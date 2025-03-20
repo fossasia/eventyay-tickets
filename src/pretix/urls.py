@@ -53,6 +53,4 @@ if settings.DEBUG:
     except ImportError:
         pass
 
-common_patterns = (
-    base_patterns + control_patterns + debug_patterns + common_patterns + page_patterns
-)
+common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns + page_patterns

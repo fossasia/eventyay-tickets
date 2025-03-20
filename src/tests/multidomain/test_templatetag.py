@@ -11,20 +11,14 @@ from pretix.multidomain.models import KnownDomain
 @pytest.fixture
 def env():
     o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
-    event = Event.objects.create(
-        organizer=o, name='MRMCD2015', slug='2015', date_from=now()
-    )
+    event = Event.objects.create(organizer=o, name='MRMCD2015', slug='2015', date_from=now())
     settings.SITE_URL = 'http://example.com'
     event.get_cache().clear()
     return o, event
 
 
-TEMPLATE_FRONT_PAGE = Template(
-    "{% load eventurl %} {% eventurl event 'presale:event.index' %}"
-)
-TEMPLATE_KWARGS = Template(
-    "{% load eventurl %} {% eventurl event 'presale:event.checkout' step='payment' %}"
-)
+TEMPLATE_FRONT_PAGE = Template("{% load eventurl %} {% eventurl event 'presale:event.index' %}")
+TEMPLATE_KWARGS = Template("{% load eventurl %} {% eventurl event 'presale:event.checkout' step='payment' %}")
 
 
 @pytest.mark.django_db
@@ -56,9 +50,7 @@ def test_event_custom_domain_kwargs(env):
 @pytest.mark.django_db
 def test_only_kwargs(env):
     with pytest.raises(TemplateSyntaxError):
-        Template(
-            "{% load eventurl %} {% eventurl event 'presale:event.checkout' step %}"
-        )
+        Template("{% load eventurl %} {% eventurl event 'presale:event.checkout' step %}")
 
 
 @pytest.mark.django_db
@@ -76,8 +68,6 @@ def test_without_event(env):
 
 @pytest.mark.django_db
 def test_save_as(env):
-    tpl = Template(
-        "{% load eventurl %} {% eventurl event 'presale:event.index' as u %}{{ u }}"
-    )
+    tpl = Template("{% load eventurl %} {% eventurl event 'presale:event.index' as u %}{{ u }}")
     rendered = tpl.render(Context({'event': env[1]})).strip()
     assert rendered == '/mrmcd/2015/'

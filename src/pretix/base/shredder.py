@@ -44,14 +44,10 @@ def shred_constraints(event: Event):
         )
         max_date = max_date['max_fromto'] or max_date['max_to'] or max_date['max_from']
         if max_date is not None and max_date > now() - timedelta(days=30):
-            return _(
-                'Your event needs to be over for at least 30 days to use this feature.'
-            )
+            return _('Your event needs to be over for at least 30 days to use this feature.')
     else:
         if (event.date_to or event.date_from) > now() - timedelta(days=30):
-            return _(
-                'Your event needs to be over for at least 30 days to use this feature.'
-            )
+            return _('Your event needs to be over for at least 30 days to use this feature.')
     if event.live:
         return _('Your ticket shop needs to be offline to use this feature.')
     return None
@@ -152,10 +148,7 @@ class PhoneNumberShredder(BaseDataShredder):
             'phone-by-order.json',
             'application/json',
             json.dumps(
-                {
-                    o.code: o.phone
-                    for o in self.event.orders.filter(phone__isnull=False)
-                },
+                {o.code: o.phone for o in self.event.orders.filter(phone__isnull=False)},
                 cls=CustomJSONEncoder,
                 indent=4,
             ),
@@ -172,9 +165,7 @@ class PhoneNumberShredder(BaseDataShredder):
                 o.meta_info = json.dumps(d)
             o.save(update_fields=['meta_info', 'phone'])
 
-        for le in self.event.logentry_set.filter(
-            action_type='pretix.event.order.phone.changed'
-        ):
+        for le in self.event.logentry_set.filter(action_type='pretix.event.order.phone.changed'):
             shred_log_fields(le, banlist=['old_phone', 'new_phone'])
 
 
@@ -182,8 +173,7 @@ class EmailAddressShredder(BaseDataShredder):
     verbose_name = _('E-mails')
     identifier = 'order_emails'
     description = _(
-        'This will remove all e-mail addresses from orders and attendees, as well as logged email '
-        'contents.'
+        'This will remove all e-mail addresses from orders and attendees, as well as logged email contents.'
     )
 
     def generate_files(self) -> List[Tuple[str, str, str]]:
@@ -191,10 +181,7 @@ class EmailAddressShredder(BaseDataShredder):
             'emails-by-order.json',
             'application/json',
             json.dumps(
-                {
-                    o.code: o.email
-                    for o in self.event.orders.filter(email__isnull=False)
-                },
+                {o.code: o.email for o in self.event.orders.filter(email__isnull=False)},
                 indent=4,
             ),
         )
@@ -204,9 +191,7 @@ class EmailAddressShredder(BaseDataShredder):
             json.dumps(
                 {
                     '{}-{}'.format(op.order.code, op.positionid): op.attendee_email
-                    for op in OrderPosition.all.filter(
-                        order__event=self.event, attendee_email__isnull=False
-                    )
+                    for op in OrderPosition.all.filter(order__event=self.event, attendee_email__isnull=False)
                 },
                 indent=4,
             ),
@@ -214,9 +199,7 @@ class EmailAddressShredder(BaseDataShredder):
 
     @transaction.atomic
     def shred_data(self):
-        OrderPosition.all.filter(
-            order__event=self.event, attendee_email__isnull=False
-        ).update(attendee_email=None)
+        OrderPosition.all.filter(order__event=self.event, attendee_email__isnull=False).update(attendee_email=None)
 
         for o in self.event.orders.all():
             o.email = None
@@ -230,14 +213,10 @@ class EmailAddressShredder(BaseDataShredder):
         for le in self.event.logentry_set.filter(action_type__contains='order.email'):
             shred_log_fields(le, banlist=['recipient', 'message', 'subject'])
 
-        for le in self.event.logentry_set.filter(
-            action_type='pretix.event.order.contact.changed'
-        ):
+        for le in self.event.logentry_set.filter(action_type='pretix.event.order.contact.changed'):
             shred_log_fields(le, banlist=['old_email', 'new_email'])
 
-        for le in self.event.logentry_set.filter(
-            action_type='pretix.event.order.modified'
-        ).exclude(data=''):
+        for le in self.event.logentry_set.filter(action_type='pretix.event.order.modified').exclude(data=''):
             d = le.parsed_data
             if 'data' in d:
                 for row in d['data']:
@@ -251,39 +230,28 @@ class EmailAddressShredder(BaseDataShredder):
 class WaitingListShredder(BaseDataShredder):
     verbose_name = _('Waiting list')
     identifier = 'waiting_list'
-    description = _(
-        'This will remove all names, email addresses, and phone numbers from the waiting list.'
-    )
+    description = _('This will remove all names, email addresses, and phone numbers from the waiting list.')
 
     def generate_files(self) -> List[Tuple[str, str, str]]:
         yield (
             'waiting-list.json',
             'application/json',
             json.dumps(
-                [
-                    WaitingListSerializer(wle).data
-                    for wle in self.event.waitinglistentries.all()
-                ],
+                [WaitingListSerializer(wle).data for wle in self.event.waitinglistentries.all()],
                 indent=4,
             ),
         )
 
     @transaction.atomic
     def shred_data(self):
-        self.event.waitinglistentries.update(
-            name_cached=None, name_parts={'_shredded': True}, email='█', phone='█'
-        )
+        self.event.waitinglistentries.update(name_cached=None, name_parts={'_shredded': True}, email='█', phone='█')
 
-        for wle in self.event.waitinglistentries.select_related('voucher').filter(
-            voucher__isnull=False
-        ):
+        for wle in self.event.waitinglistentries.select_related('voucher').filter(voucher__isnull=False):
             if '@' in wle.voucher.comment:
                 wle.voucher.comment = '█'
                 wle.voucher.save(update_fields=['comment'])
 
-        for le in self.event.logentry_set.filter(
-            action_type='pretix.voucher.added.waitinglist'
-        ).exclude(data=''):
+        for le in self.event.logentry_set.filter(action_type='pretix.voucher.added.waitinglist').exclude(data=''):
             d = le.parsed_data
             if 'name' in d:
                 d['name'] = '█'
@@ -320,10 +288,7 @@ class AttendeeInfoShredder(BaseDataShredder):
                         'state': op.state,
                     }
                     for op in OrderPosition.all.filter(order__event=self.event).filter(
-                        Q(
-                            Q(attendee_name_cached__isnull=False)
-                            | Q(attendee_name_parts__isnull=False)
-                        )
+                        Q(Q(attendee_name_cached__isnull=False) | Q(attendee_name_parts__isnull=False))
                     )
                 },
                 indent=4,
@@ -348,9 +313,7 @@ class AttendeeInfoShredder(BaseDataShredder):
             city=None,
         )
 
-        for le in self.event.logentry_set.filter(
-            action_type='pretix.event.order.modified'
-        ).exclude(data=''):
+        for le in self.event.logentry_set.filter(action_type='pretix.event.order.modified').exclude(data=''):
             d = le.parsed_data
             if 'data' in d:
                 for i, row in enumerate(d['data']):
@@ -375,9 +338,7 @@ class InvoiceAddressShredder(BaseDataShredder):
     verbose_name = _('Invoice addresses')
     identifier = 'invoice_addresses'
     tax_relevant = True
-    description = _(
-        'This will remove all invoice addresses from orders, as well as logged changes to them.'
-    )
+    description = _('This will remove all invoice addresses from orders, as well as logged changes to them.')
 
     def generate_files(self) -> List[Tuple[str, str, str]]:
         yield (
@@ -396,9 +357,7 @@ class InvoiceAddressShredder(BaseDataShredder):
     def shred_data(self):
         InvoiceAddress.objects.filter(order__event=self.event).delete()
 
-        for le in self.event.logentry_set.filter(
-            action_type='pretix.event.order.modified'
-        ).exclude(data=''):
+        for le in self.event.logentry_set.filter(action_type='pretix.event.order.modified').exclude(data=''):
             d = le.parsed_data
             if 'invoice_data' in d and not isinstance(d['invoice_data'], bool):
                 for field in d['invoice_data']:
@@ -412,15 +371,11 @@ class InvoiceAddressShredder(BaseDataShredder):
 class QuestionAnswerShredder(BaseDataShredder):
     verbose_name = _('Question answers')
     identifier = 'question_answers'
-    description = _(
-        'This will remove all answers to questions, as well as logged changes to them.'
-    )
+    description = _('This will remove all answers to questions, as well as logged changes to them.')
 
     def generate_files(self) -> List[Tuple[str, str, str]]:
         d = {}
-        for op in OrderPosition.all.filter(order__event=self.event).prefetch_related(
-            'answers', 'answers__question'
-        ):
+        for op in OrderPosition.all.filter(order__event=self.event).prefetch_related('answers', 'answers__question'):
             for a in op.answers.all():
                 if a.file:
                     fname = f'{op.order.code}-{op.positionid}-{a.question.identifier}-{os.path.basename(a.file.name)}'
@@ -436,9 +391,7 @@ class QuestionAnswerShredder(BaseDataShredder):
     def shred_data(self):
         QuestionAnswer.objects.filter(orderposition__order__event=self.event).delete()
 
-        for le in self.event.logentry_set.filter(
-            action_type='pretix.event.order.modified'
-        ).exclude(data=''):
+        for le in self.event.logentry_set.filter(action_type='pretix.event.order.modified').exclude(data=''):
             d = le.parsed_data
             if 'data' in d:
                 for i, row in enumerate(d['data']):
@@ -485,9 +438,7 @@ class InvoiceShredder(BaseDataShredder):
 class CachedTicketShredder(BaseDataShredder):
     verbose_name = _('Cached ticket files')
     identifier = 'cachedtickets'
-    description = _(
-        'This will remove all cached ticket files. No download will be offered.'
-    )
+    description = _('This will remove all cached ticket files. No download will be offered.')
 
     def generate_files(self) -> List[Tuple[str, str, str]]:
         pass

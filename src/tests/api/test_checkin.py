@@ -57,9 +57,7 @@ def order(event, item, other_item, taxrule):
             total=46,
             locale='en',
         )
-        InvoiceAddress.objects.create(
-            order=o, company='Sample company', country=Country('NZ')
-        )
+        InvoiceAddress.objects.create(order=o, company='Sample company', country=Country('NZ'))
         OrderPosition.objects.create(
             order=o,
             positionid=1,
@@ -182,11 +180,7 @@ def test_list_list(token_client, organizer, event, clist, item, subevent):
     res['limit_products'] = [item.pk]
     res['auto_checkin_sales_channels'] = []
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -194,9 +188,7 @@ def test_list_list(token_client, organizer, event, clist, item, subevent):
     clist.save()
     res['subevent'] = subevent.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent={}'.format(
-            organizer.slug, event.slug, subevent.pk
-        )
+        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent={}'.format(organizer.slug, event.slug, subevent.pk)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
@@ -211,15 +203,11 @@ def test_list_list(token_client, organizer, event, clist, item, subevent):
             date_from=datetime.datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC),
         )
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent={}'.format(
-            organizer.slug, event.slug, se2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent={}'.format(organizer.slug, event.slug, se2.pk)
     )
     assert [] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent_match={}'.format(
-            organizer.slug, event.slug, se2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent_match={}'.format(organizer.slug, event.slug, se2.pk)
     )
     assert [] == resp.data['results']
 
@@ -228,9 +216,7 @@ def test_list_list(token_client, organizer, event, clist, item, subevent):
     res['subevent'] = None
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent_match={}'.format(
-            organizer.slug, event.slug, se2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/checkinlists/?subevent_match={}'.format(organizer.slug, event.slug, se2.pk)
     )
     assert [res] == resp.data['results']
 
@@ -243,9 +229,7 @@ def test_list_detail(token_client, organizer, event, clist, item):
     res['limit_products'] = [item.pk]
     res['auto_checkin_sales_channels'] = []
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/checkinlists/{}/'.format(
-            organizer.slug, event.slug, clist.pk
-        )
+        '/api/v1/organizers/{}/events/{}/checkinlists/{}/'.format(organizer.slug, event.slug, clist.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -254,9 +238,7 @@ def test_list_detail(token_client, organizer, event, clist, item):
 @pytest.mark.django_db
 def test_list_create(token_client, organizer, event, item, item_on_wrong_event):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug),
         {
             'name': 'VIP',
             'limit_products': [item.pk],
@@ -275,9 +257,7 @@ def test_list_create(token_client, organizer, event, item, item_on_wrong_event):
         assert cl.rules == {'==': [0, 1]}
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug),
         {
             'name': 'VIP',
             'limit_products': [item.pk],
@@ -296,9 +276,7 @@ def test_list_create(token_client, organizer, event, item, item_on_wrong_event):
         assert 'web' in cl.auto_checkin_sales_channels
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug),
         {
             'name': 'VIP',
             'limit_products': [item_on_wrong_event.pk],
@@ -308,20 +286,13 @@ def test_list_create(token_client, organizer, event, item, item_on_wrong_event):
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["One or more items do not belong to this event."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["One or more items do not belong to this event."]}'
 
 
 @pytest.mark.django_db
-def test_list_create_with_subevent(
-    token_client, organizer, event, event3, item, subevent, subevent2
-):
+def test_list_create_with_subevent(token_client, organizer, event, event3, item, subevent, subevent2):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug),
         {
             'name': 'VIP',
             'limit_products': [item.pk],
@@ -333,9 +304,7 @@ def test_list_create_with_subevent(
     assert resp.status_code == 201
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug),
         {
             'name': 'VIP',
             'limit_products': [item.pk],
@@ -351,9 +320,7 @@ def test_list_create_with_subevent(
         assert 'web' in cl.auto_checkin_sales_channels
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug),
         {
             'name': 'VIP',
             'limit_products': [item.pk],
@@ -365,9 +332,7 @@ def test_list_create_with_subevent(
     assert resp.status_code == 201
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event.slug),
         {
             'name': 'VIP',
             'limit_products': [],
@@ -377,15 +342,10 @@ def test_list_create_with_subevent(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The subevent does not belong to this event."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["The subevent does not belong to this event."]}'
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(
-            organizer.slug, event3.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/'.format(organizer.slug, event3.slug),
         {
             'name': 'VIP',
             'limit_products': [],
@@ -395,18 +355,13 @@ def test_list_create_with_subevent(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The subevent does not belong to this event."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["The subevent does not belong to this event."]}'
 
 
 @pytest.mark.django_db
 def test_list_update(token_client, organizer, event, clist):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/checkinlists/{}/'.format(
-            organizer.slug, event.slug, clist.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/{}/'.format(organizer.slug, event.slug, clist.pk),
         {
             'name': 'VIP',
         },
@@ -418,9 +373,7 @@ def test_list_update(token_client, organizer, event, clist):
     assert cl.name == 'VIP'
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/checkinlists/{}/'.format(
-            organizer.slug, event.slug, clist.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/checkinlists/{}/'.format(organizer.slug, event.slug, clist.pk),
         {
             'auto_checkin_sales_channels': ['web'],
         },
@@ -433,9 +386,7 @@ def test_list_update(token_client, organizer, event, clist):
 
 
 @pytest.mark.django_db
-def test_list_all_items_positions(
-    token_client, organizer, event, clist, clist_all, item, other_item, order
-):
+def test_list_all_items_positions(token_client, organizer, event, clist, clist_all, item, other_item, order):
     with scopes_disabled():
         p1 = dict(TEST_ORDERPOSITION1_RES)
         p1['id'] = order.positions.first().pk
@@ -557,9 +508,7 @@ def test_list_all_items_positions(
     order.status = Order.STATUS_PENDING
     order.save()
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/checkinlists/{}/positions/'.format(
-            organizer.slug, event.slug, clist_all.pk
-        )
+        '/api/v1/organizers/{}/events/{}/checkinlists/{}/positions/'.format(organizer.slug, event.slug, clist_all.pk)
     )
     assert resp.status_code == 200
     assert [] == resp.data['results']
@@ -618,9 +567,7 @@ def test_list_all_items_positions_by_subevent(
 
 
 @pytest.mark.django_db
-def test_list_limited_items_positions(
-    token_client, organizer, event, clist, item, order
-):
+def test_list_limited_items_positions(token_client, organizer, event, clist, item, order):
     p1 = dict(TEST_ORDERPOSITION1_RES)
     with scopes_disabled():
         p1['id'] = order.positions.first().pk
@@ -637,9 +584,7 @@ def test_list_limited_items_positions(
 
 
 @pytest.mark.django_db
-def test_list_limited_items_position_detail(
-    token_client, organizer, event, clist, item, order
-):
+def test_list_limited_items_position_detail(token_client, organizer, event, clist, item, order):
     p1 = dict(TEST_ORDERPOSITION1_RES)
     with scopes_disabled():
         p1['id'] = order.positions.first().pk
@@ -859,9 +804,7 @@ def test_allow_multiple(token_client, organizer, clist, event, order):
 
 
 @pytest.mark.django_db
-def test_allow_multiple_reupload_same_nonce(
-    token_client, organizer, clist, event, order
-):
+def test_allow_multiple_reupload_same_nonce(token_client, organizer, clist, event, order):
     clist.allow_multiple_entries = True
     clist.save()
     with scopes_disabled():
@@ -889,9 +832,7 @@ def test_allow_multiple_reupload_same_nonce(
 
 
 @pytest.mark.django_db
-def test_multiple_different_list(
-    token_client, organizer, clist, clist_all, event, order
-):
+def test_multiple_different_list(token_client, organizer, clist, clist_all, event, order):
     with scopes_disabled():
         p = order.positions.first()
     resp = token_client.post(
@@ -1078,9 +1019,7 @@ def test_question_number(token_client, organizer, clist, event, order, question)
     assert resp.status_code == 201
     assert resp.data['status'] == 'ok'
     with scopes_disabled():
-        assert (
-            order.positions.first().answers.get(question=question[0]).answer == '3.24'
-        )
+        assert order.positions.first().answers.get(question=question[0]).answer == '3.24'
 
 
 @pytest.mark.django_db
@@ -1110,15 +1049,11 @@ def test_question_choice(token_client, organizer, clist, event, order, question)
     assert resp.data['status'] == 'ok'
     with scopes_disabled():
         assert order.positions.first().answers.get(question=question[0]).answer == 'M'
-        assert list(
-            order.positions.first().answers.get(question=question[0]).options.all()
-        ) == [question[1]]
+        assert list(order.positions.first().answers.get(question=question[0]).options.all()) == [question[1]]
 
 
 @pytest.mark.django_db
-def test_question_choice_identifier(
-    token_client, organizer, clist, event, order, question
-):
+def test_question_choice_identifier(token_client, organizer, clist, event, order, question):
     with scopes_disabled():
         p = order.positions.first()
     resp = token_client.post(
@@ -1145,9 +1080,7 @@ def test_question_choice_identifier(
     assert resp.data['status'] == 'ok'
     with scopes_disabled():
         assert order.positions.first().answers.get(question=question[0]).answer == 'M'
-        assert list(
-            order.positions.first().answers.get(question=question[0]).options.all()
-        ) == [question[1]]
+        assert list(order.positions.first().answers.get(question=question[0]).options.all()) == [question[1]]
 
 
 @pytest.mark.django_db
@@ -1230,9 +1163,7 @@ def test_question_optional(token_client, organizer, clist, event, order, questio
 
 
 @pytest.mark.django_db
-def test_question_multiple_choice(
-    token_client, organizer, clist, event, order, question
-):
+def test_question_multiple_choice(token_client, organizer, clist, event, order, question):
     with scopes_disabled():
         p = order.positions.first()
     question[0].type = 'M'
@@ -1260,12 +1191,11 @@ def test_question_multiple_choice(
     assert resp.status_code == 201
     assert resp.data['status'] == 'ok'
     with scopes_disabled():
-        assert (
-            order.positions.first().answers.get(question=question[0]).answer == 'M, L'
-        )
-        assert set(
-            order.positions.first().answers.get(question=question[0]).options.all()
-        ) == {question[1], question[2]}
+        assert order.positions.first().answers.get(question=question[0]).answer == 'M, L'
+        assert set(order.positions.first().answers.get(question=question[0]).options.all()) == {
+            question[1],
+            question[2],
+        }
 
 
 @pytest.mark.django_db
@@ -1319,9 +1249,5 @@ def test_question_upload(token_client, organizer, clist, event, order, question)
     assert resp.status_code == 201
     assert resp.data['status'] == 'ok'
     with scopes_disabled():
-        assert (
-            order.positions.first()
-            .answers.get(question=question[0])
-            .answer.startswith('file://')
-        )
+        assert order.positions.first().answers.get(question=question[0]).answer.startswith('file://')
         assert order.positions.first().answers.get(question=question[0]).file

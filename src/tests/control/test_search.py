@@ -134,9 +134,7 @@ class OrderSearchTest(SoupTest):
 
     def test_superuser(self):
         self.user.is_staff = True
-        self.user.staffsession_set.create(
-            date_start=now(), session_key=self.client.session.session_key
-        )
+        self.user.staffsession_set.create(date_start=now(), session_key=self.client.session.session_key)
         self.user.save()
         self.team.members.clear()
         resp = self.client.get('/control/search/orders/').content.decode()
@@ -144,13 +142,9 @@ class OrderSearchTest(SoupTest):
         assert 'FO2' in resp
 
     def test_filter_email(self):
-        resp = self.client.get(
-            '/control/search/orders/?query=dummy1@dummy'
-        ).content.decode()
+        resp = self.client.get('/control/search/orders/?query=dummy1@dummy').content.decode()
         assert 'FO1' in resp
-        resp = self.client.get(
-            '/control/search/orders/?query=dummynope'
-        ).content.decode()
+        resp = self.client.get('/control/search/orders/?query=dummynope').content.decode()
         assert 'FO1' not in resp
 
     def test_filter_attendee_name(self):
@@ -162,9 +156,7 @@ class OrderSearchTest(SoupTest):
     def test_filter_attendee_email(self):
         resp = self.client.get('/control/search/orders/?query=att.com').content.decode()
         assert 'FO1' in resp
-        resp = self.client.get(
-            '/control/search/orders/?query=nope.com'
-        ).content.decode()
+        resp = self.client.get('/control/search/orders/?query=nope.com').content.decode()
         assert 'FO1' not in resp
 
     def test_filter_invoice_address(self):
@@ -176,21 +168,13 @@ class OrderSearchTest(SoupTest):
     def test_filter_code(self):
         resp = self.client.get('/control/search/orders/?query=FO1').content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get(
-            '/control/search/orders/?query=30c3-FO1'
-        ).content.decode()
+        resp = self.client.get('/control/search/orders/?query=30c3-FO1').content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get(
-            '/control/search/orders/?query=30C3-fO1A'
-        ).content.decode()
+        resp = self.client.get('/control/search/orders/?query=30C3-fO1A').content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get(
-            '/control/search/orders/?query=30C3-fo14'
-        ).content.decode()
+        resp = self.client.get('/control/search/orders/?query=30C3-fo14').content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get(
-            '/control/search/orders/?query=31c3-FO1'
-        ).content.decode()
+        resp = self.client.get('/control/search/orders/?query=31c3-FO1').content.decode()
         assert '30C3-FO1' not in resp
         resp = self.client.get('/control/search/orders/?query=FO2').content.decode()
         assert '30C3-FO1' not in resp

@@ -83,9 +83,7 @@ def safelink_callback(attrs, new=False):
         and not url.startswith('tel:')
     ):
         signer = signing.Signer(salt='safe-redirect')
-        attrs[None, 'href'] = (
-            reverse('redirect') + '?url=' + urllib.parse.quote(signer.sign(url))
-        )
+        attrs[None, 'href'] = reverse('redirect') + '?url=' + urllib.parse.quote(signer.sign(url))
         attrs[None, 'target'] = '_blank'
         attrs[None, 'rel'] = 'noopener'
     return attrs
@@ -117,9 +115,7 @@ def truelink_callback(attrs, new=False):
             text = 'https://' + text
 
         text_url = urllib.parse.urlparse(text)
-        if text_url.netloc != href_url.netloc or not href_url.path.startswith(
-            href_url.path
-        ):
+        if text_url.netloc != href_url.netloc or not href_url.path.startswith(href_url.path):
             # link text contains an URL that has a different base than the actual URL
             attrs['_text'] = attrs[None, 'href']
     return attrs

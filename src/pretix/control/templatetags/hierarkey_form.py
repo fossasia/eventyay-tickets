@@ -41,9 +41,7 @@ class PropagatedNode(Node):
             </div>
             """.format(
                 body=body,
-                text_inh=_('Organizer-level settings')
-                if isinstance(event, Event)
-                else _('Site-level settings'),
+                text_inh=_('Organizer-level settings') if isinstance(event, Event) else _('Site-level settings'),
                 fnames=','.join(self.field_names),
                 text_expl=_(
                     'These settings are currently set on organizer level. This way, you can easily change them for '
@@ -59,9 +57,7 @@ class PropagatedNode(Node):
                 text_unlink=_('Change only for this event')
                 if isinstance(event, Event)
                 else _('Change only for this organizer'),
-                text_orga=_('Change for all events')
-                if isinstance(event, Event)
-                else _('Change for all organizers'),
+                text_orga=_('Change for all events') if isinstance(event, Event) else _('Change for all organizers'),
                 url=url,
             )
 
@@ -73,9 +69,7 @@ def propagated(parser, token):
     try:
         tag, event, url, *args = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError(
-            '%r tag requires at least three arguments' % token.contents.split()[0]
-        )
+        raise template.TemplateSyntaxError('%r tag requires at least three arguments' % token.contents.split()[0])
 
     nodelist = parser.parse(('endpropagated',))
     parser.delete_first_token()

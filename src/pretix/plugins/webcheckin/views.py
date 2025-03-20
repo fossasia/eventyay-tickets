@@ -10,7 +10,5 @@ class IndexView(EventPermissionRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['countries'] = [
-            {'key': key, 'value': name} for key, name in CachedCountries()
-        ]
+        ctx['countries'] = [{'key': key, 'value': name} for key, name in CachedCountries()]
         return ctx

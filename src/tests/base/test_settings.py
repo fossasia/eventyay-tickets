@@ -31,9 +31,7 @@ class SettingsTestCase(TestCase):
         self.assertIsInstance(self.event.settings.get('test', as_type=as_type), as_type)
 
     def test_serialize_lazyi18nstring(self):
-        self._test_serialization(
-            LazyI18nString({'de': 'Hallo', 'en': 'Hello'}), LazyI18nString
-        )
+        self._test_serialization(LazyI18nString({'de': 'Hallo', 'en': 'Hello'}), LazyI18nString)
 
     def test_sandbox(self):
         sandbox = SettingsSandbox('testing', 'foo', self.event)

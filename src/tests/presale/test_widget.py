@@ -37,48 +37,36 @@ class WidgetCartTest(CartTestMixin, TestCase):
         )
 
     def test_iframe_entry_view_wrapper(self):
-        self.client.get(
-            '/%s/%s/?iframe=1&locale=de' % (self.orga.slug, self.event.slug)
-        )
+        self.client.get('/%s/%s/?iframe=1&locale=de' % (self.orga.slug, self.event.slug))
         assert 'iframe_session' in self.client.session
         assert self.client.cookies[settings.LANGUAGE_COOKIE_NAME].value == 'de'
 
     def test_allow_frame_if_namespaced(self):
         response = self.client.get('/%s/%s/' % (self.orga.slug, self.event.slug))
         assert 'X-Frame-Options' in response
-        response = self.client.get(
-            '/%s/%s/w/aaaaaaaaaaaaaaaa/' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/w/aaaaaaaaaaaaaaaa/' % (self.orga.slug, self.event.slug))
         assert 'X-Frame-Options' not in response
 
-        response = self.client.get(
-            '/%s/%s/waitinglist' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/waitinglist' % (self.orga.slug, self.event.slug))
         assert 'X-Frame-Options' in response
-        response = self.client.get(
-            '/%s/%s/w/aaaaaaaaaaaaaaaa/waitinglist' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/w/aaaaaaaaaaaaaaaa/waitinglist' % (self.orga.slug, self.event.slug))
         assert 'X-Frame-Options' not in response
 
     def test_allow_frame_on_order(self):
         response = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert 'X-Frame-Options' not in response
         response = self.client.get(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert 'X-Frame-Options' not in response
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert 'X-Frame-Options' not in response
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert 'X-Frame-Options' not in response
 
@@ -107,16 +95,12 @@ class WidgetCartTest(CartTestMixin, TestCase):
         )
         doc = BeautifulSoup(response.rendered_content, 'lxml')
         assert len(doc.select('.cart .cart-row')) == 2
-        self.assertIn(
-            'Early-bird', doc.select('.cart .cart-row')[0].select('strong')[0].text
-        )
+        self.assertIn('Early-bird', doc.select('.cart .cart-row')[0].select('strong')[0].text)
         self.assertIn('1', doc.select('.cart .cart-row')[0].select('.count')[0].text)
         self.assertIn('23', doc.select('.cart .cart-row')[0].select('.price')[0].text)
         self.assertIn('23', doc.select('.cart .cart-row')[0].select('.price')[1].text)
 
-        response = self.client.get(
-            '/%s/%s/w/aaaaaaaaaaaaaaaa/' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/w/aaaaaaaaaaaaaaaa/' % (self.orga.slug, self.event.slug))
         doc = BeautifulSoup(response.rendered_content, 'lxml')
         assert len(doc.select('.cart .cart-row')) == 0
         response = self.client.post(
@@ -126,22 +110,17 @@ class WidgetCartTest(CartTestMixin, TestCase):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/w/aaaaaaaaaaaaaaaa/?require_cookie=true'
-            % (self.orga.slug, self.event.slug),
+            '/%s/%s/w/aaaaaaaaaaaaaaaa/?require_cookie=true' % (self.orga.slug, self.event.slug),
             target_status_code=200,
         )
         doc = BeautifulSoup(response.rendered_content, 'lxml')
         assert len(doc.select('.cart .cart-row')) == 2
-        self.assertIn(
-            'Early-bird', doc.select('.cart .cart-row')[0].select('strong')[0].text
-        )
+        self.assertIn('Early-bird', doc.select('.cart .cart-row')[0].select('strong')[0].text)
         self.assertIn('1', doc.select('.cart .cart-row')[0].select('.count')[0].text)
         self.assertIn('23', doc.select('.cart .cart-row')[0].select('.price')[0].text)
         self.assertIn('23', doc.select('.cart .cart-row')[0].select('.price')[1].text)
 
-        response = self.client.get(
-            '/%s/%s/w/aaaaaaaaaaaaaaab/' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/w/aaaaaaaaaaaaaaab/' % (self.orga.slug, self.event.slug))
         doc = BeautifulSoup(response.rendered_content, 'lxml')
         assert len(doc.select('.cart .cart-row')) == 0
         response = self.client.post(
@@ -151,15 +130,12 @@ class WidgetCartTest(CartTestMixin, TestCase):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/w/aaaaaaaaaaaaaaab/?require_cookie=true'
-            % (self.orga.slug, self.event.slug),
+            '/%s/%s/w/aaaaaaaaaaaaaaab/?require_cookie=true' % (self.orga.slug, self.event.slug),
             target_status_code=200,
         )
         doc = BeautifulSoup(response.rendered_content, 'lxml')
         assert len(doc.select('.cart .cart-row')) == 2
-        self.assertIn(
-            'Early-bird', doc.select('.cart .cart-row')[0].select('strong')[0].text
-        )
+        self.assertIn('Early-bird', doc.select('.cart .cart-row')[0].select('strong')[0].text)
         self.assertIn('1', doc.select('.cart .cart-row')[0].select('.count')[0].text)
         self.assertIn('23', doc.select('.cart .cart-row')[0].select('.price')[0].text)
         self.assertIn('23', doc.select('.cart .cart-row')[0].select('.price')[1].text)
@@ -167,9 +143,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
     def test_saleschannel_disabled(self):
         self.event.sales_channels = []
         self.event.save()
-        response = self.client.get(
-            '/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug))
         data = json.loads(response.content.decode())
         assert data == {
             'error': 'Tickets for this event cannot be purchased on this sales channel.',
@@ -184,9 +158,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_product_list_view(self):
-        response = self.client.get(
-            '/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug))
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert data == {
@@ -294,8 +266,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
 
     def test_product_list_view_filter(self):
         response = self.client.get(
-            '/%s/%s/widget/product_list?items=%s'
-            % (self.orga.slug, self.event.slug, self.ticket.pk)
+            '/%s/%s/widget/product_list?items=%s' % (self.orga.slug, self.event.slug, self.ticket.pk)
         )
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
@@ -335,17 +306,13 @@ class WidgetCartTest(CartTestMixin, TestCase):
         ]
 
         response = self.client.get(
-            '/%s/%s/widget/product_list?categories=0,%s'
-            % (self.orga.slug, self.event.slug, self.category.pk)
+            '/%s/%s/widget/product_list?categories=0,%s' % (self.orga.slug, self.event.slug, self.category.pk)
         )
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert len(data['items_by_category']) == 1
 
-        response = self.client.get(
-            '/%s/%s/widget/product_list?categories=0'
-            % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list?categories=0' % (self.orga.slug, self.event.slug))
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert len(data['items_by_category']) == 0
@@ -353,10 +320,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
     def test_product_list_view_with_voucher(self):
         with scopes_disabled():
             self.event.vouchers.create(item=self.ticket, code='ABCDE')
-        response = self.client.get(
-            '/%s/%s/widget/product_list?voucher=ABCDE'
-            % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list?voucher=ABCDE' % (self.orga.slug, self.event.slug))
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert data == {
@@ -415,10 +379,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
         with scopes_disabled():
             self.event.vouchers.create(quota=self.quota_shirts, code='ABCDE')
             self.quota_shirts.variations.remove(self.shirt_blue)
-        response = self.client.get(
-            '/%s/%s/widget/product_list?voucher=ABCDE'
-            % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list?voucher=ABCDE' % (self.orga.slug, self.event.slug))
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert data == {
@@ -490,10 +451,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                 code='ABCDE',
                 valid_until=now() - datetime.timedelta(days=1),
             )
-        response = self.client.get(
-            '/%s/%s/widget/product_list?voucher=ABCDE'
-            % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list?voucher=ABCDE' % (self.orga.slug, self.event.slug))
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert data == {
@@ -517,9 +475,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
 
     @override_settings(COMPRESS_PRECOMPILERS=settings.COMPRESS_PRECOMPILERS_ORIGINAL)
     def test_css_customized(self):
-        response = self.client.get(
-            '/%s/%s/widget/v1.css' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/v1.css' % (self.orga.slug, self.event.slug))
         c = b''.join(response.streaming_content).decode()
         assert '#2185d0' in c
         assert '#33c33c' not in c
@@ -527,9 +483,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
 
         self.orga.settings.primary_color = '#33c33c'
         regenerate_organizer_css.apply(args=(self.orga.pk,))
-        response = self.client.get(
-            '/%s/%s/widget/v1.css' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/v1.css' % (self.orga.slug, self.event.slug))
         c = b''.join(response.streaming_content).decode()
         assert '#2185d0' not in c
         assert '#33c33c' in c
@@ -537,9 +491,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
 
         self.event.settings.primary_color = '#34c34c'
         regenerate_css.apply(args=(self.event.pk,))
-        response = self.client.get(
-            '/%s/%s/widget/v1.css' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/v1.css' % (self.orga.slug, self.event.slug))
         c = b''.join(response.streaming_content).decode()
         assert '#2185d0' not in c
         assert '#33c33c' not in c
@@ -564,9 +516,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
             designated_price=2,
             count=1,
         )
-        response = self.client.get(
-            '/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug))
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert data['items_by_category'][0]['items'][0]['avail'] == [0, None]
@@ -583,9 +533,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                 designated_price=2,
                 count=1,
             )
-        response = self.client.get(
-            '/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug))
         assert response['Access-Control-Allow-Origin'] == '*'
         data = json.loads(response.content.decode())
         assert len(data['items_by_category'][0]['items']) == 1
@@ -609,9 +557,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     active=True,
                     date_from=now() - datetime.timedelta(days=3),
                 )
-                se1 = self.event.subevents.create(
-                    name='Present', active=True, date_from=now()
-                )
+                se1 = self.event.subevents.create(name='Present', active=True, date_from=now())
                 se2 = self.event.subevents.create(
                     name='Future',
                     active=True,
@@ -629,9 +575,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     date_from=now() + datetime.timedelta(days=3),
                 )
 
-            response = self.client.get(
-                '/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug)
-            )
+            response = self.client.get('/%s/%s/widget/product_list' % (self.orga.slug, self.event.slug))
             data = json.loads(response.content.decode())
             settings.SITE_URL = 'http://example.com'
             assert data == {
@@ -678,9 +622,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     active=True,
                     date_from=now() - datetime.timedelta(days=3),
                 )
-                se1 = self.event.subevents.create(
-                    name='Present', active=True, date_from=now()
-                )
+                se1 = self.event.subevents.create(name='Present', active=True, date_from=now())
                 se2 = self.event.subevents.create(
                     name='Future',
                     active=True,
@@ -698,10 +640,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     date_from=now() + datetime.timedelta(days=3),
                 )
 
-            response = self.client.get(
-                '/%s/%s/widget/product_list?style=calendar'
-                % (self.orga.slug, self.event.slug)
-            )
+            response = self.client.get('/%s/%s/widget/product_list?style=calendar' % (self.orga.slug, self.event.slug))
             settings.SITE_URL = 'http://example.com'
             data = json.loads(response.content.decode())
             assert data == {
@@ -808,9 +747,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     active=True,
                     date_from=now() - datetime.timedelta(days=3),
                 )
-                se1 = self.event.subevents.create(
-                    name='Present', active=True, date_from=now()
-                )
+                se1 = self.event.subevents.create(name='Present', active=True, date_from=now())
                 se2 = self.event.subevents.create(
                     name='Future',
                     active=True,
@@ -828,10 +765,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     date_from=now() + datetime.timedelta(days=3),
                 )
 
-            response = self.client.get(
-                '/%s/%s/widget/product_list?style=week'
-                % (self.orga.slug, self.event.slug)
-            )
+            response = self.client.get('/%s/%s/widget/product_list?style=week' % (self.orga.slug, self.event.slug))
             settings.SITE_URL = 'http://example.com'
             data = json.loads(response.content.decode())
             assert data == {
@@ -962,9 +896,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     active=True,
                     date_from=now() - datetime.timedelta(days=3),
                 )
-                self.event.subevents.create(
-                    name='Present', active=True, date_from=now()
-                )
+                self.event.subevents.create(name='Present', active=True, date_from=now())
                 self.event.subevents.create(
                     name='Future',
                     active=True,
@@ -1067,9 +999,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     active=True,
                     date_from=now() - datetime.timedelta(days=3),
                 )
-                se1 = self.event.subevents.create(
-                    name='Present', active=True, date_from=now()
-                )
+                se1 = self.event.subevents.create(name='Present', active=True, date_from=now())
                 se2 = self.event.subevents.create(
                     name='Future',
                     active=True,
@@ -1087,9 +1017,7 @@ class WidgetCartTest(CartTestMixin, TestCase):
                     date_from=now() + datetime.timedelta(days=3),
                 )
 
-            response = self.client.get(
-                '/%s/widget/product_list?style=calendar' % (self.orga.slug,)
-            )
+            response = self.client.get('/%s/widget/product_list?style=calendar' % (self.orga.slug,))
             settings.SITE_URL = 'http://example.com'
             data = json.loads(response.content.decode())
             assert data == {

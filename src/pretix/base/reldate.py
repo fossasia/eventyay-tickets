@@ -18,9 +18,7 @@ BASE_CHOICES = (
     ('presale_end', _('Presale end')),
 )
 
-RelativeDate = namedtuple(
-    'RelativeDate', ['days_before', 'minutes_before', 'time', 'base_date_name']
-)
+RelativeDate = namedtuple('RelativeDate', ['days_before', 'minutes_before', 'time', 'base_date_name'])
 
 
 class RelativeDateWrapper:
@@ -46,9 +44,7 @@ class RelativeDateWrapper:
             return self.data.date()
         else:
             if self.data.minutes_before is not None:
-                raise ValueError(
-                    'A minute-based relative datetime can not be used as a date'
-                )
+                raise ValueError('A minute-based relative datetime can not be used as a date')
 
             tz = pytz.timezone(event.settings.timezone)
             if isinstance(event, SubEvent):
@@ -60,9 +56,7 @@ class RelativeDateWrapper:
             else:
                 base_date = getattr(event, self.data.base_date_name) or event.date_from
 
-            new_date = base_date.astimezone(tz) - datetime.timedelta(
-                days=self.data.days_before
-            )
+            new_date = base_date.astimezone(tz) - datetime.timedelta(days=self.data.days_before)
             return new_date.date()
 
     def datetime(self, event) -> datetime.datetime:
@@ -82,14 +76,10 @@ class RelativeDateWrapper:
                 base_date = getattr(event, self.data.base_date_name) or event.date_from
 
             if self.data.minutes_before is not None:
-                return base_date.astimezone(tz) - datetime.timedelta(
-                    minutes=self.data.minutes_before
-                )
+                return base_date.astimezone(tz) - datetime.timedelta(minutes=self.data.minutes_before)
             else:
                 oldoffset = base_date.astimezone(tz).utcoffset()
-                new_date = base_date.astimezone(tz) - datetime.timedelta(
-                    days=self.data.days_before
-                )
+                new_date = base_date.astimezone(tz) - datetime.timedelta(days=self.data.days_before)
                 if self.data.time:
                     new_date = new_date.replace(
                         hour=self.data.time.hour,
@@ -151,9 +141,7 @@ class RelativeDateWrapper:
                         minutes_before=None,
                     )
             if data.base_date_name not in [k[0] for k in BASE_CHOICES]:
-                raise ValueError(
-                    '{} is not a valid base date'.format(data.base_date_name)
-                )
+                raise ValueError('{} is not a valid base date'.format(data.base_date_name))
         else:
             data = parser.parse(input)
         return RelativeDateWrapper(data)
@@ -172,9 +160,7 @@ class RelativeDateTimeWidget(forms.MultiWidget):
             forms.DateTimeInput(attrs={'class': 'datetimepicker'}),
             forms.NumberInput(),
             forms.Select(choices=kwargs.pop('base_choices')),
-            forms.TimeInput(
-                attrs={'placeholder': _('Time'), 'class': 'timepickerfield'}
-            ),
+            forms.TimeInput(attrs={'placeholder': _('Time'), 'class': 'timepickerfield'}),
             forms.NumberInput(),
         )
         super().__init__(widgets=widgets, *args, **kwargs)
@@ -235,17 +221,13 @@ class RelativeDateTimeField(forms.MultiValueField):
             forms.IntegerField(required=False),
         )
         if 'widget' not in kwargs:
-            kwargs['widget'] = RelativeDateTimeWidget(
-                status_choices=status_choices, base_choices=choices
-            )
+            kwargs['widget'] = RelativeDateTimeWidget(status_choices=status_choices, base_choices=choices)
         kwargs.pop('max_length', 0)
         kwargs.pop('empty_value', 0)
         super().__init__(fields=fields, require_all_fields=False, *args, **kwargs)
 
     def set_event(self, event):
-        self.widget.widgets[3].choices = [
-            (k, v) for k, v in BASE_CHOICES if getattr(event, k, None)
-        ]
+        self.widget.widgets[3].choices = [(k, v) for k, v in BASE_CHOICES if getattr(event, k, None)]
 
     def compress(self, data_list):
         if not data_list:
@@ -322,12 +304,8 @@ class RelativeDateField(RelativeDateTimeField):
             forms.ChoiceField(choices=BASE_CHOICES, required=False),
         )
         if 'widget' not in kwargs:
-            kwargs['widget'] = RelativeDateWidget(
-                status_choices=status_choices, base_choices=BASE_CHOICES
-            )
-        forms.MultiValueField.__init__(
-            self, fields=fields, require_all_fields=False, *args, **kwargs
-        )
+            kwargs['widget'] = RelativeDateWidget(status_choices=status_choices, base_choices=BASE_CHOICES)
+        forms.MultiValueField.__init__(self, fields=fields, require_all_fields=False, *args, **kwargs)
 
     def compress(self, data_list):
         if not data_list:

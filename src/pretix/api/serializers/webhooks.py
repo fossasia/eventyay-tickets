@@ -25,9 +25,7 @@ class ActionTypesField(serializers.Field):
 
 
 class WebHookSerializer(I18nAwareModelSerializer):
-    limit_events = EventRelatedField(
-        slug_field='slug', queryset=Event.objects.none(), many=True
-    )
+    limit_events = EventRelatedField(slug_field='slug', queryset=Event.objects.none(), many=True)
     action_types = ActionTypesField(source='*')
 
     class Meta:
@@ -44,18 +42,12 @@ class WebHookSerializer(I18nAwareModelSerializer):
     def validate(self, data):
         data = super().validate(data)
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
         for event in full_data.get('limit_events'):
             if self.context['organizer'] != event.organizer:
-                raise ValidationError(
-                    'One or more events do not belong to this organizer.'
-                )
+                raise ValidationError('One or more events do not belong to this organizer.')
 
         if full_data.get('limit_events') and full_data.get('all_events'):
             raise ValidationError('You can set either limit_events or all_events.')
@@ -73,9 +65,7 @@ class WebHookSerializer(I18nAwareModelSerializer):
         action_types = validated_data.pop('action_types', None)
         instance = super().update(instance, validated_data)
         if action_types is not None:
-            current_listeners = set(
-                instance.listeners.values_list('action_type', flat=True)
-            )
+            current_listeners = set(instance.listeners.values_list('action_type', flat=True))
             new_listeners = set(action_types)
             for l in current_listeners - new_listeners:
                 instance.listeners.filter(action_type=l).delete()

@@ -37,9 +37,7 @@ orga_router.register(r'seatingplans', organizer.SeatingPlanViewSet)
 orga_router.register(r'giftcards', organizer.GiftCardViewSet)
 orga_router.register(r'teams', organizer.TeamViewSet)
 orga_router.register(r'devices', organizer.DeviceViewSet)
-orga_router.register(
-    r'exporters', exporters.OrganizerExportersViewSet, basename='exporters'
-)
+orga_router.register(r'exporters', exporters.OrganizerExportersViewSet, basename='exporters')
 
 team_router = routers.DefaultRouter()
 team_router.register(r'members', organizer.TeamMemberViewSet)
@@ -57,21 +55,15 @@ event_router.register(r'vouchers', voucher.VoucherViewSet)
 event_router.register(r'orders', order.OrderViewSet)
 event_router.register(r'orderpositions', order.OrderPositionViewSet)
 event_router.register(r'invoices', order.InvoiceViewSet)
-event_router.register(
-    r'revokedsecrets', order.RevokedSecretViewSet, basename='revokedsecrets'
-)
+event_router.register(r'revokedsecrets', order.RevokedSecretViewSet, basename='revokedsecrets')
 event_router.register(r'taxrules', event.TaxRuleViewSet)
 event_router.register(r'waitinglistentries', waitinglist.WaitingListViewSet)
 event_router.register(r'checkinlists', checkin.CheckinListViewSet)
 event_router.register(r'cartpositions', cart.CartPositionViewSet)
-event_router.register(
-    r'exporters', exporters.EventExportersViewSet, basename='exporters'
-)
+event_router.register(r'exporters', exporters.EventExportersViewSet, basename='exporters')
 
 checkinlist_router = routers.DefaultRouter()
-checkinlist_router.register(
-    r'positions', checkin.CheckinListPositionViewSet, basename='checkinlistpos'
-)
+checkinlist_router.register(r'positions', checkin.CheckinListPositionViewSet, basename='checkinlistpos')
 
 question_router = routers.DefaultRouter()
 question_router.register(r'options', item.QuestionOptionViewSet)

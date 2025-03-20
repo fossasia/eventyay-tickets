@@ -31,11 +31,7 @@ class SeatingPlanLayoutValidator:
             jsonschema.validate(val, schema)
         except jsonschema.ValidationError as e:
             e = str(e).replace('%', '%%')
-            raise ValidationError(
-                _(
-                    'Your layout file is not a valid seating plan. Error message: {}'
-                ).format(e)
-            )
+            raise ValidationError(_('Your layout file is not a valid seating plan. Error message: {}').format(e))
 
 
 class SeatingPlan(LoggedModel):
@@ -44,15 +40,11 @@ class SeatingPlan(LoggedModel):
     """
 
     name = models.CharField(max_length=190, verbose_name=_('Name'))
-    organizer = models.ForeignKey(
-        Organizer, related_name='seating_plans', on_delete=models.CASCADE
-    )
+    organizer = models.ForeignKey(Organizer, related_name='seating_plans', on_delete=models.CASCADE)
     layout = models.TextField(validators=[SeatingPlanLayoutValidator()])
 
     Category = namedtuple('Categrory', 'name')
-    RawSeat = namedtuple(
-        'Seat', 'guid number row category zone sorting_rank row_label seat_label x y'
-    )
+    RawSeat = namedtuple('Seat', 'guid number row category zone sorting_rank row_label seat_label x y')
 
     def __str__(self):
         return self.name
@@ -82,9 +74,7 @@ class SeatingPlan(LoggedModel):
                 rpos = (zpos[0] + r['position']['x'], zpos[1] + r['position']['y'])
                 row_label = None
                 if r.get('row_label'):
-                    row_label = r['row_label'].replace(
-                        '%s', r.get('row_number', str(ri))
-                    )
+                    row_label = r['row_label'].replace('%s', r.get('row_number', str(ri)))
                 try:
                     row_rank = int(r['row_number'])
                 except ValueError:
@@ -92,9 +82,7 @@ class SeatingPlan(LoggedModel):
                 for si, s in enumerate(r['seats']):
                     seat_label = None
                     if r.get('seat_label'):
-                        seat_label = r['seat_label'].replace(
-                            '%s', s.get('seat_number', str(si))
-                        )
+                        seat_label = r['seat_label'].replace('%s', s.get('seat_number', str(si)))
                     try:
                         seat_rank = int(s['seat_number'])
                     except ValueError:
@@ -121,9 +109,7 @@ class SeatCategoryMapping(models.Model):
     pretix product on a per-(sub)event level.
     """
 
-    event = models.ForeignKey(
-        Event, related_name='seat_category_mappings', on_delete=models.CASCADE
-    )
+    event = models.ForeignKey(Event, related_name='seat_category_mappings', on_delete=models.CASCADE)
     subevent = models.ForeignKey(
         SubEvent,
         null=True,
@@ -132,9 +118,7 @@ class SeatCategoryMapping(models.Model):
         on_delete=models.CASCADE,
     )
     layout_category = models.CharField(max_length=190)
-    product = models.ForeignKey(
-        Item, related_name='seat_category_mappings', on_delete=models.CASCADE
-    )
+    product = models.ForeignKey(Item, related_name='seat_category_mappings', on_delete=models.CASCADE)
 
 
 class Seat(models.Model):
@@ -144,18 +128,14 @@ class Seat(models.Model):
     """
 
     event = models.ForeignKey(Event, related_name='seats', on_delete=models.CASCADE)
-    subevent = models.ForeignKey(
-        SubEvent, null=True, blank=True, related_name='seats', on_delete=models.CASCADE
-    )
+    subevent = models.ForeignKey(SubEvent, null=True, blank=True, related_name='seats', on_delete=models.CASCADE)
     zone_name = models.CharField(max_length=190, blank=True, default='')
     row_name = models.CharField(max_length=190, blank=True, default='')
     row_label = models.CharField(max_length=190, null=True)
     seat_number = models.CharField(max_length=190, blank=True, default='')
     seat_label = models.CharField(max_length=190, null=True)
     seat_guid = models.CharField(max_length=190, db_index=True)
-    product = models.ForeignKey(
-        'Item', null=True, blank=True, related_name='seats', on_delete=models.SET_NULL
-    )
+    product = models.ForeignKey('Item', null=True, blank=True, related_name='seats', on_delete=models.SET_NULL)
     blocked = models.BooleanField(default=False)
     sorting_rank = models.BigIntegerField(default=0)
     x = models.FloatField(null=True)
@@ -225,9 +205,7 @@ class Seat(models.Model):
         )
         if ignore_cart_id:
             cqs = cqs.exclude(cart_id=ignore_cart_id)
-        qs_annotated = qs.annotate(
-            has_order=Exists(opqs), has_cart=Exists(cqs), has_voucher=Exists(vqs)
-        )
+        qs_annotated = qs.annotate(has_order=Exists(opqs), has_cart=Exists(cqs), has_voucher=Exists(vqs))
 
         if minimal_distance > 0:
             # TODO: Is there a more performant implementation on PostgreSQL using
@@ -265,19 +243,14 @@ class Seat(models.Model):
     ):
         from .orders import Order
 
-        if (
-            self.blocked
-            and sales_channel
-            not in self.event.settings.seating_allow_blocked_seats_for_channel
-        ):
+        if self.blocked and sales_channel not in self.event.settings.seating_allow_blocked_seats_for_channel:
             return False
         opqs = self.orderposition_set.filter(
             order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID], canceled=False
         )
         cpqs = self.cartposition_set.filter(expires__gte=now())
         vqs = self.vouchers.filter(
-            Q(Q(valid_until__isnull=True) | Q(valid_until__gte=now()))
-            & Q(redeemed__lt=F('max_usages'))
+            Q(Q(valid_until__isnull=True) | Q(valid_until__gte=now())) & Q(redeemed__lt=F('max_usages'))
         )
         if ignore_cart and ignore_cart is not True:
             cpqs = cpqs.exclude(pk=ignore_cart.pk)
@@ -300,11 +273,7 @@ class Seat(models.Model):
                 ignore_order_id=ignore_orderpos.order_id if ignore_orderpos else None,
                 ignore_cart_id=(
                     distance_ignore_cart_id
-                    or (
-                        ignore_cart.cart_id
-                        if ignore_cart and ignore_cart is not True
-                        else None
-                    )
+                    or (ignore_cart.cart_id if ignore_cart and ignore_cart is not True else None)
                 ),
             )
             q = Q(has_order=True) | Q(has_voucher=True)

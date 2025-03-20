@@ -62,9 +62,7 @@ def process_login(request, user, keep_logged_in):
 
     :return: This method returns a ``HttpResponse``.
     """
-    request.session['pretix_auth_long_session'] = (
-        settings.PRETIX_LONG_SESSIONS and keep_logged_in
-    )
+    request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and keep_logged_in
     next_url = get_auth_backends()[user.auth_backend].get_next_url(request)
     if user.require_2fa:
         request.session['pretix_auth_2fa_user'] = user.pk
@@ -118,9 +116,7 @@ def login(request):
     """
     ctx = {}
     backenddict = get_auth_backends()
-    backends = sorted(
-        backenddict.values(), key=lambda b: (b.identifier != 'native', b.verbose_name)
-    )
+    backends = sorted(backenddict.values(), key=lambda b: (b.identifier != 'native', b.verbose_name))
     for b in backends:
         u = b.request_authenticate(request)
         if u and u.auth_backend == b.identifier:
@@ -137,11 +133,7 @@ def login(request):
         return redirect(reverse('control:index'))
     if request.method == 'POST':
         form = LoginForm(backend=backend, data=request.POST, request=request)
-        if (
-            form.is_valid()
-            and form.user_cache
-            and form.user_cache.auth_backend == backend.identifier
-        ):
+        if form.is_valid() and form.user_cache and form.user_cache.auth_backend == backend.identifier:
             return process_login_and_set_cookie(
                 request, form.user_cache, form.cleaned_data.get('keep_logged_in', False)
             )
@@ -165,13 +157,9 @@ def logout(request):
     auth_logout(request)
     request.session['pretix_auth_login_time'] = 0
     next = reverse('control:auth.login')
-    if 'next' in request.GET and url_has_allowed_host_and_scheme(
-        request.GET.get('next'), allowed_hosts=None
-    ):
+    if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
         next += '?next=' + quote(request.GET.get('next'))
-    if 'back' in request.GET and url_has_allowed_host_and_scheme(
-        request.GET.get('back'), allowed_hosts=None
-    ):
+    if 'back' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('back'), allowed_hosts=None):
         return redirect(request.GET.get('back'))
     return redirect(next)
 
@@ -192,9 +180,7 @@ def register(request):
                 form.cleaned_data['email'],
                 form.cleaned_data['password'],
                 locale=request.LANGUAGE_CODE,
-                timezone=request.timezone
-                if hasattr(request, 'timezone')
-                else settings.TIME_ZONE,
+                timezone=request.timezone if hasattr(request, 'timezone') else settings.TIME_ZONE,
             )
             user = authenticate(
                 request=request,
@@ -204,9 +190,8 @@ def register(request):
             user.log_action('pretix.control.auth.user.created', user=user)
             auth_login(request, user)
             request.session['pretix_auth_login_time'] = int(time.time())
-            request.session['pretix_auth_long_session'] = (
-                settings.PRETIX_LONG_SESSIONS
-                and form.cleaned_data.get('keep_logged_in', False)
+            request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get(
+                'keep_logged_in', False
             )
             response = redirect(request.GET.get('next', 'control:index'))
             set_cookie_after_logged_in(request, response)
@@ -243,10 +228,9 @@ def invite(request, token):
         if inv.team.members.filter(pk=request.user.pk).exists():
             messages.error(
                 request,
-                _(
-                    'You cannot accept the invitation for "{}" as you already are part of '
-                    'this team.'
-                ).format(inv.team.name),
+                _('You cannot accept the invitation for "{}" as you already are part of this team.').format(
+                    inv.team.name
+                ),
             )
             return redirect('control:index')
         else:
@@ -261,9 +245,7 @@ def invite(request, token):
                     },
                 )
                 inv.delete()
-            messages.success(
-                request, _('You are now part of the team "{}".').format(inv.team.name)
-            )
+            messages.success(request, _('You are now part of the team "{}".').format(inv.team.name))
             return redirect('control:index')
 
     if request.method == 'POST':
@@ -275,9 +257,7 @@ def invite(request, token):
                     form.cleaned_data['email'],
                     form.cleaned_data['password'],
                     locale=request.LANGUAGE_CODE,
-                    timezone=request.timezone
-                    if hasattr(request, 'timezone')
-                    else settings.TIME_ZONE,
+                    timezone=request.timezone if hasattr(request, 'timezone') else settings.TIME_ZONE,
                 )
                 user = authenticate(
                     request=request,
@@ -287,9 +267,8 @@ def invite(request, token):
                 user.log_action('pretix.control.auth.user.created', user=user)
                 auth_login(request, user)
                 request.session['pretix_auth_login_time'] = int(time.time())
-                request.session['pretix_auth_long_session'] = (
-                    settings.PRETIX_LONG_SESSIONS
-                    and form.cleaned_data.get('keep_logged_in', False)
+                request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get(
+                    'keep_logged_in', False
                 )
 
                 inv.team.members.add(request.user)
@@ -304,9 +283,7 @@ def invite(request, token):
                 inv.delete()
                 messages.success(
                     request,
-                    _('Welcome to pretix! You are now part of the team "{}".').format(
-                        inv.team.name
-                    ),
+                    _('Welcome to pretix! You are now part of the team "{}".').format(inv.team.name),
                 )
                 return redirect('control:index')
     else:
@@ -346,22 +323,16 @@ class Forgot(TemplateView):
 
                     rc = get_redis_connection('redis')
                     if rc.exists('pretix_pwreset_%s' % (user.id)):
-                        user.log_action(
-                            'pretix.control.auth.user.forgot_password.denied.repeated'
-                        )
+                        user.log_action('pretix.control.auth.user.forgot_password.denied.repeated')
                         raise RepeatedResetDenied()
                     else:
                         rc.setex('pretix_pwreset_%s' % (user.id), 3600 * 24, '1')
 
             except User.DoesNotExist:
-                logger.warning(
-                    'Password reset for unregistered e-mail "' + email + '"requested.'
-                )
+                logger.warning('Password reset for unregistered e-mail "' + email + '"requested.')
 
             except SendMailException:
-                logger.exception(
-                    'Sending password reset e-mail to "' + email + '" failed.'
-                )
+                logger.exception('Sending password reset e-mail to "' + email + '" failed.')
 
             except RepeatedResetDenied:
                 pass
@@ -393,9 +364,7 @@ class Forgot(TemplateView):
 
     @cached_property
     def form(self):
-        return PasswordForgotForm(
-            data=self.request.POST if self.request.method == 'POST' else None
-        )
+        return PasswordForgotForm(data=self.request.POST if self.request.method == 'POST' else None)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -412,9 +381,7 @@ class Recover(TemplateView):
             'web address into your address bar. Please note that the link is only valid '
             'for three days and that the link can only be used once.'
         ),
-        'unknownuser': _(
-            'We were unable to find the user you requested a new password for.'
-        ),
+        'unknownuser': _('We were unable to find the user you requested a new password for.'),
     }
 
     def dispatch(self, request, *args, **kwargs):
@@ -426,9 +393,7 @@ class Recover(TemplateView):
         if request.user.is_authenticated:
             return redirect(request.GET.get('next', 'control:index'))
         try:
-            user = User.objects.get(
-                id=self.request.GET.get('id'), auth_backend='native'
-            )
+            user = User.objects.get(id=self.request.GET.get('id'), auth_backend='native')
         except User.DoesNotExist:
             return self.invalid('unknownuser')
         if not default_token_generator.check_token(user, self.request.GET.get('token')):
@@ -442,14 +407,10 @@ class Recover(TemplateView):
     def post(self, request, *args, **kwargs):
         if self.form.is_valid():
             try:
-                user = User.objects.get(
-                    id=self.request.GET.get('id'), auth_backend='native'
-                )
+                user = User.objects.get(id=self.request.GET.get('id'), auth_backend='native')
             except User.DoesNotExist:
                 return self.invalid('unknownuser')
-            if not default_token_generator.check_token(
-                user, self.request.GET.get('token')
-            ):
+            if not default_token_generator.check_token(user, self.request.GET.get('token')):
                 return self.invalid('invalid')
             user.set_password(self.form.cleaned_data['password'])
             user.save()
@@ -493,9 +454,7 @@ class Login2FAView(TemplateView):
             fail = True
         else:
             try:
-                self.user = User.objects.get(
-                    pk=request.session['pretix_auth_2fa_user'], is_active=True
-                )
+                self.user = User.objects.get(pk=request.session['pretix_auth_2fa_user'], is_active=True)
             except User.DoesNotExist:
                 fail = True
         logintime = int(request.session.get('pretix_auth_2fa_time', '1'))
@@ -515,28 +474,20 @@ class Login2FAView(TemplateView):
 
             resp = json.loads(self.request.POST.get('token'))
             try:
-                devices = [
-                    WebAuthnDevice.objects.get(
-                        user=self.user, credential_id=resp.get('id')
-                    )
-                ]
+                devices = [WebAuthnDevice.objects.get(user=self.user, credential_id=resp.get('id'))]
             except WebAuthnDevice.DoesNotExist:
                 devices = U2FDevice.objects.filter(user=self.user)
 
             for d in devices:
-                credential_current_sign_count = (
-                    d.sign_count if isinstance(d, WebAuthnDevice) else 0
-                )
+                credential_current_sign_count = d.sign_count if isinstance(d, WebAuthnDevice) else 0
                 try:
-                    webauthn_assertion_response = (
-                        webauthn.verify_authentication_response(
-                            credential=resp,
-                            expected_challenge=base64.b64decode(challenge),
-                            expected_rp_id=get_webauthn_rp_id(self.request),
-                            expected_origin=settings.SITE_URL,
-                            credential_public_key=d.webauthnpubkey,
-                            credential_current_sign_count=credential_current_sign_count,
-                        )
+                    webauthn_assertion_response = webauthn.verify_authentication_response(
+                        credential=resp,
+                        expected_challenge=base64.b64decode(challenge),
+                        expected_rp_id=get_webauthn_rp_id(self.request),
+                        expected_origin=settings.SITE_URL,
+                        credential_public_key=d.webauthnpubkey,
+                        credential_current_sign_count=credential_current_sign_count,
                     )
                     sign_count = webauthn_assertion_response.new_sign_count
                     if sign_count < credential_current_sign_count:
@@ -553,9 +504,7 @@ class Login2FAView(TemplateView):
                                 credential_current_sign_count=credential_current_sign_count,
                             )
                             if webauthn_assertion_response.new_sign_count < 1:
-                                raise Exception(
-                                    'Possible replay attack, sign count set'
-                                )
+                                raise Exception('Possible replay attack, sign count set')
                         except Exception:
                             logger.exception('U2F login failed')
                         else:
@@ -573,15 +522,11 @@ class Login2FAView(TemplateView):
             valid = match_token(self.user, token)
 
         if valid:
-            auth_login(
-                request, self.user, backend='django.contrib.auth.backends.ModelBackend'
-            )
+            auth_login(request, self.user, backend='django.contrib.auth.backends.ModelBackend')
             request.session['pretix_auth_login_time'] = int(time.time())
             del request.session['pretix_auth_2fa_user']
             del request.session['pretix_auth_2fa_time']
-            if 'next' in request.GET and url_has_allowed_host_and_scheme(
-                request.GET.get('next'), allowed_hosts=None
-            ):
+            if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
                 return redirect(request.GET.get('next'))
             return redirect(reverse('control:index'))
         else:
@@ -593,16 +538,10 @@ class Login2FAView(TemplateView):
         if 'webauthn_challenge' in self.request.session:
             del self.request.session['webauthn_challenge']
         challenge = generate_challenge()
-        self.request.session['webauthn_challenge'] = base64.b64encode(
-            challenge
-        ).decode()
+        self.request.session['webauthn_challenge'] = base64.b64encode(challenge).decode()
         devices = [
-            device.webauthndevice
-            for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.user)
-        ] + [
-            device.webauthndevice
-            for device in U2FDevice.objects.filter(confirmed=True, user=self.user)
-        ]
+            device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.user)
+        ] + [device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.user)]
         if devices:
             auth_options = webauthn.generate_authentication_options(
                 rp_id=get_webauthn_rp_id(self.request),

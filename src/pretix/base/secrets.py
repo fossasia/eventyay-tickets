@@ -156,13 +156,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
             Backend(),
         )
         signature = privkey.sign(payload)
-        return (
-            bytes([0x01])
-            + struct.pack('>H', len(payload))
-            + struct.pack('>H', len(signature))
-            + payload
-            + signature
-        )
+        return bytes([0x01]) + struct.pack('>H', len(payload)) + struct.pack('>H', len(signature)) + payload + signature
 
     def _parse(self, secret):
         try:

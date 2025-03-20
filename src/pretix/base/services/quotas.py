@@ -124,9 +124,7 @@ class QuotaAvailability:
                 raise ValueError('You cannot combine full_results and allow_cache.')
 
             elif not self._count_waitinglist:
-                raise ValueError(
-                    'If you set allow_cache, you need to set count_waitinglist.'
-                )
+                raise ValueError('If you set allow_cache, you need to set count_waitinglist.')
 
             elif settings.HAS_REDIS:
                 rc = get_redis_connection('redis')
@@ -198,12 +196,7 @@ class QuotaAvailability:
         for eventid, quotas in update.items():
             rc.hmset(
                 f'quotas:{eventid}:availabilitycache',
-                {
-                    str(q.id): ','.join(
-                        [str(i) for i in self.results[q]] + [str(int(time.time()))]
-                    )
-                    for q in quotas
-                },
+                {str(q.id): ','.join([str(i) for i in self.results[q]] + [str(int(time.time()))]) for q in quotas},
             )
             # To make sure old events do not fill up our redis instance, we set an expiry on the cache. However, we set it
             # on 7 days even though we mostly ignore values older than 2 monites. The reasoning is that we have some places
@@ -217,11 +210,7 @@ class QuotaAvailability:
 
     def _close(self, quotas):
         for q in quotas:
-            if (
-                self.results[q][0] <= Quota.AVAILABILITY_ORDERED
-                and q.close_when_sold_out
-                and not q.closed
-            ):
+            if self.results[q][0] <= Quota.AVAILABILITY_ORDERED and q.close_when_sold_out and not q.closed:
                 q.closed = True
                 q.save(update_fields=['closed'])
                 q.log_action('pretix.event.quota.closed')
@@ -242,9 +231,7 @@ class QuotaAvailability:
                 if not quotas:
                     return
 
-        size_left = Counter(
-            {q: (sys.maxsize if s is None else s) for q, s in self.sizes.items()}
-        )
+        size_left = Counter({q: (sys.maxsize if s is None else s) for q, s in self.sizes.items()})
         for q in quotas:
             self.count_paid_orders[q] = 0
             self.count_pending_orders[q] = 0
@@ -253,21 +240,15 @@ class QuotaAvailability:
             self.count_waitinglist[q] = 0
 
         # Fetch which quotas belong to which items and variations
-        q_items = Quota.items.through.objects.filter(
-            quota_id__in=[q.pk for q in quotas]
-        ).values('quota_id', 'item_id')
+        q_items = Quota.items.through.objects.filter(quota_id__in=[q.pk for q in quotas]).values('quota_id', 'item_id')
         for m in q_items:
-            self._item_to_quotas[m['item_id']].append(
-                self._quota_objects[m['quota_id']]
-            )
+            self._item_to_quotas[m['item_id']].append(self._quota_objects[m['quota_id']])
 
-        q_vars = Quota.variations.through.objects.filter(
-            quota_id__in=[q.pk for q in quotas]
-        ).values('quota_id', 'itemvariation_id')
+        q_vars = Quota.variations.through.objects.filter(quota_id__in=[q.pk for q in quotas]).values(
+            'quota_id', 'itemvariation_id'
+        )
         for m in q_vars:
-            self._var_to_quotas[m['itemvariation_id']].append(
-                self._quota_objects[m['quota_id']]
-            )
+            self._var_to_quotas[m['itemvariation_id']].append(self._quota_objects[m['quota_id']])
 
         self._compute_orders(quotas, q_items, q_vars, size_left)
 
@@ -315,19 +296,11 @@ class QuotaAvailability:
             .filter(
                 Q(
                     Q(variation_id__isnull=True)
-                    & Q(
-                        item_id__in={
-                            i['item_id']
-                            for i in q_items
-                            if self._quota_objects[i['quota_id']] in quotas
-                        }
-                    )
+                    & Q(item_id__in={i['item_id'] for i in q_items if self._quota_objects[i['quota_id']] in quotas})
                 )
                 | Q(
                     variation_id__in={
-                        i['itemvariation_id']
-                        for i in q_vars
-                        if self._quota_objects[i['quota_id']] in quotas
+                        i['itemvariation_id'] for i in q_vars if self._quota_objects[i['quota_id']] in quotas
                     }
                 )
             )
@@ -360,9 +333,7 @@ class QuotaAvailability:
             ).annotate(
                 is_exited=Case(
                     When(
-                        Q(last_entry__isnull=False)
-                        & Q(last_exit__isnull=False)
-                        & Q(last_exit__gt=F('last_entry')),
+                        Q(last_entry__isnull=False) & Q(last_exit__isnull=False) & Q(last_exit__gt=F('last_entry')),
                         then=Value(1, output_field=models.IntegerField()),
                     ),
                     default=Value(0, output_field=models.IntegerField()),
@@ -370,12 +341,10 @@ class QuotaAvailability:
                 ),
             )
         else:
-            op_lookup = op_lookup.annotate(
-                is_exited=Value(0, output_field=models.IntegerField())
-            )
-        op_lookup = op_lookup.values(
-            'order__status', 'item_id', 'subevent_id', 'variation_id', 'is_exited'
-        ).annotate(c=Count('*'))
+            op_lookup = op_lookup.annotate(is_exited=Value(0, output_field=models.IntegerField()))
+        op_lookup = op_lookup.values('order__status', 'item_id', 'subevent_id', 'variation_id', 'is_exited').annotate(
+            c=Count('*')
+        )
         for line in sorted(
             op_lookup,
             key=lambda li: (int(li['is_exited']), li['order__status']),
@@ -422,19 +391,11 @@ class QuotaAvailability:
                 & Q(
                     Q(
                         Q(variation_id__isnull=True)
-                        & Q(
-                            item_id__in={
-                                i['item_id']
-                                for i in q_items
-                                if self._quota_objects[i['quota_id']] in quotas
-                            }
-                        )
+                        & Q(item_id__in={i['item_id'] for i in q_items if self._quota_objects[i['quota_id']] in quotas})
                     )
                     | Q(
                         variation_id__in={
-                            i['itemvariation_id']
-                            for i in q_vars
-                            if self._quota_objects[i['quota_id']] in quotas
+                            i['itemvariation_id'] for i in q_vars if self._quota_objects[i['quota_id']] in quotas
                         }
                     )
                     | Q(quota_id__in=[q.pk for q in quotas])
@@ -469,27 +430,15 @@ class QuotaAvailability:
                 Q(event_id__in=events)
                 & seq
                 & Q(expires__gte=now_dt)
-                & Q(
-                    Q(voucher__isnull=True)
-                    | Q(voucher__block_quota=False)
-                    | Q(voucher__valid_until__lt=now_dt)
-                )
+                & Q(Q(voucher__isnull=True) | Q(voucher__block_quota=False) | Q(voucher__valid_until__lt=now_dt))
                 & Q(
                     Q(
                         Q(variation_id__isnull=True)
-                        & Q(
-                            item_id__in={
-                                i['item_id']
-                                for i in q_items
-                                if self._quota_objects[i['quota_id']] in quotas
-                            }
-                        )
+                        & Q(item_id__in={i['item_id'] for i in q_items if self._quota_objects[i['quota_id']] in quotas})
                     )
                     | Q(
                         variation_id__in={
-                            i['itemvariation_id']
-                            for i in q_vars
-                            if self._quota_objects[i['quota_id']] in quotas
+                            i['itemvariation_id'] for i in q_vars if self._quota_objects[i['quota_id']] in quotas
                         }
                     )
                 )
@@ -524,19 +473,11 @@ class QuotaAvailability:
                 & Q(
                     Q(
                         Q(variation_id__isnull=True)
-                        & Q(
-                            item_id__in={
-                                i['item_id']
-                                for i in q_items
-                                if self._quota_objects[i['quota_id']] in quotas
-                            }
-                        )
+                        & Q(item_id__in={i['item_id'] for i in q_items if self._quota_objects[i['quota_id']] in quotas})
                     )
                     | Q(
                         variation_id__in={
-                            i['itemvariation_id']
-                            for i in q_vars
-                            if self._quota_objects[i['quota_id']] in quotas
+                            i['itemvariation_id'] for i in q_vars if self._quota_objects[i['quota_id']] in quotas
                         }
                     )
                 )

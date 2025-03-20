@@ -25,9 +25,7 @@ from pretix.control.views.organizer_views.organizer_detail_view_mixin import (
 from pretix.helpers.urls import build_absolute_uri as build_global_uri
 
 
-class TeamCreateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView
-):
+class TeamCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
     model = Team
     template_name = 'pretixcontrol/organizers/team_edit.html'
     permission = 'can_change_teams'
@@ -39,9 +37,7 @@ class TeamCreateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Team, organizer=self.request.organizer, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(Team, organizer=self.request.organizer, pk=self.kwargs.get('team'))
 
     def get_success_url(self):
         return reverse(
@@ -61,9 +57,7 @@ class TeamCreateView(
             'pretix.team.created',
             user=self.request.user,
             data={
-                k: getattr(self.object, k)
-                if k != 'limit_events'
-                else [e.id for e in getattr(self.object, k).all()]
+                k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
                 for k in form.changed_data
             },
         )
@@ -74,18 +68,14 @@ class TeamCreateView(
         return super().form_invalid(form)
 
 
-class TeamDeleteView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView
-):
+class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
     model = Team
     template_name = 'pretixcontrol/organizers/team_delete.html'
     permission = 'can_change_teams'
     context_object_name = 'team'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Team, organizer=self.request.organizer, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(Team, organizer=self.request.organizer, pk=self.kwargs.get('team'))
 
     def get_success_url(self):
         return reverse(
@@ -121,9 +111,7 @@ class TeamDeleteView(
             return redirect(success_url)
 
 
-class TeamListView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class TeamListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = Team
     template_name = 'pretixcontrol/organizers/teams.html'
     permission = 'can_change_teams'
@@ -141,29 +129,21 @@ class TeamListView(
         )
 
 
-class TeamMemberView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView
-):
+class TeamMemberView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView):
     template_name = 'pretixcontrol/organizers/team_members.html'
     context_object_name = 'team'
     permission = 'can_change_teams'
     model = Team
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Team, organizer=self.request.organizer, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(Team, organizer=self.request.organizer, pk=self.kwargs.get('team'))
 
     @cached_property
     def add_form(self):
         from pretix.control.views.organizer import InviteForm
 
         return InviteForm(
-            data=(
-                self.request.POST
-                if self.request.method == 'POST' and 'user' in self.request.POST
-                else None
-            )
+            data=(self.request.POST if self.request.method == 'POST' and 'user' in self.request.POST else None)
         )
 
     @cached_property
@@ -171,11 +151,7 @@ class TeamMemberView(
         from pretix.control.views.organizer import TokenForm
 
         return TokenForm(
-            data=(
-                self.request.POST
-                if self.request.method == 'POST' and 'name' in self.request.POST
-                else None
-            )
+            data=(self.request.POST if self.request.method == 'POST' and 'name' in self.request.POST else None)
         )
 
     def get_context_data(self, **kwargs):
@@ -194,9 +170,7 @@ class TeamMemberView(
                     'user': self,
                     'organizer': self.request.organizer.name,
                     'team': instance.team.name,
-                    'url': build_global_uri(
-                        'control:auth.invite', kwargs={'token': instance.token}
-                    ),
+                    'url': build_global_uri('control:auth.invite', kwargs={'token': instance.token}),
                 },
                 event=None,
                 locale=self.request.LANGUAGE_CODE,
@@ -219,11 +193,7 @@ class TeamMemberView(
                     .filter(can_change_teams=True, members__isnull=False)
                     .exists()
                 )
-                if (
-                    not other_admin_teams
-                    and self.object.can_change_teams
-                    and self.object.members.count() == 1
-                ):
+                if not other_admin_teams and self.object.can_change_teams and self.object.members.count() == 1:
                     messages.error(
                         self.request,
                         _(
@@ -239,9 +209,7 @@ class TeamMemberView(
                         user=self.request.user,
                         data={'email': user.email, 'user': user.pk},
                     )
-                    messages.success(
-                        self.request, _('The member has been removed from the team.')
-                    )
+                    messages.success(self.request, _('The member has been removed from the team.'))
                     return redirect(self.get_success_url())
 
         elif 'remove-invite' in request.POST:
@@ -293,19 +261,11 @@ class TeamMemberView(
                 messages.success(self.request, _('The token has been revoked.'))
                 return redirect(self.get_success_url())
 
-        elif (
-            'user' in self.request.POST
-            and self.add_form.is_valid()
-            and self.add_form.has_changed()
-        ):
+        elif 'user' in self.request.POST and self.add_form.is_valid() and self.add_form.has_changed():
             try:
-                user = User.objects.get(
-                    email__iexact=self.add_form.cleaned_data['user']
-                )
+                user = User.objects.get(email__iexact=self.add_form.cleaned_data['user'])
             except User.DoesNotExist:
-                if self.object.invites.filter(
-                    email__iexact=self.add_form.cleaned_data['user']
-                ).exists():
+                if self.object.invites.filter(email__iexact=self.add_form.cleaned_data['user']).exists():
                     messages.error(
                         self.request,
                         _('This user already has been invited for this team.'),
@@ -314,24 +274,18 @@ class TeamMemberView(
                 if 'native' not in get_auth_backends():
                     messages.error(
                         self.request,
-                        _(
-                            'Users need to have a pretix account before they can be invited.'
-                        ),
+                        _('Users need to have a pretix account before they can be invited.'),
                     )
                     return self.get(request, *args, **kwargs)
 
-                invite = self.object.invites.create(
-                    email=self.add_form.cleaned_data['user']
-                )
+                invite = self.object.invites.create(email=self.add_form.cleaned_data['user'])
                 self._send_invite(invite)
                 self.object.log_action(
                     'pretix.team.invite.created',
                     user=self.request.user,
                     data={'email': self.add_form.cleaned_data['user']},
                 )
-                messages.success(
-                    self.request, _('The new member has been invited to the team.')
-                )
+                messages.success(self.request, _('The new member has been invited to the team.'))
                 return redirect(self.get_success_url())
             else:
                 if self.object.members.filter(pk=user.pk).exists():
@@ -350,19 +304,11 @@ class TeamMemberView(
                         'user': user.pk,
                     },
                 )
-                messages.success(
-                    self.request, _('The new member has been added to the team.')
-                )
+                messages.success(self.request, _('The new member has been added to the team.'))
                 return redirect(self.get_success_url())
 
-        elif (
-            'name' in self.request.POST
-            and self.add_token_form.is_valid()
-            and self.add_token_form.has_changed()
-        ):
-            token = self.object.tokens.create(
-                name=self.add_token_form.cleaned_data['name']
-            )
+        elif 'name' in self.request.POST and self.add_token_form.is_valid() and self.add_token_form.has_changed():
+            token = self.object.tokens.create(name=self.add_token_form.cleaned_data['name'])
             self.object.log_action(
                 'pretix.team.token.created',
                 user=self.request.user,
@@ -388,9 +334,7 @@ class TeamMemberView(
         )
 
 
-class TeamUpdateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView
-):
+class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = Team
     template_name = 'pretixcontrol/organizers/team_edit.html'
     permission = 'can_change_teams'
@@ -403,9 +347,7 @@ class TeamUpdateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Team, organizer=self.request.organizer, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(Team, organizer=self.request.organizer, pk=self.kwargs.get('team'))
 
     def get_success_url(self):
         return reverse(
@@ -419,9 +361,7 @@ class TeamUpdateView(
                 'pretix.team.changed',
                 user=self.request.user,
                 data={
-                    k: getattr(self.object, k)
-                    if k != 'limit_events'
-                    else [e.id for e in getattr(self.object, k).all()]
+                    k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
                     for k in form.changed_data
                 },
             )

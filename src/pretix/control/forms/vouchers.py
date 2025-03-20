@@ -28,9 +28,7 @@ class FakeChoiceField(forms.ChoiceField):
 class VoucherForm(I18nModelForm):
     itemvar = FakeChoiceField(
         label=_('Product'),
-        help_text=_(
-            "This product is added to the user's cart if the voucher is redeemed."
-        ),
+        help_text=_("This product is added to the user's cart if the voucher is redeemed."),
         required=True,
     )
 
@@ -105,9 +103,7 @@ class VoucherForm(I18nModelForm):
             iv = self.data.get('itemvar') or initial.get('itemvar', '')
             if iv.startswith('q-'):
                 q = self.instance.event.quotas.get(pk=iv[2:])
-                choices.append(
-                    ('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q))
-                )
+                choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q)))
             elif '-' in iv:
                 itemid, varid = iv.split('-')
                 i = self.instance.event.items.get(pk=itemid)
@@ -116,9 +112,7 @@ class VoucherForm(I18nModelForm):
             elif iv:
                 i = self.instance.event.items.get(pk=iv)
                 if i.variations.exists():
-                    choices.append(
-                        (str(i.pk), _('{product} – Any variation').format(product=i))
-                    )
+                    choices.append((str(i.pk), _('{product} – Any variation').format(product=i)))
                 else:
                     choices.append((str(i.pk), str(i)))
 
@@ -171,9 +165,7 @@ class VoucherForm(I18nModelForm):
                 if itemid:
                     self.instance.item = self.instance.event.items.get(pk=itemid)
                     if varid:
-                        self.instance.variation = self.instance.item.variations.get(
-                            pk=varid
-                        )
+                        self.instance.variation = self.instance.item.variations.get(pk=varid)
                     else:
                         self.instance.variation = None
                     self.instance.quota = None
@@ -190,9 +182,7 @@ class VoucherForm(I18nModelForm):
                 raise ValidationError(_('Invalid product selected.'))
 
         if 'codes' in data:
-            data['codes'] = [
-                a.strip() for a in data.get('codes', '').strip().split('\n') if a
-            ]
+            data['codes'] = [a.strip() for a in data.get('codes', '').strip().split('\n') if a]
             cnt = len(data['codes']) * data.get('max_usages', 0)
         else:
             cnt = data.get('max_usages', 0)
@@ -207,10 +197,7 @@ class VoucherForm(I18nModelForm):
             block_quota=data.get('block_quota'),
         )
         if not self.instance.show_hidden_items and (
-            (
-                self.instance.quota
-                and all(i.hide_without_voucher for i in self.instance.quota.items.all())
-            )
+            (self.instance.quota and all(i.hide_without_voucher for i in self.instance.quota.items.all()))
             or (self.instance.item and self.instance.item.hide_without_voucher)
         ):
             raise ValidationError(
@@ -264,9 +251,7 @@ class VoucherBulkForm(VoucherForm):
     codes = forms.CharField(
         widget=forms.Textarea,
         label=_('Codes'),
-        help_text=_(
-            'Add one voucher code per line. We suggest that you copy this list and save it into a file.'
-        ),
+        help_text=_('Add one voucher code per line. We suggest that you copy this list and save it into a file.'),
         required=True,
     )
     send = forms.BooleanField(label=_('Send vouchers via email'), required=False)
@@ -306,12 +291,7 @@ class VoucherBulkForm(VoucherForm):
     Recipient = namedtuple('Recipient', 'email number name tag')
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = [
-            '{%s}' % p
-            for p in sorted(
-                get_available_placeholders(self.instance.event, base_parameters).keys()
-            )
-        ]
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.instance.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)
@@ -343,11 +323,7 @@ class VoucherBulkForm(VoucherForm):
             'valid_until': SplitDateTimePickerWidget(),
         }
         labels = {'max_usages': _('Maximum usages per voucher')}
-        help_texts = {
-            'max_usages': _(
-                'Number of times times EACH of these vouchers can be redeemed.'
-            )
-        }
+        help_texts = {'max_usages': _('Number of times times EACH of these vouchers can be redeemed.')}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -369,36 +345,26 @@ class VoucherBulkForm(VoucherForm):
         res = []
         if ',' in raw or ';' in raw:
             if '@' in r[0]:
-                raise ValidationError(
-                    _('CSV input needs to contain a header row in the first line.')
-                )
+                raise ValidationError(_('CSV input needs to contain a header row in the first line.'))
             dialect = csv.Sniffer().sniff(raw[:1024])
             reader = csv.DictReader(StringIO(raw), dialect=dialect)
             if 'email' not in reader.fieldnames:
                 raise ValidationError(
-                    _(
-                        'CSV input needs to contain a field with the header "{header}".'
-                    ).format(header='email')
+                    _('CSV input needs to contain a field with the header "{header}".').format(header='email')
                 )
-            unknown_fields = [
-                f
-                for f in reader.fieldnames
-                if f not in ('email', 'name', 'tag', 'number')
-            ]
+            unknown_fields = [f for f in reader.fieldnames if f not in ('email', 'name', 'tag', 'number')]
             if unknown_fields:
                 raise ValidationError(
-                    _(
-                        'CSV input contains an unknown field with the header "{header}".'
-                    ).format(header=unknown_fields[0])
+                    _('CSV input contains an unknown field with the header "{header}".').format(
+                        header=unknown_fields[0]
+                    )
                 )
             for i, row in enumerate(reader):
                 try:
                     EmailValidator()(row['email'])
                 except ValidationError as err:
                     raise ValidationError(
-                        _('{value} is not a valid email address.').format(
-                            value=row['email']
-                        )
+                        _('{value} is not a valid email address.').format(value=row['email'])
                     ) from err
                 try:
                     res.append(
@@ -410,35 +376,25 @@ class VoucherBulkForm(VoucherForm):
                         )
                     )
                 except ValueError as err:
-                    raise ValidationError(
-                        _('Invalid value in row {number}.').format(number=i + 1)
-                    ) from err
+                    raise ValidationError(_('Invalid value in row {number}.').format(number=i + 1)) from err
         else:
             for e in r:
                 try:
                     EmailValidator()(e.strip())
                 except ValidationError as err:
-                    raise ValidationError(
-                        _('{value} is not a valid email address.').format(
-                            value=e.strip()
-                        )
-                    ) from err
+                    raise ValidationError(_('{value} is not a valid email address.').format(value=e.strip())) from err
                 else:
-                    res.append(
-                        self.Recipient(email=e.strip(), number=1, tag=None, name='')
-                    )
+                    res.append(self.Recipient(email=e.strip(), number=1, tag=None, name=''))
         return res
 
     def clean(self):
         data = super().clean()
 
-        vouchers = self.instance.event.vouchers.annotate(
-            code_upper=Upper('code')
-        ).filter(code_upper__in=[c.upper() for c in data['codes']])
+        vouchers = self.instance.event.vouchers.annotate(code_upper=Upper('code')).filter(
+            code_upper__in=[c.upper() for c in data['codes']]
+        )
         if vouchers.exists():
-            raise ValidationError(
-                _('A voucher with one of these codes already exists.')
-            )
+            raise ValidationError(_('A voucher with one of these codes already exists.'))
 
         if data.get('send') and not all(
             [
@@ -448,9 +404,7 @@ class VoucherBulkForm(VoucherForm):
             ]
         ):
             raise ValidationError(
-                _(
-                    'If vouchers should be sent by email, subject, message and recipients need to be specified.'
-                )
+                _('If vouchers should be sent by email, subject, message and recipients need to be specified.')
             )
 
         if data.get('codes') and data.get('send'):
@@ -459,17 +413,15 @@ class VoucherBulkForm(VoucherForm):
             recp_len = sum(r.number for r in recp)
             if code_len != recp_len:
                 raise ValidationError(
-                    _(
-                        'You generated {codes} vouchers, but entered recipients for {recp} vouchers.'
-                    ).format(codes=code_len, recp=recp_len)
+                    _('You generated {codes} vouchers, but entered recipients for {recp} vouchers.').format(
+                        codes=code_len, recp=recp_len
+                    )
                 )
 
         if data.get('seats'):
             seatids = [s.strip() for s in data.get('seats').strip().split('\n') if s]
             if len(seatids) != len(data.get('codes')):
-                raise ValidationError(
-                    _('You need to specify as many seats as voucher codes.')
-                )
+                raise ValidationError(_('You need to specify as many seats as voucher codes.'))
             data['seats'] = []
             for s in seatids:
                 data['seat'] = s

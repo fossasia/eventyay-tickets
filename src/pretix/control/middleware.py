@@ -85,9 +85,9 @@ class PermissionMiddleware:
         url = resolve(request.path_info)
         url_name = url.url_name
 
-        if not request.path.startswith(
-            get_script_prefix() + 'control'
-        ) and not request.path.startswith(get_script_prefix() + 'common'):
+        if not request.path.startswith(get_script_prefix() + 'control') and not request.path.startswith(
+            get_script_prefix() + 'common'
+        ):
             # This middleware should only touch the /control subpath
             return self.get_response(request)
 
@@ -114,17 +114,9 @@ class PermissionMiddleware:
             return self._login_redirect(request)
         except SessionReauthRequired:
             if url_name not in ('user.reauth', 'auth.logout'):
-                return redirect(
-                    reverse('control:user.reauth')
-                    + '?next='
-                    + quote(request.get_full_path())
-                )
+                return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
 
-        if (
-            not request.user.require_2fa
-            and settings.PRETIX_OBLIGATORY_2FA
-            and url_name not in self.EXCEPTIONS_2FA
-        ):
+        if not request.user.require_2fa and settings.PRETIX_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
             next_url = reverse('control:user.settings.2fa')
             logger.info(
                 'This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s',
@@ -143,14 +135,8 @@ class PermissionMiddleware:
                     .first()
                 )
             request.event = event
-            if not event or not request.user.has_event_permission(
-                event.organizer, event, request=request
-            ):
-                raise Http404(
-                    _(
-                        'The selected event was not found or you have no permission to administrate it.'
-                    )
-                )
+            if not event or not request.user.has_event_permission(event.organizer, event, request=request):
+                raise Http404(_('The selected event was not found or you have no permission to administrate it.'))
             logger.info(
                 'Found organizer %s from event %s. Attaching to request.',
                 event.organizer.slug,
@@ -160,9 +146,7 @@ class PermissionMiddleware:
             if request.user.has_active_staff_session(request.session.session_key):
                 request.eventpermset = SuperuserPermissionSet()
             else:
-                request.eventpermset = request.user.get_event_permission_set(
-                    event.organizer, event
-                )
+                request.eventpermset = request.user.get_event_permission_set(event.organizer, event)
         elif 'organizer' in url.kwargs:
             organizer = Organizer.objects.filter(
                 slug=url.kwargs['organizer'],
@@ -173,20 +157,12 @@ class PermissionMiddleware:
                     organizer.slug,
                 )
             request.organizer = organizer
-            if not organizer or not request.user.has_organizer_permission(
-                organizer, request=request
-            ):
-                raise Http404(
-                    _(
-                        'The selected organizer was not found or you have no permission to administrate it.'
-                    )
-                )
+            if not organizer or not request.user.has_organizer_permission(organizer, request=request):
+                raise Http404(_('The selected organizer was not found or you have no permission to administrate it.'))
             if request.user.has_active_staff_session(request.session.session_key):
                 request.orgapermset = SuperuserPermissionSet()
             else:
-                request.orgapermset = request.user.get_organizer_permission_set(
-                    organizer
-                )
+                request.orgapermset = request.user.get_organizer_permission_set(organizer)
 
         with scope(organizer=getattr(request, 'organizer', None)):
             r = self.get_response(request)
@@ -200,16 +176,11 @@ class AuditLogMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if (
-            request.path.startswith(get_script_prefix() + 'control')
-            and request.user.is_authenticated
-        ):
+        if request.path.startswith(get_script_prefix() + 'control') and request.user.is_authenticated:
             if getattr(request.user, 'is_hijacked', False):
                 hijack_history = request.session.get('hijack_history', False)
                 hijacker = get_object_or_404(User, pk=hijack_history[0])
-                ss = hijacker.get_active_staff_session(
-                    request.session.get('hijacker_session')
-                )
+                ss = hijacker.get_active_staff_session(request.session.get('hijacker_session'))
                 if ss:
                     ss.logs.create(
                         url=request.path,

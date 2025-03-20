@@ -68,10 +68,7 @@ class InvoiceExporterMixin:
                         else [
                             ('', _('All payment providers')),
                         ]
-                        + [
-                            (k, v.verbose_name)
-                            for k, v in self.event.get_payment_providers().items()
-                        ],
+                        + [(k, v.verbose_name) for k, v in self.event.get_payment_providers().items()],
                         required=False,
                         help_text=_(
                             'Only include invoices for orders that have at least one payment attempt '
@@ -91,8 +88,7 @@ class InvoiceExporterMixin:
             qs = qs.annotate(
                 has_payment_with_provider=Exists(
                     OrderPayment.objects.filter(
-                        Q(order=OuterRef('order_id'))
-                        & Q(provider=form_data.get('payment_provider'))
+                        Q(order=OuterRef('order_id')) & Q(provider=form_data.get('payment_provider'))
                     )
                 )
             )
@@ -132,23 +128,15 @@ class InvoiceExporter(InvoiceExporterMixin, BaseExporter):
                             invoice_pdf_task.apply(args=(i.pk,))
                             i.refresh_from_db()
                         if not i.file:
-                            raise ExportError(
-                                'Could not generate PDF for invoice {nr}'.format(
-                                    nr=i.full_invoice_no
-                                )
-                            )
+                            raise ExportError('Could not generate PDF for invoice {nr}'.format(nr=i.full_invoice_no))
                         i.file.open('rb')
-                        zipf.writestr(
-                            '{}-{}.pdf'.format(i.number, i.order.code), i.file.read()
-                        )
+                        zipf.writestr('{}-{}.pdf'.format(i.number, i.order.code), i.file.read())
                         i.file.close()
                     except FileNotFoundError:
                         invoice_pdf_task.apply(args=(i.pk,))
                         i.refresh_from_db()
                         i.file.open('rb')
-                        zipf.writestr(
-                            '{}-{}.pdf'.format(i.number, i.order.code), i.file.read()
-                        )
+                        zipf.writestr('{}-{}.pdf'.format(i.number, i.order.code), i.file.read())
                         i.file.close()
                     counter += 1
                     if total and counter % max(10, total // 100) == 0:
@@ -310,16 +298,12 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                         i.foreign_currency_display,
                         i.foreign_currency_rate,
                         i.total_gross if i.total_gross else Decimal('0.00'),
-                        Decimal(i.total_net if i.total_net else '0.00').quantize(
-                            Decimal('0.01')
-                        ),
+                        Decimal(i.total_net if i.total_net else '0.00').quantize(Decimal('0.01')),
                         pmi,
                         ', '.join(
                             [
                                 str(self.providers.get(p, p))
-                                for p in sorted(
-                                    set((i.payment_providers or '').split(','))
-                                )
+                                for p in sorted(set((i.payment_providers or '').split(',')))
                                 if p and p != 'free'
                             ]
                         ),
@@ -397,9 +381,7 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                     l.tax_value,
                     l.tax_rate,
                     l.tax_name,
-                    date_format(l.event_date_from, 'SHORT_DATE_FORMAT')
-                    if l.event_date_from
-                    else '',
+                    date_format(l.event_date_from, 'SHORT_DATE_FORMAT') if l.event_date_from else '',
                     date_format(i.date, 'SHORT_DATE_FORMAT'),
                     i.order.code,
                     i.order.email,

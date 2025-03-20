@@ -41,9 +41,7 @@ def cached_invoice_address(request):
         else:
             try:
                 with scopes_disabled():
-                    request._checkout_flow_invoice_address = InvoiceAddress.objects.get(
-                        pk=iapk, order__isnull=True
-                    )
+                    request._checkout_flow_invoice_address = InvoiceAddress.objects.get(pk=iapk, order__isnull=True)
             except InvoiceAddress.DoesNotExist:
                 request._checkout_flow_invoice_address = InvoiceAddress()
     return request._checkout_flow_invoice_address
@@ -111,9 +109,7 @@ class CartMixin:
         pos_additional_fields = defaultdict(list)
         for cp in lcp:
             cp.item.event = self.request.event  # will save some SQL queries
-            responses = question_form_fields.send(
-                sender=self.request.event, position=cp
-            )
+            responses = question_form_fields.send(sender=self.request.event, position=cp)
             data = cp.meta_info_data
             for r, response in sorted(responses, key=lambda r: str(r[0])):
                 if response:
@@ -165,16 +161,10 @@ class CartMixin:
 
             # positions are sorted and grouped by various attributes
             category_key = (
-                (pos.item.category.position, pos.item.category.id)
-                if pos.item.category is not None
-                else (0, 0)
+                (pos.item.category.position, pos.item.category.id) if pos.item.category is not None else (0, 0)
             )
             item_key = pos.item.position, pos.item_id
-            variation_key = (
-                (pos.variation.position, pos.variation.id)
-                if pos.variation is not None
-                else (0, 0)
-            )
+            variation_key = (pos.variation.position, pos.variation.id) if pos.variation is not None else (0, 0)
             return (
                 (
                     # These are grouped by attributes so we don't put any position ids
@@ -205,9 +195,7 @@ class CartMixin:
                 group.tax_rule = group.item.tax_rule
 
             group.bundle_sum = group.price + sum(a.price for a in has_addons[group.pk])
-            group.bundle_sum_net = group.net_price + sum(
-                a.net_price for a in has_addons[group.pk]
-            )
+            group.bundle_sum_net = group.net_price + sum(a.net_price for a in has_addons[group.pk])
 
             if answers:
                 group.cache_answers(all=False)
@@ -267,9 +255,7 @@ def cart_exists(request):
     from pretix.presale.views.cart import get_or_create_cart_id
 
     if not hasattr(request, '_cart_cache'):
-        return CartPosition.objects.filter(
-            cart_id=get_or_create_cart_id(request), event=request.event
-        ).exists()
+        return CartPosition.objects.filter(cart_id=get_or_create_cart_id(request), event=request.event).exists()
     return bool(request._cart_cache)
 
 
@@ -286,11 +272,7 @@ def get_cart(request):
         else:
             request._cart_cache = (
                 CartPosition.objects.filter(cart_id=cart_id, event=request.event)
-                .annotate(
-                    has_addon_choices=Exists(
-                        ItemAddOn.objects.filter(base_item_id=OuterRef('item_id'))
-                    )
-                )
+                .annotate(has_addon_choices=Exists(ItemAddOn.objects.filter(base_item_id=OuterRef('item_id'))))
                 .order_by(
                     'item__category__position',
                     'item__category_id',
@@ -339,9 +321,7 @@ def get_cart(request):
                 )
             )
             for cp in request._cart_cache:
-                cp.event = (
-                    request.event
-                )  # Populate field with known value to save queries
+                cp.event = request.event  # Populate field with known value to save queries
     return request._cart_cache
 
 
@@ -369,9 +349,7 @@ def get_cart_invoice_address(request):
         else:
             try:
                 with scopes_disabled():
-                    request._checkout_flow_invoice_address = InvoiceAddress.objects.get(
-                        pk=iapk, order__isnull=True
-                    )
+                    request._checkout_flow_invoice_address = InvoiceAddress.objects.get(pk=iapk, order__isnull=True)
             except InvoiceAddress.DoesNotExist:
                 request._checkout_flow_invoice_address = InvoiceAddress()
     return request._checkout_flow_invoice_address
@@ -418,9 +396,7 @@ def allow_frame_if_namespaced(view_func):
 
     def wrapped_view(request, *args, **kwargs):
         resp = view_func(request, *args, **kwargs)
-        if request.resolver_match and request.resolver_match.kwargs.get(
-            'cart_namespace'
-        ):
+        if request.resolver_match and request.resolver_match.kwargs.get('cart_namespace'):
             resp.xframe_options_exempt = True
         return resp
 
@@ -435,9 +411,7 @@ def allow_cors_if_namespaced(view_func):
 
     def wrapped_view(request, *args, **kwargs):
         resp = view_func(request, *args, **kwargs)
-        if request.resolver_match and request.resolver_match.kwargs.get(
-            'cart_namespace'
-        ):
+        if request.resolver_match and request.resolver_match.kwargs.get('cart_namespace'):
             resp['Access-Control-Allow-Origin'] = '*'
         return resp
 
@@ -463,9 +437,7 @@ def iframe_entry_view_wrapper(view_func):
                 settings.LANGUAGE_COOKIE_NAME,
                 locale,
                 max_age=max_age,
-                expires=(datetime.utcnow() + timedelta(seconds=max_age)).strftime(
-                    '%a, %d-%b-%Y %H:%M:%S GMT'
-                ),
+                expires=(datetime.utcnow() + timedelta(seconds=max_age)).strftime('%a, %d-%b-%Y %H:%M:%S GMT'),
                 domain=settings.SESSION_COOKIE_DOMAIN,
             )
             return resp

@@ -67,8 +67,7 @@ class BaseQuestionsViewMixin:
             )
             form.pos = cartpos or orderpos
             form.show_copy_answers_to_addon_button = form.pos.addon_to and (
-                set(form.pos.addon_to.item.questions.all())
-                & set(form.pos.item.questions.all())
+                set(form.pos.addon_to.item.questions.all()) & set(form.pos.item.questions.all())
                 or (
                     form.pos.addon_to.item.admission
                     and form.pos.item.admission
@@ -86,30 +85,16 @@ class BaseQuestionsViewMixin:
                 for question_name, question_field in form.fields.items():
                     if hasattr(question_field, 'question'):
                         if question_field.question.identifier in overrides:
-                            if (
-                                'initial'
-                                in overrides[question_field.question.identifier]
-                            ):
-                                question_field.initial = overrides[
-                                    question_field.question.identifier
-                                ]['initial']
-                            if (
-                                'disabled'
-                                in overrides[question_field.question.identifier]
-                            ):
-                                question_field.disabled = overrides[
-                                    question_field.question.identifier
-                                ]['disabled']
+                            if 'initial' in overrides[question_field.question.identifier]:
+                                question_field.initial = overrides[question_field.question.identifier]['initial']
+                            if 'disabled' in overrides[question_field.question.identifier]:
+                                question_field.disabled = overrides[question_field.question.identifier]['disabled']
                     else:
                         if question_name in overrides:
                             if 'initial' in overrides[question_name]:
-                                question_field.initial = overrides[question_name][
-                                    'initial'
-                                ]
+                                question_field.initial = overrides[question_name]['initial']
                             if 'disabled' in overrides[question_name]:
-                                question_field.disabled = overrides[question_name][
-                                    'disabled'
-                                ]
+                                question_field.disabled = overrides[question_name]['disabled']
 
             if len(form.fields) > 0:
                 formlist.append(form)
@@ -176,16 +161,8 @@ class BaseQuestionsViewMixin:
                                 field.answer.save()
                         elif v != '' and v is not None:
                             answer = QuestionAnswer(
-                                cartposition=(
-                                    form.pos
-                                    if isinstance(form.pos, CartPosition)
-                                    else None
-                                ),
-                                orderposition=(
-                                    form.pos
-                                    if isinstance(form.pos, OrderPosition)
-                                    else None
-                                ),
+                                cartposition=(form.pos if isinstance(form.pos, CartPosition) else None),
+                                orderposition=(form.pos if isinstance(form.pos, OrderPosition) else None),
                                 question=field.question,
                             )
                             try:
@@ -199,16 +176,8 @@ class BaseQuestionsViewMixin:
                                 # again. However, both of these approaches have a significant performance overhead for *all* requests,
                                 # while the issue happens very very rarely. So we opt for just catching the error and retrying properly.
                                 answer = QuestionAnswer.objects.get(
-                                    cartposition=(
-                                        form.pos
-                                        if isinstance(form.pos, CartPosition)
-                                        else None
-                                    ),
-                                    orderposition=(
-                                        form.pos
-                                        if isinstance(form.pos, OrderPosition)
-                                        else None
-                                    ),
+                                    cartposition=(form.pos if isinstance(form.pos, CartPosition) else None),
+                                    orderposition=(form.pos if isinstance(form.pos, OrderPosition) else None),
                                     question=field.question,
                                 )
                                 self._save_to_answer(field, answer, v)
@@ -304,8 +273,7 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
     @cached_property
     def address_asked(self):
         return self.request.event.settings.invoice_address_asked and (
-            self.order.total != Decimal('0.00')
-            or not self.request.event.settings.invoice_address_not_asked_free
+            self.order.total != Decimal('0.00') or not self.request.event.settings.invoice_address_not_asked_free
         )
 
     @cached_property
@@ -343,9 +311,7 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
                 all_optional=self.all_optional,
             )
         else:
-            f = forms.Form(
-                data=self.request.POST if self.request.method == 'POST' else None
-            )
+            f = forms.Form(data=self.request.POST if self.request.method == 'POST' else None)
 
         override_sets = self._contact_override_sets
         for overrides in override_sets:

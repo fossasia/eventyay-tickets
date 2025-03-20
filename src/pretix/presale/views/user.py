@@ -20,15 +20,11 @@ class ResendLinkView(EventViewMixin, TemplateView):
 
     @cached_property
     def link_form(self):
-        return ResendLinkForm(
-            data=self.request.POST if self.request.method == 'POST' else None
-        )
+        return ResendLinkForm(data=self.request.POST if self.request.method == 'POST' else None)
 
     def post(self, request, *args, **kwargs):
         if not self.link_form.is_valid():
-            messages.error(
-                self.request, _('We had difficulties processing your input.')
-            )
+            messages.error(self.request, _('We had difficulties processing your input.'))
             return self.get(request, *args, **kwargs)
 
         user = self.link_form.cleaned_data.get('email')
@@ -47,13 +43,9 @@ class ResendLinkView(EventViewMixin, TemplateView):
                         'that you used the correct email address.'
                     ).format(number=24),
                 )
-                return redirect(
-                    eventreverse(self.request.event, 'presale:event.resend_link')
-                )
+                return redirect(eventreverse(self.request.event, 'presale:event.resend_link'))
             else:
-                rc.setex(
-                    'pretix_resend_{}_{}'.format(request.event.pk, user), 3600 * 24, '1'
-                )
+                rc.setex('pretix_resend_{}_{}'.format(request.event.pk, user), 3600 * 24, '1')
 
         orders = self.request.event.orders.filter(email__iexact=user)
 
@@ -74,9 +66,7 @@ class ResendLinkView(EventViewMixin, TemplateView):
             )
         except SendMailException:
             logger = logging.getLogger('pretix.presale.user')
-            logger.exception(
-                'A mail resending order links to {} could not be sent.'.format(user)
-            )
+            logger.exception('A mail resending order links to {} could not be sent.'.format(user))
             messages.error(
                 self.request,
                 _('We have trouble sending emails right now, please check back later.'),
@@ -85,9 +75,7 @@ class ResendLinkView(EventViewMixin, TemplateView):
 
         messages.success(
             self.request,
-            _(
-                'If there were any orders by this user, they will receive an email with their order codes.'
-            ),
+            _('If there were any orders by this user, they will receive an email with their order codes.'),
         )
         return redirect(eventreverse(self.request.event, 'presale:event.index'))
 

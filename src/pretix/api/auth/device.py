@@ -33,11 +33,7 @@ class DeviceTokenAuthentication(TokenAuthentication):
     def authenticate(self, request):
         r = super().authenticate(request)
         if r and isinstance(r[1], Device):
-            profile = DEVICE_SECURITY_PROFILES.get(
-                r[1].security_profile, FullAccessSecurityProfile
-            )
+            profile = DEVICE_SECURITY_PROFILES.get(r[1].security_profile, FullAccessSecurityProfile)
             if not profile.is_allowed(request):
-                raise exceptions.PermissionDenied(
-                    'Request denied by device security profile.'
-                )
+                raise exceptions.PermissionDenied('Request denied by device security profile.')
         return r

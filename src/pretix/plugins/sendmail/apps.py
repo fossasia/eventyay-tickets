@@ -13,9 +13,7 @@ class SendMailApp(AppConfig):
         category = 'FEATURE'
         featured = True
         version = version
-        description = _(
-            'This plugin allows you to send out emails ' + 'to all your customers.'
-        )
+        description = _('This plugin allows you to send out emails ' + 'to all your customers.')
 
     def ready(self):
         from . import signals  # NOQA

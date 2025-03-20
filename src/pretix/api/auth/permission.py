@@ -13,9 +13,7 @@ from pretix.helpers.security import (
 
 class EventPermission(BasePermission):
     def has_permission(self, request, view):
-        if not request.user.is_authenticated and not isinstance(
-            request.auth, (Device, TeamAPIToken)
-        ):
+        if not request.user.is_authenticated and not isinstance(request.auth, (Device, TeamAPIToken)):
             return False
 
         if request.method not in SAFE_METHODS and hasattr(view, 'write_permission'):
@@ -34,15 +32,8 @@ class EventPermission(BasePermission):
             except SessionReauthRequired:
                 return False
 
-        perm_holder = (
-            request.auth
-            if isinstance(request.auth, (Device, TeamAPIToken))
-            else request.user
-        )
-        if (
-            'event' in request.resolver_match.kwargs
-            and 'organizer' in request.resolver_match.kwargs
-        ):
+        perm_holder = request.auth if isinstance(request.auth, (Device, TeamAPIToken)) else request.user
+        if 'event' in request.resolver_match.kwargs and 'organizer' in request.resolver_match.kwargs:
             request.event = (
                 Event.objects.filter(
                     slug=request.resolver_match.kwargs['event'],
@@ -56,59 +47,37 @@ class EventPermission(BasePermission):
             ):
                 return False
             request.organizer = request.event.organizer
-            if isinstance(perm_holder, User) and perm_holder.has_active_staff_session(
-                request.session.session_key
-            ):
+            if isinstance(perm_holder, User) and perm_holder.has_active_staff_session(request.session.session_key):
                 request.eventpermset = SuperuserPermissionSet()
             else:
-                request.eventpermset = perm_holder.get_event_permission_set(
-                    request.organizer, request.event
-                )
+                request.eventpermset = perm_holder.get_event_permission_set(request.organizer, request.event)
 
             if isinstance(required_permission, (list, tuple)):
                 if not any(p in request.eventpermset for p in required_permission):
                     return False
             else:
-                if (
-                    required_permission
-                    and required_permission not in request.eventpermset
-                ):
+                if required_permission and required_permission not in request.eventpermset:
                     return False
 
         elif 'organizer' in request.resolver_match.kwargs:
-            if not request.organizer or not perm_holder.has_organizer_permission(
-                request.organizer, request=request
-            ):
+            if not request.organizer or not perm_holder.has_organizer_permission(request.organizer, request=request):
                 return False
-            if isinstance(perm_holder, User) and perm_holder.has_active_staff_session(
-                request.session.session_key
-            ):
+            if isinstance(perm_holder, User) and perm_holder.has_active_staff_session(request.session.session_key):
                 request.orgapermset = SuperuserPermissionSet()
             else:
-                request.orgapermset = perm_holder.get_organizer_permission_set(
-                    request.organizer
-                )
+                request.orgapermset = perm_holder.get_organizer_permission_set(request.organizer)
 
             if isinstance(required_permission, (list, tuple)):
                 if not any(p in request.eventpermset for p in required_permission):
                     return False
             else:
-                if (
-                    required_permission
-                    and required_permission not in request.orgapermset
-                ):
+                if required_permission and required_permission not in request.orgapermset:
                     return False
 
         if isinstance(request.auth, OAuthAccessToken):
-            if (
-                not request.auth.allow_scopes(['write'])
-                and request.method not in SAFE_METHODS
-            ):
+            if not request.auth.allow_scopes(['write']) and request.method not in SAFE_METHODS:
                 return False
-            if (
-                not request.auth.allow_scopes(['read'])
-                and request.method in SAFE_METHODS
-            ):
+            if not request.auth.allow_scopes(['read']) and request.method in SAFE_METHODS:
                 return False
         if isinstance(request.auth, OAuthAccessToken) and hasattr(request, 'organizer'):
             if not request.auth.organizers.filter(pk=request.organizer.pk).exists():
@@ -122,15 +91,9 @@ class EventCRUDPermission(EventPermission):
             return False
         elif view.action == 'create' and 'can_create_events' not in request.orgapermset:
             return False
-        elif (
-            view.action == 'destroy'
-            and 'can_change_event_settings' not in request.eventpermset
-        ):
+        elif view.action == 'destroy' and 'can_change_event_settings' not in request.eventpermset:
             return False
-        elif (
-            view.action in ['update', 'partial_update']
-            and 'can_change_event_settings' not in request.eventpermset
-        ):
+        elif view.action in ['update', 'partial_update'] and 'can_change_event_settings' not in request.eventpermset:
             return False
 
         return True
@@ -138,9 +101,7 @@ class EventCRUDPermission(EventPermission):
 
 class ProfilePermission(BasePermission):
     def has_permission(self, request, view):
-        if not request.user.is_authenticated and not isinstance(
-            request.auth, (Device, TeamAPIToken)
-        ):
+        if not request.user.is_authenticated and not isinstance(request.auth, (Device, TeamAPIToken)):
             return False
 
         if request.user.is_authenticated:
@@ -154,10 +115,7 @@ class ProfilePermission(BasePermission):
 
         if isinstance(request.auth, OAuthAccessToken):
             if (
-                not (
-                    request.auth.allow_scopes(['read'])
-                    or request.auth.allow_scopes(['profile'])
-                )
+                not (request.auth.allow_scopes(['read']) or request.auth.allow_scopes(['profile']))
                 and request.method in SAFE_METHODS
             ):
                 return False
@@ -167,9 +125,7 @@ class ProfilePermission(BasePermission):
 
 class AnyAuthenticatedClientPermission(BasePermission):
     def has_permission(self, request, view):
-        if not request.user.is_authenticated and not isinstance(
-            request.auth, (Device, TeamAPIToken)
-        ):
+        if not request.user.is_authenticated and not isinstance(request.auth, (Device, TeamAPIToken)):
             return False
 
         if request.user.is_authenticated:

@@ -61,20 +61,14 @@ class OrganizerViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            if self.request.user.has_active_staff_session(
-                self.request.session.session_key
-            ):
+            if self.request.user.has_active_staff_session(self.request.session.session_key):
                 return Organizer.objects.all()
             elif isinstance(self.request.auth, OAuthAccessToken):
                 return Organizer.objects.filter(
                     pk__in=self.request.user.teams.values_list('organizer', flat=True)
-                ).filter(
-                    pk__in=self.request.auth.organizers.values_list('pk', flat=True)
-                )
+                ).filter(pk__in=self.request.auth.organizers.values_list('pk', flat=True))
             else:
-                return Organizer.objects.filter(
-                    pk__in=self.request.user.teams.values_list('organizer', flat=True)
-                )
+                return Organizer.objects.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
         elif hasattr(self.request.auth, 'organizer_id'):
             return Organizer.objects.filter(pk=self.request.auth.organizer_id)
         else:
@@ -107,13 +101,8 @@ class SeatingPlanViewSet(viewsets.ModelViewSet):
 
     @transaction.atomic()
     def perform_update(self, serializer):
-        if (
-            serializer.instance.events.exists()
-            or serializer.instance.subevents.exists()
-        ):
-            raise PermissionDenied(
-                'This plan can not be changed while it is in use for an event.'
-            )
+        if serializer.instance.events.exists() or serializer.instance.subevents.exists():
+            raise PermissionDenied('This plan can not be changed while it is in use for an event.')
         inst = serializer.save(organizer=self.request.organizer)
         self.request.organizer.log_action(
             'pretix.seatingplan.changed',
@@ -126,9 +115,7 @@ class SeatingPlanViewSet(viewsets.ModelViewSet):
     @transaction.atomic()
     def perform_destroy(self, instance):
         if instance.events.exists() or instance.subevents.exists():
-            raise PermissionDenied(
-                'This plan can not be deleted while it is in use for an event.'
-            )
+            raise PermissionDenied('This plan can not be deleted while it is in use for an event.')
         instance.log_action(
             'pretix.seatingplan.deleted',
             user=self.request.user,
@@ -183,9 +170,7 @@ class GiftCardViewSet(viewsets.ModelViewSet):
     @transaction.atomic()
     def perform_update(self, serializer):
         if 'include_accepted' in self.request.GET:
-            raise PermissionDenied(
-                'Accepted gift cards cannot be updated, use transact instead.'
-            )
+            raise PermissionDenied('Accepted gift cards cannot be updated, use transact instead.')
         GiftCard.objects.select_for_update().get(pk=self.get_object().pk)
         old_value = serializer.instance.value
         value = serializer.validated_data.pop('value')
@@ -208,19 +193,11 @@ class GiftCardViewSet(viewsets.ModelViewSet):
     @transaction.atomic()
     def transact(self, request, **kwargs):
         gc = GiftCard.objects.select_for_update().get(pk=self.get_object().pk)
-        value = serializers.DecimalField(
-            max_digits=10, decimal_places=2
-        ).to_internal_value(request.data.get('value'))
-        text = serializers.CharField(
-            allow_blank=True, allow_null=True
-        ).to_internal_value(request.data.get('text', ''))
+        value = serializers.DecimalField(max_digits=10, decimal_places=2).to_internal_value(request.data.get('value'))
+        text = serializers.CharField(allow_blank=True, allow_null=True).to_internal_value(request.data.get('text', ''))
         if gc.value + value < Decimal('0.00'):
             return Response(
-                {
-                    'value': [
-                        'The gift card does not have sufficient credit for this operation.'
-                    ]
-                },
+                {'value': ['The gift card does not have sufficient credit for this operation.']},
                 status=status.HTTP_409_CONFLICT,
             )
         gc.transactions.create(value=value, text=text)
@@ -290,9 +267,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         return inst
 
     def perform_destroy(self, instance):
-        instance.log_action(
-            'pretix.team.deleted', user=self.request.user, auth=self.request.auth
-        )
+        instance.log_action('pretix.team.deleted', user=self.request.user, auth=self.request.auth)
         instance.delete()
 
 
@@ -304,9 +279,7 @@ class TeamMemberViewSet(DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
 
     @cached_property
     def team(self):
-        return get_object_or_404(
-            self.request.organizer.teams, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(self.request.organizer.teams, pk=self.kwargs.get('team'))
 
     def get_queryset(self):
         return self.team.members.all()
@@ -327,9 +300,7 @@ class TeamMemberViewSet(DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
         )
 
 
-class TeamInviteViewSet(
-    CreateModelMixin, DestroyModelMixin, viewsets.ReadOnlyModelViewSet
-):
+class TeamInviteViewSet(CreateModelMixin, DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = TeamInviteSerializer
     queryset = TeamInvite.objects.none()
     permission = 'can_change_teams'
@@ -337,9 +308,7 @@ class TeamInviteViewSet(
 
     @cached_property
     def team(self):
-        return get_object_or_404(
-            self.request.organizer.teams, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(self.request.organizer.teams, pk=self.kwargs.get('team'))
 
     def get_queryset(self):
         return self.team.invites.order_by('email')
@@ -371,9 +340,7 @@ class TeamInviteViewSet(
         serializer.save(team=self.team)
 
 
-class TeamAPITokenViewSet(
-    CreateModelMixin, DestroyModelMixin, viewsets.ReadOnlyModelViewSet
-):
+class TeamAPITokenViewSet(CreateModelMixin, DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = TeamAPITokenSerializer
     queryset = TeamAPIToken.objects.none()
     permission = 'can_change_teams'
@@ -381,9 +348,7 @@ class TeamAPITokenViewSet(
 
     @cached_property
     def team(self):
-        return get_object_or_404(
-            self.request.organizer.teams, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(self.request.organizer.teams, pk=self.kwargs.get('team'))
 
     def get_queryset(self):
         return self.team.tokens.order_by('name')

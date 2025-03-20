@@ -49,10 +49,7 @@ class CheckinListForm(forms.ModelForm):
             label=self.fields['auto_checkin_sales_channels'].label,
             help_text=self.fields['auto_checkin_sales_channels'].help_text,
             required=self.fields['auto_checkin_sales_channels'].required,
-            choices=(
-                (c.identifier, c.verbose_name)
-                for c in get_all_sales_channels().values()
-            ),
+            choices=((c.identifier, c.verbose_name) for c in get_all_sales_channels().values()),
             widget=forms.CheckboxSelectMultiple,
         )
 
@@ -97,12 +94,8 @@ class CheckinListForm(forms.ModelForm):
             'exit_all_at',
         ]
         widgets = {
-            'limit_products': forms.CheckboxSelectMultiple(
-                attrs={'data-inverse-dependency': '<[name$=all_products]'}
-            ),
-            'gates': forms.CheckboxSelectMultiple(
-                attrs={'class': 'scrolling-multiple-choice'}
-            ),
+            'limit_products': forms.CheckboxSelectMultiple(attrs={'data-inverse-dependency': '<[name$=all_products]'}),
+            'gates': forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
             'auto_checkin_sales_channels': forms.CheckboxSelectMultiple(),
             'exit_all_at': NextTimeInput(attrs={'class': 'timepickerfield'}),
         }
@@ -143,12 +136,8 @@ class SimpleCheckinListForm(forms.ModelForm):
             'gates',
         ]
         widgets = {
-            'limit_products': forms.CheckboxSelectMultiple(
-                attrs={'data-inverse-dependency': '<[name$=all_products]'}
-            ),
-            'gates': forms.CheckboxSelectMultiple(
-                attrs={'class': 'scrolling-multiple-choice'}
-            ),
+            'limit_products': forms.CheckboxSelectMultiple(attrs={'data-inverse-dependency': '<[name$=all_products]'}),
+            'gates': forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
         }
         field_classes = {
             'limit_products': SafeModelMultipleChoiceField,

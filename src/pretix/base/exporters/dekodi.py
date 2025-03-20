@@ -36,15 +36,11 @@ class DekodiNREIExporter(BaseExporter):
             positions.append(
                 {
                     'ADes': l.description.replace('<br />', '\n'),
-                    'ANetA': round(
-                        float((-1 if invoice.is_cancellation else 1) * l.net_value), 2
-                    ),
+                    'ANetA': round(float((-1 if invoice.is_cancellation else 1) * l.net_value), 2),
                     'ANo': self.event.slug,
                     'AQ': -1 if invoice.is_cancellation else 1,
                     'AVatP': round(float(l.tax_rate), 2),
-                    'DIDt': (l.subevent or invoice.order.event)
-                    .date_from.isoformat()
-                    .replace('Z', '+00:00'),
+                    'DIDt': (l.subevent or invoice.order.event).date_from.isoformat().replace('Z', '+00:00'),
                     'PosGrossA': round(float(l.gross_value), 2),
                     'PosNetA': round(float(l.net_value), 2),
                 }
@@ -63,13 +59,9 @@ class DekodiNREIExporter(BaseExporter):
             )
         ):
             if p.provider == 'paypal':
-                paypal_email = (
-                    p.info_data.get('payer', {}).get('payer_info', {}).get('email')
-                )
+                paypal_email = p.info_data.get('payer', {}).get('payer_info', {}).get('email')
                 try:
-                    ppid = p.info_data['transactions'][0]['related_resources'][0][
-                        'sale'
-                    ]['id']
+                    ppid = p.info_data['transactions'][0]['related_resources'][0]['sale']['id']
                 except:
                     ppid = p.info_data.get('id')
                 payments.append(
@@ -89,8 +81,7 @@ class DekodiNREIExporter(BaseExporter):
                     {
                         'PTID': '4',
                         'PTN': 'Vorkasse',
-                        'PTNo4': p.info_data.get('reference')
-                        or p.payment_provider._code(invoice.order),
+                        'PTNo4': p.info_data.get('reference') or p.payment_provider._code(invoice.order),
                         'PTNo7': round(float(p.amount), 2),
                         'PTNo8': str(self.event.currency),
                         'PTNo10': p.info_data.get('payer') or '',
@@ -127,9 +118,7 @@ class DekodiNREIExporter(BaseExporter):
                         'PTNo5': src.get('card', {}).get('last4') or '',
                         'PTNo7': round(float(p.amount), 2) or '',
                         'PTNo8': str(self.event.currency) or '',
-                        'PTNo10': src.get('owner', {}).get('verified_name')
-                        or src.get('owner', {}).get('name')
-                        or '',
+                        'PTNo10': src.get('owner', {}).get('verified_name') or src.get('owner', {}).get('name') or '',
                         'PTNo15': p.full_id or '',
                     }
                 )
@@ -147,8 +136,7 @@ class DekodiNREIExporter(BaseExporter):
         payments = [{k: v for k, v in p.items() if v is not None} for p in payments]
 
         hdr = {
-            'C': str(invoice.invoice_to_country)
-            or self.event.settings.invoice_address_from_country,
+            'C': str(invoice.invoice_to_country) or self.event.settings.invoice_address_from_country,
             'CC': self.event.currency,
             'City': invoice.invoice_to_city,
             'CN': invoice.invoice_to_company,
@@ -157,9 +145,7 @@ class DekodiNREIExporter(BaseExporter):
             'DIDt': invoice.order.datetime.isoformat().replace('Z', '+00:00'),
             'DT': '30' if invoice.is_cancellation else '10',
             'EM': invoice.order.email,
-            'FamN': invoice.invoice_to_name.rsplit(' ', 1)[-1]
-            if invoice.invoice_to_name
-            else '',
+            'FamN': invoice.invoice_to_name.rsplit(' ', 1)[-1] if invoice.invoice_to_name else '',
             'FN': (
                 invoice.invoice_to_name.rsplit(' ', 1)[0]
                 if invoice.invoice_to_name and ' ' in invoice.invoice_to_name
@@ -200,9 +186,7 @@ class DekodiNREIExporter(BaseExporter):
         }
 
     def render(self, form_data):
-        qs = self.event.invoices.select_related('order').prefetch_related(
-            'lines', 'lines__subevent'
-        )
+        qs = self.event.invoices.select_related('order').prefetch_related('lines', 'lines__subevent')
 
         if form_data.get('date_from'):
             date_value = form_data.get('date_from')

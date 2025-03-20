@@ -28,15 +28,9 @@ class CachedFile(models.Model):
     date = models.DateTimeField(null=True, blank=True)
     filename = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
-    file = models.FileField(
-        null=True, blank=True, upload_to=cachedfile_name, max_length=255
-    )
-    web_download = models.BooleanField(
-        default=True
-    )  # allow web download, True for backwards compatibility in plugins
-    session_key = models.TextField(
-        null=True, blank=True
-    )  # only allow download in this session
+    file = models.FileField(null=True, blank=True, upload_to=cachedfile_name, max_length=255)
+    web_download = models.BooleanField(default=True)  # allow web download, True for backwards compatibility in plugins
+    session_key = models.TextField(null=True, blank=True)  # only allow download in this session
 
 
 @receiver(post_delete, sender=CachedFile)
@@ -47,9 +41,7 @@ def cached_file_delete(sender, instance, **kwargs):
 
 
 class LoggingMixin:
-    def log_action(
-        self, action, data=None, user=None, api_token=None, auth=None, save=True
-    ):
+    def log_action(self, action, data=None, user=None, api_token=None, auth=None, save=True):
         """
         Create a LogEntry object that is related to this object.
         See the LogEntry documentation for details.
@@ -87,9 +79,7 @@ class LoggingMixin:
         elif isinstance(api_token, TeamAPIToken):
             kwargs['api_token'] = api_token
 
-        logentry = LogEntry(
-            content_object=self, user=user, action_type=action, event=event, **kwargs
-        )
+        logentry = LogEntry(content_object=self, user=user, action_type=action, event=event, **kwargs)
         if isinstance(data, dict):
             sensitivekeys = ['password', 'secret', 'api_key']
 
@@ -155,9 +145,9 @@ class LoggedModel(models.Model, LoggingMixin):
         """
         from .log import LogEntry
 
-        return LogEntry.objects.filter(
-            content_type=self.logs_content_type, object_id=self.pk
-        ).select_related('user', 'event', 'oauth_application', 'api_token', 'device')
+        return LogEntry.objects.filter(content_type=self.logs_content_type, object_id=self.pk).select_related(
+            'user', 'event', 'oauth_application', 'api_token', 'device'
+        )
 
 
 class LockModel:
@@ -171,15 +161,12 @@ class LockModel:
                 return
             if any(LOOKUP_SEP in f for f in fields):
                 raise ValueError(
-                    'Found "%s" in fields argument. Relations and transforms '
-                    'are not allowed in fields.' % LOOKUP_SEP
+                    'Found "%s" in fields argument. Relations and transforms are not allowed in fields.' % LOOKUP_SEP
                 )
 
         hints = {'instance': self}
         db_instance_qs = (
-            self.__class__._base_manager.db_manager(using, hints=hints)
-            .filter(pk=self.pk)
-            .select_for_update(**kwargs)
+            self.__class__._base_manager.db_manager(using, hints=hints).filter(pk=self.pk).select_for_update(**kwargs)
         )
 
         # Use provided fields, if not set then reload all non-deferred fields.
@@ -188,11 +175,7 @@ class LockModel:
             fields = list(fields)
             db_instance_qs = db_instance_qs.only(*fields)
         elif deferred_fields:
-            fields = [
-                f.attname
-                for f in self._meta.concrete_fields
-                if f.attname not in deferred_fields
-            ]
+            fields = [f.attname for f in self._meta.concrete_fields if f.attname not in deferred_fields]
             db_instance_qs = db_instance_qs.only(*fields)
 
         db_instance = db_instance_qs.get()

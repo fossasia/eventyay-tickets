@@ -13,9 +13,7 @@ from pretix.control.views.organizer_views.organizer_detail_view_mixin import (
 )
 
 
-class GateListView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class GateListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = Gate
     template_name = 'pretixcontrol/organizers/gates.html'
     permission = 'can_change_organizer_settings'
@@ -25,9 +23,7 @@ class GateListView(
         return self.request.organizer.gates.all()
 
 
-class GateCreateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView
-):
+class GateCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
     model = Gate
     template_name = 'pretixcontrol/organizers/gate_edit.html'
     permission = 'can_change_organizer_settings'
@@ -39,9 +35,7 @@ class GateCreateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate')
-        )
+        return get_object_or_404(Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate'))
 
     def get_success_url(self):
         return reverse(
@@ -67,9 +61,7 @@ class GateCreateView(
         return super().form_invalid(form)
 
 
-class GateUpdateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView
-):
+class GateUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = Gate
     template_name = 'pretixcontrol/organizers/gate_edit.html'
     permission = 'can_change_organizer_settings'
@@ -82,9 +74,7 @@ class GateUpdateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate')
-        )
+        return get_object_or_404(Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate'))
 
     def get_success_url(self):
         return reverse(
@@ -109,18 +99,14 @@ class GateUpdateView(
         return super().form_invalid(form)
 
 
-class GateDeleteView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView
-):
+class GateDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
     model = Gate
     template_name = 'pretixcontrol/organizers/gate_delete.html'
     permission = 'can_change_organizer_settings'
     context_object_name = 'gate'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate')
-        )
+        return get_object_or_404(Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate'))
 
     def get_success_url(self):
         return reverse(

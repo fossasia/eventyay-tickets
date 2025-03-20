@@ -177,9 +177,7 @@ urlpatterns = [
         organizer_views.organizer_view.OrganizerCreate.as_view(),
         name='organizers.add',
     ),
-    url(
-        r'^organizers/select2$', typeahead.organizer_select2, name='organizers.select2'
-    ),
+    url(r'^organizers/select2$', typeahead.organizer_select2, name='organizers.select2'),
     url(
         r'^organizer/(?P<organizer>[^/]+)/$',
         organizer_views.organizer_view.OrganizerDetail.as_view(),
@@ -374,9 +372,7 @@ urlpatterns = [
     url(r'^events/$', main.EventList.as_view(), name='events'),
     url(r'^events/add$', main.EventWizard.as_view(), name='events.add'),
     url(r'^events/typeahead/$', typeahead.event_list, name='events.typeahead'),
-    url(
-        r'^events/typeahead/meta/$', typeahead.meta_values, name='events.meta.typeahead'
-    ),
+    url(r'^events/typeahead/meta/$', typeahead.meta_values, name='events.meta.typeahead'),
     url(r'^search/orders/$', search.OrderSearch.as_view(), name='search.orders'),
     url(
         r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/',
@@ -402,9 +398,7 @@ urlpatterns = [
                     name='event.requiredaction.discard',
                 ),
                 url(r'^comment/$', event.EventComment.as_view(), name='event.comment'),
-                url(
-                    r'^quickstart/$', event.QuickSetupView.as_view(), name='event.quick'
-                ),
+                url(r'^quickstart/$', event.QuickSetupView.as_view(), name='event.quick'),
                 url(r'^settings/$', event.EventUpdate.as_view(), name='event.settings'),
                 url(
                     r'^settings/plugins$',

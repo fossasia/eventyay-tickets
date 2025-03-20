@@ -383,9 +383,7 @@ def test_rules_simple(position, clist):
     clist.rules = {'and': [True, True]}
     clist.save()
 
-    assert OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     perform_checkin(position, clist, {})
 
 
@@ -403,9 +401,7 @@ def test_rules_product(event, position, clist):
         ]
     }
     clist.save()
-    assert not OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     with pytest.raises(CheckInError) as excinfo:
         perform_checkin(position, clist, {})
     assert excinfo.value.code == 'rules'
@@ -422,9 +418,7 @@ def test_rules_product(event, position, clist):
         ]
     }
     clist.save()
-    assert OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     perform_checkin(position, clist, {})
 
 
@@ -447,9 +441,7 @@ def test_rules_variation(item, position, clist):
     clist.save()
     with pytest.raises(CheckInError) as excinfo:
         perform_checkin(position, clist, {})
-    assert not OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     assert excinfo.value.code == 'rules'
 
     clist.rules = {
@@ -464,9 +456,7 @@ def test_rules_variation(item, position, clist):
         ]
     }
     clist.save()
-    assert OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     perform_checkin(position, clist, {})
 
 
@@ -476,19 +466,13 @@ def test_rules_scan_number(position, clist):
     clist.allow_multiple_entries = True
     clist.rules = {'<': [{'var': 'entries_number'}, 3]}
     clist.save()
-    assert OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     perform_checkin(position, clist, {})
     perform_checkin(position, clist, {})
     perform_checkin(position, clist, {}, type=Checkin.TYPE_EXIT)
-    assert OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     perform_checkin(position, clist, {})
-    assert not OrderPosition.objects.filter(
-        SQLLogic(clist).apply(clist.rules), pk=position.pk
-    ).exists()
+    assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
     with pytest.raises(CheckInError) as excinfo:
         perform_checkin(position, clist, {})
     assert excinfo.value.code == 'rules'
@@ -505,35 +489,25 @@ def test_rules_scan_today(event, position, clist):
         perform_checkin(position, clist, {})
         perform_checkin(position, clist, {})
         perform_checkin(position, clist, {}, type=Checkin.TYPE_EXIT)
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
 
     with freeze_time('2020-01-01 22:50:00'):
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
 
     with freeze_time('2020-01-01 23:10:00'):
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
         perform_checkin(position, clist, {})
         perform_checkin(position, clist, {})
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
@@ -554,30 +528,22 @@ def test_rules_scan_days(event, position, clist):
     with freeze_time('2020-01-01 10:00:00'):
         perform_checkin(position, clist, {})
         perform_checkin(position, clist, {})
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
     with freeze_time('2020-01-03 10:00:00'):
         perform_checkin(position, clist, {})
         perform_checkin(position, clist, {})
         perform_checkin(position, clist, {})
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
     with freeze_time('2020-01-03 22:50:00'):
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
     with freeze_time('2020-01-03 23:50:00'):
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
@@ -592,17 +558,13 @@ def test_rules_time_isafter_tolerance(event, position, clist):
     clist.rules = {'isAfter': [{'var': 'now'}, {'buildTime': ['date_admission']}, 10]}
     clist.save()
     with freeze_time('2020-01-01 10:45:00'):
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
 
     with freeze_time('2020-01-01 10:51:00'):
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
 
@@ -616,17 +578,13 @@ def test_rules_time_isafter_no_tolerance(event, position, clist):
     clist.rules = {'isAfter': [{'var': 'now'}, {'buildTime': ['date_admission']}]}
     clist.save()
     with freeze_time('2020-01-01 10:51:00'):
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
 
     with freeze_time('2020-01-01 11:01:00'):
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
 
@@ -639,17 +597,13 @@ def test_rules_time_isbefore_with_tolerance(event, position, clist):
     clist.rules = {'isBefore': [{'var': 'now'}, {'buildTime': ['date_to']}, 10]}
     clist.save()
     with freeze_time('2020-01-01 11:11:00'):
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
 
     with freeze_time('2020-01-01 11:09:00'):
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
 
@@ -666,17 +620,13 @@ def test_rules_time_isafter_custom_time(event, position, clist):
     }
     clist.save()
     with freeze_time('2020-01-01 21:55:00'):
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
 
     with freeze_time('2020-01-01 22:05:00'):
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
 
@@ -685,25 +635,19 @@ def test_rules_isafter_subevent(position, clist, event):
     event.has_subevents = True
     event.save()
     event.settings.timezone = 'Europe/Berlin'
-    se1 = event.subevents.create(
-        name='Foo', date_from=event.timezone.localize(datetime(2020, 2, 1, 12, 0, 0))
-    )
+    se1 = event.subevents.create(name='Foo', date_from=event.timezone.localize(datetime(2020, 2, 1, 12, 0, 0)))
     position.subevent = se1
     position.save()
     clist.rules = {'isAfter': [{'var': 'now'}, {'buildTime': ['date_admission']}]}
     clist.save()
     with freeze_time('2020-02-01 10:51:00'):
-        assert not OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert not OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         with pytest.raises(CheckInError) as excinfo:
             perform_checkin(position, clist, {})
         assert excinfo.value.code == 'rules'
 
     with freeze_time('2020-02-01 11:01:00'):
-        assert OrderPosition.objects.filter(
-            SQLLogic(clist).apply(clist.rules), pk=position.pk
-        ).exists()
+        assert OrderPosition.objects.filter(SQLLogic(clist).apply(clist.rules), pk=position.pk).exists()
         perform_checkin(position, clist, {})
 
 

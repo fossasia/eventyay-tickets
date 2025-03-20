@@ -39,9 +39,7 @@ class TolerantFormsetModelForm(I18nModelForm):
             if name == 'ORDER' or name == 'id':
                 continue
             prefixed_name = self.add_prefix(name)
-            data_value = field.widget.value_from_datadict(
-                self.data, self.files, prefixed_name
-            )
+            data_value = field.widget.value_from_datadict(self.data, self.files, prefixed_name)
             if not field.show_hidden_initial:
                 initial_value = self.initial.get(name, field.initial)
                 if callable(initial_value):
@@ -51,9 +49,7 @@ class TolerantFormsetModelForm(I18nModelForm):
                 hidden_widget = field.hidden_widget()
                 try:
                     initial_value = field.to_python(
-                        hidden_widget.value_from_datadict(
-                            self.data, self.files, initial_prefixed_name
-                        )
+                        hidden_widget.value_from_datadict(self.data, self.files, initial_prefixed_name)
                     )
                 except forms.ValidationError:
                     # Always assume data has changed if validation fails.
@@ -71,9 +67,7 @@ def selector(values, prop):
     # list of their primary keys, ordered by the primary keys of the
     # properties they belong to EXCEPT the value for the property prop2.
     # We'll see later why we need this.
-    return [
-        v.id for v in sorted(values, key=lambda v: v.prop.id) if v.prop.id != prop.id
-    ]
+    return [v.id for v in sorted(values, key=lambda v: v.prop.id) if v.prop.id != prop.id]
 
 
 class ClearableBasenameFileInput(forms.ClearableFileInput):
@@ -91,10 +85,7 @@ class ClearableBasenameFileInput(forms.ClearableFileInput):
 
         @property
         def is_img(self):
-            return any(
-                self.file.name.lower().endswith(e)
-                for e in ('.jpg', '.jpeg', '.png', '.gif')
-            )
+            return any(self.file.name.lower().endswith(e) for e in ('.jpg', '.jpeg', '.png', '.gif'))
 
         def __str__(self):
             if hasattr(self.file, 'display_name'):
@@ -125,10 +116,7 @@ class CachedFileInput(forms.ClearableFileInput):
 
         @property
         def is_img(self):
-            return any(
-                self.file.filename.lower().endswith(e)
-                for e in ('.jpg', '.jpeg', '.png', '.gif')
-            )
+            return any(self.file.filename.lower().endswith(e) for e in ('.jpg', '.jpeg', '.png', '.gif'))
 
         def __str__(self):
             return self.file.filename
@@ -141,9 +129,7 @@ class CachedFileInput(forms.ClearableFileInput):
         from ...base.models import CachedFile
 
         v = super().value_from_datadict(data, files, name)
-        if v is None and data.get(
-            name + '-cachedfile'
-        ):  # An explicit "[x] clear" would be False, not None
+        if v is None and data.get(name + '-cachedfile'):  # An explicit "[x] clear" would be False, not None
             return CachedFile.objects.filter(id=data[name + '-cachedfile']).first()
         return v
 
@@ -155,9 +141,7 @@ class CachedFileInput(forms.ClearableFileInput):
 
         ctx = super().get_context(name, value, attrs)
         ctx['widget']['value'] = value
-        ctx['widget']['cachedfile'] = (
-            value.file if isinstance(value, self.FakeFile) else None
-        )
+        ctx['widget']['cachedfile'] = value.file if isinstance(value, self.FakeFile) else None
         ctx['widget']['hidden_name'] = name + '-cachedfile'
         return ctx
 
@@ -177,11 +161,7 @@ class SizeFileField(forms.FileField):
 
     def clean(self, *args, **kwargs):
         data = super().clean(*args, **kwargs)
-        if (
-            isinstance(data, UploadedFile)
-            and self.max_size
-            and data.size > self.max_size
-        ):
+        if isinstance(data, UploadedFile) and self.max_size and data.size > self.max_size:
             raise forms.ValidationError(
                 _('Please do not upload files larger than {size}!').format(
                     size=SizeFileField._sizeof_fmt(self.max_size)
@@ -277,11 +257,7 @@ class MultipleLanguagesWidget(forms.CheckboxSelectMultiple):
         self.choices = sorted(
             self.choices,
             key=lambda l: (
-                (
-                    0
-                    if l[0] in settings.LANGUAGES_OFFICIAL
-                    else (1 if l[0] not in settings.LANGUAGES_INCUBATING else 2)
-                ),
+                (0 if l[0] in settings.LANGUAGES_OFFICIAL else (1 if l[0] not in settings.LANGUAGES_INCUBATING else 2)),
                 str(l[1]),
             ),
         )
@@ -294,12 +270,8 @@ class MultipleLanguagesWidget(forms.CheckboxSelectMultiple):
         self.sort()
         return super().optgroups(name, value, attrs)
 
-    def create_option(
-        self, name, value, label, selected, index, subindex=None, attrs=None
-    ):
-        opt = super().create_option(
-            name, value, label, selected, index, subindex, attrs
-        )
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        opt = super().create_option(name, value, label, selected, index, subindex, attrs)
         opt['official'] = value in settings.LANGUAGES_OFFICIAL
         opt['incubating'] = value in settings.LANGUAGES_INCUBATING
         return opt
@@ -312,11 +284,7 @@ class SingleLanguageWidget(forms.Select):
         self.choices = sorted(
             self.choices,
             key=lambda l: (
-                (
-                    0
-                    if l[0] in settings.LANGUAGES_OFFICIAL
-                    else (1 if l[0] not in settings.LANGUAGES_INCUBATING else 2)
-                ),
+                (0 if l[0] in settings.LANGUAGES_OFFICIAL else (1 if l[0] not in settings.LANGUAGES_INCUBATING else 2)),
                 str(l[1]),
             ),
         )
@@ -353,9 +321,7 @@ class SplitDateTimeField(forms.SplitDateTimeField):
             if data_list[0] in self.empty_values:
                 return None
             if data_list[1] in self.empty_values:
-                raise ValidationError(
-                    self.error_messages['invalid_date'], code='invalid_date'
-                )
+                raise ValidationError(self.error_messages['invalid_date'], code='invalid_date')
             result = datetime.datetime.combine(*data_list)
             return from_current_timezone(result)
         return None

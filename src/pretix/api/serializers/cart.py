@@ -78,36 +78,25 @@ class CartPositionCreateSerializer(I18nAwareModelSerializer):
 
         if not validated_data.get('expires'):
             validated_data['expires'] = now() + timedelta(
-                minutes=self.context['event'].settings.get(
-                    'reservation_time', as_type=int
-                )
+                minutes=self.context['event'].settings.get('reservation_time', as_type=int)
             )
 
         with self.context['event'].lock():
             new_quotas = (
-                validated_data.get('variation').quotas.filter(
-                    subevent=validated_data.get('subevent')
-                )
+                validated_data.get('variation').quotas.filter(subevent=validated_data.get('subevent'))
                 if validated_data.get('variation')
-                else validated_data.get('item').quotas.filter(
-                    subevent=validated_data.get('subevent')
-                )
+                else validated_data.get('item').quotas.filter(subevent=validated_data.get('subevent'))
             )
             if len(new_quotas) == 0:
                 raise ValidationError(
-                    gettext_lazy('The product "{}" is not assigned to a quota.').format(
-                        str(validated_data.get('item'))
-                    )
+                    gettext_lazy('The product "{}" is not assigned to a quota.').format(str(validated_data.get('item')))
                 )
             for quota in new_quotas:
                 avail = quota.availability()
-                if avail[0] != Quota.AVAILABILITY_OK or (
-                    avail[1] is not None and avail[1] < 1
-                ):
+                if avail[0] != Quota.AVAILABILITY_OK or (avail[1] is not None and avail[1] < 1):
                     raise ValidationError(
                         gettext_lazy(
-                            'There is not enough quota available on quota "{}" to perform '
-                            'the operation.'
+                            'There is not enough quota available on quota "{}" to perform the operation.'
                         ).format(quota.name)
                     )
             attendee_name = validated_data.pop('attendee_name', '')
@@ -121,9 +110,7 @@ class CartPositionCreateSerializer(I18nAwareModelSerializer):
             )
             if validated_data.get('seat'):
                 if not seated:
-                    raise ValidationError(
-                        'The specified product does not allow to choose a seat.'
-                    )
+                    raise ValidationError('The specified product does not allow to choose a seat.')
                 try:
                     seat = self.context['event'].seats.get(
                         seat_guid=validated_data['seat'],
@@ -140,19 +127,13 @@ class CartPositionCreateSerializer(I18nAwareModelSerializer):
                         distance_ignore_cart_id=validated_data['cart_id'],
                     ):
                         raise ValidationError(
-                            gettext_lazy(
-                                'The selected seat "{seat}" is not available.'
-                            ).format(seat=seat.name)
+                            gettext_lazy('The selected seat "{seat}" is not available.').format(seat=seat.name)
                         )
             elif seated:
-                raise ValidationError(
-                    'The specified product requires to choose a seat.'
-                )
+                raise ValidationError('The specified product requires to choose a seat.')
 
             validated_data.pop('sales_channel')
-            cp = CartPosition.objects.create(
-                event=self.context['event'], **validated_data
-            )
+            cp = CartPosition.objects.create(event=self.context['event'], **validated_data)
 
         for answ_data in answers_data:
             options = answ_data.pop('options')
@@ -184,9 +165,7 @@ class CartPositionCreateSerializer(I18nAwareModelSerializer):
             if not subevent:
                 raise ValidationError('You need to set a subevent.')
             if subevent.event != self.context['event']:
-                raise ValidationError(
-                    'The specified subevent does not belong to this event.'
-                )
+                raise ValidationError('The specified subevent does not belong to this event.')
         elif subevent:
             raise ValidationError('You cannot set a subevent for this event.')
         return subevent
@@ -195,22 +174,14 @@ class CartPositionCreateSerializer(I18nAwareModelSerializer):
         if data.get('item'):
             if data.get('item').has_variations:
                 if not data.get('variation'):
-                    raise ValidationError(
-                        'You should specify a variation for this item.'
-                    )
+                    raise ValidationError('You should specify a variation for this item.')
                 else:
                     if data.get('variation').item != data.get('item'):
-                        raise ValidationError(
-                            'The specified variation does not belong to the specified item.'
-                        )
+                        raise ValidationError('The specified variation does not belong to the specified item.')
             elif data.get('variation'):
                 raise ValidationError('You cannot specify a variation for this item.')
         if data.get('attendee_name') and data.get('attendee_name_parts'):
             raise ValidationError(
-                {
-                    'attendee_name': [
-                        'Do not specify attendee_name if you specified attendee_name_parts.'
-                    ]
-                }
+                {'attendee_name': ['Do not specify attendee_name if you specified attendee_name_parts.']}
             )
         return data

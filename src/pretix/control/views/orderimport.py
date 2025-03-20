@@ -106,9 +106,7 @@ class ProcessView(EventPermissionRequiredMixin, AsyncAction, FormView):
 
     @cached_property
     def file(self):
-        return get_object_or_404(
-            CachedFile, pk=self.kwargs.get('file'), filename='import.csv'
-        )
+        return get_object_or_404(CachedFile, pk=self.kwargs.get('file'), filename='import.csv')
 
     @cached_property
     def parsed(self):

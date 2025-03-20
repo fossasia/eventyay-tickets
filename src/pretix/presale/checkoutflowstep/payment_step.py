@@ -53,9 +53,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
             fee = provider.calculate_fee(self._total_order_value)
 
             if 'total' in inspect.signature(provider.payment_form_render).parameters:
-                form = provider.payment_form_render(
-                    self.request, self._total_order_value + fee
-                )
+                form = provider.payment_form_render(self.request, self._total_order_value + fee)
             else:
                 form = provider.payment_form_render(self.request)
 
@@ -95,9 +93,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
         ctx = super().get_context_data(**kwargs)
         ctx['providers'] = self.provider_forms
         ctx['show_fees'] = any(p['fee'] for p in self.provider_forms)
-        ctx['selected'] = self.request.POST.get(
-            'payment', self.cart_session.get('payment', '')
-        )
+        ctx['selected'] = self.request.POST.get('payment', self.cart_session.get('payment', ''))
         if len(self.provider_forms) == 1:
             ctx['selected'] = self.provider_forms[0]['provider'].identifier
         ctx['cart'] = self.get_cart()
@@ -105,9 +101,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
 
     @cached_property
     def payment_provider(self):
-        return self.request.event.get_payment_providers().get(
-            self.cart_session['payment']
-        )
+        return self.request.event.get_payment_providers().get(self.cart_session['payment'])
 
     def _is_allowed(self, prov, request):
         return prov.is_allowed(request, total=self._total_order_value)
@@ -116,9 +110,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
         self.request = request
         if 'payment' not in self.cart_session or not self.payment_provider:
             if warn:
-                messages.error(
-                    request, _('The payment information you entered was incomplete.')
-                )
+                messages.error(request, _('The payment information you entered was incomplete.'))
             return False
         if (
             not self.payment_provider.payment_is_valid_session(request)
@@ -126,9 +118,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
             or not self._is_allowed(self.payment_provider, request)
         ):
             if warn:
-                messages.error(
-                    request, _('The payment information you entered was incomplete.')
-                )
+                messages.error(request, _('The payment information you entered was incomplete.'))
             return False
         return True
 

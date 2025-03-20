@@ -32,9 +32,7 @@ class BadgesApp(AppConfig):
         version = version
         category = 'FEATURE'
         featured = True
-        description = _(
-            'This plugin allows you to generate badges or name tags for your attendees.'
-        )
+        description = _('This plugin allows you to generate badges or name tags for your attendees.')
 
     def ready(self):
         from . import signals  # NOQA
@@ -52,10 +50,9 @@ class BadgesApp(AppConfig):
         # Add our PDFRenderer to the renderer classes if it's not already there
         pdf_renderer_path = 'pretix.plugins.badges.apps.PDFRenderer'
         if pdf_renderer_path not in settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']:
-            settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
-                settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']
-                + (pdf_renderer_path,)
-            )
+            settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = settings.REST_FRAMEWORK[
+                'DEFAULT_RENDERER_CLASSES'
+            ] + (pdf_renderer_path,)
 
     def installed(self, event):
         if not event.badge_layouts.exists():

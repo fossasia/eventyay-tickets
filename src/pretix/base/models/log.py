@@ -42,15 +42,9 @@ class LogEntry(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT)
-    api_token = models.ForeignKey(
-        'TeamAPIToken', null=True, blank=True, on_delete=models.PROTECT
-    )
-    device = models.ForeignKey(
-        'Device', null=True, blank=True, on_delete=models.PROTECT
-    )
-    oauth_application = models.ForeignKey(
-        'pretixapi.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT
-    )
+    api_token = models.ForeignKey('TeamAPIToken', null=True, blank=True, on_delete=models.PROTECT)
+    device = models.ForeignKey('Device', null=True, blank=True, on_delete=models.PROTECT)
+    oauth_application = models.ForeignKey('pretixapi.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)
     event = models.ForeignKey('Event', null=True, blank=True, on_delete=models.SET_NULL)
     action_type = models.CharField(max_length=255)
     data = models.TextField(default='{}')
@@ -79,9 +73,7 @@ class LogEntry(models.Model):
         wh_type = None
         typepath = self.action_type
         while not wh_type and '.' in typepath:
-            wh_type = wh_type or wh_types.get(
-                typepath + ('.*' if typepath != self.action_type else '')
-            )
+            wh_type = wh_type or wh_types.get(typepath + ('.*' if typepath != self.action_type else ''))
             typepath = typepath.rsplit('.', 1)[0]
         return wh_type
 
@@ -93,9 +85,7 @@ class LogEntry(models.Model):
         no_types = get_all_notification_types()
         typepath = self.action_type
         while not no_type and '.' in typepath:
-            no_type = no_type or no_types.get(
-                typepath + ('.*' if typepath != self.action_type else '')
-            )
+            no_type = no_type or no_types.get(typepath + ('.*' if typepath != self.action_type else ''))
             typepath = typepath.rsplit('.', 1)[0]
         return no_type
 
@@ -248,9 +238,7 @@ class LogEntry(models.Model):
         elif a_text:
             return a_text
         else:
-            for receiver, response in logentry_object_link.send(
-                self.event, logentry=self
-            ):
+            for receiver, response in logentry_object_link.send(self.event, logentry=self):
                 if response:
                     return response
             return ''

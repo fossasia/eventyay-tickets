@@ -23,9 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class OAuthAllowForm(AllowForm):
-    organizers = forms.ModelMultipleChoiceField(
-        queryset=Organizer.objects.none(), widget=forms.CheckboxSelectMultiple
-    )
+    organizers = forms.ModelMultipleChoiceField(queryset=Organizer.objects.none(), widget=forms.CheckboxSelectMultiple)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -54,22 +52,14 @@ class AuthorizationView(BaseAuthorizationView):
         return ctx
 
     def validate_authorization_request(self, request):
-        require_approval = request.GET.get(
-            'approval_prompt', oauth2_settings.REQUEST_APPROVAL_PROMPT
-        )
+        require_approval = request.GET.get('approval_prompt', oauth2_settings.REQUEST_APPROVAL_PROMPT)
         if require_approval != 'force' and request.GET.get('scope') != 'profile':
-            raise FatalClientError(
-                'Combnination of require_approval and scope values not allowed.'
-            )
+            raise FatalClientError('Combnination of require_approval and scope values not allowed.')
         return super().validate_authorization_request(request)
 
-    def create_authorization_response(
-        self, request, scopes, credentials, allow, organizers=None
-    ):
+    def create_authorization_response(self, request, scopes, credentials, allow, organizers=None):
         credentials['organizers'] = organizers or []
-        return super().create_authorization_response(
-            request, scopes, credentials, allow
-        )
+        return super().create_authorization_response(request, scopes, credentials, allow)
 
     def form_valid(self, form):
         client_id = form.cleaned_data['client_id']
@@ -98,9 +88,9 @@ class AuthorizationView(BaseAuthorizationView):
         logger.debug('Success url for the request: {0}'.format(self.success_url))
 
         msgs = [
-            _(
-                'The application "{application_name}" has been authorized to access your account.'
-            ).format(application_name=application.name)
+            _('The application "{application_name}" has been authorized to access your account.').format(
+                application_name=application.name
+            )
         ]
         self.request.user.send_security_notice(msgs)
         self.request.user.log_action(

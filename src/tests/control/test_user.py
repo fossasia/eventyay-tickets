@@ -168,9 +168,7 @@ class UserSettings2FATest(SoupTest):
         self.assertIn('/control/reauth', response['Location'])
         self.assertEqual(response.status_code, 302)
 
-        response = self.client.post(
-            '/control/reauth/?next=/control/settings/2fa/', {'password': 'dummy'}
-        )
+        response = self.client.post('/control/reauth/?next=/control/settings/2fa/', {'password': 'dummy'})
         self.assertIn('/control/settings/2fa/', response['Location'])
         self.assertEqual(response.status_code, 302)
 
@@ -225,25 +223,19 @@ class UserSettings2FATest(SoupTest):
         assert not TOTPDevice.objects.exists()
 
     def test_create_webauthn_require_https(self):
-        r = self.client.post(
-            '/control/settings/2fa/add', {'devicetype': 'webauthn', 'name': 'Foo'}
-        )
+        r = self.client.post('/control/settings/2fa/add', {'devicetype': 'webauthn', 'name': 'Foo'})
         assert 'alert-danger' in r.content.decode()
 
     def test_create_webauthn(self):
         with mocker_context() as mocker:
             mocker.patch('django.http.request.HttpRequest.is_secure')
-            self.client.post(
-                '/control/settings/2fa/add', {'devicetype': 'webauthn', 'name': 'Foo'}
-            )
+            self.client.post('/control/settings/2fa/add', {'devicetype': 'webauthn', 'name': 'Foo'})
             d = WebAuthnDevice.objects.first()
             assert d.name == 'Foo'
             assert not d.confirmed
 
     def test_create_totp(self):
-        self.client.post(
-            '/control/settings/2fa/add', {'devicetype': 'totp', 'name': 'Foo'}
-        )
+        self.client.post('/control/settings/2fa/add', {'devicetype': 'totp', 'name': 'Foo'})
         d = TOTPDevice.objects.first()
         assert d.name == 'Foo'
 
@@ -353,21 +345,15 @@ class UserSettingsNotificationsTest(SoupTest):
 
     def test_toggle_all(self):
         assert self.user.notifications_send
-        self.client.post(
-            '/control/settings/notifications/', {'notifications_send': 'off'}
-        )
+        self.client.post('/control/settings/notifications/', {'notifications_send': 'off'})
         self.user.refresh_from_db()
         assert not self.user.notifications_send
-        self.client.post(
-            '/control/settings/notifications/', {'notifications_send': 'on'}
-        )
+        self.client.post('/control/settings/notifications/', {'notifications_send': 'on'})
         self.user.refresh_from_db()
         assert self.user.notifications_send
 
     def test_global_enable(self):
-        self.client.post(
-            '/control/settings/notifications/', {'mail:pretix.event.order.placed': 'on'}
-        )
+        self.client.post('/control/settings/notifications/', {'mail:pretix.event.order.placed': 'on'})
         assert (
             self.user.notification_settings.get(
                 event__isnull=True,
@@ -490,9 +476,7 @@ class UserSettingsNotificationsTest(SoupTest):
     def test_disable_all_via_link(self):
         assert self.user.notifications_send
         self.client.post(
-            '/control/settings/notifications/off/{}/{}/'.format(
-                self.user.pk, self.user.notifications_token
-            )
+            '/control/settings/notifications/off/{}/{}/'.format(self.user.pk, self.user.notifications_token)
         )
         self.user.refresh_from_db()
         assert not self.user.notifications_send
@@ -501,9 +485,7 @@ class UserSettingsNotificationsTest(SoupTest):
         self.client.logout()
         assert self.user.notifications_send
         self.client.post(
-            '/control/settings/notifications/off/{}/{}/'.format(
-                self.user.pk, self.user.notifications_token
-            )
+            '/control/settings/notifications/off/{}/{}/'.format(self.user.pk, self.user.notifications_token)
         )
         self.user.refresh_from_db()
         assert not self.user.notifications_send

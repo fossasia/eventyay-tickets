@@ -46,17 +46,13 @@ def test_api_list(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.get(
-            '/api/v1/organizers/{}/events/{}/ticketlayouts/'.format(
-                env[0].slug, env[0].organizer.slug
-            )
+            '/api/v1/organizers/{}/events/{}/ticketlayouts/'.format(env[0].slug, env[0].organizer.slug)
         ).content.decode('utf-8')
     )
     assert r['results'] == [res]
     r = json.loads(
         client.get(
-            '/api/v1/organizers/{}/events/{}/ticketlayoutitems/'.format(
-                env[0].slug, env[0].organizer.slug
-            )
+            '/api/v1/organizers/{}/events/{}/ticketlayoutitems/'.format(env[0].slug, env[0].organizer.slug)
         ).content.decode('utf-8')
     )
     assert r['results'] == [
@@ -77,9 +73,7 @@ def test_api_detail(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.get(
-            '/api/v1/organizers/{}/events/{}/ticketlayouts/{}/'.format(
-                env[0].slug, env[0].organizer.slug, env[2].pk
-            )
+            '/api/v1/organizers/{}/events/{}/ticketlayouts/{}/'.format(env[0].slug, env[0].organizer.slug, env[2].pk)
         ).content.decode('utf-8')
     )
     assert r == res

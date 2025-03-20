@@ -28,9 +28,7 @@ class Command(BaseCommand):
 
         parser.add_argument('export_provider', type=str)
         parser.add_argument('output_file', type=str)
-        parser.add_argument(
-            '--parameters', action='store', type=str, help='JSON-formatted parameters'
-        )
+        parser.add_argument('--parameters', action='store', type=str, help='JSON-formatted parameters')
         parser.add_argument('--locale', action='store', type=str, help='...')
         parser.add_argument('--timezone', action='store', type=str, help='...')
 
@@ -42,9 +40,7 @@ class Command(BaseCommand):
             sys.exit(1)
 
         locale = options.get('locale', None)
-        timezone = (
-            pytz.timezone(options['timezone']) if options.get('timezone') else None
-        )
+        timezone = pytz.timezone(options['timezone']) if options.get('timezone') else None
 
         with scope(organizer=o):
             if options['event_slug']:
@@ -62,16 +58,10 @@ class Command(BaseCommand):
                 e = o.events.all()
                 if options['event_slugs']:
                     e = e.filter(slug__in=options['event_slugs'])
-                    not_found = set(options['event_slugs']).difference(
-                        event.slug for event in e
-                    )
+                    not_found = set(options['event_slugs']).difference(event.slug for event in e)
                     if not_found:
                         self.stderr.write(
-                            self.style.ERROR(
-                                'The following events were not found: {}'.format(
-                                    ', '.join(not_found)
-                                )
-                            )
+                            self.style.ERROR('The following events were not found: {}'.format(', '.join(not_found)))
                         )
                         sys.exit(1)
                 if not e.exists():
@@ -81,19 +71,13 @@ class Command(BaseCommand):
                 if not locale:
                     locale = e.first().settings.locale
                     self.stderr.write(
-                        self.style.WARNING(
-                            "Guessing locale '{}' based on event '{}'.".format(
-                                locale, e.first().slug
-                            )
-                        )
+                        self.style.WARNING("Guessing locale '{}' based on event '{}'.".format(locale, e.first().slug))
                     )
                 if not timezone:
                     timezone = e.first().settings.timezone
                     self.stderr.write(
                         self.style.WARNING(
-                            "Guessing timezone '{}' based on event '{}'.".format(
-                                timezone, e.first().slug
-                            )
+                            "Guessing timezone '{}' based on event '{}'.".format(timezone, e.first().slug)
                         )
                     )
                 signal_result = register_multievent_data_exporters.send(o)

@@ -148,10 +148,7 @@ def event_list(request):
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        'results': [
-            serialize_event(e)
-            for e in qs.select_related('organizer')[offset : offset + pagesize]
-        ],
+        'results': [serialize_event(e) for e in qs.select_related('organizer')[offset : offset + pagesize]],
         'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
@@ -184,9 +181,7 @@ def nav_context_list(request):
     if request.user.has_active_staff_session(request.session.session_key):
         qs_orga = Organizer.objects.all()
     else:
-        qs_orga = Organizer.objects.filter(
-            pk__in=request.user.teams.values_list('organizer', flat=True)
-        )
+        qs_orga = Organizer.objects.filter(pk__in=request.user.teams.values_list('organizer', flat=True))
     if query:
         qs_orga = qs_orga.filter(Q(name__icontains=query) | Q(slug__icontains=query))
 
@@ -205,9 +200,9 @@ def nav_context_list(request):
                     ).values_list('organizer', flat=True)
                 )
                 | Q(
-                    event_id__in=request.user.teams.filter(
-                        can_view_orders=True
-                    ).values_list('limit_events__id', flat=True)
+                    event_id__in=request.user.teams.filter(can_view_orders=True).values_list(
+                        'limit_events__id', flat=True
+                    )
                 )
             )
 
@@ -225,9 +220,9 @@ def nav_context_list(request):
                     ).values_list('organizer', flat=True)
                 )
                 | Q(
-                    event_id__in=request.user.teams.filter(
-                        can_view_vouchers=True
-                    ).values_list('limit_events__id', flat=True)
+                    event_id__in=request.user.teams.filter(can_view_vouchers=True).values_list(
+                        'limit_events__id', flat=True
+                    )
                 )
             )
     else:
@@ -236,38 +231,21 @@ def nav_context_list(request):
 
     show_user = (
         not query
-        or (
-            query and request.user.email and query.lower() in request.user.email.lower()
-        )
-        or (
-            query
-            and request.user.fullname
-            and query.lower() in request.user.fullname.lower()
-        )
+        or (query and request.user.email and query.lower() in request.user.email.lower())
+        or (query and request.user.fullname and query.lower() in request.user.fullname.lower())
     )
     total = qs_events.count() + qs_orga.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     results = (
         ([serialize_user(request.user)] if show_user else [])
-        + [
-            serialize_orga(e)
-            for e in qs_orga[offset : offset + (pagesize if query else 5)]
-        ]
+        + [serialize_orga(e) for e in qs_orga[offset : offset + (pagesize if query else 5)]]
         + [
             serialize_event(e)
-            for e in qs_events.select_related('organizer')[
-                offset : offset + (pagesize if query else 5)
-            ]
+            for e in qs_events.select_related('organizer')[offset : offset + (pagesize if query else 5)]
         ]
-        + [
-            serialize_order(e)
-            for e in qs_orders[offset : offset + (pagesize if query else 5)]
-        ]
-        + [
-            serialize_voucher(e)
-            for e in qs_vouchers[offset : offset + (pagesize if query else 5)]
-        ]
+        + [serialize_order(e) for e in qs_orders[offset : offset + (pagesize if query else 5)]]
+        + [serialize_voucher(e) for e in qs_vouchers[offset : offset + (pagesize if query else 5)]]
     )
 
     if show_user and organizer:
@@ -306,12 +284,8 @@ def subevent_select2(request, **kwargs):
             continue
 
     if dt:
-        dt_start = make_aware(
-            datetime.combine(dt.date(), time(hour=0, minute=0, second=0)), tz
-        )
-        dt_end = make_aware(
-            datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz
-        )
+        dt_start = make_aware(datetime.combine(dt.date(), time(hour=0, minute=0, second=0)), tz)
+        dt_end = make_aware(datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz)
         qf |= Q(date_from__gte=dt_start) & Q(date_from__lte=dt_end)
 
     qs = request.event.subevents.filter(qf).order_by('-date_from', 'name', 'pk')
@@ -325,11 +299,7 @@ def subevent_select2(request, **kwargs):
                 'id': e.pk,
                 'name': str(e.name),
                 'date_range': e.get_date_range_display()
-                + (
-                    ' ' + date_format(e.date_from.astimezone(tz), 'TIME_FORMAT')
-                    if e.settings.show_times
-                    else ''
-                ),
+                + (' ' + date_format(e.date_from.astimezone(tz), 'TIME_FORMAT') if e.settings.show_times else ''),
                 'text': str(e),
             }
             for e in qs[offset : offset + pagesize]
@@ -359,12 +329,8 @@ def quotas_select2(request, **kwargs):
             continue
 
     if dt and request.event.has_subevents:
-        dt_start = make_aware(
-            datetime.combine(dt.date(), time(hour=0, minute=0, second=0)), tz
-        )
-        dt_end = make_aware(
-            datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz
-        )
+        dt_start = make_aware(datetime.combine(dt.date(), time(hour=0, minute=0, second=0)), tz)
+        dt_end = make_aware(datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz)
         qf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
     qs = request.event.quotas.filter(qf).order_by('-subevent__date_from', 'name')
@@ -373,10 +339,7 @@ def quotas_select2(request, **kwargs):
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        'results': [
-            {'id': q.pk, 'name': str(q.name), 'text': q.name}
-            for q in qs[offset : offset + pagesize]
-        ],
+        'results': [{'id': q.pk, 'name': str(q.name), 'text': q.name} for q in qs[offset : offset + pagesize]],
         'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
@@ -390,9 +353,7 @@ def items_select2(request, **kwargs):
     except ValueError:
         page = 1
 
-    qs = request.event.items.filter(name__icontains=i18ncomp(query)).order_by(
-        'position'
-    )
+    qs = request.event.items.filter(name__icontains=i18ncomp(query)).order_by('position')
 
     total = qs.count()
     pagesize = 20
@@ -452,9 +413,7 @@ def category_select2(request, **kwargs):
     except ValueError:
         page = 1
 
-    qs = request.event.categories.filter(name__icontains=i18ncomp(query)).order_by(
-        'name'
-    )
+    qs = request.event.categories.filter(name__icontains=i18ncomp(query)).order_by('name')
 
     total = qs.count()
     pagesize = 20
@@ -489,21 +448,11 @@ def checkinlist_select2(request, **kwargs):
     else:
         tz = request.event.timezone
         if dt and request.event.has_subevents:
-            dt_start = make_aware(
-                datetime.combine(dt.date(), time(hour=0, minute=0, second=0)), tz
-            )
-            dt_end = make_aware(
-                datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz
-            )
-            qf |= Q(subevent__date_from__gte=dt_start) & Q(
-                subevent__date_from__lte=dt_end
-            )
+            dt_start = make_aware(datetime.combine(dt.date(), time(hour=0, minute=0, second=0)), tz)
+            dt_end = make_aware(datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz)
+            qf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
-    qs = (
-        request.event.checkin_lists.select_related('subevent')
-        .filter(qf)
-        .order_by('name')
-    )
+    qs = request.event.checkin_lists.select_related('subevent').filter(qf).order_by('name')
 
     total = qs.count()
     pagesize = 20
@@ -513,9 +462,7 @@ def checkinlist_select2(request, **kwargs):
             {
                 'id': e.pk,
                 'text': str(e.name),
-                'event': str(e.subevent)
-                if request.event.has_subevents and e.subevent
-                else None,
+                'event': str(e.subevent) if request.event.has_subevents and e.subevent else None,
             }
             for e in qs[offset : offset + pagesize]
         ],
@@ -536,9 +483,7 @@ def itemvarquota_select2(request, **kwargs):
 
     if not request.event.has_subevents:
         # We are very unlikely to need pagination
-        itemqs = request.event.items.prefetch_related('variations').filter(
-            name__icontains=i18ncomp(query)
-        )
+        itemqs = request.event.items.prefetch_related('variations').filter(name__icontains=i18ncomp(query))
         quotaqs = request.event.quotas.filter(name__icontains=query)
         more = False
     else:
@@ -558,14 +503,10 @@ def itemvarquota_select2(request, **kwargs):
                         tz,
                     )
                     dt_end = make_aware(
-                        datetime.combine(
-                            dt.date(), time(hour=23, minute=59, second=59)
-                        ),
+                        datetime.combine(dt.date(), time(hour=23, minute=59, second=59)),
                         tz,
                     )
-                    quotaf |= Q(subevent__date_from__gte=dt_start) & Q(
-                        subevent__date_from__lte=dt_end
-                    )
+                    quotaf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
             itemqs = request.event.items.prefetch_related('variations').filter(
                 Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query)
@@ -575,14 +516,11 @@ def itemvarquota_select2(request, **kwargs):
         else:
             if page == 1:
                 itemqs = request.event.items.prefetch_related('variations').filter(
-                    Q(name__icontains=i18ncomp(query))
-                    | Q(internal_name__icontains=query)
+                    Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query)
                 )
             else:
                 itemqs = request.event.items.none()
-            quotaqs = request.event.quotas.filter(name__icontains=query).select_related(
-                'subevent'
-            )
+            quotaqs = request.event.quotas.filter(name__icontains=query).select_related('subevent')
             total = quotaqs.count()
             pagesize = 20
             offset = (page - 1) * pagesize
@@ -592,9 +530,7 @@ def itemvarquota_select2(request, **kwargs):
     for i in itemqs:
         variations = list(i.variations.all())
         if variations:
-            choices.append(
-                (str(i.pk), _('{product} – Any variation').format(product=i), '')
-            )
+            choices.append((str(i.pk), _('{product} – Any variation').format(product=i), ''))
             for v in variations:
                 choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (i, v.value), ''))
         else:
@@ -609,9 +545,7 @@ def itemvarquota_select2(request, **kwargs):
                 )
             )
         else:
-            choices.append(
-                ('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q), '')
-            )
+            choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q), ''))
 
     doc = {
         'results': [
@@ -638,24 +572,16 @@ def organizer_select2(request):
         qs = qs.filter(Q(name__icontains=term) | Q(slug__icontains=term))
     if not request.user.has_active_staff_session(request.session.session_key):
         if 'can_create' in request.GET:
-            qs = qs.filter(
-                pk__in=request.user.teams.filter(can_create_events=True).values_list(
-                    'organizer', flat=True
-                )
-            )
+            qs = qs.filter(pk__in=request.user.teams.filter(can_create_events=True).values_list('organizer', flat=True))
         else:
-            qs = qs.filter(
-                pk__in=request.user.teams.values_list('organizer', flat=True)
-            )
+            qs = qs.filter(pk__in=request.user.teams.values_list('organizer', flat=True))
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
 
     doc = {
-        'results': [
-            {'id': o.pk, 'text': str(o.name)} for o in qs[offset : offset + pagesize]
-        ],
+        'results': [{'id': o.pk, 'text': str(o.name)} for o in qs[offset : offset + pagesize]],
         'pagination': {'more': total >= (offset + pagesize)},
     }
 
@@ -680,9 +606,7 @@ def users_select2(request):
     offset = (page - 1) * pagesize
 
     doc = {
-        'results': [
-            {'id': o.pk, 'text': str(o.email)} for o in qs[offset : offset + pagesize]
-        ],
+        'results': [{'id': o.pk, 'text': str(o.email)} for o in qs[offset : offset + pagesize]],
         'pagination': {'more': total >= (offset + pagesize)},
     }
 
@@ -705,15 +629,10 @@ def meta_values(request):
         defaults = defaults.filter(organizer_id=organizer.pk)
         matches = matches.filter(event__organizer_id=organizer.pk)
         all_access = (
-            request
-            and request.user.has_active_staff_session(request.session.session_key)
+            request and request.user.has_active_staff_session(request.session.session_key)
         ) or request.user.teams.filter(all_events=True, organizer=organizer).exists()
         if not all_access:
-            matches = matches.filter(
-                event__id__in=request.user.teams.values_list(
-                    'limit_events__id', flat=True
-                )
-            )
+            matches = matches.filter(event__id__in=request.user.teams.values_list('limit_events__id', flat=True))
 
     else:
         # We ignore superuser permissions here. This is intentional – we do not want to show super
@@ -722,21 +641,14 @@ def meta_values(request):
             organizer_id__in=request.user.teams.values_list('organizer', flat=True),
         )
 
-        if not (
-            request
-            and request.user.has_active_staff_session(request.session.session_key)
-        ):
+        if not (request and request.user.has_active_staff_session(request.session.session_key)):
             matches = matches.filter(
                 Q(
-                    event__organizer_id__in=request.user.teams.filter(
-                        all_events=True
-                    ).values_list('organizer', flat=True)
-                )
-                | Q(
-                    event__id__in=request.user.teams.values_list(
-                        'limit_events__id', flat=True
+                    event__organizer_id__in=request.user.teams.filter(all_events=True).values_list(
+                        'organizer', flat=True
                     )
                 )
+                | Q(event__id__in=request.user.teams.values_list('limit_events__id', flat=True))
             )
 
     return JsonResponse(
@@ -767,20 +679,16 @@ def item_meta_values(request, organizer, event):
     matches = matches.filter(item__event__organizer_id=organizer.pk)
     all_access = (
         request.user.has_active_staff_session(request.session.session_key)
-        or request.user.teams.filter(
-            all_events=True, organizer=organizer, can_change_items=True
-        ).exists()
+        or request.user.teams.filter(all_events=True, organizer=organizer, can_change_items=True).exists()
     )
     if not all_access:
         defaults = matches.filter(
-            event__id__in=request.user.teams.filter(can_change_items=True).values_list(
-                'limit_events__id', flat=True
-            )
+            event__id__in=request.user.teams.filter(can_change_items=True).values_list('limit_events__id', flat=True)
         )
         matches = matches.filter(
-            item__event__id__in=request.user.teams.filter(
-                can_change_items=True
-            ).values_list('limit_events__id', flat=True)
+            item__event__id__in=request.user.teams.filter(can_change_items=True).values_list(
+                'limit_events__id', flat=True
+            )
         )
 
     return JsonResponse(

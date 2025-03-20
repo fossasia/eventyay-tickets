@@ -55,9 +55,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'label': _('Ticket code (barcode content)'),
                 'editor_sample': 'tdmruoekvkpbv1o2mv8xccvqcikvr58u',
                 'evaluate': lambda orderposition, order, event: (
-                    orderposition.secret[:30] + '…'
-                    if len(orderposition.secret) > 32
-                    else orderposition.secret
+                    orderposition.secret[:30] + '…' if len(orderposition.secret) > 32 else orderposition.secret
                 ),
             },
         ),
@@ -66,9 +64,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Order code'),
                 'editor_sample': 'A1B2C',
-                'evaluate': lambda orderposition,
-                order,
-                event: orderposition.order.code,
+                'evaluate': lambda orderposition, order, event: orderposition.order.code,
             },
         ),
         (
@@ -76,9 +72,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Order position number'),
                 'editor_sample': '1',
-                'evaluate': lambda orderposition, order, event: str(
-                    orderposition.positionid
-                ),
+                'evaluate': lambda orderposition, order, event: str(orderposition.positionid),
             },
         ),
         (
@@ -86,9 +80,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Product name'),
                 'editor_sample': _('Sample product'),
-                'evaluate': lambda orderposition, order, event: str(
-                    orderposition.item.name
-                ),
+                'evaluate': lambda orderposition, order, event: str(orderposition.item.name),
             },
         ),
         (
@@ -96,9 +88,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Variation name'),
                 'editor_sample': _('Sample variation'),
-                'evaluate': lambda op, order, event: str(op.variation)
-                if op.variation
-                else '',
+                'evaluate': lambda op, order, event: str(op.variation) if op.variation else '',
             },
         ),
         (
@@ -106,9 +96,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Product description'),
                 'editor_sample': _('Sample product description'),
-                'evaluate': lambda orderposition, order, event: str(
-                    orderposition.item.description
-                ),
+                'evaluate': lambda orderposition, order, event: str(orderposition.item.description),
             },
         ),
         (
@@ -141,9 +129,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'label': _('Product category'),
                 'editor_sample': _('Ticket category'),
                 'evaluate': lambda orderposition, order, event: (
-                    str(orderposition.item.category.name)
-                    if orderposition.item.category
-                    else ''
+                    str(orderposition.item.category.name) if orderposition.item.category else ''
                 ),
             },
         ),
@@ -152,9 +138,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Price'),
                 'editor_sample': _('123.45 EUR'),
-                'evaluate': lambda op, order, event: money_filter(
-                    op.price, event.currency
-                ),
+                'evaluate': lambda op, order, event: money_filter(op.price, event.currency),
             },
         ),
         (
@@ -182,8 +166,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Attendee job title'),
                 'editor_sample': _('Sample company'),
-                'evaluate': lambda op, order, ev: op.job_title
-                or (op.addon_to.job_title if op.addon_to else ''),
+                'evaluate': lambda op, order, ev: op.job_title or (op.addon_to.job_title if op.addon_to else ''),
             },
         ),
         (
@@ -191,17 +174,14 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Attendee company'),
                 'editor_sample': _('Sample company'),
-                'evaluate': lambda op, order, ev: op.company
-                or (op.addon_to.company if op.addon_to else ''),
+                'evaluate': lambda op, order, ev: op.company or (op.addon_to.company if op.addon_to else ''),
             },
         ),
         (
             'attendee_address',
             {
                 'label': _('Full attendee address'),
-                'editor_sample': _(
-                    'John Doe\nSample company\nSesame Street 42\n12345 Any City\nAtlantis'
-                ),
+                'editor_sample': _('John Doe\nSample company\nSesame Street 42\n12345 Any City\nAtlantis'),
                 'evaluate': lambda op, order, event: op.address_format(),
             },
         ),
@@ -210,8 +190,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Attendee street'),
                 'editor_sample': 'Sesame Street 42',
-                'evaluate': lambda op, order, ev: op.street
-                or (op.addon_to.street if op.addon_to else ''),
+                'evaluate': lambda op, order, ev: op.street or (op.addon_to.street if op.addon_to else ''),
             },
         ),
         (
@@ -219,8 +198,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Attendee ZIP code'),
                 'editor_sample': '12345',
-                'evaluate': lambda op, order, ev: op.zipcode
-                or (op.addon_to.zipcode if op.addon_to else ''),
+                'evaluate': lambda op, order, ev: op.zipcode or (op.addon_to.zipcode if op.addon_to else ''),
             },
         ),
         (
@@ -228,8 +206,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Attendee city'),
                 'editor_sample': 'Any City',
-                'evaluate': lambda op, order, ev: op.city
-                or (op.addon_to.city if op.addon_to else ''),
+                'evaluate': lambda op, order, ev: op.city or (op.addon_to.city if op.addon_to else ''),
             },
         ),
         (
@@ -237,8 +214,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Attendee state'),
                 'editor_sample': 'Sample State',
-                'evaluate': lambda op, order, ev: op.state
-                or (op.addon_to.state if op.addon_to else ''),
+                'evaluate': lambda op, order, ev: op.state or (op.addon_to.state if op.addon_to else ''),
             },
         ),
         (
@@ -247,9 +223,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'label': _('Attendee country'),
                 'editor_sample': 'Atlantis',
                 'evaluate': lambda op, order, ev: str(getattr(op.country, 'name', ''))
-                or (
-                    str(getattr(op.addon_to.country, 'name', '')) if op.addon_to else ''
-                ),
+                or (str(getattr(op.addon_to.country, 'name', '')) if op.addon_to else ''),
             },
         ),
         (
@@ -282,9 +256,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Event date'),
                 'editor_sample': _('May 31st, 2017'),
-                'evaluate': lambda op, order, ev: ev.get_date_from_display(
-                    show_times=False
-                ),
+                'evaluate': lambda op, order, ev: ev.get_date_from_display(show_times=False),
             },
         ),
         (
@@ -292,9 +264,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Event date range'),
                 'editor_sample': _('May 31st – June 4th, 2017'),
-                'evaluate': lambda op, order, ev: ev.get_date_range_display(
-                    force_show_end=True
-                ),
+                'evaluate': lambda op, order, ev: ev.get_date_range_display(force_show_end=True),
             },
         ),
         (
@@ -484,9 +454,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Invoice address country'),
                 'editor_sample': _('Atlantis'),
-                'evaluate': lambda op, order, ev: str(
-                    getattr(order.invoice_address.country, 'name', '')
-                )
+                'evaluate': lambda op, order, ev: str(getattr(order.invoice_address.country, 'name', ''))
                 if getattr(order, 'invoice_address', None)
                 else '',
             },
@@ -498,9 +466,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'editor_sample': _('Add-on 1\nAdd-on 2'),
                 'evaluate': lambda op, order, ev: '\n'.join(
                     [
-                        '{} - {}'.format(p.item, p.variation)
-                        if p.variation
-                        else str(p.item)
+                        '{} - {}'.format(p.item, p.variation) if p.variation else str(p.item)
                         for p in (
                             op.addons.all()
                             if 'addons' in getattr(op, '_prefetched_objects_cache', {})
@@ -524,9 +490,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Organizer info text'),
                 'editor_sample': _('Event organizer info text'),
-                'evaluate': lambda op, order, ev: str(
-                    order.event.settings.organizer_info_text
-                ),
+                'evaluate': lambda op, order, ev: str(order.event.settings.organizer_info_text),
             },
         ),
         (
@@ -534,9 +498,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Event info text'),
                 'editor_sample': _('Event info text'),
-                'evaluate': lambda op, order, ev: str(
-                    order.event.settings.event_info_text
-                ),
+                'evaluate': lambda op, order, ev: str(order.event.settings.event_info_text),
             },
         ),
         (
@@ -579,11 +541,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'label': _('Seat: Full name'),
                 'editor_sample': _('Ground floor, Row 3, Seat 4'),
                 'evaluate': lambda op, order, ev: str(
-                    op.seat
-                    if op.seat
-                    else _('General admission')
-                    if ev.seating_plan_id is not None
-                    else ''
+                    op.seat if op.seat else _('General admission') if ev.seating_plan_id is not None else ''
                 ),
             },
         ),
@@ -593,11 +551,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'label': _('Seat: zone'),
                 'editor_sample': _('Ground floor'),
                 'evaluate': lambda op, order, ev: str(
-                    op.seat.zone_name
-                    if op.seat
-                    else _('General admission')
-                    if ev.seating_plan_id is not None
-                    else ''
+                    op.seat.zone_name if op.seat else _('General admission') if ev.seating_plan_id is not None else ''
                 ),
             },
         ),
@@ -606,9 +560,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Seat: row'),
                 'editor_sample': '3',
-                'evaluate': lambda op, order, ev: str(
-                    op.seat.row_name if op.seat else ''
-                ),
+                'evaluate': lambda op, order, ev: str(op.seat.row_name if op.seat else ''),
             },
         ),
         (
@@ -616,9 +568,7 @@ DEFAULT_VARIABLES = OrderedDict(
             {
                 'label': _('Seat: seat number'),
                 'editor_sample': 4,
-                'evaluate': lambda op, order, ev: str(
-                    op.seat.seat_number if op.seat else ''
-                ),
+                'evaluate': lambda op, order, ev: str(op.seat.seat_number if op.seat else ''),
             },
         ),
     )
@@ -626,20 +576,14 @@ DEFAULT_VARIABLES = OrderedDict(
 DEFAULT_IMAGES = OrderedDict([])
 
 
-@receiver(
-    layout_image_variables, dispatch_uid='pretix_base_layout_image_variables_questions'
-)
+@receiver(layout_image_variables, dispatch_uid='pretix_base_layout_image_variables_questions')
 def images_from_questions(sender, *args, **kwargs):
     def get_answer(op, order, event, question_id, etag):
         a = None
         if op.addon_to:
             if 'answers' in getattr(op.addon_to, '_prefetched_objects_cache', {}):
                 try:
-                    a = [
-                        a
-                        for a in op.addon_to.answers.all()
-                        if a.question_id == question_id
-                    ][0]
+                    a = [a for a in op.addon_to.answers.all() if a.question_id == question_id][0]
                 except IndexError:
                     pass
             else:
@@ -657,8 +601,7 @@ def images_from_questions(sender, *args, **kwargs):
             not a
             or not a.file
             or not any(
-                a.file.name.lower().endswith(e)
-                for e in ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tif', '.tiff')
+                a.file.name.lower().endswith(e) for e in ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tif', '.tiff')
             )
         ):
             return None
@@ -679,20 +622,14 @@ def images_from_questions(sender, *args, **kwargs):
     return d
 
 
-@receiver(
-    layout_text_variables, dispatch_uid='pretix_base_layout_text_variables_questions'
-)
+@receiver(layout_text_variables, dispatch_uid='pretix_base_layout_text_variables_questions')
 def variables_from_questions(sender, *args, **kwargs):
     def get_answer(op, order, event, question_id):
         a = None
         if op.addon_to:
             if 'answers' in getattr(op.addon_to, '_prefetched_objects_cache', {}):
                 try:
-                    a = [
-                        a
-                        for a in op.addon_to.answers.all()
-                        if a.question_id == question_id
-                    ][0]
+                    a = [a for a in op.addon_to.answers.all() if a.question_id == question_id][0]
                 except IndexError:
                     pass
             else:
@@ -725,18 +662,12 @@ def variables_from_questions(sender, *args, **kwargs):
 
 def _get_attendee_name_part(key, op, order, ev):
     if isinstance(key, tuple):
-        return ' '.join(
-            p for p in [_get_attendee_name_part(c[0], op, order, ev) for c in key] if p
-        )
+        return ' '.join(p for p in [_get_attendee_name_part(c[0], op, order, ev) for c in key] if p)
     return op.attendee_name_parts.get(key, '')
 
 
 def _get_ia_name_part(key, op, order, ev):
-    return (
-        order.invoice_address.name_parts.get(key, '')
-        if getattr(order, 'invoice_address', None)
-        else ''
-    )
+    return order.invoice_address.name_parts.get(key, '') if getattr(order, 'invoice_address', None) else ''
 
 
 def get_images(event):
@@ -761,9 +692,7 @@ def get_variables(event):
     for i in range(2, len(scheme['fields']) + 1):
         for comb in itertools.combinations(scheme['fields'], i):
             v['attendee_name_%s' % ('_'.join(c[0] for c in comb))] = {
-                'label': _('Attendee name: {part}').format(
-                    part=' + '.join(str(c[1]) for c in comb)
-                ),
+                'label': _('Attendee name: {part}').format(part=' + '.join(str(c[1]) for c in comb)),
                 'editor_sample': ' '.join(str(scheme['sample'][c[0]]) for c in comb),
                 'evaluate': partial(_get_attendee_name_part, comb),
             }
@@ -800,37 +729,19 @@ class Renderer:
 
     @classmethod
     def _register_fonts(cls):
-        pdfmetrics.registerFont(
-            TTFont('Open Sans', finders.find('fonts/OpenSans-Regular.ttf'))
-        )
-        pdfmetrics.registerFont(
-            TTFont('Open Sans I', finders.find('fonts/OpenSans-Italic.ttf'))
-        )
-        pdfmetrics.registerFont(
-            TTFont('Open Sans B', finders.find('fonts/OpenSans-Bold.ttf'))
-        )
-        pdfmetrics.registerFont(
-            TTFont('Open Sans B I', finders.find('fonts/OpenSans-BoldItalic.ttf'))
-        )
+        pdfmetrics.registerFont(TTFont('Open Sans', finders.find('fonts/OpenSans-Regular.ttf')))
+        pdfmetrics.registerFont(TTFont('Open Sans I', finders.find('fonts/OpenSans-Italic.ttf')))
+        pdfmetrics.registerFont(TTFont('Open Sans B', finders.find('fonts/OpenSans-Bold.ttf')))
+        pdfmetrics.registerFont(TTFont('Open Sans B I', finders.find('fonts/OpenSans-BoldItalic.ttf')))
 
         for family, styles in get_fonts().items():
-            pdfmetrics.registerFont(
-                TTFont(family, finders.find(styles['regular']['truetype']))
-            )
+            pdfmetrics.registerFont(TTFont(family, finders.find(styles['regular']['truetype'])))
             if 'italic' in styles:
-                pdfmetrics.registerFont(
-                    TTFont(family + ' I', finders.find(styles['italic']['truetype']))
-                )
+                pdfmetrics.registerFont(TTFont(family + ' I', finders.find(styles['italic']['truetype'])))
             if 'bold' in styles:
-                pdfmetrics.registerFont(
-                    TTFont(family + ' B', finders.find(styles['bold']['truetype']))
-                )
+                pdfmetrics.registerFont(TTFont(family + ' B', finders.find(styles['bold']['truetype'])))
             if 'bolditalic' in styles:
-                pdfmetrics.registerFont(
-                    TTFont(
-                        family + ' B I', finders.find(styles['bolditalic']['truetype'])
-                    )
-                )
+                pdfmetrics.registerFont(TTFont(family + ' B I', finders.find(styles['bolditalic']['truetype'])))
 
     def _draw_poweredby(self, canvas: Canvas, op: OrderPosition, o: dict):
         content = o.get('content', 'dark')
@@ -956,9 +867,7 @@ class Renderer:
             fontSize=float(o['fontsize']),
             leading=float(o['fontsize']),
             autoLeading='max',
-            textColor=Color(
-                o['color'][0] / 255, o['color'][1] / 255, o['color'][2] / 255
-            ),
+            textColor=Color(o['color'][0] / 255, o['color'][1] / 255, o['color'][2] / 255),
             alignment=align_map[o['align']],
         )
         text = conditional_escape(
@@ -973,13 +882,9 @@ class Renderer:
         }
         reshaper = ArabicReshaper(configuration=configuration)
         try:
-            text = '<br/>'.join(
-                get_display(reshaper.reshape(l)) for l in text.split('<br/>')
-            )
+            text = '<br/>'.join(get_display(reshaper.reshape(l)) for l in text.split('<br/>'))
         except:
-            logger.exception(
-                'Reshaping/Bidi fixes failed on string {}'.format(repr(text))
-            )
+            logger.exception('Reshaping/Bidi fixes failed on string {}'.format(repr(text)))
 
         p = Paragraph(text, style=style)
         w, h = p.wrapOn(canvas, float(o['width']) * mm, 1000 * mm)
@@ -998,9 +903,7 @@ class Renderer:
             p.drawOn(canvas, 0, -h - ad[1])
         canvas.restoreState()
 
-    def draw_page(
-        self, canvas: Canvas, order: Order, op: OrderPosition, show_page=True
-    ):
+    def draw_page(self, canvas: Canvas, order: Order, op: OrderPosition, show_page=True):
         for o in self.layout:
             if o['type'] == 'barcodearea':
                 self._draw_barcodearea(canvas, op, o)
@@ -1011,9 +914,7 @@ class Renderer:
             elif o['type'] == 'poweredby':
                 self._draw_poweredby(canvas, op, o)
             if self.bg_pdf:
-                canvas.setPageSize(
-                    (self.bg_pdf.pages[0].mediabox[2], self.bg_pdf.pages[0].mediabox[3])
-                )
+                canvas.setPageSize((self.bg_pdf.pages[0].mediabox[2], self.bg_pdf.pages[0].mediabox[3]))
         if show_page:
             canvas.showPage()
 

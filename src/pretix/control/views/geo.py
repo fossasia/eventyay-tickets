@@ -38,9 +38,7 @@ class GeoCodeView(LoginRequiredMixin, View):
         gs = GlobalSettingsObject()
 
         r = requests.get(
-            'https://api.opencagedata.com/geocode/v1/json?q={}&key={}'.format(
-                quote(q), gs.settings.opencagedata_apikey
-            )
+            'https://api.opencagedata.com/geocode/v1/json?q={}&key={}'.format(quote(q), gs.settings.opencagedata_apikey)
         )
         r.raise_for_status()
         d = r.json()

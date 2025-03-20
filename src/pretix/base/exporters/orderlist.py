@@ -70,15 +70,11 @@ class OrderListExporter(MultiSheetListExporter):
         d = [
             (
                 'paid_only',
-                forms.BooleanField(
-                    label=_('Only paid orders'), initial=True, required=False
-                ),
+                forms.BooleanField(label=_('Only paid orders'), initial=True, required=False),
             ),
             (
                 'include_payment_amounts',
-                forms.BooleanField(
-                    label=_('Include payment amounts'), initial=False, required=False
-                ),
+                forms.BooleanField(label=_('Include payment amounts'), initial=False, required=False),
             ),
             (
                 'group_multiple_choice',
@@ -310,11 +306,7 @@ class OrderListExporter(MultiSheetListExporter):
             _('Company'),
             _('Name'),
         ]
-        name_scheme = (
-            PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
-            if not self.is_multievent
-            else None
-        )
+        name_scheme = PERSON_NAME_SCHEMES[self.event.settings.name_scheme] if not self.is_multievent else None
         if name_scheme and len(name_scheme['fields']) > 1:
             for k, label, w in name_scheme['fields']:
                 headers.append(label)
@@ -353,9 +345,7 @@ class OrderListExporter(MultiSheetListExporter):
 
         full_fee_sum_cache = {
             o['order__id']: o['grosssum']
-            for o in OrderFee.objects.values('tax_rate', 'order__id')
-            .order_by()
-            .annotate(grosssum=Sum('value'))
+            for o in OrderFee.objects.values('tax_rate', 'order__id').order_by().annotate(grosssum=Sum('value'))
         }
         fee_sum_cache = {
             (o['order__id'], o['tax_rate']): o
@@ -397,9 +387,7 @@ class OrderListExporter(MultiSheetListExporter):
 
         yield self.ProgressSetTotal(total=qs.count())
         for order in qs.order_by('datetime').iterator():
-            tz = pytz.timezone(
-                self.event_object_cache[order.event_id].settings.timezone
-            )
+            tz = pytz.timezone(self.event_object_cache[order.event_id].settings.timezone)
 
             row = [
                 self.event_object_cache[order.event_id].slug,
@@ -432,18 +420,11 @@ class OrderListExporter(MultiSheetListExporter):
                 ]
             except InvoiceAddress.DoesNotExist:
                 row += [''] * (
-                    9
-                    + (
-                        len(name_scheme['fields'])
-                        if name_scheme and len(name_scheme['fields']) > 1
-                        else 0
-                    )
+                    9 + (len(name_scheme['fields']) if name_scheme and len(name_scheme['fields']) > 1 else 0)
                 )
 
             row += [
-                order.payment_date.astimezone(tz).strftime('%Y-%m-%d')
-                if order.payment_date
-                else '',
+                order.payment_date.astimezone(tz).strftime('%Y-%m-%d') if order.payment_date else '',
                 full_fee_sum_cache.get(order.id) or Decimal('0.00'),
                 order.locale,
             ]
@@ -540,11 +521,7 @@ class OrderListExporter(MultiSheetListExporter):
             _('Company'),
             _('Invoice address name'),
         ]
-        name_scheme = (
-            PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
-            if not self.is_multievent
-            else None
-        )
+        name_scheme = PERSON_NAME_SCHEMES[self.event.settings.name_scheme] if not self.is_multievent else None
         if name_scheme and len(name_scheme['fields']) > 1:
             for k, label, w in name_scheme['fields']:
                 headers.append(_('Invoice address name') + ': ' + str(label))
@@ -599,12 +576,7 @@ class OrderListExporter(MultiSheetListExporter):
                 ]
             except InvoiceAddress.DoesNotExist:
                 row += [''] * (
-                    8
-                    + (
-                        len(name_scheme['fields'])
-                        if name_scheme and len(name_scheme['fields']) > 1
-                        else 0
-                    )
+                    8 + (len(name_scheme['fields']) if name_scheme and len(name_scheme['fields']) > 1 else 0)
                 )
             row.append(
                 ', '.join(
@@ -680,11 +652,7 @@ class OrderListExporter(MultiSheetListExporter):
             _('Tax value'),
             _('Attendee name'),
         ]
-        name_scheme = (
-            PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
-            if not self.is_multievent
-            else None
-        )
+        name_scheme = PERSON_NAME_SCHEMES[self.event.settings.name_scheme] if not self.is_multievent else None
         if name_scheme and len(name_scheme['fields']) > 1:
             for k, label, w in name_scheme['fields']:
                 headers.append(_('Attendee name') + ': ' + str(label))
@@ -744,20 +712,14 @@ class OrderListExporter(MultiSheetListExporter):
 
         yield headers
 
-        all_ids = list(
-            base_qs.order_by('order__datetime', 'positionid').values_list(
-                'pk', flat=True
-            )
-        )
+        all_ids = list(base_qs.order_by('order__datetime', 'positionid').values_list('pk', flat=True))
         yield self.ProgressSetTotal(total=len(all_ids))
         for ids in chunked_iterable(all_ids, 1000):
             ops = sorted(qs.filter(id__in=ids), key=lambda k: ids.index(k.pk))
 
             for op in ops:
                 order = op.order
-                tz = pytz.timezone(
-                    self.event_object_cache[order.event_id].settings.timezone
-                )
+                tz = pytz.timezone(self.event_object_cache[order.event_id].settings.timezone)
                 row = [
                     self.event_object_cache[order.event_id].slug,
                     order.code,
@@ -772,9 +734,9 @@ class OrderListExporter(MultiSheetListExporter):
                     if op.subevent:
                         row.append(op.subevent.name)
                         row.append(
-                            op.subevent.date_from.astimezone(
-                                self.event_object_cache[order.event_id].timezone
-                            ).strftime('%Y-%m-%d %H:%M:%S')
+                            op.subevent.date_from.astimezone(self.event_object_cache[order.event_id].timezone).strftime(
+                                '%Y-%m-%d %H:%M:%S'
+                            )
                         )
                         if op.subevent.date_to:
                             row.append(
@@ -838,19 +800,11 @@ class OrderListExporter(MultiSheetListExporter):
                     if q.type == Question.TYPE_CHOICE_MULTIPLE:
                         if form_data['group_multiple_choice']:
                             row.append(
-                                ', '.join(
-                                    str(o.answer)
-                                    for o in options[q.pk]
-                                    if o.pk in acache.get(q.pk, set())
-                                )
+                                ', '.join(str(o.answer) for o in options[q.pk] if o.pk in acache.get(q.pk, set()))
                             )
                         else:
                             for o in options[q.pk]:
-                                row.append(
-                                    _('Yes')
-                                    if o.pk in acache.get(q.pk, set())
-                                    else _('No')
-                                )
+                                row.append(_('Yes') if o.pk in acache.get(q.pk, set()) else _('No'))
                     else:
                         row.append(acache.get(q.pk, ''))
 
@@ -874,12 +828,7 @@ class OrderListExporter(MultiSheetListExporter):
                     ]
                 except InvoiceAddress.DoesNotExist:
                     row += [''] * (
-                        8
-                        + (
-                            len(name_scheme['fields'])
-                            if name_scheme and len(name_scheme['fields']) > 1
-                            else 0
-                        )
+                        8 + (len(name_scheme['fields']) if name_scheme and len(name_scheme['fields']) > 1 else 0)
                     )
                 row += [
                     order.sales_channel,
@@ -889,9 +838,7 @@ class OrderListExporter(MultiSheetListExporter):
                     ', '.join(
                         [
                             str(self.providers.get(p, p))
-                            for p in sorted(
-                                set((op.payment_providers or '').split(','))
-                            )
+                            for p in sorted(set((op.payment_providers or '').split(',')))
                             if p and p != 'free'
                         ]
                     )
@@ -1043,17 +990,9 @@ class QuotaListExporter(ListExporter):
             if has_subevents:
                 if quota.subevent:
                     row.append(quota.subevent.name)
-                    row.append(
-                        quota.subevent.date_from.astimezone(
-                            self.event.timezone
-                        ).strftime('%Y-%m-%d %H:%M:%S')
-                    )
+                    row.append(quota.subevent.date_from.astimezone(self.event.timezone).strftime('%Y-%m-%d %H:%M:%S'))
                     if quota.subevent.date_to:
-                        row.append(
-                            quota.subevent.date_to.astimezone(
-                                self.event.timezone
-                            ).strftime('%Y-%m-%d %H:%M:%S')
-                        )
+                        row.append(quota.subevent.date_to.astimezone(self.event.timezone).strftime('%Y-%m-%d %H:%M:%S'))
                     else:
                         row.append('')
                 else:
@@ -1085,9 +1024,7 @@ class GiftcardRedemptionListExporter(ListExporter):
             state=OrderRefund.REFUND_STATE_DONE,
         ).order_by('created')
 
-        objs = sorted(
-            list(payments) + list(refunds), key=lambda o: (o.order.code, o.created)
-        )
+        objs = sorted(list(payments) + list(refunds), key=lambda o: (o.order.code, o.created))
 
         headers = [
             _('Event slug'),
@@ -1170,9 +1107,7 @@ def generate_GiftCardListExporter(organizer):  # hackhack
 
         def iterate_list(self, form_data):
             s = (
-                GiftCardTransaction.objects.filter(
-                    card=OuterRef('pk'), datetime__lte=form_data['date']
-                )
+                GiftCardTransaction.objects.filter(card=OuterRef('pk'), datetime__lte=form_data['date'])
                 .order_by()
                 .values('card')
                 .annotate(s=Sum('value'))
@@ -1200,9 +1135,7 @@ def generate_GiftCardListExporter(organizer):  # hackhack
             if form_data.get('state') == 'empty':
                 qs = qs.filter(cached_value=0)
             elif form_data.get('state') == 'valid_value':
-                qs = qs.exclude(cached_value=0).filter(
-                    Q(expires__isnull=True) | Q(expires__gte=form_data['date'])
-                )
+                qs = qs.exclude(cached_value=0).filter(Q(expires__isnull=True) | Q(expires__gte=form_data['date']))
             elif form_data.get('state') == 'expired_value':
                 qs = qs.exclude(cached_value=0).filter(expires__lt=form_data['date'])
             elif form_data.get('state') == 'expired':
@@ -1237,9 +1170,7 @@ def generate_GiftCardListExporter(organizer):  # hackhack
                     obj.secret,
                     _('Yes') if obj.testmode else _('No'),
                     obj.issuance.astimezone(tz).date().strftime('%Y-%m-%d'),
-                    obj.expires.astimezone(tz).date().strftime('%Y-%m-%d')
-                    if obj.expires
-                    else '',
+                    obj.expires.astimezone(tz).date().strftime('%Y-%m-%d') if obj.expires else '',
                     obj.conditions or '',
                     obj.currency,
                     obj.cached_value,

@@ -27,16 +27,12 @@ class StyleTest(TestCase):
         regenerate_organizer_css.apply(args=(self.orga.pk,))
         self.orga.settings.flush()
         assert self.orga.settings.presale_css_file
-        with open(
-            os.path.join(settings.MEDIA_ROOT, self.orga.settings.presale_css_file), 'r'
-        ) as c:
+        with open(os.path.join(settings.MEDIA_ROOT, self.orga.settings.presale_css_file), 'r') as c:
             assert '#33c33c' in c.read()
 
         self.event.settings.flush()
         assert self.event.settings.presale_css_file
-        with open(
-            os.path.join(settings.MEDIA_ROOT, self.event.settings.presale_css_file), 'r'
-        ) as c:
+        with open(os.path.join(settings.MEDIA_ROOT, self.event.settings.presale_css_file), 'r') as c:
             assert '#33c33c' in c.read()
 
     def test_organizer_generate_css_only_for_inherited_events(self):
@@ -45,15 +41,11 @@ class StyleTest(TestCase):
         regenerate_organizer_css.apply(args=(self.orga.pk,))
         self.orga.settings.flush()
         assert self.orga.settings.presale_css_file
-        with open(
-            os.path.join(settings.MEDIA_ROOT, self.orga.settings.presale_css_file), 'r'
-        ) as c:
+        with open(os.path.join(settings.MEDIA_ROOT, self.orga.settings.presale_css_file), 'r') as c:
             assert '#33c33c' in c.read()
 
         self.event.settings.flush()
         assert self.event.settings.presale_css_file
-        with open(
-            os.path.join(settings.MEDIA_ROOT, self.event.settings.presale_css_file), 'r'
-        ) as c:
+        with open(os.path.join(settings.MEDIA_ROOT, self.event.settings.presale_css_file), 'r') as c:
             assert '#34c34c' not in c.read()
             assert '#33c33c' not in c.read()

@@ -28,15 +28,11 @@ def event_permission_required(permission):
                 # just a double check, should not ever happen
                 raise PermissionDenied()
 
-            allowed = request.user.has_event_permission(
-                request.organizer, request.event, permission, request=request
-            )
+            allowed = request.user.has_event_permission(request.organizer, request.event, permission, request=request)
             if allowed:
                 return function(request, *args, **kw)
 
-            raise PermissionDenied(
-                _('You do not have permission to view this content.')
-            )
+            raise PermissionDenied(_('You do not have permission to view this content.'))
 
         return wrapper
 
@@ -72,15 +68,11 @@ def organizer_permission_required(permission):
                 # just a double check, should not ever happen
                 raise PermissionDenied()
 
-            allowed = request.user.has_organizer_permission(
-                request.organizer, permission, request=request
-            )
+            allowed = request.user.has_organizer_permission(request.organizer, permission, request=request)
             if allowed:
                 return function(request, *args, **kw)
 
-            raise PermissionDenied(
-                _('You do not have permission to view this content.')
-            )
+            raise PermissionDenied(_('You do not have permission to view this content.'))
 
         return wrapper
 
@@ -114,14 +106,8 @@ def administrator_permission_required():
                 raise PermissionDenied()
             if not request.user.has_active_staff_session(request.session.session_key):
                 if request.user.is_staff:
-                    return redirect(
-                        reverse('control:user.sudo')
-                        + '?next='
-                        + quote(current_url(request))
-                    )
-                raise PermissionDenied(
-                    _('You do not have permission to view this content.')
-                )
+                    return redirect(reverse('control:user.sudo') + '?next=' + quote(current_url(request)))
+                raise PermissionDenied(_('You do not have permission to view this content.'))
             return function(request, *args, **kw)
 
         return wrapper
@@ -141,9 +127,7 @@ def staff_member_required():
                 # just a double check, should not ever happen
                 raise PermissionDenied()
             if not request.user.is_staff:
-                raise PermissionDenied(
-                    _('You do not have permission to view this content.')
-                )
+                raise PermissionDenied(_('You do not have permission to view this content.'))
             return function(request, *args, **kw)
 
         return wrapper

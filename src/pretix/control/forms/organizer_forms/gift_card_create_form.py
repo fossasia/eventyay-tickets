@@ -24,18 +24,13 @@ class GiftCardCreateForm(forms.ModelForm):
         secret = self.cleaned_data.get('secret')
         exists = (
             GiftCard.objects.filter(secret__iexact=secret)
-            .filter(
-                Q(issuer=self.organizer)
-                | Q(issuer__gift_card_collector_acceptance__collector=self.organizer)
-            )
+            .filter(Q(issuer=self.organizer) | Q(issuer__gift_card_collector_acceptance__collector=self.organizer))
             .exists()
         )
 
         if exists:
             raise ValidationError(
-                _(
-                    'A gift card with the same secret already exists in your or an affiliated organizer account.'
-                )
+                _('A gift card with the same secret already exists in your or an affiliated organizer account.')
             )
 
         return secret

@@ -29,21 +29,13 @@ def env():
     )
     event.settings.set('ticketoutput_testdummy__enabled', True)
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    item1 = Item.objects.create(
-        event=event, name='Ticket', default_price=23, admission=True
-    )
-    item2 = Item.objects.create(
-        event=event, name='Ticket', default_price=23, admission=True
-    )
+    item1 = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True)
+    item2 = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True)
 
     for i in range(5):
-        WaitingListEntry.objects.create(
-            event=event, item=item1, email='foo{}@bar.com'.format(i)
-        )
+        WaitingListEntry.objects.create(event=event, item=item1, email='foo{}@bar.com'.format(i))
     v = Voucher.objects.create(item=item1, event=event, block_quota=True, redeemed=1)
-    WaitingListEntry.objects.create(
-        event=event, item=item1, email='success@example.org', voucher=v
-    )
+    WaitingListEntry.objects.create(event=event, item=item1, email='success@example.org', voucher=v)
     v = Voucher.objects.create(
         item=item1,
         event=event,
@@ -51,9 +43,7 @@ def env():
         redeemed=0,
         valid_until=now() - timedelta(days=5),
     )
-    WaitingListEntry.objects.create(
-        event=event, item=item2, email='expired@example.org', voucher=v
-    )
+    WaitingListEntry.objects.create(event=event, item=item2, email='expired@example.org', voucher=v)
     v = Voucher.objects.create(
         item=item1,
         event=event,
@@ -61,9 +51,7 @@ def env():
         redeemed=0,
         valid_until=now() + timedelta(days=5),
     )
-    WaitingListEntry.objects.create(
-        event=event, item=item2, email='valid@example.org', voucher=v
-    )
+    WaitingListEntry.objects.create(event=event, item=item2, email='valid@example.org', voucher=v)
 
     t = Team.objects.create(organizer=o, can_view_orders=True, can_change_orders=True)
     t.members.add(user)

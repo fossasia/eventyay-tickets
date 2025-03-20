@@ -163,9 +163,7 @@ def device_client(client, device):
 def subevent(event, meta_prop):
     event.has_subevents = True
     event.save()
-    se = event.subevents.create(
-        name='Foobar', date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc)
-    )
+    se = event.subevents.create(name='Foobar', date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc))
 
     se.meta_values.create(property=meta_prop, value='Workshop')
     return se
@@ -176,9 +174,7 @@ def subevent(event, meta_prop):
 def subevent2(event2, meta_prop):
     event2.has_subevents = True
     event2.save()
-    se = event2.subevents.create(
-        name='Foobar', date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc)
-    )
+    se = event2.subevents.create(name='Foobar', date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc))
 
     se.meta_values.create(property=meta_prop, value='Workshop')
     return se

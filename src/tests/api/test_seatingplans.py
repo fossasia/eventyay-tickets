@@ -73,9 +73,7 @@ def test_plan_list(token_client, organizer, event, seatingplan):
     res = dict(TEST_PLAN_RES)
     res['id'] = seatingplan.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/seatingplans/'.format(organizer.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/seatingplans/'.format(organizer.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -84,9 +82,7 @@ def test_plan_list(token_client, organizer, event, seatingplan):
 def test_plan_detail(token_client, organizer, event, seatingplan):
     res = dict(TEST_PLAN_RES)
     res['id'] = seatingplan.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/seatingplans/{}/'.format(organizer.slug, seatingplan.pk)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/seatingplans/{}/'.format(organizer.slug, seatingplan.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -111,9 +107,7 @@ def test_plan_create(token_client, organizer, event):
 def test_plan_create_invalid_layout(token_client, organizer, event):
     res = copy.copy(TEST_PLAN_CREATE_PAYLOAD)
     res['layout'] = {'foo': 'bar'}
-    resp = token_client.post(
-        '/api/v1/organizers/{}/seatingplans/'.format(organizer.slug), res, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/seatingplans/'.format(organizer.slug), res, format='json')
     assert resp.status_code == 400
 
 

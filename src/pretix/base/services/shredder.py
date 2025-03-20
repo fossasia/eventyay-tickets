@@ -73,17 +73,10 @@ def shred(event: Event, fileid: str, confirm_code: str) -> None:
     try:
         cf = CachedFile.objects.get(pk=fileid)
     except CachedFile.DoesNotExist:
-        raise ShredError(
-            _(
-                'The download file could no longer be found on the server, please try to start again.'
-            )
-        )
+        raise ShredError(_('The download file could no longer be found on the server, please try to start again.'))
     with ZipFile(cf.file.file, 'r') as zipfile:
         indexdata = json.loads(zipfile.read('index.json').decode())
-    if (
-        indexdata['organizer'] != event.organizer.slug
-        or indexdata['event'] != event.slug
-    ):
+    if indexdata['organizer'] != event.organizer.slug or indexdata['event'] != event.slug:
         raise ShredError(_('This file is from a different event.'))
     shredders = []
     for s in indexdata['shredders']:
@@ -95,9 +88,7 @@ def shred(event: Event, fileid: str, confirm_code: str) -> None:
         if indexdata['confirm_code'] != confirm_code:
             raise ShredError(_('The confirm code you entered was incorrect.'))
     if event.logentry_set.filter(datetime__gte=parse(indexdata['time'])):
-        raise ShredError(
-            _('Something happened in your event after the export, please try again.')
-        )
+        raise ShredError(_('Something happened in your event after the export, please try again.'))
 
     for shredder in shredders:
         shredder.shred_data()

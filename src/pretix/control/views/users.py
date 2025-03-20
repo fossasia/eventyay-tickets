@@ -69,9 +69,7 @@ class UserListView(AdministratorPermissionRequiredMixin, ListView):
         return UserFilterForm(data=self.request.GET)
 
 
-class UserEditView(
-    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, UpdateView
-):
+class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, UpdateView):
     template_name = 'pretixcontrol/admin/users/form.html'
     context_object_name = 'user'
     form_class = UserEditForm
@@ -84,9 +82,7 @@ class UserEditView(
         ctx['teams'] = self.object.teams.select_related('organizer')
         b = get_auth_backends()
         ctx['backend'] = (
-            b[self.object.auth_backend].verbose_name
-            if self.object.auth_backend in b
-            else self.object.auth_backend
+            b[self.object.auth_backend].verbose_name if self.object.auth_backend in b else self.object.auth_backend
         )
         return ctx
 
@@ -107,25 +103,15 @@ class UserEditView(
         sup = super().form_valid(form)
 
         if 'require_2fa' in form.changed_data and form.cleaned_data['require_2fa']:
-            self.object.log_action(
-                'pretix.user.settings.2fa.enabled', user=self.request.user
-            )
-        elif (
-            'require_2fa' in form.changed_data and not form.cleaned_data['require_2fa']
-        ):
-            self.object.log_action(
-                'pretix.user.settings.2fa.disabled', user=self.request.user
-            )
-        self.object.log_action(
-            'pretix.user.settings.changed', user=self.request.user, data=data
-        )
+            self.object.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
+        elif 'require_2fa' in form.changed_data and not form.cleaned_data['require_2fa']:
+            self.object.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
+        self.object.log_action('pretix.user.settings.changed', user=self.request.user, data=data)
 
         return sup
 
 
-class UserResetView(
-    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View
-):
+class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
@@ -140,12 +126,8 @@ class UserResetView(
             )
             return redirect(self.get_success_url())
 
-        self.object.log_action(
-            'pretix.control.auth.user.forgot_password.mail_sent', user=request.user
-        )
-        messages.success(
-            request, _('We sent out an e-mail containing further instructions.')
-        )
+        self.object.log_action('pretix.control.auth.user.forgot_password.mail_sent', user=request.user)
+        messages.success(request, _('We sent out an e-mail containing further instructions.'))
         return redirect(self.get_success_url())
 
     def get_success_url(self):
@@ -172,9 +154,7 @@ class UserAnonymizeView(
         self.object.is_active = False
         self.object.notifications_send = False
         self.object.save()
-        for le in self.object.all_logentries.filter(
-            action_type='pretix.user.settings.changed'
-        ):
+        for le in self.object.all_logentries.filter(action_type='pretix.user.settings.changed'):
             d = le.parsed_data
             if 'email' in d:
                 d['email'] = '█'
@@ -187,9 +167,7 @@ class UserAnonymizeView(
         return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
 
-class UserImpersonateView(
-    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View
-):
+class UserImpersonateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
@@ -260,9 +238,7 @@ class UserImpersonateStopView(LoginRequiredMixin, View):
         return redirect(reverse('control:index'))
 
 
-class UserCreateView(
-    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, CreateView
-):
+class UserCreateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, CreateView):
     template_name = 'pretixcontrol/admin/users/create.html'
     context_object_name = 'user'
     form_class = UserEditForm

@@ -19,9 +19,7 @@ class ProcessForm(forms.Form):
             ('pending', _('Create orders as pending and still require payment')),
         ),
     )
-    testmode = forms.BooleanField(
-        label=_('Create orders as test mode orders'), required=False
-    )
+    testmode = forms.BooleanField(label=_('Create orders as test mode orders'), required=False)
 
     def __init__(self, *args, **kwargs):
         headers = kwargs.pop('headers')
@@ -31,10 +29,7 @@ class ProcessForm(forms.Form):
         kwargs['initial'] = initital
         super().__init__(*args, **kwargs)
 
-        header_choices = [
-            ('csv:{}'.format(h), _('CSV column: "{name}"').format(name=h))
-            for h in headers
-        ]
+        header_choices = [('csv:{}'.format(h), _('CSV column: "{name}"').format(name=h)) for h in headers]
 
         for c in get_all_columns(self.event):
             choices = []

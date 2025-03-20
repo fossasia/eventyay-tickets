@@ -43,9 +43,7 @@ def i18n_uns(v):
         return LazyI18nString(str(v))
 
 
-settings_hierarkey.add_type(
-    LazyI18nString, serialize=lambda s: json.dumps(s.data), unserialize=i18n_uns
-)
+settings_hierarkey.add_type(LazyI18nString, serialize=lambda s: json.dumps(s.data), unserialize=i18n_uns)
 settings_hierarkey.add_type(
     LazyI18nStringList,
     serialize=operator.methodcaller('serialize'),
@@ -104,9 +102,7 @@ class SettingsSandbox:
         del self._event.settings[self._convert_key(key)]
 
     def get(self, key: str, default: Any = None, as_type: type = str):
-        return self._event.settings.get(
-            self._convert_key(key), default=default, as_type=as_type
-        )
+        return self._event.settings.get(self._convert_key(key), default=default, as_type=as_type)
 
     def set(self, key: str, value: Any):
         self._event.settings.set(self._convert_key(key), value)
@@ -119,46 +115,20 @@ def validate_event_settings(event, settings_dict):
     default_locale = settings_dict.get('locale')
     locales = settings_dict.get('locales', [])
     if default_locale and default_locale not in locales:
+        raise ValidationError({'locale': _('Your default locale must also be enabled for your event (see box above).')})
+    if settings_dict.get('attendee_names_required') and not settings_dict.get('attendee_names_asked'):
         raise ValidationError(
-            {
-                'locale': _(
-                    'Your default locale must also be enabled for your event (see box above).'
-                )
-            }
+            {'attendee_names_required': _('You cannot require specifying attendee names if you do not ask for them.')}
         )
-    if settings_dict.get('attendee_names_required') and not settings_dict.get(
-        'attendee_names_asked'
-    ):
+    if settings_dict.get('attendee_emails_required') and not settings_dict.get('attendee_emails_asked'):
         raise ValidationError(
-            {
-                'attendee_names_required': _(
-                    'You cannot require specifying attendee names if you do not ask for them.'
-                )
-            }
+            {'attendee_emails_required': _('You have to ask for attendee emails if you want to make them required.')}
         )
-    if settings_dict.get('attendee_emails_required') and not settings_dict.get(
-        'attendee_emails_asked'
-    ):
+    if settings_dict.get('invoice_address_required') and not settings_dict.get('invoice_address_asked'):
         raise ValidationError(
-            {
-                'attendee_emails_required': _(
-                    'You have to ask for attendee emails if you want to make them required.'
-                )
-            }
+            {'invoice_address_required': _('You have to ask for invoice addresses if you want to make them required.')}
         )
-    if settings_dict.get('invoice_address_required') and not settings_dict.get(
-        'invoice_address_asked'
-    ):
-        raise ValidationError(
-            {
-                'invoice_address_required': _(
-                    'You have to ask for invoice addresses if you want to make them required.'
-                )
-            }
-        )
-    if settings_dict.get('invoice_address_company_required') and not settings_dict.get(
-        'invoice_address_required'
-    ):
+    if settings_dict.get('invoice_address_company_required') and not settings_dict.get('invoice_address_required'):
         raise ValidationError(
             {
                 'invoice_address_company_required': _(
@@ -171,11 +141,7 @@ def validate_event_settings(event, settings_dict):
     if payment_term_last and event.presale_end:
         if payment_term_last.date(event) < event.presale_end.date():
             raise ValidationError(
-                {
-                    'payment_term_last': _(
-                        'The last payment date cannot be before the end of presale.'
-                    )
-                }
+                {'payment_term_last': _('The last payment date cannot be before the end of presale.')}
             )
 
     if isinstance(event, Event):

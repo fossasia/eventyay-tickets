@@ -42,9 +42,7 @@ logger = logging.getLogger(__name__)
 
 @transaction.atomic
 def build_invoice(invoice: Invoice) -> Invoice:
-    invoice.locale = invoice.event.settings.get(
-        'invoice_language', invoice.event.settings.locale
-    )
+    invoice.locale = invoice.event.settings.get('invoice_language', invoice.event.settings.locale)
     if invoice.locale == '__user__':
         invoice.locale = invoice.order.locale or invoice.event.settings.locale
 
@@ -52,55 +50,27 @@ def build_invoice(invoice: Invoice) -> Invoice:
 
     with language(invoice.locale, invoice.event.settings.region):
         invoice.invoice_from = invoice.event.settings.get('invoice_address_from')
-        invoice.invoice_from_name = invoice.event.settings.get(
-            'invoice_address_from_name'
-        )
-        invoice.invoice_from_zipcode = invoice.event.settings.get(
-            'invoice_address_from_zipcode'
-        )
-        invoice.invoice_from_city = invoice.event.settings.get(
-            'invoice_address_from_city'
-        )
-        invoice.invoice_from_country = invoice.event.settings.get(
-            'invoice_address_from_country'
-        )
-        invoice.invoice_from_tax_id = invoice.event.settings.get(
-            'invoice_address_from_tax_id'
-        )
-        invoice.invoice_from_vat_id = invoice.event.settings.get(
-            'invoice_address_from_vat_id'
-        )
+        invoice.invoice_from_name = invoice.event.settings.get('invoice_address_from_name')
+        invoice.invoice_from_zipcode = invoice.event.settings.get('invoice_address_from_zipcode')
+        invoice.invoice_from_city = invoice.event.settings.get('invoice_address_from_city')
+        invoice.invoice_from_country = invoice.event.settings.get('invoice_address_from_country')
+        invoice.invoice_from_tax_id = invoice.event.settings.get('invoice_address_from_tax_id')
+        invoice.invoice_from_vat_id = invoice.event.settings.get('invoice_address_from_vat_id')
 
-        introductory = invoice.event.settings.get(
-            'invoice_introductory_text', as_type=LazyI18nString
-        )
-        additional = invoice.event.settings.get(
-            'invoice_additional_text', as_type=LazyI18nString
-        )
-        footer = invoice.event.settings.get(
-            'invoice_footer_text', as_type=LazyI18nString
-        )
+        introductory = invoice.event.settings.get('invoice_introductory_text', as_type=LazyI18nString)
+        additional = invoice.event.settings.get('invoice_additional_text', as_type=LazyI18nString)
+        footer = invoice.event.settings.get('invoice_footer_text', as_type=LazyI18nString)
         if lp and lp.payment_provider:
-            if (
-                'payment'
-                in inspect.signature(lp.payment_provider.render_invoice_text).parameters
-            ):
-                payment = str(
-                    lp.payment_provider.render_invoice_text(invoice.order, lp)
-                )
+            if 'payment' in inspect.signature(lp.payment_provider.render_invoice_text).parameters:
+                payment = str(lp.payment_provider.render_invoice_text(invoice.order, lp))
             else:
                 payment = str(lp.payment_provider.render_invoice_text(invoice.order))
         else:
             payment = ''
-        if (
-            invoice.event.settings.invoice_include_expire_date
-            and invoice.order.status == Order.STATUS_PENDING
-        ):
+        if invoice.event.settings.invoice_include_expire_date and invoice.order.status == Order.STATUS_PENDING:
             if payment:
                 payment += '<br />'
-            payment += pgettext(
-                'invoice', 'Please complete your payment before {expire_date}.'
-            ).format(
+            payment += pgettext('invoice', 'Please complete your payment before {expire_date}.').format(
                 expire_date=date_format(invoice.order.expires, 'SHORT_DATE_FORMAT')
             )
 
@@ -140,9 +110,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
             invoice.invoice_to_beneficiary = ia.beneficiary
 
             if ia.vat_id:
-                invoice.invoice_to += (
-                    '\n' + pgettext('invoice', 'VAT-ID: %s') % ia.vat_id
-                )
+                invoice.invoice_to += '\n' + pgettext('invoice', 'VAT-ID: %s') % ia.vat_id
                 invoice.invoice_to_vat_id = ia.vat_id
 
             cc = str(ia.country)
@@ -181,9 +149,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
         invoice.lines.all().delete()
 
         positions = list(
-            invoice.order.positions.select_related(
-                'addon_to', 'item', 'tax_rule', 'subevent', 'variation'
-            )
+            invoice.order.positions.select_related('addon_to', 'item', 'tax_rule', 'subevent', 'variation')
             .annotate(addon_c=Count('addons'))
             .prefetch_related('answers', 'answers__question')
             .order_by('positionid', 'id')
@@ -195,11 +161,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
 
         tax_texts = []
         for i, p in enumerate(positions):
-            if (
-                not invoice.event.settings.invoice_include_free
-                and p.price == Decimal('0.00')
-                and not p.addon_c
-            ):
+            if not invoice.event.settings.invoice_include_free and p.price == Decimal('0.00') and not p.addon_c:
                 continue
 
             desc = str(p.item.name)
@@ -208,9 +170,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
             if p.addon_to_id:
                 desc = '  + ' + desc
             if invoice.event.settings.invoice_attendee_name and p.attendee_name:
-                desc += '<br />' + pgettext('invoice', 'Attendee: {name}').format(
-                    name=p.attendee_name
-                )
+                desc += '<br />' + pgettext('invoice', 'Attendee: {name}').format(name=p.attendee_name)
             for recv, resp in invoice_line_text.send(sender=invoice.event, position=p):
                 if resp:
                     desc += '<br/>' + resp
@@ -235,25 +195,14 @@ def build_invoice(invoice: Invoice) -> Invoice:
                 subevent=p.subevent,
                 item=p.item,
                 variation=p.variation,
-                attendee_name=p.attendee_name
-                if invoice.event.settings.invoice_attendee_name
-                else None,
-                event_date_from=p.subevent.date_from
-                if invoice.event.has_subevents
-                else invoice.event.date_from,
-                event_date_to=p.subevent.date_to
-                if invoice.event.has_subevents
-                else invoice.event.date_to,
+                attendee_name=p.attendee_name if invoice.event.settings.invoice_attendee_name else None,
+                event_date_from=p.subevent.date_from if invoice.event.has_subevents else invoice.event.date_from,
+                event_date_to=p.subevent.date_to if invoice.event.has_subevents else invoice.event.date_to,
                 tax_rate=p.tax_rate,
                 tax_name=p.tax_rule.name if p.tax_rule else '',
             )
 
-            if (
-                p.tax_rule
-                and p.tax_rule.is_reverse_charge(ia)
-                and p.price
-                and not p.tax_value
-            ):
+            if p.tax_rule and p.tax_rule.is_reverse_charge(ia) and p.price and not p.tax_value:
                 reverse_charge = True
 
             if p.tax_rule:
@@ -274,23 +223,14 @@ def build_invoice(invoice: Invoice) -> Invoice:
                 invoice=invoice,
                 description=fee_title,
                 gross_value=fee.value,
-                event_date_from=None
-                if invoice.event.has_subevents
-                else invoice.event.date_from,
-                event_date_to=None
-                if invoice.event.has_subevents
-                else invoice.event.date_to,
+                event_date_from=None if invoice.event.has_subevents else invoice.event.date_from,
+                event_date_to=None if invoice.event.has_subevents else invoice.event.date_to,
                 tax_value=fee.tax_value,
                 tax_rate=fee.tax_rate,
                 tax_name=fee.tax_rule.name if fee.tax_rule else '',
             )
 
-            if (
-                fee.tax_rule
-                and fee.tax_rule.is_reverse_charge(ia)
-                and fee.value
-                and not fee.tax_value
-            ):
+            if fee.tax_rule and fee.tax_rule.is_reverse_charge(ia) and fee.value and not fee.tax_value:
                 reverse_charge = True
 
             if fee.tax_rule:
@@ -333,24 +273,12 @@ def generate_cancellation(invoice: Invoice, trigger_pdf=True):
     cancellation.file = None
     with language(invoice.locale, invoice.event.settings.region):
         cancellation.invoice_from = invoice.event.settings.get('invoice_address_from')
-        cancellation.invoice_from_name = invoice.event.settings.get(
-            'invoice_address_from_name'
-        )
-        cancellation.invoice_from_zipcode = invoice.event.settings.get(
-            'invoice_address_from_zipcode'
-        )
-        cancellation.invoice_from_city = invoice.event.settings.get(
-            'invoice_address_from_city'
-        )
-        cancellation.invoice_from_country = invoice.event.settings.get(
-            'invoice_address_from_country'
-        )
-        cancellation.invoice_from_tax_id = invoice.event.settings.get(
-            'invoice_address_from_tax_id'
-        )
-        cancellation.invoice_from_vat_id = invoice.event.settings.get(
-            'invoice_address_from_vat_id'
-        )
+        cancellation.invoice_from_name = invoice.event.settings.get('invoice_address_from_name')
+        cancellation.invoice_from_zipcode = invoice.event.settings.get('invoice_address_from_zipcode')
+        cancellation.invoice_from_city = invoice.event.settings.get('invoice_address_from_city')
+        cancellation.invoice_from_country = invoice.event.settings.get('invoice_address_from_country')
+        cancellation.invoice_from_tax_id = invoice.event.settings.get('invoice_address_from_tax_id')
+        cancellation.invoice_from_vat_id = invoice.event.settings.get('invoice_address_from_vat_id')
     cancellation.save()
 
     cancellation = build_cancellation(cancellation)
@@ -407,8 +335,7 @@ def invoice_qualified(order: Order):
     if (
         order.total == Decimal('0.00')
         or order.require_approval
-        or order.sales_channel
-        not in order.event.settings.get('invoice_generate_sales_channels')
+        or order.sales_channel not in order.event.settings.get('invoice_generate_sales_channels')
     ):
         return False
     return True
@@ -448,31 +375,15 @@ def build_preview_invoice_pdf(event):
             organizer=event.organizer,
         )
         invoice.invoice_from = event.settings.get('invoice_address_from')
-        invoice.invoice_from_name = invoice.event.settings.get(
-            'invoice_address_from_name'
-        )
-        invoice.invoice_from_zipcode = invoice.event.settings.get(
-            'invoice_address_from_zipcode'
-        )
-        invoice.invoice_from_city = invoice.event.settings.get(
-            'invoice_address_from_city'
-        )
-        invoice.invoice_from_country = invoice.event.settings.get(
-            'invoice_address_from_country'
-        )
-        invoice.invoice_from_tax_id = invoice.event.settings.get(
-            'invoice_address_from_tax_id'
-        )
-        invoice.invoice_from_vat_id = invoice.event.settings.get(
-            'invoice_address_from_vat_id'
-        )
+        invoice.invoice_from_name = invoice.event.settings.get('invoice_address_from_name')
+        invoice.invoice_from_zipcode = invoice.event.settings.get('invoice_address_from_zipcode')
+        invoice.invoice_from_city = invoice.event.settings.get('invoice_address_from_city')
+        invoice.invoice_from_country = invoice.event.settings.get('invoice_address_from_country')
+        invoice.invoice_from_tax_id = invoice.event.settings.get('invoice_address_from_tax_id')
+        invoice.invoice_from_vat_id = invoice.event.settings.get('invoice_address_from_vat_id')
 
-        introductory = event.settings.get(
-            'invoice_introductory_text', as_type=LazyI18nString
-        )
-        additional = event.settings.get(
-            'invoice_additional_text', as_type=LazyI18nString
-        )
+        introductory = event.settings.get('invoice_introductory_text', as_type=LazyI18nString)
+        additional = event.settings.get('invoice_additional_text', as_type=LazyI18nString)
         footer = event.settings.get('invoice_footer_text', as_type=LazyI18nString)
         payment = _('A payment provider specific text might appear here.')
 

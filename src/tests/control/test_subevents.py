@@ -156,18 +156,12 @@ class SubEventsTest(SoupTest):
             assert se.checkinlist_set.count() == 1
 
     def test_delete(self):
-        doc = self.get_doc(
-            '/control/event/ccc/30c3/subevents/%d/delete' % self.subevent1.pk
-        )
+        doc = self.get_doc('/control/event/ccc/30c3/subevents/%d/delete' % self.subevent1.pk)
         assert doc.select('button')
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/%d/delete' % self.subevent1.pk, {}
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/%d/delete' % self.subevent1.pk, {})
         assert doc.select('.alert-success')
         # deleting the second event
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/%d/delete' % self.subevent2.pk, {}
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/%d/delete' % self.subevent2.pk, {})
         assert doc.select('.alert-success')
         with scopes_disabled():
             assert not SubEvent.objects.filter(pk=self.subevent2.pk).exists()
@@ -284,9 +278,7 @@ class SubEventsTest(SoupTest):
         with scopes_disabled():
             assert ses[0].quotas.count() == 1
             assert list(ses[0].quotas.first().items.all()) == [self.ticket]
-            assert (
-                SubEventItem.objects.get(subevent=ses[0], item=self.ticket).price == 16
-            )
+            assert SubEventItem.objects.get(subevent=ses[0], item=self.ticket).price == 16
             assert ses[0].checkinlist_set.count() == 1
 
         assert str(ses[1].name) == 'Foo'
@@ -297,9 +289,7 @@ class SubEventsTest(SoupTest):
         with scopes_disabled():
             assert ses[1].quotas.count() == 1
             assert list(ses[1].quotas.first().items.all()) == [self.ticket]
-            assert (
-                SubEventItem.objects.get(subevent=ses[0], item=self.ticket).price == 16
-            )
+            assert SubEventItem.objects.get(subevent=ses[0], item=self.ticket).price == 16
             assert ses[1].checkinlist_set.count() == 1
 
         assert ses[-1].date_from.isoformat() == '2027-04-03T12:36:31+00:00'
@@ -744,9 +734,7 @@ class SubEventsTest(SoupTest):
                 'bulkedit-name_0': 'SEFOO',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             assert str(self.event1.subevents.get(pk=self.subevent1.pk).name) == 'SEFOO'
@@ -768,9 +756,7 @@ class SubEventsTest(SoupTest):
                 'bulkedit-name_0': 'SEFOO',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             assert str(self.event1.subevents.get(pk=self.subevent1.pk).name) == 'SE1'
@@ -801,9 +787,7 @@ class SubEventsTest(SoupTest):
                 'prop-{}-value'.format(prop2.pk): '',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             assert self.event1.subevents.get(pk=self.subevent1.pk).meta_data == {
@@ -817,13 +801,9 @@ class SubEventsTest(SoupTest):
 
     def test_edit_bulk_day_both_same_before(self):
         with scopes_disabled():
-            self.subevent1.date_from = datetime.datetime(
-                2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent1.date_from = datetime.datetime(2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent1.save()
-            self.subevent2.date_from = datetime.datetime(
-                2013, 12, 26, 11, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent2.date_from = datetime.datetime(2013, 12, 26, 11, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent2.save()
 
         doc = self.post_doc(
@@ -841,29 +821,19 @@ class SubEventsTest(SoupTest):
                 'bulkedit-date_from_day': '2013-12-27',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             self.subevent1.refresh_from_db()
             self.subevent2.refresh_from_db()
-            assert self.subevent1.date_from == datetime.datetime(
-                2013, 12, 27, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
-            assert self.subevent2.date_from == datetime.datetime(
-                2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            assert self.subevent1.date_from == datetime.datetime(2013, 12, 27, 9, 0, 0, tzinfo=datetime.timezone.utc)
+            assert self.subevent2.date_from == datetime.datetime(2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc)
 
     def test_edit_bulk_day_both_different_before(self):
         with scopes_disabled():
-            self.subevent1.date_from = datetime.datetime(
-                2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent1.date_from = datetime.datetime(2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent1.save()
-            self.subevent2.date_from = datetime.datetime(
-                2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent2.date_from = datetime.datetime(2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent2.save()
 
         doc = self.post_doc(
@@ -881,19 +851,13 @@ class SubEventsTest(SoupTest):
                 'bulkedit-date_from_day': '2013-12-27',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             self.subevent1.refresh_from_db()
             self.subevent2.refresh_from_db()
-            assert self.subevent1.date_from == datetime.datetime(
-                2013, 12, 27, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
-            assert self.subevent2.date_from == datetime.datetime(
-                2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            assert self.subevent1.date_from == datetime.datetime(2013, 12, 27, 9, 0, 0, tzinfo=datetime.timezone.utc)
+            assert self.subevent2.date_from == datetime.datetime(2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc)
 
     def test_edit_bulk_day_unset_before(self):
         doc = self.post_doc(
@@ -911,29 +875,19 @@ class SubEventsTest(SoupTest):
                 'bulkedit-date_to_day': '2013-12-27',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             self.subevent1.refresh_from_db()
             self.subevent2.refresh_from_db()
-            assert self.subevent1.date_to == datetime.datetime(
-                2013, 12, 27, 0, 0, 0, tzinfo=datetime.timezone.utc
-            )
-            assert self.subevent2.date_to == datetime.datetime(
-                2013, 12, 27, 0, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            assert self.subevent1.date_to == datetime.datetime(2013, 12, 27, 0, 0, 0, tzinfo=datetime.timezone.utc)
+            assert self.subevent2.date_to == datetime.datetime(2013, 12, 27, 0, 0, 0, tzinfo=datetime.timezone.utc)
 
     def test_edit_bulk_day_unset(self):
         with scopes_disabled():
-            self.subevent1.date_to = datetime.datetime(
-                2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent1.date_to = datetime.datetime(2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent1.save()
-            self.subevent2.date_to = datetime.datetime(
-                2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent2.date_to = datetime.datetime(2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent2.save()
 
         doc = self.post_doc(
@@ -950,9 +904,7 @@ class SubEventsTest(SoupTest):
                 '_bulk': ['bulkeditdate_to_day'],
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             self.subevent1.refresh_from_db()
@@ -962,13 +914,9 @@ class SubEventsTest(SoupTest):
 
     def test_edit_bulk_time_both_same_before(self):
         with scopes_disabled():
-            self.subevent1.date_to = datetime.datetime(
-                2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent1.date_to = datetime.datetime(2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent1.save()
-            self.subevent2.date_to = datetime.datetime(
-                2013, 12, 27, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent2.date_to = datetime.datetime(2013, 12, 27, 9, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent2.save()
 
         doc = self.post_doc(
@@ -986,29 +934,19 @@ class SubEventsTest(SoupTest):
                 'bulkedit-date_to_time': '10:00:00',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             self.subevent1.refresh_from_db()
             self.subevent2.refresh_from_db()
-            assert self.subevent1.date_to == datetime.datetime(
-                2013, 12, 26, 10, 0, 0, tzinfo=datetime.timezone.utc
-            )
-            assert self.subevent2.date_to == datetime.datetime(
-                2013, 12, 27, 10, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            assert self.subevent1.date_to == datetime.datetime(2013, 12, 26, 10, 0, 0, tzinfo=datetime.timezone.utc)
+            assert self.subevent2.date_to == datetime.datetime(2013, 12, 27, 10, 0, 0, tzinfo=datetime.timezone.utc)
 
     def test_edit_bulk_time_both_different_before(self):
         with scopes_disabled():
-            self.subevent1.date_to = datetime.datetime(
-                2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent1.date_to = datetime.datetime(2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent1.save()
-            self.subevent2.date_to = datetime.datetime(
-                2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent2.date_to = datetime.datetime(2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent2.save()
 
         doc = self.post_doc(
@@ -1026,29 +964,19 @@ class SubEventsTest(SoupTest):
                 'bulkedit-date_to_time': '10:00:00',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             self.subevent1.refresh_from_db()
             self.subevent2.refresh_from_db()
-            assert self.subevent1.date_to == datetime.datetime(
-                2013, 12, 26, 10, 0, 0, tzinfo=datetime.timezone.utc
-            )
-            assert self.subevent2.date_to == datetime.datetime(
-                2013, 12, 27, 10, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            assert self.subevent1.date_to == datetime.datetime(2013, 12, 26, 10, 0, 0, tzinfo=datetime.timezone.utc)
+            assert self.subevent2.date_to == datetime.datetime(2013, 12, 27, 10, 0, 0, tzinfo=datetime.timezone.utc)
 
     def test_edit_bulk_time_unset_before(self):
         with scopes_disabled():
-            self.subevent1.date_from = datetime.datetime(
-                2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent1.date_from = datetime.datetime(2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent1.save()
-            self.subevent2.date_from = datetime.datetime(
-                2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            self.subevent2.date_from = datetime.datetime(2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc)
             self.subevent2.save()
 
         doc = self.post_doc(
@@ -1066,27 +994,17 @@ class SubEventsTest(SoupTest):
                 'bulkedit-date_to_time': '17:00:00',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             self.subevent1.refresh_from_db()
             self.subevent2.refresh_from_db()
-            assert self.subevent1.date_to == datetime.datetime(
-                2013, 12, 26, 17, 0, 0, tzinfo=datetime.timezone.utc
-            )
-            assert self.subevent2.date_to == datetime.datetime(
-                2013, 12, 27, 17, 0, 0, tzinfo=datetime.timezone.utc
-            )
+            assert self.subevent1.date_to == datetime.datetime(2013, 12, 26, 17, 0, 0, tzinfo=datetime.timezone.utc)
+            assert self.subevent2.date_to == datetime.datetime(2013, 12, 27, 17, 0, 0, tzinfo=datetime.timezone.utc)
 
     def test_edit_bulk_price(self):
-        sei1 = SubEventItem.objects.create(
-            subevent=self.subevent1, item=self.ticket, price=Decimal('4.00')
-        )
-        sei2 = SubEventItem.objects.create(
-            subevent=self.subevent2, item=self.ticket, price=Decimal('4.00')
-        )
+        sei1 = SubEventItem.objects.create(subevent=self.subevent1, item=self.ticket, price=Decimal('4.00'))
+        sei2 = SubEventItem.objects.create(subevent=self.subevent2, item=self.ticket, price=Decimal('4.00'))
         doc = self.post_doc(
             '/control/event/ccc/30c3/subevents/bulk_edit',
             {
@@ -1102,9 +1020,7 @@ class SubEventsTest(SoupTest):
                 'item-{}-price'.format(self.ticket.id): '5.00',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             sei1.refresh_from_db()
@@ -1136,9 +1052,7 @@ class SubEventsTest(SoupTest):
                 'quotas-1-itemvars': str(self.ticket.pk),
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             for se in [self.subevent1, self.subevent2]:
@@ -1166,9 +1080,7 @@ class SubEventsTest(SoupTest):
                 'quotas-1-size': '50',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             for se in [self.subevent1, self.subevent2]:
@@ -1193,9 +1105,7 @@ class SubEventsTest(SoupTest):
                 'quotas-1-DELETE': 'on',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             for se in [self.subevent1, self.subevent2]:
@@ -1219,9 +1129,7 @@ class SubEventsTest(SoupTest):
                 '_bulk': ['_invalid_'],
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             assert self.subevent1.quotas.get().size == 20
@@ -1239,9 +1147,7 @@ class SubEventsTest(SoupTest):
                 'quotas-0-itemvars': str(self.ticket.pk),
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             assert self.subevent1.quotas.get().size == 100
@@ -1269,9 +1175,7 @@ class SubEventsTest(SoupTest):
                 'checkinlist_set-1-limit_products': str(self.ticket.pk),
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             for se in [self.subevent1, self.subevent2]:
@@ -1294,9 +1198,7 @@ class SubEventsTest(SoupTest):
                 'checkinlist_set-1-DELETE': 'on',
             }
         )
-        doc = self.post_doc(
-            '/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True
-        )
+        doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
         assert doc.select('.alert-success')
         with scopes_disabled():
             for se in [self.subevent1, self.subevent2]:

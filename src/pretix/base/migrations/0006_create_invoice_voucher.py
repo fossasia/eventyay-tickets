@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
                     'code',
@@ -51,15 +49,11 @@ class Migration(migrations.Migration):
                 ('updated_by', models.CharField(default='system', max_length=50)),
                 (
                     'limit_events',
-                    models.ManyToManyField(
-                        related_name='invoice_vouchers', to='pretixbase.event'
-                    ),
+                    models.ManyToManyField(related_name='invoice_vouchers', to='pretixbase.event'),
                 ),
                 (
                     'limit_organizer',
-                    models.ManyToManyField(
-                        related_name='invoice_vouchers', to='pretixbase.organizer'
-                    ),
+                    models.ManyToManyField(related_name='invoice_vouchers', to='pretixbase.organizer'),
                 ),
             ],
             options={

@@ -20,9 +20,7 @@ from oauth2_provider.validators import URIValidator
 
 
 class OAuthApplication(AbstractApplication):
-    name = models.CharField(
-        verbose_name=_('Application name'), max_length=255, blank=False
-    )
+    name = models.CharField(verbose_name=_('Application name'), max_length=255, blank=False)
     redirect_uris = models.TextField(
         blank=False,
         validators=[URIValidator],
@@ -61,9 +59,7 @@ class OAuthApplication(AbstractApplication):
 class OAuthGrant(AbstractGrant):
     application = models.ForeignKey(OAuthApplication, on_delete=models.CASCADE)
     organizers = models.ManyToManyField('pretixbase.Organizer')
-    redirect_uri = models.CharField(
-        max_length=2500
-    )  # Only 255 in AbstractGrant, which caused problems
+    redirect_uri = models.CharField(max_length=2500)  # Only 255 in AbstractGrant, which caused problems
 
 
 class OAuthIDToken(AbstractIDToken):
@@ -115,17 +111,11 @@ class OAuthRefreshToken(AbstractRefreshToken):
 
 
 class WebHook(models.Model):
-    organizer = models.ForeignKey(
-        'pretixbase.Organizer', on_delete=models.CASCADE, related_name='webhooks'
-    )
+    organizer = models.ForeignKey('pretixbase.Organizer', on_delete=models.CASCADE, related_name='webhooks')
     enabled = models.BooleanField(default=True, verbose_name=_('Enable webhook'))
     target_url = models.URLField(verbose_name=_('Target URL'))
-    all_events = models.BooleanField(
-        default=True, verbose_name=_('All events (including newly created ones)')
-    )
-    limit_events = models.ManyToManyField(
-        'pretixbase.Event', verbose_name=_('Limit to events'), blank=True
-    )
+    all_events = models.BooleanField(default=True, verbose_name=_('All events (including newly created ones)'))
+    limit_events = models.ManyToManyField('pretixbase.Event', verbose_name=_('Limit to events'), blank=True)
 
     class Meta:
         ordering = ('id',)
@@ -136,9 +126,7 @@ class WebHook(models.Model):
 
 
 class WebHookEventListener(models.Model):
-    webhook = models.ForeignKey(
-        'WebHook', on_delete=models.CASCADE, related_name='listeners'
-    )
+    webhook = models.ForeignKey('WebHook', on_delete=models.CASCADE, related_name='listeners')
     action_type = models.CharField(max_length=255)
 
     class Meta:
@@ -146,9 +134,7 @@ class WebHookEventListener(models.Model):
 
 
 class WebHookCall(models.Model):
-    webhook = models.ForeignKey(
-        'WebHook', on_delete=models.CASCADE, related_name='calls'
-    )
+    webhook = models.ForeignKey('WebHook', on_delete=models.CASCADE, related_name='calls')
     datetime = models.DateTimeField(auto_now_add=True)
     target_url = models.URLField()
     action_type = models.CharField(max_length=255)

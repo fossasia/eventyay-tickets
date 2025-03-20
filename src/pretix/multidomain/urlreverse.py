@@ -20,9 +20,7 @@ def get_event_domain(event, fallback=False, return_info=False):
         # Handle case where event is deleted
         return (None, None) if return_info else None
     suffix = ('_fallback' if fallback else '') + ('_info' if return_info else '')
-    domain = getattr(event, '_cached_domain' + suffix, None) or event.cache.get(
-        'domain' + suffix
-    )
+    domain = getattr(event, '_cached_domain' + suffix, None) or event.cache.get('domain' + suffix)
     if domain is None:
         domain = None, None
         if fallback:
@@ -139,9 +137,7 @@ def eventreverse(obj, name, kwargs=None):
         path = reverse(
             name,
             kwargs=kwargs,
-            urlconf=event_domain_urlconf
-            if domaintype == 'event'
-            else organizer_domain_urlconf,
+            urlconf=event_domain_urlconf if domaintype == 'event' else organizer_domain_urlconf,
         )
         siteurlsplit = urlsplit(settings.SITE_URL)
         if siteurlsplit.port and siteurlsplit.port not in (80, 443):
@@ -180,10 +176,7 @@ def build_join_video_url(event, order):
         if any(item in event.settings.venueless_items for item in order_item_ids):
             return generate_token_url(event, order, position)
         else:
-            logger.error(
-                'order %s does not have any item that is allowed to join the event'
-                % order.code
-            )
+            logger.error('order %s does not have any item that is allowed to join the event' % order.code)
             return ''
 
 
@@ -206,9 +199,7 @@ def generate_token(event, customer_code, position):
     if position.company:
         profile['fields']['company'] = position.company
 
-    for a in position.answers.filter(
-        question_id__in=event.settings.venueless_questions
-    ).select_related('question'):
+    for a in position.answers.filter(question_id__in=event.settings.venueless_questions).select_related('question'):
         profile['fields'][a.question.identifier] = a.answer
     payload = {
         'iss': event.settings.venueless_issuer,
@@ -225,15 +216,8 @@ def generate_token(event, customer_code, position):
                 'eventyay-video-variation-{}'.format(position.variation_id),
                 'eventyay-video-category-{}'.format(position.item.category_id),
             }
-            | {
-                'eventyay-video-item-{}'.format(p.item_id)
-                for p in position.addons.all()
-            }
-            | {
-                'eventyay-video-variation-{}'.format(p.variation_id)
-                for p in position.addons.all()
-                if p.variation_id
-            }
+            | {'eventyay-video-item-{}'.format(p.item_id) for p in position.addons.all()}
+            | {'eventyay-video-variation-{}'.format(p.variation_id) for p in position.addons.all() if p.variation_id}
             | {
                 'eventyay-video-category-{}'.format(p.item.category_id)
                 for p in position.addons.all()
@@ -242,6 +226,4 @@ def generate_token(event, customer_code, position):
         ),
     }
     token = jwt.encode(payload, event.settings.venueless_secret, algorithm='HS256')
-    return '{}/#token={}'.format(event.settings.venueless_url, token).replace(
-        '//#', '/#'
-    )
+    return '{}/#token={}'.format(event.settings.venueless_url, token).replace('//#', '/#')

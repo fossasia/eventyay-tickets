@@ -90,28 +90,18 @@ class EventsTest(SoupTest):
     def test_quick_setup_later(self):
         with scopes_disabled():
             self.event1.quotas.create(name='foo', size=2)
-        resp = self.client.get(
-            '/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug)
-        )
-        self.assertRedirects(
-            resp, '/control/event/%s/%s/' % (self.orga1.slug, self.event1.slug)
-        )
+        resp = self.client.get('/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug))
+        self.assertRedirects(resp, '/control/event/%s/%s/' % (self.orga1.slug, self.event1.slug))
 
     def test_quick_setup_total_quota(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug))
         doc.select('[name=show_quota_left]')[0]['checked'] = 'checked'
         doc.select('[name=ticket_download]')[0]['checked'] = 'checked'
         doc.select('[name=contact_mail]')[0]['value'] = 'test@example.org'
         doc.select('[name=payment_banktransfer__enabled]')[0]['checked'] = 'checked'
-        doc.select('[name=payment_banktransfer_bank_details_type]')[1]['checked'] = (
-            'checked'
-        )
+        doc.select('[name=payment_banktransfer_bank_details_type]')[1]['checked'] = 'checked'
         del doc.select('[name=payment_banktransfer_bank_details_type]')[0]['checked']
-        doc.select('[name*=payment_banktransfer_bank_details_0]')[0].contents[
-            0
-        ].replace_with('Foo')
+        doc.select('[name*=payment_banktransfer_bank_details_0]')[0].contents[0].replace_with('Foo')
         doc.select('[name=total_quota]')[0]['value'] = '300'
         doc.select('[name=form-TOTAL_FORMS]')[0]['value'] = '2'
         doc.select('[name=form-INITIAL_FORMS]')[0]['value'] = '2'
@@ -137,9 +127,7 @@ class EventsTest(SoupTest):
         assert self.event1.settings.ticketoutput_pdf__enabled
         assert self.event1.settings.payment_banktransfer__enabled
         assert (
-            self.event1.settings.get(
-                'payment_banktransfer_bank_details', as_type=LazyI18nString
-            ).localize('en')
+            self.event1.settings.get('payment_banktransfer_bank_details', as_type=LazyI18nString).localize('en')
             == 'Foo'
         )
         assert 'pretix.plugins.banktransfer' in self.event1.plugins
@@ -158,20 +146,14 @@ class EventsTest(SoupTest):
             assert q.items.count() == 2
 
     def test_quick_setup_single_quota(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug))
         doc.select('[name=show_quota_left]')[0]['checked'] = 'checked'
         doc.select('[name=ticket_download]')[0]['checked'] = 'checked'
         doc.select('[name=contact_mail]')[0]['value'] = 'test@example.org'
         doc.select('[name=payment_banktransfer__enabled]')[0]['checked'] = 'checked'
-        doc.select('[name=payment_banktransfer_bank_details_type]')[1]['checked'] = (
-            'checked'
-        )
+        doc.select('[name=payment_banktransfer_bank_details_type]')[1]['checked'] = 'checked'
         del doc.select('[name=payment_banktransfer_bank_details_type]')[0]['checked']
-        doc.select('[name*=payment_banktransfer_bank_details_0]')[0].contents[
-            0
-        ].replace_with('Foo')
+        doc.select('[name*=payment_banktransfer_bank_details_0]')[0].contents[0].replace_with('Foo')
         doc.select('[name=total_quota]')[0]['value'] = ''
         doc.select('[name=form-TOTAL_FORMS]')[0]['value'] = '2'
         doc.select('[name=form-INITIAL_FORMS]')[0]['value'] = '2'
@@ -197,9 +179,7 @@ class EventsTest(SoupTest):
         assert self.event1.settings.ticketoutput_pdf__enabled
         assert self.event1.settings.payment_banktransfer__enabled
         assert (
-            self.event1.settings.get(
-                'payment_banktransfer_bank_details', as_type=LazyI18nString
-            ).localize('en')
+            self.event1.settings.get('payment_banktransfer_bank_details', as_type=LazyI18nString).localize('en')
             == 'Foo'
         )
         assert 'pretix.plugins.banktransfer' in self.event1.plugins
@@ -222,20 +202,14 @@ class EventsTest(SoupTest):
             assert q.items.count() == 1
 
     def test_quick_setup_dual_quota(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/quickstart/' % (self.orga1.slug, self.event1.slug))
         doc.select('[name=show_quota_left]')[0]['checked'] = 'checked'
         doc.select('[name=ticket_download]')[0]['checked'] = 'checked'
         doc.select('[name=contact_mail]')[0]['value'] = 'test@example.org'
         doc.select('[name=payment_banktransfer__enabled]')[0]['checked'] = 'checked'
-        doc.select('[name=payment_banktransfer_bank_details_type]')[1]['checked'] = (
-            'checked'
-        )
+        doc.select('[name=payment_banktransfer_bank_details_type]')[1]['checked'] = 'checked'
         del doc.select('[name=payment_banktransfer_bank_details_type]')[0]['checked']
-        doc.select('[name*=payment_banktransfer_bank_details_0]')[0].contents[
-            0
-        ].replace_with('Foo')
+        doc.select('[name*=payment_banktransfer_bank_details_0]')[0].contents[0].replace_with('Foo')
         doc.select('[name=total_quota]')[0]['value'] = '120'
         doc.select('[name=form-TOTAL_FORMS]')[0]['value'] = '2'
         doc.select('[name=form-INITIAL_FORMS]')[0]['value'] = '2'
@@ -261,9 +235,7 @@ class EventsTest(SoupTest):
         assert self.event1.settings.ticketoutput_pdf__enabled
         assert self.event1.settings.payment_banktransfer__enabled
         assert (
-            self.event1.settings.get(
-                'payment_banktransfer_bank_details', as_type=LazyI18nString
-            ).localize('en')
+            self.event1.settings.get('payment_banktransfer_bank_details', as_type=LazyI18nString).localize('en')
             == 'Foo'
         )
         assert 'pretix.plugins.banktransfer' in self.event1.plugins
@@ -286,9 +258,7 @@ class EventsTest(SoupTest):
             assert q.items.count() == 2
 
     def test_settings(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug))
         doc.select('[name=date_to_0]')[0]['value'] = '2013-12-30'
         doc.select('[name=date_to_1]')[0]['value'] = '17:00:00'
         doc.select('[name=settings-max_items_per_order]')[0]['value'] = '12'
@@ -303,9 +273,7 @@ class EventsTest(SoupTest):
         assert doc.select('[name=settings-max_items_per_order]')[0]['value'] == '12'
 
     def test_settings_timezone(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug))
         doc.select('[name=date_to_0]')[0]['value'] = '2013-12-30'
         doc.select('[name=date_to_1]')[0]['value'] = '17:00:00'
         doc.select('[name=settings-max_items_per_order]')[0]['value'] = '12'
@@ -326,9 +294,7 @@ class EventsTest(SoupTest):
 
         self.event1.refresh_from_db()
         # Asia/Tokyo -> GMT+9
-        assert (
-            self.event1.date_to.strftime('%Y-%m-%d %H:%M:%S') == '2013-12-30 08:00:00'
-        )
+        assert self.event1.date_to.strftime('%Y-%m-%d %H:%M:%S') == '2013-12-30 08:00:00'
         assert self.event1.settings.timezone == 'Asia/Tokyo'
 
     def test_testmode_enable(self):
@@ -426,9 +392,7 @@ class EventsTest(SoupTest):
             self.event1.items.create(name='Test', default_price=5)
             self.event1.settings.set('payment_banktransfer__enabled', True)
             self.event1.quotas.create(name='Test quota')
-        doc = self.get_doc(
-            '/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug))
         assert len(doc.select('input[name=live]'))
         self.post_doc(
             '/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug),
@@ -442,9 +406,7 @@ class EventsTest(SoupTest):
             self.event1.items.create(name='Test', default_price=0)
             self.event1.settings.set('payment_banktransfer__enabled', False)
             self.event1.quotas.create(name='Test quota')
-        doc = self.get_doc(
-            '/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug))
         assert len(doc.select('input[name=live]'))
 
     def test_live_require_payment_method(self):
@@ -452,26 +414,18 @@ class EventsTest(SoupTest):
             self.event1.items.create(name='Test', default_price=5)
             self.event1.settings.set('payment_banktransfer__enabled', False)
             self.event1.quotas.create(name='Test quota')
-        doc = self.get_doc(
-            '/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug))
         assert len(doc.select('input[name=live]')) == 0
 
     def test_live_require_a_quota(self):
         self.event1.settings.set('payment_banktransfer__enabled', True)
-        doc = self.get_doc(
-            '/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/live/' % (self.orga1.slug, self.event1.slug))
         assert len(doc.select('input[name=live]')) == 0
 
     def test_payment_settings_provider(self):
-        self.get_doc(
-            '/control/event/%s/%s/settings/payment/banktransfer'
-            % (self.orga1.slug, self.event1.slug)
-        )
+        self.get_doc('/control/event/%s/%s/settings/payment/banktransfer' % (self.orga1.slug, self.event1.slug))
         self.post_doc(
-            '/control/event/%s/%s/settings/payment/banktransfer'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/settings/payment/banktransfer' % (self.orga1.slug, self.event1.slug),
             {
                 'payment_banktransfer__enabled': 'true',
                 'payment_banktransfer_ack': 'true',
@@ -483,19 +437,13 @@ class EventsTest(SoupTest):
         )
         self.event1.settings.flush()
         assert self.event1.settings.get('payment_banktransfer__enabled', as_type=bool)
-        assert self.event1.settings.get(
-            'payment_banktransfer__fee_abs', as_type=Decimal
-        ) == Decimal('12.23')
+        assert self.event1.settings.get('payment_banktransfer__fee_abs', as_type=Decimal) == Decimal('12.23')
 
     def test_payment_settings(self):
         tr19 = self.event1.tax_rules.create(rate=Decimal('19.00'))
-        self.get_doc(
-            '/control/event/%s/%s/settings/payment'
-            % (self.orga1.slug, self.event1.slug)
-        )
+        self.get_doc('/control/event/%s/%s/settings/payment' % (self.orga1.slug, self.event1.slug))
         self.post_doc(
-            '/control/event/%s/%s/settings/payment'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/settings/payment' % (self.orga1.slug, self.event1.slug),
             {
                 'payment_term_days': '2',
                 'payment_term_minutes': '30',
@@ -511,14 +459,11 @@ class EventsTest(SoupTest):
         self.event1.presale_end = now()
         self.event1.save(update_fields=['presale_end'])
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/payment'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/settings/payment' % (self.orga1.slug, self.event1.slug),
             {
                 'payment_term_days': '2',
                 'payment_term_last_0': 'absolute',
-                'payment_term_last_1': (
-                    self.event1.presale_end - datetime.timedelta(1)
-                ).strftime('%Y-%m-%d'),
+                'payment_term_last_1': (self.event1.presale_end - datetime.timedelta(1)).strftime('%Y-%m-%d'),
                 'payment_term_last_2': '0',
                 'payment_term_last_3': 'date_from',
                 'tax_rate_default': tr19.pk,
@@ -534,8 +479,7 @@ class EventsTest(SoupTest):
         self.event1.presale_end = self.event1.date_from - datetime.timedelta(days=5)
         self.event1.save(update_fields=['presale_end'])
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/payment'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/settings/payment' % (self.orga1.slug, self.event1.slug),
             {
                 'payment_term_days': '2',
                 'payment_term_last_0': 'relative',
@@ -550,15 +494,11 @@ class EventsTest(SoupTest):
         self.event1.save(update_fields=['presale_end'])
 
     def test_invoice_settings(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/invoice'
-            % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/invoice' % (self.orga1.slug, self.event1.slug))
         data = extract_form_fields(doc.select('form')[0])
         data['invoice_address_required'] = 'on'
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/invoice'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/settings/invoice' % (self.orga1.slug, self.event1.slug),
             data,
             follow=True,
         )
@@ -570,9 +510,7 @@ class EventsTest(SoupTest):
         with mocker_context() as mocker:
             mocked = mocker.patch('pretix.presale.style.regenerate_css.apply_async')
 
-            doc = self.get_doc(
-                '/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug)
-            )
+            doc = self.get_doc('/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug))
             data = extract_form_fields(doc.select('form')[0])
             data['settings-primary_color'] = '#000000'
             doc = self.post_doc(
@@ -587,9 +525,7 @@ class EventsTest(SoupTest):
 
     def test_display_settings_do_not_override_parent(self):
         self.orga1.settings.primary_color = '#000000'
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug))
         data = extract_form_fields(doc.select('form')[0])
         doc = self.post_doc(
             '/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug),
@@ -604,9 +540,7 @@ class EventsTest(SoupTest):
     def test_display_settings_explicitly_override_parent(self):
         self.orga1.settings.primary_color = '#000000'
 
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/' % (self.orga1.slug, self.event1.slug))
         data = extract_form_fields(doc.select('form')[0])
         data['decouple'] = 'primary_color'
         doc = self.post_doc(
@@ -623,17 +557,13 @@ class EventsTest(SoupTest):
         with mocker_context() as mocker:
             mocked = mocker.patch('pretix.base.email.CustomSMTPBackend.test')
 
-            doc = self.get_doc(
-                '/control/event/%s/%s/settings/email'
-                % (self.orga1.slug, self.event1.slug)
-            )
+            doc = self.get_doc('/control/event/%s/%s/settings/email' % (self.orga1.slug, self.event1.slug))
             data = extract_form_fields(doc.select('form')[0])
             data['test'] = '1'
             data['email_vendor'] = 'smtp'
             data['send_grid_api_key'] = 'dummy_key'
             doc = self.post_doc(
-                '/control/event/%s/%s/settings/email'
-                % (self.orga1.slug, self.event1.slug),
+                '/control/event/%s/%s/settings/email' % (self.orga1.slug, self.event1.slug),
                 data,
                 follow=True,
             )
@@ -642,16 +572,12 @@ class EventsTest(SoupTest):
             assert mocked.called
 
     def test_ticket_settings(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tickets'
-            % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/tickets' % (self.orga1.slug, self.event1.slug))
         data = extract_form_fields(doc.select('form')[0])
         data['ticket_download'] = 'on'
         data['ticketoutput_testdummy__enabled'] = 'on'
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tickets'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/settings/tickets' % (self.orga1.slug, self.event1.slug),
             data,
             follow=True,
         )
@@ -802,18 +728,10 @@ class EventsTest(SoupTest):
             assert Team.objects.filter(limit_events=ev, members=self.user).exists()
 
             berlin_tz = timezone('Europe/Berlin')
-            assert ev.date_from == berlin_tz.localize(
-                datetime.datetime(2016, 12, 27, 10, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.date_to == berlin_tz.localize(
-                datetime.datetime(2016, 12, 30, 19, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.presale_start == berlin_tz.localize(
-                datetime.datetime(2016, 11, 1, 10, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.presale_end == berlin_tz.localize(
-                datetime.datetime(2016, 11, 30, 18, 0, 0)
-            ).astimezone(pytz.utc)
+            assert ev.date_from == berlin_tz.localize(datetime.datetime(2016, 12, 27, 10, 0, 0)).astimezone(pytz.utc)
+            assert ev.date_to == berlin_tz.localize(datetime.datetime(2016, 12, 30, 19, 0, 0)).astimezone(pytz.utc)
+            assert ev.presale_start == berlin_tz.localize(datetime.datetime(2016, 11, 1, 10, 0, 0)).astimezone(pytz.utc)
+            assert ev.presale_end == berlin_tz.localize(datetime.datetime(2016, 11, 30, 18, 0, 0)).astimezone(pytz.utc)
 
             assert ev.tax_rules.filter(rate=Decimal('19.00')).exists()
 
@@ -948,18 +866,10 @@ class EventsTest(SoupTest):
             assert ev.items.count() == 1
 
             berlin_tz = timezone('Europe/Berlin')
-            assert ev.date_from == berlin_tz.localize(
-                datetime.datetime(2016, 12, 27, 10, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.date_to == berlin_tz.localize(
-                datetime.datetime(2016, 12, 30, 19, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.presale_start == berlin_tz.localize(
-                datetime.datetime(2016, 11, 1, 10, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.presale_end == berlin_tz.localize(
-                datetime.datetime(2016, 11, 30, 18, 0, 0)
-            ).astimezone(pytz.utc)
+            assert ev.date_from == berlin_tz.localize(datetime.datetime(2016, 12, 27, 10, 0, 0)).astimezone(pytz.utc)
+            assert ev.date_to == berlin_tz.localize(datetime.datetime(2016, 12, 30, 19, 0, 0)).astimezone(pytz.utc)
+            assert ev.presale_start == berlin_tz.localize(datetime.datetime(2016, 11, 1, 10, 0, 0)).astimezone(pytz.utc)
+            assert ev.presale_end == berlin_tz.localize(datetime.datetime(2016, 11, 30, 18, 0, 0)).astimezone(pytz.utc)
 
             assert ev.tax_rules.filter(rate=Decimal('19.00')).count() == 1
             i = ev.items.get()
@@ -1035,18 +945,10 @@ class EventsTest(SoupTest):
             assert ev.items.count() == 1
 
             berlin_tz = timezone('Europe/Berlin')
-            assert ev.date_from == berlin_tz.localize(
-                datetime.datetime(2016, 12, 27, 10, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.date_to == berlin_tz.localize(
-                datetime.datetime(2016, 12, 30, 19, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.presale_start == berlin_tz.localize(
-                datetime.datetime(2016, 11, 1, 10, 0, 0)
-            ).astimezone(pytz.utc)
-            assert ev.presale_end == berlin_tz.localize(
-                datetime.datetime(2016, 11, 30, 18, 0, 0)
-            ).astimezone(pytz.utc)
+            assert ev.date_from == berlin_tz.localize(datetime.datetime(2016, 12, 27, 10, 0, 0)).astimezone(pytz.utc)
+            assert ev.date_to == berlin_tz.localize(datetime.datetime(2016, 12, 30, 19, 0, 0)).astimezone(pytz.utc)
+            assert ev.presale_start == berlin_tz.localize(datetime.datetime(2016, 11, 1, 10, 0, 0)).astimezone(pytz.utc)
+            assert ev.presale_end == berlin_tz.localize(datetime.datetime(2016, 11, 30, 18, 0, 0)).astimezone(pytz.utc)
 
             assert ev.tax_rules.filter(rate=Decimal('19.00')).count() == 1
 
@@ -1103,9 +1005,7 @@ class EventsTest(SoupTest):
             assert ev.organizer == self.orga1
             assert ev.location == LazyI18nString({'en': 'Hamburg'})
             assert Team.objects.filter(limit_events=ev, members=self.user).exists()
-            assert ev.date_from == datetime.datetime(
-                2016, 12, 27, 10, 0, 0, tzinfo=pytz.utc
-            )
+            assert ev.date_from == datetime.datetime(2016, 12, 27, 10, 0, 0, tzinfo=pytz.utc)
             assert ev.date_to is None
             assert ev.presale_start is None
             assert ev.presale_end is None
@@ -1163,9 +1063,7 @@ class EventsTest(SoupTest):
             assert ev.location == LazyI18nString({'en': 'Hamburg'})
             team = Team.objects.filter(limit_events=ev, members=self.user).first()
             assert team == self.team2
-            assert ev.date_from == datetime.datetime(
-                2016, 12, 27, 10, 0, 0, tzinfo=pytz.utc
-            )
+            assert ev.date_from == datetime.datetime(2016, 12, 27, 10, 0, 0, tzinfo=pytz.utc)
             assert ev.date_to is None
             assert ev.presale_start is None
             assert ev.presale_end is None
@@ -1315,16 +1213,12 @@ class EventDeletionTest(SoupTest):
             assert not self.orga1.events.exists()
 
     def test_delete_wrong_slug(self):
-        self.post_doc(
-            '/control/event/ccc/30c3/delete/', {'user_pw': 'dummy', 'slug': '31c3'}
-        )
+        self.post_doc('/control/event/ccc/30c3/delete/', {'user_pw': 'dummy', 'slug': '31c3'})
         with scopes_disabled():
             assert self.orga1.events.exists()
 
     def test_delete_wrong_pw(self):
-        self.post_doc(
-            '/control/event/ccc/30c3/delete/', {'user_pw': 'invalid', 'slug': '30c3'}
-        )
+        self.post_doc('/control/event/ccc/30c3/delete/', {'user_pw': 'invalid', 'slug': '30c3'})
         with scopes_disabled():
             assert self.orga1.events.exists()
 
@@ -1339,8 +1233,6 @@ class EventDeletionTest(SoupTest):
             total=14,
             locale='en',
         )
-        self.post_doc(
-            '/control/event/ccc/30c3/delete/', {'user_pw': 'dummy', 'slug': '30c3'}
-        )
+        self.post_doc('/control/event/ccc/30c3/delete/', {'user_pw': 'dummy', 'slug': '30c3'})
         with scopes_disabled():
             assert self.orga1.events.exists()

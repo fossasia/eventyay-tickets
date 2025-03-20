@@ -15,9 +15,7 @@ from pretix.base.services.locking import (
 @pytest.fixture
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy', date_from=now()
-    )
+    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now())
     with scope(organizer=o):
         yield event
 
@@ -34,9 +32,7 @@ def test_locking_exclusive(event):
 
 @pytest.mark.django_db
 def test_locking_different_events(event):
-    other = Event.objects.create(
-        organizer=event.organizer, name='Dummy', slug='dummy2', date_from=now()
-    )
+    other = Event.objects.create(organizer=event.organizer, name='Dummy', slug='dummy2', date_from=now())
     with event.lock():
         with other.lock():
             pass

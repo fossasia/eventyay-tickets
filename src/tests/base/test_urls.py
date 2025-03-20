@@ -15,9 +15,7 @@ class URLTestCase(TestCase):
     def test_url_names(self):
         urlconf = import_module(settings.ROOT_URLCONF)
         nameless = self.find_nameless_urls(urlconf)
-        message = 'URL regexes missing names: %s' % ' '.join(
-            [n.regex.pattern for n in nameless]
-        )
+        message = 'URL regexes missing names: %s' % ' '.join([n.regex.pattern for n in nameless])
         self.assertIs(len(nameless), 0, message)
 
     def find_nameless_urls(self, conf):

@@ -40,9 +40,7 @@ class WaitingListExporter(ListExporter):
             lambda qs: qs.filter(
                 voucher__isnull=False,
                 voucher__redeemed__lt=F('voucher__max_usages'),
-            ).filter(
-                Q(voucher__valid_until__isnull=True) | Q(voucher__valid_until__gt=now())
-            ),
+            ).filter(Q(voucher__valid_until__isnull=True) | Q(voucher__valid_until__gt=now())),
         ),
         (
             'voucher-redeemed',
@@ -120,9 +118,7 @@ class WaitingListExporter(ListExporter):
             datetime_format = '%Y-%m-%d %H:%M:%S'
 
             row = [
-                entry.created.astimezone(tz).strftime(
-                    datetime_format
-                ),  # alternative: .isoformat(),
+                entry.created.astimezone(tz).strftime(datetime_format),  # alternative: .isoformat(),
                 entry.name,
                 entry.email,
                 entry.phone,
@@ -131,9 +127,7 @@ class WaitingListExporter(ListExporter):
                 entry.event.slug,
                 entry.event.name,
                 entry.subevent.name if entry.subevent else '',
-                event_for_date_columns.date_from.astimezone(tz).strftime(
-                    datetime_format
-                ),
+                event_for_date_columns.date_from.astimezone(tz).strftime(datetime_format),
                 event_for_date_columns.date_to.astimezone(tz).strftime(datetime_format)
                 if event_for_date_columns.date_to
                 else '',

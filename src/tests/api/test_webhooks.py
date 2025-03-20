@@ -8,9 +8,7 @@ from pretix.api.models import WebHook
 
 @pytest.fixture
 def webhook(organizer, event):
-    wh = organizer.webhooks.create(
-        enabled=True, target_url='https://google.com', all_events=False
-    )
+    wh = organizer.webhooks.create(enabled=True, target_url='https://google.com', all_events=False)
     wh.limit_events.add(event)
     wh.listeners.create(action_type='pretix.event.order.placed')
     wh.listeners.create(action_type='pretix.event.order.paid')
@@ -41,9 +39,7 @@ def test_hook_list(token_client, organizer, event, webhook):
 def test_hook_detail(token_client, organizer, event, webhook):
     res = dict(TEST_WEBHOOK_RES)
     res['id'] = webhook.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/webhooks/{}/'.format(organizer.slug, webhook.pk)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/webhooks/{}/'.format(organizer.slug, webhook.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -80,22 +76,16 @@ def test_hook_create(token_client, organizer, event):
 def test_hook_create_either_all_or_limit(token_client, organizer, event):
     res = copy.copy(TEST_WEBHOOK_CREATE_PAYLOAD)
     res['all_events'] = True
-    resp = token_client.post(
-        '/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json')
     assert resp.status_code == 400
-    assert resp.data == {
-        'non_field_errors': ['You can set either limit_events or all_events.']
-    }
+    assert resp.data == {'non_field_errors': ['You can set either limit_events or all_events.']}
 
 
 @pytest.mark.django_db
 def test_hook_create_invalid_url(token_client, organizer, event):
     res = copy.copy(TEST_WEBHOOK_CREATE_PAYLOAD)
     res['target_url'] = 'foo.bar'
-    resp = token_client.post(
-        '/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json')
     assert resp.status_code == 400
     assert resp.data == {'target_url': ['Enter a valid URL.']}
 
@@ -104,9 +94,7 @@ def test_hook_create_invalid_url(token_client, organizer, event):
 def test_hook_create_invalid_event(token_client, organizer, event):
     res = copy.copy(TEST_WEBHOOK_CREATE_PAYLOAD)
     res['limit_events'] = ['foo']
-    resp = token_client.post(
-        '/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json')
     assert resp.status_code == 400
     assert resp.data == {'limit_events': ['Object with slug=foo does not exist.']}
 
@@ -115,9 +103,7 @@ def test_hook_create_invalid_event(token_client, organizer, event):
 def test_hook_create_invalid_action_types(token_client, organizer, event):
     res = copy.copy(TEST_WEBHOOK_CREATE_PAYLOAD)
     res['action_types'] = ['foo']
-    resp = token_client.post(
-        '/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/webhooks/'.format(organizer.slug), res, format='json')
     assert resp.status_code == 400
     assert resp.data == {'action_types': ['Invalid action type "foo".']}
 

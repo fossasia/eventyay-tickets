@@ -57,9 +57,7 @@ def test_device_detail(token_client, organizer, event, device):
     res = dict(TEST_DEV_RES)
     res['created'] = device.created.isoformat().replace('+00:00', 'Z')
     res['initialized'] = device.initialized.isoformat().replace('+00:00', 'Z')
-    resp = token_client.get(
-        '/api/v1/organizers/{}/devices/{}/'.format(organizer.slug, device.device_id)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/devices/{}/'.format(organizer.slug, device.device_id))
     assert resp.status_code == 200
     assert res == resp.data
 

@@ -105,13 +105,9 @@ class InvoiceAddressSerializer(I18nAwareModelSerializer):
 
     def validate(self, data):
         if data.get('name') and data.get('name_parts'):
-            raise ValidationError(
-                {'name': ['Do not specify name if you specified name_parts.']}
-            )
+            raise ValidationError({'name': ['Do not specify name if you specified name_parts.']})
         if data.get('name_parts') and '_scheme' not in data.get('name_parts'):
-            data['name_parts']['_scheme'] = self.context[
-                'request'
-            ].event.settings.name_scheme
+            data['name_parts']['_scheme'] = self.context['request'].event.settings.name_scheme
 
         if data.get('country'):
             if not pycountry.countries.get(alpha_2=data.get('country').code):
@@ -120,18 +116,10 @@ class InvoiceAddressSerializer(I18nAwareModelSerializer):
         if data.get('state'):
             cc = str(data.get('country') or self.instance.country or '')
             if cc not in COUNTRIES_WITH_STATE_IN_ADDRESS:
-                raise ValidationError(
-                    {'state': ['States are not supported in country "{}".'.format(cc)]}
-                )
+                raise ValidationError({'state': ['States are not supported in country "{}".'.format(cc)]})
             if not pycountry.subdivisions.get(code=cc + '-' + data.get('state')):
                 raise ValidationError(
-                    {
-                        'state': [
-                            '"{}" is not a known subdivision of the country "{}".'.format(
-                                data.get('state'), cc
-                            )
-                        ]
-                    }
+                    {'state': ['"{}" is not a known subdivision of the country "{}".'.format(data.get('state'), cc)]}
                 )
 
         return data
@@ -157,9 +145,7 @@ class InlineSeatSerializer(I18nAwareModelSerializer):
 
 class AnswerSerializer(I18nAwareModelSerializer):
     question_identifier = AnswerQuestionIdentifierField(source='*', read_only=True)
-    option_identifiers = AnswerQuestionOptionsIdentifierField(
-        source='*', read_only=True
-    )
+    option_identifiers = AnswerQuestionOptionsIdentifierField(source='*', read_only=True)
 
     def to_representation(self, instance):
         r = super().to_representation(instance)
@@ -188,9 +174,7 @@ class AnswerSerializer(I18nAwareModelSerializer):
 
     def validate_question(self, q):
         if q.event != self.context['event']:
-            raise ValidationError(
-                'The specified question does not belong to this event.'
-            )
+            raise ValidationError('The specified question does not belong to this event.')
         return q
 
     def _handle_file_upload(self, data):
@@ -202,27 +186,17 @@ class AnswerSerializer(I18nAwareModelSerializer):
                 pk=data['answer'][len('file:') :],
             )
         except (ValidationError, IndexError):  # invalid uuid
-            raise ValidationError(
-                'The submitted file ID "{fid}" was not found.'.format(fid=data)
-            )
+            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
         except CachedFile.DoesNotExist:
-            raise ValidationError(
-                'The submitted file ID "{fid}" was not found.'.format(fid=data)
-            )
+            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
 
         allowed_types = ('image/png', 'image/jpeg', 'image/gif', 'application/pdf')
         if cf.type not in allowed_types:
             raise ValidationError(
-                'The submitted file "{fid}" has a file type that is not allowed in this field.'.format(
-                    fid=data
-                )
+                'The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data)
             )
         if cf.file.size > 10 * 1024 * 1024:
-            raise ValidationError(
-                'The submitted file "{fid}" is too large to be used in this field.'.format(
-                    fid=data
-                )
-            )
+            raise ValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
 
         data['options'] = []
         data['answer'] = cf.file
@@ -236,29 +210,18 @@ class AnswerSerializer(I18nAwareModelSerializer):
             Question.TYPE_CHOICE_MULTIPLE,
         ):
             if not data.get('options'):
-                raise ValidationError(
-                    'You need to specify options if the question is of a choice type.'
-                )
-            if (
-                data.get('question').type == Question.TYPE_CHOICE
-                and len(data.get('options')) > 1
-            ):
-                raise ValidationError(
-                    'You can specify at most one option for this question.'
-                )
+                raise ValidationError('You need to specify options if the question is of a choice type.')
+            if data.get('question').type == Question.TYPE_CHOICE and len(data.get('options')) > 1:
+                raise ValidationError('You can specify at most one option for this question.')
             for o in data.get('options'):
                 if o.question_id != data.get('question').pk:
-                    raise ValidationError(
-                        'The specified option does not belong to this question.'
-                    )
+                    raise ValidationError('The specified option does not belong to this question.')
 
             data['answer'] = ', '.join([str(o) for o in data.get('options')])
 
         else:
             if data.get('options'):
-                raise ValidationError(
-                    'You should not specify options if the question is not of a choice type.'
-                )
+                raise ValidationError('You should not specify options if the question is not of a choice type.')
 
             if data.get('question').type == Question.TYPE_BOOLEAN:
                 if data.get('answer') in ['true', 'True', '1', 'TRUE']:
@@ -266,25 +229,15 @@ class AnswerSerializer(I18nAwareModelSerializer):
                 elif data.get('answer') in ['false', 'False', '0', 'FALSE']:
                     data['answer'] = 'False'
                 else:
-                    raise ValidationError(
-                        'Please specify "true" or "false" for boolean questions.'
-                    )
+                    raise ValidationError('Please specify "true" or "false" for boolean questions.')
             elif data.get('question').type == Question.TYPE_NUMBER:
-                serializers.DecimalField(
-                    max_digits=50, decimal_places=25
-                ).to_internal_value(data.get('answer'))
+                serializers.DecimalField(max_digits=50, decimal_places=25).to_internal_value(data.get('answer'))
             elif data.get('question').type == Question.TYPE_DATE:
-                data['answer'] = serializers.DateField().to_internal_value(
-                    data.get('answer')
-                )
+                data['answer'] = serializers.DateField().to_internal_value(data.get('answer'))
             elif data.get('question').type == Question.TYPE_TIME:
-                data['answer'] = serializers.TimeField().to_internal_value(
-                    data.get('answer')
-                )
+                data['answer'] = serializers.TimeField().to_internal_value(data.get('answer'))
             elif data.get('question').type == Question.TYPE_DATETIME:
-                data['answer'] = serializers.DateTimeField().to_internal_value(
-                    data.get('answer')
-                )
+                data['answer'] = serializers.DateTimeField().to_internal_value(data.get('answer'))
         return data
 
 
@@ -493,8 +446,7 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
         request = self.context.get('request')
         if (
             not request
-            or not self.context['request'].query_params.get('pdf_data', 'false')
-            == 'true'
+            or not self.context['request'].query_params.get('pdf_data', 'false') == 'true'
             or 'can_view_orders' not in request.eventpermset
         ):
             self.fields.pop('pdf_data', None)
@@ -502,18 +454,10 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
     def validate(self, data):
         if data.get('attendee_name') and data.get('attendee_name_parts'):
             raise ValidationError(
-                {
-                    'attendee_name': [
-                        'Do not specify attendee_name if you specified attendee_name_parts.'
-                    ]
-                }
+                {'attendee_name': ['Do not specify attendee_name if you specified attendee_name_parts.']}
             )
-        if data.get('attendee_name_parts') and '_scheme' not in data.get(
-            'attendee_name_parts'
-        ):
-            data['attendee_name_parts']['_scheme'] = self.context[
-                'request'
-            ].event.settings.name_scheme
+        if data.get('attendee_name_parts') and '_scheme' not in data.get('attendee_name_parts'):
+            data['attendee_name_parts']['_scheme'] = self.context['request'].event.settings.name_scheme
 
         if data.get('country'):
             if not pycountry.countries.get(alpha_2=data.get('country').code):
@@ -522,18 +466,10 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
         if data.get('state'):
             cc = str(data.get('country') or self.instance.country or '')
             if cc not in COUNTRIES_WITH_STATE_IN_ADDRESS:
-                raise ValidationError(
-                    {'state': ['States are not supported in country "{}".'.format(cc)]}
-                )
+                raise ValidationError({'state': ['States are not supported in country "{}".'.format(cc)]})
             if not pycountry.subdivisions.get(code=cc + '-' + data.get('state')):
                 raise ValidationError(
-                    {
-                        'state': [
-                            '"{}" is not a known subdivision of the country "{}".'.format(
-                                data.get('state'), cc
-                            )
-                        ]
-                    }
+                    {'state': ['"{}" is not a known subdivision of the country "{}".'.format(data.get('state'), cc)]}
                 )
         return data
 
@@ -568,15 +504,11 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
             for answ_data in answers_data:
                 options = answ_data.pop('options', [])
                 if answ_data['question'].pk in qs_seen:
-                    raise ValidationError(
-                        f'Question {answ_data["question"]} was sent twice.'
-                    )
+                    raise ValidationError(f'Question {answ_data["question"]} was sent twice.')
                 if answ_data['question'].pk in answercache:
                     a = answercache[answ_data['question'].pk]
                     if isinstance(answ_data['answer'], File):
-                        a.file.save(
-                            answ_data['answer'].name, answ_data['answer'], save=False
-                        )
+                        a.file.save(answ_data['answer'].name, answ_data['answer'], save=False)
                         a.answer = 'file://' + a.file.name
                     else:
                         for attr, value in answ_data.items():
@@ -639,9 +571,7 @@ class CheckinListOrderPositionSerializer(OrderPositionSerializer):
     require_attention = RequireAttentionField(source='*')
     attendee_name = AttendeeNameField(source='*')
     attendee_name_parts = AttendeeNamePartsField(source='*')
-    order__status = serializers.SlugRelatedField(
-        read_only=True, slug_field='status', source='order'
-    )
+    order__status = serializers.SlugRelatedField(read_only=True, slug_field='status', source='order')
 
     class Meta:
         model = OrderPosition
@@ -870,9 +800,7 @@ class OrderSerializer(I18nAwareModelSerializer):
 
     def validate_locale(self, l):
         if l not in set(k for k in self.instance.event.settings.locales):
-            raise ValidationError(
-                '"{}" is not a supported locale for this event.'.format(l)
-            )
+            raise ValidationError('"{}" is not a supported locale for this event.'.format(l))
         return l
 
     def update(self, instance, validated_data):
@@ -894,10 +822,7 @@ class OrderSerializer(I18nAwareModelSerializer):
                     iadata['name_parts'] = {'_legacy': name}
                 try:
                     ia = instance.invoice_address
-                    if (
-                        iadata.get('vat_id') != ia.vat_id
-                        and 'vat_id_validated' not in iadata
-                    ):
+                    if iadata.get('vat_id') != ia.vat_id and 'vat_id_validated' not in iadata:
                         ia.vat_id_validated = False
                     self.fields['invoice_address'].update(ia, iadata)
                 except InvoiceAddress.DoesNotExist:
@@ -930,18 +855,12 @@ class SimulatedOrderSerializer(OrderSerializer):
 
 
 class PriceCalcSerializer(serializers.Serializer):
-    item = serializers.PrimaryKeyRelatedField(
-        queryset=Item.objects.none(), required=False, allow_null=True
-    )
+    item = serializers.PrimaryKeyRelatedField(queryset=Item.objects.none(), required=False, allow_null=True)
     variation = serializers.PrimaryKeyRelatedField(
         queryset=ItemVariation.objects.none(), required=False, allow_null=True
     )
-    subevent = serializers.PrimaryKeyRelatedField(
-        queryset=SubEvent.objects.none(), required=False, allow_null=True
-    )
-    tax_rule = serializers.PrimaryKeyRelatedField(
-        queryset=TaxRule.objects.none(), required=False, allow_null=True
-    )
+    subevent = serializers.PrimaryKeyRelatedField(queryset=SubEvent.objects.none(), required=False, allow_null=True)
+    tax_rule = serializers.PrimaryKeyRelatedField(queryset=TaxRule.objects.none(), required=False, allow_null=True)
     locale = serializers.CharField(allow_null=True, required=False)
 
     def __init__(self, *args, **kwargs):
@@ -949,9 +868,7 @@ class PriceCalcSerializer(serializers.Serializer):
         super().__init__(*args, **kwargs)
         self.fields['item'].queryset = event.items.all()
         self.fields['tax_rule'].queryset = event.tax_rules.all()
-        self.fields['variation'].queryset = ItemVariation.objects.filter(
-            item__event=event
-        )
+        self.fields['variation'].queryset = ItemVariation.objects.filter(item__event=event)
         if event.has_subevents:
             self.fields['subevent'].queryset = event.subevents.all()
         else:
@@ -980,9 +897,7 @@ class OrderFeeCreateSerializer(I18nAwareModelSerializer):
 
     def validate_tax_rule(self, tr):
         if tr and tr.event != self.context['event']:
-            raise ValidationError(
-                'The specified tax rate does not belong to this event.'
-            )
+            raise ValidationError('The specified tax rate does not belong to this event.')
         return tr
 
 
@@ -992,9 +907,7 @@ class OrderPositionCreateSerializer(I18nAwareModelSerializer):
     secret = serializers.CharField(required=False)
     attendee_name = serializers.CharField(required=False, allow_null=True)
     seat = serializers.CharField(required=False, allow_null=True)
-    price = serializers.DecimalField(
-        required=False, allow_null=True, decimal_places=2, max_digits=10
-    )
+    price = serializers.DecimalField(required=False, allow_null=True, decimal_places=2, max_digits=10)
     voucher = serializers.SlugRelatedField(
         slug_field='code',
         queryset=Voucher.objects.none(),
@@ -1036,15 +949,8 @@ class OrderPositionCreateSerializer(I18nAwareModelSerializer):
                 v.allow_null = True
 
     def validate_secret(self, secret):
-        if (
-            secret
-            and OrderPosition.all.filter(
-                order__event=self.context['event'], secret=secret
-            ).exists()
-        ):
-            raise ValidationError(
-                'You cannot assign a position secret that already exists.'
-            )
+        if secret and OrderPosition.all.filter(order__event=self.context['event'], secret=secret).exists():
+            raise ValidationError('You cannot assign a position secret that already exists.')
         return secret
 
     def validate_item(self, item):
@@ -1059,9 +965,7 @@ class OrderPositionCreateSerializer(I18nAwareModelSerializer):
             if not subevent:
                 raise ValidationError('You need to set a subevent.')
             if subevent.event != self.context['event']:
-                raise ValidationError(
-                    'The specified subevent does not belong to this event.'
-                )
+                raise ValidationError('The specified subevent does not belong to this event.')
         elif subevent:
             raise ValidationError('You cannot set a subevent for this event.')
         return subevent
@@ -1070,36 +974,20 @@ class OrderPositionCreateSerializer(I18nAwareModelSerializer):
         if data.get('item'):
             if data.get('item').has_variations:
                 if not data.get('variation'):
-                    raise ValidationError(
-                        {'variation': ['You should specify a variation for this item.']}
-                    )
+                    raise ValidationError({'variation': ['You should specify a variation for this item.']})
                 else:
                     if data.get('variation').item != data.get('item'):
                         raise ValidationError(
-                            {
-                                'variation': [
-                                    'The specified variation does not belong to the specified item.'
-                                ]
-                            }
+                            {'variation': ['The specified variation does not belong to the specified item.']}
                         )
             elif data.get('variation'):
-                raise ValidationError(
-                    {'variation': ['You cannot specify a variation for this item.']}
-                )
+                raise ValidationError({'variation': ['You cannot specify a variation for this item.']})
         if data.get('attendee_name') and data.get('attendee_name_parts'):
             raise ValidationError(
-                {
-                    'attendee_name': [
-                        'Do not specify attendee_name if you specified attendee_name_parts.'
-                    ]
-                }
+                {'attendee_name': ['Do not specify attendee_name if you specified attendee_name_parts.']}
             )
-        if data.get('attendee_name_parts') and '_scheme' not in data.get(
-            'attendee_name_parts'
-        ):
-            data['attendee_name_parts']['_scheme'] = self.context[
-                'request'
-            ].event.settings.name_scheme
+        if data.get('attendee_name_parts') and '_scheme' not in data.get('attendee_name_parts'):
+            data['attendee_name_parts']['_scheme'] = self.context['request'].event.settings.name_scheme
 
         if data.get('country'):
             if not pycountry.countries.get(alpha_2=data.get('country').code):
@@ -1108,18 +996,10 @@ class OrderPositionCreateSerializer(I18nAwareModelSerializer):
         if data.get('state'):
             cc = str(data.get('country') or self.instance.country or '')
             if cc not in COUNTRIES_WITH_STATE_IN_ADDRESS:
-                raise ValidationError(
-                    {'state': ['States are not supported in country "{}".'.format(cc)]}
-                )
+                raise ValidationError({'state': ['States are not supported in country "{}".'.format(cc)]})
             if not pycountry.subdivisions.get(code=cc + '-' + data.get('state')):
                 raise ValidationError(
-                    {
-                        'state': [
-                            '"{}" is not a known subdivision of the country "{}".'.format(
-                                data.get('state'), cc
-                            )
-                        ]
-                    }
+                    {'state': ['"{}" is not a known subdivision of the country "{}".'.format(data.get('state'), cc)]}
                 )
 
         return data
@@ -1184,9 +1064,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['positions'].child.fields['voucher'].queryset = self.context[
-            'event'
-        ].vouchers.all()
+        self.fields['positions'].child.fields['voucher'].queryset = self.context['event'].vouchers.all()
 
     class Meta:
         model = Order
@@ -1225,12 +1103,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
         return channel
 
     def validate_code(self, code):
-        if (
-            code
-            and Order.objects.filter(
-                event__organizer=self.context['event'].organizer, code=code
-            ).exists()
-        ):
+        if code and Order.objects.filter(event__organizer=self.context['event'].organizer, code=code).exists():
             raise ValidationError('This order code is already in use.')
         if any(c not in 'ABCDEFGHJKLMNPQRSTUVWXYZ1234567890' for c in code):
             raise ValidationError('This order code contains invalid characters.')
@@ -1267,11 +1140,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
 
         elif any([p.get('addon_to') for p in data]):
             errs = [
-                {
-                    'positionid': [
-                        'If you set addon_to on any position, you need to specify position IDs manually.'
-                    ]
-                }
+                {'positionid': ['If you set addon_to on any position, you need to specify position IDs manually.']}
                 for p in data
             ]
         else:
@@ -1285,14 +1154,10 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
     def validate_testmode(self, testmode):
         if 'sales_channel' in self.initial_data:
             try:
-                sales_channel = get_all_sales_channels()[
-                    self.initial_data['sales_channel']
-                ]
+                sales_channel = get_all_sales_channels()[self.initial_data['sales_channel']]
 
                 if testmode and not sales_channel.testmode_supported:
-                    raise ValidationError(
-                        'This sales channel does not provide support for test mode.'
-                    )
+                    raise ValidationError('This sales channel does not provide support for test mode.')
             except KeyError:
                 # We do not need to raise a ValidationError here, since there is another check to validate the
                 # sales_channel
@@ -1302,9 +1167,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
 
     def create(self, validated_data):
         fees_data = validated_data.pop('fees') if 'fees' in validated_data else []
-        positions_data = (
-            validated_data.pop('positions') if 'positions' in validated_data else []
-        )
+        positions_data = validated_data.pop('positions') if 'positions' in validated_data else []
         payment_provider = validated_data.pop('payment_provider', None)
         payment_info = validated_data.pop('payment_info', '{}')
         payment_date = validated_data.pop('payment_date', now())
@@ -1362,9 +1225,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                     v = pos_data['voucher']
 
                     if pos_data.get('addon_to'):
-                        errs[i]['voucher'] = [
-                            'Vouchers are currently not supported for add-on products.'
-                        ]
+                        errs[i]['voucher'] = ['Vouchers are currently not supported for add-on products.']
                         continue
 
                     if not v.applies_to(pos_data['item'], pos_data.get('variation')):
@@ -1372,9 +1233,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                         continue
 
                     if v.subevent_id and pos_data.get('subevent').pk != v.subevent_id:
-                        errs[i]['voucher'] = [
-                            error_messages['voucher_invalid_subevent']
-                        ]
+                        errs[i]['voucher'] = [error_messages['voucher_invalid_subevent']]
                         continue
 
                     if v.valid_until is not None and v.valid_until < now_dt:
@@ -1384,15 +1243,11 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                     voucher_usage[v] += 1
                     if voucher_usage[v] > 0:
                         redeemed_in_carts = CartPosition.objects.filter(
-                            Q(voucher=pos_data['voucher'])
-                            & Q(event=self.context['event'])
-                            & Q(expires__gte=now_dt)
+                            Q(voucher=pos_data['voucher']) & Q(event=self.context['event']) & Q(expires__gte=now_dt)
                         ).exclude(pk__in=[cp.pk for cp in delete_cps])
                         v_avail = v.max_usages - v.redeemed - redeemed_in_carts.count()
                         if v_avail < voucher_usage[v]:
-                            errs[i]['voucher'] = [
-                                'The voucher has already been used the maximum number of times.'
-                            ]
+                            errs[i]['voucher'] = ['The voucher has already been used the maximum number of times.']
 
                     if v.budget is not None:
                         price = pos_data.get('price')
@@ -1422,10 +1277,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                         if disc > v_budget[v]:
                             new_disc = v_budget[v]
                             v_budget[v] -= new_disc
-                            if (
-                                new_disc == Decimal('0.00')
-                                or pos_data.get('price') is not None
-                            ):
+                            if new_disc == Decimal('0.00') or pos_data.get('price') is not None:
                                 errs[i]['voucher'] = [
                                     'The voucher has a remaining budget of {}, therefore a discount of {} can not be '
                                     'given.'.format(v_budget[v] + new_disc, disc)
@@ -1435,16 +1287,10 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                         else:
                             v_budget[v] -= disc
 
-                seated = (
-                    pos_data.get('item')
-                    .seat_category_mappings.filter(subevent=pos_data.get('subevent'))
-                    .exists()
-                )
+                seated = pos_data.get('item').seat_category_mappings.filter(subevent=pos_data.get('subevent')).exists()
                 if pos_data.get('seat'):
                     if not seated:
-                        errs[i]['seat'] = [
-                            'The specified product does not allow to choose a seat.'
-                        ]
+                        errs[i]['seat'] = ['The specified product does not allow to choose a seat.']
                     try:
                         seat = self.context['event'].seats.get(
                             seat_guid=pos_data['seat'],
@@ -1456,71 +1302,52 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                         pos_data['seat'] = seat
                         if (
                             seat not in free_seats
-                            and not seat.is_available(
-                                sales_channel=validated_data.get('sales_channel', 'web')
-                            )
+                            and not seat.is_available(sales_channel=validated_data.get('sales_channel', 'web'))
                         ) or seat in seats_seen:
                             errs[i]['seat'] = [
-                                gettext_lazy(
-                                    'The selected seat "{seat}" is not available.'
-                                ).format(seat=seat.name)
+                                gettext_lazy('The selected seat "{seat}" is not available.').format(seat=seat.name)
                             ]
                         seats_seen.add(seat)
                 elif seated:
-                    errs[i]['seat'] = [
-                        'The specified product requires to choose a seat.'
-                    ]
+                    errs[i]['seat'] = ['The specified product requires to choose a seat.']
 
             if not force:
                 for i, pos_data in enumerate(positions_data):
                     if pos_data.get('voucher'):
-                        if (
-                            pos_data['voucher'].allow_ignore_quota
-                            or pos_data['voucher'].block_quota
-                        ):
+                        if pos_data['voucher'].allow_ignore_quota or pos_data['voucher'].block_quota:
                             continue
 
                     if pos_data.get('subevent'):
                         if (
-                            pos_data.get('item').pk
-                            in pos_data['subevent'].item_overrides
-                            and pos_data['subevent']
-                            .item_overrides[pos_data['item'].pk]
-                            .disabled
+                            pos_data.get('item').pk in pos_data['subevent'].item_overrides
+                            and pos_data['subevent'].item_overrides[pos_data['item'].pk].disabled
                         ):
                             errs[i]['item'] = [
-                                gettext_lazy(
-                                    'The product "{}" is not available on this date.'
-                                ).format(str(pos_data.get('item')))
+                                gettext_lazy('The product "{}" is not available on this date.').format(
+                                    str(pos_data.get('item'))
+                                )
                             ]
                         if (
                             pos_data.get('variation')
-                            and pos_data['variation'].pk
-                            in pos_data['subevent'].var_overrides
-                            and pos_data['subevent']
-                            .var_overrides[pos_data['variation'].pk]
-                            .disabled
+                            and pos_data['variation'].pk in pos_data['subevent'].var_overrides
+                            and pos_data['subevent'].var_overrides[pos_data['variation'].pk].disabled
                         ):
                             errs[i]['item'] = [
-                                gettext_lazy(
-                                    'The product "{}" is not available on this date.'
-                                ).format(str(pos_data.get('item')))
+                                gettext_lazy('The product "{}" is not available on this date.').format(
+                                    str(pos_data.get('item'))
+                                )
                             ]
 
                     new_quotas = (
-                        pos_data.get('variation').quotas.filter(
-                            subevent=pos_data.get('subevent')
-                        )
+                        pos_data.get('variation').quotas.filter(subevent=pos_data.get('subevent'))
                         if pos_data.get('variation')
-                        else pos_data.get('item').quotas.filter(
-                            subevent=pos_data.get('subevent')
-                        )
+                        else pos_data.get('item').quotas.filter(subevent=pos_data.get('subevent'))
                     )
                     if len(new_quotas) == 0:
                         errs[i]['item'] = [
-                            gettext_lazy(
-                                'The product "{}" is not assigned to a quota.'
-                            ).format(str(pos_data.get('item')))
+                            gettext_lazy('The product "{}" is not assigned to a quota.').format(
+                                str(pos_data.get('item'))
+                            )
                         ]
                     else:
                         for quota in new_quotas:
@@ -1618,9 +1445,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                     pos.pseudonymization_id = 'PREVIEW'
                 else:
                     if pos.voucher:
-                        Voucher.objects.filter(pk=pos.voucher.pk).update(
-                            redeemed=F('redeemed') + 1
-                        )
+                        Voucher.objects.filter(pk=pos.voucher.pk).update(redeemed=F('redeemed') + 1)
                     pos.save()
                     for answ_data in answers_data:
                         options = answ_data.pop('options', [])
@@ -1658,9 +1483,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                     tr = p.tax_rule
                     d[tr] += p.price - p.tax_value
 
-                base_values = sorted(
-                    [tuple(t) for t in d.items()], key=lambda t: (t[0] or trz).rate
-                )
+                base_values = sorted([tuple(t) for t in d.items()], key=lambda t: (t[0] or trz).rate)
                 sum_base = sum(t[1] for t in base_values)
                 fee_values = [
                     (
@@ -1723,10 +1546,7 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
         ):
             payment_provider = 'free'
 
-        if (
-            order.total == Decimal('0.00')
-            and validated_data.get('status') != Order.STATUS_PAID
-        ):
+        if order.total == Decimal('0.00') and validated_data.get('status') != Order.STATUS_PAID:
             order.status = Order.STATUS_PAID
             order.save()
             order.payments.create(
@@ -1736,14 +1556,10 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                 payment_date=now(),
             )
         elif payment_provider == 'free' and order.total != Decimal('0.00'):
-            raise ValidationError(
-                'You cannot use the "free" payment provider for non-free orders.'
-            )
+            raise ValidationError('You cannot use the "free" payment provider for non-free orders.')
         elif validated_data.get('status') == Order.STATUS_PAID:
             if not payment_provider:
-                raise ValidationError(
-                    'You cannot create a paid order without a payment provider.'
-                )
+                raise ValidationError('You cannot create a paid order without a payment provider.')
             order.payments.create(
                 amount=order.total,
                 provider=payment_provider,

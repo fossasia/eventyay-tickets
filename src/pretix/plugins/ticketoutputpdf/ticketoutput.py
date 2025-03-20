@@ -42,9 +42,7 @@ class PdfTicketOutput(BaseTicketOutput):
         if not hasattr(self.event, '_ticketoutputpdf_cache_layoutmap'):
             self.event._ticketoutputpdf_cache_layoutmap = {
                 (bi.item_id, bi.sales_channel): bi.layout
-                for bi in TicketLayoutItem.objects.select_related('layout').filter(
-                    item__event=self.event
-                )
+                for bi in TicketLayoutItem.objects.select_related('layout').filter(item__event=self.event)
             }
         return self.event._ticketoutputpdf_cache_layoutmap
 
@@ -52,9 +50,7 @@ class PdfTicketOutput(BaseTicketOutput):
     def default_layout(self):
         if not hasattr(self.event, '_ticketoutputpdf_cache_default_layout'):
             try:
-                self.event._ticketoutputpdf_cache_default_layout = (
-                    self.event.ticket_layouts.get(default=True)
-                )
+                self.event._ticketoutputpdf_cache_default_layout = self.event.ticket_layouts.get(default=True)
             except TicketLayout.DoesNotExist:
                 self.event._ticketoutputpdf_cache_default_layout = TicketLayout(
                     layout=json.dumps(self._default_layout())
@@ -66,9 +62,7 @@ class PdfTicketOutput(BaseTicketOutput):
 
     def _draw_page(self, layout: TicketLayout, op: OrderPosition, order: Order):
         buffer = BytesIO()
-        objs = (
-            self.override_layout or json.loads(layout.layout) or self._legacy_layout()
-        )
+        objs = self.override_layout or json.loads(layout.layout) or self._legacy_layout()
         bg_file = layout.background
 
         if self.override_background:
@@ -397,9 +391,7 @@ class PdfTicketOutput(BaseTicketOutput):
                     'type': 'textarea',
                     'fontfamily': 'Helvetica',
                     'left': self.settings.get('attendee_x', default=15, as_type=float),
-                    'bottom': self.settings.get(
-                        'attendee_y', default=90, as_type=float
-                    ),
+                    'bottom': self.settings.get('attendee_y', default=90, as_type=float),
                     'fontsize': attendee_s,
                     'color': [0, 0, 0, 1],
                     'bold': False,

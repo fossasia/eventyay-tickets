@@ -45,9 +45,7 @@ def test_get_settings(token_client, organizer):
 @pytest.mark.django_db
 def test_patch_settings(token_client, organizer):
     with mocker_context() as mocker:
-        mocked = mocker.patch(
-            'pretix.presale.style.regenerate_organizer_css.apply_async'
-        )
+        mocked = mocker.patch('pretix.presale.style.regenerate_organizer_css.apply_async')
 
         organizer.settings.event_list_type = 'week'
         resp = token_client.patch(
@@ -128,9 +126,7 @@ def test_patch_organizer_settings_file(token_client, organizer):
         format='json',
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'organizer_logo_image': ['The submitted file ID was not found.']
-    }
+    assert resp.data == {'organizer_logo_image': ['The submitted file ID was not found.']}
 
     resp = token_client.patch(
         '/api/v1/organizers/{}/settings/'.format(organizer.slug),
@@ -139,9 +135,7 @@ def test_patch_organizer_settings_file(token_client, organizer):
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'organizer_logo_image': [
-            'The submitted file has a file type that is not allowed in this field.'
-        ]
+        'organizer_logo_image': ['The submitted file has a file type that is not allowed in this field.']
     }
 
     resp = token_client.patch(

@@ -24,9 +24,7 @@ def env():
         plugins='pretix.plugins.banktransfer',
     )
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    t = Team.objects.create(
-        organizer=event.organizer, can_view_orders=True, can_change_orders=True
-    )
+    t = Team.objects.create(organizer=event.organizer, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
     t.limit_events.add(event)
     order = Order.objects.create(
@@ -61,13 +59,9 @@ url_prefixes = ['/control/event/dummy/dummy/', '/control/organizer/dummy/']
 @pytest.mark.parametrize('url_prefix', url_prefixes)
 def test_export_refunds_as_sepa_xml(client, env, url_prefix):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    r = client.post(
-        f'{url_prefix}banktransfer/refunds/', {'unite_transactions': True}, follow=True
-    )
+    r = client.post(f'{url_prefix}banktransfer/refunds/', {'unite_transactions': True}, follow=True)
     assert b'SEPA' in r.content
-    r = client.get(
-        f'{url_prefix}banktransfer/sepa-export/{RefundExport.objects.last().id}/'
-    )
+    r = client.get(f'{url_prefix}banktransfer/sepa-export/{RefundExport.objects.last().id}/')
     assert r.status_code == 200
     r = client.post(
         f'{url_prefix}banktransfer/sepa-export/{RefundExport.objects.last().id}/',
@@ -88,9 +82,7 @@ def test_export_refunds(client, env, url_prefix):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = client.get(f'{url_prefix}banktransfer/refunds/')
     assert r.status_code == 200
-    r = client.post(
-        f'{url_prefix}banktransfer/refunds/', {'unite_transactions': True}, follow=True
-    )
+    r = client.post(f'{url_prefix}banktransfer/refunds/', {'unite_transactions': True}, follow=True)
     assert r.status_code == 200
     refund = RefundExport.objects.last()
     assert refund is not None
@@ -112,9 +104,7 @@ def test_export_refunds_omit_invalid_bic(client, env, url_prefix):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = client.get(f'{url_prefix}banktransfer/refunds/')
     assert r.status_code == 200
-    r = client.post(
-        f'{url_prefix}banktransfer/refunds/', {'unite_transactions': True}, follow=True
-    )
+    r = client.post(f'{url_prefix}banktransfer/refunds/', {'unite_transactions': True}, follow=True)
     assert r.status_code == 200
     refund = RefundExport.objects.last()
     assert refund is not None

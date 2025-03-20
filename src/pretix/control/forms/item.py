@@ -48,9 +48,7 @@ class CategoryForm(I18nModelForm):
 
 
 class QuestionForm(I18nModelForm):
-    question = I18nFormField(
-        label=_('Question'), widget_kwargs={'attrs': {'rows': 2}}, widget=I18nTextarea
-    )
+    question = I18nFormField(label=_('Question'), widget_kwargs={'attrs': {'rows': 2}}, widget=I18nTextarea)
 
     def removeDesOption(self):
         choices = list(self.fields['type'].choices)
@@ -65,9 +63,7 @@ class QuestionForm(I18nModelForm):
         self.removeDesOption()
         self.fields['items'].queryset = self.instance.event.items.all()
         self.fields['items'].required = True
-        self.fields[
-            'dependency_question'
-        ].queryset = self.instance.event.questions.filter(
+        self.fields['dependency_question'].queryset = self.instance.event.questions.filter(
             type__in=(
                 Question.TYPE_BOOLEAN,
                 Question.TYPE_CHOICE,
@@ -76,9 +72,9 @@ class QuestionForm(I18nModelForm):
             ask_during_checkin=False,
         )
         if self.instance.pk:
-            self.fields['dependency_question'].queryset = self.fields[
-                'dependency_question'
-            ].queryset.exclude(pk=self.instance.pk)
+            self.fields['dependency_question'].queryset = self.fields['dependency_question'].queryset.exclude(
+                pk=self.instance.pk
+            )
         self.fields['identifier'].required = False
         self.fields['dependency_values'].required = False
         self.fields['help_text'].widget.attrs['rows'] = 3
@@ -91,16 +87,12 @@ class QuestionForm(I18nModelForm):
         dep = val = self.cleaned_data.get('dependency_question')
         if dep:
             if dep.ask_during_checkin:
-                raise ValidationError(
-                    _('Question cannot depend on a question asked during check-in.')
-                )
+                raise ValidationError(_('Question cannot depend on a question asked during check-in.'))
 
             seen_ids = {self.instance.pk} if self.instance else set()
             while dep:
                 if dep.pk in seen_ids:
-                    raise ValidationError(
-                        _('Circular dependency between questions detected.')
-                    )
+                    raise ValidationError(_('Circular dependency between questions detected.'))
                 seen_ids.add(dep.pk)
                 dep = dep.dependency_question
         return val
@@ -108,13 +100,8 @@ class QuestionForm(I18nModelForm):
     def clean_ask_during_checkin(self):
         val = self.cleaned_data.get('ask_during_checkin')
 
-        if (
-            val
-            and self.cleaned_data.get('type') in Question.ASK_DURING_CHECKIN_UNSUPPORTED
-        ):
-            raise ValidationError(
-                _('This type of question cannot be asked during check-in.')
-            )
+        if val and self.cleaned_data.get('type') in Question.ASK_DURING_CHECKIN_UNSUPPORTED:
+            raise ValidationError(_('This type of question cannot be asked during check-in.'))
 
         return val
 
@@ -123,9 +110,7 @@ class QuestionForm(I18nModelForm):
         if d.get('dependency_question') and not d.get('dependency_values'):
             raise ValidationError({'dependency_values': [_('This field is required')]})
         if d.get('dependency_question') and d.get('ask_during_checkin'):
-            raise ValidationError(
-                _('Dependencies between questions are not supported during check-in.')
-            )
+            raise ValidationError(_('Dependencies between questions are not supported during check-in.'))
         return d
 
     class Meta:
@@ -156,9 +141,7 @@ class QuestionForm(I18nModelForm):
             'valid_datetime_max': SplitDateTimePickerWidget(),
             'valid_date_min': DatePickerWidget(),
             'valid_date_max': DatePickerWidget(),
-            'items': forms.CheckboxSelectMultiple(
-                attrs={'class': 'scrolling-multiple-choice'}
-            ),
+            'items': forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
             'dependency_values': forms.SelectMultiple,
         }
         field_classes = {
@@ -206,9 +189,7 @@ class QuotaForm(I18nModelForm):
     def __init__(self, **kwargs):
         self.instance = kwargs.get('instance', None)
         self.event = kwargs.get('event')
-        items = kwargs.pop('items', None) or self.event.items.prefetch_related(
-            'variations'
-        )
+        items = kwargs.pop('items', None) or self.event.items.prefetch_related('variations')
         self.original_instance = modelcopy(self.instance) if self.instance else None
         initial = kwargs.get('initial', {})
         if self.instance and self.instance.pk and 'itemvars' not in initial:
@@ -222,9 +203,7 @@ class QuotaForm(I18nModelForm):
         for item in items:
             if len(item.variations.all()) > 0:
                 for v in item.variations.all():
-                    choices.append(
-                        ('{}-{}'.format(item.pk, v.pk), '{} – {}'.format(item, v.value))
-                    )
+                    choices.append(('{}-{}'.format(item.pk, v.pk), '{} – {}'.format(item, v.value)))
             else:
                 choices.append(('{}'.format(item.pk), str(item)))
 
@@ -274,34 +253,22 @@ class QuotaForm(I18nModelForm):
         inst = super().save(*args, **kwargs)
 
         selected_items = set(
-            list(
-                self.event.items.filter(
-                    id__in=[i.split('-')[0] for i in self.cleaned_data['itemvars']]
-                )
-            )
+            list(self.event.items.filter(id__in=[i.split('-')[0] for i in self.cleaned_data['itemvars']]))
         )
         selected_variations = list(
             ItemVariation.objects.filter(
                 item__event=self.event,
-                id__in=[
-                    i.split('-')[1] for i in self.cleaned_data['itemvars'] if '-' in i
-                ],
+                id__in=[i.split('-')[1] for i in self.cleaned_data['itemvars'] if '-' in i],
             )
         )
 
         current_items = [] if creating else self.instance.items.all()
         current_variations = [] if creating else self.instance.variations.all()
 
-        self.instance.items.remove(
-            *[i for i in current_items if i not in selected_items]
-        )
+        self.instance.items.remove(*[i for i in current_items if i not in selected_items])
         self.instance.items.add(*[i for i in selected_items if i not in current_items])
-        self.instance.variations.remove(
-            *[i for i in current_variations if i not in selected_variations]
-        )
-        self.instance.variations.add(
-            *[i for i in selected_variations if i not in current_variations]
-        )
+        self.instance.variations.remove(*[i for i in current_variations if i not in selected_variations])
+        self.instance.variations.add(*[i for i in selected_variations if i not in current_variations])
         return inst
 
 
@@ -424,9 +391,7 @@ class ItemCreateForm(I18nModelForm):
             # Add to all sales channels by default
             self.instance.sales_channels = list(get_all_sales_channels().keys())
 
-        self.instance.position = (
-            self.event.items.aggregate(p=Max('position'))['p'] or 0
-        ) + 1
+        self.instance.position = (self.event.items.aggregate(p=Max('position'))['p'] or 0) + 1
         instance = super().save(*args, **kwargs)
 
         if not self.event.has_subevents and not self.cleaned_data.get('has_variations'):
@@ -445,9 +410,7 @@ class ItemCreateForm(I18nModelForm):
                 quota_name = self.cleaned_data.get('quota_add_new_name')
                 quota_size = self.cleaned_data.get('quota_add_new_size')
 
-                quota = Quota.objects.create(
-                    event=self.event, name=quota_name, size=quota_size
-                )
+                quota = Quota.objects.create(event=self.event, name=quota_name, size=quota_size)
                 quota.items.add(self.instance)
                 quota.log_action(
                     'pretix.event.quota.added',
@@ -460,10 +423,7 @@ class ItemCreateForm(I18nModelForm):
                 )
 
         if self.cleaned_data.get('has_variations'):
-            if (
-                self.cleaned_data.get('copy_from')
-                and self.cleaned_data.get('copy_from').has_variations
-            ):
+            if self.cleaned_data.get('copy_from') and self.cleaned_data.get('copy_from').has_variations:
                 for variation in self.cleaned_data['copy_from'].variations.all():
                     ItemVariation.objects.create(
                         item=instance,
@@ -510,14 +470,10 @@ class ItemCreateForm(I18nModelForm):
         if not self.event.has_subevents:
             if cleaned_data.get('quota_option') == self.NEW:
                 if not self.cleaned_data.get('quota_add_new_name'):
-                    raise forms.ValidationError(
-                        {'quota_add_new_name': [_('Quota name is required.')]}
-                    )
+                    raise forms.ValidationError({'quota_add_new_name': [_('Quota name is required.')]})
             elif cleaned_data.get('quota_option') == self.EXISTING:
                 if not self.cleaned_data.get('quota_add_existing'):
-                    raise forms.ValidationError(
-                        {'quota_add_existing': [_('Please select a quota.')]}
-                    )
+                    raise forms.ValidationError({'quota_add_existing': [_('Please select a quota.')]})
 
         return cleaned_data
 
@@ -569,10 +525,7 @@ class ItemUpdateForm(I18nModelForm):
         self.fields['sales_channels'] = forms.MultipleChoiceField(
             label=_('Sales channels'),
             required=False,
-            choices=(
-                (c.identifier, c.verbose_name)
-                for c in get_all_sales_channels().values()
-            ),
+            choices=((c.identifier, c.verbose_name) for c in get_all_sales_channels().values()),
             widget=forms.CheckboxSelectMultiple,
         )
         change_decimal_field(self.fields['default_price'], self.event.currency)
@@ -590,9 +543,7 @@ class ItemUpdateForm(I18nModelForm):
                 'data-placeholder': _('Shown independently of other products'),
             }
         )
-        self.fields['hidden_if_available'].widget.choices = self.fields[
-            'hidden_if_available'
-        ].choices
+        self.fields['hidden_if_available'].widget.choices = self.fields['hidden_if_available'].choices
         self.fields['hidden_if_available'].required = False
 
         self.fields['category'].queryset = self.instance.event.categories.all()
@@ -624,9 +575,7 @@ class ItemUpdateForm(I18nModelForm):
             if d['admission']:
                 self.add_error(
                     'admission',
-                    _(
-                        'Gift card products should not be admission products at the same time.'
-                    ),
+                    _('Gift card products should not be admission products at the same time.'),
                 )
         return d
 
@@ -669,9 +618,7 @@ class ItemUpdateForm(I18nModelForm):
         }
         widgets = {
             'available_from': SplitDateTimePickerWidget(),
-            'available_until': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_available_from_0'}
-            ),
+            'available_until': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_available_from_0'}),
             'generate_tickets': TicketNullBooleanSelect(),
             'show_quota_left': ShowQuotaNullBooleanSelect(),
         }
@@ -700,10 +647,7 @@ class ItemVariationsFormSet(I18nFormSet):
         if (
             should_delete
             and form.instance.pk
-            and (
-                form.instance.orderposition_set.exists()
-                or form.instance.cartposition_set.exists()
-            )
+            and (form.instance.orderposition_set.exists() or form.instance.cartposition_set.exists())
         ):
             form._delete_fail = True
             return False
@@ -809,9 +753,7 @@ class ItemAddOnForm(I18nModelForm):
                 ),
             }
         )
-        self.fields['addon_category'].widget.choices = self.fields[
-            'addon_category'
-        ].choices
+        self.fields['addon_category'].widget.choices = self.fields['addon_category'].choices
 
     class Meta:
         model = ItemAddOn
@@ -877,9 +819,7 @@ class ItemBundleFormSet(I18nFormSet):
 
             if 'itemvar' in form.cleaned_data:
                 if form.cleaned_data['itemvar'] in ivs:
-                    raise ValidationError(
-                        _('You added the same bundled product twice.')
-                    )
+                    raise ValidationError(_('You added the same bundled product twice.'))
 
                 ivs.add(form.cleaned_data['itemvar'])
 
@@ -917,9 +857,7 @@ class ItemBundleForm(I18nModelForm):
 
             if variations:
                 for v in variations:
-                    choices.append(
-                        ('%d-%d' % (i.pk, v.pk), '%s – %s' % (pname, v.value))
-                    )
+                    choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (pname, v.value)))
             else:
                 choices.append((str(i.pk), '%s' % pname))
         self.fields['itemvar'].choices = choices
@@ -944,13 +882,9 @@ class ItemBundleForm(I18nModelForm):
                 variation = None
 
             if item == self.item:
-                raise ValidationError(
-                    _('The bundled item must not be the same item as the bundling one.')
-                )
+                raise ValidationError(_('The bundled item must not be the same item as the bundling one.'))
             if item.bundles.exists():
-                raise ValidationError(
-                    _('The bundled item must not have bundles on its own.')
-                )
+                raise ValidationError(_('The bundled item must not have bundles on its own.'))
 
             self.instance.bundled_item = item
             self.instance.bundled_variation = variation

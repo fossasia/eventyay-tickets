@@ -16,9 +16,7 @@
 from docutils.parsers.rst.directives.admonitions import BaseAdmonition
 from sphinx.util import compat
 
-compat.make_admonition = (
-    BaseAdmonition  # See https://github.com/spinus/sphinxcontrib-images/issues/41
-)
+compat.make_admonition = BaseAdmonition  # See https://github.com/spinus/sphinxcontrib-images/issues/41
 
 import os
 import sys

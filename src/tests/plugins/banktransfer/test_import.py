@@ -34,9 +34,7 @@ def env():
         plugins='pretix.plugins.banktransfer',
     )
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    t = Team.objects.create(
-        organizer=event.organizer, can_view_orders=True, can_change_orders=True
-    )
+    t = Team.objects.create(organizer=event.organizer, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
     t.limit_events.add(event)
     o1 = Order.objects.create(
@@ -158,9 +156,7 @@ def test_underpaid(env, job):
         assert env[2].pending_sum == Decimal('0.50')
 
     assert len(djmail.outbox) == 1
-    assert (
-        djmail.outbox[0].subject == 'Your order received an incomplete payment: 1Z3AS'
-    )
+    assert djmail.outbox[0].subject == 'Your order received an incomplete payment: 1Z3AS'
 
 
 @pytest.mark.django_db
@@ -533,14 +529,9 @@ Buchungstag;Valuta;Buchungstext;Auftraggeber / Empfänger;Verwendungszweck;Betra
 09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;
 09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;
 """
-    payload += (
-        '09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;\n'
-        * 1000
-    )
+    payload += '09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;\n' * 1000
 
-    file = SimpleUploadedFile(
-        'file.csv', payload.encode('utf-8'), content_type='text/csv'
-    )
+    file = SimpleUploadedFile('file.csv', payload.encode('utf-8'), content_type='text/csv')
 
     r = client.post('/control/event/dummy/dummy/banktransfer/import/', {'file': file})
     doc = BeautifulSoup(r.content, 'lxml')

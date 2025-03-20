@@ -26,9 +26,7 @@ class AnswerFilesExporter(BaseExporter):
                     forms.ModelMultipleChoiceField(
                         queryset=self.event.questions.filter(type='F'),
                         label=_('Questions'),
-                        widget=forms.CheckboxSelectMultiple(
-                            attrs={'class': 'scrolling-multiple-choice'}
-                        ),
+                        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
                         required=False,
                     ),
                 ),

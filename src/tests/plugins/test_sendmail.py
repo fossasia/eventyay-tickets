@@ -68,9 +68,7 @@ def pos(order, item):
 def logged_in_client(client, event):
     """Returns a logged client"""
     user = User.objects.create_superuser('dummy@dummy.dummy', 'dummy')
-    t = Team.objects.create(
-        organizer=event.organizer, can_view_orders=True, can_change_orders=True
-    )
+    t = Team.objects.create(organizer=event.organizer, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
     t.limit_events.add(event)
     client.force_login(user)
@@ -124,9 +122,7 @@ def test_sendmail_simple_case(logged_in_client, sendmail_url, event, order, pos)
 
 
 @pytest.mark.django_db
-def test_sendmail_email_not_sent_if_order_not_match(
-    logged_in_client, sendmail_url, event, order, pos
-):
+def test_sendmail_email_not_sent_if_order_not_match(logged_in_client, sendmail_url, event, order, pos):
     djmail.outbox = []
     response = logged_in_client.post(
         sendmail_url,
@@ -362,9 +358,7 @@ def test_sendmail_both_mails(logged_in_client, sendmail_url, event, order, pos):
 
 
 @pytest.mark.django_db
-def test_sendmail_both_but_same_address(
-    logged_in_client, sendmail_url, event, order, pos
-):
+def test_sendmail_both_but_same_address(logged_in_client, sendmail_url, event, order, pos):
     p = pos
     event.settings.attendee_emails_asked = True
     p.attendee_email = 'dummy@dummy.test'
@@ -418,9 +412,7 @@ def test_sendmail_attendee_fallback(logged_in_client, sendmail_url, event, order
 
 
 @pytest.mark.django_db
-def test_sendmail_attendee_product_filter(
-    logged_in_client, sendmail_url, event, order, pos
-):
+def test_sendmail_attendee_product_filter(logged_in_client, sendmail_url, event, order, pos):
     event.settings.attendee_emails_asked = True
     with scopes_disabled():
         i2 = Item.objects.create(name='Test item', event=event, default_price=13)
@@ -450,18 +442,14 @@ def test_sendmail_attendee_product_filter(
 
 
 @pytest.mark.django_db
-def test_sendmail_attendee_checkin_filter(
-    logged_in_client, sendmail_url, event, order, checkin_list, item, pos
-):
+def test_sendmail_attendee_checkin_filter(logged_in_client, sendmail_url, event, order, checkin_list, item, pos):
     event.settings.attendee_emails_asked = True
     with scopes_disabled():
         chkl2 = event.checkin_lists.create(name='Test Checkinlist 2', all_products=True)
         p = pos
         p.attendee_email = 'attendee1@dummy.test'
         p.save()
-        pos2 = order.positions.create(
-            item=item, price=0, attendee_email='attendee2@dummy.test'
-        )
+        pos2 = order.positions.create(item=item, price=0, attendee_email='attendee2@dummy.test')
         Checkin.objects.create(position=pos2, list=chkl2)
 
     djmail.outbox = []

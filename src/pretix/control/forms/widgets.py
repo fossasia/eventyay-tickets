@@ -23,9 +23,7 @@ class Select2Mixin:
 
     def optgroups(self, name, value, attrs=None):
         if value:
-            return [
-                (None, [c], i) for i, c in enumerate(self.options(name, value, attrs))
-            ]
+            return [(None, [c], i) for i, c in enumerate(self.options(name, value, attrs))]
         return
 
 

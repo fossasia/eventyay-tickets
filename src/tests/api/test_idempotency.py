@@ -26,13 +26,9 @@ PAYLOAD = {
 
 @pytest.mark.django_db
 def test_default(token_client, organizer):
-    resp = token_client.post(
-        '/api/v1/organizers/{}/events/'.format(organizer.slug), PAYLOAD, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/events/'.format(organizer.slug), PAYLOAD, format='json')
     assert resp.status_code == 201
-    resp = token_client.post(
-        '/api/v1/organizers/{}/events/'.format(organizer.slug), PAYLOAD, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/events/'.format(organizer.slug), PAYLOAD, format='json')
     assert resp.status_code == 400
 
 
@@ -168,13 +164,9 @@ def test_ignore_get(token_client, organizer, event):
 
 @pytest.mark.django_db
 def test_ignore_outside_api(token_client, organizer):
-    resp = token_client.post(
-        '/control/login', PAYLOAD, format='json', HTTP_X_IDEMPOTENCY_KEY='foo'
-    )
+    resp = token_client.post('/control/login', PAYLOAD, format='json', HTTP_X_IDEMPOTENCY_KEY='foo')
     assert resp.status_code == 200
-    resp = token_client.post(
-        '/control/invalid/', PAYLOAD, format='json', HTTP_X_IDEMPOTENCY_KEY='foo'
-    )
+    resp = token_client.post('/control/invalid/', PAYLOAD, format='json', HTTP_X_IDEMPOTENCY_KEY='foo')
     assert resp.status_code == 302
 
 
@@ -199,9 +191,7 @@ def test_allow_retry_409(token_client, organizer, event, order):
     order.save()
     with event.lock():
         resp = token_client.post(
-            '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(
-                organizer.slug, event.slug, order.code
-            ),
+            '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(organizer.slug, event.slug, order.code),
             format='json',
             HTTP_X_IDEMPOTENCY_KEY='foo',
         )
@@ -209,9 +199,7 @@ def test_allow_retry_409(token_client, organizer, event, order):
         order.refresh_from_db()
         assert order.status == Order.STATUS_EXPIRED
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(organizer.slug, event.slug, order.code),
         format='json',
         HTTP_X_IDEMPOTENCY_KEY='foo',
     )

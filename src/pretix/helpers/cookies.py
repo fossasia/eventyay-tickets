@@ -6,11 +6,7 @@ from django.conf import settings
 def set_cookie_without_samesite(request, response, key, *args, **kwargs):
     assert 'samesite' not in kwargs
     response.set_cookie(key, *args, **kwargs)
-    is_secure = (
-        kwargs.get('secure', False)
-        or request.scheme == 'https'
-        or settings.SITE_URL.startswith('https://')
-    )
+    is_secure = kwargs.get('secure', False) or request.scheme == 'https' or settings.SITE_URL.startswith('https://')
     if not is_secure:
         # https://www.chromestatus.com/feature/5633521622188032
         return
@@ -33,15 +29,12 @@ def set_cookie_without_samesite(request, response, key, *args, **kwargs):
 
 def should_send_same_site_none(useragent):
     # Don’t send `SameSite=None` to known incompatible clients.
-    return not has_web_kit_same_site_bug(
-        useragent
-    ) and not drops_unrecognized_same_site_cookies(useragent)
+    return not has_web_kit_same_site_bug(useragent) and not drops_unrecognized_same_site_cookies(useragent)
 
 
 def has_web_kit_same_site_bug(useragent):
     return is_ios_version(12, useragent) or (
-        is_macosx_version(10, 14, useragent)
-        and (is_safari(useragent) or is_mac_embedded_browser(useragent))
+        is_macosx_version(10, 14, useragent) and (is_safari(useragent) or is_mac_embedded_browser(useragent))
     )
 
 
@@ -60,9 +53,7 @@ RE_CHROMIUM = re.compile(r'Chrom(e|ium)')
 RE_CHROMIUM_VERSION = re.compile(r'Chrom[^ /]+[ /]([0-9]+)[.0-9]*')
 RE_UC_VERSION = re.compile(r'UC[ ]?Browser/([0-9]+)\.([0-9]+)\.([0-9]+)[.0-9]*')
 RE_IOS_VERSION = re.compile(r'\(iP.+; CPU .*OS ([0-9]+)[_0-9]*.*\) AppleWebKit/')
-RE_MAC_VERSION = re.compile(
-    r'\(Macintosh;.*Mac OS X ([0-9]+)_([0-9]+)[_0-9]*.*\) AppleWebKit/'
-)
+RE_MAC_VERSION = re.compile(r'\(Macintosh;.*Mac OS X ([0-9]+)_([0-9]+)[_0-9]*.*\) AppleWebKit/')
 RE_SAFARI = re.compile(r'Version/.* Safari/')
 RE_MAC_EMBEDDED = re.compile(
     r'^Mozilla/[.0-9]+ \(Macintosh;.*Mac OS X [_0-9]+\) AppleWebKit/[.0-9]+ \(KHTML, '

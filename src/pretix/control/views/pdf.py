@@ -67,9 +67,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
             default_price=42.23,
             description=_('Sample product description'),
         )
-        item2 = self.request.event.items.create(
-            name=_('Sample workshop'), default_price=23.40
-        )
+        item2 = self.request.event.items.create(name=_('Sample workshop'), default_price=23.40)
 
         from pretix.base.models import Order
 
@@ -85,24 +83,14 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
         scheme = PERSON_NAME_SCHEMES[self.request.event.settings.name_scheme]
         sample = {k: str(v) for k, v in scheme['sample'].items()}
-        p = order.positions.create(
-            item=item, attendee_name_parts=sample, price=item.default_price
-        )
-        order.positions.create(
-            item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p
-        )
-        order.positions.create(
-            item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p
-        )
+        p = order.positions.create(item=item, attendee_name_parts=sample, price=item.default_price)
+        order.positions.create(item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p)
+        order.positions.create(item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p)
 
-        InvoiceAddress.objects.create(
-            order=order, name_parts=sample, company=_('Sample company')
-        )
+        InvoiceAddress.objects.create(order=order, name_parts=sample, company=_('Sample company'))
         return p
 
-    def generate(
-        self, p: OrderPosition, override_layout=None, override_background=None
-    ):
+    def generate(self, p: OrderPosition, override_layout=None, override_background=None):
         raise NotImplementedError()
 
     def get_layout_settings_key(self):
@@ -122,19 +110,13 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
         )
 
     def get_current_layout(self):
-        return self.request.event.settings.get(
-            self.get_layout_settings_key(), as_type=list
-        )
+        return self.request.event.settings.get(self.get_layout_settings_key(), as_type=list)
 
     def save_layout(self):
-        self.request.event.settings.set(
-            self.get_layout_settings_key(), self.request.POST.get('data')
-        )
+        self.request.event.settings.set(self.get_layout_settings_key(), self.request.POST.get('data'))
 
     def save_background(self, f: CachedFile):
-        fexisting = self.request.event.settings.get(
-            self.get_background_settings_key(), as_type=File
-        )
+        fexisting = self.request.event.settings.get(self.get_background_settings_key(), as_type=File)
         if fexisting:
             try:
                 default_storage.delete(fexisting.name)
@@ -152,9 +134,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
             'pdf',
         )
         newname = default_storage.save(fname, f.file)
-        self.request.event.settings.set(
-            self.get_background_settings_key(), 'file://' + newname
-        )
+        self.request.event.settings.set(self.get_background_settings_key(), 'file://' + newname)
 
     def post(self, request, *args, **kwargs):
         if 'emptybackground' in request.POST:
@@ -165,9 +145,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
                     height=float(request.POST.get('height')) * mm,
                 )
             except ValueError:
-                return JsonResponse(
-                    {'status': 'error', 'error': 'Invalid height/width given.'}
-                )
+                return JsonResponse({'status': 'error', 'error': 'Invalid height/width given.'})
             buffer = BytesIO()
             p.write(buffer)
             buffer.seek(0)
@@ -237,18 +215,14 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
                 fname, mimet, data = self.generate(
                     p,
                     override_layout=(
-                        json.loads(self.request.POST.get('data'))
-                        if self.request.POST.get('data')
-                        else None
+                        json.loads(self.request.POST.get('data')) if self.request.POST.get('data') else None
                     ),
                     override_background=cf.file if cf else None,
                 )
 
             resp = HttpResponse(data, content_type=mimet)
             ftype = fname.split('.')[-1]
-            resp['Content-Disposition'] = (
-                'attachment; filename="ticket-preview.{}"'.format(ftype)
-            )
+            resp['Content-Disposition'] = 'attachment; filename="ticket-preview.{}"'.format(ftype)
             return resp
         elif 'data' in request.POST:
             if cf:
@@ -271,9 +245,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
         ctx['images'] = self.get_images()
         ctx['layout'] = json.dumps(self.get_current_layout())
         ctx['title'] = self.title
-        ctx['locales'] = [
-            p for p in settings.LANGUAGES if p[0] in self.request.event.settings.locales
-        ]
+        ctx['locales'] = [p for p in settings.LANGUAGES if p[0] in self.request.event.settings.locales]
         return ctx
 
 
@@ -289,9 +261,7 @@ class FontsCSSView(TemplateView):
 
 class PdfView(TemplateView):
     def get(self, request, *args, **kwargs):
-        cf = get_object_or_404(
-            CachedFile, id=kwargs.get('filename'), filename='background_preview.pdf'
-        )
+        cf = get_object_or_404(CachedFile, id=kwargs.get('filename'), filename='background_preview.pdf')
         resp = FileResponse(cf.file, content_type='application/pdf')
         resp['Content-Disposition'] = 'attachment; filename="{}"'.format(cf.filename)
         return resp

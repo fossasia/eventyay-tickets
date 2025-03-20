@@ -24,12 +24,8 @@ class LoginForm(forms.Form):
     keep_logged_in = forms.BooleanField(label=_('Keep me logged in'), required=False)
 
     error_messages = {
-        'invalid_login': _(
-            'This combination of credentials is not known to our system.'
-        ),
-        'rate_limit': _(
-            'For security reasons, please wait 5 minutes before you try again.'
-        ),
+        'invalid_login': _('This combination of credentials is not known to our system.'),
+        'rate_limit': _('For security reasons, please wait 5 minutes before you try again.'),
         'inactive': _('This account is inactive.'),
     }
 
@@ -66,9 +62,7 @@ class LoginForm(forms.Form):
         if client_ip.is_private:
             # This is the private IP of the server, web server not set up correctly
             return None
-        return 'pretix_login_{}'.format(
-            hashlib.sha1(str(client_ip).encode()).hexdigest()
-        )
+        return 'pretix_login_{}'.format(hashlib.sha1(str(client_ip).encode()).hexdigest())
 
     def clean(self):
         if all(k in self.cleaned_data for k, f in self.fields.items() if f.required):
@@ -78,19 +72,13 @@ class LoginForm(forms.Form):
                 rc = get_redis_connection('redis')
                 cnt = rc.get(self.ratelimit_key)
                 if cnt and int(cnt) > 10:
-                    raise forms.ValidationError(
-                        self.error_messages['rate_limit'], code='rate_limit'
-                    )
-            self.user_cache = self.backend.form_authenticate(
-                self.request, self.cleaned_data
-            )
+                    raise forms.ValidationError(self.error_messages['rate_limit'], code='rate_limit')
+            self.user_cache = self.backend.form_authenticate(self.request, self.cleaned_data)
             if self.user_cache is None:
                 if self.ratelimit_key:
                     rc.incr(self.ratelimit_key)
                     rc.expire(self.ratelimit_key, 300)
-                raise forms.ValidationError(
-                    self.error_messages['invalid_login'], code='invalid_login'
-                )
+                raise forms.ValidationError(self.error_messages['invalid_login'], code='invalid_login')
             else:
                 self.confirm_login_allowed(self.user_cache)
 
@@ -119,9 +107,7 @@ class LoginForm(forms.Form):
 
 class RegistrationForm(forms.Form):
     error_messages = {
-        'duplicate_email': _(
-            'You already registered with that email address, please use the login form.'
-        ),
+        'duplicate_email': _('You already registered with that email address, please use the login form.'),
         'pw_mismatch': _('Please enter the same password twice'),
     }
     email = forms.EmailField(label=_('Email address'), required=True)
@@ -167,17 +153,13 @@ class RegistrationForm(forms.Form):
         password1 = self.cleaned_data.get('password', '')
         user = User(email=self.cleaned_data.get('email'))
         if validate_password(password1, user=user) is not None:
-            raise forms.ValidationError(
-                _(password_validators_help_texts()), code='pw_invalid'
-            )
+            raise forms.ValidationError(_(password_validators_help_texts()), code='pw_invalid')
         return password1
 
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError(
-                self.error_messages['duplicate_email'], code='duplicate_email'
-            )
+            raise forms.ValidationError(self.error_messages['duplicate_email'], code='duplicate_email')
         return email
 
 
@@ -185,12 +167,8 @@ class PasswordRecoverForm(forms.Form):
     error_messages = {
         'pw_mismatch': _('Please enter the same password twice'),
     }
-    password = forms.CharField(
-        label=_('Password'), widget=forms.PasswordInput, required=True
-    )
-    password_repeat = forms.CharField(
-        label=_('Repeat password'), widget=forms.PasswordInput
-    )
+    password = forms.CharField(label=_('Password'), widget=forms.PasswordInput, required=True)
+    password_repeat = forms.CharField(label=_('Repeat password'), widget=forms.PasswordInput)
 
     def __init__(self, user_id=None, *args, **kwargs):
         self.user_id = user_id
@@ -217,9 +195,7 @@ class PasswordRecoverForm(forms.Form):
         except User.DoesNotExist:
             user = None
         if validate_password(password1, user=user) is not None:
-            raise forms.ValidationError(
-                _(password_validators_help_texts()), code='pw_invalid'
-            )
+            raise forms.ValidationError(_(password_validators_help_texts()), code='pw_invalid')
         return password1
 
 
@@ -240,9 +216,7 @@ class PasswordForgotForm(forms.Form):
 
 class ReauthForm(forms.Form):
     error_messages = {
-        'invalid_login': _(
-            'This combination of credentials is not known to our system.'
-        ),
+        'invalid_login': _('This combination of credentials is not known to our system.'),
         'inactive': _('This account is inactive.'),
     }
 
@@ -265,9 +239,7 @@ class ReauthForm(forms.Form):
         self.cleaned_data['email'] = self.user.email
         user_cache = self.backend.form_authenticate(self.request, self.cleaned_data)
         if user_cache != self.user:
-            raise forms.ValidationError(
-                self.error_messages['invalid_login'], code='invalid_login'
-            )
+            raise forms.ValidationError(self.error_messages['invalid_login'], code='invalid_login')
         else:
             self.confirm_login_allowed(user_cache)
 

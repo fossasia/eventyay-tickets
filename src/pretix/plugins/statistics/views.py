@@ -32,10 +32,7 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
             clear_cache(self.request.event)
 
         subevent = None
-        if (
-            self.request.GET.get('subevent', '') != ''
-            and self.request.event.has_subevents
-        ):
+        if self.request.GET.get('subevent', '') != '' and self.request.event.has_subevents:
             i = self.request.GET.get('subevent', '')
             try:
                 subevent = self.request.event.subevents.get(pk=i)
@@ -77,42 +74,26 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
         # Orders by day
         ctx['obd_data'] = cache.get('statistics_obd_data' + ckey)
         if not ctx['obd_data']:
-            oqs = Order.objects.annotate(
-                payment_date=Subquery(p_date, output_field=DateTimeField())
-            )
+            oqs = Order.objects.annotate(payment_date=Subquery(p_date, output_field=DateTimeField()))
             if subevent:
-                oqs = oqs.filter(
-                    all_positions__subevent_id=subevent, all_positions__canceled=False
-                ).distinct()
+                oqs = oqs.filter(all_positions__subevent_id=subevent, all_positions__canceled=False).distinct()
 
             ordered_by_day = {}
             for o in oqs.filter(event=self.request.event).values('datetime'):
                 day = o['datetime'].astimezone(tz).date()
                 ordered_by_day[day] = ordered_by_day.get(day, 0) + 1
             paid_by_day = {}
-            for o in oqs.filter(
-                event=self.request.event, payment_date__isnull=False
-            ).values('payment_date'):
+            for o in oqs.filter(event=self.request.event, payment_date__isnull=False).values('payment_date'):
                 day = o['payment_date'].astimezone(tz).date()
                 paid_by_day[day] = paid_by_day.get(day, 0) + 1
 
             data = []
             for d in dateutil.rrule.rrule(
                 dateutil.rrule.DAILY,
-                dtstart=min(ordered_by_day.keys())
-                if ordered_by_day
-                else datetime.date.today(),
+                dtstart=min(ordered_by_day.keys()) if ordered_by_day else datetime.date.today(),
                 until=max(
-                    max(
-                        ordered_by_day.keys()
-                        if paid_by_day
-                        else [datetime.date.today()]
-                    ),
-                    max(
-                        paid_by_day.keys()
-                        if paid_by_day
-                        else [datetime.date(1970, 1, 1)]
-                    ),
+                    max(ordered_by_day.keys() if paid_by_day else [datetime.date.today()]),
+                    max(paid_by_day.keys() if paid_by_day else [datetime.date(1970, 1, 1)]),
                 ),
             ):
                 d = d.date()
@@ -136,33 +117,24 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
             num_ordered = {
                 p['item']: p['cnt']
                 for p in (
-                    opqs.filter(order__event=self.request.event)
-                    .values('item')
-                    .annotate(cnt=Count('id'))
-                    .order_by()
+                    opqs.filter(order__event=self.request.event).values('item').annotate(cnt=Count('id')).order_by()
                 )
             }
             num_paid = {
                 p['item']: p['cnt']
                 for p in (
-                    opqs.filter(
-                        order__event=self.request.event, order__status=Order.STATUS_PAID
-                    )
+                    opqs.filter(order__event=self.request.event, order__status=Order.STATUS_PAID)
                     .values('item')
                     .annotate(cnt=Count('id'))
                     .order_by()
                 )
             }
-            item_names = {
-                i.id: str(i) for i in Item.objects.filter(event=self.request.event)
-            }
+            item_names = {i.id: str(i) for i in Item.objects.filter(event=self.request.event)}
             ctx['obp_data'] = json.dumps(
                 [
                     {
                         'item': item_names[item],
-                        'item_short': item_names[item]
-                        if len(item_names[item]) < 15
-                        else (item_names[item][:15] + '…'),
+                        'item_short': item_names[item] if len(item_names[item]) < 15 else (item_names[item][:15] + '…'),
                         'ordered': cnt,
                         'paid': num_paid.get(item, 0),
                     }
@@ -176,9 +148,7 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
             rev_by_day = {}
             if subevent:
                 for o in (
-                    OrderPosition.objects.annotate(
-                        payment_date=Subquery(op_date, output_field=DateTimeField())
-                    )
+                    OrderPosition.objects.annotate(payment_date=Subquery(op_date, output_field=DateTimeField()))
                     .filter(
                         order__event=self.request.event,
                         subevent=subevent,
@@ -191,9 +161,7 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
                     rev_by_day[day] = rev_by_day.get(day, 0) + o['price']
             else:
                 for o in (
-                    Order.objects.annotate(
-                        payment_date=Subquery(p_date, output_field=DateTimeField())
-                    )
+                    Order.objects.annotate(payment_date=Subquery(p_date, output_field=DateTimeField()))
                     .filter(
                         event=self.request.event,
                         status=Order.STATUS_PAID,
@@ -208,9 +176,7 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
             total = 0
             for d in dateutil.rrule.rrule(
                 dateutil.rrule.DAILY,
-                dtstart=min(
-                    rev_by_day.keys() if rev_by_day else [datetime.date.today()]
-                ),
+                dtstart=min(rev_by_day.keys() if rev_by_day else [datetime.date.today()]),
                 until=max(rev_by_day.keys() if rev_by_day else [datetime.date.today()]),
             ):
                 d = d.date()
@@ -235,9 +201,7 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
                 ctx['seats']['blocked_seats'] = seats_qs.filter(blocked=True).count()
                 ctx['seats']['free_seats'] = seats_qs.filter(blocked=False).count()
                 ctx['seats']['purchased_seats'] = (
-                    ev.seats.count()
-                    - ctx['seats']['blocked_seats']
-                    - ctx['seats']['free_seats']
+                    ev.seats.count() - ctx['seats']['blocked_seats'] - ctx['seats']['free_seats']
                 )
 
                 seats_qs = (
@@ -255,9 +219,9 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
                 ctx['seats']['stats'] = {}
                 item_cache = {
                     i.pk: i
-                    for i in self.request.event.items.annotate(
-                        has_variations=Count('variations')
-                    ).filter(pk__in={p['product'] for p in seats_qs if p['product']})
+                    for i in self.request.event.items.annotate(has_variations=Count('variations')).filter(
+                        pk__in={p['product'] for p in seats_qs if p['product']}
+                    )
                 }
                 item_cache[None] = None
 
@@ -266,9 +230,9 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
                     if item_cache[item['product']] not in ctx['seats']['products']:
                         price = None
                         if product and product.has_variations:
-                            price = product.variations.filter(active=True).aggregate(
-                                Min('default_price')
-                            )['default_price__min']
+                            price = product.variations.filter(active=True).aggregate(Min('default_price'))[
+                                'default_price__min'
+                            ]
                         if product and not price:
                             price = product.default_price
                         if not price:

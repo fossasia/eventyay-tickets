@@ -6,15 +6,9 @@ def initialize_billing_schedules(apps, schema_editor):
     CrontabSchedule = apps.get_model('django_celery_beat', 'CrontabSchedule')
 
     schedules = {
-        'monthly_billing': CrontabSchedule.objects.create(
-            day_of_month=1, hour=0, minute=0
-        ),
-        'invoice_notification': CrontabSchedule.objects.create(
-            day_of_month=1, hour=0, minute=10
-        ),
-        'auto_billing': CrontabSchedule.objects.create(
-            day_of_month=1, hour=0, minute=20
-        ),
+        'monthly_billing': CrontabSchedule.objects.create(day_of_month=1, hour=0, minute=0),
+        'invoice_notification': CrontabSchedule.objects.create(day_of_month=1, hour=0, minute=10),
+        'auto_billing': CrontabSchedule.objects.create(day_of_month=1, hour=0, minute=20),
         'retry_payment': CrontabSchedule.objects.create(hour=0, minute=30),
         'billing_status': CrontabSchedule.objects.create(hour=0, minute=40),
     }
@@ -49,9 +43,7 @@ def initialize_billing_schedules(apps, schema_editor):
 
     for task in billing_tasks:
         if not PeriodicTask.objects.filter(name=task['name']).exists():
-            PeriodicTask.objects.create(
-                name=task['name'], task=task['task'], crontab=task['schedule']
-            )
+            PeriodicTask.objects.create(name=task['name'], task=task['task'], crontab=task['schedule'])
 
 
 def reverse_billing_schedules(apps, schema_editor):

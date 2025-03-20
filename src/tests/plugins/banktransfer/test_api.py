@@ -32,9 +32,7 @@ def env():
         plugins='pretix.plugins.banktransfer',
     )
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    t = Team.objects.create(
-        organizer=event.organizer, can_view_orders=True, can_change_orders=True
-    )
+    t = Team.objects.create(organizer=event.organizer, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
     t.limit_events.add(event)
     o1 = Order.objects.create(
@@ -103,9 +101,7 @@ def test_api_list(env, client):
     res['created'] = testtime.isoformat().replace('+00:00', 'Z')
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
-        client.get(
-            '/api/v1/organizers/{}/bankimportjobs/'.format(env[0].organizer.slug)
-        ).content.decode('utf-8')
+        client.get('/api/v1/organizers/{}/bankimportjobs/'.format(env[0].organizer.slug)).content.decode('utf-8')
     )
     assert r['results'] == [res]
 
@@ -130,11 +126,9 @@ def test_api_detail(env, client):
     res['created'] = testtime.isoformat().replace('+00:00', 'Z')
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
-        client.get(
-            '/api/v1/organizers/{}/bankimportjobs/{}/'.format(
-                env[0].organizer.slug, job.pk
-            )
-        ).content.decode('utf-8')
+        client.get('/api/v1/organizers/{}/bankimportjobs/{}/'.format(env[0].organizer.slug, job.pk)).content.decode(
+            'utf-8'
+        )
     )
     assert r == res
 

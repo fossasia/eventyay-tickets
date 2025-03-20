@@ -11,9 +11,7 @@ class TeamTokenAuthentication(TokenAuthentication):
     def authenticate_credentials(self, key):
         model = self.get_model()
         try:
-            token = model.objects.select_related('team', 'team__organizer').get(
-                token=key
-            )
+            token = model.objects.select_related('team', 'team__organizer').get(token=key)
         except model.DoesNotExist:
             raise exceptions.AuthenticationFailed('Invalid token.')
 

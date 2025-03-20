@@ -42,9 +42,7 @@ class ChartContainingView:
     def get(self, request, *args, **kwargs):
         resp = super().get(request, *args, **kwargs)
         # required by raphael.js
-        resp['Content-Security-Policy'] = (
-            "script-src 'unsafe-eval'; style-src 'unsafe-inline'"
-        )
+        resp['Content-Security-Policy'] = "script-src 'unsafe-eval'; style-src 'unsafe-inline'"
         return resp
 
 
@@ -53,11 +51,7 @@ class PaginationMixin:
 
     def get_paginate_by(self, queryset):
         skey = 'stored_page_size_' + self.request.resolver_match.url_name
-        default = (
-            self.request.session.get(skey)
-            or self.paginate_by
-            or self.DEFAULT_PAGINATION
-        )
+        default = self.request.session.get(skey) or self.paginate_by or self.DEFAULT_PAGINATION
         if self.request.GET.get('page_size'):
             try:
                 size = min(250, int(self.request.GET.get('page_size')))
@@ -177,15 +171,12 @@ class LargeResultSetPaginator(object):
         ordered = getattr(self.object_list, 'ordered', None)
         if ordered is not None and not ordered:
             obj_list_repr = (
-                '{} {}'.format(
-                    self.object_list.model, self.object_list.__class__.__name__
-                )
+                '{} {}'.format(self.object_list.model, self.object_list.__class__.__name__)
                 if hasattr(self.object_list, 'model')
                 else '{!r}'.format(self.object_list)
             )
             warnings.warn(
-                'Pagination may yield inconsistent results with an unordered '
-                'object_list: {}.'.format(obj_list_repr),
+                'Pagination may yield inconsistent results with an unordered object_list: {}.'.format(obj_list_repr),
                 UnorderedObjectListWarning,
                 stacklevel=3,
             )

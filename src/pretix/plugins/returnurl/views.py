@@ -13,9 +13,7 @@ from pretix.control.views.event import (
 class ReturnSettingsForm(SettingsForm):
     returnurl_prefix = forms.URLField(
         label=_('Base redirection URL'),
-        help_text=_(
-            'Redirection will only be allowed to URLs that start with this prefix.'
-        ),
+        help_text=_('Redirection will only be allowed to URLs that start with this prefix.'),
         required=False,
     )
 

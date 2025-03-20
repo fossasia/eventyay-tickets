@@ -49,9 +49,9 @@ class VoucherList(PaginationMixin, EventPermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = Voucher.annotate_budget_used_orders(
-            self.request.event.vouchers.filter(
-                waitinglistentries__isnull=True
-            ).select_related('item', 'variation', 'seat')
+            self.request.event.vouchers.filter(waitinglistentries__isnull=True).select_related(
+                'item', 'variation', 'seat'
+            )
         )
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
@@ -99,9 +99,7 @@ class VoucherList(PaginationMixin, EventPermissionRequiredMixin, ListView):
                 else:
                     prod = '%s' % str(v.item)
             elif v.quota:
-                prod = _('Any product in quota "{quota}"').format(
-                    quota=str(v.quota.name)
-                )
+                prod = _('Any product in quota "{quota}"').format(quota=str(v.quota.name))
             else:
                 prod = _('Any product')
             row = [
@@ -130,16 +128,12 @@ class VoucherTags(EventPermissionRequiredMixin, TemplateView):
     permission = 'can_view_vouchers'
 
     def get_queryset(self):
-        qs = self.request.event.vouchers.order_by('tag').filter(
-            tag__isnull=False, waitinglistentries__isnull=True
-        )
+        qs = self.request.event.vouchers.order_by('tag').filter(tag__isnull=False, waitinglistentries__isnull=True)
 
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
 
-        qs = qs.values('tag').annotate(
-            total=Sum('max_usages'), redeemed=Sum('redeemed')
-        )
+        qs = qs.values('tag').annotate(total=Sum('max_usages'), redeemed=Sum('redeemed'))
 
         return qs.distinct()
 
@@ -220,9 +214,7 @@ class VoucherUpdate(EventPermissionRequiredMixin, UpdateView):
 
     def get_form_class(self):
         form_class = VoucherForm
-        for receiver, response in voucher_form_class.send(
-            self.request.event, cls=form_class
-        ):
+        for receiver, response in voucher_form_class.send(self.request.event, cls=form_class):
             if response:
                 form_class = response
         return form_class
@@ -263,9 +255,7 @@ class VoucherCreate(EventPermissionRequiredMixin, CreateView):
 
     def get_form_class(self):
         form_class = VoucherForm
-        for receiver, response in voucher_form_class.send(
-            self.request.event, cls=form_class
-        ):
+        for receiver, response in voucher_form_class.send(self.request.event, cls=form_class):
             if response:
                 form_class = response
         return form_class
@@ -300,15 +290,11 @@ class VoucherCreate(EventPermissionRequiredMixin, CreateView):
             self.request,
             mark_safe(
                 _('The new voucher has been created: {code}').format(
-                    code=format_html(
-                        '<a href="{url}">{code}</a>', url=url, code=self.object.code
-                    )
+                    code=format_html('<a href="{url}">{code}</a>', url=url, code=self.object.code)
                 )
             ),
         )
-        form.instance.log_action(
-            'pretix.voucher.added', data=dict(form.cleaned_data), user=self.request.user
-        )
+        form.instance.log_action('pretix.voucher.added', data=dict(form.cleaned_data), user=self.request.user)
         return ret
 
     def post(self, request, *args, **kwargs):
@@ -334,9 +320,7 @@ class VoucherGo(EventPermissionRequiredMixin, View):
                 voucher=voucher.id,
             )
         except Voucher.DoesNotExist:
-            messages.error(
-                request, _('There is no voucher with the given voucher code.')
-            )
+            messages.error(request, _('There is no voucher with the given voucher code.'))
             return redirect(
                 'control:event.vouchers',
                 event=request.event.slug,
@@ -372,9 +356,7 @@ class VoucherBulkCreate(EventPermissionRequiredMixin, AsyncFormView):
     def copy_from(self):
         if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
-                return self.request.event.vouchers.get(
-                    pk=self.request.GET.get('copy_from')
-                )
+                return self.request.event.vouchers.get(pk=self.request.GET.get('copy_from'))
             except Voucher.DoesNotExist:
                 pass
 
@@ -409,11 +391,7 @@ class VoucherBulkCreate(EventPermissionRequiredMixin, AsyncFormView):
         def process_batch(batch_vouchers, voucherids):
             Voucher.objects.bulk_create(batch_vouchers)
             if not connection.features.can_return_rows_from_bulk_insert:
-                batch_vouchers = list(
-                    self.request.event.vouchers.filter(
-                        code__in=[v.code for v in batch_vouchers]
-                    )
-                )
+                batch_vouchers = list(self.request.event.vouchers.filter(code__in=[v.code for v in batch_vouchers]))
 
             log_entries = []
             for v in batch_vouchers:
@@ -433,11 +411,7 @@ class VoucherBulkCreate(EventPermissionRequiredMixin, AsyncFormView):
             LogEntry.objects.bulk_create(log_entries)
             form.post_bulk_save(batch_vouchers)
             batch_vouchers.clear()
-            set_progress(
-                len(voucherids)
-                / total_num
-                * (50.0 if form.cleaned_data['send'] else 100.0)
-            )
+            set_progress(len(voucherids) / total_num * (50.0 if form.cleaned_data['send'] else 100.0))
 
         voucherids = []
         with lockfn(), transaction.atomic():
@@ -478,9 +452,7 @@ class VoucherBulkCreate(EventPermissionRequiredMixin, AsyncFormView):
 
     def get_form_class(self):
         form_class = VoucherBulkForm
-        for receiver, response in voucher_form_class.send(
-            self.request.event, cls=form_class
-        ):
+        for receiver, response in voucher_form_class.send(self.request.event, cls=form_class):
             if response:
                 form_class = response
         return form_class
@@ -504,16 +476,9 @@ class VoucherRNG(EventPermissionRequiredMixin, View):
         prefix = request.GET.get('prefix')
         while len(codes) < num:
             new_codes = set()
-            for i in range(
-                min(num - len(codes), 500)
-            ):  # Work around SQLite's SQLITE_MAX_VARIABLE_NUMBER
+            for i in range(min(num - len(codes), 500)):  # Work around SQLite's SQLITE_MAX_VARIABLE_NUMBER
                 new_codes.add(_generate_random_code(prefix=prefix))
-            new_codes -= set(
-                [
-                    v['code']
-                    for v in Voucher.objects.filter(code__in=new_codes).values('code')
-                ]
-            )
+            new_codes -= set([v['code'] for v in Voucher.objects.filter(code__in=new_codes).values('code')])
             codes |= new_codes
 
         return JsonResponse({'codes': list(codes)})
@@ -533,9 +498,7 @@ class VoucherBulkAction(EventPermissionRequiredMixin, View):
 
     @cached_property
     def objects(self):
-        return self.request.event.vouchers.filter(
-            id__in=self.request.POST.getlist('voucher')
-        )
+        return self.request.event.vouchers.filter(id__in=self.request.POST.getlist('voucher'))
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -566,9 +529,7 @@ class VoucherBulkAction(EventPermissionRequiredMixin, View):
                     )
                     obj.max_usages = min(obj.redeemed, obj.max_usages)
                     obj.save(update_fields=['max_usages'])
-            messages.success(
-                request, _('The selected vouchers have been deleted or disabled.')
-            )
+            messages.success(request, _('The selected vouchers have been deleted or disabled.'))
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:

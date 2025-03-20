@@ -158,6 +158,14 @@ include = ["pretix*"]
 namespaces = false
 
 [tool.ruff]
-format = { indent-style = "space", quote-style = "single" }
-lint = { select = ["E", "F", "W", "I"] }
-isort = { known-first-party = ["pretix"] }
+line-length = 120
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "single"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pretix"]

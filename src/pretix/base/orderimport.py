@@ -100,9 +100,7 @@ class ImportColumn:
             return record.get(k[4:], None) or None
         elif k.startswith('static:'):
             return k[7:]
-        raise ValidationError(
-            _('Invalid setting for column "{header}".').format(header=self.verbose_name)
-        )
+        raise ValidationError(_('Invalid setting for column "{header}".').format(header=self.verbose_name))
 
     def clean(self, value, previous_values):
         """
@@ -171,9 +169,7 @@ class SubeventColumn(ImportColumn):
         if len(matches) == 0:
             raise ValidationError(pgettext('subevent', 'No matching date was found.'))
         if len(matches) > 1:
-            raise ValidationError(
-                pgettext('subevent', 'Multiple matching dates were found.')
-            )
+            raise ValidationError(pgettext('subevent', 'Multiple matching dates were found.'))
         return matches[0]
 
     def assign(self, value, order, position, invoice_address, **kwargs):
@@ -223,9 +219,7 @@ class Variation(ImportColumn):
     @cached_property
     def items(self):
         return list(
-            ItemVariation.objects.filter(
-                active=True, item__active=True, item__event=self.event
-            ).select_related('item')
+            ItemVariation.objects.filter(active=True, item__active=True, item__event=self.event).select_related('item')
         )
 
     def static_choices(self):
@@ -349,20 +343,13 @@ class InvoiceAddressState(ImportColumn):
 
     def clean(self, value, previous_values):
         if value:
-            if (
-                previous_values.get('invoice_address_country')
-                not in COUNTRIES_WITH_STATE_IN_ADDRESS
-            ):
+            if previous_values.get('invoice_address_country') not in COUNTRIES_WITH_STATE_IN_ADDRESS:
                 raise ValidationError(_('States are not supported for this country.'))
 
-            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[
-                previous_values.get('invoice_address_country')
-            ]
+            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[previous_values.get('invoice_address_country')]
             match = [
                 s
-                for s in pycountry.subdivisions.get(
-                    country_code=previous_values.get('invoice_address_country')
-                )
+                for s in pycountry.subdivisions.get(country_code=previous_values.get('invoice_address_country'))
                 if s.type in types and (s.code[3:] == value or s.name == value)
             ]
             if len(match) == 0:
@@ -514,20 +501,13 @@ class AttendeeState(ImportColumn):
 
     def clean(self, value, previous_values):
         if value:
-            if (
-                previous_values.get('attendee_country')
-                not in COUNTRIES_WITH_STATE_IN_ADDRESS
-            ):
+            if previous_values.get('attendee_country') not in COUNTRIES_WITH_STATE_IN_ADDRESS:
                 raise ValidationError(_('States are not supported for this country.'))
 
-            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[
-                previous_values.get('attendee_country')
-            ]
+            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[previous_values.get('attendee_country')]
             match = [
                 s
-                for s in pycountry.subdivisions.get(
-                    country_code=previous_values.get('attendee_country')
-                )
+                for s in pycountry.subdivisions.get(country_code=previous_values.get('attendee_country'))
                 if s.type in types and (s.code[3:] == value or s.name == value)
             ]
             if len(match) == 0:
@@ -589,13 +569,9 @@ class Secret(ImportColumn):
     def clean(self, value, previous_values):
         if value and (
             value in self._cached
-            or OrderPosition.all.filter(
-                order__event__organizer=self.event.organizer, secret=value
-            ).exists()
+            or OrderPosition.all.filter(order__event__organizer=self.event.organizer, secret=value).exists()
         ):
-            raise ValidationError(
-                _('You cannot assign a position secret that already exists.')
-            )
+            raise ValidationError(_('You cannot assign a position secret that already exists.'))
         self._cached.add(value)
         return value
 
@@ -633,9 +609,7 @@ class Saleschannel(ImportColumn):
     verbose_name = gettext_lazy('Sales channel')
 
     def static_choices(self):
-        return [
-            (sc.identifier, sc.verbose_name) for sc in get_all_sales_channels().values()
-        ]
+        return [(sc.identifier, sc.verbose_name) for sc in get_all_sales_channels().values()]
 
     def clean(self, value, previous_values):
         if not value:
@@ -659,23 +633,15 @@ class SeatColumn(ImportColumn):
     def clean(self, value, previous_values):
         if value:
             try:
-                value = Seat.objects.get(
-                    seat_guid=value, subevent=previous_values.get('subevent')
-                )
+                value = Seat.objects.get(seat_guid=value, subevent=previous_values.get('subevent'))
             except Seat.DoesNotExist:
                 raise ValidationError(_('No matching seat was found.'))
             if not value.is_available() or value in self._cached:
                 raise ValidationError(
-                    _(
-                        'The seat you selected has already been taken. Please select a different seat.'
-                    )
+                    _('The seat you selected has already been taken. Please select a different seat.')
                 )
             self._cached.add(value)
-        elif (
-            previous_values['item']
-            .seat_category_mappings.filter(subevent=previous_values.get('subevent'))
-            .exists()
-        ):
+        elif previous_values['item'].seat_category_mappings.filter(subevent=previous_values.get('subevent')).exists():
             raise ValidationError(_('You need to select a specific seat.'))
         return value
 
@@ -744,9 +710,7 @@ class QuestionColumn(ImportColumn):
             if not hasattr(order, '_answers'):
                 order._answers = []
             if isinstance(value, QuestionOption):
-                a = QuestionAnswer(
-                    orderposition=position, question=self.q, answer=str(value)
-                )
+                a = QuestionAnswer(orderposition=position, question=self.q, answer=str(value))
                 a._options = [value]
                 order._answers.append(a)
             elif isinstance(value, list):
@@ -758,17 +722,11 @@ class QuestionColumn(ImportColumn):
                 a._options = value
                 order._answers.append(a)
             else:
-                order._answers.append(
-                    QuestionAnswer(
-                        question=self.q, answer=str(value), orderposition=position
-                    )
-                )
+                order._answers.append(QuestionAnswer(question=self.q, answer=str(value), orderposition=position))
 
     def save(self, order):
         for a in getattr(order, '_answers', []):
-            a.orderposition = (
-                a.orderposition
-            )  # This is apparently required after save() again
+            a.orderposition = a.orderposition  # This is apparently required after save() again
             a.save()
             if hasattr(a, '_options'):
                 a.options.add(*a._options)
@@ -814,9 +772,7 @@ def get_all_columns(event):
         SeatColumn(event),
         Comment(event),
     ]
-    for q in event.questions.prefetch_related('options').exclude(
-        type=Question.TYPE_FILE
-    ):
+    for q in event.questions.prefetch_related('options').exclude(type=Question.TYPE_FILE):
         default.append(QuestionColumn(event, q))
 
     for recv, resp in order_import_columns.send(sender=event):

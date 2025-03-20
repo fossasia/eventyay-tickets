@@ -58,13 +58,8 @@ def check_create_permission(request):
     @param request: user request
     @return: true if the user has permission to create videos or has admin session mode else false
     """
-    is_create_permission = (
-        'can_create_events'
-        in request.user.get_organizer_permission_set(request.organizer)
-    )
-    is_active_staff_session = request.user.has_active_staff_session(
-        request.session.session_key
-    )
+    is_create_permission = 'can_create_events' in request.user.get_organizer_permission_set(request.organizer)
+    is_active_staff_session = request.user.has_active_staff_session(request.session.session_key)
 
     if is_create_permission or is_active_staff_session:
         return True

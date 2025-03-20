@@ -40,25 +40,15 @@ class BaseOrdersTest(TestCase):
         self.event.settings.set('payment_banktransfer__enabled', True)
         self.event.settings.set('ticketoutput_testdummy__enabled', True)
 
-        self.category = ItemCategory.objects.create(
-            event=self.event, name='Everything', position=0
-        )
-        self.quota_shirts = Quota.objects.create(
-            event=self.event, name='Shirts', size=2
-        )
-        self.shirt = Item.objects.create(
-            event=self.event, name='T-Shirt', category=self.category, default_price=12
-        )
+        self.category = ItemCategory.objects.create(event=self.event, name='Everything', position=0)
+        self.quota_shirts = Quota.objects.create(event=self.event, name='Shirts', size=2)
+        self.shirt = Item.objects.create(event=self.event, name='T-Shirt', category=self.category, default_price=12)
         self.quota_shirts.items.add(self.shirt)
-        self.shirt_red = ItemVariation.objects.create(
-            item=self.shirt, default_price=14, value='Red'
-        )
+        self.shirt_red = ItemVariation.objects.create(item=self.shirt, default_price=14, value='Red')
         self.shirt_blue = ItemVariation.objects.create(item=self.shirt, value='Blue')
         self.quota_shirts.variations.add(self.shirt_red)
         self.quota_shirts.variations.add(self.shirt_blue)
-        self.quota_tickets = Quota.objects.create(
-            event=self.event, name='Tickets', size=5
-        )
+        self.quota_tickets = Quota.objects.create(event=self.event, name='Tickets', size=5)
         self.ticket = Item.objects.create(
             event=self.event,
             name='Early-bird ticket',
@@ -109,79 +99,52 @@ class BaseOrdersTest(TestCase):
 
 class OrdersTest(BaseOrdersTest):
     def test_unknown_order(self):
-        response = self.client.get(
-            '/%s/%s/order/ABCDE/123/' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/order/ABCDE/123/' % (self.orga.slug, self.event.slug))
+        assert response.status_code == 404
+        response = self.client.get('/%s/%s/order/%s/123/' % (self.orga.slug, self.event.slug, self.not_my_order.code))
+        assert response.status_code == 404
+        response = self.client.get('/%s/%s/order/ABCDE/123/pay' % (self.orga.slug, self.event.slug))
         assert response.status_code == 404
         response = self.client.get(
-            '/%s/%s/order/%s/123/'
-            % (self.orga.slug, self.event.slug, self.not_my_order.code)
+            '/%s/%s/order/%s/123/pay' % (self.orga.slug, self.event.slug, self.not_my_order.code)
         )
         assert response.status_code == 404
-        response = self.client.get(
-            '/%s/%s/order/ABCDE/123/pay' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/order/ABCDE/123/pay/confirm' % (self.orga.slug, self.event.slug))
         assert response.status_code == 404
         response = self.client.get(
-            '/%s/%s/order/%s/123/pay'
-            % (self.orga.slug, self.event.slug, self.not_my_order.code)
+            '/%s/%s/order/%s/123/pay/confirm' % (self.orga.slug, self.event.slug, self.not_my_order.code)
         )
         assert response.status_code == 404
-        response = self.client.get(
-            '/%s/%s/order/ABCDE/123/pay/confirm' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/order/ABCDE/123/modify' % (self.orga.slug, self.event.slug))
         assert response.status_code == 404
         response = self.client.get(
-            '/%s/%s/order/%s/123/pay/confirm'
-            % (self.orga.slug, self.event.slug, self.not_my_order.code)
+            '/%s/%s/order/%s/123/modify' % (self.orga.slug, self.event.slug, self.not_my_order.code)
         )
         assert response.status_code == 404
-        response = self.client.get(
-            '/%s/%s/order/ABCDE/123/modify' % (self.orga.slug, self.event.slug)
-        )
+        response = self.client.get('/%s/%s/order/ABCDE/123/cancel' % (self.orga.slug, self.event.slug))
         assert response.status_code == 404
         response = self.client.get(
-            '/%s/%s/order/%s/123/modify'
-            % (self.orga.slug, self.event.slug, self.not_my_order.code)
+            '/%s/%s/order/%s/123/cancel' % (self.orga.slug, self.event.slug, self.not_my_order.code)
         )
         assert response.status_code == 404
-        response = self.client.get(
-            '/%s/%s/order/ABCDE/123/cancel' % (self.orga.slug, self.event.slug)
-        )
-        assert response.status_code == 404
-        response = self.client.get(
-            '/%s/%s/order/%s/123/cancel'
-            % (self.orga.slug, self.event.slug, self.not_my_order.code)
-        )
+        response = self.client.post('/%s/%s/order/ABCDE/123/cancel/do' % (self.orga.slug, self.event.slug))
         assert response.status_code == 404
         response = self.client.post(
-            '/%s/%s/order/ABCDE/123/cancel/do' % (self.orga.slug, self.event.slug)
-        )
-        assert response.status_code == 404
-        response = self.client.post(
-            '/%s/%s/order/%s/123/cancel/do'
-            % (self.orga.slug, self.event.slug, self.not_my_order.code)
+            '/%s/%s/order/%s/123/cancel/do' % (self.orga.slug, self.event.slug, self.not_my_order.code)
         )
         assert response.status_code == 404
 
     def test_unknown_position(self):
+        response = self.client.get('/%s/%s/ticket/ABCDE/1/123/' % (self.orga.slug, self.event.slug))
+        assert response.status_code == 404
+        response = self.client.get('/%s/%s/ticket/%s/1/123/' % (self.orga.slug, self.event.slug, self.order.code))
+        assert response.status_code == 404
         response = self.client.get(
-            '/%s/%s/ticket/ABCDE/1/123/' % (self.orga.slug, self.event.slug)
+            '/%s/%s/ticket/%s/1/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 404
         response = self.client.get(
-            '/%s/%s/ticket/%s/1/123/'
-            % (self.orga.slug, self.event.slug, self.order.code)
-        )
-        assert response.status_code == 404
-        response = self.client.get(
-            '/%s/%s/ticket/%s/1/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
-        )
-        assert response.status_code == 404
-        response = self.client.get(
-            '/%s/%s/ticket/%s/1/123/'
-            % (self.orga.slug, self.event.slug, self.not_my_order.code)
+            '/%s/%s/ticket/%s/1/123/' % (self.orga.slug, self.event.slug, self.not_my_order.code)
         )
         assert response.status_code == 404
         response = self.client.get(
@@ -227,8 +190,7 @@ class OrdersTest(BaseOrdersTest):
 
     def test_orders_detail(self):
         response = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         doc = BeautifulSoup(response.content.decode(), 'lxml')
@@ -259,8 +221,7 @@ class OrdersTest(BaseOrdersTest):
         self.order.status = Order.STATUS_CANCELED
         self.order.save()
         self.client.get(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         with scopes_disabled():
             self.order = Order.objects.get(id=self.order.id)
@@ -271,23 +232,17 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.set('attendee_names_required', False)
 
         response = self.client.get(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         doc = BeautifulSoup(response.content.decode(), 'lxml')
         self.assertEqual(
-            len(
-                doc.select(
-                    'input[name="%s-attendee_name_parts_0"]' % self.ticket_pos.id
-                )
-            ),
+            len(doc.select('input[name="%s-attendee_name_parts_0"]' % self.ticket_pos.id)),
             1,
         )
 
         # Not all fields filled out, expect success
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-attendee_name_parts_0' % self.ticket_pos.id: '',
             },
@@ -295,8 +250,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         with scopes_disabled():
@@ -308,16 +262,11 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.set('attendee_names_required', True)
 
         response = self.client.get(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         doc = BeautifulSoup(response.content.decode(), 'lxml')
         self.assertEqual(
-            len(
-                doc.select(
-                    'input[name="%s-attendee_name_parts_0"]' % self.ticket_pos.id
-                )
-            ),
+            len(doc.select('input[name="%s-attendee_name_parts_0"]' % self.ticket_pos.id)),
             1,
         )
         assert 'Peter' in response.content.decode()
@@ -325,8 +274,7 @@ class OrdersTest(BaseOrdersTest):
 
         # Not all required fields filled out, expect failure
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-attendee_name_parts_0' % self.ticket_pos.id: '',
             },
@@ -336,8 +284,7 @@ class OrdersTest(BaseOrdersTest):
         self.assertGreaterEqual(len(doc.select('.has-error')), 1)
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-attendee_name_parts_0' % self.ticket_pos.id: 'Peter',
             },
@@ -345,8 +292,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         with scopes_disabled():
@@ -358,24 +304,17 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.set('attendee_names_required', False)
 
         response = self.client.get(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         doc = BeautifulSoup(response.content.decode(), 'lxml')
         self.assertEqual(
-            len(
-                doc.select(
-                    'input[name="%s-question_%s"]'
-                    % (self.ticket_pos.id, self.question.id)
-                )
-            ),
+            len(doc.select('input[name="%s-question_%s"]' % (self.ticket_pos.id, self.question.id))),
             1,
         )
 
         # Not all fields filled out, expect success
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-question_%s' % (self.ticket_pos.id, self.question.id): '',
             },
@@ -383,8 +322,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         with scopes_disabled():
@@ -397,24 +335,17 @@ class OrdersTest(BaseOrdersTest):
         self.question.save()
 
         response = self.client.get(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         doc = BeautifulSoup(response.content.decode(), 'lxml')
         self.assertEqual(
-            len(
-                doc.select(
-                    'input[name="%s-question_%s"]'
-                    % (self.ticket_pos.id, self.question.id)
-                )
-            ),
+            len(doc.select('input[name="%s-question_%s"]' % (self.ticket_pos.id, self.question.id))),
             1,
         )
 
         # Not all required fields filled out, expect failure
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-question_%s' % (self.ticket_pos.id, self.question.id): '',
             },
@@ -424,8 +355,7 @@ class OrdersTest(BaseOrdersTest):
         self.assertGreaterEqual(len(doc.select('.has-error')), 1)
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-question_%s' % (self.ticket_pos.id, self.question.id): 'ABC',
             },
@@ -433,8 +363,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         with scopes_disabled():
@@ -447,8 +376,7 @@ class OrdersTest(BaseOrdersTest):
             generate_invoice(self.order)
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-question_%s' % (self.ticket_pos.id, self.question.id): 'ABC',
             },
@@ -456,8 +384,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         # Only questions changed
@@ -465,8 +392,7 @@ class OrdersTest(BaseOrdersTest):
             assert self.order.invoices.count() == 1
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-question_%s' % (self.ticket_pos.id, self.question.id): 'ABC',
                 'zipcode': '1234',
@@ -475,8 +401,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         with scopes_disabled():
@@ -485,8 +410,7 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.set('invoice_reissue_after_modify', False)
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/modify'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/modify' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 '%s-question_%s' % (self.ticket_pos.id, self.question.id): 'ABC',
                 'zipcode': '54321',
@@ -495,8 +419,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         with scopes_disabled():
@@ -506,15 +429,13 @@ class OrdersTest(BaseOrdersTest):
         self.order.status = Order.STATUS_PAID
         self.order.save()
         r = self.client.post(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
         assert 'btn-danger' not in r.content.decode()
         self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
@@ -523,20 +444,17 @@ class OrdersTest(BaseOrdersTest):
 
     def test_orders_cancel(self):
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         self.order.refresh_from_db()
@@ -545,20 +463,17 @@ class OrdersTest(BaseOrdersTest):
     def test_orders_cancel_paid(self):
         self.event.settings.cancel_allow_user_paid = True
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         self.order.refresh_from_db()
@@ -577,20 +492,17 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.cancel_allow_user_paid_keep = Decimal('3.00')
         self.event.settings.cancel_allow_user_paid_require_approval = True
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         self.order.refresh_from_db()
@@ -614,22 +526,19 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.cancel_allow_user_paid_keep = Decimal('3.00')
         self.event.settings.cancel_allow_user_paid_refund_as_giftcard = 'option'
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         assert 'manually' not in response.content.decode()
         assert 'gift card' in response.content.decode()
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'giftcard': 'true'},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         assert 'gift card' in response.content.decode()
@@ -654,22 +563,19 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.cancel_allow_user_paid_keep = Decimal('3.00')
         self.event.settings.cancel_allow_user_paid_refund_as_giftcard = 'force'
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         assert 'manually' not in response.content.decode()
         assert 'gift card' in response.content.decode()
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'giftcard': 'false'},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         assert 'gift card' in response.content.decode()
@@ -693,21 +599,18 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.cancel_allow_user_paid = True
         self.event.settings.cancel_allow_user_paid_keep = Decimal('3.00')
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         assert 'manually' not in response.content.decode()
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         self.order.refresh_from_db()
@@ -729,20 +632,17 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.cancel_allow_user_paid_keep = Decimal('3.00')
         self.event.settings.cancel_allow_user_paid_adjust_fees = True
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'cancel_fee': '6.00'},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         self.order.refresh_from_db()
@@ -764,20 +664,17 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.cancel_allow_user_paid_keep = Decimal('3.00')
         self.event.settings.cancel_allow_user_paid_adjust_fees = True
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'cancel_fee': '2.00'},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         self.order.refresh_from_db()
@@ -798,28 +695,24 @@ class OrdersTest(BaseOrdersTest):
         self.event.settings.cancel_allow_user_paid = True
         self.event.settings.cancel_allow_user_paid_keep = Decimal('3.00')
         response = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         assert 'cancellation fee of <strong>€3.00</strong>' in response.content.decode()
         response = self.client.get(
-            '/%s/%s/order/%s/%s/cancel'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/cancel' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         assert 'manually' in response.content.decode()
         assert '20.00' in response.content.decode()
         response = self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         self.order.refresh_from_db()
@@ -831,8 +724,7 @@ class OrdersTest(BaseOrdersTest):
     def test_orders_cancel_forbidden(self):
         self.event.settings.set('cancel_allow_user', False)
         self.client.post(
-            '/%s/%s/order/%s/%s/cancel/do'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/cancel/do' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
@@ -842,8 +734,7 @@ class OrdersTest(BaseOrdersTest):
     def test_invoice_create_notallowed(self):
         self.event.settings.set('invoice_generate', 'no')
         response = self.client.post(
-            '/%s/%s/order/%s/%s/invoice'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/invoice' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
@@ -854,8 +745,7 @@ class OrdersTest(BaseOrdersTest):
         with scopes_disabled():
             generate_invoice(self.order)
         response = self.client.post(
-            '/%s/%s/order/%s/%s/invoice'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/invoice' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
@@ -866,8 +756,7 @@ class OrdersTest(BaseOrdersTest):
         with scopes_disabled():
             generate_invoice(self.order)
         response = self.client.post(
-            '/%s/%s/order/%s/%s/invoice'
-            % (self.orga.slug, self.event.slug, self.order.code, '1234'),
+            '/%s/%s/order/%s/%s/invoice' % (self.orga.slug, self.event.slug, self.order.code, '1234'),
             {},
         )
         assert 404 == response.status_code
@@ -875,8 +764,7 @@ class OrdersTest(BaseOrdersTest):
     def test_invoice_create_require_payment(self):
         self.event.settings.set('invoice_generate', 'user')
         response = self.client.post(
-            '/%s/%s/order/%s/%s/invoice'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/invoice' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
@@ -893,8 +781,7 @@ class OrdersTest(BaseOrdersTest):
                 amount=self.order.total,
             )
         response = self.client.post(
-            '/%s/%s/order/%s/%s/invoice'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/invoice' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {},
             follow=True,
         )
@@ -942,8 +829,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
 
@@ -982,14 +868,12 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
 
         response = self.client.post(
-            '/%s/%s/order/ABC/123/download/%d/testdummy'
-            % (self.orga.slug, self.event.slug, self.ticket_pos.pk)
+            '/%s/%s/order/ABC/123/download/%d/testdummy' % (self.orga.slug, self.event.slug, self.ticket_pos.pk)
         )
         assert response.status_code == 404
 
@@ -1006,8 +890,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
 
@@ -1026,9 +909,7 @@ class OrdersTest(BaseOrdersTest):
         )
         assert response.status_code == 200
 
-        self.event.settings.set(
-            'ticket_download_date', now() + datetime.timedelta(days=1)
-        )
+        self.event.settings.set('ticket_download_date', now() + datetime.timedelta(days=1))
         response = self.client.post(
             '/%s/%s/order/%s/%s/download/%d/testdummy'
             % (
@@ -1042,8 +923,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
 
@@ -1073,8 +953,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
 
@@ -1106,15 +985,13 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
 
     def test_change_paymentmethod_wrong_secret(self):
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, '123')
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, '123')
         )
         assert response.status_code == 404
 
@@ -1122,8 +999,7 @@ class OrdersTest(BaseOrdersTest):
         self.order.status = Order.STATUS_PAID
         self.order.save()
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             follow=True,
         )
         assert 'alert-danger' in response.content.decode()
@@ -1228,8 +1104,7 @@ class OrdersTest(BaseOrdersTest):
                 amount=self.order.total,
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             follow=True,
         )
         assert '/pay/change' not in response.content.decode()
@@ -1238,16 +1113,14 @@ class OrdersTest(BaseOrdersTest):
         p.state = OrderPayment.PAYMENT_STATE_PENDING
         p.save()
         response = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             follow=True,
         )
         assert '/pay/change' in response.content.decode()
         p.provider = 'testdummy'
         p.save()
         response = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             follow=True,
         )
         assert '/pay/change' not in response.content.decode()
@@ -1266,14 +1139,12 @@ class OrdersTest(BaseOrdersTest):
 
             generate_invoice(self.order)
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
         )
         assert 'Test dummy' in response.content.decode()
         assert '+ €1.30' in response.content.decode()
         self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'testdummy'},
         )
         self.order.refresh_from_db()
@@ -1306,14 +1177,12 @@ class OrdersTest(BaseOrdersTest):
 
             generate_invoice(self.order)
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
         )
         assert 'Test dummy' in response.content.decode()
         assert '+ €1.30' in response.content.decode()
         self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'testdummy'},
         )
         self.order.refresh_from_db()
@@ -1360,8 +1229,7 @@ class OrdersTest(BaseOrdersTest):
                 amount=Decimal('10.00'),
             )
         self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'banktransfer'},
         )
         self.order.refresh_from_db()
@@ -1382,8 +1250,7 @@ class OrdersTest(BaseOrdersTest):
                 amount=Decimal('10.00'),
             )
         self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'banktransfer'},
         )
         self.order.refresh_from_db()
@@ -1413,22 +1280,18 @@ class OrdersTest(BaseOrdersTest):
 
             generate_invoice(self.order)
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
         )
         assert 'Test dummy' in response.content.decode()
         assert '- €1.40' in response.content.decode()
         self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'testdummy'},
         )
         with scopes_disabled():
             self.order.refresh_from_db()
             assert self.order.payments.last().provider == 'testdummy'
-            assert not self.order.fees.filter(
-                fee_type=OrderFee.FEE_TYPE_PAYMENT
-            ).exists()
+            assert not self.order.fees.filter(fee_type=OrderFee.FEE_TYPE_PAYMENT).exists()
             assert self.order.total == Decimal('23.00')
             assert self.order.invoices.count() == 3
             p0.refresh_from_db()
@@ -1450,14 +1313,12 @@ class OrdersTest(BaseOrdersTest):
                 amount=self.order.total,
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
         )
         assert 'Test dummy' in response.content.decode()
         assert '+ €12.00' in response.content.decode()
         self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'testdummy'},
         )
         self.order.refresh_from_db()
@@ -1483,13 +1344,11 @@ class OrdersTest(BaseOrdersTest):
             gc = self.orga.issued_gift_cards.create(currency='EUR')
             gc.transactions.create(value=10)
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
         )
         assert 'Gift card' in response.content.decode()
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
         with scopes_disabled():
@@ -1535,28 +1394,20 @@ class OrdersTest(BaseOrdersTest):
             self.ticket.issue_giftcard = True
             self.ticket.save()
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
-        assert (
-            'You cannot pay with gift cards when buying a gift card.'
-            in response.content.decode()
-        )
+        assert 'You cannot pay with gift cards when buying a gift card.' in response.content.decode()
 
     def test_change_paymentmethod_giftcard_wrong_currency(self):
         with scopes_disabled():
             gc = self.orga.issued_gift_cards.create(currency='USD')
             gc.transactions.create(value=10)
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
-        assert (
-            'This gift card does not support this currency.'
-            in response.content.decode()
-        )
+        assert 'This gift card does not support this currency.' in response.content.decode()
 
     def test_change_paymentmethod_giftcard_in_test_mode(self):
         with scopes_disabled():
@@ -1565,39 +1416,29 @@ class OrdersTest(BaseOrdersTest):
             gc = self.orga.issued_gift_cards.create(currency='EUR')
             gc.transactions.create(value=10)
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
-        assert (
-            'Only test gift cards can be used in test mode.'
-            in response.content.decode()
-        )
+        assert 'Only test gift cards can be used in test mode.' in response.content.decode()
 
     def test_change_paymentmethod_giftcard_not_in_test_mode(self):
         with scopes_disabled():
             gc = self.orga.issued_gift_cards.create(currency='EUR', testmode=True)
             gc.transactions.create(value=10)
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
-        assert (
-            'This gift card can only be used in test mode.' in response.content.decode()
-        )
+        assert 'This gift card can only be used in test mode.' in response.content.decode()
 
     def test_change_paymentmethod_giftcard_empty(self):
         with scopes_disabled():
             gc = self.orga.issued_gift_cards.create(currency='EUR')
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
-        assert (
-            'All credit on this gift card has been used.' in response.content.decode()
-        )
+        assert 'All credit on this gift card has been used.' in response.content.decode()
 
     def test_change_paymentmethod_giftcard_wrong_organizer(self):
         with scopes_disabled():
@@ -1606,8 +1447,7 @@ class OrdersTest(BaseOrdersTest):
             gc = o.issued_gift_cards.create(currency='EUR')
             gc.transactions.create(value=10)
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
         assert 'This gift card is not known.' in response.content.decode()
@@ -1622,13 +1462,11 @@ class OrdersTest(BaseOrdersTest):
             gc = self.orga.issued_gift_cards.create(currency='EUR')
             gc.transactions.create(value=100)
         response = self.client.get(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
         )
         assert 'Gift card' in response.content.decode()
         response = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'giftcard', 'giftcard': gc.secret},
         )
         with scopes_disabled():
@@ -1685,8 +1523,7 @@ class OrdersTest(BaseOrdersTest):
         assert response.status_code == 404
 
         response = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         match = re.search(r"\?token=([^'\"&]+)", response.content.decode())
@@ -1721,8 +1558,7 @@ class OrdersTest(BaseOrdersTest):
 
     def test_change_not_allowed(self):
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 302
 
@@ -1738,13 +1574,11 @@ class OrdersTest(BaseOrdersTest):
                 price=Decimal('14'),
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_blue.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1753,8 +1587,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         shirt_pos.refresh_from_db()
@@ -1776,13 +1609,11 @@ class OrdersTest(BaseOrdersTest):
                 price=Decimal('14'),
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_blue.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1797,8 +1628,7 @@ class OrdersTest(BaseOrdersTest):
         shirt_pos.save()
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1807,8 +1637,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         shirt_pos.refresh_from_db()
@@ -1823,8 +1652,7 @@ class OrdersTest(BaseOrdersTest):
         shirt_pos.save()
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1848,13 +1676,11 @@ class OrdersTest(BaseOrdersTest):
                 price=Decimal('14'),
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_blue.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1869,8 +1695,7 @@ class OrdersTest(BaseOrdersTest):
         shirt_pos.save()
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1879,8 +1704,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         shirt_pos.refresh_from_db()
@@ -1895,8 +1719,7 @@ class OrdersTest(BaseOrdersTest):
         shirt_pos.save()
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1920,13 +1743,11 @@ class OrdersTest(BaseOrdersTest):
                 price=Decimal('12'),
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1948,13 +1769,11 @@ class OrdersTest(BaseOrdersTest):
                 price=Decimal('12'),
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.ticket.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -1981,13 +1800,11 @@ class OrdersTest(BaseOrdersTest):
                 price=Decimal('12'),
             )
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -2000,8 +1817,7 @@ class OrdersTest(BaseOrdersTest):
         q.variations.add(self.shirt_blue)
 
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -2010,8 +1826,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         shirt_pos.refresh_from_db()
@@ -2038,13 +1853,11 @@ class OrdersTest(BaseOrdersTest):
             )
 
         response = self.client.get(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert response.status_code == 200
         response = self.client.post(
-            '/%s/%s/order/%s/%s/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {
                 f'op-{shirt_pos.pk}-itemvar': f'{self.shirt.pk}-{self.shirt_red.pk}',
                 f'op-{self.ticket_pos.pk}-itemvar': f'{self.ticket.pk}',
@@ -2053,8 +1866,7 @@ class OrdersTest(BaseOrdersTest):
         )
         self.assertRedirects(
             response,
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             target_status_code=200,
         )
         assert (

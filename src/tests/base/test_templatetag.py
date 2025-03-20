@@ -1,9 +1,7 @@
 from django.template import Context, Template
 from django.test import RequestFactory
 
-TEMPLATE_REPLACE_PAGE = Template(
-    "{% load urlreplace %}{% url_replace request 'page' 3 %}"
-)
+TEMPLATE_REPLACE_PAGE = Template("{% load urlreplace %}{% url_replace request 'page' 3 %}")
 
 
 def test_urlreplace_add__first_parameter():

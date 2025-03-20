@@ -50,9 +50,7 @@ def _default_context(request: HttpRequest):
         return ctx
 
     ctx['nav_items'] = get_global_navigation(request)
-    ctx['staff_session'] = request.user.has_active_staff_session(
-        request.session.session_key
-    )
+    ctx['staff_session'] = request.user.has_active_staff_session(request.session.session_key)
     ctx['staff_need_to_explain'] = (
         StaffSession.objects.filter(user=request.user, date_end__isnull=False).filter(
             Q(comment__isnull=True) | Q(comment='')
@@ -69,10 +67,7 @@ def _default_context(request: HttpRequest):
     ctx['talk_edit_url'] = urljoin(settings.TALK_HOSTNAME, f'orga/event/{event.slug}')
     ctx['is_video_enabled'] = is_video_enabled(event)
     ctx['is_talk_event_created'] = False
-    if (
-        event.settings.create_for == EventCreatedFor.BOTH.value
-        or event.settings.talk_schedule_public is not None
-    ):
+    if event.settings.create_for == EventCreatedFor.BOTH.value or event.settings.talk_schedule_public is not None:
         ctx['is_talk_event_created'] = True
 
     # Verify if the request includes an organizer
@@ -87,14 +82,9 @@ def _default_context(request: HttpRequest):
             complain_testmode_orders = event.cache.get('complain_testmode_orders')
             if complain_testmode_orders is None:
                 complain_testmode_orders = event.orders.filter(testmode=True).exists()
-                event.cache.set(
-                    'complain_testmode_orders', complain_testmode_orders, 30
-                )
-        ctx['complain_testmode_orders'] = (
-            complain_testmode_orders
-            and request.user.has_event_permission(
-                organizer, event, 'can_view_orders', request=request
-            )
+                event.cache.set('complain_testmode_orders', complain_testmode_orders, 30)
+        ctx['complain_testmode_orders'] = complain_testmode_orders and request.user.has_event_permission(
+            organizer, event, 'can_view_orders', request=request
         )
     else:
         ctx['complain_testmode_orders'] = False

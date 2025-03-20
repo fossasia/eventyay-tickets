@@ -10,9 +10,7 @@ class TeamForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         organizer = kwargs.pop('organizer')
         super().__init__(*args, **kwargs)
-        self.fields['limit_events'].queryset = organizer.events.all().order_by(
-            '-has_subevents', '-date_from'
-        )
+        self.fields['limit_events'].queryset = organizer.events.all().order_by('-has_subevents', '-date_from')
 
     class Meta:
         model = Team

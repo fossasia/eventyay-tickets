@@ -57,25 +57,15 @@ def compile_scss(object, file='main.scss', fonts=True):
 
     sassrules = []
     if object.settings.get('primary_color'):
-        sassrules.append(
-            '$brand-primary: {};'.format(object.settings.get('primary_color'))
-        )
+        sassrules.append('$brand-primary: {};'.format(object.settings.get('primary_color')))
     if object.settings.get('theme_color_success'):
-        sassrules.append(
-            '$brand-success: {};'.format(object.settings.get('theme_color_success'))
-        )
+        sassrules.append('$brand-success: {};'.format(object.settings.get('theme_color_success')))
     if object.settings.get('theme_color_danger'):
-        sassrules.append(
-            '$brand-danger: {};'.format(object.settings.get('theme_color_danger'))
-        )
+        sassrules.append('$brand-danger: {};'.format(object.settings.get('theme_color_danger')))
     if object.settings.get('theme_color_background'):
-        sassrules.append(
-            '$body-bg: {};'.format(object.settings.get('theme_color_background'))
-        )
+        sassrules.append('$body-bg: {};'.format(object.settings.get('theme_color_background')))
     if object.settings.get('hover_button_color'):
-        sassrules.append(
-            '$hover-button-color: {};'.format(object.settings.get('hover_button_color'))
-        )
+        sassrules.append('$hover-button-color: {};'.format(object.settings.get('hover_button_color')))
     if not object.settings.get('theme_round_borders'):
         sassrules.append('$border-radius-base: 0;')
         sassrules.append('$border-radius-large: 0;')
@@ -126,9 +116,7 @@ def compile_scss(object, file='main.scss', fonts=True):
 def regenerate_css(event):
     # main.scss
     css, checksum = compile_scss(event)
-    fname = 'pub/{}/{}/presale.{}.css'.format(
-        event.organizer.slug, event.slug, checksum[:16]
-    )
+    fname = 'pub/{}/{}/presale.{}.css'.format(event.organizer.slug, event.slug, checksum[:16])
 
     if event.settings.get('presale_css_checksum', '') != checksum:
         newname = default_storage.save(fname, ContentFile(css.encode('utf-8')))
@@ -137,9 +125,7 @@ def regenerate_css(event):
 
     # widget.scss
     css, checksum = compile_scss(event, file='widget.scss', fonts=False)
-    fname = 'pub/{}/{}/widget.{}.css'.format(
-        event.organizer.slug, event.slug, checksum[:16]
-    )
+    fname = 'pub/{}/{}/widget.{}.css'.format(event.organizer.slug, event.slug, checksum[:16])
 
     if event.settings.get('presale_widget_css_checksum', '') != checksum:
         newname = default_storage.save(fname, ContentFile(css.encode('utf-8')))
@@ -169,9 +155,9 @@ def regenerate_organizer_css(organizer_id: int):
             organizer.settings.set('presale_widget_css_checksum', checksum)
 
         non_inherited_events = set(
-            Event_SettingsStore.objects.filter(
-                object__organizer=organizer, key__in=affected_keys
-            ).values_list('object_id', flat=True)
+            Event_SettingsStore.objects.filter(object__organizer=organizer, key__in=affected_keys).values_list(
+                'object_id', flat=True
+            )
         )
         for event in organizer.events.all():
             if event.pk not in non_inherited_events:
@@ -233,9 +219,7 @@ def get_font_stylesheet(font_name):
         if 'woff' in formats:
             srcs.append("url(static('{}')) format('woff')".format(formats['woff']))
         if 'truetype' in formats:
-            srcs.append(
-                "url(static('{}')) format('truetype')".format(formats['truetype'])
-            )
+            srcs.append("url(static('{}')) format('truetype')".format(formats['truetype']))
         stylesheet.append('src: {};'.format(', '.join(srcs)))
         stylesheet.append('font-display: swap;')
         stylesheet.append('}')

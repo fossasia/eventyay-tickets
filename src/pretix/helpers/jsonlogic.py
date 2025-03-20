@@ -201,9 +201,7 @@ class Logic:
 
         # Array-level operations
         if operator == 'none':
-            return not any(
-                self.apply(values[1], i) for i in self.apply(values[0], data)
-            )
+            return not any(self.apply(values[1], i) for i in self.apply(values[0], data))
         if operator == 'all':
             elements = self.apply(values[0], data)
             if not elements:
@@ -213,16 +211,12 @@ class Logic:
             return any(self.apply(values[1], i) for i in self.apply(values[0], data))
         if operator == 'reduce':
             return reduce(
-                lambda acc, el: self.apply(
-                    values[1], {'current': el, 'accumulator': acc}
-                ),
+                lambda acc, el: self.apply(values[1], {'current': el, 'accumulator': acc}),
                 self.apply(values[0], data) or [],
                 self.apply(values[2], data),
             )
         if operator == 'map':
-            return [
-                self.apply(values[1], i) for i in (self.apply(values[0], data) or [])
-            ]
+            return [self.apply(values[1], i) for i in (self.apply(values[0], data) or [])]
         if operator == 'filter':
             return [i for i in self.apply(values[0], data) if self.apply(values[1], i)]
 

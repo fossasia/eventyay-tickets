@@ -74,17 +74,13 @@ class EventList(PaginationMixin, ListView):
             max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
         ).annotate(
             order_from=Coalesce('min_from', 'date_from'),
-            order_to=Coalesce(
-                'max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'
-            ),
+            order_to=Coalesce('max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'),
         )
 
         query_set = query_set.prefetch_related(
             Prefetch(
                 'quotas',
-                queryset=Quota.objects.filter(subevent__isnull=True)
-                .annotate(s=Coalesce(F('size'), 0))
-                .order_by('-s'),
+                queryset=Quota.objects.filter(subevent__isnull=True).annotate(s=Coalesce(F('size'), 0)).order_by('-s'),
                 to_attr='first_quotas',
             )
         )
@@ -114,11 +110,7 @@ class EventList(PaginationMixin, ListView):
             if q.size is not None:
                 q.percent_paid = min(
                     100,
-                    (
-                        round(q.cached_availability_paid_orders / q.size * 100)
-                        if q.size > 0
-                        else 100
-                    ),
+                    (round(q.cached_availability_paid_orders / q.size * 100) if q.size > 0 else 100),
                 )
         return ctx
 
@@ -146,17 +138,11 @@ class EventCreateView(SafeSessionWizardView):
         if step == 'foundation' and 'organizer' in request_get:
             try:
                 queryset = Organizer.objects.all()
-                if not request_user.has_active_staff_session(
-                    self.request.session.session_key
-                ):
+                if not request_user.has_active_staff_session(self.request.session.session_key):
                     queryset = queryset.filter(
-                        id__in=request_user.teams.filter(
-                            can_create_events=True
-                        ).values_list('organizer', flat=True)
+                        id__in=request_user.teams.filter(can_create_events=True).values_list('organizer', flat=True)
                     )
-                initial_form['organizer'] = queryset.get(
-                    slug=request_get.get('organizer')
-                )
+                initial_form['organizer'] = queryset.get(slug=request_get.get('organizer'))
             except Organizer.DoesNotExist:
                 pass
 
@@ -167,19 +153,11 @@ class EventCreateView(SafeSessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
-        context['create_for'] = self.storage.extra_data.get(
-            'create_for', EventCreatedFor.BOTH
-        )
-        context['has_organizer'] = self.request.user.teams.filter(
-            can_create_events=True
-        ).exists()
+        context['create_for'] = self.storage.extra_data.get('create_for', EventCreatedFor.BOTH)
+        context['has_organizer'] = self.request.user.teams.filter(can_create_events=True).exists()
         if self.steps.current == 'basics':
-            context['organizer'] = self.get_cleaned_data_for_step('foundation').get(
-                'organizer'
-            )
-        context['event_creation_for_choice'] = {
-            e.name: e.value for e in EventCreatedFor
-        }
+            context['organizer'] = self.get_cleaned_data_for_step('foundation').get('organizer')
+        context['event_creation_for_choice'] = {e.name: e.value for e in EventCreatedFor}
         return context
 
     def render(self, form=None, **kwargs):
@@ -221,14 +199,8 @@ class EventCreateView(SafeSessionWizardView):
 
         if create_for == EventCreatedFor.TALK:
             event_dict = {
-                'organiser_slug': (
-                    foundation_data.get('organizer').slug
-                    if foundation_data.get('organizer')
-                    else None
-                ),
-                'name': (
-                    basics_data.get('name').data if basics_data.get('name') else None
-                ),
+                'organiser_slug': (foundation_data.get('organizer').slug if foundation_data.get('organizer') else None),
+                'name': (basics_data.get('name').data if basics_data.get('name') else None),
                 'slug': basics_data.get('slug'),
                 'is_public': False,
                 'date_from': str(basics_data.get('date_from')),
@@ -238,9 +210,7 @@ class EventCreateView(SafeSessionWizardView):
                 'locales': foundation_data.get('locales'),
                 'is_video_creation': foundation_data.get('is_video_creation'),
             }
-            send_event_webhook.delay(
-                user_id=self.request.user.id, event=event_dict, action='create'
-            )
+            send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
 
         else:
             with transaction.atomic(), language(basics_data['locale']):
@@ -273,9 +243,7 @@ class EventCreateView(SafeSessionWizardView):
                         'locales': event.settings.locales,
                         'is_video_creation': foundation_data.get('is_video_creation'),
                     }
-                    send_event_webhook.delay(
-                        user_id=self.request.user.id, event=event_dict, action='create'
-                    )
+                    send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
                 event.settings.set('create_for', create_for)
 
         # The user automatically creates a world when selecting the add video option in the create ticket form.
@@ -377,9 +345,7 @@ class EventUpdate(
             return False
 
         if not check_create_permission(self.request):
-            messages.error(
-                self.request, _('You do not have permission to perform this action.')
-            )
+            messages.error(self.request, _('You do not have permission to perform this action.'))
             return False
 
         send_event_webhook.delay(
@@ -409,9 +375,7 @@ class EventUpdate(
             return False
 
         if not check_create_permission(self.request):
-            messages.error(
-                self.request, _('You do not have permission to perform this action.')
-            )
+            messages.error(self.request, _('You do not have permission to perform this action.'))
             return False
 
         create_world.delay(
@@ -442,10 +406,7 @@ class EventUpdate(
                 event = form.instance
                 event.date_from = self.reset_timezone(zone, event.date_from)
                 event.date_to = self.reset_timezone(zone, event.date_to)
-                if (
-                    event.settings.create_for
-                    and event.settings.create_for == EventCreatedFor.BOTH
-                ):
+                if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH:
                     event_dict = {
                         'organiser_slug': event.organizer.slug,
                         'name': event.name.data,
@@ -457,9 +418,7 @@ class EventUpdate(
                         'locales': event.settings.locales,
                         'is_video_creation': request.event.is_video_creation,
                     }
-                    send_event_webhook.delay(
-                        user_id=self.request.user.id, event=event_dict, action='update'
-                    )
+                    send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='update')
                 return self.form_valid(form)
             else:
                 messages.error(
@@ -494,18 +453,12 @@ class VideoAccessAuthenticator(views.APIView):
             or not self.request.event.settings.venueless_audience
             or not self.request.event.settings.venueless_secret
         ):
-            raise PermissionDenied(
-                _(
-                    'Event information is not available or the video plugin is turned off.'
-                )
-            )
+            raise PermissionDenied(_('Event information is not available or the video plugin is turned off.'))
         # Check if the organizer has permission for the event
         if not self.request.user.has_event_permission(
             self.request.organizer, self.request.event, 'can_change_event_settings'
         ):
-            raise PermissionDenied(
-                _('You do not have permission to access this video system.')
-            )
+            raise PermissionDenied(_('You do not have permission to access this video system.'))
         # Generate token and include in url to video system
         return redirect(self.generate_token_url(request))
 
@@ -526,8 +479,6 @@ class VideoAccessAuthenticator(views.APIView):
                 }
             ),
         }
-        token = jwt.encode(
-            payload, self.request.event.settings.venueless_secret, algorithm='HS256'
-        )
+        token = jwt.encode(payload, self.request.event.settings.venueless_secret, algorithm='HS256')
         base_url = self.request.event.settings.venueless_url
         return '{}/#token={}'.format(base_url, token).replace('//#', '/#')

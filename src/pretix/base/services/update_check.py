@@ -26,10 +26,7 @@ def run_update_check(sender, **kwargs):
     if not gs.settings.update_check_perform:
         return
 
-    if (
-        not gs.settings.update_check_last
-        or now() - gs.settings.update_check_last > timedelta(hours=23)
-    ):
+    if not gs.settings.update_check_last or now() - gs.settings.update_check_last > timedelta(hours=23):
         update_check.apply_async()
 
 
@@ -56,9 +53,7 @@ def update_check():
             'total': Event.objects.count(),
             'live': Event.objects.filter(live=True).count(),
         },
-        'plugins': [
-            {'name': p.module, 'version': p.version} for p in get_all_plugins()
-        ],
+        'plugins': [{'name': p.module, 'version': p.version} for p in get_all_plugins()],
     }
     try:
         r = requests.post('https://eventyay.org/.update_check/', json=check_payload)
@@ -67,9 +62,7 @@ def update_check():
             gs.settings.set('update_check_result', {'error': 'http_error'})
         else:
             rdata = r.json()
-            update_available = rdata['version']['updatable'] or any(
-                p['updatable'] for p in rdata['plugins'].values()
-            )
+            update_available = rdata['version']['updatable'] or any(p['updatable'] for p in rdata['plugins'].values())
             gs.settings.set('update_check_result_warning', update_available)
             if update_available and rdata != gs.settings.update_check_result:
                 send_update_notification_email()
@@ -110,9 +103,7 @@ def check_result_table():
         return res
 
     table = []
-    table.append(
-        ('pretix', __version__, res['version']['latest'], res['version']['updatable'])
-    )
+    table.append(('pretix', __version__, res['version']['latest'], res['version']['updatable']))
     for p in get_all_plugins():
         if p.module in res['plugins']:
             pdata = res['plugins'][p.module]

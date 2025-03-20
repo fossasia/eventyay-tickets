@@ -93,44 +93,26 @@ def _default_context(request):
                 _footer.append(response)
 
         if request.event.settings.presale_css_file:
-            ctx['css_file'] = default_storage.url(
-                request.event.settings.presale_css_file
-            )
+            ctx['css_file'] = default_storage.url(request.event.settings.presale_css_file)
 
-        ctx['event_logo'] = request.event.settings.get(
-            'logo_image', as_type=str, default=''
-        )[7:]
+        ctx['event_logo'] = request.event.settings.get('logo_image', as_type=str, default='')[7:]
         try:
-            ctx['social_image'] = request.event.cache.get_or_set(
-                'social_image_url', request.event.social_image, 60
-            )
+            ctx['social_image'] = request.event.cache.get_or_set('social_image_url', request.event.social_image, 60)
         except:
             logger.exception('Could not generate social image')
 
         ctx['event'] = request.event
-        ctx['languages'] = [
-            get_language_info(code) for code in request.event.settings.locales
-        ]
+        ctx['languages'] = [get_language_info(code) for code in request.event.settings.locales]
 
         if request.resolver_match:
-            ctx['cart_namespace'] = request.resolver_match.kwargs.get(
-                'cart_namespace', ''
-            )
+            ctx['cart_namespace'] = request.resolver_match.kwargs.get('cart_namespace', '')
     elif hasattr(request, 'organizer'):
-        ctx['languages'] = [
-            get_language_info(code) for code in request.organizer.settings.locales
-        ]
+        ctx['languages'] = [get_language_info(code) for code in request.organizer.settings.locales]
 
     if hasattr(request, 'organizer'):
-        if request.organizer.settings.presale_css_file and not hasattr(
-            request, 'event'
-        ):
-            ctx['css_file'] = default_storage.url(
-                request.organizer.settings.presale_css_file
-            )
-        ctx['organizer_logo'] = request.organizer.settings.get(
-            'organizer_logo_image', as_type=str, default=''
-        )[7:]
+        if request.organizer.settings.presale_css_file and not hasattr(request, 'event'):
+            ctx['css_file'] = default_storage.url(request.organizer.settings.presale_css_file)
+        ctx['organizer_logo'] = request.organizer.settings.get('organizer_logo_image', as_type=str, default='')[7:]
         ctx['organizer_homepage_text'] = request.organizer.settings.get(
             'organizer_homepage_text', as_type=LazyI18nString
         )
@@ -144,15 +126,13 @@ def _default_context(request):
     ctx['footer'] = _footer
     ctx['site_url'] = settings.SITE_URL
 
-    ctx['js_datetime_format'] = get_javascript_format_without_seconds(
-        'DATETIME_INPUT_FORMATS'
-    )
+    ctx['js_datetime_format'] = get_javascript_format_without_seconds('DATETIME_INPUT_FORMATS')
     ctx['js_date_format'] = get_javascript_format_without_seconds('DATE_INPUT_FORMATS')
     ctx['js_time_format'] = get_javascript_format_without_seconds('TIME_INPUT_FORMATS')
     ctx['js_locale'] = get_moment_locale()
-    ctx['html_locale'] = translation.get_language_info(
-        get_language_without_region()
-    ).get('public_code', translation.get_language())
+    ctx['html_locale'] = translation.get_language_info(get_language_without_region()).get(
+        'public_code', translation.get_language()
+    )
     ctx['settings'] = pretix_settings
     ctx['django_settings'] = settings
 

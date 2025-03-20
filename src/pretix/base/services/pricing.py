@@ -100,9 +100,7 @@ def get_price(
                 subtract_from_gross=bundled_sum,
             )
     else:
-        price = tax_rule.tax(
-            price, invoice_address=invoice_address, subtract_from_gross=bundled_sum
-        )
+        price = tax_rule.tax(price, invoice_address=invoice_address, subtract_from_gross=bundled_sum)
 
     price.gross = round_decimal(price.gross, item.event.currency)
     price.net = round_decimal(price.net, item.event.currency)

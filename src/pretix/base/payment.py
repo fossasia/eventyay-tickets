@@ -146,18 +146,14 @@ class BasePaymentProvider:
         """
         fee_abs = self.settings.get('_fee_abs', as_type=Decimal, default=0)
         fee_percent = self.settings.get('_fee_percent', as_type=Decimal, default=0)
-        fee_reverse_calc = self.settings.get(
-            '_fee_reverse_calc', as_type=bool, default=True
-        )
+        fee_reverse_calc = self.settings.get('_fee_reverse_calc', as_type=bool, default=True)
         places = settings.CURRENCY_PLACES.get(self.event.currency, 2)
         if fee_reverse_calc:
             return ((price + fee_abs) * (1 / (1 - fee_percent / 100)) - price).quantize(
                 Decimal('1') / 10**places, ROUND_HALF_UP
             )
         else:
-            return (price * fee_percent / 100 + fee_abs).quantize(
-                Decimal('1') / 10**places, ROUND_HALF_UP
-            )
+            return (price * fee_percent / 100 + fee_abs).quantize(Decimal('1') / 10**places, ROUND_HALF_UP)
 
     @property
     def verbose_name(self) -> str:
@@ -247,9 +243,7 @@ class BasePaymentProvider:
             self.event,
             'presale:event.payment.unlock',
             kwargs={
-                'hash': hashlib.sha256(
-                    (self.settings._hidden_seed + self.event.slug).encode()
-                ).hexdigest(),
+                'hash': hashlib.sha256((self.settings._hidden_seed + self.event.slug).encode()).hexdigest(),
             },
         )
 
@@ -266,9 +260,7 @@ class BasePaymentProvider:
                     '_availability_date',
                     RelativeDateField(
                         label=_('Available until'),
-                        help_text=_(
-                            'Users will not be able to choose this payment provider after the given date.'
-                        ),
+                        help_text=_('Users will not be able to choose this payment provider after the given date.'),
                         required=False,
                     ),
                 ),
@@ -339,17 +331,13 @@ class BasePaymentProvider:
                 (
                     '_fee_reverse_calc',
                     forms.BooleanField(
-                        label=_(
-                            'Calculate the fee from the total value including the fee.'
-                        ),
+                        label=_('Calculate the fee from the total value including the fee.'),
                         help_text=_(
                             'We recommend to enable this if you want your users to pay the payment fees of your '
                             'payment provider. <a href="{docs_url}" target="_blank" rel="noopener">Click here '
                             "for detailed information on what this does.</a> Don't forget to set the correct fees "
                             'above!'
-                        ).format(
-                            docs_url='https://docs.eventyay.com/en/latest/user/payments/fees.html'
-                        ),
+                        ).format(docs_url='https://docs.eventyay.com/en/latest/user/payments/fees.html'),
                         required=False,
                     ),
                 ),
@@ -363,9 +351,7 @@ class BasePaymentProvider:
                             "countries. If you don't select any country, all countries are allowed. This is only "
                             'enabled if the invoice address is required.'
                         ),
-                        widget=forms.CheckboxSelectMultiple(
-                            attrs={'class': 'scrolling-multiple-choice'}
-                        ),
+                        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
                         required=False,
                         disabled=not self.event.settings.invoice_address_required,
                     ),
@@ -381,9 +367,7 @@ class BasePaymentProvider:
                         ),
                         initial=['web'],
                         widget=forms.CheckboxSelectMultiple,
-                        help_text=_(
-                            'Only allow the usage of this payment provider in the selected sales channels.'
-                        ),
+                        help_text=_('Only allow the usage of this payment provider in the selected sales channels.'),
                     ),
                 ),
                 (
@@ -404,16 +388,13 @@ class BasePaymentProvider:
                         widget=forms.TextInput(
                             attrs={
                                 'readonly': 'readonly',
-                                'data-display-dependency': '#id_%s_hidden'
-                                % self.settings.get_prefix(),
+                                'data-display-dependency': '#id_%s_hidden' % self.settings.get_prefix(),
                                 'value': hidden_url,
                             }
                         ),
                         required=False,
                         initial=hidden_url,
-                        help_text=_(
-                            'Share this link with customers who should use this payment method.'
-                        ),
+                        help_text=_('Share this link with customers who should use this payment method.'),
                     ),
                 ),
             ]
@@ -447,9 +428,7 @@ class BasePaymentProvider:
         default implementation always renders a string stating that the invoice is already paid.
         """
         if order.status == Order.STATUS_PAID:
-            return pgettext_lazy(
-                'invoice', 'The payment for this invoice has already been received.'
-            )
+            return pgettext_lazy('invoice', 'The payment for this invoice has already been received.')
         return self.settings.get('_invoice_text', as_type=LazyI18nString, default='')
 
     @property
@@ -478,10 +457,7 @@ class BasePaymentProvider:
         """
         form = self.payment_form_class(
             data=(
-                request.POST
-                if request.method == 'POST'
-                and request.POST.get('payment') == self.identifier
-                else None
+                request.POST if request.method == 'POST' and request.POST.get('payment') == self.identifier else None
             ),
             prefix='payment_%s' % self.identifier,
             initial={
@@ -503,26 +479,22 @@ class BasePaymentProvider:
         now_dt = now_dt or now()
         tz = pytz.timezone(self.event.settings.timezone)
 
-        availability_date = self.settings.get(
-            '_availability_date', as_type=RelativeDateWrapper
-        )
+        availability_date = self.settings.get('_availability_date', as_type=RelativeDateWrapper)
         if availability_date:
             if self.event.has_subevents and cart_id:
                 dates = [
                     availability_date.datetime(se).date()
                     for se in self.event.subevents.filter(
-                        id__in=CartPosition.objects.filter(
-                            cart_id=cart_id, event=self.event
-                        ).values_list('subevent', flat=True)
+                        id__in=CartPosition.objects.filter(cart_id=cart_id, event=self.event).values_list(
+                            'subevent', flat=True
+                        )
                     )
                 ]
                 availability_date = min(dates) if dates else None
             elif self.event.has_subevents and order:
                 dates = [
                     availability_date.datetime(se).date()
-                    for se in self.event.subevents.filter(
-                        id__in=order.positions.values_list('subevent', flat=True)
-                    )
+                    for se in self.event.subevents.filter(id__in=order.positions.values_list('subevent', flat=True))
                 ]
                 availability_date = min(dates) if dates else None
             elif self.event.has_subevents:
@@ -557,12 +529,8 @@ class BasePaymentProvider:
         timing = self._is_still_available(cart_id=get_or_create_cart_id(request))
         pricing = True
 
-        if (
-            self.settings._total_max is not None or self.settings._total_min is not None
-        ) and total is None:
-            raise ImproperlyConfigured(
-                'This payment provider does not support maximum or minimum amounts.'
-            )
+        if (self.settings._total_max is not None or self.settings._total_min is not None) and total is None:
+            raise ImproperlyConfigured('This payment provider does not support maximum or minimum amounts.')
 
         if self.settings._total_max is not None:
             pricing = pricing and total <= Decimal(self.settings._total_max)
@@ -572,12 +540,7 @@ class BasePaymentProvider:
 
         if self.settings.get('_hidden', as_type=bool):
             hashes = request.session.get('pretix_unlock_hashes', [])
-            if (
-                hashlib.sha256(
-                    (self.settings._hidden_seed + self.event.slug).encode()
-                ).hexdigest()
-                not in hashes
-            ):
+            if hashlib.sha256((self.settings._hidden_seed + self.event.slug).encode()).hexdigest() not in hashes:
                 return False
 
         def get_invoice_address():
@@ -588,34 +551,26 @@ class BasePaymentProvider:
                     request._checkout_flow_invoice_address = InvoiceAddress()
                 else:
                     try:
-                        request._checkout_flow_invoice_address = (
-                            InvoiceAddress.objects.get(pk=iapk, order__isnull=True)
-                        )
+                        request._checkout_flow_invoice_address = InvoiceAddress.objects.get(pk=iapk, order__isnull=True)
                     except InvoiceAddress.DoesNotExist:
                         request._checkout_flow_invoice_address = InvoiceAddress()
             return request._checkout_flow_invoice_address
 
         if self.event.settings.invoice_address_required:
-            restricted_countries = self.settings.get(
-                '_restricted_countries', as_type=list
-            )
+            restricted_countries = self.settings.get('_restricted_countries', as_type=list)
             if restricted_countries:
                 ia = get_invoice_address()
                 if str(ia.country) not in restricted_countries:
                     return False
 
-        if hasattr(
-            request, 'sales_channel'
-        ) and request.sales_channel.identifier not in self.settings.get(
+        if hasattr(request, 'sales_channel') and request.sales_channel.identifier not in self.settings.get(
             '_restrict_to_sales_channels', as_type=list, default=['web']
         ):
             return False
 
         return timing and pricing
 
-    def payment_form_render(
-        self, request: HttpRequest, total: Decimal, order: Order = None
-    ) -> str:
+    def payment_form_render(self, request: HttpRequest, total: Decimal, order: Order = None) -> str:
         """
         When the user selects this provider as their preferred payment method,
         they will be shown the HTML you return from this method.
@@ -628,9 +583,7 @@ class BasePaymentProvider:
         :param order: Only set when this is a change to a new payment method for an existing order.
         """
         form = self.payment_form(request)
-        template = get_template(
-            'pretixpresale/event/checkout_payment_form_default.html'
-        )
+        template = get_template('pretixpresale/event/checkout_payment_form_default.html')
         ctx = {'request': request, 'form': form}
         return template.render(ctx)
 
@@ -648,9 +601,7 @@ class BasePaymentProvider:
         """
         raise NotImplementedError()  # NOQA
 
-    def payment_pending_render(
-        self, request: HttpRequest, payment: OrderPayment
-    ) -> str:
+    def payment_pending_render(self, request: HttpRequest, payment: OrderPayment) -> str:
         """
         Render customer-facing instructions on how to proceed with a pending payment
 
@@ -658,9 +609,7 @@ class BasePaymentProvider:
         """
         return ''
 
-    def checkout_prepare(
-        self, request: HttpRequest, cart: Dict[str, Any]
-    ) -> Union[bool, str]:
+    def checkout_prepare(self, request: HttpRequest, cart: Dict[str, Any]) -> Union[bool, str]:
         """
         Will be called after the user selects this provider as their payment method.
         If you provided a form to the user to enter payment data, this method should
@@ -762,14 +711,10 @@ class BasePaymentProvider:
         :param order: The order object
         """
         ps = order.pending_sum
-        if self.settings._total_max is not None and ps > Decimal(
-            self.settings._total_max
-        ):
+        if self.settings._total_max is not None and ps > Decimal(self.settings._total_max):
             return False
 
-        if self.settings._total_min is not None and ps < Decimal(
-            self.settings._total_min
-        ):
+        if self.settings._total_min is not None and ps < Decimal(self.settings._total_min):
             return False
 
         if self.settings.get('_hidden', as_type=bool):
@@ -782,22 +727,15 @@ class BasePaymentProvider:
             except InvoiceAddress.DoesNotExist:
                 return True
             else:
-                if (
-                    str(ia.country) != ''
-                    and str(ia.country) not in restricted_countries
-                ):
+                if str(ia.country) != '' and str(ia.country) not in restricted_countries:
                     return False
 
-        if order.sales_channel not in self.settings.get(
-            '_restrict_to_sales_channels', as_type=list, default=['web']
-        ):
+        if order.sales_channel not in self.settings.get('_restrict_to_sales_channels', as_type=list, default=['web']):
             return False
 
         return self._is_still_available(order=order)
 
-    def payment_prepare(
-        self, request: HttpRequest, payment: OrderPayment
-    ) -> Union[bool, str]:
+    def payment_prepare(self, request: HttpRequest, payment: OrderPayment) -> Union[bool, str]:
         """
         Will be called if the user retries to pay an unpaid order (after the user filled in
         e.g. the form returned by :py:meth:`payment_form`) or if the user changes the payment
@@ -818,9 +756,7 @@ class BasePaymentProvider:
         else:
             return False
 
-    def payment_control_render(
-        self, request: HttpRequest, payment: OrderPayment
-    ) -> str:
+    def payment_control_render(self, request: HttpRequest, payment: OrderPayment) -> str:
         """
         Will be called if the *event administrator* views the details of a payment.
 
@@ -904,9 +840,7 @@ class BasePaymentProvider:
         On success, you should call ``refund.done()``.
         On failure, you should raise a PaymentException.
         """
-        raise PaymentException(
-            _('Automatic refunds are not supported by this payment provider.')
-        )
+        raise PaymentException(_('Automatic refunds are not supported by this payment provider.'))
 
     def new_refund_control_form_render(self, request: HttpRequest, order: Order) -> str:
         """
@@ -924,9 +858,7 @@ class BasePaymentProvider:
         """
         return
 
-    def new_refund_control_form_process(
-        self, request: HttpRequest, amount: Decimal, order: Order
-    ) -> OrderRefund:
+    def new_refund_control_form_process(self, request: HttpRequest, amount: Decimal, order: Order) -> OrderRefund:
         """
         Process a backend user's request to initiate a new refund with an amount of ``amount`` for ``order``.
 
@@ -979,9 +911,7 @@ class FreeOrderProvider(BasePaymentProvider):
     identifier = 'free'
 
     def checkout_confirm_render(self, request: HttpRequest) -> str:
-        return _(
-            'No payment is required as this order only includes products which are free of charge.'
-        )
+        return _('No payment is required as this order only includes products which are free of charge.')
 
     def payment_is_valid_session(self, request: HttpRequest) -> bool:
         return True
@@ -1005,9 +935,7 @@ class FreeOrderProvider(BasePaymentProvider):
 
         cart = get_cart(request)
         total = get_cart_total(request)
-        total += sum(
-            [f.value for f in get_fees(self.event, request, total, None, None, cart)]
-        )
+        total += sum([f.value for f in get_fees(self.event, request, total, None, None, cart)])
         return total == 0
 
     def order_change_allowed(self, order: Order) -> bool:
@@ -1066,31 +994,21 @@ class ManualPayment(BasePaymentProvider):
     @property
     def test_mode_message(self):
         return _(
-            'In test mode, you can just manually mark this order as paid in the backend after it has been '
-            'created.'
+            'In test mode, you can just manually mark this order as paid in the backend after it has been created.'
         )
 
     def is_implicit(self, request: HttpRequest):
         return 'pretix.plugins.manualpayment' not in self.event.plugins
 
     def is_allowed(self, request: HttpRequest, total: Decimal = None):
-        return (
-            'pretix.plugins.manualpayment' in self.event.plugins
-            and super().is_allowed(request, total)
-        )
+        return 'pretix.plugins.manualpayment' in self.event.plugins and super().is_allowed(request, total)
 
     def order_change_allowed(self, order: Order):
-        return (
-            'pretix.plugins.manualpayment' in self.event.plugins
-            and super().order_change_allowed(order)
-        )
+        return 'pretix.plugins.manualpayment' in self.event.plugins and super().order_change_allowed(order)
 
     @property
     def public_name(self):
-        return str(
-            self.settings.get('public_name', as_type=LazyI18nString)
-            or _('Manual payment')
-        )
+        return str(self.settings.get('public_name', as_type=LazyI18nString) or _('Manual payment'))
 
     @property
     def settings_form_fields(self):
@@ -1117,9 +1035,7 @@ class ManualPayment(BasePaymentProvider):
                 (
                     'email_instructions',
                     I18nFormField(
-                        label=_(
-                            'Payment process description in order confirmation emails'
-                        ),
+                        label=_('Payment process description in order confirmation emails'),
                         help_text=_(
                             'This text will be included for the {payment_info} placeholder in order confirmation '
                             'mails. It should instruct the user on how to proceed with the payment. You can use '
@@ -1167,9 +1083,7 @@ class ManualPayment(BasePaymentProvider):
         return d
 
     def payment_form_render(self, request) -> str:
-        return rich_text(
-            str(self.settings.get('checkout_description', as_type=LazyI18nString))
-        )
+        return rich_text(str(self.settings.get('checkout_description', as_type=LazyI18nString)))
 
     def checkout_prepare(self, request, total):
         return True
@@ -1192,16 +1106,16 @@ class ManualPayment(BasePaymentProvider):
         }
 
     def order_pending_mail_render(self, order, payment) -> str:
-        msg = str(
-            self.settings.get('email_instructions', as_type=LazyI18nString)
-        ).format_map(self.format_map(order, payment))
+        msg = str(self.settings.get('email_instructions', as_type=LazyI18nString)).format_map(
+            self.format_map(order, payment)
+        )
         return msg
 
     def payment_pending_render(self, request, payment) -> str:
         return rich_text(
-            str(
-                self.settings.get('pending_description', as_type=LazyI18nString)
-            ).format_map(self.format_map(payment.order, payment))
+            str(self.settings.get('pending_description', as_type=LazyI18nString)).format_map(
+                self.format_map(payment.order, payment)
+            )
         )
 
 
@@ -1250,9 +1164,7 @@ class OffsettingProvider(BasePaymentProvider):
             'orders': payment.info_data.get('orders', []),
         }
 
-    def payment_control_render(
-        self, request: HttpRequest, payment: OrderPayment
-    ) -> str:
+    def payment_control_render(self, request: HttpRequest, payment: OrderPayment) -> str:
         return _('Balanced against orders: %s' % ', '.join(payment.info_data['orders']))
 
 
@@ -1277,14 +1189,10 @@ class GiftCardPayment(BasePaymentProvider):
         return _('In test mode, only test cards will work.')
 
     def is_allowed(self, request: HttpRequest, total: Decimal = None) -> bool:
-        return (
-            super().is_allowed(request, total) and self.event.organizer.has_gift_cards
-        )
+        return super().is_allowed(request, total) and self.event.organizer.has_gift_cards
 
     def order_change_allowed(self, order: Order) -> bool:
-        return (
-            super().order_change_allowed(order) and self.event.organizer.has_gift_cards
-        )
+        return super().order_change_allowed(order) and self.event.organizer.has_gift_cards
 
     def payment_form_render(self, request: HttpRequest, total: Decimal) -> str:
         return get_template('pretixcontrol/giftcards/checkout.html').render({})
@@ -1327,9 +1235,7 @@ class GiftCardPayment(BasePaymentProvider):
             gc = GiftCard.objects.get(pk=payment.info_data.get('gift_card'))
         except GiftCard.DoesNotExist:
             return {}
-        return {
-            'gift_card': {'id': gc.pk, 'secret': gc.secret, 'organizer': gc.issuer.slug}
-        }
+        return {'gift_card': {'id': gc.pk, 'secret': gc.secret, 'organizer': gc.issuer.slug}}
 
     def payment_partial_refund_supported(self, payment: OrderPayment) -> bool:
         return True
@@ -1337,9 +1243,7 @@ class GiftCardPayment(BasePaymentProvider):
     def payment_refund_supported(self, payment: OrderPayment) -> bool:
         return True
 
-    def checkout_prepare(
-        self, request: HttpRequest, cart: Dict[str, Any]
-    ) -> Union[bool, str, None]:
+    def checkout_prepare(self, request: HttpRequest, cart: Dict[str, Any]) -> Union[bool, str, None]:
         for p in get_cart(request):
             if p.item.issue_giftcard:
                 messages.error(
@@ -1350,38 +1254,26 @@ class GiftCardPayment(BasePaymentProvider):
 
         cs = cart_session(request)
         try:
-            gc = self.event.organizer.accepted_gift_cards.get(
-                secret=request.POST.get('giftcard')
-            )
+            gc = self.event.organizer.accepted_gift_cards.get(secret=request.POST.get('giftcard'))
             if gc.currency != self.event.currency:
-                messages.error(
-                    request, _('This gift card does not support this currency.')
-                )
+                messages.error(request, _('This gift card does not support this currency.'))
                 return
             if gc.testmode and not self.event.testmode:
-                messages.error(
-                    request, _('This gift card can only be used in test mode.')
-                )
+                messages.error(request, _('This gift card can only be used in test mode.'))
                 return
             if not gc.testmode and self.event.testmode:
-                messages.error(
-                    request, _('Only test gift cards can be used in test mode.')
-                )
+                messages.error(request, _('Only test gift cards can be used in test mode.'))
                 return
             if gc.expires and gc.expires < now():
                 messages.error(request, _('This gift card is no longer valid.'))
                 return
             if gc.value <= Decimal('0.00'):
-                messages.error(
-                    request, _('All credit on this gift card has been used.')
-                )
+                messages.error(request, _('All credit on this gift card has been used.'))
                 return
             if 'gift_cards' not in cs:
                 cs['gift_cards'] = []
             elif gc.pk in cs['gift_cards']:
-                messages.error(
-                    request, _('This gift card is already used for your payment.')
-                )
+                messages.error(request, _('This gift card is already used for your payment.'))
                 return
             cs['gift_cards'] = cs['gift_cards'] + [gc.pk]
 
@@ -1410,18 +1302,11 @@ class GiftCardPayment(BasePaymentProvider):
                 messages.success(request, _('Your gift card has been applied.'))
 
             kwargs = {'step': 'payment'}
-            if (
-                request.resolver_match
-                and 'cart_namespace' in request.resolver_match.kwargs
-            ):
-                kwargs['cart_namespace'] = request.resolver_match.kwargs[
-                    'cart_namespace'
-                ]
+            if request.resolver_match and 'cart_namespace' in request.resolver_match.kwargs:
+                kwargs['cart_namespace'] = request.resolver_match.kwargs['cart_namespace']
             return eventreverse(self.event, 'presale:event.checkout', kwargs=kwargs)
         except GiftCard.DoesNotExist:
-            if self.event.vouchers.filter(
-                code__iexact=request.POST.get('giftcard')
-            ).exists():
+            if self.event.vouchers.filter(code__iexact=request.POST.get('giftcard')).exists():
                 messages.warning(
                     request,
                     _(
@@ -1439,9 +1324,7 @@ class GiftCardPayment(BasePaymentProvider):
                 ),
             )
 
-    def payment_prepare(
-        self, request: HttpRequest, payment: OrderPayment
-    ) -> Union[bool, str, None]:
+    def payment_prepare(self, request: HttpRequest, payment: OrderPayment) -> Union[bool, str, None]:
         for p in payment.order.positions.all():
             if p.item.issue_giftcard:
                 messages.error(
@@ -1451,31 +1334,21 @@ class GiftCardPayment(BasePaymentProvider):
                 return
 
         try:
-            gc = self.event.organizer.accepted_gift_cards.get(
-                secret=request.POST.get('giftcard')
-            )
+            gc = self.event.organizer.accepted_gift_cards.get(secret=request.POST.get('giftcard'))
             if gc.currency != self.event.currency:
-                messages.error(
-                    request, _('This gift card does not support this currency.')
-                )
+                messages.error(request, _('This gift card does not support this currency.'))
                 return
             if gc.testmode and not payment.order.testmode:
-                messages.error(
-                    request, _('This gift card can only be used in test mode.')
-                )
+                messages.error(request, _('This gift card can only be used in test mode.'))
                 return
             if not gc.testmode and payment.order.testmode:
-                messages.error(
-                    request, _('Only test gift cards can be used in test mode.')
-                )
+                messages.error(request, _('Only test gift cards can be used in test mode.'))
                 return
             if gc.expires and gc.expires < now():
                 messages.error(request, _('This gift card is no longer valid.'))
                 return
             if gc.value <= Decimal('0.00'):
-                messages.error(
-                    request, _('All credit on this gift card has been used.')
-                )
+                messages.error(request, _('All credit on this gift card has been used.'))
                 return
             payment.info_data = {'gift_card': gc.pk, 'retry': True}
             payment.amount = min(payment.amount, gc.value)
@@ -1483,9 +1356,7 @@ class GiftCardPayment(BasePaymentProvider):
 
             return True
         except GiftCard.DoesNotExist:
-            if self.event.vouchers.filter(
-                code__iexact=request.POST.get('giftcard')
-            ).exists():
+            if self.event.vouchers.filter(code__iexact=request.POST.get('giftcard')).exists():
                 messages.warning(
                     request,
                     _(
@@ -1508,9 +1379,7 @@ class GiftCardPayment(BasePaymentProvider):
         # during the order creation phase because this payment provider is a special case.
         for p in payment.order.positions.all():  # noqa - just a safeguard
             if p.item.issue_giftcard:
-                raise PaymentException(
-                    _('You cannot pay with gift cards when buying a gift card.')
-                )
+                raise PaymentException(_('You cannot pay with gift cards when buying a gift card.'))
 
         gcpk = payment.info_data.get('gift_card')
         if not gcpk or not payment.info_data.get('retry'):
@@ -1518,23 +1387,15 @@ class GiftCardPayment(BasePaymentProvider):
         with transaction.atomic():
             gc = GiftCard.objects.select_for_update().get(pk=gcpk)
             if gc.currency != self.event.currency:  # noqa - just a safeguard
-                raise PaymentException(
-                    _('This gift card does not support this currency.')
-                )
+                raise PaymentException(_('This gift card does not support this currency.'))
             if not gc.accepted_by(self.event.organizer):  # noqa - just a safeguard
-                raise PaymentException(
-                    _('This gift card is not accepted by this event organizer.')
-                )
+                raise PaymentException(_('This gift card is not accepted by this event organizer.'))
             if payment.amount > gc.value:  # noqa - just a safeguard
-                raise PaymentException(
-                    _('This gift card was used in the meantime. Please try again.')
-                )
+                raise PaymentException(_('This gift card was used in the meantime. Please try again.'))
             if gc.expires and gc.expires < now():  # noqa - just a safeguard
                 messages.error(request, _('This gift card is no longer valid.'))
                 return
-            trans = gc.transactions.create(
-                value=-1 * payment.amount, order=payment.order, payment=payment
-            )
+            trans = gc.transactions.create(value=-1 * payment.amount, order=payment.order, payment=payment)
             payment.info_data = {
                 'gift_card': gc.pk,
                 'transaction_id': trans.pk,
@@ -1548,13 +1409,8 @@ class GiftCardPayment(BasePaymentProvider):
     def execute_refund(self, refund: OrderRefund):
         from .models import GiftCard
 
-        gc = GiftCard.objects.get(
-            pk=refund.info_data.get('gift_card')
-            or refund.payment.info_data.get('gift_card')
-        )
-        trans = gc.transactions.create(
-            value=refund.amount, order=refund.order, refund=refund
-        )
+        gc = GiftCard.objects.get(pk=refund.info_data.get('gift_card') or refund.payment.info_data.get('gift_card'))
+        trans = gc.transactions.create(value=refund.amount, order=refund.order, refund=refund)
         refund.info_data = {
             'gift_card': gc.pk,
             'gift_card_code': gc.secret,

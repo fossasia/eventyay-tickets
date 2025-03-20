@@ -30,9 +30,7 @@ class MailSettingPreviewTest(SoupTest):
         )
         self.locale_event.settings.locales = ['en', 'de-formal']
         self.locale_event.save()
-        t = Team.objects.create(
-            organizer=self.orga1, can_change_items=True, can_change_event_settings=True
-        )
+        t = Team.objects.create(organizer=self.orga1, can_change_items=True, can_change_event_settings=True)
         t.members.add(self.user)
         t.limit_events.add(self.locale_event)
         t.limit_events.add(self.event1)
@@ -48,9 +46,7 @@ class MailSettingPreviewTest(SoupTest):
                 slug='30m3',
                 date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
             )
-        response = self.client.post(
-            self.target.format(self.orga2.slug, self.event2.slug), {'test': 'test1'}
-        )
+        response = self.client.post(self.target.format(self.orga2.slug, self.event2.slug), {'test': 'test1'})
         assert response.status_code == 404
 
     def test_missing_item_key(self):

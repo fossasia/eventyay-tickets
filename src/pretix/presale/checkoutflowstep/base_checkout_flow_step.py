@@ -62,16 +62,9 @@ class BaseCheckoutFlowStep:
         prev = self.get_prev_applicable(request)
         if not prev:
             kwargs = {}
-            if (
-                request.resolver_match
-                and 'cart_namespace' in request.resolver_match.kwargs
-            ):
-                kwargs['cart_namespace'] = request.resolver_match.kwargs[
-                    'cart_namespace'
-                ]
-            return eventreverse(
-                self.request.event, 'presale:event.index', kwargs=kwargs
-            )
+            if request.resolver_match and 'cart_namespace' in request.resolver_match.kwargs:
+                kwargs['cart_namespace'] = request.resolver_match.kwargs['cart_namespace']
+            return eventreverse(self.request.event, 'presale:event.index', kwargs=kwargs)
         else:
             return prev.get_step_url(request)
 
@@ -93,8 +86,8 @@ class BaseCheckoutFlowStep:
             else:
                 try:
                     with scopes_disabled():
-                        self.request._checkout_flow_invoice_address = (
-                            InvoiceAddress.objects.get(pk=iapk, order__isnull=True)
+                        self.request._checkout_flow_invoice_address = InvoiceAddress.objects.get(
+                            pk=iapk, order__isnull=True
                         )
                 except InvoiceAddress.DoesNotExist:
                     self.request._checkout_flow_invoice_address = InvoiceAddress()

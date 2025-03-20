@@ -26,10 +26,7 @@ class CheckoutView(View):
         kwargs = {}
         if 'cart_namespace' in self.kwargs:
             kwargs['cart_namespace'] = self.kwargs['cart_namespace']
-        return (
-            eventreverse(self.request.event, 'presale:event.index', kwargs=kwargs)
-            + '?require_cookie=true'
-        )
+        return eventreverse(self.request.event, 'presale:event.index', kwargs=kwargs) + '?require_cookie=true'
 
     def dispatch(self, request, *args, **kwargs):
         self.request = request
@@ -39,9 +36,7 @@ class CheckoutView(View):
             return self.redirect(self.get_index_url(self.request))
 
         if not request.event.presale_is_running:
-            messages.error(
-                request, _('The presale for this event is over or has not yet started.')
-            )
+            messages.error(request, _('The presale for this event is over or has not yet started.'))
             return self.redirect(self.get_index_url(self.request))
 
         cart_error = None
@@ -58,9 +53,7 @@ class CheckoutView(View):
             if step.requires_valid_cart and cart_error:
                 messages.error(request, str(cart_error))
                 return self.redirect(
-                    previous_step.get_step_url(request)
-                    if previous_step
-                    else self.get_index_url(request)
+                    previous_step.get_step_url(request) if previous_step else self.get_index_url(request)
                 )
 
             if 'step' not in kwargs:
@@ -74,9 +67,7 @@ class CheckoutView(View):
                 return self.redirect(step.get_step_url(request))
             if is_selected:
                 if request.method.lower() in self.http_method_names:
-                    handler = getattr(
-                        step, request.method.lower(), self.http_method_not_allowed
-                    )
+                    handler = getattr(step, request.method.lower(), self.http_method_not_allowed)
                 else:
                     handler = self.http_method_not_allowed
                 return handler(request)
@@ -88,9 +79,5 @@ class CheckoutView(View):
 
     def redirect(self, url):
         if 'cart_id' in self.request.GET:
-            url += (
-                ('&' if '?' in url else '?')
-                + 'cart_id='
-                + quote(self.request.GET.get('cart_id'))
-            )
+            url += ('&' if '?' in url else '?') + 'cart_id=' + quote(self.request.GET.get('cart_id'))
         return redirect(url)

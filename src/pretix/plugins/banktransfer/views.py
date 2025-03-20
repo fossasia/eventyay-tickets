@@ -112,9 +112,7 @@ class ActionView(View):
                 return JsonResponse(
                     {
                         'status': 'error',
-                        'message': _(
-                            "Negative amount but refund can't be logged, please create manual refund first."
-                        ),
+                        'message': _("Negative amount but refund can't be logged, please create manual refund first."),
                     }
                 )
 
@@ -142,9 +140,7 @@ class ActionView(View):
         except Quota.QuotaExceededException:
             pass
         except SendMailException:
-            return JsonResponse(
-                {'status': 'error', 'message': _('Problem sending email.')}
-            )
+            return JsonResponse({'status': 'error', 'message': _('Problem sending email.')})
         trans.state = BankTransaction.STATE_VALID
         trans.save()
         trans.order.payments.filter(
@@ -192,13 +188,9 @@ class ActionView(View):
             if not k.startswith('action_'):
                 continue
             if 'event' in kwargs:
-                trans = get_object_or_404(
-                    BankTransaction, id=k.split('_')[1], event=request.event
-                )
+                trans = get_object_or_404(BankTransaction, id=k.split('_')[1], event=request.event)
             else:
-                trans = get_object_or_404(
-                    BankTransaction, id=k.split('_')[1], organizer=request.organizer
-                )
+                trans = get_object_or_404(BankTransaction, id=k.split('_')[1], organizer=request.organizer)
 
             if v == 'discard' and trans.state in (
                 BankTransaction.STATE_INVALID,
@@ -235,9 +227,7 @@ class ActionView(View):
             return JsonResponse({'results': []})
 
         if '-' in u:
-            code = Q(event__slug__icontains=u.split('-')[0]) & Q(
-                code__icontains=Order.normalize_code(u.split('-')[1])
-            )
+            code = Q(event__slug__icontains=u.split('-')[0]) & Q(code__icontains=Order.normalize_code(u.split('-')[1]))
         else:
             code = Q(code__icontains=Order.normalize_code(u))
         qs = (
@@ -340,30 +330,20 @@ class JobDetailView(DetailView):
 class BankTransactionFilterForm(forms.Form):
     search_text = forms.CharField(
         required=False,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': _('Search text')}
-        ),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Search text')}),
     )
     amount_min = forms.DecimalField(
         required=False,
         localize=True,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': _('min'), 'size': 8}
-        ),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('min'), 'size': 8}),
     )
     amount_max = forms.DecimalField(
         required=False,
         localize=True,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': _('max'), 'size': 8}
-        ),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('max'), 'size': 8}),
     )
-    date_min = forms.DateField(
-        required=False, widget=DatePickerWidget(attrs={'size': 8})
-    )
-    date_max = forms.DateField(
-        required=False, widget=DatePickerWidget(attrs={'size': 8})
-    )
+    date_min = forms.DateField(required=False, widget=DatePickerWidget(attrs={'size': 8}))
+    date_max = forms.DateField(required=False, widget=DatePickerWidget(attrs={'size': 8}))
 
     def is_valid(self):
         return super().is_valid() and any(value for value in self.cleaned_data.values())
@@ -418,12 +398,8 @@ class ImportView(ListView):
         return qs.order_by('-import_job__created')
 
     def discard_all(self):
-        self.get_queryset().update(
-            payer='', reference='', state=BankTransaction.STATE_DISCARDED
-        )
-        messages.success(
-            self.request, _('All unresolved transactions have been discarded.')
-        )
+        self.get_queryset().update(payer='', reference='', state=BankTransaction.STATE_DISCARDED)
+        messages.success(self.request, _('All unresolved transactions have been discarded.'))
 
     def post(self, *args, **kwargs):
         if self.request.POST.get('discard', '') == 'all':
@@ -431,8 +407,7 @@ class ImportView(ListView):
             return self.redirect_back()
 
         elif (
-            'file' in self.request.FILES
-            and '.csv' in self.request.FILES.get('file').name.lower()
+            'file' in self.request.FILES and '.csv' in self.request.FILES.get('file').name.lower()
         ) or 'amount' in self.request.POST:
             # Process CSV
             return self.process_csv()
@@ -440,10 +415,7 @@ class ImportView(ListView):
         elif 'file' in self.request.FILES and (
             '.txt' in self.request.FILES.get('file').name.lower()
             or '.sta' in self.request.FILES.get('file').name.lower()
-            or '.swi'
-            in self.request.FILES.get(
-                'file'
-            ).name.lower()  # Rabobank's MT940 Structured
+            or '.swi' in self.request.FILES.get('file').name.lower()  # Rabobank's MT940 Structured
         ):
             return self.process_mt940()
 
@@ -454,10 +426,7 @@ class ImportView(ListView):
         else:
             messages.error(
                 self.request,
-                _(
-                    'We were unable to detect the file type of this import. Please '
-                    'contact support for help.'
-                ),
+                _('We were unable to detect the file type of this import. Please contact support for help.'),
             )
             return self.redirect_back()
 
@@ -471,9 +440,7 @@ class ImportView(ListView):
 
     def process_mt940(self):
         try:
-            return self.start_processing(
-                mt940import.parse(self.request.FILES.get('file'))
-            )
+            return self.start_processing(mt940import.parse(self.request.FILES.get('file')))
         except:
             logger.exception('Failed to import MT940 file')
             messages.error(self.request, _('We were unable to process your input.'))
@@ -487,20 +454,14 @@ class ImportView(ListView):
             logger.error('Import failed: ' + str(e))
             messages.error(
                 self.request,
-                _(
-                    "I'm sorry, but we were unable to import this CSV file. Please "
-                    'contact support for help.'
-                ),
+                _("I'm sorry, but we were unable to import this CSV file. Please contact support for help."),
             )
             return self.redirect_back()
 
         if len(data) == 0:
             messages.error(
                 self.request,
-                _(
-                    "I'm sorry, but we detected this file as empty. Please "
-                    'contact support for help.'
-                ),
+                _("I'm sorry, but we detected this file as empty. Please contact support for help."),
             )
 
         if o.settings.get('banktransfer_csvhint') is not None:
@@ -562,16 +523,12 @@ class ImportView(ListView):
         else:
             ctx['basetpl'] = 'pretixplugins/banktransfer/import_base_organizer.html'
             ctx['organizer'] = self.request.organizer
-        return render(
-            self.request, 'pretixplugins/banktransfer/import_assign.html', ctx
-        )
+        return render(self.request, 'pretixplugins/banktransfer/import_assign.html', ctx)
 
     @cached_property
     def job_running(self):
         if 'event' in self.kwargs:
-            qs = BankImportJob.objects.filter(
-                Q(event=self.request.event) | Q(organizer=self.request.organizer)
-            )
+            qs = BankImportJob.objects.filter(Q(event=self.request.event) | Q(organizer=self.request.organizer))
         else:
             qs = BankImportJob.objects.filter(Q(organizer=self.request.organizer))
         return qs.filter(
@@ -589,15 +546,11 @@ class ImportView(ListView):
         if self.job_running:
             messages.error(
                 self.request,
-                _(
-                    'An import is currently being processed, please try again in a few minutes.'
-                ),
+                _('An import is currently being processed, please try again in a few minutes.'),
             )
             return self.redirect_back()
         if 'event' in self.kwargs:
-            job = BankImportJob.objects.create(
-                event=self.request.event, organizer=self.request.organizer
-            )
+            job = BankImportJob.objects.create(event=self.request.event, organizer=self.request.organizer)
         else:
             job = BankImportJob.objects.create(organizer=self.request.organizer)
         process_banktransfers.apply_async(kwargs={'job': job.pk, 'data': parsed})
@@ -614,9 +567,7 @@ class ImportView(ListView):
 
         if 'event' in self.kwargs:
             ctx['basetpl'] = 'pretixplugins/banktransfer/import_base.html'
-            if not self.request.event.has_subevents and self.request.event.settings.get(
-                'payment_term_last'
-            ):
+            if not self.request.event.has_subevents and self.request.event.settings.get('payment_term_last'):
                 if now() > self.request.event.payment_term_last:
                     ctx['no_more_payments'] = True
             ctx['lastimport'] = (
@@ -669,20 +620,10 @@ class ImportView(ListView):
 
 class OrganizerBanktransferView:
     def dispatch(self, request, *args, **kwargs):
-        if (
-            len(
-                request.organizer.events.order_by('currency')
-                .values_list('currency', flat=True)
-                .distinct()
-            )
-            > 1
-        ):
+        if len(request.organizer.events.order_by('currency').values_list('currency', flat=True).distinct()) > 1:
             messages.error(
                 request,
-                _(
-                    'Please perform per-event bank imports as this organizer has events with '
-                    'multiple currencies.'
-                ),
+                _('Please perform per-event bank imports as this organizer has events with multiple currencies.'),
             )
             return redirect('control:organizer', organizer=request.organizer.slug)
         return super().dispatch(request, *args, **kwargs)
@@ -733,10 +674,7 @@ class OrganizerActionView(
             can_view_orders=True,
             all_events=True,
         ).exists()
-        if (
-            self.request.user.has_active_staff_session(self.request.session.session_key)
-            or all
-        ):
+        if self.request.user.has_active_staff_session(self.request.session.session_key) or all:
             return Order.objects.filter(event__organizer=self.request.organizer)
         else:
             return Order.objects.filter(
@@ -764,8 +702,7 @@ def _unite_transaction_rows(transaction_rows):
                 'id': ', '.join(sorted(set(r['id'] for r in rows))),
                 'payer': ', '.join(sorted(set(r['payer'] for r in rows))),
                 'amount': sum(r['amount'] for r in rows),
-                'comment': ', '.join(r['comment'] for r in rows if r.get('comment'))
-                or None,
+                'comment': ', '.join(r['comment'] for r in rows if r.get('comment')) or None,
             }
         )
     return united_transactions_rows
@@ -835,9 +772,7 @@ class RefundExportListView(ListView):
                     rows=rows_data,
                 )
             else:
-                RefundExport.objects.create(
-                    organizer=self.request.organizer, testmode=False, rows=rows_data
-                )
+                RefundExport.objects.create(organizer=self.request.organizer, testmode=False, rows=rows_data)
 
         else:
             messages.warning(request, _('No valid orders have been found.'))
@@ -858,9 +793,7 @@ class EventRefundExportListView(EventPermissionRequiredMixin, RefundExportListVi
         )
 
     def get_queryset(self):
-        return RefundExport.objects.filter(event=self.request.event).order_by(
-            '-datetime'
-        )
+        return RefundExport.objects.filter(event=self.request.event).order_by('-datetime')
 
     def get_unexported(self):
         return OrderRefund.objects.filter(
@@ -871,26 +804,14 @@ class EventRefundExportListView(EventPermissionRequiredMixin, RefundExportListVi
         )
 
 
-class OrganizerRefundExportListView(
-    OrganizerPermissionRequiredMixin, RefundExportListView
-):
+class OrganizerRefundExportListView(OrganizerPermissionRequiredMixin, RefundExportListView):
     permission = 'can_change_orders'
 
     def dispatch(self, request, *args, **kwargs):
-        if (
-            len(
-                request.organizer.events.order_by('currency')
-                .values_list('currency', flat=True)
-                .distinct()
-            )
-            > 1
-        ):
+        if len(request.organizer.events.order_by('currency').values_list('currency', flat=True).distinct()) > 1:
             messages.error(
                 request,
-                _(
-                    'Please perform per-event refund exports as this organizer has events with '
-                    'multiple currencies.'
-                ),
+                _('Please perform per-event refund exports as this organizer has events with multiple currencies.'),
             )
             return redirect('control:organizer', organizer=request.organizer.slug)
         return super().dispatch(request, *args, **kwargs)
@@ -905,8 +826,7 @@ class OrganizerRefundExportListView(
 
     def get_queryset(self):
         return RefundExport.objects.filter(
-            Q(organizer=self.request.organizer)
-            | Q(event__organizer=self.request.organizer)
+            Q(organizer=self.request.organizer) | Q(event__organizer=self.request.organizer)
         ).order_by('-datetime')
 
     def get_unexported(self):
@@ -926,20 +846,14 @@ class DownloadRefundExportView(DetailView):
         self.object.downloaded = True
         self.object.save(update_fields=['downloaded'])
         filename, content_type, data = get_refund_export_csv(self.object)
-        return FileResponse(
-            data, as_attachment=True, filename=filename, content_type=content_type
-        )
+        return FileResponse(data, as_attachment=True, filename=filename, content_type=content_type)
 
 
-class EventDownloadRefundExportView(
-    EventPermissionRequiredMixin, DownloadRefundExportView
-):
+class EventDownloadRefundExportView(EventPermissionRequiredMixin, DownloadRefundExportView):
     permission = 'can_change_orders'
 
     def get_object(self, *args, **kwargs):
-        return get_object_or_404(
-            RefundExport, event=self.request.event, pk=self.kwargs.get('id')
-        )
+        return get_object_or_404(RefundExport, event=self.request.event, pk=self.kwargs.get('id'))
 
 
 class OrganizerDownloadRefundExportView(
@@ -948,9 +862,7 @@ class OrganizerDownloadRefundExportView(
     permission = 'can_change_orders'
 
     def get_object(self, *args, **kwargs):
-        return get_object_or_404(
-            RefundExport, organizer=self.request.organizer, pk=self.kwargs.get('id')
-        )
+        return get_object_or_404(RefundExport, organizer=self.request.organizer, pk=self.kwargs.get('id'))
 
 
 class SepaXMLExportForm(forms.Form):
@@ -960,9 +872,7 @@ class SepaXMLExportForm(forms.Form):
 
     def set_initial_from_event(self, event: Event):
         banktransfer = event.get_payment_providers(cached=True)[BankTransfer.identifier]
-        self.initial['account_holder'] = banktransfer.settings.get(
-            'bank_details_sepa_name'
-        )
+        self.initial['account_holder'] = banktransfer.settings.get('bank_details_sepa_name')
         self.initial['iban'] = banktransfer.settings.get('bank_details_sepa_iban')
         self.initial['bic'] = banktransfer.settings.get('bank_details_sepa_bic')
 
@@ -981,9 +891,7 @@ class SepaXMLExportView(SingleObjectMixin, FormView):
         self.object.downloaded = True
         self.object.save(update_fields=['downloaded'])
         filename, content_type, data = build_sepa_xml(self.object, **form.cleaned_data)
-        return FileResponse(
-            data, as_attachment=True, filename=filename, content_type=content_type
-        )
+        return FileResponse(data, as_attachment=True, filename=filename, content_type=content_type)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
@@ -997,9 +905,7 @@ class EventSepaXMLExportView(EventPermissionRequiredMixin, SepaXMLExportView):
     permission = 'can_change_orders'
 
     def get_object(self, *args, **kwargs):
-        return get_object_or_404(
-            RefundExport, event=self.request.event, pk=self.kwargs.get('id')
-        )
+        return get_object_or_404(RefundExport, event=self.request.event, pk=self.kwargs.get('id'))
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -1007,12 +913,8 @@ class EventSepaXMLExportView(EventPermissionRequiredMixin, SepaXMLExportView):
         return form
 
 
-class OrganizerSepaXMLExportView(
-    OrganizerPermissionRequiredMixin, OrganizerDetailViewMixin, SepaXMLExportView
-):
+class OrganizerSepaXMLExportView(OrganizerPermissionRequiredMixin, OrganizerDetailViewMixin, SepaXMLExportView):
     permission = 'can_change_orders'
 
     def get_object(self, *args, **kwargs):
-        return get_object_or_404(
-            RefundExport, organizer=self.request.organizer, pk=self.kwargs.get('id')
-        )
+        return get_object_or_404(RefundExport, organizer=self.request.organizer, pk=self.kwargs.get('id'))

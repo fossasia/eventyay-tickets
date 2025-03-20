@@ -37,9 +37,7 @@ class ContactForm(forms.Form):
         if self.event.settings.order_email_asked_twice:
             self.fields['email_repeat'] = forms.EmailField(
                 label=_('E-mail address (repeated)'),
-                help_text=_(
-                    'Please enter the same email address again to make sure you typed it correctly.'
-                ),
+                help_text=_('Please enter the same email address again to make sure you typed it correctly.'),
             )
 
         if self.event.settings.order_phone_asked:
@@ -51,11 +49,7 @@ class ContactForm(forms.Form):
                         default_prefix = prefix
                 try:
                     initial = self.initial.pop('phone', None)
-                    initial = (
-                        PhoneNumber().from_string(initial)
-                        if initial
-                        else '+{}.'.format(default_prefix)
-                    )
+                    initial = PhoneNumber().from_string(initial) if initial else '+{}.'.format(default_prefix)
                 except NumberParseException:
                     initial = None
                 self.fields['phone'] = PhoneNumberField(
@@ -93,10 +87,7 @@ class ContactForm(forms.Form):
             and self.cleaned_data.get('email')
             and self.cleaned_data.get('email_repeat')
         ):
-            if (
-                self.cleaned_data.get('email').lower()
-                != self.cleaned_data.get('email_repeat').lower()
-            ):
+            if self.cleaned_data.get('email').lower() != self.cleaned_data.get('email_repeat').lower():
                 raise ValidationError(_('Please enter the same email address twice.'))
 
 
@@ -130,9 +121,7 @@ class AddOnRadioSelect(forms.RadioSelect):
         attrs = attrs or {}
         groups = []
         has_selected = False
-        for index, (option_value, option_label, option_desc) in enumerate(
-            chain(self.choices)
-        ):
+        for index, (option_value, option_label, option_desc) in enumerate(chain(self.choices)):
             if option_value is None:
                 option_value = ''
             if isinstance(option_label, (list, tuple)):
@@ -141,9 +130,7 @@ class AddOnRadioSelect(forms.RadioSelect):
             subgroup = []
             groups.append((group_name, subgroup, index))
 
-            selected = force_str(option_value) in value and (
-                has_selected is False or self.allow_multiple_selected
-            )
+            selected = force_str(option_value) in value and (has_selected is False or self.allow_multiple_selected)
             if selected is True and has_selected is False:
                 has_selected = True
             attrs['description'] = option_desc

@@ -51,12 +51,8 @@ with scopes_disabled():
     class EventFilter(FilterSet):
         is_past = django_filters.rest_framework.BooleanFilter(method='is_past_qs')
         is_future = django_filters.rest_framework.BooleanFilter(method='is_future_qs')
-        ends_after = django_filters.rest_framework.IsoDateTimeFilter(
-            method='ends_after_qs'
-        )
-        sales_channel = django_filters.rest_framework.CharFilter(
-            method='sales_channel_qs'
-        )
+        ends_after = django_filters.rest_framework.IsoDateTimeFilter(method='ends_after_qs')
+        sales_channel = django_filters.rest_framework.CharFilter(method='sales_channel_qs')
 
         class Meta:
             model = Event
@@ -71,8 +67,7 @@ with scopes_disabled():
 
         def is_past_qs(self, queryset, name, value):
             expr = Q(has_subevents=False) & Q(
-                Q(Q(date_to__isnull=True) & Q(date_from__lt=now()))
-                | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
+                Q(Q(date_to__isnull=True) & Q(date_from__lt=now())) | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
             )
             if value:
                 return queryset.filter(expr)
@@ -109,14 +104,10 @@ class EventViewSet(viewsets.ModelViewSet):
         if isinstance(self.request.auth, (TeamAPIToken, Device)):
             qs = self.request.auth.get_events_with_any_permission()
         elif self.request.user.is_authenticated:
-            qs = self.request.user.get_events_with_any_permission(self.request).filter(
-                organizer=self.request.organizer
-            )
+            qs = self.request.user.get_events_with_any_permission(self.request).filter(organizer=self.request.organizer)
 
         qs = filter_qs_by_attr(qs, self.request)
-        return qs.prefetch_related(
-            'meta_values', 'meta_values__property', 'seat_category_mappings'
-        )
+        return qs.prefetch_related('meta_values', 'meta_values__property', 'seat_category_mappings')
 
     def perform_update(self, serializer):
         current_live_value = serializer.instance.live
@@ -127,11 +118,7 @@ class EventViewSet(viewsets.ModelViewSet):
         super().perform_update(serializer)
 
         if updated_live_value is not None and updated_live_value != current_live_value:
-            log_action = (
-                'pretix.event.live.activated'
-                if updated_live_value
-                else 'pretix.event.live.deactivated'
-            )
+            log_action = 'pretix.event.live.activated' if updated_live_value else 'pretix.event.live.deactivated'
             serializer.instance.log_action(
                 log_action,
                 user=self.request.user,
@@ -139,19 +126,9 @@ class EventViewSet(viewsets.ModelViewSet):
                 data=self.request.data,
             )
 
-        if updated_plugins_value is not None and set(updated_plugins_value) != set(
-            current_plugins_value
-        ):
-            enabled = {
-                m: 'enabled'
-                for m in updated_plugins_value
-                if m not in current_plugins_value
-            }
-            disabled = {
-                m: 'disabled'
-                for m in current_plugins_value
-                if m not in updated_plugins_value
-            }
+        if updated_plugins_value is not None and set(updated_plugins_value) != set(current_plugins_value):
+            enabled = {m: 'enabled' for m in updated_plugins_value if m not in current_plugins_value}
+            disabled = {m: 'disabled' for m in current_plugins_value if m not in updated_plugins_value}
             changed = merge_dicts(enabled, disabled)
 
             for module, action in changed.items():
@@ -162,11 +139,7 @@ class EventViewSet(viewsets.ModelViewSet):
                     data={'plugin': module},
                 )
 
-        other_keys = {
-            k: v
-            for k, v in serializer.validated_data.items()
-            if k not in ['plugins', 'live']
-        }
+        other_keys = {k: v for k, v in serializer.validated_data.items() if k not in ['plugins', 'live']}
         if other_keys:
             serializer.instance.log_action(
                 'pretix.event.changed',
@@ -199,17 +172,14 @@ class EventViewSet(viewsets.ModelViewSet):
                     data={
                         'event_id': instance.pk,
                         'name': str(instance.name),
-                        'logentries': list(
-                            instance.logentry_set.values_list('pk', flat=True)
-                        ),
+                        'logentries': list(instance.logentry_set.values_list('pk', flat=True)),
                     },
                 )
                 instance.delete_sub_objects()
                 super().perform_destroy(instance)
         except ProtectedError:
             raise PermissionDenied(
-                'The event could not be deleted as some constraints (e.g. data created by plug-ins) '
-                'do not allow it.'
+                'The event could not be deleted as some constraints (e.g. data created by plug-ins) do not allow it.'
             )
 
 
@@ -243,12 +213,8 @@ with scopes_disabled():
     class SubEventFilter(FilterSet):
         is_past = django_filters.rest_framework.BooleanFilter(method='is_past_qs')
         is_future = django_filters.rest_framework.BooleanFilter(method='is_future_qs')
-        ends_after = django_filters.rest_framework.IsoDateTimeFilter(
-            method='ends_after_qs'
-        )
-        modified_since = django_filters.IsoDateTimeFilter(
-            field_name='last_modified', lookup_expr='gte'
-        )
+        ends_after = django_filters.rest_framework.IsoDateTimeFilter(method='ends_after_qs')
+        modified_since = django_filters.IsoDateTimeFilter(field_name='last_modified', lookup_expr='gte')
 
         class Meta:
             model = SubEvent
@@ -263,8 +229,7 @@ with scopes_disabled():
 
         def is_past_qs(self, queryset, name, value):
             expr = Q(
-                Q(Q(date_to__isnull=True) & Q(date_from__lt=now()))
-                | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
+                Q(Q(date_to__isnull=True) & Q(date_from__lt=now())) | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
             )
             if value:
                 return queryset.filter(expr)
@@ -405,9 +370,7 @@ class TaxRuleViewSet(ConditionalListView, viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         if not instance.allow_delete():
-            raise PermissionDenied(
-                'This tax rule can not be deleted as it is currently in use.'
-            )
+            raise PermissionDenied('This tax rule can not be deleted as it is currently in use.')
 
         instance.log_action(
             'pretix.event.taxrule.deleted',
@@ -496,17 +459,13 @@ def talk_schedule_public(request, *args, **kwargs):
         try:
             if not check_token_permission(token, 'orga.edit_schedule'):
                 return JsonResponse(
-                    {
-                        'status': 'User does not have permission to show schedule on menu'
-                    },
+                    {'status': 'User does not have permission to show schedule on menu'},
                     status=403,
                 )
             organiser = get_object_or_404(Organizer, slug=kwargs['organizer'])
             event = get_object_or_404(Event, slug=kwargs['event'], organizer=organiser)
             request_data = json.loads(request.body)
-            event.settings.talk_schedule_public = (
-                request_data.get('is_show_schedule') or False
-            )
+            event.settings.talk_schedule_public = request_data.get('is_show_schedule') or False
 
             return JsonResponse({'status': 'success'}, status=200)
 
@@ -527,9 +486,7 @@ def talk_schedule_public(request, *args, **kwargs):
             return JsonResponse({'status': 'Internal server error'}, status=500)
     else:
         logger.error('Authorization header missing or invalid')
-        return JsonResponse(
-            {'status': 'Authorization header missing or invalid'}, status=403
-        )
+        return JsonResponse({'status': 'Authorization header missing or invalid'}, status=403)
 
 
 class CustomerOrderCheckView(APIView):
@@ -561,16 +518,10 @@ class CustomerOrderCheckView(APIView):
         )
 
         if not order_list:
-            return JsonResponse(
-                status=404, data={'error': 'Customer has no orders for this event.'}
-            )
+            return JsonResponse(status=404, data={'error': 'Customer has no orders for this event.'})
 
         for order in order_list:
             if order.status == 'p':
-                return JsonResponse(
-                    status=200, data={'message': 'Customer has paid orders.'}
-                )
+                return JsonResponse(status=200, data={'message': 'Customer has paid orders.'})
 
-        return JsonResponse(
-            status=400, data={'message': 'Customer did not paid orders.'}
-        )
+        return JsonResponse(status=400, data={'message': 'Customer did not paid orders.'})

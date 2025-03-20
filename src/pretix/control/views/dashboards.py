@@ -92,19 +92,17 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
         ).count()
 
         if subevent:
-            rev = opqs.filter(
-                order__event=sender, order__status=Order.STATUS_PAID
-            ).aggregate(sum=Sum('price'))['sum'] or Decimal('0.00')
+            rev = opqs.filter(order__event=sender, order__status=Order.STATUS_PAID).aggregate(sum=Sum('price'))[
+                'sum'
+            ] or Decimal('0.00')
         else:
-            rev = Order.objects.filter(
-                event=sender, status=Order.STATUS_PAID
-            ).aggregate(sum=Sum('total'))['sum'] or Decimal('0.00')
+            rev = Order.objects.filter(event=sender, status=Order.STATUS_PAID).aggregate(sum=Sum('total'))[
+                'sum'
+            ] or Decimal('0.00')
 
     return [
         {
-            'content': None
-            if lazy
-            else NUM_WIDGET.format(num=tickc, text=_('Attendees (ordered)')),
+            'content': None if lazy else NUM_WIDGET.format(num=tickc, text=_('Attendees (ordered)')),
             'lazy': 'attendees-ordered',
             'display_size': 'small',
             'priority': 100,
@@ -115,9 +113,7 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
             + ('?subevent={}'.format(subevent.pk) if subevent else ''),
         },
         {
-            'content': None
-            if lazy
-            else NUM_WIDGET.format(num=paidc, text=_('Attendees (paid)')),
+            'content': None if lazy else NUM_WIDGET.format(num=paidc, text=_('Attendees (paid)')),
             'lazy': 'attendees-paid',
             'display_size': 'small',
             'priority': 100,
@@ -144,9 +140,7 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
             + ('?subevent={}'.format(subevent.pk) if subevent else ''),
         },
         {
-            'content': None
-            if lazy
-            else NUM_WIDGET.format(num=prodc, text=_('Active products')),
+            'content': None if lazy else NUM_WIDGET.format(num=prodc, text=_('Active products')),
             'lazy': 'active-products',
             'display_size': 'small',
             'priority': 100,
@@ -162,28 +156,20 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
 def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
     widgets = []
 
-    wles = WaitingListEntry.objects.filter(
-        event=sender, subevent=subevent, voucher__isnull=True
-    )
+    wles = WaitingListEntry.objects.filter(event=sender, subevent=subevent, voucher__isnull=True)
     if wles.exists():
         if not lazy:
             quota_cache = {}
             happy = 0
-            tuples = (
-                wles.values('item', 'variation').order_by().annotate(cnt=Count('id'))
-            )
+            tuples = wles.values('item', 'variation').order_by().annotate(cnt=Count('id'))
 
             items = {
                 i.pk: i
-                for i in sender.items.filter(
-                    id__in=[t['item'] for t in tuples]
-                ).prefetch_related(
+                for i in sender.items.filter(id__in=[t['item'] for t in tuples]).prefetch_related(
                     Prefetch(
                         'quotas',
                         to_attr='_subevent_quotas',
-                        queryset=sender.quotas.using(settings.DATABASE_REPLICA).filter(
-                            subevent=subevent
-                        ),
+                        queryset=sender.quotas.using(settings.DATABASE_REPLICA).filter(subevent=subevent),
                     ),
                 )
             }
@@ -196,9 +182,7 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
                     Prefetch(
                         'quotas',
                         to_attr='_subevent_quotas',
-                        queryset=sender.quotas.using(settings.DATABASE_REPLICA).filter(
-                            subevent=subevent
-                        ),
+                        queryset=sender.quotas.using(settings.DATABASE_REPLICA).filter(subevent=subevent),
                     ),
                 )
             }
@@ -208,19 +192,11 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
                 variation = vars.get(wlt['variation'])
                 if not item:
                     continue
-                quotas = (
-                    variation._get_quotas(subevent=subevent)
-                    if variation
-                    else item._get_quotas(subevent=subevent)
-                )
+                quotas = variation._get_quotas(subevent=subevent) if variation else item._get_quotas(subevent=subevent)
                 row = (
-                    variation.check_quotas(
-                        subevent=subevent, count_waitinglist=False, _cache=quota_cache
-                    )
+                    variation.check_quotas(subevent=subevent, count_waitinglist=False, _cache=quota_cache)
                     if variation
-                    else item.check_quotas(
-                        subevent=subevent, count_waitinglist=False, _cache=quota_cache
-                    )
+                    else item.check_quotas(subevent=subevent, count_waitinglist=False, _cache=quota_cache)
                 )
                 if row[1] is None:
                     happy += 1
@@ -256,9 +232,7 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
             {
                 'content': None
                 if lazy
-                else NUM_WIDGET.format(
-                    num=str(wles.count()), text=_('total waiting list length')
-                ),
+                else NUM_WIDGET.format(num=str(wles.count()), text=_('total waiting list length')),
                 'lazy': 'waitinglist-length',
                 'display_size': 'small',
                 'priority': 50,
@@ -287,17 +261,13 @@ def quota_widgets(sender, subevent=None, lazy=False, **kwargs):
 
     for q in quotas:
         if not lazy:
-            status, left = (
-                qa.results[q] if q in qa.results else q.availability(allow_cache=True)
-            )
+            status, left = qa.results[q] if q in qa.results else q.availability(allow_cache=True)
         widgets.append(
             {
                 'content': None
                 if lazy
                 else NUM_WIDGET.format(
-                    num='{}/{}'.format(left, q.size)
-                    if q.size is not None
-                    else '\u221e',
+                    num='{}/{}'.format(left, q.size) if q.size is not None else '\u221e',
                     text=_('{quota} left').format(quota=escape(q.name)),
                 ),
                 'lazy': 'quota-{}'.format(q.pk),
@@ -330,22 +300,12 @@ def shop_state_widget(sender, **kwargs):
                 else (
                     _('live and in test mode')
                     if sender.live
-                    else (
-                        _('not yet public')
-                        if not sender.testmode
-                        else (_('in private test mode'))
-                    )
+                    else (_('not yet public') if not sender.testmode else (_('in private test mode')))
                 ),
                 icon='fa-check-circle'
                 if sender.live and not sender.testmode
                 else (
-                    'fa-warning'
-                    if sender.live
-                    else (
-                        'fa-times-circle'
-                        if not sender.testmode
-                        else ('fa-times-circle')
-                    )
+                    'fa-warning' if sender.live else ('fa-times-circle' if not sender.testmode else ('fa-times-circle'))
                 ),
                 cls='live' if sender.live else 'off',
             ),
@@ -432,16 +392,12 @@ def event_index(request, organizer, event):
     )
     widgets = []
     if can_view_orders:
-        for r, result in event_dashboard_widgets.send(
-            sender=request.event, subevent=subevent, lazy=True
-        ):
+        for r, result in event_dashboard_widgets.send(sender=request.event, subevent=subevent, lazy=True):
             widgets.extend(result)
 
     qs = (
         request.event.logentry_set.all()
-        .select_related(
-            'user', 'content_type', 'api_token', 'oauth_application', 'device'
-        )
+        .select_related('user', 'content_type', 'api_token', 'oauth_application', 'device')
         .order_by('-datetime')
     )
     qs = qs.exclude(action_type__in=OVERVIEW_BANLIST)
@@ -454,9 +410,7 @@ def event_index(request, organizer, event):
             ContentType.objects.get_for_model(Voucher),
             ContentType.objects.get_for_model(Order),
         ]
-        if request.user.has_event_permission(
-            request.organizer, request.event, 'can_change_items', request=request
-        ):
+        if request.user.has_event_permission(request.organizer, request.event, 'can_change_items', request=request):
             allowed_types += [
                 ContentType.objects.get_for_model(Item),
                 ContentType.objects.get_for_model(ItemCategory),
@@ -508,14 +462,10 @@ def event_index(request, organizer, event):
         ).exists()
     )
     ctx['has_pending_approvals'] = (
-        can_view_orders
-        and request.event.orders.filter(
-            status=Order.STATUS_PENDING, require_approval=True
-        ).exists()
+        can_view_orders and request.event.orders.filter(status=Order.STATUS_PENDING, require_approval=True).exists()
     )
     ctx['has_cancellation_requests'] = (
-        can_view_orders
-        and CancellationRequest.objects.filter(order__event=request.event).exists()
+        can_view_orders and CancellationRequest.objects.filter(order__event=request.event).exists()
     )
 
     for a in ctx['actions']:
@@ -547,9 +497,7 @@ def event_index_widgets_lazy(request, organizer, event):
             pass
 
     widgets = []
-    for r, result in event_dashboard_widgets.send(
-        sender=request.event, subevent=subevent, lazy=False
-    ):
+    for r, result in event_dashboard_widgets.send(sender=request.event, subevent=subevent, lazy=False):
         widgets.extend(result)
 
     return JsonResponse({'widgets': widgets})
@@ -557,9 +505,7 @@ def event_index_widgets_lazy(request, organizer, event):
 
 def annotated_event_query(request, lazy=False):
     active_orders = (
-        Order.objects.filter(
-            event=OuterRef('pk'), status__in=[Order.STATUS_PENDING, Order.STATUS_PAID]
-        )
+        Order.objects.filter(event=OuterRef('pk'), status__in=[Order.STATUS_PENDING, Order.STATUS_PAID])
         .order_by()
         .values('event')
         .annotate(c=Count('*'))
@@ -592,15 +538,11 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
         events_with_orders = set(
             qs.filter(
                 Q(
-                    organizer_id__in=user.teams.filter(
-                        all_events=True, can_view_orders=True
-                    ).values_list('organizer', flat=True)
-                )
-                | Q(
-                    id__in=user.teams.filter(can_view_orders=True).values_list(
-                        'limit_events__id', flat=True
+                    organizer_id__in=user.teams.filter(all_events=True, can_view_orders=True).values_list(
+                        'organizer', flat=True
                     )
                 )
+                | Q(id__in=user.teams.filter(can_view_orders=True).values_list('limit_events__id', flat=True))
             ).values_list('id', flat=True)
         )
 
@@ -621,9 +563,9 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
     if lazy:
         events = qs[:nmax]
     else:
-        events = qs.prefetch_related(
-            '_settings_objects', 'organizer___settings_objects'
-        ).select_related('organizer')[:nmax]
+        events = qs.prefetch_related('_settings_objects', 'organizer___settings_objects').select_related('organizer')[
+            :nmax
+        ]
     for event in events:
         if not lazy:
             tzname = event.cache.get_or_set('timezone', lambda: event.settings.timezone)
@@ -634,15 +576,11 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                 else:
                     dr = daterange(
                         (event.min_from).astimezone(tz),
-                        (event.max_fromto or event.max_to or event.max_from).astimezone(
-                            tz
-                        ),
+                        (event.max_fromto or event.max_to or event.max_from).astimezone(tz),
                     )
             else:
                 if event.date_to:
-                    dr = daterange(
-                        event.date_from.astimezone(tz), event.date_to.astimezone(tz)
-                    )
+                    dr = daterange(event.date_from.astimezone(tz), event.date_to.astimezone(tz))
                 else:
                     dr = date_format(event.date_from.astimezone(tz), 'DATE_FORMAT')
 
@@ -665,26 +603,14 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                     if event.has_subevents
                     else (
                         (
-                            (
-                                date_format(
-                                    event.date_admission.astimezone(tz), 'TIME_FORMAT'
-                                )
-                                + ' / '
-                            )
-                            if event.date_admission
-                            and event.date_admission != event.date_from
+                            (date_format(event.date_admission.astimezone(tz), 'TIME_FORMAT') + ' / ')
+                            if event.date_admission and event.date_admission != event.date_from
                             else ''
                         )
-                        + (
-                            date_format(event.date_from.astimezone(tz), 'TIME_FORMAT')
-                            if event.date_from
-                            else ''
-                        )
+                        + (date_format(event.date_from.astimezone(tz), 'TIME_FORMAT') if event.date_from else '')
                     )
                     + (
-                        ' <span class="fa fa-globe text-muted" data-toggle="tooltip" title="{}"></span>'.format(
-                            tzname
-                        )
+                        ' <span class="fa fa-globe text-muted" data-toggle="tooltip" title="{}"></span>'.format(tzname)
                         if tzname != request.timezone and not event.has_subevents
                         else ''
                     ),
@@ -701,12 +627,11 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                                     'organizer': event.organizer.slug,
                                 },
                             ),
-                            orders_text=ngettext(
-                                '{num} order', '{num} orders', event.order_count or 0
-                            ).format(num=event.order_count or 0),
+                            orders_text=ngettext('{num} order', '{num} orders', event.order_count or 0).format(
+                                num=event.order_count or 0
+                            ),
                         )
-                        if user.has_active_staff_session(request.session.session_key)
-                        or event.pk in events_with_orders
+                        if user.has_active_staff_session(request.session.session_key) or event.pk in events_with_orders
                         else ''
                     ),
                     daterange=dr,
@@ -757,8 +682,7 @@ def user_index_widgets_lazy(request):
         .filter(
             Q(has_subevents=False)
             & Q(
-                Q(Q(date_to__isnull=True) & Q(date_from__lt=now()))
-                | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
+                Q(Q(date_to__isnull=True) & Q(date_from__lt=now())) | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
             )
         )
         .order_by('-order_to', 'pk'),
@@ -767,9 +691,7 @@ def user_index_widgets_lazy(request):
     )
     widgets += widgets_for_event_qs(
         request,
-        annotated_event_query(request)
-        .filter(has_subevents=True)
-        .order_by('-order_to', 'pk'),
+        annotated_event_query(request).filter(has_subevents=True).order_by('-order_to', 'pk'),
         request.user,
         8,
     )
@@ -816,9 +738,7 @@ def user_index(request):
         ),
         'series': widgets_for_event_qs(
             request,
-            annotated_event_query(request, lazy=True)
-            .filter(has_subevents=True)
-            .order_by('-order_to', 'pk'),
+            annotated_event_query(request, lazy=True).filter(has_subevents=True).order_by('-order_to', 'pk'),
             request.user,
             8,
             lazy=True,

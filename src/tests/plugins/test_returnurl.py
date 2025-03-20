@@ -29,8 +29,7 @@ class ReturnURLTest(BaseOrdersTest):
         )
         assert r.status_code == 200
         r = self.client.post(
-            '/%s/%s/order/%s/%s/pay/change'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
+            '/%s/%s/order/%s/%s/pay/change' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret),
             {'payment': 'banktransfer'},
             follow=False,
         )
@@ -45,8 +44,7 @@ class ReturnURLTest(BaseOrdersTest):
         r = self.client.get(r['Location'], follow=False)
         assert r['Location'] == 'https://example.com/foo/var/'
         r = self.client.get(
-            '/%s/%s/order/%s/%s/'
-            % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
+            '/%s/%s/order/%s/%s/' % (self.orga.slug, self.event.slug, self.order.code, self.order.secret)
         )
         assert r.status_code == 200
 

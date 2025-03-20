@@ -36,11 +36,7 @@ class OrderPositionChangeForm(forms.Form):
         variations = list(i.variations.all())
 
         if variations:
-            current_quotas = (
-                instance.variation.quotas.all()
-                if instance.variation
-                else instance.item.quotas.all()
-            )
+            current_quotas = instance.variation.quotas.all() if instance.variation else instance.item.quotas.all()
             qa = QuotaAvailability()
             for v in variations:
                 qa.queue(*v.quotas.all())
@@ -55,11 +51,7 @@ class OrderPositionChangeForm(forms.Form):
                 if not v.active:
                     continue
 
-                q_res = [
-                    qa.results[q][0] != Quota.AVAILABILITY_OK
-                    for q in v.quotas.all()
-                    if q not in current_quotas
-                ]
+                q_res = [qa.results[q][0] != Quota.AVAILABILITY_OK for q in v.quotas.all() if q not in current_quotas]
                 if not v.quotas.all() or (q_res and any(q_res)):
                     continue
 
@@ -77,51 +69,32 @@ class OrderPositionChangeForm(forms.Form):
                     name=instance.tax_rule.name if instance.tax_rule else '',
                     rate=instance.tax_rate,
                 )
-                if (
-                    new_price.gross < current_price.gross
-                    and event.settings.change_allow_user_price == 'gte'
-                ):
+                if new_price.gross < current_price.gross and event.settings.change_allow_user_price == 'gte':
                     continue
-                if (
-                    new_price.gross <= current_price.gross
-                    and event.settings.change_allow_user_price == 'gt'
-                ):
+                if new_price.gross <= current_price.gross and event.settings.change_allow_user_price == 'gt':
                     continue
-                if (
-                    new_price.gross != current_price.gross
-                    and event.settings.change_allow_user_price == 'eq'
-                ):
+                if new_price.gross != current_price.gross and event.settings.change_allow_user_price == 'eq':
                     continue
 
                 if new_price.gross < current_price.gross:
                     if event.settings.display_net_prices:
                         label += ' (- {} {})'.format(
-                            money_filter(
-                                current_price.gross - new_price.gross, event.currency
-                            ),
+                            money_filter(current_price.gross - new_price.gross, event.currency),
                             _('plus taxes'),
                         )
                     else:
-                        label += ' (- {})'.format(
-                            money_filter(
-                                current_price.gross - new_price.gross, event.currency
-                            )
-                        )
+                        label += ' (- {})'.format(money_filter(current_price.gross - new_price.gross, event.currency))
                 elif current_price.gross < new_price.gross:
                     if event.settings.display_net_prices:
                         label += ' ({}{} {})'.format(
                             '+ ' if current_price.gross != Decimal('0.00') else '',
-                            money_filter(
-                                new_price.gross - current_price.gross, event.currency
-                            ),
+                            money_filter(new_price.gross - current_price.gross, event.currency),
                             _('plus taxes'),
                         )
                     else:
                         label += ' ({}{})'.format(
                             '+ ' if current_price.gross != Decimal('0.00') else '',
-                            money_filter(
-                                new_price.gross - current_price.gross, event.currency
-                            ),
+                            money_filter(new_price.gross - current_price.gross, event.currency),
                         )
 
                 choices.append((f'{i.pk}-{v.pk}', label))
@@ -134,8 +107,6 @@ class OrderPositionChangeForm(forms.Form):
         else:
             choices.append((str(i.pk), '%s' % pname))
             self.fields['itemvar'].widget.attrs['disabled'] = True
-            self.fields['itemvar'].help_text = _(
-                'No other variations of this product exist.'
-            )
+            self.fields['itemvar'].help_text = _('No other variations of this product exist.')
 
         self.fields['itemvar'].choices = choices

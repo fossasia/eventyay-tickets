@@ -24,9 +24,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='apicall',
             name='id',
-            field=models.BigAutoField(
-                auto_created=True, primary_key=True, serialize=False
-            ),
+            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='oauthaccesstoken',
@@ -45,22 +43,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='webhook',
             name='id',
-            field=models.BigAutoField(
-                auto_created=True, primary_key=True, serialize=False
-            ),
+            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='webhookcall',
             name='id',
-            field=models.BigAutoField(
-                auto_created=True, primary_key=True, serialize=False
-            ),
+            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='webhookeventlistener',
             name='id',
-            field=models.BigAutoField(
-                auto_created=True, primary_key=True, serialize=False
-            ),
+            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
         ),
     ]

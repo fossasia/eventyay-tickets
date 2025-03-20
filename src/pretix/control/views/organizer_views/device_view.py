@@ -18,9 +18,7 @@ from pretix.control.views.organizer_views.organizer_detail_view_mixin import (
 )
 
 
-class DeviceCreateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView
-):
+class DeviceCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
     model = Device
     template_name = 'pretixcontrol/organizers/device_edit.html'
     permission = 'can_change_organizer_settings'
@@ -44,9 +42,7 @@ class DeviceCreateView(
             'pretix.device.created',
             user=self.request.user,
             data={
-                k: getattr(self.object, k)
-                if k != 'limit_events'
-                else [e.id for e in getattr(self.object, k).all()]
+                k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
                 for k in form.changed_data
             },
         )
@@ -57,23 +53,17 @@ class DeviceCreateView(
         return super().form_invalid(form)
 
 
-class DeviceListView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class DeviceListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = Device
     template_name = 'pretixcontrol/organizers/devices.html'
     permission = 'can_change_organizer_settings'
     context_object_name = 'devices'
 
     def get_queryset(self):
-        return self.request.organizer.devices.prefetch_related('limit_events').order_by(
-            'revoked', '-device_id'
-        )
+        return self.request.organizer.devices.prefetch_related('limit_events').order_by('revoked', '-device_id')
 
 
-class DeviceLogView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class DeviceLogView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     template_name = 'pretixcontrol/organizers/device_logs.html'
     permission = 'can_change_organizer_settings'
     model = LogEntry
@@ -82,9 +72,7 @@ class DeviceLogView(
 
     @cached_property
     def device(self):
-        return get_object_or_404(
-            Device, organizer=self.request.organizer, pk=self.kwargs.get('device')
-        )
+        return get_object_or_404(Device, organizer=self.request.organizer, pk=self.kwargs.get('device'))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -106,9 +94,7 @@ class DeviceLogView(
         return qs
 
 
-class DeviceUpdateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView
-):
+class DeviceUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = Device
     template_name = 'pretixcontrol/organizers/device_edit.html'
     permission = 'can_change_organizer_settings'
@@ -121,9 +107,7 @@ class DeviceUpdateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Device, organizer=self.request.organizer, pk=self.kwargs.get('device')
-        )
+        return get_object_or_404(Device, organizer=self.request.organizer, pk=self.kwargs.get('device'))
 
     def get_success_url(self):
         return reverse(
@@ -139,9 +123,7 @@ class DeviceUpdateView(
                 'pretix.device.changed',
                 user=self.request.user,
                 data={
-                    k: getattr(self.object, k)
-                    if k != 'limit_events'
-                    else [e.id for e in getattr(self.object, k).all()]
+                    k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
                     for k in form.changed_data
                 },
             )
@@ -153,18 +135,14 @@ class DeviceUpdateView(
         return super().form_invalid(form)
 
 
-class DeviceConnectView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView
-):
+class DeviceConnectView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView):
     model = Device
     template_name = 'pretixcontrol/organizers/device_connect.html'
     permission = 'can_change_organizer_settings'
     context_object_name = 'device'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Device, organizer=self.request.organizer, pk=self.kwargs.get('device')
-        )
+        return get_object_or_404(Device, organizer=self.request.organizer, pk=self.kwargs.get('device'))
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -194,18 +172,14 @@ class DeviceConnectView(
         return ctx
 
 
-class DeviceRevokeView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView
-):
+class DeviceRevokeView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView):
     model = Device
     template_name = 'pretixcontrol/organizers/device_revoke.html'
     permission = 'can_change_organizer_settings'
     context_object_name = 'device'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Device, organizer=self.request.organizer, pk=self.kwargs.get('device')
-        )
+        return get_object_or_404(Device, organizer=self.request.organizer, pk=self.kwargs.get('device'))
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

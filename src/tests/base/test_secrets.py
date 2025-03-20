@@ -35,13 +35,9 @@ def test_force_invalidate(event, scheme):
     generator, input_dependent = scheme
     g = generator(event)
 
-    first = g.generate_secret(
-        item, None, None, current_secret=None, force_invalidate=False
-    )
+    first = g.generate_secret(item, None, None, current_secret=None, force_invalidate=False)
     assert first
-    second = g.generate_secret(
-        item, None, None, current_secret=first, force_invalidate=True
-    )
+    second = g.generate_secret(item, None, None, current_secret=first, force_invalidate=True)
     assert first != second
 
 
@@ -52,13 +48,9 @@ def test_keep_same(event, scheme):
     generator, input_dependent = scheme
     g = generator(event)
 
-    first = g.generate_secret(
-        item, None, None, current_secret=None, force_invalidate=False
-    )
+    first = g.generate_secret(item, None, None, current_secret=None, force_invalidate=False)
     assert first
-    second = g.generate_secret(
-        item, None, None, current_secret=first, force_invalidate=False
-    )
+    second = g.generate_secret(item, None, None, current_secret=first, force_invalidate=False)
     assert first == second
 
 
@@ -70,13 +62,9 @@ def test_change_if_required(event, scheme):
     generator, input_dependent = scheme
     g = generator(event)
 
-    first = g.generate_secret(
-        item, None, None, current_secret=None, force_invalidate=False
-    )
+    first = g.generate_secret(item, None, None, current_secret=None, force_invalidate=False)
     assert first
-    second = g.generate_secret(
-        item2, None, None, current_secret=first, force_invalidate=False
-    )
+    second = g.generate_secret(item2, None, None, current_secret=first, force_invalidate=False)
     if input_dependent:
         assert first != second
     else:
@@ -91,8 +79,6 @@ def test_change_if_invalid(event, scheme):
     g = generator(event)
 
     first = 'blafasel'
-    second = g.generate_secret(
-        item, None, None, current_secret=first, force_invalidate=False
-    )
+    second = g.generate_secret(item, None, None, current_secret=first, force_invalidate=False)
     if input_dependent:
         assert first != second

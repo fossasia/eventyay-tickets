@@ -9,9 +9,7 @@ DELIMITER = '\x1f'
 
 
 class MultiStringField(TextField):
-    default_error_messages = {
-        'delimiter_found': _('No value can contain the delimiter character.')
-    }
+    default_error_messages = {'delimiter_found': _('No value can contain the delimiter character.')}
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
         super().__init__(verbose_name, name, **kwargs)
@@ -92,6 +90,4 @@ class MultiStringSerializer(serializers.Field):
             raise ValidationError('Invalid data type.')
 
 
-serializers.ModelSerializer.serializer_field_mapping[MultiStringField] = (
-    MultiStringSerializer
-)
+serializers.ModelSerializer.serializer_field_mapping[MultiStringField] = MultiStringSerializer

@@ -15,9 +15,7 @@ class KnownDomain(models.Model):
         related_name='domains',
         on_delete=models.CASCADE,
     )
-    event = models.ForeignKey(
-        Event, blank=True, null=True, related_name='domains', on_delete=models.PROTECT
-    )
+    event = models.ForeignKey(Event, blank=True, null=True, related_name='domains', on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = _('Known domain')

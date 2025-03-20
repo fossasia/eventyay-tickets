@@ -172,9 +172,7 @@ def order(event, item, taxrule, question):
 
 @pytest.fixture
 def clist_autocheckin(event):
-    c = event.checkin_lists.create(
-        name='Default', all_products=True, auto_checkin_sales_channels=['web']
-    )
+    c = event.checkin_lists.create(name='Default', all_products=True, auto_checkin_sales_channels=['web'])
     return c
 
 
@@ -303,9 +301,7 @@ TEST_ORDER_RES = {
 
 
 @pytest.mark.django_db
-def test_order_list_filter_subevent_date(
-    token_client, organizer, event, order, item, taxrule, subevent, question
-):
+def test_order_list_filter_subevent_date(token_client, organizer, event, order, item, taxrule, subevent, question):
     res = copy.deepcopy(TEST_ORDER_RES)
     with scopes_disabled():
         res['positions'][0]['id'] = order.positions.first().pk
@@ -324,9 +320,7 @@ def test_order_list_filter_subevent_date(
         '/api/v1/organizers/{}/events/{}/orders/?subevent_after={}'.format(
             organizer.slug,
             event.slug,
-            (subevent.date_from + datetime.timedelta(hours=1))
-            .isoformat()
-            .replace('+00:00', 'Z'),
+            (subevent.date_from + datetime.timedelta(hours=1)).isoformat().replace('+00:00', 'Z'),
         )
     )
     assert resp.status_code == 200
@@ -335,9 +329,7 @@ def test_order_list_filter_subevent_date(
         '/api/v1/organizers/{}/events/{}/orders/?subevent_after={}'.format(
             organizer.slug,
             event.slug,
-            (subevent.date_from - datetime.timedelta(hours=1))
-            .isoformat()
-            .replace('+00:00', 'Z'),
+            (subevent.date_from - datetime.timedelta(hours=1)).isoformat().replace('+00:00', 'Z'),
         )
     )
     assert resp.status_code == 200
@@ -348,9 +340,7 @@ def test_order_list_filter_subevent_date(
         '/api/v1/organizers/{}/events/{}/orders/?subevent_before={}'.format(
             organizer.slug,
             event.slug,
-            (subevent.date_from - datetime.timedelta(hours=1))
-            .isoformat()
-            .replace('+00:00', 'Z'),
+            (subevent.date_from - datetime.timedelta(hours=1)).isoformat().replace('+00:00', 'Z'),
         )
     )
     assert resp.status_code == 200
@@ -358,9 +348,7 @@ def test_order_list_filter_subevent_date(
         '/api/v1/organizers/{}/events/{}/orders/?subevent_before={}'.format(
             organizer.slug,
             event.slug,
-            (subevent.date_from + datetime.timedelta(hours=1))
-            .isoformat()
-            .replace('+00:00', 'Z'),
+            (subevent.date_from + datetime.timedelta(hours=1)).isoformat().replace('+00:00', 'Z'),
         )
     )
     assert resp.status_code == 200
@@ -379,84 +367,44 @@ def test_order_list(token_client, organizer, event, order, item, taxrule, questi
     res['last_modified'] = order.last_modified.isoformat().replace('+00:00', 'Z')
     res['fees'][0]['tax_rule'] = taxrule.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?code=FOO'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?code=FOO'.format(organizer.slug, event.slug))
     assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?code=BAR'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?code=BAR'.format(organizer.slug, event.slug))
+    assert [] == resp.data['results']
+
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?testmode=false'.format(organizer.slug, event.slug))
+    assert [res] == resp.data['results']
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?testmode=true'.format(organizer.slug, event.slug))
+    assert [] == resp.data['results']
+
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?status=n'.format(organizer.slug, event.slug))
+    assert [res] == resp.data['results']
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?status=p'.format(organizer.slug, event.slug))
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?testmode=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orders/?email=dummy@dummy.test'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?testmode=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orders/?email=foo@example.org'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?status=n'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?locale=en'.format(organizer.slug, event.slug))
     assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?status=p'.format(
-            organizer.slug, event.slug
-        )
-    )
-    assert [] == resp.data['results']
-
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?email=dummy@dummy.test'.format(
-            organizer.slug, event.slug
-        )
-    )
-    assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?email=foo@example.org'.format(
-            organizer.slug, event.slug
-        )
-    )
-    assert [] == resp.data['results']
-
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?locale=en'.format(
-            organizer.slug, event.slug
-        )
-    )
-    assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?locale=de'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/?locale=de'.format(organizer.slug, event.slug))
     assert [] == resp.data['results']
 
     resp = token_client.get(
         '/api/v1/organizers/{}/events/{}/orders/?modified_since={}'.format(
             organizer.slug,
             event.slug,
-            (order.last_modified - datetime.timedelta(hours=1))
-            .isoformat()
-            .replace('+00:00', 'Z'),
+            (order.last_modified - datetime.timedelta(hours=1)).isoformat().replace('+00:00', 'Z'),
         )
     )
     assert [res] == resp.data['results']
@@ -472,41 +420,31 @@ def test_order_list(token_client, organizer, event, order, item, taxrule, questi
         '/api/v1/organizers/{}/events/{}/orders/?modified_since={}'.format(
             organizer.slug,
             event.slug,
-            (order.last_modified + datetime.timedelta(hours=1))
-            .isoformat()
-            .replace('+00:00', 'Z'),
+            (order.last_modified + datetime.timedelta(hours=1)).isoformat().replace('+00:00', 'Z'),
         )
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_positions=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_positions=false'.format(organizer.slug, event.slug)
     )
     assert resp.status_code == 200
     assert len(resp.data['results'][0]['positions']) == 1
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_positions=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_positions=true'.format(organizer.slug, event.slug)
     )
     assert resp.status_code == 200
     assert len(resp.data['results'][0]['positions']) == 2
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_fees=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_fees=false'.format(organizer.slug, event.slug)
     )
     assert resp.status_code == 200
     assert len(resp.data['results'][0]['fees']) == 1
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_fees=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orders/?include_canceled_fees=true'.format(organizer.slug, event.slug)
     )
     assert resp.status_code == 200
     assert len(resp.data['results'][0]['fees']) == 2
@@ -521,11 +459,7 @@ def test_order_detail(token_client, organizer, event, order, item, taxrule, ques
     res['fees'][0]['tax_rule'] = taxrule.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
     res['last_modified'] = order.last_modified.isoformat().replace('+00:00', 'Z')
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code))
     assert resp.status_code == 200
     del resp.data['fees'][0]['id']
     del res['fees'][0]['id']
@@ -534,30 +468,18 @@ def test_order_detail(token_client, organizer, event, order, item, taxrule, ques
     order.status = 'p'
     order.save()
     event.settings.ticketoutput_pdf__enabled = True
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code))
     assert len(resp.data['downloads']) == 1
     assert len(resp.data['positions'][0]['downloads']) == 1
 
     order.status = 'n'
     order.save()
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code))
     assert len(resp.data['downloads']) == 0
     assert len(resp.data['positions'][0]['downloads']) == 0
 
     event.settings.ticket_download_pending = True
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code))
     assert len(resp.data['downloads']) == 1
     assert len(resp.data['positions'][0]['downloads']) == 1
 
@@ -583,9 +505,7 @@ def test_order_detail(token_client, organizer, event, order, item, taxrule, ques
 @pytest.mark.django_db
 def test_payment_list(token_client, organizer, event, order):
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert TEST_PAYMENTS_RES == resp.data['results']
@@ -594,9 +514,7 @@ def test_payment_list(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_payment_detail(token_client, organizer, event, order):
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/1/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/1/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert TEST_PAYMENTS_RES[0] == resp.data
@@ -606,9 +524,7 @@ def test_payment_detail(token_client, organizer, event, order):
 def test_payment_create_confirmed(token_client, organizer, event, order):
     djmail.outbox = []
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'provider': 'banktransfer',
@@ -631,9 +547,7 @@ def test_payment_create_confirmed(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_payment_create_pending(token_client, organizer, event, order):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'provider': 'banktransfer',
@@ -654,9 +568,7 @@ def test_payment_create_pending(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_payment_confirm(token_client, organizer, event, order):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/confirm/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/confirm/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'force': True},
     )
@@ -667,9 +579,7 @@ def test_payment_confirm(token_client, organizer, event, order):
     assert len(djmail.outbox) == 1
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/confirm/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/confirm/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'force': True},
     )
@@ -679,9 +589,7 @@ def test_payment_confirm(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_payment_confirm_no_email(token_client, organizer, event, order):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/confirm/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/confirm/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'force': True, 'send_email': False},
     )
@@ -695,9 +603,7 @@ def test_payment_confirm_no_email(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_payment_cancel(token_client, organizer, event, order):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/cancel/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/cancel/'.format(organizer.slug, event.slug, order.code)
     )
     with scopes_disabled():
         p = order.payments.get(local_id=2)
@@ -705,9 +611,7 @@ def test_payment_cancel(token_client, organizer, event, order):
     assert p.state == OrderPayment.PAYMENT_STATE_CANCELED
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/cancel/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/cancel/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
@@ -717,57 +621,39 @@ def test_payment_refund_fail(token_client, organizer, event, order, monkeypatch)
     with scopes_disabled():
         order.payments.last().confirm()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'amount': '25.00', 'mark_canceled': False},
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'amount': ['Invalid refund amount, only 23.00 are available to refund.']
-    }
+    assert resp.data == {'amount': ['Invalid refund amount, only 23.00 are available to refund.']}
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'amount': '20.00', 'mark_canceled': False},
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'amount': ['Partial refund not available for this payment method.']
-    }
+    assert resp.data == {'amount': ['Partial refund not available for this payment method.']}
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'mark_canceled': False},
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'amount': ['Full refund not available for this payment method.']
-    }
+    assert resp.data == {'amount': ['Full refund not available for this payment method.']}
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/2/refund/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'amount': '23.00', 'mark_canceled': False},
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'amount': ['Full refund not available for this payment method.']
-    }
+    assert resp.data == {'amount': ['Full refund not available for this payment method.']}
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/payments/1/refund/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/payments/1/refund/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'amount': '23.00', 'mark_canceled': False},
     )
@@ -778,9 +664,7 @@ def test_payment_refund_fail(token_client, organizer, event, order, monkeypatch)
 @pytest.mark.django_db
 def test_refund_list(token_client, organizer, event, order):
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert TEST_REFUNDS_RES == resp.data['results']
@@ -789,9 +673,7 @@ def test_refund_list(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_refund_detail(token_client, organizer, event, order):
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert TEST_REFUNDS_RES[0] == resp.data
@@ -804,9 +686,7 @@ def test_refund_done(token_client, organizer, event, order):
     r.state = 'transit'
     r.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/done/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/done/'.format(organizer.slug, event.slug, order.code)
     )
     with scopes_disabled():
         r = order.refunds.get(local_id=1)
@@ -814,9 +694,7 @@ def test_refund_done(token_client, organizer, event, order):
     assert r.state == OrderRefund.REFUND_STATE_DONE
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/done/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/done/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
@@ -827,9 +705,7 @@ def test_refund_process_mark_refunded(token_client, organizer, event, order):
         p = order.payments.get(local_id=1)
         p.create_external_refund()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/2/process/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/2/process/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'mark_canceled': True},
     )
@@ -841,9 +717,7 @@ def test_refund_process_mark_refunded(token_client, organizer, event, order):
     assert order.status == Order.STATUS_CANCELED
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/2/process/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/2/process/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'mark_canceled': True},
     )
@@ -856,9 +730,7 @@ def test_refund_process_mark_pending(token_client, organizer, event, order):
         p = order.payments.get(local_id=1)
         p.create_external_refund()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/2/process/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/2/process/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'mark_canceled': False},
     )
@@ -877,9 +749,7 @@ def test_refund_cancel(token_client, organizer, event, order):
     r.state = 'transit'
     r.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/cancel/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/cancel/'.format(organizer.slug, event.slug, order.code)
     )
     with scopes_disabled():
         r = order.refunds.get(local_id=1)
@@ -887,17 +757,13 @@ def test_refund_cancel(token_client, organizer, event, order):
     assert r.state == OrderRefund.REFUND_STATE_CANCELED
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/cancel/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/1/cancel/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
 
 @pytest.mark.django_db
-def test_orderposition_list(
-    token_client, organizer, event, order, item, subevent, subevent2, question
-):
+def test_orderposition_list(token_client, organizer, event, order, item, subevent, subevent2, question):
     i2 = copy.copy(item)
     i2.pk = None
     i2.save()
@@ -913,31 +779,21 @@ def test_orderposition_list(
     res['variation'] = var.pk
     res['answers'][0]['question'] = question.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/orderpositions/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?order__status=n'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?order__status=n'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?order__status=p'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?order__status=p'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?item={}'.format(
-            organizer.slug, event.slug, item.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?item={}'.format(organizer.slug, event.slug, item.pk)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
@@ -947,41 +803,29 @@ def test_orderposition_list(
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?item={}'.format(
-            organizer.slug, event.slug, i2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?item={}'.format(organizer.slug, event.slug, i2.pk)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?variation={}'.format(
-            organizer.slug, event.slug, var.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?variation={}'.format(organizer.slug, event.slug, var.pk)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?variation={}'.format(
-            organizer.slug, event.slug, var2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?variation={}'.format(organizer.slug, event.slug, var2.pk)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?attendee_name=Peter'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?attendee_name=Peter'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?attendee_name=peter'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?attendee_name=peter'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?attendee_name=Mark'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?attendee_name=Mark'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
@@ -992,9 +836,7 @@ def test_orderposition_list(
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?secret=abc123'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?secret=abc123'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
@@ -1005,68 +847,48 @@ def test_orderposition_list(
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?pseudonymization_id=FOO'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?pseudonymization_id=FOO'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?search=FO'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?search=FO'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?search=z3fsn8j'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?search=z3fsn8j'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?search=Peter'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?search=Peter'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?search=5f4h6w'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?search=5f4h6w'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?order=FOO'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?order=FOO'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?order=BAR'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?order=BAR'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?has_checkin=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?has_checkin=false'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?has_checkin=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?has_checkin=true'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
     with scopes_disabled():
         cl = event.checkin_lists.create(name='Default')
-        c = op.checkins.create(
-            datetime=datetime.datetime(2017, 12, 26, 10, 0, 0, tzinfo=UTC), list=cl
-        )
+        c = op.checkins.create(datetime=datetime.datetime(2017, 12, 26, 10, 0, 0, tzinfo=UTC), list=cl)
     res['checkins'] = [
         {
             'id': c.pk,
@@ -1077,9 +899,7 @@ def test_orderposition_list(
         }
     ]
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?has_checkin=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?has_checkin=true'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
 
@@ -1088,9 +908,7 @@ def test_orderposition_list(
     res['subevent'] = subevent.pk
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/?subevent={}'.format(
-            organizer.slug, event.slug, subevent.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/?subevent={}'.format(organizer.slug, event.slug, subevent.pk)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
@@ -1129,9 +947,7 @@ def test_orderposition_detail(token_client, organizer, event, order, item, quest
     res['item'] = item.pk
     res['answers'][0]['question'] = question.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -1140,23 +956,17 @@ def test_orderposition_detail(token_client, organizer, event, order, item, quest
     order.save()
     event.settings.ticketoutput_pdf__enabled = True
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk)
     )
     assert len(resp.data['downloads']) == 1
 
 
 @pytest.mark.django_db
-def test_orderposition_detail_canceled(
-    token_client, organizer, event, order, item, question
-):
+def test_orderposition_detail_canceled(token_client, organizer, event, order, item, question):
     with scopes_disabled():
         op = order.all_positions.filter(canceled=True).first()
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk)
     )
     assert resp.status_code == 404
     resp = token_client.get(
@@ -1172,14 +982,10 @@ def test_orderposition_delete(token_client, organizer, event, order, item, quest
     with scopes_disabled():
         op = order.positions.first()
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk)
     )
     assert resp.status_code == 400
-    assert resp.data == [
-        'This operation would leave the order empty. Please cancel the order itself instead.'
-    ]
+    assert resp.data == ['This operation would leave the order empty. Please cancel the order itself instead.']
 
     with scopes_disabled():
         op2 = OrderPosition.objects.create(
@@ -1197,9 +1003,7 @@ def test_orderposition_delete(token_client, organizer, event, order, item, quest
         assert order.positions.count() == 2
 
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op2.pk)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -1287,80 +1091,48 @@ def test_invoice_list(token_client, organizer, event, order, item, invoice):
     res = dict(TEST_INVOICE_RES)
     res['lines'][0]['item'] = item.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/invoices/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?order=FOO'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/invoices/?order=FOO'.format(organizer.slug, event.slug))
     assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?order=BAR'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/invoices/?order=BAR'.format(organizer.slug, event.slug))
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?number={}'.format(
-            organizer.slug, event.slug, invoice.number
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/?number={}'.format(organizer.slug, event.slug, invoice.number)
     )
     assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?number=XXX'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/invoices/?number=XXX'.format(organizer.slug, event.slug))
     assert [] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?locale=en'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/invoices/?locale=en'.format(organizer.slug, event.slug))
     assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?locale=de'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/invoices/?locale=de'.format(organizer.slug, event.slug))
     assert [] == resp.data['results']
 
     with scopes_disabled():
         ic = generate_cancellation(invoice)
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?is_cancellation=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/?is_cancellation=false'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?is_cancellation=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/?is_cancellation=true'.format(organizer.slug, event.slug)
     )
     assert len(resp.data['results']) == 1
     assert resp.data['results'][0]['number'] == ic.number
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?refers={}'.format(
-            organizer.slug, event.slug, invoice.number
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/?refers={}'.format(organizer.slug, event.slug, invoice.number)
     )
     assert len(resp.data['results']) == 1
     assert resp.data['results'][0]['number'] == ic.number
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/?refers={}'.format(
-            organizer.slug, event.slug, ic.number
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/?refers={}'.format(organizer.slug, event.slug, ic.number)
     )
     assert [] == resp.data['results']
 
@@ -1371,9 +1143,7 @@ def test_invoice_detail(token_client, organizer, event, item, invoice):
     res['lines'][0]['item'] = item.pk
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/invoices/{}/'.format(
-            organizer.slug, event.slug, invoice.number
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/{}/'.format(organizer.slug, event.slug, invoice.number)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -1385,9 +1155,7 @@ def test_invoice_regenerate(token_client, organizer, event, invoice):
         InvoiceAddress.objects.filter(order=invoice.order).update(company='ACME Ltd')
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/invoices/{}/regenerate/'.format(
-            organizer.slug, event.slug, invoice.number
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/{}/regenerate/'.format(organizer.slug, event.slug, invoice.number)
     )
     assert resp.status_code == 204
     invoice.refresh_from_db()
@@ -1400,9 +1168,7 @@ def test_invoice_reissue(token_client, organizer, event, invoice):
         InvoiceAddress.objects.filter(order=invoice.order).update(company='ACME Ltd')
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/invoices/{}/reissue/'.format(
-            organizer.slug, event.slug, invoice.number
-        )
+        '/api/v1/organizers/{}/events/{}/invoices/{}/reissue/'.format(organizer.slug, event.slug, invoice.number)
     )
     assert resp.status_code == 204
     invoice.refresh_from_db()
@@ -1416,9 +1182,7 @@ def test_invoice_reissue(token_client, organizer, event, invoice):
 @pytest.mark.django_db
 def test_order_mark_paid_pending(token_client, organizer, event, order):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert len(djmail.outbox) == 1
@@ -1430,9 +1194,7 @@ def test_order_mark_paid_canceled(token_client, organizer, event, order):
     order.status = Order.STATUS_CANCELED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
     order.refresh_from_db()
@@ -1440,15 +1202,11 @@ def test_order_mark_paid_canceled(token_client, organizer, event, order):
 
 
 @pytest.mark.django_db
-def test_order_mark_paid_expired_quota_free(
-    token_client, organizer, event, order, quota
-):
+def test_order_mark_paid_expired_quota_free(token_client, organizer, event, order, quota):
     order.status = Order.STATUS_EXPIRED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'send_email': False},
     )
@@ -1459,17 +1217,13 @@ def test_order_mark_paid_expired_quota_free(
 
 
 @pytest.mark.django_db
-def test_order_mark_paid_expired_quota_fill(
-    token_client, organizer, event, order, quota
-):
+def test_order_mark_paid_expired_quota_fill(token_client, organizer, event, order, quota):
     order.status = Order.STATUS_EXPIRED
     order.save()
     quota.size = 0
     quota.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
     order.refresh_from_db()
@@ -1482,9 +1236,7 @@ def test_order_mark_paid_locked(token_client, organizer, event, order):
     order.save()
     with event.lock():
         resp = token_client.post(
-            '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(
-                organizer.slug, event.slug, order.code
-            )
+            '/api/v1/organizers/{}/events/{}/orders/{}/mark_paid/'.format(organizer.slug, event.slug, order.code)
         )
         assert resp.status_code == 409
         order.refresh_from_db()
@@ -1496,9 +1248,7 @@ def test_order_reactivate(token_client, organizer, event, order, quota):
     order.status = Order.STATUS_CANCELED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/reactivate/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/reactivate/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert resp.data['status'] == Order.STATUS_PENDING
@@ -1507,9 +1257,7 @@ def test_order_reactivate(token_client, organizer, event, order, quota):
 @pytest.mark.django_db
 def test_order_reactivate_invalid(token_client, organizer, event, order):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/reactivate/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/reactivate/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
@@ -1518,9 +1266,7 @@ def test_order_reactivate_invalid(token_client, organizer, event, order):
 def test_order_mark_canceled_pending(token_client, organizer, event, order):
     djmail.outbox = []
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert resp.data['status'] == Order.STATUS_CANCELED
@@ -1528,29 +1274,21 @@ def test_order_mark_canceled_pending(token_client, organizer, event, order):
 
 
 @pytest.mark.django_db
-def test_order_mark_canceled_pending_fee_not_allowed(
-    token_client, organizer, event, order
-):
+def test_order_mark_canceled_pending_fee_not_allowed(token_client, organizer, event, order):
     djmail.outbox = []
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(organizer.slug, event.slug, order.code),
         data={'cancellation_fee': '7.00'},
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'detail': 'The cancellation fee cannot be higher than the payment credit of this order.'
-    }
+    assert resp.data == {'detail': 'The cancellation fee cannot be higher than the payment credit of this order.'}
 
 
 @pytest.mark.django_db
 def test_order_mark_canceled_pending_no_email(token_client, organizer, event, order):
     djmail.outbox = []
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'send_email': False},
     )
@@ -1564,9 +1302,7 @@ def test_order_mark_canceled_expired(token_client, organizer, event, order):
     order.status = Order.STATUS_EXPIRED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     order.refresh_from_db()
@@ -1578,13 +1314,9 @@ def test_order_mark_paid_canceled_keep_fee(token_client, organizer, event, order
     order.status = Order.STATUS_PAID
     order.save()
     with scopes_disabled():
-        order.payments.create(
-            state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=order.total
-        )
+        order.payments.create(state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=order.total)
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_canceled/'.format(organizer.slug, event.slug, order.code),
         data={'cancellation_fee': '6.00'},
     )
     assert resp.status_code == 200
@@ -1599,9 +1331,7 @@ def test_order_mark_paid_refunded(token_client, organizer, event, order):
     order.status = Order.STATUS_PAID
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_refunded/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_refunded/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert resp.data['status'] == Order.STATUS_CANCELED
@@ -1612,9 +1342,7 @@ def test_order_mark_canceled_refunded(token_client, organizer, event, order):
     order.status = Order.STATUS_CANCELED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_refunded/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_refunded/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
     order.refresh_from_db()
@@ -1626,9 +1354,7 @@ def test_order_mark_paid_unpaid(token_client, organizer, event, order):
     order.status = Order.STATUS_PAID
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_pending/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_pending/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert resp.data['status'] == Order.STATUS_PENDING
@@ -1639,9 +1365,7 @@ def test_order_mark_canceled_unpaid(token_client, organizer, event, order):
     order.status = Order.STATUS_CANCELED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_pending/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_pending/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
     order.refresh_from_db()
@@ -1653,9 +1377,7 @@ def test_order_mark_pending_expired(token_client, organizer, event, order):
     order.status = Order.STATUS_PENDING
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_expired/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_expired/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert resp.data['status'] == Order.STATUS_EXPIRED
@@ -1666,9 +1388,7 @@ def test_order_mark_paid_expired(token_client, organizer, event, order):
     order.status = Order.STATUS_PAID
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/mark_expired/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/mark_expired/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
     order.refresh_from_db()
@@ -1681,9 +1401,7 @@ def test_order_extend_paid(token_client, organizer, event, order):
     order.save()
     newdate = (now() + datetime.timedelta(days=20)).strftime('%Y-%m-%d')
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'expires': newdate},
     )
@@ -1698,9 +1416,7 @@ def test_order_extend_pending(token_client, organizer, event, order):
     order.save()
     newdate = (now() + datetime.timedelta(days=20)).strftime('%Y-%m-%d')
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'expires': newdate},
     )
@@ -1718,9 +1434,7 @@ def test_order_extend_expired_quota_empty(token_client, organizer, event, order,
     quota.save()
     newdate = (now() + datetime.timedelta(days=20)).strftime('%Y-%m-%d')
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'expires': newdate},
     )
@@ -1730,18 +1444,14 @@ def test_order_extend_expired_quota_empty(token_client, organizer, event, order,
 
 
 @pytest.mark.django_db
-def test_order_extend_expired_quota_ignore(
-    token_client, organizer, event, order, quota
-):
+def test_order_extend_expired_quota_ignore(token_client, organizer, event, order, quota):
     order.status = Order.STATUS_EXPIRED
     order.save()
     quota.size = 0
     quota.save()
     newdate = (now() + datetime.timedelta(days=20)).strftime('%Y-%m-%d')
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'expires': newdate, 'force': True},
     )
@@ -1752,9 +1462,7 @@ def test_order_extend_expired_quota_ignore(
 
 
 @pytest.mark.django_db
-def test_order_extend_expired_quota_waiting_list(
-    token_client, organizer, event, order, item, quota
-):
+def test_order_extend_expired_quota_waiting_list(token_client, organizer, event, order, item, quota):
     order.status = Order.STATUS_EXPIRED
     order.save()
     quota.size = 1
@@ -1763,9 +1471,7 @@ def test_order_extend_expired_quota_waiting_list(
         event.waitinglistentries.create(item=item, email='foo@bar.com')
     newdate = (now() + datetime.timedelta(days=20)).strftime('%Y-%m-%d')
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'expires': newdate,
@@ -1785,9 +1491,7 @@ def test_order_extend_expired_quota_left(token_client, organizer, event, order, 
     quota.save()
     newdate = (now() + datetime.timedelta(days=20)).strftime('%Y-%m-%d')
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/extend/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'expires': newdate,
@@ -1804,9 +1508,7 @@ def test_order_pending_approve(token_client, organizer, event, order):
     order.require_approval = True
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/approve/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/approve/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert resp.data['status'] == Order.STATUS_PENDING
@@ -1819,9 +1521,7 @@ def test_order_invalid_state_approve(token_client, organizer, event, order):
     order.status = Order.STATUS_CANCELED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/approve/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/approve/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
@@ -1829,9 +1529,7 @@ def test_order_invalid_state_approve(token_client, organizer, event, order):
     order.status = Order.STATUS_PENDING
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/approve/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/approve/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
@@ -1841,9 +1539,7 @@ def test_order_pending_deny(token_client, organizer, event, order):
     order.require_approval = True
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/deny/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/deny/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 200
     assert resp.data['status'] == Order.STATUS_CANCELED
@@ -1856,9 +1552,7 @@ def test_order_invalid_state_deny(token_client, organizer, event, order):
     order.status = Order.STATUS_CANCELED
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/deny/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/deny/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
@@ -1866,9 +1560,7 @@ def test_order_invalid_state_deny(token_client, organizer, event, order):
     order.status = Order.STATUS_PENDING
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/deny/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/deny/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 400
 
@@ -1990,9 +1682,7 @@ def test_order_create_simulate(token_client, organizer, event, item, quota, ques
 
 
 @pytest.mark.django_db
-def test_order_create_positionids_addons_simulated(
-    token_client, organizer, event, item, quota
-):
+def test_order_create_positionids_addons_simulated(token_client, organizer, event, item, quota):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'] = [
         {
@@ -2086,9 +1776,7 @@ def test_order_create_positionids_addons_simulated(
 
 
 @pytest.mark.django_db
-def test_order_create_autocheckin(
-    token_client, organizer, event, item, quota, question, clist_autocheckin
-):
+def test_order_create_autocheckin(token_client, organizer, event, item, quota, question, clist_autocheckin):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2119,9 +1807,7 @@ def test_order_create_autocheckin(
 
 
 @pytest.mark.django_db
-def test_order_create_invoice_address_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_invoice_address_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2139,9 +1825,7 @@ def test_order_create_invoice_address_optional(
 
 
 @pytest.mark.django_db
-def test_order_create_sales_channel_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_sales_channel_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2158,9 +1842,7 @@ def test_order_create_sales_channel_optional(
 
 
 @pytest.mark.django_db
-def test_order_create_sales_channel_invalid(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_sales_channel_invalid(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2175,9 +1857,7 @@ def test_order_create_sales_channel_invalid(
 
 
 @pytest.mark.django_db
-def test_order_create_in_test_mode(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_in_test_mode(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2194,9 +1874,7 @@ def test_order_create_in_test_mode(
 
 
 @pytest.mark.django_db
-def test_order_create_in_test_mode_saleschannel_limited(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_in_test_mode_saleschannel_limited(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2211,9 +1889,7 @@ def test_order_create_in_test_mode_saleschannel_limited(
 
 
 @pytest.mark.django_db
-def test_order_create_attendee_name_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_attendee_name_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['attendee_name'] = None
     res['positions'][0]['item'] = item.pk
@@ -2231,9 +1907,7 @@ def test_order_create_attendee_name_optional(
 
 
 @pytest.mark.django_db
-def test_order_create_legacy_attendee_name(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_legacy_attendee_name(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['attendee_name'] = 'Peter'
     res['positions'][0]['item'] = item.pk
@@ -2259,9 +1933,7 @@ def test_order_create_legacy_attendee_name(
 
 
 @pytest.mark.django_db
-def test_order_create_legacy_invoice_name(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_legacy_invoice_name(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['invoice_address']['name'] = 'Peter'
     res['positions'][0]['item'] = item.pk
@@ -2286,9 +1958,7 @@ def test_order_create_legacy_invoice_name(
 
 
 @pytest.mark.django_db
-def test_order_create_code_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_code_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2339,9 +2009,7 @@ def test_order_email_optional(token_client, organizer, event, item, quota, quest
 
 
 @pytest.mark.django_db
-def test_order_create_payment_provider_optional_free(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_payment_provider_optional_free(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2360,9 +2028,7 @@ def test_order_create_payment_provider_optional_free(
 
 
 @pytest.mark.django_db
-def test_order_create_payment_info_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_payment_info_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2390,9 +2056,7 @@ def test_order_create_payment_info_optional(
 
 
 @pytest.mark.django_db
-def test_order_create_position_secret_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_position_secret_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2424,17 +2088,11 @@ def test_order_create_position_secret_optional(
     )
     assert resp.status_code == 400
 
-    assert resp.data == {
-        'positions': [
-            {'secret': ['You cannot assign a position secret that already exists.']}
-        ]
-    }
+    assert resp.data == {'positions': [{'secret': ['You cannot assign a position secret that already exists.']}]}
 
 
 @pytest.mark.django_db
-def test_order_create_tax_rules(
-    token_client, organizer, event, item, quota, question, taxrule
-):
+def test_order_create_tax_rules(token_client, organizer, event, item, quota, question, taxrule):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['fees'][0]['tax_rule'] = taxrule.pk
     res['positions'][0]['item'] = item.pk
@@ -2465,9 +2123,7 @@ def test_order_create_tax_rules(
 
 
 @pytest.mark.django_db
-def test_order_create_fee_type_validation(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_fee_type_validation(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['fees'][0]['fee_type'] = 'unknown'
     res['positions'][0]['item'] = item.pk
@@ -2482,9 +2138,7 @@ def test_order_create_fee_type_validation(
 
 
 @pytest.mark.django_db
-def test_order_create_fee_as_percentage(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_fee_as_percentage(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['fees'][0]['_treat_value_as_percentage'] = True
     res['fees'][0]['value'] = '10.00'
@@ -2504,9 +2158,7 @@ def test_order_create_fee_as_percentage(
 
 
 @pytest.mark.django_db
-def test_order_create_fee_with_auto_tax(
-    token_client, organizer, event, item, quota, question, taxrule
-):
+def test_order_create_fee_with_auto_tax(token_client, organizer, event, item, quota, question, taxrule):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['fees'][0]['_split_taxes_like_products'] = True
     res['fees'][0]['_treat_value_as_percentage'] = True
@@ -2530,9 +2182,7 @@ def test_order_create_fee_with_auto_tax(
 
 
 @pytest.mark.django_db
-def test_order_create_negative_fee_with_auto_tax(
-    token_client, organizer, event, item, quota, question, taxrule
-):
+def test_order_create_negative_fee_with_auto_tax(token_client, organizer, event, item, quota, question, taxrule):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['fees'][0]['_split_taxes_like_products'] = True
     res['fees'][0]['value'] = '-10.00'
@@ -2556,9 +2206,7 @@ def test_order_create_negative_fee_with_auto_tax(
 
 
 @pytest.mark.django_db
-def test_order_create_tax_rule_wrong_event(
-    token_client, organizer, event, item, quota, question, taxrule2
-):
+def test_order_create_tax_rule_wrong_event(token_client, organizer, event, item, quota, question, taxrule2):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['fees'][0]['tax_rule'] = taxrule2.pk
     res['positions'][0]['item'] = item.pk
@@ -2569,17 +2217,11 @@ def test_order_create_tax_rule_wrong_event(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'fees': [
-            {'tax_rule': ['The specified tax rate does not belong to this event.']}
-        ]
-    }
+    assert resp.data == {'fees': [{'tax_rule': ['The specified tax rate does not belong to this event.']}]}
 
 
 @pytest.mark.django_db
-def test_order_create_subevent_not_allowed(
-    token_client, organizer, event, item, quota, question, subevent2
-):
+def test_order_create_subevent_not_allowed(token_client, organizer, event, item, quota, question, subevent2):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2590,9 +2232,7 @@ def test_order_create_subevent_not_allowed(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [{'subevent': ['You cannot set a subevent for this event.']}]
-    }
+    assert resp.data == {'positions': [{'subevent': ['You cannot set a subevent for this event.']}]}
 
 
 @pytest.mark.django_db
@@ -2609,9 +2249,7 @@ def test_order_create_empty(token_client, organizer, event, item, quota, questio
 
 
 @pytest.mark.django_db
-def test_order_create_subevent_validation(
-    token_client, organizer, event, item, subevent, subevent2, quota, question
-):
+def test_order_create_subevent_validation(token_client, organizer, event, item, subevent, subevent2, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2630,17 +2268,11 @@ def test_order_create_subevent_validation(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [
-            {'subevent': ['The specified subevent does not belong to this event.']}
-        ]
-    }
+    assert resp.data == {'positions': [{'subevent': ['The specified subevent does not belong to this event.']}]}
 
 
 @pytest.mark.django_db
-def test_order_create_item_validation(
-    token_client, organizer, event, item, item2, quota, question
-):
+def test_order_create_item_validation(token_client, organizer, event, item, item2, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     item.active = False
     item.save()
@@ -2664,9 +2296,7 @@ def test_order_create_item_validation(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [{'item': ['The specified item does not belong to this event.']}]
-    }
+    assert resp.data == {'positions': [{'item': ['The specified item does not belong to this event.']}]}
 
     with scopes_disabled():
         var2 = item2.variations.create(value='A')
@@ -2680,9 +2310,7 @@ def test_order_create_item_validation(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [{'variation': ['You cannot specify a variation for this item.']}]
-    }
+    assert resp.data == {'positions': [{'variation': ['You cannot specify a variation for this item.']}]}
 
     with scopes_disabled():
         var1 = item.variations.create(value='A')
@@ -2694,11 +2322,7 @@ def test_order_create_item_validation(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [
-            {'item': ['The product "Budget Ticket" is not assigned to a quota.']}
-        ]
-    }
+    assert resp.data == {'positions': [{'item': ['The product "Budget Ticket" is not assigned to a quota.']}]}
 
     with scopes_disabled():
         quota.variations.add(var1)
@@ -2717,13 +2341,7 @@ def test_order_create_item_validation(
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'positions': [
-            {
-                'variation': [
-                    'The specified variation does not belong to the specified item.'
-                ]
-            }
-        ]
+        'positions': [{'variation': ['The specified variation does not belong to the specified item.']}]
     }
 
     res['positions'][0]['variation'] = None
@@ -2733,15 +2351,11 @@ def test_order_create_item_validation(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [{'variation': ['You should specify a variation for this item.']}]
-    }
+    assert resp.data == {'positions': [{'variation': ['You should specify a variation for this item.']}]}
 
 
 @pytest.mark.django_db
-def test_order_create_subevent_disabled(
-    token_client, organizer, event, item, subevent, quota, question
-):
+def test_order_create_subevent_disabled(token_client, organizer, event, item, subevent, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -2755,11 +2369,7 @@ def test_order_create_subevent_disabled(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [
-            {'item': ['The product "Budget Ticket" is not available on this date.']}
-        ]
-    }
+    assert resp.data == {'positions': [{'item': ['The product "Budget Ticket" is not available on this date.']}]}
 
     s.delete()
     resp = token_client.post(
@@ -2771,9 +2381,7 @@ def test_order_create_subevent_disabled(
 
 
 @pytest.mark.django_db
-def test_order_create_subevent_variation_disabled(
-    token_client, organizer, event, item, subevent, quota, question
-):
+def test_order_create_subevent_variation_disabled(token_client, organizer, event, item, subevent, quota, question):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         var = item2.variations.create(default_price=12, value='XS')
@@ -2793,11 +2401,7 @@ def test_order_create_subevent_variation_disabled(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [
-            {'item': ['The product "Budget Ticket" is not available on this date.']}
-        ]
-    }
+    assert resp.data == {'positions': [{'item': ['The product "Budget Ticket" is not available on this date.']}]}
 
     s.delete()
     resp = token_client.post(
@@ -2849,9 +2453,7 @@ def test_order_create_positionids_addons(token_client, organizer, event, item, q
 
 
 @pytest.mark.django_db
-def test_order_create_positionid_validation(
-    token_client, organizer, event, item, quota
-):
+def test_order_create_positionid_validation(token_client, organizer, event, item, quota):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'] = [
         {
@@ -2926,16 +2528,8 @@ def test_order_create_positionid_validation(
     assert resp.status_code == 400
     assert resp.data == {
         'positions': [
-            {
-                'positionid': [
-                    'If you set addon_to on any position, you need to specify position IDs manually.'
-                ]
-            },
-            {
-                'positionid': [
-                    'If you set addon_to on any position, you need to specify position IDs manually.'
-                ]
-            },
+            {'positionid': ['If you set addon_to on any position, you need to specify position IDs manually.']},
+            {'positionid': ['If you set addon_to on any position, you need to specify position IDs manually.']},
         ]
     }
 
@@ -2969,11 +2563,7 @@ def test_order_create_positionid_validation(
     assert resp.data == {
         'positions': [
             {},
-            {
-                'positionid': [
-                    'If you set position IDs manually, you need to do so for all positions.'
-                ]
-            },
+            {'positionid': ['If you set position IDs manually, you need to do so for all positions.']},
         ]
     }
 
@@ -3005,9 +2595,7 @@ def test_order_create_positionid_validation(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [{}, {'positionid': ['Position IDs need to be consecutive.']}]
-    }
+    assert resp.data == {'positions': [{}, {'positionid': ['Position IDs need to be consecutive.']}]}
 
     res['positions'] = [
         {
@@ -3042,9 +2630,7 @@ def test_order_create_positionid_validation(
 
 
 @pytest.mark.django_db
-def test_order_create_answer_validation(
-    token_client, organizer, event, item, quota, question, question2
-):
+def test_order_create_answer_validation(token_client, organizer, event, item, quota, question, question2):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question2.pk
@@ -3055,17 +2641,7 @@ def test_order_create_answer_validation(
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'positions': [
-            {
-                'answers': [
-                    {
-                        'question': [
-                            'The specified question does not belong to this event.'
-                        ]
-                    }
-                ]
-            }
-        ]
+        'positions': [{'answers': [{'question': ['The specified question does not belong to this event.']}]}]
     }
 
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -3080,11 +2656,7 @@ def test_order_create_answer_validation(
         'positions': [
             {
                 'answers': [
-                    {
-                        'non_field_errors': [
-                            'You should not specify options if the question is not of a choice type.'
-                        ]
-                    }
+                    {'non_field_errors': ['You should not specify options if the question is not of a choice type.']}
                 ]
             }
         ]
@@ -3101,15 +2673,7 @@ def test_order_create_answer_validation(
     assert resp.status_code == 400
     assert resp.data == {
         'positions': [
-            {
-                'answers': [
-                    {
-                        'non_field_errors': [
-                            'You need to specify options if the question is of a choice type.'
-                        ]
-                    }
-                ]
-            }
+            {'answers': [{'non_field_errors': ['You need to specify options if the question is of a choice type.']}]}
         ]
     }
 
@@ -3126,17 +2690,7 @@ def test_order_create_answer_validation(
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'positions': [
-            {
-                'answers': [
-                    {
-                        'non_field_errors': [
-                            'The specified option does not belong to this question.'
-                        ]
-                    }
-                ]
-            }
-        ]
+        'positions': [{'answers': [{'non_field_errors': ['The specified option does not belong to this question.']}]}]
     }
 
     with scopes_disabled():
@@ -3153,17 +2707,7 @@ def test_order_create_answer_validation(
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'positions': [
-            {
-                'answers': [
-                    {
-                        'non_field_errors': [
-                            'You can specify at most one option for this question.'
-                        ]
-                    }
-                ]
-            }
-        ]
+        'positions': [{'answers': [{'non_field_errors': ['You can specify at most one option for this question.']}]}]
     }
 
     r = token_client.post(
@@ -3240,11 +2784,7 @@ def test_order_create_answer_validation(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'positions': [
-            {'answers': [{'non_field_errors': ['A valid number is required.']}]}
-        ]
-    }
+    assert resp.data == {'positions': [{'answers': [{'non_field_errors': ['A valid number is required.']}]}]}
 
     question.type = Question.TYPE_BOOLEAN
     question.save()
@@ -3287,17 +2827,7 @@ def test_order_create_answer_validation(
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'positions': [
-            {
-                'answers': [
-                    {
-                        'non_field_errors': [
-                            'Please specify "true" or "false" for boolean questions.'
-                        ]
-                    }
-                ]
-            }
-        ]
+        'positions': [{'answers': [{'non_field_errors': ['Please specify "true" or "false" for boolean questions.']}]}]
     }
 
     question.type = Question.TYPE_DATE
@@ -3328,11 +2858,7 @@ def test_order_create_answer_validation(
         'positions': [
             {
                 'answers': [
-                    {
-                        'non_field_errors': [
-                            'Date has wrong format. Use one of these formats instead: YYYY-MM-DD.'
-                        ]
-                    }
+                    {'non_field_errors': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}
                 ]
             }
         ]
@@ -3417,9 +2943,7 @@ def test_order_create_answer_validation(
 
 
 @pytest.mark.django_db
-def test_order_create_quota_validation(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_quota_validation(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'] = [
         {
@@ -3456,16 +2980,8 @@ def test_order_create_quota_validation(
     assert resp.status_code == 400
     assert resp.data == {
         'positions': [
-            {
-                'item': [
-                    'There is not enough quota available on quota "Budget Quota" to perform the operation.'
-                ]
-            },
-            {
-                'item': [
-                    'There is not enough quota available on quota "Budget Quota" to perform the operation.'
-                ]
-            },
+            {'item': ['There is not enough quota available on quota "Budget Quota" to perform the operation.']},
+            {'item': ['There is not enough quota available on quota "Budget Quota" to perform the operation.']},
         ]
     }
 
@@ -3480,11 +2996,7 @@ def test_order_create_quota_validation(
     assert resp.data == {
         'positions': [
             {},
-            {
-                'item': [
-                    'There is not enough quota available on quota "Budget Quota" to perform the operation.'
-                ]
-            },
+            {'item': ['There is not enough quota available on quota "Budget Quota" to perform the operation.']},
         ]
     }
 
@@ -3498,9 +3010,7 @@ def test_order_create_quota_validation(
 
 
 @pytest.mark.django_db
-def test_order_create_quota_consume_cart(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_quota_consume_cart(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -3524,11 +3034,7 @@ def test_order_create_quota_consume_cart(
     assert resp.status_code == 400
     assert resp.data == {
         'positions': [
-            {
-                'item': [
-                    'There is not enough quota available on quota "Budget Quota" to perform the operation.'
-                ]
-            },
+            {'item': ['There is not enough quota available on quota "Budget Quota" to perform the operation.']},
         ]
     }
 
@@ -3544,9 +3050,7 @@ def test_order_create_quota_consume_cart(
 
 
 @pytest.mark.django_db
-def test_order_create_quota_consume_cart_expired(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_quota_consume_cart_expired(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -3571,11 +3075,7 @@ def test_order_create_quota_consume_cart_expired(
     assert resp.status_code == 400
     assert resp.data == {
         'positions': [
-            {
-                'item': [
-                    'There is not enough quota available on quota "Budget Quota" to perform the operation.'
-                ]
-            },
+            {'item': ['There is not enough quota available on quota "Budget Quota" to perform the operation.']},
         ]
     }
 
@@ -3606,9 +3106,7 @@ def test_order_create_free(token_client, organizer, event, item, quota, question
 
 
 @pytest.mark.django_db
-def test_order_create_invalid_payment_provider(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_invalid_payment_provider(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['payment_provider'] = 'foo'
     res['positions'][0]['item'] = item.pk
@@ -3619,15 +3117,11 @@ def test_order_create_invalid_payment_provider(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'payment_provider': ['The given payment provider is not known.']
-    }
+    assert resp.data == {'payment_provider': ['The given payment provider is not known.']}
 
 
 @pytest.mark.django_db
-def test_order_create_invalid_free_order(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_invalid_free_order(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['payment_provider'] = 'free'
     res['positions'][0]['item'] = item.pk
@@ -3638,15 +3132,11 @@ def test_order_create_invalid_free_order(
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == [
-        'You cannot use the "free" payment provider for non-free orders.'
-    ]
+    assert resp.data == ['You cannot use the "free" payment provider for non-free orders.']
 
 
 @pytest.mark.django_db
-def test_order_create_invalid_status(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_invalid_status(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['status'] = 'e'
     res['positions'][0]['item'] = item.pk
@@ -3661,9 +3151,7 @@ def test_order_create_invalid_status(
 
 
 @pytest.mark.django_db
-def test_order_create_paid_generate_invoice(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_paid_generate_invoice(token_client, organizer, event, item, quota, question):
     event.settings.invoice_generate = 'paid'
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['status'] = 'p'
@@ -3699,9 +3187,7 @@ def seat(event, organizer, item):
 
 
 @pytest.mark.django_db
-def test_order_create_with_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_with_seat(token_client, organizer, event, item, quota, seat, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['seat'] = seat.seat_guid
@@ -3719,9 +3205,7 @@ def test_order_create_with_seat(
 
 
 @pytest.mark.django_db
-def test_order_create_with_blocked_seat_allowed(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_with_blocked_seat_allowed(token_client, organizer, event, item, quota, seat, question):
     seat.blocked = True
     seat.save()
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
@@ -3739,9 +3223,7 @@ def test_order_create_with_blocked_seat_allowed(
 
 
 @pytest.mark.django_db
-def test_order_create_with_blocked_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_with_blocked_seat(token_client, organizer, event, item, quota, seat, question):
     seat.blocked = True
     seat.save()
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
@@ -3762,9 +3244,7 @@ def test_order_create_with_blocked_seat(
 
 
 @pytest.mark.django_db
-def test_order_create_with_used_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_with_used_seat(token_client, organizer, event, item, quota, seat, question):
     CartPosition.objects.create(
         event=event,
         cart_id='aaa',
@@ -3791,9 +3271,7 @@ def test_order_create_with_used_seat(
 
 
 @pytest.mark.django_db
-def test_order_create_with_unknown_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_with_unknown_seat(token_client, organizer, event, item, quota, seat, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['seat'] = seat.seat_guid + '_'
@@ -3812,9 +3290,7 @@ def test_order_create_with_unknown_seat(
 
 
 @pytest.mark.django_db
-def test_order_create_require_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_require_seat(token_client, organizer, event, item, quota, seat, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -3832,9 +3308,7 @@ def test_order_create_require_seat(
 
 
 @pytest.mark.django_db
-def test_order_create_unseated(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_unseated(token_client, organizer, event, item, quota, seat, question):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         quota.items.add(item2)
@@ -3856,9 +3330,7 @@ def test_order_create_unseated(
 
 
 @pytest.mark.django_db
-def test_order_create_with_duplicate_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_with_duplicate_seat(token_client, organizer, event, item, quota, seat, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'] = [
         {
@@ -3901,9 +3373,7 @@ def test_order_create_with_duplicate_seat(
 
 
 @pytest.mark.django_db
-def test_order_create_with_seat_consumed_from_cart(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_order_create_with_seat_consumed_from_cart(token_client, organizer, event, item, quota, seat, question):
     CartPosition.objects.create(
         event=event,
         cart_id='aaa',
@@ -3930,9 +3400,7 @@ def test_order_create_with_seat_consumed_from_cart(
 
 
 @pytest.mark.django_db
-def test_order_create_send_no_emails(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_send_no_emails(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -3947,9 +3415,7 @@ def test_order_create_send_no_emails(
 
 
 @pytest.mark.django_db
-def test_order_create_send_emails(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_send_emails(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -3966,9 +3432,7 @@ def test_order_create_send_emails(
 
 
 @pytest.mark.django_db
-def test_order_create_send_emails_free(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_send_emails_free(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['price'] = '0.00'
@@ -3988,9 +3452,7 @@ def test_order_create_send_emails_free(
 
 
 @pytest.mark.django_db
-def test_order_create_send_emails_paid(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_send_emails_paid(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4005,15 +3467,11 @@ def test_order_create_send_emails_paid(
     assert resp.status_code == 201
     assert len(djmail.outbox) == 2
     assert djmail.outbox[0].subject == 'Your order: {}'.format(resp.data['code'])
-    assert djmail.outbox[1].subject == 'Payment received for your order: {}'.format(
-        resp.data['code']
-    )
+    assert djmail.outbox[1].subject == 'Payment received for your order: {}'.format(resp.data['code'])
 
 
 @pytest.mark.django_db
-def test_order_create_send_emails_legacy(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_send_emails_legacy(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4028,15 +3486,11 @@ def test_order_create_send_emails_legacy(
     assert resp.status_code == 201
     assert len(djmail.outbox) == 2
     assert djmail.outbox[0].subject == 'Your order: {}'.format(resp.data['code'])
-    assert djmail.outbox[1].subject == 'Payment received for your order: {}'.format(
-        resp.data['code']
-    )
+    assert djmail.outbox[1].subject == 'Payment received for your order: {}'.format(resp.data['code'])
 
 
 @pytest.mark.django_db
-def test_order_paid_require_payment_method(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_paid_require_payment_method(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4063,9 +3517,7 @@ def test_order_paid_require_payment_method(
 
 
 @pytest.mark.django_db
-def test_order_create_auto_pricing(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_auto_pricing(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4085,9 +3537,7 @@ def test_order_create_auto_pricing(
 
 
 @pytest.mark.django_db
-def test_order_create_auto_pricing_reverse_charge(
-    token_client, organizer, event, item, quota, question, taxrule
-):
+def test_order_create_auto_pricing_reverse_charge(token_client, organizer, event, item, quota, question, taxrule):
     taxrule.eu_reverse_charge = True
     taxrule.home_country = Country('DE')
     taxrule.save()
@@ -4117,13 +3567,9 @@ def test_order_create_auto_pricing_reverse_charge(
 
 
 @pytest.mark.django_db
-def test_order_create_auto_pricing_country_rate(
-    token_client, organizer, event, item, quota, question, taxrule
-):
+def test_order_create_auto_pricing_country_rate(token_client, organizer, event, item, quota, question, taxrule):
     taxrule.eu_reverse_charge = True
-    taxrule.custom_rules = json.dumps(
-        [{'country': 'FR', 'address_type': '', 'action': 'vat', 'rate': '100.00'}]
-    )
+    taxrule.custom_rules = json.dumps([{'country': 'FR', 'address_type': '', 'action': 'vat', 'rate': '100.00'}])
     taxrule.save()
     item.tax_rule = taxrule
     item.save()
@@ -4215,9 +3661,7 @@ def test_order_create_autopricing_voucher_budget_partially(
 
 
 @pytest.mark.django_db
-def test_order_create_autopricing_voucher_budget_full(
-    token_client, organizer, event, item, quota, question, taxrule
-):
+def test_order_create_autopricing_voucher_budget_full(token_client, organizer, event, item, quota, question, taxrule):
     with scopes_disabled():
         voucher = event.vouchers.create(
             price_mode='set',
@@ -4243,20 +3687,13 @@ def test_order_create_autopricing_voucher_budget_full(
     assert resp.data == {
         'positions': [
             {},
-            {
-                'voucher': [
-                    'The voucher has a remaining budget of 0.00, therefore a '
-                    'discount of 1.50 can not be given.'
-                ]
-            },
+            {'voucher': ['The voucher has a remaining budget of 0.00, therefore a discount of 1.50 can not be given.']},
         ]
     }
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_budget_exceeded(
-    token_client, organizer, event, item, quota, question, taxrule
-):
+def test_order_create_voucher_budget_exceeded(token_client, organizer, event, item, quota, question, taxrule):
     with scopes_disabled():
         voucher = event.vouchers.create(
             price_mode='set',
@@ -4281,20 +3718,13 @@ def test_order_create_voucher_budget_exceeded(
     assert resp.status_code == 400
     assert resp.data == {
         'positions': [
-            {
-                'voucher': [
-                    'The voucher has a remaining budget of 3.00, therefore a '
-                    'discount of 4.00 can not be given.'
-                ]
-            }
+            {'voucher': ['The voucher has a remaining budget of 3.00, therefore a discount of 4.00 can not be given.']}
         ]
     }
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_price(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_voucher_price(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4319,9 +3749,7 @@ def test_order_create_voucher_price(
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_unknown_code(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_voucher_unknown_code(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4343,17 +3771,13 @@ def test_order_create_voucher_unknown_code(
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_redeemed(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_voucher_redeemed(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     del res['positions'][0]['price']
     res['positions'][0]['answers'][0]['question'] = question.pk
     with scopes_disabled():
-        voucher = event.vouchers.create(
-            price_mode='set', value=15, item=item, redeemed=1
-        )
+        voucher = event.vouchers.create(price_mode='set', value=15, item=item, redeemed=1)
     res['positions'][0]['voucher'] = voucher.code
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/orders/'.format(organizer.slug, event.slug),
@@ -4363,28 +3787,20 @@ def test_order_create_voucher_redeemed(
     assert resp.status_code == 400
     assert resp.data == {
         'positions': [
-            {
-                'voucher': [
-                    'The voucher has already been used the maximum number of times.'
-                ]
-            },
+            {'voucher': ['The voucher has already been used the maximum number of times.']},
         ]
     }
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_redeemed_partially(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_voucher_redeemed_partially(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['answers'][0]['question'] = question.pk
     res['positions'][0]['item'] = item.pk
     del res['positions'][0]['price']
     del res['positions'][0]['positionid']
     with scopes_disabled():
-        voucher = event.vouchers.create(
-            price_mode='set', value=15, item=item, redeemed=1, max_usages=2
-        )
+        voucher = event.vouchers.create(price_mode='set', value=15, item=item, redeemed=1, max_usages=2)
     res['positions'][0]['voucher'] = voucher.code
     res['positions'].append(copy.deepcopy(res['positions'][0]))
     res['positions'].append(copy.deepcopy(res['positions'][0]))
@@ -4397,33 +3813,21 @@ def test_order_create_voucher_redeemed_partially(
     assert resp.data == {
         'positions': [
             {},
-            {
-                'voucher': [
-                    'The voucher has already been used the maximum number of times.'
-                ]
-            },
-            {
-                'voucher': [
-                    'The voucher has already been used the maximum number of times.'
-                ]
-            },
+            {'voucher': ['The voucher has already been used the maximum number of times.']},
+            {'voucher': ['The voucher has already been used the maximum number of times.']},
         ]
     }
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_item_mismatch(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_voucher_item_mismatch(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
     del res['positions'][0]['price']
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
-        voucher = event.vouchers.create(
-            price_mode='set', value=15, item=item2, redeemed=0
-        )
+        voucher = event.vouchers.create(price_mode='set', value=15, item=item2, redeemed=0)
     res['positions'][0]['voucher'] = voucher.code
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/orders/'.format(organizer.slug, event.slug),
@@ -4439,9 +3843,7 @@ def test_order_create_voucher_item_mismatch(
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_expired(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_voucher_expired(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4469,9 +3871,7 @@ def test_order_create_voucher_expired(
 
 
 @pytest.mark.django_db
-def test_order_create_voucher_block_quota(
-    token_client, organizer, event, item, quota, question
-):
+def test_order_create_voucher_block_quota(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
@@ -4486,9 +3886,7 @@ def test_order_create_voucher_block_quota(
     assert resp.status_code == 400
 
     with scopes_disabled():
-        voucher = event.vouchers.create(
-            price_mode='set', value=15, item=item, redeemed=0, block_quota=True
-        )
+        voucher = event.vouchers.create(price_mode='set', value=15, item=item, redeemed=0, block_quota=True)
     res['positions'][0]['voucher'] = voucher.code
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/orders/'.format(organizer.slug, event.slug),
@@ -4514,9 +3912,7 @@ REFUND_CREATE_PAYLOAD = {
 def test_refund_create(token_client, organizer, event, order):
     res = copy.deepcopy(REFUND_CREATE_PAYLOAD)
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data=res,
     )
@@ -4538,9 +3934,7 @@ def test_refund_create_mark_refunded(token_client, organizer, event, order):
     res = copy.deepcopy(REFUND_CREATE_PAYLOAD)
     res['mark_canceled'] = True
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data=res,
     )
@@ -4563,9 +3957,7 @@ def test_refund_optional_fields(token_client, organizer, event, order):
     del res['info']
     del res['payment']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data=res,
     )
@@ -4579,9 +3971,7 @@ def test_refund_optional_fields(token_client, organizer, event, order):
 
     del res['state']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data=res,
     )
@@ -4593,9 +3983,7 @@ def test_refund_create_invalid_payment(token_client, organizer, event, order):
     res = copy.deepcopy(REFUND_CREATE_PAYLOAD)
     res['payment'] = 7
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/refunds/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data=res,
     )
@@ -4605,9 +3993,7 @@ def test_refund_create_invalid_payment(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_order_delete(token_client, organizer, event, order):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 403
 
@@ -4617,9 +4003,7 @@ def test_order_delete_test_mode(token_client, organizer, event, order):
     order.testmode = True
     order.save()
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -4641,9 +4025,7 @@ def test_order_delete_test_mode_voucher(token_client, organizer, event, order, i
     assert voucher.redeemed == 1
 
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -4653,25 +4035,19 @@ def test_order_delete_test_mode_voucher(token_client, organizer, event, order, i
 
 
 @pytest.mark.django_db
-def test_order_delete_test_mode_voucher_cancelled_position(
-    token_client, organizer, event, order, item
-):
+def test_order_delete_test_mode_voucher_cancelled_position(token_client, organizer, event, order, item):
     order.testmode = True
     order.save()
     with scopes_disabled():
         q = event.quotas.create(name='Quota')
         q.items.add(item)
-        voucher = event.vouchers.create(
-            price_mode='set', value=15, quota=q, redeemed=42
-        )
+        voucher = event.vouchers.create(price_mode='set', value=15, quota=q, redeemed=42)
         op = order.all_positions.last()
         op.voucher = voucher
         op.save()
 
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -4681,26 +4057,20 @@ def test_order_delete_test_mode_voucher_cancelled_position(
 
 
 @pytest.mark.django_db
-def test_order_delete_test_mode_voucher_cancelled_order(
-    token_client, organizer, event, order, item
-):
+def test_order_delete_test_mode_voucher_cancelled_order(token_client, organizer, event, order, item):
     with scopes_disabled():
         order.testmode = True
         order.status = Order.STATUS_CANCELED
         order.save()
         q = event.quotas.create(name='Quota')
         q.items.add(item)
-        voucher = event.vouchers.create(
-            price_mode='set', value=15, quota=q, redeemed=42
-        )
+        voucher = event.vouchers.create(price_mode='set', value=15, quota=q, redeemed=42)
         op = order.positions.first()
         op.voucher = voucher
         op.save()
 
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        )
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -4712,9 +4082,7 @@ def test_order_delete_test_mode_voucher_cancelled_order(
 @pytest.mark.django_db
 def test_order_update_ignore_fields(token_client, organizer, event, order):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'status': 'c'},
     )
@@ -4726,9 +4094,7 @@ def test_order_update_ignore_fields(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_order_update_only_partial(token_client, organizer, event, order):
     resp = token_client.put(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={'status': 'c'},
     )
@@ -4738,9 +4104,7 @@ def test_order_update_only_partial(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_order_update_state_validation(token_client, organizer, event, order):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'invoice_address': {
@@ -4760,9 +4124,7 @@ def test_order_update_state_validation(token_client, organizer, event, order):
     )
     assert resp.status_code == 400
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'invoice_address': {
@@ -4783,9 +4145,7 @@ def test_order_update_state_validation(token_client, organizer, event, order):
     assert resp.status_code == 400
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'invoice_address': {
@@ -4813,9 +4173,7 @@ def test_order_update_state_validation(token_client, organizer, event, order):
 def test_order_update_allowed_fields(token_client, organizer, event, order):
     event.settings.locales = ['de', 'en']
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'comment': 'Here is a comment',
@@ -4853,27 +4211,17 @@ def test_order_update_allowed_fields(token_client, organizer, event, order):
     assert order.invoice_address.city == 'Paris'
     with scopes_disabled():
         assert order.all_logentries().get(action_type='pretix.event.order.comment')
-        assert order.all_logentries().get(
-            action_type='pretix.event.order.checkin_attention'
-        )
-        assert order.all_logentries().get(
-            action_type='pretix.event.order.contact.changed'
-        )
-        assert order.all_logentries().get(
-            action_type='pretix.event.order.phone.changed'
-        )
-        assert order.all_logentries().get(
-            action_type='pretix.event.order.locale.changed'
-        )
+        assert order.all_logentries().get(action_type='pretix.event.order.checkin_attention')
+        assert order.all_logentries().get(action_type='pretix.event.order.contact.changed')
+        assert order.all_logentries().get(action_type='pretix.event.order.phone.changed')
+        assert order.all_logentries().get(action_type='pretix.event.order.locale.changed')
         assert order.all_logentries().get(action_type='pretix.event.order.modified')
 
 
 @pytest.mark.django_db
 def test_order_update_validated_vat_id(token_client, organizer, event, order):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'invoice_address': {
@@ -4899,14 +4247,10 @@ def test_order_update_validated_vat_id(token_client, organizer, event, order):
 
 
 @pytest.mark.django_db
-def test_order_update_invoiceaddress_delete_create(
-    token_client, organizer, event, order
-):
+def test_order_update_invoiceaddress_delete_create(token_client, organizer, event, order):
     event.settings.locales = ['de', 'en']
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'invoice_address': None,
@@ -4918,9 +4262,7 @@ def test_order_update_invoiceaddress_delete_create(
         order.invoice_address
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'invoice_address': {
@@ -4948,9 +4290,7 @@ def test_order_update_invoiceaddress_delete_create(
 @pytest.mark.django_db
 def test_order_update_email_to_none(token_client, organizer, event, order):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'email': None,
@@ -4964,9 +4304,7 @@ def test_order_update_email_to_none(token_client, organizer, event, order):
 @pytest.mark.django_db
 def test_order_update_locale_to_invalid(token_client, organizer, event, order):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={
             'locale': 'de',
@@ -4983,9 +4321,7 @@ def test_order_create_invoice(token_client, organizer, event, order):
     event.settings.invoice_generate_sales_channels = []
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={},
     )
@@ -4993,9 +4329,7 @@ def test_order_create_invoice(token_client, organizer, event, order):
 
     event.settings.invoice_generate_sales_channels = ['web']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={},
     )
@@ -5066,9 +4400,7 @@ def test_order_create_invoice(token_client, organizer, event, order):
     }
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={},
     )
@@ -5077,9 +4409,7 @@ def test_order_create_invoice(token_client, organizer, event, order):
 
     event.settings.invoice_generate = 'False'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/create_invoice/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={},
     )
@@ -5093,9 +4423,7 @@ def test_order_regenerate_secrets(token_client, organizer, event, order):
     with scopes_disabled():
         ps = order.positions.first().secret
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/regenerate_secrets/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/regenerate_secrets/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={},
     )
@@ -5110,9 +4438,7 @@ def test_order_regenerate_secrets(token_client, organizer, event, order):
 def test_order_resend_link(token_client, organizer, event, order):
     djmail.outbox = []
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/resend_link/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/resend_link/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={},
     )
@@ -5122,9 +4448,7 @@ def test_order_resend_link(token_client, organizer, event, order):
     order.email = None
     order.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orders/{}/resend_link/'.format(
-            organizer.slug, event.slug, order.code
-        ),
+        '/api/v1/organizers/{}/events/{}/orders/{}/resend_link/'.format(organizer.slug, event.slug, order.code),
         format='json',
         data={},
     )
@@ -5136,9 +4460,7 @@ def test_orderposition_price_calculation(token_client, organizer, event, order, 
     with scopes_disabled():
         op = order.positions.first()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={},
     )
     assert resp.status_code == 200
@@ -5154,18 +4476,12 @@ def test_orderposition_price_calculation(token_client, organizer, event, order, 
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_item_with_tax(
-    token_client, organizer, event, order, item, taxrule
-):
+def test_orderposition_price_calculation_item_with_tax(token_client, organizer, event, order, item, taxrule):
     with scopes_disabled():
-        item2 = event.items.create(
-            name='Budget Ticket', default_price=23, tax_rule=taxrule
-        )
+        item2 = event.items.create(name='Budget Ticket', default_price=23, tax_rule=taxrule)
         op = order.positions.first()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={'item': item2.pk},
     )
     assert resp.status_code == 200
@@ -5181,17 +4497,13 @@ def test_orderposition_price_calculation_item_with_tax(
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_item_with_variation(
-    token_client, organizer, event, order
-):
+def test_orderposition_price_calculation_item_with_variation(token_client, organizer, event, order):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         var = item2.variations.create(default_price=12, value='XS')
         op = order.positions.first()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={'item': item2.pk, 'variation': var.pk},
     )
     assert resp.status_code == 200
@@ -5207,18 +4519,14 @@ def test_orderposition_price_calculation_item_with_variation(
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_subevent(
-    token_client, organizer, event, order, subevent
-):
+def test_orderposition_price_calculation_subevent(token_client, organizer, event, order, subevent):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         op = order.positions.first()
     op.subevent = subevent
     op.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={'item': item2.pk, 'subevent': subevent.pk},
     )
     assert resp.status_code == 200
@@ -5234,9 +4542,7 @@ def test_orderposition_price_calculation_subevent(
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_subevent_with_override(
-    token_client, organizer, event, order, subevent
-):
+def test_orderposition_price_calculation_subevent_with_override(token_client, organizer, event, order, subevent):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         se2 = event.subevents.create(
@@ -5248,9 +4554,7 @@ def test_orderposition_price_calculation_subevent_with_override(
     op.subevent = subevent
     op.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={'item': item2.pk, 'subevent': se2.pk},
     )
     assert resp.status_code == 200
@@ -5266,9 +4570,7 @@ def test_orderposition_price_calculation_subevent_with_override(
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_voucher_matching(
-    token_client, organizer, event, order, subevent, item
-):
+def test_orderposition_price_calculation_voucher_matching(token_client, organizer, event, order, subevent, item):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         q = event.quotas.create(name='Quota')
@@ -5279,9 +4581,7 @@ def test_orderposition_price_calculation_voucher_matching(
     op.voucher = voucher
     op.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={
             'item': item2.pk,
         },
@@ -5299,9 +4599,7 @@ def test_orderposition_price_calculation_voucher_matching(
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_voucher_not_matching(
-    token_client, organizer, event, order, subevent, item
-):
+def test_orderposition_price_calculation_voucher_not_matching(token_client, organizer, event, order, subevent, item):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         q = event.quotas.create(name='Quota')
@@ -5311,9 +4609,7 @@ def test_orderposition_price_calculation_voucher_not_matching(
     op.voucher = voucher
     op.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={
             'item': item2.pk,
         },
@@ -5331,20 +4627,14 @@ def test_orderposition_price_calculation_voucher_not_matching(
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_net_price(
-    token_client, organizer, event, order, subevent, item, taxrule
-):
+def test_orderposition_price_calculation_net_price(token_client, organizer, event, order, subevent, item, taxrule):
     taxrule.price_includes_tax = False
     taxrule.save()
     with scopes_disabled():
-        item2 = event.items.create(
-            name='Budget Ticket', default_price=10, tax_rule=taxrule
-        )
+        item2 = event.items.create(name='Budget Ticket', default_price=10, tax_rule=taxrule)
         op = order.positions.first()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={
             'item': item2.pk,
         },
@@ -5362,9 +4652,7 @@ def test_orderposition_price_calculation_net_price(
 
 
 @pytest.mark.django_db
-def test_orderposition_price_calculation_reverse_charge(
-    token_client, organizer, event, order, subevent, item, taxrule
-):
+def test_orderposition_price_calculation_reverse_charge(token_client, organizer, event, order, subevent, item, taxrule):
     taxrule.price_includes_tax = False
     taxrule.eu_reverse_charge = True
     taxrule.home_country = Country('DE')
@@ -5375,14 +4663,10 @@ def test_orderposition_price_calculation_reverse_charge(
     order.invoice_address.country = Country('AT')
     order.invoice_address.save()
     with scopes_disabled():
-        item2 = event.items.create(
-            name='Budget Ticket', default_price=10, tax_rule=taxrule
-        )
+        item2 = event.items.create(name='Budget Ticket', default_price=10, tax_rule=taxrule)
         op = order.positions.first()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/price_calc/'.format(organizer.slug, event.slug, op.pk),
         data={
             'item': item2.pk,
         },
@@ -5422,9 +4706,7 @@ def test_position_update_ignore_fields(token_client, organizer, event, order):
     with scopes_disabled():
         op = order.positions.first()
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data={'price': '99.99'},
     )
@@ -5438,9 +4720,7 @@ def test_position_update_only_partial(token_client, organizer, event, order):
     with scopes_disabled():
         op = order.positions.first()
     resp = token_client.put(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data={'price': '99.99'},
     )
@@ -5463,14 +4743,10 @@ def test_position_update(token_client, organizer, event, order, question):
         'country': 'US',
         'state': 'CA',
         'attendee_email': 'foo@example.org',
-        'answers': [
-            {'question': question.pk, 'answer': 'ignored', 'options': [opt.pk]}
-        ],
+        'answers': [{'question': question.pk, 'answer': 'ignored', 'options': [opt.pk]}],
     }
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5518,9 +4794,7 @@ def test_position_update(token_client, organizer, event, order, question):
         ]
     }
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5538,9 +4812,7 @@ def test_position_update_legacy_name(token_client, organizer, event, order):
         'attendee_name_parts': {'_legacy': 'maria'},
     }
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5549,9 +4821,7 @@ def test_position_update_legacy_name(token_client, organizer, event, order):
         'attendee_name': 'Max Mustermann',
     }
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5569,9 +4839,7 @@ def test_position_update_state_validation(token_client, organizer, event, order)
         op = order.positions.first()
     payload = {'country': 'DE', 'state': 'BW'}
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5579,9 +4847,7 @@ def test_position_update_state_validation(token_client, organizer, event, order)
 
 
 @pytest.mark.django_db
-def test_position_update_question_handling(
-    token_client, organizer, event, order, question
-):
+def test_position_update_question_handling(token_client, organizer, event, order, question):
     with scopes_disabled():
         op = order.positions.first()
     payload = {
@@ -5597,9 +4863,7 @@ def test_position_update_question_handling(
         ]
     }
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5613,9 +4877,7 @@ def test_position_update_question_handling(
         ]
     }
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5624,9 +4886,7 @@ def test_position_update_question_handling(
         assert op.answers.count() == 1
     payload = {'answers': []}
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )
@@ -5649,9 +4909,7 @@ def test_position_update_question_handling(
     question.type = Question.TYPE_FILE
     question.save()
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(
-            organizer.slug, event.slug, op.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/orderpositions/{}/'.format(organizer.slug, event.slug, op.pk),
         format='json',
         data=payload,
     )

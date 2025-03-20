@@ -60,11 +60,7 @@ class RecentAuthenticationRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         tdelta = time.time() - request.session.get('pretix_auth_login_time', 0)
         if tdelta > self.max_time:
-            return redirect(
-                reverse('control:user.reauth')
-                + '?next='
-                + quote(request.get_full_path())
-            )
+            return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -80,28 +76,20 @@ class ReauthView(TemplateView):
 
             resp = json.loads(r)
             try:
-                devices = [
-                    WebAuthnDevice.objects.get(
-                        user=self.request.user, credential_id=resp.get('id')
-                    )
-                ]
+                devices = [WebAuthnDevice.objects.get(user=self.request.user, credential_id=resp.get('id'))]
             except WebAuthnDevice.DoesNotExist:
                 devices = U2FDevice.objects.filter(user=self.request.user)
 
             for d in devices:
-                credential_current_sign_count = (
-                    d.sign_count if isinstance(d, WebAuthnDevice) else 0
-                )
+                credential_current_sign_count = d.sign_count if isinstance(d, WebAuthnDevice) else 0
                 try:
-                    webauthn_assertion_response = (
-                        webauthn.verify_authentication_response(
-                            credential=resp,
-                            expected_challenge=base64.b64decode(challenge),
-                            expected_rp_id=get_webauthn_rp_id(self.request),
-                            expected_origin=settings.SITE_URL,
-                            credential_public_key=d.webauthnpubkey,
-                            credential_current_sign_count=credential_current_sign_count,
-                        )
+                    webauthn_assertion_response = webauthn.verify_authentication_response(
+                        credential=resp,
+                        expected_challenge=base64.b64decode(challenge),
+                        expected_rp_id=get_webauthn_rp_id(self.request),
+                        expected_origin=settings.SITE_URL,
+                        credential_public_key=d.webauthnpubkey,
+                        credential_current_sign_count=credential_current_sign_count,
                     )
                     sign_count = webauthn_assertion_response.new_sign_count
                     if sign_count < credential_current_sign_count:
@@ -118,9 +106,7 @@ class ReauthView(TemplateView):
                                 credential_current_sign_count=credential_current_sign_count,
                             )
                             if webauthn_assertion_response.new_sign_count < 1:
-                                raise Exception(
-                                    'Possible replay attack, sign count set'
-                                )
+                                raise Exception('Possible replay attack, sign count set')
                         except Exception:
                             logger.exception('U2F login failed')
                         else:
@@ -141,18 +127,12 @@ class ReauthView(TemplateView):
             t = int(time.time())
             request.session['pretix_auth_login_time'] = t
             request.session['pretix_auth_last_used'] = t
-            next_url = get_auth_backends()[request.user.auth_backend].get_next_url(
-                request
-            )
-            if next_url and url_has_allowed_host_and_scheme(
-                next_url, allowed_hosts=None
-            ):
+            next_url = get_auth_backends()[request.user.auth_backend].get_next_url(request)
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
                 return redirect(next_url)
             return redirect(reverse('control:index'))
         else:
-            messages.error(
-                request, _('The password you entered was invalid, please try again.')
-            )
+            messages.error(request, _('The password you entered was invalid, please try again.'))
             return self.get(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -163,9 +143,7 @@ class ReauthView(TemplateView):
             t = int(time.time())
             request.session['pretix_auth_login_time'] = t
             request.session['pretix_auth_last_used'] = t
-            if next_url and url_has_allowed_host_and_scheme(
-                next_url, allowed_hosts=None
-            ):
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
                 return redirect(next_url)
             return redirect(reverse('control:index'))
         return super().get(request, *args, **kwargs)
@@ -175,20 +153,10 @@ class ReauthView(TemplateView):
         if 'webauthn_challenge' in self.request.session:
             del self.request.session['webauthn_challenge']
         challenge = generate_challenge()
-        self.request.session['webauthn_challenge'] = base64.b64encode(
-            challenge
-        ).decode()
+        self.request.session['webauthn_challenge'] = base64.b64encode(challenge).decode()
         devices = [
-            device.webauthndevice
-            for device in WebAuthnDevice.objects.filter(
-                confirmed=True, user=self.request.user
-            )
-        ] + [
-            device.webauthndevice
-            for device in U2FDevice.objects.filter(
-                confirmed=True, user=self.request.user
-            )
-        ]
+            device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.request.user)
+        ] + [device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.request.user)]
         if devices:
             auth_options = webauthn.generate_authentication_options(
                 rp_id=get_webauthn_rp_id(self.request),
@@ -229,9 +197,7 @@ class UserSettings(UpdateView):
         return kwargs
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes could not be saved. See below for details.')
-        )
+        messages.error(self.request, _('Your changes could not be saved. See below for details.'))
         return super().form_invalid(form)
 
     def form_valid(self, form):
@@ -251,23 +217,15 @@ class UserSettings(UpdateView):
             msgs.append(_('Your password has been changed.'))
 
         if 'email' in form.changed_data:
-            msgs.append(
-                _('Your email address has been changed to {email}.').format(
-                    email=form.cleaned_data['email']
-                )
-            )
+            msgs.append(_('Your email address has been changed to {email}.').format(email=form.cleaned_data['email']))
 
         if msgs:
-            self.request.user.send_security_notice(
-                msgs, email=form.cleaned_data['email']
-            )
+            self.request.user.send_security_notice(msgs, email=form.cleaned_data['email'])
             if self._old_email != form.cleaned_data['email']:
                 self.request.user.send_security_notice(msgs, email=self._old_email)
 
         sup = super().form_valid(form)
-        self.request.user.log_action(
-            'pretix.user.settings.changed', user=self.request.user, data=data
-        )
+        self.request.user.log_action('pretix.user.settings.changed', user=self.request.user, data=data)
 
         update_session_auth_hash(self.request, self.request.user)
         return sup
@@ -288,9 +246,7 @@ class UserHistoryView(ListView):
                 content_type=ContentType.objects.get_for_model(User),
                 object_id=self.request.user.pk,
             )
-            .select_related(
-                'user', 'content_type', 'api_token', 'oauth_application', 'device'
-            )
+            .select_related('user', 'content_type', 'api_token', 'oauth_application', 'device')
             .order_by('-datetime')
         )
         return qs
@@ -313,21 +269,15 @@ class User2FAMainView(RecentAuthenticationRequiredMixin, TemplateView):
         ctx = super().get_context_data()
 
         try:
-            ctx['static_tokens'] = StaticDevice.objects.get(
-                user=self.request.user, name='emergency'
-            ).token_set.all()
+            ctx['static_tokens'] = StaticDevice.objects.get(user=self.request.user, name='emergency').token_set.all()
         except StaticDevice.MultipleObjectsReturned:
             ctx['static_tokens'] = (
-                StaticDevice.objects.filter(user=self.request.user, name='emergency')
-                .first()
-                .token_set.all()
+                StaticDevice.objects.filter(user=self.request.user, name='emergency').first().token_set.all()
             )
         except StaticDevice.DoesNotExist:
             d = StaticDevice.objects.create(user=self.request.user, name='emergency')
             for i in range(10):
-                d.token_set.create(
-                    token=get_random_string(length=12, allowed_chars='1234567890')
-                )
+                d.token_set.create(token=get_random_string(length=12, allowed_chars='1234567890'))
             ctx['static_tokens'] = d.token_set.all()
 
         ctx['devices'] = []
@@ -351,21 +301,15 @@ class User2FADeviceAddView(RecentAuthenticationRequiredMixin, FormView):
 
     def form_valid(self, form):
         if form.cleaned_data['devicetype'] == 'totp':
-            dev = TOTPDevice.objects.create(
-                user=self.request.user, confirmed=False, name=form.cleaned_data['name']
-            )
+            dev = TOTPDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
         elif form.cleaned_data['devicetype'] == 'webauthn':
             if not self.request.is_secure():
                 messages.error(
                     self.request,
-                    _(
-                        'Security devices are only available if pretix is served via HTTPS.'
-                    ),
+                    _('Security devices are only available if pretix is served via HTTPS.'),
                 )
                 return self.get(self.request, self.args, self.kwargs)
-            dev = WebAuthnDevice.objects.create(
-                user=self.request.user, confirmed=False, name=form.cleaned_data['name']
-            )
+            dev = WebAuthnDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
         return redirect(
             reverse(
                 'control:user.settings.2fa.confirm.' + form.cleaned_data['devicetype'],
@@ -374,9 +318,7 @@ class User2FADeviceAddView(RecentAuthenticationRequiredMixin, FormView):
         )
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('We could not save your changes. See below for details.')
-        )
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
 
@@ -423,18 +365,11 @@ class User2FADeviceDeleteView(RecentAuthenticationRequiredMixin, TemplateView):
             },
         )
         self.device.delete()
-        msgs = [
-            _('A two-factor authentication device has been removed from your account.')
-        ]
-        if not any(
-            dt.objects.filter(user=self.request.user, confirmed=True)
-            for dt in REAL_DEVICE_TYPES
-        ):
+        msgs = [_('A two-factor authentication device has been removed from your account.')]
+        if not any(dt.objects.filter(user=self.request.user, confirmed=True) for dt in REAL_DEVICE_TYPES):
             self.request.user.require_2fa = False
             self.request.user.save()
-            self.request.user.log_action(
-                'pretix.user.settings.2fa.disabled', user=self.request.user
-            )
+            self.request.user.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
             msgs.append(_('Two-factor authentication has been disabled.'))
 
         self.request.user.send_security_notice(msgs)
@@ -468,22 +403,12 @@ class User2FADeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, Templa
         challenge = generate_challenge()
         ukey = generate_user_handle()
 
-        self.request.session['webauthn_challenge'] = base64.b64encode(
-            challenge
-        ).decode()
+        self.request.session['webauthn_challenge'] = base64.b64encode(challenge).decode()
         self.request.session['webauthn_register_ukey'] = base64.b64encode(ukey).decode()
 
         devices = [
-            device.webauthndevice
-            for device in WebAuthnDevice.objects.filter(
-                confirmed=True, user=self.request.user
-            )
-        ] + [
-            device.webauthndevice
-            for device in U2FDevice.objects.filter(
-                confirmed=True, user=self.request.user
-            )
-        ]
+            device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.request.user)
+        ] + [device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.request.user)]
         make_credential_options = webauthn.generate_registration_options(
             rp_id=get_webauthn_rp_id(self.request),
             rp_name=get_webauthn_rp_id(self.request),
@@ -516,9 +441,7 @@ class User2FADeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, Templa
                 credential_id=registration_verification.credential_id
             ).first()
             if credential_id_exists:
-                messages.error(
-                    request, _('This security device is already registered.')
-                )
+                messages.error(request, _('This security device is already registered.'))
                 return redirect(
                     reverse(
                         'control:user.settings.2fa.confirm.webauthn',
@@ -526,13 +449,9 @@ class User2FADeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, Templa
                     )
                 )
 
-            self.device.credential_id = websafe_encode(
-                registration_verification.credential_id
-            )
+            self.device.credential_id = websafe_encode(registration_verification.credential_id)
             self.device.ukey = websafe_encode(ukey)
-            self.device.pub_key = websafe_encode(
-                registration_verification.credential_public_key
-            )
+            self.device.pub_key = websafe_encode(registration_verification.credential_public_key)
             self.device.sign_count = registration_verification.sign_count
             self.device.rp_id = get_webauthn_rp_id(request)
             self.device.icon_url = settings.SITE_URL
@@ -547,18 +466,12 @@ class User2FADeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, Templa
                     'name': self.device.name,
                 },
             )
-            notices = [
-                _(
-                    'A new two-factor authentication device has been added to your account.'
-                )
-            ]
+            notices = [_('A new two-factor authentication device has been added to your account.')]
             activate = request.POST.get('activate', '')
             if activate == 'on' and not self.request.user.require_2fa:
                 self.request.user.require_2fa = True
                 self.request.user.save()
-                self.request.user.log_action(
-                    'pretix.user.settings.2fa.enabled', user=self.request.user
-                )
+                self.request.user.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
                 notices.append(_('Two-factor authentication has been enabled.'))
             self.request.user.send_security_notice(notices)
             self.request.user.update_session_token()
@@ -579,9 +492,7 @@ class User2FADeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, Templa
             )
             return redirect(reverse('control:user.settings.2fa'))
         except Exception:
-            messages.error(
-                request, _('The registration could not be completed. Please try again.')
-            )
+            messages.error(request, _('The registration could not be completed. Please try again.'))
             logger.exception('WebAuthn registration failed')
             return redirect(
                 reverse(
@@ -608,18 +519,13 @@ class User2FADeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, TemplateVi
 
         ctx['secret'] = base64.b32encode(self.device.bin_key).decode('utf-8')
         ctx['secretGrouped'] = '  '.join(
-            [
-                ctx['secret'].lower()[(i * 4) : (i + 1) * 4]
-                for i in range(len(ctx['secret']) // 4)
-            ]
+            [ctx['secret'].lower()[(i * 4) : (i + 1) * 4] for i in range(len(ctx['secret']) // 4)]
         )
-        ctx['qrdata'] = (
-            'otpauth://totp/{label}%3A%20{user}?issuer={label}&secret={secret}&digits={digits}'.format(
-                label=quote(settings.INSTANCE_NAME),
-                user=quote(self.request.user.email),
-                secret=ctx['secret'],
-                digits=self.device.digits,
-            )
+        ctx['qrdata'] = 'otpauth://totp/{label}%3A%20{user}?issuer={label}&secret={secret}&digits={digits}'.format(
+            label=quote(settings.INSTANCE_NAME),
+            user=quote(self.request.user.email),
+            secret=ctx['secret'],
+            digits=self.device.digits,
         )
         ctx['device'] = self.device
         return ctx
@@ -639,17 +545,11 @@ class User2FADeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, TemplateVi
                     'devicetype': 'totp',
                 },
             )
-            notices = [
-                _(
-                    'A new two-factor authentication device has been added to your account.'
-                )
-            ]
+            notices = [_('A new two-factor authentication device has been added to your account.')]
             if activate == 'on' and not self.request.user.require_2fa:
                 self.request.user.require_2fa = True
                 self.request.user.save()
-                self.request.user.log_action(
-                    'pretix.user.settings.2fa.enabled', user=self.request.user
-                )
+                self.request.user.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
                 notices.append(_('Two-factor authentication has been enabled.'))
             self.request.user.send_security_notice(notices)
             self.request.user.update_session_token()
@@ -689,16 +589,10 @@ class User2FAEnableView(RecentAuthenticationRequiredMixin, TemplateView):
     template_name = 'pretixcontrol/user/2fa_enable.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if not any(
-            dt.objects.filter(user=self.request.user, confirmed=True)
-            for dt in REAL_DEVICE_TYPES
-        ):
+        if not any(dt.objects.filter(user=self.request.user, confirmed=True) for dt in REAL_DEVICE_TYPES):
             messages.error(
                 request,
-                _(
-                    'Please configure at least one device before enabling two-factor '
-                    'authentication.'
-                ),
+                _('Please configure at least one device before enabling two-factor authentication.'),
             )
             return redirect(reverse('control:user.settings.2fa'))
         return super().dispatch(request, *args, **kwargs)
@@ -706,15 +600,9 @@ class User2FAEnableView(RecentAuthenticationRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         self.request.user.require_2fa = True
         self.request.user.save()
-        self.request.user.log_action(
-            'pretix.user.settings.2fa.enabled', user=self.request.user
-        )
-        messages.success(
-            request, _('Two-factor authentication is now enabled for your account.')
-        )
-        self.request.user.send_security_notice(
-            [_('Two-factor authentication has been enabled.')]
-        )
+        self.request.user.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
+        messages.success(request, _('Two-factor authentication is now enabled for your account.'))
+        self.request.user.send_security_notice([_('Two-factor authentication has been enabled.')])
         self.request.user.update_session_token()
         update_session_auth_hash(self.request, self.request.user)
         return redirect(reverse('control:user.settings.2fa'))
@@ -726,15 +614,9 @@ class User2FADisableView(RecentAuthenticationRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         self.request.user.require_2fa = False
         self.request.user.save()
-        self.request.user.log_action(
-            'pretix.user.settings.2fa.disabled', user=self.request.user
-        )
-        messages.success(
-            request, _('Two-factor authentication is now disabled for your account.')
-        )
-        self.request.user.send_security_notice(
-            [_('Two-factor authentication has been disabled.')]
-        )
+        self.request.user.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
+        messages.success(request, _('Two-factor authentication is now disabled for your account.'))
+        self.request.user.send_security_notice([_('Two-factor authentication has been disabled.')])
         self.request.user.update_session_token()
         update_session_auth_hash(self.request, self.request.user)
         return redirect(reverse('control:user.settings.2fa'))
@@ -747,15 +629,9 @@ class User2FARegenerateEmergencyView(RecentAuthenticationRequiredMixin, Template
         StaticDevice.objects.filter(user=self.request.user, name='emergency').delete()
         d = StaticDevice.objects.create(user=self.request.user, name='emergency')
         for i in range(10):
-            d.token_set.create(
-                token=get_random_string(length=12, allowed_chars='1234567890')
-            )
-        self.request.user.log_action(
-            'pretix.user.settings.2fa.regenemergency', user=self.request.user
-        )
-        self.request.user.send_security_notice(
-            [_('Your two-factor emergency codes have been regenerated.')]
-        )
+            d.token_set.create(token=get_random_string(length=12, allowed_chars='1234567890'))
+        self.request.user.log_action('pretix.user.settings.2fa.regenemergency', user=self.request.user)
+        self.request.user.send_security_notice([_('Your two-factor emergency codes have been regenerated.')])
         self.request.user.update_session_token()
         update_session_auth_hash(self.request, self.request.user)
         messages.success(
@@ -776,9 +652,7 @@ class UserNotificationsDisableView(TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        user = get_object_or_404(
-            User, notifications_token=kwargs.get('token'), pk=kwargs.get('id')
-        )
+        user = get_object_or_404(User, notifications_token=kwargs.get('token'), pk=kwargs.get('id'))
         user.notifications_send = False
         user.save()
         messages.success(request, _('Your notifications have been disabled.'))
@@ -825,9 +699,7 @@ class UserNotificationsEditView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         if 'notifications_send' in request.POST:
-            request.user.notifications_send = (
-                request.POST.get('notifications_send', '') == 'on'
-            )
+            request.user.notifications_send = request.POST.get('notifications_send', '') == 'on'
             request.user.save()
 
             messages.success(request, _('Your notification settings have been saved.'))
@@ -837,9 +709,7 @@ class UserNotificationsEditView(TemplateView):
                     user=self.request.user,
                 )
             else:
-                self.request.user.log_action(
-                    'pretix.user.settings.notifications.enabled', user=self.request.user
-                )
+                self.request.user.log_action('pretix.user.settings.notifications.enabled', user=self.request.user)
             return redirect(
                 reverse('control:user.settings.notifications')
                 + ('?event={}'.format(self.event.pk) if self.event else '')
@@ -879,9 +749,7 @@ class UserNotificationsEditView(TemplateView):
                         ).update(enabled=True)
 
             messages.success(request, _('Your notification settings have been saved.'))
-            self.request.user.log_action(
-                'pretix.user.settings.notifications.changed', user=self.request.user
-            )
+            self.request.user.log_action('pretix.user.settings.notifications.changed', user=self.request.user)
             return redirect(
                 reverse('control:user.settings.notifications')
                 + ('?event={}'.format(self.event.pk) if self.event else '')
@@ -889,9 +757,7 @@ class UserNotificationsEditView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['events'] = self.request.user.get_events_with_any_permission().order_by(
-            '-date_from'
-        )
+        ctx['events'] = self.request.user.get_events_with_any_permission().order_by('-date_from')
         ctx['types'] = [
             (
                 tv,
@@ -902,26 +768,18 @@ class UserNotificationsEditView(TemplateView):
         ]
         ctx['event'] = self.event
         if self.event:
-            ctx['permset'] = self.request.user.get_event_permission_set(
-                self.event.organizer, self.event
-            )
+            ctx['permset'] = self.request.user.get_event_permission_set(self.event.organizer, self.event)
         return ctx
 
 
-class StartStaffSession(
-    StaffMemberRequiredMixin, RecentAuthenticationRequiredMixin, TemplateView
-):
+class StartStaffSession(StaffMemberRequiredMixin, RecentAuthenticationRequiredMixin, TemplateView):
     template_name = 'pretixcontrol/admin/user/staff_session_start.html'
 
     def post(self, request, *args, **kwargs):
         if not request.user.has_active_staff_session(request.session.session_key):
-            StaffSession.objects.create(
-                user=request.user, session_key=request.session.session_key
-            )
+            StaffSession.objects.create(user=request.user, session_key=request.session.session_key)
 
-        if 'next' in request.GET and url_has_allowed_host_and_scheme(
-            request.GET.get('next'), allowed_hosts=None
-        ):
+        if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
             return redirect(request.GET.get('next'))
         else:
             return redirect(reverse('control:index'))
@@ -939,9 +797,7 @@ class StopStaffSession(StaffMemberRequiredMixin, View):
 
         session.date_end = now()
         session.save()
-        return redirect(
-            reverse('control:admin.user.sudo.edit', kwargs={'id': session.pk})
-        )
+        return redirect(reverse('control:admin.user.sudo.edit', kwargs={'id': session.pk}))
 
 
 class StaffSessionList(AdministratorPermissionRequiredMixin, ListView):
@@ -975,9 +831,7 @@ class EditStaffSession(StaffMemberRequiredMixin, UpdateView):
         if self.request.user.has_active_staff_session(self.request.session.session_key):
             return get_object_or_404(StaffSession, pk=self.kwargs['id'])
         else:
-            return get_object_or_404(
-                StaffSession, pk=self.kwargs['id'], user=self.request.user
-            )
+            return get_object_or_404(StaffSession, pk=self.kwargs['id'], user=self.request.user)
 
 
 class UserOrdersView(ListView):
@@ -987,9 +841,7 @@ class UserOrdersView(ListView):
 
     def get_queryset(self):
         qs = (
-            Order.objects.filter(Q(email__iexact=self.request.user.email))
-            .select_related('event')
-            .order_by('-datetime')
+            Order.objects.filter(Q(email__iexact=self.request.user.email)).select_related('event').order_by('-datetime')
         )
 
         # Filter by event if provided
@@ -1001,7 +853,5 @@ class UserOrdersView(ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['filter_form'] = UserOrderFilterForm(
-            self.request.GET or None, user=self.request.user
-        )
+        ctx['filter_form'] = UserOrderFilterForm(self.request.GET or None, user=self.request.user)
         return ctx

@@ -178,17 +178,13 @@ class ParametrizedOrderNotificationType(NotificationType):
         n.add_attribute(_('Event'), order.event.name)
         if order.event.has_subevents:
             ses = []
-            for se in self.event.subevents.filter(
-                id__in=order.positions.values_list('subevent', flat=True)
-            ):
+            for se in self.event.subevents.filter(id__in=order.positions.values_list('subevent', flat=True)):
                 ses.append('{} ({})'.format(se.name, se.get_date_range_display()))
             n.add_attribute(pgettext_lazy('subevent', 'Dates'), '\n'.join(ses))
         else:
             n.add_attribute(_('Event date'), order.event.get_date_range_display())
 
-        positions = list(
-            order.positions.select_related('item', 'variation', 'subevent')
-        )
+        positions = list(order.positions.select_related('item', 'variation', 'subevent'))
         fees = list(order.fees.all())
 
         n.add_attribute(_('Order code'), order.code)
@@ -199,9 +195,7 @@ class ParametrizedOrderNotificationType(NotificationType):
                 logentry.event.currency,
             ),
         )
-        n.add_attribute(
-            _('Order total'), money_filter(order.total, logentry.event.currency)
-        )
+        n.add_attribute(_('Order total'), money_filter(order.total, logentry.event.currency))
         n.add_attribute(
             _('Pending amount'),
             money_filter(order.pending_sum, logentry.event.currency),
@@ -222,10 +216,7 @@ class ParametrizedOrderNotificationType(NotificationType):
         def groupkey(op):
             return op.item, op.variation, op.subevent
 
-        cart = [
-            (k, list(v))
-            for k, v in groupby(sorted(positions, key=sortkey), key=groupkey)
-        ]
+        cart = [(k, list(v)) for k, v in groupby(sorted(positions, key=sortkey), key=groupkey)]
         items = []
         for (item, variation, subevent), pos in cart:
             ele = [str(len(pos)) + 'x ' + str(item)]
@@ -239,9 +230,7 @@ class ParametrizedOrderNotificationType(NotificationType):
         return n
 
 
-@receiver(
-    register_notification_types, dispatch_uid='base_register_default_notification_types'
-)
+@receiver(register_notification_types, dispatch_uid='base_register_default_notification_types')
 def register_default_notification_types(sender, **kwargs):
     return (
         ParametrizedOrderNotificationType(

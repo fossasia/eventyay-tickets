@@ -75,9 +75,7 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
         )
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('We could not save your changes. See below for details.')
-        )
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -87,9 +85,7 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
     def copy_from(self):
         if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
-                return self.request.event.badge_layouts.get(
-                    pk=self.request.GET.get('copy_from')
-                )
+                return self.request.event.badge_layouts.get(pk=self.request.GET.get('copy_from'))
             except BadgeLayout.DoesNotExist:
                 pass
 
@@ -149,9 +145,7 @@ class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
     @transaction.atomic
     def form_valid(self, form):
         self.object = self.get_object()
-        self.object.log_action(
-            action='pretix.plugins.badges.layout.deleted', user=self.request.user
-        )
+        self.object.log_action(action='pretix.plugins.badges.layout.deleted', user=self.request.user)
         self.object.delete()
         if not self.request.event.badge_layouts.filter(default=True).exists():
             f = self.request.event.badge_layouts.first()
@@ -195,9 +189,7 @@ class LayoutEditorView(BaseEditorView):
     def get_default_background(self):
         return static('pretixplugins/badges/badge_default_a6l.pdf')
 
-    def generate(
-        self, op: OrderPosition, override_layout=None, override_background=None
-    ):
+    def generate(self, op: OrderPosition, override_layout=None, override_background=None):
         Renderer._register_fonts()
 
         buffer = BytesIO()
@@ -222,11 +214,7 @@ class LayoutEditorView(BaseEditorView):
         return json.loads(self.layout.layout)
 
     def get_current_background(self):
-        return (
-            self.layout.background.url
-            if self.layout.background
-            else self.get_default_background()
-        )
+        return self.layout.background.url if self.layout.background else self.get_default_background()
 
     def save_background(self, f: CachedFile):
         if self.layout.background:
@@ -260,9 +248,7 @@ class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
         return super().get_error_message(exception)
 
     def post(self, request, *args, **kwargs):
-        order = get_object_or_404(
-            self.request.event.orders, code=request.GET.get('code')
-        )
+        order = get_object_or_404(self.request.event.orders, code=request.GET.get('code'))
         cf = CachedFile(web_download=True, session_key=self.request.session.session_key)
         cf.date = now()
         cf.type = 'application/pdf'
@@ -271,7 +257,9 @@ class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
             qs = order.positions.filter(pk=request.GET.get('position'))
             positions = [p.pk for p in qs]
             if len(positions) < 5:
-                cf.filename = f'badges_{self.request.event.slug}_{order.code}_{"_".join(str(p.positionid) for p in qs)}.pdf'
+                cf.filename = (
+                    f'badges_{self.request.event.slug}_{order.code}_{"_".join(str(p.positionid) for p in qs)}.pdf'
+                )
         else:
             positions = [p.pk for p in order.positions.all()]
             cf.filename = f'badges_{self.request.event.slug}_{order.code}.pdf'

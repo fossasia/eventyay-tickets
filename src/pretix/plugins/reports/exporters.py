@@ -60,15 +60,9 @@ class ReportlabExportMixin:
         from reportlab.pdfbase import pdfmetrics
         from reportlab.pdfbase.ttfonts import TTFont
 
-        pdfmetrics.registerFont(
-            TTFont('OpenSans', finders.find('fonts/OpenSans-Regular.ttf'))
-        )
-        pdfmetrics.registerFont(
-            TTFont('OpenSansIt', finders.find('fonts/OpenSans-Italic.ttf'))
-        )
-        pdfmetrics.registerFont(
-            TTFont('OpenSansBd', finders.find('fonts/OpenSans-Bold.ttf'))
-        )
+        pdfmetrics.registerFont(TTFont('OpenSans', finders.find('fonts/OpenSans-Regular.ttf')))
+        pdfmetrics.registerFont(TTFont('OpenSansIt', finders.find('fonts/OpenSans-Italic.ttf')))
+        pdfmetrics.registerFont(TTFont('OpenSansBd', finders.find('fonts/OpenSans-Bold.ttf')))
 
     def get_doc_template(self):
         from reportlab.platypus import BaseDocTemplate
@@ -168,9 +162,7 @@ class ReportlabExportMixin:
         from reportlab.lib.units import mm
 
         canvas.setFont('OpenSans', 10)
-        canvas.drawString(
-            15 * mm, self.pagesize[1] - 15 * mm, self.get_left_header_string()
-        )
+        canvas.drawString(15 * mm, self.pagesize[1] - 15 * mm, self.get_left_header_string())
         canvas.drawRightString(
             self.pagesize[0] - 15 * mm,
             self.pagesize[1] - 15 * mm,
@@ -276,9 +268,7 @@ class OverviewReport(Report):
         tstyle_th.alignment = TA_CENTER
         story = [
             Paragraph(
-                _('Orders by product')
-                + ' '
-                + (_('(excl. taxes)') if net else _('(incl. taxes)')),
+                _('Orders by product') + ' ' + (_('(excl. taxes)') if net else _('(incl. taxes)')),
                 headlinestyle,
             ),
             Spacer(1, 5 * mm),
@@ -287,19 +277,13 @@ class OverviewReport(Report):
             story += [
                 Paragraph(
                     _('{axis} between {start} and {end}').format(
-                        axis=dict(
-                            OverviewFilterForm(event=self.event)
-                            .fields['date_axis']
-                            .choices
-                        )[form_data.get('date_axis')],
-                        start=date_format(
-                            form_data.get('date_from'), 'SHORT_DATE_FORMAT'
-                        )
+                        axis=dict(OverviewFilterForm(event=self.event).fields['date_axis'].choices)[
+                            form_data.get('date_axis')
+                        ],
+                        start=date_format(form_data.get('date_from'), 'SHORT_DATE_FORMAT')
                         if form_data.get('date_from')
                         else '–',
-                        end=date_format(
-                            form_data.get('date_until'), 'SHORT_DATE_FORMAT'
-                        )
+                        end=date_format(form_data.get('date_until'), 'SHORT_DATE_FORMAT')
                         if form_data.get('date_until')
                         else '–',
                     ),
@@ -313,11 +297,7 @@ class OverviewReport(Report):
                 subevent = self.event.subevents.get(pk=self.form_data.get('subevent'))
             except SubEvent.DoesNotExist:
                 subevent = self.form_data.get('subevent')
-            story.append(
-                Paragraph(
-                    pgettext('subevent', 'Date: {}').format(subevent), self.get_style()
-                )
-            )
+            story.append(Paragraph(pgettext('subevent', 'Date: {}').format(subevent), self.get_style()))
             story.append(Spacer(1, 5 * mm))
         tdata = [
             [
@@ -390,9 +370,7 @@ class OverviewReport(Report):
                 tdata.append([Paragraph(str(tup[0].name), tstyle_bold)])
                 for l, s in states:
                     tdata[-1].append(str(tup[0].num[l][0]))
-                    tdata[-1].append(
-                        floatformat(tup[0].num[l][2 if net else 1], places)
-                    )
+                    tdata[-1].append(floatformat(tup[0].num[l][2 if net else 1], places))
             for item in tup[1]:
                 tdata.append([str(item)])
                 for l, s in states:
@@ -403,9 +381,7 @@ class OverviewReport(Report):
                         tdata.append([Paragraph('          ' + str(var), tstyle)])
                         for l, s in states:
                             tdata[-1].append(str(var.num[l][0]))
-                            tdata[-1].append(
-                                floatformat(var.num[l][2 if net else 1], places)
-                            )
+                            tdata[-1].append(floatformat(var.num[l][2 if net else 1], places))
 
         tdata.append(
             [
@@ -498,9 +474,7 @@ class OrderTaxListReportPDF(Report):
         # Cols: Order ID | Order date | Status | Payment Date | Total | {gross tax} for t in taxes
         colwidths = [a * doc.width for a in [0.12, 0.1, 0.10, 0.12, 0.08]]
         if tax_rates:
-            colwidths += [0.48 / (len(tax_rates) * 2) * doc.width] * (
-                len(tax_rates) * 2
-            )
+            colwidths += [0.48 / (len(tax_rates) * 2) * doc.width] * (len(tax_rates) * 2)
 
         tstyledata = [
             # Alignment
@@ -517,9 +491,7 @@ class OrderTaxListReportPDF(Report):
 
         story = [
             Paragraph(
-                _('Orders by tax rate ({currency})').format(
-                    currency=self.event.currency
-                ),
+                _('Orders by tax rate ({currency})').format(currency=self.event.currency),
                 headlinestyle,
             ),
             Spacer(1, 5 * mm),
@@ -555,9 +527,7 @@ class OrderTaxListReportPDF(Report):
                 order__status__in=self.form_data['status'],
                 order__event=self.event,
             )
-            .annotate(
-                payment_date=Subquery(op_date, output_field=models.DateTimeField())
-            )
+            .annotate(payment_date=Subquery(op_date, output_field=models.DateTimeField()))
             .values(
                 'order__code',
                 'order__datetime',
@@ -569,9 +539,7 @@ class OrderTaxListReportPDF(Report):
             )
             .annotate(prices=Sum('price'), tax_values=Sum('tax_value'))
             .order_by(
-                'order__datetime'
-                if self.form_data['sort'] == 'datetime'
-                else 'payment_date',
+                'order__datetime' if self.form_data['sort'] == 'datetime' else 'payment_date',
                 'order__datetime',
                 'order__code',
             )
@@ -592,13 +560,9 @@ class OrderTaxListReportPDF(Report):
                 tdata.append(
                     [
                         op['order__code'],
-                        date_format(
-                            op['order__datetime'].astimezone(tz), 'SHORT_DATE_FORMAT'
-                        ),
+                        date_format(op['order__datetime'].astimezone(tz), 'SHORT_DATE_FORMAT'),
                         status_labels[op['order__status']],
-                        date_format(op['payment_date'], 'SHORT_DATE_FORMAT')
-                        if op['payment_date']
-                        else '',
+                        date_format(op['payment_date'], 'SHORT_DATE_FORMAT') if op['payment_date'] else '',
                         op['order__total'],
                     ]
                     + sum((['', ''] for t in tax_rates), []),
@@ -613,12 +577,8 @@ class OrderTaxListReportPDF(Report):
                         price_sums[rate] += odata['grosssum'] or Decimal('0.00')
 
             i = tax_rates.index(op['tax_rate'])
-            tdata[-1][5 + 2 * i] = (tdata[-1][5 + 2 * i] or Decimal('0.00')) + op[
-                'prices'
-            ]
-            tdata[-1][6 + 2 * i] = (tdata[-1][6 + 2 * i] or Decimal('0.00')) + op[
-                'tax_values'
-            ]
+            tdata[-1][5 + 2 * i] = (tdata[-1][5 + 2 * i] or Decimal('0.00')) + op['prices']
+            tdata[-1][6 + 2 * i] = (tdata[-1][6 + 2 * i] or Decimal('0.00')) + op['tax_values']
             tax_sums[op['tax_rate']] += op['tax_values']
             price_sums[op['tax_rate']] += op['prices']
 
@@ -637,9 +597,7 @@ class OrderTaxListReportPDF(Report):
         )
         tdata = [
             [
-                localize(round_decimal(c, self.event.currency))
-                if isinstance(c, (Decimal, int, float))
-                else c
+                localize(round_decimal(c, self.event.currency)) if isinstance(c, (Decimal, int, float)) else c
                 for c in row
             ]
             for row in tdata
@@ -737,9 +695,7 @@ class OrderTaxListReport(MultiSheetListExporter):
                 date_from = parse(date_from).date()
             if isinstance(date_from, date):
                 date_from = make_aware(
-                    datetime.combine(
-                        date_from, time(hour=0, minute=0, second=0, microsecond=0)
-                    ),
+                    datetime.combine(date_from, time(hour=0, minute=0, second=0, microsecond=0)),
                     self.event.timezone,
                 )
 
@@ -775,9 +731,7 @@ class OrderTaxListReport(MultiSheetListExporter):
                 .values('m')
                 .order_by()
             )
-            qs = qs.annotate(
-                payment_date=Subquery(p_date, output_field=DateTimeField())
-            )
+            qs = qs.annotate(payment_date=Subquery(p_date, output_field=DateTimeField()))
             if date_from:
                 qs = qs.filter(payment_date__gte=date_from)
             if date_until:
@@ -814,11 +768,7 @@ class OrderTaxListReport(MultiSheetListExporter):
                 cache.items(),
                 key=lambda item: (
                     tuple(
-                        (
-                            (iv or Decimal('0.00'))
-                            if keys[i] == 'tax_rate'
-                            else (iv or '')
-                        )
+                        ((iv or Decimal('0.00')) if keys[i] == 'tax_rate' else (iv or ''))
                         for i, iv in enumerate(item[0])
                     )
                 ),
@@ -953,10 +903,7 @@ class OrderTaxListReport(MultiSheetListExporter):
             _('Payment date'),
             _('Order total'),
         ] + sum(
-            (
-                [str(t) + ' % ' + _('Gross'), str(t) + ' % ' + _('Tax')]
-                for t in tax_rates
-            ),
+            ([str(t) + ' % ' + _('Gross'), str(t) + ' % ' + _('Tax')] for t in tax_rates),
             [],
         )
         yield headers
@@ -981,9 +928,7 @@ class OrderTaxListReport(MultiSheetListExporter):
                 order__status__in=form_data['status'],
                 order__event=self.event,
             )
-            .annotate(
-                payment_date=Subquery(op_date, output_field=models.DateTimeField())
-            )
+            .annotate(payment_date=Subquery(op_date, output_field=models.DateTimeField()))
             .values(
                 'order__code',
                 'order__datetime',
@@ -999,9 +944,7 @@ class OrderTaxListReport(MultiSheetListExporter):
             )
             .annotate(prices=Sum('price'), tax_values=Sum('tax_value'))
             .order_by(
-                'order__datetime'
-                if form_data['sort'] == 'datetime'
-                else 'payment_date',
+                'order__datetime' if form_data['sort'] == 'datetime' else 'payment_date',
                 'order__datetime',
                 'order__code',
             )
@@ -1025,17 +968,13 @@ class OrderTaxListReport(MultiSheetListExporter):
                     row = None
                 row = [
                     op['order__code'],
-                    date_format(
-                        op['order__datetime'].astimezone(tz), 'SHORT_DATE_FORMAT'
-                    ),
+                    date_format(op['order__datetime'].astimezone(tz), 'SHORT_DATE_FORMAT'),
                     op['order__invoice_address__company'],
                     op['order__invoice_address__name_cached'],
                     op['order__invoice_address__country'],
                     op['order__invoice_address__vat_id'],
                     status_labels[op['order__status']],
-                    date_format(op['payment_date'], 'SHORT_DATE_FORMAT')
-                    if op['payment_date']
-                    else '',
+                    date_format(op['payment_date'], 'SHORT_DATE_FORMAT') if op['payment_date'] else '',
                     round_decimal(op['order__total'], self.event.currency),
                 ] + sum(([Decimal('0.00'), Decimal('0.00')] for t in tax_rates), [])
                 last_order_code = op['order__code']
@@ -1048,12 +987,8 @@ class OrderTaxListReport(MultiSheetListExporter):
                         price_sums[rate] += odata['grosssum'] or 0
 
             i = tax_rates.index(op['tax_rate'])
-            row[9 + 2 * i] = round_decimal(
-                row[9 + 2 * i] + op['prices'], self.event.currency
-            )
-            row[10 + 2 * i] = round_decimal(
-                row[10 + 2 * i] + op['tax_values'], self.event.currency
-            )
+            row[9 + 2 * i] = round_decimal(row[9 + 2 * i] + op['prices'], self.event.currency)
+            row[10 + 2 * i] = round_decimal(row[10 + 2 * i] + op['tax_values'], self.event.currency)
             tax_sums[op['tax_rate']] += op['tax_values']
             price_sums[op['tax_rate']] += op['prices']
 
@@ -1062,12 +997,8 @@ class OrderTaxListReport(MultiSheetListExporter):
         yield [_('Total'), '', '', '', '', '', '', '', ''] + sum(
             (
                 [
-                    round_decimal(
-                        price_sums.get(t) or Decimal('0.00'), self.event.currency
-                    ),
-                    round_decimal(
-                        tax_sums.get(t) or Decimal('0.00'), self.event.currency
-                    ),
+                    round_decimal(price_sums.get(t) or Decimal('0.00'), self.event.currency),
+                    round_decimal(tax_sums.get(t) or Decimal('0.00'), self.event.currency),
                 ]
                 for t in tax_rates
             ),

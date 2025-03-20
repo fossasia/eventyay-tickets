@@ -25,22 +25,16 @@ logger = logging.getLogger(__name__)
 
 
 def generate_orderposition(order_position: int, provider: str):
-    order_position = OrderPosition.objects.select_related('order', 'order__event').get(
-        id=order_position
-    )
+    order_position = OrderPosition.objects.select_related('order', 'order__event').get(id=order_position)
 
-    with language(
-        order_position.order.locale, order_position.order.event.settings.region
-    ):
+    with language(order_position.order.locale, order_position.order.event.settings.region):
         responses = register_ticket_outputs.send(order_position.order.event)
         for receiver, response in responses:
             prov = response(order_position.order.event)
             if prov.identifier == provider:
                 filename, ttype, data = prov.generate(order_position)
                 path, ext = os.path.splitext(filename)
-                for ct in CachedTicket.objects.filter(
-                    order_position=order_position, provider=provider
-                ):
+                for ct in CachedTicket.objects.filter(order_position=order_position, provider=provider):
                     ct.delete()
                 ct = CachedTicket.objects.create(
                     order_position=order_position,
@@ -66,9 +60,7 @@ def generate_order(order: int, provider: str):
                     continue
 
                 path, ext = os.path.splitext(filename)
-                for ct in CachedCombinedTicket.objects.filter(
-                    order=order, provider=provider
-                ):
+                for ct in CachedCombinedTicket.objects.filter(order=order, provider=provider):
                     ct.delete()
                 ct = CachedCombinedTicket.objects.create(
                     order=order, provider=provider, extension=ext, type=ttype, file=None
@@ -118,9 +110,7 @@ def preview(event: int, provider: str):
 
         scheme = PERSON_NAME_SCHEMES[event.settings.name_scheme]
         sample = {k: str(v) for k, v in scheme['sample'].items()}
-        p = order.positions.create(
-            item=item, attendee_name_parts=sample, price=item.default_price
-        )
+        p = order.positions.create(item=item, attendee_name_parts=sample, price=item.default_price)
         s = event.subevents.first()
         order.positions.create(
             item=item2,
@@ -137,9 +127,7 @@ def preview(event: int, provider: str):
             subevent=s,
         )
 
-        InvoiceAddress.objects.create(
-            order=order, name_parts=sample, company=_('Sample company')
-        )
+        InvoiceAddress.objects.create(order=order, name_parts=sample, company=_('Sample company'))
 
         responses = register_ticket_outputs.send(event)
         for receiver, response in responses:
@@ -149,29 +137,20 @@ def preview(event: int, provider: str):
 
 
 def get_tickets_for_order(order, base_position=None):
-    can_download = all(
-        [r for rr, r in allow_ticket_download.send(order.event, order=order)]
-    )
+    can_download = all([r for rr, r in allow_ticket_download.send(order.event, order=order)])
     if not can_download:
         return []
     if not order.ticket_download_available:
         return []
 
-    providers = [
-        response(order.event)
-        for receiver, response in register_ticket_outputs.send(order.event)
-    ]
+    providers = [response(order.event) for receiver, response in register_ticket_outputs.send(order.event)]
 
     tickets = []
 
     positions = list(order.positions_with_tickets)
     if base_position:
         # Only the given position and its children
-        positions = [
-            p
-            for p in positions
-            if p.pk == base_position.pk or p.addon_to_id == base_position.pk
-        ]
+        positions = [p for p in positions if p.pk == base_position.pk or p.addon_to_id == base_position.pk]
 
     for p in providers:
         if not p.is_enabled:
@@ -181,9 +160,7 @@ def get_tickets_for_order(order, base_position=None):
             try:
                 if len(positions) == 0:
                     continue
-                ct = CachedCombinedTicket.objects.filter(
-                    order=order, provider=p.identifier, file__isnull=False
-                ).last()
+                ct = CachedCombinedTicket.objects.filter(order=order, provider=p.identifier, file__isnull=False).last()
                 if not ct or not ct.file:
                     retval = generate_order(order.pk, p.identifier)
                     if not retval:
@@ -243,9 +220,7 @@ def get_tickets_for_order(order, base_position=None):
 
 
 @app.task(base=EventTask, acks_late=True)
-def invalidate_cache(
-    event: Event, item: int = None, provider: str = None, order: int = None, **kwargs
-):
+def invalidate_cache(event: Event, item: int = None, provider: str = None, order: int = None, **kwargs):
     qs = CachedTicket.objects.filter(order_position__order__event=event)
     qsc = CachedCombinedTicket.objects.filter(order__event=event)
 

@@ -35,9 +35,7 @@ for app in apps.get_app_configs():
             urlmod = importlib.import_module(app.name + '.urls')
             if hasattr(urlmod, 'event_patterns'):
                 patterns = plugin_event_urls(urlmod.event_patterns, plugin=app.name)
-                raw_plugin_patterns.append(
-                    url(r'^(?P<event>[^/]+)/', include((patterns, app.label)))
-                )
+                raw_plugin_patterns.append(url(r'^(?P<event>[^/]+)/', include((patterns, app.label))))
             if hasattr(urlmod, 'organizer_patterns'):
                 patterns = urlmod.organizer_patterns
                 raw_plugin_patterns.append(url(r'', include((patterns, app.label))))

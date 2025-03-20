@@ -23,9 +23,7 @@ from pretix.base.models import (
 
 
 class InlineItemVariationSerializer(I18nAwareModelSerializer):
-    price = serializers.DecimalField(
-        read_only=True, decimal_places=2, max_digits=10, coerce_to_string=True
-    )
+    price = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10, coerce_to_string=True)
 
     class Meta:
         model = ItemVariation
@@ -42,9 +40,7 @@ class InlineItemVariationSerializer(I18nAwareModelSerializer):
 
 
 class ItemVariationSerializer(I18nAwareModelSerializer):
-    price = serializers.DecimalField(
-        read_only=True, decimal_places=2, max_digits=10, coerce_to_string=True
-    )
+    price = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10, coerce_to_string=True)
 
     class Meta:
         model = ItemVariation
@@ -94,27 +90,17 @@ class ItemBundleSerializer(serializers.ModelSerializer):
         data = super().validate(data)
         event = self.context['event']
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
-        ItemBundle.clean_itemvar(
-            event, full_data.get('bundled_item'), full_data.get('bundled_variation')
-        )
+        ItemBundle.clean_itemvar(event, full_data.get('bundled_item'), full_data.get('bundled_variation'))
 
         item = self.context['item']
         if item == full_data.get('bundled_item'):
-            raise ValidationError(
-                _('The bundled item must not be the same item as the bundling one.')
-            )
+            raise ValidationError(_('The bundled item must not be the same item as the bundling one.'))
         if full_data.get('bundled_item'):
             if full_data['bundled_item'].bundles.exists():
-                raise ValidationError(
-                    _('The bundled item must not have bundles on its own.')
-                )
+                raise ValidationError(_('The bundled item must not have bundles on its own.'))
 
         return data
 
@@ -148,9 +134,7 @@ class ItemAddOnSerializer(serializers.ModelSerializer):
         return value
 
     def validate_addon_category(self, value):
-        ItemAddOn.clean_categories(
-            self.context['event'], self.context['item'], self.instance, value
-        )
+        ItemAddOn.clean_categories(self.context['event'], self.context['item'], self.instance, value)
         return value
 
 
@@ -218,9 +202,7 @@ class ItemSerializer(I18nAwareModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        if self.instance and (
-            'addons' in data or 'variations' in data or 'bundles' in data
-        ):
+        if self.instance and ('addons' in data or 'variations' in data or 'bundles' in data):
             raise ValidationError(
                 _(
                     'Updating add-ons, bundles, or variations via PATCH/PUT is not supported. Please use the '
@@ -240,11 +222,7 @@ class ItemSerializer(I18nAwareModelSerializer):
                     )
                 )
             if data.get('admission'):
-                raise ValidationError(
-                    _(
-                        'Gift card products should not be admission products at the same time.'
-                    )
-                )
+                raise ValidationError(_('Gift card products should not be admission products at the same time.'))
 
         return data
 
@@ -277,36 +255,24 @@ class ItemSerializer(I18nAwareModelSerializer):
                 )
                 ItemAddOn.clean_min_count(addon_data['min_count'])
                 ItemAddOn.clean_max_count(addon_data['max_count'])
-                ItemAddOn.clean_max_min_count(
-                    addon_data['max_count'], addon_data['min_count']
-                )
+                ItemAddOn.clean_max_min_count(addon_data['max_count'], addon_data['min_count'])
         return value
 
     @cached_property
     def item_meta_properties(self):
-        return {
-            p.name: p for p in self.context['request'].event.item_meta_properties.all()
-        }
+        return {p.name: p for p in self.context['request'].event.item_meta_properties.all()}
 
     def validate_meta_data(self, value):
         for key in value['meta_data'].keys():
             if key not in self.item_meta_properties:
-                raise ValidationError(
-                    _("Item meta data property '{name}' does not exist.").format(
-                        name=key
-                    )
-                )
+                raise ValidationError(_("Item meta data property '{name}' does not exist.").format(name=key))
         return value
 
     @transaction.atomic
     def create(self, validated_data):
-        variations_data = (
-            validated_data.pop('variations') if 'variations' in validated_data else {}
-        )
+        variations_data = validated_data.pop('variations') if 'variations' in validated_data else {}
         addons_data = validated_data.pop('addons') if 'addons' in validated_data else {}
-        bundles_data = (
-            validated_data.pop('bundles') if 'bundles' in validated_data else {}
-        )
+        bundles_data = validated_data.pop('bundles') if 'bundles' in validated_data else {}
         meta_data = validated_data.pop('meta_data', None)
         item = Item.objects.create(**validated_data)
 
@@ -320,9 +286,7 @@ class ItemSerializer(I18nAwareModelSerializer):
         # Meta data
         if meta_data is not None:
             for key, value in meta_data.items():
-                ItemMetaValue.objects.create(
-                    property=self.item_meta_properties.get(key), value=value, item=item
-                )
+                ItemMetaValue.objects.create(property=self.item_meta_properties.get(key), value=value, item=item)
         return item
 
     def update(self, instance, validated_data):
@@ -331,18 +295,14 @@ class ItemSerializer(I18nAwareModelSerializer):
 
         # Meta data
         if meta_data is not None:
-            current = {
-                mv.property: mv for mv in item.meta_values.select_related('property')
-            }
+            current = {mv.property: mv for mv in item.meta_values.select_related('property')}
             for key, value in meta_data.items():
                 prop = self.item_meta_properties.get(key)
                 if prop in current:
                     current[prop].value = value
                     current[prop].save()
                 else:
-                    item.meta_values.create(
-                        property=self.item_meta_properties.get(key), value=value
-                    )
+                    item.meta_values.create(property=self.item_meta_properties.get(key), value=value)
 
             for prop, current_object in current.items():
                 if prop.name not in meta_data:
@@ -388,9 +348,7 @@ class LegacyDependencyValueField(serializers.CharField):
 class QuestionSerializer(I18nAwareModelSerializer):
     options = InlineQuestionOptionSerializer(many=True, required=False)
     identifier = serializers.CharField(allow_null=True)
-    dependency_value = LegacyDependencyValueField(
-        source='dependency_values', required=False, allow_null=True
-    )
+    dependency_value = LegacyDependencyValueField(source='dependency_values', required=False, allow_null=True)
 
     class Meta:
         model = Question
@@ -429,9 +387,7 @@ class QuestionSerializer(I18nAwareModelSerializer):
                 Question.TYPE_BOOLEAN,
                 Question.TYPE_CHOICE_MULTIPLE,
             ):
-                raise ValidationError(
-                    'Question dependencies can only be set to boolean or choice questions.'
-                )
+                raise ValidationError('Question dependencies can only be set to boolean or choice questions.')
             if value == self.instance:
                 raise ValidationError('A question cannot depend on itself.')
         return value
@@ -440,19 +396,12 @@ class QuestionSerializer(I18nAwareModelSerializer):
         data = super().validate(data)
         if self.instance and 'options' in data:
             raise ValidationError(
-                _(
-                    'Updating options via PATCH/PUT is not supported. Please use the dedicated'
-                    ' nested endpoint.'
-                )
+                _('Updating options via PATCH/PUT is not supported. Please use the dedicated nested endpoint.')
             )
 
         event = self.context['event']
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
         if full_data.get('ask_during_checkin') and full_data.get('dependency_question'):
@@ -461,26 +410,17 @@ class QuestionSerializer(I18nAwareModelSerializer):
         dep = full_data.get('dependency_question')
         if dep:
             if dep.ask_during_checkin:
-                raise ValidationError(
-                    _('Question cannot depend on a question asked during check-in.')
-                )
+                raise ValidationError(_('Question cannot depend on a question asked during check-in.'))
 
             seen_ids = {self.instance.pk} if self.instance else set()
             while dep:
                 if dep.pk in seen_ids:
-                    raise ValidationError(
-                        _('Circular dependency between questions detected.')
-                    )
+                    raise ValidationError(_('Circular dependency between questions detected.'))
                 seen_ids.add(dep.pk)
                 dep = dep.dependency_question
 
-        if (
-            full_data.get('ask_during_checkin')
-            and full_data.get('type') in Question.ASK_DURING_CHECKIN_UNSUPPORTED
-        ):
-            raise ValidationError(
-                _('This type of question cannot be asked during check-in.')
-            )
+        if full_data.get('ask_during_checkin') and full_data.get('type') in Question.ASK_DURING_CHECKIN_UNSUPPORTED:
+            raise ValidationError(_('This type of question cannot be asked during check-in.'))
 
         Question.clean_items(event, full_data.get('items'))
         return data
@@ -501,9 +441,7 @@ class QuestionSerializer(I18nAwareModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        options_data = (
-            validated_data.pop('options') if 'options' in validated_data else []
-        )
+        options_data = validated_data.pop('options') if 'options' in validated_data else []
         items = validated_data.pop('items')
 
         question = Question.objects.create(**validated_data)
@@ -532,11 +470,7 @@ class QuotaSerializer(I18nAwareModelSerializer):
         data = super().validate(data)
         event = self.context['event']
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
         Quota.clean_variations(full_data.get('items'), full_data.get('variations'))

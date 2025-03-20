@@ -29,18 +29,12 @@ class AllTicketsPDF(BaseExporter):
 
     @property
     def export_form_fields(self):
-        name_scheme = (
-            PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
-            if not self.is_multievent
-            else None
-        )
+        name_scheme = PERSON_NAME_SCHEMES[self.event.settings.name_scheme] if not self.is_multievent else None
         d = OrderedDict(
             [
                 (
                     'include_pending',
-                    forms.BooleanField(
-                        label=_('Include pending orders'), required=False
-                    ),
+                    forms.BooleanField(label=_('Include pending orders'), required=False),
                 ),
                 (
                     'date_from',
@@ -48,9 +42,7 @@ class AllTicketsPDF(BaseExporter):
                         label=_('Start date'),
                         widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                         required=False,
-                        help_text=_(
-                            'Only include tickets for dates on or after this date.'
-                        ),
+                        help_text=_('Only include tickets for dates on or after this date.'),
                     ),
                 ),
                 (
@@ -59,9 +51,7 @@ class AllTicketsPDF(BaseExporter):
                         label=_('End date'),
                         widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                         required=False,
-                        help_text=_(
-                            'Only include tickets for dates on or before this date.'
-                        ),
+                        help_text=_('Only include tickets for dates on or before this date.'),
                     ),
                 ),
                 (
@@ -81,9 +71,7 @@ class AllTicketsPDF(BaseExporter):
                                 )
                                 for k, label, w in name_scheme['fields']
                             ]
-                            if settings.JSON_FIELD_AVAILABLE
-                            and name_scheme
-                            and len(name_scheme['fields']) > 1
+                            if settings.JSON_FIELD_AVAILABLE and name_scheme and len(name_scheme['fields']) > 1
                             else []
                         ),
                     ),
@@ -118,33 +106,26 @@ class AllTicketsPDF(BaseExporter):
                 ),
                 self.event.timezone,
             )
-            qs = qs.filter(
-                Q(subevent__date_from__gte=dt)
-                | Q(subevent__isnull=True, order__event__date_from__gte=dt)
-            )
+            qs = qs.filter(Q(subevent__date_from__gte=dt) | Q(subevent__isnull=True, order__event__date_from__gte=dt))
 
         if form_data.get('date_to'):
             dt = make_aware(
                 datetime.combine(
-                    dateutil.parser.parse(form_data['date_to']).date()
-                    + timedelta(days=1),
+                    dateutil.parser.parse(form_data['date_to']).date() + timedelta(days=1),
                     time(hour=0, minute=0, second=0),
                 ),
                 self.event.timezone,
             )
-            qs = qs.filter(
-                Q(subevent__date_from__lt=dt)
-                | Q(subevent__isnull=True, order__event__date_from__lt=dt)
-            )
+            qs = qs.filter(Q(subevent__date_from__lt=dt) | Q(subevent__isnull=True, order__event__date_from__lt=dt))
 
         if form_data.get('order_by') == 'name':
             qs = qs.order_by('attendee_name_cached', 'order__code')
         elif form_data.get('order_by') == 'code':
             qs = qs.order_by('order__code')
         elif form_data.get('order_by') == 'date':
-            qs = qs.annotate(
-                ed=Coalesce('subevent__date_from', 'order__event__date_from')
-            ).order_by('ed', 'order__code')
+            qs = qs.annotate(ed=Coalesce('subevent__date_from', 'order__event__date_from')).order_by(
+                'ed', 'order__code'
+            )
         elif form_data.get('order_by', '').startswith('name:'):
             part = form_data['order_by'][5:]
             qs = (

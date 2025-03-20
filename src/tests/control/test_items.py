@@ -33,12 +33,8 @@ class ItemFormTest(SoupTest):
             slug='30c3',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
         )
-        self.item1 = Item.objects.create(
-            event=self.event1, name='Standard', default_price=0, position=1
-        )
-        t = Team.objects.create(
-            organizer=self.orga1, can_change_event_settings=True, can_change_items=True
-        )
+        self.item1 = Item.objects.create(event=self.event1, name='Standard', default_price=0, position=1)
+        t = Team.objects.create(organizer=self.orga1, can_change_event_settings=True, can_change_items=True)
         t.members.add(self.user)
         t.limit_events.add(self.event1)
         self.client.login(email='dummy@dummy.dummy', password='dummy')
@@ -46,9 +42,7 @@ class ItemFormTest(SoupTest):
 
 class CategoriesTest(ItemFormTest):
     def test_create(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/categories/add' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/categories/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name_0'] = 'Entry tickets'
         doc = self.post_doc(
@@ -60,15 +54,11 @@ class CategoriesTest(ItemFormTest):
 
     def test_update(self):
         c = ItemCategory.objects.create(event=self.event1, name='Entry tickets')
-        doc = self.get_doc(
-            '/control/event/%s/%s/categories/%s/'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/categories/%s/' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name_0'] = 'T-Shirts'
         doc = self.post_doc(
-            '/control/event/%s/%s/categories/%s/'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/categories/%s/' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -79,47 +69,29 @@ class CategoriesTest(ItemFormTest):
 
     def test_sort(self):
         with scopes_disabled():
-            c1 = ItemCategory.objects.create(
-                event=self.event1, name='Entry tickets', position=0
-            )
+            c1 = ItemCategory.objects.create(event=self.event1, name='Entry tickets', position=0)
             ItemCategory.objects.create(event=self.event1, name='T-Shirts', position=1)
-        doc = self.get_doc(
-            '/control/event/%s/%s/categories/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/categories/' % (self.orga1.slug, self.event1.slug))
         self.assertIn('Entry tickets', doc.select('table > tbody > tr')[0].text)
         self.assertIn('T-Shirts', doc.select('table > tbody > tr')[1].text)
 
-        self.client.get(
-            '/control/event/%s/%s/categories/%s/down'
-            % (self.orga1.slug, self.event1.slug, c1.id)
-        )
-        doc = self.get_doc(
-            '/control/event/%s/%s/categories/' % (self.orga1.slug, self.event1.slug)
-        )
+        self.client.get('/control/event/%s/%s/categories/%s/down' % (self.orga1.slug, self.event1.slug, c1.id))
+        doc = self.get_doc('/control/event/%s/%s/categories/' % (self.orga1.slug, self.event1.slug))
         self.assertIn('Entry tickets', doc.select('table > tbody > tr')[1].text)
         self.assertIn('T-Shirts', doc.select('table > tbody > tr')[0].text)
 
-        self.client.get(
-            '/control/event/%s/%s/categories/%s/up'
-            % (self.orga1.slug, self.event1.slug, c1.id)
-        )
-        doc = self.get_doc(
-            '/control/event/%s/%s/categories/' % (self.orga1.slug, self.event1.slug)
-        )
+        self.client.get('/control/event/%s/%s/categories/%s/up' % (self.orga1.slug, self.event1.slug, c1.id))
+        doc = self.get_doc('/control/event/%s/%s/categories/' % (self.orga1.slug, self.event1.slug))
         self.assertIn('Entry tickets', doc.select('table > tbody > tr')[0].text)
         self.assertIn('T-Shirts', doc.select('table > tbody > tr')[1].text)
 
     def test_delete(self):
         with scopes_disabled():
             c = ItemCategory.objects.create(event=self.event1, name='Entry tickets')
-        doc = self.get_doc(
-            '/control/event/%s/%s/categories/%s/delete'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/categories/%s/delete' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/categories/%s/delete'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/categories/%s/delete' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -130,9 +102,7 @@ class CategoriesTest(ItemFormTest):
 
 class QuestionsTest(ItemFormTest):
     def test_create(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/add' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['question_0'] = 'What is your shoe size?'
         form_data['type'] = 'N'
@@ -153,10 +123,7 @@ class QuestionsTest(ItemFormTest):
                 required=True,
             )
             o1 = c.options.create(answer='Germany')
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['form-TOTAL_FORMS'] = '1'
         form_data['form-INITIAL_FORMS'] = '1'
@@ -166,8 +133,7 @@ class QuestionsTest(ItemFormTest):
         form_data['items'] = self.item1.id
         form_data['form-0-answer_0'] = 'England'
         self.post_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         c.refresh_from_db()
@@ -184,10 +150,7 @@ class QuestionsTest(ItemFormTest):
                 required=True,
             )
             o1 = c.options.create(answer='Germany')
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['form-TOTAL_FORMS'] = '1'
         form_data['form-INITIAL_FORMS'] = '1'
@@ -198,8 +161,7 @@ class QuestionsTest(ItemFormTest):
         form_data['form-0-answer_0'] = 'England'
         form_data['form-0-DELETE'] = 'yes'
         self.post_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         c.refresh_from_db()
@@ -214,10 +176,7 @@ class QuestionsTest(ItemFormTest):
                 type='N',
                 required=True,
             )
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['type'] = 'C'
         form_data['form-TOTAL_FORMS'] = '1'
@@ -228,8 +187,7 @@ class QuestionsTest(ItemFormTest):
         form_data['form-0-id'] = ''
         form_data['form-0-answer_0'] = 'Germany'
         self.post_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         with scopes_disabled():
@@ -245,16 +203,12 @@ class QuestionsTest(ItemFormTest):
                 type='N',
                 required=True,
             )
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['items'] = self.item1.id
         form_data['question_0'] = 'How old are you?'
         doc = self.post_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         self.assertIn('How old', doc.select('#page-wrapper table')[0].text)
@@ -272,14 +226,10 @@ class QuestionsTest(ItemFormTest):
                 type='N',
                 required=True,
             )
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/delete'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/delete' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/questions/%s/delete'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/questions/%s/delete' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -296,9 +246,7 @@ class QuestionsTest(ItemFormTest):
                 required=True,
             )
 
-            item1 = Item.objects.create(
-                event=self.event1, name='Standard', default_price=0, position=1
-            )
+            item1 = Item.objects.create(event=self.event1, name='Standard', default_price=0, position=1)
             o = Order.objects.create(
                 code='FOO',
                 event=self.event1,
@@ -334,28 +282,19 @@ class QuestionsTest(ItemFormTest):
             )
             op.answers.create(question=c, answer='39')
 
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/' % (self.orga1.slug, self.event1.slug, c.id))
         tbl = doc.select('.container-fluid table.table-bordered tbody')[0]
         assert tbl.select('tr')[0].select('td')[0].text.strip() == '42'
         assert tbl.select('tr')[0].select('td')[1].text.strip() == '2'
         assert tbl.select('tr')[1].select('td')[0].text.strip() == '39'
         assert tbl.select('tr')[1].select('td')[1].text.strip() == '1'
 
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/?status=p'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/?status=p' % (self.orga1.slug, self.event1.slug, c.id))
         assert not doc.select('.container-fluid table.table-bordered tbody')
 
         o.status = Order.STATUS_PAID
         o.save()
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/?status=p'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/?status=p' % (self.orga1.slug, self.event1.slug, c.id))
         tbl = doc.select('.container-fluid table.table-bordered tbody')[0]
         assert tbl.select('tr')[0].select('td')[0].text.strip() == '42'
 
@@ -374,17 +313,13 @@ class QuestionsTest(ItemFormTest):
                 required=True,
             )
             o1 = q1.options.create(answer='Germany')
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, q2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, q2.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['items'] = self.item1.id
         form_data['dependency_question'] = q1.pk
         form_data['dependency_values'] = o1.identifier
         doc = self.post_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, q2.id),
+            '/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, q2.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -409,16 +344,12 @@ class QuestionsTest(ItemFormTest):
                 dependency_question=q1,
                 dependency_values=[o1.identifier],
             )
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, q1.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, q1.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['dependency_question'] = q2.pk
         form_data['dependency_values'] = '1'
         doc = self.post_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, q1.id),
+            '/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, q1.id),
             form_data,
         )
         assert not doc.select('.alert-success')
@@ -437,16 +368,12 @@ class QuestionsTest(ItemFormTest):
                 type='T',
                 required=True,
             )
-        doc = self.get_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, q2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, q2.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['dependency_question'] = q1.pk
         form_data['dependency_values'] = '1'
         doc = self.post_doc(
-            '/control/event/%s/%s/questions/%s/change'
-            % (self.orga1.slug, self.event1.slug, q2.id),
+            '/control/event/%s/%s/questions/%s/change' % (self.orga1.slug, self.event1.slug, q2.id),
             form_data,
         )
         assert not doc.select('.alert-success')
@@ -454,9 +381,7 @@ class QuestionsTest(ItemFormTest):
 
 class QuotaTest(ItemFormTest):
     def test_create(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/quotas/add' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/quotas/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name'] = 'Full house'
         form_data['size'] = '500'
@@ -470,31 +395,19 @@ class QuotaTest(ItemFormTest):
     def test_update(self):
         with scopes_disabled():
             c = Quota.objects.create(event=self.event1, name='Full house', size=500)
-            item1 = Item.objects.create(
-                event=self.event1, name='Standard', default_price=0
-            )
-            item2 = Item.objects.create(
-                event=self.event1, name='Business', default_price=0
-            )
+            item1 = Item.objects.create(event=self.event1, name='Standard', default_price=0)
+            item2 = Item.objects.create(event=self.event1, name='Business', default_price=0)
             ItemVariation.objects.create(item=item2, value='Silver')
             ItemVariation.objects.create(item=item2, value='Gold')
-        doc = self.get_doc(
-            '/control/event/%s/%s/quotas/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
-        [i for i in doc.select('[name=itemvars]') if i.get('value') == str(item1.id)][
-            0
-        ]['checked'] = 'checked'
+        doc = self.get_doc('/control/event/%s/%s/quotas/%s/change' % (self.orga1.slug, self.event1.slug, c.id))
+        [i for i in doc.select('[name=itemvars]') if i.get('value') == str(item1.id)][0]['checked'] = 'checked'
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['size'] = '350'
         doc = self.post_doc(
-            '/control/event/%s/%s/quotas/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/quotas/%s/change' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
-        doc = self.get_doc(
-            '/control/event/%s/%s/quotas/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/quotas/' % (self.orga1.slug, self.event1.slug))
         self.assertIn('350', doc.select('#page-wrapper table')[0].text)
         self.assertNotIn('500', doc.select('#page-wrapper table')[0].text)
         with scopes_disabled():
@@ -507,18 +420,12 @@ class QuotaTest(ItemFormTest):
         with scopes_disabled():
             se1 = self.event1.subevents.create(name='Foo', date_from=now())
             se2 = self.event1.subevents.create(name='Bar', date_from=now())
-            c = Quota.objects.create(
-                event=self.event1, name='Full house', size=500, subevent=se1
-            )
-        doc = self.get_doc(
-            '/control/event/%s/%s/quotas/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+            c = Quota.objects.create(event=self.event1, name='Full house', size=500, subevent=se1)
+        doc = self.get_doc('/control/event/%s/%s/quotas/%s/change' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['subevent'] = se2.pk
         self.post_doc(
-            '/control/event/%s/%s/quotas/%s/change'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/quotas/%s/change' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         with scopes_disabled():
@@ -527,14 +434,10 @@ class QuotaTest(ItemFormTest):
     def test_delete(self):
         with scopes_disabled():
             c = Quota.objects.create(event=self.event1, name='Full house', size=500)
-        doc = self.get_doc(
-            '/control/event/%s/%s/quotas/%s/delete'
-            % (self.orga1.slug, self.event1.slug, c.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/quotas/%s/delete' % (self.orga1.slug, self.event1.slug, c.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/quotas/%s/delete'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/quotas/%s/delete' % (self.orga1.slug, self.event1.slug, c.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -552,8 +455,7 @@ class QuotaTest(ItemFormTest):
                 closed=True,
             )
         self.post_doc(
-            '/control/event/%s/%s/quotas/%s/'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/quotas/%s/' % (self.orga1.slug, self.event1.slug, c.id),
             {'reopen': 'true'},
         )
         with scopes_disabled():
@@ -571,8 +473,7 @@ class QuotaTest(ItemFormTest):
                 closed=True,
             )
         self.post_doc(
-            '/control/event/%s/%s/quotas/%s/'
-            % (self.orga1.slug, self.event1.slug, c.id),
+            '/control/event/%s/%s/quotas/%s/' % (self.orga1.slug, self.event1.slug, c.id),
             {'disable': 'true'},
         )
         with scopes_disabled():
@@ -598,21 +499,17 @@ class ItemsTest(ItemFormTest):
         )
         self.var1 = ItemVariation.objects.create(item=self.item2, value='Silver')
         self.var2 = ItemVariation.objects.create(item=self.item2, value='Gold')
-        self.addoncat = ItemCategory.objects.create(
-            event=self.event1, name='Item category'
-        )
+        self.addoncat = ItemCategory.objects.create(event=self.event1, name='Item category')
 
     def test_move(self):
         self.client.post(
-            '/control/event/%s/%s/items/%s/down'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%s/down' % (self.orga1.slug, self.event1.slug, self.item1.id),
         )
         self.item1.refresh_from_db()
         self.item2.refresh_from_db()
         assert self.item1.position > self.item2.position
         self.client.post(
-            '/control/event/%s/%s/items/%s/up'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%s/up' % (self.orga1.slug, self.event1.slug, self.item1.id),
         )
         self.item1.refresh_from_db()
         self.item2.refresh_from_db()
@@ -623,16 +520,11 @@ class ItemsTest(ItemFormTest):
             '/control/event/%s/%s/items/add' % (self.orga1.slug, self.event1.slug),
             {'name_0': 'T-Shirt', 'default_price': '23.00', 'tax_rate': '19.00'},
         )
-        resp = self.client.get(
-            '/control/event/%s/%s/items/' % (self.orga1.slug, self.event1.slug)
-        )
+        resp = self.client.get('/control/event/%s/%s/items/' % (self.orga1.slug, self.event1.slug))
         assert 'T-Shirt' in resp.content.decode()
 
     def test_update(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
         d.update(
             {
@@ -645,18 +537,14 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item1.id),
             d,
         )
         self.item1.refresh_from_db()
         assert self.item1.default_price == Decimal('23.00')
 
     def test_update_validate_giftcard(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
         d.update(
             {
@@ -670,18 +558,14 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item1.id),
             d,
         )
         self.item1.refresh_from_db()
         assert not self.item1.issue_giftcard
 
     def test_manipulate_addons(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
 
         d.update(
@@ -697,8 +581,7 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
@@ -719,8 +602,7 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
@@ -744,18 +626,14 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
             assert self.item2.addons.count() == 1
 
     def test_manipulate_bundles(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
 
         d.update(
@@ -771,8 +649,7 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
@@ -793,8 +670,7 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
@@ -814,8 +690,7 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
@@ -823,9 +698,7 @@ class ItemsTest(ItemFormTest):
 
         # Do not allow multi-level bundles
         with scopes_disabled():
-            self.item1.bundles.create(
-                bundled_item=self.item1, count=1, designated_price=0
-            )
+            self.item1.bundles.create(bundled_item=self.item1, count=1, designated_price=0)
         d.update(
             {
                 'bundles-TOTAL_FORMS': '1',
@@ -839,18 +712,14 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
             assert not self.item2.bundles.exists()
 
     def test_update_variations(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
         d.update(
             {
@@ -867,18 +736,14 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         self.var1.refresh_from_db()
         assert str(self.var1.value) == 'Bronze'
 
     def test_delete_variation(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
         d.update(
             {
@@ -896,8 +761,7 @@ class ItemsTest(ItemFormTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item2.id),
             d,
         )
         with scopes_disabled():
@@ -905,15 +769,13 @@ class ItemsTest(ItemFormTest):
 
     def test_delete(self):
         self.client.post(
-            '/control/event/%s/%s/items/%d/delete'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%d/delete' % (self.orga1.slug, self.event1.slug, self.item1.id),
             {},
         )
         with scopes_disabled():
             assert not self.event1.items.filter(pk=self.item1.pk).exists()
         self.client.post(
-            '/control/event/%s/%s/items/%d/delete'
-            % (self.orga1.slug, self.event1.slug, self.item2.id),
+            '/control/event/%s/%s/items/%d/delete' % (self.orga1.slug, self.event1.slug, self.item2.id),
             {},
         )
         with scopes_disabled():
@@ -939,8 +801,7 @@ class ItemsTest(ItemFormTest):
                 attendee_name_parts={'full_name': 'Peter'},
             )
         self.client.post(
-            '/control/event/%s/%s/items/%d/delete'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%d/delete' % (self.orga1.slug, self.event1.slug, self.item1.id),
             {},
         )
         with scopes_disabled():
@@ -985,9 +846,7 @@ class ItemsTest(ItemFormTest):
         with scopes_disabled():
             q = Quota.objects.create(event=self.event1, name='New Test Quota', size=50)
 
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/add' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name_0'] = 'Existing'
         form_data['default_price'] = '2.00'
@@ -1005,9 +864,7 @@ class ItemsTest(ItemFormTest):
             assert q.items.filter(pk=i.pk).exists()
 
     def test_add_to_new_quota(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/add' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name_0'] = 'New Item'
         form_data['default_price'] = '2.00'

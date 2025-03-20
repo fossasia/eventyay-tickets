@@ -8,9 +8,7 @@ from django.utils.translation import pgettext
 from i18nfield.forms import I18nFormField
 
 
-def render_label(
-    content, label_for=None, label_class=None, label_title='', optional=False
-):
+def render_label(content, label_for=None, label_class=None, label_title='', optional=False):
     """
     Render a label with content
     """
@@ -32,11 +30,7 @@ def render_label(
         builder,
         tag='label',
         attrs=mark_safe(flatatt(attrs)) if attrs else '',
-        opt=mark_safe(
-            '<br><span class="optional">{}</span>'.format(pgettext('form', 'Optional'))
-        )
-        if optional
-        else '',
+        opt=mark_safe('<br><span class="optional">{}</span>'.format(pgettext('form', 'Optional'))) if optional else '',
         content=text_value(content),
     )
 

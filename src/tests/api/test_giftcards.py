@@ -43,31 +43,21 @@ def test_giftcard_list(token_client, organizer, event, giftcard, other_giftcard)
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/giftcards/?testmode=true'.format(organizer.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/giftcards/?testmode=true'.format(organizer.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/giftcards/?testmode=false'.format(organizer.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/giftcards/?testmode=false'.format(organizer.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/giftcards/?secret=DEF'.format(organizer.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/giftcards/?secret=DEF'.format(organizer.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/giftcards/?secret=ABCDEF'.format(organizer.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/giftcards/?secret=ABCDEF'.format(organizer.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/giftcards/?include_accepted=true'.format(organizer.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/giftcards/?include_accepted=true'.format(organizer.slug))
     assert resp.status_code == 200
     assert 2 == len(resp.data['results'])
 
@@ -77,9 +67,7 @@ def test_giftcard_detail(token_client, organizer, event, giftcard):
     res = dict(TEST_GC_RES)
     res['id'] = giftcard.pk
     res['issuance'] = giftcard.issuance.isoformat().replace('+00:00', 'Z')
-    resp = token_client.get(
-        '/api/v1/organizers/{}/giftcards/{}/'.format(organizer.slug, giftcard.pk)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/giftcards/{}/'.format(organizer.slug, giftcard.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -110,14 +98,10 @@ def test_giftcard_create(token_client, organizer, event):
 def test_giftcard_duplicate_secert(token_client, organizer, event, giftcard):
     res = copy.copy(TEST_GIFTCARD_CREATE_PAYLOAD)
     res['secret'] = 'ABCDEF'
-    resp = token_client.post(
-        '/api/v1/organizers/{}/giftcards/'.format(organizer.slug), res, format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/giftcards/'.format(organizer.slug), res, format='json')
     assert resp.status_code == 400
     assert resp.data == {
-        'secret': [
-            'A gift card with the same secret already exists in your or an affiliated organizer account.'
-        ]
+        'secret': ['A gift card with the same secret already exists in your or an affiliated organizer account.']
     }
 
 
@@ -151,9 +135,7 @@ def test_giftcard_patch_min_value(token_client, organizer, event, giftcard):
 @pytest.mark.django_db
 def test_giftcard_transact(token_client, organizer, event, giftcard):
     resp = token_client.post(
-        '/api/v1/organizers/{}/giftcards/{}/transact/'.format(
-            organizer.slug, giftcard.pk
-        ),
+        '/api/v1/organizers/{}/giftcards/{}/transact/'.format(organizer.slug, giftcard.pk),
         {
             'value': '10.00',
         },
@@ -163,9 +145,7 @@ def test_giftcard_transact(token_client, organizer, event, giftcard):
     giftcard.refresh_from_db()
     assert giftcard.value == Decimal('33.00')
     resp = token_client.post(
-        '/api/v1/organizers/{}/giftcards/{}/transact/'.format(
-            organizer.slug, giftcard.pk
-        ),
+        '/api/v1/organizers/{}/giftcards/{}/transact/'.format(organizer.slug, giftcard.pk),
         {'value': '10.00', 'text': 'bla'},
         format='json',
     )
@@ -178,18 +158,14 @@ def test_giftcard_transact(token_client, organizer, event, giftcard):
 @pytest.mark.django_db
 def test_giftcard_transact_min_zero(token_client, organizer, event, giftcard):
     resp = token_client.post(
-        '/api/v1/organizers/{}/giftcards/{}/transact/'.format(
-            organizer.slug, giftcard.pk
-        ),
+        '/api/v1/organizers/{}/giftcards/{}/transact/'.format(organizer.slug, giftcard.pk),
         {
             'value': '-100.00',
         },
         format='json',
     )
     assert resp.status_code == 409
-    assert resp.data == {
-        'value': ['The gift card does not have sufficient credit for this operation.']
-    }
+    assert resp.data == {'value': ['The gift card does not have sufficient credit for this operation.']}
     giftcard.refresh_from_db()
     assert giftcard.value == Decimal('23.00')
 
@@ -205,9 +181,7 @@ def test_giftcard_no_deletion(token_client, organizer, event, giftcard):
 @pytest.mark.django_db
 def test_giftcard_transactions(token_client, organizer, giftcard):
     resp = token_client.get(
-        '/api/v1/organizers/{}/giftcards/{}/transactions/'.format(
-            organizer.slug, giftcard.pk
-        ),
+        '/api/v1/organizers/{}/giftcards/{}/transactions/'.format(organizer.slug, giftcard.pk),
     )
     assert resp.status_code == 200
     assert resp.data == {
@@ -217,9 +191,7 @@ def test_giftcard_transactions(token_client, organizer, giftcard):
         'results': [
             {
                 'id': giftcard.transactions.first().pk,
-                'datetime': giftcard.transactions.first()
-                .datetime.isoformat()
-                .replace('+00:00', 'Z'),
+                'datetime': giftcard.transactions.first().datetime.isoformat().replace('+00:00', 'Z'),
                 'value': '23.00',
                 'event': None,
                 'order': None,

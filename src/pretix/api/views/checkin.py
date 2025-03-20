@@ -64,9 +64,7 @@ with scopes_disabled():
 
     class CheckinListFilter(FilterSet):
         subevent_match = django_filters.NumberFilter(method='subevent_match_qs')
-        ends_after = django_filters.rest_framework.IsoDateTimeFilter(
-            method='ends_after_qs'
-        )
+        ends_after = django_filters.rest_framework.IsoDateTimeFilter(method='ends_after_qs')
 
         class Meta:
             model = CheckinList
@@ -78,9 +76,7 @@ with scopes_disabled():
         def ends_after_qs(self, queryset, name, value):
             expr = Q(subevent__isnull=True) | Q(
                 Q(Q(subevent__date_to__isnull=True) & Q(subevent__date_from__gte=value))
-                | Q(
-                    Q(subevent__date_to__isnull=False) & Q(subevent__date_to__gte=value)
-                )
+                | Q(Q(subevent__date_to__isnull=False) & Q(subevent__date_to__gte=value))
             )
             return queryset.filter(expr)
 
@@ -170,21 +166,13 @@ class CheckinListViewSet(viewsets.ModelViewSet):
                 'inside_count': clist.inside_count,
             }
 
-            op_by_item = {
-                p['item']: p['cnt']
-                for p in pqs.order_by().values('item').annotate(cnt=Count('id'))
-            }
+            op_by_item = {p['item']: p['cnt'] for p in pqs.order_by().values('item').annotate(cnt=Count('id'))}
             op_by_variation = {
-                p['variation']: p['cnt']
-                for p in pqs.order_by().values('variation').annotate(cnt=Count('id'))
+                p['variation']: p['cnt'] for p in pqs.order_by().values('variation').annotate(cnt=Count('id'))
             }
-            c_by_item = {
-                p['item']: p['cnt']
-                for p in cqs.order_by().values('item').annotate(cnt=Count('id'))
-            }
+            c_by_item = {p['item']: p['cnt'] for p in cqs.order_by().values('item').annotate(cnt=Count('id'))}
             c_by_variation = {
-                p['variation']: p['cnt']
-                for p in cqs.order_by().values('variation').annotate(cnt=Count('id'))
+                p['variation']: p['cnt'] for p in cqs.order_by().values('variation').annotate(cnt=Count('id'))
             }
 
             if not clist.all_products:
@@ -193,9 +181,7 @@ class CheckinListViewSet(viewsets.ModelViewSet):
                 items = clist.event.items
 
             response['items'] = []
-            for item in items.order_by(
-                'category__position', 'position', 'pk'
-            ).prefetch_related('variations'):
+            for item in items.order_by('category__position', 'position', 'pk').prefetch_related('variations'):
                 i = {
                     'id': item.pk,
                     'name': str(item),
@@ -221,9 +207,7 @@ class CheckinListViewSet(viewsets.ModelViewSet):
 with scopes_disabled():
 
     class CheckinOrderPositionFilter(OrderPositionFilter):
-        check_rules = django_filters.rest_framework.BooleanFilter(
-            method='check_rules_qs'
-        )
+        check_rules = django_filters.rest_framework.BooleanFilter(method='check_rules_qs')
         # check_rules is currently undocumented on purpose, let's get a feel for the performance impact first
 
         def __init__(self, *args, **kwargs):
@@ -236,9 +220,7 @@ with scopes_disabled():
         def check_rules_qs(self, queryset, name, value):
             if not self.checkinlist.rules:
                 return queryset
-            return queryset.filter(
-                SQLLogic(self.checkinlist).apply(self.checkinlist.rules)
-            )
+            return queryset.filter(SQLLogic(self.checkinlist).apply(self.checkinlist.rules))
 
 
 def _checkin_list_position_queryset(
@@ -252,14 +234,10 @@ def _checkin_list_position_queryset(
     if not checkinlists:
         raise BaseValidationError('No check-in list passed.')
     if len(list_by_event) != len(checkinlists):
-        raise BaseValidationError(
-            'Selecting two check-in lists from the same event is unsupported.'
-        )
+        raise BaseValidationError('Selecting two check-in lists from the same event is unsupported.')
 
     cqs = (
-        Checkin.objects.filter(
-            position_id=OuterRef('pk'), list_id__in=[cl.pk for cl in checkinlists]
-        )
+        Checkin.objects.filter(position_id=OuterRef('pk'), list_id__in=[cl.pk for cl in checkinlists])
         .order_by()
         .values('position_id')
         .annotate(m=Max('datetime'))
@@ -285,14 +263,10 @@ def _checkin_list_position_queryset(
             else:
                 list_q &= Q(
                     Q(order__status=Order.STATUS_PAID)
-                    | Q(
-                        order__status=Order.STATUS_PENDING, order__valid_if_pending=True
-                    )
+                    | Q(order__status=Order.STATUS_PENDING, order__valid_if_pending=True)
                 )
         if not checkinlist.all_products and not ignore_products:
-            list_q &= Q(
-                item__in=checkinlist.limit_products.values_list('id', flat=True)
-            )
+            list_q &= Q(item__in=checkinlist.limit_products.values_list('id', flat=True))
         lists_qs.append(list_q)
 
     qs = qs.filter(reduce(operator.or_, lists_qs))
@@ -301,16 +275,12 @@ def _checkin_list_position_queryset(
         qs = qs.prefetch_related(
             Prefetch(
                 lookup='checkins',
-                queryset=Checkin.objects.filter(
-                    list_id__in=[cl.pk for cl in checkinlists]
-                ),
+                queryset=Checkin.objects.filter(list_id__in=[cl.pk for cl in checkinlists]),
             ),
             'answers',
             'answers__options',
             'answers__question',
-            Prefetch(
-                'addons', OrderPosition.objects.select_related('item', 'variation')
-            ),
+            Prefetch('addons', OrderPosition.objects.select_related('item', 'variation')),
             Prefetch(
                 'order',
                 Order.objects.select_related('invoice_address').prefetch_related(
@@ -341,16 +311,12 @@ def _checkin_list_position_queryset(
         qs = qs.prefetch_related(
             Prefetch(
                 lookup='checkins',
-                queryset=Checkin.objects.filter(
-                    list_id__in=[cl.pk for cl in checkinlists]
-                ),
+                queryset=Checkin.objects.filter(list_id__in=[cl.pk for cl in checkinlists]),
             ),
             'answers',
             'answers__options',
             'answers__question',
-            Prefetch(
-                'addons', OrderPosition.objects.select_related('item', 'variation')
-            ),
+            Prefetch('addons', OrderPosition.objects.select_related('item', 'variation')),
         ).select_related(
             'item',
             'variation',
@@ -394,27 +360,17 @@ def _handle_file_upload(data, user, auth):
             pk=data[len('file:') :],
         )
     except (BaseValidationError, IndexError):  # invalid uuid
-        raise BaseValidationError(
-            'The submitted file ID "{fid}" was not found.'.format(fid=data)
-        )
+        raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
     except CachedFile.DoesNotExist:
-        raise BaseValidationError(
-            'The submitted file ID "{fid}" was not found.'.format(fid=data)
-        )
+        raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
 
     allowed_types = ('image/png', 'image/jpeg', 'image/gif', 'application/pdf')
     if cf.type not in allowed_types:
         raise BaseValidationError(
-            'The submitted file "{fid}" has a file type that is not allowed in this field.'.format(
-                fid=data
-            )
+            'The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data)
         )
     if cf.file.size > settings.FILE_UPLOAD_MAX_SIZE_OTHER:
-        raise BaseValidationError(
-            'The submitted file "{fid}" is too large to be used in this field.'.format(
-                fid=data
-            )
-        )
+        raise BaseValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
 
     return cf.file
 
@@ -449,9 +405,7 @@ def _setup_context(request, expand, event=None, pdf_data=None, user=None, auth=N
     return base_context
 
 
-def _get_common_checkin_args(
-    checkinlists, checkin_type, dateandtime, device, gate, nonce, force, simulate=False
-):
+def _get_common_checkin_args(checkinlists, checkin_type, dateandtime, device, gate, nonce, force, simulate=False):
     args = {
         'type': checkin_type,
         'list': checkinlists[0],
@@ -531,30 +485,21 @@ def _handle_no_candidates(
     )
 
 
-def _filter_matching_candidates(
-    op_candidates, list_by_event, raw_barcode, legacy_url_support
-):
+def _filter_matching_candidates(op_candidates, list_by_event, raw_barcode, legacy_url_support):
     return [
         op
         for op in op_candidates
         if (
-            (
-                list_by_event[op.order.event_id].addon_match
-                or op.secret == raw_barcode
-                or legacy_url_support
-            )
+            (list_by_event[op.order.event_id].addon_match or op.secret == raw_barcode or legacy_url_support)
             and (
                 list_by_event[op.order.event_id].all_products
-                or op.item_id
-                in {i.pk for i in list_by_event[op.order.event_id].limit_products.all()}
+                or op.item_id in {i.pk for i in list_by_event[op.order.event_id].limit_products.all()}
             )
         )
     ]
 
 
-def _handle_ambiguous_candidates(
-    op, common_checkin_args, list_by_event, context, user, auth, simulate
-):
+def _handle_ambiguous_candidates(op, common_checkin_args, list_by_event, context, user, auth, simulate):
     if not simulate:
         op.order.log_action(
             'pretix.event.checkin.denied',
@@ -602,9 +547,7 @@ def _process_given_answers(op, answers_data, user, auth):
             if str(q.pk) in answers_data:
                 try:
                     if q.type == Question.TYPE_FILE:
-                        given_answers[q] = _handle_file_upload(
-                            answers_data[str(q.pk)], user, auth
-                        )
+                        given_answers[q] = _handle_file_upload(answers_data[str(q.pk)], user, auth)
                     else:
                         given_answers[q] = q.clean_answer(answers_data[str(q.pk)])
                 except BaseValidationError:
@@ -660,11 +603,7 @@ def _redeem_process(
     op_candidates = list(queryset.filter(q))
 
     if not op_candidates:
-        revoked = list(
-            RevokedTicketSecret.objects.filter(
-                event_id__in=list_by_event.keys(), secret=raw_barcode
-            )
-        )
+        revoked = list(RevokedTicketSecret.objects.filter(event_id__in=list_by_event.keys(), secret=raw_barcode))
         if len(revoked) == 0:
             return _handle_no_candidates(
                 checkinlists,
@@ -724,14 +663,10 @@ def _redeem_process(
                     'require_attention': op.require_checkin_attention,
                     'position': CheckinListOrderPositionSerializer(
                         op,
-                        context=_setup_context(
-                            request, expand, op.order.event, pdf_data, user, auth
-                        ),
+                        context=_setup_context(request, expand, op.order.event, pdf_data, user, auth),
                     ).data,
                     'questions': [QuestionSerializer(q).data for q in e.questions],
-                    'list': MiniCheckinListSerializer(
-                        list_by_event[op.order.event_id]
-                    ).data,
+                    'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
                 },
                 status=400,
             )
@@ -757,12 +692,8 @@ def _redeem_process(
                     **common_checkin_args,
                 )
 
-            serializer_context = _setup_context(
-                request, expand, op.order.event, pdf_data, user, auth
-            )
-            position_data = CheckinListOrderPositionSerializer(
-                op, context=serializer_context
-            ).data
+            serializer_context = _setup_context(request, expand, op.order.event, pdf_data, user, auth)
+            position_data = CheckinListOrderPositionSerializer(op, context=serializer_context).data
             downloads = _append_badge_download(position_data['downloads'], op, request)
             position_data['downloads'] = downloads
 
@@ -772,19 +703,13 @@ def _redeem_process(
                     'reason': 'Already checked in',
                     'require_attention': op.require_checkin_attention,
                     'position': position_data,
-                    'list': MiniCheckinListSerializer(
-                        list_by_event[op.order.event_id]
-                    ).data,
+                    'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
                 },
                 status=201,
             )
         else:
-            serializer_context = _setup_context(
-                request, expand, op.order.event, pdf_data, user, auth
-            )
-            position_data = CheckinListOrderPositionSerializer(
-                op, context=serializer_context
-            ).data
+            serializer_context = _setup_context(request, expand, op.order.event, pdf_data, user, auth)
+            position_data = CheckinListOrderPositionSerializer(op, context=serializer_context).data
             downloads = _append_badge_download(position_data['downloads'], op, request)
             position_data['downloads'] = downloads
 
@@ -793,9 +718,7 @@ def _redeem_process(
                     'status': 'ok',
                     'require_attention': op.require_checkin_attention,
                     'position': position_data,
-                    'list': MiniCheckinListSerializer(
-                        list_by_event[op.order.event_id]
-                    ).data,
+                    'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
                 },
                 status=201,
             )
@@ -828,23 +751,17 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_custom = {
         'attendee_name': {
             '_order': F('display_name').asc(nulls_first=True),
-            'display_name': Coalesce(
-                'attendee_name_cached', 'addon_to__attendee_name_cached'
-            ),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached'),
         },
         '-attendee_name': {
             '_order': F('display_name').desc(nulls_last=True),
-            'display_name': Coalesce(
-                'attendee_name_cached', 'addon_to__attendee_name_cached'
-            ),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached'),
         },
         'last_checked_in': {
             '_order': FixedOrderBy(F('last_checked_in'), nulls_first=True),
         },
         '-last_checked_in': {
-            '_order': FixedOrderBy(
-                F('last_checked_in'), nulls_last=True, descending=True
-            ),
+            '_order': FixedOrderBy(F('last_checked_in'), nulls_last=True, descending=True),
         },
     }
 
@@ -860,17 +777,13 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
     @cached_property
     def checkinlist(self):
         try:
-            return get_object_or_404(
-                CheckinList, event=self.request.event, pk=self.kwargs.get('list')
-            )
+            return get_object_or_404(CheckinList, event=self.request.event, pk=self.kwargs.get('list'))
         except ValueError:
             raise Http404()
 
     def get_queryset(self, ignore_status=False, ignore_products=False):
         cqs = (
-            Checkin.objects.filter(
-                position_id=OuterRef('pk'), list_id=self.checkinlist.pk
-            )
+            Checkin.objects.filter(position_id=OuterRef('pk'), list_id=self.checkinlist.pk)
             .order_by()
             .values('position_id')
             .annotate(m=Max('datetime'))
@@ -887,10 +800,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
         if self.checkinlist.subevent:
             qs = qs.filter(subevent=self.checkinlist.subevent)
 
-        if (
-            self.request.query_params.get('ignore_status', 'false') != 'true'
-            and not ignore_status
-        ):
+        if self.request.query_params.get('ignore_status', 'false') != 'true' and not ignore_status:
             qs = qs.filter(
                 order__status__in=[Order.STATUS_PAID, Order.STATUS_PENDING]
                 if self.checkinlist.include_pending
@@ -906,9 +816,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                 'answers',
                 'answers__options',
                 'answers__question',
-                Prefetch(
-                    'addons', OrderPosition.objects.select_related('item', 'variation')
-                ),
+                Prefetch('addons', OrderPosition.objects.select_related('item', 'variation')),
                 Prefetch(
                     'order',
                     Order.objects.select_related('invoice_address').prefetch_related(
@@ -944,9 +852,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                 'answers',
                 'answers__options',
                 'answers__question',
-                Prefetch(
-                    'addons', OrderPosition.objects.select_related('item', 'variation')
-                ),
+                Prefetch('addons', OrderPosition.objects.select_related('item', 'variation')),
             ).select_related(
                 'item',
                 'variation',
@@ -958,9 +864,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             )
 
         if not self.checkinlist.all_products and not ignore_products:
-            qs = qs.filter(
-                item__in=self.checkinlist.limit_products.values_list('id', flat=True)
-            )
+            qs = qs.filter(item__in=self.checkinlist.limit_products.values_list('id', flat=True))
 
         if 'subevent' in self.request.query_params.getlist('expand'):
             qs = qs.prefetch_related(
@@ -993,9 +897,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
 
         return qs
 
-    @action(
-        detail=False, methods=['POST'], url_name='redeem', url_path='(?P<pk>.*)/redeem'
-    )
+    @action(detail=False, methods=['POST'], url_name='redeem', url_path='(?P<pk>.*)/redeem')
     def redeem(self, *args, **kwargs):
         force = bool(self.request.data.get('force', False))
         type = self.request.data.get('type', None) or Checkin.TYPE_ENTRY
@@ -1016,9 +918,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             else:
                 op = queryset.get(secret=self.kwargs['pk'])
         except OrderPosition.DoesNotExist:
-            revoked_matches = list(
-                self.request.event.revoked_secrets.filter(secret=self.kwargs['pk'])
-            )
+            revoked_matches = list(self.request.event.revoked_secrets.filter(secret=self.kwargs['pk']))
             if len(revoked_matches) == 0 or not force:
                 self.request.event.log_action(
                     'pretix.event.checkin.unknown',
@@ -1078,11 +978,8 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(
                 {
                     'status': 'incomplete',
-                    'require_attention': op.item.checkin_attention
-                    or op.order.checkin_attention,
-                    'position': CheckinListOrderPositionSerializer(
-                        op, context=self.get_serializer_context()
-                    ).data,
+                    'require_attention': op.item.checkin_attention or op.order.checkin_attention,
+                    'position': CheckinListOrderPositionSerializer(op, context=self.get_serializer_context()).data,
                     'questions': [QuestionSerializer(q).data for q in e.questions],
                 },
                 status=400,
@@ -1106,11 +1003,8 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                 {
                     'status': 'error',
                     'reason': e.code,
-                    'require_attention': op.item.checkin_attention
-                    or op.order.checkin_attention,
-                    'position': CheckinListOrderPositionSerializer(
-                        op, context=self.get_serializer_context()
-                    ).data,
+                    'require_attention': op.item.checkin_attention or op.order.checkin_attention,
+                    'position': CheckinListOrderPositionSerializer(op, context=self.get_serializer_context()).data,
                 },
                 status=400,
             )
@@ -1118,11 +1012,8 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(
                 {
                     'status': 'ok',
-                    'require_attention': op.item.checkin_attention
-                    or op.order.checkin_attention,
-                    'position': CheckinListOrderPositionSerializer(
-                        op, context=self.get_serializer_context()
-                    ).data,
+                    'require_attention': op.item.checkin_attention or op.order.checkin_attention,
+                    'position': CheckinListOrderPositionSerializer(op, context=self.get_serializer_context()).data,
                 },
                 status=201,
             )
@@ -1135,26 +1026,18 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                 pk=data[len('file:') :],
             )
         except (BaseValidationError, IndexError):  # invalid uuid
-            raise BaseValidationError(
-                'The submitted file ID "{fid}" was not found.'.format(fid=data)
-            )
+            raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
         except CachedFile.DoesNotExist:
-            raise BaseValidationError(
-                'The submitted file ID "{fid}" was not found.'.format(fid=data)
-            )
+            raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
 
         allowed_types = ('image/png', 'image/jpeg', 'image/gif', 'application/pdf')
         if cf.type not in allowed_types:
             raise BaseValidationError(
-                'The submitted file "{fid}" has a file type that is not allowed in this field.'.format(
-                    fid=data
-                )
+                'The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data)
             )
         if cf.file.size > 10 * 1024 * 1024:
             raise BaseValidationError(
-                'The submitted file "{fid}" is too large to be used in this field.'.format(
-                    fid=data
-                )
+                'The submitted file "{fid}" is too large to be used in this field.'.format(fid=data)
             )
 
         return cf.file
@@ -1166,18 +1049,14 @@ class CheckinRedeemView(views.APIView):
         user = self.request.user
 
         if isinstance(auth, (TeamAPIToken, Device)):
-            events = auth.get_events_with_permission(
-                ('can_change_orders', 'can_checkin_orders')
-            )
+            events = auth.get_events_with_permission(('can_change_orders', 'can_checkin_orders'))
         elif user.is_authenticated:
-            events = user.get_events_with_permission(
-                ('can_change_orders', 'can_checkin_orders'), request
-            ).filter(organizer=self.request.organizer)
+            events = user.get_events_with_permission(('can_change_orders', 'can_checkin_orders'), request).filter(
+                organizer=self.request.organizer
+            )
         else:
             raise ValueError('Unknown authentication method')
-        serializer = CheckinRedeemInputSerializer(
-            data=request.data, context={'events': events}
-        )
+        serializer = CheckinRedeemInputSerializer(data=request.data, context={'events': events})
         serializer.is_valid(raise_exception=True)
         return _redeem_process(
             checkinlists=serializer.validated_data['lists'],
@@ -1217,15 +1096,11 @@ class CheckinSearchView(ListAPIView):
     ordering_custom = {
         'attendee_name': {
             '_order': F('display_name').asc(nulls_first=True),
-            'display_name': Coalesce(
-                'attendee_name_cached', 'addon_to__attendee_name_cached'
-            ),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached'),
         },
         '-attendee_name': {
             '_order': F('display_name').desc(nulls_last=True),
-            'display_name': Coalesce(
-                'attendee_name_cached', 'addon_to__attendee_name_cached'
-            ),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached'),
         },
         'last_checked_in': {
             '_order': OrderBy(F('last_checked_in'), nulls_first=True),
@@ -1238,9 +1113,7 @@ class CheckinSearchView(ListAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update(
-            {'expand': self.request.query_params.getlist('expand'), 'pdf_data': False}
-        )
+        context.update({'expand': self.request.query_params.getlist('expand'), 'pdf_data': False})
         return context
 
     @cached_property
@@ -1249,30 +1122,22 @@ class CheckinSearchView(ListAPIView):
         user = self.request.user
 
         if isinstance(auth, (TeamAPIToken, Device)):
-            events = auth.get_events_with_permission(
-                ('can_view_orders', 'can_checkin_orders')
-            )
+            events = auth.get_events_with_permission(('can_view_orders', 'can_checkin_orders'))
         elif user.is_authenticated:
-            events = user.get_events_with_permission(
-                ('can_view_orders', 'can_checkin_orders'), self.request
-            ).filter(organizer=self.request.organizer)
+            events = user.get_events_with_permission(('can_view_orders', 'can_checkin_orders'), self.request).filter(
+                organizer=self.request.organizer
+            )
         else:
             raise ValueError('Unknown authentication method')
 
         requested_list_ids = [
-            int(list_id)
-            for list_id in self.request.query_params.getlist('list')
-            if list_id.isdigit()
+            int(list_id) for list_id in self.request.query_params.getlist('list') if list_id.isdigit()
         ]
-        checkin_lists = CheckinList.objects.filter(
-            event__in=events, id__in=requested_list_ids
-        ).select_related('event')
+        checkin_lists = CheckinList.objects.filter(event__in=events, id__in=requested_list_ids).select_related('event')
 
         if len(checkin_lists) != len(requested_list_ids):
             missing_lists = set(requested_list_ids) - {lst.pk for lst in checkin_lists}
-            raise PermissionDenied(
-                f'Access denied or non-existent lists: {", ".join(map(str, missing_lists))}'
-            )
+            raise PermissionDenied(f'Access denied or non-existent lists: {", ".join(map(str, missing_lists))}')
 
         return list(checkin_lists)
 
@@ -1284,9 +1149,9 @@ class CheckinSearchView(ListAPIView):
         if isinstance(auth, (TeamAPIToken, Device)):
             events = auth.get_events_with_permission('can_view_orders')
         elif user.is_authenticated:
-            events = user.get_events_with_permission(
-                'can_view_orders', self.request
-            ).filter(organizer=self.request.organizer)
+            events = user.get_events_with_permission('can_view_orders', self.request).filter(
+                organizer=self.request.organizer
+            )
         else:
             raise ValueError('Unknown authentication method')
 
@@ -1301,8 +1166,7 @@ class CheckinSearchView(ListAPIView):
 
         queryset = _checkin_list_position_queryset(
             self.lists,
-            ignore_status=params.get('ignore_status', 'false') == 'true'
-            or ignore_status,
+            ignore_status=params.get('ignore_status', 'false') == 'true' or ignore_status,
             ignore_products=ignore_products,
             pdf_data=params.get('pdf_data', 'false') == 'true',
             expand=params.getlist('expand'),

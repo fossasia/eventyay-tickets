@@ -13,17 +13,13 @@ def organizer():
 
 @pytest.fixture
 def event(organizer):
-    event = Event.objects.create(
-        organizer=organizer, name='Dummy', slug='dummy', date_from=now()
-    )
+    event = Event.objects.create(organizer=organizer, name='Dummy', slug='dummy', date_from=now())
     return event
 
 
 @pytest.fixture
 def webhook(organizer, event):
-    wh = organizer.webhooks.create(
-        enabled=True, target_url='https://google.com', all_events=False
-    )
+    wh = organizer.webhooks.create(enabled=True, target_url='https://google.com', all_events=False)
     wh.limit_events.add(event)
     wh.listeners.create(action_type='pretix.event.order.placed')
     wh.listeners.create(action_type='pretix.event.order.paid')
@@ -39,9 +35,7 @@ def admin_user(admin_team):
 
 @pytest.fixture
 def admin_team(organizer):
-    return Team.objects.create(
-        organizer=organizer, can_change_organizer_settings=True, name='Admin team'
-    )
+    return Team.objects.create(organizer=organizer, can_change_organizer_settings=True, name='Admin team')
 
 
 @pytest.mark.django_db
@@ -68,9 +62,7 @@ def test_create_webhook(event, admin_user, admin_team, client):
         w = WebHook.objects.last()
         assert w.target_url == 'https://google.com'
         assert w.limit_events.count() == 1
-        assert list(w.listeners.values_list('action_type', flat=True)) == [
-            'pretix.event.order.paid'
-        ]
+        assert list(w.listeners.values_list('action_type', flat=True)) == ['pretix.event.order.paid']
         assert not w.all_events
 
 

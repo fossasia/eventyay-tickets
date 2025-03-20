@@ -84,9 +84,7 @@ DEFAULT_SETTINGS = {
         'form_class': forms.BooleanField,
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
-            label=_(
-                'Display net prices in the product list instead of gross prices (not recommended)'
-            ),
+            label=_('Display net prices in the product list instead of gross prices (not recommended)'),
             help_text=_(
                 'Regardless of your selection, the cart will display gross prices as this is the final amount to be '
                 'paid.'
@@ -104,9 +102,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Require attendee names'),
-            help_text=_(
-                'Require attendee names for all tickets which include admission to the event.'
-            ),
+            help_text=_('Require attendee names for all tickets which include admission to the event.'),
         ),
     },
     'attendee_names_required': {
@@ -116,12 +112,8 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Require attendee names'),
-            help_text=_(
-                'Require attendees to fill in their names for all admission tickets.'
-            ),
-            widget=forms.CheckboxInput(
-                attrs={'data-checkbox-dependency': '#id_settings-attendee_names_asked'}
-            ),
+            help_text=_('Require attendees to fill in their names for all admission tickets.'),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_settings-attendee_names_asked'}),
         ),
     },
     'attendee_emails_asked': {
@@ -153,9 +145,7 @@ DEFAULT_SETTINGS = {
                 'above option for more details. One email address for the order confirmation will always be '
                 'required regardless of this setting.'
             ),
-            widget=forms.CheckboxInput(
-                attrs={'data-checkbox-dependency': '#id_settings-attendee_emails_asked'}
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_settings-attendee_emails_asked'}),
         ),
     },
     'attendee_company_asked': {
@@ -174,11 +164,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Require company per ticket'),
-            widget=forms.CheckboxInput(
-                attrs={
-                    'data-checkbox-dependency': '#id_settings-attendee_company_asked'
-                }
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_settings-attendee_company_asked'}),
         ),
     },
     'attendee_addresses_asked': {
@@ -197,14 +183,8 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Require postal addresses per ticket'),
-            help_text=_(
-                'Require attendees to fill in postal addresses for all admission tickets.'
-            ),
-            widget=forms.CheckboxInput(
-                attrs={
-                    'data-checkbox-dependency': '#id_settings-attendee_addresses_asked'
-                }
-            ),
+            help_text=_('Require attendees to fill in postal addresses for all admission tickets.'),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_settings-attendee_addresses_asked'}),
         ),
     },
     'order_email_asked_twice': {
@@ -214,9 +194,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Ask for the order email address twice'),
-            help_text=_(
-                'Require attendees to enter their primary email address twice to help prevent errors.'
-            ),
+            help_text=_('Require attendees to enter their primary email address twice to help prevent errors.'),
         ),
     },
     'order_phone_asked': {
@@ -235,9 +213,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Require a phone number per order'),
-            widget=forms.CheckboxInput(
-                attrs={'data-checkbox-dependency': '#id_settings-order_phone_asked'}
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_settings-order_phone_asked'}),
         ),
     },
     'invoice_address_asked': {
@@ -295,9 +271,7 @@ DEFAULT_SETTINGS = {
         'type': bool,
         'form_kwargs': dict(
             label=_('Require invoice address'),
-            widget=forms.CheckboxInput(
-                attrs={'data-checkbox-dependency': '#id_invoice_address_asked'}
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_invoice_address_asked'}),
         ),
     },
     'invoice_address_company_required': {
@@ -308,9 +282,7 @@ DEFAULT_SETTINGS = {
         'form_kwargs': dict(
             label=_('Require a business addresses'),
             help_text=_('This will require attendees to enter a company name.'),
-            widget=forms.CheckboxInput(
-                attrs={'data-checkbox-dependency': '#id_invoice_address_required'}
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_invoice_address_required'}),
         ),
     },
     'invoice_address_beneficiary': {
@@ -320,9 +292,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Ask for beneficiary'),
-            widget=forms.CheckboxInput(
-                attrs={'data-checkbox-dependency': '#id_invoice_address_asked'}
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_invoice_address_asked'}),
         ),
     },
     'invoice_address_custom_field': {
@@ -352,9 +322,7 @@ DEFAULT_SETTINGS = {
                 'This option is only applicable if an invoice address is requested. The VAT ID field will not be '
                 'required.'
             ),
-            widget=forms.CheckboxInput(
-                attrs={'data-checkbox-dependency': '#id_invoice_address_asked'}
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_invoice_address_asked'}),
         ),
     },
     'invoice_address_explanation_text': {
@@ -366,9 +334,7 @@ DEFAULT_SETTINGS = {
             label=_('Invoice address explanation'),
             widget=I18nTextarea,
             widget_kwargs={'attrs': {'rows': '2'}},
-            help_text=_(
-                'This text will be shown above the invoice address form during checkout.'
-            ),
+            help_text=_('This text will be shown above the invoice address form during checkout.'),
         ),
     },
     'invoice_show_payments': {
@@ -391,10 +357,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Show free products on invoices'),
-            help_text=_(
-                'Note that invoices will never be generated for orders that contain only free '
-                'products.'
-            ),
+            help_text=_('Note that invoices will never be generated for orders that contain only free products.'),
         ),
     },
     'invoice_include_expire_date': {
@@ -404,9 +367,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Show expiration date of order'),
-            help_text=_(
-                'The expiration date will not be shown if the invoice is generated after the order is paid.'
-            ),
+            help_text=_('The expiration date will not be shown if the invoice is generated after the order is paid.'),
         ),
     },
     'invoice_numbers_counter_length': {
@@ -429,9 +390,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Generate invoices with consecutive numbers'),
-            help_text=_(
-                'If deactivated, the order code will be used in the invoice number.'
-            ),
+            help_text=_('If deactivated, the order code will be used in the invoice number.'),
         ),
     },
     'invoice_numbers_prefix': {
@@ -480,9 +439,7 @@ DEFAULT_SETTINGS = {
         'form_kwags': dict(
             min_value=0,
             label=_('Reservation period'),
-            help_text=_(
-                "The number of minutes the items in a user's cart are reserved for this user."
-            ),
+            help_text=_("The number of minutes the items in a user's cart are reserved for this user."),
         ),
     },
     'redirect_to_checkout_directly': {
@@ -491,9 +448,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_class': forms.BooleanField,
         'form_kwargs': dict(
-            label=_(
-                'Directly redirect to check-out after a product has been added to the cart.'
-            ),
+            label=_('Directly redirect to check-out after a product has been added to the cart.'),
         ),
     },
     'presale_has_ended_text': {
@@ -569,9 +524,7 @@ DEFAULT_SETTINGS = {
             ),
             validators=[MinValueValidator(0), MaxValueValidator(1000000)],
         ),
-        'serializer_kwargs': dict(
-            validators=[MinValueValidator(0), MaxValueValidator(1000000)]
-        ),
+        'serializer_kwargs': dict(validators=[MinValueValidator(0), MaxValueValidator(1000000)]),
     },
     'payment_term_weekdays': {
         'default': 'True',
@@ -612,9 +565,7 @@ DEFAULT_SETTINGS = {
                 },
             ),
         ),
-        'serializer_kwargs': dict(
-            validators=[MinValueValidator(0), MaxValueValidator(1440)]
-        ),
+        'serializer_kwargs': dict(validators=[MinValueValidator(0), MaxValueValidator(1440)]),
     },
     'payment_term_last': {
         'default': None,
@@ -719,9 +670,7 @@ DEFAULT_SETTINGS = {
                     _('Automatically on payment or when required by payment method'),
                 ),
             ),
-            help_text=_(
-                'Invoices will never be automatically generated for free orders.'
-            ),
+            help_text=_('Invoices will never be automatically generated for free orders.'),
         ),
     },
     'invoice_reissue_after_modify': {
@@ -746,9 +695,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.CharField,
         'form_kwargs': dict(
             label=_('Address line'),
-            widget=forms.Textarea(
-                attrs={'rows': 2, 'placeholder': _('Albert Einstein Road 52')}
-            ),
+            widget=forms.Textarea(attrs={'rows': 2, 'placeholder': _('Albert Einstein Road 52')}),
         ),
     },
     'invoice_address_from_name': {
@@ -817,9 +764,7 @@ DEFAULT_SETTINGS = {
             widget_kwargs={
                 'attrs': {
                     'rows': 3,
-                    'placeholder': _(
-                        'e.g. With this document, we sent you the invoice for your ticket order.'
-                    ),
+                    'placeholder': _('e.g. With this document, we sent you the invoice for your ticket order.'),
                 }
             },
             label=_('Introductory text'),
@@ -861,9 +806,7 @@ DEFAULT_SETTINGS = {
                 }
             },
             label=_('Footer'),
-            help_text=_(
-                'Will be printed centered and in a smaller font at the end of every invoice page.'
-            ),
+            help_text=_('Will be printed centered and in a smaller font at the end of every invoice page.'),
         ),
     },
     'invoice_language': {'default': '__user__', 'type': str},
@@ -889,9 +832,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Show items outside presale period'),
-            help_text=_(
-                'Show item details before presale has started and after presale has ended'
-            ),
+            help_text=_('Show item details before presale has started and after presale has ended'),
         ),
     },
     'timezone': {'default': settings.TIME_ZONE, 'type': str},
@@ -963,9 +904,7 @@ DEFAULT_SETTINGS = {
         'form_class': forms.BooleanField,
         'form_kwargs': dict(
             label=_('Show event end date'),
-            help_text=_(
-                "If disabled, only event's start date will be displayed to the public."
-            ),
+            help_text=_("If disabled, only event's start date will be displayed to the public."),
         ),
     },
     'show_times': {
@@ -975,9 +914,7 @@ DEFAULT_SETTINGS = {
         'form_class': forms.BooleanField,
         'form_kwargs': dict(
             label=_('Show dates with time'),
-            help_text=_(
-                "If disabled, the event's start and end date will be displayed without the time of day."
-            ),
+            help_text=_("If disabled, the event's start and end date will be displayed without the time of day."),
         ),
     },
     'hide_sold_out': {
@@ -996,9 +933,7 @@ DEFAULT_SETTINGS = {
         'form_class': forms.BooleanField,
         'form_kwargs': dict(
             label=_('Show number of tickets left'),
-            help_text=_(
-                'Publicly show how many tickets of a certain type are still available.'
-            ),
+            help_text=_('Publicly show how many tickets of a certain type are still available.'),
         ),
     },
     'meta_noindex': {
@@ -1082,11 +1017,7 @@ DEFAULT_SETTINGS = {
         'form_kwargs': dict(
             label=_('Require name'),
             help_text=_('Require a name when signing up to the waiting list..'),
-            widget=forms.CheckboxInput(
-                attrs={
-                    'data-checkbox-dependency': '#id_settings-waiting_list_names_asked'
-                }
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_settings-waiting_list_names_asked'}),
         ),
     },
     'waiting_list_phones_asked': {
@@ -1107,11 +1038,7 @@ DEFAULT_SETTINGS = {
         'form_kwargs': dict(
             label=_('Require phone number'),
             help_text=_('Require a phone number when signing up to the waiting list..'),
-            widget=forms.CheckboxInput(
-                attrs={
-                    'data-checkbox-dependency': '#id_settings-waiting_list_phones_asked'
-                }
-            ),
+            widget=forms.CheckboxInput(attrs={'data-checkbox-dependency': '#id_settings-waiting_list_phones_asked'}),
         ),
     },
     'waiting_list_phones_explanation_text': {
@@ -1197,9 +1124,7 @@ DEFAULT_SETTINGS = {
         'form_class': forms.BooleanField,
         'form_kwargs': dict(
             label=_('Generate tickets for pending orders'),
-            help_text=_(
-                'If turned off, ticket downloads are only possible after an order has been marked as paid.'
-            ),
+            help_text=_('If turned off, ticket downloads are only possible after an order has been marked as paid.'),
             widget=forms.CheckboxInput(
                 attrs={
                     'data-checkbox-dependency': '#id_ticket_download',
@@ -1291,9 +1216,7 @@ DEFAULT_SETTINGS = {
         'form_class': forms.BooleanField,
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
-            label=_(
-                'Allow attendees to modify their information after they checked in.'
-            ),
+            label=_('Allow attendees to modify their information after they checked in.'),
         ),
     },
     'last_order_modification_date': {
@@ -1316,9 +1239,7 @@ DEFAULT_SETTINGS = {
         'form_class': forms.BooleanField,
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
-            label=_(
-                'Customers can change the variation of the products they purchased'
-            ),
+            label=_('Customers can change the variation of the products they purchased'),
         ),
     },
     'change_allow_user_price': {
@@ -1330,27 +1251,19 @@ DEFAULT_SETTINGS = {
             choices=(
                 (
                     'gte',
-                    _(
-                        'Only allow changes if the resulting price is higher or equal than the previous price.'
-                    ),
+                    _('Only allow changes if the resulting price is higher or equal than the previous price.'),
                 ),
                 (
                     'gt',
-                    _(
-                        'Only allow changes if the resulting price is higher than the previous price.'
-                    ),
+                    _('Only allow changes if the resulting price is higher than the previous price.'),
                 ),
                 (
                     'eq',
-                    _(
-                        'Only allow changes if the resulting price is equal to the previous price.'
-                    ),
+                    _('Only allow changes if the resulting price is equal to the previous price.'),
                 ),
                 (
                     'any',
-                    _(
-                        'Allow changes regardless of price, even if this results in a refund.'
-                    ),
+                    _('Allow changes regardless of price, even if this results in a refund.'),
                 ),
             )
         ),
@@ -1359,27 +1272,19 @@ DEFAULT_SETTINGS = {
             choices=(
                 (
                     'gte',
-                    _(
-                        'Only allow changes if the resulting price is higher or equal than the previous price.'
-                    ),
+                    _('Only allow changes if the resulting price is higher or equal than the previous price.'),
                 ),
                 (
                     'gt',
-                    _(
-                        'Only allow changes if the resulting price is higher than the previous price.'
-                    ),
+                    _('Only allow changes if the resulting price is higher than the previous price.'),
                 ),
                 (
                     'eq',
-                    _(
-                        'Only allow changes if the resulting price is equal to the previous price.'
-                    ),
+                    _('Only allow changes if the resulting price is equal to the previous price.'),
                 ),
                 (
                     'any',
-                    _(
-                        'Allow changes regardless of price, even if this results in a refund.'
-                    ),
+                    _('Allow changes regardless of price, even if this results in a refund.'),
                 ),
             ),
             widget=forms.RadioSelect,
@@ -1461,9 +1366,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Allow attendees to voluntarily choose a lower refund'),
-            help_text=_(
-                'With this option enabled, your attendees can choose to get a smaller refund to support you.'
-            ),
+            help_text=_('With this option enabled, your attendees can choose to get a smaller refund to support you.'),
         ),
     },
     'cancel_allow_user_paid_adjust_fees_explanation': {
@@ -1524,9 +1427,7 @@ DEFAULT_SETTINGS = {
                 ('off', _('All refunds are issued to the original payment method')),
                 (
                     'option',
-                    _(
-                        'Customers can choose between a gift card and a refund to their payment method'
-                    ),
+                    _('Customers can choose between a gift card and a refund to their payment method'),
                 ),
                 ('force', _('All refunds are issued as gift cards')),
             ],
@@ -1538,9 +1439,7 @@ DEFAULT_SETTINGS = {
                 ('off', _('All refunds are issued to the original payment method')),
                 (
                     'option',
-                    _(
-                        'Customers can choose between a gift card and a refund to their payment method'
-                    ),
+                    _('Customers can choose between a gift card and a refund to their payment method'),
                 ),
                 ('force', _('All refunds are issued as gift cards')),
             ],
@@ -1574,8 +1473,7 @@ DEFAULT_SETTINGS = {
         'form_kwargs': dict(
             label=_('Imprint URL'),
             help_text=_(
-                'This should point e.g. to a part of your website that has your contact details and legal '
-                'information.'
+                'This should point e.g. to a part of your website that has your contact details and legal information.'
             ),
         ),
         'serializer_class': serializers.URLField,
@@ -1595,9 +1493,7 @@ DEFAULT_SETTINGS = {
         'form_kwargs': dict(
             label=_('Attach ticket files'),
             help_text=format_lazy(
-                _(
-                    "Tickets will never be attached if they're larger than {size} to avoid email delivery problems."
-                ),
+                _("Tickets will never be attached if they're larger than {size} to avoid email delivery problems."),
                 size='4 MB',
             ),
         ),
@@ -1609,9 +1505,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Attach calendar files'),
-            help_text=_(
-                'If enabled, we will attach an .ics calendar file to order confirmation emails.'
-            ),
+            help_text=_('If enabled, we will attach an .ics calendar file to order confirmation emails.'),
         ),
     },
     'mail_prefix': {
@@ -2014,9 +1908,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
         ),
@@ -2025,9 +1917,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
             widget=forms.TextInput(attrs={'class': 'colorpickerfield'}),
@@ -2042,9 +1932,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
         ),
@@ -2054,9 +1942,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
             widget=forms.TextInput(attrs={'class': 'colorpickerfield'}),
@@ -2071,9 +1957,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
         ),
@@ -2083,9 +1967,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
             widget=forms.TextInput(attrs={'class': 'colorpickerfield'}),
@@ -2100,9 +1982,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
         ),
@@ -2111,9 +1991,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
             widget=forms.TextInput(attrs={'class': 'colorpickerfield no-contrast'}),
@@ -2128,9 +2006,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
         ),
@@ -2139,9 +2015,7 @@ Your {event} team"""
             validators=[
                 RegexValidator(
                     regex='^#[0-9a-fA-F]{6}$',
-                    message=_(
-                        'Please enter the hexadecimal code of a color, e.g. #990000.'
-                    ),
+                    message=_('Please enter the hexadecimal code of a color, e.g. #990000.'),
                 ),
             ],
             widget=forms.TextInput(attrs={'class': 'colorpickerfield no-contrast'}),
@@ -2275,9 +2149,7 @@ Your {event} team"""
             ext_whitelist=('.png', '.jpg', '.gif', '.jpeg'),
             required=False,
             max_size=10 * 1024 * 1024,
-            help_text=_(
-                'We will show your logo with a maximal height and width of 2.5 cm.'
-            ),
+            help_text=_('We will show your logo with a maximal height and width of 2.5 cm.'),
         ),
         'serializer_class': UploadedFileField,
         'serializer_kwargs': dict(
@@ -2506,9 +2378,7 @@ Your {event} team"""
             label=_('Length of gift card codes'),
             help_text=_(
                 'The system generates by default {}-character long gift card codes. However, if a different length '
-                'is required, it can be set here.'.format(
-                    settings.ENTROPY['giftcard_secret']
-                )
+                'is required, it can be set here.'.format(settings.ENTROPY['giftcard_secret'])
             ),
         ),
     },
@@ -2625,9 +2495,7 @@ NAME_SCHEMES = OrderedDict(
                     ('family_name', _('Family name'), 1),
                 ),
                 'concatenation': lambda d: ' '.join(
-                    str(p)
-                    for p in [d.get('given_name', ''), d.get('family_name', '')]
-                    if p
+                    str(p) for p in [d.get('given_name', ''), d.get('family_name', '')] if p
                 ),
                 'sample': {
                     'given_name': pgettext_lazy('person_name_sample', 'John'),
@@ -2747,9 +2615,7 @@ NAME_SCHEMES = OrderedDict(
                     ('given_name', _('Given name'), 1),
                 ),
                 'concatenation': lambda d: ' '.join(
-                    str(p)
-                    for p in [d.get('family_name', ''), d.get('given_name', '')]
-                    if p
+                    str(p) for p in [d.get('family_name', ''), d.get('given_name', '')] if p
                 ),
                 'sample': {
                     'given_name': pgettext_lazy('person_name_sample', 'John'),
@@ -2766,9 +2632,7 @@ NAME_SCHEMES = OrderedDict(
                     ('family_name', _('Family name'), 1),
                 ),
                 'concatenation': lambda d: ''.join(
-                    str(p)
-                    for p in [d.get('family_name', ''), d.get('given_name', '')]
-                    if p
+                    str(p) for p in [d.get('family_name', ''), d.get('given_name', '')] if p
                 ),
                 'sample': {
                     'given_name': '泽东',
@@ -2786,9 +2650,7 @@ NAME_SCHEMES = OrderedDict(
                 ),
                 'concatenation': lambda d: (
                     str(d.get('family_name', ''))
-                    + str(
-                        (', ' if d.get('family_name') and d.get('given_name') else '')
-                    )
+                    + str((', ' if d.get('family_name') and d.get('given_name') else ''))
                     + str(d.get('given_name', ''))
                 ),
                 'sample': {
@@ -2848,9 +2710,7 @@ NAME_SCHEMES = OrderedDict(
                     ('family_name', _('Family name'), 2),
                 ),
                 'concatenation': lambda d: ' '.join(
-                    str(p)
-                    for p in (d.get(key, '') for key in ['given_name', 'family_name'])
-                    if p
+                    str(p) for p in (d.get(key, '') for key in ['given_name', 'family_name']) if p
                 ),
                 'sample': {
                     'salutation': pgettext_lazy('person_name_sample', 'Mr'),
@@ -2870,11 +2730,7 @@ NAME_SCHEMES = OrderedDict(
                     ('family_name', _('Family name'), 2),
                 ),
                 'concatenation': lambda d: ' '.join(
-                    str(p)
-                    for p in (
-                        d.get(key, '') for key in ['title', 'given_name', 'family_name']
-                    )
-                    if p
+                    str(p) for p in (d.get(key, '') for key in ['title', 'given_name', 'family_name']) if p
                 ),
                 'sample': {
                     'salutation': pgettext_lazy('person_name_sample', 'Mr'),
@@ -2896,14 +2752,7 @@ NAME_SCHEMES = OrderedDict(
                     ('degree', pgettext_lazy('person_name', 'Degree (after name)'), 2),
                 ),
                 'concatenation': lambda d: (
-                    ' '.join(
-                        str(p)
-                        for p in (
-                            d.get(key, '')
-                            for key in ['title', 'given_name', 'family_name']
-                        )
-                        if p
-                    )
+                    ' '.join(str(p) for p in (d.get(key, '') for key in ['title', 'given_name', 'family_name']) if p)
                     + str((', ' if d.get('degree') else ''))
                     + str(d.get('degree', ''))
                 ),

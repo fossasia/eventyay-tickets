@@ -12,29 +12,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='badgelayout',
             name='size',
-            field=models.TextField(
-                default='[{"width": 148, "height": 105, "orientation": "portrait"}]'
-            ),
+            field=models.TextField(default='[{"width": 148, "height": 105, "orientation": "portrait"}]'),
         ),
         migrations.AlterField(
             model_name='badgeitem',
             name='id',
-            field=models.BigAutoField(
-                auto_created=True, primary_key=True, serialize=False
-            ),
+            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='badgelayout',
             name='id',
-            field=models.BigAutoField(
-                auto_created=True, primary_key=True, serialize=False
-            ),
+            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
         ),
         migrations.AlterField(
             model_name='badgelayout',
             name='size',
-            field=models.TextField(
-                default='[{"width": 148, "height": 105, "orientation": "landscape"}]'
-            ),
+            field=models.TextField(default='[{"width": 148, "height": 105, "orientation": "landscape"}]'),
         ),
     ]

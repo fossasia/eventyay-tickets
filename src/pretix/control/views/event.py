@@ -126,9 +126,7 @@ class MetaDataEditorMixin:
                     request=self.request,
                 )
             ),
-            instance=val_instances.get(
-                p.pk, self.meta_model(property=p, event=self.object)
-            ),
+            instance=val_instances.get(p.pk, self.meta_model(property=p, event=self.object)),
             data=(self.request.POST if self.request.method == 'POST' else None),
         )
 
@@ -199,14 +197,10 @@ class EventUpdate(
         change_css = False
 
         if self.sform.has_changed() or self.confirm_texts_formset.has_changed():
-            data = {
-                k: self.request.event.settings.get(k) for k in self.sform.changed_data
-            }
+            data = {k: self.request.event.settings.get(k) for k in self.sform.changed_data}
             if self.confirm_texts_formset.has_changed():
                 data.update(confirm_texts=self.confirm_texts_formset.cleaned_data)
-            self.request.event.log_action(
-                'pretix.event.settings', user=self.request.user, data=data
-            )
+            self.request.event.log_action('pretix.event.settings', user=self.request.user, data=data)
             if any(p in self.sform.changed_data for p in SETTINGS_AFFECTING_CSS):
                 change_css = True
         if form.has_changed():
@@ -321,9 +315,7 @@ class EventUpdate(
     def confirm_texts_formset(self):
         initial = [
             {'text': text, 'ORDER': order}
-            for order, text in enumerate(
-                self.object.settings.get('confirm_texts', as_type=LazyI18nStringList)
-            )
+            for order, text in enumerate(self.object.settings.get('confirm_texts', as_type=LazyI18nStringList))
         ]
         return ConfirmTextFormset(
             self.request.POST if self.request.method == 'POST' else None,
@@ -362,9 +354,7 @@ class EventPlugins(
 
         context = super().get_context_data(*args, **kwargs)
         plugins = [
-            p
-            for p in get_all_plugins(self.object)
-            if not p.name.startswith('.') and getattr(p, 'visible', True)
+            p for p in get_all_plugins(self.object) if not p.name.startswith('.') and getattr(p, 'visible', True)
         ]
         order = [
             'FEATURE',
@@ -386,15 +376,11 @@ class EventPlugins(
             [
                 (c, labels.get(c, c), list(plist))
                 for c, plist in groupby(
-                    sorted(
-                        plugins, key=lambda p: str(getattr(p, 'category', _('Other')))
-                    ),
+                    sorted(plugins, key=lambda p: str(getattr(p, 'category', _('Other')))),
                     lambda p: str(getattr(p, 'category', _('Other'))),
                 )
             ],
-            key=lambda c: (order.index(c[0]), c[1])
-            if c[0] in order
-            else (999, str(c[1])),
+            key=lambda c: (order.index(c[0]), c[1]) if c[0] in order else (999, str(c[1])),
         )
         context['plugins_active'] = self.object.get_plugins()
         return context
@@ -416,9 +402,7 @@ class EventPlugins(
         }
 
         with transaction.atomic():
-            allow_restricted = request.user.has_active_staff_session(
-                request.session.session_key
-            )
+            allow_restricted = request.user.has_active_staff_session(request.session.session_key)
 
             for key, value in request.POST.items():
                 if key.startswith('plugin:'):
@@ -433,9 +417,7 @@ class EventPlugins(
                             user=self.request.user,
                             data={'plugin': module},
                         )
-                        self.object.enable_plugin(
-                            module, allow_restricted=allow_restricted
-                        )
+                        self.object.enable_plugin(module, allow_restricted=allow_restricted)
                     else:
                         self.request.event.log_action(
                             'pretix.event.plugins.disabled',
@@ -486,9 +468,7 @@ class PaymentProviderSettings(
 
     @cached_property
     def provider(self):
-        provider = self.request.event.get_payment_providers().get(
-            self.kwargs['provider']
-        )
+        provider = self.request.event.get_payment_providers().get(self.kwargs['provider'])
         return provider
 
     @cached_property
@@ -513,10 +493,7 @@ class PaymentProviderSettings(
         if not self.provider:
             messages.error(
                 self.request,
-                _(
-                    'This payment provider does not exist or the respective plugin is '
-                    'disabled.'
-                ),
+                _('This payment provider does not exist or the respective plugin is disabled.'),
             )
             return redirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
@@ -539,9 +516,7 @@ class PaymentProviderSettings(
                 self.request.event.log_action(
                     'pretix.event.payment.provider.' + self.provider.identifier,
                     user=self.request.user,
-                    data={
-                        k: self.form.cleaned_data.get(k) for k in self.form.changed_data
-                    },
+                    data={k: self.form.cleaned_data.get(k) for k in self.form.changed_data},
                 )
                 self.form.save()
             messages.success(self.request, _('Your changes have been saved.'))
@@ -620,11 +595,7 @@ class PaymentSettings(EventSettingsViewMixin, EventSettingsFormView):
             [
                 p
                 for p in self.request.event.get_payment_providers().values()
-                if not (
-                    p.is_implicit(self.request)
-                    if callable(p.is_implicit)
-                    else p.is_implicit
-                )
+                if not (p.is_implicit(self.request) if callable(p.is_implicit) else p.is_implicit)
                 and (p.settings_form_fields or p.settings_content_render(self.request))
             ],
             key=lambda s: s.verbose_name,
@@ -635,9 +606,7 @@ class PaymentSettings(EventSettingsViewMixin, EventSettingsFormView):
             p.show_enabled = p.is_enabled
             p.sales_channels = [
                 sales_channels[channel]
-                for channel in p.settings.get(
-                    '_restrict_to_sales_channels', as_type=list, default=['web']
-                )
+                for channel in p.settings.get('_restrict_to_sales_channels', as_type=list, default=['web'])
             ]
             if p.is_meta:
                 p.show_enabled = p.settings._enabled in (True, 'True')
@@ -771,16 +740,13 @@ class MailSettings(EventSettingsViewMixin, EventSettingsFormView):
                 )
 
             if request.POST.get('test', '0').strip() == '1':
-                backend = self.request.event.get_mail_backend(
-                    force_custom=True, timeout=10
-                )
+                backend = self.request.event.get_mail_backend(force_custom=True, timeout=10)
                 try:
                     backend.test(self.request.event.settings.mail_from)
                 except Exception as e:
                     messages.warning(
                         self.request,
-                        _('An error occurred while contacting the SMTP server: %s')
-                        % str(e),
+                        _('An error occurred while contacting the SMTP server: %s') % str(e),
                     )
                 else:
                     if form.cleaned_data.get('smtp_use_custom'):
@@ -833,24 +799,16 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
         ctx = {}
         url_pattern = re.compile(r'^(https?://|www\.)[^\s]+$')
 
-        for p in get_available_placeholders(
-            self.request.event, MailSettingsForm.base_context[item]
-        ).values():
+        for p in get_available_placeholders(self.request.event, MailSettingsForm.base_context[item]).values():
             s = str(p.render_sample(self.request.event)).strip()
 
             if s.startswith('*'):
                 ctx[p.identifier] = s
             elif url_pattern.match(s):
-                ctx[p.identifier] = (
-                    '<a href="{}" target="_blank" rel="noopener noreferrer">{}</a>'.format(
-                        s, s
-                    )
-                )
+                ctx[p.identifier] = '<a href="{}" target="_blank" rel="noopener noreferrer">{}</a>'.format(s, s)
             else:
-                ctx[p.identifier] = (
-                    '<span class="placeholder" title="{}">{}</span>'.format(
-                        _('This value will be replaced based on dynamic parameters.'), s
-                    )
+                ctx[p.identifier] = '<span class="placeholder" title="{}">{}</span>'.format(
+                    _('This value will be replaced based on dynamic parameters.'), s
                 )
         return self.SafeDict(ctx)
 
@@ -867,9 +825,7 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
             if matched is not None:
                 idx = matched.group('idx')
                 if idx in self.supported_locale:
-                    with language(
-                        self.supported_locale[idx], self.request.event.settings.region
-                    ):
+                    with language(self.supported_locale[idx], self.request.event.settings.region):
                         msgs[self.supported_locale[idx]] = markdown_compile_email(
                             v.format_map(self.placeholders(preview_item))
                         )
@@ -937,14 +893,10 @@ class TicketSettingsPreview(EventPermissionRequiredMixin, View):
             messages.error(request, _('You requested an invalid ticket output type.'))
             return redirect(self.get_error_url())
 
-        fname, mimet, data = tickets.preview(
-            self.request.event.pk, self.output.identifier
-        )
+        fname, mimet, data = tickets.preview(self.request.event.pk, self.output.identifier)
         resp = HttpResponse(data, content_type=mimet)
         ftype = fname.split('.')[-1]
-        resp['Content-Disposition'] = 'attachment; filename="ticket-preview.{}"'.format(
-            ftype
-        )
+        resp['Content-Disposition'] = 'attachment; filename="ticket-preview.{}"'.format(ftype)
         return resp
 
     def get_error_url(self) -> str:
@@ -997,9 +949,7 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
         return form
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('We could not save your changes. See below for details.')
-        )
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
     @transaction.atomic
@@ -1057,10 +1007,7 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
                 files=(self.request.FILES if self.request.method == 'POST' else None),
             )
             provider.form.fields = OrderedDict(
-                [
-                    ('ticketoutput_%s_%s' % (provider.identifier, k), v)
-                    for k, v in provider.settings_form_fields.items()
-                ]
+                [('ticketoutput_%s_%s' % (provider.identifier, k), v) for k, v in provider.settings_form_fields.items()]
             )
             provider.settings_content = provider.settings_content_render(self.request)
             provider.form.prepare_fields()
@@ -1080,9 +1027,7 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
         return providers
 
 
-class EventPermissions(
-    EventSettingsViewMixin, EventPermissionRequiredMixin, TemplateView
-):
+class EventPermissions(EventSettingsViewMixin, EventPermissionRequiredMixin, TemplateView):
     template_name = 'pretixcontrol/event/permissions.html'
 
 
@@ -1101,30 +1046,22 @@ class EventLive(EventPermissionRequiredMixin, TemplateView):
             with transaction.atomic():
                 request.event.live = True
                 request.event.save()
-                self.request.event.log_action(
-                    'pretix.event.live.activated', user=self.request.user, data={}
-                )
+                self.request.event.log_action('pretix.event.live.activated', user=self.request.user, data={})
             messages.success(self.request, _('Your shop is live now!'))
         elif request.POST.get('live') == 'false':
             with transaction.atomic():
                 request.event.live = False
                 request.event.save()
-                self.request.event.log_action(
-                    'pretix.event.live.deactivated', user=self.request.user, data={}
-                )
+                self.request.event.log_action('pretix.event.live.deactivated', user=self.request.user, data={})
             messages.success(
                 self.request,
-                _(
-                    "We've taken your shop down. You can re-enable it whenever you want!"
-                ),
+                _("We've taken your shop down. You can re-enable it whenever you want!"),
             )
         elif request.POST.get('testmode') == 'true':
             with transaction.atomic():
                 request.event.testmode = True
                 request.event.save()
-                self.request.event.log_action(
-                    'pretix.event.testmode.activated', user=self.request.user, data={}
-                )
+                self.request.event.log_action('pretix.event.testmode.activated', user=self.request.user, data={})
             messages.success(self.request, _('Your shop is now in test mode!'))
         elif request.POST.get('testmode') == 'false':
             with transaction.atomic():
@@ -1169,9 +1106,7 @@ class EventLive(EventPermissionRequiredMixin, TemplateView):
         )
 
 
-class EventDelete(
-    RecentAuthenticationRequiredMixin, EventPermissionRequiredMixin, FormView
-):
+class EventDelete(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixin, FormView):
     permission = 'can_change_event_settings'
     template_name = 'pretixcontrol/event/delete.html'
     form_class = EventDeleteForm
@@ -1197,9 +1132,7 @@ class EventDelete(
                         'event_id': self.request.event.pk,
                         'name': str(self.request.event.name),
                         'slug': self.request.event.slug,
-                        'logentries': list(
-                            self.request.event.logentry_set.values_list('pk', flat=True)
-                        ),
+                        'logentries': list(self.request.event.logentry_set.values_list('pk', flat=True)),
                     },
                 )
                 self.request.event.delete_sub_objects()
@@ -1228,9 +1161,7 @@ class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
     def get_queryset(self):
         qs = (
             self.request.event.logentry_set.all()
-            .select_related(
-                'user', 'content_type', 'api_token', 'oauth_application', 'device'
-            )
+            .select_related('user', 'content_type', 'api_token', 'oauth_application', 'device')
             .order_by('-datetime')
         )
         qs = qs.exclude(action_type__in=OVERVIEW_BANLIST)
@@ -1282,11 +1213,7 @@ class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
             qs = qs.filter(user_id=self.request.GET.get('user'))
 
         if self.request.GET.get('content_type'):
-            qs = qs.filter(
-                content_type=get_object_or_404(
-                    ContentType, pk=self.request.GET.get('content_type')
-                )
-            )
+            qs = qs.filter(content_type=get_object_or_404(ContentType, pk=self.request.GET.get('content_type')))
 
             if self.request.GET.get('object'):
                 qs = qs.filter(object_id=self.request.GET.get('object'))
@@ -1295,15 +1222,9 @@ class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        ctx['userlist'] = (
-            self.request.event.logentry_set.order_by()
-            .distinct()
-            .values('user__id', 'user__email')
-        )
+        ctx['userlist'] = self.request.event.logentry_set.order_by().distinct().values('user__id', 'user__email')
         ctx['devicelist'] = (
-            self.request.event.logentry_set.order_by('device__name')
-            .distinct()
-            .values('device__id', 'device__name')
+            self.request.event.logentry_set.order_by('device__name').distinct().values('device__id', 'device__name')
         )
         return ctx
 
@@ -1330,9 +1251,7 @@ class EventActionDiscard(EventPermissionRequiredMixin, View):
     permission = 'can_change_orders'
 
     def get(self, request, **kwargs):
-        action = get_object_or_404(
-            RequiredAction, event=request.event, pk=kwargs.get('id')
-        )
+        action = get_object_or_404(RequiredAction, event=request.event, pk=kwargs.get('id'))
         action.done = True
         action.user = request.user
         action.save()
@@ -1380,9 +1299,7 @@ class EventComment(EventPermissionRequiredMixin, View):
         )
 
 
-class TaxList(
-    EventSettingsViewMixin, EventPermissionRequiredMixin, PaginationMixin, ListView
-):
+class TaxList(EventSettingsViewMixin, EventPermissionRequiredMixin, PaginationMixin, ListView):
     model = TaxRule
     context_object_name = 'taxrules'
     template_name = 'pretixcontrol/event/tax_index.html'
@@ -1435,11 +1352,7 @@ class TaxCreate(EventSettingsViewMixin, EventPermissionRequiredMixin, CreateView
     def form_valid(self, form):
         form.instance.event = self.request.event
         form.instance.custom_rules = json.dumps(
-            [
-                f.cleaned_data
-                for f in self.formset.ordered_forms
-                if f not in self.formset.deleted_forms
-            ],
+            [f.cleaned_data for f in self.formset.ordered_forms if f not in self.formset.deleted_forms],
             cls=I18nJSONEncoder,
         )
         messages.success(self.request, _('The new tax rule has been created.'))
@@ -1452,9 +1365,7 @@ class TaxCreate(EventSettingsViewMixin, EventPermissionRequiredMixin, CreateView
         return ret
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('We could not save your changes. See below for details.')
-        )
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
 
@@ -1484,9 +1395,7 @@ class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView
         return TaxRuleLineFormSet(
             data=self.request.POST if self.request.method == 'POST' else None,
             event=self.request.event,
-            initial=json.loads(self.object.custom_rules)
-            if self.object.custom_rules
-            else [],
+            initial=json.loads(self.object.custom_rules) if self.object.custom_rules else [],
         )
 
     def get_context_data(self, **kwargs):
@@ -1498,11 +1407,7 @@ class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView
     def form_valid(self, form):
         messages.success(self.request, _('Your changes have been saved.'))
         form.instance.custom_rules = json.dumps(
-            [
-                f.cleaned_data
-                for f in self.formset.ordered_forms
-                if f not in self.formset.deleted_forms
-            ],
+            [f.cleaned_data for f in self.formset.ordered_forms if f not in self.formset.deleted_forms],
             cls=I18nJSONEncoder,
         )
         if form.has_changed():
@@ -1523,9 +1428,7 @@ class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView
         )
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('We could not save your changes. See below for details.')
-        )
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
 
@@ -1546,9 +1449,7 @@ class TaxDelete(EventSettingsViewMixin, EventPermissionRequiredMixin, DeleteView
         self.object = self.get_object()
         success_url = self.get_success_url()
         if self.object.allow_delete():
-            self.object.log_action(
-                action='pretix.event.taxrule.deleted', user=self.request.user
-            )
+            self.object.log_action(action='pretix.event.taxrule.deleted', user=self.request.user)
             self.object.delete()
             messages.success(self.request, _('The selected tax rule has been deleted.'))
         else:
@@ -1605,9 +1506,7 @@ class QuickSetupView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.event.items.exists() or request.event.quotas.exists():
-            messages.info(
-                request, _('Your event is not empty, you need to set it up manually.')
-            )
+            messages.info(request, _('Your event is not empty, you need to set it up manually.'))
             return redirect(
                 reverse(
                     'control:event.index',
@@ -1709,15 +1608,9 @@ class QuickSetupView(FormView):
                 )
                 plugins_active.append('pretix.plugins.stripe')
 
-        self.request.event.settings.show_quota_left = form.cleaned_data[
-            'show_quota_left'
-        ]
-        self.request.event.settings.waiting_list_enabled = form.cleaned_data[
-            'waiting_list_enabled'
-        ]
-        self.request.event.settings.attendee_names_required = form.cleaned_data[
-            'attendee_names_required'
-        ]
+        self.request.event.settings.show_quota_left = form.cleaned_data['show_quota_left']
+        self.request.event.settings.waiting_list_enabled = form.cleaned_data['waiting_list_enabled']
+        self.request.event.settings.attendee_names_required = form.cleaned_data['attendee_names_required']
         self.request.event.settings.contact_mail = form.cleaned_data['contact_mail']
         self.request.event.settings.imprint_url = form.cleaned_data['imprint_url']
         self.request.event.log_action(
@@ -1725,17 +1618,15 @@ class QuickSetupView(FormView):
             user=self.request.user,
             data={k: self.request.event.settings.get(k) for k in form.changed_data},
         )
-        self.request.event.settings.require_registered_account_for_tickets = (
-            form.cleaned_data['require_registered_account_for_tickets']
-        )
+        self.request.event.settings.require_registered_account_for_tickets = form.cleaned_data[
+            'require_registered_account_for_tickets'
+        ]
 
         items = []
         category = None
         tax_rule = self.request.event.tax_rules.first()
         if any(f not in self.formset.deleted_forms for f in self.formset):
-            category = self.request.event.categories.create(
-                name=LazyI18nString.from_gettext(gettext('Tickets'))
-            )
+            category = self.request.event.categories.create(name=LazyI18nString.from_gettext(gettext('Tickets')))
             category.log_action(
                 'pretix.event.category.added',
                 data={'name': gettext('Tickets')},

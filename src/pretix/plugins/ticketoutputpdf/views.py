@@ -41,9 +41,7 @@ class EditorView(BaseEditorView):
 
     def save_layout(self):
         super().save_layout()
-        invalidate_cache.apply_async(
-            kwargs={'event': self.request.event.pk, 'provider': 'pdf'}
-        )
+        invalidate_cache.apply_async(kwargs={'event': self.request.event.pk, 'provider': 'pdf'})
 
     def get_layout_settings_key(self):
         return 'ticketoutput_pdf_layout'
@@ -54,23 +52,14 @@ class EditorView(BaseEditorView):
     def get_default_background(self):
         return static('pretixpresale/pdf/ticket_default_a4.pdf')
 
-    def generate(
-        self, p: OrderPosition, override_layout=None, override_background=None
-    ):
-        prov = self.get_output(
-            override_layout=override_layout, override_background=override_background
-        )
+    def generate(self, p: OrderPosition, override_layout=None, override_background=None):
+        prov = self.get_output(override_layout=override_layout, override_background=override_background)
         fname, mimet, data = prov.generate(p)
         return fname, mimet, data
 
     def get_current_layout(self):
         prov = self.get_output()
-        return (
-            self.request.event.settings.get(
-                self.get_layout_settings_key(), as_type=list
-            )
-            or prov._default_layout()
-        )
+        return self.request.event.settings.get(self.get_layout_settings_key(), as_type=list) or prov._default_layout()
 
 
 class LayoutListView(EventPermissionRequiredMixin, ListView):
@@ -117,9 +106,7 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
         )
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('We could not save your changes. See below for details.')
-        )
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -129,9 +116,7 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
     def copy_from(self):
         if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
-                return self.request.event.ticket_layouts.get(
-                    pk=self.request.GET.get('copy_from')
-                )
+                return self.request.event.ticket_layouts.get(pk=self.request.GET.get('copy_from'))
             except TicketLayout.DoesNotExist:
                 pass
 
@@ -256,16 +241,12 @@ class LayoutEditorView(BaseEditorView):
             user=self.request.user,
             data={'layout': self.request.POST.get('data')},
         )
-        invalidate_cache.apply_async(
-            kwargs={'event': self.request.event.pk, 'provider': 'pdf'}
-        )
+        invalidate_cache.apply_async(kwargs={'event': self.request.event.pk, 'provider': 'pdf'})
 
     def get_default_background(self):
         return static('pretixpresale/pdf/ticket_default_a4.pdf')
 
-    def generate(
-        self, op: OrderPosition, override_layout=None, override_background=None
-    ):
+    def generate(self, op: OrderPosition, override_layout=None, override_background=None):
         Renderer._register_fonts()
 
         buffer = BytesIO()
@@ -290,16 +271,10 @@ class LayoutEditorView(BaseEditorView):
         return json.loads(self.layout.layout)
 
     def get_current_background(self):
-        return (
-            self.layout.background.url
-            if self.layout.background
-            else self.get_default_background()
-        )
+        return self.layout.background.url if self.layout.background else self.get_default_background()
 
     def save_background(self, f: CachedFile):
         if self.layout.background:
             self.layout.background.delete()
         self.layout.background.save('background.pdf', f.file)
-        invalidate_cache.apply_async(
-            kwargs={'event': self.request.event.pk, 'provider': 'pdf'}
-        )
+        invalidate_cache.apply_async(kwargs={'event': self.request.event.pk, 'provider': 'pdf'})

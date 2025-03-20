@@ -15,9 +15,7 @@ from pretix.helpers.stripe_utils import (
 
 class OrganizerForm(I18nModelForm):
     error_messages = {
-        'duplicate_slug': _(
-            'This slug is already in use. Please choose a different one.'
-        ),
+        'duplicate_slug': _('This slug is already in use. Please choose a different one.'),
     }
 
     class Meta:
@@ -150,18 +148,14 @@ class BillingSettingsForm(forms.ModelForm):
         self.warning_message = None
         super().__init__(*args, **kwargs)
         selected_languages = [
-            (code, name)
-            for code, name in settings.LANGUAGES
-            if code in self.organizer.settings.locales
+            (code, name) for code, name in settings.LANGUAGES if code in self.organizer.settings.locales
         ]
         self.fields['preferred_language'].choices = selected_languages
         self.fields['preferred_language'].initial = self.organizer.settings.locale
         self.set_initial_data()
 
     def set_initial_data(self):
-        billing_settings = OrganizerBillingModel.objects.filter(
-            organizer_id=self.organizer.id
-        ).first()
+        billing_settings = OrganizerBillingModel.objects.filter(organizer_id=self.organizer.id).first()
 
         if billing_settings:
             for field in self.Meta.fields:
@@ -170,9 +164,7 @@ class BillingSettingsForm(forms.ModelForm):
     def validate_vat_number(self, country_code, vat_number):
         if country_code not in pyvat.VAT_REGISTRIES:
             country_name = get_country_name(country_code)
-            self.warning_message = _(
-                'VAT number validation is not supported for {}'.format(country_name)
-            )
+            self.warning_message = _('VAT number validation is not supported for {}'.format(country_name))
             return True
         result = pyvat.is_vat_number_format_valid(vat_number, country_code)
         return result
@@ -187,18 +179,12 @@ class BillingSettingsForm(forms.ModelForm):
             raise forms.ValidationError('Voucher code not found!')
 
         if not voucher_instance.is_active():
-            raise forms.ValidationError(
-                'The voucher code has either expired or reached its usage limit.'
-            )
+            raise forms.ValidationError('The voucher code has either expired or reached its usage limit.')
 
         if voucher_instance.limit_organizer.exists():
-            limit_organizer = voucher_instance.limit_organizer.values_list(
-                'id', flat=True
-            )
+            limit_organizer = voucher_instance.limit_organizer.values_list('id', flat=True)
             if self.organizer.id not in limit_organizer:
-                raise forms.ValidationError(
-                    'Voucher code is not valid for this organizer!'
-                )
+                raise forms.ValidationError('Voucher code is not valid for this organizer!')
 
         return voucher_instance
 
@@ -211,18 +197,14 @@ class BillingSettingsForm(forms.ModelForm):
             country_name = get_country_name(country_code)
             is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
             if not is_valid_vat_number:
-                self.add_error(
-                    'tax_id', _('Invalid VAT number for {}'.format(country_name))
-                )
+                self.add_error('tax_id', _('Invalid VAT number for {}'.format(country_name)))
 
     def save(self, commit=True):
         def set_attribute(instance):
             for field in self.Meta.fields:
                 setattr(instance, field, self.cleaned_data[field])
 
-        instance = OrganizerBillingModel.objects.filter(
-            organizer_id=self.organizer.id
-        ).first()
+        instance = OrganizerBillingModel.objects.filter(organizer_id=self.organizer.id).first()
 
         if instance:
             set_attribute(instance)

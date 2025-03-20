@@ -21,9 +21,7 @@ from tests.testdummy.payment import DummyPaymentProvider
 @pytest.fixture
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy', date_from=now()
-    )
+    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now())
     with scope(organizer=o):
         yield event
 
@@ -66,9 +64,7 @@ def test_payment_fee_reverse_percent_and_abs_default(event):
 @pytest.mark.django_db
 def test_availability_date_available(event):
     prov = DummyPaymentProvider(event)
-    prov.settings.set(
-        '_availability_date', datetime.date.today() + datetime.timedelta(days=1)
-    )
+    prov.settings.set('_availability_date', datetime.date.today() + datetime.timedelta(days=1))
     result = prov._is_still_available()
     assert result
 
@@ -76,9 +72,7 @@ def test_availability_date_available(event):
 @pytest.mark.django_db
 def test_availability_date_not_available(event):
     prov = DummyPaymentProvider(event)
-    prov.settings.set(
-        '_availability_date', datetime.date.today() - datetime.timedelta(days=1)
-    )
+    prov.settings.set('_availability_date', datetime.date.today() - datetime.timedelta(days=1))
     result = prov._is_still_available()
     assert not result
 
@@ -103,15 +97,9 @@ def test_availability_date_relative(event):
     )
 
     utc = pytz.timezone('UTC')
-    assert prov._is_still_available(
-        tz.localize(datetime.datetime(2016, 11, 30, 23, 0, 0)).astimezone(utc)
-    )
-    assert prov._is_still_available(
-        tz.localize(datetime.datetime(2016, 12, 1, 23, 59, 0)).astimezone(utc)
-    )
-    assert not prov._is_still_available(
-        tz.localize(datetime.datetime(2016, 12, 2, 0, 0, 1)).astimezone(utc)
-    )
+    assert prov._is_still_available(tz.localize(datetime.datetime(2016, 11, 30, 23, 0, 0)).astimezone(utc))
+    assert prov._is_still_available(tz.localize(datetime.datetime(2016, 12, 1, 23, 59, 0)).astimezone(utc))
+    assert not prov._is_still_available(tz.localize(datetime.datetime(2016, 12, 2, 0, 0, 1)).astimezone(utc))
 
 
 @pytest.mark.django_db
@@ -122,15 +110,9 @@ def test_availability_date_timezones(event):
 
     tz = pytz.timezone('US/Pacific')
     utc = pytz.timezone('UTC')
-    assert prov._is_still_available(
-        tz.localize(datetime.datetime(2016, 11, 30, 23, 0, 0)).astimezone(utc)
-    )
-    assert prov._is_still_available(
-        tz.localize(datetime.datetime(2016, 12, 1, 23, 59, 0)).astimezone(utc)
-    )
-    assert not prov._is_still_available(
-        tz.localize(datetime.datetime(2016, 12, 2, 0, 0, 1)).astimezone(utc)
-    )
+    assert prov._is_still_available(tz.localize(datetime.datetime(2016, 11, 30, 23, 0, 0)).astimezone(utc))
+    assert prov._is_still_available(tz.localize(datetime.datetime(2016, 12, 1, 23, 59, 0)).astimezone(utc))
+    assert not prov._is_still_available(tz.localize(datetime.datetime(2016, 12, 2, 0, 0, 1)).astimezone(utc))
 
 
 @pytest.mark.django_db
@@ -147,12 +129,8 @@ def test_availability_date_cart_relative_subevents(event):
         admission=True,
     )
 
-    se1 = event.subevents.create(
-        name='SE1', date_from=now() + datetime.timedelta(days=10)
-    )
-    se2 = event.subevents.create(
-        name='SE2', date_from=now() + datetime.timedelta(days=3)
-    )
+    se1 = event.subevents.create(name='SE1', date_from=now() + datetime.timedelta(days=10))
+    se2 = event.subevents.create(name='SE2', date_from=now() + datetime.timedelta(days=3))
 
     CartPosition.objects.create(
         item=ticket,
@@ -213,12 +191,8 @@ def test_availability_date_order_relative_subevents(event):
         admission=True,
     )
 
-    se1 = event.subevents.create(
-        name='SE1', date_from=now() + datetime.timedelta(days=10)
-    )
-    se2 = event.subevents.create(
-        name='SE2', date_from=now() + datetime.timedelta(days=3)
-    )
+    se1 = event.subevents.create(name='SE1', date_from=now() + datetime.timedelta(days=10))
+    se2 = event.subevents.create(name='SE2', date_from=now() + datetime.timedelta(days=3))
 
     order = Order.objects.create(
         code='FOO',

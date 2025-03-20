@@ -60,16 +60,10 @@ class SubEventForm(I18nModelForm):
         }
         widgets = {
             'date_from': SplitDateTimePickerWidget(),
-            'date_to': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_date_from_0'}
-            ),
-            'date_admission': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_date_from_0'}
-            ),
+            'date_to': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_date_from_0'}),
+            'date_admission': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_date_from_0'}),
             'presale_start': SplitDateTimePickerWidget(),
-            'presale_end': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_presale_start_0'}
-            ),
+            'presale_end': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_presale_start_0'}),
         }
 
 
@@ -119,9 +113,7 @@ class SubEventBulkEditForm(I18nModelForm):
         for k in ('name', 'location', 'frontpage_text'):
             # i18n fields
             if k in self.mixed_values:
-                self.fields[k].widget.attrs['placeholder'] = '[{}]'.format(
-                    _('Selection contains various values')
-                )
+                self.fields[k].widget.attrs['placeholder'] = '[{}]'.format(_('Selection contains various values'))
             else:
                 self.fields[k].widget.attrs['placeholder'] = ''
             self.fields[k].one_required = False
@@ -129,9 +121,7 @@ class SubEventBulkEditForm(I18nModelForm):
         for k in ('geo_lat', 'geo_lon'):
             # scalar fields
             if k in self.mixed_values:
-                self.fields[k].widget.attrs['placeholder'] = '[{}]'.format(
-                    _('Selection contains various values')
-                )
+                self.fields[k].widget.attrs['placeholder'] = '[{}]'.format(_('Selection contains various values'))
             else:
                 self.fields[k].widget.attrs['placeholder'] = ''
             self.fields[k].widget.is_required = False
@@ -191,9 +181,7 @@ class SubEventBulkEditForm(I18nModelForm):
                     cval = self.cleaned_data[k]
                     if cval is None:
                         newval = None
-                        if not self._meta.model._meta.get_field(
-                            k.replace('_day', '')
-                        ).null:
+                        if not self._meta.model._meta.get_field(k.replace('_day', '')).null:
                             continue
                     elif oldval:
                         oldval = oldval.astimezone(self.event.timezone)
@@ -273,9 +261,7 @@ class SubEventItemVariationForm(SubEventItemOrVariationFormMixin, forms.ModelFor
         self.fields['price'].widget.attrs['placeholder'] = money_filter(
             self.variation.price, self.item.event.currency, hide_currency=True
         )
-        self.fields['price'].label = '{} – {}'.format(
-            str(self.item), self.variation.value
-        )
+        self.fields['price'].label = '{} – {}'.format(str(self.item), self.variation.value)
 
     class Meta:
         model = SubEventItem
@@ -327,23 +313,16 @@ class SubEventMetaValueForm(forms.ModelForm):
                 choices=[
                     (
                         '',
-                        _('Default ({value})').format(
-                            value=self.default or self.property.default
-                        )
+                        _('Default ({value})').format(value=self.default or self.property.default)
                         if self.default or self.property.default
                         else '',
                     ),
                 ]
-                + [
-                    (a.strip(), a.strip())
-                    for a in self.property.allowed_values.splitlines()
-                ],
+                + [(a.strip(), a.strip()) for a in self.property.allowed_values.splitlines()],
             )
         else:
             self.fields['value'].label = self.property.name
-            self.fields['value'].widget.attrs['placeholder'] = (
-                self.default or self.property.default
-            )
+            self.fields['value'].widget.attrs['placeholder'] = self.default or self.property.default
             self.fields['value'].widget.attrs['data-typeahead-url'] = (
                 reverse('control:events.meta.typeahead')
                 + '?'
@@ -398,9 +377,7 @@ class CheckinListFormSet(I18nInlineFormSet):
 
 class RRuleForm(forms.Form):
     # TODO: calendar.setfirstweekday
-    exclude = forms.BooleanField(
-        label=_('Exclude these dates instead of adding them.'), required=False
-    )
+    exclude = forms.BooleanField(label=_('Exclude these dates instead of adding them.'), required=False)
     freq = forms.ChoiceField(
         choices=[
             ('yearly', _('year(s)')),
@@ -413,9 +390,7 @@ class RRuleForm(forms.Form):
     interval = forms.IntegerField(label=_('Interval'), initial=1)
     dtstart = forms.DateField(
         label=_('Start date'),
-        widget=forms.DateInput(
-            attrs={'class': 'datepickerfield', 'required': 'required'}
-        ),
+        widget=forms.DateInput(attrs={'class': 'datepickerfield', 'required': 'required'}),
         initial=lambda: now().date(),
     )
 
@@ -429,9 +404,7 @@ class RRuleForm(forms.Form):
     )
     count = forms.IntegerField(label=_('Number of repetitions'), initial=10)
     until = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'class': 'datepickerfield', 'required': 'required'}
-        ),
+        widget=forms.DateInput(attrs={'class': 'datepickerfield', 'required': 'required'}),
         label=_('Last date'),
         required=True,
         initial=lambda: now() + timedelta(days=365),
@@ -469,9 +442,7 @@ class RRuleForm(forms.Form):
         ],
         required=False,
     )
-    yearly_bymonth = forms.ChoiceField(
-        choices=[(str(i), MONTHS[i]) for i in range(1, 13)], required=False
-    )
+    yearly_bymonth = forms.ChoiceField(choices=[(str(i), MONTHS[i]) for i in range(1, 13)], required=False)
 
     monthly_same = forms.ChoiceField(
         choices=[
@@ -549,6 +520,4 @@ class TimeForm(forms.Form):
     )
 
 
-TimeFormSet = formset_factory(
-    TimeForm, min_num=1, can_order=False, can_delete=True, extra=1, validate_min=True
-)
+TimeFormSet = formset_factory(TimeForm, min_num=1, can_order=False, can_delete=True, extra=1, validate_min=True)

@@ -58,14 +58,9 @@ class PluginConfig(AppConfig):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not hasattr(self, 'PretixPluginMeta'):
-            raise ImproperlyConfigured(
-                'A pretix plugin config should have a PretixPluginMeta inner class.'
-            )
+            raise ImproperlyConfigured('A pretix plugin config should have a PretixPluginMeta inner class.')
 
-        if (
-            hasattr(self.PretixPluginMeta, 'compatibility')
-            and not os.environ.get('PRETIX_IGNORE_CONFLICTS') == 'True'
-        ):
+        if hasattr(self.PretixPluginMeta, 'compatibility') and not os.environ.get('PRETIX_IGNORE_CONFLICTS') == 'True':
             self.check_compatibility()
 
     def check_compatibility(self):

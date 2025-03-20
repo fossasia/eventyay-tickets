@@ -12,9 +12,7 @@ from pretix.base.models import Event, InvoiceAddress, Organizer, TaxRule
 @pytest.fixture
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy', date_from=now()
-    )
+    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now())
     with scope(organizer=o):
         yield event
 
@@ -184,9 +182,7 @@ def test_reverse_charge_valid_vat_id_business_eu(event):
         rate=Decimal('10.00'),
         price_includes_tax=False,
     )
-    ia = InvoiceAddress(
-        is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT')
-    )
+    ia = InvoiceAddress(is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT'))
     assert tr.is_reverse_charge(ia)
     assert not tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('0.00')
@@ -201,9 +197,7 @@ def test_reverse_charge_valid_vat_id_business_3rdc(event):
         rate=Decimal('10.00'),
         price_includes_tax=False,
     )
-    ia = InvoiceAddress(
-        is_business=True, country=Country('US'), vat_id='US12346', vat_id_validated=True
-    )
+    ia = InvoiceAddress(is_business=True, country=Country('US'), vat_id='US12346', vat_id_validated=True)
     assert not tr.is_reverse_charge(ia)
     assert not tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('0.00')
@@ -218,9 +212,7 @@ def test_reverse_charge_disabled(event):
         rate=Decimal('10.00'),
         price_includes_tax=False,
     )
-    ia = InvoiceAddress(
-        is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT')
-    )
+    ia = InvoiceAddress(is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT'))
     assert not tr.is_reverse_charge(ia)
     assert tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('10.00')
@@ -234,13 +226,9 @@ def test_custom_rules_override(event):
         home_country=Country('DE'),
         rate=Decimal('10.00'),
         price_includes_tax=False,
-        custom_rules=json.dumps(
-            [{'country': 'ZZ', 'address_type': '', 'action': 'vat'}]
-        ),
+        custom_rules=json.dumps([{'country': 'ZZ', 'address_type': '', 'action': 'vat'}]),
     )
-    ia = InvoiceAddress(
-        is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT')
-    )
+    ia = InvoiceAddress(is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT'))
     assert not tr.is_reverse_charge(ia)
     assert tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('10.00')
@@ -259,9 +247,7 @@ def test_custom_rules_in_order(event):
             ]
         ),
     )
-    ia = InvoiceAddress(
-        is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT')
-    )
+    ia = InvoiceAddress(is_business=True, vat_id='AT12346', vat_id_validated=True, country=Country('AT'))
     assert not tr.is_reverse_charge(ia)
     assert tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('10.00')
@@ -392,9 +378,7 @@ def test_custom_rules_vat_id(event):
     assert not tr.is_reverse_charge(ia)
     assert tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('10.00')
-    ia = InvoiceAddress(
-        is_business=True, country=Country('DE'), vat_id='DE1234', vat_id_validated=True
-    )
+    ia = InvoiceAddress(is_business=True, country=Country('DE'), vat_id='DE1234', vat_id_validated=True)
     assert tr.is_reverse_charge(ia)
     assert not tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('0.00')
@@ -421,9 +405,7 @@ def test_custom_rules_country_rate(event):
     assert not tr.is_reverse_charge(ia)
     assert tr._tax_applicable(ia)
     assert tr.tax_rate_for(ia) == Decimal('10.00')
-    ia = InvoiceAddress(
-        is_business=True, country=Country('DE'), vat_id='DE1234', vat_id_validated=True
-    )
+    ia = InvoiceAddress(is_business=True, country=Country('DE'), vat_id='DE1234', vat_id_validated=True)
     assert tr.tax_rate_for(ia) == Decimal('100.00')
     assert not tr.is_reverse_charge(ia)
     assert tr._tax_applicable(ia)

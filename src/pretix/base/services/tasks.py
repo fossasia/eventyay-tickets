@@ -27,10 +27,7 @@ from pretix.celery_app import app
 
 class ProfiledTask(app.Task):
     def __call__(self, *args, **kwargs):
-        if (
-            settings.PROFILING_RATE > 0
-            and random.random() < settings.PROFILING_RATE / 100
-        ):
+        if settings.PROFILING_RATE > 0 and random.random() < settings.PROFILING_RATE / 100:
             profiler = cProfile.Profile()
             profiler.enable()
             t0 = time.perf_counter()
@@ -40,9 +37,7 @@ class ProfiledTask(app.Task):
             profiler.dump_stats(
                 os.path.join(
                     settings.PROFILE_DIR,
-                    '{time:.0f}_{tottime:.3f}_celery_{t}.pstat'.format(
-                        t=self.name, tottime=tottime, time=time.time()
-                    ),
+                    '{time:.0f}_{tottime:.3f}_celery_{t}.pstat'.format(t=self.name, tottime=tottime, time=time.time()),
                 )
             )
         else:
@@ -61,9 +56,7 @@ class ProfiledTask(app.Task):
                 if isinstance(exc, t):
                     expected = True
                     break
-            pretix_task_runs_total.inc(
-                1, task_name=self.name, status='expected-error' if expected else 'error'
-            )
+            pretix_task_runs_total.inc(1, task_name=self.name, status='expected-error' if expected else 'error')
 
         return super().on_failure(exc, task_id, args, kwargs, einfo)
 
@@ -135,9 +128,7 @@ class TransactionAwareTask(ProfiledTask):
         Unlike the default task in celery, this task does not return an async
         result
         """
-        transaction.on_commit(
-            lambda: super(TransactionAwareTask, self).apply_async(*args, **kwargs)
-        )
+        transaction.on_commit(lambda: super(TransactionAwareTask, self).apply_async(*args, **kwargs))
 
 
 class TransactionAwareProfiledEventTask(ProfiledEventTask):
@@ -146,8 +137,4 @@ class TransactionAwareProfiledEventTask(ProfiledEventTask):
         Unlike the default task in celery, this task does not return an async
         result
         """
-        transaction.on_commit(
-            lambda: super(TransactionAwareProfiledEventTask, self).apply_async(
-                *args, **kwargs
-            )
-        )
+        transaction.on_commit(lambda: super(TransactionAwareProfiledEventTask, self).apply_async(*args, **kwargs))

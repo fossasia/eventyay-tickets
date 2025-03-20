@@ -42,8 +42,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     @cached_property
     def address_asked(self):
         return self.request.event.settings.invoice_address_asked and (
-            not self.request.event.settings.invoice_address_not_asked_free
-            or not get_cart_is_free(self.request)
+            not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(self.request)
         )
 
     def get_context_data(self, **kwargs):
@@ -52,9 +51,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         if self.payment_provider:
             ctx['payment'] = self.payment_provider.checkout_confirm_render(self.request)
             ctx['payment_provider'] = self.payment_provider
-        ctx['require_approval'] = any(
-            cp.item.require_approval for cp in ctx['cart']['positions']
-        )
+        ctx['require_approval'] = any(cp.item.require_approval for cp in ctx['cart']['positions'])
         ctx['addr'] = self.invoice_address
         ctx['confirm_messages'] = self.confirm_messages
         ctx['cart_session'] = self.cart_session
@@ -99,9 +96,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     def payment_provider(self):
         if 'payment' not in self.cart_session:
             return None
-        return self.request.event.get_payment_providers().get(
-            self.cart_session['payment']
-        )
+        return self.request.event.get_payment_providers().get(self.cart_session['payment'])
 
     def get(self, request):
         self.request = request
@@ -111,9 +106,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     @cached_property
     def all_optional(self):
-        for recv, resp in checkout_all_optional.send(
-            sender=self.request.event, request=self.request
-        ):
+        for recv, resp in checkout_all_optional.send(sender=self.request.event, request=self.request):
             if resp:
                 return True
         return False
@@ -124,9 +117,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         if self.confirm_messages and not self.all_optional:
             for key, msg in self.confirm_messages.items():
                 if request.POST.get('confirm_{}'.format(key)) != 'yes':
-                    msg = str(
-                        _('You need to check all checkboxes on the bottom of the page.')
-                    )
+                    msg = str(_('You need to check all checkboxes on the bottom of the page.'))
                     messages.error(self.request, msg)
                     if 'ajax' in self.request.POST or 'ajax' in self.request.GET:
                         return JsonResponse(
@@ -142,9 +133,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
             'contact_form_data': self.cart_session.get('contact_form_data', {}),
             'confirm_messages': [str(m) for m in self.confirm_messages.values()],
         }
-        for receiver, response in order_meta_from_request.send(
-            sender=request.event, request=request
-        ):
+        for receiver, response in order_meta_from_request.send(sender=request.event, request=request):
             meta_info.update(response)
 
         return self.do(
@@ -170,18 +159,14 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     def get_error_message(self, exception):
         if exception.__class__.__name__ == 'SendMailException':
-            return _(
-                'There was an error sending the confirmation mail. Please try again later.'
-            )
+            return _('There was an error sending the confirmation mail. Please try again later.')
         return super().get_error_message(exception)
 
     def get_error_url(self):
         return self.get_step_url(self.request)
 
     def get_order_url(self, order):
-        payment = order.payments.filter(
-            state=OrderPayment.PAYMENT_STATE_CREATED
-        ).first()
+        payment = order.payments.filter(state=OrderPayment.PAYMENT_STATE_CREATED).first()
         if not payment:
             return (
                 eventreverse(

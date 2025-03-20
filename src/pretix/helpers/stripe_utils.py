@@ -34,12 +34,8 @@ def get_stripe_key(key_type: str) -> str:
     gs = GlobalSettingsObject()
 
     try:
-        prod_key = getattr(
-            gs.settings, 'payment_stripe_connect_{}_key'.format(key_type), None
-        )
-        test_key = getattr(
-            gs.settings, 'payment_stripe_connect_test_{}_key'.format(key_type), None
-        )
+        prod_key = getattr(gs.settings, 'payment_stripe_connect_{}_key'.format(key_type), None)
+        test_key = getattr(gs.settings, 'payment_stripe_connect_test_{}_key'.format(key_type), None)
     except AttributeError as e:
         logger.error('Missing attribute for Stripe %s key: %s', key_type, str(e))
         raise ValidationError(
@@ -50,11 +46,7 @@ def get_stripe_key(key_type: str) -> str:
 
     if not prod_key and not test_key:
         logger.error('No Stripe %s key found', key_type)
-        raise ValidationError(
-            'Please contact the administrator to set the Stripe {} key.'.format(
-                key_type
-            )
-        )
+        raise ValidationError('Please contact the administrator to set the Stripe {} key.'.format(key_type))
 
     logger.info('Get successful %s key', key_type)
 
@@ -85,14 +77,10 @@ def handle_stripe_errors(operation_name: str):
                 logger.error('Stripe API error during %s: %s', operation_name, str(e))
                 raise ValidationError('Stripe service error.')
             except stripe.error.APIConnectionError as e:
-                logger.error(
-                    'API connection error during %s: %s', operation_name, str(e)
-                )
+                logger.error('API connection error during %s: %s', operation_name, str(e))
                 raise ValidationError('Network communication error.')
             except stripe.error.AuthenticationError as e:
-                logger.error(
-                    'Authentication error during %s: %s', operation_name, str(e)
-                )
+                logger.error('Authentication error during %s: %s', operation_name, str(e))
                 raise ValidationError(
                     'Authentication failed. Please contact the administrator to check the configuration of the Stripe API key.'
                 )
@@ -103,9 +91,7 @@ def handle_stripe_errors(operation_name: str):
                 logger.error('Rate limit error during %s: %s', operation_name, str(e))
                 raise ValidationError('Too many requests. Please try again later.')
             except stripe.error.InvalidRequestError as e:
-                logger.error(
-                    'Invalid request error during %s: %s', operation_name, str(e)
-                )
+                logger.error('Invalid request error during %s: %s', operation_name, str(e))
                 raise ValidationError('Invalid request.')
             except stripe.error.SignatureVerificationError as e:
                 logger.error(
@@ -143,9 +129,9 @@ def create_setup_intent(customer_id: str) -> str:
         usage='off_session',
     )
     logger.info('Created a successful setup intent.')
-    billing_settings_updated = OrganizerBillingModel.objects.filter(
-        stripe_customer_id=customer_id
-    ).update(stripe_setup_intent_id=stripe_setup_intent.id)
+    billing_settings_updated = OrganizerBillingModel.objects.filter(stripe_customer_id=customer_id).update(
+        stripe_setup_intent_id=stripe_setup_intent.id
+    )
     if not billing_settings_updated:
         logger.error('No billing settings found for the customer %s', customer_id)
         raise ValidationError('No billing settings found for the customer.')
@@ -162,18 +148,14 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
     if not organizer:
         logger.error('Organizer %s not found.', organizer_slug)
         raise ValidationError('Organizer {} not found.'.format(organizer_slug))
-    billing_settings = OrganizerBillingModel.objects.filter(
-        organizer_id=organizer.id
-    ).first()
+    billing_settings = OrganizerBillingModel.objects.filter(organizer_id=organizer.id).first()
     if billing_settings and billing_settings.stripe_customer_id:
         return billing_settings.stripe_customer_id
     logger.error(
         'No billing settings or Stripe customer ID found for organizer %s',
         organizer_slug,
     )
-    raise ValidationError(
-        'No stripe_customer_id found for organizer {}'.format(organizer_slug)
-    )
+    raise ValidationError('No stripe_customer_id found for organizer {}'.format(organizer_slug))
 
 
 @handle_stripe_errors('create_stripe_customer')
@@ -207,9 +189,9 @@ def update_payment_info(setup_intent_id: str, customer_id: str):
     if not payment_method:
         logger.error('No payment method found for the setup intent %s', setup_intent_id)
         raise ValidationError('No payment method found for the setup intent.')
-    billing_setting_updated = OrganizerBillingModel.objects.filter(
-        stripe_customer_id=customer_id
-    ).update(stripe_payment_method_id=payment_method)
+    billing_setting_updated = OrganizerBillingModel.objects.filter(stripe_customer_id=customer_id).update(
+        stripe_payment_method_id=payment_method
+    )
     if not billing_setting_updated:
         logger.error('No billing settings found for the customer %s', customer_id)
         raise ValidationError('No billing settings found for the customer.')
@@ -229,14 +211,10 @@ def get_payment_method_info(stripe_customer_id: str):
     @return: A dictionary containing the payment method information.
     """
     stripe.api_key = get_stripe_secret_key()
-    billing_settings = OrganizerBillingModel.objects.filter(
-        stripe_customer_id=stripe_customer_id
-    ).first()
+    billing_settings = OrganizerBillingModel.objects.filter(stripe_customer_id=stripe_customer_id).first()
     if not billing_settings or not billing_settings.stripe_payment_method_id:
         return None
-    payment_method = stripe.PaymentMethod.retrieve(
-        billing_settings.stripe_payment_method_id
-    )
+    payment_method = stripe.PaymentMethod.retrieve(billing_settings.stripe_payment_method_id)
     logger.info('Retrieve successful payment information.')
     return payment_method
 
@@ -265,9 +243,7 @@ def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
     @return: A dictionary containing the attached payment method information.
     """
     stripe.api_key = get_stripe_secret_key()
-    attached_payment_method = stripe.PaymentMethod.attach(
-        payment_method_id, customer=customer_id
-    )
+    attached_payment_method = stripe.PaymentMethod.attach(payment_method_id, customer=customer_id)
     logger.info(
         'Attached successful payment method.',
     )
@@ -358,10 +334,6 @@ def process_auto_billing_charge_stripe(
     if not payment_method:
         logger.error('No payment method found for the customer %s', customer_id)
         raise ValidationError('No payment method found for the customer.')
-    payment_intent = create_payment_intent(
-        amount, currency, customer_id, payment_method.id, metadata, invoice_id
-    )
-    payment_intent_confirmation_info = confirm_payment_intent(
-        payment_intent.id, payment_method.id
-    )
+    payment_intent = create_payment_intent(amount, currency, customer_id, payment_method.id, metadata, invoice_id)
+    payment_intent_confirmation_info = confirm_payment_intent(payment_intent.id, payment_method.id)
     return payment_intent_confirmation_info

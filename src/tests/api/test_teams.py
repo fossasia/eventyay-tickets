@@ -66,9 +66,7 @@ def test_team_list(token_client, organizer, event, team):
 def test_team_detail(token_client, organizer, event, second_team):
     res = dict(SECOND_TEAM_RES)
     res['id'] = second_team.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/teams/{}/'.format(organizer.slug, second_team.pk)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/teams/{}/'.format(organizer.slug, second_team.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -140,9 +138,7 @@ def test_team_members_list(token_client, organizer, event, user, team):
     res = dict(TEST_TEAM_MEMBER_RES)
     res['id'] = user.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/teams/{}/members/'.format(organizer.slug, team.pk)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/teams/{}/members/'.format(organizer.slug, team.pk))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -152,11 +148,7 @@ def test_team_members_detail(token_client, organizer, event, team, user):
     team.members.add(user)
     res = dict(TEST_TEAM_MEMBER_RES)
     res['id'] = user.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/teams/{}/members/{}/'.format(
-            organizer.slug, team.pk, user.pk
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/teams/{}/members/{}/'.format(organizer.slug, team.pk, user.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -164,11 +156,7 @@ def test_team_members_detail(token_client, organizer, event, team, user):
 @pytest.mark.django_db
 def test_team_members_delete(token_client, organizer, event, team, user):
     team.members.add(user)
-    resp = token_client.delete(
-        '/api/v1/organizers/{}/teams/{}/members/{}/'.format(
-            organizer.slug, team.pk, user.pk
-        )
-    )
+    resp = token_client.delete('/api/v1/organizers/{}/teams/{}/members/{}/'.format(organizer.slug, team.pk, user.pk))
     assert resp.status_code == 204
     assert team.members.count() == 0
     assert User.objects.filter(pk=user.pk).exists()
@@ -189,9 +177,7 @@ def test_team_invites_list(token_client, organizer, event, user, team, invite):
     res = dict(TEST_TEAM_INVITE_RES)
     res['id'] = invite.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/teams/{}/invites/'.format(organizer.slug, team.pk)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/teams/{}/invites/'.format(organizer.slug, team.pk))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -200,22 +186,14 @@ def test_team_invites_list(token_client, organizer, event, user, team, invite):
 def test_team_invites_detail(token_client, organizer, event, team, user, invite):
     res = dict(TEST_TEAM_INVITE_RES)
     res['id'] = invite.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/teams/{}/invites/{}/'.format(
-            organizer.slug, team.pk, invite.pk
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/teams/{}/invites/{}/'.format(organizer.slug, team.pk, invite.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
 
 @pytest.mark.django_db
 def test_team_invites_delete(token_client, organizer, event, team, user, invite):
-    resp = token_client.delete(
-        '/api/v1/organizers/{}/teams/{}/invites/{}/'.format(
-            organizer.slug, team.pk, invite.pk
-        )
-    )
+    resp = token_client.delete('/api/v1/organizers/{}/teams/{}/invites/{}/'.format(organizer.slug, team.pk, invite.pk))
     assert resp.status_code == 204
     assert team.invites.count() == 0
 
@@ -235,9 +213,7 @@ def test_team_invites_create(token_client, organizer, event, team, user):
         {'email': 'newmail@dummy.dummy'},
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode() == '["This user already has been invited for this team."]'
-    )
+    assert resp.content.decode() == '["This user already has been invited for this team."]'
 
     resp = token_client.post(
         '/api/v1/organizers/{}/teams/{}/invites/'.format(organizer.slug, team.pk),
@@ -253,9 +229,7 @@ def test_team_invites_create(token_client, organizer, event, team, user):
         {'email': user.email},
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode() == '["This user already has permissions for this team."]'
-    )
+    assert resp.content.decode() == '["This user already has permissions for this team."]'
 
 
 TEST_TEAM_TOKEN_RES = {
@@ -275,9 +249,7 @@ def test_team_tokens_list(token_client, organizer, event, user, second_team, tok
     res = dict(TEST_TEAM_TOKEN_RES)
     res['id'] = token.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/teams/{}/tokens/'.format(organizer.slug, second_team.pk)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/teams/{}/tokens/'.format(organizer.slug, second_team.pk))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -287,9 +259,7 @@ def test_team_tokens_detail(token_client, organizer, event, second_team, token):
     res = dict(TEST_TEAM_TOKEN_RES)
     res['id'] = token.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/teams/{}/tokens/{}/'.format(
-            organizer.slug, second_team.pk, token.pk
-        )
+        '/api/v1/organizers/{}/teams/{}/tokens/{}/'.format(organizer.slug, second_team.pk, token.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -298,9 +268,7 @@ def test_team_tokens_detail(token_client, organizer, event, second_team, token):
 @pytest.mark.django_db
 def test_team_tokens_delete(token_client, organizer, event, second_team, token):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/teams/{}/tokens/{}/'.format(
-            organizer.slug, second_team.pk, token.pk
-        )
+        '/api/v1/organizers/{}/teams/{}/tokens/{}/'.format(organizer.slug, second_team.pk, token.pk)
     )
     assert resp.status_code == 200
     token.refresh_from_db()

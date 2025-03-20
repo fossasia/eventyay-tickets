@@ -8,9 +8,7 @@ from pretix.base.models import LoggedModel
 
 
 def bg_name(instance, filename: str) -> str:
-    secret = get_random_string(
-        length=16, allowed_chars=string.ascii_letters + string.digits
-    )
+    secret = get_random_string(length=16, allowed_chars=string.ascii_letters + string.digits)
     return 'pub/{org}/{ev}/ticketoutputpdf/{id}-{secret}.pdf'.format(
         org=instance.event.organizer.slug,
         ev=instance.event.slug,
@@ -20,9 +18,7 @@ def bg_name(instance, filename: str) -> str:
 
 
 class TicketLayout(LoggedModel):
-    event = models.ForeignKey(
-        'pretixbase.Event', on_delete=models.CASCADE, related_name='ticket_layouts'
-    )
+    event = models.ForeignKey('pretixbase.Event', on_delete=models.CASCADE, related_name='ticket_layouts')
     default = models.BooleanField(
         verbose_name=_('Default'),
         default=False,
@@ -214,9 +210,7 @@ class TicketLayout(LoggedModel):
         "content":"dark"
     }]"""
     )
-    background = models.FileField(
-        null=True, blank=True, upload_to=bg_name, max_length=255
-    )
+    background = models.FileField(null=True, blank=True, upload_to=bg_name, max_length=255)
 
     class Meta:
         ordering = ('name',)
@@ -233,9 +227,7 @@ class TicketLayoutItem(models.Model):
         related_name='ticketlayout_assignments',
         on_delete=models.CASCADE,
     )
-    layout = models.ForeignKey(
-        'TicketLayout', on_delete=models.CASCADE, related_name='item_assignments'
-    )
+    layout = models.ForeignKey('TicketLayout', on_delete=models.CASCADE, related_name='item_assignments')
     sales_channel = models.CharField(max_length=190, default='web')
 
     class Meta:

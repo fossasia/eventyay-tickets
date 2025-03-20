@@ -118,9 +118,7 @@ class JobRunSerializer(serializers.Serializer):
                     validators=v.validators,
                 )
             else:
-                self.fields[k] = FormFieldWrapperField(
-                    form_field=v, required=v.required, allow_null=not v.required
-                )
+                self.fields[k] = FormFieldWrapperField(form_field=v, required=v.required, allow_null=not v.required)
 
     def to_internal_value(self, data):
         if isinstance(data, QueryDict):

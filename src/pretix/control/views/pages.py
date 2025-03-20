@@ -41,9 +41,7 @@ class PageCreate(AdministratorPermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes have not been saved, see below for errors.')
-        )
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
 
@@ -101,15 +99,11 @@ class PageUpdate(AdministratorPermissionRequiredMixin, PageDetailMixin, UpdateVi
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('We could not save your changes. See below for details.')
-        )
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
 
-class PageDelete(
-    AdministratorPermissionRequiredMixin, PageDetailMixin, CompatDeleteView
-):
+class PageDelete(AdministratorPermissionRequiredMixin, PageDetailMixin, CompatDeleteView):
     model = Page
     template_name = 'pretixcontrol/admin/pages/delete.html'
     context_object_name = 'page'
@@ -134,12 +128,8 @@ class ShowPageView(TemplateView):
         ctx = super().get_context_data()
         page = self.get_page()
         ctx['page'] = page
-        ctx['show_link_in_header_for_all_pages'] = Page.objects.filter(
-            link_in_header=True
-        )
-        ctx['show_link_in_footer_for_all_pages'] = Page.objects.filter(
-            link_in_footer=True
-        )
+        ctx['show_link_in_header_for_all_pages'] = Page.objects.filter(link_in_header=True)
+        ctx['show_link_in_footer_for_all_pages'] = Page.objects.filter(link_in_footer=True)
 
         attributes = dict(bleach.ALLOWED_ATTRIBUTES)
         attributes['a'] = ['href', 'title', 'target']
@@ -149,8 +139,7 @@ class ShowPageView(TemplateView):
 
         ctx['content'] = bleach.clean(
             str(page.text),
-            tags=bleach.ALLOWED_TAGS
-            + ['img', 'p', 'br', 's', 'sup', 'sub', 'u', 'h3', 'h4', 'h5', 'h6'],
+            tags=bleach.ALLOWED_TAGS + ['img', 'p', 'br', 's', 'sup', 'sub', 'u', 'h3', 'h4', 'h5', 'h6'],
             attributes=attributes,
             protocols=bleach.ALLOWED_PROTOCOLS + ['data'],
         )

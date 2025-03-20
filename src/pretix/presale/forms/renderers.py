@@ -48,13 +48,7 @@ def render_label(
         if 'for' in attrs:
             del attrs['for']
     else:
-        opt += (
-            '<i class="sr-only label-required">, {}</i>'.format(
-                pgettext('form', 'required')
-            )
-            if not optional
-            else ''
-        )
+        opt += '<i class="sr-only label-required">, {}</i>'.format(pgettext('form', 'required')) if not optional else ''
 
     builder = '<{tag}{attrs}>{content}{opt}</{tag}>'
     return format_html(
@@ -85,9 +79,7 @@ class CheckoutFieldRenderer(FieldRenderer):
                 form_group_class = add_css_class(form_group_class, self.error_css_class)
         else:
             if self.field.form.is_bound:
-                form_group_class = add_css_class(
-                    form_group_class, self.success_css_class
-                )
+                form_group_class = add_css_class(form_group_class, self.success_css_class)
         required = (
             getattr(self.field.field, '_show_required', False)
             or getattr(self.field.field, '_required', False)
@@ -96,9 +88,7 @@ class CheckoutFieldRenderer(FieldRenderer):
         if required and self.required_css_class:
             form_group_class = add_css_class(form_group_class, self.required_css_class)
         if self.layout == 'horizontal':
-            form_group_class = add_css_class(
-                form_group_class, self.get_size_class(prefix='form-group')
-            )
+            form_group_class = add_css_class(form_group_class, self.get_size_class(prefix='form-group'))
         return form_group_class
 
     def append_to_field(self, html):
@@ -107,10 +97,8 @@ class CheckoutFieldRenderer(FieldRenderer):
         if self.field_help:
             help_text_and_errors.append(self.field_help)
         for idx, text in enumerate(help_text_and_errors):
-            html += (
-                '<div class="help-block" id="help-for-{id}-{idx}">{text}</div>'.format(
-                    id=self.field.id_for_label, text=text, idx=idx
-                )
+            html += '<div class="help-block" id="help-for-{id}-{idx}">{text}</div>'.format(
+                id=self.field.id_for_label, text=text, idx=idx
             )
         return html
 
@@ -122,10 +110,7 @@ class CheckoutFieldRenderer(FieldRenderer):
         if self.field_help:
             help_cnt += 1
         if help_cnt > 0:
-            help_ids = [
-                'help-for-{id}-{idx}'.format(id=self.field.id_for_label, idx=idx)
-                for idx in range(help_cnt)
-            ]
+            help_ids = ['help-for-{id}-{idx}'.format(id=self.field.id_for_label, idx=idx) for idx in range(help_cnt)]
             widget.attrs['aria-describedby'] = ' '.join(help_ids)
 
     def add_label(self, html):
@@ -172,9 +157,7 @@ class CheckoutFieldRenderer(FieldRenderer):
 
     def wrap_label_and_field(self, html):
         if self.is_group_widget:
-            attrs = ' role="group" aria-labelledby="legend-{}"'.format(
-                self.field.html_name
-            )
+            attrs = ' role="group" aria-labelledby="legend-{}"'.format(self.field.html_name)
         else:
             attrs = ''
         return '<div class="{klass}"{attrs}>{html}</div>'.format(

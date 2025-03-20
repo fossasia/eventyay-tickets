@@ -83,9 +83,7 @@ def _detect_event(request, require_live=True, require_plugin=None):
                     r['Access-Control-Allow-Origin'] = '*'
                     return r
             elif 'organizer' in url.kwargs:
-                request.organizer = Organizer.objects.using(db).get(
-                    slug=url.kwargs['organizer']
-                )
+                request.organizer = Organizer.objects.using(db).get(slug=url.kwargs['organizer'])
             else:
                 raise Http404()
 
@@ -103,20 +101,10 @@ def _detect_event(request, require_live=True, require_plugin=None):
             if require_live and not request.event.live:
                 can_access = url.url_name == 'event.auth' or (
                     request.user.is_authenticated
-                    and request.user.has_event_permission(
-                        request.organizer, request.event, request=request
-                    )
+                    and request.user.has_event_permission(request.organizer, request.event, request=request)
                 )
-                if (
-                    not can_access
-                    and 'pretix_event_access_{}'.format(request.event.pk)
-                    in request.session
-                ):
-                    sparent = SessionStore(
-                        request.session.get(
-                            'pretix_event_access_{}'.format(request.event.pk)
-                        )
-                    )
+                if not can_access and 'pretix_event_access_{}'.format(request.event.pk) in request.session:
+                    sparent = SessionStore(request.session.get('pretix_event_access_{}'.format(request.event.pk)))
                     try:
                         parentdata = sparent.load()
                     except:
@@ -127,21 +115,15 @@ def _detect_event(request, require_live=True, require_plugin=None):
                 if not can_access:
                     return permission_denied(
                         request,
-                        PermissionDenied(
-                            _('The selected ticket shop is currently not available.')
-                        ),
+                        PermissionDenied(_('The selected ticket shop is currently not available.')),
                     )
 
             if require_plugin:
-                is_core = any(
-                    require_plugin.startswith(m) for m in settings.CORE_MODULES
-                )
+                is_core = any(require_plugin.startswith(m) for m in settings.CORE_MODULES)
                 if require_plugin not in request.event.get_plugins() and not is_core:
                     raise Http404(_('This feature is not enabled.'))
 
-            for receiver, response in process_request.send(
-                request.event, request=request
-            ):
+            for receiver, response in process_request.send(request.event, request=request):
                 if response:
                     return response
 
@@ -185,17 +167,13 @@ def _detect_event(request, require_live=True, require_plugin=None):
 def _event_view(function=None, require_live=True, require_plugin=None):
     def event_view_wrapper(func, require_live=require_live):
         def wrap(request, *args, **kwargs):
-            ret = _detect_event(
-                request, require_live=require_live, require_plugin=require_plugin
-            )
+            ret = _detect_event(request, require_live=require_live, require_plugin=require_plugin)
             if ret:
                 return ret
             else:
                 with scope(organizer=getattr(request, 'organizer', None)):
                     response = func(request=request, *args, **kwargs)
-                    for receiver, r in process_response.send(
-                        request.event, request=request, response=response
-                    ):
+                    for receiver, r in process_response.send(request.event, request=request, response=response):
                         response = r
 
                     if isinstance(response, TemplateResponse):

@@ -11,9 +11,7 @@ class Validator(OAuth2Validator):
         if not getattr(request, 'organizers', None) and request.scopes != ['profile']:
             raise FatalClientError('No organizers selected.')
 
-        expires = timezone.now() + timedelta(
-            seconds=oauth2_settings.AUTHORIZATION_CODE_EXPIRE_SECONDS
-        )
+        expires = timezone.now() + timedelta(seconds=oauth2_settings.AUTHORIZATION_CODE_EXPIRE_SECONDS)
         g = Grant(
             application=request.client,
             user=request.user,
@@ -51,9 +49,7 @@ class Validator(OAuth2Validator):
                 orgs = list(request.organizers.all())
             else:
                 orgs = list(source_refresh_token.access_token.organizers.all())
-        access_token = super()._create_access_token(
-            expires, request, token, source_refresh_token=None
-        )
+        access_token = super()._create_access_token(expires, request, token, source_refresh_token=None)
         if token['scope'] != 'profile':
             access_token.organizers.add(*orgs)
         return access_token

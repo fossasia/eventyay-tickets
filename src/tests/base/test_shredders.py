@@ -50,9 +50,7 @@ def event():
 
 @pytest.fixture
 def item(event):
-    return event.items.create(
-        name='Early-bird ticket', category=None, default_price=23, admission=True
-    )
+    return event.items.create(name='Early-bird ticket', category=None, default_price=23, admission=True)
 
 
 @pytest.fixture
@@ -168,9 +166,7 @@ def test_attendee_name_shredder(event, order):
     l1 = order.log_action(
         'pretix.event.order.modified',
         data={
-            'data': [
-                {'attendee_name': 'Peter', 'question_1': 'Test', 'company': 'Foobar'}
-            ],
+            'data': [{'attendee_name': 'Peter', 'question_1': 'Test', 'company': 'Foobar'}],
             'invoice_data': {'name': 'Foo'},
         },
     )
@@ -274,19 +270,13 @@ def test_question_answer_shredder(event, order, question):
             'data': [
                 {
                     'attendee_name': 'Hans',
-                    'question_%d' % question.pk: [
-                        {'id': opt.pk, 'type': 'QuestionOption'}
-                    ],
+                    'question_%d' % question.pk: [{'id': opt.pk, 'type': 'QuestionOption'}],
                 }
             ],
         },
     )
-    qa = QuestionAnswer.objects.create(
-        orderposition=order.positions.first(), question=question, answer='S'
-    )
-    qa2 = QuestionAnswer.objects.create(
-        orderposition=order.positions.first(), question=q2, answer='file:///foo.pdf'
-    )
+    qa = QuestionAnswer.objects.create(orderposition=order.positions.first(), question=question, answer='S')
+    qa2 = QuestionAnswer.objects.create(orderposition=order.positions.first(), question=q2, answer='file:///foo.pdf')
     qa.file.save('foo.pdf', ContentFile('foo'))
     fname = qa.file.path
     assert os.path.exists(fname)
@@ -356,9 +346,7 @@ def test_cached_tickets(event, order):
     generate('orderposition', order.positions.first().pk, 'pdf')
     generate('order', order.pk, 'pdf')
 
-    ct = CachedTicket.objects.get(
-        order_position=order.positions.first(), provider='pdf'
-    )
+    ct = CachedTicket.objects.get(order_position=order.positions.first(), provider='pdf')
     cct = CachedCombinedTicket.objects.get(order=order, provider='pdf')
     assert ct.file
     assert cct.file
@@ -370,9 +358,7 @@ def test_cached_tickets(event, order):
     assert s.generate_files() is None
     s.shred_data()
 
-    assert not CachedTicket.objects.filter(
-        order_position=order.positions.first(), provider='pdf'
-    ).exists()
+    assert not CachedTicket.objects.filter(order_position=order.positions.first(), provider='pdf').exists()
     assert not CachedCombinedTicket.objects.filter(order=order, provider='pdf').exists()
     assert not os.path.exists(ct_fname)
     assert not os.path.exists(cct_fname)
@@ -435,11 +421,7 @@ def test_shred_constraint_30_days_subevents(event):
     event.has_subevents = True
     event.live = False
 
-    event.subevents.create(
-        date_from=now() - timedelta(days=32), date_to=now() - timedelta(days=32)
-    )
+    event.subevents.create(date_from=now() - timedelta(days=32), date_to=now() - timedelta(days=32))
     assert shred_constraints(event) is None
-    event.subevents.create(
-        date_from=now() - timedelta(days=22), date_to=now() - timedelta(days=32)
-    )
+    event.subevents.create(date_from=now() - timedelta(days=22), date_to=now() - timedelta(days=32))
     assert shred_constraints(event)

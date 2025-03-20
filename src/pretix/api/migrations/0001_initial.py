@@ -18,9 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('idempotency_key', models.CharField(db_index=True, max_length=190)),
                 ('auth_hash', models.CharField(db_index=True, max_length=190)),
@@ -133,9 +131,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('enabled', models.BooleanField(default=True)),
                 ('target_url', models.URLField()),
@@ -150,9 +146,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('action_type', models.CharField(max_length=255)),
                 (
@@ -173,9 +167,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('datetime', models.DateTimeField(auto_now_add=True)),
                 ('target_url', models.URLField()),

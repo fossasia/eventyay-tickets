@@ -24,35 +24,21 @@ class EventMiddleware:
 
         if not hasattr(request, 'sales_channel'):
             # The environ lookup is only relevant during unit testing
-            request.sales_channel = request.environ.get(
-                'PRETIX_SALES_CHANNEL', WebshopSalesChannel()
-            )
+            request.sales_channel = request.environ.get('PRETIX_SALES_CHANNEL', WebshopSalesChannel())
 
         if url.namespace != 'presale':
             return self.get_response(request)
 
-        if (
-            'organizer' in url.kwargs
-            or 'event' in url.kwargs
-            or getattr(request, 'event_domain', False)
-        ):
-            redirect = _detect_event(
-                request, require_live=url.url_name not in self.NO_REQUIRE_LIVE_URLS
-            )
+        if 'organizer' in url.kwargs or 'event' in url.kwargs or getattr(request, 'event_domain', False):
+            redirect = _detect_event(request, require_live=url.url_name not in self.NO_REQUIRE_LIVE_URLS)
             if redirect:
                 return redirect
 
         with scope(organizer=getattr(request, 'organizer', None)):
             response = self.get_response(request)
 
-            if (
-                hasattr(request, '_namespace')
-                and request._namespace == 'presale'
-                and hasattr(request, 'event')
-            ):
-                for receiver, r in process_response.send(
-                    request.event, request=request, response=response
-                ):
+            if hasattr(request, '_namespace') and request._namespace == 'presale' and hasattr(request, 'event'):
+                for receiver, r in process_response.send(request.event, request=request, response=response):
                     response = r
 
             if isinstance(response, TemplateResponse):

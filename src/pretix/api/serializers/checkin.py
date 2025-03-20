@@ -48,18 +48,12 @@ class CheckinListSerializer(I18nAwareModelSerializer):
         data = super().validate(data)
         event = self.context['event']
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
         for item in full_data.get('limit_products'):
             if event != item.event:
-                raise ValidationError(
-                    _('One or more items do not belong to this event.')
-                )
+                raise ValidationError(_('One or more items do not belong to this event.'))
 
         if event.has_subevents:
             if full_data.get('subevent') and event != full_data.get('subevent').event:
@@ -78,15 +72,11 @@ class CheckinListSerializer(I18nAwareModelSerializer):
 
 
 class CheckinRedeemInputSerializer(serializers.Serializer):
-    lists = serializers.PrimaryKeyRelatedField(
-        required=True, many=True, queryset=CheckinList.objects.none()
-    )
+    lists = serializers.PrimaryKeyRelatedField(required=True, many=True, queryset=CheckinList.objects.none())
     secret = serializers.CharField(required=True, allow_null=False)
     force = serializers.BooleanField(default=False, required=False)
     source_type = serializers.ChoiceField(choices=['barcode'], default='barcode')
-    type = serializers.ChoiceField(
-        choices=Checkin.CHECKIN_TYPES, default=Checkin.TYPE_ENTRY
-    )
+    type = serializers.ChoiceField(choices=Checkin.CHECKIN_TYPES, default=Checkin.TYPE_ENTRY)
     ignore_unpaid = serializers.BooleanField(default=False, required=False)
     questions_supported = serializers.BooleanField(default=True, required=False)
     nonce = serializers.CharField(required=False, allow_null=True)

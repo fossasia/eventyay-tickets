@@ -72,9 +72,7 @@ class OrganizerTest(SoupTest):
             nonlocal called
             called = True
 
-        self.monkeypatch.setattr(
-            'pretix.presale.style.regenerate_organizer_css.apply_async', set_called
-        )
+        self.monkeypatch.setattr('pretix.presale.style.regenerate_organizer_css.apply_async', set_called)
         assert not self.orga1.settings.presale_css_checksum
         doc = self.get_doc('/control/organizer/%s/edit' % (self.orga1.slug,))
         doc.select('[name=settings-primary_color]')[0]['value'] = '#33c33c'

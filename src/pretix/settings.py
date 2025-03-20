@@ -68,9 +68,7 @@ CSP_ADDITIONAL_HEADER = config.get('pretix', 'csp_additional_header', fallback='
 
 PDFTK = config.get('tools', 'pdftk', fallback=None)
 
-PRETIX_AUTH_BACKENDS = config.get(
-    'pretix', 'auth_backends', fallback='pretix.base.auth.NativeAuthBackend'
-).split(',')
+PRETIX_AUTH_BACKENDS = config.get('pretix', 'auth_backends', fallback='pretix.base.auth.NativeAuthBackend').split(',')
 
 db_backend = config.get('database', 'backend', fallback='sqlite3')
 if db_backend == 'postgresql_psycopg2':
@@ -89,9 +87,7 @@ if db_tls_config is not None:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.' + db_backend,
-        'NAME': config.get(
-            'database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3')
-        ),
+        'NAME': config.get('database', 'name', fallback=os.path.join(DATA_DIR, 'db.sqlite3')),
         'USER': config.get('database', 'user', fallback=''),
         'PASSWORD': config.get('database', 'password', fallback=''),
         'HOST': config.get('database', 'host', fallback=''),
@@ -108,9 +104,7 @@ if config.has_section('replica'):
         'ENGINE': 'django.db.backends.' + db_backend,
         'NAME': config.get('replica', 'name', fallback=DATABASES['default']['NAME']),
         'USER': config.get('replica', 'user', fallback=DATABASES['default']['USER']),
-        'PASSWORD': config.get(
-            'replica', 'password', fallback=DATABASES['default']['PASSWORD']
-        ),
+        'PASSWORD': config.get('replica', 'password', fallback=DATABASES['default']['PASSWORD']),
         'HOST': config.get('replica', 'host', fallback=DATABASES['default']['HOST']),
         'PORT': config.get('replica', 'port', fallback=DATABASES['default']['PORT']),
         'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
@@ -128,25 +122,17 @@ STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 MEDIA_URL = config.get('urls', 'media', fallback=BASE_PATH + '/media/')
 
 INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
-INSTANCE_NAME_COMMON = config.get(
-    'pretix', 'instance_name_common', fallback='eventyay-common'
-)
+INSTANCE_NAME_COMMON = config.get('pretix', 'instance_name_common', fallback='eventyay-common')
 PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
 PRETIX_PASSWORD_RESET = config.getboolean('pretix', 'password_reset', fallback=True)
 PRETIX_LONG_SESSIONS = config.getboolean('pretix', 'long_sessions', fallback=True)
-PRETIX_ADMIN_AUDIT_COMMENTS = config.getboolean(
-    'pretix', 'audit_comments', fallback=False
-)
+PRETIX_ADMIN_AUDIT_COMMENTS = config.getboolean('pretix', 'audit_comments', fallback=False)
 PRETIX_OBLIGATORY_2FA = config.getboolean('pretix', 'obligatory_2fa', fallback=False)
 PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 PRETIX_PRIMARY_COLOR = '#2185d0'
-TALK_HOSTNAME = config.get(
-    'pretix', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/'
-)
-VIDEO_SERVER_HOSTNAME = config.get(
-    'pretix', 'video_server_hostname', fallback='https://app.eventyay.com/video'
-)
+TALK_HOSTNAME = config.get('pretix', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+VIDEO_SERVER_HOSTNAME = config.get('pretix', 'video_server_hostname', fallback='https://app.eventyay.com/video')
 
 SITE_URL = config.get('pretix', 'url', fallback='http://localhost')
 if SITE_URL.endswith('/'):
@@ -194,9 +180,7 @@ ALLOWED_HOSTS = ['*']
 LANGUAGE_CODE = config.get('locale', 'default', fallback='en')
 TIME_ZONE = config.get('locale', 'timezone', fallback='UTC')
 
-MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get(
-    'mail', 'from', fallback='pretix@localhost'
-)
+MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='pretix@localhost')
 EMAIL_HOST = config.get('mail', 'host', fallback='localhost')
 EMAIL_PORT = config.getint('mail', 'port', fallback=25)
 EMAIL_HOST_USER = config.get('mail', 'user', fallback='')
@@ -205,9 +189,7 @@ EMAIL_USE_TLS = config.getboolean('mail', 'tls', fallback=False)
 EMAIL_USE_SSL = config.getboolean('mail', 'ssl', fallback=False)
 EMAIL_SUBJECT_PREFIX = '[pretix] '
 
-ADMINS = [
-    ('Admin', n) for n in config.get('mail', 'admins', fallback='').split(',') if n
-]
+ADMINS = [('Admin', n) for n in config.get('mail', 'admins', fallback='').split(',') if n]
 
 METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
 METRICS_USER = config.get('metrics', 'user', fallback='metrics')
@@ -454,9 +436,7 @@ if METRICS_ENABLED:
     )
 
 
-PROFILING_RATE = config.getfloat(
-    'django', 'profile', fallback=0
-)  # Percentage of requests to profile
+PROFILING_RATE = config.getfloat('django', 'profile', fallback=0)  # Percentage of requests to profile
 if PROFILING_RATE > 0:
     if not os.path.exists(PROFILE_DIR):
         os.mkdir(PROFILE_DIR)
@@ -509,9 +489,7 @@ ALL_LANGUAGES = [
     ('uk', _('Ukrainian')),
 ]
 LANGUAGES_OFFICIAL = {'en', 'de', 'de-formal'}
-LANGUAGES_INCUBATING = {'pl', 'fi', 'pt-br'} - set(
-    config.get('languages', 'allow_incubating', fallback='').split(',')
-)
+LANGUAGES_INCUBATING = {'pl', 'fi', 'pt-br'} - set(config.get('languages', 'allow_incubating', fallback='').split(','))
 LANGUAGES_RTL = {'ar', 'hw'}
 
 if DEBUG:
@@ -601,9 +579,7 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_DIRS = (
-    [os.path.join(BASE_DIR, 'pretix/static')]
-    if os.path.exists(os.path.join(BASE_DIR, 'pretix/static'))
-    else []
+    [os.path.join(BASE_DIR, 'pretix/static')] if os.path.exists(os.path.join(BASE_DIR, 'pretix/static')) else []
 )
 
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'pretix/static')
@@ -643,9 +619,7 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'default': {
-            'format': '%(levelname)s %(asctime)s %(name)s %(module)s %(message)s'
-        },
+        'default': {'format': '%(levelname)s %(asctime)s %(name)s %(module)s %(message)s'},
     },
     'filters': {
         'require_admin_enabled': {
@@ -717,9 +691,7 @@ LOGGING = {
 }
 
 SENTRY_ENABLED = False
-if config.has_option('sentry', 'dsn') and not any(
-    c in sys.argv for c in ('shell', 'shell_scoped', 'shell_plus')
-):
+if config.has_option('sentry', 'dsn') and not any(c in sys.argv for c in ('shell', 'shell_scoped', 'shell_plus')):
     import sentry_sdk
     from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.logging import (
@@ -845,9 +817,7 @@ HAS_GEOIP = False
 if config.has_option('geoip', 'path'):
     HAS_GEOIP = True
     GEOIP_PATH = config.get('geoip', 'path')
-    GEOIP_COUNTRY = config.get(
-        'geoip', 'filename_country', fallback='GeoLite2-Country.mmdb'
-    )
+    GEOIP_COUNTRY = config.get('geoip', 'filename_country', fallback='GeoLite2-Country.mmdb')
 
 # Django allauth settings for social login
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None

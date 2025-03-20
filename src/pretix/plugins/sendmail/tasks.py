@@ -41,16 +41,12 @@ def send_mails(
                 if p.addon_to_id is not None:
                     continue
 
-                if p.item_id not in items and not any(
-                    a.item_id in items for a in p.addons.all()
-                ):
+                if p.item_id not in items and not any(a.item_id in items for a in p.addons.all()):
                     continue
 
                 if filter_checkins:
                     checkins = list(p.checkins.all())
-                    allowed = (not_checked_in and not checkins) or (
-                        any(c.list_id in checkin_lists for c in checkins)
-                    )
+                    allowed = (not_checked_in and not checkins) or (any(c.list_id in checkin_lists for c in checkins))
                     if not allowed:
                         continue
 
@@ -64,9 +60,7 @@ def send_mails(
 
                 try:
                     with language(o.locale, event.settings.region):
-                        email_context = get_email_context(
-                            event=event, order=o, position_or_address=p, position=p
-                        )
+                        email_context = get_email_context(event=event, order=o, position_or_address=p, position=p)
                         mail(
                             p.attendee_email,
                             subject,
@@ -83,12 +77,8 @@ def send_mails(
                             user=user,
                             data={
                                 'position': p.positionid,
-                                'subject': subject.localize(o.locale).format_map(
-                                    email_context
-                                ),
-                                'message': message.localize(o.locale).format_map(
-                                    email_context
-                                ),
+                                'subject': subject.localize(o.locale).format_map(email_context),
+                                'message': message.localize(o.locale).format_map(email_context),
                                 'recipient': p.attendee_email,
                             },
                         )
@@ -98,9 +88,7 @@ def send_mails(
         if send_to_order and o.email:
             try:
                 with language(o.locale, event.settings.region):
-                    email_context = get_email_context(
-                        event=event, order=o, position_or_address=ia
-                    )
+                    email_context = get_email_context(event=event, order=o, position_or_address=ia)
                     mail(
                         o.email,
                         subject,
@@ -115,12 +103,8 @@ def send_mails(
                         'pretix.plugins.sendmail.order.email.sent',
                         user=user,
                         data={
-                            'subject': subject.localize(o.locale).format_map(
-                                email_context
-                            ),
-                            'message': message.localize(o.locale).format_map(
-                                email_context
-                            ),
+                            'subject': subject.localize(o.locale).format_map(email_context),
+                            'message': message.localize(o.locale).format_map(email_context),
                             'recipient': o.email,
                         },
                     )

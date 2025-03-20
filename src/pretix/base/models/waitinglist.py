@@ -38,9 +38,7 @@ class WaitingListEntry(LoggedModel):
         on_delete=models.CASCADE,
         verbose_name=pgettext_lazy('subevent', 'Date'),
     )
-    created = models.DateTimeField(
-        verbose_name=_('On waiting list since'), auto_now_add=True
-    )
+    created = models.DateTimeField(verbose_name=_('On waiting list since'), auto_now_add=True)
     name_cached = models.CharField(
         max_length=255,
         verbose_name=_('Name'),
@@ -88,9 +86,7 @@ class WaitingListEntry(LoggedModel):
         return '%s waits for %s' % (str(self.email), str(self.item))
 
     def clean(self):
-        WaitingListEntry.clean_duplicate(
-            self.email, self.item, self.variation, self.subevent, self.pk
-        )
+        WaitingListEntry.clean_duplicate(self.email, self.item, self.variation, self.subevent, self.pk)
         WaitingListEntry.clean_itemvar(self.event, self.item, self.variation)
         WaitingListEntry.clean_subevent(self.event, self.subevent)
 
@@ -117,37 +113,26 @@ class WaitingListEntry(LoggedModel):
 
     def send_voucher(self, quota_cache=None, user=None, auth=None):
         availability = (
-            self.variation.check_quotas(
-                count_waitinglist=False, subevent=self.subevent, _cache=quota_cache
-            )
+            self.variation.check_quotas(count_waitinglist=False, subevent=self.subevent, _cache=quota_cache)
             if self.variation
-            else self.item.check_quotas(
-                count_waitinglist=False, subevent=self.subevent, _cache=quota_cache
-            )
+            else self.item.check_quotas(count_waitinglist=False, subevent=self.subevent, _cache=quota_cache)
         )
         if availability[1] is None or availability[1] < 1:
             raise WaitingListException(_('This product is currently not available.'))
         if self.voucher:
-            raise WaitingListException(
-                _('A voucher has already been sent to this person.')
-            )
+            raise WaitingListException(_('A voucher has already been sent to this person.'))
         if '@' not in self.email:
-            raise WaitingListException(
-                _('This entry is anonymized and can no longer be used.')
-            )
+            raise WaitingListException(_('This entry is anonymized and can no longer be used.'))
 
         with transaction.atomic():
             v = Voucher.objects.create(
                 event=self.event,
                 max_usages=1,
-                valid_until=now()
-                + timedelta(hours=self.event.settings.waiting_list_hours),
+                valid_until=now() + timedelta(hours=self.event.settings.waiting_list_hours),
                 item=self.item,
                 variation=self.variation,
                 tag='waiting-list',
-                comment=_(
-                    'Automatically created from waiting list entry for {email}'
-                ).format(email=self.email),
+                comment=_('Automatically created from waiting list entry for {email}').format(email=self.email),
                 block_quota=True,
                 subevent=self.subevent,
             )
@@ -174,9 +159,7 @@ class WaitingListEntry(LoggedModel):
         with language(self.locale, self.event.settings.region):
             mail(
                 self.email,
-                _('You have been selected from the waitinglist for {event}').format(
-                    event=str(self.event)
-                ),
+                _('You have been selected from the waitinglist for {event}').format(event=str(self.event)),
                 self.event.settings.mail_text_waiting_list,
                 get_email_context(event=self.event, waiting_list_entry=self),
                 self.event,
@@ -188,9 +171,7 @@ class WaitingListEntry(LoggedModel):
         if event != item.event:
             raise ValidationError(_('The selected item does not belong to this event.'))
         if item.has_variations and (not variation or variation.item != item):
-            raise ValidationError(
-                _('Please select a specific variation of this product.')
-            )
+            raise ValidationError(_('Please select a specific variation of this product.'))
 
     @staticmethod
     def clean_subevent(event, subevent):

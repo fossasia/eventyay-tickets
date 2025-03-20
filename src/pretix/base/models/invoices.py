@@ -16,9 +16,7 @@ from pretix.helpers.countries import FastCountryField
 
 
 def invoice_filename(instance, filename: str) -> str:
-    secret = get_random_string(
-        length=16, allowed_chars=string.ascii_letters + string.digits
-    )
+    secret = get_random_string(length=16, allowed_chars=string.ascii_letters + string.digits)
     return 'invoices/{org}/{ev}/{no}-{code}-{secret}.{ext}'.format(
         org=instance.event.organizer.slug,
         ev=instance.event.slug,
@@ -78,15 +76,9 @@ class Invoice(models.Model):
     :type file: File
     """
 
-    order = models.ForeignKey(
-        'Order', related_name='invoices', db_index=True, on_delete=models.CASCADE
-    )
-    organizer = models.ForeignKey(
-        'Organizer', related_name='invoices', db_index=True, on_delete=models.PROTECT
-    )
-    event = models.ForeignKey(
-        'Event', related_name='invoices', db_index=True, on_delete=models.CASCADE
-    )
+    order = models.ForeignKey('Order', related_name='invoices', db_index=True, on_delete=models.CASCADE)
+    organizer = models.ForeignKey('Organizer', related_name='invoices', db_index=True, on_delete=models.PROTECT)
+    event = models.ForeignKey('Event', related_name='invoices', db_index=True, on_delete=models.CASCADE)
     prefix = models.CharField(max_length=160, db_index=True)
     invoice_no = models.CharField(max_length=19, db_index=True)
     full_invoice_no = models.CharField(max_length=190, db_index=True)
@@ -123,15 +115,11 @@ class Invoice(models.Model):
     payment_provider_text = models.TextField(blank=True)
     footer_text = models.TextField(blank=True)
     foreign_currency_display = models.CharField(max_length=50, null=True, blank=True)
-    foreign_currency_rate = models.DecimalField(
-        decimal_places=4, max_digits=10, null=True, blank=True
-    )
+    foreign_currency_rate = models.DecimalField(decimal_places=4, max_digits=10, null=True, blank=True)
     foreign_currency_rate_date = models.DateField(null=True, blank=True)
     shredded = models.BooleanField(default=False)
 
-    file = models.FileField(
-        null=True, blank=True, upload_to=invoice_filename, max_length=255
-    )
+    file = models.FileField(null=True, blank=True, upload_to=invoice_filename, max_length=255)
     internal_reference = models.TextField(blank=True)
     custom_field = models.CharField(max_length=255, null=True)
 
@@ -154,9 +142,7 @@ class Invoice(models.Model):
             self.invoice_from,
             (self.invoice_from_zipcode or '') + ' ' + (self.invoice_from_city or ''),
             self.invoice_from_country.name if self.invoice_from_country else '',
-            pgettext('invoice', 'VAT-ID: %s') % self.invoice_from_vat_id
-            if self.invoice_from_vat_id
-            else '',
+            pgettext('invoice', 'VAT-ID: %s') % self.invoice_from_vat_id if self.invoice_from_vat_id else '',
             taxidrow,
         ]
         return '\n'.join([p.strip() for p in parts if p and p.strip()])
@@ -180,15 +166,10 @@ class Invoice(models.Model):
         if self.invoice_to_state:
             state_name = self.invoice_to_state
             if str(self.invoice_to_country) in COUNTRIES_WITH_STATE_IN_ADDRESS:
-                if (
-                    COUNTRIES_WITH_STATE_IN_ADDRESS[str(self.invoice_to_country)][1]
-                    == 'long'
-                ):
+                if COUNTRIES_WITH_STATE_IN_ADDRESS[str(self.invoice_to_country)][1] == 'long':
                     try:
                         state_name = pycountry.subdivisions.get(
-                            code='{}-{}'.format(
-                                self.invoice_to_country, self.invoice_to_state
-                            )
+                            code='{}-{}'.format(self.invoice_to_country, self.invoice_to_state)
                         ).name
                     except:
                         pass
@@ -197,13 +178,7 @@ class Invoice(models.Model):
             self.invoice_to_company,
             self.invoice_to_name,
             self.invoice_to_street,
-            (
-                (self.invoice_to_zipcode or '')
-                + ' '
-                + (self.invoice_to_city or '')
-                + ' '
-                + (state_name or '')
-            ).strip(),
+            ((self.invoice_to_zipcode or '') + ' ' + (self.invoice_to_city or '') + ' ' + (state_name or '')).strip(),
             self.invoice_to_country.name if self.invoice_to_country else '',
         ]
         return '\n'.join([p.strip() for p in parts if p and p.strip()])
@@ -224,8 +199,7 @@ class Invoice(models.Model):
     def _get_invoice_number_from_order(self):
         return '{order}-{count}'.format(
             order=self.order.code,
-            count=Invoice.objects.filter(event=self.event, order=self.order).count()
-            + 1,
+            count=Invoice.objects.filter(event=self.event, order=self.order).count() + 1,
         )
 
     def save(self, *args, **kwargs):
@@ -236,14 +210,9 @@ class Invoice(models.Model):
         if not self.organizer:
             self.organizer = self.order.event.organizer
         if not self.prefix:
-            self.prefix = self.event.settings.invoice_numbers_prefix or (
-                self.event.slug.upper() + '-'
-            )
+            self.prefix = self.event.settings.invoice_numbers_prefix or (self.event.slug.upper() + '-')
             if self.is_cancellation:
-                self.prefix = (
-                    self.event.settings.invoice_numbers_prefix_cancellations
-                    or self.prefix
-                )
+                self.prefix = self.event.settings.invoice_numbers_prefix_cancellations or self.prefix
             if '%' in self.prefix:
                 self.prefix = self.date.strftime(self.prefix)
 
@@ -274,9 +243,7 @@ class Invoice(models.Model):
         with the same invoice_no as the deleted one. For various reasons, invoice_no
         should be reliably unique for an event.
         """
-        raise Exception(
-            'Invoices cannot be deleted, to guarantee uniqueness of Invoice.invoice_no in any event.'
-        )
+        raise Exception('Invoices cannot be deleted, to guarantee uniqueness of Invoice.invoice_no in any event.')
 
     @property
     def number(self):
@@ -330,28 +297,18 @@ class InvoiceLine(models.Model):
     :type attendee_name: str
     """
 
-    invoice = models.ForeignKey(
-        'Invoice', related_name='lines', on_delete=models.CASCADE
-    )
+    invoice = models.ForeignKey('Invoice', related_name='lines', on_delete=models.CASCADE)
     position = models.PositiveIntegerField(default=0)
     description = models.TextField()
     gross_value = models.DecimalField(max_digits=10, decimal_places=2)
-    tax_value = models.DecimalField(
-        max_digits=10, decimal_places=2, default=Decimal('0.00')
-    )
-    tax_rate = models.DecimalField(
-        max_digits=7, decimal_places=2, default=Decimal('0.00')
-    )
+    tax_value = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    tax_rate = models.DecimalField(max_digits=7, decimal_places=2, default=Decimal('0.00'))
     tax_name = models.CharField(max_length=190)
-    subevent = models.ForeignKey(
-        'SubEvent', null=True, blank=True, on_delete=models.PROTECT
-    )
+    subevent = models.ForeignKey('SubEvent', null=True, blank=True, on_delete=models.PROTECT)
     event_date_from = models.DateTimeField(null=True)
     event_date_to = models.DateTimeField(null=True)
     item = models.ForeignKey('Item', null=True, blank=True, on_delete=models.PROTECT)
-    variation = models.ForeignKey(
-        'ItemVariation', null=True, blank=True, on_delete=models.PROTECT
-    )
+    variation = models.ForeignKey('ItemVariation', null=True, blank=True, on_delete=models.PROTECT)
     attendee_name = models.TextField(null=True, blank=True)
 
     @property

@@ -25,16 +25,12 @@ class WebHookForm(forms.ModelForm):
             for a in get_all_webhook_events().values()
         ]
         if self.instance and self.instance.pk:
-            self.fields['events'].initial = list(
-                self.instance.listeners.values_list('action_type', flat=True)
-            )
+            self.fields['events'].initial = list(self.instance.listeners.values_list('action_type', flat=True))
 
     class Meta:
         model = WebHook
         fields = ['target_url', 'enabled', 'all_events', 'limit_events']
         widgets = {
-            'limit_events': forms.CheckboxSelectMultiple(
-                attrs={'data-inverse-dependency': '#id_all_events'}
-            ),
+            'limit_events': forms.CheckboxSelectMultiple(attrs={'data-inverse-dependency': '#id_all_events'}),
         }
         field_classes = {'limit_events': SafeModelMultipleChoiceField}

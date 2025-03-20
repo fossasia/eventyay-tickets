@@ -16,9 +16,7 @@ from ...control.permissions import OrganizerPermissionRequiredMixin
 from ..tasks import send_team_webhook
 
 
-class TeamListView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class TeamListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = Team
     template_name = 'eventyay_common/organizers/teams/teams.html'
     context_object_name = 'teams'
@@ -28,9 +26,7 @@ class TeamListView(
         return self.request.organizer.teams.all().order_by('name')
 
 
-class TeamCreateView(
-    OrganizerDetailViewMixin, CreateView, OrganizerPermissionRequiredMixin
-):
+class TeamCreateView(OrganizerDetailViewMixin, CreateView, OrganizerPermissionRequiredMixin):
     model = Team
     template_name = 'eventyay_common/organizers/teams/team_edit.html'
     form_class = TeamForm
@@ -42,9 +38,7 @@ class TeamCreateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Team, organizer=self.request.organizer, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(Team, organizer=self.request.organizer, pk=self.kwargs.get('team'))
 
     @transaction.atomic
     def form_valid(self, form):
@@ -80,9 +74,7 @@ class TeamCreateView(
         )
 
 
-class TeamUpdateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView
-):
+class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = Team
     template_name = 'eventyay_common/organizers/teams/team_edit.html'
     context_object_name = 'team'
@@ -95,17 +87,13 @@ class TeamUpdateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        self.object = get_object_or_404(
-            Team, organizer=self.request.organizer, pk=self.kwargs.get('team')
-        )
+        self.object = get_object_or_404(Team, organizer=self.request.organizer, pk=self.kwargs.get('team'))
         self.old_name = self.object.name
         return self.object
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['talk_edit_url'] = urljoin(
-            settings.TALK_HOSTNAME, f'orga/organiser/{self.request.organizer.slug}'
-        )
+        ctx['talk_edit_url'] = urljoin(settings.TALK_HOSTNAME, f'orga/organiser/{self.request.organizer.slug}')
         return ctx
 
     def get_success_url(self):
@@ -142,18 +130,14 @@ class TeamUpdateView(
         return super().form_invalid(form)
 
 
-class TeamDeleteView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView
-):
+class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
     model = Team
     template_name = 'eventyay_common/organizers/teams/team_delete.html'
     context_object_name = 'team'
     permission = 'can_change_teams'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            Team, organizer=self.request.organizer, pk=self.kwargs.get('team')
-        )
+        return get_object_or_404(Team, organizer=self.request.organizer, pk=self.kwargs.get('team'))
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
@@ -179,14 +163,10 @@ class TeamDeleteView(
                 'action': 'delete',
             }
             send_team_webhook.delay(user_id=self.request.user.id, team=team_data)
-            messages.success(
-                self.request, gettext_lazy('The selected team is deleted.')
-            )
+            messages.success(self.request, gettext_lazy('The selected team is deleted.'))
             return redirect(success_url)
         else:
-            messages.error(
-                self.request, gettext_lazy('The selected team cannot be deleted.')
-            )
+            messages.error(self.request, gettext_lazy('The selected team cannot be deleted.'))
             return redirect(success_url)
 
     def get_success_url(self):

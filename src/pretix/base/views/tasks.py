@@ -30,9 +30,7 @@ class AsyncMixin:
         return self.error_url
 
     def get_check_url(self, task_id, ajax):
-        return (
-            self.request.path + '?async_id=%s' % task_id + ('&ajax=1' if ajax else '')
-        )
+        return self.request.path + '?async_id=%s' % task_id + ('&ajax=1' if ajax else '')
 
     def _ajax_response_data(self):
         return {}
@@ -134,10 +132,7 @@ class AsyncMixin:
         return redirect(self.get_error_url())
 
     def get_error_message(self, exception):
-        if (
-            isinstance(exception, dict)
-            and exception['exc_type'] in self.known_errortypes
-        ):
+        if isinstance(exception, dict) and exception['exc_type'] in self.known_errortypes:
             return exception['exc_message']
         elif exception.__class__.__name__ in self.known_errortypes:
             return str(exception)
@@ -192,9 +187,7 @@ class AsyncFormView(AsyncMixin, FormView):
     known_errortypes = ['ValidationError']
 
     def __init_subclass__(cls):
-        def async_execute(
-            self, request_path, form_kwargs, organizer=None, event=None, user=None
-        ):
+        def async_execute(self, request_path, form_kwargs, organizer=None, event=None, user=None):
             view_instance = cls()
             view_instance.request = RequestFactory().post(request_path)
             if organizer:
@@ -208,9 +201,7 @@ class AsyncFormView(AsyncMixin, FormView):
             if form_kwargs.get('instance'):
                 cls.model.objects.get(pk=form_kwargs['instance'])
 
-            form_kwargs = view_instance.get_async_form_kwargs(
-                form_kwargs, organizer, event
-            )
+            form_kwargs = view_instance.get_async_form_kwargs(form_kwargs, organizer, event)
 
             form = form_class(**form_kwargs)
             return view_instance.async_form_valid(self, form)

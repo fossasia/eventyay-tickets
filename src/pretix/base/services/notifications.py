@@ -13,17 +13,13 @@ from pretix.celery_app import app
 from pretix.helpers.urls import build_absolute_uri
 
 
-@app.task(
-    base=TransactionAwareTask, acks_late=True, max_retries=9, default_retry_delay=900
-)
+@app.task(base=TransactionAwareTask, acks_late=True, max_retries=9, default_retry_delay=900)
 @scopes_disabled()
 def notify(logentry_ids: list):
     if not isinstance(logentry_ids, list):
         logentry_ids = [logentry_ids]
 
-    qs = LogEntry.all.select_related('event', 'event__organizer').filter(
-        id__in=logentry_ids
-    )
+    qs = LogEntry.all.select_related('event', 'event__organizer').filter(id__in=logentry_ids)
 
     _event, _at, notify_specific, notify_global = None, None, None, None
     for logentry in qs:
@@ -35,17 +31,13 @@ def notify(logentry_ids: list):
         if not notification_type:
             break  # No suitable plugin
 
-        if (
-            _event != logentry.event
-            or _at != logentry.action_type
-            or notify_global is None
-        ):
+        if _event != logentry.event or _at != logentry.action_type or notify_global is None:
             _event = logentry.event
             _at = logentry.action_type
             # All users that have the permission to get the notification
-            users = logentry.event.get_users_with_permission(
-                notification_type.required_permission
-            ).filter(notifications_send=True, is_active=True)
+            users = logentry.event.get_users_with_permission(notification_type.required_permission).filter(
+                notifications_send=True, is_active=True
+            )
             if logentry.user:
                 users = users.exclude(pk=logentry.user.pk)
 
@@ -70,16 +62,12 @@ def notify(logentry_ids: list):
         for um, enabled in notify_specific.items():
             user, method = um
             if enabled:
-                send_notification.apply_async(
-                    args=(logentry.id, notification_type.action_type, user.pk, method)
-                )
+                send_notification.apply_async(args=(logentry.id, notification_type.action_type, user.pk, method))
 
         for um, enabled in notify_global.items():
             user, method = um
             if enabled and um not in notify_specific:
-                send_notification.apply_async(
-                    args=(logentry.id, notification_type.action_type, user.pk, method)
-                )
+                send_notification.apply_async(args=(logentry.id, notification_type.action_type, user.pk, method))
 
 
 @app.task(base=ProfiledTask, acks_late=True, max_retries=9, default_retry_delay=900)
@@ -136,8 +124,7 @@ def send_notification_mail(notification: Notification, user: User):
             'to': [user.email],
             'subject': '[{}] {}: {}'.format(
                 settings.INSTANCE_NAME,
-                notification.event.settings.mail_prefix
-                or notification.event.slug.upper(),
+                notification.event.settings.mail_prefix or notification.event.slug.upper(),
                 notification.title,
             ),
             'body': body_plain,

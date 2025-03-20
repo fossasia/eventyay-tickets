@@ -39,9 +39,7 @@ def control_nav_import(sender, request=None, **kwargs):
     url = resolve(request.path_info)
     p = request.user.has_event_permission(
         request.organizer, request.event, 'can_change_settings', request
-    ) or request.user.has_event_permission(
-        request.organizer, request.event, 'can_view_orders', request
-    )
+    ) or request.user.has_event_permission(request.organizer, request.event, 'can_view_orders', request)
     if not p:
         return []
     return [
@@ -107,9 +105,7 @@ def event_copy_data_receiver(sender, other, question_map, item_map, **kwargs):
         layout_map[oldid] = bl
 
     for bi in BadgeItem.objects.filter(item__event=other):
-        BadgeItem.objects.create(
-            item=item_map.get(bi.item_id), layout=layout_map.get(bi.layout_id)
-        )
+        BadgeItem.objects.create(item=item_map.get(bi.item_id), layout=layout_map.get(bi.layout_id))
 
 
 @receiver(register_data_exporters, dispatch_uid='badges_export_all')
@@ -123,8 +119,7 @@ def _cached_rendermap(event):
     if hasattr(event, '_cached_renderermap'):
         return event._cached_renderermap
     renderermap = {
-        bi.item_id: bi.layout_id
-        for bi in BadgeItem.objects.select_related('layout').filter(item__event=event)
+        bi.item_id: bi.layout_id for bi in BadgeItem.objects.select_related('layout').filter(item__event=event)
     }
     try:
         default_renderer = event.badge_layouts.get(default=True).pk
@@ -136,9 +131,7 @@ def _cached_rendermap(event):
 
 
 @receiver(order_position_buttons, dispatch_uid='badges_control_order_buttons')
-def control_order_position_info(
-    sender: Event, position, request, order: Order, **kwargs
-):
+def control_order_position_info(sender: Event, position, request, order: Order, **kwargs):
     if _cached_rendermap(sender)[position.item_id] is None:
         return ''
     template = get_template('pretixplugins/badges/control_order_position_buttons.html')
@@ -179,9 +172,9 @@ def badges_logentry_display(sender, logentry, **kwargs):
 
 @receiver(signal=logentry_object_link, dispatch_uid='badges_logentry_object_link')
 def badges_logentry_object_link(sender, logentry, **kwargs):
-    if not logentry.action_type.startswith(
-        'pretix.plugins.badges.layout'
-    ) or not isinstance(logentry.content_object, BadgeLayout):
+    if not logentry.action_type.startswith('pretix.plugins.badges.layout') or not isinstance(
+        logentry.content_object, BadgeLayout
+    ):
         return
 
     a_text = _('Badge layout {val}')

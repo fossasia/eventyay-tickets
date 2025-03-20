@@ -14,9 +14,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('state', models.CharField(default='pending', max_length=32)),
@@ -30,9 +28,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('state', models.CharField(default='imported', max_length=32)),
                 ('message', models.TextField()),
@@ -55,9 +51,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('datetime', models.DateTimeField(auto_now_add=True)),
                 ('testmode', models.BooleanField(default=False)),

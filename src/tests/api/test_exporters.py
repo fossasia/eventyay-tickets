@@ -41,17 +41,11 @@ def test_event_list(token_client, organizer, event):
     event.has_subevents = True
     event.save()
     c = copy.deepcopy(SAMPLE_EXPORTER_CONFIG)
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/exporters/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/exporters/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert c in resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/exporters/orderlist/'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/exporters/orderlist/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert c == resp.data
 
@@ -63,9 +57,7 @@ def test_org_list(token_client, organizer, event):
     resp = token_client.get('/api/v1/organizers/{}/exporters/'.format(organizer.slug))
     assert resp.status_code == 200
     assert c in resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/exporters/orderlist/'.format(organizer.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/exporters/orderlist/'.format(organizer.slug))
     assert resp.status_code == 200
     assert c == resp.data
 
@@ -73,9 +65,7 @@ def test_org_list(token_client, organizer, event):
 @pytest.mark.django_db
 def test_event_validate(token_client, organizer, team, event):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/exporters/orderlist/run/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/exporters/orderlist/run/'.format(organizer.slug, event.slug),
         data={},
         format='json',
     )
@@ -83,9 +73,7 @@ def test_event_validate(token_client, organizer, team, event):
     assert resp.data == {'_format': ['This field is required.']}
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/exporters/orderlist/run/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/exporters/orderlist/run/'.format(organizer.slug, event.slug),
         data={
             '_format': 'FOOBAR',
         },
@@ -137,9 +125,7 @@ def test_org_validate_events(token_client, organizer, team, event):
 @pytest.mark.django_db(transaction=True)
 def test_run_success(token_client, organizer, team, event):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/exporters/orderlist/run/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/exporters/orderlist/run/'.format(organizer.slug, event.slug),
         data={
             '_format': 'xlsx',
         },

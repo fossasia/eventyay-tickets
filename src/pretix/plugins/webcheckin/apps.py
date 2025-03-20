@@ -13,9 +13,7 @@ class WebCheckinApp(AppConfig):
         version = version
         category = 'FEATURE'
         featured = True
-        description = _(
-            'This plugin allows you to perform check-in actions in your browser.'
-        )
+        description = _('This plugin allows you to perform check-in actions in your browser.')
 
     def ready(self):
         from . import signals  # NOQA

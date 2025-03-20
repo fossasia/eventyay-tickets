@@ -123,19 +123,13 @@ def import_orders(event: Event, fileid: str, settings: dict, locale: str, user) 
                     c.assign(record.get(c.identifier), order, position, order._address)
 
             except ImportError as e:
-                raise ImportError(
-                    _('Invalid data in row {row}: {message}').format(
-                        row=i, message=str(e)
-                    )
-                )
+                raise ImportError(_('Invalid data in row {row}: {message}').format(row=i, message=str(e)))
 
         # quota check?
         with event.lock():
             with transaction.atomic():
                 for o in orders:
-                    o.total = sum(
-                        [c.price for c in o._positions]
-                    )  # currently no support for fees
+                    o.total = sum([c.price for c in o._positions])  # currently no support for fees
                     if o.total == Decimal('0.00'):
                         o.status = Order.STATUS_PAID
                         o.save()
@@ -186,10 +180,7 @@ def import_orders(event: Event, fileid: str, settings: dict, locale: str, user) 
                         invoice_qualified(o)
                         and (
                             (event.settings.get('invoice_generate') == 'True')
-                            or (
-                                event.settings.get('invoice_generate') == 'paid'
-                                and o.status == Order.STATUS_PAID
-                            )
+                            or (event.settings.get('invoice_generate') == 'paid' and o.status == Order.STATUS_PAID)
                         )
                         and not o.invoices.last()
                     )

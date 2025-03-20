@@ -57,9 +57,7 @@ class ExportersMixin:
         cf = get_object_or_404(CachedFile, id=kwargs['cfid'])
         if cf.file:
             resp = ChunkBasedFileResponse(cf.file.file, content_type=cf.type)
-            resp['Content-Disposition'] = 'attachment; filename="{}"'.format(
-                cf.filename
-            )
+            resp['Content-Disposition'] = 'attachment; filename="{}"'.format(cf.filename)
             return resp
         elif not settings.HAS_CELERY:
             return Response(
@@ -73,15 +71,11 @@ class ExportersMixin:
                 msg = res.info['exc_message']
             else:
                 msg = 'Internal error'
-            return Response(
-                {'status': 'failed', 'message': msg}, status=status.HTTP_410_GONE
-            )
+            return Response({'status': 'failed', 'message': msg}, status=status.HTTP_410_GONE)
 
         return Response(
             {
-                'status': 'running'
-                if res.state in ('PROGRESS', 'STARTED', 'SUCCESS')
-                else 'waiting',
+                'status': 'running' if res.state in ('PROGRESS', 'STARTED', 'SUCCESS') else 'waiting',
                 'percentage': res.result.get('value', None) if res.result else None,
             },
             status=status.HTTP_409_CONFLICT,
@@ -90,9 +84,7 @@ class ExportersMixin:
     @action(detail=True, methods=['POST'])
     def run(self, *args, **kwargs):
         instance = self.get_object()
-        serializer = JobRunSerializer(
-            exporter=instance, data=self.request.data, **self.get_serializer_kwargs()
-        )
+        serializer = JobRunSerializer(exporter=instance, data=self.request.data, **self.get_serializer_kwargs())
         serializer.is_valid(raise_exception=True)
 
         cf = CachedFile(web_download=False)
@@ -111,11 +103,7 @@ class ExportersMixin:
         }
         url_kwargs.update(self.kwargs)
         return Response(
-            {
-                'download': reverse(
-                    'api-v1:exporters-download', kwargs=url_kwargs, request=self.request
-                )
-            },
+            {'download': reverse('api-v1:exporters-download', kwargs=url_kwargs, request=self.request)},
             status=status.HTTP_202_ACCEPTED,
         )
 
@@ -139,9 +127,7 @@ class EventExportersViewSet(ExportersMixin, viewsets.ViewSet):
         return exporters
 
     def do_export(self, cf, instance, data):
-        return export.apply_async(
-            args=(self.request.event.id, str(cf.id), instance.identifier, data)
-        )
+        return export.apply_async(args=(self.request.event.id, str(cf.id), instance.identifier, data))
 
 
 class OrganizerExportersViewSet(ExportersMixin, viewsets.ViewSet):
@@ -166,24 +152,18 @@ class OrganizerExportersViewSet(ExportersMixin, viewsets.ViewSet):
 
     def get_serializer_kwargs(self):
         return {
-            'events': self.request.auth.get_events_with_permission(
-                'can_view_orders', request=self.request
-            ).filter(organizer=self.request.organizer)
+            'events': self.request.auth.get_events_with_permission('can_view_orders', request=self.request).filter(
+                organizer=self.request.organizer
+            )
         }
 
     def do_export(self, cf, instance, data):
         return multiexport.apply_async(
             kwargs={
                 'organizer': self.request.organizer.id,
-                'user': self.request.user.id
-                if self.request.user.is_authenticated
-                else None,
-                'token': self.request.auth.pk
-                if isinstance(self.request.auth, TeamAPIToken)
-                else None,
-                'device': self.request.auth.pk
-                if isinstance(self.request.auth, Device)
-                else None,
+                'user': self.request.user.id if self.request.user.is_authenticated else None,
+                'token': self.request.auth.pk if isinstance(self.request.auth, TeamAPIToken) else None,
+                'device': self.request.auth.pk if isinstance(self.request.auth, Device) else None,
                 'fileid': str(cf.id),
                 'provider': instance.identifier,
                 'form_data': data,

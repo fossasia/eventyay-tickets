@@ -193,10 +193,7 @@ def render_pdf(event, positions, opt):
         p = canvas.Canvas(buffer, pagesize=pagesizes.A4)
         for i, (op, r) in enumerate(positions):
             offsetx = opt['margins'][3] + (i % opt['cols']) * opt['offsets'][0]
-            offsety = (
-                opt['margins'][2]
-                + (opt['rows'] - 1 - i // opt['cols']) * opt['offsets'][1]
-            )
+            offsety = opt['margins'][2] + (opt['rows'] - 1 - i // opt['cols']) * opt['offsets'][1]
             p.translate(offsetx, offsety)
             with language(op.order.locale, op.order.event.settings.region):
                 r.draw_page(p, op.order, op, show_page=False)
@@ -209,20 +206,13 @@ def render_pdf(event, positions, opt):
         buffer.seek(0)
         canvas_pdf_reader = PdfReader(buffer)
         empty_pdf_page = output_pdf_writer.add_blank_page(
-            width=opt['pagesize'][0]
-            if opt['pagesize']
-            else positions[0][1].bg_pdf.pages[0].mediabox[2],
-            height=opt['pagesize'][1]
-            if opt['pagesize']
-            else positions[0][1].bg_pdf.pages[0].mediabox[3],
+            width=opt['pagesize'][0] if opt['pagesize'] else positions[0][1].bg_pdf.pages[0].mediabox[2],
+            height=opt['pagesize'][1] if opt['pagesize'] else positions[0][1].bg_pdf.pages[0].mediabox[3],
         )
         for i, (op, r) in enumerate(positions):
             bg_page = copy.copy(r.bg_pdf.pages[0])
             offsetx = opt['margins'][3] + (i % opt['cols']) * opt['offsets'][0]
-            offsety = (
-                opt['margins'][2]
-                + (opt['rows'] - 1 - i // opt['cols']) * opt['offsets'][1]
-            )
+            offsety = opt['margins'][2] + (opt['rows'] - 1 - i // opt['cols']) * opt['offsets'][1]
             bg_page.add_transformation(Transformation().translate(offsetx, offsety))
             empty_pdf_page.merge_page(bg_page)
         empty_pdf_page.merge_page(canvas_pdf_reader.pages[0])
@@ -251,9 +241,7 @@ def render_pdf(event, positions, opt):
     output_pdf_writer.write(outbuffer)
     outbuffer.seek(0)
     if not any:
-        raise OrderError(
-            _('None of the selected products is configured to print badges.')
-        )
+        raise OrderError(_('None of the selected products is configured to print badges.'))
     return outbuffer
 
 
@@ -270,30 +258,20 @@ class BadgeExporter(BaseExporter):
                     'items',
                     forms.ModelMultipleChoiceField(
                         queryset=self.event.items.annotate(
-                            no_badging=Exists(
-                                BadgeItem.objects.filter(
-                                    item=OuterRef('pk'), layout__isnull=True
-                                )
-                            )
+                            no_badging=Exists(BadgeItem.objects.filter(item=OuterRef('pk'), layout__isnull=True))
                         ).exclude(no_badging=True),
                         label=_('Limit to products'),
-                        widget=forms.CheckboxSelectMultiple(
-                            attrs={'class': 'scrolling-multiple-choice'}
-                        ),
+                        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
                         initial=self.event.items.filter(admission=True),
                     ),
                 ),
                 (
                     'include_pending',
-                    forms.BooleanField(
-                        label=_('Include pending orders'), required=False
-                    ),
+                    forms.BooleanField(label=_('Include pending orders'), required=False),
                 ),
                 (
                     'include_addons',
-                    forms.BooleanField(
-                        label=_('Include add-on or bundled positions'), required=False
-                    ),
+                    forms.BooleanField(label=_('Include add-on or bundled positions'), required=False),
                 ),
                 (
                     'rendering',
@@ -314,9 +292,7 @@ class BadgeExporter(BaseExporter):
                         label=_('Start date'),
                         widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                         required=False,
-                        help_text=_(
-                            'Only include tickets for dates on or after this date.'
-                        ),
+                        help_text=_('Only include tickets for dates on or after this date.'),
                     ),
                 ),
                 (
@@ -325,9 +301,7 @@ class BadgeExporter(BaseExporter):
                         label=_('End date'),
                         widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                         required=False,
-                        help_text=_(
-                            'Only include tickets for dates on or before this date.'
-                        ),
+                        help_text=_('Only include tickets for dates on or before this date.'),
                     ),
                 ),
                 (
@@ -347,8 +321,7 @@ class BadgeExporter(BaseExporter):
                                 )
                                 for k, label, w in name_scheme['fields']
                             ]
-                            if settings.JSON_FIELD_AVAILABLE
-                            and len(name_scheme['fields']) > 1
+                            if settings.JSON_FIELD_AVAILABLE and len(name_scheme['fields']) > 1
                             else []
                         ),
                     ),
@@ -359,9 +332,7 @@ class BadgeExporter(BaseExporter):
 
     def render(self, form_data: dict) -> Tuple[str, str, str]:
         qs = (
-            OrderPosition.objects.filter(
-                order__event=self.event, item_id__in=form_data['items']
-            )
+            OrderPosition.objects.filter(order__event=self.event, item_id__in=form_data['items'])
             .prefetch_related('answers', 'answers__question')
             .select_related('order', 'item', 'variation', 'addon_to')
         )
@@ -382,33 +353,26 @@ class BadgeExporter(BaseExporter):
                 ),
                 self.event.timezone,
             )
-            qs = qs.filter(
-                Q(subevent__date_from__gte=dt)
-                | Q(subevent__isnull=True, order__event__date_from__gte=dt)
-            )
+            qs = qs.filter(Q(subevent__date_from__gte=dt) | Q(subevent__isnull=True, order__event__date_from__gte=dt))
 
         if form_data.get('date_to'):
             dt = make_aware(
                 datetime.combine(
-                    dateutil.parser.parse(form_data['date_to']).date()
-                    + timedelta(days=1),
+                    dateutil.parser.parse(form_data['date_to']).date() + timedelta(days=1),
                     time(hour=0, minute=0, second=0),
                 ),
                 self.event.timezone,
             )
-            qs = qs.filter(
-                Q(subevent__date_from__lt=dt)
-                | Q(subevent__isnull=True, order__event__date_from__lt=dt)
-            )
+            qs = qs.filter(Q(subevent__date_from__lt=dt) | Q(subevent__isnull=True, order__event__date_from__lt=dt))
 
         if form_data.get('order_by') == 'name':
             qs = qs.order_by('attendee_name_cached', 'order__code')
         elif form_data.get('order_by') == 'code':
             qs = qs.order_by('order__code')
         elif form_data.get('order_by') == 'date':
-            qs = qs.annotate(
-                ed=Coalesce('subevent__date_from', 'order__event__date_from')
-            ).order_by('ed', 'order__code')
+            qs = qs.annotate(ed=Coalesce('subevent__date_from', 'order__event__date_from')).order_by(
+                'ed', 'order__code'
+            )
         elif form_data.get('order_by', '').startswith('name:'):
             part = form_data['order_by'][5:]
             qs = (
@@ -423,7 +387,5 @@ class BadgeExporter(BaseExporter):
                 .order_by('resolved_name_part')
             )
 
-        outbuffer = render_pdf(
-            self.event, qs, OPTIONS[form_data.get('rendering', 'one')]
-        )
+        outbuffer = render_pdf(self.event, qs, OPTIONS[form_data.get('rendering', 'one')])
         return 'badges.pdf', 'application/pdf', outbuffer.read()

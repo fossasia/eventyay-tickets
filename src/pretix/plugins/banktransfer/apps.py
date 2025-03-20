@@ -14,9 +14,7 @@ class BankTransferApp(AppConfig):
         category = 'PAYMENT'
         featured = True
         version = version
-        description = _(
-            'This plugin allows you to receive payments ' + 'via bank transfer.'
-        )
+        description = _('This plugin allows you to receive payments ' + 'via bank transfer.')
 
     def ready(self):
         from . import signals  # NOQA
@@ -29,11 +27,7 @@ class BankTransferApp(AppConfig):
         try:
             import chardet  # NOQA
         except ImportError:
-            errs.append(
-                _(
-                    "Install the python package 'chardet' for better CSV import capabilities."
-                )
-            )
+            errs.append(_("Install the python package 'chardet' for better CSV import capabilities."))
         return errs
 
 

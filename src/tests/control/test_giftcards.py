@@ -34,18 +34,14 @@ def gift_card(organizer):
 @pytest.fixture
 def admin_user(organizer):
     u = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    admin_team = Team.objects.create(
-        organizer=organizer, can_manage_gift_cards=True, name='Admin team'
-    )
+    admin_team = Team.objects.create(organizer=organizer, can_manage_gift_cards=True, name='Admin team')
     admin_team.members.add(u)
     return u
 
 
 @pytest.fixture
 def team2(admin_user, organizer2):
-    admin_team = Team.objects.create(
-        organizer=organizer2, can_manage_gift_cards=True, name='Admin team'
-    )
+    admin_team = Team.objects.create(organizer=organizer2, can_manage_gift_cards=True, name='Admin team')
     admin_team.members.add(admin_user)
 
 
@@ -54,9 +50,7 @@ def test_list_of_cards(organizer, admin_user, client, gift_card):
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get('/control/organizer/dummy/giftcards')
     assert gift_card.secret in resp.content.decode()
-    resp = client.get(
-        '/control/organizer/dummy/giftcards?query=' + gift_card.secret[:3]
-    )
+    resp = client.get('/control/organizer/dummy/giftcards?query=' + gift_card.secret[:3])
     assert gift_card.secret in resp.content.decode()
     resp = client.get('/control/organizer/dummy/giftcards?query=1234_FOO')
     assert gift_card.secret not in resp.content.decode()
@@ -91,9 +85,7 @@ def test_card_add(organizer, admin_user, client):
 @pytest.mark.django_db
 def test_card_detail_view_transact(organizer, admin_user, gift_card, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    client.post(
-        '/control/organizer/dummy/giftcard/{}/'.format(gift_card.pk), {'value': '23.00'}
-    )
+    client.post('/control/organizer/dummy/giftcard/{}/'.format(gift_card.pk), {'value': '23.00'})
     assert gift_card.value == 23 + 42
     assert gift_card.all_logentries().count() == 1
 
@@ -110,9 +102,7 @@ def test_card_detail_edit(organizer, admin_user, gift_card, client):
 
 
 @pytest.mark.django_db
-def test_card_detail_view_transact_revert_refund(
-    organizer, admin_user, gift_card, client
-):
+def test_card_detail_view_transact_revert_refund(organizer, admin_user, gift_card, client):
     with scopes_disabled():
         event = organizer.events.create(
             name='Dummy',
@@ -135,9 +125,7 @@ def test_card_detail_view_transact_revert_refund(
             provider='banktransfer',
             state=OrderPayment.PAYMENT_STATE_CONFIRMED,
         )
-        r = o.refunds.create(
-            amount=o.total, provider='giftcard', state=OrderRefund.REFUND_STATE_DONE
-        )
+        r = o.refunds.create(amount=o.total, provider='giftcard', state=OrderRefund.REFUND_STATE_DONE)
         t = gift_card.transactions.create(value=14, order=o, refund=r)
 
     client.login(email='dummy@dummy.dummy', password='dummy')
@@ -163,13 +151,9 @@ def test_card_detail_view_transact_min_value(organizer, admin_user, gift_card, c
 
 
 @pytest.mark.django_db
-def test_card_detail_view_transact_invalid_value(
-    organizer, admin_user, gift_card, client
-):
+def test_card_detail_view_transact_invalid_value(organizer, admin_user, gift_card, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    r = client.post(
-        '/control/organizer/dummy/giftcard/{}/'.format(gift_card.pk), {'value': 'foo'}
-    )
+    r = client.post('/control/organizer/dummy/giftcard/{}/'.format(gift_card.pk), {'value': 'foo'})
     assert 'alert-danger' in r.rendered_content
     assert gift_card.value == 42
 
@@ -184,9 +168,7 @@ def test_manage_acceptance(organizer, organizer2, admin_user, gift_card, client,
 
 
 @pytest.mark.django_db
-def test_manage_acceptance_permission_required(
-    organizer, organizer2, admin_user, gift_card, client
-):
+def test_manage_acceptance_permission_required(organizer, organizer2, admin_user, gift_card, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     client.post('/control/organizer/dummy/giftcards', {'add': organizer2.slug})
     assert not organizer.gift_card_issuer_acceptance.filter(issuer=organizer2).exists()

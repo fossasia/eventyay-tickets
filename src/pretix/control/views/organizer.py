@@ -42,9 +42,9 @@ class ExportMixin:
     @cached_property
     def exporters(self):
         exporters = []
-        events = self.request.user.get_events_with_permission(
-            'can_view_orders', request=self.request
-        ).filter(organizer=self.request.organizer)
+        events = self.request.user.get_events_with_permission('can_view_orders', request=self.request).filter(
+            organizer=self.request.organizer
+        )
         responses = register_multievent_data_exporters.send(self.request.organizer)
         id = self.request.GET.get('identifier') or self.request.POST.get('exporter')
         for ex in sorted(
@@ -58,11 +58,7 @@ class ExportMixin:
             test_form = ExporterForm(data=self.request.GET, prefix=ex.identifier)
             test_form.fields = ex.export_form_fields
             test_form.is_valid()
-            initial = {
-                k: v
-                for k, v in test_form.cleaned_data.items()
-                if ex.identifier + '-' + k in self.request.GET
-            }
+            initial = {k: v for k, v in test_form.cleaned_data.items() if ex.identifier + '-' + k in self.request.GET}
 
             ex.form = ExporterForm(
                 data=(self.request.POST if self.request.method == 'POST' else None),
@@ -77,9 +73,7 @@ class ExportMixin:
                         forms.ModelMultipleChoiceField(
                             queryset=events,
                             initial=events,
-                            widget=forms.CheckboxSelectMultiple(
-                                attrs={'class': 'scrolling-multiple-choice'}
-                            ),
+                            widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
                             label=_('Events'),
                             required=True,
                         ),
@@ -95,9 +89,7 @@ class ExportMixin:
         return ctx
 
 
-class ExportDoView(
-    OrganizerPermissionRequiredMixin, ExportMixin, AsyncAction, TemplateView
-):
+class ExportDoView(OrganizerPermissionRequiredMixin, ExportMixin, AsyncAction, TemplateView):
     known_errortypes = ['ExportError']
     task = multiexport
     template_name = 'pretixcontrol/organizers/export.html'
@@ -136,9 +128,7 @@ class ExportDoView(
         if not self.exporter.form.is_valid():
             messages.error(
                 self.request,
-                _(
-                    'There was a problem processing your input. See below for error details.'
-                ),
+                _('There was a problem processing your input. See below for error details.'),
             )
             return self.get(request, *args, **kwargs)
 
@@ -161,9 +151,7 @@ class ExportView(OrganizerPermissionRequiredMixin, ExportMixin, TemplateView):
     template_name = 'pretixcontrol/organizers/export.html'
 
 
-class EventMetaPropertyListView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class EventMetaPropertyListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/properties.html'
     permission = 'can_change_organizer_settings'
@@ -173,9 +161,7 @@ class EventMetaPropertyListView(
         return self.request.organizer.meta_properties.all()
 
 
-class EventMetaPropertyCreateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView
-):
+class EventMetaPropertyCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/property_edit.html'
     permission = 'can_change_organizer_settings'
@@ -212,9 +198,7 @@ class EventMetaPropertyCreateView(
         return super().form_invalid(form)
 
 
-class EventMetaPropertyUpdateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView
-):
+class EventMetaPropertyUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/property_edit.html'
     permission = 'can_change_organizer_settings'
@@ -251,9 +235,7 @@ class EventMetaPropertyUpdateView(
         return super().form_invalid(form)
 
 
-class EventMetaPropertyDeleteView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView
-):
+class EventMetaPropertyDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/property_delete.html'
     permission = 'can_change_organizer_settings'
@@ -293,9 +275,7 @@ class LogView(OrganizerPermissionRequiredMixin, PaginationMixin, ListView):
     def get_queryset(self):
         qs = (
             self.request.organizer.all_logentries()
-            .select_related(
-                'user', 'content_type', 'api_token', 'oauth_application', 'device'
-            )
+            .select_related('user', 'content_type', 'api_token', 'oauth_application', 'device')
             .order_by('-datetime')
         )
         qs = qs.exclude(action_type__in=OVERVIEW_BANLIST)

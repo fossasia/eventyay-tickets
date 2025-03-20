@@ -26,9 +26,7 @@ def get_refund_export_csv(refund_export: RefundExport):
     output = StreamWriter(byte_data)
 
     writer = csv.writer(output)
-    writer.writerow(
-        [_('Payer'), 'IBAN', 'BIC', _('Amount'), _('Currency'), _('Code'), _('Comment')]
-    )
+    writer.writerow([_('Payer'), 'IBAN', 'BIC', _('Amount'), _('Currency'), _('Code'), _('Comment')])
     for row in refund_export.rows_data:
         bic = ''
         if row.get('bic'):

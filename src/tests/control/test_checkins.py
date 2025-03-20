@@ -36,12 +36,8 @@ def dashboard_env():
     )
     event.settings.set('ticketoutput_testdummy__enabled', True)
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    item_ticket = Item.objects.create(
-        event=event, name='Ticket', default_price=23, admission=True
-    )
-    item_mascot = Item.objects.create(
-        event=event, name='Mascot', default_price=10, admission=False
-    )
+    item_ticket = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True)
+    item_mascot = Item.objects.create(event=event, name='Mascot', default_price=10, admission=False)
 
     t = Team.objects.create(organizer=o, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
@@ -69,9 +65,7 @@ def dashboard_env():
         price=Decimal('23'),
         attendee_name_parts={'full_name': 'Peter'},
     )
-    OrderPosition.objects.create(
-        order=order_paid, item=item_mascot, variation=None, price=Decimal('10')
-    )
+    OrderPosition.objects.create(order=order_paid, item=item_mascot, variation=None, price=Decimal('10'))
 
     return event, user, o, order_paid, item_ticket, item_mascot, cl
 
@@ -121,9 +115,7 @@ def checkin_list_env():
     # permission
     orga = Organizer.objects.create(name='Dummy', slug='dummy')
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    team = Team.objects.create(
-        organizer=orga, can_view_orders=True, can_change_orders=True
-    )
+    team = Team.objects.create(organizer=orga, can_view_orders=True, can_change_orders=True)
     team.members.add(user)
 
     # event
@@ -142,12 +134,8 @@ def checkin_list_env():
     cl = event.checkin_lists.create(name='Default', all_products=True)
 
     # item
-    item_ticket = Item.objects.create(
-        event=event, name='Ticket', default_price=23, admission=True, position=0
-    )
-    item_mascot = Item.objects.create(
-        event=event, name='Mascot', default_price=10, admission=False, position=1
-    )
+    item_ticket = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True, position=0)
+    item_mascot = Item.objects.create(event=event, name='Mascot', default_price=10, admission=False, position=1)
 
     # order
     order_pending = Order.objects.create(
@@ -206,9 +194,7 @@ def checkin_list_env():
         price=Decimal('23'),
         attendee_name_parts={'full_name': 'A1'},
     )
-    op_a1_mascot = OrderPosition.objects.create(
-        order=order_a1, item=item_mascot, variation=None, price=Decimal('10')
-    )
+    op_a1_mascot = OrderPosition.objects.create(order=order_a1, item=item_mascot, variation=None, price=Decimal('10'))
     op_a2_ticket = OrderPosition.objects.create(
         order=order_a2,
         item=item_ticket,
@@ -226,9 +212,7 @@ def checkin_list_env():
     )
 
     # checkin
-    Checkin.objects.create(
-        position=op_a1_ticket, datetime=now() + timedelta(minutes=1), list=cl
-    )
+    Checkin.objects.create(position=op_a1_ticket, datetime=now() + timedelta(minutes=1), list=cl)
     Checkin.objects.create(position=op_a3_ticket, list=cl)
 
     return (
@@ -270,10 +254,7 @@ def checkin_list_env():
 def test_checkins_list_ordering(client, checkin_list_env, order_key, expected):
     client.login(email='dummy@dummy.dummy', password='dummy')
     response = client.get(
-        '/control/event/dummy/dummy/checkinlists/{}/?ordering='.format(
-            checkin_list_env[6].pk
-        )
-        + order_key
+        '/control/event/dummy/dummy/checkinlists/{}/?ordering='.format(checkin_list_env[6].pk) + order_key
     )
     qs = response.context['entries']
     item_keys = [q.order.code + str(q.item.name) for q in qs]
@@ -296,10 +277,7 @@ def test_checkins_list_ordering(client, checkin_list_env, order_key, expected):
 )
 def test_checkins_list_filter(client, checkin_list_env, query, expected):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get(
-        '/control/event/dummy/dummy/checkinlists/{}/?'.format(checkin_list_env[6].pk)
-        + query
-    )
+    response = client.get('/control/event/dummy/dummy/checkinlists/{}/?'.format(checkin_list_env[6].pk) + query)
     qs = response.context['entries']
     item_keys = [q.order.code + str(q.item.name) for q in qs]
     assert item_keys == expected
@@ -310,9 +288,7 @@ def test_checkins_item_filter(client, checkin_list_env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     for item in checkin_list_env[3]:
         response = client.get(
-            '/control/event/dummy/dummy/checkinlists/{}/?item={}'.format(
-                checkin_list_env[6].pk, item.pk
-            )
+            '/control/event/dummy/dummy/checkinlists/{}/?item={}'.format(checkin_list_env[6].pk, item.pk)
         )
         assert all(i.item.id == item.id for i in response.context['entries'])
 
@@ -331,11 +307,7 @@ def test_checkins_item_filter(client, checkin_list_env):
 )
 def test_checkins_list_mixed(client, checkin_list_env, query, expected):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get(
-        '/control/event/dummy/dummy/checkinlists/{}/?{}'.format(
-            checkin_list_env[6].pk, query
-        )
-    )
+    response = client.get('/control/event/dummy/dummy/checkinlists/{}/?{}'.format(checkin_list_env[6].pk, query))
     qs = response.context['entries']
     item_keys = [q.order.code + str(q.item.name) for q in qs]
     assert item_keys == expected
@@ -386,9 +358,7 @@ def checkin_list_with_addon_env():
     # permission
     orga = Organizer.objects.create(name='Dummy', slug='dummy')
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    team = Team.objects.create(
-        organizer=orga, can_view_orders=True, can_change_orders=True
-    )
+    team = Team.objects.create(organizer=orga, can_view_orders=True, can_change_orders=True)
     team.members.add(user)
 
     # event
@@ -407,12 +377,8 @@ def checkin_list_with_addon_env():
 
     # item
     cat_adm = ItemCategory.objects.create(event=event, name='Admission')
-    cat_workshop = ItemCategory.objects.create(
-        event=event, name='Admission', is_addon=True
-    )
-    item_ticket = Item.objects.create(
-        event=event, name='Ticket', default_price=23, admission=True, category=cat_adm
-    )
+    cat_workshop = ItemCategory.objects.create(event=event, name='Admission', is_addon=True)
+    item_ticket = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True, category=cat_adm)
     item_workshop = Item.objects.create(
         event=event,
         name='Workshop',
@@ -420,9 +386,7 @@ def checkin_list_with_addon_env():
         admission=False,
         category=cat_workshop,
     )
-    ItemAddOn.objects.create(
-        base_item=item_ticket, addon_category=cat_workshop, min_count=0, max_count=2
-    )
+    ItemAddOn.objects.create(base_item=item_ticket, addon_category=cat_workshop, min_count=0, max_count=2)
 
     # order
     order_pending = Order.objects.create(
@@ -487,9 +451,7 @@ def checkin_list_with_addon_env():
     )
 
     # checkin
-    Checkin.objects.create(
-        position=op_a1_ticket, datetime=now() + timedelta(minutes=1), list=cl
-    )
+    Checkin.objects.create(position=op_a1_ticket, datetime=now() + timedelta(minutes=1), list=cl)
 
     return (
         event,
@@ -503,24 +465,14 @@ def checkin_list_with_addon_env():
 
 
 @pytest.mark.django_db
-def test_checkins_attendee_name_from_addon_available(
-    client, checkin_list_with_addon_env
-):
+def test_checkins_attendee_name_from_addon_available(client, checkin_list_with_addon_env):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get(
-        '/control/event/dummy/dummy/checkinlists/{}/'.format(
-            checkin_list_with_addon_env[6].pk
-        )
-    )
+    response = client.get('/control/event/dummy/dummy/checkinlists/{}/'.format(checkin_list_with_addon_env[6].pk))
     qs = response.context['entries']
     item_keys = [
         q.order.code
         + str(q.item.name)
-        + (
-            str(q.addon_to.attendee_name)
-            if q.addon_to is not None
-            else str(q.attendee_name)
-        )
+        + (str(q.addon_to.attendee_name) if q.addon_to is not None else str(q.attendee_name))
         for q in qs
     ]
     assert item_keys == [
@@ -543,27 +495,19 @@ class CheckinListFormTest(SoupTest):
             date_from=datetime(2013, 12, 26, tzinfo=timezone.utc),
         )
         self.event1.settings.timezone = 'Europe/Berlin'
-        t = Team.objects.create(
-            organizer=self.orga1, can_change_event_settings=True, can_view_orders=True
-        )
+        t = Team.objects.create(organizer=self.orga1, can_change_event_settings=True, can_view_orders=True)
         t.members.add(self.user)
         t.limit_events.add(self.event1)
         self.client.login(email='dummy@dummy.dummy', password='dummy')
-        self.item_ticket = Item.objects.create(
-            event=self.event1, name='Ticket', default_price=23, admission=True
-        )
+        self.item_ticket = Item.objects.create(event=self.event1, name='Ticket', default_price=23, admission=True)
 
     def test_create(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/checkinlists/add'
-            % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/checkinlists/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name'] = 'All'
         form_data['all_products'] = 'on'
         doc = self.post_doc(
-            '/control/event/%s/%s/checkinlists/add'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/checkinlists/add' % (self.orga1.slug, self.event1.slug),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -574,16 +518,12 @@ class CheckinListFormTest(SoupTest):
     def test_update(self):
         with scopes_disabled():
             cl = self.event1.checkin_lists.create(name='All', all_products=True)
-        doc = self.get_doc(
-            '/control/event/%s/%s/checkinlists/%s/change'
-            % (self.orga1.slug, self.event1.slug, cl.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/checkinlists/%s/change' % (self.orga1.slug, self.event1.slug, cl.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['all_products'] = ''
         form_data['limit_products'] = str(self.item_ticket.pk)
         doc = self.post_doc(
-            '/control/event/%s/%s/checkinlists/%s/change'
-            % (self.orga1.slug, self.event1.slug, cl.id),
+            '/control/event/%s/%s/checkinlists/%s/change' % (self.orga1.slug, self.event1.slug, cl.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -596,15 +536,11 @@ class CheckinListFormTest(SoupTest):
     def test_update_exit_all_at_current_day(self):
         with scopes_disabled():
             cl = self.event1.checkin_lists.create(name='All', all_products=True)
-        doc = self.get_doc(
-            '/control/event/%s/%s/checkinlists/%s/change'
-            % (self.orga1.slug, self.event1.slug, cl.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/checkinlists/%s/change' % (self.orga1.slug, self.event1.slug, cl.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['exit_all_at'] = '03:00:00'
         doc = self.post_doc(
-            '/control/event/%s/%s/checkinlists/%s/change'
-            % (self.orga1.slug, self.event1.slug, cl.id),
+            '/control/event/%s/%s/checkinlists/%s/change' % (self.orga1.slug, self.event1.slug, cl.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -615,15 +551,11 @@ class CheckinListFormTest(SoupTest):
     def test_update_exit_all_at_next_day(self):
         with scopes_disabled():
             cl = self.event1.checkin_lists.create(name='All', all_products=True)
-        doc = self.get_doc(
-            '/control/event/%s/%s/checkinlists/%s/change'
-            % (self.orga1.slug, self.event1.slug, cl.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/checkinlists/%s/change' % (self.orga1.slug, self.event1.slug, cl.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['exit_all_at'] = '03:00:00'
         doc = self.post_doc(
-            '/control/event/%s/%s/checkinlists/%s/change'
-            % (self.orga1.slug, self.event1.slug, cl.id),
+            '/control/event/%s/%s/checkinlists/%s/change' % (self.orga1.slug, self.event1.slug, cl.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -633,14 +565,10 @@ class CheckinListFormTest(SoupTest):
     def test_delete(self):
         with scopes_disabled():
             cl = self.event1.checkin_lists.create(name='All', all_products=True)
-        doc = self.get_doc(
-            '/control/event/%s/%s/checkinlists/%s/delete'
-            % (self.orga1.slug, self.event1.slug, cl.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/checkinlists/%s/delete' % (self.orga1.slug, self.event1.slug, cl.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/checkinlists/%s/delete'
-            % (self.orga1.slug, self.event1.slug, cl.id),
+            '/control/event/%s/%s/checkinlists/%s/delete' % (self.orga1.slug, self.event1.slug, cl.id),
             form_data,
         )
         assert doc.select('.alert-success')

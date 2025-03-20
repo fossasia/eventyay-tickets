@@ -64,14 +64,10 @@ def test_counter(monkeypatch):
     assert fake_redis.storage[fullname_post] == 7
 
     with pytest.raises(ValueError):
-        pretix_view_requests_total.inc(
-            -4, status_code='200', url_name='foo', method='POST'
-        )
+        pretix_view_requests_total.inc(-4, status_code='200', url_name='foo', method='POST')
 
     with pytest.raises(ValueError):
-        pretix_view_requests_total.inc(
-            -4, status_code='200', url_name='foo', method='POST', too='much'
-        )
+        pretix_view_requests_total.inc(-4, status_code='200', url_name='foo', method='POST', too='much')
 
     # test dimensionless counters
     dimless_counter = metrics.Counter('dimless_counter', 'this is a helpstring')
@@ -89,15 +85,9 @@ def test_gauge(monkeypatch):
     test_gauge = metrics.Gauge('my_gauge', 'this is a helpstring', ['dimension'])
 
     # now test
-    fullname_one = test_gauge._construct_metric_identifier(
-        'my_gauge', {'dimension': 'one'}
-    )
-    fullname_two = test_gauge._construct_metric_identifier(
-        'my_gauge', {'dimension': 'two'}
-    )
-    fullname_three = test_gauge._construct_metric_identifier(
-        'my_gauge', {'dimension': 'three'}
-    )
+    fullname_one = test_gauge._construct_metric_identifier('my_gauge', {'dimension': 'one'})
+    fullname_two = test_gauge._construct_metric_identifier('my_gauge', {'dimension': 'two'})
+    fullname_three = test_gauge._construct_metric_identifier('my_gauge', {'dimension': 'three'})
 
     test_gauge.inc(dimension='one')
     assert fake_redis.storage[fullname_one] == 1
@@ -193,9 +183,7 @@ def test_metrics_view(monkeypatch, client):
         'http_requests_total',
         {'status_code': '200', 'url_name': 'foo', 'method': 'GET'},
     )
-    pretix_view_requests_total.inc(
-        counter_value, status_code='200', url_name='foo', method='GET'
-    )
+    pretix_view_requests_total.inc(counter_value, status_code='200', url_name='foo', method='GET')
 
     # test unauthorized-page
     assert 'You are not authorized' in client.get('/metrics').content.decode('utf-8')
@@ -203,9 +191,7 @@ def test_metrics_view(monkeypatch, client):
 
     # test metrics-view
     basic_auth = {'HTTP_AUTHORIZATION': base64.b64encode(bytes('foo:bar', 'utf-8'))}
-    assert '{} {}'.format(fullname, counter_value) not in client.get(
-        '/metrics', headers=basic_auth
-    )
+    assert '{} {}'.format(fullname, counter_value) not in client.get('/metrics', headers=basic_auth)
 
 
 @pytest.mark.django_db

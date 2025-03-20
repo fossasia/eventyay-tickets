@@ -52,14 +52,11 @@ class EventShredderTest(SoupTest):
         session.save()
 
     def test_shred_simple(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug))
         assert doc.select('input[value=order_emails]')
         assert doc.select('input[value=invoices]')
         doc = self.post_doc(
-            '/control/event/%s/%s/shredder/export'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/shredder/export' % (self.orga1.slug, self.event1.slug),
             {'shredder': 'order_emails'},
         )
         assert doc.select('a.btn-primary')[0].text.strip() == 'Download data'
@@ -70,9 +67,7 @@ class EventShredderTest(SoupTest):
             assert indexdata['shredders'] == ['order_emails']
             assert indexdata['organizer'] == 'ccc'
             assert indexdata['event'] == '30c3'
-            assert (
-                zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
-            )
+            assert zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
 
             maildata = json.loads(zipfile.read('emails-by-order.json').decode())
             assert maildata == {'FOO': 'dummy@dummy.test'}
@@ -89,14 +84,11 @@ class EventShredderTest(SoupTest):
         assert not self.order.email
 
     def test_shred_password_wrong(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug))
         assert doc.select('input[value=order_emails]')
         assert doc.select('input[value=invoices]')
         doc = self.post_doc(
-            '/control/event/%s/%s/shredder/export'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/shredder/export' % (self.orga1.slug, self.event1.slug),
             {'shredder': 'order_emails'},
         )
         assert doc.select('a.btn-primary')[0].text.strip() == 'Download data'
@@ -107,9 +99,7 @@ class EventShredderTest(SoupTest):
             assert indexdata['shredders'] == ['order_emails']
             assert indexdata['organizer'] == 'ccc'
             assert indexdata['event'] == '30c3'
-            assert (
-                zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
-            )
+            assert zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
 
             maildata = json.loads(zipfile.read('emails-by-order.json').decode())
             assert maildata == {'FOO': 'dummy@dummy.test'}
@@ -126,14 +116,11 @@ class EventShredderTest(SoupTest):
         assert self.order.email
 
     def test_shred_confirm_code_wrong(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug))
         assert doc.select('input[value=order_emails]')
         assert doc.select('input[value=invoices]')
         doc = self.post_doc(
-            '/control/event/%s/%s/shredder/export'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/shredder/export' % (self.orga1.slug, self.event1.slug),
             {'shredder': 'order_emails'},
         )
         assert doc.select('a.btn-primary')[0].text.strip() == 'Download data'
@@ -144,9 +131,7 @@ class EventShredderTest(SoupTest):
             assert indexdata['shredders'] == ['order_emails']
             assert indexdata['organizer'] == 'ccc'
             assert indexdata['event'] == '30c3'
-            assert (
-                zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
-            )
+            assert zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
 
             maildata = json.loads(zipfile.read('emails-by-order.json').decode())
             assert maildata == {'FOO': 'dummy@dummy.test'}
@@ -165,26 +150,20 @@ class EventShredderTest(SoupTest):
     def test_shred_constraints(self):
         self.event1.live = True
         self.event1.save()
-        doc = self.get_doc(
-            '/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug))
         assert not doc.select('input[value=order_emails]')
         doc = self.post_doc(
-            '/control/event/%s/%s/shredder/export'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/shredder/export' % (self.orga1.slug, self.event1.slug),
             {'shredder': 'order_emails'},
         )
         assert doc.select('.alert-danger')
 
     def test_shred_something_happened(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/shredder/' % (self.orga1.slug, self.event1.slug))
         assert doc.select('input[value=order_emails]')
         assert doc.select('input[value=invoices]')
         doc = self.post_doc(
-            '/control/event/%s/%s/shredder/export'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/shredder/export' % (self.orga1.slug, self.event1.slug),
             {'shredder': 'order_emails'},
         )
         assert doc.select('a.btn-primary')[0].text.strip() == 'Download data'
@@ -195,9 +174,7 @@ class EventShredderTest(SoupTest):
             assert indexdata['shredders'] == ['order_emails']
             assert indexdata['organizer'] == 'ccc'
             assert indexdata['event'] == '30c3'
-            assert (
-                zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
-            )
+            assert zipfile.read('CONFIRM_CODE.txt').decode() == indexdata['confirm_code']
 
             maildata = json.loads(zipfile.read('emails-by-order.json').decode())
             assert maildata == {'FOO': 'dummy@dummy.test'}

@@ -14,9 +14,7 @@ from pretix.control.views.organizer_views.organizer_detail_view_mixin import (
 from pretix.helpers.dicts import merge_dicts
 
 
-class WebHookListView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class WebHookListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = WebHook
     template_name = 'pretixcontrol/organizers/webhooks.html'
     permission = 'can_change_organizer_settings'
@@ -26,9 +24,7 @@ class WebHookListView(
         return self.request.organizer.webhooks.prefetch_related('limit_events')
 
 
-class WebHookCreateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView
-):
+class WebHookCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
     model = WebHook
     template_name = 'pretixcontrol/organizers/webhook_edit.html'
     permission = 'can_change_organizer_settings'
@@ -55,9 +51,7 @@ class WebHookCreateView(
             user=self.request.user,
             data=merge_dicts(
                 {
-                    k: form.cleaned_data[k]
-                    if k != 'limit_events'
-                    else [e.id for e in getattr(self.object, k).all()]
+                    k: form.cleaned_data[k] if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
                     for k in form.changed_data
                 },
                 {'id': form.instance.pk},
@@ -73,9 +67,7 @@ class WebHookCreateView(
         return super().form_invalid(form)
 
 
-class WebHookUpdateView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView
-):
+class WebHookUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = WebHook
     template_name = 'pretixcontrol/organizers/webhook_edit.html'
     permission = 'can_change_organizer_settings'
@@ -88,9 +80,7 @@ class WebHookUpdateView(
         return kwargs
 
     def get_object(self, queryset=None):
-        return get_object_or_404(
-            WebHook, organizer=self.request.organizer, pk=self.kwargs.get('webhook')
-        )
+        return get_object_or_404(WebHook, organizer=self.request.organizer, pk=self.kwargs.get('webhook'))
 
     def get_success_url(self):
         return reverse(
@@ -116,9 +106,7 @@ class WebHookUpdateView(
                 ),
             )
 
-        current_listeners = set(
-            self.object.listeners.values_list('action_type', flat=True)
-        )
+        current_listeners = set(self.object.listeners.values_list('action_type', flat=True))
         new_listeners = set(form.cleaned_data['events'])
         for l in current_listeners - new_listeners:
             self.object.listeners.filter(action_type=l).delete()
@@ -133,9 +121,7 @@ class WebHookUpdateView(
         return super().form_invalid(form)
 
 
-class WebHookLogsView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class WebHookLogsView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = WebHook
     template_name = 'pretixcontrol/organizers/webhook_logs.html'
     permission = 'can_change_organizer_settings'
@@ -149,9 +135,7 @@ class WebHookLogsView(
 
     @cached_property
     def webhook(self):
-        return get_object_or_404(
-            WebHook, organizer=self.request.organizer, pk=self.kwargs.get('webhook')
-        )
+        return get_object_or_404(WebHook, organizer=self.request.organizer, pk=self.kwargs.get('webhook'))
 
     def get_queryset(self):
         return self.webhook.calls.order_by('-datetime')

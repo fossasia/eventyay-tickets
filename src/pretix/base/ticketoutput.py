@@ -85,9 +85,7 @@ class BaseTicketOutput:
                 for pos in order.positions_with_tickets:
                     fname, __, content = self.generate(pos)
                     zipf.writestr(
-                        '{}-{}{}'.format(
-                            order.code, pos.positionid, os.path.splitext(fname)[1]
-                        ),
+                        '{}-{}{}'.format(order.code, pos.positionid, os.path.splitext(fname)[1]),
                         content,
                     )
 

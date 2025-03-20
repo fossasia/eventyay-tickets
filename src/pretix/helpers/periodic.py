@@ -9,9 +9,7 @@ logger = logging.getLogger(__name__)
 SKIPPED = object()
 
 
-def minimum_interval(
-    minutes_after_success, minutes_after_error=0, minutes_running_timeout=30
-):
+def minimum_interval(minutes_after_success, minutes_after_error=0, minutes_running_timeout=30):
     """
     This is intended to be used as a decorator on receivers of the ``periodic_task`` signal.
     It stores the result in the task in the cache (usually redis) to ensure the receiver function

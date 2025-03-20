@@ -115,9 +115,7 @@ class InvoicePDFGenerator:
         header_data = [
             [
                 Paragraph('EVENTYAY', self.styles['title']),
-                Paragraph(
-                    f'Invoice #{self.billing_invoice.id}', self.styles['subtitle']
-                ),
+                Paragraph(f'Invoice #{self.billing_invoice.id}', self.styles['subtitle']),
             ],
             [
                 Paragraph('Making Events Happen', self.styles['body']),
@@ -170,9 +168,7 @@ class InvoicePDFGenerator:
             [
                 Paragraph('123 Tech Street', self.styles['body']),
                 '',
-                Paragraph(
-                    self.organizer_billing_info.address_line_1, self.styles['body']
-                ),
+                Paragraph(self.organizer_billing_info.address_line_1, self.styles['body']),
             ],
             [
                 Paragraph('San Francisco, CA 94105', self.styles['body']),
@@ -207,9 +203,7 @@ class InvoicePDFGenerator:
             ['Billing Period:', self.billing_invoice.monthly_bill.strftime('%B %Y')],
         ]
 
-        event_table = Table(
-            event_data, colWidths=[self.doc.width / 4, self.doc.width * 3 / 4]
-        )
+        event_table = Table(event_data, colWidths=[self.doc.width / 4, self.doc.width * 3 / 4])
         event_table.setStyle(
             TableStyle(
                 [
@@ -281,14 +275,9 @@ class InvoicePDFGenerator:
 
         elements.extend([items_table, Spacer(1, 10)])
 
-        if (
-            self.billing_invoice.voucher_price_mode
-            and self.billing_invoice.voucher_price_mode != PriceModeChoices.NONE
-        ):
+        if self.billing_invoice.voucher_price_mode and self.billing_invoice.voucher_price_mode != PriceModeChoices.NONE:
             voucher_text = f'Applied Voucher: {self._format_voucher_info()}'
-            elements.extend(
-                [Paragraph(voucher_text, self.styles['body']), Spacer(1, 20)]
-            )
+            elements.extend([Paragraph(voucher_text, self.styles['body']), Spacer(1, 20)])
 
         return elements
 
@@ -310,9 +299,7 @@ class InvoicePDFGenerator:
             ],
         ]
 
-        totals_table = Table(
-            totals_data, colWidths=[self.doc.width * 0.8, self.doc.width * 0.2]
-        )
+        totals_table = Table(totals_data, colWidths=[self.doc.width * 0.8, self.doc.width * 0.2])
         totals_table.setStyle(
             TableStyle(
                 [

@@ -12,16 +12,10 @@ from pretix.base.models.fields import MultiStringField
 
 
 class CheckinList(LoggedModel):
-    event = models.ForeignKey(
-        'Event', related_name='checkin_lists', on_delete=models.CASCADE
-    )
+    event = models.ForeignKey('Event', related_name='checkin_lists', on_delete=models.CASCADE)
     name = models.CharField(max_length=190)
-    all_products = models.BooleanField(
-        default=True, verbose_name=_('All products (including newly created ones)')
-    )
-    limit_products = models.ManyToManyField(
-        'Item', verbose_name=_('Limit to products'), blank=True
-    )
+    all_products = models.BooleanField(default=True, verbose_name=_('All products (including newly created ones)'))
+    limit_products = models.ManyToManyField('Item', verbose_name=_('Limit to products'), blank=True)
     subevent = models.ForeignKey(
         'SubEvent',
         null=True,
@@ -32,10 +26,7 @@ class CheckinList(LoggedModel):
     include_pending = models.BooleanField(
         verbose_name=pgettext_lazy('checkin', 'Include pending orders'),
         default=False,
-        help_text=_(
-            'With this option, people will be able to check in even if the '
-            'order has not been paid.'
-        ),
+        help_text=_('With this option, people will be able to check in even if the order has not been paid.'),
     )
     gates = models.ManyToManyField(
         'Gate',
@@ -46,19 +37,13 @@ class CheckinList(LoggedModel):
             'check-in devices.'
         ),
     )
-    allow_entry_after_exit = models.BooleanField(
-        verbose_name=_('Allow re-entering after an exit scan'), default=True
-    )
+    allow_entry_after_exit = models.BooleanField(verbose_name=_('Allow re-entering after an exit scan'), default=True)
     allow_multiple_entries = models.BooleanField(
         verbose_name=_('Allow multiple entries per ticket'),
-        help_text=_(
-            'Use this option to turn off warnings if a ticket is scanned a second time.'
-        ),
+        help_text=_('Use this option to turn off warnings if a ticket is scanned a second time.'),
         default=False,
     )
-    exit_all_at = models.DateTimeField(
-        verbose_name=_('Automatically check out everyone at'), null=True, blank=True
-    )
+    exit_all_at = models.DateTimeField(verbose_name=_('Automatically check out everyone at'), null=True, blank=True)
     auto_checkin_sales_channels = MultiStringField(
         default=[],
         blank=True,
@@ -117,10 +102,7 @@ class CheckinList(LoggedModel):
                 .annotate(m=Max('datetime'))
                 .values('m')
             ),
-        ).filter(
-            Q(last_entry__isnull=False)
-            & Q(Q(last_exit__isnull=True) | Q(last_exit__lt=F('last_entry')))
-        )
+        ).filter(Q(last_entry__isnull=False) & Q(Q(last_exit__isnull=True) | Q(last_exit__lt=F('last_entry'))))
 
     @property
     def inside_count(self):
@@ -215,21 +197,15 @@ class CheckinList(LoggedModel):
             return
 
         if len(rules) > 1:
-            raise ValidationError(
-                f'Rules should not include dictionaries with more than one key, found: "{rules}".'
-            )
+            raise ValidationError(f'Rules should not include dictionaries with more than one key, found: "{rules}".')
 
         operator = list(rules.keys())[0]
 
         if operator not in allowed_operators:
-            raise ValidationError(
-                f'Logic operator "{operator}" is currently not allowed.'
-            )
+            raise ValidationError(f'Logic operator "{operator}" is currently not allowed.')
 
         if depth == 0 and operator not in top_level_operators:
-            raise ValidationError(
-                f'Logic operator "{operator}" is currently not allowed on the first level.'
-            )
+            raise ValidationError(f'Logic operator "{operator}" is currently not allowed on the first level.')
 
         values = rules[operator]
         if not isinstance(values, list) and not isinstance(values, tuple):
@@ -237,15 +213,11 @@ class CheckinList(LoggedModel):
 
         if operator == 'var':
             if values[0] not in allowed_vars:
-                raise ValidationError(
-                    f'Logic variable "{values[0]}" is currently not allowed.'
-                )
+                raise ValidationError(f'Logic variable "{values[0]}" is currently not allowed.')
             return
 
         if operator in ('or', 'and') and seen_nonbool:
-            raise ValidationError(
-                'You cannot use OR/AND logic on a level below a comparison operator.'
-            )
+            raise ValidationError('You cannot use OR/AND logic on a level below a comparison operator.')
 
         for v in values:
             cls.validate_rules(
@@ -266,9 +238,7 @@ class Checkin(models.Model):
         (TYPE_ENTRY, _('Entry')),
         (TYPE_EXIT, _('Exit')),
     )
-    position = models.ForeignKey(
-        'pretixbase.OrderPosition', related_name='checkins', on_delete=models.CASCADE
-    )
+    position = models.ForeignKey('pretixbase.OrderPosition', related_name='checkins', on_delete=models.CASCADE)
     datetime = models.DateTimeField(default=now)
     nonce = models.CharField(max_length=190, null=True, blank=True)
     list = models.ForeignKey(
@@ -300,9 +270,7 @@ class Checkin(models.Model):
         ordering = (('-datetime'),)
 
     def __repr__(self):
-        return "<Checkin: pos {} on list '{}' at {}>".format(
-            self.position, self.list, self.datetime
-        )
+        return "<Checkin: pos {} on list '{}' at {}>".format(self.position, self.list, self.datetime)
 
     def save(self, **kwargs):
         super().save(**kwargs)

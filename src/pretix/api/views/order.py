@@ -103,12 +103,8 @@ with scopes_disabled():
         email = django_filters.CharFilter(field_name='email', lookup_expr='iexact')
         code = django_filters.CharFilter(field_name='code', lookup_expr='iexact')
         status = django_filters.CharFilter(field_name='status', lookup_expr='iexact')
-        modified_since = django_filters.IsoDateTimeFilter(
-            field_name='last_modified', lookup_expr='gte'
-        )
-        created_since = django_filters.IsoDateTimeFilter(
-            field_name='datetime', lookup_expr='gte'
-        )
+        modified_since = django_filters.IsoDateTimeFilter(field_name='last_modified', lookup_expr='gte')
+        created_since = django_filters.IsoDateTimeFilter(field_name='datetime', lookup_expr='gte')
         subevent_after = django_filters.IsoDateTimeFilter(method='subevent_after_qs')
         subevent_before = django_filters.IsoDateTimeFilter(method='subevent_before_qs')
         search = django_filters.CharFilter(method='search_qs')
@@ -129,8 +125,7 @@ with scopes_disabled():
                 has_se_after=Exists(
                     OrderPosition.all.filter(
                         subevent_id__in=SubEvent.objects.filter(
-                            Q(date_to__gt=value)
-                            | Q(date_from__gt=value, date_to__isnull=True),
+                            Q(date_to__gt=value) | Q(date_from__gt=value, date_to__isnull=True),
                             event=OuterRef(OuterRef('event_id')),
                         ).values_list('id'),
                         order_id=OuterRef('pk'),
@@ -162,9 +157,7 @@ with scopes_disabled():
                 code = Q(code__icontains=Order.normalize_code(u))
 
             matching_invoices = Invoice.objects.filter(
-                Q(invoice_no__iexact=u)
-                | Q(invoice_no__iexact=u.zfill(5))
-                | Q(full_invoice_no__iexact=u)
+                Q(invoice_no__iexact=u) | Q(invoice_no__iexact=u.zfill(5)) | Q(full_invoice_no__iexact=u)
             ).values_list('order_id', flat=True)
 
             matching_positions = OrderPosition.objects.filter(
@@ -186,9 +179,7 @@ with scopes_disabled():
                 | Q(comment__icontains=u)
                 | Q(has_pos=True)
             )
-            for recv, q in order_search_filter_q.send(
-                sender=getattr(self, 'event', None), query=u
-            ):
+            for recv, q in order_search_filter_q.send(sender=getattr(self, 'event', None), query=u):
                 mainq = mainq | q
             return qs.annotate(has_pos=Exists(matching_positions)).filter(mainq)
 
@@ -212,10 +203,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = self.request.event.orders
         if 'fees' not in self.request.GET.getlist('exclude'):
-            if (
-                self.request.query_params.get('include_canceled_fees', 'false')
-                == 'true'
-            ):
+            if self.request.query_params.get('include_canceled_fees', 'false') == 'true':
                 fqs = OrderFee.all
             else:
                 fqs = OrderFee.objects
@@ -227,10 +215,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         if 'invoice_address' not in self.request.GET.getlist('exclude'):
             qs = qs.select_related('invoice_address')
 
-        if (
-            self.request.query_params.get('include_canceled_positions', 'false')
-            == 'true'
-        ):
+        if self.request.query_params.get('include_canceled_positions', 'false') == 'true':
             opq = OrderPosition.all
         else:
             opq = OrderPosition.objects
@@ -248,9 +233,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                         'item__category',
                         'addon_to',
                         'seat',
-                        Prefetch(
-                            'addons', opq.select_related('item', 'variation', 'seat')
-                        ),
+                        Prefetch('addons', opq.select_related('item', 'variation', 'seat')),
                     ),
                 )
             )
@@ -303,9 +286,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         if order.status != Order.STATUS_PAID:
             raise PermissionDenied('Downloads are not available for unpaid orders.')
 
-        ct = CachedCombinedTicket.objects.filter(
-            order=order, provider=provider.identifier, file__isnull=False
-        ).last()
+        ct = CachedCombinedTicket.objects.filter(order=order, provider=provider.identifier, file__isnull=False).last()
         if not ct or not ct.file:
             generate.apply_async(args=('order', order.pk, provider.identifier))
             raise RetryException()
@@ -315,13 +296,11 @@ class OrderViewSet(viewsets.ModelViewSet):
                 return resp
             else:
                 resp = FileResponse(ct.file.file, content_type=ct.type)
-                resp['Content-Disposition'] = (
-                    'attachment; filename="{}-{}-{}{}"'.format(
-                        self.request.event.slug.upper(),
-                        order.code,
-                        provider.identifier,
-                        ct.extension,
-                    )
+                resp['Content-Disposition'] = 'attachment; filename="{}-{}-{}{}"'.format(
+                    self.request.event.slug.upper(),
+                    order.code,
+                    provider.identifier,
+                    ct.extension,
                 )
                 return resp
 
@@ -357,9 +336,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                                     'local_id': p.local_id,
                                     'provider': p.provider,
                                 },
-                                user=self.request.user
-                                if self.request.user.is_authenticated
-                                else None,
+                                user=self.request.user if self.request.user.is_authenticated else None,
                                 auth=self.request.auth,
                             )
                     except PaymentException as e:
@@ -370,9 +347,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                                 'provider': p.provider,
                                 'error': str(e),
                             },
-                            user=self.request.user
-                            if self.request.user.is_authenticated
-                            else None,
+                            user=self.request.user if self.request.user.is_authenticated else None,
                             auth=self.request.auth,
                         )
                 p = order.payments.create(
@@ -423,13 +398,9 @@ class OrderViewSet(viewsets.ModelViewSet):
             cancel_order(
                 order,
                 user=request.user if request.user.is_authenticated else None,
-                api_token=request.auth
-                if isinstance(request.auth, TeamAPIToken)
-                else None,
+                api_token=request.auth if isinstance(request.auth, TeamAPIToken) else None,
                 device=request.auth if isinstance(request.auth, Device) else None,
-                oauth_application=request.auth.application
-                if isinstance(request.auth, OAuthAccessToken)
-                else None,
+                oauth_application=request.auth.application if isinstance(request.auth, OAuthAccessToken) else None,
                 send_mail=send_mail,
                 cancellation_fee=cancellation_fee,
             )
@@ -450,9 +421,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             reactivate_order(
                 order,
                 user=request.user if request.user.is_authenticated else None,
-                auth=request.auth
-                if isinstance(request.auth, (Device, TeamAPIToken, OAuthAccessToken))
-                else None,
+                auth=request.auth if isinstance(request.auth, (Device, TeamAPIToken, OAuthAccessToken)) else None,
             )
         except OrderError as e:
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -467,9 +436,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             approve_order(
                 order,
                 user=request.user if request.user.is_authenticated else None,
-                auth=request.auth
-                if isinstance(request.auth, (Device, TeamAPIToken, OAuthAccessToken))
-                else None,
+                auth=request.auth if isinstance(request.auth, (Device, TeamAPIToken, OAuthAccessToken)) else None,
                 send_mail=send_mail,
             )
         except Quota.QuotaExceededException as e:
@@ -488,9 +455,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             deny_order(
                 order,
                 user=request.user if request.user.is_authenticated else None,
-                auth=request.auth
-                if isinstance(request.auth, (Device, TeamAPIToken, OAuthAccessToken))
-                else None,
+                auth=request.auth if isinstance(request.auth, (Device, TeamAPIToken, OAuthAccessToken)) else None,
                 send_mail=send_mail,
                 comment=comment,
             )
@@ -503,9 +468,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         order = self.get_object()
 
         if order.status != Order.STATUS_PAID:
-            return Response(
-                {'detail': 'The order is not paid.'}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'detail': 'The order is not paid.'}, status=status.HTTP_400_BAD_REQUEST)
 
         order.status = Order.STATUS_PENDING
         order.save(update_fields=['status'])
@@ -538,18 +501,12 @@ class OrderViewSet(viewsets.ModelViewSet):
         order = self.get_object()
 
         if order.status != Order.STATUS_PAID:
-            return Response(
-                {'detail': 'The order is not paid.'}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'detail': 'The order is not paid.'}, status=status.HTTP_400_BAD_REQUEST)
 
         mark_order_refunded(
             order,
             user=request.user if request.user.is_authenticated else None,
-            auth=(
-                request.auth
-                if isinstance(request.auth, (TeamAPIToken, OAuthAccessToken, Device))
-                else None
-            ),
+            auth=(request.auth if isinstance(request.auth, (TeamAPIToken, OAuthAccessToken, Device)) else None),
         )
         return self.retrieve(request, [], **kwargs)
 
@@ -598,11 +555,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             order.resend_link(user=self.request.user, auth=self.request.auth)
         except SendMailException:
             return Response(
-                {
-                    'detail': _(
-                        'There was an error sending the mail. Please try again later.'
-                    )
-                },
+                {'detail': _('There was an error sending the mail. Please try again later.')},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 
@@ -618,9 +571,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         order.save(update_fields=['secret'])
         CachedTicket.objects.filter(order_position__order=order).delete()
         CachedCombinedTicket.objects.filter(order=order).delete()
-        tickets.invalidate_cache.apply_async(
-            kwargs={'event': self.request.event.pk, 'order': order.pk}
-        )
+        tickets.invalidate_cache.apply_async(kwargs={'event': self.request.event.pk, 'order': order.pk})
         order.log_action(
             'pretix.event.order.secret.changed',
             user=self.request.user,
@@ -633,23 +584,17 @@ class OrderViewSet(viewsets.ModelViewSet):
         new_date = request.data.get('expires', None)
         force = request.data.get('force', False)
         if not new_date:
-            return Response(
-                {'detail': 'New date is missing.'}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'detail': 'New date is missing.'}, status=status.HTTP_400_BAD_REQUEST)
 
         df = serializers.DateField()
         try:
             new_date = df.to_internal_value(new_date)
         except:
-            return Response(
-                {'detail': 'New date is invalid.'}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'detail': 'New date is invalid.'}, status=status.HTTP_400_BAD_REQUEST)
 
         tz = pytz.timezone(self.request.event.settings.timezone)
         new_date = make_aware(
-            datetime.datetime.combine(
-                new_date, datetime.time(hour=23, minute=59, second=59)
-            ),
+            datetime.datetime.combine(new_date, datetime.time(hour=23, minute=59, second=59)),
             tz,
         )
 
@@ -670,19 +615,13 @@ class OrderViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if 'send_mail' in request.data and 'send_email' not in request.data:
             request.data['send_email'] = request.data['send_mail']
-        serializer = OrderCreateSerializer(
-            data=request.data, context=self.get_serializer_context()
-        )
+        serializer = OrderCreateSerializer(data=request.data, context=self.get_serializer_context())
         serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             try:
                 self.perform_create(serializer)
             except TaxRule.SaleNotAllowed:
-                raise ValidationError(
-                    _(
-                        'One of the selected products is not available in the selected country.'
-                    )
-                )
+                raise ValidationError(_('One of the selected products is not available in the selected country.'))
             send_mail = serializer._send_mail
             order = serializer.instance
             if not order.pk:
@@ -707,10 +646,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                 invoice_qualified(order)
                 and (
                     (order.event.settings.get('invoice_generate') == 'True')
-                    or (
-                        order.event.settings.get('invoice_generate') == 'paid'
-                        and order.status == Order.STATUS_PAID
-                    )
+                    or (order.event.settings.get('invoice_generate') == 'paid' and order.status == Order.STATUS_PAID)
                 )
                 and not order.invoices.last()
             )
@@ -730,21 +666,13 @@ class OrderViewSet(viewsets.ModelViewSet):
                 if free_flow:
                     email_template = request.event.settings.mail_text_order_free
                     log_entry = 'pretix.event.order.email.order_free'
-                    email_attendees = (
-                        request.event.settings.mail_send_order_free_attendee
-                    )
-                    email_attendees_template = (
-                        request.event.settings.mail_text_order_free_attendee
-                    )
+                    email_attendees = request.event.settings.mail_send_order_free_attendee
+                    email_attendees_template = request.event.settings.mail_text_order_free_attendee
                 else:
                     email_template = request.event.settings.mail_text_order_placed
                     log_entry = 'pretix.event.order.email.order_placed'
-                    email_attendees = (
-                        request.event.settings.mail_send_order_placed_attendee
-                    )
-                    email_attendees_template = (
-                        request.event.settings.mail_text_order_placed_attendee
-                    )
+                    email_attendees = request.event.settings.mail_send_order_placed_attendee
+                    email_attendees_template = request.event.settings.mail_text_order_placed_attendee
 
                 _order_placed_email(
                     request.event,
@@ -757,11 +685,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                 )
                 if email_attendees:
                     for p in order.positions.all():
-                        if (
-                            p.addon_to_id is None
-                            and p.attendee_email
-                            and p.attendee_email != order.email
-                        ):
+                        if p.addon_to_id is None and p.attendee_email and p.attendee_email != order.email:
                             _order_placed_email_attendee(
                                 request.event,
                                 order,
@@ -774,17 +698,11 @@ class OrderViewSet(viewsets.ModelViewSet):
                     payment._send_paid_mail(invoice, None, '')
                     if self.request.event.settings.mail_send_order_paid_attendee:
                         for p in order.positions.all():
-                            if (
-                                p.addon_to_id is None
-                                and p.attendee_email
-                                and p.attendee_email != order.email
-                            ):
+                            if p.addon_to_id is None and p.attendee_email and p.attendee_email != order.email:
                                 payment._send_paid_mail_attendee(p, None)
 
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.get('partial', False)
@@ -797,10 +715,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         with transaction.atomic():
-            if (
-                'comment' in self.request.data
-                and serializer.instance.comment != self.request.data.get('comment')
-            ):
+            if 'comment' in self.request.data and serializer.instance.comment != self.request.data.get('comment'):
                 serializer.instance.log_action(
                     'pretix.event.order.comment',
                     user=self.request.user,
@@ -810,8 +725,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
             if (
                 'checkin_attention' in self.request.data
-                and serializer.instance.checkin_attention
-                != self.request.data.get('checkin_attention')
+                and serializer.instance.checkin_attention != self.request.data.get('checkin_attention')
             ):
                 serializer.instance.log_action(
                     'pretix.event.order.checkin_attention',
@@ -820,10 +734,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     data={'new_value': self.request.data.get('checkin_attention')},
                 )
 
-            if (
-                'email' in self.request.data
-                and serializer.instance.email != self.request.data.get('email')
-            ):
+            if 'email' in self.request.data and serializer.instance.email != self.request.data.get('email'):
                 serializer.instance.email_known_to_work = False
                 serializer.instance.log_action(
                     'pretix.event.order.contact.changed',
@@ -835,10 +746,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     },
                 )
 
-            if (
-                'phone' in self.request.data
-                and serializer.instance.phone != self.request.data.get('phone')
-            ):
+            if 'phone' in self.request.data and serializer.instance.phone != self.request.data.get('phone'):
                 serializer.instance.log_action(
                     'pretix.event.order.phone.changed',
                     user=self.request.user,
@@ -849,10 +757,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     },
                 )
 
-            if (
-                'locale' in self.request.data
-                and serializer.instance.locale != self.request.data.get('locale')
-            ):
+            if 'locale' in self.request.data and serializer.instance.locale != self.request.data.get('locale'):
                 serializer.instance.log_action(
                     'pretix.event.order.locale.changed',
                     user=self.request.user,
@@ -882,9 +787,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             )
 
         if 'invoice_address' in self.request.data:
-            order_modified.send(
-                sender=serializer.instance.event, order=serializer.instance
-            )
+            order_modified.send(sender=serializer.instance.event, order=serializer.instance)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -903,12 +806,8 @@ class OrderViewSet(viewsets.ModelViewSet):
 with scopes_disabled():
 
     class OrderPositionFilter(FilterSet):
-        order = django_filters.CharFilter(
-            field_name='order', lookup_expr='code__iexact'
-        )
-        has_checkin = django_filters.rest_framework.BooleanFilter(
-            method='has_checkin_qs'
-        )
+        order = django_filters.CharFilter(field_name='order', lookup_expr='code__iexact')
+        has_checkin = django_filters.rest_framework.BooleanFilter(method='has_checkin_qs')
         attendee_name = django_filters.CharFilter(method='attendee_name_qs')
         search = django_filters.CharFilter(method='search_qs')
 
@@ -929,8 +828,7 @@ with scopes_disabled():
 
         def attendee_name_qs(self, queryset, name, value):
             return queryset.filter(
-                Q(attendee_name_cached__iexact=value)
-                | Q(addon_to__attendee_name_cached__iexact=value)
+                Q(attendee_name_cached__iexact=value) | Q(addon_to__attendee_name_cached__iexact=value)
             )
 
         class Meta:
@@ -948,9 +846,7 @@ with scopes_disabled():
             }
 
 
-class OrderPositionViewSet(
-    mixins.DestroyModelMixin, mixins.UpdateModelMixin, viewsets.ReadOnlyModelViewSet
-):
+class OrderPositionViewSet(mixins.DestroyModelMixin, mixins.UpdateModelMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = OrderPositionSerializer
     queryset = OrderPosition.all.none()
     filter_backends = (DjangoFilterBackend, OrderingFilter)
@@ -968,15 +864,11 @@ class OrderPositionViewSet(
     ordering_custom = {
         'attendee_name': {
             '_order': F('display_name').asc(nulls_first=True),
-            'display_name': Coalesce(
-                'attendee_name_cached', 'addon_to__attendee_name_cached'
-            ),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached'),
         },
         '-attendee_name': {
             '_order': F('display_name').asc(nulls_last=True),
-            'display_name': Coalesce(
-                'attendee_name_cached', 'addon_to__attendee_name_cached'
-            ),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached'),
         },
     }
 
@@ -986,10 +878,7 @@ class OrderPositionViewSet(
         return ctx
 
     def get_queryset(self):
-        if (
-            self.request.query_params.get('include_canceled_positions', 'false')
-            == 'true'
-        ):
+        if self.request.query_params.get('include_canceled_positions', 'false') == 'true':
             qs = OrderPosition.all
         else:
             qs = OrderPosition.objects
@@ -1026,9 +915,7 @@ class OrderPositionViewSet(
                 'answers',
                 'answers__options',
                 'answers__question',
-            ).select_related(
-                'item', 'order', 'order__event', 'order__event__organizer', 'seat'
-            )
+            ).select_related('item', 'order', 'order__event', 'order__event__organizer', 'seat')
         return qs
 
     def _get_output_provider(self, identifier):
@@ -1118,9 +1005,7 @@ class OrderPositionViewSet(
             return Response(
                 {
                     'gross': price.gross,
-                    'gross_formatted': money_filter(
-                        price.gross, self.request.event.currency, hide_currency=True
-                    ),
+                    'gross_formatted': money_filter(price.gross, self.request.event.currency, hide_currency=True),
                     'net': price.net,
                     'rate': price.rate,
                     'name': str(price.name),
@@ -1158,9 +1043,7 @@ class OrderPositionViewSet(
         if key not in image_vars:
             raise NotFound('Unknown key')
 
-        image_file = image_vars[key]['evaluate'](
-            pos, pos.order, pos.subevent or self.request.event
-        )
+        image_file = image_vars[key]['evaluate'](pos, pos.order, pos.subevent or self.request.event)
         if image_file is None:
             raise NotFound('No image available')
 
@@ -1201,9 +1084,7 @@ class OrderPositionViewSet(
         if not pos.generate_ticket:
             raise PermissionDenied('Downloads are not enabled for this product.')
 
-        ct = CachedTicket.objects.filter(
-            order_position=pos, provider=provider.identifier, file__isnull=False
-        ).last()
+        ct = CachedTicket.objects.filter(order_position=pos, provider=provider.identifier, file__isnull=False).last()
         if not ct or not ct.file:
             generate.apply_async(args=('orderposition', pos.pk, provider.identifier))
             raise RetryException()
@@ -1213,14 +1094,12 @@ class OrderPositionViewSet(
                 return resp
             else:
                 resp = FileResponse(ct.file.file, content_type=ct.type)
-                resp['Content-Disposition'] = (
-                    'attachment; filename="{}-{}-{}-{}{}"'.format(
-                        self.request.event.slug.upper(),
-                        pos.order.code,
-                        pos.positionid,
-                        provider.identifier,
-                        ct.extension,
-                    )
+                resp['Content-Disposition'] = 'attachment; filename="{}-{}-{}-{}{}"'.format(
+                    self.request.event.slug.upper(),
+                    pos.order.code,
+                    pos.positionid,
+                    provider.identifier,
+                    ct.extension,
                 )
                 return resp
 
@@ -1275,9 +1154,7 @@ class OrderPositionViewSet(
                 'order': serializer.instance.order.pk,
             }
         )
-        order_modified.send(
-            sender=serializer.instance.order.event, order=serializer.instance.order
-        )
+        order_modified.send(sender=serializer.instance.order.event, order=serializer.instance.order)
 
 
 class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
@@ -1289,30 +1166,21 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx['order'] = get_object_or_404(
-            Order, code=self.kwargs['order'], event=self.request.event
-        )
+        ctx['order'] = get_object_or_404(Order, code=self.kwargs['order'], event=self.request.event)
         ctx['event'] = self.request.event
         return ctx
 
     def get_queryset(self):
-        order = get_object_or_404(
-            Order, code=self.kwargs['order'], event=self.request.event
-        )
+        order = get_object_or_404(Order, code=self.kwargs['order'], event=self.request.event)
         return order.payments.all()
 
     def create(self, request, *args, **kwargs):
         send_mail = request.data.get('send_email', True)
-        serializer = OrderPaymentCreateSerializer(
-            data=request.data, context=self.get_serializer_context()
-        )
+        serializer = OrderPaymentCreateSerializer(data=request.data, context=self.get_serializer_context())
         serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             mark_confirmed = False
-            if (
-                serializer.validated_data['state']
-                == OrderPayment.PAYMENT_STATE_CONFIRMED
-            ):
+            if serializer.validated_data['state'] == OrderPayment.PAYMENT_STATE_CONFIRMED:
                 serializer.validated_data['state'] = OrderPayment.PAYMENT_STATE_PENDING
                 mark_confirmed = True
             self.perform_create(serializer)
@@ -1320,9 +1188,7 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
             if mark_confirmed:
                 try:
                     r.confirm(
-                        user=self.request.user
-                        if self.request.user.is_authenticated
-                        else None,
+                        user=self.request.user if self.request.user.is_authenticated else None,
                         auth=self.request.auth,
                         count_waitinglist=False,
                         force=request.data.get('force', False),
@@ -1346,9 +1212,7 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
             )
 
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -1387,9 +1251,9 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['POST'])
     def refund(self, request, **kwargs):
         payment = self.get_object()
-        amount = serializers.DecimalField(
-            max_digits=10, decimal_places=2
-        ).to_internal_value(request.data.get('amount', str(payment.amount)))
+        amount = serializers.DecimalField(max_digits=10, decimal_places=2).to_internal_value(
+            request.data.get('amount', str(payment.amount))
+        )
         if 'mark_refunded' in request.data:
             mark_refunded = request.data.get('mark_refunded', False)
         else:
@@ -1401,12 +1265,8 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        full_refund_possible = payment.payment_provider.payment_refund_supported(
-            payment
-        )
-        partial_refund_possible = (
-            payment.payment_provider.payment_partial_refund_supported(payment)
-        )
+        full_refund_possible = payment.payment_provider.payment_refund_supported(payment)
+        partial_refund_possible = payment.payment_provider.payment_partial_refund_supported(payment)
         available_amount = payment.amount - payment.refunded_amount
 
         if amount <= 0:
@@ -1416,13 +1276,7 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
             )
         if amount > available_amount:
             return Response(
-                {
-                    'amount': [
-                        'Invalid refund amount, only {} are available to refund.'.format(
-                            available_amount
-                        )
-                    ]
-                },
+                {'amount': ['Invalid refund amount, only {} are available to refund.'.format(available_amount)]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if amount != payment.amount and not partial_refund_possible:
@@ -1466,9 +1320,7 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
                 if mark_refunded:
                     mark_order_refunded(
                         payment.order,
-                        user=self.request.user
-                        if self.request.user.is_authenticated
-                        else None,
+                        user=self.request.user if self.request.user.is_authenticated else None,
                         auth=self.request.auth,
                     )
                 else:
@@ -1476,9 +1328,7 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
                     payment.order.set_expires(
                         now(),
                         payment.order.event.subevents.filter(
-                            id__in=payment.order.positions.values_list(
-                                'subevent_id', flat=True
-                            )
+                            id__in=payment.order.positions.values_list('subevent_id', flat=True)
                         ),
                     )
                     payment.order.save(update_fields=['status', 'expires'])
@@ -1506,9 +1356,7 @@ class PaymentViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
                         'local_id': payment.local_id,
                         'provider': payment.provider,
                     },
-                    user=self.request.user
-                    if self.request.user.is_authenticated
-                    else None,
+                    user=self.request.user if self.request.user.is_authenticated else None,
                     auth=self.request.auth,
                 )
         except PaymentException as e:
@@ -1527,9 +1375,7 @@ class RefundViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
     lookup_field = 'local_id'
 
     def get_queryset(self):
-        order = get_object_or_404(
-            Order, code=self.kwargs['order'], event=self.request.event
-        )
+        order = get_object_or_404(Order, code=self.kwargs['order'], event=self.request.event)
         return order.refunds.all()
 
     @action(detail=True, methods=['POST'])
@@ -1584,9 +1430,7 @@ class RefundViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
                 user=self.request.user if self.request.user.is_authenticated else None,
                 auth=self.request.auth,
             )
-        elif not (
-            refund.order.status == Order.STATUS_PAID and refund.order.pending_sum <= 0
-        ):
+        elif not (refund.order.status == Order.STATUS_PAID and refund.order.pending_sum <= 0):
             refund.order.status = Order.STATUS_PENDING
             refund.order.set_expires(
                 now(),
@@ -1618,9 +1462,7 @@ class RefundViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx['order'] = get_object_or_404(
-            Order, code=self.kwargs['order'], event=self.request.event
-        )
+        ctx['order'] = get_object_or_404(Order, code=self.kwargs['order'], event=self.request.event)
         return ctx
 
     def create(self, request, *args, **kwargs):
@@ -1629,9 +1471,7 @@ class RefundViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
         else:
             mark_refunded = request.data.pop('mark_canceled', False)
         mark_pending = request.data.pop('mark_pending', False)
-        serializer = OrderRefundCreateSerializer(
-            data=request.data, context=self.get_serializer_context()
-        )
+        serializer = OrderRefundCreateSerializer(data=request.data, context=self.get_serializer_context())
         serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             self.perform_create(serializer)
@@ -1661,18 +1501,12 @@ class RefundViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
                     r.order.status = Order.STATUS_PENDING
                     r.order.set_expires(
                         now(),
-                        r.order.event.subevents.filter(
-                            id__in=r.order.positions.values_list(
-                                'subevent_id', flat=True
-                            )
-                        ),
+                        r.order.event.subevents.filter(id__in=r.order.positions.values_list('subevent_id', flat=True)),
                     )
                     r.order.save(update_fields=['status', 'expires'])
 
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -1683,14 +1517,12 @@ with scopes_disabled():
     class InvoiceFilter(FilterSet):
         refers = django_filters.CharFilter(method='refers_qs')
         number = django_filters.CharFilter(method='nr_qs')
-        order = django_filters.CharFilter(
-            field_name='order', lookup_expr='code__iexact'
-        )
+        order = django_filters.CharFilter(field_name='order', lookup_expr='code__iexact')
 
         def refers_qs(self, queryset, name, value):
-            return queryset.annotate(
-                refers_nr=Concat('refers__prefix', 'refers__invoice_no')
-            ).filter(refers_nr__iexact=value)
+            return queryset.annotate(refers_nr=Concat('refers__prefix', 'refers__invoice_no')).filter(
+                refers_nr__iexact=value
+            )
 
         def nr_qs(self, queryset, name, value):
             return queryset.filter(nr__iexact=value)
@@ -1736,17 +1568,13 @@ class InvoiceViewSet(viewsets.ReadOnlyModelViewSet):
             invoice.refresh_from_db()
 
         if invoice.shredded:
-            raise PermissionDenied(
-                'The invoice file is no longer stored on the server.'
-            )
+            raise PermissionDenied('The invoice file is no longer stored on the server.')
 
         if not invoice.file:
             raise RetryException()
 
         resp = FileResponse(invoice.file.file, content_type='application/pdf')
-        resp['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(
-            invoice.number
-        )
+        resp['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(invoice.number)
         return resp
 
     @action(detail=True, methods=['POST'])
@@ -1755,9 +1583,7 @@ class InvoiceViewSet(viewsets.ReadOnlyModelViewSet):
         if inv.canceled:
             raise ValidationError('The invoice has already been canceled.')
         elif inv.shredded:
-            raise PermissionDenied(
-                'The invoice file is no longer stored on the server.'
-            )
+            raise PermissionDenied('The invoice file is no longer stored on the server.')
         else:
             inv = regenerate_invoice(inv)
             inv.order.log_action(
@@ -1774,9 +1600,7 @@ class InvoiceViewSet(viewsets.ReadOnlyModelViewSet):
         if inv.canceled:
             raise ValidationError('The invoice has already been canceled.')
         elif inv.shredded:
-            raise PermissionDenied(
-                'The invoice file is no longer stored on the server.'
-            )
+            raise PermissionDenied('The invoice file is no longer stored on the server.')
         else:
             c = generate_cancellation(inv)
             if inv.order.status != Order.STATUS_CANCELED:
@@ -1795,9 +1619,7 @@ class InvoiceViewSet(viewsets.ReadOnlyModelViewSet):
 with scopes_disabled():
 
     class RevokedSecretFilter(FilterSet):
-        created_since = django_filters.IsoDateTimeFilter(
-            field_name='created', lookup_expr='gte'
-        )
+        created_since = django_filters.IsoDateTimeFilter(field_name='created', lookup_expr='gte')
 
         class Meta:
             model = RevokedTicketSecret

@@ -57,11 +57,7 @@ class Metric(object):
 
         # now test if no further labels are required
         if len(labels) != len(self.labelnames):
-            raise ValueError(
-                'Unknown labels used: {}'.format(
-                    ', '.join(set(labels) - set(self.labelnames))
-                )
-            )
+            raise ValueError('Unknown labels used: {}'.format(', '.join(set(labels) - set(self.labelnames))))
 
     def _construct_metric_identifier(self, metricname, labels=None, labelnames=None):
         """
@@ -243,9 +239,7 @@ def estimate_count_fast(type):
     """
     if 'postgres' in settings.DATABASES['default']['ENGINE']:
         cursor = connection.cursor()
-        cursor.execute(
-            "select reltuples from pg_class where relname='%s';" % type._meta.db_table
-        )
+        cursor.execute("select reltuples from pg_class where relname='%s';" % type._meta.db_table)
         row = cursor.fetchone()
         return int(row[0])
     else:
@@ -275,13 +269,9 @@ def metric_values():
     exact_tables = [Order, OrderPosition, Invoice, Event, Organizer]
     for m in apps.get_models():  # Count all models
         if any(issubclass(m, p) for p in exact_tables):
-            metrics['pretix_model_instances']['{model="%s"}' % m._meta] = (
-                m.objects.count()
-            )
+            metrics['pretix_model_instances']['{model="%s"}' % m._meta] = m.objects.count()
         else:
-            metrics['pretix_model_instances']['{model="%s"}' % m._meta] = (
-                estimate_count_fast(m)
-            )
+            metrics['pretix_model_instances']['{model="%s"}' % m._meta] = estimate_count_fast(m)
 
     if settings.HAS_CELERY:
         client = app.broker_connection().channel().client
@@ -292,13 +282,9 @@ def metric_values():
             if lfirst:
                 ldata = json.loads(lfirst)
                 dt = time.time() - ldata.get('created', 0)
-                metrics['pretix_celery_tasks_queued_age_seconds'][
-                    '{queue="%s"}' % q.name
-                ] = dt
+                metrics['pretix_celery_tasks_queued_age_seconds']['{queue="%s"}' % q.name] = dt
             else:
-                metrics['pretix_celery_tasks_queued_age_seconds'][
-                    '{queue="%s"}' % q.name
-                ] = 0
+                metrics['pretix_celery_tasks_queued_age_seconds']['{queue="%s"}' % q.name] = 0
 
     return metrics
 
@@ -311,9 +297,5 @@ pretix_view_duration_seconds = Histogram(
     'Return time of views.',
     ['status_code', 'method', 'url_name'],
 )
-pretix_task_runs_total = Counter(
-    'pretix_task_runs_total', 'Total calls to a celery task', ['task_name', 'status']
-)
-pretix_task_duration_seconds = Histogram(
-    'pretix_task_duration_seconds', 'Call time of a celery task', ['task_name']
-)
+pretix_task_runs_total = Counter('pretix_task_runs_total', 'Total calls to a celery task', ['task_name', 'status'])
+pretix_task_duration_seconds = Histogram('pretix_task_duration_seconds', 'Call time of a celery task', ['task_name'])

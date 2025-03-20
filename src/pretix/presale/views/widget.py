@@ -60,9 +60,7 @@ def indent(s):
 
 def widget_css_etag(request, **kwargs):
     o = getattr(request, 'event', request.organizer)
-    return (
-        o.settings.presale_widget_css_checksum or o.settings.presale_widget_css_checksum
-    )
+    return o.settings.presale_widget_css_checksum or o.settings.presale_widget_css_checksum
 
 
 def widget_js_etag(request, lang, **kwargs):
@@ -85,12 +83,7 @@ def widget_css(request, **kwargs):
         except FileNotFoundError:
             pass
     tpl = get_template('pretixpresale/widget_dummy.html')
-    et = (
-        html.fromstring(tpl.render({}))
-        .xpath('/html/head/link')[0]
-        .attrib['href']
-        .replace(settings.STATIC_URL, '')
-    )
+    et = html.fromstring(tpl.render({})).xpath('/html/head/link')[0].attrib['href'].replace(settings.STATIC_URL, '')
     f = finders.find(et)
     resp = FileResponse(open(f, 'rb'), content_type='text/css')
     return resp
@@ -129,20 +122,12 @@ def generate_widget_js(lang):
             'November',
             'December',
         )
-        catalog = dict(
-            (k, v)
-            for k, v in catalog.items()
-            if k.startswith('widget\u0004') or k in str_wl
-        )
+        catalog = dict((k, v) for k, v in catalog.items() if k.startswith('widget\u0004') or k in str_wl)
         template = Engine().from_string(js_catalog_template)
         context = Context(
             {
-                'catalog_str': indent(json.dumps(catalog, sort_keys=True, indent=2))
-                if catalog
-                else None,
-                'formats_str': indent(
-                    json.dumps(get_formats(), sort_keys=True, indent=2)
-                ),
+                'catalog_str': indent(json.dumps(catalog, sort_keys=True, indent=2)) if catalog else None,
+                'formats_str': indent(json.dumps(get_formats(), sort_keys=True, indent=2)),
                 'plural': plural,
             }
         )
@@ -195,9 +180,7 @@ def widget_js(request, lang, **kwargs):
         data = generate_widget_js(lang).encode()
         checksum = hashlib.sha1(data).hexdigest()
         if not settings.DEBUG:
-            newname = default_storage.save(
-                'widget/widget.{}.{}.js'.format(lang, checksum), ContentFile(data)
-            )
+            newname = default_storage.save('widget/widget.{}.{}.js'.format(lang, checksum), ContentFile(data))
             gs.settings.set('widget_file_{}'.format(lang), 'file://' + newname)
             gs.settings.set('widget_checksum_{}'.format(lang), checksum)
             cache.set('widget_js_data_{}'.format(lang), data, 3600 * 4)
@@ -229,9 +212,7 @@ class WidgetAPIProductList(EventListMixin, View):
         if 'items' in self.request.GET:
             qs = qs.filter(pk__in=self.request.GET.get('items').split(','))
         if 'categories' in self.request.GET:
-            qs = qs.filter(
-                category__pk__in=self.request.GET.get('categories').split(',')
-            )
+            qs = qs.filter(category__pk__in=self.request.GET.get('categories').split(','))
 
         items, display_add_to_cart = get_grouped_items(
             self.request.event,
@@ -254,36 +235,22 @@ class WidgetAPIProductList(EventListMixin, View):
                         {
                             'id': item.pk,
                             'name': str(item.name),
-                            'picture': get_picture(self.request.event, item.picture)
-                            if item.picture
-                            else None,
-                            'description': str(
-                                rich_text(item.description, safelinks=False)
-                            )
+                            'picture': get_picture(self.request.event, item.picture) if item.picture else None,
+                            'description': str(rich_text(item.description, safelinks=False))
                             if item.description
                             else None,
                             'has_variations': item.has_variations,
                             'require_voucher': item.require_voucher,
                             'order_min': item.min_per_order,
-                            'order_max': item.order_max
-                            if not item.has_variations
-                            else None,
-                            'price': price_dict(item, item.display_price)
-                            if not item.has_variations
-                            else None,
-                            'min_price': item.min_price
-                            if item.has_variations
-                            else None,
-                            'max_price': item.max_price
-                            if item.has_variations
-                            else None,
+                            'order_max': item.order_max if not item.has_variations else None,
+                            'price': price_dict(item, item.display_price) if not item.has_variations else None,
+                            'min_price': item.min_price if item.has_variations else None,
+                            'max_price': item.max_price if item.has_variations else None,
                             'allow_waitinglist': item.allow_waitinglist,
                             'free_price': item.free_price,
                             'avail': [
                                 item.cached_availability[0],
-                                item.cached_availability[1]
-                                if item.do_show_quota_left
-                                else None,
+                                item.cached_availability[1] if item.do_show_quota_left else None,
                             ]
                             if not item.has_variations
                             else None,
@@ -301,9 +268,7 @@ class WidgetAPIProductList(EventListMixin, View):
                                     'id': var.id,
                                     'value': str(var.value),
                                     'order_max': var.order_max,
-                                    'description': str(
-                                        rich_text(var.description, safelinks=False)
-                                    )
+                                    'description': str(rich_text(var.description, safelinks=False))
                                     if var.description
                                     else None,
                                     'price': price_dict(item, var.display_price),
@@ -327,9 +292,7 @@ class WidgetAPIProductList(EventListMixin, View):
                                     ),
                                     'avail': [
                                         var.cached_availability[0],
-                                        var.cached_availability[1]
-                                        if item.do_show_quota_left
-                                        else None,
+                                        var.cached_availability[1] if item.do_show_quota_left else None,
                                     ],
                                 }
                                 for var in item.available_variations
@@ -342,10 +305,8 @@ class WidgetAPIProductList(EventListMixin, View):
         return grps, display_add_to_cart, len(items)
 
     def post_process(self, data):
-        data['poweredby'] = (
-            '<a href="https://eventyay.com" target="_blank" rel="noopener">{}</a>'.format(
-                pgettext('widget', 'event ticketing powered by eventyay')
-            )
+        data['poweredby'] = '<a href="https://eventyay.com" target="_blank" rel="noopener">{}</a>'.format(
+            pgettext('widget', 'event ticketing powered by eventyay')
         )
 
     def response(self, data):
@@ -359,33 +320,19 @@ class WidgetAPIProductList(EventListMixin, View):
             return self._get_event_list(request, **kwargs)
 
         if not request.event.live:
-            return self.response(
-                {'error': gettext('This ticket shop is currently disabled.')}
-            )
+            return self.response({'error': gettext('This ticket shop is currently disabled.')})
 
         if request.sales_channel.identifier not in request.event.sales_channels:
             return self.response(
-                {
-                    'error': gettext(
-                        'Tickets for this event cannot be purchased on this sales channel.'
-                    )
-                }
+                {'error': gettext('Tickets for this event cannot be purchased on this sales channel.')}
             )
 
         self.subevent = None
         if request.event.has_subevents:
             if 'subevent' in kwargs:
-                self.subevent = request.event.subevents.filter(
-                    pk=kwargs['subevent'], active=True
-                ).first()
+                self.subevent = request.event.subevents.filter(pk=kwargs['subevent'], active=True).first()
                 if not self.subevent:
-                    return self.response(
-                        {
-                            'error': gettext(
-                                'The selected date does not exist in this event series.'
-                            )
-                        }
-                    )
+                    return self.response({'error': gettext('The selected date does not exist in this event series.')})
             else:
                 return self._get_event_list(request, **kwargs)
         else:
@@ -395,9 +342,7 @@ class WidgetAPIProductList(EventListMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         o = getattr(request, 'event', request.organizer)
-        if 'lang' in request.GET and request.GET.get('lang') in [
-            lc for lc, ll in settings.LANGUAGES
-        ]:
+        if 'lang' in request.GET and request.GET.get('lang') in [lc for lc, ll in settings.LANGUAGES]:
             with language(request.GET.get('lang'), o.settings.region):
                 return self.get(request, **kwargs)
         else:
@@ -411,8 +356,7 @@ class WidgetAPIProductList(EventListMixin, View):
                 availability['text'] = gettext('Book now')
                 availability['reason'] = 'ok'
             elif event.settings.waiting_list_enabled and (
-                ev.best_availability_state is not None
-                and ev.best_availability_state >= 0
+                ev.best_availability_state is not None and ev.best_availability_state >= 0
             ):
                 availability['color'] = 'orange'
                 availability['text'] = gettext('Waiting list')
@@ -421,10 +365,7 @@ class WidgetAPIProductList(EventListMixin, View):
                 availability['color'] = 'orange'
                 availability['text'] = gettext('Reserved')
                 availability['reason'] = 'reserved'
-            elif (
-                ev.best_availability_state is not None
-                and ev.best_availability_state < Quota.AVAILABILITY_RESERVED
-            ):
+            elif ev.best_availability_state is not None and ev.best_availability_state < Quota.AVAILABILITY_RESERVED:
                 availability['color'] = 'red'
                 if ev.has_paid_item:
                     availability['text'] = gettext('Sold out')
@@ -463,8 +404,7 @@ class WidgetAPIProductList(EventListMixin, View):
             if (
                 event.settings.show_date_to
                 and ev.date_to
-                and ev.date_from.astimezone(tz).date()
-                == ev.date_to.astimezone(tz).date()
+                and ev.date_from.astimezone(tz).date() == ev.date_to.astimezone(tz).date()
             ):
                 dr += ' – ' + date_format(ev.date_to.astimezone(tz), 'TIME_FORMAT')
         return dr
@@ -486,8 +426,7 @@ class WidgetAPIProductList(EventListMixin, View):
             if (
                 time
                 and ev.date_to
-                and ev.date_from.astimezone(tz).date()
-                == ev.date_to.astimezone(tz).date()
+                and ev.date_from.astimezone(tz).date() == ev.date_to.astimezone(tz).date()
                 and event.settings.show_date_to
             ):
                 time += ' – ' + date_format(ev.date_to.astimezone(tz), 'TIME_FORMAT')
@@ -525,9 +464,7 @@ class WidgetAPIProductList(EventListMixin, View):
 
         if hasattr(self.request, 'event'):
             data['name'] = str(request.event.name)
-            data['frontpage_text'] = str(
-                rich_text(request.event.settings.frontpage_text, safelinks=False)
-            )
+            data['frontpage_text'] = str(rich_text(request.event.settings.frontpage_text, safelinks=False))
 
         cache_key = ':'.join(
             [
@@ -553,12 +490,8 @@ class WidgetAPIProductList(EventListMixin, View):
                 tz = pytz.timezone(self.request.event.settings.timezone)
             else:
                 tz = pytz.UTC
-            before = datetime(self.year, self.month, 1, 0, 0, 0, tzinfo=tz) - timedelta(
-                days=1
-            )
-            after = datetime(
-                self.year, self.month, ndays, 0, 0, 0, tzinfo=tz
-            ) + timedelta(days=1)
+            before = datetime(self.year, self.month, 1, 0, 0, 0, tzinfo=tz) - timedelta(days=1)
+            after = datetime(self.year, self.month, ndays, 0, 0, 0, tzinfo=tz) + timedelta(days=1)
 
             ebd = defaultdict(list)
 
@@ -651,9 +584,7 @@ class WidgetAPIProductList(EventListMixin, View):
             ebd = defaultdict(list)
             if hasattr(self.request, 'event'):
                 add_subevents_for_days(
-                    filter_qs_by_attr(
-                        self.request.event.subevents_annotated('web'), self.request
-                    ),
+                    filter_qs_by_attr(self.request.event.subevents_annotated('web'), self.request),
                     before,
                     after,
                     ebd,
@@ -701,9 +632,7 @@ class WidgetAPIProductList(EventListMixin, View):
             if hasattr(self.request, 'event'):
                 evs = self.request.event.subevents_sorted(
                     filter_qs_by_attr(
-                        self.request.event.subevents_annotated(
-                            self.request.sales_channel.identifier
-                        ),
+                        self.request.event.subevents_annotated(self.request.sales_channel.identifier),
                         self.request,
                     )
                 )
@@ -712,8 +641,7 @@ class WidgetAPIProductList(EventListMixin, View):
                     evs = [
                         se
                         for se in evs
-                        if not se.presale_has_ended
-                        and se.best_availability_state >= Quota.AVAILABILITY_RESERVED
+                        if not se.presale_has_ended and se.best_availability_state >= Quota.AVAILABILITY_RESERVED
                     ]
 
                 data['events'] = [
@@ -722,9 +650,7 @@ class WidgetAPIProductList(EventListMixin, View):
                         'location': str(ev.location),
                         'date_range': self._get_date_range(ev, ev.event, tz),
                         'availability': self._get_availability(ev, ev.event),
-                        'event_url': build_absolute_uri(
-                            ev.event, 'presale:event.index'
-                        ),
+                        'event_url': build_absolute_uri(ev.event, 'presale:event.index'),
                         'subevent': ev.pk,
                     }
                     for ev in evs
@@ -733,17 +659,11 @@ class WidgetAPIProductList(EventListMixin, View):
                 data['events'] = []
                 qs = self._get_event_queryset()
                 for event in qs:
-                    tz = pytz.timezone(
-                        event.cache.get_or_set(
-                            'timezone', lambda: event.settings.timezone
-                        )
-                    )
+                    tz = pytz.timezone(event.cache.get_or_set('timezone', lambda: event.settings.timezone))
                     if event.has_subevents:
                         dr = daterange(
                             event.min_from.astimezone(tz),
-                            (
-                                event.max_fromto or event.max_to or event.max_from
-                            ).astimezone(tz),
+                            (event.max_fromto or event.max_to or event.max_from).astimezone(tz),
                         )
                         avail = {'color': 'none', 'text': gettext('Event series')}
                     else:
@@ -755,9 +675,7 @@ class WidgetAPIProductList(EventListMixin, View):
                             'location': str(event.location),
                             'date_range': dr,
                             'availability': avail,
-                            'event_url': build_absolute_uri(
-                                event, 'presale:event.index'
-                            ),
+                            'event_url': build_absolute_uri(event, 'presale:event.index'),
                         }
                     )
 
@@ -789,31 +707,23 @@ class WidgetAPIProductList(EventListMixin, View):
             'display_net_prices': request.event.settings.display_net_prices,
             'show_variations_expanded': request.event.settings.show_variations_expanded,
             'waiting_list_enabled': request.event.settings.waiting_list_enabled,
-            'voucher_explanation_text': str(
-                request.event.settings.voucher_explanation_text
-            ),
+            'voucher_explanation_text': str(request.event.settings.voucher_explanation_text),
             'error': None,
             'cart_exists': False,
         }
 
         if (
             'cart_id' in request.GET
-            and CartPosition.objects.filter(
-                event=request.event, cart_id=request.GET.get('cart_id')
-            ).exists()
+            and CartPosition.objects.filter(event=request.event, cart_id=request.GET.get('cart_id')).exists()
         ):
             data['cart_exists'] = True
 
         ev = self.subevent or request.event
         data['name'] = str(ev.name)
         if self.subevent:
-            data['frontpage_text'] = str(
-                rich_text(self.subevent.frontpage_text, safelinks=False)
-            )
+            data['frontpage_text'] = str(rich_text(self.subevent.frontpage_text, safelinks=False))
         else:
-            data['frontpage_text'] = str(
-                rich_text(request.event.settings.frontpage_text, safelinks=False)
-            )
+            data['frontpage_text'] = str(rich_text(request.event.settings.frontpage_text, safelinks=False))
         data['date_range'] = self._get_date_range(ev, request.event)
         fail = False
 
@@ -822,13 +732,9 @@ class WidgetAPIProductList(EventListMixin, View):
                 if request.event.settings.presale_has_ended_text:
                     data['error'] = str(request.event.settings.presale_has_ended_text)
                 else:
-                    data['error'] = gettext(
-                        'The presale period for this event is over.'
-                    )
+                    data['error'] = gettext('The presale period for this event is over.')
             elif request.event.settings.presale_start_show_date:
-                data['error'] = gettext(
-                    'The presale for this event will start on %(date)s at %(time)s.'
-                ) % {
+                data['error'] = gettext('The presale for this event will start on %(date)s at %(time)s.') % {
                     'date': date_format(
                         ev.effective_presale_start.astimezone(request.event.timezone),
                         'SHORT_DATE_FORMAT',
@@ -839,23 +745,16 @@ class WidgetAPIProductList(EventListMixin, View):
                     ),
                 }
             else:
-                data['error'] = gettext(
-                    'The presale for this event has not yet started.'
-                )
+                data['error'] = gettext('The presale for this event has not yet started.')
 
         self.voucher = None
         if 'voucher' in request.GET:
             try:
-                self.voucher = request.event.vouchers.get(
-                    code__iexact=request.GET.get('voucher').strip()
-                )
+                self.voucher = request.event.vouchers.get(code__iexact=request.GET.get('voucher').strip())
                 if self.voucher.redeemed >= self.voucher.max_usages:
                     data['error'] = error_messages['voucher_redeemed']
                     fail = True
-                if (
-                    self.voucher.valid_until is not None
-                    and self.voucher.valid_until < now()
-                ):
+                if self.voucher.valid_until is not None and self.voucher.valid_until < now():
                     data['error'] = error_messages['voucher_expired']
                     fail = True
 
@@ -864,22 +763,13 @@ class WidgetAPIProductList(EventListMixin, View):
                     redeemed_in_carts = CartPosition.objects.filter(
                         Q(voucher=self.voucher)
                         & Q(event=request.event)
-                        & (
-                            Q(expires__gte=now())
-                            | Q(cart_id=get_or_create_cart_id(request))
-                        )
+                        & (Q(expires__gte=now()) | Q(cart_id=get_or_create_cart_id(request)))
                     )
                 else:
                     redeemed_in_carts = CartPosition.objects.filter(
-                        Q(voucher=self.voucher)
-                        & Q(event=request.event)
-                        & Q(expires__gte=now())
+                        Q(voucher=self.voucher) & Q(event=request.event) & Q(expires__gte=now())
                     )
-                v_avail = (
-                    self.voucher.max_usages
-                    - self.voucher.redeemed
-                    - redeemed_in_carts.count()
-                )
+                v_avail = self.voucher.max_usages - self.voucher.redeemed - redeemed_in_carts.count()
 
                 if v_avail < 1:
                     data['error'] = error_messages['voucher_redeemed']
@@ -888,16 +778,9 @@ class WidgetAPIProductList(EventListMixin, View):
                 data['error'] = error_messages['voucher_invalid']
                 fail = True
 
-        if not fail and (
-            ev.presale_is_running
-            or request.event.settings.show_items_outside_presale_period
-        ):
-            data['items_by_category'], data['display_add_to_cart'], data['itemnum'] = (
-                self._get_items()
-            )
-            data['display_add_to_cart'] = (
-                data['display_add_to_cart'] and ev.presale_is_running
-            )
+        if not fail and (ev.presale_is_running or request.event.settings.show_items_outside_presale_period):
+            data['items_by_category'], data['display_add_to_cart'], data['itemnum'] = self._get_items()
+            data['display_add_to_cart'] = data['display_add_to_cart'] and ev.presale_is_running
         else:
             data['items_by_category'] = []
             data['display_add_to_cart'] = False

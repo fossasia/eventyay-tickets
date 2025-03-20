@@ -32,9 +32,7 @@ class MetaDataField(Field):
         return {v.property.name: v.value for v in value.meta_values.all()}
 
     def to_internal_value(self, data):
-        if not isinstance(data, dict) or not all(
-            isinstance(k, str) for k in data.keys()
-        ):
+        if not isinstance(data, dict) or not all(isinstance(k, str) for k in data.keys()):
             raise ValidationError('meta_data needs to be an object (str -> str).')
 
         return {'meta_data': data}
@@ -50,9 +48,7 @@ class MetaPropertyField(Field):
             or not all(isinstance(k, str) for k in data.keys())
             or not all(isinstance(k, str) for k in data.values())
         ):
-            raise ValidationError(
-                'item_meta_properties needs to be an object (str -> str).'
-            )
+            raise ValidationError('item_meta_properties needs to be an object (str -> str).')
         return {'item_meta_properties': data}
 
 
@@ -69,9 +65,7 @@ class SeatCategoryMappingField(Field):
             or not all(isinstance(k, str) for k in data.keys())
             or not all(isinstance(k, int) for k in data.values())
         ):
-            raise ValidationError(
-                'seat_category_mapping needs to be an object (str -> int).'
-            )
+            raise ValidationError('seat_category_mapping needs to be an object (str -> int).')
         return {'seat_category_mapping': data or {}}
 
 
@@ -83,9 +77,7 @@ class PluginsField(Field):
             [
                 p.module
                 for p in get_all_plugins()
-                if not p.name.startswith('.')
-                and getattr(p, 'visible', True)
-                and p.module in obj.get_plugins()
+                if not p.name.startswith('.') and getattr(p, 'visible', True) and p.module in obj.get_plugins()
             ]
         )
 
@@ -95,16 +87,12 @@ class PluginsField(Field):
 
 class TimeZoneField(ChoiceField):
     def get_attribute(self, instance):
-        return instance.cache.get_or_set(
-            'timezone_name', lambda: instance.settings.timezone, 3600
-        )
+        return instance.cache.get_or_set('timezone_name', lambda: instance.settings.timezone, 3600)
 
 
 class ValidKeysField(Field):
     def to_representation(self, value):
-        return value.cache.get_or_set(
-            'ticket_secret_valid_keys', lambda: self._get(value), 120
-        )
+        return value.cache.get_or_set('ticket_secret_valid_keys', lambda: self._get(value), 120)
 
     def _get(self, value):
         return {
@@ -158,20 +146,14 @@ class EventSerializer(I18nAwareModelSerializer):
     def validate(self, data):
         data = super().validate(data)
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
         Event.clean_dates(data.get('date_from'), data.get('date_to'))
         Event.clean_presale(data.get('presale_start'), data.get('presale_end'))
 
         if full_data.get('has_subevents') and full_data.get('seating_plan'):
-            raise ValidationError(
-                'Event series should not directly be assigned a seating plan.'
-            )
+            raise ValidationError('Event series should not directly be assigned a seating plan.')
 
         return data
 
@@ -198,33 +180,22 @@ class EventSerializer(I18nAwareModelSerializer):
 
     @cached_property
     def meta_properties(self):
-        return {
-            p.name: p for p in self.context['request'].organizer.meta_properties.all()
-        }
+        return {p.name: p for p in self.context['request'].organizer.meta_properties.all()}
 
     def validate_meta_data(self, value):
         for key, v in value['meta_data'].items():
             if key not in self.meta_properties:
-                raise ValidationError(
-                    _("Meta data property '{name}' does not exist.").format(name=key)
-                )
+                raise ValidationError(_("Meta data property '{name}' does not exist.").format(name=key))
             if self.meta_properties[key].allowed_values:
-                if v not in [
-                    _v.strip()
-                    for _v in self.meta_properties[key].allowed_values.splitlines()
-                ]:
+                if v not in [_v.strip() for _v in self.meta_properties[key].allowed_values.splitlines()]:
                     raise ValidationError(
-                        _(
-                            "Meta data property '{name}' does not allow value '{value}'."
-                        ).format(name=key, value=v)
+                        _("Meta data property '{name}' does not allow value '{value}'.").format(name=key, value=v)
                     )
         return value
 
     @cached_property
     def item_meta_props(self):
-        return {
-            p.name: p for p in self.context['request'].event.item_meta_properties.all()
-        }
+        return {p.name: p for p in self.context['request'].event.item_meta_properties.all()}
 
     def validate_seating_plan(self, value):
         if value and value.organizer != self.context['request'].organizer:
@@ -239,9 +210,7 @@ class EventSerializer(I18nAwareModelSerializer):
     def validate_seat_category_mapping(self, value):
         if not self.instance or not self.instance.pk:
             if value and value['seat_category_mapping']:
-                raise ValidationError(
-                    'You cannot specify seat category mappings on event creation.'
-                )
+                raise ValidationError('You cannot specify seat category mappings on event creation.')
             else:
                 return {'seat_category_mapping': {}}
         item_cache = {i.pk: i for i in self.instance.items.all()}
@@ -263,9 +232,7 @@ class EventSerializer(I18nAwareModelSerializer):
 
         for plugin in value.get('plugins'):
             if plugin not in plugins_available:
-                raise ValidationError(
-                    _("Unknown plugin: '{name}'.").format(name=plugin)
-                )
+                raise ValidationError(_("Unknown plugin: '{name}'.").format(name=plugin))
 
         return value
 
@@ -276,9 +243,7 @@ class EventSerializer(I18nAwareModelSerializer):
             if isinstance(self.context['request'].auth, (Device, TeamAPIToken))
             else self.context['request'].user
         )
-        if perm_holder.has_organizer_permission(
-            'can_change_organizer_settings', request=self.context['request']
-        ):
+        if perm_holder.has_organizer_permission('can_change_organizer_settings', request=self.context['request']):
             return []
         return [k for k, p in self.meta_properties.items() if p.protected]
 
@@ -287,9 +252,7 @@ class EventSerializer(I18nAwareModelSerializer):
         meta_data = validated_data.pop('meta_data', None)
         item_meta_properties = validated_data.pop('item_meta_properties', None)
         validated_data.pop('seat_category_mapping', None)
-        plugins = validated_data.pop(
-            'plugins', settings.PRETIX_PLUGINS_DEFAULT.split(',')
-        )
+        plugins = validated_data.pop('plugins', settings.PRETIX_PLUGINS_DEFAULT.split(','))
         tz = validated_data.pop('timezone', None)
         event = super().create(validated_data)
 
@@ -300,9 +263,7 @@ class EventSerializer(I18nAwareModelSerializer):
         if meta_data is not None:
             for key, value in meta_data.items():
                 if key not in self.ignored_meta_properties:
-                    event.meta_values.create(
-                        property=self.meta_properties.get(key), value=value
-                    )
+                    event.meta_values.create(property=self.meta_properties.get(key), value=value)
 
         # Item Meta properties
         if item_meta_properties is not None:
@@ -334,9 +295,7 @@ class EventSerializer(I18nAwareModelSerializer):
 
         # Meta data
         if meta_data is not None:
-            current = {
-                mv.property: mv for mv in event.meta_values.select_related('property')
-            }
+            current = {mv.property: mv for mv in event.meta_values.select_related('property')}
             for key, value in meta_data.items():
                 if key not in self.ignored_meta_properties:
                     prop = self.meta_properties.get(key)
@@ -344,9 +303,7 @@ class EventSerializer(I18nAwareModelSerializer):
                         current[prop].value = value
                         current[prop].save()
                     else:
-                        event.meta_values.create(
-                            property=self.meta_properties.get(key), value=value
-                        )
+                        event.meta_values.create(property=self.meta_properties.get(key), value=value)
 
             for prop, current_object in current.items():
                 if prop.name not in self.ignored_meta_properties:
@@ -362,9 +319,7 @@ class EventSerializer(I18nAwareModelSerializer):
                     prop.default = value
                     prop.save()
                 else:
-                    prop = event.item_meta_properties.create(
-                        name=key, default=value, event=event
-                    )
+                    prop = event.item_meta_properties.create(name=key, default=value, event=event)
                     current.append(prop)
 
             for prop in current:
@@ -375,10 +330,7 @@ class EventSerializer(I18nAwareModelSerializer):
         if seat_category_mapping is not None or (
             'seating_plan' in validated_data and validated_data['seating_plan'] is None
         ):
-            current_mappings = {
-                m.layout_category: m
-                for m in event.seat_category_mappings.filter(subevent=None)
-            }
+            current_mappings = {m.layout_category: m for m in event.seat_category_mappings.filter(subevent=None)}
             if not event.seating_plan:
                 seat_category_mapping = {}
             for key, value in seat_category_mapping.items():
@@ -387,9 +339,7 @@ class EventSerializer(I18nAwareModelSerializer):
                     m.product = value
                     m.save()
                 else:
-                    event.seat_category_mappings.create(
-                        product=value, layout_category=key
-                    )
+                    event.seat_category_mappings.create(product=value, layout_category=key)
             for m in current_mappings.values():
                 m.delete()
         if 'seating_plan' in validated_data or seat_category_mapping is not None:
@@ -399,9 +349,7 @@ class EventSerializer(I18nAwareModelSerializer):
                 event.seating_plan,
                 {
                     m.layout_category: m.product
-                    for m in event.seat_category_mappings.select_related(
-                        'product'
-                    ).filter(subevent=None)
+                    for m in event.seat_category_mappings.select_related('product').filter(subevent=None)
                 },
             )
 
@@ -423,9 +371,7 @@ class CloneEventSerializer(EventSerializer):
         tz = validated_data.pop('timezone', None)
         new_event = super().create(validated_data)
 
-        event = Event.objects.filter(
-            slug=self.context['event'], organizer=self.context['organizer'].pk
-        ).first()
+        event = Event.objects.filter(slug=self.context['event'], organizer=self.context['organizer'].pk).first()
         new_event.copy_data_from(event)
 
         if plugins is not None:
@@ -456,9 +402,7 @@ class SubEventItemVariationSerializer(I18nAwareModelSerializer):
 
 
 class SubEventSerializer(I18nAwareModelSerializer):
-    item_price_overrides = SubEventItemSerializer(
-        source='subeventitem_set', many=True, required=False
-    )
+    item_price_overrides = SubEventItemSerializer(source='subeventitem_set', many=True, required=False)
     variation_price_overrides = SubEventItemVariationSerializer(
         source='subeventitemvariation_set', many=True, required=False
     )
@@ -495,25 +439,16 @@ class SubEventSerializer(I18nAwareModelSerializer):
         data = super().validate(data)
         event = self.context['request'].event
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
         Event.clean_dates(data.get('date_from'), data.get('date_to'))
         Event.clean_presale(data.get('presale_start'), data.get('presale_end'))
 
-        SubEvent.clean_items(
-            event, [item['item'] for item in full_data.get('subeventitem_set', [])]
-        )
+        SubEvent.clean_items(event, [item['item'] for item in full_data.get('subeventitem_set', [])])
         SubEvent.clean_variations(
             event,
-            [
-                item['variation']
-                for item in full_data.get('subeventitemvariation_set', [])
-            ],
+            [item['variation'] for item in full_data.get('subeventitemvariation_set', [])],
         )
         return data
 
@@ -528,9 +463,7 @@ class SubEventSerializer(I18nAwareModelSerializer):
             raise ValidationError('Invalid seating plan.')
         if self.instance and self.instance.pk:
             try:
-                validate_plan_change(
-                    self.context['request'].event, self.instance, value
-                )
+                validate_plan_change(self.context['request'].event, self.instance, value)
             except SeatProtected as e:
                 raise ValidationError(str(e))
         return value
@@ -546,25 +479,16 @@ class SubEventSerializer(I18nAwareModelSerializer):
 
     @cached_property
     def meta_properties(self):
-        return {
-            p.name: p for p in self.context['request'].organizer.meta_properties.all()
-        }
+        return {p.name: p for p in self.context['request'].organizer.meta_properties.all()}
 
     def validate_meta_data(self, value):
         for key, v in value['meta_data'].items():
             if key not in self.meta_properties:
-                raise ValidationError(
-                    _("Meta data property '{name}' does not exist.").format(name=key)
-                )
+                raise ValidationError(_("Meta data property '{name}' does not exist.").format(name=key))
             if self.meta_properties[key].allowed_values:
-                if v not in [
-                    _v.strip()
-                    for _v in self.meta_properties[key].allowed_values.splitlines()
-                ]:
+                if v not in [_v.strip() for _v in self.meta_properties[key].allowed_values.splitlines()]:
                     raise ValidationError(
-                        _(
-                            "Meta data property '{name}' does not allow value '{value}'."
-                        ).format(name=key, value=v)
+                        _("Meta data property '{name}' does not allow value '{value}'.").format(name=key, value=v)
                     )
         return value
 
@@ -575,23 +499,17 @@ class SubEventSerializer(I18nAwareModelSerializer):
             if isinstance(self.context['request'].auth, (Device, TeamAPIToken))
             else self.context['request'].user
         )
-        if perm_holder.has_organizer_permission(
-            'can_change_organizer_settings', request=self.context['request']
-        ):
+        if perm_holder.has_organizer_permission('can_change_organizer_settings', request=self.context['request']):
             return []
         return [k for k, p in self.meta_properties.items() if p.protected]
 
     @transaction.atomic
     def create(self, validated_data):
         item_price_overrides_data = (
-            validated_data.pop('subeventitem_set')
-            if 'subeventitem_set' in validated_data
-            else {}
+            validated_data.pop('subeventitem_set') if 'subeventitem_set' in validated_data else {}
         )
         variation_price_overrides_data = (
-            validated_data.pop('subeventitemvariation_set')
-            if 'subeventitemvariation_set' in validated_data
-            else {}
+            validated_data.pop('subeventitemvariation_set') if 'subeventitemvariation_set' in validated_data else {}
         )
         meta_data = validated_data.pop('meta_data', None)
         seat_category_mapping = validated_data.pop('seat_category_mapping', None)
@@ -600,17 +518,13 @@ class SubEventSerializer(I18nAwareModelSerializer):
         for item_price_override_data in item_price_overrides_data:
             SubEventItem.objects.create(subevent=subevent, **item_price_override_data)
         for variation_price_override_data in variation_price_overrides_data:
-            SubEventItemVariation.objects.create(
-                subevent=subevent, **variation_price_override_data
-            )
+            SubEventItemVariation.objects.create(subevent=subevent, **variation_price_override_data)
 
         # Meta data
         if meta_data is not None:
             for key, value in meta_data.items():
                 if key not in self.ignored_meta_properties:
-                    subevent.meta_values.create(
-                        property=self.meta_properties.get(key), value=value
-                    )
+                    subevent.meta_values.create(property=self.meta_properties.get(key), value=value)
 
         # Seats
         if subevent.seating_plan:
@@ -636,53 +550,34 @@ class SubEventSerializer(I18nAwareModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         item_price_overrides_data = validated_data.pop('subeventitem_set', None)
-        variation_price_overrides_data = validated_data.pop(
-            'subeventitemvariation_set', None
-        )
+        variation_price_overrides_data = validated_data.pop('subeventitemvariation_set', None)
         meta_data = validated_data.pop('meta_data', None)
         seat_category_mapping = validated_data.pop('seat_category_mapping', None)
         subevent = super().update(instance, validated_data)
 
         if item_price_overrides_data is not None:
-            existing_item_overrides = {
-                item.item: item.id
-                for item in SubEventItem.objects.filter(subevent=subevent)
-            }
+            existing_item_overrides = {item.item: item.id for item in SubEventItem.objects.filter(subevent=subevent)}
 
             for item_price_override_data in item_price_overrides_data:
                 id = existing_item_overrides.pop(item_price_override_data['item'], None)
-                SubEventItem(
-                    id=id, subevent=subevent, **item_price_override_data
-                ).save()
+                SubEventItem(id=id, subevent=subevent, **item_price_override_data).save()
 
-            SubEventItem.objects.filter(
-                id__in=existing_item_overrides.values()
-            ).delete()
+            SubEventItem.objects.filter(id__in=existing_item_overrides.values()).delete()
 
         if variation_price_overrides_data is not None:
             existing_variation_overrides = {
-                item.variation: item.id
-                for item in SubEventItemVariation.objects.filter(subevent=subevent)
+                item.variation: item.id for item in SubEventItemVariation.objects.filter(subevent=subevent)
             }
 
             for variation_price_override_data in variation_price_overrides_data:
-                id = existing_variation_overrides.pop(
-                    variation_price_override_data['variation'], None
-                )
-                SubEventItemVariation(
-                    id=id, subevent=subevent, **variation_price_override_data
-                ).save()
+                id = existing_variation_overrides.pop(variation_price_override_data['variation'], None)
+                SubEventItemVariation(id=id, subevent=subevent, **variation_price_override_data).save()
 
-            SubEventItemVariation.objects.filter(
-                id__in=existing_variation_overrides.values()
-            ).delete()
+            SubEventItemVariation.objects.filter(id__in=existing_variation_overrides.values()).delete()
 
         # Meta data
         if meta_data is not None:
-            current = {
-                mv.property: mv
-                for mv in subevent.meta_values.select_related('property')
-            }
+            current = {mv.property: mv for mv in subevent.meta_values.select_related('property')}
             for key, value in meta_data.items():
                 if key not in self.ignored_meta_properties:
                     prop = self.meta_properties.get(key)
@@ -690,9 +585,7 @@ class SubEventSerializer(I18nAwareModelSerializer):
                         current[prop].value = value
                         current[prop].save()
                     else:
-                        subevent.meta_values.create(
-                            property=self.meta_properties.get(key), value=value
-                        )
+                        subevent.meta_values.create(property=self.meta_properties.get(key), value=value)
 
             for prop, current_object in current.items():
                 if prop.name not in self.ignored_meta_properties:
@@ -705,9 +598,7 @@ class SubEventSerializer(I18nAwareModelSerializer):
         ):
             current_mappings = {
                 m.layout_category: m
-                for m in self.context['request'].event.seat_category_mappings.filter(
-                    subevent=subevent
-                )
+                for m in self.context['request'].event.seat_category_mappings.filter(subevent=subevent)
             }
             if not subevent.seating_plan:
                 seat_category_mapping = {}

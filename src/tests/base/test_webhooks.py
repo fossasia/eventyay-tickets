@@ -18,17 +18,13 @@ def organizer():
 
 @pytest.fixture
 def event(organizer):
-    event = Event.objects.create(
-        organizer=organizer, name='Dummy', slug='dummy', date_from=now()
-    )
+    event = Event.objects.create(organizer=organizer, name='Dummy', slug='dummy', date_from=now())
     return event
 
 
 @pytest.fixture
 def webhook(organizer, event):
-    wh = organizer.webhooks.create(
-        enabled=True, target_url='https://google.com', all_events=False
-    )
+    wh = organizer.webhooks.create(enabled=True, target_url='https://google.com', all_events=False)
     wh.limit_events.add(event)
     wh.listeners.create(action_type='pretix.event.order.placed')
     wh.listeners.create(action_type='pretix.event.order.paid')

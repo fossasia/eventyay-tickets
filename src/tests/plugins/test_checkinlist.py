@@ -45,9 +45,7 @@ def event():
             total=33,
             locale='en',
         )
-        item_ticket = Item.objects.create(
-            event=event, name='Ticket', default_price=23, admission=True
-        )
+        item_ticket = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True)
         OrderPosition.objects.create(
             order=order_paid,
             item=item_ticket,

@@ -42,9 +42,7 @@ def vouchers_send(
                     v.tag = r.get('tag')
                 if v.comment:
                     v.comment += '\n\n'
-                v.comment = gettext('The voucher has been sent to {recipient}.').format(
-                    recipient=r['email']
-                )
+                v.comment = gettext('The voucher has been sent to {recipient}.').format(recipient=r['email'])
                 logs.append(
                     v.log_action(
                         'pretix.voucher.sent',
@@ -58,9 +56,7 @@ def vouchers_send(
                         save=False,
                     )
                 )
-            Voucher.objects.bulk_update(
-                voucher_list, fields=['comment', 'tag'], batch_size=500
-            )
+            Voucher.objects.bulk_update(voucher_list, fields=['comment', 'tag'], batch_size=500)
             LogEntry.objects.bulk_create(logs, batch_size=500)
 
             if progress and ir % 50 == 0:

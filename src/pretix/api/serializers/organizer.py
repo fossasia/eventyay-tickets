@@ -46,20 +46,14 @@ class SeatingPlanSerializer(I18nAwareModelSerializer):
 
 
 class GiftCardSerializer(I18nAwareModelSerializer):
-    value = serializers.DecimalField(
-        max_digits=10, decimal_places=2, min_value=Decimal('0.00')
-    )
+    value = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=Decimal('0.00'))
 
     def validate(self, data):
         data = super().validate(data)
         s = data['secret']
         qs = GiftCard.objects.filter(secret=s).filter(
             Q(issuer=self.context['organizer'])
-            | Q(
-                issuer__gift_card_collector_acceptance__collector=self.context[
-                    'organizer'
-                ]
-            )
+            | Q(issuer__gift_card_collector_acceptance__collector=self.context['organizer'])
         )
         if self.instance:
             qs = qs.exclude(pk=self.instance.pk)
@@ -130,11 +124,7 @@ class TeamSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
         if full_data.get('limit_events') and full_data.get('all_events'):
             raise ValidationError('Do not set both limit_events and all_events.')
@@ -189,9 +179,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                     'user': self,
                     'organizer': self.context['organizer'].name,
                     'team': instance.team.name,
-                    'url': build_absolute_uri(
-                        'control:auth.invite', kwargs={'token': instance.token}
-                    ),
+                    'url': build_absolute_uri('control:auth.invite', kwargs={'token': instance.token}),
                 },
                 event=None,
                 locale=get_language_without_region(),  # TODO: expose?
@@ -204,22 +192,12 @@ class TeamInviteSerializer(serializers.ModelSerializer):
             try:
                 user = User.objects.get(email__iexact=validated_data['email'])
             except User.DoesNotExist:
-                if (
-                    self.context['team']
-                    .invites.filter(email__iexact=validated_data['email'])
-                    .exists()
-                ):
-                    raise ValidationError(
-                        _('This user already has been invited for this team.')
-                    )
+                if self.context['team'].invites.filter(email__iexact=validated_data['email']).exists():
+                    raise ValidationError(_('This user already has been invited for this team.'))
                 if 'native' not in get_auth_backends():
-                    raise ValidationError(
-                        'Users need to have a pretix account before they can be invited.'
-                    )
+                    raise ValidationError('Users need to have a pretix account before they can be invited.')
 
-                invite = self.context['team'].invites.create(
-                    email=validated_data['email']
-                )
+                invite = self.context['team'].invites.create(email=validated_data['email'])
                 self._send_invite(invite)
                 invite.team.log_action(
                     'pretix.team.invite.created',
@@ -229,9 +207,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                 return invite
             else:
                 if self.context['team'].members.filter(pk=user.pk).exists():
-                    raise ValidationError(
-                        _('This user already has permissions for this team.')
-                    )
+                    raise ValidationError(_('This user already has permissions for this team.'))
 
                 self.context['team'].members.add(user)
                 self.context['team'].log_action(

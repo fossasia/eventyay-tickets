@@ -49,12 +49,7 @@ class EventPluginSignal(django.dispatch.Signal):
 
         # Only fire receivers from active plugins and core modules
         excluded = settings.PRETIX_PLUGINS_EXCLUDE
-        if core_module or (
-            sender
-            and app
-            and app.name in sender.get_plugins()
-            and app.name not in excluded
-        ):
+        if core_module or (sender and app and app.name in sender.get_plugins() and app.name not in excluded):
             if not hasattr(app, 'compatibility_errors') or not app.compatibility_errors:
                 return True
         return False
@@ -70,10 +65,7 @@ class EventPluginSignal(django.dispatch.Signal):
             raise ValueError('Sender needs to be an event.')
 
         responses = []
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return responses
 
         if not app_cache:
@@ -85,9 +77,7 @@ class EventPluginSignal(django.dispatch.Signal):
                 responses.append((receiver, response))
         return responses
 
-    def send_chained(
-        self, sender: Event, chain_kwarg_name, **named
-    ) -> List[Tuple[Callable, Any]]:
+    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> List[Tuple[Callable, Any]]:
         """
         Send signal from sender to all connected receivers. The return value of the first receiver
         will be used as the keyword argument specified by ``chain_kwarg_name`` in the input to the
@@ -99,10 +89,7 @@ class EventPluginSignal(django.dispatch.Signal):
             raise ValueError('Sender needs to be an event.')
 
         response = named.get(chain_kwarg_name)
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return response
 
         if not app_cache:
@@ -126,10 +113,7 @@ class EventPluginSignal(django.dispatch.Signal):
             raise ValueError('Sender needs to be an event.')
 
         responses = []
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return []
 
         if not app_cache:
@@ -147,9 +131,7 @@ class EventPluginSignal(django.dispatch.Signal):
 
 
 class GlobalSignal(django.dispatch.Signal):
-    def send_chained(
-        self, sender: Event, chain_kwarg_name, **named
-    ) -> List[Tuple[Callable, Any]]:
+    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> List[Tuple[Callable, Any]]:
         """
         Send signal from sender to all connected receivers. The return value of the first receiver
         will be used as the keyword argument specified by ``chain_kwarg_name`` in the input to the
@@ -157,10 +139,7 @@ class GlobalSignal(django.dispatch.Signal):
 
         """
         response = named.get(chain_kwarg_name)
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return response
 
         for receiver in self._live_receivers(sender):
@@ -171,9 +150,7 @@ class GlobalSignal(django.dispatch.Signal):
 
 class DeprecatedSignal(django.dispatch.Signal):
     def connect(self, receiver, sender=None, weak=True, dispatch_uid=None):
-        warnings.warn(
-            'This signal is deprecated and will soon be removed', stacklevel=3
-        )
+        warnings.warn('This signal is deprecated and will soon be removed', stacklevel=3)
         super().connect(receiver, sender=None, weak=True, dispatch_uid=None)
 
 

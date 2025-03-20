@@ -39,9 +39,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     def is_applicable(self, request):
         if not hasattr(request, '_checkoutflow_addons_applicable'):
-            request._checkoutflow_addons_applicable = (
-                get_cart(request).filter(item__addons__isnull=False).exists()
-            )
+            request._checkoutflow_addons_applicable = get_cart(request).filter(item__addons__isnull=False).exists()
         return request._checkoutflow_addons_applicable
 
     def is_completed(self, request, warn=False):
@@ -50,20 +48,13 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
         cart_positions = (
             get_cart(request)
             .filter(addon_to__isnull=True)
-            .prefetch_related(
-                'item__addons', 'item__addons__addon_category', 'addons', 'addons__item'
-            )
+            .prefetch_related('item__addons', 'item__addons__addon_category', 'addons', 'addons__item')
         )
 
         for cartpos in cart_positions:
             a = cartpos.addons.all()
             for addon in cartpos.item.addons.all():
-                count = sum(
-                    1
-                    for item in a
-                    if item.item.category_id == addon.addon_category_id
-                    and not item.is_bundled
-                )
+                count = sum(1 for item in a if item.item.category_id == addon.addon_category_id and not item.is_bundled)
                 if not addon.min_count <= count <= addon.max_count:
                     self._completed = False
                     return False
@@ -131,9 +122,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                     if i.has_variations:
                         for variation in i.available_variations:
                             variation_id = (i.pk, variation.pk)
-                            variation.initial = len(
-                                current_addon_products[variation_id]
-                            )
+                            variation.initial = len(current_addon_products[variation_id])
 
                             if variation.initial and i.free_price:
                                 first_addon = current_addon_products[variation_id][0]
@@ -141,9 +130,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                                     net=first_addon.price - first_addon.tax_value,
                                     gross=first_addon.price,
                                     tax=first_addon.tax_value,
-                                    name=first_addon.item.tax_rule.name
-                                    if first_addon.item.tax_rule
-                                    else '',
+                                    name=first_addon.item.tax_rule.name if first_addon.item.tax_rule else '',
                                     rate=first_addon.tax_rate,
                                 )
                             else:
@@ -219,10 +206,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
 
         total_selected_quantity = sum(a[0] for a in selected.values())
         exceeds_single_allowed = (
-            any(
-                sum(v[0] for k, v in selected.items() if k[0] == i) > 1
-                for i in category['items']
-            )
+            any(sum(v[0] for k, v in selected.items() if k[0] == i) > 1 for i in category['items'])
             and not category['multi_allowed']
         )
 
@@ -275,9 +259,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                 try:
                     selected = self._clean_category(f, c)
                 except ValidationError as e:
-                    messages.error(
-                        request, e.message % e.params if e.params else e.message
-                    )
+                    messages.error(request, e.message % e.params if e.params else e.message)
                     return self.get(request, *args, **kwargs)
 
                 for (i, v), (c, price) in selected.items():

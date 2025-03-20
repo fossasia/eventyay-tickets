@@ -20,10 +20,7 @@ class CProfileMiddleware(object):
             if b in request.path:
                 return self.get_response(request)
 
-        if (
-            settings.PROFILING_RATE > 0
-            and random.random() < settings.PROFILING_RATE / 100
-        ):
+        if settings.PROFILING_RATE > 0 and random.random() < settings.PROFILING_RATE / 100:
             profiler = cProfile.Profile()
             profiler.enable()
             starttime = time.perf_counter()

@@ -61,11 +61,7 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
         from pretix.base.settings import DEFAULTS
 
         self.obj = kwargs.get('obj', None)
-        self.locales = (
-            self.obj.settings.get('locales')
-            if self.obj
-            else kwargs.pop('locales', None)
-        )
+        self.locales = self.obj.settings.get('locales') if self.obj else kwargs.pop('locales', None)
         kwargs['attribute_name'] = 'settings'
         kwargs['locales'] = self.locales
         kwargs['initial'] = self.obj.settings.freeze()
@@ -85,10 +81,7 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
 
     def save(self):
         for k, v in self.cleaned_data.items():
-            if (
-                isinstance(self.fields.get(k), SecretKeySettingsField)
-                and self.cleaned_data.get(k) == SECRET_REDACTED
-            ):
+            if isinstance(self.fields.get(k), SecretKeySettingsField) and self.cleaned_data.get(k) == SECRET_REDACTED:
                 self.cleaned_data[k] = self.initial[k]
         return super().save()
 
@@ -118,9 +111,7 @@ class SafeSessionWizardView(SessionWizardView):
     def get_prefix(self, request, *args, **kwargs):
         if hasattr(request, '_session_wizard_prefix'):
             return request._session_wizard_prefix
-        prefix_form = PrefixForm(
-            self.request.POST, prefix=super().get_prefix(request, *args, **kwargs)
-        )
+        prefix_form = PrefixForm(self.request.POST, prefix=super().get_prefix(request, *args, **kwargs))
         if not prefix_form.is_valid():
             request._session_wizard_prefix = get_random_string(length=24)
         else:
@@ -172,9 +163,7 @@ class I18nMarkdownTextarea(i18nfield.forms.I18nTextarea):
         markdown_note = _('You can use {name} in this field.').format(
             name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>'
         )
-        rendered_widgets.append(
-            f'<div class="i18n-field-markdown-note">{markdown_note}</div>'
-        )
+        rendered_widgets.append(f'<div class="i18n-field-markdown-note">{markdown_note}</div>')
         return super().format_output(rendered_widgets)
 
 

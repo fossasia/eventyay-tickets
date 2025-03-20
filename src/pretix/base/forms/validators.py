@@ -25,9 +25,7 @@ class PlaceholderValidator(BaseValidator):
 
         if value.count('{') != value.count('}'):
             raise ValidationError(
-                _(
-                    'Invalid placeholder syntax: You used a different number of "{" than of "}".'
-                ),
+                _('Invalid placeholder syntax: You used a different number of "{" than of "}".'),
                 code='invalid_placeholder_syntax',
             )
 

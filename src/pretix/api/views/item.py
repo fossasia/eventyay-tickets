@@ -247,9 +247,7 @@ class ItemBundleViewSet(viewsets.ModelViewSet):
             auth=self.request.auth,
             data={
                 'bundled_item': instance.bundled_item.pk,
-                'bundled_variation': instance.bundled_variation.pk
-                if instance.bundled_variation
-                else None,
+                'bundled_variation': instance.bundled_variation.pk if instance.bundled_variation else None,
                 'count': instance.count,
                 'designated_price': instance.designated_price,
             },
@@ -283,9 +281,7 @@ class ItemAddOnViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         item = self.item
-        category = get_object_or_404(
-            ItemCategory, pk=self.request.data['addon_category']
-        )
+        category = get_object_or_404(ItemCategory, pk=self.request.data['addon_category'])
         serializer.save(base_item=item, addon_category=category)
         item.log_action(
             'pretix.event.item.addons.added',
@@ -441,23 +437,17 @@ class QuestionOptionViewSet(viewsets.ModelViewSet):
     write_permission = 'can_change_items'
 
     def get_queryset(self):
-        q = get_object_or_404(
-            Question, pk=self.kwargs['question'], event=self.request.event
-        )
+        q = get_object_or_404(Question, pk=self.kwargs['question'], event=self.request.event)
         return q.options.all()
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
         ctx['event'] = self.request.event
-        ctx['question'] = get_object_or_404(
-            Question, pk=self.kwargs['question'], event=self.request.event
-        )
+        ctx['question'] = get_object_or_404(Question, pk=self.kwargs['question'], event=self.request.event)
         return ctx
 
     def perform_create(self, serializer):
-        q = get_object_or_404(
-            Question, pk=self.kwargs['question'], event=self.request.event
-        )
+        q = get_object_or_404(Question, pk=self.kwargs['question'], event=self.request.event)
         serializer.save(question=q)
         q.log_action(
             'pretix.event.question.option.added',

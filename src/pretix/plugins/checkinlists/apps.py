@@ -13,9 +13,7 @@ class CheckinlistsApp(AppConfig):
         name = _('Check-in list exporter')
         version = version
         visible = False
-        description = _(
-            'This plugin allows you to generate check-in lists for your conference.'
-        )
+        description = _('This plugin allows you to generate check-in lists for your conference.')
 
     def ready(self):
         from . import signals  # NOQA

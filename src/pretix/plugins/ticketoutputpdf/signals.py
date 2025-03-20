@@ -49,9 +49,7 @@ def register_multievent_data(sender, **kwargs):
 @receiver(item_forms, dispatch_uid='pretix_ticketoutputpdf_item_forms')
 def control_item_forms(sender, request, item, **kwargs):
     forms = []
-    for k, v in sorted(
-        list(get_all_sales_channels().items()), key=lambda a: (int(a[0] != 'web'), a[0])
-    ):
+    for k, v in sorted(list(get_all_sales_channels().items()), key=lambda a: (int(a[0] != 'web'), a[0])):
         try:
             inst = TicketLayoutItem.objects.get(item=item, sales_channel=k)
         except TicketLayoutItem.DoesNotExist:
@@ -71,9 +69,7 @@ def control_item_forms(sender, request, item, **kwargs):
 @receiver(item_copy_data, dispatch_uid='pretix_ticketoutputpdf_item_copy')
 def copy_item(sender, source, target, **kwargs):
     for tli in TicketLayoutItem.objects.filter(item=source):
-        TicketLayoutItem.objects.create(
-            item=target, layout=tli.layout, sales_channel=tli.sales_channel
-        )
+        TicketLayoutItem.objects.create(item=target, layout=tli.layout, sales_channel=tli.sales_channel)
 
 
 @receiver(signal=event_copy_data, dispatch_uid='pretix_ticketoutputpdf_copy_data')
@@ -112,9 +108,7 @@ def pdf_event_copy_data_receiver(sender, other, item_map, question_map, **kwargs
     return layout_map
 
 
-@receiver(
-    signal=logentry_display, dispatch_uid='pretix_ticketoutputpdf_logentry_display'
-)
+@receiver(signal=logentry_display, dispatch_uid='pretix_ticketoutputpdf_logentry_display')
 def pdf_logentry_display(sender, logentry, **kwargs):
     if not logentry.action_type.startswith('pretix.plugins.ticketoutputpdf'):
         return
@@ -134,9 +128,9 @@ def pdf_logentry_display(sender, logentry, **kwargs):
     dispatch_uid='pretix_ticketoutputpdf_logentry_object_link',
 )
 def pdf_logentry_object_link(sender, logentry, **kwargs):
-    if not logentry.action_type.startswith(
-        'pretix.plugins.ticketoutputpdf.layout'
-    ) or not isinstance(logentry.content_object, TicketLayout):
+    if not logentry.action_type.startswith('pretix.plugins.ticketoutputpdf.layout') or not isinstance(
+        logentry.content_object, TicketLayout
+    ):
         return
 
     a_text = _('Ticket layout {val}')

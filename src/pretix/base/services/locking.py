@@ -91,9 +91,7 @@ def lock_event_db(event):
                 return True
             elif l.date < now() - timedelta(seconds=LOCK_TIMEOUT):
                 newtoken = str(uuid.uuid4())
-                updated = EventLock.objects.filter(
-                    event=event.id, token=l.token
-                ).update(date=dt, token=newtoken)
+                updated = EventLock.objects.filter(event=event.id, token=l.token).update(date=dt, token=newtoken)
                 if updated:
                     l.token = newtoken
                     event._lock = l
@@ -120,9 +118,7 @@ def redis_lock_from_event(event):
 
     if not hasattr(event, '_lock') or not event._lock:
         rc = get_redis_connection('redis')
-        event._lock = Lock(
-            redis=rc, name='pretix_event_%s' % event.id, timeout=LOCK_TIMEOUT
-        )
+        event._lock = Lock(redis=rc, name='pretix_event_%s' % event.id, timeout=LOCK_TIMEOUT)
     return event._lock
 
 

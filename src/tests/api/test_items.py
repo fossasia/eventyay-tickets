@@ -67,9 +67,7 @@ def order(event, item, taxrule):
             tax_value=Decimal('0.05'),
             tax_rule=taxrule,
         )
-        InvoiceAddress.objects.create(
-            order=o, company='Sample company', country=Country('NZ')
-        )
+        InvoiceAddress.objects.create(order=o, company='Sample company', country=Country('NZ'))
         return o
 
 
@@ -120,22 +118,16 @@ TEST_CATEGORY_RES = {
 def test_category_list(token_client, organizer, event, team, category):
     res = dict(TEST_CATEGORY_RES)
     res['id'] = category.pk
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/categories/'.format(organizer.slug, event.slug))
+    assert resp.status_code == 200
+    assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/'.format(organizer.slug, event.slug)
+        '/api/v1/organizers/{}/events/{}/categories/?is_addon=false'.format(organizer.slug, event.slug)
     )
     assert resp.status_code == 200
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/?is_addon=false'.format(
-            organizer.slug, event.slug
-        )
-    )
-    assert resp.status_code == 200
-    assert [res] == resp.data['results']
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/?is_addon=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/categories/?is_addon=true'.format(organizer.slug, event.slug)
     )
     assert resp.status_code == 200
     assert [] == resp.data['results']
@@ -143,34 +135,26 @@ def test_category_list(token_client, organizer, event, team, category):
     category.save()
     res['is_addon'] = True
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/?is_addon=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/categories/?is_addon=true'.format(organizer.slug, event.slug)
     )
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
     category.log_action('foo')
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/categories/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     lmd = resp['Last-Modified']
     assert lmd
     time.sleep(1)
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/categories/'.format(organizer.slug, event.slug),
         HTTP_IF_MODIFIED_SINCE=lmd,
     )
     assert resp.status_code == 304
     time.sleep(1)
     category.log_action('foo')
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/categories/'.format(organizer.slug, event.slug),
         HTTP_IF_MODIFIED_SINCE=lmd,
     )
     assert resp.status_code == 200
@@ -181,9 +165,7 @@ def test_category_detail(token_client, organizer, event, team, category):
     res = dict(TEST_CATEGORY_RES)
     res['id'] = category.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(
-            organizer.slug, event.slug, category.pk
-        )
+        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(organizer.slug, event.slug, category.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -192,9 +174,7 @@ def test_category_detail(token_client, organizer, event, team, category):
 @pytest.mark.django_db
 def test_category_create(token_client, organizer, event, team):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/categories/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/categories/'.format(organizer.slug, event.slug),
         {
             'name': {'en': 'Tickets'},
             'description': {'en': ''},
@@ -209,9 +189,7 @@ def test_category_create(token_client, organizer, event, team):
 @pytest.mark.django_db
 def test_category_update(token_client, organizer, event, team, category):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(
-            organizer.slug, event.slug, category.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(organizer.slug, event.slug, category.pk),
         {
             'name': {'en': 'Test'},
         },
@@ -225,9 +203,7 @@ def test_category_update(token_client, organizer, event, team, category):
 @pytest.mark.django_db
 def test_category_update_wrong_event(token_client, organizer, event2, category):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(
-            organizer.slug, event2.slug, category.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(organizer.slug, event2.slug, category.pk),
         {
             'name': {'en': 'Test'},
         },
@@ -239,9 +215,7 @@ def test_category_update_wrong_event(token_client, organizer, event2, category):
 @pytest.mark.django_db
 def test_category_delete(token_client, organizer, event, category3, item):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(
-            organizer.slug, event.slug, category3.pk
-        )
+        '/api/v1/organizers/{}/events/{}/categories/{}/'.format(organizer.slug, event.slug, category3.pk)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -252,9 +226,7 @@ def test_category_delete(token_client, organizer, event, category3, item):
 @pytest.fixture
 def item(event):
     item = event.items.create(name='Budget Ticket', default_price=23)
-    item.meta_values.create(
-        property=event.item_meta_properties.first(), value='Tuesday'
-    )
+    item.meta_values.create(property=event.item_meta_properties.first(), value='Tuesday')
     return item
 
 
@@ -311,49 +283,29 @@ def test_item_list(token_client, organizer, event, team, item):
     cat = event.categories.create(name='foo')
     res = dict(TEST_ITEM_RES)
     res['id'] = item.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?active=true'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?active=true'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?active=false'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?active=false'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?category={}'.format(
-            organizer.slug, event.slug, cat.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/?category={}'.format(organizer.slug, event.slug, cat.pk)
     )
     assert resp.status_code == 200
     assert [] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?admission=true'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?admission=true'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?admission=false'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?admission=false'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -361,43 +313,23 @@ def test_item_list(token_client, organizer, event, team, item):
     item.save()
     res['admission'] = True
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?admission=true'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?admission=true'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?admission=false'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?admission=false'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?tax_rate=0'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?tax_rate=0'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?tax_rate=19'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?tax_rate=19'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/?free_price=true'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/?free_price=true'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
 
@@ -406,11 +338,7 @@ def test_item_list(token_client, organizer, event, team, item):
 def test_item_detail(token_client, organizer, event, team, item):
     res = dict(TEST_ITEM_RES)
     res['id'] = item.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -434,11 +362,7 @@ def test_item_detail_variations(token_client, organizer, event, team, item):
         }
     ]
     res['has_variations'] = True
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk))
     assert resp.status_code == 200
     assert res['variations'] == resp.data['variations']
 
@@ -459,11 +383,7 @@ def test_item_detail_addons(token_client, organizer, event, team, item, category
             'price_included': False,
         }
     ]
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -484,11 +404,7 @@ def test_item_detail_bundles(token_client, organizer, event, team, item, categor
             'designated_price': '2.00',
         }
     ]
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -534,9 +450,7 @@ def test_item_create(token_client, organizer, event, item, category, taxrule):
 
 
 @pytest.mark.django_db
-def test_item_create_with_variation(
-    token_client, organizer, event, item, category, taxrule
-):
+def test_item_create_with_variation(token_client, organizer, event, item, category, taxrule):
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/items/'.format(organizer.slug, event.slug),
         {
@@ -582,9 +496,7 @@ def test_item_create_with_variation(
 
 
 @pytest.mark.django_db
-def test_item_create_giftcard_validation(
-    token_client, organizer, event, item, category, category2, taxrule, taxrule0
-):
+def test_item_create_giftcard_validation(token_client, organizer, event, item, category, category2, taxrule, taxrule0):
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/items/'.format(organizer.slug, event.slug),
         {
@@ -648,16 +560,13 @@ def test_item_create_giftcard_validation(
     )
     assert resp.status_code == 400
     assert (
-        resp.content.decode()
-        == '{"non_field_errors":["Gift card products should not be associated with non-zero '
+        resp.content.decode() == '{"non_field_errors":["Gift card products should not be associated with non-zero '
         'tax rates since sales tax will be applied when the gift card is redeemed."]}'
     )
 
 
 @pytest.mark.django_db
-def test_item_create_with_addon(
-    token_client, organizer, event, item, category, category2, taxrule
-):
+def test_item_create_with_addon(token_client, organizer, event, item, category, category2, taxrule):
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/items/'.format(organizer.slug, event.slug),
         {
@@ -740,10 +649,7 @@ def test_item_create_with_addon(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"addons":["The add-on\'s category must belong to the same event as the item."]}'
-    )
+    assert resp.content.decode() == '{"addons":["The add-on\'s category must belong to the same event as the item."]}'
     with scopes_disabled():
         assert 2 == Item.objects.all().count()
 
@@ -785,10 +691,7 @@ def test_item_create_with_addon(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"addons":["The maximum count needs to be greater than the minimum count."]}'
-    )
+    assert resp.content.decode() == '{"addons":["The maximum count needs to be greater than the minimum count."]}'
     with scopes_disabled():
         assert 2 == Item.objects.all().count()
 
@@ -839,9 +742,7 @@ def test_item_create_with_addon(
 
 
 @pytest.mark.django_db
-def test_item_create_with_bundle(
-    token_client, organizer, event, item, category, item2, taxrule
-):
+def test_item_create_with_bundle(token_client, organizer, event, item, category, item2, taxrule):
     with scopes_disabled():
         i = event.items.create(name='Included thing', default_price=2)
     resp = token_client.post(
@@ -924,10 +825,7 @@ def test_item_create_with_bundle(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"bundles":["The bundled item must belong to the same event as the item."]}'
-    )
+    assert resp.content.decode() == '{"bundles":["The bundled item must belong to the same event as the item."]}'
 
     with scopes_disabled():
         v = item2.variations.create(value='foo')
@@ -966,20 +864,13 @@ def test_item_create_with_bundle(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"bundles":["The chosen variation does not belong to this item."]}'
-    )
+    assert resp.content.decode() == '{"bundles":["The chosen variation does not belong to this item."]}'
 
 
 @pytest.mark.django_db
-def test_item_update(
-    token_client, organizer, event, item, category, item2, category2, taxrule2
-):
+def test_item_update(token_client, organizer, event, item, category, item2, category2, taxrule2):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {'min_per_order': 1, 'max_per_order': 2},
         format='json',
     )
@@ -988,62 +879,42 @@ def test_item_update(
         assert Item.objects.get(pk=item.pk).max_per_order == 2
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {'min_per_order': 10, 'max_per_order': 2},
         format='json',
     )
     assert resp.status_code == 400
     assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The maximum number per order can not be lower than the '
+        resp.content.decode() == '{"non_field_errors":["The maximum number per order can not be lower than the '
         'minimum number per order."]}'
     )
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {'available_from': '2017-12-30T12:00', 'available_until': '2017-12-29T12:00'},
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The item\'s availability cannot end before it starts."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["The item\'s availability cannot end before it starts."]}'
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {'category': category2.pk},
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"category":["The item\'s category must belong to the same event as the item."]}'
-    )
+    assert resp.content.decode() == '{"category":["The item\'s category must belong to the same event as the item."]}'
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {'tax_rule': taxrule2.pk},
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"tax_rule":["The item\'s tax rule must belong to the same event as the item."]}'
-    )
+    assert resp.content.decode() == '{"tax_rule":["The item\'s tax rule must belong to the same event as the item."]}'
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {
             'addons': [
                 {
@@ -1066,9 +937,7 @@ def test_item_update(
     )
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {
             'bundles': [
                 {
@@ -1089,9 +958,7 @@ def test_item_update(
     )
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {'meta_data': {'day': 'Friday'}},
         format='json',
     )
@@ -1100,25 +967,18 @@ def test_item_update(
         assert Item.objects.get(pk=item.pk).meta_data == {'day': 'Friday'}
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {'meta_data': {'foo': 'bar'}},
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"meta_data":["Item meta data property \'foo\' does not exist."]}'
-    )
+    assert resp.content.decode() == '{"meta_data":["Item meta data property \'foo\' does not exist."]}'
 
 
 @pytest.mark.django_db
 def test_item_update_with_variation(token_client, organizer, event, item):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {
             'variations': [
                 {
@@ -1144,9 +1004,7 @@ def test_item_update_with_variation(token_client, organizer, event, item):
 @pytest.mark.django_db
 def test_item_update_with_addon(token_client, organizer, event, item, category):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk),
         {
             'addons': [
                 {
@@ -1171,39 +1029,23 @@ def test_item_update_with_addon(token_client, organizer, event, item, category):
 
 @pytest.mark.django_db
 def test_items_delete(token_client, organizer, event, item):
-    resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        )
-    )
+    resp = token_client.delete('/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk))
     assert resp.status_code == 204
     with scopes_disabled():
         assert not event.items.filter(pk=item.id).exists()
 
 
 @pytest.mark.django_db
-def test_items_with_order_position_not_delete(
-    token_client, organizer, event, item, order_position
-):
-    resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        )
-    )
+def test_items_with_order_position_not_delete(token_client, organizer, event, item, order_position):
+    resp = token_client.delete('/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk))
     assert resp.status_code == 403
     with scopes_disabled():
         assert event.items.filter(pk=item.id).exists()
 
 
 @pytest.mark.django_db
-def test_items_with_cart_position_delete(
-    token_client, organizer, event, item, cart_position
-):
-    resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/items/{}/'.format(
-            organizer.slug, event.slug, item.pk
-        )
-    )
+def test_items_with_cart_position_delete(token_client, organizer, event, item, cart_position):
+    resp = token_client.delete('/api/v1/organizers/{}/events/{}/items/{}/'.format(organizer.slug, event.slug, item.pk))
     assert resp.status_code == 204
     with scopes_disabled():
         assert not event.items.filter(pk=item.id).exists()
@@ -1255,9 +1097,7 @@ def test_variations_list(token_client, organizer, event, item, variation):
     res = dict(TEST_VARIATIONS_RES)
     res['id'] = variation.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/variations/'.format(
-            organizer.slug, event.slug, item.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/{}/variations/'.format(organizer.slug, event.slug, item.pk)
     )
     assert resp.status_code == 200
     assert res['value'] == resp.data['results'][0]['value']
@@ -1281,9 +1121,7 @@ def test_variations_detail(token_client, organizer, event, item, variation):
 @pytest.mark.django_db
 def test_variations_create(token_client, organizer, event, item, variation):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/variations/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/variations/'.format(organizer.slug, event.slug, item.pk),
         {
             'value': {'en': 'ChildC2'},
             'active': True,
@@ -1305,9 +1143,7 @@ def test_variations_create(token_client, organizer, event, item, variation):
 @pytest.mark.django_db
 def test_variations_create_not_allowed(token_client, organizer, event, item):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/variations/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/variations/'.format(organizer.slug, event.slug, item.pk),
         {
             'value': {'en': 'ChildC2'},
             'active': True,
@@ -1320,8 +1156,7 @@ def test_variations_create_not_allowed(token_client, organizer, event, item):
     )
     assert resp.status_code == 403
     assert (
-        resp.content.decode()
-        == '{"detail":"This variation cannot be created because the item does '
+        resp.content.decode() == '{"detail":"This variation cannot be created because the item does '
         'not have variations. Changing a product without variations to a product with '
         'variations is not allowed."}'
     )
@@ -1385,8 +1220,7 @@ def test_variations_with_order_position_not_delete(
     )
     assert resp.status_code == 403
     assert (
-        resp.content.decode()
-        == '{"detail":"This variation cannot be deleted because it has already been ordered '
+        resp.content.decode() == '{"detail":"This variation cannot be deleted because it has already been ordered '
         "by a user or currently is in a users's cart. Please set the variation as "
         "'inactive' instead.\"}"
     )
@@ -1395,9 +1229,7 @@ def test_variations_with_order_position_not_delete(
 
 
 @pytest.mark.django_db
-def test_variations_with_cart_position_not_delete(
-    token_client, organizer, event, item, variations, cart_position
-):
+def test_variations_with_cart_position_not_delete(token_client, organizer, event, item, variations, cart_position):
     with scopes_disabled():
         assert item.variations.filter(pk=variations[0].id).exists()
     resp = token_client.delete(
@@ -1407,8 +1239,7 @@ def test_variations_with_cart_position_not_delete(
     )
     assert resp.status_code == 403
     assert (
-        resp.content.decode()
-        == '{"detail":"This variation cannot be deleted because it has already been ordered '
+        resp.content.decode() == '{"detail":"This variation cannot be deleted because it has already been ordered '
         "by a user or currently is in a users's cart. Please set the variation as "
         "'inactive' instead.\"}"
     )
@@ -1427,8 +1258,7 @@ def test_only_variation_not_delete(token_client, organizer, event, item, variati
     )
     assert resp.status_code == 403
     assert (
-        resp.content.decode()
-        == '{"detail":"This variation cannot be deleted because it is the only variation. '
+        resp.content.decode() == '{"detail":"This variation cannot be deleted because it is the only variation. '
         'Changing a product with variations to a product without variations is not '
         'allowed."}'
     )
@@ -1455,9 +1285,7 @@ def test_bundles_list(token_client, organizer, event, item, bundle, item3):
     res['id'] = bundle.pk
     res['bundled_item'] = item3.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(
-            organizer.slug, event.slug, item.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(organizer.slug, event.slug, item.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data['results'][0]
@@ -1469,9 +1297,7 @@ def test_bundles_detail(token_client, organizer, event, item, bundle, item3):
     res['id'] = bundle.pk
     res['bundled_item'] = item3.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/{}/'.format(
-            organizer.slug, event.slug, item.pk, bundle.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/{}/'.format(organizer.slug, event.slug, item.pk, bundle.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -1480,9 +1306,7 @@ def test_bundles_detail(token_client, organizer, event, item, bundle, item3):
 @pytest.mark.django_db
 def test_bundles_create(token_client, organizer, event, item, item2, item3):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(organizer.slug, event.slug, item.pk),
         {
             'bundled_item': item3.pk,
             'bundled_variation': None,
@@ -1500,9 +1324,7 @@ def test_bundles_create(token_client, organizer, event, item, item2, item3):
     assert b.count == 1
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(organizer.slug, event.slug, item.pk),
         {
             'bundled_item': item2.pk,
             'bundled_variation': None,
@@ -1513,14 +1335,11 @@ def test_bundles_create(token_client, organizer, event, item, item2, item3):
     )
     assert resp.status_code == 400
     assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The bundled item must belong to the same event as the item."]}'
+        resp.content.decode() == '{"non_field_errors":["The bundled item must belong to the same event as the item."]}'
     )
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(organizer.slug, event.slug, item.pk),
         {
             'bundled_item': item.pk,
             'bundled_variation': None,
@@ -1538,9 +1357,7 @@ def test_bundles_create(token_client, organizer, event, item, item2, item3):
     with scopes_disabled():
         item3.bundles.create(bundled_item=item, count=1, designated_price=3)
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/'.format(organizer.slug, event.slug, item.pk),
         {
             'bundled_item': item3.pk,
             'bundled_variation': None,
@@ -1550,18 +1367,13 @@ def test_bundles_create(token_client, organizer, event, item, item2, item3):
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The bundled item must not have bundles on its own."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["The bundled item must not have bundles on its own."]}'
 
 
 @pytest.mark.django_db
 def test_bundles_update(token_client, organizer, event, item, bundle):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/{}/'.format(
-            organizer.slug, event.slug, item.pk, bundle.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/{}/'.format(organizer.slug, event.slug, item.pk, bundle.pk),
         {
             'count': 3,
         },
@@ -1576,9 +1388,7 @@ def test_bundles_update(token_client, organizer, event, item, bundle):
 @pytest.mark.django_db
 def test_bundles_delete(token_client, organizer, event, item, bundle):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/items/{}/bundles/{}/'.format(
-            organizer.slug, event.slug, item.pk, bundle.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/{}/bundles/{}/'.format(organizer.slug, event.slug, item.pk, bundle.pk)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -1587,9 +1397,7 @@ def test_bundles_delete(token_client, organizer, event, item, bundle):
 
 @pytest.fixture
 def addon(item, category):
-    return item.addons.create(
-        addon_category=category, min_count=0, max_count=10, position=1
-    )
+    return item.addons.create(addon_category=category, min_count=0, max_count=10, position=1)
 
 
 @pytest.fixture
@@ -1612,9 +1420,7 @@ def test_addons_list(token_client, organizer, event, item, addon, category):
     res['id'] = addon.pk
     res['addon_category'] = category.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(
-            organizer.slug, event.slug, item.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(organizer.slug, event.slug, item.pk)
     )
     assert resp.status_code == 200
     assert res['addon_category'] == resp.data['results'][0]['addon_category']
@@ -1629,9 +1435,7 @@ def test_addons_detail(token_client, organizer, event, item, addon, category):
     res['id'] = addon.pk
     res['addon_category'] = category.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(
-            organizer.slug, event.slug, item.pk, addon.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(organizer.slug, event.slug, item.pk, addon.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -1640,9 +1444,7 @@ def test_addons_detail(token_client, organizer, event, item, addon, category):
 @pytest.mark.django_db
 def test_addons_create(token_client, organizer, event, item, category, category2):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(organizer.slug, event.slug, item.pk),
         {
             'addon_category': category.pk,
             'min_count': 0,
@@ -1660,9 +1462,7 @@ def test_addons_create(token_client, organizer, event, item, category, category2
     assert addon.addon_category == category
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(organizer.slug, event.slug, item.pk),
         {
             'addon_category': category.pk,
             'min_count': 10,
@@ -1674,15 +1474,10 @@ def test_addons_create(token_client, organizer, event, item, category, category2
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"addon_category":["The item already has an add-on of this category."]}'
-    )
+    assert resp.content.decode() == '{"addon_category":["The item already has an add-on of this category."]}'
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(
-            organizer.slug, event.slug, item.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/'.format(organizer.slug, event.slug, item.pk),
         {
             'addon_category': category2.pk,
             'min_count': 10,
@@ -1695,8 +1490,7 @@ def test_addons_create(token_client, organizer, event, item, category, category2
     )
     assert resp.status_code == 400
     assert (
-        resp.content.decode()
-        == '{"addon_category":["The add-on\'s category must belong to the same event as '
+        resp.content.decode() == '{"addon_category":["The add-on\'s category must belong to the same event as '
         'the item."]}'
     )
 
@@ -1704,9 +1498,7 @@ def test_addons_create(token_client, organizer, event, item, category, category2
 @pytest.mark.django_db
 def test_addons_update(token_client, organizer, event, item, addon):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(
-            organizer.slug, event.slug, item.pk, addon.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(organizer.slug, event.slug, item.pk, addon.pk),
         {'min_count': 100, 'max_count': 101},
         format='json',
     )
@@ -1717,16 +1509,13 @@ def test_addons_update(token_client, organizer, event, item, addon):
     assert a.max_count == 101
 
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(
-            organizer.slug, event.slug, item.pk, a.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(organizer.slug, event.slug, item.pk, a.pk),
         {'min_count': 10, 'max_count': 1},
         format='json',
     )
     assert resp.status_code == 400
     assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The maximum count needs to be greater than the minimum '
+        resp.content.decode() == '{"non_field_errors":["The maximum count needs to be greater than the minimum '
         'count."]}'
     )
 
@@ -1734,9 +1523,7 @@ def test_addons_update(token_client, organizer, event, item, addon):
 @pytest.mark.django_db
 def test_addons_delete(token_client, organizer, event, item, addon):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(
-            organizer.slug, event.slug, item.pk, addon.pk
-        )
+        '/api/v1/organizers/{}/events/{}/items/{}/addons/{}/'.format(organizer.slug, event.slug, item.pk, addon.pk)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -1768,9 +1555,7 @@ def test_quota_list(token_client, organizer, event, quota, item, subevent):
     res['id'] = quota.pk
     res['items'] = [item.pk]
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/quotas/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/quotas/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -1778,19 +1563,13 @@ def test_quota_list(token_client, organizer, event, quota, item, subevent):
     quota.save()
     res['subevent'] = subevent.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/quotas/?subevent={}'.format(
-            organizer.slug, event.slug, subevent.pk
-        )
+        '/api/v1/organizers/{}/events/{}/quotas/?subevent={}'.format(organizer.slug, event.slug, subevent.pk)
     )
     assert [res] == resp.data['results']
     with scopes_disabled():
-        se2 = event.subevents.create(
-            name='Foobar', date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC)
-        )
+        se2 = event.subevents.create(name='Foobar', date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC))
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/quotas/?subevent={}'.format(
-            organizer.slug, event.slug, se2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/quotas/?subevent={}'.format(organizer.slug, event.slug, se2.pk)
     )
     assert [] == resp.data['results']
 
@@ -1801,11 +1580,7 @@ def test_quota_detail(token_client, organizer, event, quota, item):
 
     res['id'] = quota.pk
     res['items'] = [item.pk]
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(
-            organizer.slug, event.slug, quota.pk
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/quotas/{}/'.format(organizer.slug, event.slug, quota.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -1841,16 +1616,11 @@ def test_quota_create(token_client, organizer, event, event2, item):
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["One or more items do not belong to this event."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["One or more items do not belong to this event."]}'
 
 
 @pytest.mark.django_db
-def test_quota_create_with_variations(
-    token_client, organizer, event, item, variations, variations2
-):
+def test_quota_create_with_variations(token_client, organizer, event, item, variations, variations2):
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/quotas/'.format(organizer.slug, event.slug),
         {
@@ -1876,10 +1646,7 @@ def test_quota_create_with_variations(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"variations":["Invalid pk \\"100\\" - object does not exist."]}'
-    )
+    assert resp.content.decode() == '{"variations":["Invalid pk \\"100\\" - object does not exist."]}'
 
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/quotas/'.format(organizer.slug, event.slug),
@@ -1917,9 +1684,7 @@ def test_quota_create_with_variations(
 
 
 @pytest.mark.django_db
-def test_quota_create_with_subevent(
-    token_client, organizer, event, event3, item, variations, subevent, subevent2
-):
+def test_quota_create_with_subevent(token_client, organizer, event, event3, item, variations, subevent, subevent2):
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/quotas/'.format(organizer.slug, event.slug),
         {
@@ -1945,10 +1710,7 @@ def test_quota_create_with_subevent(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["Subevent cannot be null for event series."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["Subevent cannot be null for event series."]}'
 
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/quotas/'.format(organizer.slug, event.slug),
@@ -1962,10 +1724,7 @@ def test_quota_create_with_subevent(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The subevent does not belong to this event."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["The subevent does not belong to this event."]}'
 
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/quotas/'.format(organizer.slug, event3.slug),
@@ -1979,18 +1738,13 @@ def test_quota_create_with_subevent(
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["The subevent does not belong to this event."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["The subevent does not belong to this event."]}'
 
 
 @pytest.mark.django_db
 def test_quota_update(token_client, organizer, event, quota, item):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(
-            organizer.slug, event.slug, quota.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(organizer.slug, event.slug, quota.pk),
         {
             'name': 'Ticket Quota Update',
             'size': 111,
@@ -2008,9 +1762,7 @@ def test_quota_update(token_client, organizer, event, quota, item):
 @pytest.mark.django_db
 def test_quota_update_closed(token_client, organizer, event, quota, item):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(
-            organizer.slug, event.slug, quota.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(organizer.slug, event.slug, quota.pk),
         {
             'closed': True,
         },
@@ -2019,32 +1771,22 @@ def test_quota_update_closed(token_client, organizer, event, quota, item):
     assert resp.status_code == 200
     with scopes_disabled():
         quota = Quota.objects.get(pk=resp.data['id'])
-    assert (
-        quota.all_logentries().filter(action_type='pretix.event.quota.closed').count()
-        == 1
-    )
+    assert quota.all_logentries().filter(action_type='pretix.event.quota.closed').count() == 1
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(
-            organizer.slug, event.slug, quota.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(organizer.slug, event.slug, quota.pk),
         {
             'closed': False,
         },
         format='json',
     )
     assert resp.status_code == 200
-    assert (
-        quota.all_logentries().filter(action_type='pretix.event.quota.opened').count()
-        == 1
-    )
+    assert quota.all_logentries().filter(action_type='pretix.event.quota.opened').count() == 1
 
 
 @pytest.mark.django_db
 def test_quota_update_unchanged(token_client, organizer, event, quota, item):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(
-            organizer.slug, event.slug, quota.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(organizer.slug, event.slug, quota.pk),
         {
             'size': 200,
         },
@@ -2060,9 +1802,7 @@ def test_quota_update_unchanged(token_client, organizer, event, quota, item):
 @pytest.mark.django_db
 def test_quota_delete(token_client, organizer, event, quota):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(
-            organizer.slug, event.slug, quota.pk
-        )
+        '/api/v1/organizers/{}/events/{}/quotas/{}/'.format(organizer.slug, event.slug, quota.pk)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -2072,9 +1812,7 @@ def test_quota_delete(token_client, organizer, event, quota):
 @pytest.mark.django_db
 def test_quota_availability(token_client, organizer, event, quota, item):
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/quotas/{}/availability/'.format(
-            organizer.slug, event.slug, quota.pk
-        )
+        '/api/v1/organizers/{}/events/{}/quotas/{}/availability/'.format(organizer.slug, event.slug, quota.pk)
     )
     assert resp.status_code == 200
     assert {
@@ -2123,9 +1861,7 @@ TEST_QUESTION_RES = {
     'valid_datetime_min': None,
     'valid_datetime_max': None,
     'help_text': {'en': 'This is an example question'},
-    'options': [
-        {'id': 0, 'position': 0, 'identifier': 'LVETRWVU', 'answer': {'en': 'XL'}}
-    ],
+    'options': [{'id': 0, 'position': 0, 'identifier': 'LVETRWVU', 'answer': {'en': 'XL'}}],
 }
 
 
@@ -2136,46 +1872,32 @@ def test_question_list(token_client, organizer, event, question, item):
     res['items'] = [item.pk]
     res['options'][0]['id'] = question.options.first().pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/questions/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/?required=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/questions/?required=false'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/?ask_during_checkin=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/questions/?ask_during_checkin=false'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/?identifier=ABC'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/questions/?identifier=ABC'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/?required=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/questions/?required=true'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/?ask_during_checkin=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/questions/?ask_during_checkin=true'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/?identifier=DEF'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/questions/?identifier=DEF'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
@@ -2189,9 +1911,7 @@ def test_question_detail(token_client, organizer, event, question, item):
     res['options'][0]['id'] = question.options.first().pk
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        )
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -2221,9 +1941,7 @@ def test_question_create(token_client, organizer, event, event2, item):
         assert len(question.items.all()) == 1
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/questions/'.format(
-            organizer.slug, event2.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/'.format(organizer.slug, event2.slug),
         {
             'question': "What's your name?",
             'type': 'S',
@@ -2236,10 +1954,7 @@ def test_question_create(token_client, organizer, event, event2, item):
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["One or more items do not belong to this event."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["One or more items do not belong to this event."]}'
 
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/questions/'.format(organizer.slug, event.slug),
@@ -2255,10 +1970,7 @@ def test_question_create(token_client, organizer, event, event2, item):
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"identifier":["This identifier is already used for a different question."]}'
-    )
+    assert resp.content.decode() == '{"identifier":["This identifier is already used for a different question."]}'
 
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/questions/'.format(organizer.slug, event.slug),
@@ -2299,10 +2011,7 @@ def test_question_create(token_client, organizer, event, event2, item):
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["Dependencies are not supported during check-in."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["Dependencies are not supported during check-in."]}'
 
     question.type = Question.TYPE_BOOLEAN
     question.save()
@@ -2355,9 +2064,7 @@ def test_question_create(token_client, organizer, event, event2, item):
 @pytest.mark.django_db
 def test_question_update(token_client, organizer, event, question):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk),
         {
             'question': "What's your shoe size?",
             'type': 'N',
@@ -2381,41 +2088,29 @@ def test_question_update_circular_dependency(token_client, organizer, event, que
             dependency_question=question,
         )
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk),
         {'dependency_question': q2.pk},
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"non_field_errors":["Circular dependency between questions detected."]}'
-    )
+    assert resp.content.decode() == '{"non_field_errors":["Circular dependency between questions detected."]}'
 
 
 @pytest.mark.django_db
 def test_question_self_dependency(token_client, organizer, event, question):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk),
         {'dependency_question': question.pk},
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"dependency_question":["A question cannot depend on itself."]}'
-    )
+    assert resp.content.decode() == '{"dependency_question":["A question cannot depend on itself."]}'
 
 
 @pytest.mark.django_db
 def test_question_update_options(token_client, organizer, event, question, item):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk),
         {'options': []},
         format='json',
     )
@@ -2429,9 +2124,7 @@ def test_question_update_options(token_client, organizer, event, question, item)
 @pytest.mark.django_db
 def test_question_delete(token_client, organizer, event, question):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        )
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk)
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -2441,9 +2134,7 @@ def test_question_delete(token_client, organizer, event, question):
 @pytest.mark.django_db
 def test_question_update_dependency_values(token_client, organizer, event, question):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk),
         {'dependency_values': ['a', 'b']},
         format='json',
     )
@@ -2453,13 +2144,9 @@ def test_question_update_dependency_values(token_client, organizer, event, quest
 
 
 @pytest.mark.django_db
-def test_question_update_dependency_value_legacy(
-    token_client, organizer, event, question
-):
+def test_question_update_dependency_value_legacy(token_client, organizer, event, question):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk),
         {'dependency_value': 'a'},
         format='json',
     )
@@ -2469,13 +2156,9 @@ def test_question_update_dependency_value_legacy(
 
 
 @pytest.mark.django_db
-def test_question_update_dependency_value_legacy_conflict(
-    token_client, organizer, event, question
-):
+def test_question_update_dependency_value_legacy_conflict(token_client, organizer, event, question):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/'.format(organizer.slug, event.slug, question.pk),
         {'dependency_values': ['a', 'b'], 'dependency_value': 'a'},
         format='json',
     )
@@ -2492,9 +2175,7 @@ def test_options_list(token_client, organizer, event, question, option):
     res = dict(TEST_OPTIONS_RES)
     res['id'] = option.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/questions/{}/options/'.format(
-            organizer.slug, event.slug, question.pk
-        )
+        '/api/v1/organizers/{}/events/{}/questions/{}/options/'.format(organizer.slug, event.slug, question.pk)
     )
     assert resp.status_code == 200
     assert res['identifier'] == resp.data['results'][0]['identifier']
@@ -2517,9 +2198,7 @@ def test_options_detail(token_client, organizer, event, question, option):
 @pytest.mark.django_db
 def test_options_create(token_client, organizer, event, question):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/questions/{}/options/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/options/'.format(organizer.slug, event.slug, question.pk),
         {'identifier': 'DFEMJWMJ', 'answer': 'A', 'position': 0},
         format='json',
     )
@@ -2529,9 +2208,7 @@ def test_options_create(token_client, organizer, event, question):
     assert option.answer == 'A'
 
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/questions/{}/options/'.format(
-            organizer.slug, event.slug, question.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/questions/{}/options/'.format(organizer.slug, event.slug, question.pk),
         {'identifier': 'DFEMJWMJ', 'answer': 'A', 'position': 0},
         format='json',
     )
@@ -2632,7 +2309,4 @@ def test_question_create_with_option(token_client, organizer, event, item):
         format='json',
     )
     assert resp.status_code == 400
-    assert (
-        resp.content.decode()
-        == '{"options":["The identifier \\"ABC\\" is already used for a different option."]}'
-    )
+    assert resp.content.decode() == '{"options":["The identifier \\"ABC\\" is already used for a different option."]}'

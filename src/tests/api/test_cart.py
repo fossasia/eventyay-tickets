@@ -89,11 +89,7 @@ def test_cp_list(token_client, organizer, event, item, taxrule, question):
     res['id'] = cr.pk
     res['item'] = item.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [] == resp.data['results']
 
@@ -117,11 +113,7 @@ def test_cp_list_api(token_client, organizer, event, item, taxrule, question):
     res['id'] = cr.pk
     res['item'] = item.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -145,9 +137,7 @@ def test_cp_detail(token_client, organizer, event, item, taxrule, question):
     res['id'] = cr.pk
     res['item'] = item.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/cartpositions/{}/'.format(
-            organizer.slug, event.slug, cr.pk
-        )
+        '/api/v1/organizers/{}/events/{}/cartpositions/{}/'.format(organizer.slug, event.slug, cr.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -172,9 +162,7 @@ def test_cp_delete(token_client, organizer, event, item, taxrule, question):
     res['id'] = cr.pk
     res['item'] = item.pk
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/cartpositions/{}/'.format(
-            organizer.slug, event.slug, cr.pk
-        )
+        '/api/v1/organizers/{}/events/{}/cartpositions/{}/'.format(organizer.slug, event.slug, cr.pk)
     )
     assert resp.status_code == 204
 
@@ -200,9 +188,7 @@ def test_cartpos_create(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -215,17 +201,13 @@ def test_cartpos_create(token_client, organizer, event, item, quota, question):
 
 
 @pytest.mark.django_db
-def test_cartpos_create_name_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_cartpos_create_name_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     res['attendee_name'] = None
     del res['attendee_name_parts']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -238,25 +220,19 @@ def test_cartpos_create_name_optional(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_legacy_name(
-    token_client, organizer, event, item, quota, question
-):
+def test_cartpos_create_legacy_name(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     res['attendee_name'] = 'Peter'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
     del res['attendee_name_parts']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -274,9 +250,7 @@ def test_cartpos_cart_id_noapi(token_client, organizer, event, item, quota, ques
     res['item'] = item.pk
     res['cart_id'] = 'aaa'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -284,16 +258,12 @@ def test_cartpos_cart_id_noapi(token_client, organizer, event, item, quota, ques
 
 
 @pytest.mark.django_db
-def test_cartpos_cart_id_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_cartpos_cart_id_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     del res['cart_id']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -306,15 +276,11 @@ def test_cartpos_cart_id_optional(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_subevent_validation(
-    token_client, organizer, event, item, subevent, subevent2, quota, question
-):
+def test_cartpos_create_subevent_validation(token_client, organizer, event, item, subevent, subevent2, quota, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -323,30 +289,22 @@ def test_cartpos_create_subevent_validation(
 
     res['subevent'] = subevent2.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'subevent': ['The specified subevent does not belong to this event.']
-    }
+    assert resp.data == {'subevent': ['The specified subevent does not belong to this event.']}
 
 
 @pytest.mark.django_db
-def test_cartpos_create_item_validation(
-    token_client, organizer, event, item, item2, quota, question
-):
+def test_cartpos_create_item_validation(token_client, organizer, event, item, item2, quota, question):
     item.active = False
     item.save()
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -357,9 +315,7 @@ def test_cartpos_create_item_validation(
 
     res['item'] = item2.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -372,25 +328,19 @@ def test_cartpos_create_item_validation(
     res['item'] = item.pk
     res['variation'] = var2.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'non_field_errors': ['You cannot specify a variation for this item.']
-    }
+    assert resp.data == {'non_field_errors': ['You cannot specify a variation for this item.']}
 
     with scopes_disabled():
         var1 = item.variations.create(value='A')
     res['item'] = item.pk
     res['variation'] = var1.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -399,9 +349,7 @@ def test_cartpos_create_item_validation(
 
     quota.variations.add(var1)
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -409,44 +357,30 @@ def test_cartpos_create_item_validation(
 
     res['variation'] = var2.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'non_field_errors': [
-            'The specified variation does not belong to the specified item.'
-        ]
-    }
+    assert resp.data == {'non_field_errors': ['The specified variation does not belong to the specified item.']}
 
     res['variation'] = None
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'non_field_errors': ['You should specify a variation for this item.']
-    }
+    assert resp.data == {'non_field_errors': ['You should specify a variation for this item.']}
 
 
 @pytest.mark.django_db
-def test_cartpos_expires_optional(
-    token_client, organizer, event, item, quota, question
-):
+def test_cartpos_expires_optional(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     del res['expires']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -460,67 +394,43 @@ def test_cartpos_expires_optional(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_answer_validation(
-    token_client, organizer, event, item, quota, question, question2
-):
+def test_cartpos_create_answer_validation(token_client, organizer, event, item, quota, question, question2):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['answers'] = [{'question': 1, 'answer': 'S', 'options': []}]
 
     res['item'] = item.pk
     res['answers'][0]['question'] = question2.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'answers': [
-            {'question': ['The specified question does not belong to this event.']}
-        ]
-    }
+    assert resp.data == {'answers': [{'question': ['The specified question does not belong to this event.']}]}
 
     res['answers'][0]['question'] = question.pk
     res['answers'][0]['options'] = [question.options.first().pk]
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'answers': [
-            {
-                'non_field_errors': [
-                    'You should not specify options if the question is not of a choice type.'
-                ]
-            }
-        ]
+        'answers': [{'non_field_errors': ['You should not specify options if the question is not of a choice type.']}]
     }
 
     question.type = Question.TYPE_CHOICE
     question.save()
     res['answers'][0]['options'] = []
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'answers': [
-            {
-                'non_field_errors': [
-                    'You need to specify options if the question is of a choice type.'
-                ]
-            }
-        ]
+        'answers': [{'non_field_errors': ['You need to specify options if the question is of a choice type.']}]
     }
 
     with scopes_disabled():
@@ -530,22 +440,12 @@ def test_cartpos_create_answer_validation(
         question.options.last().pk,
     ]
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'answers': [
-            {
-                'non_field_errors': [
-                    'You can specify at most one option for this question.'
-                ]
-            }
-        ]
-    }
+    assert resp.data == {'answers': [{'non_field_errors': ['You can specify at most one option for this question.']}]}
 
     r = token_client.post(
         '/api/v1/upload',
@@ -563,9 +463,7 @@ def test_cartpos_create_answer_validation(
     question.type = Question.TYPE_FILE
     question.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -583,9 +481,7 @@ def test_cartpos_create_answer_validation(
         question.options.last().pk,
     ]
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -601,9 +497,7 @@ def test_cartpos_create_answer_validation(
     res['answers'][0]['options'] = []
     res['answers'][0]['answer'] = '3.45'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -618,25 +512,19 @@ def test_cartpos_create_answer_validation(
     res['answers'][0]['options'] = []
     res['answers'][0]['answer'] = 'foo'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'answers': [{'non_field_errors': ['A valid number is required.']}]
-    }
+    assert resp.data == {'answers': [{'non_field_errors': ['A valid number is required.']}]}
 
     question.type = Question.TYPE_BOOLEAN
     question.save()
     res['answers'][0]['options'] = []
     res['answers'][0]['answer'] = 'True'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -650,9 +538,7 @@ def test_cartpos_create_answer_validation(
     question.save()
     res['answers'][0]['answer'] = '0'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -666,30 +552,18 @@ def test_cartpos_create_answer_validation(
     question.save()
     res['answers'][0]['answer'] = 'bla'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == {
-        'answers': [
-            {
-                'non_field_errors': [
-                    'Please specify "true" or "false" for boolean questions.'
-                ]
-            }
-        ]
-    }
+    assert resp.data == {'answers': [{'non_field_errors': ['Please specify "true" or "false" for boolean questions.']}]}
 
     question.type = Question.TYPE_DATE
     question.save()
     res['answers'][0]['answer'] = '2018-05-14'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -703,30 +577,20 @@ def test_cartpos_create_answer_validation(
     question.save()
     res['answers'][0]['answer'] = 'bla'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
     assert resp.data == {
-        'answers': [
-            {
-                'non_field_errors': [
-                    'Date has wrong format. Use one of these formats instead: YYYY-MM-DD.'
-                ]
-            }
-        ]
+        'answers': [{'non_field_errors': ['Date has wrong format. Use one of these formats instead: YYYY-MM-DD.']}]
     }
 
     question.type = Question.TYPE_DATETIME
     question.save()
     res['answers'][0]['answer'] = '2018-05-14T13:00:00Z'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -740,9 +604,7 @@ def test_cartpos_create_answer_validation(
     question.save()
     res['answers'][0]['answer'] = 'bla'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -762,9 +624,7 @@ def test_cartpos_create_answer_validation(
     question.save()
     res['answers'][0]['answer'] = '13:00:00'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -778,44 +638,32 @@ def test_cartpos_create_answer_validation(
     question.save()
     res['answers'][0]['answer'] = 'bla'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
     assert resp.data == {
         'answers': [
-            {
-                'non_field_errors': [
-                    'Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].'
-                ]
-            }
+            {'non_field_errors': ['Time has wrong format. Use one of these formats instead: hh:mm[:ss[.uuuuuu]].']}
         ]
     }
 
 
 @pytest.mark.django_db
-def test_cartpos_create_quota_validation(
-    token_client, organizer, event, item, quota, question
-):
+def test_cartpos_create_quota_validation(token_client, organizer, event, item, quota, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
 
     quota.size = 0
     quota.save()
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
     assert resp.status_code == 400
-    assert resp.data == [
-        'There is not enough quota available on quota "Budget Quota" to perform the operation.'
-    ]
+    assert resp.data == ['There is not enough quota available on quota "Budget Quota" to perform the operation.']
 
 
 @pytest.fixture
@@ -826,16 +674,12 @@ def seat(event, organizer, item):
 
 
 @pytest.mark.django_db
-def test_cartpos_create_with_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_cartpos_create_with_seat(token_client, organizer, event, item, quota, seat, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     res['seat'] = seat.seat_guid
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -846,18 +690,14 @@ def test_cartpos_create_with_seat(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_with_blocked_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_cartpos_create_with_blocked_seat(token_client, organizer, event, item, quota, seat, question):
     seat.blocked = True
     seat.save()
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     res['seat'] = seat.seat_guid
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -866,9 +706,7 @@ def test_cartpos_create_with_blocked_seat(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_with_blocked_seat_allowed(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_cartpos_create_with_blocked_seat_allowed(token_client, organizer, event, item, quota, seat, question):
     seat.blocked = True
     seat.save()
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
@@ -877,9 +715,7 @@ def test_cartpos_create_with_blocked_seat_allowed(
     res['sales_channel'] = 'bar'
     event.settings.seating_allow_blocked_seats_for_channel = ['bar']
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -887,9 +723,7 @@ def test_cartpos_create_with_blocked_seat_allowed(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_with_used_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_cartpos_create_with_used_seat(token_client, organizer, event, item, quota, seat, question):
     CartPosition.objects.create(
         event=event,
         cart_id='aaa',
@@ -902,9 +736,7 @@ def test_cartpos_create_with_used_seat(
     res['item'] = item.pk
     res['seat'] = seat.seat_guid
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -913,16 +745,12 @@ def test_cartpos_create_with_used_seat(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_with_unknown_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_cartpos_create_with_unknown_seat(token_client, organizer, event, item, quota, seat, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     res['seat'] = seat.seat_guid + '_'
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -931,15 +759,11 @@ def test_cartpos_create_with_unknown_seat(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_require_seat(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_cartpos_create_require_seat(token_client, organizer, event, item, quota, seat, question):
     res = copy.deepcopy(CARTPOS_CREATE_PAYLOAD)
     res['item'] = item.pk
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )
@@ -948,9 +772,7 @@ def test_cartpos_create_require_seat(
 
 
 @pytest.mark.django_db
-def test_cartpos_create_unseated(
-    token_client, organizer, event, item, quota, seat, question
-):
+def test_cartpos_create_unseated(token_client, organizer, event, item, quota, seat, question):
     with scopes_disabled():
         item2 = event.items.create(name='Budget Ticket', default_price=23)
         quota.items.add(item2)
@@ -958,9 +780,7 @@ def test_cartpos_create_unseated(
     res['item'] = item2.pk
     res['seat'] = seat.seat_guid
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/cartpositions/'.format(organizer.slug, event.slug),
         format='json',
         data=res,
     )

@@ -77,18 +77,11 @@ class SendGridEmail:
                     content_type = part.get_content_type()
                     content_disposition = str(part.get('Content-Disposition'))
 
-                    if (
-                        content_type == 'text/html'
-                        and 'attachment' not in content_disposition
-                    ):
-                        html_content = part.get_payload(decode=True).decode(
-                            part.get_content_charset()
-                        )
+                    if content_type == 'text/html' and 'attachment' not in content_disposition:
+                        html_content = part.get_payload(decode=True).decode(part.get_content_charset())
                         break  # Found the HTML content, no need to continue
             except Exception as e:
-                logger.error(
-                    'Error happened when trying to parse mail template: %s' % e
-                )
+                logger.error('Error happened when trying to parse mail template: %s' % e)
                 html_content = email.body
             message = Mail(
                 from_email=email.from_email,
@@ -116,15 +109,11 @@ class CustomSMTPBackend(EmailBackend):
             self.connection.ehlo_or_helo_if_needed()
             (code, resp) = self.connection.mail(from_addr, [])
             if code != 250:
-                logger.warn(
-                    'Error testing mail settings, code %d, resp: %s' % (code, resp)
-                )
+                logger.warn('Error testing mail settings, code %d, resp: %s' % (code, resp))
                 raise SMTPResponseException(code, resp)
             (code, resp) = self.connection.rcpt('test@eventyay.com')
             if (code != 250) and (code != 251):
-                logger.warn(
-                    'Error testing mail settings, code %d, resp: %s' % (code, resp)
-                )
+                logger.warn('Error testing mail settings, code %d, resp: %s' % (code, resp))
                 raise SMTPResponseException(code, resp)
         finally:
             self.close()
@@ -200,9 +189,7 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
     def template_name(self):
         raise NotImplementedError()
 
-    def render(
-        self, plain_body: str, plain_signature: str, subject: str, order, position
-    ) -> str:
+    def render(self, plain_body: str, plain_signature: str, subject: str, order, position) -> str:
         body_md = markdown_compile_email(plain_body)
         htmlctx = {
             'site': settings.INSTANCE_NAME,
@@ -210,8 +197,7 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
             'body': body_md,
             'subject': str(subject),
             'color': settings.PRETIX_PRIMARY_COLOR,
-            'rtl': get_language() in settings.LANGUAGES_RTL
-            or get_language().split('-')[0] in settings.LANGUAGES_RTL,
+            'rtl': get_language() in settings.LANGUAGES_RTL or get_language().split('-')[0] in settings.LANGUAGES_RTL,
         }
         if self.organizer:
             htmlctx['organizer'] = self.organizer
@@ -228,9 +214,9 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
         if order:
             htmlctx['order'] = order
             positions = list(
-                order.positions.select_related(
-                    'item', 'variation', 'subevent', 'addon_to'
-                ).annotate(has_addons=Count('addons'))
+                order.positions.select_related('item', 'variation', 'subevent', 'addon_to').annotate(
+                    has_addons=Count('addons')
+                )
             )
             htmlctx['cart'] = [
                 (k, list(v))
@@ -378,12 +364,7 @@ def get_email_context(**kwargs):
 def _placeholder_payment(order, payment):
     if not payment:
         return None
-    if (
-        'payment'
-        in inspect.signature(
-            payment.payment_provider.order_pending_mail_render
-        ).parameters
-    ):
+    if 'payment' in inspect.signature(payment.payment_provider.order_pending_mail_render).parameters:
         return str(payment.payment_provider.order_pending_mail_render(order, payment))
     else:
         return str(payment.payment_provider.order_pending_mail_render(order))
@@ -407,11 +388,7 @@ def get_best_name(position_or_address, parts=False):
 
     if isinstance(position_or_address, OrderPosition):
         if position_or_address.attendee_name:
-            return (
-                position_or_address.attendee_name_parts
-                if parts
-                else position_or_address.attendee_name
-            )
+            return position_or_address.attendee_name_parts if parts else position_or_address.attendee_name
         elif position_or_address.order:
             try:
                 return (
@@ -430,9 +407,7 @@ def generate_sample_video_url():
     return '{}/#token={}'.format(settings.SITE_URL, sample_token)
 
 
-@receiver(
-    register_mail_placeholders, dispatch_uid='pretixbase_register_mail_placeholders'
-)
+@receiver(register_mail_placeholders, dispatch_uid='pretixbase_register_mail_placeholders')
 def base_placeholders(sender, **kwargs):
     from pretix.multidomain.urlreverse import (
         build_absolute_uri,
@@ -440,9 +415,7 @@ def base_placeholders(sender, **kwargs):
     )
 
     ph = [
-        SimpleFunctionalMailTextPlaceholder(
-            'event', ['event'], lambda event: event.name, lambda event: event.name
-        ),
+        SimpleFunctionalMailTextPlaceholder('event', ['event'], lambda event: event.name, lambda event: event.name),
         SimpleFunctionalMailTextPlaceholder(
             'event',
             ['event_or_subevent'],
@@ -452,9 +425,7 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             'event_slug', ['event'], lambda event: event.slug, lambda event: event.slug
         ),
-        SimpleFunctionalMailTextPlaceholder(
-            'code', ['order'], lambda order: order.code, 'F8VVL'
-        ),
+        SimpleFunctionalMailTextPlaceholder('code', ['order'], lambda order: order.code, 'F8VVL'),
         SimpleFunctionalMailTextPlaceholder(
             'total',
             ['order'],
@@ -470,12 +441,8 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             'refund_amount',
             ['event_or_subevent', 'refund_amount'],
-            lambda event_or_subevent, refund_amount: LazyCurrencyNumber(
-                refund_amount, event_or_subevent.currency
-            ),
-            lambda event_or_subevent: LazyCurrencyNumber(
-                Decimal('42.23'), event_or_subevent.currency
-            ),
+            lambda event_or_subevent, refund_amount: LazyCurrencyNumber(refund_amount, event_or_subevent.currency),
+            lambda event_or_subevent: LazyCurrencyNumber(Decimal('42.23'), event_or_subevent.currency),
         ),
         SimpleFunctionalMailTextPlaceholder(
             'total_with_currency',
@@ -486,9 +453,7 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             'expire_date',
             ['event', 'order'],
-            lambda event, order: LazyExpiresDate(
-                order.expires.astimezone(event.timezone)
-            ),
+            lambda event, order: LazyExpiresDate(order.expires.astimezone(event.timezone)),
             lambda event: LazyDate(now() + timedelta(days=15)),
         ),
         SimpleFunctionalMailTextPlaceholder(
@@ -598,9 +563,7 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             'url',
             ['waiting_list_entry', 'event'],
-            lambda waiting_list_entry, event: build_absolute_uri(
-                event, 'presale:event.redeem'
-            )
+            lambda waiting_list_entry, event: build_absolute_uri(event, 'presale:event.redeem')
             + '?voucher='
             + waiting_list_entry.voucher.code,
             lambda event: build_absolute_uri(
@@ -722,9 +685,7 @@ def base_placeholders(sender, **kwargs):
                 },
             ),
         ),
-        SimpleFunctionalMailTextPlaceholder(
-            'name', ['name'], lambda name: name, _('John Doe')
-        ),
+        SimpleFunctionalMailTextPlaceholder('name', ['name'], lambda name: name, _('John Doe')),
         SimpleFunctionalMailTextPlaceholder(
             'comment',
             ['comment'],
@@ -781,18 +742,14 @@ def base_placeholders(sender, **kwargs):
             SimpleFunctionalMailTextPlaceholder(
                 'name_%s' % f,
                 ['position_or_address'],
-                lambda position_or_address, f=f: get_best_name(
-                    position_or_address, parts=True
-                ).get(f, ''),
+                lambda position_or_address, f=f: get_best_name(position_or_address, parts=True).get(f, ''),
                 name_scheme['sample'][f],
             )
         )
 
     for k, v in sender.meta_data.items():
         ph.append(
-            SimpleFunctionalMailTextPlaceholder(
-                'meta_%s' % k, ['event'], lambda event, k=k: event.meta_data[k], v
-            )
+            SimpleFunctionalMailTextPlaceholder('meta_%s' % k, ['event'], lambda event, k=k: event.meta_data[k], v)
         )
 
     return ph

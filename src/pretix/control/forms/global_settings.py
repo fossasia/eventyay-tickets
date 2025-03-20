@@ -20,40 +20,19 @@ class GlobalSettingsForm(SettingsForm):
         Load default email setting form .cfg file if not set
         """
         global_settings = self.obj.settings
-        if (
-            global_settings.get('smtp_port') is None
-            or global_settings.get('smtp_port') == ''
-        ):
+        if global_settings.get('smtp_port') is None or global_settings.get('smtp_port') == '':
             self.obj.settings.set('smtp_port', settings.EMAIL_PORT)
-        if (
-            global_settings.get('smtp_host') is None
-            or global_settings.get('smtp_host') == ''
-        ):
+        if global_settings.get('smtp_host') is None or global_settings.get('smtp_host') == '':
             self.obj.settings.set('smtp_host', settings.EMAIL_HOST)
-        if (
-            global_settings.get('smtp_username') is None
-            or global_settings.get('smtp_username') == ''
-        ):
+        if global_settings.get('smtp_username') is None or global_settings.get('smtp_username') == '':
             self.obj.settings.set('smtp_username', settings.EMAIL_HOST_USER)
-        if (
-            global_settings.get('smtp_password') is None
-            or global_settings.get('smtp_password') == ''
-        ):
+        if global_settings.get('smtp_password') is None or global_settings.get('smtp_password') == '':
             self.obj.settings.set('smtp_password', settings.EMAIL_HOST_PASSWORD)
-        if (
-            global_settings.get('smtp_use_tls') is None
-            or global_settings.get('smtp_use_tls') == ''
-        ):
+        if global_settings.get('smtp_use_tls') is None or global_settings.get('smtp_use_tls') == '':
             self.obj.settings.set('smtp_use_tls', settings.EMAIL_USE_TLS)
-        if (
-            global_settings.get('smtp_use_ssl') is None
-            or global_settings.get('smtp_use_ssl') == ''
-        ):
+        if global_settings.get('smtp_use_ssl') is None or global_settings.get('smtp_use_ssl') == '':
             self.obj.settings.set('smtp_use_ssl', settings.EMAIL_USE_SSL)
-        if (
-            global_settings.get('email_vendor') is None
-            or global_settings.get('email_vendor') == ''
-        ):
+        if global_settings.get('email_vendor') is None or global_settings.get('email_vendor') == '':
             self.obj.settings.set('email_vendor', 'smtp')
 
     def __init__(self, *args, **kwargs):
@@ -72,9 +51,7 @@ class GlobalSettingsForm(SettingsForm):
                         widget=I18nTextInput,
                         required=False,
                         label=_('Additional footer text'),
-                        help_text=_(
-                            'Will be included as additional text in the footer, site-wide.'
-                        ),
+                        help_text=_('Will be included as additional text in the footer, site-wide.'),
                     ),
                 ),
                 (
@@ -83,9 +60,7 @@ class GlobalSettingsForm(SettingsForm):
                         widget=I18nTextInput,
                         required=False,
                         label=_('Additional footer link'),
-                        help_text=_(
-                            'Will be included as the link in the additional footer text.'
-                        ),
+                        help_text=_('Will be included as the link in the additional footer text.'),
                     ),
                 ),
                 (
@@ -123,9 +98,7 @@ class GlobalSettingsForm(SettingsForm):
                     forms.CharField(
                         required=False,
                         label=_('Leaflet tiles URL pattern'),
-                        help_text=_('e.g. {sample}').format(
-                            sample='https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                        ),
+                        help_text=_('e.g. {sample}').format(sample='https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'),
                     ),
                 ),
                 (
@@ -160,9 +133,7 @@ class GlobalSettingsForm(SettingsForm):
                     forms.CharField(
                         label=_('Hostname'),
                         required=False,
-                        widget=forms.TextInput(
-                            attrs={'placeholder': 'mail.example.org'}
-                        ),
+                        widget=forms.TextInput(attrs={'placeholder': 'mail.example.org'}),
                     ),
                 ),
                 (
@@ -170,18 +141,14 @@ class GlobalSettingsForm(SettingsForm):
                     forms.IntegerField(
                         label=_('Port'),
                         required=False,
-                        widget=forms.TextInput(
-                            attrs={'placeholder': 'e.g. 587, 465, 25, ...'}
-                        ),
+                        widget=forms.TextInput(attrs={'placeholder': 'e.g. 587, 465, 25, ...'}),
                     ),
                 ),
                 (
                     'smtp_username',
                     forms.CharField(
                         label=_('Username'),
-                        widget=forms.TextInput(
-                            attrs={'placeholder': 'myuser@example.org'}
-                        ),
+                        widget=forms.TextInput(attrs={'placeholder': 'myuser@example.org'}),
                         required=False,
                     ),
                 ),
@@ -272,9 +239,7 @@ class GlobalSettingsForm(SettingsForm):
                         required=False,
                         decimal_places=2,
                         max_digits=10,
-                        help_text=_(
-                            'A percentage fee will be charged for each ticket sold.'
-                        ),
+                        help_text=_('A percentage fee will be charged for each ticket sold.'),
                         validators=[MinValueValidator(0)],
                     ),
                 ),
@@ -313,9 +278,7 @@ class SSOConfigForm(SettingsForm):
     redirect_url = forms.URLField(
         required=True,
         label=_('Redirect URL'),
-        help_text=_('e.g. {sample}').format(
-            sample='https://app-test.eventyay.com/talk/oauth2/callback/'
-        ),
+        help_text=_('e.g. {sample}').format(sample='https://app-test.eventyay.com/talk/oauth2/callback/'),
     )
 
     def __init__(self, *args, **kwargs):
@@ -347,25 +310,17 @@ class StripeKeyValidator:
 
     def __call__(self, value: str) -> None:
         if not value:
-            raise forms.ValidationError(
-                _('The Stripe key cannot be empty.'), code='invalid-stripe-key'
-            )
+            raise forms.ValidationError(_('The Stripe key cannot be empty.'), code='invalid-stripe-key')
 
         if not any(value.startswith(p) for p in self._prefixes):
             if len(self._prefixes) == 1:
-                message = _(
-                    'The provided key does not look valid. It should start with "%(prefix)s".'
-                )
+                message = _('The provided key does not look valid. It should start with "%(prefix)s".')
                 params = {'value': value, 'prefix': self._prefixes[0]}
             else:
-                message = _(
-                    'The provided key does not look valid. It should start with one of: %(prefixes)s'
-                )
+                message = _('The provided key does not look valid. It should start with one of: %(prefixes)s')
                 params = {
                     'value': value,
                     'prefixes': ', '.join(f'"{p}"' for p in self._prefixes),
                 }
 
-            raise forms.ValidationError(
-                message, code='invalid-stripe-key', params=params
-            )
+            raise forms.ValidationError(message, code='invalid-stripe-key', params=params)

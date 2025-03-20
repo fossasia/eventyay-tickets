@@ -22,46 +22,34 @@ class TaxRateFormTest(SoupTest):
             slug='30c3',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
         )
-        t = Team.objects.create(
-            organizer=self.orga1, can_change_event_settings=True, can_change_items=True
-        )
+        t = Team.objects.create(organizer=self.orga1, can_change_event_settings=True, can_change_items=True)
         t.members.add(self.user)
         t.limit_events.add(self.event1)
         self.client.login(email='dummy@dummy.dummy', password='dummy')
 
     def test_create(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tax/add'
-            % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/tax/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name_0'] = 'VAT'
         form_data['rate'] = '19.00'
         form_data['price_includes_tax'] = 'on'
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tax/add'
-            % (self.orga1.slug, self.event1.slug),
+            '/control/event/%s/%s/settings/tax/add' % (self.orga1.slug, self.event1.slug),
             form_data,
         )
         assert doc.select('.alert-success')
         self.assertIn('VAT', doc.select('#page-wrapper table')[0].text)
         with scopes_disabled():
-            assert self.event1.tax_rules.get(
-                rate=19, price_includes_tax=True, eu_reverse_charge=False
-            )
+            assert self.event1.tax_rules.get(rate=19, price_includes_tax=True, eu_reverse_charge=False)
 
     def test_update(self):
         with scopes_disabled():
             tr = self.event1.tax_rules.create(rate=19, name='VAT')
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tax/%s/'
-            % (self.orga1.slug, self.event1.slug, tr.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/tax/%s/' % (self.orga1.slug, self.event1.slug, tr.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['rate'] = '20.00'
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tax/%s/'
-            % (self.orga1.slug, self.event1.slug, tr.id),
+            '/control/event/%s/%s/settings/tax/%s/' % (self.orga1.slug, self.event1.slug, tr.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -71,14 +59,10 @@ class TaxRateFormTest(SoupTest):
     def test_delete(self):
         with scopes_disabled():
             tr = self.event1.tax_rules.create(rate=19, name='VAT')
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id),
+            '/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -90,14 +74,10 @@ class TaxRateFormTest(SoupTest):
         with scopes_disabled():
             tr = self.event1.tax_rules.create(rate=19, name='VAT')
             self.event1.items.create(name='foo', default_price=12, tax_rule=tr)
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id),
+            '/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id),
             form_data,
         )
         self.assertIn('VAT', doc.select('#page-wrapper')[0].text)
@@ -108,14 +88,10 @@ class TaxRateFormTest(SoupTest):
         with scopes_disabled():
             tr = self.event1.tax_rules.create(rate=19, name='VAT')
         self.event1.settings.tax_rate_default = tr
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id),
+            '/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id),
             form_data,
         )
         self.assertIn('VAT', doc.select('#page-wrapper')[0].text)
@@ -142,14 +118,10 @@ class TaxRateFormTest(SoupTest):
                 tax_value=Decimal('0.05'),
                 tax_rule=tr,
             )
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id),
+            '/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id),
             form_data,
         )
         self.assertIn('VAT', doc.select('#page-wrapper')[0].text)
@@ -170,17 +142,11 @@ class TaxRateFormTest(SoupTest):
                 total=12,
                 locale='en',
             )
-            o.positions.create(
-                item=i, price=12, tax_rule=tr, tax_rate=19, tax_value=12 - 12 / 1.19
-            )
-        doc = self.get_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id)
-        )
+            o.positions.create(item=i, price=12, tax_rule=tr, tax_rate=19, tax_value=12 - 12 / 1.19)
+        doc = self.get_doc('/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/settings/tax/%s/delete'
-            % (self.orga1.slug, self.event1.slug, tr.id),
+            '/control/event/%s/%s/settings/tax/%s/delete' % (self.orga1.slug, self.event1.slug, tr.id),
             form_data,
         )
         self.assertIn('VAT', doc.select('#page-wrapper')[0].text)

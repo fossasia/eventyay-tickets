@@ -65,10 +65,7 @@ class LocaleMiddleware(MiddlewareMixin):
         tzname = None
         if hasattr(request, 'event'):
             tzname = request.event.settings.timezone
-        elif (
-            hasattr(request, 'organizer')
-            and 'timezone' in request.organizer.settings._cache()
-        ):
+        elif hasattr(request, 'organizer') and 'timezone' in request.organizer.settings._cache():
             tzname = request.organizer.settings.timezone
         elif request.user.is_authenticated:
             tzname = request.user.timezone
@@ -92,11 +89,7 @@ class LocaleMiddleware(MiddlewareMixin):
 def get_language_from_user_settings(request: HttpRequest) -> str:
     if request.user.is_authenticated:
         lang_code = request.user.locale
-        if (
-            lang_code in _supported
-            and lang_code is not None
-            and check_for_language(lang_code)
-        ):
+        if lang_code in _supported and lang_code is not None and check_for_language(lang_code):
             return lang_code
 
 
@@ -209,11 +202,7 @@ class SecurityMiddleware(MiddlewareMixin):
         img_src = []
         gs = global_settings_object(request)
         if gs.settings.leaflet_tiles:
-            img_src.append(
-                gs.settings.leaflet_tiles[
-                    : gs.settings.leaflet_tiles.index('/', 10)
-                ].replace('{s}', '*')
-            )
+            img_src.append(gs.settings.leaflet_tiles[: gs.settings.leaflet_tiles.index('/', 10)].replace('{s}', '*'))
 
         h = {
             'default-src': ['{static}'],
@@ -230,16 +219,14 @@ class SecurityMiddleware(MiddlewareMixin):
             ],
             'style-src': ['{static}', '{media}'],
             'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com'],
-            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com']
-            + img_src,
+            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com'] + img_src,
             'font-src': ['{static}'],
             'media-src': ['{static}', 'data:'],
             # form-action is not only used to match on form actions, but also on URLs
             # form-actions redirect to. In the context of e.g. payment providers or
             # single-sign-on this can be nearly anything so we cannot really restrict
             # this. However, we'll restrict it to HTTPS.
-            'form-action': ['{dynamic}', 'https:']
-            + (['http:'] if settings.SITE_URL.startswith('http://') else []),
+            'form-action': ['{dynamic}', 'https:'] + (['http:'] if settings.SITE_URL.startswith('http://') else []),
         }
         if settings.LOG_CSP:
             base_path = settings.BASE_PATH
@@ -255,17 +242,11 @@ class SecurityMiddleware(MiddlewareMixin):
         if settings.MEDIA_URL.startswith('http'):
             mediadomain += ' ' + settings.MEDIA_URL[: settings.MEDIA_URL.find('/', 9)]
         if settings.STATIC_URL.startswith('http'):
-            staticdomain += (
-                ' ' + settings.STATIC_URL[: settings.STATIC_URL.find('/', 9)]
-            )
+            staticdomain += ' ' + settings.STATIC_URL[: settings.STATIC_URL.find('/', 9)]
         if settings.SITE_URL.startswith('http'):
             if settings.SITE_URL.find('/', 9) > 0:
-                staticdomain += (
-                    ' ' + settings.SITE_URL[: settings.SITE_URL.find('/', 9)]
-                )
-                dynamicdomain += (
-                    ' ' + settings.SITE_URL[: settings.SITE_URL.find('/', 9)]
-                )
+                staticdomain += ' ' + settings.SITE_URL[: settings.SITE_URL.find('/', 9)]
+                dynamicdomain += ' ' + settings.SITE_URL[: settings.SITE_URL.find('/', 9)]
             else:
                 staticdomain += ' ' + settings.SITE_URL
                 dynamicdomain += ' ' + settings.SITE_URL
@@ -281,20 +262,12 @@ class SecurityMiddleware(MiddlewareMixin):
                     domain = '%s:%d' % (domain, siteurlsplit.port)
                 dynamicdomain += ' ' + domain
 
-        if request.path not in self.CSP_EXEMPT and not getattr(
-            resp, '_csp_ignore', False
-        ):
+        if request.path not in self.CSP_EXEMPT and not getattr(resp, '_csp_ignore', False):
             resp['Content-Security-Policy'] = _render_csp(h).format(
                 static=staticdomain, dynamic=dynamicdomain, media=mediadomain
             )
             for k, v in h.items():
-                h[k] = (
-                    ' '.join(v)
-                    .format(
-                        static=staticdomain, dynamic=dynamicdomain, media=mediadomain
-                    )
-                    .split(' ')
-                )
+                h[k] = ' '.join(v).format(static=staticdomain, dynamic=dynamicdomain, media=mediadomain).split(' ')
             resp['Content-Security-Policy'] = _render_csp(h)
         elif 'Content-Security-Policy' in resp:
             del resp['Content-Security-Policy']

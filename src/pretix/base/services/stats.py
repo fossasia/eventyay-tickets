@@ -112,9 +112,7 @@ def order_overview(
 
     if date_from and isinstance(date_from, date):
         date_from = make_aware(
-            datetime.combine(
-                date_from, time(hour=0, minute=0, second=0, microsecond=0)
-            ),
+            datetime.combine(date_from, time(hour=0, minute=0, second=0, microsecond=0)),
             event.timezone,
         )
 
@@ -205,9 +203,7 @@ def order_overview(
                 var.num['total'] = num['total'].get((item.id, variid), (0, 0, 0))
             for l in states.keys():
                 item.num[l] = tuplesum(var.num[l] for var in item.all_variations)
-            item.num['total'] = tuplesum(
-                var.num['total'] for var in item.all_variations
-            )
+            item.num['total'] = tuplesum(var.num['total'] for var in item.all_variations)
         else:
             for l in states.keys():
                 item.num[l] = num[l].get((item.id, None), (0, 0, 0))
@@ -260,9 +256,7 @@ def order_overview(
             if date_until:
                 qs = qs.filter(order__datetime__lt=date_until)
         elif date_filter == 'last_payment_date':
-            qs = qs.annotate(
-                payment_date=Subquery(p_date, output_field=DateTimeField())
-            )
+            qs = qs.annotate(payment_date=Subquery(p_date, output_field=DateTimeField()))
             if date_from:
                 qs = qs.filter(payment_date__gte=date_from)
             if date_until:
@@ -285,22 +279,16 @@ def order_overview(
             }
         num['total'] = dictsum(num['pending'], num['paid'])
 
-        provider_names = {
-            k: v.verbose_name for k, v in event.get_payment_providers().items()
-        }
+        provider_names = {k: v.verbose_name for k, v in event.get_payment_providers().items()}
         names = dict(OrderFee.FEE_TYPES)
 
         for pprov, total in sorted(num['total'].items(), key=lambda i: i[0]):
             ppobj = DummyObject()
             if pprov[0] == OrderFee.FEE_TYPE_PAYMENT:
-                ppobj.name = '{} - {}'.format(
-                    names[pprov[0]], provider_names.get(pprov[1], pprov[1])
-                )
+                ppobj.name = '{} - {}'.format(names[pprov[0]], provider_names.get(pprov[1], pprov[1]))
             else:
                 name = pprov[1]
-                for r, resp in order_fee_type_name.send(
-                    sender=event, fee_type=pprov[0], internal_type=pprov[1]
-                ):
+                for r, resp in order_fee_type_name.send(sender=event, fee_type=pprov[0], internal_type=pprov[1]):
                     if resp:
                         name = resp
                         break

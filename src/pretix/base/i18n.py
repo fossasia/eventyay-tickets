@@ -39,11 +39,7 @@ class LazyExpiresDate:
         return self.__str__()
 
     def __str__(self):
-        at_end_of_day = (
-            self.value.hour == 23
-            and self.value.minute == 59
-            and self.value.second >= 59
-        )
+        at_end_of_day = self.value.hour == 23 and self.value.minute == 59 and self.value.second >= 59
         if at_end_of_day:
             return date_format(self.value, 'SHORT_DATE_FORMAT')
         else:

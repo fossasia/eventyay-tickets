@@ -43,13 +43,11 @@ with scopes_disabled():
         def filter_active(self, queryset, name, value):
             if value:
                 return queryset.filter(
-                    Q(redeemed__lt=F('max_usages'))
-                    & (Q(valid_until__isnull=True) | Q(valid_until__gt=now()))
+                    Q(redeemed__lt=F('max_usages')) & (Q(valid_until__isnull=True) | Q(valid_until__gt=now()))
                 )
             else:
                 return queryset.filter(
-                    Q(redeemed__gte=F('max_usages'))
-                    | (Q(valid_until__isnull=False) & Q(valid_until__lte=now()))
+                    Q(redeemed__gte=F('max_usages')) | (Q(valid_until__isnull=False) & Q(valid_until__lte=now()))
                 )
 
 
@@ -73,11 +71,7 @@ class VoucherViewSet(viewsets.ModelViewSet):
         # locks when we know we won't need them.
         if 'allow_ignore_quota' in data and data.get('allow_ignore_quota'):
             return False
-        if (
-            instance
-            and 'allow_ignore_quota' not in data
-            and instance.allow_ignore_quota
-        ):
+        if instance and 'allow_ignore_quota' not in data and instance.allow_ignore_quota:
             return False
 
         if 'block_quota' in data and not data.get('block_quota'):
@@ -128,9 +122,7 @@ class VoucherViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         if not instance.allow_delete():
-            raise PermissionDenied(
-                'This voucher can not be deleted as it has already been used.'
-            )
+            raise PermissionDenied('This voucher can not be deleted as it has already been used.')
 
         instance.log_action(
             'pretix.voucher.deleted',
@@ -161,6 +153,4 @@ class VoucherViewSet(viewsets.ModelViewSet):
                         data=self.request.data[i],
                     )
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

@@ -133,10 +133,7 @@ def get_event_navigation(request: HttpRequest):
         ]
         event_settings += sorted(
             sum(
-                (
-                    list(a[1])
-                    for a in nav_event_settings.send(request.event, request=request)
-                ),
+                (list(a[1]) for a in nav_event_settings.send(request.event, request=request)),
                 [],
             ),
             key=lambda r: r['label'],
@@ -195,8 +192,7 @@ def get_event_navigation(request: HttpRequest):
                                 'organizer': request.event.organizer.slug,
                             },
                         ),
-                        'active': url.url_name
-                        in ('event.item', 'event.items.add', 'event.items')
+                        'active': url.url_name in ('event.item', 'event.items.add', 'event.items')
                         or 'event.item.' in url.url_name,
                     },
                     {
@@ -247,8 +243,7 @@ def get_event_navigation(request: HttpRequest):
                         'organizer': request.event.organizer.slug,
                     },
                 ),
-                'active': url.url_name
-                in ('event.orders', 'event.order', 'event.orders.search')
+                'active': url.url_name in ('event.orders', 'event.order', 'event.orders.search')
                 or 'event.order.' in url.url_name,
             },
             {
@@ -349,8 +344,7 @@ def get_event_navigation(request: HttpRequest):
                                 'organizer': request.event.organizer.slug,
                             },
                         ),
-                        'active': url.url_name != 'event.vouchers.tags'
-                        and 'event.vouchers' in url.url_name,
+                        'active': url.url_name != 'event.vouchers.tags' and 'event.vouchers' in url.url_name,
                     },
                     {
                         'label': _('Tags'),
@@ -399,9 +393,7 @@ def get_event_navigation(request: HttpRequest):
     merge_in(
         nav,
         sorted(
-            sum(
-                (list(a[1]) for a in nav_event.send(request.event, request=request)), []
-            ),
+            sum((list(a[1]) for a in nav_event.send(request.event, request=request)), []),
             key=lambda r: (1 if r.get('parent') else 0, r['label']),
         ),
     )
@@ -496,9 +488,7 @@ def get_organizer_navigation(request):
     nav = [
         {
             'label': _('My events'),
-            'url': reverse(
-                'control:organizer', kwargs={'organizer': request.organizer.slug}
-            ),
+            'url': reverse('control:organizer', kwargs={'organizer': request.organizer.slug}),
             'active': url.url_name == 'organizer',
             'icon': 'calendar',
         },
@@ -556,8 +546,7 @@ def get_organizer_navigation(request):
                     'control:organizer.teams',
                     kwargs={'organizer': request.organizer.slug},
                 ),
-                'active': 'organizer.team' in url.url_name
-                and url.namespace == 'control',
+                'active': 'organizer.team' in url.url_name and url.namespace == 'control',
                 'icon': 'group',
             }
         )
@@ -621,9 +610,7 @@ def get_organizer_navigation(request):
             sum(
                 (
                     list(a[1])
-                    for a in nav_organizer.send(
-                        request.organizer, request=request, organizer=request.organizer
-                    )
+                    for a in nav_organizer.send(request.organizer, request=request, organizer=request.organizer)
                 ),
                 [],
             ),
@@ -728,9 +715,7 @@ def get_admin_navigation(request):
                 },
                 {
                     'label': _('Social login settings'),
-                    'url': reverse(
-                        'plugins:socialauth:admin.global.social.auth.settings'
-                    ),
+                    'url': reverse('plugins:socialauth:admin.global.social.auth.settings'),
                     'active': (url.url_name == 'admin.global.social.auth.settings'),
                 },
                 {

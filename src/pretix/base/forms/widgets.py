@@ -51,13 +51,7 @@ class TimePickerWidget(forms.TimeInput):
 
         def placeholder():
             tf = time_format or get_format('TIME_INPUT_FORMATS')[0]
-            return (
-                now()
-                .replace(
-                    year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0
-                )
-                .strftime(tf)
-            )
+            return now().replace(year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0).strftime(tf)
 
         time_attrs['placeholder'] = lazy(placeholder, str)
 
@@ -144,15 +138,11 @@ class SplitDateTimePickerWidget(forms.SplitDateTimeWidget):
         time_attrs['autocomplete'] = 'off'
         if min_date:
             date_attrs['data-min'] = (
-                min_date
-                if isinstance(min_date, date)
-                else min_date.astimezone(get_current_timezone()).date()
+                min_date if isinstance(min_date, date) else min_date.astimezone(get_current_timezone()).date()
             ).isoformat()
         if max_date:
             date_attrs['data-max'] = (
-                max_date
-                if isinstance(max_date, date)
-                else max_date.astimezone(get_current_timezone()).date()
+                max_date if isinstance(max_date, date) else max_date.astimezone(get_current_timezone()).date()
             ).isoformat()
 
         def date_placeholder():
@@ -173,13 +163,7 @@ class SplitDateTimePickerWidget(forms.SplitDateTimeWidget):
 
         def time_placeholder():
             tf = time_format or get_format('TIME_INPUT_FORMATS')[0]
-            return (
-                now()
-                .replace(
-                    year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0
-                )
-                .strftime(tf)
-            )
+            return now().replace(year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0).strftime(tf)
 
         date_attrs['placeholder'] = lazy(date_placeholder, str)
         time_attrs['placeholder'] = lazy(time_placeholder, str)

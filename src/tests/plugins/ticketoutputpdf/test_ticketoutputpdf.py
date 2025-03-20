@@ -21,9 +21,7 @@ from pretix.plugins.ticketoutputpdf.ticketoutput import PdfTicketOutput
 @pytest.fixture
 def env0():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy', date_from=now(), live=True
-    )
+    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now(), live=True)
     o1 = Order.objects.create(
         code='FOOBAR',
         event=event,

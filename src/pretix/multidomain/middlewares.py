@@ -42,9 +42,7 @@ class MultiDomainMiddleware(MiddlewareMixin):
                 host = '%s:%s' % (host, server_port)
 
         domain, port = split_domain_port(host)
-        default_domain, default_port = split_domain_port(
-            urlparse(settings.SITE_URL).netloc
-        )
+        default_domain, default_port = split_domain_port(urlparse(settings.SITE_URL).netloc)
         request.port = int(port) if port else None
         request.host = domain
         if domain == default_domain:
@@ -54,9 +52,7 @@ class MultiDomainMiddleware(MiddlewareMixin):
 
             if cached is None:
                 try:
-                    kd = KnownDomain.objects.select_related('organizer', 'event').get(
-                        domainname=domain
-                    )  # noqa
+                    kd = KnownDomain.objects.select_related('organizer', 'event').get(domainname=domain)  # noqa
                     orga = kd.organizer
                     event = kd.event
                 except KnownDomain.DoesNotExist:
@@ -77,18 +73,12 @@ class MultiDomainMiddleware(MiddlewareMixin):
                     request.event = event
                 else:
                     with scopes_disabled():
-                        request.event = Event.objects.select_related('organizer').get(
-                            pk=event
-                        )
+                        request.event = Event.objects.select_related('organizer').get(pk=event)
                         request.organizer = request.event.organizer
                 request.urlconf = 'pretix.multidomain.event_domain_urlconf'
             elif orga:
                 request.organizer_domain = True
-                request.organizer = (
-                    orga
-                    if isinstance(orga, Organizer)
-                    else Organizer.objects.get(pk=orga)
-                )
+                request.organizer = orga if isinstance(orga, Organizer) else Organizer.objects.get(pk=orga)
                 request.urlconf = 'pretix.multidomain.organizer_domain_urlconf'
             elif settings.DEBUG or domain in LOCAL_HOST_NAMES:
                 request.urlconf = 'pretix.multidomain.maindomain_urlconf'

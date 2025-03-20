@@ -41,9 +41,7 @@ class VueCompiler(CompilerFilter):
         if self.filename is None:
             raise FilterError('VueCompiler can only compile files, not inline code.')
         if not os.path.exists(self.rollup_bin):
-            raise FilterError(
-                "Rollup not installed, please run 'make npminstall' in source root."
-            )
+            raise FilterError("Rollup not installed, please run 'make npminstall' in source root.")
         self.options += (
             (
                 'export_name',

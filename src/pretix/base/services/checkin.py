@@ -101,28 +101,20 @@ class LazyRuleVars:
 
     @cached_property
     def entries_number(self):
-        return self._position.checkins.filter(
-            type=Checkin.TYPE_ENTRY, list=self._clist
-        ).count()
+        return self._position.checkins.filter(type=Checkin.TYPE_ENTRY, list=self._clist).count()
 
     @cached_property
     def entries_today(self):
         tz = self._clist.event.timezone
-        midnight = (
-            now().astimezone(tz).replace(hour=0, minute=0, second=0, microsecond=0)
-        )
-        return self._position.checkins.filter(
-            type=Checkin.TYPE_ENTRY, list=self._clist, datetime__gte=midnight
-        ).count()
+        midnight = now().astimezone(tz).replace(hour=0, minute=0, second=0, microsecond=0)
+        return self._position.checkins.filter(type=Checkin.TYPE_ENTRY, list=self._clist, datetime__gte=midnight).count()
 
     @cached_property
     def entries_days(self):
         tz = self._clist.event.timezone
         with override(tz):
             return (
-                self._position.checkins.filter(
-                    list=self._clist, type=Checkin.TYPE_ENTRY
-                )
+                self._position.checkins.filter(list=self._clist, type=Checkin.TYPE_ENTRY)
                 .annotate(day=TruncDate('datetime', tzinfo=tz))
                 .values('day')
                 .distinct()
@@ -234,11 +226,7 @@ class SQLLogic:
                     output_field=IntegerField(),
                 )
             elif values[0] == 'entries_today':
-                midnight = (
-                    now()
-                    .astimezone(self.list.event.timezone)
-                    .replace(hour=0, minute=0, second=0, microsecond=0)
-                )
+                midnight = now().astimezone(self.list.event.timezone).replace(hour=0, minute=0, second=0, microsecond=0)
                 return Coalesce(
                     Subquery(
                         Checkin.objects.filter(
@@ -360,9 +348,7 @@ def _save_answers(op, answers, given_answers):
                 written = True
                 qa.options.clear()
             else:
-                qa = op.answers.create(
-                    question=q, answer=', '.join([str(o) for o in a])
-                )
+                qa = op.answers.create(question=q, answer=', '.join([str(o) for o in a]))
             qa.options.add(*a)
         elif isinstance(a, File):
             if q in answers:
@@ -425,9 +411,7 @@ def perform_checkin(
         )
 
     # Do this outside of transaction so it is saved even if the checkin fails for some other reason
-    checkin_questions = list(
-        clist.event.questions.filter(ask_during_checkin=True, items__in=[op.item_id])
-    )
+    checkin_questions = list(clist.event.questions.filter(ask_during_checkin=True, items__in=[op.item_id]))
     require_answers = []
     if checkin_questions:
         answers = {a.question: a for a in op.answers.all()}
@@ -441,9 +425,7 @@ def perform_checkin(
         # Lock order positions
         op = OrderPosition.all.select_for_update().get(pk=op.pk)
 
-        if not clist.all_products and op.item_id not in [
-            i.pk for i in clist.limit_products.all()
-        ]:
+        if not clist.all_products and op.item_id not in [i.pk for i in clist.limit_products.all()]:
             raise CheckInError(
                 _('This order position has an invalid product for this check-in list.'),
                 'product',
@@ -456,11 +438,7 @@ def perform_checkin(
         elif (
             op.order.status != Order.STATUS_PAID
             and not force
-            and not (
-                ignore_unpaid
-                and clist.include_pending
-                and op.order.status == Order.STATUS_PENDING
-            )
+            and not (ignore_unpaid and clist.include_pending and op.order.status == Order.STATUS_PENDING)
         ):
             raise CheckInError(_('This order is not marked as paid.'), 'unpaid')
         elif require_answers and not force and questions_supported:
@@ -474,20 +452,13 @@ def perform_checkin(
             rule_data = LazyRuleVars(op, clist, dt)
             logic = get_logic_environment(op.subevent or clist.event)
             if not logic.apply(clist.rules, rule_data):
-                raise CheckInError(
-                    _('This entry is not permitted due to custom rules.'), 'rules'
-                )
+                raise CheckInError(_('This entry is not permitted due to custom rules.'), 'rules')
 
         device = None
         if isinstance(auth, Device):
             device = auth
 
-        last_ci = (
-            op.checkins.order_by('-datetime')
-            .filter(list=clist)
-            .only('type', 'nonce')
-            .first()
-        )
+        last_ci = op.checkins.order_by('-datetime').filter(list=clist).only('type', 'nonce').first()
         entry_allowed = (
             type == Checkin.TYPE_EXIT
             or clist.allow_multiple_entries
@@ -497,9 +468,7 @@ def perform_checkin(
 
         if nonce and (
             (last_ci and last_ci.nonce == nonce)
-            or op.checkins.filter(
-                type=type, list=clist, device=device, nonce=nonce
-            ).exists()
+            or op.checkins.filter(type=type, list=clist, device=device, nonce=nonce).exists()
         ):
             return
 
@@ -542,9 +511,9 @@ def order_placed(sender, **kwargs):
     event = sender
 
     cls = list(
-        event.checkin_lists.filter(
-            auto_checkin_sales_channels__contains=order.sales_channel
-        ).prefetch_related('limit_products')
+        event.checkin_lists.filter(auto_checkin_sales_channels__contains=order.sales_channel).prefetch_related(
+            'limit_products'
+        )
     )
     if not cls:
         return
@@ -564,9 +533,9 @@ def order_placed(sender, **kwargs):
 @receiver(periodic_task, dispatch_uid='autocheckin_exit_all')
 @scopes_disabled()
 def process_exit_all(sender, **kwargs):
-    qs = CheckinList.objects.filter(
-        exit_all_at__lte=now(), exit_all_at__isnull=False
-    ).select_related('event', 'event__organizer')
+    qs = CheckinList.objects.filter(exit_all_at__lte=now(), exit_all_at__isnull=False).select_related(
+        'event', 'event__organizer'
+    )
     for cl in qs:
         for p in cl.positions_inside:
             with scope(organizer=cl.event.organizer):

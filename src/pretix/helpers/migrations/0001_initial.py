@@ -14,9 +14,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('source', models.CharField(max_length=255)),
                 ('size', models.CharField(max_length=255)),

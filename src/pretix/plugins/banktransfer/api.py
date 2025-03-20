@@ -40,9 +40,7 @@ class BankTransactionSerializer(serializers.ModelSerializer):
 
 
 class BankImportJobSerializer(serializers.ModelSerializer):
-    event = serializers.SlugRelatedField(
-        slug_field='slug', read_only=True, allow_null=True
-    )
+    event = serializers.SlugRelatedField(slug_field='slug', read_only=True, allow_null=True)
     transactions = BankTransactionSerializer(many=True, read_only=False)
     state = serializers.CharField(read_only=True)
     partial = False
@@ -86,14 +84,8 @@ class BankImportJobViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
         return serializer.save()
 
     def create(self, request, *args, **kwargs):
-        perm_holder = (
-            request.auth
-            if isinstance(request.auth, (Device, TeamAPIToken))
-            else request.user
-        )
-        if not perm_holder.has_organizer_permission(
-            request.organizer, 'can_change_orders'
-        ):
+        perm_holder = request.auth if isinstance(request.auth, (Device, TeamAPIToken)) else request.user
+        if not perm_holder.has_organizer_permission(request.organizer, 'can_change_orders'):
             raise PermissionDenied('Invalid set of permissions')
 
         if (
@@ -114,9 +106,7 @@ class BankImportJobViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
         job = self.perform_create(serializer)
         process_banktransfers.apply_async(kwargs={'job': job.pk, 'data': job._data})
         job.refresh_from_db()
-        return Response(
-            self.get_serializer(instance=job).data, status=status.HTTP_201_CREATED
-        )
+        return Response(self.get_serializer(instance=job).data, status=status.HTTP_201_CREATED)
 
     def get_serializer(self, *args, **kwargs):
         kwargs['organizer'] = self.request.organizer

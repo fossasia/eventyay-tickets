@@ -171,10 +171,7 @@ def test_address_with_state(env):
         order=order,
     )
     inv = generate_invoice(order)
-    assert (
-        inv.invoice_to
-        == 'Acme Company\n221B Baker Street\n46530 Granger IN\nUnited States of America'
-    )
+    assert inv.invoice_to == 'Acme Company\n221B Baker Street\n46530 Granger IN\nUnited States of America'
 
 
 @pytest.mark.django_db
@@ -191,10 +188,7 @@ def test_address_with_state_long(env):
         order=order,
     )
     inv = generate_invoice(order)
-    assert (
-        inv.invoice_to
-        == 'Acme Company\n221B Baker Street\n46530 Granger Selangor\nMalaysia'
-    )
+    assert inv.invoice_to == 'Acme Company\n221B Baker Street\n46530 Granger Selangor\nMalaysia'
 
 
 @pytest.mark.django_db
@@ -210,10 +204,7 @@ def test_address(env):
         order=order,
     )
     inv = generate_invoice(order)
-    assert (
-        inv.invoice_to
-        == 'Acme Company\n221B Baker Street\n12345 London\nUnited Kingdom'
-    )
+    assert inv.invoice_to == 'Acme Company\n221B Baker Street\n12345 London\nUnited Kingdom'
 
 
 @pytest.mark.django_db
@@ -232,10 +223,7 @@ def test_address_vat_id(env):
         order=order,
     )
     inv = generate_invoice(order)
-    assert (
-        inv.invoice_to
-        == 'Acme Company\nSherlock Holmes\n221B Baker Street\n12345 London\nUK\nVAT-ID: UK1234567'
-    )
+    assert inv.invoice_to == 'Acme Company\nSherlock Holmes\n221B Baker Street\n12345 London\nUK\nVAT-ID: UK1234567'
 
 
 @pytest.mark.django_db
@@ -519,9 +507,7 @@ def test_invoice_numbers(env):
     inv6 = generate_invoice(order)
     invt3 = generate_invoice(testorder)
     inv7 = generate_invoice(order)
-    Invoice.objects.filter(
-        pk=inv6.pk
-    ).delete()  # This should never ever happen, but what if it happens anyway?
+    Invoice.objects.filter(pk=inv6.pk).delete()  # This should never ever happen, but what if it happens anyway?
     inv8 = generate_invoice(order)
     inv23 = generate_invoice(order2)
 

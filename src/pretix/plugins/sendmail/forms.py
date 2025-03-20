@@ -15,9 +15,7 @@ from pretix.control.forms.widgets import Select2, Select2Multiple
 
 
 class MailForm(forms.Form):
-    recipients = forms.ChoiceField(
-        label=_('Send email to'), widget=forms.RadioSelect, initial='orders', choices=[]
-    )
+    recipients = forms.ChoiceField(label=_('Send email to'), widget=forms.RadioSelect, initial='orders', choices=[])
     sendto = forms.MultipleChoiceField()  # overridden later
     subject = forms.CharField(label=_('Subject'))
     message = forms.CharField(label=_('Message'))
@@ -54,22 +52,16 @@ class MailForm(forms.Form):
         max_size=10 * 1024 * 1024,
     )  # TODO i18n
     items = forms.ModelMultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(
-            attrs={'class': 'scrolling-multiple-choice'}
-        ),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
         label=_('Only send to people who bought'),
         required=True,
         queryset=Item.objects.none(),
     )
-    filter_checkins = forms.BooleanField(
-        label=_('Filter check-in status'), required=False
-    )
+    filter_checkins = forms.BooleanField(label=_('Filter check-in status'), required=False)
     checkin_lists = SafeModelMultipleChoiceField(
         queryset=CheckinList.objects.none(), required=False
     )  # overridden later
-    not_checked_in = forms.BooleanField(
-        label=_('Send to customers not checked in'), required=False
-    )
+    not_checked_in = forms.BooleanField(label=_('Send to customers not checked in'), required=False)
     subevent = forms.ModelChoiceField(
         SubEvent.objects.none(),
         label=_('Only send to customers of'),
@@ -78,30 +70,22 @@ class MailForm(forms.Form):
     )
     subevents_from = forms.SplitDateTimeField(
         widget=SplitDateTimePickerWidget(),
-        label=pgettext_lazy(
-            'subevent', 'Only send to customers of dates starting at or after'
-        ),
+        label=pgettext_lazy('subevent', 'Only send to customers of dates starting at or after'),
         required=False,
     )
     subevents_to = forms.SplitDateTimeField(
         widget=SplitDateTimePickerWidget(),
-        label=pgettext_lazy(
-            'subevent', 'Only send to customers of dates starting before'
-        ),
+        label=pgettext_lazy('subevent', 'Only send to customers of dates starting before'),
         required=False,
     )
     created_from = forms.SplitDateTimeField(
         widget=SplitDateTimePickerWidget(),
-        label=pgettext_lazy(
-            'subevent', 'Only send to customers with orders created after'
-        ),
+        label=pgettext_lazy('subevent', 'Only send to customers with orders created after'),
         required=False,
     )
     created_to = forms.SplitDateTimeField(
         widget=SplitDateTimePickerWidget(),
-        label=pgettext_lazy(
-            'subevent', 'Only send to customers with orders created before'
-        ),
+        label=pgettext_lazy('subevent', 'Only send to customers with orders created before'),
         required=False,
     )
 
@@ -124,12 +108,7 @@ class MailForm(forms.Form):
         return d
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = [
-            '{%s}' % p
-            for p in sorted(
-                get_available_placeholders(self.event, base_parameters).keys()
-            )
-        ]
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)
@@ -146,16 +125,11 @@ class MailForm(forms.Form):
             recp_choices += [
                 (
                     'attendees',
-                    _(
-                        'Every attendee (falling back to the order contact when no attendee email address is '
-                        'given)'
-                    ),
+                    _('Every attendee (falling back to the order contact when no attendee email address is given)'),
                 ),
                 (
                     'both',
-                    _(
-                        'Both (all order contact addresses and all attendee email addresses)'
-                    ),
+                    _('Both (all order contact addresses and all attendee email addresses)'),
                 ),
             ]
         self.fields['recipients'].choices = recp_choices
@@ -172,12 +146,8 @@ class MailForm(forms.Form):
             required=True,
             locales=event.settings.get('locales'),
         )
-        self._set_field_placeholders(
-            'subject', ['event', 'order', 'position_or_address']
-        )
-        self._set_field_placeholders(
-            'message', ['event', 'order', 'position_or_address']
-        )
+        self._set_field_placeholders('subject', ['event', 'order', 'position_or_address'])
+        self._set_field_placeholders('message', ['event', 'order', 'position_or_address'])
         choices = [(e, l) for e, l in Order.STATUS_CHOICE if e != 'n']
         choices.insert(0, ('na', _('payment pending (except unapproved)')))
         choices.insert(0, ('pa', _('approval pending')))
@@ -185,9 +155,7 @@ class MailForm(forms.Form):
             choices.append(('overdue', _('pending with payment overdue')))
         self.fields['sendto'] = forms.MultipleChoiceField(
             label=_('Send to customers with order status'),
-            widget=forms.CheckboxSelectMultiple(
-                attrs={'class': 'scrolling-multiple-choice'}
-            ),
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
             choices=choices,
         )
         if not self.initial.get('sendto'):
@@ -214,9 +182,7 @@ class MailForm(forms.Form):
                 'data-placeholder': _('Send to customers checked in on list'),
             }
         )
-        self.fields['checkin_lists'].widget.choices = self.fields[
-            'checkin_lists'
-        ].choices
+        self.fields['checkin_lists'].widget.choices = self.fields['checkin_lists'].choices
         self.fields['checkin_lists'].label = _('Send to customers checked in on list')
 
         if event.has_subevents:

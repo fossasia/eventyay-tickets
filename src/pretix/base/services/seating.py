@@ -33,10 +33,7 @@ def validate_plan_change(event, subevent, plan):
     leftovers = list(current_taken_seats - new_seats)
     if leftovers:
         raise SeatProtected(
-            _(
-                'You can not change the plan since seat "%s" is not present in the new plan and is '
-                'already sold.'
-            ),
+            _('You can not change the plan since seat "%s" is not present in the new plan and is already sold.'),
             leftovers[0],
         )
 
@@ -78,11 +75,7 @@ def generate_seats(event, subevent, plan, mapping, blocked_guids=None):
                         update(seat, 'x', ss.x),
                         update(seat, 'y', ss.y),
                     ]
-                    + (
-                        [update(seat, 'blocked', ss.guid in blocked_guids)]
-                        if blocked_guids
-                        else []
-                    )
+                    + ([update(seat, 'blocked', ss.guid in blocked_guids)] if blocked_guids else [])
                 )
                 if updated:
                     seat.save()
@@ -109,8 +102,7 @@ def generate_seats(event, subevent, plan, mapping, blocked_guids=None):
         if s.has_op:
             raise SeatProtected(
                 _(
-                    'You can not change the plan since seat "%s" is not present in the new plan and is '
-                    'already sold.',
+                    'You can not change the plan since seat "%s" is not present in the new plan and is already sold.',
                     s.name,
                 )
             )
@@ -124,7 +116,5 @@ def generate_seats(event, subevent, plan, mapping, blocked_guids=None):
             )
 
     Seat.objects.bulk_create(create_seats)
-    CartPosition.objects.filter(
-        seat__in=[s.pk for s in current_seats.values()]
-    ).delete()
+    CartPosition.objects.filter(seat__in=[s.pk for s in current_seats.values()]).delete()
     Seat.objects.filter(pk__in=[s.pk for s in current_seats.values()]).delete()

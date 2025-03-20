@@ -34,40 +34,26 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
             slug='30c3',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
         )
-        t = Team.objects.create(
-            organizer=self.orga, can_view_vouchers=True, can_change_vouchers=True
-        )
+        t = Team.objects.create(organizer=self.orga, can_view_vouchers=True, can_change_vouchers=True)
         t.members.add(self.user)
         t.limit_events.add(self.event)
         self.client.login(email='dummy@dummy.dummy', password='dummy')
 
-        self.quota_shirts = Quota.objects.create(
-            event=self.event, name='Shirts', size=2
-        )
-        self.shirt = Item.objects.create(
-            event=self.event, name='T-Shirt', default_price=12
-        )
+        self.quota_shirts = Quota.objects.create(event=self.event, name='Shirts', size=2)
+        self.shirt = Item.objects.create(event=self.event, name='T-Shirt', default_price=12)
         self.quota_shirts.items.add(self.shirt)
-        self.shirt_red = ItemVariation.objects.create(
-            item=self.shirt, default_price=14, value='Red'
-        )
+        self.shirt_red = ItemVariation.objects.create(item=self.shirt, default_price=14, value='Red')
         self.shirt_blue = ItemVariation.objects.create(item=self.shirt, value='Blue')
         self.quota_shirts.variations.add(self.shirt_red)
         self.quota_shirts.variations.add(self.shirt_blue)
-        self.quota_tickets = Quota.objects.create(
-            event=self.event, name='Tickets', size=5
-        )
-        self.ticket = Item.objects.create(
-            event=self.event, name='Early-bird ticket', default_price=23
-        )
+        self.quota_tickets = Quota.objects.create(event=self.event, name='Tickets', size=5)
+        self.ticket = Item.objects.create(event=self.event, name='Early-bird ticket', default_price=23)
         self.quota_tickets.items.add(self.ticket)
 
     def _create_voucher(self, data, expected_failure=False):
         with scopes_disabled():
             count_before = self.event.vouchers.count()
-        doc = self.get_doc(
-            '/control/event/%s/%s/vouchers/add' % (self.orga.slug, self.event.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/vouchers/add' % (self.orga.slug, self.event.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data.update(data)
         doc = self.post_doc(
@@ -85,14 +71,11 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
     def _create_bulk_vouchers(self, data, expected_failure=False):
         with scopes_disabled():
             count_before = self.event.vouchers.count()
-        doc = self.get_doc(
-            '/control/event/%s/%s/vouchers/bulk_add' % (self.orga.slug, self.event.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/vouchers/bulk_add' % (self.orga.slug, self.event.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data.update(data)
         doc = self.post_doc(
-            '/control/event/%s/%s/vouchers/bulk_add'
-            % (self.orga.slug, self.event.slug),
+            '/control/event/%s/%s/vouchers/bulk_add' % (self.orga.slug, self.event.slug),
             form_data,
         )
         with scopes_disabled():
@@ -101,21 +84,14 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
                 assert count_before == self.event.vouchers.count()
             else:
                 assert doc.select('.alert-success')
-                assert (
-                    count_before + len(form_data.get('codes').split('\n'))
-                    == self.event.vouchers.count()
-                )
+                assert count_before + len(form_data.get('codes').split('\n')) == self.event.vouchers.count()
 
     def _change_voucher(self, v, data, expected_failure=False):
-        doc = self.get_doc(
-            '/control/event/%s/%s/vouchers/%s/'
-            % (self.orga.slug, self.event.slug, v.pk)
-        )
+        doc = self.get_doc('/control/event/%s/%s/vouchers/%s/' % (self.orga.slug, self.event.slug, v.pk))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data.update(data)
         doc = self.post_doc(
-            '/control/event/%s/%s/vouchers/%s/'
-            % (self.orga.slug, self.event.slug, v.pk),
+            '/control/event/%s/%s/vouchers/%s/' % (self.orga.slug, self.event.slug, v.pk),
             form_data,
         )
         if expected_failure:
@@ -126,21 +102,15 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
     def test_list(self):
         with scopes_disabled():
             self.event.vouchers.create(item=self.ticket, code='ABCDEFG')
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/' % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/' % (self.orga.slug, self.event.slug))
         assert 'ABCDEFG' in doc.content.decode()
 
     def test_csv(self):
         with scopes_disabled():
             self.event.vouchers.create(item=self.ticket, code='ABCDEFG')
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?download=yes'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?download=yes' % (self.orga.slug, self.event.slug))
         assert (
-            doc.content.decode().strip()
-            == '"Voucher code","Valid until","Product","Reserve quota",'
+            doc.content.decode().strip() == '"Voucher code","Valid until","Product","Reserve quota",'
             '"Bypass quota","Price effect","Value","Tag","Redeemed",'
             '"Maximum usages","Seat","Comment"'
             '\r\n"ABCDEFG","","Early-bird ticket","No","No","No effect","","","0",'
@@ -150,91 +120,53 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
     def test_filter_status_valid(self):
         with scopes_disabled():
             v = self.event.vouchers.create(item=self.ticket)
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?status=v'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?status=v' % (self.orga.slug, self.event.slug))
         assert v.code in doc.content.decode()
         v.redeemed = 1
         v.save()
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?status=v'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?status=v' % (self.orga.slug, self.event.slug))
         assert v.code not in doc.content.decode()
 
     def test_filter_status_redeemed(self):
         with scopes_disabled():
             v = self.event.vouchers.create(item=self.ticket, redeemed=1)
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?status=r'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?status=r' % (self.orga.slug, self.event.slug))
         assert v.code in doc.content.decode()
         v.redeemed = 0
         v.save()
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?status=r'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?status=r' % (self.orga.slug, self.event.slug))
         assert v.code not in doc.content.decode()
 
     def test_filter_status_expired(self):
         with scopes_disabled():
-            v = self.event.vouchers.create(
-                item=self.ticket, valid_until=now() + datetime.timedelta(days=1)
-            )
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?status=e'
-            % (self.orga.slug, self.event.slug)
-        )
+            v = self.event.vouchers.create(item=self.ticket, valid_until=now() + datetime.timedelta(days=1))
+        doc = self.client.get('/control/event/%s/%s/vouchers/?status=e' % (self.orga.slug, self.event.slug))
         assert v.code not in doc.content.decode()
         v.valid_until = now() - datetime.timedelta(days=1)
         v.save()
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?status=e'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?status=e' % (self.orga.slug, self.event.slug))
         assert v.code in doc.content.decode()
 
     def test_filter_tag(self):
         with scopes_disabled():
-            self.event.vouchers.create(
-                item=self.ticket, code='ABCDEFG', comment='Foo', tag='bar'
-            )
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?tag=bar' % (self.orga.slug, self.event.slug)
-        )
+            self.event.vouchers.create(item=self.ticket, code='ABCDEFG', comment='Foo', tag='bar')
+        doc = self.client.get('/control/event/%s/%s/vouchers/?tag=bar' % (self.orga.slug, self.event.slug))
         assert 'ABCDEFG' in doc.content.decode()
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?tag=baz' % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?tag=baz' % (self.orga.slug, self.event.slug))
         assert 'ABCDEFG' not in doc.content.decode()
 
     def test_search_code(self):
         with scopes_disabled():
             self.event.vouchers.create(item=self.ticket, code='ABCDEFG', comment='Foo')
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?search=ABCDEFG'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?search=ABCDEFG' % (self.orga.slug, self.event.slug))
         assert 'ABCDEFG' in doc.content.decode()
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?search=Foo'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?search=Foo' % (self.orga.slug, self.event.slug))
         assert 'ABCDEFG' in doc.content.decode()
-        doc = self.client.get(
-            '/control/event/%s/%s/vouchers/?search=12345'
-            % (self.orga.slug, self.event.slug)
-        )
+        doc = self.client.get('/control/event/%s/%s/vouchers/?search=12345' % (self.orga.slug, self.event.slug))
         assert 'ABCDEFG' not in doc.content.decode()
 
     def test_bulk_rng(self):
-        rng = self.client.get(
-            '/control/event/%s/%s/vouchers/rng?num=7'
-            % (self.orga.slug, self.event.slug)
-        )
+        rng = self.client.get('/control/event/%s/%s/vouchers/rng?num=7' % (self.orga.slug, self.event.slug))
         codes = json.loads(rng.content.decode('utf-8'))['codes']
         assert len(codes) == 7
         assert all([len(r) == 16 for r in codes])
@@ -242,9 +174,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
     def test_display_voucher_code(self):
         with scopes_disabled():
             count_before = self.event.vouchers.count()
-        doc = self.get_doc(
-            '/control/event/%s/%s/vouchers/add' % (self.orga.slug, self.event.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/vouchers/add' % (self.orga.slug, self.event.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data.update({'itemvar': '%d' % self.ticket.pk})
         doc = self.post_doc(
@@ -309,12 +239,8 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
             {
                 'itemvar': '%d-%d' % (self.shirt.pk, self.shirt_red.pk),
                 'block_quota': 'on',
-                'valid_until_0': (now() - datetime.timedelta(days=3)).strftime(
-                    '%Y-%m-%d'
-                ),
-                'valid_until_1': (now() - datetime.timedelta(days=3)).strftime(
-                    '%H:%M:%S'
-                ),
+                'valid_until_0': (now() - datetime.timedelta(days=3)).strftime('%Y-%m-%d'),
+                'valid_until_1': (now() - datetime.timedelta(days=3)).strftime('%H:%M:%S'),
             }
         )
 
@@ -347,9 +273,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         )
 
     def test_create_blocking_quota_voucher_quota_free(self):
-        self._create_voucher(
-            {'itemvar': 'q-%d' % self.quota_tickets.pk, 'block_quota': 'on'}
-        )
+        self._create_voucher({'itemvar': 'q-%d' % self.quota_tickets.pk, 'block_quota': 'on'})
         with scopes_disabled():
             v = Voucher.objects.latest('pk')
         assert v.block_quota
@@ -411,12 +335,8 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         self._change_voucher(
             v,
             {
-                'valid_until_0': (now() + datetime.timedelta(days=3)).strftime(
-                    '%Y-%m-%d'
-                ),
-                'valid_until_1': (now() + datetime.timedelta(days=3)).strftime(
-                    '%H:%M:%S'
-                ),
+                'valid_until_0': (now() + datetime.timedelta(days=3)).strftime('%Y-%m-%d'),
+                'valid_until_1': (now() + datetime.timedelta(days=3)).strftime('%H:%M:%S'),
             },
             expected_failure=True,
         )
@@ -433,12 +353,8 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         self._change_voucher(
             v,
             {
-                'valid_until_0': (now() + datetime.timedelta(days=3)).strftime(
-                    '%Y-%m-%d'
-                ),
-                'valid_until_1': (now() + datetime.timedelta(days=3)).strftime(
-                    '%H:%M:%S'
-                ),
+                'valid_until_0': (now() + datetime.timedelta(days=3)).strftime('%Y-%m-%d'),
+                'valid_until_1': (now() + datetime.timedelta(days=3)).strftime('%H:%M:%S'),
             },
         )
         v.refresh_from_db()
@@ -446,9 +362,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
 
     def test_change_item_of_blocking_voucher_quota_free(self):
         with scopes_disabled():
-            ticket2 = Item.objects.create(
-                event=self.event, name='Late-bird ticket', default_price=23
-            )
+            ticket2 = Item.objects.create(event=self.event, name='Late-bird ticket', default_price=23)
             self.quota_tickets.items.add(ticket2)
             v = self.event.vouchers.create(item=self.ticket, block_quota=True)
         self._change_voucher(
@@ -462,9 +376,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         self.quota_shirts.size = 0
         self.quota_shirts.save()
         with scopes_disabled():
-            hoodie = Item.objects.create(
-                event=self.event, name='Hoodie', default_price=23
-            )
+            hoodie = Item.objects.create(event=self.event, name='Hoodie', default_price=23)
             self.quota_shirts.items.add(hoodie)
             v = self.event.vouchers.create(item=self.ticket, block_quota=True)
         self._change_voucher(
@@ -479,9 +391,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         with scopes_disabled():
             self.quota_shirts.variations.remove(self.shirt_blue)
             self.quota_tickets.variations.add(self.shirt_blue)
-            v = self.event.vouchers.create(
-                item=self.shirt, variation=self.shirt_red, block_quota=True
-            )
+            v = self.event.vouchers.create(item=self.shirt, variation=self.shirt_red, block_quota=True)
         self._change_voucher(
             v,
             {
@@ -495,9 +405,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
             self.quota_tickets.variations.add(self.shirt_blue)
             self.quota_tickets.size = 0
             self.quota_tickets.save()
-            v = self.event.vouchers.create(
-                item=self.shirt, variation=self.shirt_red, block_quota=True
-            )
+            v = self.event.vouchers.create(item=self.shirt, variation=self.shirt_red, block_quota=True)
         self._change_voucher(
             v,
             {
@@ -533,9 +441,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         with scopes_disabled():
             self.quota_tickets.size = 0
             self.quota_tickets.save()
-            ticket2 = Item.objects.create(
-                event=self.event, name='Standard Ticket', default_price=23
-            )
+            ticket2 = Item.objects.create(event=self.event, name='Standard Ticket', default_price=23)
             self.quota_tickets.items.add(ticket2)
             v = self.event.vouchers.create(item=self.ticket, block_quota=True)
         self._change_voucher(
@@ -549,9 +455,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         with scopes_disabled():
             self.quota_shirts.size = 0
             self.quota_shirts.save()
-            v = self.event.vouchers.create(
-                item=self.shirt, variation=self.shirt_red, block_quota=True
-            )
+            v = self.event.vouchers.create(item=self.shirt, variation=self.shirt_red, block_quota=True)
         self._change_voucher(
             v,
             {
@@ -783,15 +687,13 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         with scopes_disabled():
             v = self.event.vouchers.create(quota=self.quota_tickets)
         doc = self.get_doc(
-            '/control/event/%s/%s/vouchers/%s/delete'
-            % (self.orga.slug, self.event.slug, v.pk),
+            '/control/event/%s/%s/vouchers/%s/delete' % (self.orga.slug, self.event.slug, v.pk),
             follow=True,
         )
         assert not doc.select('.alert-danger')
 
         doc = self.post_doc(
-            '/control/event/%s/%s/vouchers/%s/delete'
-            % (self.orga.slug, self.event.slug, v.pk),
+            '/control/event/%s/%s/vouchers/%s/delete' % (self.orga.slug, self.event.slug, v.pk),
             {},
             follow=True,
         )
@@ -803,15 +705,13 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         with scopes_disabled():
             v = self.event.vouchers.create(quota=self.quota_tickets, redeemed=1)
         doc = self.get_doc(
-            '/control/event/%s/%s/vouchers/%s/delete'
-            % (self.orga.slug, self.event.slug, v.pk),
+            '/control/event/%s/%s/vouchers/%s/delete' % (self.orga.slug, self.event.slug, v.pk),
             follow=True,
         )
         assert doc.select('.alert-danger')
 
         doc = self.post_doc(
-            '/control/event/%s/%s/vouchers/%s/delete'
-            % (self.orga.slug, self.event.slug, v.pk),
+            '/control/event/%s/%s/vouchers/%s/delete' % (self.orga.slug, self.event.slug, v.pk),
             {},
             follow=True,
         )
@@ -859,14 +759,10 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
 
             self.quota_tickets.subevent = se1
             self.quota_tickets.save()
-            q2 = Quota.objects.create(
-                event=self.event, name='Tickets', size=0, subevent=se2
-            )
+            q2 = Quota.objects.create(event=self.event, name='Tickets', size=0, subevent=se2)
             q2.items.add(self.ticket)
 
-        self._create_voucher(
-            {'itemvar': '%d' % self.ticket.pk, 'block_quota': 'on', 'subevent': se1.pk}
-        )
+        self._create_voucher({'itemvar': '%d' % self.ticket.pk, 'block_quota': 'on', 'subevent': se1.pk})
 
     def test_subevent_blocking_quota_full(self):
         self.event.has_subevents = True
@@ -878,9 +774,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
             self.quota_tickets.subevent = se1
             self.quota_tickets.size = 0
             self.quota_tickets.save()
-            q2 = Quota.objects.create(
-                event=self.event, name='Tickets', size=5, subevent=se2
-            )
+            q2 = Quota.objects.create(event=self.event, name='Tickets', size=5, subevent=se2)
             q2.items.add(self.ticket)
 
         self._create_voucher(
@@ -928,14 +822,7 @@ class VoucherFormTest(SoupTestMixin, TransactionTestCase):
         shirt_voucher.redeemed = 2
         shirt_voucher.save()
 
-        doc = self.get_doc(
-            '/control/event/%s/%s/vouchers/%s/'
-            % (self.orga.slug, self.event.slug, shirt_voucher.pk)
-        )
+        doc = self.get_doc('/control/event/%s/%s/vouchers/%s/' % (self.orga.slug, self.event.slug, shirt_voucher.pk))
 
-        assert (
-            len(doc.select('.alert-warning ul li')) == 1
-        )  # Check that there's exactly 1 item in the warning list
-        assert (
-            doc.text.count('Order DEDUP') == 1
-        )  # Check that the order is listed exactly once
+        assert len(doc.select('.alert-warning ul li')) == 1  # Check that there's exactly 1 item in the warning list
+        assert doc.text.count('Order DEDUP') == 1  # Check that the order is listed exactly once

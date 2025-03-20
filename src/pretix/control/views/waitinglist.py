@@ -30,9 +30,7 @@ class AutoAssign(EventPermissionRequiredMixin, AsyncAction, View):
     permission = 'can_change_orders'
 
     def get_success_message(self, value):
-        return _('{num} vouchers have been created and sent out via email.').format(
-            num=value
-        )
+        return _('{num} vouchers have been created and sent out via email.').format(num=value)
 
     def get_success_url(self, value):
         return self.get_error_url()
@@ -80,10 +78,7 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
                 else:
                     messages.success(
                         request,
-                        _(
-                            'An email containing a voucher code has been sent to the '
-                            'specified address.'
-                        ),
+                        _('An email containing a voucher code has been sent to the specified address.'),
                     )
                 return self._redirect_back()
             except WaitingListEntry.DoesNotExist:
@@ -96,16 +91,9 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
                     pk=request.POST.get('move_top'),
                     event=self.request.event,
                 )
-                wle.priority = (
-                    self.request.event.waitinglistentries.aggregate(m=Max('priority'))[
-                        'm'
-                    ]
-                    + 1
-                )
+                wle.priority = self.request.event.waitinglistentries.aggregate(m=Max('priority'))['m'] + 1
                 wle.save(update_fields=['priority'])
-                messages.success(
-                    request, _('The waiting list entry has been moved to the top.')
-                )
+                messages.success(request, _('The waiting list entry has been moved to the top.'))
                 return self._redirect_back()
             except WaitingListEntry.DoesNotExist:
                 messages.error(request, _('Waiting list entry not found.'))
@@ -117,12 +105,7 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
                     pk=request.POST.get('move_end'),
                     event=self.request.event,
                 )
-                wle.priority = (
-                    self.request.event.waitinglistentries.aggregate(m=Min('priority'))[
-                        'm'
-                    ]
-                    - 1
-                )
+                wle.priority = self.request.event.waitinglistentries.aggregate(m=Min('priority'))['m'] - 1
                 wle.save(update_fields=['priority'])
                 messages.success(
                     request,
@@ -135,9 +118,7 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
         return self._redirect_back()
 
     def _redirect_back(self):
-        if 'next' in self.request.GET and is_safe_url(
-            self.request.GET.get('next'), allowed_hosts=None
-        ):
+        if 'next' in self.request.GET and is_safe_url(self.request.GET.get('next'), allowed_hosts=None):
             return redirect(self.request.GET.get('next'))
         return redirect(
             reverse(
@@ -170,9 +151,7 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
             qs = qs.filter(
                 voucher__isnull=False,
                 voucher__redeemed__lt=F('voucher__max_usages'),
-            ).filter(
-                Q(voucher__valid_until__isnull=True) | Q(voucher__valid_until__gt=now())
-            )
+            ).filter(Q(voucher__valid_until__isnull=True) | Q(voucher__valid_until__gt=now()))
         elif s == 'e':
             qs = qs.filter(
                 voucher__isnull=False,
@@ -203,9 +182,7 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
         any_avail = False
         for wle in ctx[self.context_object_name]:
             if (wle.item, wle.variation, wle.subevent) in itemvar_cache:
-                wle.availability = itemvar_cache.get(
-                    (wle.item, wle.variation, wle.subevent)
-                )
+                wle.availability = itemvar_cache.get((wle.item, wle.variation, wle.subevent))
             else:
                 ev = wle.subevent or self.request.event
                 disabled = (
@@ -229,9 +206,7 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
                             _cache=quota_cache,
                         )
                     )
-                itemvar_cache[(wle.item, wle.variation, wle.subevent)] = (
-                    wle.availability
-                )
+                itemvar_cache[(wle.item, wle.variation, wle.subevent)] = wle.availability
             if wle.availability[0] == 100:
                 any_avail = True
 
@@ -245,9 +220,9 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
         return ctx
 
     def get_sales_estimate(self):
-        qs = WaitingListEntry.objects.filter(
-            event=self.request.event, voucher__isnull=True
-        ).aggregate(s=Sum(Coalesce('variation__default_price', 'item__default_price')))
+        qs = WaitingListEntry.objects.filter(event=self.request.event, voucher__isnull=True).aggregate(
+            s=Sum(Coalesce('variation__default_price', 'item__default_price'))
+        )
         return qs['s']
 
     def get(self, request, *args, **kwargs):
@@ -329,14 +304,10 @@ class EntryDelete(EventPermissionRequiredMixin, DeleteView):
     def form_valid(self, form):
         self.object = self.get_object()
         success_url = self.get_success_url()
-        self.object.log_action(
-            'pretix.event.orders.waitinglist.deleted', user=self.request.user
-        )
+        self.object.log_action('pretix.event.orders.waitinglist.deleted', user=self.request.user)
         self.object.delete()
         messages.success(self.request, _('The selected entry has been deleted.'))
-        if 'next' in self.request.GET and is_safe_url(
-            self.request.GET.get('next'), allowed_hosts=None
-        ):
+        if 'next' in self.request.GET and is_safe_url(self.request.GET.get('next'), allowed_hosts=None):
             return redirect(self.request.GET.get('next'))
         return HttpResponseRedirect(success_url)
 

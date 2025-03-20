@@ -23,9 +23,7 @@ class NotificationSetting(models.Model):
     """
 
     CHANNELS = (('mail', _('E-mail')),)
-    user = models.ForeignKey(
-        'User', on_delete=models.CASCADE, related_name='notification_settings'
-    )
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='notification_settings')
     action_type = models.CharField(max_length=255)
     event = models.ForeignKey(
         'Event',

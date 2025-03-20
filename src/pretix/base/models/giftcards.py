@@ -57,9 +57,7 @@ class GiftCard(LoggedModel):
         validators=[
             RegexValidator(
                 regex='^[a-zA-Z0-9][a-zA-Z0-9.-]+$',
-                message=_(
-                    'The gift card code may only contain letters, numbers, dots and dashes.'
-                ),
+                message=_('The gift card code may only contain letters, numbers, dots and dashes.'),
             )
         ],
     )
@@ -70,9 +68,7 @@ class GiftCard(LoggedModel):
         blank=True,
         verbose_name=pgettext_lazy('giftcard', 'Special terms and conditions'),
     )
-    CURRENCY_CHOICES = [
-        (c.alpha_3, c.alpha_3 + ' - ' + c.name) for c in settings.CURRENCIES
-    ]
+    CURRENCY_CHOICES = [(c.alpha_3, c.alpha_3 + ' - ' + c.name) for c in settings.CURRENCIES]
     currency = models.CharField(max_length=10, choices=CURRENCY_CHOICES)
 
     def __str__(self):
@@ -89,9 +85,7 @@ class GiftCard(LoggedModel):
     def accepted_by(self, organizer):
         return (
             self.issuer == organizer
-            or GiftCardAcceptance.objects.filter(
-                issuer=self.issuer, collector=organizer
-            ).exists()
+            or GiftCardAcceptance.objects.filter(issuer=self.issuer, collector=organizer).exists()
         )
 
     def save(self, *args, **kwargs):
@@ -106,9 +100,7 @@ class GiftCard(LoggedModel):
 
 
 class GiftCardTransaction(models.Model):
-    card = models.ForeignKey(
-        'GiftCard', related_name='transactions', on_delete=models.PROTECT
-    )
+    card = models.ForeignKey('GiftCard', related_name='transactions', on_delete=models.PROTECT)
     datetime = models.DateTimeField(auto_now_add=True)
     value = models.DecimalField(decimal_places=2, max_digits=10)
     order = models.ForeignKey(

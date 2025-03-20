@@ -46,10 +46,7 @@ class WaitingView(EventViewMixin, FormView):
         if request.GET.get('iframe', '') == '1' and 'require_cookie' not in request.GET:
             # Widget just opened. Let's to a stupid redirect to check if cookies are disabled
             return redirect(request.get_full_path() + '&require_cookie=true')
-        elif (
-            'require_cookie' in request.GET
-            and settings.SESSION_COOKIE_NAME not in request.COOKIES
-        ):
+        elif 'require_cookie' in request.GET and settings.SESSION_COOKIE_NAME not in request.COOKIES:
             # Cookies are in fact not supported. We can't even display the form, since we can't get CSRF right without
             # cookies.
             r = render(
@@ -92,9 +89,7 @@ class WaitingView(EventViewMixin, FormView):
             return redirect(self.get_index_url())
 
         if not self.item_and_variation:
-            messages.error(
-                request, _('We could not identify the product you selected.')
-            )
+            messages.error(request, _('We could not identify the product you selected.'))
             return redirect(self.get_index_url())
 
         if not self.item_and_variation[0].allow_waitinglist:
@@ -111,40 +106,28 @@ class WaitingView(EventViewMixin, FormView):
                     active=True,
                 )
             else:
-                messages.error(
-                    request, pgettext_lazy('subevent', 'You need to select a date.')
-                )
+                messages.error(request, pgettext_lazy('subevent', 'You need to select a date.'))
                 return redirect(self.get_index_url())
 
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         availability = (
-            self.item_and_variation[1].check_quotas(
-                count_waitinglist=True, subevent=self.subevent
-            )
+            self.item_and_variation[1].check_quotas(count_waitinglist=True, subevent=self.subevent)
             if self.item_and_variation[1]
-            else self.item_and_variation[0].check_quotas(
-                count_waitinglist=True, subevent=self.subevent
-            )
+            else self.item_and_variation[0].check_quotas(count_waitinglist=True, subevent=self.subevent)
         )
         if availability[0] == 100:
             messages.error(
                 self.request,
-                _(
-                    'You cannot add yourself to the waiting list as this product is currently '
-                    'available.'
-                ),
+                _('You cannot add yourself to the waiting list as this product is currently available.'),
             )
             return redirect(self.get_index_url())
 
         form.save()
         messages.success(
             self.request,
-            _(
-                "We've added you to the waiting list. You will receive "
-                'an email as soon as tickets get available again.'
-            ),
+            _("We've added you to the waiting list. You will receive an email as soon as tickets get available again."),
         )
         return super().form_valid(form)
 

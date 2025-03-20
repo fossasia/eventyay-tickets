@@ -39,9 +39,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes have not been saved, see below for errors.')
-        )
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
@@ -65,17 +63,13 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
             result = self.create_oauth_application(url)
         except (IntegrityError, ValidationError, ObjectDoesNotExist) as e:
             error_type = type(e).__name__
-            logger.error(
-                'Error while creating OAuth2 application: %s - %s', error_type, e
-            )
+            logger.error('Error while creating OAuth2 application: %s - %s', error_type, e)
             return self.render_to_response({'error_message': f'{error_type}: {e}'})
 
         return self.render_to_response(self.get_context_data(form=form, result=result))
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes have not been saved, see below for errors.')
-        )
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
@@ -128,9 +122,7 @@ class UpdateCheckView(StaffMemberRequiredMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes have not been saved, see below for errors.')
-        )
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):

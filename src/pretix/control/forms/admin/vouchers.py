@@ -22,9 +22,7 @@ class InvoiceVoucherForm(I18nModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label=_('Organizer effect'),
-        help_text=_(
-            'The voucher will be valid for all events under the selected organizers.'
-        ),
+        help_text=_('The voucher will be valid for all events under the selected organizers.'),
     )
 
     class Meta:

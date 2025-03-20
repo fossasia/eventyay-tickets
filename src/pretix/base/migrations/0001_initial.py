@@ -39,17 +39,13 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('password', models.CharField(max_length=128)),
                 ('last_login', models.DateTimeField(blank=True, null=True)),
                 (
                     'email',
-                    models.EmailField(
-                        db_index=True, max_length=190, null=True, unique=True
-                    ),
+                    models.EmailField(db_index=True, max_length=190, null=True, unique=True),
                 ),
                 ('fullname', models.CharField(max_length=255, null=True)),
                 ('is_active', models.BooleanField(default=True)),
@@ -103,9 +99,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.UUIDField(
-                        default=uuid.uuid4, primary_key=True, serialize=False
-                    ),
+                    models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False),
                 ),
                 ('expires', models.DateTimeField(blank=True, null=True)),
                 ('date', models.DateTimeField(blank=True, null=True)),
@@ -128,9 +122,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('device_id', models.PositiveIntegerField()),
                 (
@@ -171,9 +163,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('testmode', models.BooleanField(default=False)),
                 ('name', i18nfield.fields.I18nCharField(max_length=200)),
@@ -224,9 +214,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('issuance', models.DateTimeField(auto_now_add=True)),
                 ('secret', models.CharField(db_index=True, max_length=190)),
@@ -245,9 +233,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('key', models.CharField(max_length=255)),
                 ('value', models.TextField()),
@@ -258,9 +244,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('prefix', models.CharField(db_index=True, max_length=160)),
                 ('invoice_no', models.CharField(db_index=True, max_length=19)),
@@ -342,9 +326,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', i18nfield.fields.I18nCharField(max_length=255)),
                 ('internal_name', models.CharField(max_length=255, null=True)),
@@ -400,9 +382,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(db_index=True, max_length=50)),
                 ('default', models.TextField()),
@@ -425,9 +405,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('value', i18nfield.fields.I18nCharField(max_length=255)),
                 ('active', models.BooleanField(default=True)),
@@ -461,9 +439,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('code', models.CharField(db_index=True, max_length=16)),
                 ('status', models.CharField(db_index=True, max_length=3)),
@@ -471,16 +447,12 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=254, null=True)),
                 (
                     'phone',
-                    phonenumber_field.modelfields.PhoneNumberField(
-                        max_length=128, null=True, region=None
-                    ),
+                    phonenumber_field.modelfields.PhoneNumberField(max_length=128, null=True, region=None),
                 ),
                 ('locale', models.CharField(max_length=32, null=True)),
                 (
                     'secret',
-                    models.CharField(
-                        default=pretix.base.models.orders.generate_secret, max_length=32
-                    ),
+                    models.CharField(default=pretix.base.models.orders.generate_secret, max_length=32),
                 ),
                 ('datetime', models.DateTimeField(db_index=True)),
                 ('cancellation_date', models.DateTimeField(blank=True, null=True)),
@@ -520,9 +492,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('value', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('fee_type', models.CharField(max_length=100)),
@@ -549,9 +519,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('local_id', models.PositiveIntegerField()),
                 ('state', models.CharField(max_length=190)),
@@ -588,9 +556,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
                     'price_before_voucher',
@@ -670,9 +636,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=200)),
                 ('slug', models.CharField(db_index=True, max_length=50, unique=True)),
@@ -689,9 +653,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('question', i18nfield.fields.I18nTextField()),
                 ('identifier', models.CharField(max_length=190)),
@@ -737,9 +699,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     'items',
-                    models.ManyToManyField(
-                        related_name='questions', to='pretixbase.item'
-                    ),
+                    models.ManyToManyField(related_name='questions', to='pretixbase.item'),
                 ),
             ],
             options={
@@ -754,9 +714,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=200)),
                 ('size', models.PositiveIntegerField(null=True)),
@@ -788,9 +746,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('zone_name', models.CharField(default='', max_length=190)),
                 ('row_name', models.CharField(default='', max_length=190)),
@@ -829,9 +785,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=190)),
                 ('layout', models.TextField()),
@@ -854,9 +808,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('date_start', models.DateTimeField(auto_now_add=True)),
                 ('date_end', models.DateTimeField(blank=True, null=True)),
@@ -879,9 +831,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('active', models.BooleanField(default=False)),
                 ('is_public', models.BooleanField(default=True)),
@@ -921,9 +871,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=190)),
                 ('all_events', models.BooleanField(default=False)),
@@ -941,9 +889,7 @@ class Migration(migrations.Migration):
                 ('limit_events', models.ManyToManyField(to='pretixbase.event')),
                 (
                     'members',
-                    models.ManyToManyField(
-                        related_name='teams', to=settings.AUTH_USER_MODEL
-                    ),
+                    models.ManyToManyField(related_name='teams', to=settings.AUTH_USER_MODEL),
                 ),
                 (
                     'organizer',
@@ -965,9 +911,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
                     'code',
@@ -1063,9 +1007,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=64)),
                 ('confirmed', models.BooleanField(default=True)),
@@ -1092,9 +1034,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('name_cached', models.CharField(max_length=255, null=True)),
@@ -1102,9 +1042,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=254)),
                 (
                     'phone',
-                    phonenumber_field.modelfields.PhoneNumberField(
-                        max_length=128, null=True, region=None
-                    ),
+                    phonenumber_field.modelfields.PhoneNumberField(max_length=128, null=True, region=None),
                 ),
                 ('locale', models.CharField(default='en', max_length=190)),
                 ('priority', models.IntegerField(default=0)),
@@ -1163,9 +1101,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=64)),
                 ('confirmed', models.BooleanField(default=True)),
@@ -1187,9 +1123,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('email', models.EmailField(max_length=254, null=True)),
                 (
@@ -1215,9 +1149,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=190)),
                 ('active', models.BooleanField(default=True)),
@@ -1243,9 +1175,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', i18nfield.fields.I18nCharField(max_length=190)),
                 ('rate', models.DecimalField(decimal_places=2, max_digits=10)),
@@ -1277,9 +1207,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
                     'price',
@@ -1307,9 +1235,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
                     'price',
@@ -1335,9 +1261,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subevent',
             name='items',
-            field=models.ManyToManyField(
-                through='pretixbase.SubEventItem', to='pretixbase.item'
-            ),
+            field=models.ManyToManyField(through='pretixbase.SubEventItem', to='pretixbase.item'),
         ),
         migrations.AddField(
             model_name='subevent',
@@ -1362,9 +1286,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('datetime', models.DateTimeField(auto_now_add=True)),
                 ('url', models.CharField(max_length=255)),
@@ -1395,9 +1317,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('layout_category', models.CharField(max_length=190)),
                 (
@@ -1442,9 +1362,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('secret', models.TextField(db_index=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
@@ -1472,9 +1390,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('datetime', models.DateTimeField(auto_now_add=True, db_index=True)),
                 ('done', models.BooleanField(default=False)),
@@ -1514,18 +1430,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='quota',
             name='variations',
-            field=models.ManyToManyField(
-                related_name='quotas', to='pretixbase.itemvariation'
-            ),
+            field=models.ManyToManyField(related_name='quotas', to='pretixbase.itemvariation'),
         ),
         migrations.CreateModel(
             name='QuestionOption',
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('identifier', models.CharField(max_length=190)),
                 ('answer', i18nfield.fields.I18nCharField()),
@@ -1550,9 +1462,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('key', models.CharField(max_length=255)),
                 ('value', models.TextField()),
@@ -1571,9 +1481,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('local_id', models.PositiveIntegerField()),
                 ('state', models.CharField(max_length=190)),
@@ -1665,9 +1573,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('object_id', models.PositiveIntegerField(db_index=True)),
                 ('datetime', models.DateTimeField(auto_now_add=True, db_index=True)),
@@ -1732,9 +1638,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', i18nfield.fields.I18nCharField(max_length=255)),
                 ('internal_name', models.CharField(max_length=255, null=True)),
@@ -1762,16 +1666,12 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('count', models.PositiveIntegerField(default=1)),
                 (
                     'designated_price',
-                    models.DecimalField(
-                        decimal_places=2, default=Decimal('0.00'), max_digits=10
-                    ),
+                    models.DecimalField(decimal_places=2, default=Decimal('0.00'), max_digits=10),
                 ),
                 (
                     'base_item',
@@ -1842,24 +1742,18 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('position', models.PositiveIntegerField(default=0)),
                 ('description', models.TextField()),
                 ('gross_value', models.DecimalField(decimal_places=2, max_digits=10)),
                 (
                     'tax_value',
-                    models.DecimalField(
-                        decimal_places=2, default=Decimal('0.00'), max_digits=10
-                    ),
+                    models.DecimalField(decimal_places=2, default=Decimal('0.00'), max_digits=10),
                 ),
                 (
                     'tax_rate',
-                    models.DecimalField(
-                        decimal_places=2, default=Decimal('0.00'), max_digits=7
-                    ),
+                    models.DecimalField(decimal_places=2, default=Decimal('0.00'), max_digits=7),
                 ),
                 ('tax_name', models.CharField(max_length=190)),
                 ('event_date_from', models.DateTimeField(null=True)),
@@ -1907,9 +1801,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('last_modified', models.DateTimeField(auto_now=True)),
                 ('is_business', models.BooleanField(default=False)),
@@ -1976,9 +1868,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('datetime', models.DateTimeField(auto_now_add=True)),
                 ('value', models.DecimalField(decimal_places=2, max_digits=10)),
@@ -2028,9 +1918,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
                     'collector',
@@ -2074,9 +1962,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=190)),
                 ('identifier', models.CharField(max_length=190)),
@@ -2099,9 +1985,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(db_index=True, max_length=50)),
                 ('default', models.TextField()),
@@ -2127,9 +2011,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('key', models.CharField(max_length=255)),
                 ('value', models.TextField()),
@@ -2191,9 +2073,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('name', models.CharField(max_length=190)),
                 ('all_products', models.BooleanField(default=True)),
@@ -2235,9 +2115,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('datetime', models.DateTimeField(default=django.utils.timezone.now)),
                 ('nonce', models.CharField(max_length=190, null=True)),
@@ -2288,9 +2166,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
                     'price_before_voucher',
@@ -2389,9 +2265,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 (
@@ -2414,9 +2288,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('provider', models.CharField(max_length=255)),
                 ('type', models.CharField(max_length=255)),
@@ -2444,9 +2316,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('provider', models.CharField(max_length=255)),
                 ('type', models.CharField(max_length=255)),
@@ -2474,9 +2344,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('value', models.TextField()),
                 (
@@ -2506,9 +2374,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('answer', models.TextField()),
                 (
@@ -2530,9 +2396,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     'options',
-                    models.ManyToManyField(
-                        related_name='answers', to='pretixbase.questionoption'
-                    ),
+                    models.ManyToManyField(related_name='answers', to='pretixbase.questionoption'),
                 ),
                 (
                     'orderposition',
@@ -2564,9 +2428,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('action_type', models.CharField(max_length=255)),
                 ('method', models.CharField(max_length=255)),
@@ -2598,9 +2460,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('value', models.TextField()),
                 (
@@ -2630,9 +2490,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('min_count', models.PositiveIntegerField(default=0)),
                 ('max_count', models.PositiveIntegerField(default=1)),
@@ -2674,9 +2532,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('value', models.TextField()),
                 (

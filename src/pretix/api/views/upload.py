@@ -37,9 +37,7 @@ class UploadView(APIView):
         file_obj = request.data['file']
         content_type = file_obj.content_type.split(';')[0]  # ignore e.g. "; charset=…"
         if content_type not in ALLOWED_TYPES:
-            raise ValidationError(
-                'Content type "{type}" is not allowed'.format(type=content_type)
-            )
+            raise ValidationError('Content type "{type}" is not allowed'.format(type=content_type))
         if not any(file_obj.name.endswith(ext) for ext in ALLOWED_TYPES[content_type]):
             raise ValidationError(
                 'File name "{name}" has an invalid extension for type "{type}"'.format(

@@ -17,9 +17,7 @@ def env():
         plugins='pretix.plugins.banktransfer',
     )
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    t = Team.objects.create(
-        organizer=event.organizer, can_view_orders=True, can_change_orders=True
-    )
+    t = Team.objects.create(organizer=event.organizer, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
     t.limit_events.add(event)
     return event, user
@@ -43,9 +41,7 @@ Anke,Müller,anke@example.net
         content_type='text/csv',
     )
 
-    r = client.post(
-        '/control/event/dummy/dummy/orders/import/', {'file': file}, follow=True
-    )
+    r = client.post('/control/event/dummy/dummy/orders/import/', {'file': file}, follow=True)
     doc = BeautifulSoup(r.content, 'lxml')
     assert doc.select('select[name=orders]')
     assert doc.select('select[name=status]')

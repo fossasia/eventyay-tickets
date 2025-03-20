@@ -61,9 +61,7 @@ class CheckInListMixin(BaseExporter):
                         label=_('Start date'),
                         widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                         required=False,
-                        help_text=_(
-                            'Only include tickets for dates on or after this date.'
-                        ),
+                        help_text=_('Only include tickets for dates on or after this date.'),
                     ),
                 ),
                 (
@@ -72,16 +70,12 @@ class CheckInListMixin(BaseExporter):
                         label=_('End date'),
                         widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                         required=False,
-                        help_text=_(
-                            'Only include tickets for dates on or before this date.'
-                        ),
+                        help_text=_('Only include tickets for dates on or before this date.'),
                     ),
                 ),
                 (
                     'secrets',
-                    forms.BooleanField(
-                        label=_('Include QR-code secret'), required=False
-                    ),
+                    forms.BooleanField(label=_('Include QR-code secret'), required=False),
                 ),
                 (
                     'attention_only',
@@ -107,8 +101,7 @@ class CheckInListMixin(BaseExporter):
                                 )
                                 for k, label, w in name_scheme['fields']
                             ]
-                            if settings.JSON_FIELD_AVAILABLE
-                            and len(name_scheme['fields']) > 1
+                            if settings.JSON_FIELD_AVAILABLE and len(name_scheme['fields']) > 1
                             else []
                         ),
                         widget=forms.RadioSelect,
@@ -120,9 +113,7 @@ class CheckInListMixin(BaseExporter):
                     forms.ModelMultipleChoiceField(
                         queryset=self.event.questions.all(),
                         label=_('Include questions'),
-                        widget=forms.CheckboxSelectMultiple(
-                            attrs={'class': 'scrolling-multiple-choice'}
-                        ),
+                        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
                         required=False,
                     ),
                 ),
@@ -172,9 +163,7 @@ class CheckInListMixin(BaseExporter):
                 last_checked_in=Subquery(cqsin),
                 last_checked_out=Subquery(cqsout),
                 auto_checked_in=Exists(
-                    Checkin.objects.filter(
-                        position_id=OuterRef('pk'), list_id=cl.pk, auto_checked_in=True
-                    )
+                    Checkin.objects.filter(position_id=OuterRef('pk'), list_id=cl.pk, auto_checked_in=True)
                 ),
             )
             .prefetch_related(
@@ -213,8 +202,7 @@ class CheckInListMixin(BaseExporter):
         if form_data.get('date_to'):
             dt = make_aware(
                 datetime.combine(
-                    dateutil.parser.parse(form_data['date_to']).date()
-                    + timedelta(days=1),
+                    dateutil.parser.parse(form_data['date_to']).date() + timedelta(days=1),
                     time(hour=0, minute=0, second=0),
                 ),
                 self.event.timezone,
@@ -257,9 +245,7 @@ class CheckInListMixin(BaseExporter):
             )
 
         if form_data.get('attention_only'):
-            qs = qs.filter(
-                Q(item__checkin_attention=True) | Q(order__checkin_attention=True)
-            )
+            qs = qs.filter(Q(item__checkin_attention=True) | Q(order__checkin_attention=True))
 
         if not cl.include_pending:
             qs = qs.filter(order__status=Order.STATUS_PAID)
@@ -312,9 +298,7 @@ class PDFCheckinList(ReportlabExportMixin, CheckInListMixin, BaseExporter):
     def get_story(self, doc, form_data):
         cl = self.event.checkin_lists.get(pk=form_data['list'])
 
-        questions = list(
-            Question.objects.filter(event=self.event, id__in=form_data['questions'])
-        )
+        questions = list(Question.objects.filter(event=self.event, id__in=form_data['questions']))
 
         headlinestyle = self.get_style()
         headlinestyle.fontSize = 15
@@ -384,17 +368,12 @@ class PDFCheckinList(ReportlabExportMixin, CheckInListMixin, BaseExporter):
                 ian = ''
                 iac = ''
 
-            name = (
-                op.attendee_name
-                or (op.addon_to.attendee_name if op.addon_to else '')
-                or ian
-            )
+            name = op.attendee_name or (op.addon_to.attendee_name if op.addon_to else '') or ian
             if iac:
                 name += '<br/>' + iac
 
             item = '{} ({})'.format(
-                str(op.item)
-                + (' – ' + str(op.variation.value) if op.variation else ''),
+                str(op.item) + (' – ' + str(op.variation.value) if op.variation else ''),
                 money_filter(op.price, self.event.currency),
             )
             if self.event.has_subevents and not cl.subevent:
@@ -464,9 +443,7 @@ class CSVCheckinList(CheckInListMixin, ListExporter):
     def iterate_list(self, form_data):
         cl = self.event.checkin_lists.get(pk=form_data['list'])
 
-        questions = list(
-            Question.objects.filter(event=self.event, id__in=form_data['questions'])
-        )
+        questions = list(Question.objects.filter(event=self.event, id__in=form_data['questions']))
 
         qs = self._get_queryset(cl, form_data)
 
@@ -551,9 +528,7 @@ class CSVCheckinList(CheckInListMixin, ListExporter):
 
             row = [
                 op.order.code,
-                op.attendee_name
-                or (op.addon_to.attendee_name if op.addon_to else '')
-                or ia.name,
+                op.attendee_name or (op.addon_to.attendee_name if op.addon_to else '') or ia.name,
             ]
             if len(name_scheme['fields']) > 1:
                 for k, label, w in name_scheme['fields']:
@@ -565,8 +540,7 @@ class CSVCheckinList(CheckInListMixin, ListExporter):
                         ).get(k, '')
                     )
             row += [
-                str(op.item)
-                + (' – ' + str(op.variation.value) if op.variation else ''),
+                str(op.item) + (' – ' + str(op.variation.value) if op.variation else ''),
                 op.price,
                 date_format(
                     last_checked_in.astimezone(self.event.timezone),
@@ -583,17 +557,10 @@ class CSVCheckinList(CheckInListMixin, ListExporter):
                 _('Yes') if op.auto_checked_in else _('No'),
             ]
             if cl.include_pending:
-                row.append(
-                    _('Yes') if op.order.status == Order.STATUS_PAID else _('No')
-                )
+                row.append(_('Yes') if op.order.status == Order.STATUS_PAID else _('No'))
             if form_data['secrets']:
                 row.append(op.secret)
-            row.append(
-                op.attendee_email
-                or (op.addon_to.attendee_email if op.addon_to else '')
-                or op.order.email
-                or ''
-            )
+            row.append(op.attendee_email or (op.addon_to.attendee_email if op.addon_to else '') or op.order.email or '')
             row.append(str(op.order.phone) if op.order.phone else '')
             if self.event.has_subevents:
                 row.append(str(op.subevent.name))
@@ -633,17 +600,9 @@ class CSVCheckinList(CheckInListMixin, ListExporter):
 
             row.append(op.company or ia.company)
             row.append(op.voucher.code if op.voucher else '')
-            row.append(
-                op.order.datetime.astimezone(self.event.timezone).strftime('%Y-%m-%d')
-            )
-            row.append(
-                op.order.datetime.astimezone(self.event.timezone).strftime('%H:%M:%S')
-            )
-            row.append(
-                _('Yes')
-                if op.order.checkin_attention or op.item.checkin_attention
-                else _('No')
-            )
+            row.append(op.order.datetime.astimezone(self.event.timezone).strftime('%Y-%m-%d'))
+            row.append(op.order.datetime.astimezone(self.event.timezone).strftime('%H:%M:%S'))
+            row.append(_('Yes') if op.order.checkin_attention or op.item.checkin_attention else _('No'))
             row.append(op.order.comment or '')
 
             if op.seat:
@@ -755,9 +714,7 @@ class CheckinLogList(ListExporter):
                     forms.ModelMultipleChoiceField(
                         queryset=self.event.items.all(),
                         label=_('Limit to products'),
-                        widget=forms.CheckboxSelectMultiple(
-                            attrs={'class': 'scrolling-multiple-choice'}
-                        ),
+                        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
                         initial=self.event.items.all(),
                     ),
                 ),

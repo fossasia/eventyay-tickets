@@ -37,9 +37,6 @@ class Command(BaseCommand):
             for app_name, app_content in apps.all_models.items()
             for (model_name, model_class) in app_content.items()
         }
-        scope_options = {
-            app_name: models[app_name].objects.get(**app_value)
-            for app_name, app_value in lookups.items()
-        }
+        scope_options = {app_name: models[app_name].objects.get(**app_value) for app_name, app_value in lookups.items()}
         with scope(**scope_options):
             return call_command(cmd, *args, **options)

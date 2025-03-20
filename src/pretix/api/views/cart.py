@@ -11,9 +11,7 @@ from pretix.api.serializers.cart import (
 from pretix.base.models import CartPosition
 
 
-class CartPositionViewSet(
-    CreateModelMixin, DestroyModelMixin, viewsets.ReadOnlyModelViewSet
-):
+class CartPositionViewSet(CreateModelMixin, DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = CartPositionSerializer
     queryset = CartPosition.objects.none()
     filter_backends = (OrderingFilter,)
@@ -25,9 +23,7 @@ class CartPositionViewSet(
 
     def get_queryset(self):
         return (
-            CartPosition.objects.filter(
-                event=self.request.event, cart_id__endswith='@api'
-            )
+            CartPosition.objects.filter(event=self.request.event, cart_id__endswith='@api')
             .select_related('seat')
             .prefetch_related('answers')
         )
@@ -38,9 +34,7 @@ class CartPositionViewSet(
         return ctx
 
     def create(self, request, *args, **kwargs):
-        serializer = CartPositionCreateSerializer(
-            data=request.data, context=self.get_serializer_context()
-        )
+        serializer = CartPositionCreateSerializer(data=request.data, context=self.get_serializer_context())
         serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             self.perform_create(serializer)
@@ -48,9 +42,7 @@ class CartPositionViewSet(
             serializer = CartPositionSerializer(cp, context=serializer.context)
 
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save()

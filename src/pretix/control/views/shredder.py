@@ -60,19 +60,12 @@ class ShredDownloadView(
         try:
             cf = CachedFile.objects.get(pk=kwargs['file'])
         except CachedFile.DoesNotExist:
-            raise ShredError(
-                _(
-                    'The download file could no longer be found on the server, please try to start again.'
-                )
-            )
+            raise ShredError(_('The download file could no longer be found on the server, please try to start again.'))
 
         with ZipFile(cf.file.file, 'r') as zipfile:
             indexdata = json.loads(zipfile.read('index.json').decode())
 
-        if (
-            indexdata['organizer'] != kwargs['organizer']
-            or indexdata['event'] != kwargs['event']
-        ):
+        if indexdata['organizer'] != kwargs['organizer'] or indexdata['event'] != kwargs['event']:
             raise ShredError(_('This file is from a different event.'))
 
         shredders = []
@@ -84,9 +77,7 @@ class ShredDownloadView(
 
         ctx = super().get_context_data(**kwargs)
         ctx['shredders'] = self.shredders
-        ctx['download_on_shred'] = any(
-            shredder.require_download_confirmation for shredder in shredders
-        )
+        ctx['download_on_shred'] = any(shredder.require_download_confirmation for shredder in shredders)
         ctx['file'] = get_object_or_404(CachedFile, pk=kwargs.get('file'))
         return ctx
 

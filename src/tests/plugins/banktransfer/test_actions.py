@@ -31,9 +31,7 @@ def env():
         plugins='pretix.plugins.banktransfer',
     )
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    t = Team.objects.create(
-        organizer=event.organizer, can_view_orders=True, can_change_orders=True
-    )
+    t = Team.objects.create(organizer=event.organizer, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
     t.limit_events.add(event)
     o1 = Order.objects.create(
@@ -73,9 +71,7 @@ def test_discard(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'discard',
             },
@@ -101,9 +97,7 @@ def test_assign_order(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'assign:{}'.format(env[2].code),
             },
@@ -130,9 +124,7 @@ def test_assign_order_unknown(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {'action_{}'.format(trans.pk): 'assign:FOO'},
         ).content.decode('utf-8')
     )
@@ -155,9 +147,7 @@ def test_assign_order_amount_incorrect(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {'action_{}'.format(trans.pk): 'assign:{}'.format(env[2].code)},
         ).content.decode('utf-8')
     )
@@ -180,9 +170,7 @@ def test_comment(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {'action_{}'.format(trans.pk): 'comment:This is my comment'},
         ).content.decode('utf-8')
     )
@@ -209,9 +197,7 @@ def test_retry_success(env, client):
     env[3].save()
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'retry',
             },
@@ -239,9 +225,7 @@ def test_retry_canceled(env, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'retry',
             },
@@ -271,9 +255,7 @@ def test_retry_refunded(env, client):
     env[3].save()
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'retry',
             },
@@ -303,9 +285,7 @@ def test_retry_paid(env, client):
     env[3].save()
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'retry',
             },
@@ -361,9 +341,7 @@ def test_assign_order_organizer_full_code(env, client):
         client.post(
             '/control/organizer/{}/banktransfer/action/'.format(env[0].organizer.slug),
             {
-                'action_{}'.format(trans.pk): 'assign:{}-{}'.format(
-                    env[0].slug.upper(), env[2].code
-                ),
+                'action_{}'.format(trans.pk): 'assign:{}-{}'.format(env[0].slug.upper(), env[2].code),
             },
         ).content.decode('utf-8')
     )
@@ -392,9 +370,7 @@ def test_assign_order_organizer_no_permission(env, client):
     r = client.post(
         '/control/organizer/{}/banktransfer/action/'.format(env[0].organizer.slug),
         {
-            'action_{}'.format(trans.pk): 'assign:{}-{}'.format(
-                env[0].slug.upper(), env[2].code
-            ),
+            'action_{}'.format(trans.pk): 'assign:{}-{}'.format(env[0].slug.upper(), env[2].code),
         },
     )
     assert r.status_code == 403
@@ -418,9 +394,7 @@ def test_assign_order_organizer_no_permission_for_event(env, client):
         client.post(
             '/control/organizer/{}/banktransfer/action/'.format(env[0].organizer.slug),
             {
-                'action_{}'.format(trans.pk): 'assign:{}-{}'.format(
-                    env[0].slug.upper(), env[2].code
-                ),
+                'action_{}'.format(trans.pk): 'assign:{}-{}'.format(env[0].slug.upper(), env[2].code),
             },
         ).content.decode('utf-8')
     )
@@ -444,9 +418,7 @@ def test_retry_refund(env, client):
     env[3].save()
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'retry',
             },
@@ -480,9 +452,7 @@ def test_retry_refund_external(env, client):
     env[3].save()
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'retry',
             },
@@ -520,17 +490,13 @@ def test_retry_refund_complete(env, client):
             provider='banktransfer',
             state=OrderPayment.PAYMENT_STATE_CONFIRMED,
         )
-        ref = env[3].refunds.create(
-            amount=23, provider='manual', state=OrderRefund.REFUND_STATE_CREATED
-        )
+        ref = env[3].refunds.create(amount=23, provider='manual', state=OrderRefund.REFUND_STATE_CREATED)
     client.login(email='dummy@dummy.dummy', password='dummy')
     env[3].status = Order.STATUS_CANCELED
     env[3].save()
     r = json.loads(
         client.post(
-            '/control/event/{}/{}/banktransfer/action/'.format(
-                env[0].organizer.slug, env[0].slug
-            ),
+            '/control/event/{}/{}/banktransfer/action/'.format(env[0].organizer.slug, env[0].slug),
             {
                 'action_{}'.format(trans.pk): 'retry',
             },

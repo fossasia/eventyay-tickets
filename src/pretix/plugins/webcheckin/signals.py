@@ -18,9 +18,7 @@ def navbar_entry(sender, request, **kwargs):
         return []
     return [
         {
-            'label': mark_safe(
-                _('Web Check-in') + ' <span class="label label-success">beta</span>'
-            ),
+            'label': mark_safe(_('Web Check-in') + ' <span class="label label-success">beta</span>'),
             'url': reverse(
                 'plugins:webcheckin:index',
                 kwargs={
@@ -37,7 +35,6 @@ def navbar_entry(sender, request, **kwargs):
             ),
             'external': True,
             'icon': 'check-square-o',
-            'active': url.namespace == 'plugins:webcheckin'
-            and url.url_name.startswith('index'),
+            'active': url.namespace == 'plugins:webcheckin' and url.url_name.startswith('index'),
         }
     ]

@@ -14,9 +14,7 @@ class LocaleDeterminationTest(TestCase):
     def setUp(self):
         super().setUp()
         o = Organizer.objects.create(name='Dummy', slug='dummy')
-        self.event = Event.objects.create(
-            organizer=o, name='Dummy', slug='dummy', date_from=now(), live=True
-        )
+        self.event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now(), live=True)
         self.TEST_LOCALE = 'de' if settings.LANGUAGE_CODE == 'en' else 'en'
         self.TEST_LOCALE_LONG = 'de-AT' if settings.LANGUAGE_CODE == 'en' else 'en-NZ'
         self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')

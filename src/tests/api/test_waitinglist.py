@@ -27,9 +27,7 @@ def wle(event, item):
 
     with mock.patch('django.utils.timezone.now') as mock_now:
         mock_now.return_value = testtime
-        return WaitingListEntry.objects.create(
-            event=event, item=item, email='waiting@example.org', locale='en'
-        )
+        return WaitingListEntry.objects.create(event=event, item=item, email='waiting@example.org', locale='en')
 
 
 TEST_WLE_RES = {
@@ -63,37 +61,25 @@ def test_wle_list(token_client, organizer, event, wle, item, subevent):
     res['item'] = item.pk
     res['variation'] = var.pk
 
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/'.format(
-            organizer.slug, event.slug
-        )
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/waitinglistentries/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?item={}'.format(
-            organizer.slug, event.slug, item.pk
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?item={}'.format(organizer.slug, event.slug, item.pk)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?item={}'.format(
-            organizer.slug, event.slug, i2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?item={}'.format(organizer.slug, event.slug, i2.pk)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?variation={}'.format(
-            organizer.slug, event.slug, var.pk
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?variation={}'.format(organizer.slug, event.slug, var.pk)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?variation={}'.format(
-            organizer.slug, event.slug, var2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?variation={}'.format(organizer.slug, event.slug, var2.pk)
     )
     assert [] == resp.data['results']
 
@@ -104,35 +90,25 @@ def test_wle_list(token_client, organizer, event, wle, item, subevent):
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?email=foo@bar.sample'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?email=foo@bar.sample'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?locale=en'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?locale=en'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?locale=de'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?locale=de'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?has_voucher=false'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?has_voucher=false'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?has_voucher=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?has_voucher=true'.format(organizer.slug, event.slug)
     )
     assert [] == resp.data['results']
 
@@ -142,9 +118,7 @@ def test_wle_list(token_client, organizer, event, wle, item, subevent):
     wle.save()
     res['voucher'] = v.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?has_voucher=true'.format(
-            organizer.slug, event.slug
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?has_voucher=true'.format(organizer.slug, event.slug)
     )
     assert [res] == resp.data['results']
 
@@ -164,9 +138,7 @@ def test_wle_list(token_client, organizer, event, wle, item, subevent):
             date_from=datetime.datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC),
         )
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/?subevent={}'.format(
-            organizer.slug, event.slug, se2.pk
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/?subevent={}'.format(organizer.slug, event.slug, se2.pk)
     )
     assert [] == resp.data['results']
 
@@ -177,9 +149,7 @@ def test_wle_detail(token_client, organizer, event, wle, item):
     res['id'] = wle.pk
     res['item'] = item.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(
-            organizer.slug, event.slug, wle.pk
-        )
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(organizer.slug, event.slug, wle.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -188,9 +158,7 @@ def test_wle_detail(token_client, organizer, event, wle, item):
 @pytest.mark.django_db
 def test_delete_wle(token_client, organizer, event, wle, item):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(
-            organizer.slug, event.slug, wle.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(organizer.slug, event.slug, wle.pk),
     )
     assert resp.status_code == 204
     with scopes_disabled():
@@ -204,9 +172,7 @@ def test_delete_wle_assigned(token_client, organizer, event, wle, item):
     wle.voucher = v
     wle.save()
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(
-            organizer.slug, event.slug, wle.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(organizer.slug, event.slug, wle.pk),
     )
     assert resp.status_code == 403
     with scopes_disabled():
@@ -215,9 +181,7 @@ def test_delete_wle_assigned(token_client, organizer, event, wle, item):
 
 def create_wle(token_client, organizer, event, data, expected_failure=False):
     resp = token_client.post(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/'.format(
-            organizer.slug, event.slug
-        ),
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/'.format(organizer.slug, event.slug),
         data=data,
         format='json',
     )
@@ -353,9 +317,7 @@ def test_wle_create_duplicate(token_client, organizer, event, item, quota):
 
 def change_wle(token_client, organizer, event, wle, data, expected_failure=False):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(
-            organizer.slug, event.slug, wle.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/waitinglistentries/{}/'.format(organizer.slug, event.slug, wle.pk),
         data=data,
         format='json',
     )
@@ -406,16 +368,12 @@ def test_wle_change_to_available_item(token_client, organizer, event, item, wle,
         i = event.items.create(name='Budget Ticket', default_price=23)
         q = event.quotas.create(name='Budget Ticket', size=1)
     q.items.add(i)
-    change_wle(
-        token_client, organizer, event, wle, data={'item': i.pk}, expected_failure=True
-    )
+    change_wle(token_client, organizer, event, wle, data={'item': i.pk}, expected_failure=True)
     assert wle.item == item
 
 
 @pytest.mark.django_db
-def test_wle_change_to_unavailable_item(
-    token_client, organizer, event, item, wle, quota
-):
+def test_wle_change_to_unavailable_item(token_client, organizer, event, item, wle, quota):
     with scopes_disabled():
         i = event.items.create(name='Budget Ticket', default_price=23)
         v = i.variations.create(value='S')
@@ -435,9 +393,7 @@ def test_wle_change_to_unavailable_item(
 
 
 @pytest.mark.django_db
-def test_wle_change_to_unavailable_item_missing_var(
-    token_client, organizer, event, item, wle, quota
-):
+def test_wle_change_to_unavailable_item_missing_var(token_client, organizer, event, item, wle, quota):
     with scopes_disabled():
         i = event.items.create(name='Budget Ticket', default_price=23)
         v = i.variations.create(value='S')
@@ -459,9 +415,7 @@ def test_wle_change_to_unavailable_item_missing_var(
 
 
 @pytest.mark.django_db
-def test_wle_change_subevent_of_wrong_event(
-    token_client, organizer, event, item, wle, subevent, subevent2
-):
+def test_wle_change_subevent_of_wrong_event(token_client, organizer, event, item, wle, subevent, subevent2):
     wle.subevent = subevent
     wle.save()
     change_wle(

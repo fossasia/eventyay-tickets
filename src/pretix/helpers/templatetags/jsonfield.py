@@ -30,14 +30,10 @@ class JSONExtract(Expression):
         self.source_expression = self._parse_expressions(expression)[0]
         self.extra = extra
 
-    def resolve_expression(
-        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
-    ):
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
-        c.source_expression = c.source_expression.resolve_expression(
-            query, allow_joins, reuse, summarize, for_save
-        )
+        c.source_expression = c.source_expression.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
     def as_sql(
@@ -58,9 +54,7 @@ class JSONExtract(Expression):
             template = '{} #> %s'.format(arg_sql)
             return template, params
         else:
-            raise NotSupportedError(
-                'Functions on JSONFields are only supported on PostgreSQL.'
-            )
+            raise NotSupportedError('Functions on JSONFields are only supported on PostgreSQL.')
 
     def copy(self):
         c = super().copy()

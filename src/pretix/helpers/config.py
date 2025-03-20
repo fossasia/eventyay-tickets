@@ -29,12 +29,8 @@ class EnvOrParserConfig:
 
     def getboolean(self, section, option, *, raw=False, vars=None, fallback=_UNSET):
         if self._envkey(section, option) in os.environ:
-            return self.cp._convert_to_boolean(
-                os.environ[self._envkey(section, option)]
-            )
-        return self.cp.getboolean(
-            section, option, raw=raw, vars=vars, fallback=fallback
-        )
+            return self.cp._convert_to_boolean(os.environ[self._envkey(section, option)])
+        return self.cp.getboolean(section, option, raw=raw, vars=vars, fallback=fallback)
 
     def has_section(self, section):
         if any(k.startswith(self._envkey(section, '')) for k in os.environ):

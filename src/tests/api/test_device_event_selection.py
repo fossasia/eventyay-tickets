@@ -48,9 +48,7 @@ def test_choose_between_events(device_client, device):
 
     # Keep current when still running
     with freeze_time('2020-01-10T14:30:00+09:00'):
-        resp = device_client.get(
-            f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}'
-        )
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}')
         assert resp.status_code == 304
     with freeze_time('2020-01-10T16:30:00+09:00'):
         resp = device_client.get('/api/v1/device/eventselection?current_event=e1')
@@ -76,25 +74,19 @@ def test_choose_between_events(device_client, device):
         assert resp.status_code == 200
         assert resp.data['event']['slug'] == 'e1'
     with freeze_time('2020-01-10T16:01:00+09:00'):
-        resp = device_client.get(
-            f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}'
-        )
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}')
         assert resp.status_code == 200
         assert resp.data['event']['slug'] == 'e2'
         assert resp.data['checkinlist'] == cl2.pk
 
     # Prefer the one on the same day
     with freeze_time('2020-01-10T23:59:00+09:00'):
-        resp = device_client.get(
-            f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}'
-        )
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}')
         assert resp.status_code == 200
         assert resp.data['event']['slug'] == 'e2'
         assert resp.data['checkinlist'] == cl2.pk
     with freeze_time('2020-01-11T01:00:00+09:00'):
-        resp = device_client.get(
-            f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}'
-        )
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}')
         assert resp.status_code == 200
         assert resp.data['event']['slug'] == 'tomorrow'
         assert resp.data['checkinlist'] == cl3.pk
@@ -144,18 +136,12 @@ def test_choose_between_subevents(device_client, device):
             date_to=tz.localize(datetime(2020, 1, 11, 16, 0)),
         )
     with freeze_time('2020-01-10T14:30:00+09:00'):
-        resp = device_client.get(
-            f'/api/v1/device/eventselection?current_event=e1&current_subevent={se1.pk}'
-        )
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_subevent={se1.pk}')
         assert resp.status_code == 304
     with freeze_time('2020-01-10T16:30:00+09:00'):
-        resp = device_client.get(
-            f'/api/v1/device/eventselection?current_event=e1&current_subevent={se1.pk}'
-        )
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_subevent={se1.pk}')
         assert resp.status_code == 200
-        resp = device_client.get(
-            f'/api/v1/device/eventselection?current_event=e1&current_subevent={se2.pk}'
-        )
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_subevent={se2.pk}')
         assert resp.status_code == 304
 
     # Next one only

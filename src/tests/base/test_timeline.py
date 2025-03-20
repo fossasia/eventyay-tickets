@@ -50,17 +50,9 @@ def test_event_dates(event):
             [
                 e
                 for e in tl
-                if e.event == event
-                and e.datetime == event.date_from
-                and e.description == 'Your event starts'
+                if e.event == event and e.datetime == event.date_from and e.description == 'Your event starts'
             ]
         )
         assert one(
-            [
-                e
-                for e in tl
-                if e.event == event
-                and e.datetime == event.date_to
-                and e.description == 'Your event ends'
-            ]
+            [e for e in tl if e.event == event and e.datetime == event.date_to and e.description == 'Your event ends']
         )

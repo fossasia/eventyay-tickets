@@ -211,9 +211,7 @@ def test_superuser_required(perf_patch, client, env, url):
         assert '/sudo/' in response['Location']
     else:
         assert response.status_code == 403
-    env[1].staffsession_set.create(
-        date_start=now(), session_key=client.session.session_key
-    )
+    env[1].staffsession_set.create(date_start=now(), session_key=client.session.session_key)
     response = client.get('/control/' + url)
     assert response.status_code in (200, 302, 404)
 
@@ -358,9 +356,7 @@ def test_wrong_event_permission(perf_patch, client, env, perm, url, code):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize('perm,url,code', event_permission_urls)
-def test_limited_event_permission_for_other_event(
-    perf_patch, client, env, perm, url, code
-):
+def test_limited_event_permission_for_other_event(perf_patch, client, env, perm, url, code):
     event2 = Event.objects.create(
         organizer=env[2],
         name='Dummy',

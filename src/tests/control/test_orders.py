@@ -145,13 +145,9 @@ def test_order_list(client, env):
         q.items.add(env[3])
         op = env[2].positions.first()
         qa = QuestionAnswer.objects.create(question=q, orderposition=op, answer='12')
-    response = client.get(
-        '/control/event/dummy/dummy/orders/?question=%d&answer=12' % q.pk
-    )
+    response = client.get('/control/event/dummy/dummy/orders/?question=%d&answer=12' % q.pk)
     assert 'FOO' in response.content.decode()
-    response = client.get(
-        '/control/event/dummy/dummy/orders/?question=%d&answer=13' % q.pk
-    )
+    response = client.get('/control/event/dummy/dummy/orders/?question=%d&answer=13' % q.pk)
     assert 'FOO' not in response.content.decode()
 
     q.type = 'C'
@@ -160,13 +156,9 @@ def test_order_list(client, env):
         qo1 = q.options.create(answer='Foo')
         qo2 = q.options.create(answer='Bar')
         qa.options.add(qo1)
-    response = client.get(
-        '/control/event/dummy/dummy/orders/?question=%d&answer=%d' % (q.pk, qo1.pk)
-    )
+    response = client.get('/control/event/dummy/dummy/orders/?question=%d&answer=%d' % (q.pk, qo1.pk))
     assert 'FOO' in response.content.decode()
-    response = client.get(
-        '/control/event/dummy/dummy/orders/?question=%d&answer=%d' % (q.pk, qo2.pk)
-    )
+    response = client.get('/control/event/dummy/dummy/orders/?question=%d&answer=%d' % (q.pk, qo2.pk))
     assert 'FOO' not in response.content.decode()
 
     response = client.get('/control/event/dummy/dummy/orders/?status=testmode')
@@ -204,9 +196,7 @@ def test_order_set_contact(client, env):
         q = Quota.objects.create(event=env[0], size=0)
         q.items.add(env[3])
     client.login(email='dummy@dummy.dummy', password='dummy')
-    client.post(
-        '/control/event/dummy/dummy/orders/FOO/contact', {'email': 'admin@rami.io'}
-    )
+    client.post('/control/event/dummy/dummy/orders/FOO/contact', {'email': 'admin@rami.io'})
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
     assert o.email == 'admin@rami.io'
@@ -449,9 +439,7 @@ def test_order_cancel_paid_keep_fee(client, env):
 def test_order_cancel_pending_keep_fee(client, env):
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-        o.payments.create(
-            state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=Decimal('8.00')
-        )
+        o.payments.create(state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=Decimal('8.00'))
         o.status = Order.STATUS_PENDING
         o.save()
     client.login(email='dummy@dummy.dummy', password='dummy')
@@ -476,9 +464,7 @@ def test_order_cancel_pending_keep_fee(client, env):
 def test_order_cancel_pending_fee_too_high(client, env):
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-        o.payments.create(
-            state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=Decimal('4.00')
-        )
+        o.payments.create(state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=Decimal('4.00'))
         o.status = Order.STATUS_PENDING
         o.save()
     client.login(email='dummy@dummy.dummy', password='dummy')
@@ -515,9 +501,7 @@ def test_order_cancel_unpaid_no_fees_allowed(client, env):
 def test_order_invoice_create_forbidden(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     env[0].settings.set('invoice_generate', 'no')
-    response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/invoice', {}, follow=True
-    )
+    response = client.post('/control/event/dummy/dummy/orders/FOO/invoice', {}, follow=True)
     assert 'alert-danger' in response.content.decode()
 
 
@@ -527,9 +511,7 @@ def test_order_invoice_create_duplicate(client, env):
     with scopes_disabled():
         generate_invoice(env[2])
     env[0].settings.set('invoice_generate', 'admin')
-    response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/invoice', {}, follow=True
-    )
+    response = client.post('/control/event/dummy/dummy/orders/FOO/invoice', {}, follow=True)
     assert 'alert-danger' in response.content.decode()
 
 
@@ -537,9 +519,7 @@ def test_order_invoice_create_duplicate(client, env):
 def test_order_invoice_create_ok(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     env[0].settings.set('invoice_generate', 'admin')
-    response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/invoice', {}, follow=True
-    )
+    response = client.post('/control/event/dummy/dummy/orders/FOO/invoice', {}, follow=True)
     assert 'alert-success' in response.content.decode()
     with scopes_disabled():
         assert env[2].invoices.exists()
@@ -550,9 +530,7 @@ def test_order_invoice_regenerate(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
         i = generate_invoice(env[2])
-        InvoiceAddress.objects.create(
-            name_parts={'full_name': 'Foo', '_scheme': 'full'}, order=env[2]
-        )
+        InvoiceAddress.objects.create(name_parts={'full_name': 'Foo', '_scheme': 'full'}, order=env[2])
         env[0].settings.set('invoice_generate', 'admin')
     response = client.post(
         '/control/event/dummy/dummy/orders/FOO/invoices/%d/regenerate' % i.pk,
@@ -596,9 +574,7 @@ def test_order_invoice_reissue(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
         i = generate_invoice(env[2])
-        InvoiceAddress.objects.create(
-            name_parts={'full_name': 'Foo', '_scheme': 'full'}, order=env[2]
-        )
+        InvoiceAddress.objects.create(name_parts={'full_name': 'Foo', '_scheme': 'full'}, order=env[2])
         env[0].settings.set('invoice_generate', 'admin')
     response = client.post(
         '/control/event/dummy/dummy/orders/FOO/invoices/%d/reissue' % i.pk,
@@ -631,9 +607,7 @@ def test_order_invoice_reissue_canceled(client, env):
 @pytest.mark.django_db
 def test_order_invoice_reissue_unknown(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/invoices/%d/reissue' % 3, {}, follow=True
-    )
+    response = client.post('/control/event/dummy/dummy/orders/FOO/invoices/%d/reissue' % 3, {}, follow=True)
     assert 'alert-danger' in response.content.decode()
 
 
@@ -641,9 +615,7 @@ def test_order_invoice_reissue_unknown(client, env):
 def test_order_resend_link(client, env):
     mail.outbox = []
     client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/resend', {}, follow=True
-    )
+    response = client.post('/control/event/dummy/dummy/orders/FOO/resend', {}, follow=True)
     assert 'alert-success' in response.content.decode()
     assert 'FOO' in mail.outbox[0].body
 
@@ -655,13 +627,9 @@ def test_order_reactivate_not_canceled(client, env):
         o.status = Order.STATUS_PAID
         o.save()
     client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get(
-        '/control/event/dummy/dummy/orders/FOO/reactivate', follow=True
-    )
+    response = client.get('/control/event/dummy/dummy/orders/FOO/reactivate', follow=True)
     assert 'alert-danger' in response.content.decode()
-    response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/reactivate', follow=True
-    )
+    response = client.post('/control/event/dummy/dummy/orders/FOO/reactivate', follow=True)
     assert 'alert-danger' in response.content.decode()
 
 
@@ -674,9 +642,7 @@ def test_order_reactivate(client, env):
         o.status = Order.STATUS_CANCELED
         o.save()
     client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/reactivate', {}, follow=True
-    )
+    response = client.post('/control/event/dummy/dummy/orders/FOO/reactivate', {}, follow=True)
     print(response.content.decode())
     assert 'alert-success' in response.content.decode()
     with scopes_disabled():
@@ -814,9 +780,7 @@ def test_order_extend_expired_quota_empty(client, env):
     assert b'alert-danger' in response.content
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime(
-        '%Y-%m-%d %H:%M:%S'
-    )
+    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime('%Y-%m-%d %H:%M:%S')
     assert o.status == Order.STATUS_EXPIRED
 
 
@@ -880,9 +844,7 @@ def test_order_extend_expired_seat_blocked(client, env):
         o.status = Order.STATUS_EXPIRED
         olddate = o.expires
         o.save()
-        seat_a1 = env[0].seats.create(
-            seat_number='A1', product=env[3], seat_guid='A1', blocked=True
-        )
+        seat_a1 = env[0].seats.create(seat_number='A1', product=env[3], seat_guid='A1', blocked=True)
         p = o.positions.first()
         p.seat = seat_a1
         p.save()
@@ -899,9 +861,7 @@ def test_order_extend_expired_seat_blocked(client, env):
     assert b'alert-danger' in response.content
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime(
-        '%Y-%m-%d %H:%M:%S'
-    )
+    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime('%Y-%m-%d %H:%M:%S')
     assert o.status == Order.STATUS_EXPIRED
 
 
@@ -949,9 +909,7 @@ def test_order_extend_expired_seat_taken(client, env):
     assert b'alert-danger' in response.content
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime(
-        '%Y-%m-%d %H:%M:%S'
-    )
+    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime('%Y-%m-%d %H:%M:%S')
     assert o.status == Order.STATUS_EXPIRED
 
 
@@ -982,9 +940,7 @@ def test_order_extend_expired_quota_partial(client, env):
     assert b'alert-danger' in response.content
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime(
-        '%Y-%m-%d %H:%M:%S'
-    )
+    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime('%Y-%m-%d %H:%M:%S')
     assert o.status == Order.STATUS_EXPIRED
 
 
@@ -1053,15 +1009,10 @@ def test_order_extend_expired_voucher_budget_fail(client, env):
         follow=True,
     )
     assert b'alert-danger' in response.content
-    assert (
-        b'The voucher &quot;FOO&quot; no longer has sufficient budget.'
-        in response.content
-    )
+    assert b'The voucher &quot;FOO&quot; no longer has sufficient budget.' in response.content
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-        assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime(
-            '%Y-%m-%d %H:%M:%S'
-        )
+        assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime('%Y-%m-%d %H:%M:%S')
         assert o.status == Order.STATUS_EXPIRED
         assert v.budget_used() == Decimal('0.00')
 
@@ -1126,9 +1077,7 @@ def test_order_mark_paid_overpaid_expired(client, env):
         o.status = Order.STATUS_EXPIRED
         o.expires = now() - timedelta(days=5)
         o.save()
-        o.payments.create(
-            state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=o.total * 2
-        )
+        o.payments.create(state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=o.total * 2)
         assert o.pending_sum == -1 * o.total
         q = Quota.objects.create(event=env[0], size=0)
         q.items.add(env[3])
@@ -1228,9 +1177,7 @@ def test_order_mark_paid_expired_seat_taken(client, env):
     assert b'alert-danger' in response.content
     with scopes_disabled():
         o = Order.objects.get(id=env[2].id)
-    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime(
-        '%Y-%m-%d %H:%M:%S'
-    )
+    assert o.expires.strftime('%Y-%m-%d %H:%M:%S') == olddate.strftime('%Y-%m-%d %H:%M:%S')
     assert o.status == Order.STATUS_EXPIRED
 
 
@@ -1421,18 +1368,14 @@ class OrderChangeTests(SoupTest):
         self.quota.items.add(self.ticket)
         self.quota.items.add(self.shirt)
         user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-        t = Team.objects.create(
-            organizer=o, can_view_orders=True, can_change_orders=True
-        )
+        t = Team.objects.create(organizer=o, can_view_orders=True, can_change_orders=True)
         t.members.add(user)
         t.limit_events.add(self.event)
         self.client.login(email='dummy@dummy.dummy', password='dummy')
 
     def test_do_not_show_canceled(self):
         r = self.client.get(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            )
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code)
         )
         assert self.op1.secret[:5] in r.content.decode()
         assert self.op2.secret[:5] in r.content.decode()
@@ -1440,9 +1383,7 @@ class OrderChangeTests(SoupTest):
 
     def test_change_item_success(self):
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1475,9 +1416,7 @@ class OrderChangeTests(SoupTest):
             q2.items.add(self.ticket)
             q2.items.add(self.shirt)
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1494,9 +1433,7 @@ class OrderChangeTests(SoupTest):
 
     def test_change_price_success(self):
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1517,9 +1454,7 @@ class OrderChangeTests(SoupTest):
 
     def test_cancel_success(self):
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1535,9 +1470,7 @@ class OrderChangeTests(SoupTest):
 
     def test_add_item_success(self):
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '1',
                 'add-INITIAL_FORMS': '0',
@@ -1570,9 +1503,7 @@ class OrderChangeTests(SoupTest):
             )
 
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1612,9 +1543,7 @@ class OrderChangeTests(SoupTest):
             )
 
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1639,15 +1568,11 @@ class OrderChangeTests(SoupTest):
 
     def test_change_fee_value_success(self):
         with scopes_disabled():
-            fee = self.order.fees.create(
-                fee_type='shipping', value=Decimal('5.00'), tax_rule=self.tr19
-            )
+            fee = self.order.fees.create(fee_type='shipping', value=Decimal('5.00'), tax_rule=self.tr19)
         self.order.total += Decimal('5.00')
         self.order.save()
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1671,15 +1596,11 @@ class OrderChangeTests(SoupTest):
 
     def test_cancel_fee_success(self):
         with scopes_disabled():
-            fee = self.order.fees.create(
-                fee_type='shipping', value=Decimal('5.00'), tax_rule=self.tr19
-            )
+            fee = self.order.fees.create(fee_type='shipping', value=Decimal('5.00'), tax_rule=self.tr19)
         self.order.total += Decimal('5.00')
         self.order.save()
         self.client.post(
-            '/control/event/{}/{}/orders/{}/change'.format(
-                self.event.organizer.slug, self.event.slug, self.order.code
-            ),
+            '/control/event/{}/{}/orders/{}/change'.format(self.event.organizer.slug, self.event.slug, self.order.code),
             {
                 'add-TOTAL_FORMS': '0',
                 'add-INITIAL_FORMS': '0',
@@ -1706,14 +1627,10 @@ class OrderChangeTests(SoupTest):
 def test_check_vatid(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
-        ia = InvoiceAddress.objects.create(
-            order=env[2], is_business=True, vat_id='ATU1234567', country=Country('AT')
-        )
+        ia = InvoiceAddress.objects.create(order=env[2], is_business=True, vat_id='ATU1234567', country=Country('AT'))
     with mock.patch('vat_moss.id.validate') as mock_validate:
         mock_validate.return_value = ('AT', 'AT123456', 'Foo')
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-success' in response.content.decode()
         ia.refresh_from_db()
         assert ia.vat_id_validated
@@ -1723,14 +1640,10 @@ def test_check_vatid(client, env):
 def test_check_vatid_no_entered(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
-        ia = InvoiceAddress.objects.create(
-            order=env[2], is_business=True, country=Country('AT')
-        )
+        ia = InvoiceAddress.objects.create(order=env[2], is_business=True, country=Country('AT'))
     with mock.patch('vat_moss.id.validate') as mock_validate:
         mock_validate.return_value = ('AT', 'AT123456', 'Foo')
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-danger' in response.content.decode()
         ia.refresh_from_db()
         assert not ia.vat_id_validated
@@ -1740,14 +1653,10 @@ def test_check_vatid_no_entered(client, env):
 def test_check_vatid_invalid_country(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
-        ia = InvoiceAddress.objects.create(
-            order=env[2], is_business=True, vat_id='ATU1234567', country=Country('FR')
-        )
+        ia = InvoiceAddress.objects.create(order=env[2], is_business=True, vat_id='ATU1234567', country=Country('FR'))
     with mock.patch('vat_moss.id.validate') as mock_validate:
         mock_validate.return_value = ('AT', 'AT123456', 'Foo')
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-danger' in response.content.decode()
         ia.refresh_from_db()
         assert not ia.vat_id_validated
@@ -1757,14 +1666,10 @@ def test_check_vatid_invalid_country(client, env):
 def test_check_vatid_noneu_country(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
-        ia = InvoiceAddress.objects.create(
-            order=env[2], is_business=True, vat_id='CHU1234567', country=Country('CH')
-        )
+        ia = InvoiceAddress.objects.create(order=env[2], is_business=True, vat_id='CHU1234567', country=Country('CH'))
     with mock.patch('vat_moss.id.validate') as mock_validate:
         mock_validate.return_value = ('AT', 'AT123456', 'Foo')
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-danger' in response.content.decode()
         ia.refresh_from_db()
         assert not ia.vat_id_validated
@@ -1774,14 +1679,10 @@ def test_check_vatid_noneu_country(client, env):
 def test_check_vatid_no_country(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
-        ia = InvoiceAddress.objects.create(
-            order=env[2], is_business=True, vat_id='ATU1234567'
-        )
+        ia = InvoiceAddress.objects.create(order=env[2], is_business=True, vat_id='ATU1234567')
     with mock.patch('vat_moss.id.validate') as mock_validate:
         mock_validate.return_value = ('AT', 'AT123456', 'Foo')
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-danger' in response.content.decode()
         ia.refresh_from_db()
         assert not ia.vat_id_validated
@@ -1792,9 +1693,7 @@ def test_check_vatid_no_invoiceaddress(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with mock.patch('vat_moss.id.validate') as mock_validate:
         mock_validate.return_value = ('AT', 'AT123456', 'Foo')
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-danger' in response.content.decode()
 
 
@@ -1802,9 +1701,7 @@ def test_check_vatid_no_invoiceaddress(client, env):
 def test_check_vatid_invalid(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
-        ia = InvoiceAddress.objects.create(
-            order=env[2], is_business=True, vat_id='ATU1234567', country=Country('AT')
-        )
+        ia = InvoiceAddress.objects.create(order=env[2], is_business=True, vat_id='ATU1234567', country=Country('AT'))
     with mock.patch('vat_moss.id.validate') as mock_validate:
 
         def raiser(*args, **kwargs):
@@ -1813,9 +1710,7 @@ def test_check_vatid_invalid(client, env):
             raise vat_moss.errors.InvalidError('Fail')
 
         mock_validate.side_effect = raiser
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-danger' in response.content.decode()
         ia.refresh_from_db()
         assert not ia.vat_id_validated
@@ -1825,9 +1720,7 @@ def test_check_vatid_invalid(client, env):
 def test_check_vatid_unavailable(client, env):
     client.login(email='dummy@dummy.dummy', password='dummy')
     with scopes_disabled():
-        ia = InvoiceAddress.objects.create(
-            order=env[2], is_business=True, vat_id='ATU1234567', country=Country('AT')
-        )
+        ia = InvoiceAddress.objects.create(order=env[2], is_business=True, vat_id='ATU1234567', country=Country('AT'))
     with mock.patch('vat_moss.id.validate') as mock_validate:
 
         def raiser(*args, **kwargs):
@@ -1836,9 +1729,7 @@ def test_check_vatid_unavailable(client, env):
             raise vat_moss.errors.WebServiceUnavailableError('Fail')
 
         mock_validate.side_effect = raiser
-        response = client.post(
-            '/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True
-        )
+        response = client.post('/control/event/dummy/dummy/orders/FOO/checkvatid', {}, follow=True)
         assert 'alert-danger' in response.content.decode()
         ia.refresh_from_db()
         assert not ia.vat_id_validated
@@ -2608,14 +2499,10 @@ def test_refund_list(client, env):
     response = client.get('/control/event/dummy/dummy/orders/refunds/?status=done')
     assert 'R-1' in response.content.decode()
     assert 'R-2' not in response.content.decode()
-    response = client.get(
-        '/control/event/dummy/dummy/orders/refunds/?status=all&provider=manual'
-    )
+    response = client.get('/control/event/dummy/dummy/orders/refunds/?status=all&provider=manual')
     assert 'R-1' not in response.content.decode()
     assert 'R-2' in response.content.decode()
-    response = client.get(
-        '/control/event/dummy/dummy/orders/refunds/?status=all&provider=banktransfer'
-    )
+    response = client.get('/control/event/dummy/dummy/orders/refunds/?status=all&provider=banktransfer')
     assert 'R-1' in response.content.decode()
     assert 'R-2' not in response.content.decode()
 
@@ -2623,14 +2510,10 @@ def test_refund_list(client, env):
 @pytest.mark.django_db
 def test_delete_cancellation_request(client, env):
     with scopes_disabled():
-        r = env[2].cancellation_requests.create(
-            cancellation_fee=Decimal('4.00'), refund_as_giftcard=True
-        )
+        r = env[2].cancellation_requests.create(cancellation_fee=Decimal('4.00'), refund_as_giftcard=True)
     client.login(email='dummy@dummy.dummy', password='dummy')
     response = client.post(
-        '/control/event/dummy/dummy/orders/FOO/cancellationrequests/{}/delete'.format(
-            r.pk
-        ),
+        '/control/event/dummy/dummy/orders/FOO/cancellationrequests/{}/delete'.format(r.pk),
         {},
         follow=True,
     )
@@ -2645,9 +2528,7 @@ def test_approve_cancellation_request(client, env):
         o.payments.create(state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=o.total)
         o.status = Order.STATUS_PAID
         o.save()
-        r = env[2].cancellation_requests.create(
-            cancellation_fee=Decimal('4.00'), refund_as_giftcard=True
-        )
+        r = env[2].cancellation_requests.create(cancellation_fee=Decimal('4.00'), refund_as_giftcard=True)
     client.login(email='dummy@dummy.dummy', password='dummy')
     response = client.get(
         '/control/event/dummy/dummy/orders/FOO/transition?status=c&req={}'.format(r.pk),

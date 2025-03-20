@@ -18,9 +18,7 @@ TEST_TAXRULE_RES = {
 def test_rule_list(token_client, organizer, event, taxrule):
     res = dict(TEST_TAXRULE_RES)
     res['id'] = taxrule.pk
-    resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/taxrules/'.format(organizer.slug, event.slug)
-    )
+    resp = token_client.get('/api/v1/organizers/{}/events/{}/taxrules/'.format(organizer.slug, event.slug))
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -30,9 +28,7 @@ def test_rule_detail(token_client, organizer, event, taxrule):
     res = dict(TEST_TAXRULE_RES)
     res['id'] = taxrule.pk
     resp = token_client.get(
-        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(
-            organizer.slug, event.slug, taxrule.pk
-        )
+        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(organizer.slug, event.slug, taxrule.pk)
     )
     assert resp.status_code == 200
     assert res == resp.data
@@ -63,9 +59,7 @@ def test_rule_create(token_client, organizer, event):
 @pytest.mark.django_db
 def test_rule_update(token_client, organizer, event, taxrule):
     resp = token_client.patch(
-        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(
-            organizer.slug, event.slug, taxrule.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(organizer.slug, event.slug, taxrule.pk),
         {
             'rate': '20.00',
         },
@@ -80,9 +74,7 @@ def test_rule_update(token_client, organizer, event, taxrule):
 @pytest.mark.django_db
 def test_rule_delete(token_client, organizer, event, taxrule):
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(
-            organizer.slug, event.slug, taxrule.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(organizer.slug, event.slug, taxrule.pk),
     )
     assert resp.status_code == 204
     assert not event.tax_rules.exists()
@@ -93,9 +85,7 @@ def test_rule_delete_forbidden(token_client, organizer, event, taxrule):
     with scopes_disabled():
         event.items.create(name='Budget Ticket', default_price=23, tax_rule=taxrule)
     resp = token_client.delete(
-        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(
-            organizer.slug, event.slug, taxrule.pk
-        ),
+        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(organizer.slug, event.slug, taxrule.pk),
     )
     assert resp.status_code == 403
     assert event.tax_rules.exists()

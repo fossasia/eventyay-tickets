@@ -17,9 +17,7 @@ def register_payment_provider(sender, **kwargs):
 @receiver(nav_event, dispatch_uid='payment_banktransfer_nav')
 def control_nav_import(sender, request=None, **kwargs):
     url = resolve(request.path_info)
-    if not request.user.has_event_permission(
-        request.organizer, request.event, 'can_change_orders', request=request
-    ):
+    if not request.user.has_event_permission(request.organizer, request.event, 'can_change_orders', request=request):
         return []
     return [
         {
@@ -42,10 +40,7 @@ def control_nav_import(sender, request=None, **kwargs):
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (
-                        url.namespace == 'plugins:banktransfer'
-                        and url.url_name == 'import'
-                    ),
+                    'active': (url.namespace == 'plugins:banktransfer' and url.url_name == 'import'),
                 },
                 {
                     'label': _('Export refunds'),
@@ -56,10 +51,7 @@ def control_nav_import(sender, request=None, **kwargs):
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (
-                        url.namespace == 'plugins:banktransfer'
-                        and url.url_name.startswith('refunds')
-                    ),
+                    'active': (url.namespace == 'plugins:banktransfer' and url.url_name.startswith('refunds')),
                 },
             ],
         },

@@ -12,10 +12,7 @@ class VoucherListSerializer(serializers.ListSerializer):
         errs = []
         err = False
         for voucher_data in validated_data:
-            if (
-                voucher_data.get('seat')
-                and (voucher_data.get('seat'), voucher_data.get('subevent')) in seats
-            ):
+            if voucher_data.get('seat') and (voucher_data.get('seat'), voucher_data.get('subevent')) in seats:
                 err = True
                 errs.append({'code': ['Duplicate seat ID in request.']})
                 continue
@@ -68,11 +65,7 @@ class VoucherSerializer(I18nAwareModelSerializer):
     def validate(self, data):
         data = super().validate(data)
 
-        full_data = (
-            self.to_internal_value(self.to_representation(self.instance))
-            if self.instance
-            else {}
-        )
+        full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
         Voucher.clean_item_properties(
@@ -84,9 +77,7 @@ class VoucherSerializer(I18nAwareModelSerializer):
             block_quota=full_data.get('block_quota'),
         )
         Voucher.clean_subevent(full_data, self.context.get('event'))
-        Voucher.clean_max_usages(
-            full_data, self.instance.redeemed if self.instance else 0
-        )
+        Voucher.clean_max_usages(full_data, self.instance.redeemed if self.instance else 0)
         check_quota = Voucher.clean_quota_needs_checking(
             full_data,
             self.instance,

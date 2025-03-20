@@ -54,30 +54,24 @@ def application():
 def test_authorize_require_login(client, application: OAuthApplication):
     application, secret = application
     resp = client.get(
-        '/api/v1/oauth/authorize?client_id=%s&redirect_uri=%s'
-        % (application.client_id, quote('https://example.org'))
+        '/api/v1/oauth/authorize?client_id=%s&redirect_uri=%s' % (application.client_id, quote('https://example.org'))
     )
     assert resp.status_code == 302
     assert resp['Location'].startswith('/control/login')
 
 
 @pytest.mark.django_db
-def test_authorize_invalid_redirect_uri(
-    client, admin_user, application: OAuthApplication
-):
+def test_authorize_invalid_redirect_uri(client, admin_user, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
-        '/api/v1/oauth/authorize?client_id=%s&redirect_uri=%s'
-        % (application.client_id, quote('https://example.org'))
+        '/api/v1/oauth/authorize?client_id=%s&redirect_uri=%s' % (application.client_id, quote('https://example.org'))
     )
     assert resp.status_code == 400
 
 
 @pytest.mark.django_db
-def test_authorize_missing_response_type(
-    client, admin_user, application: OAuthApplication
-):
+def test_authorize_missing_response_type(client, admin_user, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -92,9 +86,7 @@ def test_authorize_missing_response_type(
 
 
 @pytest.mark.django_db
-def test_authorize_require_organizer(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_authorize_require_organizer(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -140,9 +132,7 @@ def test_authorize_denied(client, admin_user, organizer, application: OAuthAppli
 
 
 @pytest.mark.django_db
-def test_authorize_disallow_response_token(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_authorize_disallow_response_token(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -154,9 +144,7 @@ def test_authorize_disallow_response_token(
 
 
 @pytest.mark.django_db
-def test_authorize_read_scope(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_authorize_read_scope(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -210,9 +198,7 @@ def test_authorize_state(client, admin_user, organizer, application: OAuthApplic
 
 
 @pytest.mark.django_db
-def test_authorize_default_scope(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_authorize_default_scope(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -242,9 +228,7 @@ def test_authorize_default_scope(
 
 
 @pytest.mark.django_db
-def test_token_from_code_without_auth(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_token_from_code_without_auth(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -309,10 +293,7 @@ def test_token_from_code(client, admin_user, organizer, application: OAuthApplic
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
@@ -325,9 +306,7 @@ def test_token_from_code(client, admin_user, organizer, application: OAuthApplic
 
 
 @pytest.mark.django_db
-def test_use_token_for_access_one_organizer(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_use_token_for_access_one_organizer(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     Organizer.objects.create(name='A', slug='a')
 
@@ -359,17 +338,12 @@ def test_use_token_for_access_one_organizer(
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
     access_token = data['access_token']
-    resp = client.get(
-        '/api/v1/organizers/', HTTP_AUTHORIZATION='Bearer %s' % access_token
-    )
+    resp = client.get('/api/v1/organizers/', HTTP_AUTHORIZATION='Bearer %s' % access_token)
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
     assert data == {
@@ -383,21 +357,15 @@ def test_use_token_for_access_one_organizer(
         HTTP_AUTHORIZATION='Bearer %s' % access_token,
     )
     assert resp.status_code == 200
-    resp = client.get(
-        '/api/v1/organizers/a/events/', HTTP_AUTHORIZATION='Bearer %s' % access_token
-    )
+    resp = client.get('/api/v1/organizers/a/events/', HTTP_AUTHORIZATION='Bearer %s' % access_token)
     assert resp.status_code == 403
 
 
 @pytest.mark.django_db
-def test_use_token_for_access_two_organizers(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_use_token_for_access_two_organizers(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     o2 = Organizer.objects.create(name='A', slug='a')
-    t2 = Team.objects.create(
-        organizer=o2, can_change_teams=True, name='Admin team', all_events=True
-    )
+    t2 = Team.objects.create(organizer=o2, can_change_teams=True, name='Admin team', all_events=True)
     t2.members.add(admin_user)
 
     client.login(email='dummy@dummy.dummy', password='dummy')
@@ -428,17 +396,12 @@ def test_use_token_for_access_two_organizers(
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
     access_token = data['access_token']
-    resp = client.get(
-        '/api/v1/organizers/', HTTP_AUTHORIZATION='Bearer %s' % access_token
-    )
+    resp = client.get('/api/v1/organizers/', HTTP_AUTHORIZATION='Bearer %s' % access_token)
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
     assert data == {
@@ -455,9 +418,7 @@ def test_use_token_for_access_two_organizers(
         HTTP_AUTHORIZATION='Bearer %s' % access_token,
     )
     assert resp.status_code == 200
-    resp = client.get(
-        '/api/v1/organizers/a/events/', HTTP_AUTHORIZATION='Bearer %s' % access_token
-    )
+    resp = client.get('/api/v1/organizers/a/events/', HTTP_AUTHORIZATION='Bearer %s' % access_token)
     assert resp.status_code == 200
 
 
@@ -492,10 +453,7 @@ def test_token_refresh(client, admin_user, organizer, application: OAuthApplicat
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
@@ -507,15 +465,10 @@ def test_token_refresh(client, admin_user, organizer, application: OAuthApplicat
             'refresh_token': refresh_token,
             'grant_type': 'refresh_token',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
-    assert not OAuthAccessToken.objects.filter(
-        token=access_token
-    ).exists()  # old token revoked
+    assert not OAuthAccessToken.objects.filter(token=access_token).exists()  # old token revoked
     data = json.loads(resp.content.decode())
     access_token = data['access_token']
     grant = OAuthAccessToken.objects.get(token=access_token)
@@ -553,10 +506,7 @@ def test_allow_write(client, admin_user, organizer, application: OAuthApplicatio
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     print('#######', resp.content.decode())
     assert resp.status_code == 200
@@ -601,24 +551,17 @@ def test_allow_read_only(client, admin_user, organizer, application: OAuthApplic
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
     access_token = data['access_token']
-    resp = client.post(
-        '/api/v1/organizers/a/events/', HTTP_AUTHORIZATION='Bearer %s' % access_token
-    )
+    resp = client.post('/api/v1/organizers/a/events/', HTTP_AUTHORIZATION='Bearer %s' % access_token)
     assert resp.status_code == 403
 
 
 @pytest.mark.django_db
-def test_token_revoke_refresh_token(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_token_revoke_refresh_token(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -648,10 +591,7 @@ def test_token_revoke_refresh_token(
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
@@ -662,34 +602,24 @@ def test_token_revoke_refresh_token(
         data={
             'token': refresh_token,
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     assert not OAuthAccessToken.objects.get(token=access_token).is_valid()
-    assert not OAuthRefreshToken.objects.filter(
-        token=refresh_token, revoked__isnull=True
-    ).exists()
+    assert not OAuthRefreshToken.objects.filter(token=refresh_token, revoked__isnull=True).exists()
     resp = client.post(
         '/api/v1/oauth/token',
         data={
             'refresh_token': refresh_token,
             'grant_type': 'refresh_token',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 400
 
 
 @pytest.mark.django_db
-def test_token_revoke_access_token(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_token_revoke_access_token(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -719,10 +649,7 @@ def test_token_revoke_access_token(
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
@@ -733,15 +660,10 @@ def test_token_revoke_access_token(
         data={
             'token': access_token,
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
-    assert not OAuthAccessToken.objects.get(
-        token=access_token
-    ).is_valid()  # old token revoked
+    assert not OAuthAccessToken.objects.get(token=access_token).is_valid()  # old token revoked
 
     resp = client.post(
         '/api/v1/oauth/token',
@@ -749,10 +671,7 @@ def test_token_revoke_access_token(
             'refresh_token': refresh_token,
             'grant_type': 'refresh_token',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
@@ -792,10 +711,7 @@ def test_user_revoke(client, admin_user, organizer, application: OAuthApplicatio
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())
@@ -804,9 +720,7 @@ def test_user_revoke(client, admin_user, organizer, application: OAuthApplicatio
 
     at = OAuthAccessToken.objects.get(token=access_token)
     client.login(email='dummy@dummy.dummy', password='dummy')
-    resp = client.post(
-        '/control/settings/oauth/authorized/{}/revoke'.format(at.pk), data={}
-    )
+    resp = client.post('/control/settings/oauth/authorized/{}/revoke'.format(at.pk), data={})
     assert resp.status_code == 302
     client.logout()
     assert not OAuthAccessToken.objects.filter(token=access_token).exists()
@@ -818,18 +732,13 @@ def test_user_revoke(client, admin_user, organizer, application: OAuthApplicatio
             'refresh_token': refresh_token,
             'grant_type': 'refresh_token',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 400
 
 
 @pytest.mark.django_db
-def test_allow_profile_only(
-    client, admin_user, organizer, application: OAuthApplication
-):
+def test_allow_profile_only(client, admin_user, organizer, application: OAuthApplication):
     application, secret = application
     client.login(email='dummy@dummy.dummy', password='dummy')
     resp = client.get(
@@ -859,10 +768,7 @@ def test_allow_profile_only(
             'redirect_uri': application.redirect_uris,
             'grant_type': 'authorization_code',
         },
-        HTTP_AUTHORIZATION='Basic '
-        + base64.b64encode(
-            ('%s:%s' % (application.client_id, secret)).encode()
-        ).decode(),
+        HTTP_AUTHORIZATION='Basic ' + base64.b64encode(('%s:%s' % (application.client_id, secret)).encode()).decode(),
     )
     assert resp.status_code == 200
     data = json.loads(resp.content.decode())

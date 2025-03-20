@@ -30,9 +30,7 @@ def notify_incomplete_payment(o: Order):
     with language(o.locale, o.event.settings.region):
         email_template = o.event.settings.mail_text_order_expire_warning
         email_context = get_email_context(event=o.event, order=o)
-        email_subject = gettext(
-            'Your order received an incomplete payment: %(code)s'
-        ) % {'code': o.code}
+        email_subject = gettext('Your order received an incomplete payment: %(code)s') % {'code': o.code}
 
         try:
             o.send_mail(
@@ -129,9 +127,7 @@ def _handle_transaction(
         if order_pending_sum != trans.amount:
             # we can't :( this needs to be dealt with by a human
             trans.state = BankTransaction.STATE_NOMATCH
-            trans.message = gettext_noop(
-                'Automatic split to multiple orders not possible.'
-            )
+            trans.message = gettext_noop('Automatic split to multiple orders not possible.')
             trans.save()
             return
 
@@ -196,10 +192,7 @@ def _handle_transaction(
             cancel_old_payments(order)
 
             order.refresh_from_db()
-            if (
-                order.pending_sum > Decimal('0.00')
-                and order.status == Order.STATUS_PENDING
-            ):
+            if order.pending_sum > Decimal('0.00') and order.status == Order.STATUS_PENDING:
                 notify_incomplete_payment(order)
 
     trans.save()
@@ -216,15 +209,11 @@ def parse_date(date_str):
     return None
 
 
-def _get_unknown_transactions(
-    job: BankImportJob, data: list, event: Event = None, organizer: Organizer = None
-):
+def _get_unknown_transactions(job: BankImportJob, data: list, event: Event = None, organizer: Organizer = None):
     amount_pattern = re.compile('[^0-9.-]')
     known_checksums = set(
         t['checksum']
-        for t in BankTransaction.objects.filter(
-            Q(event=event) if event else Q(organizer=organizer)
-        ).values('checksum')
+        for t in BankTransaction.objects.filter(Q(event=event) if event else Q(organizer=organizer)).values('checksum')
     )
 
     transactions = []
@@ -241,9 +230,7 @@ def _get_unknown_transactions(
             try:
                 amount = Decimal(amount)
             except:
-                logger.exception(
-                    'Could not parse amount of transaction: {}'.format(amount)
-                )
+                logger.exception('Could not parse amount of transaction: {}'.format(amount))
                 amount = Decimal('0.00')
 
         trans = BankTransaction(
@@ -280,9 +267,7 @@ def process_banktransfers(self, job: int, data: list) -> None:
 
             try:
                 # Delete left-over transactions from a failed run before so they can reimported
-                BankTransaction.objects.filter(
-                    state=BankTransaction.STATE_UNCHECKED, **job.owner_kwargs
-                ).delete()
+                BankTransaction.objects.filter(state=BankTransaction.STATE_UNCHECKED, **job.owner_kwargs).delete()
 
                 transactions = _get_unknown_transactions(job, data, **job.owner_kwargs)
 
@@ -298,19 +283,14 @@ def process_banktransfers(self, job: int, data: list) -> None:
                 pattern = re.compile(
                     '(%s)[ \\-_]*([A-Z0-9]{%s,%s})'
                     % (
-                        '|'.join(
-                            p.replace('.', r'\.').replace('-', r'[\- ]*')
-                            for p in prefixes
-                        ),
+                        '|'.join(p.replace('.', r'\.').replace('-', r'[\- ]*') for p in prefixes),
                         code_len_agg['min'] or 0,
                         code_len_agg['max'] or 5,
                     )
                 )
 
                 for trans in transactions:
-                    matches = pattern.findall(
-                        trans.reference.replace(' ', '').replace('\n', '').upper()
-                    )
+                    matches = pattern.findall(trans.reference.replace(' ', '').replace('\n', '').upper())
 
                     if matches:
                         if job.event:

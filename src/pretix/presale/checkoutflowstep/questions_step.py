@@ -38,9 +38,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
 
     @cached_property
     def all_optional(self):
-        for recv, resp in checkout_all_optional.send(
-            sender=self.request.event, request=self.request
-        ):
+        for recv, resp in checkout_all_optional.send(sender=self.request.event, request=self.request):
             if resp:
                 return True
         return False
@@ -71,9 +69,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
 
         override_sets = self._contact_override_sets
         for overrides in override_sets:
-            initial.update(
-                {k: v['initial'] for k, v in overrides.items() if 'initial' in v}
-            )
+            initial.update({k: v['initial'] for k, v in overrides.items() if 'initial' in v})
 
         f = ContactForm(
             data=self.request.POST if self.request.method == 'POST' else None,
@@ -104,8 +100,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
     def eu_reverse_charge_relevant(self):
         return any(
             [
-                p.item.tax_rule
-                and (p.item.tax_rule.eu_reverse_charge or p.item.tax_rule.custom_rules)
+                p.item.tax_rule and (p.item.tax_rule.eu_reverse_charge or p.item.tax_rule.custom_rules)
                 for p in self.positions
             ]
         )
@@ -116,9 +111,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         if not self.invoice_address.pk:
             wd_initial = {
                 'name_parts': {
-                    k[21:].replace('-', '_'): v
-                    for k, v in wd.items()
-                    if k.startswith('invoice-address-name-')
+                    k[21:].replace('-', '_'): v for k, v in wd.items() if k.startswith('invoice-address-name-')
                 },
                 'company': wd.get('invoice-address-company', ''),
                 'is_business': bool(wd.get('invoice-address-company', '')),
@@ -133,9 +126,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
 
         override_sets = self._contact_override_sets
         for overrides in override_sets:
-            initial.update(
-                {k: v['initial'] for k, v in overrides.items() if 'initial' in v}
-            )
+            initial.update({k: v['initial'] for k, v in overrides.items() if 'initial' in v})
 
         if not self.address_asked and self.request.event.settings.invoice_name_required:
             f = InvoiceNameForm(
@@ -171,8 +162,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
     @cached_property
     def address_asked(self):
         return self.request.event.settings.invoice_address_asked and (
-            not self.request.event.settings.invoice_address_not_asked_free
-            or not get_cart_is_free(self.request)
+            not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(self.request)
         )
 
     def post(self, request):
@@ -183,9 +173,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         if failed:
             messages.error(
                 request,
-                _(
-                    'We had difficulties processing your input. Please review the errors below.'
-                ),
+                _('We had difficulties processing your input. Please review the errors below.'),
             )
             return self.render()
         self.cart_session['email'] = self.contact_form.cleaned_data['email']
@@ -271,20 +259,12 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                 return (
                     ('True' in qvals and answ[parentid].answer == 'True')
                     or ('False' in qvals and answ[parentid].answer == 'False')
-                    or (
-                        any(
-                            qval in [o.identifier for o in answ[parentid].options.all()]
-                            for qval in qvals
-                        )
-                    )
+                    or (any(qval in [o.identifier for o in answ[parentid].options.all()] for qval in qvals))
                 )
 
             def question_is_required(q):
                 return q.required and (
-                    not q.dependency_question_id
-                    or question_is_visible(
-                        q.dependency_question_id, q.dependency_values
-                    )
+                    not q.dependency_question_id or question_is_visible(q.dependency_question_id, q.dependency_values)
                 )
 
             for q in cp.item.questions_to_ask:
@@ -297,56 +277,38 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                     return False
             if (
                 cp.item.admission
-                and self.request.event.settings.get(
-                    'attendee_names_required', as_type=bool
-                )
+                and self.request.event.settings.get('attendee_names_required', as_type=bool)
                 and not cp.attendee_name_parts
             ):
                 if warn:
-                    messages.warning(
-                        request, _('Please fill in answers to all required questions.')
-                    )
+                    messages.warning(request, _('Please fill in answers to all required questions.'))
                 return False
             if (
                 cp.item.admission
-                and self.request.event.settings.get(
-                    'attendee_emails_required', as_type=bool
-                )
+                and self.request.event.settings.get('attendee_emails_required', as_type=bool)
                 and cp.attendee_email is None
             ):
                 if warn:
-                    messages.warning(
-                        request, _('Please fill in answers to all required questions.')
-                    )
+                    messages.warning(request, _('Please fill in answers to all required questions.'))
                 return False
             if (
                 cp.item.admission
-                and self.request.event.settings.get(
-                    'attendee_company_required', as_type=bool
-                )
+                and self.request.event.settings.get('attendee_company_required', as_type=bool)
                 and cp.company is None
             ):
                 if warn:
-                    messages.warning(
-                        request, _('Please fill in answers to all required questions.')
-                    )
+                    messages.warning(request, _('Please fill in answers to all required questions.'))
                 return False
             if (
                 cp.item.admission
-                and self.request.event.settings.get(
-                    'attendee_attendees_required', as_type=bool
-                )
+                and self.request.event.settings.get('attendee_attendees_required', as_type=bool)
                 and (cp.street is None or cp.city is None or cp.country is None)
             ):
                 if warn:
-                    messages.warning(
-                        request, _('Please fill in answers to all required questions.')
-                    )
+                    messages.warning(request, _('Please fill in answers to all required questions.'))
                 return False
 
-            responses = question_form_fields.send(
-                sender=self.request.event, position=cp
-            )
+            responses = question_form_fields.send(sender=self.request.event, position=cp)
             form_data = cp.meta_info_data.get('question_form_data', {})
             for r, response in sorted(responses, key=lambda r: str(r[0])):
                 for key, value in response.items():

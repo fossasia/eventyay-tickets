@@ -47,9 +47,7 @@ class OrganizerList(PaginationMixin, ListView):
         if self.request.user.has_active_staff_session(self.request.session.session_key):
             return qs
         else:
-            return qs.filter(
-                pk__in=self.request.user.teams.values_list('organizer', flat=True)
-            )
+            return qs.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -77,12 +75,7 @@ class TaskList(PaginationMixin, ListView):
         return TaskFilterForm(data=self.request.GET)
 
     def get_queryset(self):
-        queryset = (
-            super()
-            .get_queryset()
-            .exclude(name='celery.backend_cleanup')
-            .select_related('crontab')
-        )
+        queryset = super().get_queryset().exclude(name='celery.backend_cleanup').select_related('crontab')
 
         if self.filter_form.is_valid():
             queryset = self.filter_form.filter_qs(queryset)
@@ -104,7 +97,9 @@ class TaskList(PaginationMixin, ListView):
         options.locale_code = settings.LANGUAGE_CODE
         options.verbose = True
         schedule = task.crontab
-        cron_expression = f'{schedule.minute} {schedule.hour} {schedule.day_of_month} {schedule.month_of_year} {schedule.day_of_week}'
+        cron_expression = (
+            f'{schedule.minute} {schedule.hour} {schedule.day_of_month} {schedule.month_of_year} {schedule.day_of_week}'
+        )
         task.run_at = get_description(cron_expression, options)
 
         return task

@@ -13,9 +13,7 @@ from pretix.multidomain.urlreverse import build_absolute_uri
 
 def get_ical(events):
     cal = vobject.iCalendar()
-    cal.add('prodid').value = '-//pretix//{}//'.format(
-        settings.INSTANCE_NAME.replace(' ', '_')
-    )
+    cal.add('prodid').value = '-//pretix//{}//'.format(settings.INSTANCE_NAME.replace(' ', '_'))
     creation_time = datetime.datetime.now(pytz.utc)
 
     for ev in events:
@@ -49,9 +47,7 @@ def get_ical(events):
             else:
                 # with full-day events date_to in pretix is included (e.g. last day)
                 # whereas dtend in vcalendar is non-inclusive => add one day for export
-                vevent.add('dtend').value = ev.date_to.astimezone(
-                    tz
-                ).date() + datetime.timedelta(days=1)
+                vevent.add('dtend').value = ev.date_to.astimezone(tz).date() + datetime.timedelta(days=1)
 
         descr = []
         descr.append(_('Tickets: {url}').format(url=url))
@@ -59,9 +55,7 @@ def get_ical(events):
         if ev.date_admission:
             descr.append(
                 str(_('Admission: {datetime}')).format(
-                    datetime=date_format(
-                        ev.date_admission.astimezone(tz), 'SHORT_DATETIME_FORMAT'
-                    )
+                    datetime=date_format(ev.date_admission.astimezone(tz), 'SHORT_DATETIME_FORMAT')
                 )
             )
 

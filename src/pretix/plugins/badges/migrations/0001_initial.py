@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
             ],
             options={
@@ -31,9 +29,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('default', models.BooleanField(default=False)),
                 ('name', models.CharField(max_length=190)),

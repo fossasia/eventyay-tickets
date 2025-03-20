@@ -70,19 +70,14 @@ class EventWizardFoundationForm(forms.Form):
         super().__init__(*args, **kwargs)
         qs = Organizer.objects.all()
         if not self.user.has_active_staff_session(self.session.session_key):
-            qs = qs.filter(
-                id__in=self.user.teams.filter(can_create_events=True).values_list(
-                    'organizer', flat=True
-                )
-            )
+            qs = qs.filter(id__in=self.user.teams.filter(can_create_events=True).values_list('organizer', flat=True))
         self.fields['organizer'] = forms.ModelChoiceField(
             label=_('Organizer'),
             queryset=qs,
             widget=Select2(
                 attrs={
                     'data-model-select2': 'generic',
-                    'data-select2-url': reverse('control:organizers.select2')
-                    + '?can_create=1',
+                    'data-select2-url': reverse('control:organizers.select2') + '?can_create=1',
                     'data-placeholder': _('Organizer'),
                 }
             ),
@@ -97,9 +92,7 @@ class EventWizardFoundationForm(forms.Form):
 
 class EventWizardBasicsForm(I18nModelForm):
     error_messages = {
-        'duplicate_slug': _(
-            'You already used this slug for a different event. Please choose a new one.'
-        ),
+        'duplicate_slug': _('You already used this slug for a different event. Please choose a new one.'),
     }
     timezone = forms.ChoiceField(
         choices=((a, a) for a in common_timezones),
@@ -153,13 +146,9 @@ class EventWizardBasicsForm(I18nModelForm):
         }
         widgets = {
             'date_from': SplitDateTimePickerWidget(),
-            'date_to': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_basics-date_from_0'}
-            ),
+            'date_to': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_basics-date_from_0'}),
             'presale_start': SplitDateTimePickerWidget(),
-            'presale_end': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_basics-presale_start_0'}
-            ),
+            'presale_end': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_basics-presale_start_0'}),
             'slug': SlugWidget,
         }
 
@@ -173,16 +162,10 @@ class EventWizardBasicsForm(I18nModelForm):
         super().__init__(*args, **kwargs)
         if 'timezone' not in self.initial:
             self.initial['timezone'] = get_current_timezone_name()
-        self.fields['locale'].choices = [
-            (a, b) for a, b in settings.LANGUAGES if a in self.locales
-        ]
+        self.fields['locale'].choices = [(a, b) for a, b in settings.LANGUAGES if a in self.locales]
         self.fields['location'].widget.attrs['rows'] = '3'
-        self.fields['location'].widget.attrs['placeholder'] = _(
-            'Sample Conference Center\nHeidelberg, Germany'
-        )
-        self.fields['slug'].widget.prefix = build_absolute_uri(
-            self.organizer, 'presale:organizer.index'
-        )
+        self.fields['location'].widget.attrs['placeholder'] = _('Sample Conference Center\nHeidelberg, Germany')
+        self.fields['slug'].widget.prefix = build_absolute_uri(self.organizer, 'presale:organizer.index')
         if self.has_subevents:
             del self.fields['presale_start']
             del self.fields['presale_end']
@@ -191,12 +174,8 @@ class EventWizardBasicsForm(I18nModelForm):
         if self.has_control_rights(self.user, self.organizer):
             del self.fields['team']
         else:
-            self.fields['team'].queryset = self.user.teams.filter(
-                organizer=self.organizer
-            )
-            if not self.organizer.settings.get(
-                'event_team_provisioning', True, as_type=bool
-            ):
+            self.fields['team'].queryset = self.user.teams.filter(organizer=self.organizer)
+            if not self.organizer.settings.get('event_team_provisioning', True, as_type=bool):
                 self.fields['team'].required = True
                 self.fields['team'].empty_label = None
                 self.fields['team'].initial = 0
@@ -205,16 +184,10 @@ class EventWizardBasicsForm(I18nModelForm):
         data = super().clean()
         if data.get('locale') not in self.locales:
             raise ValidationError(
-                {
-                    'locale': _(
-                        'Your default locale must also be enabled for your event (see box above).'
-                    )
-                }
+                {'locale': _('Your default locale must also be enabled for your event (see box above).')}
             )
         if data.get('timezone') not in common_timezones:
-            raise ValidationError(
-                {'timezone': _('Your default locale must be specified.')}
-            )
+            raise ValidationError({'timezone': _('Your default locale must be specified.')})
 
         # change timezone
         zone = timezone(data.get('timezone'))
@@ -231,9 +204,7 @@ class EventWizardBasicsForm(I18nModelForm):
     def clean_slug(self):
         slug = self.cleaned_data['slug']
         if Event.objects.filter(slug__iexact=slug, organizer=self.organizer).exists():
-            raise forms.ValidationError(
-                self.error_messages['duplicate_slug'], code='duplicate_slug'
-            )
+            raise forms.ValidationError(self.error_messages['duplicate_slug'], code='duplicate_slug')
         return slug
 
     @staticmethod
@@ -256,11 +227,7 @@ class EventChoiceMixin:
         return mark_safe(
             '{}<br /><span class="text-muted">{} · {}</span>'.format(
                 escape(str(obj)),
-                (
-                    obj.get_date_range_display()
-                    if not obj.has_subevents
-                    else _('Event series')
-                ),
+                (obj.get_date_range_display() if not obj.has_subevents else _('Event series')),
                 obj.slug,
             )
         )
@@ -290,9 +257,9 @@ class EventWizardCopyForm(forms.Form):
                 ).values_list('organizer', flat=True)
             )
             | Q(
-                id__in=user.teams.filter(
-                    can_change_event_settings=True, can_change_items=True
-                ).values_list('limit_events__id', flat=True)
+                id__in=user.teams.filter(can_change_event_settings=True, can_change_items=True).values_list(
+                    'limit_events__id', flat=True
+                )
             )
         )
 
@@ -311,17 +278,14 @@ class EventWizardCopyForm(forms.Form):
             widget=Select2(
                 attrs={
                     'data-model-select2': 'event',
-                    'data-select2-url': reverse('control:events.typeahead')
-                    + '?can_copy=1',
+                    'data-select2-url': reverse('control:events.typeahead') + '?can_copy=1',
                     'data-placeholder': _('Do not copy'),
                 }
             ),
             empty_label=_('Do not copy'),
             required=False,
         )
-        self.fields['copy_from_event'].widget.choices = self.fields[
-            'copy_from_event'
-        ].choices
+        self.fields['copy_from_event'].widget.choices = self.fields['copy_from_event'].choices
 
 
 class EventMetaValueForm(forms.ModelForm):
@@ -335,17 +299,10 @@ class EventMetaValueForm(forms.ModelForm):
                 choices=[
                     (
                         '',
-                        (
-                            _('Default ({value})').format(value=self.property.default)
-                            if self.property.default
-                            else ''
-                        ),
+                        (_('Default ({value})').format(value=self.property.default) if self.property.default else ''),
                     ),
                 ]
-                + [
-                    (a.strip(), a.strip())
-                    for a in self.property.allowed_values.splitlines()
-                ],
+                + [(a.strip(), a.strip()) for a in self.property.allowed_values.splitlines()],
             )
         else:
             self.fields['value'].label = self.property.name
@@ -391,27 +348,20 @@ class EventUpdateForm(I18nModelForm):
         if not self.change_slug:
             self.fields['slug'].widget.attrs['readonly'] = 'readonly'
         self.fields['location'].widget.attrs['rows'] = '3'
-        self.fields['location'].widget.attrs['placeholder'] = _(
-            'Sample Conference Center\nHeidelberg, Germany'
-        )
+        self.fields['location'].widget.attrs['placeholder'] = _('Sample Conference Center\nHeidelberg, Germany')
         if self.domain:
             self.fields['domain'] = forms.CharField(
                 max_length=255,
                 label=_('Custom domain'),
                 required=False,
-                help_text=_(
-                    'You need to configure the custom domain in the webserver beforehand.'
-                ),
+                help_text=_('You need to configure the custom domain in the webserver beforehand.'),
             )
         self.fields['sales_channels'] = forms.MultipleChoiceField(
             label=self.fields['sales_channels'].label,
             help_text=self.fields['sales_channels'].help_text,
             required=self.fields['sales_channels'].required,
             initial=self.fields['sales_channels'].initial,
-            choices=(
-                (c.identifier, c.verbose_name)
-                for c in get_all_sales_channels().values()
-            ),
+            choices=((c.identifier, c.verbose_name) for c in get_all_sales_channels().values()),
             widget=forms.CheckboxSelectMultiple,
         )
 
@@ -419,19 +369,9 @@ class EventUpdateForm(I18nModelForm):
         d = self.cleaned_data['domain']
         if d:
             if d == urlparse(settings.SITE_URL).hostname:
-                raise ValidationError(
-                    _('You cannot choose the base domain of this installation.')
-                )
-            if (
-                KnownDomain.objects.filter(domainname=d)
-                .exclude(event=self.instance.pk)
-                .exists()
-            ):
-                raise ValidationError(
-                    _(
-                        'This domain is already in use for a different event or organizer.'
-                    )
-                )
+                raise ValidationError(_('You cannot choose the base domain of this installation.'))
+            if KnownDomain.objects.filter(domainname=d).exclude(event=self.instance.pk).exists():
+                raise ValidationError(_('This domain is already in use for a different event or organizer.'))
         return d
 
     def save(self, commit=True):
@@ -440,10 +380,7 @@ class EventUpdateForm(I18nModelForm):
         if self.domain:
             current_domain = instance.domains.first()
             if self.cleaned_data['domain']:
-                if (
-                    current_domain
-                    and current_domain.domainname != self.cleaned_data['domain']
-                ):
+                if current_domain and current_domain.domainname != self.cleaned_data['domain']:
                     current_domain.delete()
                     KnownDomain.objects.create(
                         organizer=instance.organizer,
@@ -494,16 +431,10 @@ class EventUpdateForm(I18nModelForm):
         }
         widgets = {
             'date_from': SplitDateTimePickerWidget(),
-            'date_to': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_date_from_0'}
-            ),
-            'date_admission': SplitDateTimePickerWidget(
-                attrs={'data-date-default': '#id_date_from_0'}
-            ),
+            'date_to': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_date_from_0'}),
+            'date_admission': SplitDateTimePickerWidget(attrs={'data-date-default': '#id_date_from_0'}),
             'presale_start': SplitDateTimePickerWidget(),
-            'presale_end': SplitDateTimePickerWidget(
-                attrs={'data-date-after': '#id_presale_start_0'}
-            ),
+            'presale_end': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_presale_start_0'}),
             'sales_channels': CheckboxSelectMultiple(),
         }
 
@@ -707,9 +638,7 @@ class CancelSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.obj.settings.giftcard_expiry_years is not None:
-            self.fields[
-                'cancel_allow_user_paid_refund_as_giftcard'
-            ].help_text = gettext(
+            self.fields['cancel_allow_user_paid_refund_as_giftcard'].help_text = gettext(
                 'You have configured gift cards to be valid {} years plus the year the gift card is issued in.'
             ).format(self.obj.settings.giftcard_expiry_years)
 
@@ -784,9 +713,7 @@ class ProviderForm(SettingsForm):
                 v.set_event(self.obj)
 
             if hasattr(v, '_as_type'):
-                self.initial[k] = self.obj.settings.get(
-                    k, as_type=v._as_type, default=v.initial
-                )
+                self.initial[k] = self.obj.settings.get(k, as_type=v._as_type, default=v.initial)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -849,9 +776,7 @@ class InvoiceSettingsForm(SettingsForm):
             'sales channels.'
         ),
     )
-    invoice_renderer = forms.ChoiceField(
-        label=_('Invoice style'), required=True, choices=[]
-    )
+    invoice_renderer = forms.ChoiceField(label=_('Invoice style'), required=True, choices=[])
     invoice_language = forms.ChoiceField(
         widget=forms.Select,
         required=True,
@@ -863,24 +788,19 @@ class InvoiceSettingsForm(SettingsForm):
         event = kwargs.get('obj')
         super().__init__(*args, **kwargs)
         self.fields['invoice_renderer'].choices = [
-            (r.identifier, r.verbose_name)
-            for r in event.get_invoice_renderers().values()
+            (r.identifier, r.verbose_name) for r in event.get_invoice_renderers().values()
         ]
-        self.fields['invoice_numbers_prefix'].widget.attrs['placeholder'] = (
-            event.slug.upper() + '-'
-        )
+        self.fields['invoice_numbers_prefix'].widget.attrs['placeholder'] = event.slug.upper() + '-'
         if event.settings.invoice_numbers_prefix:
-            self.fields['invoice_numbers_prefix_cancellations'].widget.attrs[
-                'placeholder'
-            ] = event.settings.invoice_numbers_prefix
+            self.fields['invoice_numbers_prefix_cancellations'].widget.attrs['placeholder'] = (
+                event.settings.invoice_numbers_prefix
+            )
         else:
-            self.fields['invoice_numbers_prefix_cancellations'].widget.attrs[
-                'placeholder'
-            ] = event.slug.upper() + '-'
+            self.fields['invoice_numbers_prefix_cancellations'].widget.attrs['placeholder'] = event.slug.upper() + '-'
         locale_names = dict(settings.LANGUAGES)
-        self.fields['invoice_language'].choices = [
-            ('__user__', _("The user's language"))
-        ] + [(a, locale_names[a]) for a in event.settings.locales]
+        self.fields['invoice_language'].choices = [('__user__', _("The user's language"))] + [
+            (a, locale_names[a]) for a in event.settings.locales
+        ]
         self.fields['invoice_generate_sales_channels'].choices = (
             (c.identifier, c.verbose_name) for c in get_all_sales_channels().values()
         )
@@ -902,9 +822,7 @@ def multimail_validate(val):
 
 def contains_web_channel_validate(val):
     if 'web' not in val:
-        raise ValidationError(
-            _('The online shop must be selected to receive these emails.')
-        )
+        raise ValidationError(_('The online shop must be selected to receive these emails.'))
 
 
 class MailSettingsForm(SettingsForm):
@@ -917,31 +835,23 @@ class MailSettingsForm(SettingsForm):
     ]
 
     mail_sales_channel_placed_paid = forms.MultipleChoiceField(
-        choices=lambda: [
-            (ident, sc.verbose_name) for ident, sc in get_all_sales_channels().items()
-        ],
+        choices=lambda: [(ident, sc.verbose_name) for ident, sc in get_all_sales_channels().items()],
         label=_('Sales channels for checkout emails'),
         help_text=_(
             'The order placed and paid emails will only be send to orders from these sales channels. '
             'The online shop must be enabled.'
         ),
-        widget=forms.CheckboxSelectMultiple(
-            attrs={'class': 'scrolling-multiple-choice'}
-        ),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
         validators=[contains_web_channel_validate],
     )
 
     mail_sales_channel_download_reminder = forms.MultipleChoiceField(
-        choices=lambda: [
-            (ident, sc.verbose_name) for ident, sc in get_all_sales_channels().items()
-        ],
+        choices=lambda: [(ident, sc.verbose_name) for ident, sc in get_all_sales_channels().items()],
         label=_('Sales channels'),
         help_text=_(
             'This email will only be send to orders from these sales channels. The online shop must be enabled.'
         ),
-        widget=forms.CheckboxSelectMultiple(
-            attrs={'class': 'scrolling-multiple-choice'}
-        ),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
         validators=[contains_web_channel_validate],
     )
 
@@ -956,17 +866,11 @@ class MailSettingsForm(SettingsForm):
         label=_('Signature'),
         required=False,
         widget=I18nTextarea,
-        help_text=_(
-            'This will be attached to every email. Available placeholders: {event}'
-        ),
+        help_text=_('This will be attached to every email. Available placeholders: {event}'),
         validators=[PlaceholderValidator(['{event}'])],
-        widget_kwargs={
-            'attrs': {'rows': '4', 'placeholder': _('e.g. your contact details')}
-        },
+        widget_kwargs={'attrs': {'rows': '4', 'placeholder': _('e.g. your contact details')}},
     )
-    mail_html_renderer = forms.ChoiceField(
-        label=_('HTML mail renderer'), required=True, choices=[]
-    )
+    mail_html_renderer = forms.ChoiceField(label=_('HTML mail renderer'), required=True, choices=[])
     mail_text_order_placed = I18nFormField(
         label=_('Text sent to order contact address'),
         required=False,
@@ -1125,9 +1029,7 @@ class MailSettingsForm(SettingsForm):
     )
     smtp_use_custom = forms.BooleanField(
         label=_('Use Custom Email'),
-        help_text=_(
-            'All mail related to your event will be sent over your specified email gateway.'
-        ),
+        help_text=_('All mail related to your event will be sent over your specified email gateway.'),
         required=False,
     )
     send_grid_api_key = forms.CharField(
@@ -1173,9 +1075,7 @@ class MailSettingsForm(SettingsForm):
         help_text=_('Commonly enabled on port 587.'),
         required=False,
     )
-    smtp_use_ssl = forms.BooleanField(
-        label=_('Use SSL'), help_text=_('Commonly enabled on port 465.'), required=False
-    )
+    smtp_use_ssl = forms.BooleanField(label=_('Use SSL'), help_text=_('Commonly enabled on port 465.'), required=False)
     base_context = {
         'mail_text_order_placed': ['event', 'order', 'payment'],
         'mail_text_order_placed_attendee': ['event', 'order', 'position'],
@@ -1199,12 +1099,7 @@ class MailSettingsForm(SettingsForm):
     }
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = [
-            '{%s}' % p
-            for p in sorted(
-                get_available_placeholders(self.event, base_parameters).keys()
-            )
-        ]
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)
@@ -1216,8 +1111,7 @@ class MailSettingsForm(SettingsForm):
         self.event = event = kwargs.get('obj')
         super().__init__(*args, **kwargs)
         self.fields['mail_html_renderer'].choices = [
-            (r.identifier, r.verbose_name)
-            for r in event.get_html_mail_renderers().values()
+            (r.identifier, r.verbose_name) for r in event.get_html_mail_renderers().values()
         ]
         for k, v in self.base_context.items():
             self._set_field_placeholders(k, v)
@@ -1236,11 +1130,7 @@ class MailSettingsForm(SettingsForm):
             # Python's smtplib does not support password-less schemes anyway.
             data['smtp_password'] = self.initial.get('smtp_password')
         if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
-            raise ValidationError(
-                _(
-                    'You can activate either SSL or STARTTLS security, but not both at the same time.'
-                )
-            )
+            raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))
 
 
 class TicketSettingsForm(SettingsForm):
@@ -1265,8 +1155,7 @@ class TicketSettingsForm(SettingsForm):
         event = kwargs.get('obj')
         super().__init__(*args, **kwargs)
         self.fields['ticket_secret_generator'].choices = [
-            (r.identifier, r.verbose_name)
-            for r in event.ticket_secret_generators.values()
+            (r.identifier, r.verbose_name) for r in event.ticket_secret_generators.values()
         ]
 
     def prepare_fields(self):
@@ -1337,12 +1226,8 @@ class TaxRuleLineForm(I18nForm):
             ('block', _('Sale not allowed')),
         ],
     )
-    rate = forms.DecimalField(
-        label=_('Deviating tax rate'), max_digits=10, decimal_places=2, required=False
-    )
-    invoice_text = I18nFormField(
-        label=_('Text on invoice'), required=False, widget=I18nTextInput
-    )
+    rate = forms.DecimalField(label=_('Deviating tax rate'), max_digits=10, decimal_places=2, required=False)
+    invoice_text = I18nFormField(label=_('Text on invoice'), required=False, widget=I18nTextInput)
 
 
 class I18nBaseFormSet(I18nFormSetMixin, forms.BaseFormSet):
@@ -1355,9 +1240,7 @@ class I18nBaseFormSet(I18nFormSetMixin, forms.BaseFormSet):
         super().__init__(*args, **kwargs)
 
 
-TaxRuleLineFormSet = formset_factory(
-    TaxRuleLineForm, formset=I18nBaseFormSet, can_order=True, can_delete=True, extra=0
-)
+TaxRuleLineFormSet = formset_factory(TaxRuleLineForm, formset=I18nBaseFormSet, can_order=True, can_delete=True, extra=0)
 
 
 class TaxRuleForm(I18nModelForm):
@@ -1378,9 +1261,7 @@ class WidgetCodeForm(forms.Form):
         required=False,
         queryset=SubEvent.objects.none(),
     )
-    language = forms.ChoiceField(
-        label=_('Language'), required=True, choices=settings.LANGUAGES
-    )
+    language = forms.ChoiceField(label=_('Language'), required=True, choices=settings.LANGUAGES)
     voucher = forms.CharField(
         label=_('Pre-selected voucher'),
         required=False,
@@ -1408,9 +1289,7 @@ class WidgetCodeForm(forms.Form):
         else:
             del self.fields['subevent']
 
-        self.fields['language'].choices = [
-            (l, n) for l, n in settings.LANGUAGES if l in self.event.settings.locales
-        ]
+        self.fields['language'].choices = [(l, n) for l, n in settings.LANGUAGES if l in self.event.settings.locales]
 
     def clean_voucher(self):
         v = self.cleaned_data.get('voucher')
@@ -1449,9 +1328,7 @@ class EventDeleteForm(forms.Form):
 class QuickSetupForm(I18nForm):
     show_quota_left = forms.BooleanField(
         label=_('Show number of tickets left'),
-        help_text=_(
-            'Publicly show how many tickets of a certain type are still available.'
-        ),
+        help_text=_('Publicly show how many tickets of a certain type are still available.'),
         required=False,
     )
     waiting_list_enabled = forms.BooleanField(
@@ -1465,24 +1342,20 @@ class QuickSetupForm(I18nForm):
     )
     ticket_download = forms.BooleanField(
         label=_('Ticket downloads'),
-        help_text=_(
-            'Your customers will be able to download their tickets in PDF format.'
-        ),
+        help_text=_('Your customers will be able to download their tickets in PDF format.'),
         required=False,
     )
     attendee_names_required = forms.BooleanField(
         label=_('Require all attendees to fill in their names'),
         help_text=_(
-            'By default, we will ask for names but not require them. You can turn this off completely in the '
-            'settings.'
+            'By default, we will ask for names but not require them. You can turn this off completely in the settings.'
         ),
         required=False,
     )
     imprint_url = forms.URLField(
         label=_('Imprint URL'),
         help_text=_(
-            'This should point e.g. to a part of your website that has your contact details and legal '
-            'information.'
+            'This should point e.g. to a part of your website that has your contact details and legal information.'
         ),
         required=False,
     )
@@ -1532,17 +1405,11 @@ class QuickSetupForm(I18nForm):
 
     def __init__(self, *args, **kwargs):
         self.obj = kwargs.pop('event', None)
-        self.locales = (
-            self.obj.settings.get('locales')
-            if self.obj
-            else kwargs.pop('locales', None)
-        )
+        self.locales = self.obj.settings.get('locales') if self.obj else kwargs.pop('locales', None)
         kwargs['locales'] = self.locales
         super().__init__(*args, **kwargs)
         plugins_active = self.obj.get_plugins()
-        if ('eventyay_stripe' not in plugins_active) or (
-            not self.obj.settings.payment_stripe_connect_client_id
-        ):
+        if ('eventyay_stripe' not in plugins_active) or (not self.obj.settings.payment_stripe_connect_client_id):
             del self.fields['payment_stripe__enabled']
         if 'pretix.plugins.banktransfer' not in plugins_active:
             del self.fields['payment_banktransfer__enabled']

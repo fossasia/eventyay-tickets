@@ -39,16 +39,12 @@ class OAuthApplicationRegistrationView(ApplicationRegistration):
     template_name = 'pretixcontrol/oauth/app_register.html'
 
     def get_form_class(self):
-        return forms.modelform_factory(
-            get_application_model(), fields=('name', 'redirect_uris')
-        )
+        return forms.modelform_factory(get_application_model(), fields=('name', 'redirect_uris'))
 
     def form_valid(self, form):
         form.instance.client_type = 'confidential'
         form.instance.authorization_grant_type = 'authorization-code'
-        oauth_application_registered.send(
-            sender=self.request, user=self.request.user, application=form.instance
-        )
+        oauth_application_registered.send(sender=self.request, user=self.request.user, application=form.instance)
         return super().form_valid(form)
 
 
@@ -84,9 +80,7 @@ class OAuthApplicationRollView(ApplicationDetail):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        messages.success(
-            request, _('A new client secret has been generated and is now effective.')
-        )
+        messages.success(request, _('A new client secret has been generated and is now effective.'))
         self.object.client_secret = generate_client_secret()
         self.object.save()
         return HttpResponseRedirect(self.object.get_absolute_url())
@@ -146,7 +140,5 @@ class AuthorizationRevokeView(DetailView):
             rt.revoke()
         o.delete()
 
-        messages.success(
-            request, _('Access for the selected application has been revoked.')
-        )
+        messages.success(request, _('Access for the selected application has been revoked.'))
         return redirect(self.success_url)

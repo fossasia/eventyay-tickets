@@ -10,9 +10,7 @@ from pretix.multidomain.models import KnownDomain
 @pytest.fixture
 def env():
     o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
-    event = Event.objects.create(
-        organizer=o, name='MRMCD2015', slug='2015', date_from=now(), live=True
-    )
+    event = Event.objects.create(organizer=o, name='MRMCD2015', slug='2015', date_from=now(), live=True)
     event.get_cache().clear()
     settings.SITE_URL = 'http://example.com'
     return o, event
@@ -103,9 +101,7 @@ def test_organizer_with_org_domain_on_main_domain(env, client):
 @pytest.mark.django_db
 def test_event_on_org_domain_only_with_wrong_organizer(env, client):
     organizer2 = Organizer.objects.create(name='Dummy', slug='dummy')
-    Event.objects.create(
-        organizer=organizer2, name='D1234', slug='1234', date_from=now(), live=True
-    )
+    Event.objects.create(organizer=organizer2, name='D1234', slug='1234', date_from=now(), live=True)
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
     r = client.get('/dummy/1234/', HTTP_HOST='foobar')
     assert r.status_code == 404
@@ -114,9 +110,7 @@ def test_event_on_org_domain_only_with_wrong_organizer(env, client):
 @pytest.mark.django_db
 def test_unknown_event_on_org_domain(env, client):
     organizer2 = Organizer.objects.create(name='Dummy', slug='dummy')
-    Event.objects.create(
-        organizer=organizer2, name='D1234', slug='1234', date_from=now(), live=True
-    )
+    Event.objects.create(organizer=organizer2, name='D1234', slug='1234', date_from=now(), live=True)
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
     r = client.get('/1234/', HTTP_HOST='foobar')
     assert r.status_code == 404
@@ -184,9 +178,7 @@ def test_cookie_samesite_none(env, client, agent):
         HTTP_USER_AGENT=agent,
         secure=True,
     )
-    r = client.get(
-        '/mrmcd/2015/', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True
-    )
+    r = client.get('/mrmcd/2015/', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True)
     assert r.client.cookies['pretix_csrftoken']['samesite'] == 'None'
     assert r.client.cookies['pretix_session']['samesite'] == 'None'
 
@@ -214,7 +206,5 @@ def test_cookie_samesite_none_only_on_compatible_browsers(env, client, agent):
         HTTP_USER_AGENT=agent,
         secure=True,
     )
-    r = client.get(
-        '/mrmcd/2015/', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True
-    )
+    r = client.get('/mrmcd/2015/', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True)
     assert not r.client.cookies['pretix_csrftoken'].get('samesite')

@@ -11,9 +11,7 @@ pyproject = toml.load('/pretix/pyproject.toml')
 # If github_token is None, remove the eventyay-stripe and eventyay-paypal dependency
 if not github_token:
     pyproject['project']['dependencies'] = [
-        dep
-        for dep in pyproject['project']['dependencies']
-        if not dep.startswith('eventyay-stripe')
+        dep for dep in pyproject['project']['dependencies'] if not dep.startswith('eventyay-stripe')
     ]
     pyproject['project']['dependencies'] = [
         dep

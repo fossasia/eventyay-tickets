@@ -16,18 +16,12 @@ from pretix.control.forms import SingleLanguageWidget
 class UserSettingsForm(forms.ModelForm):
     error_messages = {
         'duplicate_identifier': _(
-            'There already is an account associated with this e-mail address. '
-            'Please choose a different one.'
+            'There already is an account associated with this e-mail address. Please choose a different one.'
         ),
-        'pw_current': _(
-            'Please enter your current password if you want to change your e-mail '
-            'address or password.'
-        ),
+        'pw_current': _('Please enter your current password if you want to change your e-mail address or password.'),
         'pw_current_wrong': _('The current password you entered was not correct.'),
         'pw_mismatch': _('Please enter the same password twice'),
-        'rate_limit': _(
-            'For security reasons, please wait 5 minutes before you try again.'
-        ),
+        'rate_limit': _('For security reasons, please wait 5 minutes before you try again.'),
     }
 
     old_pw = forms.CharField(
@@ -97,9 +91,7 @@ class UserSettingsForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email']
-        if User.objects.filter(
-            Q(email__iexact=email) & ~Q(pk=self.instance.pk)
-        ).exists():
+        if User.objects.filter(Q(email__iexact=email) & ~Q(pk=self.instance.pk)).exists():
             raise forms.ValidationError(
                 self.error_messages['duplicate_identifier'],
                 code='duplicate_identifier',
@@ -109,18 +101,14 @@ class UserSettingsForm(forms.ModelForm):
     def clean_new_pw(self):
         password1 = self.cleaned_data.get('new_pw', '')
         if password1 and validate_password(password1, user=self.user) is not None:
-            raise forms.ValidationError(
-                _(password_validators_help_texts()), code='pw_invalid'
-            )
+            raise forms.ValidationError(_(password_validators_help_texts()), code='pw_invalid')
         return password1
 
     def clean_new_pw_repeat(self):
         password1 = self.cleaned_data.get('new_pw')
         password2 = self.cleaned_data.get('new_pw_repeat')
         if password1 and password1 != password2:
-            raise forms.ValidationError(
-                self.error_messages['pw_mismatch'], code='pw_mismatch'
-            )
+            raise forms.ValidationError(self.error_messages['pw_mismatch'], code='pw_mismatch')
 
     def clean(self):
         password1 = self.cleaned_data.get('new_pw')
@@ -128,9 +116,7 @@ class UserSettingsForm(forms.ModelForm):
         old_pw = self.cleaned_data.get('old_pw')
 
         if (password1 or email != self.user.email) and not old_pw:
-            raise forms.ValidationError(
-                self.error_messages['pw_current'], code='pw_current'
-            )
+            raise forms.ValidationError(self.error_messages['pw_current'], code='pw_current')
 
         if password1:
             self.instance.set_password(password1)

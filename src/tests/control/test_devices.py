@@ -13,9 +13,7 @@ def organizer():
 
 @pytest.fixture
 def event(organizer):
-    event = Event.objects.create(
-        organizer=organizer, name='Dummy', slug='dummy', date_from=now()
-    )
+    event = Event.objects.create(organizer=organizer, name='Dummy', slug='dummy', date_from=now())
     return event
 
 
@@ -33,9 +31,7 @@ def admin_user(admin_team):
 
 @pytest.fixture
 def admin_team(organizer):
-    return Team.objects.create(
-        organizer=organizer, can_change_organizer_settings=True, name='Admin team'
-    )
+    return Team.objects.create(organizer=organizer, can_change_organizer_settings=True, name='Admin team')
 
 
 @pytest.mark.django_db
@@ -93,8 +89,6 @@ def test_revoke_device(event, admin_user, admin_team, device, client):
     device.save()
 
     client.get('/control/organizer/dummy/device/{}/revoke'.format(device.pk))
-    client.post(
-        '/control/organizer/dummy/device/{}/revoke'.format(device.pk), {}, follow=True
-    )
+    client.post('/control/organizer/dummy/device/{}/revoke'.format(device.pk), {}, follow=True)
     device.refresh_from_db()
     assert device.revoked

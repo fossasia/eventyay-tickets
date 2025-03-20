@@ -13,17 +13,13 @@ def organizer():
 
 @pytest.fixture
 def event(organizer):
-    event = Event.objects.create(
-        organizer=organizer, name='Dummy', slug='dummy', date_from=now()
-    )
+    event = Event.objects.create(organizer=organizer, name='Dummy', slug='dummy', date_from=now())
     return event
 
 
 @pytest.fixture
 def admin_team(organizer):
-    return Team.objects.create(
-        organizer=organizer, can_change_teams=True, name='Admin team'
-    )
+    return Team.objects.create(organizer=organizer, can_change_teams=True, name='Admin team')
 
 
 @pytest.fixture
@@ -274,9 +270,7 @@ def test_remove_team(event, admin_user, admin_team, client):
 
     with scopes_disabled():
         t2 = Team.objects.create(organizer=event.organizer, name='Admin team 2')
-    resp = client.post(
-        '/control/organizer/dummy/team/{}/delete'.format(t2.pk), {}, follow=True
-    )
+    resp = client.post('/control/organizer/dummy/team/{}/delete'.format(t2.pk), {}, follow=True)
     with scopes_disabled():
         assert Team.objects.count() == 1
     assert 'alert-success' in resp.content.decode()
@@ -286,9 +280,7 @@ def test_remove_team(event, admin_user, admin_team, client):
 def test_remove_last_admin_team(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
 
-    resp = client.post(
-        '/control/organizer/dummy/team/{}/delete'.format(admin_team.pk), {}, follow=True
-    )
+    resp = client.post('/control/organizer/dummy/team/{}/delete'.format(admin_team.pk), {}, follow=True)
     with scopes_disabled():
         assert Team.objects.count() == 1
     assert 'alert-danger' in resp.content.decode()

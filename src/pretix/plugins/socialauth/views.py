@@ -31,17 +31,11 @@ class OAuthLoginView(View):
         self.set_oauth2_params(request)
 
         gs = GlobalSettingsObject()
-        client_id = (
-            gs.settings.get('login_providers', as_type=dict)
-            .get(provider, {})
-            .get('client_id')
-        )
+        client_id = gs.settings.get('login_providers', as_type=dict).get(provider, {}).get('client_id')
         provider_instance = adapter.get_provider(request, provider, client_id=client_id)
 
         base_url = provider_instance.get_login_url(request)
-        query_params = {
-            'next': build_absolute_uri('plugins:socialauth:social.oauth.return')
-        }
+        query_params = {'next': build_absolute_uri('plugins:socialauth:social.oauth.return')}
         parsed_url = urlparse(base_url)
         updated_url = parsed_url._replace(query=urlencode(query_params))
         return redirect(urlunparse(updated_url))
@@ -63,9 +57,7 @@ class OAuthLoginView(View):
             return
 
         params = parse_qs(parsed.query)
-        sanitized_params = {
-            k: v[0] for k, v in params.items() if k in OAuth2Params.model_fields.keys()
-        }
+        sanitized_params = {k: v[0] for k, v in params.items() if k in OAuth2Params.model_fields.keys()}
 
         try:
             oauth2_params = OAuth2Params.model_validate(sanitized_params)
@@ -91,9 +83,7 @@ class OAuthReturnView(View):
 
             return response
         except AttributeError as e:
-            messages.error(
-                request, _('Error while authorizing: no email address available.')
-            )
+            messages.error(request, _('Error while authorizing: no email address available.'))
             logger.error('Error while authorizing: %s', e)
             return redirect('control:auth.login')
 
@@ -146,9 +136,7 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['login_providers'] = self.gs.settings.get(
-            'login_providers', as_type=dict
-        )
+        context['login_providers'] = self.gs.settings.get('login_providers', as_type=dict)
         context['tickets_domain'] = urljoin(settings.SITE_URL, settings.BASE_PATH)
         return context
 
@@ -184,9 +172,7 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
     def update_provider_state(self, request, provider, login_providers):
         setting_state = request.POST.get(f'{provider}_login', '').lower()
         if setting_state in [s.value for s in self.SettingState]:
-            login_providers[provider]['state'] = (
-                setting_state == self.SettingState.ENABLED
-            )
+            login_providers[provider]['state'] = setting_state == self.SettingState.ENABLED
 
     def get_success_url(self) -> str:
         return reverse('plugins:socialauth:admin.global.social.auth.settings')

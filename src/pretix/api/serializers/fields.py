@@ -15,17 +15,12 @@ class ListMultipleChoiceField(serializers.MultipleChoiceField):
         if not self.allow_empty and len(data) == 0:
             self.fail('empty')
 
-        internal_value_data = [
-            super(serializers.MultipleChoiceField, self).to_internal_value(item)
-            for item in data
-        ]
+        internal_value_data = [super(serializers.MultipleChoiceField, self).to_internal_value(item) for item in data]
 
         return remove_duplicates_from_list(internal_value_data)
 
     def to_representation(self, value):
-        representation_data = [
-            self.choice_strings_to_values.get(str(item), item) for item in value
-        ]
+        representation_data = [self.choice_strings_to_values.get(str(item), item) for item in value]
 
         return remove_duplicates_from_list(representation_data)
 

@@ -198,16 +198,12 @@ class BankTransfer(BasePaymentProvider):
 
     @property
     def public_name(self):
-        return str(
-            self.settings.get('public_name', as_type=LazyI18nString)
-            or self.verbose_name
-        )
+        return str(self.settings.get('public_name', as_type=LazyI18nString) or self.verbose_name)
 
     @property
     def test_mode_message(self):
         return _(
-            'In test mode, you can just manually mark this order as paid in the backend after it has been '
-            'created.'
+            'In test mode, you can just manually mark this order as paid in the backend after it has been created.'
         )
 
     @property
@@ -216,10 +212,7 @@ class BankTransfer(BasePaymentProvider):
 
     @property
     def settings_form_fields(self):
-        d = OrderedDict(
-            list(super().settings_form_fields.items())
-            + list(BankTransfer.form_fields().items())
-        )
+        d = OrderedDict(list(super().settings_form_fields.items()) + list(BankTransfer.form_fields().items()))
         d.move_to_end('bank_details', last=False)
         d.move_to_end('bank_details_sepa_bank', last=False)
         d.move_to_end('bank_details_sepa_bic', last=False)
@@ -240,20 +233,12 @@ class BankTransfer(BasePaymentProvider):
             ):
                 if not cleaned_data.get('payment_banktransfer_%s' % f):
                     raise ValidationError(
-                        {
-                            'payment_banktransfer_%s' % f: _(
-                                'Please fill out your bank account details.'
-                            )
-                        }
+                        {'payment_banktransfer_%s' % f: _('Please fill out your bank account details.')}
                     )
         else:
             if not cleaned_data.get('payment_banktransfer_bank_details'):
                 raise ValidationError(
-                    {
-                        'payment_banktransfer_bank_details': _(
-                            'Please enter your bank account details.'
-                        )
-                    }
+                    {'payment_banktransfer_bank_details': _('Please enter your bank account details.')}
                 )
         return cleaned_data
 
@@ -321,22 +306,16 @@ class BankTransfer(BasePaymentProvider):
             'order': payment.order,
             'amount': payment.amount,
             'settings': self.settings,
-            'pending_description': self.settings.get(
-                'pending_description', as_type=LazyI18nString
-            ),
+            'pending_description': self.settings.get('pending_description', as_type=LazyI18nString),
             'details': self.settings.get('bank_details', as_type=LazyI18nString),
         }
         return template.render(ctx)
 
-    def payment_control_render(
-        self, request: HttpRequest, payment: OrderPayment
-    ) -> str:
+    def payment_control_render(self, request: HttpRequest, payment: OrderPayment) -> str:
         warning = None
         if not self.payment_refund_supported(payment):
             warning = _('Invalid IBAN/BIC')
-        return self._render_control_info(
-            request, payment.order, payment.info_data, warning=warning
-        )
+        return self._render_control_info(request, payment.order, payment.info_data, warning=warning)
 
     def _render_control_info(self, request, order, info_data, **extra_context):
         template = get_template('pretixplugins/banktransfer/control.html')
@@ -353,11 +332,7 @@ class BankTransfer(BasePaymentProvider):
     def _code(self, order):
         prefix = self.settings.get('prefix', default='')
         li = order.invoices.last()
-        invoice_number = (
-            li.number
-            if self.settings.get('include_invoice_number', as_type=bool) and li
-            else ''
-        )
+        invoice_number = li.number if self.settings.get('include_invoice_number', as_type=bool) and li else ''
 
         code = ' '.join((prefix, order.full_code, invoice_number)).strip(' ')
 
@@ -389,11 +364,7 @@ class BankTransfer(BasePaymentProvider):
         except ValidationError:
             return False
         else:
-            return not any(
-                iban.startswith(b)
-                for b in (self.settings.refund_iban_blocklist or '').splitlines()
-                if b
-            )
+            return not any(iban.startswith(b) for b in (self.settings.refund_iban_blocklist or '').splitlines() if b)
 
     def payment_partial_refund_supported(self, payment: OrderPayment) -> bool:
         return self.payment_refund_supported(payment)
@@ -416,9 +387,7 @@ class BankTransfer(BasePaymentProvider):
         if self.payment_refund_supported(payment):
             try:
                 iban = self.norm(pi['iban'])
-                return gettext('Bank account {iban}').format(
-                    iban=iban[0:2] + '****' + iban[-4:]
-                )
+                return gettext('Bank account {iban}').format(iban=iban[0:2] + '****' + iban[-4:])
             except:
                 pass
         return super().payment_presale_render(payment)
@@ -432,16 +401,12 @@ class BankTransfer(BasePaymentProvider):
             return  # we're already done here
 
         if refund.payment is None:
-            raise ValueError(
-                _('Can only create a bank transfer refund from an existing payment.')
-            )
+            raise ValueError(_('Can only create a bank transfer refund from an existing payment.'))
 
         refund.info_data = {
             'payer': refund.payment.info_data['payer'],
             'iban': self.norm(refund.payment.info_data['iban']),
-            'bic': self.norm(refund.payment.info_data['bic'])
-            if refund.payment.info_data.get('bic')
-            else None,
+            'bic': self.norm(refund.payment.info_data['bic']) if refund.payment.info_data.get('bic') else None,
         }
         refund.save(update_fields=['info'])
 
@@ -481,26 +446,18 @@ class BankTransfer(BasePaymentProvider):
     def new_refund_control_form_render(self, request: HttpRequest, order: Order) -> str:
         f = self.NewRefundForm(
             prefix='refund-banktransfer',
-            data=request.POST
-            if request.method == 'POST' and request.POST.get('refund-banktransfer-iban')
-            else None,
+            data=request.POST if request.method == 'POST' and request.POST.get('refund-banktransfer-iban') else None,
         )
-        template = get_template(
-            'pretixplugins/banktransfer/new_refund_control_form.html'
-        )
+        template = get_template('pretixplugins/banktransfer/new_refund_control_form.html')
         ctx = {
             'form': f,
         }
         return template.render(ctx)
 
-    def new_refund_control_form_process(
-        self, request: HttpRequest, amount: Decimal, order: Order
-    ) -> OrderRefund:
+    def new_refund_control_form_process(self, request: HttpRequest, amount: Decimal, order: Order) -> OrderRefund:
         f = self.NewRefundForm(prefix='refund-banktransfer', data=request.POST)
         if not f.is_valid():
-            raise ValidationError(
-                _('Your input was invalid, please see below for details.')
-            )
+            raise ValidationError(_('Your input was invalid, please see below for details.'))
         d = {
             'payer': f.cleaned_data['payer'],
             'iban': self.norm(f.cleaned_data['iban']),

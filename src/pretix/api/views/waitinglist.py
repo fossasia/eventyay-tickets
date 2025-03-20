@@ -14,9 +14,7 @@ from pretix.base.models.waitinglist import WaitingListException
 with scopes_disabled():
 
     class WaitingListFilter(FilterSet):
-        has_voucher = django_filters.rest_framework.BooleanFilter(
-            method='has_voucher_qs'
-        )
+        has_voucher = django_filters.rest_framework.BooleanFilter(method='has_voucher_qs')
 
         def has_voucher_qs(self, queryset, name, value):
             return queryset.filter(voucher__isnull=not value)
@@ -54,9 +52,7 @@ class WaitingListViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         if serializer.instance.voucher:
-            raise PermissionDenied(
-                'This entry can not be changed as it has already been assigned a voucher.'
-            )
+            raise PermissionDenied('This entry can not be changed as it has already been assigned a voucher.')
         serializer.save(event=self.request.event)
         serializer.instance.log_action(
             'pretix.event.orders.waitinglist.changed',
@@ -66,9 +62,7 @@ class WaitingListViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         if instance.voucher:
-            raise PermissionDenied(
-                'This entry can not be deleted as it has already been assigned a voucher.'
-            )
+            raise PermissionDenied('This entry can not be deleted as it has already been assigned a voucher.')
 
         instance.log_action(
             'pretix.event.orders.waitinglist.deleted',

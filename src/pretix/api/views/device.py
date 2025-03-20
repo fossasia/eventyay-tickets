@@ -66,16 +66,12 @@ class InitializeView(APIView):
         serializer.is_valid(raise_exception=True)
 
         try:
-            device = Device.objects.get(
-                initialization_token=serializer.validated_data.get('token')
-            )
+            device = Device.objects.get(initialization_token=serializer.validated_data.get('token'))
         except Device.DoesNotExist:
             raise ValidationError({'token': ['Unknown initialization token.']})
 
         if device.initialized:
-            raise ValidationError(
-                {'token': ['This initialization token has already been used.']}
-            )
+            raise ValidationError({'token': ['This initialization token has already been used.']})
 
         device.initialized = now()
         device.hardware_brand = serializer.validated_data.get('hardware_brand')
@@ -85,9 +81,7 @@ class InitializeView(APIView):
         device.api_token = generate_api_token()
         device.save()
 
-        device.log_action(
-            'pretix.device.initialized', data=serializer.validated_data, auth=device
-        )
+        device.log_action('pretix.device.initialized', data=serializer.validated_data, auth=device)
 
         serializer = DeviceSerializer(device)
         return Response(serializer.data)
@@ -105,9 +99,7 @@ class UpdateView(APIView):
         device.software_brand = serializer.validated_data.get('software_brand')
         device.software_version = serializer.validated_data.get('software_version')
         device.save()
-        device.log_action(
-            'pretix.device.updated', data=serializer.validated_data, auth=device
-        )
+        device.log_action('pretix.device.updated', data=serializer.validated_data, auth=device)
 
         serializer = DeviceSerializer(device)
         return Response(serializer.data)
@@ -154,9 +146,7 @@ class EventSelectionView(APIView):
             .order_by('first_date')
         )
         if self.request.auth.gate:
-            has_cl = CheckinList.objects.filter(
-                event=OuterRef('pk'), gates__in=[self.request.auth.gate]
-            )
+            has_cl = CheckinList.objects.filter(event=OuterRef('pk'), gates__in=[self.request.auth.gate])
             qs = qs.annotate(has_cl=Exists(has_cl)).filter(has_cl=True)
         return qs
 
@@ -190,13 +180,9 @@ class EventSelectionView(APIView):
         current_event = None
         current_subevent = None
         if 'current_event' in request.query_params:
-            current_event = device.organizer.events.filter(
-                slug=request.query_params['current_event']
-            ).first()
+            current_event = device.organizer.events.filter(slug=request.query_params['current_event']).first()
             if current_event and 'current_subevent' in request.query_params:
-                current_subevent = current_event.subevents.filter(
-                    pk=request.query_params['current_subevent']
-                ).first()
+                current_subevent = current_event.subevents.filter(pk=request.query_params['current_subevent']).first()
             if current_event and current_event.has_subevents and not current_subevent:
                 current_event = None
 
@@ -254,11 +240,7 @@ class EventSelectionView(APIView):
             return self._suggest_event(current_event, upcoming_ev)
 
         # Both last and next event are today, we switch over in the middle
-        if (
-            now()
-            > last_started_ev.last_date
-            + (upcoming_ev.first_date - last_started_ev.last_date) / 2
-        ):
+        if now() > last_started_ev.last_date + (upcoming_ev.first_date - last_started_ev.last_date) / 2:
             return self._suggest_event(current_event, upcoming_ev)
         else:
             return self._suggest_event(current_event, last_started_ev)
@@ -270,9 +252,7 @@ class EventSelectionView(APIView):
                 pk=self.request.query_params['current_checkinlist']
             ).first()
         if isinstance(ev, SubEvent):
-            checkinlist_qs = ev.event.checkin_lists.filter(
-                Q(subevent__isnull=True) | Q(subevent=ev)
-            )
+            checkinlist_qs = ev.event.checkin_lists.filter(Q(subevent__isnull=True) | Q(subevent=ev))
         else:
             checkinlist_qs = ev.checkin_lists
 
@@ -281,17 +261,13 @@ class EventSelectionView(APIView):
 
         checkinlist = None
         if current_checkinlist:
-            checkinlist = checkinlist_qs.filter(
-                Q(name=current_checkinlist.name) | Q(pk=current_checkinlist.pk)
-            ).first()
+            checkinlist = checkinlist_qs.filter(Q(name=current_checkinlist.name) | Q(pk=current_checkinlist.pk)).first()
         if not checkinlist:
             checkinlist = checkinlist_qs.first()
         r = {
             'event': {
                 'slug': ev.event.slug if isinstance(ev, SubEvent) else ev.slug,
-                'name': str(ev.event.name)
-                if isinstance(ev, SubEvent)
-                else str(ev.name),
+                'name': str(ev.event.name) if isinstance(ev, SubEvent) else str(ev.name),
             },
             'subevent': ev.pk if isinstance(ev, SubEvent) else None,
             'checkinlist': checkinlist.pk if checkinlist else None,

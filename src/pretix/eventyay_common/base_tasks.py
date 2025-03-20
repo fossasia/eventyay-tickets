@@ -65,9 +65,7 @@ class CreateWorldTask(Task):
             logger.error('Event does not exist: %s', event_slug)
             raise ValueError(f"Event with slug '{event_slug}' does not exist")
 
-    def save_video_settings_information(
-        self, event_id: str, video_settings: dict
-    ) -> None:
+    def save_video_settings_information(self, event_id: str, video_settings: dict) -> None:
         """
         Save video configuration settings for an event.
 
@@ -81,9 +79,7 @@ class CreateWorldTask(Task):
         try:
             with scopes_disabled():
                 event_instance = Event.objects.get(slug=event_id)
-                video_config_form = VenuelessSettingsForm(
-                    data=video_settings, obj=event_instance
-                )
+                video_config_form = VenuelessSettingsForm(data=video_settings, obj=event_instance)
                 if video_config_form.is_valid():
                     video_config_form.save()
                 else:
@@ -92,9 +88,7 @@ class CreateWorldTask(Task):
                         'Video integration configuration failed - Validation errors: %s',
                         errors,
                     )
-                    raise ValueError(
-                        f'Failed to validate video integration settings: {errors}'
-                    )
+                    raise ValueError(f'Failed to validate video integration settings: {errors}')
         except Event.DoesNotExist:
             logger.error('Event does not exist: %s', event_id)
             raise ValueError(f"Event with ID '{event_id}' does not exist")
@@ -154,9 +148,7 @@ class CreateWorldTask(Task):
         """
         plugin_name = 'pretix_venueless'
         if not self.check_installed_plugin(plugin_name):
-            logger.error(
-                'Video integration configuration failed - Plugin not installed'
-            )
+            logger.error('Video integration configuration failed - Plugin not installed')
             raise ValueError(f"Plugin '{plugin_name}' is not installed")
 
         event_id = world_data.get('id')

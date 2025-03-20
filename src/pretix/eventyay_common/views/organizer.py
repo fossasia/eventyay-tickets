@@ -30,12 +30,8 @@ class OrganizerList(PaginationMixin, ListView):
         qs = Organizer.objects.all()
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
-        if not self.request.user.has_active_staff_session(
-            self.request.session.session_key
-        ):
-            qs = qs.filter(
-                pk__in=self.request.user.teams.values_list('organizer', flat=True)
-            )
+        if not self.request.user.has_active_staff_session(self.request.session.session_key):
+            qs = qs.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
         return qs
 
     def get_context_data(self, **kwargs):
@@ -84,9 +80,7 @@ class OrganizerCreate(CreateView):
             'slug': self.object.slug,
             'action': 'create',
         }
-        send_organizer_webhook.delay(
-            user_id=self.request.user.id, organizer=organizer_data
-        )
+        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
 
         team.members.add(self.request.user)
         return response
@@ -114,9 +108,7 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['talk_edit_url'] = urljoin(
-            settings.TALK_HOSTNAME, f'orga/organiser/{self.object.slug}'
-        )
+        ctx['talk_edit_url'] = urljoin(settings.TALK_HOSTNAME, f'orga/organiser/{self.object.slug}')
         return ctx
 
     @transaction.atomic
@@ -127,9 +119,7 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
             'slug': self.object.slug,
             'action': 'update',
         }
-        send_organizer_webhook.delay(
-            user_id=self.request.user.id, organizer=organizer_data
-        )
+        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
         return response
 
     def get_success_url(self) -> str:

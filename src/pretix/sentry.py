@@ -55,9 +55,7 @@ class PretixSentryIntegration(DjangoIntegration):
             integration = hub.get_integration(DjangoIntegration)
             if integration is not None:
                 with hub.configure_scope() as scope:
-                    scope.add_event_processor(
-                        _make_event_processor(weakref.ref(request), integration)
-                    )
+                    scope.add_event_processor(_make_event_processor(weakref.ref(request), integration))
             return old_get_response(self, request)
 
         BaseHandler.get_response = sentry_patched_get_response

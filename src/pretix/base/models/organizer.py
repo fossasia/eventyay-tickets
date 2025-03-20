@@ -47,9 +47,7 @@ class Organizer(LoggedModel):
             ),
             RegexValidator(
                 regex='^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$',
-                message=_(
-                    'The slug may only contain letters, numbers, dots and dashes.'
-                ),
+                message=_('The slug may only contain letters, numbers, dots and dashes.'),
             ),
             OrganizerSlugBanlistValidator(),
         ],
@@ -112,8 +110,7 @@ class Organizer(LoggedModel):
         return self.cache.get_or_set(
             key='has_gift_cards',
             timeout=15,
-            default=lambda: self.issued_gift_cards.exists()
-            or self.gift_card_issuer_acceptance.exists(),
+            default=lambda: self.issued_gift_cards.exists() or self.gift_card_issuer_acceptance.exists(),
         )
 
     @property
@@ -121,11 +118,7 @@ class Organizer(LoggedModel):
         from .giftcards import GiftCard, GiftCardAcceptance
 
         return GiftCard.objects.annotate(
-            accepted=Exists(
-                GiftCardAcceptance.objects.filter(
-                    issuer=OuterRef('issuer'), collector=self
-                )
-            )
+            accepted=Exists(GiftCardAcceptance.objects.filter(issuer=OuterRef('issuer'), collector=self))
         ).filter(Q(issuer=self) | Q(accepted=True))
 
     @property
@@ -135,8 +128,7 @@ class Organizer(LoggedModel):
             return make_aware(
                 datetime.combine(
                     date(
-                        now().astimezone(tz).year
-                        + self.settings.get('giftcard_expiry_years', as_type=int),
+                        now().astimezone(tz).year + self.settings.get('giftcard_expiry_years', as_type=int),
                         12,
                         31,
                     ),
@@ -169,15 +161,11 @@ class Organizer(LoggedModel):
 
 
 def generate_invite_token():
-    return get_random_string(
-        length=32, allowed_chars=string.ascii_lowercase + string.digits
-    )
+    return get_random_string(length=32, allowed_chars=string.ascii_lowercase + string.digits)
 
 
 def generate_api_token():
-    return get_random_string(
-        length=64, allowed_chars=string.ascii_lowercase + string.digits
-    )
+    return get_random_string(length=64, allowed_chars=string.ascii_lowercase + string.digits)
 
 
 class Team(LoggedModel):
@@ -214,19 +202,11 @@ class Team(LoggedModel):
     :type can_change_vouchers: bool
     """
 
-    organizer = models.ForeignKey(
-        Organizer, related_name='teams', on_delete=models.CASCADE
-    )
+    organizer = models.ForeignKey(Organizer, related_name='teams', on_delete=models.CASCADE)
     name = models.CharField(max_length=190, verbose_name=_('Team name'))
-    members = models.ManyToManyField(
-        User, related_name='teams', verbose_name=_('Team members')
-    )
-    all_events = models.BooleanField(
-        default=False, verbose_name=_('All events (including newly created ones)')
-    )
-    limit_events = models.ManyToManyField(
-        'Event', verbose_name=_('Limit to events'), blank=True
-    )
+    members = models.ManyToManyField(User, related_name='teams', verbose_name=_('Team members'))
+    all_events = models.BooleanField(default=False, verbose_name=_('All events (including newly created ones)'))
+    limit_events = models.ManyToManyField('Event', verbose_name=_('Limit to events'), blank=True)
 
     can_create_events = models.BooleanField(
         default=False,
@@ -244,22 +224,12 @@ class Team(LoggedModel):
             'reports, so be careful who you add to this team!'
         ),
     )
-    can_manage_gift_cards = models.BooleanField(
-        default=False, verbose_name=_('Can manage gift cards')
-    )
+    can_manage_gift_cards = models.BooleanField(default=False, verbose_name=_('Can manage gift cards'))
 
-    can_change_event_settings = models.BooleanField(
-        default=False, verbose_name=_('Can change event settings')
-    )
-    can_change_items = models.BooleanField(
-        default=False, verbose_name=_('Can change product settings')
-    )
-    can_view_orders = models.BooleanField(
-        default=False, verbose_name=_('Can view orders')
-    )
-    can_change_orders = models.BooleanField(
-        default=False, verbose_name=_('Can change orders')
-    )
+    can_change_event_settings = models.BooleanField(default=False, verbose_name=_('Can change event settings'))
+    can_change_items = models.BooleanField(default=False, verbose_name=_('Can change product settings'))
+    can_view_orders = models.BooleanField(default=False, verbose_name=_('Can view orders'))
+    can_change_orders = models.BooleanField(default=False, verbose_name=_('Can change orders'))
     can_checkin_orders = models.BooleanField(
         default=False,
         verbose_name=_('Can perform check-ins'),
@@ -268,12 +238,8 @@ class Team(LoggedModel):
             'attendees. Users with "can change orders" can also perform check-ins.'
         ),
     )
-    can_view_vouchers = models.BooleanField(
-        default=False, verbose_name=_('Can view vouchers')
-    )
-    can_change_vouchers = models.BooleanField(
-        default=False, verbose_name=_('Can change vouchers')
-    )
+    can_view_vouchers = models.BooleanField(default=False, verbose_name=_('Can view vouchers'))
+    can_change_vouchers = models.BooleanField(default=False, verbose_name=_('Can change vouchers'))
 
     def __str__(self) -> str:
         return _('%(name)s on %(object)s') % {
@@ -325,14 +291,10 @@ class TeamInvite(models.Model):
 
     team = models.ForeignKey(Team, related_name='invites', on_delete=models.CASCADE)
     email = models.EmailField(null=True, blank=True)
-    token = models.CharField(
-        default=generate_invite_token, max_length=64, null=True, blank=True
-    )
+    token = models.CharField(default=generate_invite_token, max_length=64, null=True, blank=True)
 
     def __str__(self) -> str:
-        return _("Invite to team '{team}' for '{email}'").format(
-            team=str(self.team), email=self.email
-        )
+        return _("Invite to team '{team}' for '{email}'").format(team=str(self.team), email=self.email)
 
 
 class TeamAPIToken(models.Model):
@@ -362,9 +324,9 @@ class TeamAPIToken(models.Model):
         :param event: The event to check
         :return: set of permissions
         """
-        has_event_access = (
-            self.team.all_events and organizer == self.team.organizer
-        ) or (event in self.team.limit_events.all())
+        has_event_access = (self.team.all_events and organizer == self.team.organizer) or (
+            event in self.team.limit_events.all()
+        )
         return self.team.permission_set() if has_event_access else set()
 
     def get_organizer_permission_set(self, organizer) -> set:
@@ -376,9 +338,7 @@ class TeamAPIToken(models.Model):
         """
         return self.team.permission_set() if self.team.organizer == organizer else set()
 
-    def has_event_permission(
-        self, organizer, event, perm_name=None, request=None
-    ) -> bool:
+    def has_event_permission(self, organizer, event, perm_name=None, request=None) -> bool:
         """
         Checks if this token is part of a team that grants access of type ``perm_name``
         to the event ``event``.
@@ -389,16 +349,12 @@ class TeamAPIToken(models.Model):
         :param request: This parameter is ignored and only defined for compatibility reasons.
         :return: bool
         """
-        has_event_access = (
-            self.team.all_events and organizer == self.team.organizer
-        ) or (event in self.team.limit_events.all())
-        if isinstance(perm_name, (tuple, list)):
-            return has_event_access and any(
-                self.team.has_permission(p) for p in perm_name
-            )
-        return has_event_access and (
-            not perm_name or self.team.has_permission(perm_name)
+        has_event_access = (self.team.all_events and organizer == self.team.organizer) or (
+            event in self.team.limit_events.all()
         )
+        if isinstance(perm_name, (tuple, list)):
+            return has_event_access and any(self.team.has_permission(p) for p in perm_name)
+        return has_event_access and (not perm_name or self.team.has_permission(perm_name))
 
     def has_organizer_permission(self, organizer, perm_name=None, request=None):
         """
@@ -411,12 +367,8 @@ class TeamAPIToken(models.Model):
         :return: bool
         """
         if isinstance(perm_name, (tuple, list)):
-            return organizer == self.team.organizer and any(
-                self.team.has_permission(p) for p in perm_name
-            )
-        return organizer == self.team.organizer and (
-            not perm_name or self.team.has_permission(perm_name)
-        )
+            return organizer == self.team.organizer and any(self.team.has_permission(p) for p in perm_name)
+        return organizer == self.team.organizer and (not perm_name or self.team.has_permission(perm_name))
 
     def get_events_with_any_permission(self):
         """
@@ -436,10 +388,9 @@ class TeamAPIToken(models.Model):
         :param request: Ignored, for compatibility with User model
         :return: Iterable of Events
         """
-        if (
-            isinstance(permission, (list, tuple))
-            and any(getattr(self.team, p, False) for p in permission)
-        ) or (isinstance(permission, str) and getattr(self.team, permission, False)):
+        if (isinstance(permission, (list, tuple)) and any(getattr(self.team, p, False) for p in permission)) or (
+            isinstance(permission, str) and getattr(self.team, permission, False)
+        ):
             return self.get_events_with_any_permission()
         else:
             return self.team.organizer.events.none()
@@ -450,9 +401,7 @@ class OrganizerBillingModel(models.Model):
     Billing model - support billing information for organizer
     """
 
-    organizer = models.ForeignKey(
-        'Organizer', on_delete=models.CASCADE, related_name='billing'
-    )
+    organizer = models.ForeignKey('Organizer', on_delete=models.CASCADE, related_name='billing')
 
     primary_contact_name = models.CharField(
         max_length=255,

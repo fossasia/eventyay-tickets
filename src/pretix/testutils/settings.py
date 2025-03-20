@@ -25,9 +25,7 @@ INSTANCE_NAME = 'eventyay.com'
 
 COMPRESS_PRECOMPILERS_ORIGINAL = COMPRESS_PRECOMPILERS
 COMPRESS_PRECOMPILERS = ()
-TEMPLATES[0]['OPTIONS']['loaders'] = (
-    ('django.template.loaders.cached.Loader', template_loaders),
-)
+TEMPLATES[0]['OPTIONS']['loaders'] = (('django.template.loaders.cached.Loader', template_loaders),)
 
 DEBUG = True
 DEBUG_PROPAGATE_EXCEPTIONS = True

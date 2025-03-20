@@ -41,9 +41,7 @@ def _send_wle_mail(
     subevent: SubEvent,
 ):
     with language(wle.locale, wle.event.settings.region):
-        email_context = get_email_context(
-            event_or_subevent=subevent or wle.event, event=wle.event
-        )
+        email_context = get_email_context(event_or_subevent=subevent or wle.event, event=wle.event)
         try:
             mail(
                 wle.email,
@@ -95,11 +93,7 @@ def _send_mail(
             if subevent and p.subevent_id != subevent.id:
                 continue
 
-            if (
-                p.addon_to_id is None
-                and p.attendee_email
-                and p.attendee_email != order.email
-            ):
+            if p.addon_to_id is None and p.attendee_email and p.attendee_email != order.email:
                 real_subject = str(subject).format_map(TolerantDict(email_context))
                 email_context = get_email_context(
                     event_or_subevent=p.subevent or order.event,
@@ -119,9 +113,7 @@ def _send_mail(
                         user=user,
                     )
                 except SendMailException:
-                    logger.exception(
-                        'Order canceled email could not be sent to attendee'
-                    )
+                    logger.exception('Order canceled email could not be sent to attendee')
 
 
 @app.task(
@@ -183,17 +175,11 @@ def cancel_event(
             subevent = subevents.first()
             subevent_ids = {subevent.pk}
         else:
-            subevents = event.subevents.filter(
-                date_from__gte=subevents_from, date_from__lt=subevents_to
-            )
+            subevents = event.subevents.filter(date_from__gte=subevents_from, date_from__lt=subevents_to)
             subevent_ids = set(subevents.values_list('id', flat=True))
 
-        has_subevent = OrderPosition.objects.filter(order_id=OuterRef('pk')).filter(
-            subevent__in=subevents
-        )
-        has_other_subevent = OrderPosition.objects.filter(
-            order_id=OuterRef('pk')
-        ).exclude(subevent__in=subevents)
+        has_subevent = OrderPosition.objects.filter(order_id=OuterRef('pk')).filter(subevent__in=subevents)
+        has_other_subevent = OrderPosition.objects.filter(order_id=OuterRef('pk')).exclude(subevent__in=subevents)
         orders_to_change = orders_to_cancel.annotate(
             has_subevent=Exists(has_subevent),
             has_other_subevent=Exists(has_other_subevent),
@@ -234,9 +220,7 @@ def cancel_event(
             )
     failed = 0
     total = orders_to_cancel.count() + orders_to_change.count()
-    qs_wl = event.waitinglistentries.filter(voucher__isnull=True).select_related(
-        'subevent'
-    )
+    qs_wl = event.waitinglistentries.filter(voucher__isnull=True).select_related('subevent')
     if subevents:
         qs_wl = qs_wl.filter(subevent__in=subevents)
     if send_waitinglist:
@@ -256,11 +240,7 @@ def cancel_event(
                         keep_fee_objects.append(f)
                     fee_sum += f.value
             if keep_fee_percentage:
-                fee += (
-                    Decimal(keep_fee_percentage)
-                    / Decimal('100.00')
-                    * (o.total - fee_sum)
-                )
+                fee += Decimal(keep_fee_percentage) / Decimal('100.00') * (o.total - fee_sum)
             if keep_fee_fixed:
                 fee += Decimal(keep_fee_fixed)
             if keep_fee_per_ticket:
@@ -303,13 +283,8 @@ def cancel_event(
                     )
 
             counter += 1
-            if (
-                not self.request.called_directly
-                and counter % max(10, total // 100) == 0
-            ):
-                self.update_state(
-                    state='PROGRESS', meta={'value': round(counter / total * 100, 2)}
-                )
+            if not self.request.called_directly and counter % max(10, total // 100) == 0:
+                self.update_state(state='PROGRESS', meta={'value': round(counter / total * 100, 2)})
         except LockTimeoutException:
             logger.exception('Could not cancel order')
             failed += 1
@@ -377,26 +352,14 @@ def cancel_event(
                 )
 
             counter += 1
-            if (
-                not self.request.called_directly
-                and counter % max(10, total // 100) == 0
-            ):
-                self.update_state(
-                    state='PROGRESS', meta={'value': round(counter / total * 100, 2)}
-                )
+            if not self.request.called_directly and counter % max(10, total // 100) == 0:
+                self.update_state(state='PROGRESS', meta={'value': round(counter / total * 100, 2)})
 
     if send_waitinglist:
         for wle in qs_wl:
-            _send_wle_mail(
-                wle, send_waitinglist_subject, send_waitinglist_message, wle.subevent
-            )
+            _send_wle_mail(wle, send_waitinglist_subject, send_waitinglist_message, wle.subevent)
 
             counter += 1
-            if (
-                not self.request.called_directly
-                and counter % max(10, total // 100) == 0
-            ):
-                self.update_state(
-                    state='PROGRESS', meta={'value': round(counter / total * 100, 2)}
-                )
+            if not self.request.called_directly and counter % max(10, total // 100) == 0:
+                self.update_state(state='PROGRESS', meta={'value': round(counter / total * 100, 2)})
     return failed

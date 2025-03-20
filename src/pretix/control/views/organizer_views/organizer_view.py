@@ -210,11 +210,7 @@ class OrganizerDelete(AdministratorPermissionRequiredMixin, FormView):
                     data={
                         'organizer_id': self.request.organizer.pk,
                         'name': str(self.request.organizer.name),
-                        'logentries': list(
-                            self.request.organizer.all_logentries().values_list(
-                                'pk', flat=True
-                            )
-                        ),
+                        'logentries': list(self.request.organizer.all_logentries().values_list('pk', flat=True)),
                     },
                 )
                 self.request.organizer.delete_sub_objects()
@@ -235,9 +231,7 @@ class OrganizerDelete(AdministratorPermissionRequiredMixin, FormView):
         return reverse('control:index')
 
 
-class OrganizerDisplaySettings(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, View
-):
+class OrganizerDisplaySettings(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, View):
     permission = None
 
     def get(self, request, *wargs, **kwargs):
@@ -252,9 +246,7 @@ class OrganizerDisplaySettings(
         )
 
 
-class OrganizerSettingsFormView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, FormView
-):
+class OrganizerSettingsFormView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, FormView):
     model = Organizer
     permission = 'can_change_organizer_settings'
 
@@ -291,18 +283,14 @@ class OrganizerSettingsFormView(
             return self.get(request)
 
 
-class OrganizerTeamView(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView
-):
+class OrganizerTeamView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView):
     model = Organizer
     template_name = 'pretixcontrol/organizers/teams.html'
     permission = 'can_change_permissions'
     context_object_name = 'organizer'
 
 
-class OrganizerDetail(
-    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
-):
+class OrganizerDetail(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = Event
     template_name = 'pretixcontrol/organizers/detail.html'
     permission = None
@@ -338,9 +326,7 @@ class OrganizerDetail(
             max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
         ).annotate(
             order_from=Coalesce('min_from', 'date_from'),
-            order_to=Coalesce(
-                'max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'
-            ),
+            order_to=Coalesce('max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'),
         )
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
@@ -348,17 +334,12 @@ class OrganizerDetail(
 
     @cached_property
     def filter_form(self):
-        return EventFilterForm(
-            data=self.request.GET, request=self.request, organizer=self.organizer
-        )
+        return EventFilterForm(data=self.request.GET, request=self.request, organizer=self.organizer)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['filter_form'] = self.filter_form
-        ctx['meta_fields'] = [
-            self.filter_form['meta_{}'.format(p.name)]
-            for p in self.organizer.meta_properties.all()
-        ]
+        ctx['meta_fields'] = [self.filter_form['meta_{}'.format(p.name)] for p in self.organizer.meta_properties.all()]
         return ctx
 
 
@@ -393,9 +374,7 @@ class OrganizerList(PaginationMixin, ListView):
         if self.request.user.has_active_staff_session(self.request.session.session_key):
             return qs
         else:
-            return qs.filter(
-                pk__in=self.request.user.teams.values_list('organizer', flat=True)
-            )
+            return qs.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -429,9 +408,7 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
 
-        billing_settings = OrganizerBillingModel.objects.filter(
-            organizer_id=self.request.organizer.id
-        ).first()
+        billing_settings = OrganizerBillingModel.objects.filter(organizer_id=self.request.organizer.id).first()
 
         if billing_settings and billing_settings.stripe_customer_id:
             ctx['is_general_information_fulfilled'] = True

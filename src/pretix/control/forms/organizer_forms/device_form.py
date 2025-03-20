@@ -10,19 +10,13 @@ class DeviceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         organizer = kwargs.pop('organizer')
         super().__init__(*args, **kwargs)
-        self.fields['limit_events'].queryset = organizer.events.all().order_by(
-            '-has_subevents', '-date_from'
-        )
+        self.fields['limit_events'].queryset = organizer.events.all().order_by('-has_subevents', '-date_from')
         self.fields['gate'].queryset = organizer.gates.all()
 
     def clean(self):
         cleaned_data = super().clean()
         if not cleaned_data.get('all_events') and not cleaned_data.get('limit_events'):
-            raise ValidationError(
-                _(
-                    'Your device will not have access to anything, please select some events.'
-                )
-            )
+            raise ValidationError(_('Your device will not have access to anything, please select some events.'))
 
         return cleaned_data
 

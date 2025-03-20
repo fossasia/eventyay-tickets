@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('title', i18nfield.fields.I18nCharField()),
                 ('slug', models.SlugField(max_length=150)),

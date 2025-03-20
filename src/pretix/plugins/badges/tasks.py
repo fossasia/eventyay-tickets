@@ -22,9 +22,7 @@ logger = logging.getLogger(__name__)
 def badges_create_pdf(event: Event, fileid: int, positions: List[int]) -> int:
     file = CachedFile.objects.get(id=fileid)
 
-    pdfcontent = render_pdf(
-        event, OrderPosition.objects.filter(id__in=positions), opt=OPTIONS['one']
-    )
+    pdfcontent = render_pdf(event, OrderPosition.objects.filter(id__in=positions), opt=OPTIONS['one'])
     file.file.save(cachedfile_name(file, file.filename), ContentFile(pdfcontent.read()))
     file.save()
     return file.pk

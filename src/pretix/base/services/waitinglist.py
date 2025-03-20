@@ -56,13 +56,9 @@ def assign_automatically(event: Event, user_id: int = None, subevent_id: int = N
                 else wle.item.quotas.filter(subevent=wle.subevent)
             )
             availability = (
-                wle.variation.check_quotas(
-                    count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent
-                )
+                wle.variation.check_quotas(count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent)
                 if wle.variation
-                else wle.item.check_quotas(
-                    count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent
-                )
+                else wle.item.check_quotas(count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent)
             )
             if availability[1] is None or availability[1] > 0:
                 try:
@@ -75,9 +71,7 @@ def assign_automatically(event: Event, user_id: int = None, subevent_id: int = N
                 for q in quotas:
                     quota_cache[q.pk] = (
                         quota_cache[q.pk][0] if quota_cache[q.pk][0] > 1 else 0,
-                        quota_cache[q.pk][1] - 1
-                        if quota_cache[q.pk][1] is not None
-                        else sys.maxsize,
+                        quota_cache[q.pk][1] - 1 if quota_cache[q.pk][1] is not None else sys.maxsize,
                     )
             else:
                 gone.add((wle.item, wle.variation, wle.subevent))

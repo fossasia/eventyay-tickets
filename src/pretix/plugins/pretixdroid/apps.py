@@ -14,9 +14,7 @@ class PretixdroidApp(AppConfig):
         visible = False
         restricted = True
         category = 'INTEGRATION'
-        description = _(
-            'This plugin allows you to use the pretixdroid and pretixdesk apps for your event.'
-        )
+        description = _('This plugin allows you to use the pretixdroid and pretixdesk apps for your event.')
 
 
 default_app_config = 'pretix.plugins.pretixdroid.PretixdroidApp'

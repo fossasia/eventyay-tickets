@@ -23,9 +23,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     'id',
-                    models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 ('status', models.CharField(default='n', max_length=1)),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=10)),

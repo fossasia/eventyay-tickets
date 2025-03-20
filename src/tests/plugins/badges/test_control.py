@@ -20,9 +20,7 @@ class BadgeLayoutFormTest(SoupTest):
             plugins='pretix.plugins.badges',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
         )
-        self.item1 = Item.objects.create(
-            event=self.event1, name='Standard', default_price=0, position=1
-        )
+        self.item1 = Item.objects.create(event=self.event1, name='Standard', default_price=0, position=1)
         t = Team.objects.create(
             organizer=self.orga1,
             can_change_event_settings=True,
@@ -38,9 +36,7 @@ class BadgeLayoutFormTest(SoupTest):
         self.client.login(email='dummy@dummy.dummy', password='dummy')
 
     def test_create(self):
-        doc = self.get_doc(
-            '/control/event/%s/%s/badges/add' % (self.orga1.slug, self.event1.slug)
-        )
+        doc = self.get_doc('/control/event/%s/%s/badges/add' % (self.orga1.slug, self.event1.slug))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         form_data['name'] = 'Layout 1'
         doc = self.post_doc(
@@ -56,8 +52,7 @@ class BadgeLayoutFormTest(SoupTest):
             bl1 = self.event1.badge_layouts.create(name='Layout 1', default=True)
             bl2 = self.event1.badge_layouts.create(name='Layout 2')
         self.post_doc(
-            '/control/event/%s/%s/badges/%s/default'
-            % (self.orga1.slug, self.event1.slug, bl2.id),
+            '/control/event/%s/%s/badges/%s/default' % (self.orga1.slug, self.event1.slug, bl2.id),
             {},
         )
         bl1.refresh_from_db()
@@ -69,14 +64,10 @@ class BadgeLayoutFormTest(SoupTest):
         with scopes_disabled():
             bl1 = self.event1.badge_layouts.create(name='Layout 1', default=True)
             bl2 = self.event1.badge_layouts.create(name='Layout 2')
-        doc = self.get_doc(
-            '/control/event/%s/%s/badges/%s/delete'
-            % (self.orga1.slug, self.event1.slug, bl1.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/badges/%s/delete' % (self.orga1.slug, self.event1.slug, bl1.id))
         form_data = extract_form_fields(doc.select('.container-fluid form')[0])
         doc = self.post_doc(
-            '/control/event/%s/%s/badges/%s/delete'
-            % (self.orga1.slug, self.event1.slug, bl1.id),
+            '/control/event/%s/%s/badges/%s/delete' % (self.orga1.slug, self.event1.slug, bl1.id),
             form_data,
         )
         assert doc.select('.alert-success')
@@ -90,10 +81,7 @@ class BadgeLayoutFormTest(SoupTest):
         with scopes_disabled():
             self.event1.badge_layouts.create(name='Layout 1', default=True)
             bl2 = self.event1.badge_layouts.create(name='Layout 2')
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item1.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item1.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
         d.update(
             {
@@ -107,16 +95,12 @@ class BadgeLayoutFormTest(SoupTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item1.id),
             d,
         )
         with scopes_disabled():
             assert BadgeItem.objects.get(item=self.item1, layout=bl2)
-        doc = self.get_doc(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item1.id)
-        )
+        doc = self.get_doc('/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item1.id))
         d = extract_form_fields(doc.select('.container-fluid form')[0])
         d.update(
             {
@@ -130,8 +114,7 @@ class BadgeLayoutFormTest(SoupTest):
             }
         )
         self.client.post(
-            '/control/event/%s/%s/items/%d/'
-            % (self.orga1.slug, self.event1.slug, self.item1.id),
+            '/control/event/%s/%s/items/%d/' % (self.orga1.slug, self.event1.slug, self.item1.id),
             d,
         )
         with scopes_disabled():

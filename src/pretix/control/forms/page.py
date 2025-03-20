@@ -51,9 +51,7 @@ class PageSettingsForm(forms.ModelForm):
 
     def save(self, commit=True):
         for locale, html in self.cleaned_data['text'].data.items():
-            self.cleaned_data['text'].data[locale] = process_data_images(
-                html, self.mimes
-            )
+            self.cleaned_data['text'].data[locale] = process_data_images(html, self.mimes)
         return super().save(commit)
 
 

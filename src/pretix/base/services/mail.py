@@ -154,11 +154,7 @@ def mail(
         renderer = ClassicMailRenderer(None)
         content_plain = body_plain = render_mail(template, context)
         subject = str(subject).format_map(TolerantDict(context))
-        sender = (
-            sender
-            or (event.settings.get('mail_from') if event else settings.MAIL_FROM)
-            or settings.MAIL_FROM
-        )
+        sender = sender or (event.settings.get('mail_from') if event else settings.MAIL_FROM) or settings.MAIL_FROM
         if event:
             sender_name = str(event.name)
             if len(sender_name) > 75:
@@ -209,9 +205,7 @@ def mail(
                 ).format(event=event.name)
                 body_plain += '\r\n'
                 body_plain += (
-                    _(
-                        'You can view your order details at the following URL:\n{orderurl}.'
-                    )
+                    _('You can view your order details at the following URL:\n{orderurl}.')
                     .replace('\n', '\r\n')
                     .format(
                         event=event.name,
@@ -227,14 +221,12 @@ def mail(
                     )
                 )
             elif order:
-                body_plain += _(
-                    'You are receiving this email because you placed an order for {event}.'
-                ).format(event=event.name)
+                body_plain += _('You are receiving this email because you placed an order for {event}.').format(
+                    event=event.name
+                )
                 body_plain += '\r\n'
                 body_plain += (
-                    _(
-                        'You can view your order details at the following URL:\n{orderurl}.'
-                    )
+                    _('You can view your order details at the following URL:\n{orderurl}.')
                     .replace('\n', '\r\n')
                     .format(
                         event=event.name,
@@ -258,19 +250,14 @@ def mail(
         with override(timezone):
             try:
                 if 'position' in inspect.signature(renderer.render).parameters:
-                    body_html = renderer.render(
-                        content_plain, signature, raw_subject, order, position
-                    )
+                    body_html = renderer.render(content_plain, signature, raw_subject, order, position)
                 else:
                     # Backwards compatibility
                     warnings.warn(
-                        'E-mail renderer called without position argument because position argument is not '
-                        'supported.',
+                        'E-mail renderer called without position argument because position argument is not supported.',
                         DeprecationWarning,
                     )
-                    body_html = renderer.render(
-                        content_plain, signature, raw_subject, order
-                    )
+                    body_html = renderer.render(content_plain, signature, raw_subject, order)
             except:
                 logger.exception('Could not render HTML body')
                 body_html = None
@@ -290,20 +277,13 @@ def mail(
             attach_tickets=attach_tickets,
             attach_ical=attach_ical,
             user=user.pk if user else None,
-            attach_cached_files=[
-                (cf.id if isinstance(cf, CachedFile) else cf)
-                for cf in attach_cached_files
-            ]
+            attach_cached_files=[(cf.id if isinstance(cf, CachedFile) else cf) for cf in attach_cached_files]
             if attach_cached_files
             else [],
         )
 
         if invoices:
-            task_chain = [
-                invoice_pdf_task.si(i.pk).on_error(send_task)
-                for i in invoices
-                if not i.file
-            ]
+            task_chain = [invoice_pdf_task.si(i.pk).on_error(send_task) for i in invoices if not i.file]
         else:
             task_chain = []
 
@@ -355,13 +335,9 @@ def mail_send_task(
 ) -> bool:
     email = CustomEmail(subject, body, sender, to=to, bcc=bcc, headers=headers)
     if html is not None:
-        html_message = SafeMIMEMultipart(
-            _subtype='related', encoding=settings.DEFAULT_CHARSET
-        )
+        html_message = SafeMIMEMultipart(_subtype='related', encoding=settings.DEFAULT_CHARSET)
         html_with_cid, cid_images = replace_images_with_cid_paths(html)
-        html_message.attach(
-            SafeMIMEText(html_with_cid, 'html', settings.DEFAULT_CHARSET)
-        )
+        html_message.attach(SafeMIMEText(html_with_cid, 'html', settings.DEFAULT_CHARSET))
         attach_cid_images(html_message, cid_images, verify_ssl=True)
         email.attach_alternative(html_message, 'multipart/related')
 
@@ -400,9 +376,7 @@ def mail_send_task(
                         if attach_tickets:
                             args = []
                             attach_size = 0
-                            for name, ct in get_tickets_for_order(
-                                order, base_position=position
-                            ):
+                            for name, ct in get_tickets_for_order(order, base_position=position):
                                 content = ct.file.read()
                                 args.append((name, content, ct.type))
                                 attach_size += len(content)
@@ -445,9 +419,7 @@ def mail_send_task(
                                     'text/calendar',
                                 )
 
-            email = email_filter.send_chained(
-                event, 'message', message=email, order=order, user=user
-            )
+            email = email_filter.send_chained(event, 'message', message=email, order=order, user=user)
 
         if invoices:
             invoices = Invoice.objects.filter(pk__in=invoices)
@@ -456,10 +428,7 @@ def mail_send_task(
                     try:
                         with language(inv.order.locale):
                             email.attach(
-                                pgettext('invoice', 'Invoice {num}')
-                                .format(num=inv.number)
-                                .replace(' ', '_')
-                                + '.pdf',
+                                pgettext('invoice', 'Invoice {num}').format(num=inv.number).replace(' ', '_') + '.pdf',
                                 inv.file.file.read(),
                                 'application/pdf',
                             )
@@ -480,9 +449,7 @@ def mail_send_task(
                         logger.exception('Could not attach file to email')
                         pass
 
-        email = global_email_filter.send_chained(
-            event, 'message', message=email, user=user, order=order
-        )
+        email = global_email_filter.send_chained(event, 'message', message=email, user=user, order=order)
         if attach_file_base64:
             attach_file_content = base64.b64decode(attach_file_base64)
             email.attach(attach_file_name, attach_file_content, 'application/pdf')
@@ -501,9 +468,7 @@ def mail_send_task(
                         order.log_action(
                             'pretix.event.order.email.error',
                             data={
-                                'subject': 'SMTP code {}, max retries exceeded'.format(
-                                    e.smtp_code
-                                ),
+                                'subject': 'SMTP code {}, max retries exceeded'.format(e.smtp_code),
                                 'message': e.smtp_error.decode()
                                 if isinstance(e.smtp_error, bytes)
                                 else str(e.smtp_error),
@@ -519,9 +484,7 @@ def mail_send_task(
                     'pretix.event.order.email.error',
                     data={
                         'subject': 'SMTP code {}'.format(e.smtp_code),
-                        'message': e.smtp_error.decode()
-                        if isinstance(e.smtp_error, bytes)
-                        else str(e.smtp_error),
+                        'message': e.smtp_error.decode() if isinstance(e.smtp_error, bytes) else str(e.smtp_error),
                         'recipient': '',
                         'invoices': [],
                     },
@@ -666,9 +629,7 @@ def convert_image_to_cid(image_src, cid_id, verify_ssl=True):
         if image_src.startswith('data:image/'):
             image_type, image_content = image_src.split(',', 1)
             image_type = re.findall(r'data:image/(\w+);base64', image_type)[0]
-            mime_image = MIMEImage(
-                image_content, _subtype=image_type, _encoder=encoder_linelength
-            )
+            mime_image = MIMEImage(image_content, _subtype=image_type, _encoder=encoder_linelength)
             mime_image.add_header('Content-Transfer-Encoding', 'base64')
         elif image_src.startswith('data:'):
             logger.exception('ERROR creating MIME element %s[%s]' % (cid_id, image_src))

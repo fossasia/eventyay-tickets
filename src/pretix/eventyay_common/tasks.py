@@ -35,9 +35,7 @@ from .schemas.billing import CollectBillingResponse
 logger = logging.getLogger(__name__)
 
 
-@shared_task(
-    bind=True, max_retries=5, default_retry_delay=60
-)  # Retries up to 5 times with a 60-second delay
+@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
 def send_organizer_webhook(self, user_id, organizer):
     # Define the payload to send to the webhook
     payload = {
@@ -66,9 +64,7 @@ def send_organizer_webhook(self, user_id, organizer):
             logger.error('Max retries exceeded for sending organizer webhook.')
 
 
-@shared_task(
-    bind=True, max_retries=5, default_retry_delay=60
-)  # Retries up to 5 times with a 60-second delay
+@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
 def send_team_webhook(self, user_id, team):
     # Define the payload to send to the webhook
     payload = {
@@ -262,18 +258,12 @@ def collect_billing_invoice(
 
     logger.info('Collecting billing data for event: %s', event.name)
 
-    if BillingInvoice.objects.filter(
-        event=event, monthly_bill=last_month_date, organizer=event.organizer
-    ).exists():
+    if BillingInvoice.objects.filter(event=event, monthly_bill=last_month_date, organizer=event.organizer).exists():
         logger.info('Billing invoice already exists for event: %s', event.name)
         return CollectBillingResponse(status=False)
 
-    month_end = (last_month_date + relativedelta(months=1, day=1)) - relativedelta(
-        days=1
-    )
-    if not event.orders.filter(
-        status=Order.STATUS_PAID, datetime__range=[last_month_date, month_end]
-    ).exists():
+    month_end = (last_month_date + relativedelta(months=1, day=1)) - relativedelta(days=1)
+    if not event.orders.filter(status=Order.STATUS_PAID, datetime__range=[last_month_date, month_end]).exists():
         logger.info('No paid orders for event: %s in the last month', event.name)
         return CollectBillingResponse(status=False)
 
@@ -284,11 +274,7 @@ def collect_billing_invoice(
 
     # Create a new billing invoice
     billing_invoice = BillingInvoice(
-        status=(
-            BillingInvoice.STATUS_PENDING
-            if final_ticket_fee > 0
-            else BillingInvoice.STATUS_PAID
-        ),
+        status=(BillingInvoice.STATUS_PENDING if final_ticket_fee > 0 else BillingInvoice.STATUS_PAID),
         organizer=event.organizer,
         event=event,
         amount=total_amount,
@@ -303,18 +289,14 @@ def collect_billing_invoice(
         created_by=settings.PRETIX_EMAIL_NONE_VALUE,
         updated_by=settings.PRETIX_EMAIL_NONE_VALUE,
     )
-    billing_invoice.next_reminder_datetime = get_next_reminder_datetime(
-        settings.BILLING_REMINDER_SCHEDULE
-    )
+    billing_invoice.next_reminder_datetime = get_next_reminder_datetime(settings.BILLING_REMINDER_SCHEDULE)
     billing_invoice.save()
     logger.info('End - completed task to collect billing on a monthly basis.')
 
     return CollectBillingResponse(status=True, voucher_discount=voucher_discount)
 
 
-@shared_task(
-    bind=True, max_retries=5, default_retry_delay=60
-)  # Retries up to 5 times with a 60-second delay
+@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
 @scopes_disabled()
 def monthly_billing_collect(self):
     """
@@ -328,9 +310,7 @@ def monthly_billing_collect(self):
         Get the current billing period details
         """
         today = datetime.now(tz.utc)
-        first_day_of_current_month = today.replace(
-            day=1, hour=0, minute=0, second=0, microsecond=0
-        )
+        first_day_of_current_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         last_month_date = first_day_of_current_month - relativedelta(months=1)
         return last_month_date
 
@@ -341,18 +321,12 @@ def monthly_billing_collect(self):
         ticket_rate = Decimal(str(gs.settings.get('ticket_fee_percentage') or 2.5))
 
         for organizer in Organizer.objects.all():
-            organizer_billing = OrganizerBillingModel.objects.filter(
-                organizer=organizer
-            ).first()
-            invoice_voucher = (
-                organizer_billing.invoice_voucher if organizer_billing else None
-            )
+            organizer_billing = OrganizerBillingModel.objects.filter(organizer=organizer).first()
+            invoice_voucher = organizer_billing.invoice_voucher if organizer_billing else None
             total_voucher_discount = Decimal('0.00')
 
             for event in organizer.events.all():
-                collect_billing_response = collect_billing_invoice(
-                    event, last_month_date, ticket_rate, invoice_voucher
-                )
+                collect_billing_response = collect_billing_invoice(event, last_month_date, ticket_rate, invoice_voucher)
                 if collect_billing_response.status:
                     total_voucher_discount += collect_billing_response.voucher_discount
 
@@ -409,18 +383,14 @@ def retry_payment(payment_intent_id, organizer_id):
     """
     try:
         with scopes_disabled():
-            billing_settings = OrganizerBillingModel.objects.filter(
-                organizer_id=organizer_id
-            ).first()
+            billing_settings = OrganizerBillingModel.objects.filter(organizer_id=organizer_id).first()
             if not billing_settings or not billing_settings.stripe_payment_method_id:
                 logger.error(
                     'No billing settings or Stripe payment method ID found for organizer %s',
                     organizer_id,
                 )
                 return
-            confirm_payment_intent(
-                payment_intent_id, billing_settings.stripe_payment_method_id
-            )
+            confirm_payment_intent(payment_intent_id, billing_settings.stripe_payment_method_id)
             logger.info('Payment confirmed for payment intent: %s', payment_intent_id)
     except ValidationError as e:
         logger.error('Error retrying payment for %s: %s', payment_intent_id, str(e))
@@ -439,14 +409,10 @@ def process_auto_billing_charge():
         today = datetime.today()
         first_day_of_current_month = today.replace(day=1)
         last_month_date = (first_day_of_current_month - relativedelta(months=1)).date()
-        pending_invoices = BillingInvoice.objects.filter(
-            Q(monthly_bill=last_month_date) & Q(status='n')
-        )
+        pending_invoices = BillingInvoice.objects.filter(Q(monthly_bill=last_month_date) & Q(status='n'))
         for invoice in pending_invoices:
             if invoice.final_ticket_fee > 0:
-                billing_settings = OrganizerBillingModel.objects.filter(
-                    organizer_id=invoice.organizer_id
-                ).first()
+                billing_settings = OrganizerBillingModel.objects.filter(organizer_id=invoice.organizer_id).first()
                 if not billing_settings or not billing_settings.stripe_customer_id:
                     logger.error(
                         'No billing settings or Stripe customer ID found for organizer %s',
@@ -488,9 +454,7 @@ def calculate_total_amount_on_monthly(event: Event, last_month_date_start) -> De
     @return: total amount of all paid orders for the event in the previous month
     """
     # Calculate the end date for last month
-    last_month_date_end = (
-        last_month_date_start + relativedelta(months=1, day=1)
-    ) - relativedelta(days=1)
+    last_month_date_end = (last_month_date_start + relativedelta(months=1, day=1)) - relativedelta(days=1)
 
     # Use aggregate to sum the total of all paid orders within the date range
     total_amount = sum(
@@ -527,15 +491,11 @@ def calculate_ticket_fee(
     def _apply_voucher(
         ticket_fee: Decimal, voucher_discount: Decimal, invoice_voucher: InvoiceVoucher
     ) -> Tuple[Decimal, Decimal]:
-        final_ticket_fee = invoice_voucher.calculate_price(
-            original_price=ticket_fee, event=event
-        )
+        final_ticket_fee = invoice_voucher.calculate_price(original_price=ticket_fee, event=event)
         voucher_discount = ticket_fee - final_ticket_fee
         return final_ticket_fee, voucher_discount
 
-    def _is_voucher_valid_for_event(
-        invoice_voucher: InvoiceVoucher, event: Event
-    ) -> bool:
+    def _is_voucher_valid_for_event(invoice_voucher: InvoiceVoucher, event: Event) -> bool:
         if not invoice_voucher or not invoice_voucher.is_active():
             return False
 
@@ -551,9 +511,7 @@ def calculate_ticket_fee(
     voucher_discount = Decimal('0.00')
 
     if _is_voucher_valid_for_event(invoice_voucher, event):
-        final_ticket_fee, voucher_discount = _apply_voucher(
-            ticket_fee, voucher_discount, invoice_voucher
-        )
+        final_ticket_fee, voucher_discount = _apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
 
     return ticket_fee, final_ticket_fee, voucher_discount
 
@@ -599,13 +557,9 @@ def billing_invoice_notification(self):
     last_month_invoices = BillingInvoice.objects.filter(monthly_bill=billing_month)
     for invoice in last_month_invoices:
         # Get organizer's contact details
-        organizer_billing = OrganizerBillingModel.objects.filter(
-            organizer=invoice.organizer
-        ).first()
+        organizer_billing = OrganizerBillingModel.objects.filter(organizer=invoice.organizer).first()
         if not organizer_billing:
-            logger.error(
-                'No billing settings found for organizer %s', invoice.organizer.name
-            )
+            logger.error('No billing settings found for organizer %s', invoice.organizer.name)
             continue
         month_name = invoice.monthly_bill.strftime('%B')
         # Send email to organizer with invoice pdf
@@ -618,18 +572,14 @@ def billing_invoice_notification(self):
             f'EventYay Team'
         )
 
-        billing_invoice_send_email(
-            mail_subject, mail_content, invoice, organizer_billing
-        )
+        billing_invoice_send_email(mail_subject, mail_content, invoice, organizer_billing)
     logger.info('End - completed task to send billing invoice notification.')
 
 
 @shared_task(bind=True)
 @scopes_disabled()
 def retry_failed_payment(self):
-    pending_invoices = BillingInvoice.objects.filter(
-        status=BillingInvoice.STATUS_PENDING
-    )
+    pending_invoices = BillingInvoice.objects.filter(status=BillingInvoice.STATUS_PENDING)
     today = datetime.now(tz.utc)
     logger.info('Start - running task to retry failed payment: %s', today)
     timezone = pytz.timezone(settings.TIME_ZONE)
@@ -644,8 +594,7 @@ def retry_failed_payment(self):
             reminder_date = datetime(today.year, today.month, reminder_date)
             reminder_date = timezone.localize(reminder_date)
             if (
-                not invoice.last_reminder_datetime
-                or invoice.last_reminder_datetime < reminder_date
+                not invoice.last_reminder_datetime or invoice.last_reminder_datetime < reminder_date
             ) and reminder_date <= today:
                 retry_payment(
                     payment_intent_id=invoice.stripe_payment_intent_id,
@@ -660,13 +609,9 @@ def retry_failed_payment(self):
 @shared_task(bind=True)
 @scopes_disabled()
 def check_billing_status_for_warning(self):
-    pending_invoices = BillingInvoice.objects.filter(
-        status=BillingInvoice.STATUS_PENDING, reminder_enabled=True
-    )
+    pending_invoices = BillingInvoice.objects.filter(status=BillingInvoice.STATUS_PENDING, reminder_enabled=True)
     today = datetime.now(tz.utc)
-    logger.info(
-        'Start - running task to check billing status for warning on: %s', today
-    )
+    logger.info('Start - running task to check billing status for warning on: %s', today)
     timezone = pytz.timezone(settings.TIME_ZONE)
     for invoice in pending_invoices:
         if invoice.final_ticket_fee <= 0:
@@ -689,8 +634,7 @@ def check_billing_status_for_warning(self):
             reminder_date = datetime(today.year, today.month, reminder_date)
             reminder_date = timezone.localize(reminder_date)
             if (
-                not invoice.last_reminder_datetime
-                or invoice.last_reminder_datetime < reminder_date
+                not invoice.last_reminder_datetime or invoice.last_reminder_datetime < reminder_date
             ) and reminder_date <= today:
                 # Send warning email to organizer
                 logger.info(
@@ -699,9 +643,7 @@ def check_billing_status_for_warning(self):
                 )
 
                 # Get organizer's contact details
-                organizer_billing = OrganizerBillingModel.objects.filter(
-                    organizer=invoice.organizer
-                ).first()
+                organizer_billing = OrganizerBillingModel.objects.filter(organizer=invoice.organizer).first()
                 if not organizer_billing:
                     logger.error(
                         'No billing settings found for organizer %s',
@@ -729,14 +671,10 @@ def check_billing_status_for_warning(self):
                     f'Warm regards,\n'
                     f'EventYay Team'
                 )
-                billing_invoice_send_email(
-                    mail_subject, mail_content, invoice, organizer_billing
-                )
+                billing_invoice_send_email(mail_subject, mail_content, invoice, organizer_billing)
 
                 invoice.last_reminder_datetime = reminder_date
-                invoice.next_reminder_datetime = get_next_reminder_datetime(
-                    invoice.reminder_schedule
-                )
+                invoice.next_reminder_datetime = get_next_reminder_datetime(invoice.reminder_schedule)
                 invoice.save()
                 break
     logger.info('End - completed task to check billing status for warning.')
@@ -745,9 +683,7 @@ def check_billing_status_for_warning(self):
 def billing_invoice_send_email(subject, content, invoice, organizer_billing):
     organizer_billing_contact = [organizer_billing.primary_contact_email]
     # generate invoice pdf
-    generator = InvoicePDFGenerator(
-        billing_invoice=invoice, organizer_billing_info=organizer_billing
-    )
+    generator = InvoicePDFGenerator(billing_invoice=invoice, organizer_billing_info=organizer_billing)
     pdf_buffer = generator.generate()
     # Send email to organizer
     pdf_content = pdf_buffer.getvalue()
