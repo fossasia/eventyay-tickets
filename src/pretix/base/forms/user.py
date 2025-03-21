@@ -53,19 +53,11 @@ class UserSettingsForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = [
-            'fullname',
-            'wikimedia_username',
-            'locale',
-            'timezone',
-            'email'
-        ]
+        fields = ['fullname', 'wikimedia_username', 'locale', 'timezone', 'email']
         labels = {
             'wikimedia_username': 'Nick name',
         }
-        widgets = {
-            'locale': SingleLanguageWidget
-        }
+        widgets = {'locale': SingleLanguageWidget}
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')

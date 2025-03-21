@@ -169,3 +169,6 @@ select = ["E", "F", "W", "I"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["pretix"]
+
+[tool.ruff.lint.per-file-ignores]
+"*/settings.py" = ["F405"]
