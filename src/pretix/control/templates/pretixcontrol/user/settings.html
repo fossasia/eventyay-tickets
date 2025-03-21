@@ -10,6 +10,7 @@
     <fieldset>
         <legend>{% trans "General settings" %}</legend>
         {% bootstrap_field form.fullname layout='horizontal' %}
+        {% bootstrap_field form.wikimedia_username layout='horizontal' readonly='readonly' %}
         {% bootstrap_field form.locale layout='horizontal' %}
         {% bootstrap_field form.timezone layout='horizontal' %}
         <div class="form-group">

@@ -85,26 +85,29 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    email = models.EmailField(
-        unique=True,
-        db_index=True,
-        null=True,
-        blank=True,
-        verbose_name=_('E-mail'),
-        max_length=190,
+    email = models.EmailField(unique=True, db_index=True, null=True, blank=True,
+                              verbose_name=_('E-mail'), max_length=190)
+    fullname = models.CharField(max_length=255, blank=True, null=True,
+                                verbose_name=_('Full name'))
+    wikimedia_username = models.CharField(max_length=255, blank=True, null=True,
+                                     verbose_name=('Wikimedia username'))
+    is_active = models.BooleanField(default=True,
+                                    verbose_name=_('Is active'))
+    is_staff = models.BooleanField(default=False,
+                                   verbose_name=_('Is site admin'))
+    date_joined = models.DateTimeField(auto_now_add=True,
+                                       verbose_name=_('Date joined'))
+    locale = models.CharField(max_length=50,
+                              choices=settings.LANGUAGES,
+                              default=settings.LANGUAGE_CODE,
+                              verbose_name=_('Language'))
+    timezone = models.CharField(max_length=100,
+                                default=settings.TIME_ZONE,
+                                verbose_name=_('Timezone'))
+    require_2fa = models.BooleanField(
+        default=False,
+        verbose_name=_('Two-factor authentication is required to log in')
     )
-    fullname = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('Full name'))
-    is_active = models.BooleanField(default=True, verbose_name=_('Is active'))
-    is_staff = models.BooleanField(default=False, verbose_name=_('Is site admin'))
-    date_joined = models.DateTimeField(auto_now_add=True, verbose_name=_('Date joined'))
-    locale = models.CharField(
-        max_length=50,
-        choices=settings.LANGUAGES,
-        default=settings.LANGUAGE_CODE,
-        verbose_name=_('Language'),
-    )
-    timezone = models.CharField(max_length=100, default=settings.TIME_ZONE, verbose_name=_('Timezone'))
-    require_2fa = models.BooleanField(default=False, verbose_name=_('Two-factor authentication is required to log in'))
     notifications_send = models.BooleanField(
         default=True,
         verbose_name=_('Receive notifications according to my settings below'),
@@ -163,10 +166,13 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         Returns the first of the following user properties that is found to exist:
 
         * Full name
+        * Wikimedia username
         * Email address
         """
         if self.fullname:
             return self.fullname
+        elif self.wikimedia_username:
+            return self.wikimedia_username
         else:
             return self.email
 
