@@ -1058,11 +1058,15 @@ class SSOProviderForm(I18nModelForm):
         fields = ['is_active', 'name', 'button_label', 'method']
         widgets = {
             'method': forms.RadioSelect,
+            'is_active': forms.RadioSelect(choices=((True, _('Enable')), (False, _('Disable')))),
+        }
+        labels = {
+            'is_active': _('Active'),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        
         name_scheme = self.event.settings.name_scheme
         scheme = PERSON_NAME_SCHEMES.get(name_scheme)
         for fname, label, size in scheme['fields']:
@@ -1118,10 +1122,15 @@ class SSOClientForm(I18nModelForm):
             'authorization_grant_type': forms.RadioSelect,
             'client_type': forms.RadioSelect,
             'allowed_scopes': forms.CheckboxSelectMultiple,
+            'is_active': forms.RadioSelect(choices=((True, _('Enable')), (False, _('Disable')))),
+        }
+        labels = {
+            'is_active': _('Active'),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
         self.fields['allowed_scopes'] = forms.MultipleChoiceField(
             label=self.fields['allowed_scopes'].label,
             help_text=self.fields['allowed_scopes'].help_text,

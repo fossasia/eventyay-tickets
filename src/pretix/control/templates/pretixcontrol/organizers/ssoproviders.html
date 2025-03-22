@@ -18,6 +18,7 @@
         <thead>
         <tr>
             <th>{% trans "Name" %}</th>
+            <th>{% trans "Status" %}</th>
             <th></th>
         </tr>
         </thead>
@@ -31,6 +32,13 @@
                         {% if not p.is_active %}</del>{% endif %}
                     </a>
                 </strong></td>
+                <td>
+                    {% if p.is_active %}
+                        <span class="label label-success">{% trans "Enable" %}</span>
+                    {% else %}
+                        <span class="label label-default">{% trans "Disable" %}</span>
+                    {% endif %}
+                </td>
                 <td class="text-right flip">
                     <a href="{% url "control:organizer.ssoprovider.edit" organizer=request.organizer.slug provider=p.id %}"
                             class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
