@@ -29,6 +29,16 @@ the sense that it does not break your data,  but its APIs might change without p
 
 To get started using pretix on your own server, look at the `installation guide`_ in our documentation.
 
+Features
+--------
+
+* Single Sign-On (SSO) providers including GitHub, Google, and Wikimedia integration
+* Complete ticket shop solution for online and on-site sales
+* Customizable ticket layouts and email templates
+* Support for various payment methods
+* Integration with different analytics platforms
+* Multi-language support
+
 Support
 -------
 
