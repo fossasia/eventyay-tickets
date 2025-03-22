@@ -3,19 +3,91 @@
 {% load bootstrap3 %}
 {% load static %}
 
-{% block custom_header %}
-    <script type="text/javascript" src="{% static "move-email-elements/moveEmailElements.js" %}"></script>
+{% block inner %}
+<div class="tabbed-nav">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" {% if active_tab == 'basics' %}class="active"{% endif %}>
+            <a href="{% url 'control:admin.global.settings.basics' %}">
+                {% trans "Basics" %}
+            </a>
+        </li>
+        <li role="presentation" {% if active_tab == 'localization' %}class="active"{% endif %}>
+            <a href="{% url 'control:admin.global.settings.localization' %}">
+                {% trans "Localization" %}
+            </a>
+        </li>
+        <li role="presentation" {% if active_tab == 'email' %}class="active"{% endif %}>
+            <a href="{% url 'control:admin.global.settings.email' %}">
+                {% trans "Email" %}
+            </a>
+        </li>
+        <li role="presentation" {% if active_tab == 'payment_gateways' %}class="active"{% endif %}>
+            <a href="{% url 'control:admin.global.settings.payment_gateways' %}">
+                {% trans "Payment Gateways" %}
+            </a>
+        </li>
+        <li role="presentation" {% if active_tab == 'maps' %}class="active"{% endif %}>
+            <a href="{% url 'control:admin.global.settings.maps' %}">
+                {% trans "Maps" %}
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% if active_tab == 'basics' %}
+                        {% trans "Basic Settings" %}
+                    {% elif active_tab == 'localization' %}
+                        {% trans "Localization Settings" %}
+                    {% elif active_tab == 'email' %}
+                        {% trans "Email Settings" %}
+                    {% elif active_tab == 'payment_gateways' %}
+                        {% trans "Payment Gateway Settings" %}
+                    {% elif active_tab == 'maps' %}
+                        {% trans "Map Settings" %}
+                    {% endif %}
+                </h3>
+            </div>
+            <div class="panel-body">
+                <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% bootstrap_form_errors form %}
+                    
+                    {% for field in form %}
+                        {% bootstrap_field field layout='control' %}
+                    {% endfor %}
+                    
+                    <div class="form-group submit-group">
+                        <button type="submit" class="btn btn-primary btn-save">
+                            {% trans "Save" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-{% block inner %}
-    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_form form layout='control' %}
-        <div class="form-group submit-group">
-            <button type="submit" class="btn btn-primary btn-save">
-                {% trans "Save" %}
-            </button>
-        </div>
-    </form>
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript">
+    $(function() {
+        // Show/hide email vendor specific fields
+        if ($('input[name="email_vendor"]').length) {
+            $('input[name="email_vendor"]').change(function() {
+                var selectedVendor = $('input[name="email_vendor"]:checked').val();
+                if (selectedVendor == 'sendgrid') {
+                    $('.field-send_grid_api_key').show();
+                    $('.field-smtp_host, .field-smtp_port, .field-smtp_username, .field-smtp_password, .field-smtp_use_tls, .field-smtp_use_ssl').hide();
+                } else {
+                    $('.field-send_grid_api_key').hide();
+                    $('.field-smtp_host, .field-smtp_port, .field-smtp_username, .field-smtp_password, .field-smtp_use_tls, .field-smtp_use_ssl').show();
+                }
+            }).trigger('change');
+        }
+    });
+</script>
 {% endblock %}

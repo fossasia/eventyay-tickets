@@ -17,10 +17,13 @@ from pretix.base.services.update_check import check_result_table, update_check
 from pretix.base.settings import GlobalSettingsObject
 from pretix.common.enums import ValidStates
 from pretix.control.forms.global_settings import (
-    GlobalSettingsForm, SSOConfigForm, UpdateSettingsForm,
+    GlobalSettingsForm,
+    SSOConfigForm,
+    UpdateSettingsForm,
 )
 from pretix.control.permissions import (
-    AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
+    AdministratorPermissionRequiredMixin,
+    StaffMemberRequiredMixin,
 )
 
 logger = logging.getLogger(__name__)
@@ -29,6 +32,17 @@ logger = logging.getLogger(__name__)
 class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
     template_name = 'pretixcontrol/global_settings.html'
     form_class = GlobalSettingsForm
+    active_tab = 'basics'  # Default active tab
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['active_tab'] = self.active_tab
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['active_tab'] = self.active_tab
+        return ctx
 
     def form_valid(self, form):
         form.save()
@@ -42,7 +56,23 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('control:admin.global.settings')
+        return reverse('control:admin.global.settings.' + self.active_tab)
+
+
+class GlobalSettingsLocalizationView(GlobalSettingsView):
+    active_tab = 'localization'
+
+
+class GlobalSettingsEmailView(GlobalSettingsView):
+    active_tab = 'email'
+
+
+class GlobalSettingsPaymentGatewaysView(GlobalSettingsView):
+    active_tab = 'payment_gateways'
+
+
+class GlobalSettingsMapsView(GlobalSettingsView):
+    active_tab = 'maps'
 
 
 class SSOView(AdministratorPermissionRequiredMixin, FormView):
@@ -62,7 +92,9 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
             result = self.create_oauth_application(url)
         except (IntegrityError, ValidationError, ObjectDoesNotExist) as e:
             error_type = type(e).__name__
-            logger.error('Error while creating OAuth2 application: %s - %s', error_type, e)
+            logger.error(
+                'Error while creating OAuth2 application: %s - %s', error_type, e
+            )
             return self.render_to_response({'error_message': f'{error_type}: {e}'})
 
         return self.render_to_response(self.get_context_data(form=form, result=result))
@@ -80,7 +112,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         application, created = OAuthApplication.objects.get_or_create(
             redirect_uris=redirect_uris,
             defaults={
-                'name': "Talk SSO Client",
+                'name': 'Talk SSO Client',
                 'client_type': OAuthApplication.CLIENT_CONFIDENTIAL,
                 'authorization_grant_type': OAuthApplication.GRANT_AUTHORIZATION_CODE,
                 'user': None,
@@ -92,13 +124,13 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         )
 
         return {
-            "success_message": (
-                "Successfully created OAuth2 Application"
+            'success_message': (
+                'Successfully created OAuth2 Application'
                 if created
-                else "OAuth2 Application with this redirect URI already exists"
+                else 'OAuth2 Application with this redirect URI already exists'
             ),
-            "client_id": application.client_id,
-            "client_secret": application.client_secret,
+            'client_id': application.client_id,
+            'client_secret': application.client_secret,
         }
 
 
