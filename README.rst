@@ -7,7 +7,7 @@ eventyay-tickets
 Project status & release cycle
 ------------------------------
 
-Welcome to the **Eventyay** project! The ticketing component of the system provides options for **ticket sales and event-related items** such as T-shirts. Eventyay has been in development since **2014** and is based on a fork of **Pretix**.
+Welcome to the **Eventyay** project! The ticketing component of the system provides options for **ticket sales and event-related items** such as T-shirts. Eventyay has been in development since **2014**. Its ticketing component is based on a fork of **Pretix**.
 
 Support
 -------
