@@ -39,3 +39,5 @@ recursive-include assets/svg-font *.svg
 
 global-exclude *.py[co]
 global-exclude __pycache__
+
+exclude *.lock

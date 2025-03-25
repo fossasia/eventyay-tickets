@@ -60,47 +60,22 @@ dependencies = [
   "vobject~=0.9.0",
   "whitenoise~=6.8.0",
   "zxcvbn~=4.4.0",
-  'pretalx_pages @ git+https://github.com/fossasia/eventyay-talk-pages.git@main',
-  'pretalx_venueless @ git+https://github.com/fossasia/eventyay-talk-video.git@main',
-  'pretalx-downstream @ git+https://github.com/fossasia/eventyay-talk-downstream.git@main',
+  "pretalx_pages @ git+https://github.com/fossasia/eventyay-talk-pages.git@main",
+  "pretalx_venueless @ git+https://github.com/fossasia/eventyay-talk-video.git@main",
+  "pretalx-downstream @ git+https://github.com/fossasia/eventyay-talk-downstream.git@main",
   "django-allauth~=0.63.3",
   "PyJWT~=2.8.0",
-  'django-oauth-toolkit==2.4.*',
-  'requests-oauthlib==2.*',
-  'psycopg2-binary==2.9.10',
-  'oauthlib==3.2.*',
+  "django-oauth-toolkit==2.4.*",
+  "requests-oauthlib==2.*",
+  "psycopg2-binary==2.9.10",
+  "oauthlib==3.2.*",
+  "gunicorn>=23.0.0",
 ]
 
 [project.optional-dependencies]
-dev = [
-  "black",
-  "build",
-  "check-manifest",
-  "coverage",
-  "djhtml",
-  "Faker",
-  "flake8",
-  "flake8-bugbear",
-  "freezegun",
-  "isort",
-  "jsonschema",
-  "lxml",
-  "pytest",
-  "pytest-cov",
-  "pytest-django",
-  "pytest-mock",
-  "pytest-sugar",
-  "pytest-xdist",
-  "pywatchman",
-  "responses",
-  "urllib3",
-]
 postgres = ["psycopg2-binary~=2.9.0"]
 redis = ["redis~=5.2.0"]
-
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools", "wheel"]
+memcached = ["pylibmc"]
 
 [project.urls]
 Homepage = "https://eventyay.com"
@@ -109,11 +84,47 @@ Repository = "https://github.com/fossasia/eventyay-talk"
 Changelog = "https://docs.eventyay.org/changelog/"
 Issues = "https://github.com/fossasia/eventyay-talk/issues"
 
+[dependency-groups]
+lint = ["djhtml>=3.0.7", "ruff>=0.9.10"]
+test = [
+  "coverage>=7.6.12",
+  "faker>=37.0.0",
+  "freezegun>=1.5.1",
+  "pytest>=8.3.5",
+  "pytest-cov",
+  "pytest-django",
+  "pytest-mock",
+  "pytest-sugar",
+  "pytest-xdist",
+  "responses>=0.25.7",
+]
+dev = [
+  "build>=1.2.2.post1",
+  "check-manifest>=0.50",
+  "jsonschema>=4.23.0",
+  "lxml>=5.3.1",
+  "pywatchman>=2.0.0",
+  "urllib3>=2.3.0",
+]
+doc = [
+    "sphinx-autobuild>=2024.10.3",
+    "sphinx>=8.2.3",
+    "sphinx-autodoc-typehints>=3.1.0",
+    "sphinx-copybutton>=0.5.2",
+    "sphinxcontrib-django>=2.5",
+    "sphinxcontrib-httpdomain>=1.8.1",
+    "sphinxcontrib-spelling>=8.0.1",
+]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
 [tool.setuptools]
 include-package-data = true
 
-[tool.setuptools.dynamic]
-version = {attr = "pretalx.__version__"}
+[tool.setuptools.dynamic.version]
+attr = "pretalx.__version__"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -136,27 +147,29 @@ ignore = [
 ]
 
 [tool.djlint]
-blank_line_after_tag="load,extends,include"
-blank_line_before_tag="load,extends,include"
-close_void_tags=false
-extend_exclude="static,docs"
-max_blank_lines=1
-preserve_blank_lines=1
-profile="django"
+blank_line_after_tag = "load,extends,include"
+blank_line_before_tag = "load,extends,include"
+close_void_tags = false
+extend_exclude = "static,docs"
+max_blank_lines = 1
+preserve_blank_lines = 1
+profile = "django"
+
+[tool.uv]
+default-groups = ["dev", "test"]
 
 [tool.pyright]
-venv = "pretalx"
 exclude = [
-    "src/pretalx/frontend/",
-    "src/pretalx/static/",
-    "src/pretalx/locale/",
-    "src/pretalx/settings.py",
-    "src/pretalx/common/settings/test_settings.py",
-    "src/local/",
-    "build/",
-    "doc/*",
-    "**/.*",
-    "**/__pycache__",
+  "src/pretalx/frontend/",
+  "src/pretalx/static/",
+  "src/pretalx/locale/",
+  "src/pretalx/settings.py",
+  "src/pretalx/common/settings/test_settings.py",
+  "src/local/",
+  "build/",
+  "doc/*",
+  "**/.*",
+  "**/__pycache__",
 ]
 # We don’t use types, Django doesn’t have good pyright support even with django-types.
 # So we disable type checking, and then manually re-enable useful checks.

@@ -78,6 +78,7 @@ ENV/
 .project
 .pydevproject
 .vscode
+.helix
 
 # IDEA / pycharm
 .idea/

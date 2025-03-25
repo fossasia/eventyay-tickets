@@ -22,26 +22,34 @@ RUN apt-get update && \
     echo 'pretalxuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 ENV LC_ALL=C.UTF-8
+# Tell uv to install packages to system, not virtual environment.
+ENV UV_PROJECT_ENVIRONMENT=/usr/local
 ENV BASE_PATH=/talk
 
 COPY pyproject.toml /pretalx
+COPY uv.lock /pretalx
 COPY src /pretalx/src
 COPY deployment/docker/pretalx.bash /usr/local/bin/pretalx
 COPY deployment/docker/supervisord.conf /etc/supervisord.conf
 
-RUN pip3 install -U pip setuptools wheel typing && \
-    pip3 install -e /pretalx/[postgres,redis] && \
-    pip3 install pylibmc && \
-    pip3 install gunicorn
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-RUN python3 -m pretalx makemigrations
-RUN python3 -m pretalx migrate
+# RUN pip3 install -U pip setuptools wheel typing && \
+#     pip3 install -e /pretalx/[postgres,redis] && \
+#     pip3 install pylibmc && \
+#     pip3 install gunicorn
+
+WORKDIR /pretalx
+RUN uv sync --frozen --all-extras --no-install-project
+
+RUN uv run -m pretalx makemigrations
+RUN uv run -m pretalx migrate
 
 RUN apt-get update && \
     apt-get install -y nodejs npm && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    python3 -m pretalx rebuild
+    uv run -m pretalx rebuild
 
 RUN chmod +x /usr/local/bin/pretalx && \
     cd /pretalx/src && \
