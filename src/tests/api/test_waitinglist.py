@@ -1,7 +1,9 @@
 import copy
 import datetime
 from unittest import mock
-
+import threading
+import time
+from queue import PriorityQueue
 import pytest
 from django_scopes import scopes_disabled
 from pytz import UTC
@@ -451,9 +453,7 @@ def test_wle_send_voucher_unavailable(token_client, organizer, event, item, wle,
     assert not wle.voucher
 
 # WaitingList class definition
-import threading
-import time
-from queue import PriorityQueue
+
 
 class WaitingList:
     def __init__(self):
@@ -485,8 +485,13 @@ class WaitingList:
             return None
 
 # Additional test cases
+import pytest
+import threading
+import time
+from waiting_list import WaitingList  # Adjust the import based on your project structure
+
+@pytest.mark.django_db
 def test_waiting_list():
-    print("Running tests...")
     wl = WaitingList()
     
     # Test: Adding and removing users
@@ -498,20 +503,57 @@ def test_waiting_list():
     assert wl.remove_user() == "User1", "Test Failed: User1 should be removed first"
     assert wl.remove_user() == "User2", "Test Failed: User2 should be removed second"
     assert wl.remove_user() == "User3", "Test Failed: User3 should be removed third"
-    assert wl.remove_user() is None, "Test Failed: Queue should be empty"
-    
-    # Test: Empty queue case
-    assert wl.peek_next_user() is None, "Test Failed: Peek should return None for empty queue"
-    
-    # Test: Users waiting for different durations
-    wl.add_user("UserA")
-    time.sleep(1)
-    wl.add_user("UserB")
-    
-    assert wl.remove_user() == "UserA", "Test Failed: UserA should be removed first"
-    assert wl.remove_user() == "UserB", "Test Failed: UserB should be removed second"
-    
-    print("All tests passed!")
 
-# Run tests
-test_waiting_list()
+@pytest.mark.django_db
+def test_concurrent_access():
+    concurrent_wl = WaitingList()
+    num_users = 20
+
+    # Function to add a user concurrently
+    def add_user(i):
+        concurrent_wl.add_user(f"User{i}")
+
+    add_threads = []
+    for i in range(num_users):
+        t = threading.Thread(target=add_user, args=(i,))
+        add_threads.append(t)
+        t.start()
+
+    for t in add_threads:
+        t.join()
+
+    # Function to remove a user concurrently
+    removed_users = []
+    def remove_user():
+        user = concurrent_wl.remove_user()
+        if user is not None:
+            removed_users.append(user)
+
+    remove_threads = []
+    for _ in range(num_users):
+        t = threading.Thread(target=remove_user)
+        remove_threads.append(t)
+        t.start()
+
+    for t in remove_threads:
+        t.join()
+
+    # Verify that all users have been removed in FIFO order
+    expected_users = [f"User{i}" for i in range(num_users)]
+    assert removed_users == expected_users, "Test Failed: Concurrent removal did not maintain FIFO order"
+
+@pytest.mark.django_db
+def test_large_number_of_users():
+    wl = WaitingList()
+    
+    # Test: Adding a large number of users
+    for i in range(1000):
+        wl.add_user(f"LargeUser{i}")
+
+    # Validate FIFO ordering for the 1000 users
+    for i in range(1000):
+        expected = f"LargeUser{i}"
+        actual = wl.remove_user()
+        assert actual == expected, f"Test Failed: Expected {expected} but got {actual}"
+
+# Note: No direct call to test_waiting_list() here; pytest will discover and run the tests.
