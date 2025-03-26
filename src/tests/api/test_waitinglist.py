@@ -449,3 +449,69 @@ def test_wle_send_voucher_unavailable(token_client, organizer, event, item, wle,
     assert resp.status_code == 400
     wle.refresh_from_db()
     assert not wle.voucher
+
+# WaitingList class definition
+import threading
+import time
+from queue import PriorityQueue
+
+class WaitingList:
+    def __init__(self):
+        self.queue = PriorityQueue()
+        self.counter = 0  # To ensure FIFO order
+        self.lock = threading.Lock()
+
+    def add_user(self, user_id):
+        with self.lock:
+            timestamp = time.time()
+            self.queue.put((timestamp, self.counter, user_id))
+            self.counter += 1
+            print(f"User {user_id} added to the waiting list at {timestamp}")
+
+    def remove_user(self):
+        with self.lock:
+            if not self.queue.empty():
+                _, _, user_id = self.queue.get()
+                print(f"User {user_id} removed from the waiting list")
+                return user_id
+            else:
+                print("Waiting list is empty")
+                return None
+
+    def peek_next_user(self):
+        with self.lock:
+            if not self.queue.empty():
+                return self.queue.queue[0][2]  # Return next user_id without removing it
+            return None
+
+# Additional test cases
+def test_waiting_list():
+    print("Running tests...")
+    wl = WaitingList()
+    
+    # Test: Adding and removing users
+    wl.add_user("User1")
+    wl.add_user("User2")
+    wl.add_user("User3")
+    
+    assert wl.peek_next_user() == "User1", "Test Failed: User1 should be first"
+    assert wl.remove_user() == "User1", "Test Failed: User1 should be removed first"
+    assert wl.remove_user() == "User2", "Test Failed: User2 should be removed second"
+    assert wl.remove_user() == "User3", "Test Failed: User3 should be removed third"
+    assert wl.remove_user() is None, "Test Failed: Queue should be empty"
+    
+    # Test: Empty queue case
+    assert wl.peek_next_user() is None, "Test Failed: Peek should return None for empty queue"
+    
+    # Test: Users waiting for different durations
+    wl.add_user("UserA")
+    time.sleep(1)
+    wl.add_user("UserB")
+    
+    assert wl.remove_user() == "UserA", "Test Failed: UserA should be removed first"
+    assert wl.remove_user() == "UserB", "Test Failed: UserB should be removed second"
+    
+    print("All tests passed!")
+
+# Run tests
+test_waiting_list()
