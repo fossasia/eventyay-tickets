@@ -1,7 +1,7 @@
 $(function () {
     const basePath = JSON.parse(document.getElementById('base_path').textContent);
     const isAdminMode = JSON.parse(document.getElementById('is_admin_mode').textContent);
-    const talkHostNamePath= JSON.parse(document.getElementById('talk_hostname_url').textContent);
+    const talkHostNamePath = JSON.parse(document.getElementById('talk_hostname_url').textContent);
     const currentPath = window.location.pathname;
     const queryString = window.location.search;
 
@@ -10,7 +10,7 @@ $(function () {
     const logoutParams = new URLSearchParams({back: backUrl});
 
     const ticketsPath = `/control/`;
-    const talksPath = `${talkHostNamePath}/orga/event/`
+    const talksPath = `${talkHostNamePath}orga/event/`
     const mainDashboardPath = `/common/`;
     const eventPath = `/common/events/`;
     const organizerPath = `/common/organizers/`;
