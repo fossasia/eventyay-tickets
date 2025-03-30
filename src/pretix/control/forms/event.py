@@ -9,7 +9,7 @@ from django.forms import CheckboxSelectMultiple, formset_factory
 from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
-from django.utils.timezone import get_current_timezone_name
+from django.utils.timezone import get_current_timezone, get_current_timezone_name, now
 from django.utils.translation import gettext, gettext_lazy as _, pgettext_lazy
 from django_countries.fields import LazyTypedChoiceField
 from i18nfield.forms import (
@@ -164,6 +164,11 @@ class EventWizardBasicsForm(I18nModelForm):
         super().__init__(*args, **kwargs)
         if "timezone" not in self.initial:
             self.initial["timezone"] = get_current_timezone_name()
+
+        selected_timezone = self.initial.get("timezone") or get_current_timezone().zone
+        tz = timezone(selected_timezone)
+        min_date = now().astimezone(tz).date()
+        self.fields["date_from"].widget = SplitDateTimePickerWidget(min_date=min_date)
         self.fields["locale"].choices = [
             (a, b) for a, b in settings.LANGUAGES if a in self.locales
         ]
@@ -241,6 +246,53 @@ class EventWizardBasicsForm(I18nModelForm):
             or user.is_staff
         )
 
+    @staticmethod
+    def convert_to_user_timezone(dt):
+        """
+        Converts a given datetime to the user's timezone.
+        If the datetime is None, returns None.
+        """
+        if dt is None:
+            return None
+        user_timezone_str = get_current_timezone_name()
+        user_tz = timezone(user_timezone_str)
+        naive_dt = dt.replace(tzinfo=None)
+        return user_tz.localize(naive_dt)
+
+    def clean_date_from(self):
+        """
+        Validates that the event start date (date_from) is in the future.
+        Converts it to the user's timezone before comparison.
+        """
+        date_from = self.cleaned_data.get("date_from")
+        date_from_with_user_tz = self.convert_to_user_timezone(date_from)
+        user_now = now().astimezone(timezone(get_current_timezone_name()))
+
+        if date_from and date_from_with_user_tz < user_now:
+            raise ValidationError(_("The event start date and time cannot be in the past."))
+
+        return date_from_with_user_tz
+
+    def clean_date_to(self):
+        """
+        Ensures the event end date (date_to) is:
+        - Not in the past
+        - Must be after the start date (date_from) with no overlap.
+        Both are converted to the user's timezone before comparison.
+        """
+        date_to = self.cleaned_data.get("date_to")
+        date_from = self.cleaned_data.get("date_from")
+        date_to_with_user_tz = self.convert_to_user_timezone(date_to)
+        date_from_with_user_tz = self.convert_to_user_timezone(date_from)
+        user_today = now().astimezone(timezone(get_current_timezone_name())).date()
+
+        if date_to_with_user_tz and date_to_with_user_tz.date() < user_today:
+            raise ValidationError(_("The event end date and time cannot be in the past."))
+
+        if date_from_with_user_tz and date_to_with_user_tz and date_to_with_user_tz <= date_from_with_user_tz:
+            raise ValidationError(_("The event end date and time must be after the start date and time."))
+
+        return date_to_with_user_tz
 
 class EventChoiceMixin:
     def label_from_instance(self, obj):
@@ -381,6 +433,13 @@ class EventUpdateForm(I18nModelForm):
                 kwargs["initial"].setdefault("domain", initial_domain.domainname)
 
         super().__init__(*args, **kwargs)
+        if "timezone" not in self.initial:
+            self.initial["timezone"] = get_current_timezone_name()
+
+        selected_timezone = self.initial.get("timezone") or get_current_timezone().zone
+        tz = timezone(selected_timezone)
+        min_date = now().astimezone(tz).date()
+        self.fields["date_from"].widget = SplitDateTimePickerWidget(min_date=min_date)
         if not self.change_slug:
             self.fields["slug"].widget.attrs["readonly"] = "readonly"
         self.fields["location"].widget.attrs["rows"] = "3"
@@ -426,6 +485,54 @@ class EventUpdateForm(I18nModelForm):
                     )
                 )
         return d
+
+    @staticmethod
+    def convert_to_user_timezone(dt):
+        """
+        Converts a given datetime to the user's timezone.
+        If the datetime is None, returns None.
+        """
+        if dt is None:
+            return None
+        user_timezone_str = get_current_timezone_name()
+        user_tz = timezone(user_timezone_str)
+        naive_dt = dt.replace(tzinfo=None)
+        return user_tz.localize(naive_dt)
+
+    def clean_date_from(self):
+        """
+        Validates that the event start date (date_from) is in the future.
+        Converts it to the user's timezone before comparison.
+        """
+        date_from = self.cleaned_data.get("date_from")
+        date_from_with_user_tz = self.convert_to_user_timezone(date_from)
+        user_now = now().astimezone(timezone(get_current_timezone_name()))
+
+        if date_from and date_from_with_user_tz < user_now:
+            raise ValidationError(_("The event start date and time cannot be in the past."))
+
+        return date_from_with_user_tz
+
+    def clean_date_to(self):
+        """
+        Ensures the event end date (date_to) is:
+        - Not in the past
+        - Must be after the start date (date_from) with no overlap.
+        Both are converted to the user's timezone before comparison.
+        """
+        date_to = self.cleaned_data.get("date_to")
+        date_from = self.cleaned_data.get("date_from")
+        date_to_with_user_tz = self.convert_to_user_timezone(date_to)
+        date_from_with_user_tz = self.convert_to_user_timezone(date_from)
+        user_today = now().astimezone(timezone(get_current_timezone_name())).date()
+
+        if date_to_with_user_tz and date_to_with_user_tz.date() < user_today:
+            raise ValidationError(_("The event end date and time cannot be in the past."))
+
+        if date_from_with_user_tz and date_to_with_user_tz and date_to_with_user_tz <= date_from_with_user_tz:
+            raise ValidationError(_("The event end date and time must be after the start date and time."))
+
+        return date_to_with_user_tz
 
     def save(self, commit=True):
         instance = super().save(commit)
