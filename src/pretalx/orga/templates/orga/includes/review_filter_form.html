@@ -4,10 +4,10 @@
 {% block form_attrs %} id="review-filter-form"{% endblock form_attrs %}
 
 {% block extra_filter_fields %}
-    {% if max_review_count and max_review_count > 1 %}
-        <div id="range-wrapper">
-            <input type="text" id="review-count" name="review-count" data-max="{{ max_review_count }}"/>
-            <label for="review-count" class="pt-0">{% translate "Number of reviews" %}</label>
-        </div>
-    {% endif %}
+  {% if max_review_count and max_review_count > 1 %}
+    <div id="range-wrapper">
+      <input type="text" id="review-count" name="review-count" data-max="{{ max_review_count }}"/>
+      <label for="review-count" class="pt-0">{% translate "Number of reviews" %}</label>
+    </div>
+  {% endif %}
 {% endblock extra_filter_fields %}

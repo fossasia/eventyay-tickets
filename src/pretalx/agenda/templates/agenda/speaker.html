@@ -10,77 +10,77 @@
 {% block meta_title %}{{ profile.user.get_display_name }}{% endblock meta_title %}
 {% block social_title %}{{ profile.user.get_display_name }}{% endblock social_title %}
 {% block meta_image %}
-    {% if profile.user.avatar_url and request.event.cfp.request_avatar %}
-        <meta property="thumbnail" content="{{ profile.urls.social_image.full }}">
-        <meta property="og:image" content="{{ profile.urls.social_image.full }}">
-    {% endif %}
+  {% if profile.user.avatar_url and request.event.cfp.request_avatar %}
+    <meta property="thumbnail" content="{{ profile.urls.social_image.full }}">
+    <meta property="og:image" content="{{ profile.urls.social_image.full }}">
+  {% endif %}
 {% endblock meta_image %}
 {% block alternate_link %}
-    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ profile.code }}" />
+  <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ profile.code }}" />
 {% endblock alternate_link %}
 
 {% block agenda_custom_header %}
-    {% compress js %}
-        <script defer src="{% static "common/js/lightbox.js" %}"></script>
-    {% endcompress %}
-    {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
-    {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static "common/js/lightbox.js" %}"></script>
+  {% endcompress %}
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
 {% endblock agenda_custom_header %}
 
 {% block agenda_content %}
-    <article>
-        <div class="d-flex mb-2">
-            <h3 class="heading-with-buttons">
-                {{ profile.user.get_display_name }}
-                {% if request.event.current_schedule %}
-                    <div class="buttons ml-auto flip">
-                        <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
-                            <i class="fa fa-calendar"></i> .ical
-                        </a>
-                    </div>
-                {% endif %}
-            </h3>
-        </div>
-        <div class="speaker-container">
-            <section class="speaker-info">
-                <div class="speaker-bio">{{ profile.biography|rich_text }}</div>
-                {% if profile.user.avatar_url and request.event.cfp.request_avatar %}
-                    <div class="speaker-avatar">
-                        <a href="{{ profile.user.avatar.url }}" data-lightbox="{{ profile.user.avatar.url }}">
-                            <img loading="lazy" width="100%" src="{{ profile.user.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
-                        </a>
-                    </div>
-                {% endif %}
-            </section>
-            {% if answers %}
-                <hr />
-                <section class="answers">
-                    {% for answer in answers %}
-                        <span class="question"><strong>{{ answer.question.question }}</strong></span>
-                        <span class="answer">– {% include "common/question_answer.html" with answer=answer %}</span>
-                    {% endfor %}
-                </section>
-            {% endif %}
-            <hr />
-            {% if talks %}
-                <section class="speaker-talks">
-                    <h4>
-                        {% blocktranslate trimmed count count=talks.count %}
-                            Session
-                        {% plural %}
-                            Sessions
-                        {% endblocktranslate %}
-                    </h4>
-                    {% for session in talks %}
-                        <a href="{{ session.submission.urls.public }}">
+  <article>
+    <div class="d-flex mb-2">
+      <h3 class="heading-with-buttons">
+        {{ profile.user.get_display_name }}
+        {% if request.event.current_schedule %}
+          <div class="buttons ml-auto flip">
+            <a class="btn btn-outline-primary" href="{{ profile.urls.talks_ical }}">
+              <i class="fa fa-calendar"></i> .ical
+            </a>
+          </div>
+        {% endif %}
+      </h3>
+    </div>
+    <div class="speaker-container">
+      <section class="speaker-info">
+        <div class="speaker-bio">{{ profile.biography|rich_text }}</div>
+        {% if profile.user.avatar_url and request.event.cfp.request_avatar %}
+          <div class="speaker-avatar">
+            <a href="{{ profile.user.avatar.url }}" data-lightbox="{{ profile.user.avatar.url }}">
+              <img loading="lazy" width="100%" src="{{ profile.user.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
+            </a>
+          </div>
+        {% endif %}
+      </section>
+      {% if answers %}
+        <hr />
+        <section class="answers">
+          {% for answer in answers %}
+            <span class="question"><strong>{{ answer.question.question }}</strong></span>
+            <span class="answer">– {% include "common/question_answer.html" with answer=answer %}</span>
+          {% endfor %}
+        </section>
+      {% endif %}
+      <hr />
+      {% if talks %}
+        <section class="speaker-talks">
+          <h4>
+            {% blocktranslate trimmed count count=talks.count %}
+              Session
+            {% plural %}
+              Sessions
+            {% endblocktranslate %}
+          </h4>
+          {% for session in talks %}
+            <a href="{{ session.submission.urls.public }}">
 
-                            {% include "agenda/session_block.html" with show_date=True %}
+              {% include "agenda/session_block.html" with show_date=True %}
 
-                        </a>
-                    {% endfor %}
-                </section>
-            {% endif %}
-        </div>
-    </article>
+            </a>
+          {% endfor %}
+        </section>
+      {% endif %}
+    </div>
+  </article>
 {% endblock agenda_content %}

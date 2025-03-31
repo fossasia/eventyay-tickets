@@ -4,62 +4,62 @@
 {% load static %}
 
 {% compress js %}
-    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-    <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-    <script defer src="{% static "agenda/js/datetime-local.js" %}"></script>
+  <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+  <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
+  <script defer src="{% static "agenda/js/datetime-local.js" %}"></script>
 {% endcompress %}
 
 <h2>
-    {{ quotation_open }}{{ submission.title }}{{ quotation_close }}
-    {% if submission.state == "draft" %}
-        <span class="badge color-secondary">{% translate "Draft" %}</span>
-    {% endif %}
+  {{ quotation_open }}{{ submission.title }}{{ quotation_close }}
+  {% if submission.state == "draft" %}
+    <span class="badge color-secondary">{% translate "Draft" %}</span>
+  {% endif %}
 </h2>
 {% if submission.state != "draft" %}
-    <p>
-        {% translate "Current state of your proposal:" %}
+  <p>
+    {% translate "Current state of your proposal:" %}
 
-        {% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}
+    {% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}
 
-    </p>
+  </p>
 {% else %}
-    <div class="alert alert-info">
-        {% blocktranslate trimmed %}
-            This is a draft proposal.
-            It will never be visible to anybody else, unless you submit it or explicitly share it.
-        {% endblocktranslate %}
-    </div>
+  <div class="alert alert-info">
+    {% blocktranslate trimmed %}
+      This is a draft proposal.
+      It will never be visible to anybody else, unless you submit it or explicitly share it.
+    {% endblocktranslate %}
+  </div>
 {% endif %}
 {% if submission.public_slots %}
-    <h3>
-        <small>
-            {% for talk in submission.public_slots %}
-                {{ talk.start|datetimerange:talk.end }}, {{ talk.room.name }}
-                {% if not forloop.last %}·{% endif %}
-            {% endfor %}
-        </small>
-    </h3>
+  <h3>
+    <small>
+      {% for talk in submission.public_slots %}
+        {{ talk.start|datetimerange:talk.end }}, {{ talk.room.name }}
+        {% if not forloop.last %}·{% endif %}
+      {% endfor %}
+    </small>
+  </h3>
 {% endif %}
 <div class="submission-info d-flex">
-    {% if submission.submission_type and request.event.submission_types.all|length > 1 %}
-        <p class="mr-1 ml-1">
-            <strong>{% translate "Session type" %}</strong>: {{ submission.submission_type.name }}
-        </p>
-        ·
-    {% endif %}
-    {% if submission.track and request.event.tracks.all|length > 1 %}
-        <p class="mr-1 ml-1">
-            <strong>{% translate "Track" %}</strong> {{ submission.track.name }}
-        </p>
-        ·
-    {% endif %}
-    {% if request.event.is_multilingual and request.event.cfp.request_content_locale %}
-        <p class="mr-1 ml-1">
-            <strong>{{ phrases.base.language }}</strong> {{ submission.get_content_locale_display }}
-        </p>
-        ·
-    {% endif %}
+  {% if submission.submission_type and request.event.submission_types.all|length > 1 %}
     <p class="mr-1 ml-1">
-        <strong>{% translate "Duration" %}</strong> {{ submission.export_duration }}
+      <strong>{% translate "Session type" %}</strong>: {{ submission.submission_type.name }}
     </p>
+    ·
+  {% endif %}
+  {% if submission.track and request.event.tracks.all|length > 1 %}
+    <p class="mr-1 ml-1">
+      <strong>{% translate "Track" %}</strong> {{ submission.track.name }}
+    </p>
+    ·
+  {% endif %}
+  {% if request.event.is_multilingual and request.event.cfp.request_content_locale %}
+    <p class="mr-1 ml-1">
+      <strong>{{ phrases.base.language }}</strong> {{ submission.get_content_locale_display }}
+    </p>
+    ·
+  {% endif %}
+  <p class="mr-1 ml-1">
+    <strong>{% translate "Duration" %}</strong> {{ submission.export_duration }}
+  </p>
 </div>

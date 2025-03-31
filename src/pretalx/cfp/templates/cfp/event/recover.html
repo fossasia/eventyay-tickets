@@ -7,29 +7,29 @@
 {% block title %}{{ phrases.base.password_reset_heading }}{% endblock title %}
 
 {% block scripts %}
-    {% compress js %}
-        <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
-        <script defer src="{% static 'common/js/base.js' %}"></script>
-        <script defer src="{% static 'common/js/password_strength.js' %}"></script>
-    {% endcompress %}
-    {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
-    {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
+    <script defer src="{% static 'common/js/base.js' %}"></script>
+    <script defer src="{% static 'common/js/password_strength.js' %}"></script>
+  {% endcompress %}
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
+  {% endcompress %}
 {% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div class="col-md-8 labelless-password-input-form">
-            {% if is_invite_template %}
-                <h2>{% translate "Set your password to access your profile and proposals" %}</h2>
-                <p>{{ phrases.base.password_reset_nearly_done }}</p>
-            {% else %}
-                <h2>{{ phrases.base.password_reset_heading }}</h2>
-                <p>{{ phrases.base.password_reset_nearly_done }}</p>
-            {% endif %}
-            {{ form }}
-            <button type="submit" class="btn btn-block btn-success">{{ phrases.base.save }}</button>
-        </div>
-    </form>
+  <form method="post">
+    {% csrf_token %}
+    <div class="col-md-8 labelless-password-input-form">
+      {% if is_invite_template %}
+        <h2>{% translate "Set your password to access your profile and proposals" %}</h2>
+        <p>{{ phrases.base.password_reset_nearly_done }}</p>
+      {% else %}
+        <h2>{{ phrases.base.password_reset_heading }}</h2>
+        <p>{{ phrases.base.password_reset_nearly_done }}</p>
+      {% endif %}
+      {{ form }}
+      <button type="submit" class="btn btn-block btn-success">{{ phrases.base.save }}</button>
+    </div>
+  </form>
 {% endblock content %}

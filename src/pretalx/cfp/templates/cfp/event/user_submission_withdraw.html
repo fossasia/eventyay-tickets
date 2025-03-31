@@ -6,25 +6,25 @@
 
 {% block content %}
 
-    {% include "cfp/includes/user_submission_header.html" %}
+  {% include "cfp/includes/user_submission_header.html" %}
 
-    <form method="post">
-        {% csrf_token %}
-        <h3>{% translate "Withdraw proposal" %}</h3>
-        <div class="alert alert-danger">
-            {% blocktranslate trimmed %}
-                Do you really want to withdraw your proposal?
-            {% endblocktranslate %}
-        </div>
-        <p>
-            <button type="submit"
-                    class="btn float-right btn-danger">
-                {% translate "Withdraw" %}
-            </button>
-            <a href="{{ submission.urls.user_base }}" class="btn float-right btn-info">
-                {{ phrases.base.back_button }}
-            </a>
-            {% translate "You will not be able to revert this action." %}
-        </p>
-    </form>
+  <form method="post">
+    {% csrf_token %}
+    <h3>{% translate "Withdraw proposal" %}</h3>
+    <div class="alert alert-danger">
+      {% blocktranslate trimmed %}
+        Do you really want to withdraw your proposal?
+      {% endblocktranslate %}
+    </div>
+    <p>
+      <button type="submit"
+              class="btn float-right btn-danger">
+        {% translate "Withdraw" %}
+      </button>
+      <a href="{{ submission.urls.user_base }}" class="btn float-right btn-info">
+        {{ phrases.base.back_button }}
+      </a>
+      {% translate "You will not be able to revert this action." %}
+    </p>
+  </form>
 {% endblock content %}

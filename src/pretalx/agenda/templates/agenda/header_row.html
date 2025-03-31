@@ -3,55 +3,55 @@
 {% load compress %}
 
 {% block agenda_header_row %}
-    {% compress js %}
-        <script src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
-        <script src="{% static "agenda/js/join-online-event.js" %}"></script>
-    {% endcompress %}
+  {% compress js %}
+    <script src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
+    <script src="{% static "agenda/js/join-online-event.js" %}"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block agenda_content %}
-<div id="join-video-popupmodal" hidden aria-live="polite">
-  <div class="modal-card">
+  <div id="join-video-popupmodal" hidden aria-live="polite">
+    <div class="modal-card">
       <div class="modal-card-content-join">
-          <div>
-              <h3>
-                  {% trans "This is a ticketed event. If you ordered a ticket as a guest user, you don't have an account but can still access the ticket using the secret link in your ticket confirmation email. On the tickets page there is also a link to join online sessions." %}
-              </h3>
-              <h3>
-                  {% trans "As a ticket holder please also check your email for the unique link to join online sessions." %}
-              </h3>
-              <p class="text">
-                  {% trans "Can't find your ticket?" %}
-                  <a id="resend_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}resend'>
-                      {% trans "Resend the email" %}
-                  </a>
-                  {% trans "to receive it." %}
-              </p>
-              <p class="text">
-                  {% trans "Want to order a ticket?" %}
-                  <a id="ticket_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}'>
-                      {% trans "Get a ticket here" %}
-                  </a>
-              </p>
-          </div>
+        <div>
+          <h3>
+            {% trans "This is a ticketed event. If you ordered a ticket as a guest user, you don't have an account but can still access the ticket using the secret link in your ticket confirmation email. On the tickets page there is also a link to join online sessions." %}
+          </h3>
+          <h3>
+            {% trans "As a ticket holder please also check your email for the unique link to join online sessions." %}
+          </h3>
+          <p class="text">
+            {% trans "Can't find your ticket?" %}
+            <a id="resend_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}resend'>
+              {% trans "Resend the email" %}
+            </a>
+            {% trans "to receive it." %}
+          </p>
+          <p class="text">
+            {% trans "Want to order a ticket?" %}
+            <a id="ticket_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}'>
+              {% trans "Get a ticket here" %}
+            </a>
+          </p>
+        </div>
       </div>
       <div class="join-online-close">
-          <button id="join-online-close-button" class="btn-link join-online-close-button">Close</button>
+        <button id="join-online-close-button" class="btn-link join-online-close-button">Close</button>
       </div>
+    </div>
   </div>
-</div>
-<div id="join-video-popupmodal-missing-config" hidden aria-live="polite">
-  <div class="modal-card">
+  <div id="join-video-popupmodal-missing-config" hidden aria-live="polite">
+    <div class="modal-card">
       <div class="modal-card-content-join">
-          <div>
-              <h3>
-                  {% trans "Some configurations is missing for video setting, please contact organizer." %}
-              </h3>
-          </div>
+        <div>
+          <h3>
+            {% trans "Some configurations is missing for video setting, please contact organizer." %}
+          </h3>
+        </div>
       </div>
       <div class="join-online-close">
-          <button id="join-online-close-button-missing-config" class="btn btn-default join-online-close-button">Close</button>
+        <button id="join-online-close-button-missing-config" class="btn btn-default join-online-close-button">Close</button>
       </div>
+    </div>
   </div>
-</div>
 {% endblock %}

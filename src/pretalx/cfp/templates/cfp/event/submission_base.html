@@ -10,81 +10,81 @@
 {% block title %}{% if submission_title %}{{ submission_title }}{% else %}{% translate "Create proposal" %}{% endif %} :: {{ request.event.name }}{% endblock title %}
 
 {% block cfp_header %}
-    {% include "cfp/includes/forms_header.html" %}
-    {% compress js %}
-        <script defer src="{% static "cfp/js/proposalTabTitles.js" %}"></script>
-    {% endcompress %}
-    {% block cfp_submission_header %}{% endblock cfp_submission_header %}
+  {% include "cfp/includes/forms_header.html" %}
+  {% compress js %}
+    <script defer src="{% static "cfp/js/proposalTabTitles.js" %}"></script>
+  {% endcompress %}
+  {% block cfp_submission_header %}{% endblock cfp_submission_header %}
 {% endblock cfp_header %}
 
 {% block content %}
-    <div id="submission-steps" class="stages">
-        {% for stp in cfp_flow %}
-            {% if stp.identifier != 'user' %}
-            <a {% if stp.resolved_url %}href="{{ stp.resolved_url }}"{% endif %} class="step step-{% if stp.is_before %}done{% elif stp.identifier == step.identifier %}current{% else %}tbd{% endif %}">
-                <div class="step-icon">
-                    <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
-                </div>
-                <div class="step-label">{{ stp.label }}</div>
-            </a>
-            {% endif %}
-        {% endfor %}
-        <div class="step step-tbd">
-            <div class="step-icon">
-                <span class="fa fa-check"></span>
-            </div>
-            <div class="step-label">{% translate "Done!" %}</div>
-        </div>
+  <div id="submission-steps" class="stages">
+    {% for stp in cfp_flow %}
+      {% if stp.identifier != 'user' %}
+        <a {% if stp.resolved_url %}href="{{ stp.resolved_url }}"{% endif %} class="step step-{% if stp.is_before %}done{% elif stp.identifier == step.identifier %}current{% else %}tbd{% endif %}">
+          <div class="step-icon">
+            <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
+          </div>
+          <div class="step-label">{{ stp.label }}</div>
+        </a>
+      {% endif %}
+    {% endfor %}
+    <div class="step step-tbd">
+      <div class="step-icon">
+        <span class="fa fa-check"></span>
+      </div>
+      <div class="step-label">{% translate "Done!" %}</div>
     </div>
-    {% block cfp_form %}
-        {% if request.user.is_authenticated %}
-        <form method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
-            {% csrf_token %}
-            {{ wizard.management_form }}
-            <div class="d-flex align-items-start">
-                <h2>{% block submission_step_title %}{{ title|default:'' }}{% endblock submission_step_title %}</h2>
-                {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
-                {% if can_edit_cfp %}{% block orga_edit_link %}{% orga_edit_link request.event.cfp.urls.editor %}{% endblock %}{% endif %}
+  </div>
+  {% block cfp_form %}
+    {% if request.user.is_authenticated %}
+      <form method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        <div class="d-flex align-items-start">
+          <h2>{% block submission_step_title %}{{ title|default:'' }}{% endblock submission_step_title %}</h2>
+          {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
+          {% if can_edit_cfp %}{% block orga_edit_link %}{% orga_edit_link request.event.cfp.urls.editor %}{% endblock %}{% endif %}
+        </div>
+        {% block submission_step_text %}<p>{{ text|rich_text }}</p>{% endblock %}
+        {% block inner %}
+          {{ form }}
+        {% endblock inner %}
+        {% block buttons %}
+          <div class="row flex-row-reverse">
+            <div class="col-md-3 flip ml-auto d-flex flex-column">
+              {% if request.GET.draft == "1" %}
+                <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="draft">
+                  {% translate "Save as draft" %}
+                </button>
+              {% else %}
+                <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="submit">
+                  {% if next_url %}
+                    {% translate "Continue" %} »
+                  {% else %}
+                    {% translate "Submit proposal!" %} »
+                  {% endif %}
+                </button>
+                <button type="submit" class="btn btn-link text-center" name="action" value="draft">
+                  {% translate "or save as draft for now" %}
+                  <i class="fa fa-question-circle" title="{% translate "You can save your proposal as a draft and submit it later. Organisers will not be able to see your proposal, though they will be able to send you reminder emails about the upcoming deadline." %}"></i>
+                </button>
+              {% endif %}
             </div>
-            {% block submission_step_text %}<p>{{ text|rich_text }}</p>{% endblock %}
-            {% block inner %}
-                {{ form }}
-            {% endblock inner %}
-            {% block buttons %}
-                <div class="row flex-row-reverse">
-                    <div class="col-md-3 flip ml-auto d-flex flex-column">
-                        {% if request.GET.draft == "1" %}
-                            <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="draft">
-                                {% translate "Save as draft" %}
-                            </button>
-                        {% else %}
-                            <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="submit">
-                                {% if next_url %}
-                                    {% translate "Continue" %} »
-                                {% else %}
-                                    {% translate "Submit proposal!" %} »
-                                {% endif %}
-                            </button>
-                            <button type="submit" class="btn btn-link text-center" name="action" value="draft">
-                                {% translate "or save as draft for now" %}
-                                <i class="fa fa-question-circle" title="{% translate "You can save your proposal as a draft and submit it later. Organisers will not be able to see your proposal, though they will be able to send you reminder emails about the upcoming deadline." %}"></i>
-                            </button>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-3">
-                        {% if prev_url %}
-                            <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
-                                « {{ phrases.base.back_button }}
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endblock buttons %}
-        </form>
-        {% else %}
-            <h2>{{ _('You need to be logged in to submit a proposal') }}</h2>
-            <p>{{ _('Please log in or create an account to submit a proposal. This enables us to contact you and allows you to edit your proposal or check its status at any time.') }}</p>
-            {% include "common/auth.html" with form=form no_form=True no_buttons=True next_url=request.get_full_path %}
-        {% endif %}
-    {% endblock cfp_form %}
+            <div class="col-md-3">
+              {% if prev_url %}
+                <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
+                  « {{ phrases.base.back_button }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endblock buttons %}
+      </form>
+    {% else %}
+      <h2>{{ _('You need to be logged in to submit a proposal') }}</h2>
+      <p>{{ _('Please log in or create an account to submit a proposal. This enables us to contact you and allows you to edit your proposal or check its status at any time.') }}</p>
+      {% include "common/auth.html" with form=form no_form=True no_buttons=True next_url=request.get_full_path %}
+    {% endif %}
+  {% endblock cfp_form %}
 {% endblock content %}

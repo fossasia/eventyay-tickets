@@ -3,75 +3,75 @@
 {% load i18n %}
 
 {% block mail_content %}
-    <h2>
-        {{ page_obj.paginator.count }}
-        {% translate "Sent Mails" %}
-    </h2>
-    {% include "common/includes/search_form.html" %}
-    <div class="table-responsive-sm">
-        <table class="table table-sm table-hover table-flip table-sticky">
-            <thead>
-                <tr>
-                    <th>
-                        {{ phrases.base.email_subject }}
-                        <a href="{% querystring sort="subject" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
-                        <a href="{% querystring sort="-subject" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
-                    </th>
-                    <th>
-                        {% translate "To" %}
-                        <a href="{% querystring sort="to" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
-                        <a href="{% querystring sort="-to" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
-                    </th>
-                    <th></th>
-                    <th></th>
-                    <th class="numeric">
-                        {% translate "Sent" %}
-                        <a href="{% querystring sort="-sent" %}"><i class="fa fa-caret-down" title="{% translate "Sort (latest first)" %}"></i></a>
-                        <a href="{% querystring sort="sent" %}"><i class="fa fa-caret-up" title="{% translate "Sort (oldest first)" %}"></i></a>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for mail in mails %}
-                    <tr>
-                        <td>
-                            <a href="{{ mail.urls.base }}">{{ mail.subject }}</a>
-                        </td>
-                        <td>
-                            {% for user in mail.to_users.all %}
-                                {% if user in request.event.submitters %}
-                                    <a href="{% url "orga:speakers.view" event=request.event.slug code=user.code %}">
-                                        {{ user }}
-                                    </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
-                            {% endfor %}
-                            {% if mail.to %}{{ mail.to }}{% endif %}
-                        </td>
-                        <td>
-                            {% for submission in mail.submissions.all %}
-                                <div class="d-flex align-items-center">
-                                    {% if show_tracks and submission.track %}
-                                        <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
-                                        </div>
-                                    {% endif %}
-                                    <a href="{{ submission.orga_urls.base }}">
-                                        {{ submission.title }}
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        </td>
-                        <td class="text-right d-flex align-items-center">
-                            {% if mail.attachments %}
-                                <i class="fa fa-paperclip mr-2" title="{% translate "Contains an attachment" %}"></i>
-                            {% endif %}
-                            {% include "orga/includes/mail_template_role.html" with template=mail.template %}
-                        </td>
-                        <td class="numeric">{{ mail.sent }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <h2>
+    {{ page_obj.paginator.count }}
+    {% translate "Sent Mails" %}
+  </h2>
+  {% include "common/includes/search_form.html" %}
+  <div class="table-responsive-sm">
+    <table class="table table-sm table-hover table-flip table-sticky">
+      <thead>
+        <tr>
+          <th>
+            {{ phrases.base.email_subject }}
+            <a href="{% querystring sort="subject" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+            <a href="{% querystring sort="-subject" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+          </th>
+          <th>
+            {% translate "To" %}
+            <a href="{% querystring sort="to" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+            <a href="{% querystring sort="-to" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+          </th>
+          <th></th>
+          <th></th>
+          <th class="numeric">
+            {% translate "Sent" %}
+            <a href="{% querystring sort="-sent" %}"><i class="fa fa-caret-down" title="{% translate "Sort (latest first)" %}"></i></a>
+            <a href="{% querystring sort="sent" %}"><i class="fa fa-caret-up" title="{% translate "Sort (oldest first)" %}"></i></a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mail in mails %}
+          <tr>
+            <td>
+              <a href="{{ mail.urls.base }}">{{ mail.subject }}</a>
+            </td>
+            <td>
+              {% for user in mail.to_users.all %}
+                {% if user in request.event.submitters %}
+                  <a href="{% url "orga:speakers.view" event=request.event.slug code=user.code %}">
+                    {{ user }}
+                  </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
+              {% endfor %}
+              {% if mail.to %}{{ mail.to }}{% endif %}
+            </td>
+            <td>
+              {% for submission in mail.submissions.all %}
+                <div class="d-flex align-items-center">
+                  {% if show_tracks and submission.track %}
+                    <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
+                    </div>
+                  {% endif %}
+                  <a href="{{ submission.orga_urls.base }}">
+                    {{ submission.title }}
+                  </a>
+                </div>
+              {% endfor %}
+            </td>
+            <td class="text-right d-flex align-items-center">
+              {% if mail.attachments %}
+                <i class="fa fa-paperclip mr-2" title="{% translate "Contains an attachment" %}"></i>
+              {% endif %}
+              {% include "orga/includes/mail_template_role.html" with template=mail.template %}
+            </td>
+            <td class="numeric">{{ mail.sent }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    {% include "orga/includes/pagination.html" %}
+  {% include "orga/includes/pagination.html" %}
 
 {% endblock mail_content %}

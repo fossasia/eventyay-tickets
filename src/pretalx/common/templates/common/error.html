@@ -4,28 +4,28 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{% block title %}{% endblock title %} {{site_name}}</title>
-        {% compress css %}
-            <link rel="stylesheet" type="text/css" href="{% static "common/css/_reset.css" %}" />
-            <link rel="stylesheet" type="text/css" href="{% static "common/css/base.css" %}" />
-            <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
-            <link rel="stylesheet" type="text/css" href="{% static "common/css/_fonts.css" %}" />
-            <link rel="stylesheet" type="text/css" href="{% static "common/css/error.css" %}" />
-        {% endcompress %}
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta charset="UTF-8">
+  <head>
+    <title>{% block title %}{% endblock title %} {{site_name}}</title>
+    {% compress css %}
+      <link rel="stylesheet" type="text/css" href="{% static "common/css/_reset.css" %}" />
+      <link rel="stylesheet" type="text/css" href="{% static "common/css/base.css" %}" />
+      <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
+      <link rel="stylesheet" type="text/css" href="{% static "common/css/_fonts.css" %}" />
+      <link rel="stylesheet" type="text/css" href="{% static "common/css/error.css" %}" />
+    {% endcompress %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
 
-        {% include "common/includes/favicon.html" %}
+    {% include "common/includes/favicon.html" %}
 
-    </head>
-    <body>
-        <div id="wrapper">
-            {% block error_image %}{% endblock error_image %}
-            {% block content %}
-                <h2>{% block error_message %}{% endblock error_message %}</h2>
-                <h4 class="mt-4">HTTP {% block error_code %}{% endblock error_code %}</h4>
-            {% endblock content %}
-        </div>
-    </body>
+  </head>
+  <body>
+    <div id="wrapper">
+      {% block error_image %}{% endblock error_image %}
+      {% block content %}
+        <h2>{% block error_message %}{% endblock error_message %}</h2>
+        <h4 class="mt-4">HTTP {% block error_code %}{% endblock error_code %}</h4>
+      {% endblock content %}
+    </div>
+  </body>
 </html>

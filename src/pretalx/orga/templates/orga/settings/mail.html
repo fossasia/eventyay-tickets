@@ -5,49 +5,49 @@
 {% load static %}
 
 {% block stylesheets %}
-    {% compress css %}
-        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
-    {% endcompress %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
 {% endblock stylesheets %}
 
 {% block scripts %}
-    {% compress js %}
-        <script defer src="{% static "orga/js/mailSettings.js" %}"></script>
-        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
-    {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static "orga/js/mailSettings.js" %}"></script>
+    <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+  {% endcompress %}
 {% endblock scripts %}
 
 {% block extra_title %}{% translate "Email settings" %} :: {% endblock extra_title %}
 
 {% block settings_content %}
-    <form method="post">
-        {% csrf_token %}
-        <h2>
-            {% translate "Email settings" %}
-            <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-                <i class="fa fa-question-circle-o text-info"></i>
-            </span>
-        </h2>
-        <dialog id="info-dialog">
-            <div class="alert alert-info">
-                {% blocktranslate trimmed %}
-                    If you don’t configure custom email settings, the global configuration
-                    for this server will be used (ask your administrator for details).<br>
-                    We recommend that you add email settings here explicitly.
-                {% endblocktranslate %}
-            </div>
-        </dialog>
-        {{ form }}
-        <div class="submit-group panel">
-            <span></span>
-            <span>
-                {% if action == "edit" or action == "create" %}
-                    <button type="submit" class="btn btn-lg btn-success" name="test" value="1">
-                        {% translate "Save and test custom SMTP connection" %}
-                    </button>
-                    <button type="submit" class="btn btn-lg btn-info">{{ phrases.base.save }}</button>
-                {% endif %}
-            </span>
-        </div>
-    </form>
+  <form method="post">
+    {% csrf_token %}
+    <h2>
+      {% translate "Email settings" %}
+      <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+        <i class="fa fa-question-circle-o text-info"></i>
+      </span>
+    </h2>
+    <dialog id="info-dialog">
+      <div class="alert alert-info">
+        {% blocktranslate trimmed %}
+          If you don’t configure custom email settings, the global configuration
+          for this server will be used (ask your administrator for details).<br>
+          We recommend that you add email settings here explicitly.
+        {% endblocktranslate %}
+      </div>
+    </dialog>
+    {{ form }}
+    <div class="submit-group panel">
+      <span></span>
+      <span>
+        {% if action == "edit" or action == "create" %}
+          <button type="submit" class="btn btn-lg btn-success" name="test" value="1">
+            {% translate "Save and test custom SMTP connection" %}
+          </button>
+          <button type="submit" class="btn btn-lg btn-info">{{ phrases.base.save }}</button>
+        {% endif %}
+      </span>
+    </div>
+  </form>
 {% endblock settings_content %}

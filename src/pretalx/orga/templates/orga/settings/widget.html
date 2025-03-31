@@ -8,71 +8,71 @@
 {% block extra_title %}{% translate "Widget generation" %} :: {% endblock extra_title %}
 
 {% block stylesheets %}
-    {% compress css %}
-        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
-    {% endcompress %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
 {% endblock stylesheets %}
 
 {% block scripts %}
-    {% compress js %}
-        <script defer src="{% static "orga/js/widgetSettings.js" %}"></script>
-        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
-    {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static "orga/js/widgetSettings.js" %}"></script>
+    <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+  {% endcompress %}
 {% endblock scripts %}
 
 {% block settings_content %}
-    <h2>
-        {% translate "Widget settings" %}
-        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-            <i class="fa fa-question-circle-o text-info"></i>
-        </span>
-    </h2>
-    <dialog id="info-dialog">
-        <div class="alert alert-info flip ml-auto">
-            {% blocktranslate trimmed %}
-                You can configure a eventyay schedule widget to show your event schedule
-                on your homepage, instead of using this page. If you want to disable the
-                schedule on here entirely, please activate the setting below.
-            {% endblocktranslate %}
-        </div>
-    </dialog>
-
-    {% include "orga/includes/base_form.html" %}
-
-    <h2>{% translate "Widget generation" %}</h2>
-    <p>
-        {% blocktranslate trimmed %}
-            The eventyay schedule widget is a way to embed your schedule into your event website. This way, your attendees can see your schedule without leaving your website, and you can style the schedule to fit right in with your website.
-        {% endblocktranslate %}
-    </p>
-
-    <div id="widget-generation">
-        <p>
-            {% blocktranslate trimmed %}
-                Using this form, you can generate code to copy and paste to your website source.
-            {% endblocktranslate %}
-        </p>
-        {{ extra_form }}
-        <div class="submit-group panel">
-            <span></span>
-            <span>
-                <button id="generate-widget" class="btn btn-info btn-lg">{% translate "Generate widget" %}</button>
-            </span>
-        </div>
+  <h2>
+    {% translate "Widget settings" %}
+    <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+      <i class="fa fa-question-circle-o text-info"></i>
+    </span>
+  </h2>
+  <dialog id="info-dialog">
+    <div class="alert alert-info flip ml-auto">
+      {% blocktranslate trimmed %}
+        You can configure a eventyay schedule widget to show your event schedule
+        on your homepage, instead of using this page. If you want to disable the
+        schedule on here entirely, please activate the setting below.
+      {% endblocktranslate %}
     </div>
-    <div id="generated-widget" class="d-none">
-        <p>
-            {% blocktranslate trimmed %}
-                To embed the widget into your website, copy the following code to the <code>&lt;head></code> section of your website:
-            {% endblocktranslate %}
-        </p>
+  </dialog>
+
+  {% include "orga/includes/base_form.html" %}
+
+  <h2>{% translate "Widget generation" %}</h2>
+  <p>
+    {% blocktranslate trimmed %}
+      The eventyay schedule widget is a way to embed your schedule into your event website. This way, your attendees can see your schedule without leaving your website, and you can style the schedule to fit right in with your website.
+    {% endblocktranslate %}
+  </p>
+
+  <div id="widget-generation">
+    <p>
+      {% blocktranslate trimmed %}
+        Using this form, you can generate code to copy and paste to your website source.
+      {% endblocktranslate %}
+    </p>
+    {{ extra_form }}
+    <div class="submit-group panel">
+      <span></span>
+      <span>
+        <button id="generate-widget" class="btn btn-info btn-lg">{% translate "Generate widget" %}</button>
+      </span>
+    </div>
+  </div>
+  <div id="generated-widget" class="d-none">
+    <p>
+      {% blocktranslate trimmed %}
+        To embed the widget into your website, copy the following code to the <code>&lt;head></code> section of your website:
+      {% endblocktranslate %}
+    </p>
         <pre id="widget-head">
 &lt;script type="text/javascript" src="{{ request.event.urls.schedule_widget_script.full }}">&lt;/script></pre>
-        <p>
-            {% blocktranslate trimmed %}
-                Then, copy the following code to the place of your website where you want the widget to show up:
-            {% endblocktranslate %}
-        </p>
+    <p>
+      {% blocktranslate trimmed %}
+        Then, copy the following code to the place of your website where you want the widget to show up:
+      {% endblocktranslate %}
+    </p>
         <pre id="widget-body">
 &lt;pretalx-schedule event-url="{{ request.event.urls.base.full }}" locale="LOCALE" format="FORMAT" style="--pretalx-clr-primary: {{ request.event.visible_primary_color }}"FILTER_DAYS>&lt;/pretalx-schedule>
 &lt;noscript>
@@ -83,25 +83,25 @@
         &lt;/div>
     &lt;/div>
 &lt;/noscript></pre>
-        <p>
-            <span class="text-success">
-                <i class="fa fa-info-circle"></i>
-            </span>
-            {% blocktranslate trimmed with link="#" %}
+    <p>
+      <span class="text-success">
+        <i class="fa fa-info-circle"></i>
+      </span>
+      {% blocktranslate trimmed with link="#" %}
 
-                Please look at <a href="{{ link }}">our documentation</a> for more information.
-            {% endblocktranslate %}
-        </p>
-    </div>
+        Please look at <a href="{{ link }}">our documentation</a> for more information.
+      {% endblocktranslate %}
+    </p>
+  </div>
 
-    {% if request.event.is_public and request.event|get_feature_flag:"show_schedule" and request.event.current_schedule and not request.event.custom_domain %}
-        <div class="mw-100">
-            <h2>{% translate "Widget preview" %}</h2>
-            <p>
-                {% blocktranslate trimmed %}
-                    This is roughly what your widget will look like if you choose the grid format:
-                {% endblocktranslate %}
-            </p>
+  {% if request.event.is_public and request.event|get_feature_flag:"show_schedule" and request.event.current_schedule and not request.event.custom_domain %}
+    <div class="mw-100">
+      <h2>{% translate "Widget preview" %}</h2>
+      <p>
+        {% blocktranslate trimmed %}
+          This is roughly what your widget will look like if you choose the grid format:
+        {% endblocktranslate %}
+      </p>
             <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:"#2185d0" }}"></pretalx-schedule>
       </div>
    <script type="text/javascript" src="{{ request.event.urls.schedule_widget_script }}" async></script>

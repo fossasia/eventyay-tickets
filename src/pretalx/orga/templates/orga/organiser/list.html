@@ -8,47 +8,47 @@
 {% block extra_title %}{% translate "Teams" %} :: {% endblock extra_title %}
 
 {% block stylesheets %}
-    {% compress css %}
-        <link rel="stylesheet" href="{% static "orga/css/dashboard.css" %}">
-    {% endcompress %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "orga/css/dashboard.css" %}">
+  {% endcompress %}
 {% endblock stylesheets %}
 
 {% block content %}
-    <form class="mb-4 m-2">
-        <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
-    </form>
-    {% has_perm "orga.change_organiser_settings" request.user None as can_create_organiser %}
-    <div class="dashboard-list event-blocks">
-        {% if can_create_organiser %}
-            <a class="dashboard-block symbol" href="{% url "orga:organiser.create" %}">
-                <i class="fa fa-plus-circle"></i>
-            </a>
-        {% endif %}
-        {% for organiser in organisers %}
-            <a class="event-block dashboard-block" href="{{ organiser.orga_urls.base }}">
-                <h2 class="name">{{ organiser.name }}</h2>
-                <div class="stats">
-                    <div class="submissions">
-                        {{ organiser.event_count }}
-                        {% blocktranslate trimmed count count=organiser.event_count %}
-                            Event
-                        {% plural %}
-                            Events
-                        {% endblocktranslate %}
-                    </div>
-                    <div class="state inactive">
-                        {{ organiser.team_count }}
-                        {% blocktranslate trimmed count count=organiser.team_count context "number of teams" %}
-                            Team
-                        {% plural %}
-                            Teams
-                        {% endblocktranslate %}
-                    </div>
-                </div>
-            </a>
-        {% endfor %}
-    </div>
-    {% if not organisers and not can_create_organiser %}
-        <div class="alert alert-info">{% translate "There are no organisers you can edit." %}</div>
+  <form class="mb-4 m-2">
+    <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
+  </form>
+  {% has_perm "orga.change_organiser_settings" request.user None as can_create_organiser %}
+  <div class="dashboard-list event-blocks">
+    {% if can_create_organiser %}
+      <a class="dashboard-block symbol" href="{% url "orga:organiser.create" %}">
+        <i class="fa fa-plus-circle"></i>
+      </a>
     {% endif %}
+    {% for organiser in organisers %}
+      <a class="event-block dashboard-block" href="{{ organiser.orga_urls.base }}">
+        <h2 class="name">{{ organiser.name }}</h2>
+        <div class="stats">
+          <div class="submissions">
+            {{ organiser.event_count }}
+            {% blocktranslate trimmed count count=organiser.event_count %}
+              Event
+            {% plural %}
+              Events
+            {% endblocktranslate %}
+          </div>
+          <div class="state inactive">
+            {{ organiser.team_count }}
+            {% blocktranslate trimmed count count=organiser.team_count context "number of teams" %}
+              Team
+            {% plural %}
+              Teams
+            {% endblocktranslate %}
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+  {% if not organisers and not can_create_organiser %}
+    <div class="alert alert-info">{% translate "There are no organisers you can edit." %}</div>
+  {% endif %}
 {% endblock content %}

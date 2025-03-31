@@ -7,31 +7,31 @@
 {% block extra_title %}{% if form.instance.pk %}{% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}{% else %}{% translate "New room" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% include "common/availabilities.html" %}
+  {% include "common/availabilities.html" %}
 
-    <h2>
-        {% if form.instance.pk %}
-            {% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
-        {% else %}
-            {% translate "New room" %}
-        {% endif %}
-    </h2>
-    <form method="post">
-        {% csrf_token %}
-        {% include "common/forms/errors.html" %}
-        {% for field in form %}
-            {% if field.name != "guid" %}
-                {{ field.as_field_group }}
-            {% endif %}
-        {% endfor %}
-        <details>
-            <summary class="col-md-9 ml-auto mb-4">
-                <h3 class="d-inline">{% translate "Advanced settings" %}</h3>
-            </summary>
-            {{ form.guid.as_field_group }}
-        </details>
+  <h2>
+    {% if form.instance.pk %}
+      {% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
+    {% else %}
+      {% translate "New room" %}
+    {% endif %}
+  </h2>
+  <form method="post">
+    {% csrf_token %}
+    {% include "common/forms/errors.html" %}
+    {% for field in form %}
+      {% if field.name != "guid" %}
+        {{ field.as_field_group }}
+      {% endif %}
+    {% endfor %}
+    <details>
+      <summary class="col-md-9 ml-auto mb-4">
+        <h3 class="d-inline">{% translate "Advanced settings" %}</h3>
+      </summary>
+      {{ form.guid.as_field_group }}
+    </details>
 
-        {% include "orga/includes/submit_row.html" %}
+    {% include "orga/includes/submit_row.html" %}
 
-    </form>
+  </form>
 {% endblock content %}

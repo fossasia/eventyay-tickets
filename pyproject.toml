@@ -153,6 +153,7 @@ close_void_tags = false
 extend_exclude = "static,docs"
 max_blank_lines = 1
 preserve_blank_lines = 1
+indent = 2
 profile = "django"
 
 [tool.uv]

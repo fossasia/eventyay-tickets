@@ -1,75 +1,75 @@
 {% load i18n %}
 
 <details class="dropdown submission-state-dropdown submission-state-{{ submission.state }}{% if submission.pending_state %} submission-state-pending-{{ submission.pending_state }}{% endif %}" aria-haspopup="menu" role="menu">
-    <summary class="btn">
-        <h4>
+  <summary class="btn">
+    <h4>
 
-            {% include "cfp/event/fragment_state.html" with state=submission.state %}
+      {% include "cfp/event/fragment_state.html" with state=submission.state %}
 
-            {% if submission.pending_state %}
-                <span class="pending-indicator">
-                    (<i class="fa fa-arrow-right"></i> {% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
-                </span>
-            {% endif %}
-        </h4>
-        <i class="fa fa-caret-down"></i>
-    </summary>
-    <div class="dropdown-content dropdown-content-s submission-dropdown-menu">
-        {% if submission.state != "submitted" or submission.pending_state %}
-            <a
-                class="dropdown-item submission-state-submitted"
-                role="menuitem" tabindex="-1"
-                href="{{ submission.orga_urls.make_submitted }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
-                {% include "cfp/event/fragment_state.html" with state="submitted" %}
-            </a>
-        {% endif %}
-        {% if submission.state != "accepted" or submission.pending_state %}
-            <a
-                class="dropdown-item submission-state-accepted"
-                role="menuitem" tabindex="-1"
-                href="{{ submission.orga_urls.accept }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
-                {% include "cfp/event/fragment_state.html" with state="accepted" %}
-            </a>
-        {% endif %}
-        {% if submission.state != "confirmed" or submission.pending_state %}
-            <a
-                class="dropdown-item submission-state-confirmed"
-                role="menuitem" tabindex="-1"
-                href="{{ submission.orga_urls.confirm }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
-                {% include "cfp/event/fragment_state.html" with state="confirmed" %}
-            </a>
-        {% endif %}
-        {% if submission.state != "rejected" or submission.pending_state %}
-            <a
-                class="dropdown-item submission-state-rejected"
-                role="menuitem" tabindex="-1"
-                href="{{ submission.orga_urls.reject }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
-                {% include "cfp/event/fragment_state.html" with state="rejected" %}
-            </a>
-        {% endif %}
-        {% if submission.state != "canceled" or submission.pending_state %}
-            <a
-                class="dropdown-item submission-state-canceled"
-                role="menuitem" tabindex="-1"
-                href="{{ submission.orga_urls.cancel }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
-                {% include "cfp/event/fragment_state.html" with state="canceled" %}
-            </a>
-        {% endif %}
-        {% if submission.state != "withdrawn" or submission.pending_state %}
-            <a
-                class="dropdown-item submission-state-withdrawn"
-                role="menuitem" tabindex="-1"
-                href="{{ submission.orga_urls.withdraw }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
-                {% include "cfp/event/fragment_state.html" with state="withdrawn" %}
-            </a>
-        {% endif %}
-        {% if submission.state != "deleted" or submission.pending_state %}
-            <a
-                class="dropdown-item submission-state-deleted"
-                role="menuitem" tabindex="-1"
-                href="{{ submission.orga_urls.delete }}?{% if submission.code not in request.path %}next={{ request.path|urlencode }}%3F{% endif %}{{ request.META.QUERY_STRING|urlencode }}">
-                {% include "cfp/event/fragment_state.html" with state="deleted" %}
-            </a>
-        {% endif %}
-    </div>
+      {% if submission.pending_state %}
+        <span class="pending-indicator">
+          (<i class="fa fa-arrow-right"></i> {% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
+        </span>
+      {% endif %}
+    </h4>
+    <i class="fa fa-caret-down"></i>
+  </summary>
+  <div class="dropdown-content dropdown-content-s submission-dropdown-menu">
+    {% if submission.state != "submitted" or submission.pending_state %}
+      <a
+        class="dropdown-item submission-state-submitted"
+        role="menuitem" tabindex="-1"
+        href="{{ submission.orga_urls.make_submitted }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
+        {% include "cfp/event/fragment_state.html" with state="submitted" %}
+      </a>
+    {% endif %}
+    {% if submission.state != "accepted" or submission.pending_state %}
+      <a
+        class="dropdown-item submission-state-accepted"
+        role="menuitem" tabindex="-1"
+        href="{{ submission.orga_urls.accept }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
+        {% include "cfp/event/fragment_state.html" with state="accepted" %}
+      </a>
+    {% endif %}
+    {% if submission.state != "confirmed" or submission.pending_state %}
+      <a
+        class="dropdown-item submission-state-confirmed"
+        role="menuitem" tabindex="-1"
+        href="{{ submission.orga_urls.confirm }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
+        {% include "cfp/event/fragment_state.html" with state="confirmed" %}
+      </a>
+    {% endif %}
+    {% if submission.state != "rejected" or submission.pending_state %}
+      <a
+        class="dropdown-item submission-state-rejected"
+        role="menuitem" tabindex="-1"
+        href="{{ submission.orga_urls.reject }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
+        {% include "cfp/event/fragment_state.html" with state="rejected" %}
+      </a>
+    {% endif %}
+    {% if submission.state != "canceled" or submission.pending_state %}
+      <a
+        class="dropdown-item submission-state-canceled"
+        role="menuitem" tabindex="-1"
+        href="{{ submission.orga_urls.cancel }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
+        {% include "cfp/event/fragment_state.html" with state="canceled" %}
+      </a>
+    {% endif %}
+    {% if submission.state != "withdrawn" or submission.pending_state %}
+      <a
+        class="dropdown-item submission-state-withdrawn"
+        role="menuitem" tabindex="-1"
+        href="{{ submission.orga_urls.withdraw }}?next={{ request.path|urlencode }}%3F{{ request.META.QUERY_STRING|urlencode }}">
+        {% include "cfp/event/fragment_state.html" with state="withdrawn" %}
+      </a>
+    {% endif %}
+    {% if submission.state != "deleted" or submission.pending_state %}
+      <a
+        class="dropdown-item submission-state-deleted"
+        role="menuitem" tabindex="-1"
+        href="{{ submission.orga_urls.delete }}?{% if submission.code not in request.path %}next={{ request.path|urlencode }}%3F{% endif %}{{ request.META.QUERY_STRING|urlencode }}">
+        {% include "cfp/event/fragment_state.html" with state="deleted" %}
+      </a>
+    {% endif %}
+  </div>
 </details>

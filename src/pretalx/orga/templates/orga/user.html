@@ -5,24 +5,24 @@
 {% load static %}
 
 {% block scripts %}
-    {% compress js %}
-        <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
-        <script defer src="{% static 'common/js/password_strength.js' %}"></script>
-    {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
+    <script defer src="{% static 'common/js/password_strength.js' %}"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block extra_title %}{% translate "User settings" %} :: {% endblock extra_title %}
 {% block content %}
-    <fieldset class="m-2">
-        <legend>{% translate "User settings" %}</legend>
-        {% include "orga/includes/base_form.html" with form=profile_form submit_name="form" submit_value="profile" %}
-    </fieldset>
+  <fieldset class="m-2">
+    <legend>{% translate "User settings" %}</legend>
+    {% include "orga/includes/base_form.html" with form=profile_form submit_name="form" submit_value="profile" %}
+  </fieldset>
 
-    <fieldset class="m-2 password-input-form">
-        <legend>{% translate "Login settings" %}</legend>
-        {% include "orga/includes/base_form.html" with form=login_form submit_name="form" submit_value="login" %}
-    </fieldset>
+  <fieldset class="m-2 password-input-form">
+    <legend>{% translate "Login settings" %}</legend>
+    {% include "orga/includes/base_form.html" with form=login_form submit_name="form" submit_value="login" %}
+  </fieldset>
 
-    {% include "common/user_api_token.html" with orga="true" %}
+  {% include "common/user_api_token.html" with orga="true" %}
 
 {% endblock content %}

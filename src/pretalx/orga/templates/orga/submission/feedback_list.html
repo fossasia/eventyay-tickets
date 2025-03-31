@@ -6,14 +6,14 @@
 {% block submission_title %}{% translate "Attendee feedback" %} :: {% endblock submission_title %}
 
 {% block submission_content %}
-    {% for entry in feedback %}
-        <div class="card mb-2">
-            <div class="card-body pb-0">{{ entry.review|rich_text }}</div>
-        </div>
-    {% empty %}
-        {{ phrases.schedule.no_feedback }}
-    {% endfor %}
+  {% for entry in feedback %}
+    <div class="card mb-2">
+      <div class="card-body pb-0">{{ entry.review|rich_text }}</div>
+    </div>
+  {% empty %}
+    {{ phrases.schedule.no_feedback }}
+  {% endfor %}
 
-    {% include "orga/includes/pagination.html" %}
+  {% include "orga/includes/pagination.html" %}
 
 {% endblock submission_content %}

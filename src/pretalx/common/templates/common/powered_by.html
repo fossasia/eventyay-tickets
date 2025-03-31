@@ -33,7 +33,7 @@
 {% endcomment %}
 {% safelink "https://eventyay.com" as redir %}
 {% with 'href="'|add:redir|add:'" target="_blank" rel="noopener"'|safe as a_attr %}
-    {% blocktranslate trimmed %}
-        powered by <a {{ a_attr }}>eventyay</a>
-    {% endblocktranslate %}
+  {% blocktranslate trimmed %}
+    powered by <a {{ a_attr }}>eventyay</a>
+  {% endblocktranslate %}
 {% endwith %}

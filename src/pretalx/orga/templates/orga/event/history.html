@@ -5,11 +5,11 @@
 {% block extra_title %}{% translate "Event History" %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h2>{% translate "Event History" %}</h2>
-    <div class="dashboard-history">
+  <h2>{% translate "Event History" %}</h2>
+  <div class="dashboard-history">
 
-        {% include "common/logs.html" with entries=log_entries %}
-        {% include "orga/includes/pagination.html" %}
+    {% include "common/logs.html" with entries=log_entries %}
+    {% include "orga/includes/pagination.html" %}
 
-    </div>
+  </div>
 {% endblock content %}

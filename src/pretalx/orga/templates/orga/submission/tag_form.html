@@ -8,25 +8,25 @@
 {% endblock stylesheets %}
 
 {% block scripts %}
-    {% compress js %}
-        <script defer src="{% static "vendored/vanilla-picker/vanilla-picker.min.js" %}"></script>
-        <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
-    {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static "vendored/vanilla-picker/vanilla-picker.min.js" %}"></script>
+    <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
+  {% endcompress %}
 {% endblock scripts %}
 
 {% block extra_title %}
-    {% if form.instance.tag %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %} ::
+  {% if form.instance.tag %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %} ::
 {% endblock extra_title %}
 
 {% block content %}
-    <h2>
-        {% if form.instance.tag %}
-            {% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}
-        {% else %}
-            {% translate "New tag" %}
-        {% endif %}
-    </h2>
+  <h2>
+    {% if form.instance.tag %}
+      {% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}
+    {% else %}
+      {% translate "New tag" %}
+    {% endif %}
+  </h2>
 
-    {% include "orga/includes/base_form.html" %}
+  {% include "orga/includes/base_form.html" %}
 
 {% endblock content %}

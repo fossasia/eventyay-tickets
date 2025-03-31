@@ -4,13 +4,13 @@
 
 {% block title %}{{ phrases.base.password_reset_heading }}{% endblock title %}
 {% block content %}
-    <div>
-        <h4 class="text-center">{{ phrases.base.password_reset_question }}</h4>
-        <p></p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form }}
-            <button type="submit" class="btn btn-block btn-success">{{ phrases.base.password_reset_action }}</button>
-        </form>
-    </div>
+  <div>
+    <h4 class="text-center">{{ phrases.base.password_reset_question }}</h4>
+    <p></p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form }}
+      <button type="submit" class="btn btn-block btn-success">{{ phrases.base.password_reset_action }}</button>
+    </form>
+  </div>
 {% endblock content %}

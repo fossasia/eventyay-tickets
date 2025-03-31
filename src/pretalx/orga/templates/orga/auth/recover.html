@@ -7,21 +7,21 @@
 {% block title %}{{ phrases.base.password_reset_heading }}{% endblock title %}
 
 {% block scripts %}
-    {% compress js %}
-        <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
-        <script defer src="{% static 'common/js/base.js' %}"></script>
-        <script defer src="{% static 'common/js/password_strength.js' %}"></script>
-    {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
+    <script defer src="{% static 'common/js/base.js' %}"></script>
+    <script defer src="{% static 'common/js/password_strength.js' %}"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <div class="labelless-password-input-form">
-            <h4>{{ phrases.base.password_reset_heading }}</h4>
-            <p>{{ phrases.base.password_reset_nearly_done }}</p>
-            {{ form }}
-            <button type="submit" class="btn btn-block btn-success">{{ phrases.base.save }}</button>
-        </div>
-    </form>
+  <form method="post">
+    {% csrf_token %}
+    <div class="labelless-password-input-form">
+      <h4>{{ phrases.base.password_reset_heading }}</h4>
+      <p>{{ phrases.base.password_reset_nearly_done }}</p>
+      {{ form }}
+      <button type="submit" class="btn btn-block btn-success">{{ phrases.base.save }}</button>
+    </div>
+  </form>
 {% endblock content %}

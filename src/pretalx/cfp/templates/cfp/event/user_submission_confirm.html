@@ -7,51 +7,51 @@
 {% block title %}{{ submission.title }} :: {% endblock title %}
 
 {% block cfp_header %}
-    {% include "cfp/includes/forms_header.html" %}
+  {% include "cfp/includes/forms_header.html" %}
 {% endblock cfp_header %}
 
 {% block content %}
-    <div class="col-md-10 ml-auto mr-auto">
+  <div class="col-md-10 ml-auto mr-auto">
 
-        {% include "cfp/includes/user_submission_header.html" %}
+    {% include "cfp/includes/user_submission_header.html" %}
 
-        <div class="text">
-            {% blocktranslate trimmed %}
-                Congratulations on your acceptance!
-            {% endblocktranslate %}
-            {% if form.availabilities %}
-                {% blocktranslate trimmed %}
-                    Please provide us with your available hours during the event, so that we can schedule your event accordingly:
-                {% endblocktranslate %}
-                <p></p>
-            {% endif %}
-        </div>
-        <form method="post" class="availability-form">
-            {% csrf_token %}
-            {% if form.availabilities %}
-
-                {% include "common/availabilities.html" %}
-                {{ form.availabilities.as_field_group }}
-
-                <div class="text-muted">{{ form.availabilities.help_text }}</div>
-            {% endif %}
-            <p></p>
-            {% blocktranslate trimmed %}
-                By confirming your proposal, you agree that you are able and willing to participate in this event and
-                present the content of this proposal.
-                The proposal data, such as title, abstract, description, and any uploads you provided, can be made
-                publicly available once the proposal is confirmed.
-            {% endblocktranslate %}
-            <p></p>
-            <div class="submit-group">
-                <span>
-                    <a href="{{ submission.urls.user_base }}" class="btn btn-lg btn-info">{{ phrases.base.back_button }}</a>
-                    <a href="{{ submission.urls.withdraw }}" class="btn btn-lg btn-danger">{% translate "Withdraw" %}</a>
-                </span>
-                <span>
-                    <button type="submit" class="btn btn-lg btn-success">{% translate "Confirm" %}</button>
-                </span>
-            </div>
-        </form>
+    <div class="text">
+      {% blocktranslate trimmed %}
+        Congratulations on your acceptance!
+      {% endblocktranslate %}
+      {% if form.availabilities %}
+        {% blocktranslate trimmed %}
+          Please provide us with your available hours during the event, so that we can schedule your event accordingly:
+        {% endblocktranslate %}
+        <p></p>
+      {% endif %}
     </div>
+    <form method="post" class="availability-form">
+      {% csrf_token %}
+      {% if form.availabilities %}
+
+        {% include "common/availabilities.html" %}
+        {{ form.availabilities.as_field_group }}
+
+        <div class="text-muted">{{ form.availabilities.help_text }}</div>
+      {% endif %}
+      <p></p>
+      {% blocktranslate trimmed %}
+        By confirming your proposal, you agree that you are able and willing to participate in this event and
+        present the content of this proposal.
+        The proposal data, such as title, abstract, description, and any uploads you provided, can be made
+        publicly available once the proposal is confirmed.
+      {% endblocktranslate %}
+      <p></p>
+      <div class="submit-group">
+        <span>
+          <a href="{{ submission.urls.user_base }}" class="btn btn-lg btn-info">{{ phrases.base.back_button }}</a>
+          <a href="{{ submission.urls.withdraw }}" class="btn btn-lg btn-danger">{% translate "Withdraw" %}</a>
+        </span>
+        <span>
+          <button type="submit" class="btn btn-lg btn-success">{% translate "Confirm" %}</button>
+        </span>
+      </div>
+    </form>
+  </div>
 {% endblock content %}

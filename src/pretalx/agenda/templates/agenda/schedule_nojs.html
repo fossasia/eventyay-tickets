@@ -7,81 +7,81 @@
 {% load phrases %}
 
 {% block stylesheets %}
-    {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{% static "agenda/css/agenda_nojs.css" %}" />
-    {% endcompress %}
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static "agenda/css/agenda_nojs.css" %}" />
+  {% endcompress %}
 {% endblock stylesheets %}
 
 {% block agenda_content %}
-    <div id="fahrplan" class="list">
+  <div id="fahrplan" class="list">
 
-        <div class="alert alert-info">
-            <div></div>
-            <div>
-                {% blocktranslate trimmed with href=request.event.urls.schedule %}
-                    To see our schedule with full functionality, like timezone conversion and personal scheduling, please enable JavaScript and go <a href="{{ href }}">here</a>.
-                {% endblocktranslate %}
-            </div>
-        </div>
-        {% if schedule != schedule.event.current_schedule %}
-            <div class="alert alert-warning m-3">
-                <span>
-                    {% if not schedule.version %}
-                        {{ phrases.schedule.wip_version }}
-                    {% else %}
-                        {{ phrases.schedule.old_version }}
-                    {% endif %}
-                    {% if request.event.current_schedule %}
-                        {% phrase "phrases.schedule.current_version" current_url=schedule.event.urls.schedule %}
-                    {% endif %}
-                </span>
-            </div>
-        {% endif %}
-
-        <div class="pretalx-tabbed">
-            <div class="pretalx-tabbed-content">
-                {% if day_count > 1 %}
-                    <div class="pretalx-tabs">
-                        {% for day in data %}
-                            <div class="pretalx-tab">
-                                <label class="pretalx-tab-label" for="{{ day.start|date:"Y-m-d" }}">
-                                    {{ day.start|date:"l" }}, {{ day.start|date:"DATE_FORMAT" }}
-                                </label>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% for day in data %}
-                    {% if day_count > 1 %}
-                        <input name="tabs" id="{{ day.start|date:"Y-m-d" }}" type="radio" {% if forloop.first %}checked{% endif %}>
-                    {% endif %}
-                    <div class="pretalx-list-day pretalx-tab-content"
-                         data-start="{{ day.display_start|date:"c" }}">
-                        {% if day.first_start %}
-                            {% for session in day.talks %}
-                                <div class="bucket-time">
-                                    {% ifchanged session.start %}
-                                        {{ session.start|date:"TIME_FORMAT" }}
-                                    {% endifchanged %}
-                                </div>
-                                {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
-                                    <a href="{{ session.submission.urls.public }}">
-                                {% endif %}
-
-                                {% include "agenda/session_block.html" %}
-
-                                {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}</a>{% endif %}
-                            {% endfor %}
-                        {% else %}
-                            <div class="no-session">
-                                {% blocktranslate with current_day=day.start|date:"DATE_FORMAT" weekday=day.start|date:"l" trimmed %}
-                                    No sessions on {{ weekday }}, {{ current_day }}.
-                                {% endblocktranslate %}
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+    <div class="alert alert-info">
+      <div></div>
+      <div>
+        {% blocktranslate trimmed with href=request.event.urls.schedule %}
+          To see our schedule with full functionality, like timezone conversion and personal scheduling, please enable JavaScript and go <a href="{{ href }}">here</a>.
+        {% endblocktranslate %}
+      </div>
     </div>
+    {% if schedule != schedule.event.current_schedule %}
+      <div class="alert alert-warning m-3">
+        <span>
+          {% if not schedule.version %}
+            {{ phrases.schedule.wip_version }}
+          {% else %}
+            {{ phrases.schedule.old_version }}
+          {% endif %}
+          {% if request.event.current_schedule %}
+            {% phrase "phrases.schedule.current_version" current_url=schedule.event.urls.schedule %}
+          {% endif %}
+        </span>
+      </div>
+    {% endif %}
+
+    <div class="pretalx-tabbed">
+      <div class="pretalx-tabbed-content">
+        {% if day_count > 1 %}
+          <div class="pretalx-tabs">
+            {% for day in data %}
+              <div class="pretalx-tab">
+                <label class="pretalx-tab-label" for="{{ day.start|date:"Y-m-d" }}">
+                  {{ day.start|date:"l" }}, {{ day.start|date:"DATE_FORMAT" }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% for day in data %}
+          {% if day_count > 1 %}
+            <input name="tabs" id="{{ day.start|date:"Y-m-d" }}" type="radio" {% if forloop.first %}checked{% endif %}>
+          {% endif %}
+          <div class="pretalx-list-day pretalx-tab-content"
+               data-start="{{ day.display_start|date:"c" }}">
+            {% if day.first_start %}
+              {% for session in day.talks %}
+                <div class="bucket-time">
+                  {% ifchanged session.start %}
+                    {{ session.start|date:"TIME_FORMAT" }}
+                  {% endifchanged %}
+                </div>
+                {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}
+                  <a href="{{ session.submission.urls.public }}">
+                {% endif %}
+
+                {% include "agenda/session_block.html" %}
+
+                {% if not schedule.is_archived and session.submission and not session.submission.is_deleted %}</a>{% endif %}
+              {% endfor %}
+            {% else %}
+              <div class="no-session">
+                {% blocktranslate with current_day=day.start|date:"DATE_FORMAT" weekday=day.start|date:"l" trimmed %}
+                  No sessions on {{ weekday }}, {{ current_day }}.
+                {% endblocktranslate %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 {% endblock agenda_content %}

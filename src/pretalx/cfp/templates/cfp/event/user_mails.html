@@ -4,11 +4,11 @@
 {% block title %}{% translate "Your Emails" %} :: {% endblock title %}
 
 {% block content %}
-    <h2>{% translate "Your Emails" %}</h2>
-    <p>
-        {% translate "These are emails the organisers sent you, so you should be able to find them in your email inbox, but this page serves as a helper in case your email address was unavailable or the emails got lost in some way." %}
-    </p>
+  <h2>{% translate "Your Emails" %}</h2>
+  <p>
+    {% translate "These are emails the organisers sent you, so you should be able to find them in your email inbox, but this page serves as a helper in case your email address was unavailable or the emails got lost in some way." %}
+  </p>
 
-    {% include "common/mail_log.html" %}
+  {% include "common/mail_log.html" %}
 
 {% endblock content %}
