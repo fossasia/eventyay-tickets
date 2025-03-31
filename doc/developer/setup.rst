@@ -33,17 +33,19 @@ Please make sure you have the following dependencies installed:
 +----------------------------------+------------------+
 | uv                               |      N/A         |
 +----------------------------------+------------------+
+| `just`_ (optional)               | ``just``         |
++----------------------------------+------------------+
 
 Some Python dependencies might also need a compiler during installation, the Debian package
 ``build-essential`` or something similar should suffice.
 
-The `uv` tool is installed from [https://docs.astral.sh/uv/](https://docs.astral.sh/uv/).
+The ``uv`` tool is installed from https://docs.astral.sh/uv/.
 
 
 Local Python environment
 ------------------------
 
-Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.10
+Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.11
 (or newer) installed. Also make sure you have pip for Python 3 installed, by
 running ``pip3 -V``.
 
@@ -67,10 +69,23 @@ First up, install all the main application dependencies::
 
     source .venv/bin/activate
 
-You should now see a (.venv) prepended to your shell prompt.
+You should now see a *(.venv)* prepended to your shell prompt.
 
 When working with `pretalx`, you need to use commands installed in this virtual environment, so you always have to activate it.
-Other than explicitly activate, you can invoke the commands indirectly via `uv run`.
+Other than explicitly activating, you can invoke the commands indirectly via `uv run`. For example:
+
+.. code-block:: shell
+
+    # With uv run
+    $ uv run src/manage.py runserver
+    # To run a module, equivalent to `python -m module`
+    $ uv run -m module
+    # To run a binary
+    $ uv run djhtml
+    # Without uv run
+    $ source .venv/bin/activate
+    (.venv)$ cd src
+    (.venv)$ ./manage.py runserver
 
 Next, you will have to copy the static files from the source folder to the
 STATIC_ROOT directory, and create the local database::
@@ -131,10 +146,7 @@ Code checks and unit tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 Before you check in your code into git, always run the static linters and style checkers::
 
-    (.venv)$ black .
-    (.venv)$ isort .
-    (.venv)$ flake8 .
-    (.venv)$ find -name "*.html" | xargs djhtml -i
+    (.venv)$ djhtml -t 2 src
 
 Once you’re done with those, run the tests::
 
@@ -149,6 +161,14 @@ first breaking test.
 
 If you edit a stylesheet ``.scss`` file, please run ``sass-convert -i path/to/file.scss``
 afterwards to format that file.
+
+.. tip::
+
+    Some long commands are put in *justfile* to let you run them with a shorter command.
+    For example, you can run ``just djhtml`` instead of ``djhtml -t 2 src``.
+
+    It is better that you use a modern shell (like `fish`_) because it can give autocomplete
+    for the ``just`` command based on recipes defined in *justfile*.
 
 Working with mails
 ^^^^^^^^^^^^^^^^^^
@@ -206,3 +226,7 @@ Then, go to http://localhost:8081 for a version of the documentation that
 automatically re-builds when you save a changed source file.
 Please note that changes in the static files (stylesheets and JavaScript) will only be reflected
 after a restart.
+
+
+.. _just: https://just.systems/
+.. _fish: https://fishshell.com/
