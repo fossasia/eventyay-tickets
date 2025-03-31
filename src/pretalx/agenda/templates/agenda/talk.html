@@ -126,12 +126,14 @@
                 {% if answers %}
                     <hr />
                     <section class="answers">
+                        <dl>
                         {% for answer in answers %}
-                            <span class="question"><strong>{{ answer.question.question }}:</strong></span>
-                            <span class="answer {% if question.variant != "text" %}answer-strip-paragraph{% endif %}">{% include "common/question_answer.html" with answer=answer %}</span>
+                            <dt class="question mt-2"><strong>{{ answer.question.question|append_colon }}</strong></dt>
+                            <dd class="answer {% if question.variant != "text" %}answer-strip-paragraph{% endif %}">{% include "common/question_answer.html" with answer=answer %}</dd>
                         {% endfor %}
+                        </dl>
+                    </section>
                 {% endif %}
-            </section>
             {% if submission.active_resources %}
                 <section class="resources">
                     {% translate "See also:" %}

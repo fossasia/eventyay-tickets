@@ -7,6 +7,7 @@ from django import template
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.safestring import mark_safe
 from publicsuffixlist import PublicSuffixList
+from i18nfield.strings import LazyI18nString
 
 from pretalx.common.views.redirect import safelink as sl
 
@@ -178,3 +179,14 @@ def rich_text(text: str):
 def rich_text_without_links(text: str):
     """Process markdown and cleans HTML in a text input, but without links."""
     return render_markdown(text, cleaner=NO_LINKS_CLEANER)
+
+
+@register.filter
+def append_colon(text: LazyI18nString) -> str:
+    """Appends a colon to the given text if it doesn't end with a punctuation mark."""
+    text = str(text).strip()
+    if not text:
+        return ""
+    if text[-1] in [".", "!", "?", ":", ";"]:
+        return text
+    return f"{text}:"
