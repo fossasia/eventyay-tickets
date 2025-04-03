@@ -79,6 +79,10 @@
                 <legend>{% trans "Ticket buying settings" %}</legend>
                 {% bootstrap_field form.require_registered_account_for_tickets layout="control" %}
             </fieldset>
+            <fieldset>
+                <legend>{% trans "Ticket restrictions" %}</legend>
+                {% bootstrap_field form.one_ticket_per_user layout="control" %}
+            </fieldset>
         </div>
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">

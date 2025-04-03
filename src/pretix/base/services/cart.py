@@ -21,6 +21,7 @@ from pretix.base.models import (
     CartPosition, Event, InvoiceAddress, Item, ItemVariation, Seat,
     SeatCategoryMapping, Voucher,
 )
+from pretix.base.models import Order, OrderPosition
 from pretix.base.models.event import SubEvent
 from pretix.base.models.orders import OrderFee
 from pretix.base.models.tax import TAXED_ZERO, TaxedPrice, TaxRule
@@ -110,6 +111,7 @@ error_messages = {
     'seat_multiple': _('You can not select the same seat multiple times.'),
     'gift_card': _("You entered a gift card instead of a voucher. Gift cards can be entered later on when you're asked for your payment details."),
     'country_blocked': _('One of the selected products is not available in the selected country.'),
+    'one_ticket_per_user': _('You can only purchase one ticket for this event.'),
 }
 
 
@@ -310,6 +312,29 @@ class CartManager:
                     ), self.event.timezone)
                     if term_last < self.now_dt:
                         raise CartError(error_messages['payment_ended'])
+                    
+        if self.event.settings.one_ticket_per_user:
+            user_email = self._widget_data.get('email','').lower().strip()
+            if self.event.settings.one_ticket_per_user and not user_email:
+                raise CartError(_('Email address is required for ticket purchase'))
+            if user_email:
+                # Check both cart positions and orders
+                existing_positions = CartPosition.objects.filter(
+                    event=self.event, 
+                    attendee_email=user_email
+                ).exclude(pk__in=[
+                    op.position.id for op in self._operations 
+                    if isinstance(op, self.RemoveOperation)
+                ])
+                
+                existing_orders = OrderPosition.objects.filter(
+                    order__event=self.event, 
+                    attendee_email=user_email,
+                    order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID]
+                )
+                
+                if existing_positions.exists() or existing_orders.exists():
+                    raise CartError(error_messages['one_ticket_per_user'])
 
         if isinstance(op, self.AddOperation):
             if op.item.category and op.item.category.is_addon and not (op.addon_to and op.addon_to != 'FAKE'):
@@ -317,6 +342,7 @@ class CartManager:
 
             if op.item.require_bundling and not op.addon_to == 'FAKE':
                 raise CartError(error_messages['bundled_only'])
+
 
     def _get_price(self, item: Item, variation: Optional[ItemVariation],
                    voucher: Optional[Voucher], custom_price: Optional[Decimal],

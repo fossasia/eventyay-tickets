@@ -58,8 +58,11 @@ class EventWizardFoundationForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
         self.session = kwargs.pop("session")
+        event = kwargs.get("obj")
         super().__init__(*args, **kwargs)
         qs = Organizer.objects.all()
+        if not event.settings.attendee_emails_asked:
+            del self.fields['one_ticket_per_user']
         if not self.user.has_active_staff_session(self.session.session_key):
             qs = qs.filter(
                 id__in=self.user.teams.filter(can_create_events=True).values_list(
@@ -1239,6 +1242,7 @@ class TicketSettingsForm(SettingsForm):
         "ticket_download_pending",
         "ticket_download_require_validated_email",
         "require_registered_account_for_tickets",
+        "one_ticket_per_user",
     ]
     ticket_secret_generator = forms.ChoiceField(
         label=_("Ticket code generator"),
@@ -1246,6 +1250,11 @@ class TicketSettingsForm(SettingsForm):
         required=True,
         widget=forms.RadioSelect,
         choices=[],
+    )
+    one_ticket_per_user = forms.BooleanField(
+        label=_("Limit to one ticket per user"),
+        required=False,
+        help_text=_("If enabled, each user can only purchase one ticket for this event."),
     )
 
     def __init__(self, *args, **kwargs):
