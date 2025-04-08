@@ -4,25 +4,25 @@
 {% load rich_text %}
 
 {% block submission_step_title %}
-  {% if request.GET.draft == "1" %}
-    {% translate "Sign in or register to save your draft" %}
-  {% else %}
-    {{ title }}
-  {% endif %}
+    {% if request.GET.draft == "1" %}
+        {% translate "Sign in or register to save your draft" %}
+    {% else %}
+        {{ title }}
+    {% endif %}
 {% endblock submission_step_title %}
 
 {% block submission_step_text %}
-  <p>
-    {% if request.GET.draft == "1" %}
-      {% blocktranslate trimmed %}
-        Organisers will not be able to see your draft or your email address. They will be able to send you reminders about your pending proposal draft closer to the deadline.
-      {% endblocktranslate %}
-    {% else %}
-      {{ text|rich_text }}
-    {% endif %}
-  </p>
+    <p>
+        {% if request.GET.draft == "1" %}
+            {% blocktranslate trimmed %}
+                Organisers will not be able to see your draft or your email address. They will be able to send you reminders about your pending proposal draft closer to the deadline.
+            {% endblocktranslate %}
+        {% else %}
+            {{ text|rich_text }}
+        {% endif %}
+    </p>
 {% endblock submission_step_text %}
 
 {% block inner %}
-  {% include "common/auth.html" with form=form no_form=True no_buttons=True %}
+    {% include "common/auth.html" with form=form no_form=True no_buttons=True %}
 {% endblock inner %}

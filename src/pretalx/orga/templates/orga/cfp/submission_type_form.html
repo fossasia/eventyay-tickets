@@ -7,14 +7,14 @@
 {% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New Session Type" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
-  <h2>
-    {% if form.instance.name %}
-      {% translate "Session type" %}: {{ form.instance.name }}
-    {% else %}
-      {% translate "New Session Type" %}
-    {% endif %}
-  </h2>
+    <h2>
+        {% if form.instance.name %}
+            {% translate "Session type" %}: {{ form.instance.name }}
+        {% else %}
+            {% translate "New Session Type" %}
+        {% endif %}
+    </h2>
 
-  {% include "orga/includes/base_form.html" %}
+    {% include "orga/includes/base_form.html" %}
 
 {% endblock content %}

@@ -8,100 +8,100 @@
 
 
 {% block stylesheets %}
-  {% compress css %}
-    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
-    <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
-  {% endcompress %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+        <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
+    {% endcompress %}
 {% endblock stylesheets %}
 
 {% block scripts %}
-  {% compress js %}
-    <script defer src="{% static "common/js/modalDialog.js" %}"></script>
-    <script defer src="{% static "orga/js/dragsort.js" %}"></script>
-  {% endcompress %}
+    {% compress js %}
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+        <script defer src="{% static "orga/js/dragsort.js" %}"></script>
+    {% endcompress %}
 {% endblock scripts %}
 
 {% block content %}
-  <h2>
-    {% translate "Questions" %}
-    <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-      <i class="fa fa-question-circle-o text-info"></i>
-    </span>
-  </h2>
-  <dialog id="info-dialog">
-    <div class="alert alert-info">
-      {% blocktranslate trimmed %}
-        Questions can help you sort out additional details with speakers, such as
-        clothing sizes, special requirements such as dietary needs, or accommodation.
-        Questions can be asked either on a per-proposal level, or per speaker, as
-        you see fit.
-      {% endblocktranslate %}
+    <h2>
+        {% translate "Questions" %}
+        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+            <i class="fa fa-question-circle-o text-info"></i>
+        </span>
+    </h2>
+    <dialog id="info-dialog">
+        <div class="alert alert-info">
+            {% blocktranslate trimmed %}
+                Questions can help you sort out additional details with speakers, such as
+                clothing sizes, special requirements such as dietary needs, or accommodation.
+                Questions can be asked either on a per-proposal level, or per speaker, as
+                you see fit.
+            {% endblocktranslate %}
+        </div>
+    </dialog>
+    <div class="submit-group">
+        <span></span>
+        <span>
+            {% if questions %}
+                <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% translate "Send out reminders for unanswered questions" %}</a>
+            {% endif %}
+            <a href="{{ request.event.cfp.urls.new_question }}" class="btn btn-success">
+                <i class="fa fa-plus"></i>
+                {% translate "Add a new question" %}
+            </a>
+        </span>
     </div>
-  </dialog>
-  <div class="submit-group">
-    <span></span>
-    <span>
-      {% if questions %}
-        <a href="{{ request.event.cfp.urls.remind_questions }}" class="btn btn-info">{% translate "Send out reminders for unanswered questions" %}</a>
-      {% endif %}
-      <a href="{{ request.event.cfp.urls.new_question }}" class="btn btn-success">
-        <i class="fa fa-plus"></i>
-        {% translate "Add a new question" %}
-      </a>
-    </span>
-  </div>
 
-  <div class="table-responsive-sm">
-    <table class="table table-hover table-sm table-flip-sticky">
-      <thead>
-        <tr>
-          <th>{% translate "Question" %}</th>
-          <th>{% translate "Target" %}</th>
-          <th class="text-center">{% translate "required" %}</th>
-          <th class="text-center">{% translate "active" %}</th>
-          <th class="numeric">{% translate "Answers" %}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody dragsort-url="{{ request.event.cfp.urls.questions }}">
-        {% for question in questions %}
-          <tr dragsort-id="{{ question.id }}">
-            <td>
-              <a href="{{ question.urls.base }}">{{ question.question }}</a>
-            </td>
-            <td>{{ question.get_target_display }}</td>
-            <td class="text-center">
-              <i class="fa fa-{{ question.required|yesno:"check-circle text-success,times-circle text-danger" }}">
-              </i>
-              {% if question.question_required == "require after" or question.freeze_after %}
-                <i class="fa fa-clock-o" title="{% translate "This question’s availability depends on a deadline." %}"> </i>
-              {% endif %}
-            </td>
-            <td class="text-center">
-              <i class="fa fa-{{ question.active|yesno:"check-circle text-success,times-circle text-danger" }}">
-              </i>
-            </td>
-            <td class="numeric">{{ question.answer_count }}</td>
-            <td class="text-right">
-              <button draggable="true" class="btn btn-sm btn-primary mr-1 dragsort-button" title="{% translate "Move item" %}">
-                <i class="fa fa-arrows"></i>
-              </button>
-              <a href="{{ question.urls.edit }}" class="btn btn-sm btn-info mr-1" title="{{ phrases.base.edit }}">
-                <i class="fa fa-edit"></i>
-              </a>
-              <a href="{{ question.urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
-                <i class="fa fa-trash"></i>
-              </a>
-            </td>
-          </tr>
+    <div class="table-responsive-sm">
+        <table class="table table-hover table-sm table-flip-sticky">
+            <thead>
+                <tr>
+                    <th>{% translate "Question" %}</th>
+                    <th>{% translate "Target" %}</th>
+                    <th class="text-center">{% translate "required" %}</th>
+                    <th class="text-center">{% translate "active" %}</th>
+                    <th class="numeric">{% translate "Answers" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody dragsort-url="{{ request.event.cfp.urls.questions }}">
+                {% for question in questions %}
+                    <tr dragsort-id="{{ question.id }}">
+                        <td>
+                            <a href="{{ question.urls.base }}">{{ question.question }}</a>
+                        </td>
+                        <td>{{ question.get_target_display }}</td>
+                        <td class="text-center">
+                            <i class="fa fa-{{ question.required|yesno:"check-circle text-success,times-circle text-danger" }}">
+                            </i>
+                            {% if question.question_required == "require after" or question.freeze_after %}
+                                <i class="fa fa-clock-o" title="{% translate "This question’s availability depends on a deadline." %}"> </i>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <i class="fa fa-{{ question.active|yesno:"check-circle text-success,times-circle text-danger" }}">
+                            </i>
+                        </td>
+                        <td class="numeric">{{ question.answer_count }}</td>
+                        <td class="text-right">
+                            <button draggable="true" class="btn btn-sm btn-primary mr-1 dragsort-button" title="{% translate "Move item" %}">
+                                <i class="fa fa-arrows"></i>
+                            </button>
+                            <a href="{{ question.urls.edit }}" class="btn btn-sm btn-info mr-1" title="{{ phrases.base.edit }}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ question.urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
 
-        {% empty %}
-          <tr>
-            <td colspan=4 class="w-75">{% translate "You have configured no questions yet." %}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+                {% empty %}
+                    <tr>
+                        <td colspan=4 class="w-75">{% translate "You have configured no questions yet." %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% endblock content %}

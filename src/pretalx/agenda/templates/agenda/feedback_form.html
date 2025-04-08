@@ -3,33 +3,33 @@
 {% load i18n %}
 
 {% block agenda_custom_header %}
-  {% include "cfp/includes/forms_header.html" %}
+    {% include "cfp/includes/forms_header.html" %}
 {% endblock %}
 
 {% block content %}
 
-  <h3 class="talk-title">
-    <a href="{{ talk.urls.public }}">{{ quotation_open }}{{ talk.title }}{{ quotation_close }}</a>
-  </h3>
-  <div class="talk row">
-    <div class="talk-content">
-      <div class="description">
-        {% blocktranslate trimmed %}
-          Reviews are a valuable tool for speakers to improve their content and presentation.
-          Even a short review can prove valuable to a speaker! Please
-          take the time and communicate your feedback in a constructive way.
-        {% endblocktranslate %}
-        {{ phrases.agenda.feedback_success }}
-        {% if not talk.does_accept_feedback or not can_give_feedback %}
-          {% translate "You can’t give feedback for this session at this time." %}
-        {% else %}
-          <form method="post">
-            {% csrf_token %}
-            {{ form }}
-            <button type="submit" class="btn-success float-right">{{ phrases.base.send }}</button>
-          </form>
-        {% endif %}
-      </div>
+    <h3 class="talk-title">
+        <a href="{{ talk.urls.public }}">{{ quotation_open }}{{ talk.title }}{{ quotation_close }}</a>
+    </h3>
+    <div class="talk row">
+        <div class="talk-content">
+            <div class="description">
+                {% blocktranslate trimmed %}
+                    Reviews are a valuable tool for speakers to improve their content and presentation.
+                    Even a short review can prove valuable to a speaker! Please
+                    take the time and communicate your feedback in a constructive way.
+                {% endblocktranslate %}
+                {{ phrases.agenda.feedback_success }}
+                {% if not talk.does_accept_feedback or not can_give_feedback %}
+                    {% translate "You can’t give feedback for this session at this time." %}
+                {% else %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                        <button type="submit" class="btn-success float-right">{{ phrases.base.send }}</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </div>
 {% endblock content %}

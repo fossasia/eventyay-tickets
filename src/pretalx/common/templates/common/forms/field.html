@@ -1,26 +1,26 @@
 {% load i18n %}
 <div class="form-group {{ form_group_class }}{% with classes=field.css_classes %}{% if classes %} {{ classes }}{% endif %}{% endwith %}">
-  {% block field_label_left %}
-    {% if field.field.widget.input_type != "checkbox" or field.field.widget.allow_multiple_selected %}
-      <label for="{{ field.auto_id }}" class="{{ label_class }}">
-        {{ field.label }}
-        {% if not field.field.required %}<span class="optional">{% translate "Optional" %}</span>{% endif %}
-      </label>
-    {% endif %}
-  {% endblock %}
+    {% block field_label_left %}
+        {% if field.field.widget.input_type != "checkbox" or field.field.widget.allow_multiple_selected %}
+            <label for="{{ field.auto_id }}" class="{{ label_class }}">
+                {{ field.label }}
+                {% if not field.field.required %}<span class="optional">{% translate "Optional" %}</span>{% endif %}
+            </label>
+        {% endif %}
+    {% endblock %}
 
-  {% block field_content_right %}
-    {% if field.use_fieldset %}<fieldset{% if field.help_text and field.auto_id and "aria-describedby" not in field.field.widget.attrs %} aria-describedby="{{ field.auto_id }}_helptext"{% endif %}>{% endif %}
-    {{ field }}
-    {% if field.field.widget.input_type == "checkbox" and not field.field.widget.allow_multiple_selected %}
-      <label class="form-check-label" for="{{ field.auto_id }}">
-        {{ field.label }}
-      </label>
-    {% endif %}
-    {% if field.use_fieldset %}</fieldset>{% endif %}
-    {% for text in field.errors %}
-      <div class="invalid-feedback">{{ text }}</div>
-    {% endfor %}
-    {% if field.help_text %}<small class="form-text text-muted"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</small>{% endif %}
-  {% endblock %}
+    {% block field_content_right %}
+        {% if field.use_fieldset %}<fieldset{% if field.help_text and field.auto_id and "aria-describedby" not in field.field.widget.attrs %} aria-describedby="{{ field.auto_id }}_helptext"{% endif %}>{% endif %}
+        {{ field }}
+        {% if field.field.widget.input_type == "checkbox" and not field.field.widget.allow_multiple_selected %}
+            <label class="form-check-label" for="{{ field.auto_id }}">
+                {{ field.label }}
+            </label>
+        {% endif %}
+        {% if field.use_fieldset %}</fieldset>{% endif %}
+        {% for text in field.errors %}
+            <div class="invalid-feedback">{{ text }}</div>
+        {% endfor %}
+        {% if field.help_text %}<small class="form-text text-muted"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</small>{% endif %}
+    {% endblock %}
 </div>

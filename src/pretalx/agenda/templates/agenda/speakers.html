@@ -6,33 +6,33 @@
 {% load thumbnail %}
 
 {% block agenda_content %}
-  <p></p>
-  <article>
-    <section style="--track-color: {{ request.event.visible_primary_color }}" class="pretalx-list-day">
-      {% for speaker in speakers %}
-        <a href="{{ speaker.urls.public }}">
-          <div class="pretalx-session">
-            <div class="pretalx-session-time-box avatar">
-              <div class="avatar-wrapper">
-                {% if speaker.user.avatar_url and request.event.cfp.request_avatar %}
-                  <img loading="lazy" src="{{ speaker.user.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
-                {% else %}
-                  <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg" alt="{% translate "The speaker’s profile picture" %}">
-                {% endif %}
-              </div>
-            </div>
-            <div class="pretalx-session-info">
-              <div class="title">{{ speaker.user.get_display_name }}</div>
-              <div class="abstract">{{ speaker.biography|default:""|rich_text_without_links }}</div>
-              <ul>
-                {% for talk in speaker.talks %}
-                  <li>{{ talk.title }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </a>
-      {% endfor %}
-    </section>
-  </article>
+    <p></p>
+    <article>
+        <section style="--track-color: {{ request.event.visible_primary_color }}" class="pretalx-list-day">
+            {% for speaker in speakers %}
+                <a href="{{ speaker.urls.public }}">
+                    <div class="pretalx-session">
+                        <div class="pretalx-session-time-box avatar">
+                            <div class="avatar-wrapper">
+                                {% if speaker.user.avatar_url and request.event.cfp.request_avatar %}
+                                    <img loading="lazy" src="{{ speaker.user.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
+                                {% else %}
+                                    <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg" alt="{% translate "The speaker’s profile picture" %}">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="pretalx-session-info">
+                            <div class="title">{{ speaker.user.get_display_name }}</div>
+                            <div class="abstract">{{ speaker.biography|default:""|rich_text_without_links }}</div>
+                            <ul>
+                                {% for talk in speaker.talks %}
+                                    <li>{{ talk.title }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </section>
+    </article>
 {% endblock agenda_content %}

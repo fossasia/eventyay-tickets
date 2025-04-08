@@ -4,28 +4,28 @@
 {% load rich_text %}
 
 {% block content %}
-  <h3 class="talk-title">
-    <a href="{{ talk.urls.public }}">
-      {% translate "Feedback" %}: {{ quotation_open }}{{ talk.title }}{{ quotation_close }}
-    </a>
-    <small class="text-muted">
-      {{ talk.slot.local_start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.slot.local_start|date:"TIME_FORMAT" }}–{{ talk.slot.end|date:"TIME_FORMAT" }}, {{ talk.slot.room.name }}
-    </small>
-  </h3>
-  <div class="talk feedback-list flex-column">
-    {% for opinion in feedback %}
-      <div class="speakers feedback-box">
-        {% if opinion.speaker and talk.speakers.count > 1 %}
-          <div>
-            <em>{% translate "This review is for you personally, not for all speakers in this session." %}</em>
-          </div>
-        {% endif %}
-        <i class="fa fa-quote-left quote" aria-hidden="true"></i>
-        <div class="feedback-text">{{ opinion.review|rich_text }}</div>
-        <i class="fa fa-quote-right quote float-right" aria-hidden="true"></i>
-      </div>
-    {% empty %}
-      {{ phrases.schedule.no_feedback }}
-    {% endfor %}
-  </div>
+    <h3 class="talk-title">
+        <a href="{{ talk.urls.public }}">
+            {% translate "Feedback" %}: {{ quotation_open }}{{ talk.title }}{{ quotation_close }}
+        </a>
+        <small class="text-muted">
+            {{ talk.slot.local_start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.slot.local_start|date:"TIME_FORMAT" }}–{{ talk.slot.end|date:"TIME_FORMAT" }}, {{ talk.slot.room.name }}
+        </small>
+    </h3>
+    <div class="talk feedback-list flex-column">
+        {% for opinion in feedback %}
+            <div class="speakers feedback-box">
+                {% if opinion.speaker and talk.speakers.count > 1 %}
+                    <div>
+                        <em>{% translate "This review is for you personally, not for all speakers in this session." %}</em>
+                    </div>
+                {% endif %}
+                <i class="fa fa-quote-left quote" aria-hidden="true"></i>
+                <div class="feedback-text">{{ opinion.review|rich_text }}</div>
+                <i class="fa fa-quote-right quote float-right" aria-hidden="true"></i>
+            </div>
+        {% empty %}
+            {{ phrases.schedule.no_feedback }}
+        {% endfor %}
+    </div>
 {% endblock content %}

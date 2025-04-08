@@ -1,5 +1,4 @@
 import datetime as dt
-from datetime import UTC
 from urllib.parse import unquote, urlparse
 
 import jwt
@@ -309,7 +308,7 @@ class OnlineVideoJoin(EventPermissionRequired, View):
 
         else:
             # Redirect user to online event
-            iat = dt.datetime.now(tz=UTC)
+            iat = dt.datetime.utcnow()
             exp = iat + dt.timedelta(days=30)
             profile = {
                 "display_name": request.user.name,

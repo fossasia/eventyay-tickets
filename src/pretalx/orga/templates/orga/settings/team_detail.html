@@ -7,146 +7,146 @@
 {% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }} :: {% endblock extra_title %}
 
 {% block scripts %}
-  {% compress js %}
-    <script defer src="{% static "common/js/lightbox.js" %}"></script>
-  {% endcompress %}
+    {% compress js %}
+        <script defer src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
 {% endblock scripts %}
 {% block stylesheets %}
-  {% compress css %}
-    <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
-  {% endcompress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
 {% endblock stylesheets %}
 
 {% block settings_content %}
-  <div>
-    {% if team.pk %}
-      <h2>
-        {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Members" %}
-      </h2>
+    <div>
+        {% if team.pk %}
+            <h2>
+                {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Members" %}
+            </h2>
 
-      <form method="post">
-        {% csrf_token %}
-        <div class="table-responsive-sm">
-          <table class="table table-sm table-hover table-flip table-sticky">
-            <thead>
-              <tr>
-                <th>{% translate "Name" %}</th>
-                <th>{% translate "Email" %}</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for member in members %}
-                <tr>
-                  <td>
-                    {% include "orga/includes/user_name.html" with user=member lightbox=True %}
-                  </td>
-                  <td>
-                    <a href="mailto:{{ member.email }}">{{ member.email }}</a>
-                  </td>
-                  <td class="flip text-right">
-                    <a
-                      href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/reset/{{ member.id }}"
-                      class="btn btn-sm btn-warning"
-                    >
-                      {{ phrases.base.password_reset_heading }}
-                    </a>
-                    <a
-                      href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/delete/{{ member.id }}"
-                      class="btn btn-sm btn-danger" title="{% translate "Remove team member" %}"
-                    >
-                      <i class="fa fa-trash"></i>
-                    </a>
-                  </td>
-                </tr>
-              {% endfor %}
-              {% for member in team.invites.all %}
-                <tr>
-                  <td>
-                    <em>({% translate "pending Invitation" %})</em>
-                  </td>
-                  <td>
-                    {{ member.email }}
-                    <a href="{{ member.urls.invitation }}">
-                      <i class="fa fa-link"></i>
-                    </a>
-                  </td>
-                  <td class="flip text-right">
-                    <a
-                      href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/resend"
-                      class="btn btn-sm btn-outline-warning"
-                    >
-                      {% translate "Resend invite" %}
-                    </a>
-                    <a
-                      href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/uninvite"
-                      class="btn btn-sm btn-danger"
-                    >
-                      <i class="fa fa-trash"></i>
-                    </a>
-                  </td>
-                </tr>
-              {% endfor %}
-              <tr>
-                <td>
-                  <strong>{% translate "Add member" %}</strong>
-                  <br>
-                  <small><em><a id="bulk-email" href="">{% translate "Add multiple team members?" %}</a></em></small>
-                </td>
-                <td class="w-50">
-                  {% csrf_token %}
-                  <div id="single-invite">
-                    <select multiple name="invite-email" id="id_invite-email" class="form-control" placeholder="{{ invite_form.email.label }}"> </select>
-                  </div>
-                  <div id="bulk-invite" class="d-none">
-                    {{ invite_form.bulk_email.as_field_group }}
-                  </div>
-                </td>
-                <td class="flip text-right">
-                  <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </form>
-      <h3 id="permissions">
-        {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Permissions" %}
-      </h3>
-    {% else %}
-      <h2>{% translate "New team" %}</h2>
-    {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="table-responsive-sm">
+                    <table class="table table-sm table-hover table-flip table-sticky">
+                        <thead>
+                            <tr>
+                                <th>{% translate "Name" %}</th>
+                                <th>{% translate "Email" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                                <tr>
+                                    <td>
+                                        {% include "orga/includes/user_name.html" with user=member lightbox=True %}
+                                    </td>
+                                    <td>
+                                        <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                                    </td>
+                                    <td class="flip text-right">
+                                        <a
+                                            href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/reset/{{ member.id }}"
+                                            class="btn btn-sm btn-warning"
+                                        >
+                                            {{ phrases.base.password_reset_heading }}
+                                        </a>
+                                        <a
+                                            href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/delete/{{ member.id }}"
+                                            class="btn btn-sm btn-danger" title="{% translate "Remove team member" %}"
+                                        >
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            {% for member in team.invites.all %}
+                                <tr>
+                                    <td>
+                                        <em>({% translate "pending Invitation" %})</em>
+                                    </td>
+                                    <td>
+                                        {{ member.email }}
+                                        <a href="{{ member.urls.invitation }}">
+                                            <i class="fa fa-link"></i>
+                                        </a>
+                                    </td>
+                                    <td class="flip text-right">
+                                        <a
+                                            href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/resend"
+                                            class="btn btn-sm btn-outline-warning"
+                                        >
+                                            {% translate "Resend invite" %}
+                                        </a>
+                                        <a
+                                            href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ member.id }}/uninvite"
+                                            class="btn btn-sm btn-danger"
+                                        >
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>
+                                    <strong>{% translate "Add member" %}</strong>
+                                    <br>
+                                    <small><em><a id="bulk-email" href="">{% translate "Add multiple team members?" %}</a></em></small>
+                                </td>
+                                <td class="w-50">
+                                    {% csrf_token %}
+                                    <div id="single-invite">
+                                        <select multiple name="invite-email" id="id_invite-email" class="form-control" placeholder="{{ invite_form.email.label }}"> </select>
+                                    </div>
+                                    <div id="bulk-invite" class="d-none">
+                                        {{ invite_form.bulk_email.as_field_group }}
+                                    </div>
+                                </td>
+                                <td class="flip text-right">
+                                    <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            <h3 id="permissions">
+                {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Permissions" %}
+            </h3>
+        {% else %}
+            <h2>{% translate "New team" %}</h2>
+        {% endif %}
 
-    <form method="post">
-      {% csrf_token %}
-      {% include "common/forms/errors.html" %}
-      {{ form.name.as_field_group }}
-      {{ form.all_events.as_field_group }}
-      {{ form.limit_events.as_field_group }}
-      {{ form.can_create_events.as_field_group }}
-      {{ form.can_change_teams.as_field_group }}
-      {{ form.can_change_organiser_settings.as_field_group }}
-      {{ form.can_change_event_settings.as_field_group }}
-      {{ form.can_change_submissions.as_field_group }}
-      {{ form.is_reviewer.as_field_group }}
-      <div id="review-settings">
-        <div class="form-group row">
-          <div class="col-md-9 offset-md-3">
-            <h3 id="review-settings">{% translate "Review settings" %}</h3>
-          </div>
-        </div>
-        {{ form.force_hide_speaker_names.as_field_group }}
-        {{ form.limit_tracks.as_field_group }}
-      </div>
+        <form method="post">
+            {% csrf_token %}
+            {% include "common/forms/errors.html" %}
+            {{ form.name.as_field_group }}
+            {{ form.all_events.as_field_group }}
+            {{ form.limit_events.as_field_group }}
+            {{ form.can_create_events.as_field_group }}
+            {{ form.can_change_teams.as_field_group }}
+            {{ form.can_change_organiser_settings.as_field_group }}
+            {{ form.can_change_event_settings.as_field_group }}
+            {{ form.can_change_submissions.as_field_group }}
+            {{ form.is_reviewer.as_field_group }}
+            <div id="review-settings">
+                <div class="form-group row">
+                    <div class="col-md-9 offset-md-3">
+                        <h3 id="review-settings">{% translate "Review settings" %}</h3>
+                    </div>
+                </div>
+                {{ form.force_hide_speaker_names.as_field_group }}
+                {{ form.limit_tracks.as_field_group }}
+            </div>
 
-      {% include "orga/includes/submit_row.html" with submit_value="team" submit_name="form" %}
+            {% include "orga/includes/submit_row.html" with submit_value="team" submit_name="form" %}
 
-    </form>
-  </div>
+        </form>
+    </div>
 
-  <span id="vars" remoteUrl="{{ request.organiser.orga_urls.user_search }}"></span>
-  {% compress js %}
-    <script defer src="{% static "orga/js/speakers.js" %}"></script>
-    <script defer src="{% static "orga/js/teamSettings.js" %}"></script>
-  {% endcompress %}
+    <span id="vars" remoteUrl="{{ request.organiser.orga_urls.user_search }}"></span>
+    {% compress js %}
+        <script defer src="{% static "orga/js/speakers.js" %}"></script>
+        <script defer src="{% static "orga/js/teamSettings.js" %}"></script>
+    {% endcompress %}
 {% endblock settings_content %}

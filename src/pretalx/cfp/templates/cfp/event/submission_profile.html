@@ -4,26 +4,26 @@
 {% load orga_edit_link %}
 
 {% block orga_edit_link %}
-  {% orga_edit_link request.event.cfp.urls.text "information" %}
+    {% orga_edit_link request.event.cfp.urls.text "information" %}
 {% endblock orga_edit_link %}
 
 {% block inner %}
 
-  {{ form.name.as_field_group }}
-  {% if form.biography %}
-    {{ form.biography.as_field_group }}
-  {% endif %}
+    {{ form.name.as_field_group }}
+    {% if form.biography %}
+        {{ form.biography.as_field_group }}
+    {% endif %}
 
-  {% if form.avatar or form.get_gravatar %}
-    {% include "common/avatar.html" with user=user form=form %}
-  {% endif %}
-  {% if form.avatar_source %}{{ form.avatar_source.as_field_group }}{% endif %}
-  {% if form.avatar_license %}{{ form.avatar_license.as_field_group }}{% endif %}
+    {% if form.avatar or form.get_gravatar %}
+        {% include "common/avatar.html" with user=user form=form %}
+    {% endif %}
+    {% if form.avatar_source %}{{ form.avatar_source.as_field_group }}{% endif %}
+    {% if form.avatar_license %}{{ form.avatar_license.as_field_group }}{% endif %}
 
-  {% if form.availabilities %}
-    {% include "common/availabilities.html" %}
+    {% if form.availabilities %}
+        {% include "common/availabilities.html" %}
 
-    {{ form.availabilities.as_field_group }}
-  {% endif %}
+        {{ form.availabilities.as_field_group }}
+    {% endif %}
 
 {% endblock inner %}

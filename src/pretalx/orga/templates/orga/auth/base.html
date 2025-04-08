@@ -4,42 +4,42 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{% block title %}{% endblock %} :: {{site_name}} </title>
-    {% compress css %}
-      <link rel="stylesheet" type="text/css" href="{% static "common/css/_reset.css" %}" />
-      <link rel="stylesheet" type="text/css" href="{% static "common/css/base.css" %}" />
-      <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
-      <link rel="stylesheet" type="text/css" href="{% static "common/css/_fonts.css" %}" />
-      <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
-      <link rel="stylesheet" type="text/css" href="{% static "orga/css/auth.css" %}" />
-    {% endcompress %}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#2185d0">
+    <head>
+        <title>{% block title %}{% endblock %} :: {{site_name}} </title>
+        {% compress css %}
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_reset.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/base.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_fonts.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "orga/css/auth.css" %}" />
+        {% endcompress %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#2185d0">
 
-    {% include "common/includes/favicon.html" %}
+        {% include "common/includes/favicon.html" %}
 
-    {% block scripts %}{% endblock scripts %}
+        {% block scripts %}{% endblock scripts %}
 
-  </head>
-  <body>
-    <div id="wrapper"{% if request.event.primary_color %} style="background-color: {{ request.event.primary_color }}"{% endif %}>
+    </head>
+    <body>
+        <div id="wrapper"{% if request.event.primary_color %} style="background-color: {{ request.event.primary_color }}"{% endif %}>
             {# we're not lazy-loading these images, because they are central and immediately visible, and having them flash in 100ms later looks bad #}
-      {% if not request.event.logo %}
-        <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% translate "The eventyay logo" %}">
-      {% else %}
-        <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event’s logo" %}">
-      {% endif %}
-      <p>
-        {% if messages %}
-          {% for message in messages %}
-            <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-      </p>
-      <div class="card">
-        {% block content %}{% endblock content %}
-      </div>
-    </div>
-  </body>
+            {% if not request.event.logo %}
+                <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% translate "The eventyay logo" %}">
+            {% else %}
+                <img height="150" width="auto" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event’s logo" %}">
+            {% endif %}
+            <p>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            </p>
+            <div class="card">
+                {% block content %}{% endblock content %}
+            </div>
+        </div>
+    </body>
 </html>

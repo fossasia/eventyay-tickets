@@ -1,5 +1,5 @@
 <form method="post" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
-  {% csrf_token %}
-  {{ form }}
-  {% include "orga/includes/submit_row.html" %}
+    {% csrf_token %}
+    {{ form }}
+    {% include "orga/includes/submit_row.html" %}
 </form>

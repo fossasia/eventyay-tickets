@@ -2,21 +2,21 @@
 {% load static %}
 
 {% compress js %}
-  <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-  <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
+    <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+    <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
 
-  <script defer src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
-  <script defer src="{% static "vendored/fullcalendar/moment-timezone-plugin.min.js" %}"></script>
+    <script defer src="{% static "vendored/fullcalendar/fullcalendar.min.js" %}"></script>
+    <script defer src="{% static "vendored/fullcalendar/moment-timezone-plugin.min.js" %}"></script>
 
-  <script defer src="{% static "common/js/availabilities.js" %}"></script>
+    <script defer src="{% static "common/js/availabilities.js" %}"></script>
 {% endcompress %}
 {% compress css %}
-  <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
-  <link rel="stylesheet" href="{% static "common/css/availabilities.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
+    <link rel="stylesheet" href="{% static "common/css/availabilities.css" %}">
 {% endcompress %}
 
 {% with html_locale|slice:":2" as calendar_locale %}
-  {% if calendar_locale and calendar_locale in AVAILABLE_CALENDAR_LOCALES %}
-    <script defer id="calendar-locale" data-locale="{{ calendar_locale }}" src="{% static "vendored/fullcalendar/"|add:calendar_locale|add:".js" %}"></script>
-  {% endif %}
+    {% if calendar_locale and calendar_locale in AVAILABLE_CALENDAR_LOCALES %}
+        <script defer id="calendar-locale" data-locale="{{ calendar_locale }}" src="{% static "vendored/fullcalendar/"|add:calendar_locale|add:".js" %}"></script>
+    {% endif %}
 {% endwith %}

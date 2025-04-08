@@ -5,13 +5,13 @@
 
 {% block title %}{{ phrases.base.permission_denied }}{% endblock title %}
 {% block error_image %}
-  <img loading="lazy" src="{% static "common/img/error_403.svg" %}" class="img" alt="{{ phrases.base.permission_denied }}">
+    <img loading="lazy" src="{% static "common/img/error_403.svg" %}" class="img" alt="{{ phrases.base.permission_denied }}">
 {% endblock error_image %}
 {% block error_message %}
-  {{ phrases.base.permission_denied }}
-  </h2>
-  <h5>
-    <p class="ml-auto mr-auto text-center">{{ phrases.base.permission_denied_long }}</p>
-  </h5>
+    {{ phrases.base.permission_denied }}
+    </h2>
+    <h5>
+        <p class="ml-auto mr-auto text-center">{{ phrases.base.permission_denied_long }}</p>
+    </h5>
 {% endblock error_message %}
 {% block error_code %}403{% endblock error_code %}

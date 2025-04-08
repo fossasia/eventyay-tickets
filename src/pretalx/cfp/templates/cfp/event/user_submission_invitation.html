@@ -8,36 +8,36 @@
 {% block title %}{{ submission.title }} :: {% endblock title %}
 
 {% block cfp_header %}
-  {% include "cfp/includes/forms_header.html" %}
-  {% compress js %}
-    <script defer src="{% static "common/js/copy.js" %}"></script>
-  {% endcompress %}
+    {% include "cfp/includes/forms_header.html" %}
+    {% compress js %}
+        <script defer src="{% static "common/js/copy.js" %}"></script>
+    {% endcompress %}
 {% endblock cfp_header %}
 
 {% block content %}
 
-  {% include "cfp/includes/user_submission_header.html" %}
+    {% include "cfp/includes/user_submission_header.html" %}
 
-  <div class="alert alert-info offset-md-3" role="alert"><div>
-    {% blocktranslate trimmed %}
-      Invite another speaker to your proposal here. Instead of letting us send an email,
-      (which might get caught by spam filters) you can also give them this link:
-    {% endblocktranslate %}
-    <br>
-    {{ submission.urls.accept_invitation.full|copyable }}
-  </div></div>
-  <form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <div class="row">
-      <div class="w-25 flip ml-auto url-links">
-        <a class="btn btn-block btn-info btn-lg" href="{{ submission.urls.user_base }}">
-          {{ phrases.base.cancel }}
-        </a>
-        <button type="submit" class="btn btn-block btn-success btn-lg">
-          {{ phrases.base.send }}
-        </button>
-      </div>
-    </div>
-  </form>
+    <div class="alert alert-info offset-md-3" role="alert"><div>
+        {% blocktranslate trimmed %}
+            Invite another speaker to your proposal here. Instead of letting us send an email,
+            (which might get caught by spam filters) you can also give them this link:
+        {% endblocktranslate %}
+        <br>
+        {{ submission.urls.accept_invitation.full|copyable }}
+    </div></div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <div class="row">
+            <div class="w-25 flip ml-auto url-links">
+                <a class="btn btn-block btn-info btn-lg" href="{{ submission.urls.user_base }}">
+                    {{ phrases.base.cancel }}
+                </a>
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {{ phrases.base.send }}
+                </button>
+            </div>
+        </div>
+    </form>
 {% endblock content %}

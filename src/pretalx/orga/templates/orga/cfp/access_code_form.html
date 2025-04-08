@@ -7,49 +7,49 @@
 {% block extra_title %}{% if form.instance.pk %}{{ form.instance.code }}{% else %}{% translate "New access code" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
-  <h2>
-    {% if form.instance.pk %}
-      {% translate "Edit access code" %}
-    {% else %}
-      {% translate "New access code" %}
-    {% endif %}
-  </h2>
-  {% if form.instance.pk and form.instance.submissions.exists %}
-    <div class="alert alert-info">
-      <span>
-        {% blocktranslate trimmed %}
-          This access code has already been used. You can’t delete it, but you can disable it by setting an expiration date.
-        {% endblocktranslate %}
-        <ul>
-          {% for submission in form.instance.submissions.all %}
-            <li>
-              <a href="{{ submission.orga_urls.base }}">{{ submission.title }} –
-                {% include "orga/includes/submission_speaker_names.html" with submission=submission %}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      </span>
-    </div>
-  {% endif %}
-  <form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <div class="submit-group panel">
-      <span>
-        {% if form.instance.pk and not form.instance.submissions.exists %}
-          <a class="btn btn-outline-danger btn-lg" href="{{ form.instance.urls.delete }}">
-            <i class="fa fa-trash"></i>
-            {{ phrases.base.delete_button }}
-          </a>
+    <h2>
+        {% if form.instance.pk %}
+            {% translate "Edit access code" %}
+        {% else %}
+            {% translate "New access code" %}
         {% endif %}
-      </span>
-      <span>
-        <button type="submit" class="btn btn-success btn-lg">
-          <i class="fa fa-check"></i>
-          {{ phrases.base.save }}
-        </button>
-      </span>
-    </div>
-  </form>
+    </h2>
+    {% if form.instance.pk and form.instance.submissions.exists %}
+        <div class="alert alert-info">
+            <span>
+                {% blocktranslate trimmed %}
+                    This access code has already been used. You can’t delete it, but you can disable it by setting an expiration date.
+                {% endblocktranslate %}
+                <ul>
+                    {% for submission in form.instance.submissions.all %}
+                        <li>
+                            <a href="{{ submission.orga_urls.base }}">{{ submission.title }} –
+                                {% include "orga/includes/submission_speaker_names.html" with submission=submission %}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </span>
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <div class="submit-group panel">
+            <span>
+                {% if form.instance.pk and not form.instance.submissions.exists %}
+                    <a class="btn btn-outline-danger btn-lg" href="{{ form.instance.urls.delete }}">
+                        <i class="fa fa-trash"></i>
+                        {{ phrases.base.delete_button }}
+                    </a>
+                {% endif %}
+            </span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fa fa-check"></i>
+                    {{ phrases.base.save }}
+                </button>
+            </span>
+        </div>
+    </form>
 
 {% endblock content %}

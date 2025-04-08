@@ -4,25 +4,25 @@
 {% load static %}
 
 {% block error_image %}
-  <img loading="lazy" src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{{ phrases.base.bad_request }}">
+    <img loading="lazy" src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{{ phrases.base.bad_request }}">
 {% endblock error_image %}
 
 {% block error_message %}
-  <p>
-    {{ phrases.base.bad_request }}
-    <br>
-  </p>
-  </h2>
-  <h3>
-    <p class="ml-auto mr-auto text-center">
-      {% blocktranslate trimmed %}
-        It looks as if the communication between you and eventyay went wrong in
-        some way.
+    <p>
+        {{ phrases.base.bad_request }}
         <br>
-        Please return to the last page and try again!
-      {% endblocktranslate %}
     </p>
-  </h3>
-  <h2>
+    </h2>
+    <h3>
+        <p class="ml-auto mr-auto text-center">
+            {% blocktranslate trimmed %}
+                It looks as if the communication between you and eventyay went wrong in
+                some way.
+                <br>
+                Please return to the last page and try again!
+            {% endblocktranslate %}
+        </p>
+    </h3>
+    <h2>
 {% endblock error_message %}
 {% block error_code %}400{% endblock error_code %}

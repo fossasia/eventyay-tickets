@@ -7,8 +7,8 @@
 {% block extra_title %}{% translate "Schedule session" %} {{ quotation_open }}{{ form.instance.submission.title }}{{ quotation_close }} :: {% endblock extra_title %}
 
 {% block schedule_content %}
-  <h2>
-    {% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}
-  </h2>
-  {% include "orga/includes/base_form.html" %}
+    <h2>
+        {% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}
+    </h2>
+    {% include "orga/includes/base_form.html" %}
 {% endblock schedule_content %}

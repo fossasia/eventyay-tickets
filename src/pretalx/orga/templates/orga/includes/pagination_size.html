@@ -2,9 +2,9 @@
 
 <a href="{% querystring page_size=pagination_size page="1" %}"
    {% if page_size == pagination_size %}class="font-weight-bold"{% endif %}>
-  {% if pagination_size == 100_000 %}
-    {{ phrases.base.all_choices }}
-  {% else %}
-    {{ pagination_size }}
-  {% endif %}
+    {% if pagination_size == 100_000 %}
+        {{ phrases.base.all_choices }}
+    {% else %}
+        {{ pagination_size }}
+    {% endif %}
 </a>
