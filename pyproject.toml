@@ -144,6 +144,7 @@ ignore = [
   "src/tests",
   "src/tests/*",
   "SECURITY.md",
+  "justfile",
 ]
 
 [tool.djlint]

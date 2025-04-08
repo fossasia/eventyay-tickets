@@ -50,7 +50,7 @@ jobs:
       - name: Install Python dependencies
         run: uv sync
       - name: Run check-manifest
-        run: uv run check-manifest
+        run: uv run --no-sync check-manifest
       - name: Run build
         run: uv build
       - name: Check package
