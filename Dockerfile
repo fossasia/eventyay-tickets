@@ -7,6 +7,7 @@ RUN apt-get update && \
             supervisor \
             sudo \
             locales \
+            curl \
             less \
             --no-install-recommends && \
     apt-get clean && \
@@ -45,8 +46,9 @@ RUN uv sync --frozen --all-extras --no-install-project
 RUN uv run -m pretalx makemigrations
 RUN uv run -m pretalx migrate
 
-RUN apt-get update && \
-    apt-get install -y nodejs npm && \
+RUN wget -qO- https://deb.nodesource.com/setup_22.x | bash && \
+    apt-get update && \
+    apt-get install -y nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     uv run -m pretalx rebuild
