@@ -603,6 +603,14 @@ STATICFILES_FINDERS = (
 static_path = BASE_DIR / "pretalx" / "static"
 STATICFILES_DIRS = [static_path] if static_path.exists() else []
 
+# We have some Vue 3 frontend apps which are built with Vite, we need to
+# tell Django to collect their compiled output files.
+# Note that those apps must be built before running collectstatic.
+FRONTEND_DIR = BASE_DIR / "pretalx" / "frontend"
+_GLOBAL_NAV_MENU_DIR = FRONTEND_DIR / "global-nav-menu" / "dist"
+if _GLOBAL_NAV_MENU_DIR.exists():
+    STATICFILES_DIRS.append(_GLOBAL_NAV_MENU_DIR)
+
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",

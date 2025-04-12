@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>Global Nav Menu</title>
+    <!-- <link href='https://unpkg.com/@csstools/normalize.css' rel='stylesheet' /> -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+      .flex {
+        display: flex;
+      }
+      .flex-row {
+        flex-direction: row;
+      }
+      .justify-end {
+        justify-content: flex-end;
+      }
+      .items-end {
+        align-items: flex-end;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- This ID must match the element in Django template of eventyay-talk -->
+    <div class='flex flex-row justify-end'>
+      <div id='global-nav-menu'></div>
+    </div>
+    <script type='module' src='/src/main.ts'></script>
+  </body>
+</html>

@@ -108,3 +108,8 @@ screens/
 .npm
 .python_history
 .ptpython_history
+
+# Frontend
+node_modules
+dist
+dist-ssr

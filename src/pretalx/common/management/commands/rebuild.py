@@ -11,6 +11,21 @@ from django.test import override_settings
 from pretalx.common.models.settings import GlobalSettings
 
 
+def build_vue3_frontend_apps():
+    """
+    Build the Vue3 frontend apps.
+
+    We don't move the build process of "schedule-editor" here, because we want to reduce the
+    difference from upstream pretalx.
+    """
+    frontend_dir = Path(__file__).parent.parent.parent.parent / "frontend"
+    env = os.environ.copy()
+    env["BASE_URL"] = settings.STATIC_URL
+    app_dir = frontend_dir / "global-nav-menu"
+    subprocess.check_call(["npm", "ci"], cwd=app_dir)
+    subprocess.check_call(["npm", "run", "build"], cwd=app_dir, env=env)
+
+
 class Command(BaseCommand):
     help = "Rebuild static files and language files"
 
@@ -39,6 +54,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         silent = 0 if options.get("silent") else 1
         call_command("compilemessages", verbosity=silent)
+        build_vue3_frontend_apps()
         call_command(
             "collectstatic", verbosity=silent, interactive=False, clear=options["clear"]
         )
