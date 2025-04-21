@@ -1,0 +1,23 @@
+Issue - The dev deployment shows the return part for Stripe as https://app-test.eventyay.com/tickets/_stripe/oauth_return/ instead of https://app-test.eventyay.com/tickets/_stripe/webhook/. Clarify why the return paths are different on the dev and production deployment.
+
+OAuth Return URL
+This is used when you connect a Stripe account to your platform via Stripe Connect (OAuth).
+After the user authenticates and grants permissions to your app, Stripe redirects them to your specified OAuth return URI.
+In your dev deployment, this is:
+https://app-test.eventyay.com/tickets/_stripe/oauth_return/
+This path is used to handle the result of the OAuth flow (success or error).
+
+Webhook Endpoint
+This is where Stripe sends event notifications (like payment succeeded, refund issued, etc.).
+In your case, the correct webhook endpoint would be:
+https://app-test.eventyay.com/tickets/_stripe/webhook/
+Application listens here for Stripe's server-to-server POST requests and processes them accordingly.
+
+They serve completely different purposes.
+The oauth_return URL is for redirects during user interaction, while the webhook URL is for asynchronous server notifications from Stripe.
+
+On dev vs. production:
+It's possible dev and prod environments have slightly different setups or that one is misconfigured.
+Check your Stripe dashboard (for the dev API keys) under:
+Developers > Webhooks — to confirm webhook endpoint is set correctly.
+Connect settings — to verify the correct OAuth return URI is listed.
