@@ -144,7 +144,7 @@ class GlobalSettingsForm(SettingsForm):
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
         self.fields = OrderedDict(list(self.fields.items()) + [
             (
-                'payment_stripe_connect_secret_key',
+                'payment_stripe_secret_key',
                 SecretKeySettingsField(
                     label=_('Stripe Connect: Secret key'),
                     required=False,
@@ -154,7 +154,7 @@ class GlobalSettingsForm(SettingsForm):
                 )
             ),
             (
-                'payment_stripe_connect_publishable_key',
+                'payment_stripe_publishable_key',
                 forms.CharField(
                     label=_('Stripe Connect: Publishable key'),
                     required=False,
@@ -164,7 +164,7 @@ class GlobalSettingsForm(SettingsForm):
                 )
             ),
             (
-                'payment_stripe_connect_test_secret_key',
+                'payment_stripe_test_secret_key',
                 SecretKeySettingsField(
                     label=_('Stripe Connect: Secret key (test)'),
                     required=False,
@@ -174,7 +174,7 @@ class GlobalSettingsForm(SettingsForm):
                 )
             ),
             (
-                'payment_stripe_connect_test_publishable_key',
+                'payment_stripe_test_publishable_key',
                 forms.CharField(
                     label=_('Stripe Connect: Publishable key (test)'),
                     required=False,
