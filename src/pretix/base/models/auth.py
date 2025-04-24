@@ -87,6 +87,8 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
                               verbose_name=_('E-mail'), max_length=190)
     fullname = models.CharField(max_length=255, blank=True, null=True,
                                 verbose_name=_('Full name'))
+    wikimedia_username = models.CharField(max_length=255, blank=True, null=True,
+                                     verbose_name=('Wikimedia username'))
     is_active = models.BooleanField(default=True,
                                     verbose_name=_('Is active'))
     is_staff = models.BooleanField(default=False,
@@ -162,10 +164,13 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         Returns the first of the following user properties that is found to exist:
 
         * Full name
+        * Wikimedia username
         * Email address
         """
         if self.fullname:
             return self.fullname
+        elif self.wikimedia_username:
+            return self.wikimedia_username
         else:
             return self.email
 
