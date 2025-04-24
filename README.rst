@@ -22,7 +22,7 @@ Please look through our issues and start contributing.
 Setting Up Eventyay-Tickets
 ---------------------------
 
-Eventyay-Tickets requires a Docker-based setup. Please follow the detailed instructions in the `development setup guide <https://github.com/fossasia/eventyay-docker/blob/development/README.development.md>`_ in the eventyay-docker repository.
+Eventyay-Tickets requires a Docker-based setup. Please follow the detailed instructions in the `development setup guide <https://github.com/fossasia/eventyay-docker/blob/main/README.development.md>`_ in the eventyay-docker repository.
 
 License
 -------
