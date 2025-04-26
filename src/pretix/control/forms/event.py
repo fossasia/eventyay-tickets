@@ -1410,8 +1410,8 @@ class QuickSetupForm(I18nForm):
         super().__init__(*args, **kwargs)
         plugins_active = self.obj.get_plugins()
         if ('eventyay_stripe' not in plugins_active) or (not self.obj.settings.payment_stripe_client_id):
-            del self.fields["payment_stripe__enabled"]
-        if ('pretix.plugins.banktransfer' not in plugins_active):
+            del self.fields['payment_stripe__enabled']
+        if 'pretix.plugins.banktransfer' not in plugins_active:
             del self.fields['payment_banktransfer__enabled']
         self.fields['payment_banktransfer_bank_details'].required = False
         for f in self.fields.values():
