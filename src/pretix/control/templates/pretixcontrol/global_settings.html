@@ -2,7 +2,6 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load static %}
-
 {% block inner %}
 <div class="tabbed-nav">
     <ul class="nav nav-tabs" role="tablist">
@@ -32,7 +31,6 @@
             </a>
         </li>
     </ul>
-
     <div class="tab-content">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -54,11 +52,11 @@
                 <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
                     {% csrf_token %}
                     {% bootstrap_form_errors form %}
-                    
+
                     {% for field in form %}
                         {% bootstrap_field field layout='control' %}
                     {% endfor %}
-                    
+
                     <div class="form-group submit-group">
                         <button type="submit" class="btn btn-primary btn-save">
                             {% trans "Save" %}
@@ -70,7 +68,6 @@
     </div>
 </div>
 {% endblock %}
-
 {% block scripts %}
 {{ block.super }}
 <script type="text/javascript">

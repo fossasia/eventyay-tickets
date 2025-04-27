@@ -366,9 +366,6 @@ urlpatterns = [
         url(r'^settings/payment_gateways/$', global_settings.GlobalSettingsPaymentGatewaysView.as_view(),
             name='admin.global.settings.payment_gateways'),
         url(r'^settings/maps/$', global_settings.GlobalSettingsMapsView.as_view(), name='admin.global.settings.maps'),
-
     ])),
     url(r'^event/(?P<organizer>[^/]+)/$', RedirectView.as_view(pattern_name='control:organizer'), name='event.organizerredirect'),
-
-  
 ]
