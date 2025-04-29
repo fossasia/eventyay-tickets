@@ -25,6 +25,11 @@
                 {% trans "Payment Gateways" %}
             </a>
         </li>
+        <li role="presentation" {% if active_tab == 'ticket_fees' %}class="active"{% endif %}>
+            <a href="{% url 'control:admin.global.settings.ticket_fees' %}">
+                {% trans "Ticket Fees" %}
+            </a>
+        </li>
         <li role="presentation" {% if active_tab == 'maps' %}class="active"{% endif %}>
             <a href="{% url 'control:admin.global.settings.maps' %}">
                 {% trans "Maps" %}
@@ -43,6 +48,8 @@
                         {% trans "Email Settings" %}
                     {% elif active_tab == 'payment_gateways' %}
                         {% trans "Payment Gateway Settings" %}
+                    {% elif active_tab == 'ticket_fees' %}
+                        {% trans "Ticket Fee Settings" %} 
                     {% elif active_tab == 'maps' %}
                         {% trans "Map Settings" %}
                     {% endif %}

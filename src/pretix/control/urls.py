@@ -365,6 +365,7 @@ urlpatterns = [
         url(r'^settings/email/$', global_settings.GlobalSettingsEmailView.as_view(), name='admin.global.settings.email'),
         url(r'^settings/payment_gateways/$', global_settings.GlobalSettingsPaymentGatewaysView.as_view(),
             name='admin.global.settings.payment_gateways'),
+        url(r'^settings/ticket_fees/$', global_settings.GlobalSettingsTicketFeesView.as_view(), name='admin.global.settings.ticket_fees'),
         url(r'^settings/maps/$', global_settings.GlobalSettingsMapsView.as_view(), name='admin.global.settings.maps'),
     ])),
     url(r'^event/(?P<organizer>[^/]+)/$', RedirectView.as_view(pattern_name='control:organizer'), name='event.organizerredirect'),
