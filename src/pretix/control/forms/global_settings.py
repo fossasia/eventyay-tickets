@@ -22,7 +22,6 @@ class GlobalSettingsForm(SettingsForm):
             'footer_link',
             'banner_message',
             'banner_message_detail',
-            'ticket_fee_percentage',
         ],
         'localization': [
             'region',
@@ -44,6 +43,9 @@ class GlobalSettingsForm(SettingsForm):
             'payment_stripe_test_secret_key',
             'payment_stripe_test_publishable_key',
             'stripe_webhook_secret_key',
+        ],
+        'ticket_fees': [
+            'ticket_fee_percentage',
         ],
         'maps': [
             'opencagedata_apikey',
