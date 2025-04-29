@@ -1018,7 +1018,7 @@ class Question(LoggedModel):
         (TYPE_NUMBER, _("Number")),
         (TYPE_STRING, _("Text (one line)")),
         (TYPE_TEXT, _("Multiline text")),
-        (TYPE_BOOLEAN, _("Yes/No")),
+        (TYPE_BOOLEAN, _("Confirm Checkbox")),
         (TYPE_CHOICE, _("Choose one from a list")),
         (TYPE_CHOICE_MULTIPLE, _("Choose multiple from a list")),
         (TYPE_FILE, _("File upload")),
