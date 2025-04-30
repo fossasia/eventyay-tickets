@@ -47,9 +47,6 @@ class GlobalSettingsForm(SettingsForm):
         'ticket_fees': [
             'ticket_fee_percentage',
         ],
-        'billing_validation': [
-            'billing_validation',
-        ],
         'maps': [
             'opencagedata_apikey',
             'mapquest_apikey',
@@ -136,13 +133,6 @@ class GlobalSettingsForm(SettingsForm):
                 choices=smtp_select,
 
             )),
-            ("billing_validation", forms.BooleanField(
-                label=_("Enable billing validation"),
-                required=False,
-                help_text=_("Billing validation lets you require organizers to set up a billing method before they can create events. "
-                            "When this option is enabled, no new event can be created until a valid billing method has been added."),
-                ),
-             ),
             ('send_grid_api_key', forms.CharField(
                 required=False,
                 label=_("Sendgrid Token"),
