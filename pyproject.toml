@@ -166,6 +166,7 @@ quote-style = "single"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
+ignore = ["E722", "E741"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["pretix"]

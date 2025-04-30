@@ -231,68 +231,19 @@ class GlobalSettingsForm(SettingsForm):
 
         self.fields['banner_message'].widget.attrs['rows'] = '2'
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
-        self.fields = OrderedDict(list(self.fields.items()) + [
-            (
-                'payment_stripe_secret_key',
-                SecretKeySettingsField(
-                    label=_('Stripe Connect: Secret key'),
-                    required=False,
-                    validators=(
-                        StripeKeyValidator(['sk_live_', 'rk_live_']),
+        self.fields = OrderedDict(
+            list(self.fields.items())
+            + [
+                (
+                    'payment_stripe_secret_key',
+                    SecretKeySettingsField(
+                        label=_('Stripe Connect: Secret key'),
+                        required=False,
+                        validators=(StripeKeyValidator(['sk_live_', 'rk_live_']),),
                     ),
-                )
-            ),
-            (
-                'payment_stripe_publishable_key',
-                forms.CharField(
-                    label=_('Stripe Connect: Publishable key'),
-                    required=False,
-                    validators=(
-                        StripeKeyValidator('pk_live_'),
-                    ),
-                )
-            ),
-            (
-                'payment_stripe_test_secret_key',
-                SecretKeySettingsField(
-                    label=_('Stripe Connect: Secret key (test)'),
-                    required=False,
-                    validators=(
-                        StripeKeyValidator(['sk_test_', 'rk_test_']),
-                    ),
-                )
-            ),
-            (
-                'payment_stripe_test_publishable_key',
-                forms.CharField(
-                    label=_('Stripe Connect: Publishable key (test)'),
-                    required=False,
-                    validators=(
-                        StripeKeyValidator('pk_test_'),
-                    ),
-                )
-            ),
-            (
-                'stripe_webhook_secret_key',
-                SecretKeySettingsField(
-                    label=_('Stripe Webhook: Secret key'),
-                    required=False,
-                )
-            ),
-            (
-                "ticket_fee_percentage",
-                forms.DecimalField(
-                    label=_("Ticket fee percentage"),
-                    required=False,
-                    decimal_places=2,
-                    max_digits=10,
-                    help_text=_(
-                        "A percentage fee will be charged for each ticket sold."
-                    ),
-                    validators=[MinValueValidator(0)],
                 ),
                 (
-                    'payment_stripe_connect_publishable_key',
+                    'payment_stripe_publishable_key',
                     forms.CharField(
                         label=_('Stripe Connect: Publishable key'),
                         required=False,
@@ -300,7 +251,7 @@ class GlobalSettingsForm(SettingsForm):
                     ),
                 ),
                 (
-                    'payment_stripe_connect_test_secret_key',
+                    'payment_stripe_test_secret_key',
                     SecretKeySettingsField(
                         label=_('Stripe Connect: Secret key (test)'),
                         required=False,
@@ -308,7 +259,7 @@ class GlobalSettingsForm(SettingsForm):
                     ),
                 ),
                 (
-                    'payment_stripe_connect_test_publishable_key',
+                    'payment_stripe_test_publishable_key',
                     forms.CharField(
                         label=_('Stripe Connect: Publishable key (test)'),
                         required=False,
@@ -331,6 +282,48 @@ class GlobalSettingsForm(SettingsForm):
                         max_digits=10,
                         help_text=_('A percentage fee will be charged for each ticket sold.'),
                         validators=[MinValueValidator(0)],
+                    ),
+                    (
+                        'payment_stripe_connect_publishable_key',
+                        forms.CharField(
+                            label=_('Stripe Connect: Publishable key'),
+                            required=False,
+                            validators=(StripeKeyValidator('pk_live_'),),
+                        ),
+                    ),
+                    (
+                        'payment_stripe_connect_test_secret_key',
+                        SecretKeySettingsField(
+                            label=_('Stripe Connect: Secret key (test)'),
+                            required=False,
+                            validators=(StripeKeyValidator(['sk_test_', 'rk_test_']),),
+                        ),
+                    ),
+                    (
+                        'payment_stripe_connect_test_publishable_key',
+                        forms.CharField(
+                            label=_('Stripe Connect: Publishable key (test)'),
+                            required=False,
+                            validators=(StripeKeyValidator('pk_test_'),),
+                        ),
+                    ),
+                    (
+                        'stripe_webhook_secret_key',
+                        SecretKeySettingsField(
+                            label=_('Stripe Webhook: Secret key'),
+                            required=False,
+                        ),
+                    ),
+                    (
+                        'ticket_fee_percentage',
+                        forms.DecimalField(
+                            label=_('Ticket fee percentage'),
+                            required=False,
+                            decimal_places=2,
+                            max_digits=10,
+                            help_text=_('A percentage fee will be charged for each ticket sold.'),
+                            validators=[MinValueValidator(0)],
+                        ),
                     ),
                 ),
             ]

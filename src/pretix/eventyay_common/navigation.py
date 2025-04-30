@@ -16,10 +16,10 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
         return []
     nav = [
         {
-            "label": _("My Events"),
-            "url": reverse("eventyay_common:events"),
-            "active": "events" in url.url_name,
-            "icon": "calendar",
+            'label': _('My Events'),
+            'url': reverse('eventyay_common:events'),
+            'active': 'events' in url.url_name,
+            'icon': 'calendar',
         },
         {
             'label': _('Organizers'),
@@ -58,9 +58,9 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, A
         return []
     nav = [
         {
-            "label": _("Settings"),
-            "url": reverse(
-                "eventyay_common:event.update",
+            'label': _('Settings'),
+            'url': reverse(
+                'eventyay_common:event.update',
                 kwargs={
                     'event': event.slug,
                     'organizer': event.organizer.slug,

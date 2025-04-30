@@ -1126,19 +1126,19 @@ class Question(LoggedModel):
     TYPE_PHONENUMBER = 'TEL'
     TYPE_DESCRIPTION = 'DES'
     TYPE_CHOICES = (
-        (TYPE_NUMBER, _("Number")),
-        (TYPE_STRING, _("Text (one line)")),
-        (TYPE_TEXT, _("Multiline text")),
-        (TYPE_BOOLEAN, _("Confirm Checkbox")),
-        (TYPE_CHOICE, _("Choose one from a list")),
-        (TYPE_CHOICE_MULTIPLE, _("Choose multiple from a list")),
-        (TYPE_FILE, _("File upload")),
-        (TYPE_DATE, _("Date")),
-        (TYPE_TIME, _("Time")),
-        (TYPE_DATETIME, _("Date and time")),
-        (TYPE_COUNTRYCODE, _("Country code (ISO 3166-1 alpha-2)")),
-        (TYPE_PHONENUMBER, _("Phone number")),
-        (TYPE_DESCRIPTION, _("Text field")),
+        (TYPE_NUMBER, _('Number')),
+        (TYPE_STRING, _('Text (one line)')),
+        (TYPE_TEXT, _('Multiline text')),
+        (TYPE_BOOLEAN, _('Confirm Checkbox')),
+        (TYPE_CHOICE, _('Choose one from a list')),
+        (TYPE_CHOICE_MULTIPLE, _('Choose multiple from a list')),
+        (TYPE_FILE, _('File upload')),
+        (TYPE_DATE, _('Date')),
+        (TYPE_TIME, _('Time')),
+        (TYPE_DATETIME, _('Date and time')),
+        (TYPE_COUNTRYCODE, _('Country code (ISO 3166-1 alpha-2)')),
+        (TYPE_PHONENUMBER, _('Phone number')),
+        (TYPE_DESCRIPTION, _('Text field')),
     )
     UNLOCALIZED_TYPES = [TYPE_DATE, TYPE_TIME, TYPE_DATETIME]
     ASK_DURING_CHECKIN_UNSUPPORTED = [TYPE_PHONENUMBER]
