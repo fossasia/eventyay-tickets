@@ -7,23 +7,20 @@ import pretix.base.models.vouchers
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("pretixbase", "0005_page_alter_cachedcombinedticket_id_and_more"),
+        ('pretixbase', '0005_page_alter_cachedcombinedticket_id_and_more'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="InvoiceVoucher",
+            name='InvoiceVoucher',
             fields=[
                 (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    'id',
+                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
                 (
-                    "code",
+                    'code',
                     models.CharField(
                         db_index=True,
                         default=pretix.base.models.vouchers.generate_code,
@@ -31,42 +28,38 @@ class Migration(migrations.Migration):
                         unique=True,
                     ),
                 ),
-                ("max_usages", models.PositiveIntegerField(default=1)),
-                ("redeemed", models.PositiveIntegerField(default=0)),
+                ('max_usages', models.PositiveIntegerField(default=1)),
+                ('redeemed', models.PositiveIntegerField(default=0)),
                 (
-                    "budget",
+                    'budget',
                     models.DecimalField(decimal_places=2, max_digits=10, null=True),
                 ),
                 (
-                    "valid_until",
+                    'valid_until',
                     models.DateTimeField(blank=True, db_index=True, null=True),
                 ),
-                ("price_mode", models.CharField(default="none", max_length=100)),
+                ('price_mode', models.CharField(default='none', max_length=100)),
                 (
-                    "value",
+                    'value',
                     models.DecimalField(decimal_places=2, max_digits=10, null=True),
                 ),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("created_by", models.CharField(default="system", max_length=50)),
-                ("updated_at", models.DateTimeField(auto_now=True)),
-                ("updated_by", models.CharField(default="system", max_length=50)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('created_by', models.CharField(default='system', max_length=50)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('updated_by', models.CharField(default='system', max_length=50)),
                 (
-                    "limit_events",
-                    models.ManyToManyField(
-                        related_name="invoice_vouchers", to="pretixbase.event"
-                    ),
+                    'limit_events',
+                    models.ManyToManyField(related_name='invoice_vouchers', to='pretixbase.event'),
                 ),
                 (
-                    "limit_organizer",
-                    models.ManyToManyField(
-                        related_name="invoice_vouchers", to="pretixbase.organizer"
-                    ),
+                    'limit_organizer',
+                    models.ManyToManyField(related_name='invoice_vouchers', to='pretixbase.organizer'),
                 ),
             ],
             options={
-                "verbose_name": "Invoice Voucher",
-                "verbose_name_plural": "Invoice Vouchers",
-                "ordering": ("code",),
+                'verbose_name': 'Invoice Voucher',
+                'verbose_name_plural': 'Invoice Vouchers',
+                'ordering': ('code',),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),

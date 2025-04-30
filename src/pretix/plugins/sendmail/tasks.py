@@ -9,9 +9,19 @@ from pretix.celery_app import app
 
 
 @app.task(base=ProfiledEventTask, acks_late=True)
-def send_mails(event: Event, user: int, subject: dict, message: dict, orders: list, items: list,
-               recipients: str, filter_checkins: bool, not_checked_in: bool, checkin_lists: list,
-               attachments: list = None) -> None:
+def send_mails(
+    event: Event,
+    user: int,
+    subject: dict,
+    message: dict,
+    orders: list,
+    items: list,
+    recipients: str,
+    filter_checkins: bool,
+    not_checked_in: bool,
+    checkin_lists: list,
+    attachments: list = None,
+) -> None:
     failures = []
     user = User.objects.get(pk=user) if user else None
     orders = Order.objects.filter(pk__in=orders, event=event)
@@ -36,10 +46,7 @@ def send_mails(event: Event, user: int, subject: dict, message: dict, orders: li
 
                 if filter_checkins:
                     checkins = list(p.checkins.all())
-                    allowed = (
-                        (not_checked_in and not checkins)
-                        or (any(c.list_id in checkin_lists for c in checkins))
-                    )
+                    allowed = (not_checked_in and not checkins) or (any(c.list_id in checkin_lists for c in checkins))
                     if not allowed:
                         continue
 
@@ -63,7 +70,7 @@ def send_mails(event: Event, user: int, subject: dict, message: dict, orders: li
                             locale=o.locale,
                             order=o,
                             position=p,
-                            attach_cached_files=attachments
+                            attach_cached_files=attachments,
                         )
                         o.log_action(
                             'pretix.plugins.sendmail.order.email.sent.attendee',
@@ -72,8 +79,8 @@ def send_mails(event: Event, user: int, subject: dict, message: dict, orders: li
                                 'position': p.positionid,
                                 'subject': subject.localize(o.locale).format_map(email_context),
                                 'message': message.localize(o.locale).format_map(email_context),
-                                'recipient': p.attendee_email
-                            }
+                                'recipient': p.attendee_email,
+                            },
                         )
                 except SendMailException:
                     failures.append(p.attendee_email)
@@ -90,7 +97,7 @@ def send_mails(event: Event, user: int, subject: dict, message: dict, orders: li
                         event,
                         locale=o.locale,
                         order=o,
-                        attach_cached_files=attachments
+                        attach_cached_files=attachments,
                     )
                     o.log_action(
                         'pretix.plugins.sendmail.order.email.sent',
@@ -98,8 +105,8 @@ def send_mails(event: Event, user: int, subject: dict, message: dict, orders: li
                         data={
                             'subject': subject.localize(o.locale).format_map(email_context),
                             'message': message.localize(o.locale).format_map(email_context),
-                            'recipient': o.email
-                        }
+                            'recipient': o.email,
+                        },
                     )
             except SendMailException:
                 failures.append(o.email)

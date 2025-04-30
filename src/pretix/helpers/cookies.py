@@ -6,10 +6,7 @@ from django.conf import settings
 def set_cookie_without_samesite(request, response, key, *args, **kwargs):
     assert 'samesite' not in kwargs
     response.set_cookie(key, *args, **kwargs)
-    is_secure = (
-        kwargs.get('secure', False) or request.scheme == 'https' or
-        settings.SITE_URL.startswith('https://')
-    )
+    is_secure = kwargs.get('secure', False) or request.scheme == 'https' or settings.SITE_URL.startswith('https://')
     if not is_secure:
         # https://www.chromestatus.com/feature/5633521622188032
         return
@@ -45,20 +42,23 @@ def drops_unrecognized_same_site_cookies(useragent):
     if is_uc_browser(useragent):
         return not is_uc_browser_version_at_least(12, 13, 2, useragent)
     return (
-        is_chromium_based(useragent) and is_chromium_version_at_least(51, useragent) and
-        not is_chromium_version_at_least(67, useragent)
+        is_chromium_based(useragent)
+        and is_chromium_version_at_least(51, useragent)
+        and not is_chromium_version_at_least(67, useragent)
     )
 
 
 # Regex parsing of User-Agent string. (See note above!)
-RE_CHROMIUM = re.compile(r"Chrom(e|ium)")
-RE_CHROMIUM_VERSION = re.compile(r"Chrom[^ /]+[ /]([0-9]+)[.0-9]*")
-RE_UC_VERSION = re.compile(r"UC[ ]?Browser/([0-9]+)\.([0-9]+)\.([0-9]+)[.0-9]*")
-RE_IOS_VERSION = re.compile(r"\(iP.+; CPU .*OS ([0-9]+)[_0-9]*.*\) AppleWebKit/")
-RE_MAC_VERSION = re.compile(r"\(Macintosh;.*Mac OS X ([0-9]+)_([0-9]+)[_0-9]*.*\) AppleWebKit/")
-RE_SAFARI = re.compile(r"Version/.* Safari/")
-RE_MAC_EMBEDDED = re.compile(r"^Mozilla/[.0-9]+ \(Macintosh;.*Mac OS X [_0-9]+\) AppleWebKit/[.0-9]+ \(KHTML, "
-                             r"like Gecko\)$")
+RE_CHROMIUM = re.compile(r'Chrom(e|ium)')
+RE_CHROMIUM_VERSION = re.compile(r'Chrom[^ /]+[ /]([0-9]+)[.0-9]*')
+RE_UC_VERSION = re.compile(r'UC[ ]?Browser/([0-9]+)\.([0-9]+)\.([0-9]+)[.0-9]*')
+RE_IOS_VERSION = re.compile(r'\(iP.+; CPU .*OS ([0-9]+)[_0-9]*.*\) AppleWebKit/')
+RE_MAC_VERSION = re.compile(r'\(Macintosh;.*Mac OS X ([0-9]+)_([0-9]+)[_0-9]*.*\) AppleWebKit/')
+RE_SAFARI = re.compile(r'Version/.* Safari/')
+RE_MAC_EMBEDDED = re.compile(
+    r'^Mozilla/[.0-9]+ \(Macintosh;.*Mac OS X [_0-9]+\) AppleWebKit/[.0-9]+ \(KHTML, '
+    r'like Gecko\)$'
+)
 
 
 def is_ios_version(major, useragent):

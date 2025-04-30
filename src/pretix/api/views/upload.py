@@ -23,7 +23,10 @@ ALLOWED_TYPES = {
 
 class UploadView(APIView):
     authentication_classes = (
-        SessionAuthentication, OAuth2Authentication, DeviceTokenAuthentication, TeamTokenAuthentication
+        SessionAuthentication,
+        OAuth2Authentication,
+        DeviceTokenAuthentication,
+        TeamTokenAuthentication,
     )
     parser_classes = [FileUploadParser]
     permission_classes = [AnyAuthenticatedClientPermission]
@@ -32,24 +35,23 @@ class UploadView(APIView):
         if 'file' not in request.data:
             raise ValidationError('No file has been submitted.')
         file_obj = request.data['file']
-        content_type = file_obj.content_type.split(";")[0]  # ignore e.g. "; charset=…"
+        content_type = file_obj.content_type.split(';')[0]  # ignore e.g. "; charset=…"
         if content_type not in ALLOWED_TYPES:
             raise ValidationError('Content type "{type}" is not allowed'.format(type=content_type))
         if not any(file_obj.name.endswith(ext) for ext in ALLOWED_TYPES[content_type]):
-            raise ValidationError('File name "{name}" has an invalid extension for type "{type}"'.format(
-                name=file_obj.name,
-                type=content_type
-            ))
+            raise ValidationError(
+                'File name "{name}" has an invalid extension for type "{type}"'.format(
+                    name=file_obj.name, type=content_type
+                )
+            )
         cf = CachedFile.objects.create(
             expires=now() + datetime.timedelta(days=1),
             date=now(),
             web_download=False,
             filename=file_obj.name,
             type=content_type,
-            session_key=f'api-upload-{str(type(request.user or request.auth))}-{(request.user or request.auth).pk}'
+            session_key=f'api-upload-{str(type(request.user or request.auth))}-{(request.user or request.auth).pk}',
         )
         cf.file.save(file_obj.name, file_obj)
         cf.save()
-        return Response({
-            'id': f'file:{cf.pk}'
-        }, status=201)
+        return Response({'id': f'file:{cf.pk}'}, status=201)

@@ -14,7 +14,8 @@ from django.core.files.storage import default_storage
 from django.db.models import Exists, OuterRef, Q
 from django.db.models.functions import Coalesce
 from django.utils.timezone import make_aware
-from django.utils.translation import gettext as _, gettext_lazy
+from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from pypdf import Transformation
 from reportlab.lib import pagesizes
 from reportlab.lib.units import mm
@@ -35,98 +36,143 @@ def _renderer(event, layout):
     if layout is None:
         return None
     if isinstance(layout.background, File) and layout.background.name:
-        bgf = default_storage.open(layout.background.name, "rb")
+        bgf = default_storage.open(layout.background.name, 'rb')
     else:
-        bgf = open(finders.find('pretixplugins/badges/badge_default_a6l.pdf'), "rb")
+        bgf = open(finders.find('pretixplugins/badges/badge_default_a6l.pdf'), 'rb')
     return Renderer(event, json.loads(layout.layout), bgf)
 
 
-OPTIONS = OrderedDict([
-    ('one', {
-        'name': gettext_lazy('One badge per page'),
-        'cols': 1,
-        'rows': 1,
-        'margins': [0, 0, 0, 0],
-        'offsets': [0, 0],
-        'pagesize': None,
-    }),
-    ('a4_a6l', {
-        'name': gettext_lazy('4 landscape A6 pages on one A4 page'),
-        'cols': 2,
-        'rows': 2,
-        'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
-        'offsets': [pagesizes.landscape(pagesizes.A4)[0] / 2, pagesizes.landscape(pagesizes.A4)[1] / 2],
-        'pagesize': pagesizes.landscape(pagesizes.A4),
-    }),
-    ('a4_a6p', {
-        'name': gettext_lazy('4 portrait A6 pages on one A4 page'),
-        'cols': 2,
-        'rows': 2,
-        'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
-        'offsets': [pagesizes.portrait(pagesizes.A4)[0] / 2, pagesizes.portrait(pagesizes.A4)[0] / 2],
-        'pagesize': pagesizes.portrait(pagesizes.A4),
-    }),
-    ('a4_a7l', {
-        'name': gettext_lazy('8 landscape A7 pages on one A4 page'),
-        'cols': 2,
-        'rows': 4,
-        'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
-        'offsets': [pagesizes.portrait(pagesizes.A4)[0] / 2, pagesizes.portrait(pagesizes.A4)[1] / 4],
-        'pagesize': pagesizes.portrait(pagesizes.A4),
-    }),
-    ('a4_a7p', {
-        'name': gettext_lazy('8 portrait A7 pages on one A4 page'),
-        'cols': 4,
-        'rows': 2,
-        'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
-        'offsets': [pagesizes.landscape(pagesizes.A4)[0] / 4, pagesizes.landscape(pagesizes.A4)[0] / 2],
-        'pagesize': pagesizes.landscape(pagesizes.A4),
-    }),
-    ('durable_54x90', {
-        'name': 'DURABLE BADGEMAKER® 54 x 90 mm (1445-02)',
-        'cols': 2,
-        'rows': 5,
-        'margins': [12 * mm, 15 * mm, 15 * mm, 15 * mm],
-        'offsets': [90 * mm, 54 * mm],
-        'pagesize': pagesizes.A4,
-    }),
-    ('durable_40x75', {
-        'name': 'DURABLE BADGEMAKER® 40 x 75 mm (1453-02)',
-        'cols': 2,
-        'rows': 6,
-        'margins': [28.5 * mm, 30 * mm, 28.5 * mm, 30 * mm],
-        'offsets': [75 * mm, 40 * mm],
-        'pagesize': pagesizes.A4,
-    }),
-    ('durable_60x90', {
-        'name': 'DURABLE BADGEMAKER® 60 x 90 mm (1456-02)',
-        'cols': 2,
-        'rows': 4,
-        'margins': [28.5 * mm, 15 * mm, 28.5 * mm, 15 * mm],
-        'offsets': [90 * mm, 60 * mm],
-        'pagesize': pagesizes.A4,
-    }),
-    ('durable_fix_40x75', {
-        'name': 'DURABLE BADGEFIX® 40 x 75 mm (8334-02)',
-        'cols': 2,
-        'rows': 6,
-        'margins': [28.5 * mm, 30 * mm, 28.5 * mm, 30 * mm],
-        'offsets': [93 * mm, 60 * mm],
-        'pagesize': pagesizes.A4,
-    }),
-    ('herma_50x80', {
-        'name': 'HERMA 50 x 80 mm (4412)',
-        'cols': 2,
-        'rows': 5,
-        'margins': [13.5 * mm, 17.5 * mm, 13.5 * mm, 17.5 * mm],
-        'offsets': [95 * mm, 55 * mm],
-        'pagesize': pagesizes.A4,
-    }),
-])
+OPTIONS = OrderedDict(
+    [
+        (
+            'one',
+            {
+                'name': gettext_lazy('One badge per page'),
+                'cols': 1,
+                'rows': 1,
+                'margins': [0, 0, 0, 0],
+                'offsets': [0, 0],
+                'pagesize': None,
+            },
+        ),
+        (
+            'a4_a6l',
+            {
+                'name': gettext_lazy('4 landscape A6 pages on one A4 page'),
+                'cols': 2,
+                'rows': 2,
+                'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
+                'offsets': [
+                    pagesizes.landscape(pagesizes.A4)[0] / 2,
+                    pagesizes.landscape(pagesizes.A4)[1] / 2,
+                ],
+                'pagesize': pagesizes.landscape(pagesizes.A4),
+            },
+        ),
+        (
+            'a4_a6p',
+            {
+                'name': gettext_lazy('4 portrait A6 pages on one A4 page'),
+                'cols': 2,
+                'rows': 2,
+                'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
+                'offsets': [
+                    pagesizes.portrait(pagesizes.A4)[0] / 2,
+                    pagesizes.portrait(pagesizes.A4)[0] / 2,
+                ],
+                'pagesize': pagesizes.portrait(pagesizes.A4),
+            },
+        ),
+        (
+            'a4_a7l',
+            {
+                'name': gettext_lazy('8 landscape A7 pages on one A4 page'),
+                'cols': 2,
+                'rows': 4,
+                'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
+                'offsets': [
+                    pagesizes.portrait(pagesizes.A4)[0] / 2,
+                    pagesizes.portrait(pagesizes.A4)[1] / 4,
+                ],
+                'pagesize': pagesizes.portrait(pagesizes.A4),
+            },
+        ),
+        (
+            'a4_a7p',
+            {
+                'name': gettext_lazy('8 portrait A7 pages on one A4 page'),
+                'cols': 4,
+                'rows': 2,
+                'margins': [0 * mm, 0 * mm, 0 * mm, 0 * mm],
+                'offsets': [
+                    pagesizes.landscape(pagesizes.A4)[0] / 4,
+                    pagesizes.landscape(pagesizes.A4)[0] / 2,
+                ],
+                'pagesize': pagesizes.landscape(pagesizes.A4),
+            },
+        ),
+        (
+            'durable_54x90',
+            {
+                'name': 'DURABLE BADGEMAKER® 54 x 90 mm (1445-02)',
+                'cols': 2,
+                'rows': 5,
+                'margins': [12 * mm, 15 * mm, 15 * mm, 15 * mm],
+                'offsets': [90 * mm, 54 * mm],
+                'pagesize': pagesizes.A4,
+            },
+        ),
+        (
+            'durable_40x75',
+            {
+                'name': 'DURABLE BADGEMAKER® 40 x 75 mm (1453-02)',
+                'cols': 2,
+                'rows': 6,
+                'margins': [28.5 * mm, 30 * mm, 28.5 * mm, 30 * mm],
+                'offsets': [75 * mm, 40 * mm],
+                'pagesize': pagesizes.A4,
+            },
+        ),
+        (
+            'durable_60x90',
+            {
+                'name': 'DURABLE BADGEMAKER® 60 x 90 mm (1456-02)',
+                'cols': 2,
+                'rows': 4,
+                'margins': [28.5 * mm, 15 * mm, 28.5 * mm, 15 * mm],
+                'offsets': [90 * mm, 60 * mm],
+                'pagesize': pagesizes.A4,
+            },
+        ),
+        (
+            'durable_fix_40x75',
+            {
+                'name': 'DURABLE BADGEFIX® 40 x 75 mm (8334-02)',
+                'cols': 2,
+                'rows': 6,
+                'margins': [28.5 * mm, 30 * mm, 28.5 * mm, 30 * mm],
+                'offsets': [93 * mm, 60 * mm],
+                'pagesize': pagesizes.A4,
+            },
+        ),
+        (
+            'herma_50x80',
+            {
+                'name': 'HERMA 50 x 80 mm (4412)',
+                'cols': 2,
+                'rows': 5,
+                'margins': [13.5 * mm, 17.5 * mm, 13.5 * mm, 17.5 * mm],
+                'offsets': [95 * mm, 55 * mm],
+                'pagesize': pagesizes.A4,
+            },
+        ),
+    ]
+)
 
 
 def render_pdf(event, positions, opt):
     from pypdf import PdfReader, PdfWriter
+
     Renderer._register_fonts()
 
     renderermap = {
@@ -186,94 +232,110 @@ def render_pdf(event, positions, opt):
     if pagebuffer:
         render_page(pagebuffer)
 
-    output_pdf_writer.add_metadata({
-        '/Title': 'Badges',
-        '/Creator': 'pretix',
-    })
+    output_pdf_writer.add_metadata(
+        {
+            '/Title': 'Badges',
+            '/Creator': 'pretix',
+        }
+    )
     output_pdf_writer.write(outbuffer)
     outbuffer.seek(0)
     if not any:
-        raise OrderError(_("None of the selected products is configured to print badges."))
+        raise OrderError(_('None of the selected products is configured to print badges.'))
     return outbuffer
 
 
 class BadgeExporter(BaseExporter):
-    identifier = "badges"
-    verbose_name = _("Attendee badges")
+    identifier = 'badges'
+    verbose_name = _('Attendee badges')
 
     @property
     def export_form_fields(self):
         name_scheme = PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
         d = OrderedDict(
             [
-                ('items',
-                 forms.ModelMultipleChoiceField(
-                     queryset=self.event.items.annotate(
-                         no_badging=Exists(BadgeItem.objects.filter(item=OuterRef('pk'), layout__isnull=True))
-                     ).exclude(no_badging=True),
-                     label=_('Limit to products'),
-                     widget=forms.CheckboxSelectMultiple(
-                         attrs={'class': 'scrolling-multiple-choice'}
-                     ),
-                     initial=self.event.items.filter(admission=True)
-                 )),
-                ('include_pending',
-                 forms.BooleanField(
-                     label=_('Include pending orders'),
-                     required=False
-                 )),
-                ('include_addons',
-                 forms.BooleanField(
-                     label=_('Include add-on or bundled positions'),
-                     required=False
-                 )),
-                ('rendering',
-                 forms.ChoiceField(
-                     label=_('Rendering option'),
-                     choices=[
-                         (k, r['name']) for k, r in OPTIONS.items()
-                     ],
-                     required=True,
-                     help_text=_('This option allows you to align multiple badges on one page, for example if you '
-                                 'want to print to a sheet of stickers with a regular office printer. Please note '
-                                 'that your individual badge layouts must already be in the correct size.')
-                 )),
-                ('date_from',
-                 forms.DateField(
-                     label=_('Start date'),
-                     widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                     required=False,
-                     help_text=_('Only include tickets for dates on or after this date.')
-                 )),
-                ('date_to',
-                 forms.DateField(
-                     label=_('End date'),
-                     widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                     required=False,
-                     help_text=_('Only include tickets for dates on or before this date.')
-                 )),
-                ('order_by',
-                 forms.ChoiceField(
-                     label=_('Sort by'),
-                     choices=[
-                         ('name', _('Attendee name')),
-                         ('code', _('Order code')),
-                         ('date', _('Event date')),
-                     ] + ([
-                         ('name:{}'.format(k), _('Attendee name: {part}').format(part=label))
-                         for k, label, w in name_scheme['fields']
-                     ] if settings.JSON_FIELD_AVAILABLE and len(name_scheme['fields']) > 1 else []),
-                 )),
+                (
+                    'items',
+                    forms.ModelMultipleChoiceField(
+                        queryset=self.event.items.annotate(
+                            no_badging=Exists(BadgeItem.objects.filter(item=OuterRef('pk'), layout__isnull=True))
+                        ).exclude(no_badging=True),
+                        label=_('Limit to products'),
+                        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+                        initial=self.event.items.filter(admission=True),
+                    ),
+                ),
+                (
+                    'include_pending',
+                    forms.BooleanField(label=_('Include pending orders'), required=False),
+                ),
+                (
+                    'include_addons',
+                    forms.BooleanField(label=_('Include add-on or bundled positions'), required=False),
+                ),
+                (
+                    'rendering',
+                    forms.ChoiceField(
+                        label=_('Rendering option'),
+                        choices=[(k, r['name']) for k, r in OPTIONS.items()],
+                        required=True,
+                        help_text=_(
+                            'This option allows you to align multiple badges on one page, for example if you '
+                            'want to print to a sheet of stickers with a regular office printer. Please note '
+                            'that your individual badge layouts must already be in the correct size.'
+                        ),
+                    ),
+                ),
+                (
+                    'date_from',
+                    forms.DateField(
+                        label=_('Start date'),
+                        widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                        required=False,
+                        help_text=_('Only include tickets for dates on or after this date.'),
+                    ),
+                ),
+                (
+                    'date_to',
+                    forms.DateField(
+                        label=_('End date'),
+                        widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                        required=False,
+                        help_text=_('Only include tickets for dates on or before this date.'),
+                    ),
+                ),
+                (
+                    'order_by',
+                    forms.ChoiceField(
+                        label=_('Sort by'),
+                        choices=[
+                            ('name', _('Attendee name')),
+                            ('code', _('Order code')),
+                            ('date', _('Event date')),
+                        ]
+                        + (
+                            [
+                                (
+                                    'name:{}'.format(k),
+                                    _('Attendee name: {part}').format(part=label),
+                                )
+                                for k, label, w in name_scheme['fields']
+                            ]
+                            if settings.JSON_FIELD_AVAILABLE and len(name_scheme['fields']) > 1
+                            else []
+                        ),
+                    ),
+                ),
             ]
         )
         return d
 
     def render(self, form_data: dict) -> Tuple[str, str, str]:
-        qs = OrderPosition.objects.filter(
-            order__event=self.event, item_id__in=form_data['items']
-        ).prefetch_related(
-            'answers', 'answers__question'
-        ).select_related('order', 'item', 'variation', 'addon_to')
+        qs = (
+            OrderPosition.objects.filter(order__event=self.event, item_id__in=form_data['items'])
+            .prefetch_related('answers', 'answers__question')
+            .select_related('order', 'item', 'variation', 'addon_to')
+        )
 
         if not form_data.get('include_addons'):
             qs = qs.filter(addon_to__isnull=True)
@@ -284,17 +346,23 @@ class BadgeExporter(BaseExporter):
             qs = qs.filter(order__status__in=[Order.STATUS_PAID])
 
         if form_data.get('date_from'):
-            dt = make_aware(datetime.combine(
-                dateutil.parser.parse(form_data['date_from']).date(),
-                time(hour=0, minute=0, second=0)
-            ), self.event.timezone)
+            dt = make_aware(
+                datetime.combine(
+                    dateutil.parser.parse(form_data['date_from']).date(),
+                    time(hour=0, minute=0, second=0),
+                ),
+                self.event.timezone,
+            )
             qs = qs.filter(Q(subevent__date_from__gte=dt) | Q(subevent__isnull=True, order__event__date_from__gte=dt))
 
         if form_data.get('date_to'):
-            dt = make_aware(datetime.combine(
-                dateutil.parser.parse(form_data['date_to']).date() + timedelta(days=1),
-                time(hour=0, minute=0, second=0)
-            ), self.event.timezone)
+            dt = make_aware(
+                datetime.combine(
+                    dateutil.parser.parse(form_data['date_to']).date() + timedelta(days=1),
+                    time(hour=0, minute=0, second=0),
+                ),
+                self.event.timezone,
+            )
             qs = qs.filter(Q(subevent__date_from__lt=dt) | Q(subevent__isnull=True, order__event__date_from__lt=dt))
 
         if form_data.get('order_by') == 'name':
@@ -302,16 +370,21 @@ class BadgeExporter(BaseExporter):
         elif form_data.get('order_by') == 'code':
             qs = qs.order_by('order__code')
         elif form_data.get('order_by') == 'date':
-            qs = qs.annotate(ed=Coalesce('subevent__date_from', 'order__event__date_from')).order_by('ed', 'order__code')
+            qs = qs.annotate(ed=Coalesce('subevent__date_from', 'order__event__date_from')).order_by(
+                'ed', 'order__code'
+            )
         elif form_data.get('order_by', '').startswith('name:'):
             part = form_data['order_by'][5:]
-            qs = qs.annotate(
-                resolved_name=Coalesce('attendee_name_parts', 'addon_to__attendee_name_parts',
-                                       'order__invoice_address__name_parts')
-            ).annotate(
-                resolved_name_part=JSONExtract('resolved_name', part)
-            ).order_by(
-                'resolved_name_part'
+            qs = (
+                qs.annotate(
+                    resolved_name=Coalesce(
+                        'attendee_name_parts',
+                        'addon_to__attendee_name_parts',
+                        'order__invoice_address__name_parts',
+                    )
+                )
+                .annotate(resolved_name_part=JSONExtract('resolved_name', part))
+                .order_by('resolved_name_part')
             )
 
         outbuffer = render_pdf(self.event, qs, OPTIONS[form_data.get('rendering', 'one')])

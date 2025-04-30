@@ -8,7 +8,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import ListView
 from i18nfield.strings import LazyI18nString
@@ -18,7 +19,9 @@ from pretix.base.i18n import language
 from pretix.base.models import Event, EventMetaValue, Organizer, Quota, Team
 from pretix.base.services.quotas import QuotaAvailability
 from pretix.control.forms.event import (
-    EventWizardBasicsForm, EventWizardCopyForm, EventWizardFoundationForm,
+    EventWizardBasicsForm,
+    EventWizardCopyForm,
+    EventWizardFoundationForm,
 )
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.permissions import OrganizerPermissionRequiredMixin
@@ -31,29 +34,38 @@ class EventList(PaginationMixin, ListView):
     template_name = 'pretixcontrol/events/index.html'
 
     def get_queryset(self):
-        qs = self.request.user.get_events_with_any_permission(self.request).prefetch_related(
-            'organizer', '_settings_objects', 'organizer___settings_objects', 'organizer__meta_properties',
-            Prefetch(
-                'meta_values',
-                EventMetaValue.objects.select_related('property'),
-                to_attr='meta_values_cached'
+        qs = (
+            self.request.user.get_events_with_any_permission(self.request)
+            .prefetch_related(
+                'organizer',
+                '_settings_objects',
+                'organizer___settings_objects',
+                'organizer__meta_properties',
+                Prefetch(
+                    'meta_values',
+                    EventMetaValue.objects.select_related('property'),
+                    to_attr='meta_values_cached',
+                ),
             )
-        ).order_by('-date_from')
+            .order_by('-date_from')
+        )
 
         qs = qs.annotate(
             min_from=Min('subevents__date_from'),
             max_from=Max('subevents__date_from'),
             max_to=Max('subevents__date_to'),
-            max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from'))
+            max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
         ).annotate(
             order_from=Coalesce('min_from', 'date_from'),
             order_to=Coalesce('max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'),
         )
 
         qs = qs.prefetch_related(
-            Prefetch('quotas',
-                     queryset=Quota.objects.filter(subevent__isnull=True).annotate(s=Coalesce(F('size'), 0)).order_by('-s'),
-                     to_attr='first_quotas')
+            Prefetch(
+                'quotas',
+                queryset=Quota.objects.filter(subevent__isnull=True).annotate(s=Coalesce(F('size'), 0)).order_by('-s'),
+                to_attr='first_quotas',
+            )
         )
 
         if self.filter_form.is_valid():
@@ -63,13 +75,9 @@ class EventList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['filter_form'] = self.filter_form
-        orga_c = Organizer.objects.filter(
-            pk__in=self.request.user.teams.values_list('organizer', flat=True)
-        ).count()
+        orga_c = Organizer.objects.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True)).count()
         ctx['hide_orga'] = orga_c <= 1
-        ctx['meta_fields'] = [
-            self.filter_form[k] for k in self.filter_form.fields if k.startswith('meta_')
-        ]
+        ctx['meta_fields'] = [self.filter_form[k] for k in self.filter_form.fields if k.startswith('meta_')]
 
         quotas = []
         for s in ctx['events']:
@@ -87,7 +95,7 @@ class EventList(PaginationMixin, ListView):
             if q.size is not None:
                 q.percent_paid = min(
                     100,
-                    round(q.cached_availability_paid_orders / q.size * 100) if q.size > 0 else 100
+                    round(q.cached_availability_paid_orders / q.size * 100) if q.size > 0 else 100,
                 )
         return ctx
 
@@ -98,8 +106,8 @@ class EventList(PaginationMixin, ListView):
 
 def condition_copy(wizard):
     return (
-        not wizard.clone_from and
-        EventWizardCopyForm.copy_from_queryset(wizard.request.user, wizard.request.session).exists()
+        not wizard.clone_from
+        and EventWizardCopyForm.copy_from_queryset(wizard.request.user, wizard.request.session).exists()
     )
 
 
@@ -114,9 +122,7 @@ class EventWizard(SafeSessionWizardView):
         'basics': 'pretixcontrol/events/create_basics.html',
         'copy': 'pretixcontrol/events/create_copy.html',
     }
-    condition_dict = {
-        'copy': condition_copy
-    }
+    condition_dict = {'copy': condition_copy}
 
     def get_form_initial(self, step):
         initial = super().get_form_initial(step)
@@ -146,7 +152,9 @@ class EventWizard(SafeSessionWizardView):
                     qs = Organizer.objects.all()
                     if not self.request.user.has_active_staff_session(self.request.session.session_key):
                         qs = qs.filter(
-                            id__in=self.request.user.teams.filter(can_create_events=True).values_list('organizer', flat=True)
+                            id__in=self.request.user.teams.filter(can_create_events=True).values_list(
+                                'organizer', flat=True
+                            )
                         )
                     initial['organizer'] = qs.get(slug=self.request.GET.get('organizer'))
                 except Organizer.DoesNotExist:
@@ -158,16 +166,16 @@ class EventWizard(SafeSessionWizardView):
         self.clone_from = None
         if 'clone' in self.request.GET:
             try:
-                clone_from = Event.objects.select_related('organizer').get(pk=self.request.GET.get("clone"))
+                clone_from = Event.objects.select_related('organizer').get(pk=self.request.GET.get('clone'))
             except Event.DoesNotExist:
                 allow = False
             else:
-                allow = (
-                    request.user.has_event_permission(clone_from.organizer, clone_from,
-                                                      'can_change_event_settings', request)
-                    and request.user.has_event_permission(clone_from.organizer, clone_from,
-                                                          'can_change_items', request)
-                )
+                allow = request.user.has_event_permission(
+                    clone_from.organizer,
+                    clone_from,
+                    'can_change_event_settings',
+                    request,
+                ) and request.user.has_event_permission(clone_from.organizer, clone_from, 'can_change_items', request)
             if not allow:
                 messages.error(self.request, _('You do not have permission to clone this event.'))
             else:
@@ -200,7 +208,7 @@ class EventWizard(SafeSessionWizardView):
                 fdata = {
                     'organizer': Organizer(slug='_nonexisting'),
                     'has_subevents': False,
-                    'locales': ['en']
+                    'locales': ['en'],
                 }
                 # The show must go on, we catch this error in render()
             kwargs.update(fdata)
@@ -230,24 +238,26 @@ class EventWizard(SafeSessionWizardView):
             )
 
             if not EventWizardBasicsForm.has_control_rights(self.request.user, event.organizer):
-                if basics_data["team"] is not None:
-                    t = basics_data["team"]
+                if basics_data['team'] is not None:
+                    t = basics_data['team']
                     t.limit_events.add(event)
                 elif event.organizer.settings.event_team_provisioning:
                     t = Team.objects.create(
-                        organizer=event.organizer, name=_('Team {event}').format(event=event.name),
-                        can_change_event_settings=True, can_change_items=True,
-                        can_view_orders=True, can_change_orders=True, can_view_vouchers=True,
-                        can_change_vouchers=True
+                        organizer=event.organizer,
+                        name=_('Team {event}').format(event=event.name),
+                        can_change_event_settings=True,
+                        can_change_items=True,
+                        can_view_orders=True,
+                        can_change_orders=True,
+                        can_view_vouchers=True,
+                        can_change_vouchers=True,
                     )
                     t.members.add(self.request.user)
                     t.limit_events.add(event)
 
             logdata = {}
             for f in form_list:
-                logdata.update({
-                    k: v for k, v in f.cleaned_data.items()
-                })
+                logdata.update({k: v for k, v in f.cleaned_data.items()})
             event.log_action('pretix.event.settings', user=self.request.user, data=logdata)
 
             if copy_data and copy_data['copy_from_event']:
@@ -256,17 +266,17 @@ class EventWizard(SafeSessionWizardView):
             elif self.clone_from:
                 event.copy_data_from(self.clone_from)
             else:
-                event.checkin_lists.create(
-                    name=_('Default'),
-                    all_products=True
-                )
+                event.checkin_lists.create(name=_('Default'), all_products=True)
                 event.set_defaults()
 
             if basics_data['tax_rate']:
-                if not event.settings.tax_rate_default or event.settings.tax_rate_default.rate != basics_data['tax_rate']:
+                if (
+                    not event.settings.tax_rate_default
+                    or event.settings.tax_rate_default.rate != basics_data['tax_rate']
+                ):
                     event.settings.tax_rate_default = event.tax_rules.create(
                         name=LazyI18nString.from_gettext(gettext('VAT')),
-                        rate=basics_data['tax_rate']
+                        rate=basics_data['tax_rate'],
                     )
 
             event.settings.set('timezone', basics_data['timezone'])
@@ -274,19 +284,30 @@ class EventWizard(SafeSessionWizardView):
             event.settings.set('locales', foundation_data['locales'])
 
         if (copy_data and copy_data['copy_from_event']) or self.clone_from or event.has_subevents:
-            return redirect(reverse('control:event.settings', kwargs={
-                'organizer': event.organizer.slug,
-                'event': event.slug,
-            }) + '?congratulations=1')
+            return redirect(
+                reverse(
+                    'control:event.settings',
+                    kwargs={
+                        'organizer': event.organizer.slug,
+                        'event': event.slug,
+                    },
+                )
+                + '?congratulations=1'
+            )
         else:
-            return redirect(reverse('control:event.quick', kwargs={
-                'organizer': event.organizer.slug,
-                'event': event.slug,
-            }) + '?congratulations=1')
+            return redirect(
+                reverse(
+                    'control:event.quick',
+                    kwargs={
+                        'organizer': event.organizer.slug,
+                        'event': event.slug,
+                    },
+                )
+                + '?congratulations=1'
+            )
 
 
 class SlugRNG(OrganizerPermissionRequiredMixin, View):
-
     def get(self, request, *args, **kwargs):
         # See Order.assign_code
         charset = list('abcdefghjklmnpqrstuvwxyz3789')

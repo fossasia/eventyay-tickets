@@ -75,13 +75,13 @@ def test_device_auth_revoked(client, device):
     device.save()
     resp = client.get('/api/v1/organizers/')
     assert resp.status_code == 401
-    assert str(resp.data['detail']) == "Device access has been revoked."
+    assert str(resp.data['detail']) == 'Device access has been revoked.'
 
 
 @pytest.mark.django_db
 def test_device_auth_security_profile(client, device):
     client.credentials(HTTP_AUTHORIZATION='Device ' + device.api_token)
-    device.security_profile = "pretixscan"
+    device.security_profile = 'pretixscan'
     device.save()
     resp = client.get('/api/v1/organizers/dummy/giftcards/')
     assert resp.status_code == 403

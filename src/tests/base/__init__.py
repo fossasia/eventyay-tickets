@@ -3,18 +3,17 @@ from django.test import TestCase
 
 
 class SoupTestMixin:
-
     def get_doc(self, *args, **kwargs):
         response = self.client.get(*args, **kwargs)
-        return BeautifulSoup(response.render().content, "lxml")
+        return BeautifulSoup(response.render().content, 'lxml')
 
     def post_doc(self, *args, **kwargs):
         kwargs['follow'] = True
         response = self.client.post(*args, **kwargs)
         try:
-            return BeautifulSoup(response.render().content, "lxml")
+            return BeautifulSoup(response.render().content, 'lxml')
         except AttributeError:
-            return BeautifulSoup(response.content, "lxml")
+            return BeautifulSoup(response.content, 'lxml')
 
 
 class SoupTest(SoupTestMixin, TestCase):
@@ -66,17 +65,14 @@ def extract_form_fields(soup):
         value = ''
         options = select.find_all('option')
         is_multiple = select.has_attr('multiple')
-        selected_options = [
-            option for option in options
-            if option.has_attr('selected')
-        ]
+        selected_options = [option for option in options if option.has_attr('selected')]
 
         # If no select options, go with the first one
         if not selected_options and options:
             selected_options = [options[0]]
 
         if not is_multiple:
-            assert (len(selected_options) < 2)
+            assert len(selected_options) < 2
             if len(selected_options) == 1:
                 value = selected_options[0]['value']
         else:
