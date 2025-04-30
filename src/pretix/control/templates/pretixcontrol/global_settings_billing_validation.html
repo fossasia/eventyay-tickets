@@ -1,0 +1,44 @@
+{% extends "pretixcontrol/global_settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+{% block inner %}
+{% include "pretixcontrol/global_settings_tabs.html" %}
+<div class="tab-content">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% trans "Billing Validation Settings" %}</h3>
+        </div>
+        <div class="panel-body">
+            <form action="" method="post" class="form-horizontal">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr class="{% if billing_validation %}success{% else %}default{% endif %}">
+                                <td>
+                                    <strong>{% trans "Validate billing information" %}</strong>
+                                    <p class="help-block">
+                                        {% trans "Billing validation lets you require organizers to set up a billing method before they can create events. When this option is enabled, no new event can be created until a valid billing method has been added." %}
+                                    </p>
+                                </td>
+                                <td class="text-right flip" width="20%">
+                                    {% if billing_validation %}
+                                        <button class="btn btn-default btn-block" name="billing_validation" value="disabled">
+                                            {% trans "Disable" %}
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-default btn-block" name="billing_validation" value="enabled">
+                                            {% trans "Enable" %}
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

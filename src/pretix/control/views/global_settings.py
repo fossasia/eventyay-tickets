@@ -192,34 +192,33 @@ class RefundDetailView(AdministratorPermissionRequiredMixin, View):
         return JsonResponse({'data': p.info_data})
 
 
-class ToggleBillingValidationView(AdministratorPermissionRequiredMixin, TemplateView):
-    template_name = 'pretixcontrol/toggle_billing_validation.html'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.gs = GlobalSettingsObject()
+class GlobalSettingsBillingValidationView(GlobalSettingsView):
+    template_name = 'pretixcontrol/global_settings_billing_validation.html'
+    active_tab = 'billing_validation'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.gs.settings.get('billing_validation') is None:
-            self.gs.settings.set('billing_validation', True)
-        context['billing_validation'] = self.gs.settings.get('billing_validation')
+        gs = GlobalSettingsObject() 
+        if gs.settings.get('billing_validation') is None:
+            gs.settings.set('billing_validation', True)
+        context['billing_validation'] = gs.settings.get('billing_validation')
         return context
 
     def post(self, request, *args, **kwargs):
+        gs = GlobalSettingsObject()
         value = request.POST.get('billing_validation', '').lower()
 
-        if value == ValidStates.DISABLED:
-            billing_validation = False
-        elif value == ValidStates.ENABLED:
-            billing_validation = True
+        if value == 'disabled':
+            gs.settings.set('billing_validation', False)
+            messages.success(request, _('Billing validation has been disabled.'))
+        elif value == 'enabled':
+            gs.settings.set('billing_validation', True)
+            messages.success(request, _('Billing validation has been enabled.'))
         else:
             logger.error('Invalid value for billing validation: %s', value)
             messages.error(request, _('Invalid value for billing validation!'))
-            return redirect(self.get_success_url())
 
-        self.gs.settings.set('billing_validation', billing_validation)
         return redirect(self.get_success_url())
 
-    def get_success_url(self) -> str:
-        return reverse('control:admin.toggle.billing.validation')
+    def get_success_url(self):
+        return reverse('control:admin.global.settings.billing_validation')
