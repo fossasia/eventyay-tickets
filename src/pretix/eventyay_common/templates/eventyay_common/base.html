@@ -147,10 +147,10 @@
                         <div class="dropdown context-selector">
                             {% block nav_top_header %}
                                 {% if request.event %}
-                                    <a href="#" class="dropdown-toggle">
+                                    <a href="{% url "eventyay_common:event.index" organizer=request.event.organizer.slug event=request.event.slug %}" class="dropdown-toggle">
                                         <span class="fa-stack fa-lg">
                                           <i class="fa fa-circle fa-stack-2x"></i>
-                                          <i class="fa fa-calendar fa-stack-1x fa-inverse"></i>
+                                          <i class="fa fa-dashboard fa-stack-1x fa-inverse"></i>
                                         </span>
                                         <div class="context-indicator">
                                             <span class="context-name">{{ request.event }}</span>
@@ -169,15 +169,15 @@
                                         </div>
                                     </a>
                                 {% else %}
-                                <a href="#" class="dropdown-toggle">
-                                    <span class="fa-stack fa-lg">
-                                      <i class="fa fa-circle fa-stack-2x"></i>
-                                      <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                    <div class="context-indicator">
-                                        <span class="context-name">{{ request.user }}</span>
-                                    </div>
-                                </a>
+                                    <a href="{% url "eventyay_common:dashboard" %}" class="dropdown-toggle">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-dashboard fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{% trans "Main dashboard" %}</span>
+                                        </div>
+                                    </a>
                                 {% endif %}
                             {% endblock %}
                         </div>

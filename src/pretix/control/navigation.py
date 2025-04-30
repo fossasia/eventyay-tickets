@@ -15,20 +15,7 @@ def get_event_navigation(request: HttpRequest):
     url = request.resolver_match
     if not url:
         return []
-    nav = [
-        {
-            'label': _('Dashboard'),
-            'url': reverse(
-                'control:event.index',
-                kwargs={
-                    'event': request.event.slug,
-                    'organizer': request.event.organizer.slug,
-                },
-            ),
-            'active': (url.url_name == 'event.index'),
-            'icon': 'dashboard',
-        }
-    ]
+    nav = []
     if 'can_change_event_settings' in request.eventpermset:
         event_settings = [
             {
@@ -406,12 +393,6 @@ def get_global_navigation(request):
     if not url:
         return []
     nav = [
-        {
-            'label': _('Tickets dashboard'),
-            'url': reverse('control:index'),
-            'active': (url.url_name == 'index'),
-            'icon': 'dashboard',
-        },
         {
             'label': _('My orders'),
             'url': reverse('control:user.settings.orders'),

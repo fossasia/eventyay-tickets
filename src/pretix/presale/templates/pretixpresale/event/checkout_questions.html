@@ -1,6 +1,7 @@
 {% extends "pretixpresale/event/checkout_base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load form_widget_filters %}
 {% load rich_text %}
 {% block inner %}
     <p>{% trans "Before we continue, we need you to answer some questions." %}</p>
@@ -138,7 +139,25 @@
                                 {% endif %}
                                 <div data-idx="{{ forloop.parentloop.counter0 }}" data-addonidx="{{ forloop.counter0 }}">
                                     {% for field in form %}
-                                        {% if field.field.widget.attrs.type == "description" %}
+                                        {% if field|is_checkbox_input %}
+                                            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                                                <label class="col-md-3 control-label">
+                                                    {{ field.label }}
+                                                    {% if field.field.required %}<span class="text-primary">*</span>{% endif %}
+                                                </label>
+                                                <div class="col-md-9">
+                                                    <div class="checkbox">
+                                                        <label>{{ field }}</label>
+                                                    </div>
+                                                    {% if field.help_text %}
+                                                        <span class="help-block text-muted">{{ field.help_text }}</span>
+                                                    {% endif %}
+                                                    {% for error in field.errors %}
+                                                        <p class="help-block text-danger">{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% elif field.field.widget.attrs.type == "description" %}
                                             <div class="form-group">
                                                 <label class="col-md-3 control-label">{{field.label}}</label>
                                                 <div class="col-md-9">
