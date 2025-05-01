@@ -13,45 +13,10 @@ from pretix.base.signals import register_global_settings
 
 
 class GlobalSettingsForm(SettingsForm):
-    auto_fields = ['region', 'mail_from']
-
-    # Define which fields belong to which tabs
-    tab_structure = {
-        'basics': [
-            'footer_text',
-            'footer_link',
-            'banner_message',
-            'banner_message_detail',
-            'ticket_fee_percentage',
-        ],
-        'localization': [
-            'region',
-        ],
-        'email': [
-            'mail_from',
-            'email_vendor',
-            'send_grid_api_key',
-            'smtp_host',
-            'smtp_port',
-            'smtp_username',
-            'smtp_password',
-            'smtp_use_tls',
-            'smtp_use_ssl',
-        ],
-        'payment_gateways': [
-            'payment_stripe_secret_key',
-            'payment_stripe_publishable_key',
-            'payment_stripe_test_secret_key',
-            'payment_stripe_test_publishable_key',
-            'stripe_webhook_secret_key',
-        ],
-        'maps': [
-            'opencagedata_apikey',
-            'mapquest_apikey',
-            'leaflet_tiles',
-            'leaflet_tiles_attribution',
-        ],
-    }
+    auto_fields = [
+        'region',
+        'mail_from'
+    ]
 
     def _setting_default(self):
         """
@@ -76,7 +41,6 @@ class GlobalSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettingsObject()
         self._setting_default()
-        self.active_tab = kwargs.pop('active_tab', 'basics') if 'active_tab' in kwargs else 'basics'
         super().__init__(*args, obj=self.obj, **kwargs)
 
         smtp_select = [
@@ -240,13 +204,6 @@ class GlobalSettingsForm(SettingsForm):
                 ),
             )
         ])
-
-        # Filter fields based on active tab
-        if self.active_tab in self.tab_structure:
-            active_fields = self.tab_structure[self.active_tab]
-            for field_name in list(self.fields.keys()):
-                if field_name not in active_fields:
-                    del self.fields[field_name]
 
 
 class UpdateSettingsForm(SettingsForm):
