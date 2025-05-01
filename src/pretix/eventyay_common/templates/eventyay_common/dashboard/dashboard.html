@@ -1,45 +1,130 @@
-{% extends "eventyay_common/base.html" %} {% load i18n %} {% block title %}{%
-trans "Dashboard" %} {% endblock %} {% block content %}
-<h1>{% trans "Dashboard" %}</h1>
-<div class="dropdown-container">
-  <input
-    type="text"
-    class="form-control"
-    id="dashboard_query"
-    placeholder="{% trans 'Go to event' %}"
-    autofocus
-  />
-</div>
-<h2>{% trans "Your upcoming events" %}</h2>
-<div class="dashboard">
-  {% if can_create_event %}
-  <div class="widget-small widget-container">
-    <a href="{% url 'eventyay_common:events.add' %}" class="widget">
-      <div class="newevent">
-        <span class="fa fa-plus-circle"></span>{% trans "Create a new event" %}
-      </div>
-    </a>
-  </div>
-  {% endif %} {% for w in upcoming %}
-  <div
-    class="widget-{{ w.display_size|default:'small' }} {{ w.container_class|default:'widget-container' }} {% if w.lazy %}widget-lazy-loading{% endif %}"
-    data-lazy-id="{{ w.lazy }}"
-  >
-    <div class="widget">
-      {% if w.lazy %}
-      <span class="fa fa-cog fa-4x"></span>
-      {% else %} {{ w.content|safe }} {% endif %}
+{% extends "eventyay_common/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Dashboard" %}
+{% endblock %}
+{% block content %}
+    <h1>{% trans "Dashboard" %}</h1>
+    <div class="dropdown-container">
+      <input type="text" class="form-control" id="dashboard_query"
+              placeholder="{% trans 'Go to event' %}"
+              data-typeahead-query autofocus>
+      <ul data-event-typeahead data-source="{% url 'control:nav.typeahead' %}" data-typeahead-field="#dashboard_query"
+              class="event-dropdown dropdown-menu">
+      </ul>
     </div>
-  </div>
-  {% endfor %}
-</div>
-{% if upcoming %}
-<p class="">
-  <a
-    href="{% url 'eventyay_common:events' %}?ordering=date_from&status=date_future"
-    class=""
-  >
-    {% trans "View all upcoming events" %}
-  </a>
-</p>
-{% endif %} {% endblock %}
+    <h2>{% trans "Your upcoming events" %}</h2>
+    <div class="dashboard">
+      {% if can_create_event %}
+          <div class="widget-small widget-container">
+              <a href="{% url 'eventyay_common:events.add' %}" class="widget">
+                  <div class="newevent"><span class="fa fa-plus-circle"></span>{% trans "Create a new event" %}</div>
+              </a>
+          </div>
+      {% endif %}
+      {% for w in upcoming %}
+          <div class="widget-{{ w.display_size|default:'small' }} {{ w.container_class|default:'widget-container' }} {% if w.lazy %}widget-lazy-loading{% endif %}" data-lazy-id="{{ w.lazy }}">
+              <div class="widget">
+                  {% if w.lazy %}
+                      <span class="fa fa-cog fa-4x"></span>
+                  {% else %}
+                      {{ w.content|safe }}
+                  {% endif %}
+              </div>
+          </div>
+      {% endfor %}
+    </div>
+    {% if upcoming %}
+      <p class="">
+        <a href="{% url 'eventyay_common:events' %}?ordering=date_from&status=date_future" class="">
+            {% trans "View all upcoming events" %}
+        </a>
+      </p>
+    {% endif %}
+    {% if past %}
+        <h2>{% trans "Your most recent events" %}</h2>
+        <div class="dashboard">
+            {% for w in past %}
+                <div class="widget-{{ w.display_size|default:'small' }} {{ w.container_class|default:'widget-container' }} {% if w.lazy %}widget-lazy-loading{% endif %}" data-lazy-id="{{ w.lazy }}">
+                    <div class="widget">
+                        {% if w.lazy %}
+                            <span class="fa fa-cog fa-4x"></span>
+                        {% else %}
+                            {{ w.content|safe }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <p>
+            <a href="{% url 'eventyay_common:events' %}?ordering=date_from&status=-date_to" class="">
+                {% trans "View all recent events" %}
+            </a>
+        </p>
+    {% endif %}
+    {% if series %}
+        <h2>{% trans "Your event series" %}</h2>
+        <div class="dashboard">
+            {% for w in series %}
+                <div class="widget-{{ w.display_size|default:'small' }} {{ w.container_class|default:'widget-container' }} {% if w.lazy %}widget-lazy-loading{% endif %}" data-lazy-id="{{ w.lazy }}">
+                    <div class="widget">
+                        {% if w.lazy %}
+                            <span class="fa fa-cog fa-4x"></span>
+                        {% else %}
+                            {{ w.content|safe }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <p class="">
+            <a href="{% url 'eventyay_common:events' %}?ordering=-date_to&status=series" class="">
+                {% trans "View all event series" %}
+            </a>
+        </p>
+    {% endif %}
+    {% if widgets %}
+        <h2>{% trans "Other features" %}</h2>
+        <div class="dashboard">
+            {% for w in widgets %}
+                <div class="widget-{{ w.display_size|default:'small' }} {{ w.container_class|default:'widget-container' }} {% if w.lazy %}widget-lazy-loading{% endif %}" data-lazy-id="{{ w.lazy }}">
+                    {% if w.url %}
+                        <a href="{{ w.url }}" class="widget">
+                            {% if w.lazy %}
+                                <span class="fa fa-cog fa-4x"></span>
+                            {% else %}
+                                {{ w.content|safe }}
+                            {% endif %}
+                        </a>
+                    {% else %}
+                        <div class="widget">
+                            {% if w.lazy %}
+                                <span class="fa fa-cog fa-4x"></span>
+                            {% else %}
+                                {{ w.content|safe }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="modal popup-modal" id="alert-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-card">
+                        <div class="modal-card-icon">
+                            <i class="fa fa-cog big-rotating-icon"></i>
+                        </div>
+                        <div class="modal-card-content">
+                            <h3>{% trans "Component not enabled!" %}</h3>
+                            <p>{% trans "You need to enable this component first" %}</p>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Ok" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
