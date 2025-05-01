@@ -68,10 +68,6 @@ class GlobalSettingsPaymentGatewaysView(GlobalSettingsView):
     active_tab = 'payment_gateways'
 
 
-class GlobalSettingsTicketFeesView(GlobalSettingsView):
-    active_tab = 'ticket_fees'
-
-
 class GlobalSettingsMapsView(GlobalSettingsView):
     active_tab = 'maps'
 
