@@ -607,9 +607,10 @@ STATICFILES_DIRS = [static_path] if static_path.exists() else []
 # tell Django to collect their compiled output files.
 # Note that those apps must be built before running collectstatic.
 FRONTEND_DIR = BASE_DIR / "pretalx" / "frontend"
-_GLOBAL_NAV_MENU_DIR = FRONTEND_DIR / "global-nav-menu" / "dist"
-if _GLOBAL_NAV_MENU_DIR.exists():
-    STATICFILES_DIRS.append(_GLOBAL_NAV_MENU_DIR)
+# Note: We must assume that the directory exists,
+# because when `collectstatic` was invoked by `rebuild` command,
+# it only sees the settings before Vite runs.
+STATICFILES_DIRS.append(FRONTEND_DIR / "global-nav-menu" / "dist")
 
 STORAGES = {
     "default": {
