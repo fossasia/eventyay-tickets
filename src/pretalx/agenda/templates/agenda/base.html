@@ -21,6 +21,7 @@
         {{ request.event.urls.base }}
     {% endif %}
 {% endblock nav_link %}
+
 {% block header_tabs %}
     <a href="{{ request.event.urls.schedule }}" class='header-tab {% if "/schedule/" in request.path_info %}active{% endif %}'>
         <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}

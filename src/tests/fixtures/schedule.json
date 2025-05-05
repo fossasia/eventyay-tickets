@@ -266,7 +266,7 @@
           ]
         },
         "language": {
-          "type": "string",
+          "type": ["string", "null"],
           "examples": ["en", "de", "cs", "ab"]
         },
         "abstract": {
@@ -300,18 +300,18 @@
           "type": "string",
           "format": "uri"
         },
+        "origin_url": {
+          "title": "URL of this event at the origin system",
+          "type": "string",
+          "format": "uri"
+        },
         "attachments": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Reference"
           }
-        },
-        "answers": {
-          "type": "array",
-          "items": {},
-          "$ref": "https://c3voc.de/schedule/submission#/definitions/Answers"
         }
-      },
+     },
       "required": [
         "abstract",
         "date",
@@ -419,10 +419,6 @@
         },
         "biography": {
           "type": ["string", "null"]
-        },
-        "answers": {
-          "type": "array",
-          "items": {}
         }
       },
       "required": ["name"]

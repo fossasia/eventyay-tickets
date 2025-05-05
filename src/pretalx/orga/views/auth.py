@@ -1,4 +1,5 @@
 import datetime as dt
+from http import HTTPMethod
 
 from django.conf import settings
 from django.contrib import messages
@@ -40,13 +41,15 @@ class LoginView(GenericLoginView):
 
 
 def logout_view(request):
-    logout(request)
+    if request.method == HTTPMethod.POST:
+        logout(request)
     response = redirect(
         GenericLoginView.get_next_url_or_fallback(request, reverse("orga:login"))
     )
-    # Remove the JWT cookie
-    response.delete_cookie("sso_token")  # Same domain used when setting the cookie
-    response.delete_cookie("customer_sso_token")
+   if request.method == HTTPMethod.POST:
+		# Remove the JWT cookie
+		response.delete_cookie("sso_token")  # Same domain used when setting the cookie
+		response.delete_cookie("customer_sso_token")
     return response
 
 

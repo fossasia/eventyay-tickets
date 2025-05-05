@@ -92,26 +92,19 @@ class MultiDomainMiddleware:
         if request.path_info.startswith("/orga"):  # pragma: no cover
             return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
 
-        # If this domain is used as custom domain, but we are trying to view a
-        # non-event page, try to redirect to the most recent event instead.
-        events = Event.objects.filter(
-            Q(custom_domain=f"{request.scheme}://{domain}")
-            | Q(custom_domain=f"{request.scheme}://{host}"),
-        ).order_by("-date_from")
-        if events:
-            request.uses_custom_domain = True
-            public_event = events.filter(is_public=True).first()
-            if public_event:
-                return redirect(public_event.urls.base.full())
-            # This domain is configured for an event, but does not have a public event
-            # yet. We will show the start page instead of a confusing (to organisers)
-            # 404.
-            return
-        # This domain is not configured for any event, so we will show a 404.
-        # Note that this should not occur on a well-configured host, as the web server
-        # should make sure that a domain is configured before serving it (as it needs to
-        # provide an SSL certificate for it, etc.), but of course this can still happen
-        # when caches (DNS or otherwise) are involved.
+        # If this domain is used as custom domain, redirect to most recent event
+        event = (
+            Event.objects.filter(
+                Q(custom_domain=f"{request.scheme}://{domain}")
+                | Q(custom_domain=f"{request.scheme}://{host}"),
+                is_public=True,
+            )
+            .order_by("-date_from")
+            .first()
+        )
+        if event:
+            return redirect(event.urls.base.full())
+==== BASE ====
         raise DisallowedHost(f"Unknown host: {host}")
 
     def process_response(self, request, response):

@@ -152,6 +152,7 @@ md = markdown.Markdown(
         "markdown.extensions.fenced_code",
         "markdown.extensions.codehilite",
         "markdown.extensions.md_in_html",
+        StrikeThroughExtension(),
     ],
 )
 

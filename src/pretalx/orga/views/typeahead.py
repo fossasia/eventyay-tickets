@@ -4,11 +4,12 @@ from contextlib import suppress
 from django.conf import settings
 from django.db.models import Exists, OuterRef, Q
 from django.http import JsonResponse
+from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
 from django_scopes import scopes_disabled
 
 from pretalx.event.models import Organiser
-from pretalx.person.models import SpeakerProfile
+from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import Submission
 
 
@@ -54,6 +55,15 @@ def serialize_speaker(speaker):
         "name": _n("Speaker", "Speakers", 1) + f" {speaker.user.name}",
         "url": speaker.orga_urls.base,
         "event": str(speaker.event.name),
+    }
+
+
+def serialize_admin_user(user):
+    return {
+        "type": "user.admin",
+        "name": _("User") + f" {user.get_display_name()}",
+        "email": user.email,
+        "url": user.orga_urls.admin,
     }
 
 
@@ -134,7 +144,18 @@ def nav_typeahead(request):
                 .order_by()
             )
 
-    total = qs_events.count() + qs_orga.count()
+    qs_users = User.objects.none()
+    if query and request.user.is_administrator:
+        qs_users = (
+            User.objects.filter(
+                Q(name__icontains=query)
+                | Q(email__icontains=query)
+                | Q(code__istartswith=query)
+            ).order_by("email")
+            if query
+            else User.objects.none()
+        )
+
     pagesize = 20
     offset = (page - 1) * pagesize
     results = (
@@ -154,6 +175,10 @@ def nav_typeahead(request):
             for e in qs_submissions[offset : offset + (pagesize if query else 5)]
         ]
         + [
+            serialize_admin_user(e)
+            for e in qs_users[offset : offset + (pagesize if query else 5)]
+        ]
+        + [
             serialize_speaker(e)
             for e in qs_speakers[offset : offset + (pagesize if query else 5)]
         ]
@@ -165,5 +190,12 @@ def nav_typeahead(request):
             results.remove(current_organiser)
         results.insert(1, current_organiser)
 
+    total = (
+        qs_orga.count()
+        + qs_events.count()
+        + qs_submissions.count()
+        + qs_users.count()
+        + qs_speakers.count()
+    )
     doc = {"results": results, "pagination": {"more": total >= (offset + pagesize)}}
     return JsonResponse(doc)

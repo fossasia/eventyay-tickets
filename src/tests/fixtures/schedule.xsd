@@ -88,7 +88,7 @@
       <xs:element type="start" name="start"/>
       <xs:element type="duration" name="duration"/>
       <xs:element type="xs:string" name="abstract"/>
-      <xs:element type="voc-slug" name="slug"/>
+      <xs:element type="voc-slug-new" name="slug"/>
       <xs:element type="xs:string" name="track"/>
       <!-- logo is the path or URL to an image, we use httpURI as type here as apps prefer full URLs now -->
       <xs:element type="emptyOrURI" name="logo" minOccurs="0" />
@@ -101,6 +101,7 @@
       <xs:element type="httpURI" name="video_download_url" minOccurs="0"/>
       <xs:element type="httpURI" name="url" minOccurs="0"/>
       <xs:element type="httpURI" name="feedback_url" minOccurs="0"/>
+      <xs:element type="httpURI" name="origin_url" minOccurs="0"/>
     </xs:all>
     <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
     <xs:attribute name="guid" type="uuid" use="required"/>
@@ -143,6 +144,12 @@
   <xs:simpleType name="voc-slug">
     <xs:restriction base="xs:string">
       <xs:pattern value="[a-z0-9_]{4,}-[0-9]{1,6}-[a-z0-9\-_]{4,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="voc-slug-new">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z0-9_]{4,}-[a-z0-9\-_]{4,}"/>
     </xs:restriction>
   </xs:simpleType>
 

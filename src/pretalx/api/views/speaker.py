@@ -51,4 +51,5 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
         return SpeakerProfile.objects.none()
 
     def get_queryset(self):
-        return self.get_base_queryset() or self.queryset
+        queryset = self.get_base_queryset() or self.queryset
+        return queryset.select_related("user", "event", "event__cfp")

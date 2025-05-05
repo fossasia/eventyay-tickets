@@ -8,24 +8,34 @@
                     <span class="time">
                         <i class="fa fa-clock-o"></i> {{ log.timestamp|date:"SHORT_DATETIME_FORMAT" }}
                     </span>
-                    <span class="person">
-                        {% if log.person %}
-                            {% if log.is_orga_action %}
-                                <br>
-                                <i class="fa fa-check-circle fa-fw"
-                                   data-toggle="tooltip"
-                                   title="{% translate "This change was performed by a member of the event orga." %}">
-                                </i>
-                            {% else %}
-                                <i class="fa fa-user fa-fw"></i>
+                    {% if not hide_user %}
+                        <span class="person">
+                            {% if log.person %}
+                                {% if log.is_orga_action %}
+                                    <br>
+                                    <i class="fa fa-check-circle fa-fw"
+                                       data-toggle="tooltip"
+                                       title="{% translate "This change was performed by a member of the event orga." %}">
+                                    </i>
+                                {% else %}
+                                    <i class="fa fa-user fa-fw"></i>
+                                {% endif %}
+                                {% if log.is_orga_action and hide_orga %}
+                                    {% translate "An organiser" %}
+                                {% else %}
+                                    {{ log.person.get_display_name }}
+                                {% endif %}
                             {% endif %}
-                            {% if log.is_orga_action and hide_orga %}
-                                {% translate "An organiser" %}
-                            {% else %}
-                                {{ log.person.get_display_name }}
+                        </span>
+                    {% endif %}
+                    {% if show_event %}
+                        <span class="event">
+                            {% if log.event %}
+                                <i class="fa fa-calendar"></i>
+                                <a href="{{ log.event.orga_urls.base }}">{{ log.event.name }}</a>
                             {% endif %}
-                        {% endif %}
-                    </span>
+                        </span>
+                    {% endif %}
                     <span class="log-object">
                         {% if not hide_orga and log.display_object %}<i class="fa fa-flag"></i>{{ log.display_object|safe }}{% endif %}
                     </span>

@@ -1,4 +1,3 @@
-import logging
 import urllib.parse
 
 from django.core import signing

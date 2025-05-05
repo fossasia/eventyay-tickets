@@ -56,7 +56,7 @@ class Availability(PretalxModel):
         """
         return all(
             getattr(self, attribute, None) == getattr(other, attribute, None)
-            for attribute in ["person", "room", "start", "end"]
+            for attribute in ("person", "room", "start", "end")
         )
 
     @cached_property

@@ -135,4 +135,4 @@ If you see the ``o`` parameter on a resource, you can use it to sort the result
 set by one of the allowed fields. Prepend a ``-`` to the field name to reverse
 the sort order.
 
-.. _CSRF policies: https://docs.djangoproject.com/en/stable/ref/csrf/#ajax
+.. _CSRF policies: https://docs.djangoproject.com/en/stable/howto/csrf/#using-csrf-protection-with-ajax

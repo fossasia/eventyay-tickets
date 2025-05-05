@@ -229,7 +229,7 @@ class Event(PretalxModel):
         verbose_name=_("Logo"),
         help_text=_(
             "If you provide a logo image, your event’s name will not be shown in the event header. "
-            "The logo will be scaled down to a height of 150px."
+            "The logo will be scaled down to a height of 140px."
         ),
     )
     header_image = models.ImageField(
@@ -316,7 +316,6 @@ class Event(PretalxModel):
 
     class orga_urls(EventUrls):
         base_path = settings.BASE_PATH
-        create = "{base_path}/orga/event/new"
         base = "{base_path}/orga/event/{self.slug}/"
         login = "{base}login/"
         live = "{base}live"

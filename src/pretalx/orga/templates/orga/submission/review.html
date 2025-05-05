@@ -165,15 +165,17 @@
             {% if can_view_other_reviews or form.instance.pk %}
                 <div class="table-responsive-sm">
                     <table class="table review-table table-hover table-flip table-sticky">
-                        <tr>
-                            <th>{% translate "Score" %}</th>
-                            {% if score_categories|length > 1 %}
-                                {% for cat in score_categories %}<th>{{ cat.name }}</th>{% endfor %}
-                            {% endif %}
-                            {% for field in qform %}<th>{{ field.label }}</th>{% endfor %}
-                            <th>{% translate "Review" %}</th>
-                            <th></th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>{% translate "Score" %}</th>
+                                {% if score_categories|length > 1 %}
+                                    {% for cat in score_categories %}<th>{{ cat.name }}</th>{% endfor %}
+                                {% endif %}
+                                {% for field in qform %}<th>{{ field.label }}</th>{% endfor %}
+                                <th>{% translate "Review" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
                         <tbody>
                             {% if form.instance.pk and review_display %}
 
@@ -202,10 +204,18 @@
                         </div>
                     </div>
                 {% endif %}
-                <div class="submit-group pb-0 d-flex flex-row-reverse">
+==== BASE ====
+                <div class="submit-group pb-0">
                     <div>
-                        <div class="d-flex flex-row-reverse">
-                            <button type="submit" class="btn btn-lg btn-success ml-1" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Save and next" %}</button>
+                        {% if form.instance.pk %}
+                            <a href="{{ form.instance.urls.delete }}" class="btn btn-lg btn-outline-danger">{% translate "Delete review" %}</a>
+                        {% endif %}
+                        <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% translate "Save" %}</button>
+                    </div>
+                    <div>
+                        <div>
+                            <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
+==== BASE ====
                             {% if not request.event.review_settings.score_mandatory and not request.event.review_settings.text_mandatory %}
                                 <button type="submit" class="btn btn-lg btn-info ml-1" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Abstain" %}</button>
                             {% endif %}

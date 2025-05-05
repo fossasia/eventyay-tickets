@@ -15,6 +15,7 @@ body {
   /* Dotted borders are IN! */
   border-style: dotted dashed solid double;  /* more commenting */
   BORDER-color: red green blue yellow;
+  object-fit: cover;
 }
 #best-descriptor {
   border: 5px solid red;

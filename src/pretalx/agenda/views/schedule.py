@@ -195,7 +195,6 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     def get(self, request, **kwargs):
         accept_header = request.headers.get("Accept", "")
-
         if getattr(self, "is_html_export", False) or "text/html" in accept_header:
             return super().get(request, **kwargs)
 

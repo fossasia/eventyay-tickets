@@ -495,7 +495,7 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
                 "score": review.display_score,
                 "scores": self.get_scores_for_review(review),
                 "text": review.text,
-                "user": review.user.get_display_name(),
+                "user": review.user,
                 "answers": [
                     review.answers.filter(question=question).first()
                     for question in self.qform.queryset
@@ -549,7 +549,7 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
                 "score": review.display_score,
                 "scores": self.get_scores_for_review(review),
                 "text": review.text,
-                "user": review.user.get_display_name(),
+                "user": review.user,
                 "answers": [
                     review.answers.filter(question=question).first()
                     for question in self.qform.queryset

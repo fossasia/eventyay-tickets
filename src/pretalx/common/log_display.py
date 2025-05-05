@@ -29,6 +29,7 @@ TEMPLATE_LOG_NAMES = {
     "pretalx.organiser.delete": _("The organiser {name} was deleted."),
 }
 
+# These log names were used in the past, and we still support them for display purposes
 LOG_ALIASES = {
     "pretalx.event.invite.orga.accept": "pretalx.invite.orga.accept",
     "pretalx.event.invite.orga.retract": "pretalx.invite.orga.retract",

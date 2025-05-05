@@ -116,7 +116,7 @@ class ScheduleData(BaseExporter):
 
 class FrabXmlExporter(ScheduleData):
     identifier = "schedule.xml"
-    verbose_name = "Sessions XML"
+    verbose_name = "XML (frab compatible)"
     public = True
     show_qrcode = True
     favs_retrieve = False
@@ -155,7 +155,7 @@ class MyFrabXmlExporter(FrabXmlExporter):
 
 class FrabXCalExporter(ScheduleData):
     identifier = "schedule.xcal"
-    verbose_name = "Sessions XCAL"
+    verbose_name = "XCal (frab compatible)"
     public = True
     favs_retrieve = False
     talk_ids = []
@@ -186,7 +186,7 @@ class MyFrabXCalExporter(FrabXCalExporter):
 
 class FrabJsonExporter(ScheduleData):
     identifier = "schedule.json"
-    verbose_name = "Sessions JSON"
+    verbose_name = "JSON (frab compatible)"
     public = True
     favs_retrieve = False
     talk_ids = []
@@ -265,34 +265,18 @@ class FrabJsonExporter(ScheduleData):
                                     "do_not_record": talk.submission.do_not_record,
                                     "persons": [
                                         {
-                                            "name": person.get_display_name(),
-                                            "public_name": person.get_display_name(),  # deprecated
-                                            "guid": person.guid,
-                                            "id": person.id,
-                                            "url": person.event_profile(
-                                                self.event
-                                            ).urls.public.full(),
                                             "code": person.code,
+                                            "name": person.get_display_name(),
                                             "avatar": person.get_avatar_url(self.event)
                                             or None,
                                             "biography": person.event_profile(
                                                 self.event
                                             ).biography,
-                                            "answers": (
-                                                [
-                                                    {
-                                                        "question": answer.question.id,
-                                                        "answer": answer.answer,
-                                                        "options": [
-                                                            option.answer
-                                                            for option in answer.options.all()
-                                                        ],
-                                                    }
-                                                    for answer in person.answers.all()
-                                                ]
-                                                if getattr(self, "is_orga", False)
-                                                else []
-                                            ),
+                                            "public_name": person.get_display_name(),  # deprecated
+                                            "guid": person.guid,
+                                            "url": person.event_profile(
+                                                self.event
+                                            ).urls.public.full(),
                                         }
                                         for person in talk.submission.speakers.all()
                                     ],
@@ -306,6 +290,7 @@ class FrabJsonExporter(ScheduleData):
                                         if resource.link
                                     ],
                                     "feedback_url": talk.submission.urls.feedback.full(),
+                                    "origin_url": talk.submission.urls.public.full(),
                                     "attachments": [
                                         {
                                             "title": resource.description,
@@ -315,21 +300,6 @@ class FrabJsonExporter(ScheduleData):
                                         for resource in talk.submission.resources.all()
                                         if not resource.link
                                     ],
-                                    "answers": (
-                                        [
-                                            {
-                                                "question": answer.question.id,
-                                                "answer": answer.answer,
-                                                "options": [
-                                                    option.answer
-                                                    for option in answer.options.all()
-                                                ],
-                                            }
-                                            for answer in talk.submission.answers.all()
-                                        ]
-                                        if getattr(self, "is_orga", False)
-                                        else []
-                                    ),
                                 }
                                 for talk in room["talks"]
                                 if (

@@ -48,6 +48,21 @@
       padding-left: 40px;
     }
   }
+  &.feedback-list .feedback-box {
+    margin: 20px;
+
+    .quote {
+      font-size: 1.5rem;
+      color: rgb(0 0 0 / 0.56);
+      border: var(--color-border) 1px solid;
+      border-radius: var(--size-border-radius);
+      padding: 20px;
+    }
+
+    .feedback-text {
+      padding-left: 40px;
+    }
+  }
 }
 
 .speaker-container {

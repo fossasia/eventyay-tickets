@@ -68,6 +68,8 @@ dialog#lightbox-dialog {
       object-fit: contain;
       max-height: 80vh;
       max-width: 80vw;
+      height: 100%;
+      width: 100%;
     }
     .lightbox-close {
       position: absolute;

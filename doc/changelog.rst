@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`schedule` When you embed the pretalx widget on an external page, clicking on session links will open the sessions in a new tab, so attendees won't have to try to navigate back to your home page.
 - :feature:`schedule` Organisers can now configure additional links to show in the top menu next to "Schedule", "Sessions", "Speakers", handy for links back to the conference website, streams, etc.
 - :feature:`orga` Organisers can now configure footer links that will be shown on all schedule pages.
 - :feature:`cfp` pretalx will now send an email after a user changes their password, notifying them of the change.
@@ -697,7 +698,7 @@ Release Notes
 - :bug:`-` There was no possibility to reset a user’s API token.
 - :bug:`-` If an organiser changed a speaker’s email address, they could assign an address already in use in the pretalx instance, resulting in buggy behaviour all around.
 - :release:`0.5.0 <2018-03-07>`
-- :feature:`-` pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into plugin hooks. You can enable or disable plugins per event.
+- :feature:`-` pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into plugin hooks. You can enable or disable plugins per event. You can find the plugin developer documentation :ref:`here<plugin-index>`.
 - :feature:`340` Organisers can now decide if reviewers should have to submit a score or a text with their review.
 - :feature:`93` Organisers can provide room-based information for speakers, and send it automatically in the emails about talk scheduling.
 - :feature:`318` The list of submissions is now better searchable.
