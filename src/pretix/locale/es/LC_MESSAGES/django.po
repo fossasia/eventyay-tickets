@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-27 03:50+0000\n"
+"POT-Creation-Date: 2025-05-06 10:28+0000\n"
 "PO-Revision-Date: 2020-07-02 17:25+0000\n"
 "Last-Translator: oocf <oswaldocerna@gmail.com>\n"
 "Language-Team: Spanish <https://translate.eventyay.com/projects/pretix/"
@@ -364,7 +364,7 @@ msgstr ""
 
 #: pretix/base/auth.py:113 pretix/base/forms/auth.py:207
 #: pretix/base/models/auth.py:87 pretix/base/models/notifications.py:25
-#: pretix/base/models/orders.py:183 pretix/control/navigation.py:60
+#: pretix/base/models/orders.py:183 pretix/control/navigation.py:50
 #: pretix/control/templates/pretixcontrol/event/settings.html:74
 #: pretix/plugins/checkinlists/exporters.py:417
 #: pretix/presale/checkoutflowstep/confirm_step.py:64
@@ -384,7 +384,7 @@ msgid "Online shop"
 msgstr "Tienda en línea"
 
 #: pretix/base/configurations/default_setting.py:41
-#: pretix/base/models/orders.py:1203 pretix/base/models/orders.py:2306
+#: pretix/base/models/orders.py:1204 pretix/base/models/orders.py:2307
 msgid "Select country"
 msgstr "Seleccione país"
 
@@ -1005,7 +1005,7 @@ msgid "Albert Einstein Road 52"
 msgstr "Calle Albert Einstein 52"
 
 #: pretix/base/configurations/default_setting.py:746
-#: pretix/base/models/orders.py:1199 pretix/base/models/orders.py:2299
+#: pretix/base/models/orders.py:1199 pretix/base/models/orders.py:2300
 msgid "Company name"
 msgstr "Nombre de la Compañía"
 
@@ -1016,8 +1016,8 @@ msgstr "Nombre de la Compañía"
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:529
 #: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:481
-#: pretix/base/models/orders.py:1201 pretix/base/models/orders.py:2303
-#: pretix/base/orderimport.py:285 pretix/base/orderimport.py:431
+#: pretix/base/models/orders.py:1202 pretix/base/models/orders.py:2304
+#: pretix/base/orderimport.py:285 pretix/base/orderimport.py:442
 #: pretix/control/forms/filter.py:529 pretix/control/forms/filter.py:560
 #: pretix/control/views/item.py:354
 #: pretix/plugins/checkinlists/exporters.py:441
@@ -1025,7 +1025,7 @@ msgstr "Nombre de la Compañía"
 msgid "ZIP code"
 msgstr "Código postal"
 
-#: pretix/base/configurations/default_setting.py:765 pretix/base/pdf.py:249
+#: pretix/base/configurations/default_setting.py:765 pretix/base/pdf.py:254
 msgid "Random City"
 msgstr "Ciudad Aleatoria"
 
@@ -1036,9 +1036,9 @@ msgstr "Ciudad Aleatoria"
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:530
 #: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:492
-#: pretix/base/models/orders.py:1202 pretix/base/models/orders.py:2304
+#: pretix/base/models/orders.py:1203 pretix/base/models/orders.py:2305
 #: pretix/base/models/organizer.py:444 pretix/base/orderimport.py:296
-#: pretix/base/orderimport.py:442 pretix/control/forms/filter.py:534
+#: pretix/base/orderimport.py:453 pretix/control/forms/filter.py:534
 #: pretix/control/forms/filter.py:565
 #: pretix/control/forms/organizer_forms/organizer_form.py:105
 #: pretix/control/views/item.py:364
@@ -1054,9 +1054,9 @@ msgstr "Ciudad"
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:531
 #: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:507
-#: pretix/base/models/orders.py:1203 pretix/base/models/orders.py:2305
-#: pretix/base/models/orders.py:2306 pretix/base/models/organizer.py:454
-#: pretix/base/orderimport.py:312 pretix/base/orderimport.py:458
+#: pretix/base/models/orders.py:1204 pretix/base/models/orders.py:2306
+#: pretix/base/models/orders.py:2307 pretix/base/models/organizer.py:454
+#: pretix/base/orderimport.py:312 pretix/base/orderimport.py:469
 #: pretix/control/forms/filter.py:539 pretix/control/forms/filter.py:570
 #: pretix/control/forms/organizer_forms/organizer_form.py:113
 #: pretix/control/templates/pretixcontrol/order/index.html:827
@@ -2797,7 +2797,7 @@ msgstr "Nombre preferido"
 
 #: pretix/base/configurations/default_setting.py:2803
 #: pretix/base/configurations/default_setting.py:2817
-#: pretix/base/models/auth.py:89 pretix/base/models/orders.py:2300
+#: pretix/base/models/auth.py:89 pretix/base/models/orders.py:2301
 #: pretix/control/templates/pretixcontrol/admin/users/index.html:42
 msgid "Full name"
 msgstr "Nombre completo"
@@ -2850,7 +2850,7 @@ msgid "Simple with logo"
 msgstr "Simple con logo"
 
 #: pretix/base/email.py:516 pretix/base/email.py:582 pretix/base/email.py:598
-#: pretix/base/email.py:603 pretix/base/pdf.py:121 pretix/base/pdf.py:264
+#: pretix/base/email.py:603 pretix/base/pdf.py:121 pretix/base/pdf.py:269
 #: pretix/base/services/invoices.py:365 pretix/control/views/event.py:710
 msgid "John Doe"
 msgstr "Juan Pérez"
@@ -2905,7 +2905,7 @@ msgid "Answers to file upload questions"
 msgstr "Respuestas a las preguntas sobre carga de archivos"
 
 #: pretix/base/exporters/answers.py:27 pretix/base/models/items.py:1121
-#: pretix/control/navigation.py:161
+#: pretix/control/navigation.py:151
 #: pretix/control/templates/pretixcontrol/items/questions.html:3
 #: pretix/control/templates/pretixcontrol/items/questions.html:8
 msgid "Questions"
@@ -2970,8 +2970,8 @@ msgstr ""
 "Solo incliur recibos emitidos hasta o antes de esta fecha. Nota que la fecha "
 "del recibo no siempre corresponde a la orden o fecha de pago."
 
-#: pretix/base/exporters/invoices.py:52 pretix/base/models/orders.py:1394
-#: pretix/base/models/orders.py:1771 pretix/control/forms/filter.py:139
+#: pretix/base/exporters/invoices.py:52 pretix/base/models/orders.py:1395
+#: pretix/base/models/orders.py:1772 pretix/control/forms/filter.py:139
 #: pretix/control/forms/filter.py:1541
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:9
 #: pretix/control/templates/pretixcontrol/boxoffice/payment.html:14
@@ -3025,7 +3025,7 @@ msgstr "Número de factura"
 #: pretix/base/exporters/invoices.py:166 pretix/base/exporters/invoices.py:294
 #: pretix/base/exporters/orderlist.py:850
 #: pretix/base/exporters/waitinglist.py:84 pretix/base/models/items.py:1025
-#: pretix/base/models/orders.py:195 pretix/base/models/orders.py:2251
+#: pretix/base/models/orders.py:195 pretix/base/models/orders.py:2252
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:63
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:17
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:11
@@ -3075,7 +3075,7 @@ msgid "Cancellation of"
 msgstr "Cancelación de"
 
 #: pretix/base/exporters/invoices.py:171
-#: pretix/base/exporters/waitinglist.py:95 pretix/base/models/auth.py:99
+#: pretix/base/exporters/waitinglist.py:95 pretix/base/models/auth.py:101
 #: pretix/control/forms/event.py:1370 pretix/control/views/waitinglist.py:215
 msgid "Language"
 msgstr "Idioma"
@@ -3095,8 +3095,8 @@ msgstr "Emisor de factura:"
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:528
 #: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:467
-#: pretix/base/models/orders.py:1200 pretix/base/models/orders.py:2302
-#: pretix/base/orderimport.py:274 pretix/base/orderimport.py:420
+#: pretix/base/models/orders.py:1201 pretix/base/models/orders.py:2303
+#: pretix/base/orderimport.py:274 pretix/base/orderimport.py:431
 #: pretix/control/forms/filter.py:525 pretix/control/forms/filter.py:556
 #: pretix/control/templates/pretixcontrol/order/index.html:823
 #: pretix/plugins/checkinlists/exporters.py:440
@@ -3115,7 +3115,7 @@ msgstr "IVA-ID"
 #: pretix/base/exporters/invoices.py:305 pretix/base/exporters/invoices.py:313
 #: pretix/base/exporters/orderlist.py:243
 #: pretix/base/exporters/orderlist.py:418
-#: pretix/base/exporters/orderlist.py:566 pretix/base/models/orders.py:2309
+#: pretix/base/exporters/orderlist.py:566 pretix/base/models/orders.py:2310
 #: pretix/base/orderimport.py:356
 #: pretix/control/templates/pretixcontrol/order/index.html:834
 #: pretix/plugins/reports/exporters.py:721
@@ -3164,8 +3164,8 @@ msgstr "Dirección"
 #: pretix/base/exporters/orderlist.py:418
 #: pretix/base/exporters/orderlist.py:532
 #: pretix/base/exporters/orderlist.py:566 pretix/base/forms/questions.py:543
-#: pretix/base/forms/questions.py:971 pretix/base/models/orders.py:1204
-#: pretix/base/models/orders.py:2308 pretix/base/orderimport.py:331
+#: pretix/base/forms/questions.py:971 pretix/base/models/orders.py:1205
+#: pretix/base/models/orders.py:2309 pretix/base/orderimport.py:331
 #: pretix/control/templates/pretixcontrol/order/index.html:830
 #: pretix/plugins/checkinlists/exporters.py:444
 #: pretix/plugins/reports/exporters.py:720
@@ -3176,13 +3176,13 @@ msgid "State"
 msgstr "Estado"
 
 #: pretix/base/exporters/invoices.py:187 pretix/base/exporters/invoices.py:314
-#: pretix/base/models/orders.py:2319
+#: pretix/base/models/orders.py:2320
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:114
 msgid "Beneficiary"
 msgstr "Beneficiario"
 
 #: pretix/base/exporters/invoices.py:188 pretix/base/exporters/invoices.py:315
-#: pretix/base/models/orders.py:2314 pretix/base/orderimport.py:367
+#: pretix/base/models/orders.py:2315 pretix/base/orderimport.py:367
 #: pretix/control/templates/pretixcontrol/order/index.html:854
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:121
 msgid "Internal reference"
@@ -3289,14 +3289,14 @@ msgid "Net price"
 msgstr "Precio neto"
 
 #: pretix/base/exporters/invoices.py:289 pretix/base/exporters/orderlist.py:409
-#: pretix/base/exporters/orderlist.py:518 pretix/base/models/orders.py:1919
-#: pretix/base/models/orders.py:2019
+#: pretix/base/exporters/orderlist.py:518 pretix/base/models/orders.py:1920
+#: pretix/base/models/orders.py:2020
 msgid "Tax value"
 msgstr "Valor impuesto"
 
 #: pretix/base/exporters/invoices.py:290 pretix/base/exporters/orderlist.py:407
-#: pretix/base/exporters/orderlist.py:516 pretix/base/models/orders.py:1910
-#: pretix/base/models/orders.py:2010 pretix/base/models/tax.py:114
+#: pretix/base/exporters/orderlist.py:516 pretix/base/models/orders.py:1911
+#: pretix/base/models/orders.py:2011 pretix/base/models/tax.py:114
 #: pretix/plugins/reports/exporters.py:670
 #: pretix/plugins/reports/exporters.py:715
 msgid "Tax rate"
@@ -3324,14 +3324,14 @@ msgid "Order data"
 msgstr "Datos de la orden"
 
 #: pretix/base/exporters/orderlist.py:45 pretix/base/models/orders.py:246
-#: pretix/control/navigation.py:224
+#: pretix/control/navigation.py:214
 #: pretix/control/templates/pretixcontrol/orders/index.html:7
 #: pretix/control/templates/pretixcontrol/orders/index.html:12
 #: pretix/plugins/reports/exporters.py:516
 msgid "Orders"
 msgstr "Órdenes"
 
-#: pretix/base/exporters/orderlist.py:46 pretix/base/models/orders.py:2035
+#: pretix/base/exporters/orderlist.py:46 pretix/base/models/orders.py:2036
 #: pretix/base/notifications.py:196
 msgid "Order positions"
 msgstr "Posiciones de la orden"
@@ -3435,7 +3435,7 @@ msgstr "Estado"
 #: pretix/base/exporters/orderlist.py:234
 #: pretix/base/exporters/orderlist.py:400
 #: pretix/base/exporters/orderlist.py:503
-#: pretix/base/exporters/waitinglist.py:86 pretix/base/pdf.py:258
+#: pretix/base/exporters/waitinglist.py:86 pretix/base/pdf.py:263
 #: pretix/control/templates/pretixcontrol/checkin/index.html:84
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:145
 msgid "Email"
@@ -3446,7 +3446,7 @@ msgstr "Correo electrónico"
 #: pretix/base/exporters/orderlist.py:504
 #: pretix/base/exporters/waitinglist.py:87 pretix/base/models/items.py:1029
 #: pretix/base/models/orders.py:187 pretix/base/models/waitinglist.py:56
-#: pretix/base/pdf.py:253
+#: pretix/base/pdf.py:258
 #: pretix/control/templates/pretixcontrol/order/index.html:210
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:147
 #: pretix/control/views/waitinglist.py:214
@@ -3494,7 +3494,7 @@ msgid "Fees"
 msgstr "Tasas"
 
 #: pretix/base/exporters/orderlist.py:243
-#: pretix/base/exporters/orderlist.py:569 pretix/base/orderimport.py:548
+#: pretix/base/exporters/orderlist.py:569 pretix/base/orderimport.py:559
 #: pretix/control/templates/pretixcontrol/order/index.html:174
 #: pretix/control/templates/pretixcontrol/pdf/index.html:212
 msgid "Order locale"
@@ -3520,7 +3520,7 @@ msgid "Invoice numbers"
 msgstr "Números de factura"
 
 #: pretix/base/exporters/orderlist.py:254
-#: pretix/base/exporters/orderlist.py:569 pretix/base/orderimport.py:574
+#: pretix/base/exporters/orderlist.py:569 pretix/base/orderimport.py:585
 #: pretix/control/forms/filter.py:491
 #: pretix/control/templates/pretixcontrol/order/index.html:171
 msgid "Sales channel"
@@ -3534,7 +3534,7 @@ msgstr "Requiere atención especial"
 
 #: pretix/base/exporters/orderlist.py:256
 #: pretix/base/exporters/orderlist.py:745 pretix/base/models/orders.py:208
-#: pretix/base/models/vouchers.py:192 pretix/base/orderimport.py:623
+#: pretix/base/models/vouchers.py:192 pretix/base/orderimport.py:634
 #: pretix/control/forms/filter.py:463
 #: pretix/control/templates/pretixcontrol/admin/user/staff_session_list.html:21
 #: pretix/control/templates/pretixcontrol/order/index.html:772
@@ -3561,7 +3561,7 @@ msgstr "Tipo de tarifa"
 
 #: pretix/base/exporters/orderlist.py:406
 #: pretix/base/exporters/orderlist.py:515 pretix/base/models/orders.py:1169
-#: pretix/base/orderimport.py:499 pretix/base/pdf.py:106
+#: pretix/base/orderimport.py:510 pretix/base/pdf.py:106
 #: pretix/control/templates/pretixcontrol/item/index.html:88
 #: pretix/control/templates/pretixcontrol/order/change.html:157
 #: pretix/control/templates/pretixcontrol/order/change.html:307
@@ -3581,7 +3581,7 @@ msgstr "Norma fiscal"
 #: pretix/base/exporters/orderlist.py:411
 #: pretix/base/exporters/orderlist.py:416
 #: pretix/base/exporters/orderlist.py:560
-#: pretix/base/exporters/orderlist.py:564 pretix/base/pdf.py:263
+#: pretix/base/exporters/orderlist.py:564 pretix/base/pdf.py:268
 msgid "Invoice address name"
 msgstr "Dirección de facturación"
 
@@ -3610,7 +3610,7 @@ msgstr "ID de la Posición"
 #: pretix/control/views/waitinglist.py:218
 #: pretix/plugins/checkinlists/exporters.py:421
 #: pretix/plugins/sendmail/forms.py:177
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:112
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:113
 #: pretix/presale/templates/pretixpresale/event/order_change.html:29
 msgctxt "subevent"
 msgid "Date"
@@ -3657,7 +3657,7 @@ msgid "Attendee name"
 msgstr "Nombre del participante"
 
 #: pretix/base/exporters/orderlist.py:526 pretix/base/forms/questions.py:448
-#: pretix/base/models/orders.py:1181 pretix/base/pdf.py:162
+#: pretix/base/models/orders.py:1181 pretix/base/pdf.py:167
 #: pretix/control/templates/pretixcontrol/order/index.html:399
 #: pretix/control/views/item.py:320
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:60
@@ -3679,7 +3679,7 @@ msgstr "Recibo"
 msgid "Pseudonymization ID"
 msgstr "ID Seudónimo"
 
-#: pretix/base/exporters/orderlist.py:535 pretix/base/orderimport.py:594
+#: pretix/base/exporters/orderlist.py:535 pretix/base/orderimport.py:605
 #: pretix/plugins/checkinlists/exporters.py:434
 #, fuzzy
 #| msgid "Seat"
@@ -3738,8 +3738,8 @@ msgstr "Estado del reembolso"
 
 #: pretix/base/exporters/orderlist.py:744
 #: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:245
-#: pretix/base/models/orders.py:1381 pretix/base/models/orders.py:1752
-#: pretix/base/models/orders.py:1899 pretix/base/models/orders.py:2004
+#: pretix/base/models/orders.py:1382 pretix/base/models/orders.py:1753
+#: pretix/base/models/orders.py:1900 pretix/base/models/orders.py:2005
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:64
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:15
 #: pretix/plugins/checkinlists/exporters.py:295
@@ -3768,8 +3768,8 @@ msgid "Status code"
 msgstr "Código del estado"
 
 #: pretix/base/exporters/orderlist.py:745
-#: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:1377
-#: pretix/base/models/orders.py:1748
+#: pretix/base/exporters/orderlist.py:850 pretix/base/models/orders.py:1378
+#: pretix/base/models/orders.py:1749
 #: pretix/control/templates/pretixcontrol/order/index.html:618
 #: pretix/control/templates/pretixcontrol/order/index.html:714
 #: pretix/control/templates/pretixcontrol/orders/refunds.html:74
@@ -3820,7 +3820,7 @@ msgstr "Carrito actual del usuario"
 
 #: pretix/base/exporters/orderlist.py:787
 #: pretix/base/exporters/waitinglist.py:20 pretix/base/shredder.py:205
-#: pretix/control/forms/event.py:1446 pretix/control/navigation.py:206
+#: pretix/control/forms/event.py:1446 pretix/control/navigation.py:196
 #: pretix/control/templates/pretixcontrol/event/settings.html:259
 #: pretix/control/templates/pretixcontrol/orders/cancel.html:62
 #: pretix/control/templates/pretixcontrol/waitinglist/index.html:6
@@ -4034,7 +4034,7 @@ msgid "Product name"
 msgstr "Nombre del producto"
 
 #: pretix/base/exporters/waitinglist.py:91 pretix/base/models/event.py:422
-#: pretix/base/pdf.py:167 pretix/control/forms/filter.py:809
+#: pretix/base/pdf.py:172 pretix/control/forms/filter.py:809
 #: pretix/control/forms/filter.py:811 pretix/control/forms/filter.py:1028
 #: pretix/control/forms/filter.py:1030
 #: pretix/control/templates/pretixcontrol/admin/events/index.html:64
@@ -4232,19 +4232,19 @@ msgstr ""
 "Sólo se utiliza para vistas que no están vinculadas a un evento. Para todas "
 "las vistas de eventos, se utiliza la zona horaria de eventos."
 
-#: pretix/base/forms/user.py:134
+#: pretix/base/forms/user.py:139
 msgid "Device name"
 msgstr "Nombre del dispositivo"
 
-#: pretix/base/forms/user.py:135
+#: pretix/base/forms/user.py:140
 msgid "Device type"
 msgstr "Tipo de dispositivo"
 
-#: pretix/base/forms/user.py:136
+#: pretix/base/forms/user.py:141
 msgid "Smartphone with the Authenticator application"
 msgstr "Celular con aplicación de autenticación"
 
-#: pretix/base/forms/user.py:137
+#: pretix/base/forms/user.py:142
 msgid "WebAuthn-compatible hardware token (e.g. Yubikey)"
 msgstr "Hardware compatible con token WebAuthn (p. ej. Yubikey)"
 
@@ -4262,7 +4262,7 @@ msgid "Invalid placeholder(s): %(value)s"
 msgstr "Persona(s) interesada(s) inválida(s): %(value)s"
 
 #: pretix/base/forms/widgets.py:153 pretix/base/forms/widgets.py:158
-#: pretix/base/models/orders.py:2298
+#: pretix/base/models/orders.py:2299
 msgid "Business customer"
 msgstr "Cliente de negocios"
 
@@ -4342,7 +4342,7 @@ msgstr ""
 " hasta {to_date}"
 
 #: pretix/base/invoice.py:408
-#: pretix/control/templates/pretixcontrol/base.html:279
+#: pretix/control/templates/pretixcontrol/base.html:278
 #: pretix/control/templates/pretixcontrol/checkin/index.html:109
 #: pretix/control/templates/pretixcontrol/order/index.html:23
 #: pretix/control/templates/pretixcontrol/orders/index.html:142
@@ -4489,35 +4489,35 @@ msgstr ""
 msgid "Modern Invoice Renderer"
 msgstr "Creador Moderno de Recibos (pretix 2.7)"
 
-#: pretix/base/models/auth.py:91
+#: pretix/base/models/auth.py:93
 msgid "Is active"
 msgstr "Está activo"
 
-#: pretix/base/models/auth.py:93
+#: pretix/base/models/auth.py:95
 msgid "Is site admin"
 msgstr "Es administrador del sitio"
 
-#: pretix/base/models/auth.py:95
+#: pretix/base/models/auth.py:97
 msgid "Date joined"
 msgstr "Fecha que se unió"
 
-#: pretix/base/models/auth.py:102
+#: pretix/base/models/auth.py:104
 msgid "Timezone"
 msgstr "Zona horaria"
 
-#: pretix/base/models/auth.py:105
+#: pretix/base/models/auth.py:107
 msgid "Two-factor authentication is required to log in"
 msgstr "Autenticación de 2 pasos es necesaria para iniciar sesión"
 
-#: pretix/base/models/auth.py:109
+#: pretix/base/models/auth.py:111
 msgid "Receive notifications according to my settings below"
 msgstr "Recibir notificaciones de acuerdo a mi configuración inferior"
 
-#: pretix/base/models/auth.py:110
+#: pretix/base/models/auth.py:112
 msgid "If turned off, you will not get any notifications."
 msgstr "Si apagado, no recibirás ninguna notificación."
 
-#: pretix/base/models/auth.py:123
+#: pretix/base/models/auth.py:125
 #: pretix/control/templates/pretixcontrol/admin/user/staff_session_edit.html:23
 #: pretix/control/templates/pretixcontrol/admin/user/staff_session_list.html:15
 #: pretix/control/templates/pretixcontrol/admin/users/form.html:4
@@ -4529,17 +4529,17 @@ msgstr "Si apagado, no recibirás ninguna notificación."
 msgid "User"
 msgstr "Usuario"
 
-#: pretix/base/models/auth.py:124 pretix/control/navigation.py:536
+#: pretix/base/models/auth.py:126 pretix/control/navigation.py:520
 #: pretix/control/templates/pretixcontrol/admin/users/index.html:5
 #: pretix/control/templates/pretixcontrol/admin/users/index.html:7
 msgid "Users"
 msgstr "Usuarios"
 
-#: pretix/base/models/auth.py:181
+#: pretix/base/models/auth.py:186
 msgid "Account information changed"
 msgstr "La información de la cuenta ha cambiado"
 
-#: pretix/base/models/auth.py:199
+#: pretix/base/models/auth.py:204
 #: pretix/control/templates/pretixcontrol/auth/forgot.html:7
 msgid "Password recovery"
 msgstr "Recuperación de contraseña"
@@ -4587,7 +4587,7 @@ msgstr ""
 "Con esta opción, las personas podrán registrarse incluso si no han pagado el "
 "pedido."
 
-#: pretix/base/models/checkin.py:25 pretix/control/navigation.py:459
+#: pretix/base/models/checkin.py:25 pretix/control/navigation.py:443
 #: pretix/control/templates/pretixcontrol/organizers/gates.html:5
 #, fuzzy
 #| msgctxt "subevent"
@@ -4738,7 +4738,7 @@ msgid "Event currency"
 msgstr "Moneda del evento"
 
 #: pretix/base/models/event.py:456 pretix/base/models/event.py:1402
-#: pretix/base/pdf.py:224 pretix/control/forms/subevents.py:535
+#: pretix/base/pdf.py:229 pretix/control/forms/subevents.py:535
 #: pretix/control/templates/pretixcontrol/subevents/bulk.html:270
 msgid "Event end time"
 msgstr "Hora de finalización del evento"
@@ -4799,7 +4799,7 @@ msgstr "Lalitud"
 msgid "Longitude"
 msgstr "Longitud"
 
-#: pretix/base/models/event.py:510 pretix/control/navigation.py:44
+#: pretix/base/models/event.py:510 pretix/control/navigation.py:34
 msgid "Plugins"
 msgstr "Plugins"
 
@@ -4809,7 +4809,7 @@ msgstr "Plugins"
 msgid "Internal comment"
 msgstr "Comentario interno"
 
-#: pretix/base/models/event.py:515 pretix/base/pdf.py:172
+#: pretix/base/models/event.py:515 pretix/base/pdf.py:177
 #: pretix/control/forms/event.py:253 pretix/control/forms/filter.py:1010
 #: pretix/control/templates/pretixcontrol/event/index.html:16
 #: pretix/control/views/dashboards.py:507
@@ -4842,7 +4842,7 @@ msgstr ""
 
 #: pretix/base/models/event.py:538 pretix/base/models/items.py:256
 #: pretix/base/models/items.py:1362 pretix/base/models/orders.py:177
-#: pretix/base/models/orders.py:2243 pretix/base/models/vouchers.py:90
+#: pretix/base/models/orders.py:2244 pretix/base/models/vouchers.py:90
 #: pretix/base/models/waitinglist.py:31 pretix/base/notifications.py:178
 #: pretix/control/templates/pretixcontrol/search/orders.html:44
 #: pretix/control/templates/pretixcontrol/user/orders.html:28
@@ -5364,8 +5364,8 @@ msgstr ""
 
 #: pretix/base/models/items.py:431 pretix/base/models/items.py:1072
 #: pretix/control/forms/filter.py:327 pretix/control/forms/filter.py:1199
-#: pretix/control/forms/item.py:207 pretix/control/navigation.py:127
-#: pretix/control/navigation.py:136
+#: pretix/control/forms/item.py:207 pretix/control/navigation.py:117
+#: pretix/control/navigation.py:126
 #: pretix/control/templates/pretixcontrol/checkin/lists.html:85
 #: pretix/control/templates/pretixcontrol/items/base.html:3
 #: pretix/control/templates/pretixcontrol/items/index.html:3
@@ -5527,8 +5527,11 @@ msgid "Multiline text"
 msgstr "Texto multilíneas"
 
 #: pretix/base/models/items.py:1021
-msgid "Yes/No"
-msgstr "Sí/No"
+#, fuzzy
+#| msgctxt "payment_state"
+#| msgid "confirmed"
+msgid "Confirm Checkbox"
+msgstr "confirmado"
 
 #: pretix/base/models/items.py:1022
 msgid "Choose one from a list"
@@ -5562,7 +5565,7 @@ msgid "Text field"
 msgstr "Correo electrónico verificado"
 
 #: pretix/base/models/items.py:1041 pretix/base/models/items.py:1120
-#: pretix/base/orderimport.py:652 pretix/control/forms/item.py:45
+#: pretix/base/orderimport.py:663 pretix/control/forms/item.py:45
 #: pretix/control/templates/pretixcontrol/items/question_edit.html:10
 #: pretix/control/templates/pretixcontrol/items/question_edit.html:20
 #: pretix/control/templates/pretixcontrol/items/questions.html:30
@@ -5644,7 +5647,7 @@ msgid "An answer to this question is required to proceed."
 msgstr "Se requiere una respuesta a esta pregunta para proceder."
 
 #: pretix/base/models/items.py:1179 pretix/base/models/items.py:1197
-#: pretix/base/orderimport.py:662 pretix/base/orderimport.py:670
+#: pretix/base/orderimport.py:673 pretix/base/orderimport.py:681
 msgid "Invalid option selected."
 msgstr "Selección de opción inválida."
 
@@ -5758,7 +5761,7 @@ msgstr ""
 msgid "Quota"
 msgstr "Cuota"
 
-#: pretix/base/models/items.py:1416 pretix/control/navigation.py:145
+#: pretix/base/models/items.py:1416 pretix/control/navigation.py:135
 #: pretix/control/templates/pretixcontrol/items/quotas.html:4
 #: pretix/control/templates/pretixcontrol/items/quotas.html:9
 #: pretix/control/templates/pretixcontrol/subevents/bulk.html:416
@@ -5830,7 +5833,7 @@ msgstr "Regla de impuesto {val}"
 msgid "Locale"
 msgstr "Localización"
 
-#: pretix/base/models/orders.py:201 pretix/base/models/orders.py:2255
+#: pretix/base/models/orders.py:201 pretix/base/models/orders.py:2256
 #: pretix/control/forms/orders.py:41
 msgid "Expiration date"
 msgstr "Fecha de expiración"
@@ -5924,173 +5927,180 @@ msgstr "<archivo>"
 msgid "Empty, if this product is not an admission ticket"
 msgstr "Vacío, si este producto no es un ticket de admisión"
 
-#: pretix/base/models/orders.py:1364
+#: pretix/base/models/orders.py:1200 pretix/base/orderimport.py:420
+#, fuzzy
+#| msgctxt "person_name"
+#| msgid "Title"
+msgid "Job Title"
+msgstr "Título"
+
+#: pretix/base/models/orders.py:1365
 msgctxt "payment_state"
 msgid "created"
 msgstr "creado"
 
-#: pretix/base/models/orders.py:1365
+#: pretix/base/models/orders.py:1366
 msgctxt "payment_state"
 msgid "pending"
 msgstr "pendiente"
 
-#: pretix/base/models/orders.py:1366
+#: pretix/base/models/orders.py:1367
 msgctxt "payment_state"
 msgid "confirmed"
 msgstr "confirmado"
 
-#: pretix/base/models/orders.py:1367
+#: pretix/base/models/orders.py:1368
 msgctxt "payment_state"
 msgid "canceled"
 msgstr "cancelado"
 
-#: pretix/base/models/orders.py:1368
+#: pretix/base/models/orders.py:1369
 msgctxt "payment_state"
 msgid "failed"
 msgstr "fallido"
 
-#: pretix/base/models/orders.py:1369
+#: pretix/base/models/orders.py:1370
 msgctxt "payment_state"
 msgid "refunded"
 msgstr "reembolsado"
 
-#: pretix/base/models/orders.py:1397 pretix/base/models/orders.py:1779
+#: pretix/base/models/orders.py:1398 pretix/base/models/orders.py:1780
 #: pretix/base/shredder.py:400
 #: pretix/control/templates/pretixcontrol/organizers/billing.html:41
 msgid "Payment information"
 msgstr "Información de pago"
 
-#: pretix/base/models/orders.py:1592
+#: pretix/base/models/orders.py:1593
 #, fuzzy, python-format
 #| msgid "Order approved and confirmed: %(code)s"
 msgid "Event registration confirmed: %(code)s"
 msgstr "Pedido aprobado y confirmado: %(code)s"
 
-#: pretix/base/models/orders.py:1610
+#: pretix/base/models/orders.py:1611
 #, python-format
 msgid "Payment received for your order: %(code)s"
 msgstr "Pago recibido por su pedido: %(code)s"
 
-#: pretix/base/models/orders.py:1720
+#: pretix/base/models/orders.py:1721
 msgctxt "refund_state"
 msgid "started externally"
 msgstr "iniciado externamente"
 
-#: pretix/base/models/orders.py:1721
+#: pretix/base/models/orders.py:1722
 msgctxt "refund_state"
 msgid "created"
 msgstr "creado"
 
-#: pretix/base/models/orders.py:1722
+#: pretix/base/models/orders.py:1723
 msgctxt "refund_state"
 msgid "in transit"
 msgstr "en tránsito"
 
-#: pretix/base/models/orders.py:1723
+#: pretix/base/models/orders.py:1724
 msgctxt "refund_state"
 msgid "done"
 msgstr "hecho"
 
-#: pretix/base/models/orders.py:1724
+#: pretix/base/models/orders.py:1725
 msgctxt "refund_state"
 msgid "failed"
 msgstr "fallido"
 
-#: pretix/base/models/orders.py:1726
+#: pretix/base/models/orders.py:1727
 msgctxt "refund_state"
 msgid "canceled"
 msgstr "cancelado"
 
-#: pretix/base/models/orders.py:1734
+#: pretix/base/models/orders.py:1735
 msgctxt "refund_source"
 msgid "Organizer"
 msgstr "Organizador"
 
-#: pretix/base/models/orders.py:1735
+#: pretix/base/models/orders.py:1736
 msgctxt "refund_source"
 msgid "Customer"
 msgstr "Cliente"
 
-#: pretix/base/models/orders.py:1736
+#: pretix/base/models/orders.py:1737
 msgctxt "refund_source"
 msgid "External"
 msgstr "Externo"
 
-#: pretix/base/models/orders.py:1774
+#: pretix/base/models/orders.py:1775
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:192
 #, fuzzy
 #| msgid "Refund only"
 msgid "Refund reason"
 msgstr "Reembolso solamente"
 
-#: pretix/base/models/orders.py:1775
+#: pretix/base/models/orders.py:1776
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:193
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:195
 msgid ""
 "May be shown to the end user or used e.g. as part of a payment reference."
 msgstr ""
 
-#: pretix/base/models/orders.py:1885
+#: pretix/base/models/orders.py:1886
 msgid "Payment fee"
 msgstr "Tarifa de pago"
 
-#: pretix/base/models/orders.py:1886
+#: pretix/base/models/orders.py:1887
 msgid "Shipping fee"
 msgstr "Tarifa de envío"
 
-#: pretix/base/models/orders.py:1887
+#: pretix/base/models/orders.py:1888
 msgid "Service fee"
 msgstr "Tarifa por servicio"
 
-#: pretix/base/models/orders.py:1888
+#: pretix/base/models/orders.py:1889
 #: pretix/control/templates/pretixcontrol/order/index.html:138
 msgid "Cancellation fee"
 msgstr "Tarifa de cancelación"
 
-#: pretix/base/models/orders.py:1889
+#: pretix/base/models/orders.py:1890
 msgid "Other fees"
 msgstr "Otras tarifas"
 
-#: pretix/base/models/orders.py:1890 pretix/base/payment.py:1089
+#: pretix/base/models/orders.py:1891 pretix/base/payment.py:1089
 #: pretix/control/templates/pretixcontrol/items/index.html:91
 #: pretix/control/templates/pretixcontrol/order/index.html:133
 msgid "Gift card"
 msgstr "Tarjeta de regalo"
 
-#: pretix/base/models/orders.py:1895
+#: pretix/base/models/orders.py:1896
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:65
 #: pretix/control/templates/pretixcontrol/organizers/giftcard.html:103
 #: pretix/control/views/vouchers.py:73
 msgid "Value"
 msgstr "Valor"
 
-#: pretix/base/models/orders.py:2034
+#: pretix/base/models/orders.py:2035
 msgid "Order position"
 msgstr "Posición de la orden"
 
-#: pretix/base/models/orders.py:2219 pretix/base/services/orders.py:877
+#: pretix/base/models/orders.py:2220 pretix/base/services/orders.py:877
 #, fuzzy, python-format
 #| msgid "Your order: %(code)s"
 msgid "Your event registration: %(code)s"
 msgstr "Su pedido: %(code)s"
 
-#: pretix/base/models/orders.py:2248
+#: pretix/base/models/orders.py:2249
 msgid "Cart ID (e.g. session key)"
 msgstr "ID de carrito (p. ej. clave de sesión)"
 
-#: pretix/base/models/orders.py:2270
+#: pretix/base/models/orders.py:2271
 msgid "Cart position"
 msgstr "Posición del carrito"
 
-#: pretix/base/models/orders.py:2271
+#: pretix/base/models/orders.py:2272
 msgid "Cart positions"
 msgstr "Posiciones del carrito"
 
-#: pretix/base/models/orders.py:2310
+#: pretix/base/models/orders.py:2311
 msgid "Only for business customers within the EU."
 msgstr "Solo para usuarios comerciales en la UE."
 
-#: pretix/base/models/orders.py:2315
+#: pretix/base/models/orders.py:2316
 msgid "This reference will be printed on your invoice for your convenience."
 msgstr "Esta referencia se imprimirá en su factura para su conveniencia."
 
@@ -6117,13 +6127,13 @@ msgstr ""
 msgid "Organizer"
 msgstr "Organizador"
 
-#: pretix/base/models/organizer.py:59 pretix/control/navigation.py:316
+#: pretix/base/models/organizer.py:59 pretix/control/navigation.py:300
 #: pretix/control/templates/pretixcontrol/admin/organizers.html:6
 #: pretix/control/templates/pretixcontrol/admin/organizers.html:8
 #: pretix/control/templates/pretixcontrol/oauth/authorized.html:19
 #: pretix/control/templates/pretixcontrol/organizers/index.html:6
 #: pretix/control/templates/pretixcontrol/organizers/index.html:8
-#: pretix/eventyay_common/navigation.py:31
+#: pretix/eventyay_common/navigation.py:25
 #: pretix/eventyay_common/templates/eventyay_common/organizers/index.html:5
 #: pretix/eventyay_common/templates/eventyay_common/organizers/index.html:7
 msgid "Organizers"
@@ -6214,7 +6224,7 @@ msgstr "%(name)s de %(object)s"
 msgid "Team"
 msgstr "Equipo"
 
-#: pretix/base/models/organizer.py:285 pretix/control/navigation.py:426
+#: pretix/base/models/organizer.py:285 pretix/control/navigation.py:410
 #: pretix/control/templates/pretixcontrol/organizers/teams.html:5
 #: pretix/eventyay_common/templates/eventyay_common/organizers/index.html:61
 #: pretix/eventyay_common/templates/eventyay_common/organizers/teams/teams.html:5
@@ -6533,8 +6543,8 @@ msgstr ""
 msgid "Shows hidden products that match this voucher"
 msgstr "Mostrar los productos ocultos que se encuentran en el recibo"
 
-#: pretix/base/models/vouchers.py:205 pretix/control/navigation.py:236
-#: pretix/control/navigation.py:554
+#: pretix/base/models/vouchers.py:205 pretix/control/navigation.py:226
+#: pretix/control/navigation.py:538
 #: pretix/control/templates/pretixcontrol/admin/vouchers/index.html:6
 #: pretix/control/templates/pretixcontrol/admin/vouchers/index.html:8
 #: pretix/control/templates/pretixcontrol/vouchers/index.html:6
@@ -6774,7 +6784,7 @@ msgstr ""
 msgid "View all unresolved problems"
 msgstr "Ver todos los problemas sin resolver"
 
-#: pretix/base/notifications.py:183 pretix/control/navigation.py:116
+#: pretix/base/notifications.py:183 pretix/control/navigation.py:106
 #: pretix/control/templates/pretixcontrol/subevents/bulk.html:20
 #: pretix/control/templates/pretixcontrol/subevents/index.html:5
 #: pretix/control/templates/pretixcontrol/subevents/index.html:7
@@ -6783,7 +6793,7 @@ msgctxt "subevent"
 msgid "Dates"
 msgstr "Fechas"
 
-#: pretix/base/notifications.py:185 pretix/base/pdf.py:177
+#: pretix/base/notifications.py:185 pretix/base/pdf.py:182
 #: pretix/plugins/badges/exporters.py:261
 #: pretix/plugins/ticketoutputpdf/exporters.py:59
 msgid "Event date"
@@ -6955,20 +6965,20 @@ msgstr "Necesita seleccionar una variación del producto."
 msgid "Invoice address"
 msgstr "Direcciones de facturación"
 
-#: pretix/base/orderimport.py:319 pretix/base/orderimport.py:465
+#: pretix/base/orderimport.py:319 pretix/base/orderimport.py:476
 #, fuzzy
 #| msgid "Please enter a valid email address."
 msgid "Please enter a valid country code."
 msgstr "Por favor, introduzca una dirección de correo electrónico válida."
 
-#: pretix/base/orderimport.py:336 pretix/base/orderimport.py:482
+#: pretix/base/orderimport.py:336 pretix/base/orderimport.py:493
 #, fuzzy
 #| msgid "Automatic refunds are not supported by this payment provider."
 msgid "States are not supported for this country."
 msgstr ""
 "Los reembolsos automáticos no son soportados por este proveedor de pago."
 
-#: pretix/base/orderimport.py:344 pretix/base/orderimport.py:490
+#: pretix/base/orderimport.py:344 pretix/base/orderimport.py:501
 #, fuzzy
 #| msgid "Please select a quota."
 msgid "Please enter a valid state."
@@ -6980,9 +6990,9 @@ msgstr "Por favor, seleccione una cuota."
 msgid "Attendee e-mail address"
 msgstr "Correo electrónico del participante"
 
-#: pretix/base/orderimport.py:409 pretix/base/orderimport.py:420
-#: pretix/base/orderimport.py:431 pretix/base/orderimport.py:442
-#: pretix/base/orderimport.py:458 pretix/base/orderimport.py:477
+#: pretix/base/orderimport.py:409 pretix/base/orderimport.py:431
+#: pretix/base/orderimport.py:442 pretix/base/orderimport.py:453
+#: pretix/base/orderimport.py:469 pretix/base/orderimport.py:488
 #: pretix/control/forms/filter.py:552 pretix/control/forms/filter.py:556
 #: pretix/control/forms/filter.py:560 pretix/control/forms/filter.py:565
 #: pretix/control/forms/filter.py:570
@@ -6994,73 +7004,79 @@ msgstr "Correo electrónico del participante"
 msgid "Attendee address"
 msgstr "Insignias de participante"
 
-#: pretix/base/orderimport.py:477
+#: pretix/base/orderimport.py:420
+#, fuzzy
+#| msgid "Attendee email"
+msgid "Attendee Job Title"
+msgstr "Correo electrónico del participante"
+
+#: pretix/base/orderimport.py:488
 #, fuzzy
 #| msgctxt "address"
 #| msgid "State"
 msgid "State"
 msgstr "Estado"
 
-#: pretix/base/orderimport.py:500
+#: pretix/base/orderimport.py:511
 #, fuzzy
 #| msgid "Create a first product"
 msgid "Calculate from product"
 msgstr "Crear un primer producto"
 
-#: pretix/base/orderimport.py:508 pretix/control/views/orders.py:797
+#: pretix/base/orderimport.py:519 pretix/control/views/orders.py:797
 #: pretix/control/views/orders.py:821 pretix/control/views/orders.py:851
 #: pretix/control/views/orders.py:883 pretix/control/views/orders.py:906
 msgid "You entered an invalid number."
 msgstr "Ha introducido un número no válido."
 
-#: pretix/base/orderimport.py:526
+#: pretix/base/orderimport.py:537
 #: pretix/control/templates/pretixcontrol/checkin/index.html:88
 #: pretix/control/templates/pretixcontrol/order/index.html:371
 msgid "Ticket code"
 msgstr "Código de ticket"
 
-#: pretix/base/orderimport.py:527
+#: pretix/base/orderimport.py:538
 #, fuzzy
 msgid "Generate automatically"
 msgstr "Registrado automáticamente"
 
-#: pretix/base/orderimport.py:536
+#: pretix/base/orderimport.py:547
 msgid "You cannot assign a position secret that already exists."
 msgstr ""
 
-#: pretix/base/orderimport.py:565
+#: pretix/base/orderimport.py:576
 #, fuzzy
 #| msgid "Please enter a valid email address."
 msgid "Please enter a valid language code."
 msgstr "Por favor, introduzca una dirección de correo electrónico válida."
 
-#: pretix/base/orderimport.py:585
+#: pretix/base/orderimport.py:596
 #, fuzzy
 #| msgid "Please enter a valid email address."
 msgid "Please enter a valid sales channel."
 msgstr "Por favor, introduzca una dirección de correo electrónico válida."
 
-#: pretix/base/orderimport.py:608
+#: pretix/base/orderimport.py:619
 #, fuzzy
 #| msgid "No matching answers found."
 msgid "No matching seat was found."
 msgstr "No se encontraron respuestas coincidentes."
 
-#: pretix/base/orderimport.py:611 pretix/base/services/cart.py:109
+#: pretix/base/orderimport.py:622 pretix/base/services/cart.py:109
 #, fuzzy
 #| msgid "This slug is already in use. Please choose a different one."
 msgid ""
 "The seat you selected has already been taken. Please select a different seat."
 msgstr "Esta URL semántica ya está en uso. Por favor, elija una diferente."
 
-#: pretix/base/orderimport.py:614 pretix/base/services/cart.py:106
+#: pretix/base/orderimport.py:625 pretix/base/services/cart.py:106
 #, fuzzy
 #| msgctxt "subevent"
 #| msgid "You need to select a date."
 msgid "You need to select a specific seat."
 msgstr "Necesitas seleccionar una fecha."
 
-#: pretix/base/orderimport.py:664 pretix/base/orderimport.py:672
+#: pretix/base/orderimport.py:675 pretix/base/orderimport.py:683
 #, fuzzy
 #| msgid "Invalid option selected."
 msgid "Ambiguous option selected."
@@ -7487,6 +7503,17 @@ msgid "Price including add-ons"
 msgstr "Precio incluyendo complementos"
 
 #: pretix/base/pdf.py:125
+#, fuzzy
+#| msgid "Attendee name"
+msgid "Attendee job title"
+msgstr "Nombre del participante"
+
+#: pretix/base/pdf.py:126 pretix/base/pdf.py:131 pretix/base/pdf.py:274
+#: pretix/base/services/tickets.py:96 pretix/control/views/pdf.py:80
+msgid "Sample company"
+msgstr "Compañía de ejemplo"
+
+#: pretix/base/pdf.py:130
 #: pretix/control/templates/pretixcontrol/order/index.html:423
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:73
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:76
@@ -7495,18 +7522,13 @@ msgstr "Precio incluyendo complementos"
 msgid "Attendee company"
 msgstr "Correo electrónico del participante"
 
-#: pretix/base/pdf.py:126 pretix/base/pdf.py:269
-#: pretix/base/services/tickets.py:96 pretix/control/views/pdf.py:80
-msgid "Sample company"
-msgstr "Compañía de ejemplo"
-
-#: pretix/base/pdf.py:130
+#: pretix/base/pdf.py:135
 #, fuzzy
 #| msgid "Attendee badges"
 msgid "Full attendee address"
 msgstr "Insignias de participante"
 
-#: pretix/base/pdf.py:131
+#: pretix/base/pdf.py:136
 msgid ""
 "John Doe\n"
 "Sample company\n"
@@ -7520,175 +7542,175 @@ msgstr ""
 "12335 ciudad\n"
 "Atlantis"
 
-#: pretix/base/pdf.py:135
+#: pretix/base/pdf.py:140
 #, fuzzy
 #| msgid "Attendee name"
 msgid "Attendee street"
 msgstr "Nombre del participante"
 
-#: pretix/base/pdf.py:140
+#: pretix/base/pdf.py:145
 #, fuzzy
 #| msgid "Attendee badges"
 msgid "Attendee ZIP code"
 msgstr "Insignias de participante"
 
-#: pretix/base/pdf.py:145
+#: pretix/base/pdf.py:150
 #, fuzzy
 #| msgid "Attendee email"
 msgid "Attendee city"
 msgstr "Correo electrónico del participante"
 
-#: pretix/base/pdf.py:150
+#: pretix/base/pdf.py:155
 #, fuzzy
 #| msgid "Attendee name"
 msgid "Attendee state"
 msgstr "Nombre del participante"
 
-#: pretix/base/pdf.py:155
+#: pretix/base/pdf.py:160
 #, fuzzy
 #| msgid "Attendee email"
 msgid "Attendee country"
 msgstr "Correo electrónico del participante"
 
-#: pretix/base/pdf.py:168 pretix/base/pdf.py:173
+#: pretix/base/pdf.py:173 pretix/base/pdf.py:178
 msgid "Sample event name"
 msgstr "Nombre de evento de ejemplo"
 
-#: pretix/base/pdf.py:178
+#: pretix/base/pdf.py:183
 msgid "May 31st, 2017"
 msgstr "31 de Mayo, 2017"
 
-#: pretix/base/pdf.py:182
+#: pretix/base/pdf.py:187
 msgid "Event date range"
 msgstr "Rango de fechas de evento"
 
-#: pretix/base/pdf.py:183
+#: pretix/base/pdf.py:188
 msgid "May 31st – June 4th, 2017"
 msgstr "31 de Mayo – 4 de Junio, 2017"
 
-#: pretix/base/pdf.py:187
+#: pretix/base/pdf.py:192
 msgid "Event begin date and time"
 msgstr "Fecha y hora de inicio de evento"
 
-#: pretix/base/pdf.py:188
+#: pretix/base/pdf.py:193
 msgid "2017-05-31 20:00"
 msgstr "2017-05-31 20:00"
 
-#: pretix/base/pdf.py:195
+#: pretix/base/pdf.py:200
 msgid "Event begin date"
 msgstr "Fecha de inicio del evento"
 
-#: pretix/base/pdf.py:196 pretix/base/pdf.py:217 pretix/base/pdf.py:326
+#: pretix/base/pdf.py:201 pretix/base/pdf.py:222 pretix/base/pdf.py:331
 msgid "2017-05-31"
 msgstr "2017-05-31"
 
-#: pretix/base/pdf.py:203
+#: pretix/base/pdf.py:208
 msgid "Event begin time"
 msgstr "Hora de inicio de evento"
 
-#: pretix/base/pdf.py:204
+#: pretix/base/pdf.py:209
 msgid "20:00"
 msgstr "20:00"
 
-#: pretix/base/pdf.py:208
+#: pretix/base/pdf.py:213
 msgid "Event end date and time"
 msgstr "Fecha y hora de finalización del evento"
 
-#: pretix/base/pdf.py:209
+#: pretix/base/pdf.py:214
 msgid "2017-05-31 22:00"
 msgstr "2017-05-31 22:00"
 
-#: pretix/base/pdf.py:216
+#: pretix/base/pdf.py:221
 msgid "Event end date"
 msgstr "Fecha de finalización del evento"
 
-#: pretix/base/pdf.py:225
+#: pretix/base/pdf.py:230
 msgid "22:00"
 msgstr "22:00"
 
-#: pretix/base/pdf.py:232
+#: pretix/base/pdf.py:237
 msgid "Event admission date and time"
 msgstr "Fecha y hora de admisión al evento"
 
-#: pretix/base/pdf.py:233 pretix/base/pdf.py:334
+#: pretix/base/pdf.py:238 pretix/base/pdf.py:339
 msgid "2017-05-31 19:00"
 msgstr "2017-05-31 19:00"
 
-#: pretix/base/pdf.py:240
+#: pretix/base/pdf.py:245
 msgid "Event admission time"
 msgstr "Hora de admisión del evento"
 
-#: pretix/base/pdf.py:241 pretix/base/pdf.py:342
+#: pretix/base/pdf.py:246 pretix/base/pdf.py:347
 msgid "19:00"
 msgstr "19:00"
 
-#: pretix/base/pdf.py:248
+#: pretix/base/pdf.py:253
 msgid "Event location"
 msgstr "Ubicación del evento"
 
-#: pretix/base/pdf.py:268
+#: pretix/base/pdf.py:273
 msgid "Invoice address company"
 msgstr "Dirección de facturación empresa"
 
-#: pretix/base/pdf.py:273
+#: pretix/base/pdf.py:278
 #, fuzzy
 #| msgid "Invoice addresses"
 msgid "Invoice address street"
 msgstr "Direcciones de facturación"
 
-#: pretix/base/pdf.py:274
+#: pretix/base/pdf.py:279
 msgid "Sesame Street 42"
 msgstr ""
 
-#: pretix/base/pdf.py:278
+#: pretix/base/pdf.py:283
 #, fuzzy
 #| msgid "Invoice addresses"
 msgid "Invoice address ZIP code"
 msgstr "Direcciones de facturación"
 
-#: pretix/base/pdf.py:279
+#: pretix/base/pdf.py:284
 #, fuzzy
 #| msgid "012345"
 msgid "12345"
 msgstr "012345"
 
-#: pretix/base/pdf.py:283
+#: pretix/base/pdf.py:288
 #, fuzzy
 #| msgid "Invoice address company"
 msgid "Invoice address city"
 msgstr "Dirección de facturación empresa"
 
-#: pretix/base/pdf.py:284 pretix/base/services/invoices.py:368
+#: pretix/base/pdf.py:289 pretix/base/services/invoices.py:368
 msgid "Sample city"
 msgstr "Ciudad de ejemplo"
 
-#: pretix/base/pdf.py:288
+#: pretix/base/pdf.py:293
 #, fuzzy
 #| msgid "Invoice address name"
 msgid "Invoice address state"
 msgstr "Dirección de facturación"
 
-#: pretix/base/pdf.py:289
+#: pretix/base/pdf.py:294
 #, fuzzy
 #| msgid "Sample city"
 msgid "Sample State"
 msgstr "Ciudad de ejemplo"
 
-#: pretix/base/pdf.py:293
+#: pretix/base/pdf.py:298
 #, fuzzy
 #| msgid "Invoice address company"
 msgid "Invoice address country"
 msgstr "Dirección de facturación empresa"
 
-#: pretix/base/pdf.py:294
+#: pretix/base/pdf.py:299
 msgid "Atlantis"
 msgstr ""
 
-#: pretix/base/pdf.py:298
+#: pretix/base/pdf.py:303
 msgid "List of Add-Ons"
 msgstr "Lista de add-ons"
 
-#: pretix/base/pdf.py:299
+#: pretix/base/pdf.py:304
 msgid ""
 "Add-on 1\n"
 "Add-on 2"
@@ -7696,87 +7718,87 @@ msgstr ""
 "Agregado 1\n"
 "Agregado 2"
 
-#: pretix/base/pdf.py:310 pretix/control/forms/filter.py:892
+#: pretix/base/pdf.py:315 pretix/control/forms/filter.py:892
 #: pretix/control/forms/filter.py:894
 #: pretix/control/templates/pretixcontrol/admin/organizers.html:35
 #: pretix/control/templates/pretixcontrol/organizers/index.html:33
 msgid "Organizer name"
 msgstr "Nombre del organizador"
 
-#: pretix/base/pdf.py:311
+#: pretix/base/pdf.py:316
 msgid "Event organizer company"
 msgstr "Empresa organizadora de eventos"
 
-#: pretix/base/pdf.py:315
+#: pretix/base/pdf.py:320
 msgid "Organizer info text"
 msgstr "Texto informativo del organizador"
 
-#: pretix/base/pdf.py:316
+#: pretix/base/pdf.py:321
 msgid "Event organizer info text"
 msgstr "Texto de información del organizador del evento"
 
-#: pretix/base/pdf.py:320 pretix/base/pdf.py:321
+#: pretix/base/pdf.py:325 pretix/base/pdf.py:326
 #, fuzzy
 #| msgid "Event organizer info text"
 msgid "Event info text"
 msgstr "Texto de información del organizador del evento"
 
-#: pretix/base/pdf.py:325
+#: pretix/base/pdf.py:330
 msgid "Printing date"
 msgstr "Fecha de impresión"
 
-#: pretix/base/pdf.py:333
+#: pretix/base/pdf.py:338
 msgid "Printing date and time"
 msgstr "Fecha y hora de impresión"
 
-#: pretix/base/pdf.py:341
+#: pretix/base/pdf.py:346
 msgid "Printing time"
 msgstr "Hora de impresión"
 
-#: pretix/base/pdf.py:349
+#: pretix/base/pdf.py:354
 #, fuzzy
 #| msgid "Full name"
 msgid "Seat: Full name"
 msgstr "Nombre completo"
 
-#: pretix/base/pdf.py:350
+#: pretix/base/pdf.py:355
 msgid "Ground floor, Row 3, Seat 4"
 msgstr "Planta baja, fila 3, asiento 4"
 
-#: pretix/base/pdf.py:352 pretix/base/pdf.py:358
+#: pretix/base/pdf.py:357 pretix/base/pdf.py:363
 #: pretix/control/forms/orders.py:255
 msgid "General admission"
 msgstr "Entrada general"
 
-#: pretix/base/pdf.py:355
+#: pretix/base/pdf.py:360
 #, fuzzy
 #| msgid "Team name"
 msgid "Seat: zone"
 msgstr "Nombre del equipo"
 
-#: pretix/base/pdf.py:356
+#: pretix/base/pdf.py:361
 msgid "Ground floor"
 msgstr "Planta baja"
 
-#: pretix/base/pdf.py:361
+#: pretix/base/pdf.py:366
 msgid "Seat: row"
 msgstr "Asiento: fila"
 
-#: pretix/base/pdf.py:366
+#: pretix/base/pdf.py:371
 msgid "Seat: seat number"
 msgstr "Asiento: número de asiento"
 
-#: pretix/base/pdf.py:407 pretix/base/pdf.py:445
+#: pretix/base/pdf.py:412 pretix/base/pdf.py:450
 #, python-brace-format
 msgid "Question: {question}"
 msgstr "Pregunta: {question}"
 
-#: pretix/base/pdf.py:446
+#: pretix/base/pdf.py:451
 #, python-brace-format
 msgid "<Answer: {question}>"
 msgstr "<Respuesta: {question}>"
 
-#: pretix/base/pdf.py:477 pretix/base/pdf.py:484
+#: pretix/base/pdf.py:482 pretix/base/pdf.py:489
 #: pretix/plugins/badges/exporters.py:263
 #: pretix/plugins/checkinlists/exporters.py:78
 #: pretix/plugins/checkinlists/exporters.py:404
@@ -7785,12 +7807,12 @@ msgstr "<Respuesta: {question}>"
 msgid "Attendee name: {part}"
 msgstr "Nombre del participante: {part}"
 
-#: pretix/base/pdf.py:494
+#: pretix/base/pdf.py:499
 #, python-brace-format
 msgid "Invoice address name: {part}"
 msgstr "Nombre para dirección de facturación: {part}"
 
-#: pretix/base/pdf.py:710 pretix/plugins/ticketoutputpdf/ticketoutput.py:78
+#: pretix/base/pdf.py:715 pretix/plugins/ticketoutputpdf/ticketoutput.py:78
 msgid "Ticket"
 msgstr "Ticket"
 
@@ -8943,7 +8965,7 @@ msgstr ""
 #: pretix/base/templates/pretixbase/email/email_footer.html:3
 #: pretix/control/templates/pretixcontrol/admin/pages/base.html:51
 #: pretix/control/templates/pretixcontrol/auth/base.html:86
-#: pretix/control/templates/pretixcontrol/base.html:411
+#: pretix/control/templates/pretixcontrol/base.html:410
 #: pretix/eventyay_common/templates/eventyay_common/base.html:313
 #, fuzzy, python-format
 #| msgid "powered by <a %(a_attr)s>pretix</a>"
@@ -9881,7 +9903,7 @@ msgstr "Cantidad disponible"
 msgid "Search for…"
 msgstr "Buscar por…"
 
-#: pretix/control/forms/filter.py:148 pretix/control/navigation.py:174
+#: pretix/control/forms/filter.py:148 pretix/control/navigation.py:164
 #: pretix/control/templates/pretixcontrol/items/question.html:20
 msgid "All orders"
 msgstr "Todas las ordenes"
@@ -10298,8 +10320,8 @@ msgstr "Nombre del equipo"
 #: pretix/control/templates/pretixcontrol/admin/task_management/task_management.html:62
 #: pretix/control/templates/pretixcontrol/event/payment.html:29
 #: pretix/control/templates/pretixcontrol/toggle_billing_validation.html:39
-#: pretix/control/templates/pretixcontrol/user/settings.html:48
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:48
+#: pretix/control/templates/pretixcontrol/user/settings.html:49
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:49
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:59
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:79
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:105
@@ -10310,8 +10332,8 @@ msgstr "Habilitado"
 #: pretix/control/templates/pretixcontrol/event/payment.html:34
 #: pretix/control/templates/pretixcontrol/subevents/index.html:131
 #: pretix/control/templates/pretixcontrol/toggle_billing_validation.html:35
-#: pretix/control/templates/pretixcontrol/user/settings.html:53
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:53
+#: pretix/control/templates/pretixcontrol/user/settings.html:54
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:54
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:94
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:115
 msgid "Disabled"
@@ -10817,7 +10839,7 @@ msgstr "Agregado a"
 #: pretix/control/templates/pretixcontrol/checkin/index.html:81
 #: pretix/control/templates/pretixcontrol/order/change.html:118
 #: pretix/control/views/vouchers.py:73
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:84
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:85
 msgid "Seat"
 msgstr "Asiento"
 
@@ -12598,7 +12620,7 @@ msgstr "Te hiciste pasar por {}."
 msgid "You stopped impersonating {}."
 msgstr "Dejaste de hacerte pasar por {}."
 
-#: pretix/control/middleware.py:117
+#: pretix/control/middleware.py:137
 msgid ""
 "The selected event was not found or you have no permission to administrate "
 "it."
@@ -12606,7 +12628,7 @@ msgstr ""
 "El evento seleccionado no se ha encontrado o no tiene permiso para "
 "administrarlo."
 
-#: pretix/control/middleware.py:129
+#: pretix/control/middleware.py:159
 msgid ""
 "The selected organizer was not found or you have no permission to "
 "administrate it."
@@ -12614,20 +12636,8 @@ msgstr ""
 "El organizador seleccionado no ha sido encontrado o no tiene permiso para "
 "administrarlo."
 
-#: pretix/control/navigation.py:16
-#: pretix/control/templates/pretixcontrol/admin/dashboard.html:3
-#: pretix/control/templates/pretixcontrol/dashboard.html:3
-#: pretix/eventyay_common/navigation.py:19
-#: pretix/eventyay_common/navigation.py:69
-#: pretix/eventyay_common/templates/eventyay_common/dashboard/dashboard.html:3
-#: pretix/eventyay_common/templates/eventyay_common/dashboard/dashboard.html:6
-#: pretix/eventyay_common/templates/eventyay_common/event/settings.html:62
-#: pretix/eventyay_common/templates/eventyay_common/event/settings.html:82
-msgid "Dashboard"
-msgstr "Tablero"
-
-#: pretix/control/navigation.py:28 pretix/control/navigation.py:334
-#: pretix/control/navigation.py:392
+#: pretix/control/navigation.py:18 pretix/control/navigation.py:318
+#: pretix/control/navigation.py:376
 #: pretix/control/templates/pretixcontrol/checkin/list_edit.html:35
 #: pretix/control/templates/pretixcontrol/event/mail.html:21
 #: pretix/control/templates/pretixcontrol/event/tax_edit.html:32
@@ -12639,7 +12649,7 @@ msgstr "Tablero"
 msgid "General"
 msgstr "General"
 
-#: pretix/control/navigation.py:36
+#: pretix/control/navigation.py:26
 #: pretix/control/templates/pretixcontrol/event/quick_setup.html:160
 #: pretix/control/templates/pretixcontrol/order/index.html:712
 #: pretix/control/templates/pretixcontrol/order/refund_choose.html:36
@@ -12648,7 +12658,7 @@ msgstr "General"
 msgid "Payment"
 msgstr "Pago"
 
-#: pretix/control/navigation.py:52
+#: pretix/control/navigation.py:42
 #: pretix/control/templates/pretixcontrol/event/component_link.html:8
 #: pretix/control/views/event.py:1383 pretix/control/views/event.py:1385
 #: pretix/control/views/event.py:1416 pretix/control/views/event.py:1421
@@ -12661,43 +12671,43 @@ msgstr "Pago"
 msgid "Tickets"
 msgstr "Entradas"
 
-#: pretix/control/navigation.py:68
+#: pretix/control/navigation.py:58
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:8
 msgid "Tax rules"
 msgstr "Normativa fiscal"
 
-#: pretix/control/navigation.py:76
+#: pretix/control/navigation.py:66
 msgid "Invoicing"
 msgstr "Facturación"
 
-#: pretix/control/navigation.py:84
+#: pretix/control/navigation.py:74
 msgctxt "action"
 msgid "Cancellation"
 msgstr "Cancelación"
 
-#: pretix/control/navigation.py:92
+#: pretix/control/navigation.py:82
 #: pretix/control/templates/pretixcontrol/event/widget.html:11
 msgid "Widget"
 msgstr "Widget"
 
-#: pretix/control/navigation.py:105 pretix/control/navigation.py:385
-#: pretix/control/navigation.py:566
+#: pretix/control/navigation.py:95 pretix/control/navigation.py:369
+#: pretix/control/navigation.py:550
 #: pretix/control/templates/pretixcontrol/event/payment.html:48
-#: pretix/eventyay_common/navigation.py:81
+#: pretix/eventyay_common/navigation.py:63
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:87
 msgid "Settings"
 msgstr "Ajustes"
 
-#: pretix/control/navigation.py:153
+#: pretix/control/navigation.py:143
 msgid "Categories"
 msgstr "Categorías"
 
-#: pretix/control/navigation.py:182
+#: pretix/control/navigation.py:172
 msgid "Overview"
 msgstr "Panorama general"
 
-#: pretix/control/navigation.py:190
+#: pretix/control/navigation.py:180
 #: pretix/control/templates/pretixcontrol/order/index.html:699
 #: pretix/control/templates/pretixcontrol/orders/refunds.html:7
 #: pretix/control/templates/pretixcontrol/orders/refunds.html:12
@@ -12705,30 +12715,30 @@ msgstr "Panorama general"
 msgid "Refunds"
 msgstr "Reembolsos"
 
-#: pretix/control/navigation.py:198 pretix/control/navigation.py:469
+#: pretix/control/navigation.py:188 pretix/control/navigation.py:453
 msgid "Export"
 msgstr "Exportación"
 
-#: pretix/control/navigation.py:216
+#: pretix/control/navigation.py:206
 #, fuzzy
 #| msgid "Import file"
 msgid "Import"
 msgstr "Fichero de importación"
 
-#: pretix/control/navigation.py:245
+#: pretix/control/navigation.py:235
 msgid "All vouchers"
 msgstr "Todos los vales"
 
-#: pretix/control/navigation.py:253
+#: pretix/control/navigation.py:243
 msgid "Tags"
 msgstr "Etiquetas"
 
-#: pretix/control/navigation.py:265
+#: pretix/control/navigation.py:255
 msgctxt "navigation"
 msgid "Check-in"
 msgstr "Registro"
 
-#: pretix/control/navigation.py:274
+#: pretix/control/navigation.py:264
 #: pretix/control/templates/pretixcontrol/checkin/lists.html:3
 #: pretix/control/templates/pretixcontrol/checkin/lists.html:8
 #: pretix/control/templates/pretixcontrol/checkin/lists.html:79
@@ -12739,27 +12749,20 @@ msgstr "Registro"
 msgid "Check-in lists"
 msgstr "Listas de registro"
 
-#: pretix/control/navigation.py:298
-#: pretix/control/templates/pretixcontrol/dashboard.html:5
-#, fuzzy
-#| msgid "Ticket download"
-msgid "Tickets dashboard"
-msgstr "Descarga de tickets"
-
-#: pretix/control/navigation.py:304
+#: pretix/control/navigation.py:288
 #, fuzzy
 #| msgid "My Orders"
 msgid "My orders"
 msgstr "Mis pedidos"
 
-#: pretix/control/navigation.py:310 pretix/control/navigation.py:375
+#: pretix/control/navigation.py:294 pretix/control/navigation.py:359
 #: pretix/control/templates/pretixcontrol/events/index.html:7
 #, fuzzy
 #| msgid "All events"
 msgid "My events"
 msgstr "Todos los eventos"
 
-#: pretix/control/navigation.py:322
+#: pretix/control/navigation.py:306
 #: pretix/control/templates/pretixcontrol/orders/search.html:7
 #: pretix/control/templates/pretixcontrol/orders/search.html:9
 #: pretix/control/templates/pretixcontrol/search/orders.html:7
@@ -12767,99 +12770,99 @@ msgstr "Todos los eventos"
 msgid "Order search"
 msgstr "Búsqueda de pedidos"
 
-#: pretix/control/navigation.py:328 pretix/eventyay_common/navigation.py:37
+#: pretix/control/navigation.py:312 pretix/eventyay_common/navigation.py:31
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/control.html:8
 #, fuzzy
 #| msgid "Amount"
 msgid "Account"
 msgstr "Monto"
 
-#: pretix/control/navigation.py:339
-#: pretix/control/templates/pretixcontrol/user/settings.html:16
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:16
+#: pretix/control/navigation.py:323
+#: pretix/control/templates/pretixcontrol/user/settings.html:17
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:17
 msgid "Notifications"
 msgstr "Notificaciones"
 
-#: pretix/control/navigation.py:344
+#: pretix/control/navigation.py:328
 msgid "2FA"
 msgstr "Autenticación de dos factores"
 
-#: pretix/control/navigation.py:349
+#: pretix/control/navigation.py:333
 msgid "Authorized apps"
 msgstr "Aplicaciones autorizadas"
 
-#: pretix/control/navigation.py:354
+#: pretix/control/navigation.py:338
 #: pretix/control/templates/pretixcontrol/user/history.html:4
 #: pretix/control/templates/pretixcontrol/user/history.html:6
 #: pretix/control/templates/pretixcontrol/user/history.html:10
-#: pretix/control/templates/pretixcontrol/user/settings.html:70
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:70
+#: pretix/control/templates/pretixcontrol/user/settings.html:71
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:71
 msgid "Account history"
 msgstr "Historial de la cuenta"
 
-#: pretix/control/navigation.py:415
+#: pretix/control/navigation.py:399
 #: pretix/control/templates/pretixcontrol/organizers/billing.html:15
 #, fuzzy
 #| msgid "Login settings"
 msgid "Billing settings"
 msgstr "Configuración de inicio de sesión"
 
-#: pretix/control/navigation.py:445 pretix/control/navigation.py:452
+#: pretix/control/navigation.py:429 pretix/control/navigation.py:436
 msgid "Devices"
 msgstr "Dispositivos"
 
-#: pretix/control/navigation.py:506
+#: pretix/control/navigation.py:490
 #: pretix/control/templates/pretixcontrol/admin/dashboard.html:5
 #, fuzzy
 #| msgid "Dashboard"
 msgid "Admin Dashboard"
 msgstr "Tablero"
 
-#: pretix/control/navigation.py:512
+#: pretix/control/navigation.py:496
 #, fuzzy
 #| msgid "All events"
 msgid "All Events"
 msgstr "Todos los eventos"
 
-#: pretix/control/navigation.py:518
+#: pretix/control/navigation.py:502
 #, fuzzy
 #| msgid "All organizers"
 msgid "All Organizers"
 msgstr "Todos los organizadores"
 
-#: pretix/control/navigation.py:524
+#: pretix/control/navigation.py:508
 #: pretix/control/templates/pretixcontrol/admin/task_management/task_management.html:7
 #: pretix/control/templates/pretixcontrol/admin/task_management/task_management.html:10
 msgid "Task management"
 msgstr ""
 
-#: pretix/control/navigation.py:530
+#: pretix/control/navigation.py:514
 #, fuzzy
 #| msgid "Page %d"
 msgid "Pages"
 msgstr "Página %d"
 
-#: pretix/control/navigation.py:542
+#: pretix/control/navigation.py:526
 msgid "All users"
 msgstr "Todos los usuarios"
 
-#: pretix/control/navigation.py:547
+#: pretix/control/navigation.py:531
 #: pretix/control/templates/pretixcontrol/admin/user/staff_session_list.html:5
 #: pretix/control/templates/pretixcontrol/admin/user/staff_session_list.html:7
 msgid "Admin sessions"
 msgstr "Sesiones de administración"
 
-#: pretix/control/navigation.py:560
+#: pretix/control/navigation.py:544
 #: pretix/control/templates/pretixcontrol/global_settings_base.html:5
 #: pretix/control/templates/pretixcontrol/global_settings_base.html:7
 msgid "Global settings"
 msgstr "Parametrizaciones globales"
 
-#: pretix/control/navigation.py:571
+#: pretix/control/navigation.py:555
 msgid "Update check"
 msgstr "Verificación de actualización"
 
-#: pretix/control/navigation.py:576
+#: pretix/control/navigation.py:560
 #: pretix/control/templates/pretixcontrol/global_sso.html:7
 #: pretix/control/templates/pretixcontrol/global_sso.html:9
 #, fuzzy
@@ -12867,7 +12870,7 @@ msgstr "Verificación de actualización"
 msgid "Generate keys for SSO"
 msgstr "Generar tickets"
 
-#: pretix/control/navigation.py:581
+#: pretix/control/navigation.py:565
 #: pretix/plugins/socialauth/templates/socialauth/social_auth_settings.html:6
 #: pretix/plugins/socialauth/templates/socialauth/social_auth_settings.html:11
 #, fuzzy
@@ -12875,7 +12878,7 @@ msgstr "Generar tickets"
 msgid "Social login settings"
 msgstr "Configuración de inicio de sesión"
 
-#: pretix/control/navigation.py:586
+#: pretix/control/navigation.py:570
 msgid "Billing Validation"
 msgstr ""
 
@@ -12883,6 +12886,15 @@ msgstr ""
 #: pretix/control/permissions.py:105 pretix/control/permissions.py:122
 msgid "You do not have permission to view this content."
 msgstr "Usted no tiene permiso para ver este contenido."
+
+#: pretix/control/templates/pretixcontrol/admin/dashboard.html:3
+#: pretix/control/templates/pretixcontrol/dashboard.html:3
+#: pretix/eventyay_common/templates/eventyay_common/dashboard/dashboard.html:3
+#: pretix/eventyay_common/templates/eventyay_common/dashboard/dashboard.html:6
+#: pretix/eventyay_common/templates/eventyay_common/event/settings.html:62
+#: pretix/eventyay_common/templates/eventyay_common/event/settings.html:82
+msgid "Dashboard"
+msgstr "Tablero"
 
 #: pretix/control/templates/pretixcontrol/admin/events/index.html:8
 #: pretix/control/templates/pretixcontrol/events/index.html:8
@@ -13203,10 +13215,10 @@ msgstr "Atrás"
 #: pretix/control/templates/pretixcontrol/subevents/bulk_edit.html:348
 #: pretix/control/templates/pretixcontrol/subevents/detail.html:240
 #: pretix/control/templates/pretixcontrol/user/notifications.html:85
-#: pretix/control/templates/pretixcontrol/user/settings.html:81
+#: pretix/control/templates/pretixcontrol/user/settings.html:82
 #: pretix/control/templates/pretixcontrol/vouchers/bulk.html:98
 #: pretix/control/templates/pretixcontrol/vouchers/detail.html:105
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:81
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:82
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:131
 #: pretix/eventyay_common/templates/eventyay_common/organizers/create.html:17
 #: pretix/eventyay_common/templates/eventyay_common/organizers/edit.html:35
@@ -13426,14 +13438,14 @@ msgid "Expiry"
 msgstr "Vencimiento"
 
 #: pretix/control/templates/pretixcontrol/auth/base.html:71
-#: pretix/control/templates/pretixcontrol/base.html:340
+#: pretix/control/templates/pretixcontrol/base.html:339
 #: pretix/eventyay_common/templates/eventyay_common/base.html:242
 #, python-format
 msgid "You are currently working on behalf of %(user)s."
 msgstr "Actualmente trabaja en nombre de %(user)s."
 
 #: pretix/control/templates/pretixcontrol/auth/base.html:76
-#: pretix/control/templates/pretixcontrol/base.html:345
+#: pretix/control/templates/pretixcontrol/base.html:344
 #: pretix/eventyay_common/templates/eventyay_common/base.html:247
 msgid "Stop impersonating"
 msgstr "Deja de hacerte pasar por"
@@ -13547,7 +13559,7 @@ msgstr ""
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:11
 #: pretix/presale/templates/pretixpresale/event/checkout_addons.html:342
 #: pretix/presale/templates/pretixpresale/event/checkout_payment.html:77
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:172
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:191
 #: pretix/presale/templates/pretixpresale/event/order_pay.html:27
 #: pretix/presale/templates/pretixpresale/event/order_pay_change.html:60
 msgid "Continue"
@@ -13638,7 +13650,14 @@ msgstr "Finalizar sesión de administración"
 msgid "Organizer account"
 msgstr "Cuenta del organizador"
 
-#: pretix/control/templates/pretixcontrol/base.html:325
+#: pretix/control/templates/pretixcontrol/base.html:267
+#: pretix/control/templates/pretixcontrol/dashboard.html:5
+#, fuzzy
+#| msgid "Ticket download"
+msgid "Tickets dashboard"
+msgstr "Descarga de tickets"
+
+#: pretix/control/templates/pretixcontrol/base.html:324
 #: pretix/eventyay_common/templates/eventyay_common/base.html:227
 msgid ""
 "Please leave a short comment on what you did in the following admin sessions:"
@@ -13646,12 +13665,12 @@ msgstr ""
 "Por favor, deje un breve comentario sobre lo que hizo en las siguientes "
 "sesiones de administración:"
 
-#: pretix/control/templates/pretixcontrol/base.html:356
+#: pretix/control/templates/pretixcontrol/base.html:355
 #: pretix/eventyay_common/templates/eventyay_common/base.html:258
 msgid "Read more"
 msgstr "Leer más"
 
-#: pretix/control/templates/pretixcontrol/base.html:373
+#: pretix/control/templates/pretixcontrol/base.html:372
 #: pretix/eventyay_common/templates/eventyay_common/base.html:275
 msgid ""
 "Your event contains <strong>test mode orders</strong> even though "
@@ -13664,17 +13683,17 @@ msgstr ""
 "estas ordenes para asegurarte que no se muestren en tus reportes "
 "estadísticos y bloquear la compra de tickets a las personas."
 
-#: pretix/control/templates/pretixcontrol/base.html:380
+#: pretix/control/templates/pretixcontrol/base.html:379
 #: pretix/eventyay_common/templates/eventyay_common/base.html:282
 msgid "Show all test mode orders"
 msgstr "Mostrar todas las ordenes en modo de prueba"
 
-#: pretix/control/templates/pretixcontrol/base.html:388
+#: pretix/control/templates/pretixcontrol/base.html:387
 #: pretix/eventyay_common/templates/eventyay_common/base.html:290
 msgid "The system automatically checks for updates in the background."
 msgstr ""
 
-#: pretix/control/templates/pretixcontrol/base.html:397
+#: pretix/control/templates/pretixcontrol/base.html:396
 #: pretix/eventyay_common/templates/eventyay_common/base.html:299
 #, fuzzy
 #| msgid ""
@@ -13687,18 +13706,18 @@ msgstr ""
 "pretix se está ejecutando en modo debug. Por razones de seguridad, no "
 "ejecute nunca el modo de depuración en una instancia de producción."
 
-#: pretix/control/templates/pretixcontrol/base.html:406
+#: pretix/control/templates/pretixcontrol/base.html:405
 #: pretix/eventyay_common/templates/eventyay_common/base.html:308
 #, python-format
 msgid "Times displayed in %(tz)s"
 msgstr "Horas desplegadas en %(tz)s"
 
-#: pretix/control/templates/pretixcontrol/base.html:416
+#: pretix/control/templates/pretixcontrol/base.html:415
 #: pretix/eventyay_common/templates/eventyay_common/base.html:318
 msgid "running in development mode"
 msgstr "Funcionamiento en modo de desarrollo"
 
-#: pretix/control/templates/pretixcontrol/base.html:443
+#: pretix/control/templates/pretixcontrol/base.html:442
 #: pretix/eventyay_common/templates/eventyay_common/base.html:334
 #: pretix/presale/templates/pretixpresale/waiting.html:25
 msgid "If this takes longer than a few minutes, please contact us."
@@ -14239,8 +14258,8 @@ msgstr ""
 "notificaciones para este evento."
 
 #: pretix/control/templates/pretixcontrol/event/cancel.html:44
-#: pretix/control/templates/pretixcontrol/user/settings.html:29
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:29
+#: pretix/control/templates/pretixcontrol/user/settings.html:30
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:30
 msgid "Change notification settings"
 msgstr "Cambiar la configuración de notificación"
 
@@ -14964,8 +14983,8 @@ msgstr "Desactivar"
 #: pretix/control/templates/pretixcontrol/user/2fa_enable.html:21
 #: pretix/control/templates/pretixcontrol/user/2fa_main.html:56
 #: pretix/control/templates/pretixcontrol/user/notifications.html:23
-#: pretix/control/templates/pretixcontrol/user/settings.html:55
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:55
+#: pretix/control/templates/pretixcontrol/user/settings.html:56
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:56
 #: pretix/plugins/socialauth/templates/socialauth/social_auth_settings.html:43
 msgid "Enable"
 msgstr "Habilitar"
@@ -16235,13 +16254,10 @@ msgstr ""
 
 #: pretix/control/templates/pretixcontrol/items/question_edit.html:37
 msgid ""
-"If you mark a Yes/No question as required, it means that the user has to "
-"select Yes and No is not accepted. If you want to allow both options, do not "
-"make this field required."
+"If a Confirm Checkbox is marked as required, the user must check it to "
+"proceed. To allow the user to leave it unchecked, do not set the field as "
+"required."
 msgstr ""
-"Si marca una pregunta Sí/No como requerida, significa que el usuario tiene "
-"que seleccionar Sí y No no es aceptado. Si desea permitir ambas opciones, no "
-"haga que este campo sea obligatorio."
 
 #: pretix/control/templates/pretixcontrol/items/question_edit.html:55
 msgid "Answer options"
@@ -16543,8 +16559,8 @@ msgstr "Revocar"
 
 #: pretix/control/templates/pretixcontrol/oauth/authorized.html:4
 #: pretix/control/templates/pretixcontrol/oauth/authorized.html:6
-#: pretix/control/templates/pretixcontrol/user/settings.html:61
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:61
+#: pretix/control/templates/pretixcontrol/user/settings.html:62
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:62
 msgid "Authorized applications"
 msgstr "Solicitudes autorizadas"
 
@@ -16793,13 +16809,13 @@ msgstr "Cambiar la información de la orden"
 #: pretix/control/templates/pretixcontrol/order/change_questions.html:25
 #: pretix/control/templates/pretixcontrol/order/index.html:814
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:88
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:35
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:36
 #: pretix/presale/templates/pretixpresale/event/order_modify.html:29
 msgid "Invoice information"
 msgstr "Datos de la factura"
 
 #: pretix/control/templates/pretixcontrol/order/change_questions.html:26
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:36
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:37
 #: pretix/presale/templates/pretixpresale/event/order_modify.html:30
 msgid "(optional)"
 msgstr "(opcional)"
@@ -19219,8 +19235,8 @@ msgstr ""
 
 #: pretix/control/templates/pretixcontrol/user/2fa_main.html:4
 #: pretix/control/templates/pretixcontrol/user/2fa_main.html:6
-#: pretix/control/templates/pretixcontrol/user/settings.html:45
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:45
+#: pretix/control/templates/pretixcontrol/user/settings.html:46
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:46
 msgid "Two-factor authentication"
 msgstr "Autenticación de dos factores"
 
@@ -19369,15 +19385,15 @@ msgstr "Global"
 
 #: pretix/control/templates/pretixcontrol/user/notifications.html:70
 #: pretix/control/templates/pretixcontrol/user/notifications.html:72
-#: pretix/control/templates/pretixcontrol/user/settings.html:20
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:20
+#: pretix/control/templates/pretixcontrol/user/settings.html:21
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:21
 msgid "On"
 msgstr "Encendido"
 
 #: pretix/control/templates/pretixcontrol/user/notifications.html:70
 #: pretix/control/templates/pretixcontrol/user/notifications.html:71
-#: pretix/control/templates/pretixcontrol/user/settings.html:24
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:24
+#: pretix/control/templates/pretixcontrol/user/settings.html:25
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:25
 msgid "Off"
 msgstr "Apagado"
 
@@ -19439,23 +19455,23 @@ msgstr "Iniciar sesión como otra persona"
 msgid "Account settings"
 msgstr "Configuración de la cuenta"
 
-#: pretix/control/templates/pretixcontrol/user/settings.html:35
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:35
+#: pretix/control/templates/pretixcontrol/user/settings.html:36
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:36
 msgid "Login settings"
 msgstr "Configuración de inicio de sesión"
 
-#: pretix/control/templates/pretixcontrol/user/settings.html:50
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:50
+#: pretix/control/templates/pretixcontrol/user/settings.html:51
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:51
 msgid "Change two-factor settings"
 msgstr "Cambiar la configuración de dos factores"
 
-#: pretix/control/templates/pretixcontrol/user/settings.html:65
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:65
+#: pretix/control/templates/pretixcontrol/user/settings.html:66
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:66
 msgid "Show applications"
 msgstr "Mostrar aplicaciones"
 
-#: pretix/control/templates/pretixcontrol/user/settings.html:74
-#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:74
+#: pretix/control/templates/pretixcontrol/user/settings.html:75
+#: pretix/eventyay_common/templates/eventyay_common/account/settings.html:75
 msgid "Show account history"
 msgstr "Mostrar el historial de la cuenta"
 
@@ -21265,7 +21281,7 @@ msgstr "La entrada solicitada no existe."
 msgid "The selected entry has been deleted."
 msgstr "Se ha borrado la entrada seleccionada."
 
-#: pretix/eventyay_common/navigation.py:25
+#: pretix/eventyay_common/navigation.py:19
 #, fuzzy
 #| msgid "Events"
 msgid "My Events"
@@ -21275,6 +21291,12 @@ msgstr "Eventos"
 #: pretix/eventyay_common/templates/eventyay_common/base.html:141
 msgid "Log out"
 msgstr "Salir"
+
+#: pretix/eventyay_common/templates/eventyay_common/base.html:178
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Main dashboard"
+msgstr "Tablero"
 
 #: pretix/eventyay_common/templates/eventyay_common/dashboard/dashboard.html:121
 #: pretix/eventyay_common/templates/eventyay_common/event/fragment_dashboard.html:83
@@ -23774,7 +23796,7 @@ msgstr "No hay complementos disponibles para este producto."
 #: pretix/presale/templates/pretixpresale/event/checkout_addons.html:337
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:192
 #: pretix/presale/templates/pretixpresale/event/checkout_payment.html:72
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:167
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:186
 msgid "Go back"
 msgstr "Regresar"
 
@@ -23869,7 +23891,7 @@ msgid "Modify contact information"
 msgstr "Información de contacto"
 
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:138
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:18
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:19
 #: pretix/presale/templates/pretixpresale/event/order_modify.html:33
 msgid "Contact information"
 msgstr "Información de contacto"
@@ -23897,8 +23919,10 @@ msgstr ""
 "un enlace que puede utilizar para pagar."
 
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:198
-msgid "Place binding order"
-msgstr "Colocar orden de compra"
+#, fuzzy
+#| msgid "Placed order"
+msgid "Place order"
+msgstr "Pedido realizado"
 
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:200
 msgid "Submit registration"
@@ -23940,25 +23964,25 @@ msgstr ""
 "Por favor, vaya a la configuración de pago y active uno o más proveedores de "
 "pago."
 
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:6
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:7
 msgid "Before we continue, we need you to answer some questions."
 msgstr "Antes de continuar, necesitamos que respondas algunas preguntas."
 
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:8
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:9
 msgid ""
 "You need to fill all fields that are marked with <span>*</span> to continue."
 msgstr ""
 "Debe rellenar todos los campos marcados con <span>*</span> para continuar."
 
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:67
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:68
 msgid "Copy answers from above"
 msgstr "Copiar las respuestas de arriba"
 
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:98
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:99
 msgid "Selected add-ons"
 msgstr "Complementos seleccionados"
 
-#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:133
+#: pretix/presale/templates/pretixpresale/event/checkout_questions.html:134
 #, fuzzy
 #| msgid "Change answers"
 msgid "Copy answers"
@@ -25555,6 +25579,21 @@ msgstr "Acceso de escritura"
 #: pretix/settings.py:822
 msgid "Kosovo"
 msgstr ""
+
+#~ msgid "Yes/No"
+#~ msgstr "Sí/No"
+
+#~ msgid ""
+#~ "If you mark a Yes/No question as required, it means that the user has to "
+#~ "select Yes and No is not accepted. If you want to allow both options, do "
+#~ "not make this field required."
+#~ msgstr ""
+#~ "Si marca una pregunta Sí/No como requerida, significa que el usuario "
+#~ "tiene que seleccionar Sí y No no es aceptado. Si desea permitir ambas "
+#~ "opciones, no haga que este campo sea obligatorio."
+
+#~ msgid "Place binding order"
+#~ msgstr "Colocar orden de compra"
 
 #, fuzzy
 #~| msgid "Edit list"
