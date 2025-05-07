@@ -16,6 +16,12 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
         return []
     nav = [
         {
+            "label": _("My Orders"),
+            "url": reverse("eventyay_common:orders"),
+            "active": "events" in url.url_name,
+            "icon": "shopping-cart",
+        },
+        {
             "label": _("My Events"),
             "url": reverse("eventyay_common:events"),
             "active": "events" in url.url_name,
