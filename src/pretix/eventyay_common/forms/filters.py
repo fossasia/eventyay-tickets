@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models import Event
 
@@ -7,9 +8,9 @@ class UserOrderFilterForm(forms.Form):
     event = forms.ModelChoiceField(
         queryset=None,
         required=False,
-        label="Event",
+        label=_('Event'),
         widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label="Select an Event"
+        empty_label=_('Select an Event')
     )
 
     def __init__(self, *args, **kwargs):
