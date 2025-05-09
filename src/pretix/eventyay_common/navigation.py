@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import List, TypedDict
 
 from django.http import HttpRequest
 from django.urls import reverse
@@ -9,7 +9,14 @@ from pretix.control.navigation import merge_in
 from pretix.control.signals import nav_event, nav_global
 
 
-def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
+class MenuItem(TypedDict):
+    label: str
+    url: str
+    active: bool
+    icon: str
+
+
+def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
     """Generate navigation items for global."""
     url = request.resolver_match
     if not url:
@@ -59,7 +66,7 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     return nav
 
 
-def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, Any]]:
+def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     """Generate navigation items for an event."""
     url = request.resolver_match
     if not url:
@@ -94,4 +101,20 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, A
     # Merge plugin items into default navigation
     merge_in(nav, sorted_plugin_items)
 
+    return nav
+
+
+def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
+    """Generate navigation items for account."""
+    url = request.resolver_match
+    if not url:
+        return []
+    nav = [
+        {
+            'label': _('General'),
+            'url': reverse('eventyay_common:account.general'),
+            'active': 'account' in url.url_name,
+            'icon': 'user',
+        },
+    ]
     return nav

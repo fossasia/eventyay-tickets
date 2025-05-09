@@ -2,6 +2,20 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% block title %}{% trans "Account settings" %}{% endblock %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class="dropdown-toggle">
+        <span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+        </span>
+        <div class="context-indicator">
+            <span class="context-name">{% trans "Account" %}</span>
+        </div>
+    </a>
+{% endblock%}
+
+
 {% block content %}
 <h1>{% trans "Account settings" %}</h1>
 <form action="" method="post" class="form-horizontal">
