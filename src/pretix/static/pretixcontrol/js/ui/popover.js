@@ -11,7 +11,7 @@ $(function () {
     const logoutParams = new URLSearchParams({ back: backUrl });
 
     const ticketsPath = `/control/`;
-    const talksPath = `${talkHostNamePath}/orga/event/`
+    const talksPath = `${talkHostNamePath}orga/event/`
     const mainDashboardPath = `/common/`;
     const orderPath = `/control/settings/orders/`;
     const eventPath = `/control/events/`;
@@ -46,7 +46,7 @@ $(function () {
                                 </a>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                     <div class="profile-menu">
                         <a href="${basePath}${orderPath}" target="_self" class="btn btn-outline-success">
                             <i class="fa fa-shopping-cart"></i> ${window.gettext('My orders')}
