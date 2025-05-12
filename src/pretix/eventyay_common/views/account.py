@@ -1,5 +1,4 @@
-
-from zoneinfo import ZoneInfo
+from datetime import datetime, UTC
 from logging import getLogger
 from collections import defaultdict
 from typing import Any, cast
@@ -18,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django_otp.plugins.otp_static.models import StaticDevice
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
+from pretix.common.consts import KEY_LAST_FORCE_LOGIN
 from pretix.base.models import User, Event, NotificationSetting, WebAuthnDevice, U2FDevice
 from pretix.base.notifications import get_all_notification_types
 from pretix.base.forms.user import UserSettingsForm
@@ -35,12 +35,13 @@ class RecentAuthenticationRequiredMixin:
         if not request.user.is_authenticated:
             return redirect(reverse('control:user.login'))
         user = cast(User, request.user)
-        last_login = user.last_login
-        if not last_login:
+        last_login_secs = cast(float | None, request.session.get(KEY_LAST_FORCE_LOGIN))
+        if not last_login_secs:
             logger.warning('Something wrong with our authentication system. User %s has no last_login set.', user)
             messages.error(request, _('Something went wrong, you cannot access this page now.'))
             return redirect('/')
-        logger.info('User %s last login: %s', user, last_login.astimezone(ZoneInfo('Asia/Ho_Chi_Minh')))
+        last_login = datetime.fromtimestamp(last_login_secs, tz=UTC)
+        logger.info('User %s last login: %s', user, last_login)
         delta = timezone.now() - last_login
         if delta.total_seconds() > self.max_time:
             return redirect(reverse('control:user.reauth'))
