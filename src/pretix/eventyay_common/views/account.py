@@ -6,7 +6,7 @@ from typing import Any, cast
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.http import HttpRequest, HttpResponse
-from django.views.generic import UpdateView, TemplateView
+from django.views.generic import UpdateView, TemplateView, FormView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
@@ -20,7 +20,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from pretix.common.consts import KEY_LAST_FORCE_LOGIN
 from pretix.base.models import User, Event, NotificationSetting, WebAuthnDevice, U2FDevice
 from pretix.base.notifications import get_all_notification_types
-from pretix.base.forms.user import UserSettingsForm
+from pretix.base.forms.user import UserSettingsForm, User2FADeviceAddForm
 from ..navigation import get_account_navigation
 
 
@@ -245,3 +245,25 @@ class TwoFactorAuthSettingsView(RecentAuthenticationRequiredMixin, AccountMenuMi
             ctx['devices'] += objs
 
         return ctx
+
+
+class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, FormView):
+    form_class = User2FADeviceAddForm
+    template_name = 'pretixcontrol/user/2fa_add.html'
+
+    def form_valid(self, form):
+        if form.cleaned_data['devicetype'] == 'totp':
+            dev = TOTPDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
+        elif form.cleaned_data['devicetype'] == 'webauthn':
+            if not self.request.is_secure():
+                messages.error(self.request,
+                               _('Security devices are only available if pretix is served via HTTPS.'))
+                return self.get(self.request, self.args, self.kwargs)
+            dev = WebAuthnDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
+        return redirect(reverse('control:user.settings.2fa.confirm.' + form.cleaned_data['devicetype'], kwargs={
+            'device': dev.pk
+        }))
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
+        return super().form_invalid(form)

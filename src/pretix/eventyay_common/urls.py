@@ -32,4 +32,5 @@ urlpatterns = [
     path('account/general/', account.GeneralSettingsView.as_view(), name='account.general'),
     path('account/notifications/', account.NotificationSettingsView.as_view(), name='account.notifications'),
     path('account/2fa/', account.TwoFactorAuthSettingsView.as_view(), name='account.2fa'),
+    path('account/2fa/add-device/', account.TwoFactorAuthDeviceAddView.as_view(), name='account.2fa.add-device'),
 ]
