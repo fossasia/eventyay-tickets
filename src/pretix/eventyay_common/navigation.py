@@ -106,15 +106,27 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
 
 def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
     """Generate navigation items for account."""
-    url = request.resolver_match
-    if not url:
+    resolver_match = request.resolver_match
+    if not resolver_match:
         return []
     nav = [
         {
             'label': _('General'),
             'url': reverse('eventyay_common:account.general'),
-            'active': 'account' in url.url_name,
+            'active': 'general' in resolver_match.url_name,
             'icon': 'user',
         },
+        {
+            'label': _('Notifications'),
+            'url': reverse('eventyay_common:account.notifications'),
+            'active': 'notifications' in resolver_match.url_name,
+            'icon': 'bell',
+        },
+        {
+            'label': _('Two-factor authentication'),
+            'url': reverse('eventyay_common:account.2fa'),
+            'active': '2fa' in resolver_match.url_name,
+            'icon': 'lock',
+        }
     ]
     return nav

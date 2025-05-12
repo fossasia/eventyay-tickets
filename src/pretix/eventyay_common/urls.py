@@ -1,4 +1,5 @@
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 from pretix.eventyay_common.views import (
     account, dashboards, event, organizer, team,
@@ -27,6 +28,8 @@ urlpatterns = [
     ])),
     path('orders/', MyOrdersView.as_view(), name='orders'),
     # TODO: We may move other /control/settings/xxx pages (which are for User settings) to under this "account" section as well.
-    path('account/', account.AccountSettings.as_view(), name='account'),
-    path('account/general/', account.AccountGeneralSettings.as_view(), name='account.general'),
+    path('account/', RedirectView.as_view(pattern_name='eventyay_common:account.general'), name='account'),
+    path('account/general/', account.GeneralSettingsView.as_view(), name='account.general'),
+    path('account/notifications/', account.NotificationSettingsView.as_view(), name='account.notifications'),
+    path('account/2fa/', account.TwoFactorAuthSettingsView.as_view(), name='account.2fa'),
 ]
