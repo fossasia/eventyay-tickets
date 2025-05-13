@@ -13,10 +13,7 @@ from pretix.base.signals import register_global_settings
 
 
 class GlobalSettingsForm(SettingsForm):
-    auto_fields = [
-        'region',
-        'mail_from'
-    ]
+    auto_fields = ['region', 'mail_from']
 
     def _setting_default(self):
         """
