@@ -1,18 +1,31 @@
-{% extends "eventyay_common/account/base.html" %}
+{% extends 'eventyay_common/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% block title %}{% trans "Add a two-factor authentication device" %}{% endblock %}
+{% block title %}{{ _('Add a two-factor authentication device') }}{% endblock %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
 {% block content %}
-    <h1>{% trans "Add a two-factor authentication device" %}</h1>
-    <form action="" method="post" class="form-horizontal">
+    <h1>{{ _('Add a two-factor authentication device') }}</h1>
+    <form method='post' class='form-horizontal'>
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% bootstrap_field form.name layout='horizontal' %}
         {% bootstrap_field form.devicetype layout='horizontal' %}
-        <div class="form-group submit-group">
-            <button type="submit" class="btn btn-primary btn-save">
-                {% trans "Continue" %}
+        <div class='form-group submit-group'>
+            <button type='submit' class='btn btn-primary btn-save'>
+                {{ _('Continue') }}
             </button>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}

@@ -1,53 +1,53 @@
-{% extends "eventyay_common/base.html" %}
+{% extends 'eventyay_common/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% block title %}{% trans "Account settings" %}{% endblock %}
+{% block title %}{{ _('Account settings') }}{% endblock %}
 
 {% block nav_top_header %}
-    <a href="{% url 'eventyay_common:account' %}" class="dropdown-toggle">
-        <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
         </span>
-        <div class="context-indicator">
-            <span class="context-name">{% trans "Account" %}</span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
         </div>
     </a>
-{% endblock%}
+{% endblock nav_top_header %}
 
 
 {% block content %}
-<h1>{% trans "Account settings" %}</h1>
-<form action="" method="post" class="form-horizontal">
+<h1>{{ _('Account settings') }}</h1>
+<form action='' method='post' class='form-horizontal'>
     {% csrf_token %}
     {% bootstrap_form_errors form %}
     <fieldset>
-        <legend>{% trans "General settings" %}</legend>
+        <legend>{{ _('General settings') }}</legend>
         {% bootstrap_field form.fullname layout='horizontal' %}
         {% bootstrap_field form.wikimedia_username layout='horizontal' readonly='readonly' %}
         {% bootstrap_field form.locale layout='horizontal' %}
         {% bootstrap_field form.timezone layout='horizontal' %}
-        <div class="form-group">
-            <label class="col-md-3 control-label" for="id_new_pw_repeat">{% trans "Notifications" %}</label>
-            <div class="col-md-9 static-form-row">
+        <div class='form-group'>
+            <label class='col-md-3 control-label' for="id_new_pw_repeat">{{ _('Notifications') }}</label>
+            <div class='col-md-9 static-form-row'>
                 {% if request.user.notifications_send and request.user.notification_settings.exists %}
-                    <span class="label label-success">
-                        <span class="fa fa-bell-o"></span> {% trans "On" %}
+                    <span class='label label-success'>
+                        <span class='fa fa-bell-o'></span> {{ _('On') }}
                     </span>
                 {% else %}
-                    <span class="label label-warning">
-                        <span class="fa fa-bell-slash-o"></span> {% trans "Off" %}
+                    <span class='label label-warning'>
+                        <span class='fa fa-bell-slash-o'></span> {{ _('Off') }}
                     </span>
                 {% endif %}
                 &nbsp;
-                <a href="{% url "control:user.settings.notifications" %}">
-                    {% trans "Change notification settings" %}
+                <a href="{% url 'eventyay_common:account.notifications' %}">
+                    {{ _('Change notification settings') }}
                 </a>
             </div>
         </div>
     </fieldset>
     <fieldset>
-        <legend>{% trans "Login settings" %}</legend>
+        <legend>{{ _('Login settings') }}</legend>
         {% if form.old_pw %}
             {% bootstrap_field form.old_pw layout='horizontal' %}
         {% endif %}
@@ -56,45 +56,45 @@
             {% bootstrap_field form.new_pw layout='horizontal' %}
             {% bootstrap_field form.new_pw_repeat layout='horizontal' %}
         {% endif %}
-        <div class="form-group">
-            <label class="col-md-3 control-label" for="id_new_pw_repeat">{% trans "Two-factor authentication" %}</label>
-            <div class="col-md-9 static-form-row">
+        <div class='form-group'>
+            <label class='col-md-3 control-label' for="id_new_pw_repeat">{{ _('Two-factor authentication') }}</label>
+            <div class='col-md-9 static-form-row'>
                 {% if user.require_2fa %}
-                    <span class="label label-success">{% trans "Enabled" %}</span> &nbsp;
-                    <a href="{% url "control:user.settings.2fa" %}">
-                        {% trans "Change two-factor settings" %}
+                    <span class='label label-success'>{{ _('Enabled') }}</span> &nbsp;
+                    <a href="{% url 'eventyay_common:account.2fa' %}">
+                        {{ _('Change two-factor settings') }}
                     </a>
                 {% else %}
-                    <span class="label label-default">{% trans "Disabled" %}</span> &nbsp;
-                    <a href="{% url "control:user.settings.2fa" %}">
-                        {% trans "Enable" %}
+                    <span class='label label-default'>{{ _('Disabled') }}</span> &nbsp;
+                    <a href="{% url 'eventyay_common:account.2fa' %}">
+                        {{ _('Enable') }}
                     </a>
                 {% endif %}
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-md-3 control-label" for="">{% trans "Authorized applications" %}</label>
-            <div class="col-md-9 static-form-row">
-                <a href="{% url "control:user.settings.oauth.list" %}">
-                    <span class="fa fa-plug"></span>
-                    {% trans "Show applications" %}
+        <div class='form-group'>
+            <label class='col-md-3 control-label' for="">{{ _('Authorized applications') }}</label>
+            <div class='col-md-9 static-form-row'>
+                <a href="{% url 'eventyay_common:account.oauth-list' %}">
+                    <span class='fa fa-plug'></span>
+                    {{ _('Show applications') }}
                 </a>
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-md-3 control-label" for="">{% trans "Account history" %}</label>
-            <div class="col-md-9 static-form-row">
-                <a href="{% url "control:user.settings.history" %}">
-                    <span class="fa fa-history"></span>
-                    {% trans "Show account history" %}
+        <div class='form-group'>
+            <label class='col-md-3 control-label' for="">{{ _('Account history') }}</label>
+            <div class='col-md-9 static-form-row'>
+                <a href="{% url 'eventyay_common:account.history' %}">
+                    <span class='fa fa-history'></span>
+                    {{ _('Show account history') }}
                 </a>
             </div>
         </div>
     </fieldset>
-    <div class="form-group submit-group">
-        <button type="submit" class="btn btn-primary btn-save">
-            {% trans "Save" %}
+    <div class='form-group submit-group'>
+        <button type='submit' class='btn btn-primary btn-save'>
+            {{ _('Save') }}
         </button>
     </div>
 </form>
-{% endblock %}
+{% endblock content %}

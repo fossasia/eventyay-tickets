@@ -1,11 +1,15 @@
+import base64
 from datetime import datetime, UTC
 from logging import getLogger
 from collections import defaultdict
+from urllib.parse import quote, urlencode
 from typing import Any, cast
 
 from django.urls import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.forms import BaseForm
 from django.views.generic import UpdateView, TemplateView, FormView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
@@ -44,7 +48,9 @@ class RecentAuthenticationRequiredMixin:
         logger.info('User %s last login: %s', user, last_login)
         delta = timezone.now() - last_login
         if delta.total_seconds() > self.max_time:
-            return redirect(reverse('control:user.reauth'))
+            auth_url = reverse('control:user.reauth')
+            auth_url = '{}?{}'.format(auth_url, urlencode({'next': request.path}))
+            return redirect(auth_url)
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -249,9 +255,9 @@ class TwoFactorAuthSettingsView(RecentAuthenticationRequiredMixin, AccountMenuMi
 
 class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, FormView):
     form_class = User2FADeviceAddForm
-    template_name = 'pretixcontrol/user/2fa_add.html'
+    template_name = 'eventyay_common/account/2fa-add.html'
 
-    def form_valid(self, form):
+    def form_valid(self, form: BaseForm) -> HttpResponse:
         if form.cleaned_data['devicetype'] == 'totp':
             dev = TOTPDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
         elif form.cleaned_data['devicetype'] == 'webauthn':
@@ -260,10 +266,81 @@ class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, FormView):
                                _('Security devices are only available if pretix is served via HTTPS.'))
                 return self.get(self.request, self.args, self.kwargs)
             dev = WebAuthnDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
-        return redirect(reverse('control:user.settings.2fa.confirm.' + form.cleaned_data['devicetype'], kwargs={
-            'device': dev.pk
+        next_url_name = 'eventyay_common:account.2fa.confirm.{}'.format(form.cleaned_data['devicetype'])
+        return redirect(reverse(next_url_name, kwargs={
+            'device_id': dev.pk
         }))
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: BaseForm) -> HttpResponse:
         messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
+
+
+class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, TemplateView):
+    template_name = 'eventyay_common/account/2fa-confirm-totp.html'
+
+    @cached_property
+    def device(self) -> TOTPDevice: 
+        return get_object_or_404(TOTPDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=False)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+
+        ctx['secret'] = base64.b32encode(self.device.bin_key).decode('utf-8')
+        ctx['secretGrouped'] = "  ".join([ctx['secret'].lower()[(i * 4): (i + 1) * 4] for i in range(len(ctx['secret']) // 4)])
+        label = f"{settings.INSTANCE_NAME}: {self.request.user.email}"
+        ctx['qrdata'] = 'otpauth://totp/{}?{}'.format(
+            quote(label),
+            urlencode({
+                'issuer': settings.INSTANCE_NAME,
+                'secret': ctx['secret'],
+                'digits': self.device.digits
+            })
+        )
+        ctx['device'] = self.device
+        return ctx
+
+    def post(self, request: HttpRequest, *args, **kwargs):
+        token = request.POST.get('token', '')
+        activate = request.POST.get('activate', '')
+        user = cast(User, request.user)
+        if self.device.verify_token(token):
+            self.device.confirmed = True
+            self.device.save()
+            user.log_action('pretix.user.settings.2fa.device.added', user=user, data={
+                'id': self.device.pk,
+                'name': self.device.name,
+                'devicetype': 'totp'
+            })
+            notices = [
+                _('A new two-factor authentication device has been added to your account.')
+            ]
+            if activate == 'on' and not user.require_2fa:
+                user.require_2fa = True
+                user.save()
+                user.log_action('pretix.user.settings.2fa.enabled', user=user)
+                notices.append(
+                    _('Two-factor authentication has been enabled.')
+                )
+            user.send_security_notice(notices)
+            user.update_session_token()
+            update_session_auth_hash(self.request, user)
+
+            note = ''
+            if not user.require_2fa:
+                note = ' ' + str(_('Please note that you still need to enable two-factor authentication for your '
+                                   'account using the buttons below to make a second factor required for logging '
+                                   'into your account.'))
+            messages.success(request, str(_('The device has been verified and can now be used.')) + note)
+            return redirect(reverse('eventyay_common:account.2fa'))
+        else:
+            messages.error(request, _('The code you entered was not valid. If this problem persists, please check '
+                                      'that the date and time of your phone are configured correctly.'))
+            return redirect(reverse('eventyay_common:account.2fa.confirm.totp', kwargs={
+                'device_id': self.device.pk
+            }))
+
+
+# This view is just a placeholder for the URL patterns that we haven't implemented views for yet.
+class DummyView(TemplateView):
+    template_name = 'eventyay_common/base.html'
