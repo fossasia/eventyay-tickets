@@ -1,5 +1,4 @@
-from django.urls import include
-from django.urls import re_path as url
+from django.urls import include, path, re_path as url
 
 from pretix.eventyay_common.views import (
     account,
@@ -8,6 +7,7 @@ from pretix.eventyay_common.views import (
     organizer,
     team,
 )
+from pretix.eventyay_common.views.orders import MyOrdersView
 
 app_name = 'eventyay_common'
 
@@ -43,24 +43,12 @@ urlpatterns = [
     ),
     url(r'^events/$', event.EventList.as_view(), name='events'),
     url(r'^events/add$', event.EventCreateView.as_view(), name='events.add'),
-    url(
-        r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/',
-        include(
-            [
-                url(r'^$', dashboards.EventIndexView.as_view(), name='event.index'),
-                url(
-                    r'^widgets.json$',
-                    dashboards.event_index_widgets_lazy,
-                    name='event.index.widgets',
-                ),
-                url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
-                url(
-                    r'^video-access/$',
-                    event.VideoAccessAuthenticator.as_view(),
-                    name='event.create_access_to_video',
-                ),
-            ]
-        ),
-    ),
+    url(r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include([
+        url(r'^$', dashboards.EventIndexView.as_view(), name='event.index'),
+        url(r'^widgets.json$', dashboards.event_index_widgets_lazy, name='event.index.widgets'),
+        url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
+        url(r'^video-access/$', event.VideoAccessAuthenticator.as_view(), name='event.create_access_to_video'),
+    ])),
+    path('orders/', MyOrdersView.as_view(), name='orders'),
     url(r'^account/$', account.AccountSettings.as_view(), name='account'),
 ]

@@ -8,6 +8,7 @@ RUN apt-get update && \
             build-essential \
             gettext \
             git \
+            less \
             libffi-dev \
             libjpeg-dev \
             libmemcached-dev \
@@ -25,6 +26,9 @@ RUN apt-get update && \
             npm && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && \
     apt-get install -y nodejs && \
+    wget https://github.com/helix-editor/helix/releases/download/25.01.1/helix_25.1.1-1_amd64.deb && \
+    apt-get install -y ./helix_25.1.1-1_amd64.deb && \
+    rm -f helix_25.1.1-1_amd64.deb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     dpkg-reconfigure locales && \
@@ -34,7 +38,7 @@ RUN apt-get update && \
     mkdir /data && \
     groupadd -g $GID pretixuser && \
     useradd -ms /bin/bash -d /pretix -u $UID -g pretixuser pretixuser && \
-    echo 'pretixuser ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers && \
+    echo 'pretixuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
     mkdir /static && \
     mkdir /etc/supervisord
 

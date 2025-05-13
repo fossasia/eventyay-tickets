@@ -32,17 +32,6 @@ logger = logging.getLogger(__name__)
 class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
     template_name = 'pretixcontrol/global_settings.html'
     form_class = GlobalSettingsForm
-    active_tab = 'basics'  # Default active tab
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['active_tab'] = self.active_tab
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['active_tab'] = self.active_tab
-        return ctx
 
     def form_valid(self, form):
         form.save()
@@ -54,27 +43,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('control:admin.global.settings.' + self.active_tab)
-
-
-class GlobalSettingsLocalizationView(GlobalSettingsView):
-    active_tab = 'localization'
-
-
-class GlobalSettingsEmailView(GlobalSettingsView):
-    active_tab = 'email'
-
-
-class GlobalSettingsPaymentGatewaysView(GlobalSettingsView):
-    active_tab = 'payment_gateways'
-
-
-class GlobalSettingsTicketFeesView(GlobalSettingsView):
-    active_tab = 'ticket_fees'
-
-
-class GlobalSettingsMapsView(GlobalSettingsView):
-    active_tab = 'maps'
+        return reverse('control:admin.global.settings')
 
 
 class SSOView(AdministratorPermissionRequiredMixin, FormView):
