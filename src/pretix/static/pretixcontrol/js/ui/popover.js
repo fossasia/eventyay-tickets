@@ -13,7 +13,7 @@ $(function () {
     const ticketsPath = `/control/`;
     const talksPath = `${talkHostNamePath}orga/event/`
     const mainDashboardPath = `/common/`;
-    const orderPath = `/control/settings/orders/`;
+    const orderPath = `/common/orders/`;
     const eventPath = `/control/events/`;
     const organizerPath = `/control/organizers/`;
 
