@@ -253,6 +253,45 @@ class TwoFactorAuthSettingsView(RecentAuthenticationRequiredMixin, AccountMenuMi
         return ctx
 
 
+class TwoFactorAuthEnableView(RecentAuthenticationRequiredMixin, TemplateView):
+    template_name = 'eventyay_common/account/2fa-enable.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not any(dt.objects.filter(user=self.request.user, confirmed=True) for dt in REAL_DEVICE_TYPES):
+            messages.error(request, _('Please configure at least one device before enabling two-factor '
+                                      'authentication.'))
+            return redirect(reverse('eventyay_common:account.2fa'))
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.request.user.require_2fa = True
+        self.request.user.save()
+        self.request.user.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
+        messages.success(request, _('Two-factor authentication is now enabled for your account.'))
+        self.request.user.send_security_notice([
+            _('Two-factor authentication has been enabled.')
+        ])
+        self.request.user.update_session_token()
+        update_session_auth_hash(self.request, self.request.user)
+        return redirect(reverse('eventyay_common:account.2fa'))
+
+
+class TwoFactorAuthDisableView(RecentAuthenticationRequiredMixin, TemplateView):
+    template_name = 'eventyay_common/account/2fa-disable.html'
+
+    def post(self, request, *args, **kwargs):
+        self.request.user.require_2fa = False
+        self.request.user.save()
+        self.request.user.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
+        messages.success(request, _('Two-factor authentication is now disabled for your account.'))
+        self.request.user.send_security_notice([
+            _('Two-factor authentication has been disabled.')
+        ])
+        self.request.user.update_session_token()
+        update_session_auth_hash(self.request, self.request.user)
+        return redirect(reverse('eventyay_common:account.2fa'))
+
+
 class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, FormView):
     form_class = User2FADeviceAddForm
     template_name = 'eventyay_common/account/2fa-add.html'
@@ -280,7 +319,7 @@ class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, Temp
     template_name = 'eventyay_common/account/2fa-confirm-totp.html'
 
     @cached_property
-    def device(self) -> TOTPDevice: 
+    def device(self) -> TOTPDevice:
         return get_object_or_404(TOTPDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=False)
 
     def get_context_data(self, **kwargs):

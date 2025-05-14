@@ -49,7 +49,7 @@
             </div>
             <div class='panel-body'>
                 {% if not settings.PRETIX_OBLIGATORY_2FA %}
-                    <a href="{% url 'control:user.settings.2fa.disable' %}" class='btn btn-primary pull-right flip'>
+                    <a href="{% url 'eventyay_common:account.2fa.disable' %}" class='btn btn-primary pull-right flip'>
                         {{ _('Disable') }}
                     </a>
                 {% endif %}
@@ -65,7 +65,7 @@
             </div>
             <div class='panel-body'>
                 {% if devices|length %}
-                    <a href="{% url 'control:user.settings.2fa.enable' %}" class='btn btn-primary pull-right flip'>
+                    <a href="{% url 'eventyay_common:account.2fa.enable' %}" class='btn btn-primary pull-right flip'>
                         {{ _('Enable') }}
                     </a>
                 {% endif %}
