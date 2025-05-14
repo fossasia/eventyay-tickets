@@ -285,12 +285,6 @@ def get_global_navigation(request):
         return []
     nav = [
         {
-            'label': _('My orders'),
-            'url': reverse('control:user.settings.orders'),
-            'active': 'user.settings.orders' in url.url_name,
-            'icon': 'shopping-cart',
-        },
-        {
             'label': _('My events'),
             'url': reverse('control:events'),
             'active': 'events' in url.url_name,
