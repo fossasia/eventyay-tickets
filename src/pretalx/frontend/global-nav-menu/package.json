@@ -9,16 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@biomejs/biome": "^1.9.4",
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@iconify-json/fa": "^1.2.1",
-    "@vitejs/plugin-vue": "^5.2.1",
+    "@unocss/preset-web-fonts": "^66.1.1",
+    "@vitejs/plugin-vue": "^5.2.4",
     "@vue/tsconfig": "^0.7.0",
-    "typescript": "~5.7.2",
-    "unocss": "^66.1.0-beta.8",
-    "vite": "^6.2.0",
-    "vue-tsc": "^2.2.4"
+    "typescript": "5.8.3",
+    "unocss": "^66.1.1",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.10"
   }
 }

@@ -10,10 +10,6 @@ export default defineConfig({
     UnoCSS({ mode: 'vue-scoped' }),
   ],
   build: {
-    // We don't minify generated code, because it will go through Django compressor.
-    minify: false,
-    cssMinify: false,
-    sourcemap: false,
     rollupOptions: {
       output: {
         // The compiled output should have predictable names, so that we can use them in the Django template.

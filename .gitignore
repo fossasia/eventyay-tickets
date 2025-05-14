@@ -95,6 +95,7 @@ pyrightconfig.json
 .DS_Store
 
 .pytest_cache
+.mypy_cache
 *.cfg
 
 # django-perf-rec

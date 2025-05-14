@@ -1,4 +1,5 @@
-import { defineConfig, presetWind3, presetIcons } from 'unocss'
+import { defineConfig, presetWind3, presetIcons, Preset } from 'unocss'
+import presetWebFonts from '@unocss/preset-web-fonts'
 
 export default defineConfig({
   presets: [
@@ -6,5 +7,12 @@ export default defineConfig({
       preflight: 'on-demand',
     }),
     presetIcons(),
+    presetWebFonts({
+      provider: 'google',
+      fonts: {
+        sans: 'Open Sans',
+        mono: 'Fira Code',
+      },
+    }) as Preset,
   ]
 })
