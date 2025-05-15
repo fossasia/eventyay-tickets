@@ -86,7 +86,7 @@
             {% for d in devices %}
                 <li class='list-group-item'>
                     <a class='btn btn-delete btn-danger btn-xs pull-right flip'
-                            href="{% url 'control:user.settings.2fa.delete' devicetype=d.devicetype device=d.pk %}">
+                            href="{% url 'eventyay_common:account.2fa.delete' devicetype=d.devicetype device_id=d.pk %}">
                         Delete
                     </a>
                     {% if d.devicetype == "totp" %}
@@ -122,7 +122,7 @@
                     <li><code>{{ t.token }}</code></li>
                 {% endfor %}
             </ul>
-            <a href="{% url 'control:user.settings.2fa.regenemergency' %}" class='btn btn-default'>
+            <a href="{% url 'eventyay_common:account.2fa.regenemergency' %}" class='btn btn-default'>
                 <span class='fa fa-refresh'></span>
                 {{ _('Generate new emergency tokens') }}
             </a>

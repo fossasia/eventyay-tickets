@@ -1,10 +1,12 @@
 import base64
+import json
 from datetime import datetime, UTC
 from logging import getLogger
 from collections import defaultdict
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, urlencode, urlparse
 from typing import Any, cast
 
+import webauthn
 from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
@@ -20,11 +22,13 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_otp.plugins.otp_static.models import StaticDevice
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from webauthn.helpers import generate_challenge, generate_user_handle
 
 from pretix.common.consts import KEY_LAST_FORCE_LOGIN
 from pretix.base.models import User, Event, NotificationSetting, WebAuthnDevice, U2FDevice
 from pretix.base.notifications import get_all_notification_types
 from pretix.base.forms.user import UserSettingsForm, User2FADeviceAddForm
+from pretix.helpers.u2f import websafe_encode
 from ..navigation import get_account_navigation
 
 
@@ -378,6 +382,113 @@ class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, Acco
             return redirect(reverse('eventyay_common:account.2fa.confirm.totp', kwargs={
                 'device_id': self.device.pk
             }))
+        
+
+class TwoFactorAuthDeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, TemplateView):
+    template_name = 'eventyay_common/account/2fa-confirm-webauthn.html'
+
+    @cached_property
+    def device(self):
+        return get_object_or_404(WebAuthnDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=False)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        ctx['device'] = self.device
+
+        if 'webauthn_register_ukey' in self.request.session:
+            del self.request.session['webauthn_register_ukey']
+        if 'webauthn_challenge' in self.request.session:
+            del self.request.session['webauthn_challenge']
+
+        challenge = generate_challenge()
+        ukey = generate_user_handle()
+
+        self.request.session['webauthn_challenge'] = base64.b64encode(challenge).decode()
+        self.request.session['webauthn_register_ukey'] = base64.b64encode(ukey).decode()
+
+        devices = [
+            device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.request.user)
+        ] + [
+            device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.request.user)
+        ]
+        make_credential_options = webauthn.generate_registration_options(
+            rp_id=get_webauthn_rp_id(self.request),
+            rp_name=get_webauthn_rp_id(self.request),
+            user_id=ukey,
+            user_name=self.request.user.email,
+            challenge=challenge,
+            exclude_credentials=devices,
+        )
+        ctx['jsondata'] = webauthn.options_to_json(make_credential_options)
+
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        try:
+            challenge = self.request.session['webauthn_challenge']
+            ukey = self.request.session['webauthn_register_ukey']
+            resp = json.loads(self.request.POST.get("token"))
+            registration_verification = webauthn.verify_registration_response(
+                credential=resp,
+                expected_challenge=base64.b64decode(challenge),
+                expected_rp_id=get_webauthn_rp_id(self.request),
+                expected_origin=settings.SITE_URL,
+            )
+            # Check that the credentialId is not yet registered to any other user.
+            # If registration is requested for a credential that is already registered
+            # to a different user, the Relying Party SHOULD fail this registration
+            # ceremony, or it MAY decide to accept the registration, e.g. while deleting
+            # the older registration.
+            credential_id_exists = WebAuthnDevice.objects.filter(
+                credential_id=registration_verification.credential_id
+            ).first()
+            if credential_id_exists:
+                messages.error(request, _('This security device is already registered.'))
+                return redirect(reverse('eventyay_common:account.2fa.confirm.webauthn', kwargs={
+                    'device_id': self.device.pk
+                }))
+
+            self.device.credential_id = websafe_encode(registration_verification.credential_id)
+            self.device.ukey = websafe_encode(ukey)
+            self.device.pub_key = websafe_encode(registration_verification.credential_public_key)
+            self.device.sign_count = registration_verification.sign_count
+            self.device.rp_id = get_webauthn_rp_id(request)
+            self.device.icon_url = settings.SITE_URL
+            self.device.confirmed = True
+            self.device.save()
+            self.request.user.log_action('pretix.user.settings.2fa.device.added', user=self.request.user, data={
+                'id': self.device.pk,
+                'devicetype': 'u2f',
+                'name': self.device.name,
+            })
+            notices = [
+                _('A new two-factor authentication device has been added to your account.')
+            ]
+            activate = request.POST.get('activate', '')
+            if activate == 'on' and not self.request.user.require_2fa:
+                self.request.user.require_2fa = True
+                self.request.user.save()
+                self.request.user.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
+                notices.append(
+                    _('Two-factor authentication has been enabled.')
+                )
+            self.request.user.send_security_notice(notices)
+            self.request.user.update_session_token()
+            update_session_auth_hash(self.request, self.request.user)
+
+            note = ''
+            if not self.request.user.require_2fa:
+                note = ' ' + str(_('Please note that you still need to enable two-factor authentication for your '
+                                   'account using the buttons below to make a second factor required for logging '
+                                   'into your account.'))
+            messages.success(request, str(_('The device has been verified and can now be used.')) + note)
+            return redirect(reverse('control:user.settings.2fa'))
+        except Exception:
+            messages.error(request, _('The registration could not be completed. Please try again.'))
+            logger.exception('WebAuthn registration failed')
+            return redirect(reverse('control:user.settings.2fa.confirm.webauthn', kwargs={
+                'device': self.device.pk
+            }))
 
 
 class TwoFactorAuthDeviceDeleteView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
@@ -417,9 +528,18 @@ class TwoFactorAuthDeviceDeleteView(RecentAuthenticationRequiredMixin, AccountMe
         self.request.user.update_session_token()
         update_session_auth_hash(self.request, self.request.user)
         messages.success(request, _('The device has been removed.'))
-        return redirect(reverse('eventay_common:account.2fa'))
+        return redirect(reverse('eventyay_common:account.2fa'))
 
 
 # This view is just a placeholder for the URL patterns that we haven't implemented views for yet.
 class DummyView(TemplateView):
     template_name = 'eventyay_common/base.html'
+
+
+
+def get_u2f_appid(request: HttpRequest):
+    return settings.SITE_URL
+
+
+def get_webauthn_rp_id(request: HttpRequest):
+    return urlparse(settings.SITE_URL).hostname

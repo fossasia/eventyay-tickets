@@ -1,0 +1,37 @@
+{% extends "eventyay_common/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+{% load compress %}
+{% block title %}{{ _('Add a two-factor authentication device') }}{% endblock %}
+{% block content %}
+    <h1>{{ _('Add a two-factor authentication device') }}</h1>
+    <p id="webauthn-progress">
+        <span class="fa fa-cog fa-spin"></span>
+        {{ _('Please connect your WebAuthn device. If it has a button, touch it now. You might have to unplug the device and plug it back in again.') }}
+    </p>
+    <form class='form form-inline' method='post' action='' id='webauthn-form'>
+        {% csrf_token %}
+        <input type='hidden' id='webauthn-response' name='token' class='form-control' required='required'>
+        <p>
+            <label>
+                <input type='checkbox' name='activate' checked='checked' value='on'>
+                {{ _('Require second factor for future logins') }}
+            </label>
+        </p>
+        <button class='btn btn-primary sr-only' type='submit'></button>
+    </form>
+
+    <div class='sr-only alert alert-danger' id='webauthn-error'>
+        {{ _('Device registration failed.') }}
+    </div>
+    <script type='text/json' id='webauthn-enroll'>
+        {{ jsondata|safe }}
+
+
+    </script>
+    {% compress js %}
+        <script type='text/javascript' src="{% static 'pretixcontrol/js/base64js.js' %}"></script>
+        <script type='text/javascript' src="{% static 'pretixcontrol/js/ui/webauthn.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
