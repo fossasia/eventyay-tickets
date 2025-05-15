@@ -253,7 +253,7 @@ class TwoFactorAuthSettingsView(RecentAuthenticationRequiredMixin, AccountMenuMi
         return ctx
 
 
-class TwoFactorAuthEnableView(RecentAuthenticationRequiredMixin, TemplateView):
+class TwoFactorAuthEnableView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
     template_name = 'eventyay_common/account/2fa-enable.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -276,7 +276,7 @@ class TwoFactorAuthEnableView(RecentAuthenticationRequiredMixin, TemplateView):
         return redirect(reverse('eventyay_common:account.2fa'))
 
 
-class TwoFactorAuthDisableView(RecentAuthenticationRequiredMixin, TemplateView):
+class TwoFactorAuthDisableView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
     template_name = 'eventyay_common/account/2fa-disable.html'
 
     def post(self, request, *args, **kwargs):
@@ -292,7 +292,7 @@ class TwoFactorAuthDisableView(RecentAuthenticationRequiredMixin, TemplateView):
         return redirect(reverse('eventyay_common:account.2fa'))
 
 
-class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, FormView):
+class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, FormView):
     form_class = User2FADeviceAddForm
     template_name = 'eventyay_common/account/2fa-add.html'
 
@@ -315,7 +315,7 @@ class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, FormView):
         return super().form_invalid(form)
 
 
-class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, TemplateView):
+class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
     template_name = 'eventyay_common/account/2fa-confirm-totp.html'
 
     @cached_property
@@ -378,6 +378,46 @@ class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, Temp
             return redirect(reverse('eventyay_common:account.2fa.confirm.totp', kwargs={
                 'device_id': self.device.pk
             }))
+
+
+class TwoFactorAuthDeviceDeleteView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
+    template_name = 'eventyay_common/account/2fa-delete.html'
+
+    @cached_property
+    def device(self):
+        if self.kwargs['devicetype'] == 'totp':
+            return get_object_or_404(TOTPDevice, user=self.request.user, pk=self.kwargs['device'], confirmed=True)
+        elif self.kwargs['devicetype'] == 'webauthn':
+            return get_object_or_404(WebAuthnDevice, user=self.request.user, pk=self.kwargs['device'], confirmed=True)
+        elif self.kwargs['devicetype'] == 'u2f':
+            return get_object_or_404(U2FDevice, user=self.request.user, pk=self.kwargs['device'], confirmed=True)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        ctx['device'] = self.device
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        self.request.user.log_action('pretix.user.settings.2fa.device.deleted', user=self.request.user, data={
+            'id': self.device.pk,
+            'name': self.device.name,
+            'devicetype': self.kwargs['devicetype']
+        })
+        self.device.delete()
+        msgs = [
+            _('A two-factor authentication device has been removed from your account.')
+        ]
+        if not any(dt.objects.filter(user=self.request.user, confirmed=True) for dt in REAL_DEVICE_TYPES):
+            self.request.user.require_2fa = False
+            self.request.user.save()
+            self.request.user.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
+            msgs.append(_('Two-factor authentication has been disabled.'))
+
+        self.request.user.send_security_notice(msgs)
+        self.request.user.update_session_token()
+        update_session_auth_hash(self.request, self.request.user)
+        messages.success(request, _('The device has been removed.'))
+        return redirect(reverse('eventay_common:account.2fa'))
 
 
 # This view is just a placeholder for the URL patterns that we haven't implemented views for yet.
