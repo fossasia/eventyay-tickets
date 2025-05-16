@@ -38,6 +38,7 @@ urlpatterns = [
     path('account/2fa/totp/<str:device_id>/confirm', account.TwoFactorAuthDeviceConfirmTOTPView.as_view(), name='account.2fa.confirm.totp'),
     path('account/2fa/webauthn/<str:device_id>/confirm', account.TwoFactorAuthDeviceConfirmWebAuthnView.as_view(), name='account.2fa.confirm.webauthn'),
     path('account/2fa/<str:devicetype>/<str:device_id>/delete', account.TwoFactorAuthDeviceDeleteView.as_view(), name='account.2fa.delete'),
+    path('account/2fa/regenemergency', account.DummyView.as_view(), name='account.2fa.regenemergency'),
     path('account/oauth-list', account.DummyView.as_view(), name='account.oauth-list'),
     path('account/history', account.DummyView.as_view(), name='account.history'),
 ]
