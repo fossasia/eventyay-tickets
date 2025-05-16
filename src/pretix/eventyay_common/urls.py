@@ -1,8 +1,9 @@
-from django.urls import include, re_path as url
+from django.urls import include, path, re_path as url
 
 from pretix.eventyay_common.views import (
     account, dashboards, event, organizer, team,
 )
+from pretix.eventyay_common.views.orders import MyOrdersView
 
 app_name = 'eventyay_common'
 
@@ -27,5 +28,6 @@ urlpatterns = [
         url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
         url(r'^video-access/$', event.VideoAccessAuthenticator.as_view(), name='event.create_access_to_video'),
     ])),
+    path('orders/', MyOrdersView.as_view(), name='orders'),
     url(r'^account/$', account.AccountSettings.as_view(), name='account'),
 ]
