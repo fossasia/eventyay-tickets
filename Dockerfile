@@ -18,7 +18,7 @@ RUN apt-get update && \
     mkdir /etc/pretalx && \
     mkdir /data && \
     mkdir /public && \
-    groupadd -g $GID pretalxuser && \
+    groupadd -o -g $GID pretalxuser && \
     useradd -r -u $UID -g pretalxuser -d /pretalx -ms /bin/bash pretalxuser && \
     echo 'pretalxuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
