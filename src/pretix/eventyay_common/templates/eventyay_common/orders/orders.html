@@ -1,0 +1,59 @@
+{% extends "eventyay_common/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load eventurl %}
+{% load money %}
+{% block title %}{% trans "My Orders" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "My Orders" %}</h1>
+    <div class="row filter-form">
+        <form action="" method="get">
+            <div class="col-md-3 col-xs-6">
+                <!-- Add the event filter here -->
+                {% bootstrap_field filter_form.event layout='inline' %}
+            </div>
+            <div class="col-md-2 col-xs-6">
+                <button type="submit" class="btn btn-primary">
+                    <span class="fa fa-filter"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-condensed table-hover table-quotas">
+            <thead>
+                <tr>
+                    <th>{{ _('Order Code') }}</th>
+                    <th>{{ _('Event') }}</th>
+                    <th>{{ _('Date') }}</th>
+                    <th>{{ _('Order total') }}</th>
+                    <th>{{ _('Status') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in order_list %}
+                <tr>
+                    <td>
+                        <a href="{% abseventurl order.event 'presale:event.order' order=order.code secret=order.secret %}">
+                            {{ order.code }}
+                        </a>
+                    </td>
+                    <td>{{ order.event.name }}</td>
+                    <td>{{ order.datetime|date:"SHORT_DATETIME_FORMAT" }}</td>
+                    <td>
+                        {{ order.total|money:order.event.currency }}
+                    </td>
+                    <td>
+                        {% include "eventyay_common/orders/fragment_order_status.html" with order=order event=order.event %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">{{ _('You have no orders.') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

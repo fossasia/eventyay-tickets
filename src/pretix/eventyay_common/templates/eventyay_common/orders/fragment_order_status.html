@@ -1,0 +1,37 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% if order.status == "n" %}
+    {% if order.require_approval %}
+        <span class="label label-warning {{ class }}">
+            <span class="fa fa-question-circle"></span>
+            {% trans "Approval pending" %}
+        </span>
+    {% else %}
+        <span data-toggle="tooltip" title="{{ order.expires|date:"SHORT_DATETIME_FORMAT" }}"
+                class="label label-warning {{ class }}">
+            <span class="fa fa-money"></span>
+            {% trans "Pending" %}
+        </span>
+    {% endif %}
+{% elif order.status == "p" %}
+    {% if order.count_positions == 0 %}
+        <span class="label label-info {{ class }}">
+            <span class="fa fa-times"></span>
+            {% trans "Canceled (paid fee)" %}
+        </span>
+    {% else %}
+        <span class="label label-success {{ class }}">
+            <span class="fa fa-check"></span>
+            {% trans "Paid" %}
+            </span>
+    {% endif %}
+{% elif order.status == "e" %} {# expired #}
+    <span class="label label-danger {{ class }}">
+            <span class="fa fa-clock-o"></span>
+        {% trans "Expired" %}</span>
+{% elif order.status == "c" %}
+    <span class="label label-danger {{ class }}">
+            <span class="fa fa-times"></span>
+        {% trans "Canceled" %}
+    </span>
+{% endif %}
