@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import List, TypedDict
 
 from django.http import HttpRequest
 from django.urls import reverse
@@ -9,7 +9,14 @@ from pretix.control.navigation import merge_in
 from pretix.control.signals import nav_event, nav_global
 
 
-def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
+class MenuItem(TypedDict):
+    label: str
+    url: str
+    active: bool
+    icon: str
+
+
+def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
     """Generate navigation items for global."""
     url = request.resolver_match
     if not url:
@@ -59,7 +66,7 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     return nav
 
 
-def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, Any]]:
+def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     """Generate navigation items for an event."""
     url = request.resolver_match
     if not url:
@@ -94,4 +101,32 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, A
     # Merge plugin items into default navigation
     merge_in(nav, sorted_plugin_items)
 
+    return nav
+
+
+def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
+    """Generate navigation items for account."""
+    resolver_match = request.resolver_match
+    if not resolver_match:
+        return []
+    nav = [
+        {
+            'label': _('General'),
+            'url': reverse('eventyay_common:account.general'),
+            'active': 'general' in resolver_match.url_name,
+            'icon': 'user',
+        },
+        {
+            'label': _('Notifications'),
+            'url': reverse('eventyay_common:account.notifications'),
+            'active': 'notifications' in resolver_match.url_name,
+            'icon': 'bell',
+        },
+        {
+            'label': _('Two-factor authentication'),
+            'url': reverse('eventyay_common:account.2fa'),
+            'active': '2fa' in resolver_match.url_name,
+            'icon': 'lock',
+        }
+    ]
     return nav

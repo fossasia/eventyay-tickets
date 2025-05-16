@@ -1,0 +1,131 @@
+{% extends 'eventyay_common/base.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{{ _('Two-factor authentication') }}{% endblock %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
+{% block content %}
+    <h1>{{ _('Two-factor authentication') }}</h1>
+    <p>
+        {% blocktrans trimmed %}
+            Two-factor authentication is a way to add additional security to your account. If you enable it, you will
+            not only need your password to log in, but also an additional token that is generated e.g. by an app on your
+            smartphone or a hardware token generator and that changes on a regular basis.
+        {% endblocktrans %}
+    </p>
+    {% if settings.PRETIX_OBLIGATORY_2FA %}
+        <div class='panel panel-warning'>
+            <div class='panel-heading'>
+                <h3 class='panel-title'>{{ _('Obligatory usage of two-factor authentication') }}</h3>
+            </div>
+            <div class='panel-body'>
+                <p>
+                    <strong>{{ _('This system enforces the usage of two-factor authentication!') }}</strong>
+                </p>
+            {% if not devices %}
+                <p>{{ _('Please set up at least one device below.') }}</p>
+            {% elif not user.require_2fa %}
+                <p>{{ _('Please activate two-factor authentication using the button below.') }}</p>
+            {% endif %}
+            </div>
+        </div>
+
+    {% endif %}
+    {% if user.require_2fa %}
+        <div class='panel panel-success'>
+            <div class='panel-heading'>
+                <h3 class='panel-title'>{{ _('Two-factor status') }}</h3>
+            </div>
+            <div class='panel-body'>
+                {% if not settings.PRETIX_OBLIGATORY_2FA %}
+                    <a href="{% url 'eventyay_common:account.2fa.disable' %}" class='btn btn-primary pull-right flip'>
+                        {{ _('Disable') }}
+                    </a>
+                {% endif %}
+                <p>
+                    <strong>{{ _('Two-factor authentication is currently enabled.') }}</strong>
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <div class='panel panel-warning'>
+            <div class='panel-heading'>
+                <h3 class='panel-title'>{{ _('Two-factor status') }}</h3>
+            </div>
+            <div class='panel-body'>
+                {% if devices|length %}
+                    <a href="{% url 'eventyay_common:account.2fa.enable' %}" class='btn btn-primary pull-right flip'>
+                        {{ _('Enable') }}
+                    </a>
+                {% endif %}
+                <p>
+                    <strong>{{ _('Two-factor authentication is currently disabled.') }}</strong>
+                </p>
+                {% if not devices|length %}
+                    <p>{{ _('To enable it, you need to configure at least one device below.') }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+            <h3 class='panel-title'>{{ _('Registered devices') }}</h3>
+        </div>
+        <ul class='list-group'>
+            {% for d in devices %}
+                <li class='list-group-item'>
+                    <a class='btn btn-delete btn-danger btn-xs pull-right flip'
+                            href="{% url 'eventyay_common:account.2fa.delete' devicetype=d.devicetype device_id=d.pk %}">
+                        Delete
+                    </a>
+                    {% if d.devicetype == "totp" %}
+                        <span class='fa fa-mobile'></span>
+                    {% elif d.devicetype == "webauthn" %}
+                        <span class='fa fa-usb'></span>
+                    {% elif d.devicetype == "u2f" %}
+                        <span class='fa fa-usb'></span>
+                    {% endif %}
+                    {{ d.name }}
+                </li>
+            {% endfor %}
+
+            <li class='list-group-item'>
+                <a href="{% url 'eventyay_common:account.2fa.add-device' %}" class='btn btn-primary'>
+                    <span class='fa fa-plus'></span>
+                    {{ _('Add a new device') }}
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+            <h3 class='panel-title'>{{ _('Emergency tokens') }}</h3>
+        </div>
+        <div class='panel-body'>
+            <p>
+                {{ _('If you lose access to your devices, you can use one of the following keys to log in. We recommend to store them in a safe place, e.g. printed out or in a password manager. Every token can be used at most once.') }}
+            </p>
+            <p>{{ _('Unused tokens:') }}</p>
+            <ul>
+                {% for t in static_tokens %}
+                    <li><code>{{ t.token }}</code></li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'eventyay_common:account.2fa.regenemergency' %}" class='btn btn-default'>
+                <span class='fa fa-refresh'></span>
+                {{ _('Generate new emergency tokens') }}
+            </a>
+        </div>
+    </div>
+{% endblock content %}

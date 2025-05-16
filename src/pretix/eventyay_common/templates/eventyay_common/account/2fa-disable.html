@@ -1,0 +1,24 @@
+{% extends "eventyay_common/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{{ _('Disable two-factor authentication') }}{% endblock %}
+{% block content %}
+    <h1>{{ _('Disable two-factor authentication') }}</h1>
+    <form action='' method='post' class='form-horizontal'>
+        {% csrf_token %}
+        <p>
+            {{ _('Do you really want to disable two-factor authentication?') }}
+        </p>
+        <p>
+            {{ _('You will no longer require a second device to log in to your account.') }}
+        </p>
+        <div class='form-group submit-group'>
+            <a href="{% url 'eventyay_common:account.2fa' %}" class='btn btn-default btn-cancel'>
+                {{ _('Cancel') }}
+            </a>
+            <button type='submit' class='btn btn-delete btn-danger btn-save'>
+                {{ _('Disable') }}
+            </button>
+        </div>
+    </form>
+{% endblock %}
