@@ -30,18 +30,22 @@ class DeviceCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixi
         return kwargs
 
     def get_success_url(self):
-        return reverse('control:organizer.device.connect', kwargs={
-            'organizer': self.request.organizer.slug,
-            'device': self.object.pk
-        })
+        return reverse(
+            'control:organizer.device.connect',
+            kwargs={'organizer': self.request.organizer.slug, 'device': self.object.pk},
+        )
 
     def form_valid(self, form):
         form.instance.organizer = self.request.organizer
         ret = super().form_valid(form)
-        form.instance.log_action('pretix.device.created', user=self.request.user, data={
-            k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
-            for k in form.changed_data
-        })
+        form.instance.log_action(
+            'pretix.device.created',
+            user=self.request.user,
+            data={
+                k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
+                for k in form.changed_data
+            },
+        )
         return ret
 
     def form_invalid(self, form):
@@ -56,9 +60,7 @@ class DeviceListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
     context_object_name = 'devices'
 
     def get_queryset(self):
-        return self.request.organizer.devices.prefetch_related(
-            'limit_events'
-        ).order_by('revoked', '-device_id')
+        return self.request.organizer.devices.prefetch_related('limit_events').order_by('revoked', '-device_id')
 
 
 class DeviceLogView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
@@ -78,13 +80,17 @@ class DeviceLogView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, 
         return ctx
 
     def get_queryset(self):
-        qs = LogEntry.objects.filter(
-            device_id=self.device
-        ).select_related(
-            'user', 'content_type', 'api_token', 'oauth_application',
-        ).prefetch_related(
-            'device', 'event'
-        ).order_by('-datetime')
+        qs = (
+            LogEntry.objects.filter(device_id=self.device)
+            .select_related(
+                'user',
+                'content_type',
+                'api_token',
+                'oauth_application',
+            )
+            .prefetch_related('device', 'event')
+            .order_by('-datetime')
+        )
         return qs
 
 
@@ -104,16 +110,23 @@ class DeviceUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixi
         return get_object_or_404(Device, organizer=self.request.organizer, pk=self.kwargs.get('device'))
 
     def get_success_url(self):
-        return reverse('control:organizer.devices', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'control:organizer.devices',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )
 
     def form_valid(self, form):
         if form.has_changed():
-            self.object.log_action('pretix.device.changed', user=self.request.user, data={
-                k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
-                for k in form.changed_data
-            })
+            self.object.log_action(
+                'pretix.device.changed',
+                user=self.request.user,
+                data={
+                    k: getattr(self.object, k) if k != 'limit_events' else [e.id for e in getattr(self.object, k).all()]
+                    for k in form.changed_data
+                },
+            )
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
 
@@ -134,23 +147,28 @@ class DeviceConnectView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMix
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         if 'ajax' in request.GET:
-            return JsonResponse({
-                'initialized': bool(self.object.initialized)
-            })
+            return JsonResponse({'initialized': bool(self.object.initialized)})
         if self.object.initialized:
             messages.success(request, _('This device has been set up successfully.'))
-            return redirect(reverse('control:organizer.devices', kwargs={
-                'organizer': self.request.organizer.slug,
-            }))
+            return redirect(
+                reverse(
+                    'control:organizer.devices',
+                    kwargs={
+                        'organizer': self.request.organizer.slug,
+                    },
+                )
+            )
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['qrdata'] = json.dumps({
-            'handshake_version': 1,
-            'url': settings.SITE_URL,
-            'token': self.object.initialization_token,
-        })
+        ctx['qrdata'] = json.dumps(
+            {
+                'handshake_version': 1,
+                'url': settings.SITE_URL,
+                'token': self.object.initialization_token,
+            }
+        )
         return ctx
 
 
@@ -167,9 +185,14 @@ class DeviceRevokeView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixi
         self.object = self.get_object()
         if not self.object.api_token:
             messages.success(request, _('This device currently does not have access.'))
-            return redirect(reverse('control:organizer.devices', kwargs={
-                'organizer': self.request.organizer.slug,
-            }))
+            return redirect(
+                reverse(
+                    'control:organizer.devices',
+                    kwargs={
+                        'organizer': self.request.organizer.slug,
+                    },
+                )
+            )
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -178,6 +201,11 @@ class DeviceRevokeView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixi
         self.object.save()
         self.object.log_action('pretix.device.revoked', user=self.request.user)
         messages.success(request, _('Access for this device has been revoked.'))
-        return redirect(reverse('control:organizer.devices', kwargs={
-            'organizer': self.request.organizer.slug,
-        }))
+        return redirect(
+            reverse(
+                'control:organizer.devices',
+                kwargs={
+                    'organizer': self.request.organizer.slug,
+                },
+            )
+        )

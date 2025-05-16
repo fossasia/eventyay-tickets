@@ -61,24 +61,17 @@ SAMPLE_PLAN = """{
 
 @pytest.fixture
 def seatingplan(organizer, event):
-    wh = organizer.seating_plans.create(
-        name="Plan",
-        layout=SAMPLE_PLAN
-    )
+    wh = organizer.seating_plans.create(name='Plan', layout=SAMPLE_PLAN)
     return wh
 
 
-TEST_PLAN_RES = {
-    "id": 1,
-    "name": "Plan",
-    "layout": json.loads(SAMPLE_PLAN)
-}
+TEST_PLAN_RES = {'id': 1, 'name': 'Plan', 'layout': json.loads(SAMPLE_PLAN)}
 
 
 @pytest.mark.django_db
 def test_plan_list(token_client, organizer, event, seatingplan):
     res = dict(TEST_PLAN_RES)
-    res["id"] = seatingplan.pk
+    res['id'] = seatingplan.pk
 
     resp = token_client.get('/api/v1/organizers/{}/seatingplans/'.format(organizer.slug))
     assert resp.status_code == 200
@@ -88,16 +81,13 @@ def test_plan_list(token_client, organizer, event, seatingplan):
 @pytest.mark.django_db
 def test_plan_detail(token_client, organizer, event, seatingplan):
     res = dict(TEST_PLAN_RES)
-    res["id"] = seatingplan.pk
+    res['id'] = seatingplan.pk
     resp = token_client.get('/api/v1/organizers/{}/seatingplans/{}/'.format(organizer.slug, seatingplan.pk))
     assert resp.status_code == 200
     assert res == resp.data
 
 
-TEST_PLAN_CREATE_PAYLOAD = {
-    "name": "Plan 2",
-    "layout": json.loads(SAMPLE_PLAN)
-}
+TEST_PLAN_CREATE_PAYLOAD = {'name': 'Plan 2', 'layout': json.loads(SAMPLE_PLAN)}
 
 
 @pytest.mark.django_db
@@ -105,7 +95,7 @@ def test_plan_create(token_client, organizer, event):
     resp = token_client.post(
         '/api/v1/organizers/{}/seatingplans/'.format(organizer.slug),
         TEST_PLAN_CREATE_PAYLOAD,
-        format='json'
+        format='json',
     )
     assert resp.status_code == 201
     with scopes_disabled():
@@ -117,11 +107,7 @@ def test_plan_create(token_client, organizer, event):
 def test_plan_create_invalid_layout(token_client, organizer, event):
     res = copy.copy(TEST_PLAN_CREATE_PAYLOAD)
     res['layout'] = {'foo': 'bar'}
-    resp = token_client.post(
-        '/api/v1/organizers/{}/seatingplans/'.format(organizer.slug),
-        res,
-        format='json'
-    )
+    resp = token_client.post('/api/v1/organizers/{}/seatingplans/'.format(organizer.slug), res, format='json')
     assert resp.status_code == 400
 
 
@@ -129,14 +115,12 @@ def test_plan_create_invalid_layout(token_client, organizer, event):
 def test_plan_patch(token_client, organizer, event, seatingplan):
     resp = token_client.patch(
         '/api/v1/organizers/{}/seatingplans/{}/'.format(organizer.slug, seatingplan.pk),
-        {
-            'name': 'Foo'
-        },
-        format='json'
+        {'name': 'Foo'},
+        format='json',
     )
     assert resp.status_code == 200
     seatingplan.refresh_from_db()
-    assert seatingplan.name == "Foo"
+    assert seatingplan.name == 'Foo'
 
 
 @pytest.mark.django_db
@@ -155,10 +139,8 @@ def test_plan_patch_used(token_client, organizer, event, seatingplan):
     event.save()
     resp = token_client.patch(
         '/api/v1/organizers/{}/seatingplans/{}/'.format(organizer.slug, seatingplan.pk),
-        {
-            'name': 'Foo'
-        },
-        format='json'
+        {'name': 'Foo'},
+        format='json',
     )
     assert resp.status_code == 403
 

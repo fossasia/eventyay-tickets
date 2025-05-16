@@ -8,12 +8,18 @@ from pretix.base.models import Event, Organizer
 
 class KnownDomain(models.Model):
     domainname = models.CharField(max_length=255, primary_key=True)
-    organizer = models.ForeignKey(Organizer, blank=True, null=True, related_name='domains', on_delete=models.CASCADE)
+    organizer = models.ForeignKey(
+        Organizer,
+        blank=True,
+        null=True,
+        related_name='domains',
+        on_delete=models.CASCADE,
+    )
     event = models.ForeignKey(Event, blank=True, null=True, related_name='domains', on_delete=models.PROTECT)
 
     class Meta:
-        verbose_name = _("Known domain")
-        verbose_name_plural = _("Known domains")
+        verbose_name = _('Known domain')
+        verbose_name_plural = _('Known domains')
 
     def __str__(self):
         return self.domainname

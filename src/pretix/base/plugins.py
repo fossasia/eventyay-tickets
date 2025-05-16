@@ -31,14 +31,14 @@ def get_all_plugins(event=None) -> List[type]:
     """
     plugins = []
     for app in apps.get_app_configs():
-        if hasattr(app, "PretixPluginMeta"):
+        if hasattr(app, 'PretixPluginMeta'):
             meta = app.PretixPluginMeta
             meta.module = app.name
             meta.app = app
             if app.name in settings.PRETIX_PLUGINS_EXCLUDE:
                 continue
 
-            if hasattr(app, "is_available") and event:
+            if hasattr(app, 'is_available') and event:
                 if not app.is_available(event):
                     continue
 
@@ -46,8 +46,8 @@ def get_all_plugins(event=None) -> List[type]:
     return sorted(
         plugins,
         key=lambda m: (
-            0 if m.module.startswith("pretix.") else 1,
-            str(m.name).lower().replace("pretix ", ""),
+            0 if m.module.startswith('pretix.') else 1,
+            str(m.name).lower().replace('pretix ', ''),
         ),
     )
 
@@ -57,15 +57,10 @@ class PluginConfig(AppConfig):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not hasattr(self, "PretixPluginMeta"):
-            raise ImproperlyConfigured(
-                "A pretix plugin config should have a PretixPluginMeta inner class."
-            )
+        if not hasattr(self, 'PretixPluginMeta'):
+            raise ImproperlyConfigured('A pretix plugin config should have a PretixPluginMeta inner class.')
 
-        if (
-            hasattr(self.PretixPluginMeta, "compatibility")
-            and not os.environ.get("PRETIX_IGNORE_CONFLICTS") == "True"
-        ):
+        if hasattr(self.PretixPluginMeta, 'compatibility') and not os.environ.get('PRETIX_IGNORE_CONFLICTS') == 'True':
             self.check_compatibility()
 
     def check_compatibility(self):
@@ -91,12 +86,12 @@ class PluginConfig(AppConfig):
         """
         try:
             for requirement in self.PretixPluginMeta.compatibility:
-                package_name, _, required_version = requirement.partition("==")
+                package_name, _, required_version = requirement.partition('==')
                 installed_version = importlib.metadata.version(package_name)
                 if installed_version != required_version:
-                    logger.error("Incompatible plugins found!")
+                    logger.error('Incompatible plugins found!')
                     logger.error(
-                        "Plugin %s requires you to have %s==%s, but you installed %s==%s",
+                        'Plugin %s requires you to have %s==%s, but you installed %s==%s',
                         self.name,
                         package_name,
                         required_version,
@@ -105,5 +100,5 @@ class PluginConfig(AppConfig):
                     )
                     sys.exit(1)
         except importlib.metadata.PackageNotFoundError as e:
-            logger.exception(f"Package not found: {e}")
+            logger.exception(f'Package not found: {e}')
             sys.exit(1)

@@ -38,7 +38,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                 logentry = LogEntry.objects.get(
                     id=from_log_id,
                     event=self.request.event,
-                    action_type='pretix.plugins.sendmail.sent'
+                    action_type='pretix.plugins.sendmail.sent',
                 )
                 kwargs['initial'] = {
                     'recipients': logentry.parsed_data.get('recipients', 'orders'),
@@ -51,9 +51,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                         id__in=[a['id'] for a in logentry.parsed_data['items']]
                     )
                 elif logentry.parsed_data.get('item'):
-                    kwargs['initial']['items'] = self.request.event.items.filter(
-                        id=logentry.parsed_data['item']['id']
-                    )
+                    kwargs['initial']['items'] = self.request.event.items.filter(id=logentry.parsed_data['item']['id'])
                 if 'checkin_lists' in logentry.parsed_data:
                     kwargs['initial']['checkin_lists'] = self.request.event.checkin_lists.filter(
                         id__in=[c['id'] for c in logentry.parsed_data['checkin_lists']]
@@ -105,9 +103,11 @@ class SenderView(EventPermissionRequiredMixin, FormView):
             if form.cleaned_data.get('not_checked_in'):
                 ql.append(Q(checkins__list_id=None))
             if form.cleaned_data.get('checkin_lists'):
-                ql.append(Q(
-                    checkins__list_id__in=[i.pk for i in form.cleaned_data.get('checkin_lists', [])],
-                ))
+                ql.append(
+                    Q(
+                        checkins__list_id__in=[i.pk for i in form.cleaned_data.get('checkin_lists', [])],
+                    )
+                )
             if len(ql) == 2:
                 opq = opq.filter(ql[0] | ql[1])
             elif ql:
@@ -133,15 +133,16 @@ class SenderView(EventPermissionRequiredMixin, FormView):
             messages.error(self.request, _('There are no orders matching this selection.'))
             return self.get(self.request, *self.args, **self.kwargs)
 
-        if self.request.POST.get("action") == "preview":
+        if self.request.POST.get('action') == 'preview':
             for l in self.request.event.settings.locales:
                 with language(l, self.request.event.settings.region):
                     context_dict = TolerantDict()
-                    for k, v in get_available_placeholders(self.request.event, ['event', 'order',
-                                                                                'position_or_address']).items():
+                    for k, v in get_available_placeholders(
+                        self.request.event, ['event', 'order', 'position_or_address']
+                    ).items():
                         context_dict[k] = '<span class="placeholder" title="{}">{}</span>'.format(
                             _('This value will be replaced based on dynamic parameters.'),
-                            v.render_sample(self.request.event)
+                            v.render_sample(self.request.event),
                         )
 
                     subject = bleach.clean(form.cleaned_data['subject'].localize(l), tags=[])
@@ -171,19 +172,25 @@ class SenderView(EventPermissionRequiredMixin, FormView):
         if form.cleaned_data.get('attachment') is not None:
             kwargs['attachments'] = [form.cleaned_data['attachment'].id]
 
-        send_mails.apply_async(
-            kwargs=kwargs
+        send_mails.apply_async(kwargs=kwargs)
+        self.request.event.log_action(
+            'pretix.plugins.sendmail.sent',
+            user=self.request.user,
+            data=dict(form.cleaned_data),
         )
-        self.request.event.log_action('pretix.plugins.sendmail.sent',
-                                      user=self.request.user,
-                                      data=dict(form.cleaned_data))
-        messages.success(self.request, _('Your message has been queued and will be sent to the contact addresses of %d '
-                                         'orders in the next few minutes.') % len(orders))
+        messages.success(
+            self.request,
+            _(
+                'Your message has been queued and will be sent to the contact addresses of %d '
+                'orders in the next few minutes.'
+            )
+            % len(orders),
+        )
 
         return redirect(
             'plugins:sendmail:send',
             event=self.request.event.slug,
-            organizer=self.request.event.organizer.slug
+            organizer=self.request.event.organizer.slug,
         )
 
     def get_context_data(self, *args, **kwargs):
@@ -201,20 +208,15 @@ class EmailHistoryView(EventPermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = LogEntry.objects.filter(
-            event=self.request.event,
-            action_type='pretix.plugins.sendmail.sent'
+            event=self.request.event, action_type='pretix.plugins.sendmail.sent'
         ).select_related('event', 'user')
         return qs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
 
-        itemcache = {
-            i.pk: str(i) for i in self.request.event.items.all()
-        }
-        checkin_list_cache = {
-            i.pk: str(i) for i in self.request.event.checkin_lists.all()
-        }
+        itemcache = {i.pk: str(i) for i in self.request.event.items.all()}
+        checkin_list_cache = {i.pk: str(i) for i in self.request.event.checkin_lists.all()}
         status = dict(Order.STATUS_CHOICE)
         status['overdue'] = _('pending with payment overdue')
         status['na'] = _('payment pending (except unapproved)')
@@ -226,17 +228,14 @@ class EmailHistoryView(EventPermissionRequiredMixin, ListView):
             for locale, msg in log.pdata['message'].items():
                 log.pdata['locales'][locale] = {
                     'message': msg,
-                    'subject': log.pdata['subject'][locale]
+                    'subject': log.pdata['subject'][locale],
                 }
-            log.pdata['sendto'] = [
-                status[s] for s in log.pdata['sendto']
-            ]
-            log.pdata['items'] = [
-                itemcache.get(i['id'], '?') for i in log.pdata.get('items', [])
-            ]
+            log.pdata['sendto'] = [status[s] for s in log.pdata['sendto']]
+            log.pdata['items'] = [itemcache.get(i['id'], '?') for i in log.pdata.get('items', [])]
             log.pdata['checkin_lists'] = [
                 checkin_list_cache.get(i['id'], '?')
-                for i in log.pdata.get('checkin_lists', []) if i['id'] in checkin_list_cache
+                for i in log.pdata.get('checkin_lists', [])
+                if i['id'] in checkin_list_cache
             ]
             if log.pdata.get('subevent'):
                 try:

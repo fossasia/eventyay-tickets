@@ -16,9 +16,8 @@ NoLayoutSingleton = BadgeLayout(pk='-')
 
 
 class BadgeLayoutIterator(ModelChoiceIterator):
-
     def __iter__(self):
-        yield ("-", _("(Do not print badges)"))
+        yield ('-', _('(Do not print badges)'))
         yield from super().__iter__()
 
     def __len__(self):

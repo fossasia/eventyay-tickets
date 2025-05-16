@@ -19,7 +19,9 @@ from django_scopes import scope
 from pretix.base.models import Event, Organizer
 from pretix.base.models.auth import SuperuserPermissionSet, User
 from pretix.helpers.security import (
-    SessionInvalid, SessionReauthRequired, assert_session_valid,
+    SessionInvalid,
+    SessionReauthRequired,
+    assert_session_valid,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,27 +35,27 @@ class PermissionMiddleware:
     """
 
     EXCEPTIONS = (
-        "auth.login",
-        "auth.login.2fa",
-        "auth.register",
-        "auth.forgot",
-        "auth.forgot.recover",
-        "auth.invite",
-        "user.settings.notifications.off",
+        'auth.login',
+        'auth.login.2fa',
+        'auth.register',
+        'auth.forgot',
+        'auth.forgot.recover',
+        'auth.invite',
+        'user.settings.notifications.off',
         'oauth2_provider',
     )
 
     EXCEPTIONS_2FA = (
-        "user.settings.2fa",
-        "user.settings.2fa.add",
-        "user.settings.2fa.enable",
-        "user.settings.2fa.disable",
-        "user.settings.2fa.regenemergency",
-        "user.settings.2fa.confirm.totp",
-        "user.settings.2fa.confirm.u2f",
-        "user.settings.2fa.delete",
-        "auth.logout",
-        "user.reauth"
+        'user.settings.2fa',
+        'user.settings.2fa.add',
+        'user.settings.2fa.enable',
+        'user.settings.2fa.disable',
+        'user.settings.2fa.regenemergency',
+        'user.settings.2fa.confirm.totp',
+        'user.settings.2fa.confirm.u2f',
+        'user.settings.2fa.delete',
+        'auth.logout',
+        'user.reauth',
     )
 
     def __init__(self, get_response=None):
@@ -170,13 +172,12 @@ class PermissionMiddleware:
 
 
 class AuditLogMiddleware:
-
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         if request.path.startswith(get_script_prefix() + 'control') and request.user.is_authenticated:
-            if getattr(request.user, "is_hijacked", False):
+            if getattr(request.user, 'is_hijacked', False):
                 hijack_history = request.session.get('hijack_history', False)
                 hijacker = get_object_or_404(User, pk=hijack_history[0])
                 ss = hijacker.get_active_staff_session(request.session.get('hijacker_session'))
@@ -184,15 +185,12 @@ class AuditLogMiddleware:
                     ss.logs.create(
                         url=request.path,
                         method=request.method,
-                        impersonating=request.user
+                        impersonating=request.user,
                     )
             else:
                 ss = request.user.get_active_staff_session(request.session.session_key)
                 if ss:
-                    ss.logs.create(
-                        url=request.path,
-                        method=request.method
-                    )
+                    ss.logs.create(url=request.path, method=request.method)
 
         response = self.get_response(request)
         return response
