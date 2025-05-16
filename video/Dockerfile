@@ -25,7 +25,7 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \
     mkdir /etc/venueless && \
     mkdir -p /venueless/webapp && \
     mkdir /data && \
-    groupadd -g $GID venueless && \
+    groupadd -o -g $GID venueless && \
     useradd -ms /bin/bash -d /venueless -u $UID -g venueless venueless && \
     echo 'venueless ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers && \
     mkdir /static
