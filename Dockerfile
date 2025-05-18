@@ -36,7 +36,7 @@ RUN apt-get update && \
 	/usr/sbin/update-locale LANG=C.UTF-8 && \
     mkdir /etc/pretix && \
     mkdir /data && \
-    groupadd -g $GID pretixuser && \
+    groupadd -o -g $GID pretixuser && \
     useradd -ms /bin/bash -d /pretix -u $UID -g pretixuser pretixuser && \
     echo 'pretixuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
     mkdir /static && \
