@@ -51,8 +51,7 @@ class OrganizerCreate(CreateView):
     context_object_name = 'organizer'
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_active_staff_session(self.request.session.session_key):
-            raise PermissionDenied()
+        # Allow all users to create organizers
         return super().dispatch(request, *args, **kwargs)
 
     @transaction.atomic
