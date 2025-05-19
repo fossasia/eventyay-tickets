@@ -19,7 +19,7 @@ matplotlib==3.9.*
 numpy==2.0.*
 orjson==3.10.*
 openpyxl~=3.1.4
-Pillow==11.0.*
+Pillow==11.2.*
 pandas==2.2.*
 pdf2image==1.17.*
 pdfrw==0.4
