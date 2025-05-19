@@ -14,7 +14,7 @@ django-multifactor==0.7.4
 djangorestframework==3.16.*
 emoji==2.14.*
 icalendar==6.1.*
-lxml==5.3.*
+lxml==5.4.*
 matplotlib==3.9.*
 numpy==2.2.*
 orjson==3.10.*
