@@ -382,7 +382,7 @@ class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, Acco
             return redirect(reverse('eventyay_common:account.2fa.confirm.totp', kwargs={
                 'device_id': self.device.pk
             }))
-        
+
 
 class TwoFactorAuthDeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, TemplateView):
     template_name = 'eventyay_common/account/2fa-confirm-webauthn.html'
@@ -528,6 +528,25 @@ class TwoFactorAuthDeviceDeleteView(RecentAuthenticationRequiredMixin, AccountMe
         self.request.user.update_session_token()
         update_session_auth_hash(self.request, self.request.user)
         messages.success(request, _('The device has been removed.'))
+        return redirect(reverse('eventyay_common:account.2fa'))
+
+
+class TwoFactorAuthRegenerateEmergencyView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
+    template_name = 'eventyay_common/account/2fa-regenemergency.html'
+
+    def post(self, request, *args, **kwargs):
+        StaticDevice.objects.filter(user=self.request.user, name='emergency').delete()
+        d = StaticDevice.objects.create(user=self.request.user, name='emergency')
+        for i in range(10):
+            d.token_set.create(token=get_random_string(length=12, allowed_chars='1234567890'))
+        self.request.user.log_action('eventyay_common:account.2fa.regenemergency', user=self.request.user)
+        self.request.user.send_security_notice([
+            _('Your two-factor emergency codes have been regenerated.')
+        ])
+        self.request.user.update_session_token()
+        update_session_auth_hash(self.request, self.request.user)
+        messages.success(request, _('Your emergency codes have been newly generated. Remember to store them in a safe '
+                                    'place in case you lose access to your devices.'))
         return redirect(reverse('eventyay_common:account.2fa'))
 
 
