@@ -127,6 +127,12 @@ def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
             'url': reverse('eventyay_common:account.2fa'),
             'active': '2fa' in resolver_match.url_name,
             'icon': 'lock',
-        }
+        },
+        {
+            'label': _('OAuth applications'),
+            'url': reverse('eventyay_common:account.oauth.authorized-apps'),
+            'active': 'oauth' in resolver_match.url_name,
+            'icon': 'key',
+        },
     ]
     return nav

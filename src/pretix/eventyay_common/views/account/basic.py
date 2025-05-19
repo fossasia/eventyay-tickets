@@ -4,7 +4,7 @@ from datetime import datetime, UTC
 from logging import getLogger
 from collections import defaultdict
 from urllib.parse import quote, urlencode, urlparse
-from typing import Any, cast
+from typing import cast
 
 import webauthn
 from django.urls import reverse
@@ -22,6 +22,7 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_otp.plugins.otp_static.models import StaticDevice
 from django_otp.plugins.otp_totp.models import TOTPDevice
+
 from webauthn.helpers import generate_challenge, generate_user_handle
 
 from pretix.common.consts import KEY_LAST_FORCE_LOGIN
@@ -29,7 +30,8 @@ from pretix.base.models import User, Event, NotificationSetting, WebAuthnDevice,
 from pretix.base.notifications import get_all_notification_types
 from pretix.base.forms.user import UserSettingsForm, User2FADeviceAddForm
 from pretix.helpers.u2f import websafe_encode
-from ..navigation import get_account_navigation
+from ...navigation import get_account_navigation
+from .common import AccountMenuMixIn
 
 
 REAL_DEVICE_TYPES = (TOTPDevice, WebAuthnDevice, U2FDevice)
@@ -56,13 +58,6 @@ class RecentAuthenticationRequiredMixin:
             auth_url = '{}?{}'.format(auth_url, urlencode({'next': request.path}))
             return redirect(auth_url)
         return super().dispatch(request, *args, **kwargs)
-
-
-class AccountMenuMixIn:
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        ctx = super().get_context_data(**kwargs)
-        ctx['nav_items'] = get_account_navigation(self.request)
-        return ctx
 
 
 # Copied from src/pretix/control/views/user.py and modified.

@@ -39,6 +39,9 @@ urlpatterns = [
     path('account/2fa/webauthn/<str:device_id>/confirm', account.TwoFactorAuthDeviceConfirmWebAuthnView.as_view(), name='account.2fa.confirm.webauthn'),
     path('account/2fa/<str:devicetype>/<str:device_id>/delete', account.TwoFactorAuthDeviceDeleteView.as_view(), name='account.2fa.delete'),
     path('account/2fa/regenemergency', account.TwoFactorAuthRegenerateEmergencyView.as_view(), name='account.2fa.regenemergency'),
-    path('account/oauth-list', account.DummyView.as_view(), name='account.oauth-list'),
+    path('account/oauth/authorized-apps', account.OAuthAuthorizedAppListView.as_view(), name='account.oauth.authorized-apps'),
+    path('account/oauth/own-apps', account.OAuthOwnAppListView.as_view(), name='account.oauth.own-apps'),
+    path('account/oauth/app/register', account.OAuthApplicationRegistrationView.as_view(), name='account.oauth.app.register'),
+    path('account/oauth/revoke', account.DummyView.as_view(), name='account.history'),
     path('account/history', account.DummyView.as_view(), name='account.history'),
 ]

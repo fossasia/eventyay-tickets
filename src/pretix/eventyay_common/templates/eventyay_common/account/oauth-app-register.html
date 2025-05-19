@@ -1,7 +1,7 @@
 {% extends 'eventyay_common/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% block title %}{{ _('Regenerate emergency codes') }}{% endblock title %}
+{% block title %}{{ _('Register a new application') }}{% endblock title %}
 
 {% block nav_top_header %}
     <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
@@ -16,21 +16,13 @@
 {% endblock nav_top_header %}
 
 {% block content %}
-    <h1>{{ _('Regenerate emergency codes') }}</h1>
-    <form action='' method='post' class='form-horizontal'>
+    <h1>{{ _('Register a new application') }}</h1>
+    <form class='form-horizontal' method='post' action=''>
         {% csrf_token %}
-        <p>
-            {{ _('Do you really want to regenerate your emergency codes?') }}
-        </p>
-        <p>
-            {{ _('The old codes will no longer work.') }}
-        </p>
+        {% bootstrap_form form layout='control' %}
         <div class='form-group submit-group'>
-            <a href="{% url 'eventyay_common:account.2fa' %}" class='btn btn-default btn-cancel'>
-                {{ _('Cancel') }}
-            </a>
-            <button type='submit' class='btn btn-danger btn-save'>
-                {{ _('Regenerate') }}
+            <button type='submit' class='btn btn-primary btn-save'>
+                {{ _('Save') }}
             </button>
         </div>
     </form>
