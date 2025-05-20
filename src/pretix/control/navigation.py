@@ -286,7 +286,7 @@ def get_global_navigation(request):
     nav = [
         {
             'label': _('My events'),
-            'url': reverse('control:events'),
+            'url': reverse('eventyay_common:events'),
             'active': 'events' in url.url_name,
             'icon': 'calendar',
         },
