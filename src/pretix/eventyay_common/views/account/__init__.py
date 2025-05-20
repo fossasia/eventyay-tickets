@@ -5,4 +5,4 @@ from .basic import (TwoFactorAuthSettingsView, TwoFactorAuthEnableView,
                       TwoFactorAuthDeviceConfirmWebAuthnView,
                       TwoFactorAuthDeviceDeleteView,
                       TwoFactorAuthRegenerateEmergencyView)
-from .oauth import (OAuthAuthorizedAppListView, OAuthOwnAppListView, OAuthApplicationRegistrationView)
+from .oauth import (OAuthAuthorizedAppListView, OAuthOwnAppListView, OAuthApplicationRegistrationView, OAuthApplicationUpdateView)

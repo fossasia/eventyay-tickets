@@ -51,7 +51,7 @@ class OAuthApplicationRegistrationView(AccountMenuMixIn, ApplicationRegistration
         return forms.modelform_factory(
             get_application_model(),
             fields=(
-                "name", "redirect_uris"
+                'name', 'redirect_uris'
             )
         )
 
@@ -62,3 +62,30 @@ class OAuthApplicationRegistrationView(AccountMenuMixIn, ApplicationRegistration
             sender=self.request, user=self.request.user, application=form.instance
         )
         return super().form_valid(form)
+
+
+class ApplicationUpdateForm(forms.ModelForm):
+    class Meta:
+        model = OAuthApplication
+        fields = ('name', 'client_id', 'client_secret', 'redirect_uris')
+
+    def clean_client_id(self):
+        return self.instance.client_id
+
+    def clean_client_secret(self):
+        return self.instance.client_secret
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['client_id'].widget.attrs['readonly'] = True
+        self.fields['client_secret'].widget.attrs['readonly'] = True
+
+
+class OAuthApplicationUpdateView(AccountMenuMixIn, ApplicationUpdate):
+    template_name = 'eventyay_common/account/oauth-app-update.html'
+
+    def get_form_class(self):
+        return ApplicationUpdateForm
+
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True)

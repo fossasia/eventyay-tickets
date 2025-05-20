@@ -19,7 +19,7 @@ urlpatterns = [
     path('organizer/<str:organizer>/team/<str:team>/edit', team.TeamUpdateView.as_view(), name='organizer.team.edit'),
     path('organizer/<str:organizer>/team/<str:team>/delete', team.TeamDeleteView.as_view(), name='organizer.team.delete'),
     path('events/', event.EventList.as_view(), name='events'),
-    url(r'^events/search/$', event.EventSearchView.as_view(), name='events.search'),
+    path('events/search/', event.EventSearchView.as_view(), name='events.search'),
     path('events/add', event.EventCreateView.as_view(), name='events.add'),
     path('event/<str:organizer>/<str:event>/', include([
         path('', dashboards.EventIndexView.as_view(), name='event.index'),
@@ -43,6 +43,9 @@ urlpatterns = [
     path('account/oauth/authorized-apps', account.OAuthAuthorizedAppListView.as_view(), name='account.oauth.authorized-apps'),
     path('account/oauth/own-apps', account.OAuthOwnAppListView.as_view(), name='account.oauth.own-apps'),
     path('account/oauth/app/register', account.OAuthApplicationRegistrationView.as_view(), name='account.oauth.app.register'),
-    path('account/oauth/revoke', account.DummyView.as_view(), name='account.history'),
+    path('account/oauth/app/<int:pk>/', account.OAuthApplicationUpdateView.as_view(), name='account.oauth.app'),
+    path('account/oauth/app/<int:pk>/revoke', account.DummyView.as_view(), name='account.oauth.app.revoke'),
+    path('account/oauth/app/<int:pk>/roll', account.DummyView.as_view(), name='account.oauth.app.roll'),
+    path('account/oauth/app/<int:pk>/disable', account.DummyView.as_view(), name='account.oauth.app.disable'),
     path('account/history', account.DummyView.as_view(), name='account.history'),
 ]
