@@ -19,6 +19,7 @@ urlpatterns = [
     path('organizer/<str:organizer>/team/<str:team>/edit', team.TeamUpdateView.as_view(), name='organizer.team.edit'),
     path('organizer/<str:organizer>/team/<str:team>/delete', team.TeamDeleteView.as_view(), name='organizer.team.delete'),
     path('events/', event.EventList.as_view(), name='events'),
+    url(r'^events/search/$', event.EventSearchView.as_view(), name='events.search'),
     path('events/add', event.EventCreateView.as_view(), name='events.add'),
     path('event/<str:organizer>/<str:event>/', include([
         path('', dashboards.EventIndexView.as_view(), name='event.index'),
