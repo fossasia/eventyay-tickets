@@ -13,31 +13,44 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Tests
+    name: Exhibitors Plugin Tests
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout exhibitors plugin
+        uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
+      - name: Clone eventyay-tickets
+        run: |
+          git clone https://github.com/fossasia/eventyay-tickets.git ../eventyay-tickets
+
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y gettext
+        run: sudo apt-get update && sudo apt-get install -y gettext libjpeg-dev zlib1g-dev libpq-dev
 
-      - name: Install Python dependencies
+      - name: Set up virtual environment
         run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]" psycopg2-binary pytest
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
 
-      - name: Run tests for exhibitors plugin
-        run: pytest tests --reruns 3
+          # Install eventyay-tickets with dev dependencies
+          cd ../eventyay-tickets
+          pip install -e ".[dev]"
+
+          # Go back to plugin directory and install it
+          cd ../eventyay-tickets-exhibitors
+          pip install -e .
+
+      - name: Compile translations
+        run: |
+          source venv/bin/activate
+          make
+
+      - name: Run tests
+        run: |
+          source venv/bin/activate
+          pytest tests --reruns 3
