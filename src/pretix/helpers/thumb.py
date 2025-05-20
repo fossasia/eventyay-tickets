@@ -53,8 +53,9 @@ def create_thumbnail(sourcename, size):
     image = Image.open(BytesIO(source.read()))
     try:
         image.load()
-    except:
-        raise ThumbnailError('Could not load image')
+    except OSError as e:
+        msg = f'Could not load image: {e}'
+        raise ThumbnailError(msg) from e
 
     # before we calc thumbnail, we need to check and apply EXIF-orientation
     image = ImageOps.exif_transpose(image)
