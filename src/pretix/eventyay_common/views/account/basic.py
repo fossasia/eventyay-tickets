@@ -12,7 +12,8 @@ from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.forms import BaseForm
-from django.views.generic import UpdateView, TemplateView, FormView
+from django.views.generic import UpdateView, TemplateView, FormView, ListView
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
@@ -26,7 +27,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from webauthn.helpers import generate_challenge, generate_user_handle
 
 from pretix.common.consts import KEY_LAST_FORCE_LOGIN
-from pretix.base.models import User, Event, NotificationSetting, WebAuthnDevice, U2FDevice
+from pretix.base.models import User, Event, NotificationSetting, WebAuthnDevice, U2FDevice, LogEntry
 from pretix.base.notifications import get_all_notification_types
 from pretix.base.forms.user import UserSettingsForm, User2FADeviceAddForm
 from pretix.helpers.u2f import websafe_encode
@@ -544,6 +545,32 @@ class TwoFactorAuthRegenerateEmergencyView(RecentAuthenticationRequiredMixin, Ac
         messages.success(request, _('Your emergency codes have been newly generated. Remember to store them in a safe '
                                     'place in case you lose access to your devices.'))
         return redirect(reverse('eventyay_common:account.2fa'))
+
+
+class HistoryView(AccountMenuMixIn, ListView):
+    template_name = 'eventyay_common/account/history.html'
+    model = LogEntry
+    context_object_name = 'logs'
+    paginate_by = 20
+
+    def get_queryset(self):
+        qs = LogEntry.objects.filter(
+            content_type=ContentType.objects.get_for_model(User),
+            object_id=self.request.user.pk
+        ).select_related(
+            'user', 'content_type', 'api_token', 'oauth_application', 'device'
+        ).order_by('-datetime')
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+
+        class FakeClass:
+            def top_logentries(self):
+                return ctx['logs']
+
+        ctx['fakeobj'] = FakeClass()
+        return ctx
 
 
 # This view is just a placeholder for the URL patterns that we haven't implemented views for yet.

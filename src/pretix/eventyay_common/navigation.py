@@ -134,5 +134,11 @@ def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
             'active': 'oauth' in resolver_match.url_name,
             'icon': 'key',
         },
+        {
+            'label': _('History'),
+            'url': reverse('eventyay_common:account.history'),
+            'active': 'history' in resolver_match.url_name,
+            'icon': 'history',
+        }
     ]
     return nav

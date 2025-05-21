@@ -1,4 +1,4 @@
-from .basic import GeneralSettingsView, NotificationSettingsView, DummyView
+from .basic import GeneralSettingsView, NotificationSettingsView, HistoryView, DummyView
 from .basic import (
     TwoFactorAuthSettingsView,
     TwoFactorAuthEnableView,
