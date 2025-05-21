@@ -73,9 +73,13 @@
                 </th>
                 <th>
                     {% trans "Paid tickets per quota" %}
+                    <a href="?{% url_replace request 'ordering' '-total_quota' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'ordering' 'total_quota' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th>
                     {% trans "Shop" %}
+                    <a href="?{% url_replace request 'ordering' '-live' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'ordering' 'live' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th class="text-right flip">
                     {% trans "Actions" %}
@@ -118,7 +122,7 @@
                         {% if e.first_quotas|length > 3 %}
                             <a href="{% url 'control:event.items.quotas' organizer=e.organizer.slug event=e.slug %}"
                                class="quotabox-more" data-toggle="tooltip" title="{% trans 'More quotas' %}"
-                               data-placement="top">
+                               aria-label="{% trans 'More quotas' %}" data-placement="top">
                                 &middot;&middot;&middot;
                             </a>
                         {% endif %}
