@@ -30,8 +30,8 @@ urlpatterns = [
     path('orders/', MyOrdersView.as_view(), name='orders'),
     # TODO: We may move other /control/settings/xxx pages (which are for User settings) to under this "account" section as well.
     path('account/', RedirectView.as_view(pattern_name='eventyay_common:account.general'), name='account'),
-    path('account/general/', account.GeneralSettingsView.as_view(), name='account.general'),
-    path('account/notifications/', account.NotificationSettingsView.as_view(), name='account.notifications'),
+    path('account/general', account.GeneralSettingsView.as_view(), name='account.general'),
+    path('account/notifications', account.NotificationSettingsView.as_view(), name='account.notifications'),
     path('account/2fa/', account.TwoFactorAuthSettingsView.as_view(), name='account.2fa'),
     path('account/2fa/enable', account.TwoFactorAuthEnableView.as_view(), name='account.2fa.enable'),
     path('account/2fa/disable', account.TwoFactorAuthDisableView.as_view(), name='account.2fa.disable'),
