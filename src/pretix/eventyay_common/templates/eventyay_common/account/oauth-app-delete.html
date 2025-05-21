@@ -1,7 +1,7 @@
 {% extends 'eventyay_common/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% block title %}{{ _('Generate new application secret') }}{% endblock title %}
+{% block title %}{{ _('Disable application') }}{% endblock title %}
 
 {% block nav_top_header %}
     <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
@@ -16,16 +16,16 @@
 {% endblock nav_top_header %}
 
 {% block content %}
-    <h1>{{ _('Generate new application secret') }}</h1>
+    <h1>{{ _('Disable application') }}</h1>
         <form action='' method='post' class='form-horizontal'>
             {% csrf_token %}
             <p>{{ confirm_message|safe }}</p>
             <div class='form-group submit-group'>
-                <a href="{% url 'eventyay_common:account.oauth.own-apps' %}" class='btn btn-delete btn-default btn-cancel'>
+                <a href="{% url 'eventyay_common:account.oauth.own-apps' %}" class='btn btn-default btn-cancel'>
                     {{ _('Cancel') }}
                 </a>
-                <button type='submit' class='btn btn-danger btn-save'>
-                    {{ _('Roll secret') }}
+                <button type='submit' class='btn btn-delete btn-danger btn-save'>
+                    {{ _('Disable') }}
                 </button>
             </div>
         </form>

@@ -3,6 +3,7 @@ import logging
 from django import forms
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from oauth2_provider.scopes import get_scopes_backend
@@ -98,6 +99,13 @@ class OAuthApplicationUpdateView(AccountMenuMixIn, ApplicationUpdate):
 class OAuthApplicationRollView(ApplicationDetail):
     template_name = 'eventyay_common/account/oauth-app-rollkeys.html'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        obj = self.get_object()
+        confirm_message = _("Are you sure you want to generate a new client secret for the application {code}?")
+        ctx['confirm_message'] = confirm_message.format(code=f'<strong>{obj}</strong>')
+        return ctx
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         messages.success(request, _('A new client secret has been generated and is now effective.'))
@@ -107,3 +115,24 @@ class OAuthApplicationRollView(ApplicationDetail):
 
     def get_queryset(self):
         return super().get_queryset().filter(active=True)
+
+
+class OAuthApplicationDeleteView(ApplicationDelete):
+    template_name = 'eventyay_common/account/oauth-app-delete.html'
+    success_url = reverse_lazy("eventyay_common:account.oauth.own-apps")
+
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        obj = self.get_object()
+        confirm_message = _("Are you sure you want to disable the application {code} permanently?")
+        ctx['confirm_message'] = confirm_message.format(code=f'<strong>{obj}</strong>')
+        return ctx
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.active = False
+        self.object.save()
+        return HttpResponseRedirect(self.success_url)
