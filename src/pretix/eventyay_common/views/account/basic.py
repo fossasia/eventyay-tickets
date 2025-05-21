@@ -477,12 +477,13 @@ class TwoFactorAuthDeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, 
                                    'account using the buttons below to make a second factor required for logging '
                                    'into your account.'))
             messages.success(request, str(_('The device has been verified and can now be used.')) + note)
-            return redirect(reverse('control:user.settings.2fa'))
-        except Exception:
+            return redirect(reverse('eventyay_common:account.2fa'))
+        except Exception as e:
+            msg = f'WebAuthn registration failed: {e}'
+            logger.exception(msg)
             messages.error(request, _('The registration could not be completed. Please try again.'))
-            logger.exception('WebAuthn registration failed')
-            return redirect(reverse('control:user.settings.2fa.confirm.webauthn', kwargs={
-                'device': self.device.pk
+            return redirect(reverse('eventyay_common:account.2fa.confirm.webauthn', kwargs={
+                'device_id': self.device.pk
             }))
 
 
@@ -492,11 +493,11 @@ class TwoFactorAuthDeviceDeleteView(RecentAuthenticationRequiredMixin, AccountMe
     @cached_property
     def device(self):
         if self.kwargs['devicetype'] == 'totp':
-            return get_object_or_404(TOTPDevice, user=self.request.user, pk=self.kwargs['device'], confirmed=True)
+            return get_object_or_404(TOTPDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=True)
         elif self.kwargs['devicetype'] == 'webauthn':
-            return get_object_or_404(WebAuthnDevice, user=self.request.user, pk=self.kwargs['device'], confirmed=True)
+            return get_object_or_404(WebAuthnDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=True)
         elif self.kwargs['devicetype'] == 'u2f':
-            return get_object_or_404(U2FDevice, user=self.request.user, pk=self.kwargs['device'], confirmed=True)
+            return get_object_or_404(U2FDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=True)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()

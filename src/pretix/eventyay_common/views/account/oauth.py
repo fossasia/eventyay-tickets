@@ -1,6 +1,9 @@
 import logging
 
 from django import forms
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.models import get_application_model
@@ -8,6 +11,7 @@ from oauth2_provider.views import (
     ApplicationDelete, ApplicationDetail, ApplicationList,
     ApplicationRegistration, ApplicationUpdate,
 )
+from oauth2_provider.generators import generate_client_secret
 
 from pretix.api.models import (
     OAuthAccessToken, OAuthApplication, OAuthRefreshToken
@@ -86,6 +90,20 @@ class OAuthApplicationUpdateView(AccountMenuMixIn, ApplicationUpdate):
 
     def get_form_class(self):
         return ApplicationUpdateForm
+
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True)
+
+
+class OAuthApplicationRollView(ApplicationDetail):
+    template_name = 'eventyay_common/account/oauth-app-rollkeys.html'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        messages.success(request, _('A new client secret has been generated and is now effective.'))
+        self.object.client_secret = generate_client_secret()
+        self.object.save()
+        return HttpResponseRedirect(self.object.get_absolute_url())
 
     def get_queryset(self):
         return super().get_queryset().filter(active=True)

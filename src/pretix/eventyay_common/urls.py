@@ -43,9 +43,9 @@ urlpatterns = [
     path('account/oauth/authorized-apps', account.OAuthAuthorizedAppListView.as_view(), name='account.oauth.authorized-apps'),
     path('account/oauth/own-apps', account.OAuthOwnAppListView.as_view(), name='account.oauth.own-apps'),
     path('account/oauth/app/register', account.OAuthApplicationRegistrationView.as_view(), name='account.oauth.app.register'),
-    path('account/oauth/app/<int:pk>/', account.OAuthApplicationUpdateView.as_view(), name='account.oauth.app'),
+    path('account/oauth/app/<int:pk>', account.OAuthApplicationUpdateView.as_view(), name='account.oauth.app'),
     path('account/oauth/app/<int:pk>/revoke', account.DummyView.as_view(), name='account.oauth.app.revoke'),
-    path('account/oauth/app/<int:pk>/roll', account.DummyView.as_view(), name='account.oauth.app.roll'),
+    path('account/oauth/app/<int:pk>/roll', account.OAuthApplicationRollView.as_view(), name='account.oauth.app.roll'),
     path('account/oauth/app/<int:pk>/disable', account.DummyView.as_view(), name='account.oauth.app.disable'),
     path('account/history', account.DummyView.as_view(), name='account.history'),
 ]
