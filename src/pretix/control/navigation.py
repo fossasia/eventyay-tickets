@@ -330,7 +330,7 @@ def get_global_navigation(request):
                 },
                 {
                     'label': _('Account history'),
-                    'url': reverse('control:user.settings.history'),
+                    'url': reverse('eventyay_common:account.history'),
                     'active': 'user.settings.history' in url.url_name,
                 },
             ]
