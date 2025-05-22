@@ -95,11 +95,13 @@ def _default_context(request):
         if request.event.settings.presale_css_file:
             ctx['css_file'] = default_storage.url(request.event.settings.presale_css_file)
 
+        # FIXME: We should avoid hardcoding truncate length here.
+        # It is not flexible because it requires the media folder to be at "/data/media/".
         ctx['event_logo'] = request.event.settings.get('logo_image', as_type=str, default='')[7:]
         try:
             ctx['social_image'] = request.event.cache.get_or_set('social_image_url', request.event.social_image, 60)
-        except:
-            logger.exception('Could not generate social image')
+        except (ValueError, OSError) as e:
+            logger.error('Could not generate social image. Error: %s', e)
 
         ctx['event'] = request.event
         ctx['languages'] = [get_language_info(code) for code in request.event.settings.locales]

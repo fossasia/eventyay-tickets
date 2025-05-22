@@ -8,9 +8,9 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import F, Max, Min, Prefetch
+from django.db.models import F, Max, Min, Prefetch, Q
 from django.db.models.functions import Coalesce, Greatest
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -482,3 +482,20 @@ class VideoAccessAuthenticator(views.APIView):
         token = jwt.encode(payload, self.request.event.settings.venueless_secret, algorithm='HS256')
         base_url = self.request.event.settings.venueless_url
         return '{}/#token={}'.format(base_url, token).replace('//#', '/#')
+
+
+class EventSearchView(views.APIView):
+    def get(self, request):
+        query = request.GET.get('query', '')
+        events = (
+            Event.objects.filter(Q(name__icontains=query) | Q(slug__icontains=query))
+            .order_by('name')
+            .select_related('organizer')[:10]
+        )
+
+        results = []
+        for event in events:
+            if request.user.has_event_permission(event.organizer, event, 'can_view_orders', request=request):
+                results.append({'name': event.name, 'slug': event.slug, 'organizer': event.organizer.slug})
+
+        return JsonResponse(results, safe=False)
