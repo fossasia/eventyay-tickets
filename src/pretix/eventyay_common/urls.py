@@ -8,6 +8,10 @@ from pretix.eventyay_common.views.orders import MyOrdersView
 
 app_name = 'eventyay_common'
 
+# TODO: Standardize the use of trailing slashes. Proposal:
+# - No trailing slash in general. It is because these views are private (requires login), not exposed to SEO bots.
+# - The view which will have children views (like "/organizers/", which have children like "/organizers/add") should have trailing slash.
+
 urlpatterns = [
     path('', dashboards.eventyay_common_dashboard, name='dashboard'),
     path('widgets.json/', dashboards.user_index_widgets_lazy, name='dashboard.widgets'),
