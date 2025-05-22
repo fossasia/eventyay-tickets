@@ -4,7 +4,10 @@ from contextlib import contextmanager
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
-    BACKEND_SESSION_KEY, get_user_model, load_backend, login,
+    BACKEND_SESSION_KEY,
+    get_user_model,
+    load_backend,
+    login,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -37,12 +40,12 @@ def get_used_backend(request):
 @contextmanager
 def keep_session_age(session):
     try:
-        session_expiry = session["_session_expiry"]
+        session_expiry = session['_session_expiry']
     except KeyError:
         yield
     else:
         yield
-        session["_session_expiry"] = session_expiry
+        session['_session_expiry'] = session_expiry
 
 
 class UserListView(AdministratorPermissionRequiredMixin, ListView):
@@ -72,7 +75,7 @@ class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationReq
     form_class = UserEditForm
 
     def get_object(self, queryset=None):
-        return get_object_or_404(User, pk=self.kwargs.get("id"))
+        return get_object_or_404(User, pk=self.kwargs.get('id'))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -109,20 +112,21 @@ class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationReq
 
 
 class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
-
     def get(self, request, *args, **kwargs):
         return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
-        self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
+        self.object = get_object_or_404(User, pk=self.kwargs.get('id'))
         try:
             self.object.send_password_reset()
         except SendMailException:
-            messages.error(request, _('There was an error sending the mail. Please try again later.'))
+            messages.error(
+                request,
+                _('There was an error sending the mail. Please try again later.'),
+            )
             return redirect(self.get_success_url())
 
-        self.object.log_action('pretix.control.auth.user.forgot_password.mail_sent',
-                               user=request.user)
+        self.object.log_action('pretix.control.auth.user.forgot_password.mail_sent', user=request.user)
         messages.success(request, _('We sent out an e-mail containing further instructions.'))
         return redirect(self.get_success_url())
 
@@ -130,24 +134,27 @@ class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRe
         return reverse('control:admin.users.edit', kwargs=self.kwargs)
 
 
-class UserAnonymizeView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, TemplateView):
-    template_name = "pretixcontrol/admin/users/anonymize.html"
+class UserAnonymizeView(
+    AdministratorPermissionRequiredMixin,
+    RecentAuthenticationRequiredMixin,
+    TemplateView,
+):
+    template_name = 'pretixcontrol/admin/users/anonymize.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['user'] = get_object_or_404(User, pk=self.kwargs.get("id"))
+        ctx['user'] = get_object_or_404(User, pk=self.kwargs.get('id'))
         return ctx
 
     def post(self, request, *args, **kwargs):
-        self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
-        self.object.log_action('pretix.user.anonymized',
-                               user=request.user)
-        self.object.email = "{}@disabled.eventyay.com".format(self.object.pk)
-        self.object.fullname = ""
+        self.object = get_object_or_404(User, pk=self.kwargs.get('id'))
+        self.object.log_action('pretix.user.anonymized', user=request.user)
+        self.object.email = '{}@disabled.eventyay.com'.format(self.object.pk)
+        self.object.fullname = ''
         self.object.is_active = False
         self.object.notifications_send = False
         self.object.save()
-        for le in self.object.all_logentries.filter(action_type="pretix.user.settings.changed"):
+        for le in self.object.all_logentries.filter(action_type='pretix.user.settings.changed'):
             d = le.parsed_data
             if 'email' in d:
                 d['email'] = '█'
@@ -161,32 +168,30 @@ class UserAnonymizeView(AdministratorPermissionRequiredMixin, RecentAuthenticati
 
 
 class UserImpersonateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
-
     def get(self, request, *args, **kwargs):
         return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
-        self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
-        self.request.user.log_action('pretix.control.auth.user.impersonated',
-                                     user=request.user,
-                                     data={
-                                         'other': self.kwargs.get("id"),
-                                         'other_email': self.object.email
-                                     })
+        self.object = get_object_or_404(User, pk=self.kwargs.get('id'))
+        self.request.user.log_action(
+            'pretix.control.auth.user.impersonated',
+            user=request.user,
+            data={'other': self.kwargs.get('id'), 'other_email': self.object.email},
+        )
         oldkey = request.session.session_key
         hijacker = request.user
         hijacked = self.object
 
-        hijack_history = request.session.get("hijack_history", [])
+        hijack_history = request.session.get('hijack_history', [])
         hijack_history.append(request.user._meta.pk.value_to_string(hijacker))
 
         backend = get_used_backend(request)
-        backend = f"{backend.__module__}.{backend.__class__.__name__}"
+        backend = f'{backend.__module__}.{backend.__class__.__name__}'
 
         with signals.no_update_last_login(), keep_session_age(request.session):
             login(request, hijacked, backend=backend)
 
-        request.session["hijack_history"] = hijack_history
+        request.session['hijack_history'] = hijack_history
 
         signals.hijack_started.send(
             sender=None,
@@ -199,20 +204,19 @@ class UserImpersonateView(AdministratorPermissionRequiredMixin, RecentAuthentica
 
 
 class UserImpersonateStopView(LoginRequiredMixin, View):
-
     def post(self, request, *args, **kwargs):
         impersonated = request.user
         hijs = request.session['hijacker_session']
-        hijack_history = request.session.get("hijack_history", [])
+        hijack_history = request.session.get('hijack_history', [])
         hijacked = request.user
         user_pk = hijack_history.pop()
         hijacker = get_object_or_404(get_user_model(), pk=user_pk)
         backend = get_used_backend(request)
-        backend = f"{backend.__module__}.{backend.__class__.__name__}"
+        backend = f'{backend.__module__}.{backend.__class__.__name__}'
         with signals.no_update_last_login(), keep_session_age(request.session):
             login(request, hijacker, backend=backend)
 
-        request.session["hijack_history"] = hijack_history
+        request.session['hijack_history'] = hijack_history
 
         signals.hijack_ended.send(
             sender=None,
@@ -226,12 +230,11 @@ class UserImpersonateStopView(LoginRequiredMixin, View):
             ss.session_key = request.session.session_key
             ss.save()
 
-        request.user.log_action('pretix.control.auth.user.impersonate_stopped',
-                                user=request.user,
-                                data={
-                                    'other': impersonated.pk,
-                                    'other_email': impersonated.email
-                                })
+        request.user.log_action(
+            'pretix.control.auth.user.impersonate_stopped',
+            user=request.user,
+            data={'other': impersonated.pk, 'other_email': impersonated.email},
+        )
         return redirect(reverse('control:index'))
 
 
@@ -259,7 +262,7 @@ class UserCreateView(AdministratorPermissionRequiredMixin, RecentAuthenticationR
         return super().form_valid(form)
 
 
-@require_http_methods(["GET"])
+@require_http_methods(['GET'])
 @protected_resource()  # Ensures the endpoint is protected by OAuth2
 def user_info(request):
     """

@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 class BanlistValidator:
-
     banlist = []
 
     def __call__(self, value):
@@ -20,7 +19,6 @@ class BanlistValidator:
 
 @deconstructible
 class EventSlugBanlistValidator(BanlistValidator):
-
     banlist = [
         'download',
         'healthcheck',
@@ -40,7 +38,6 @@ class EventSlugBanlistValidator(BanlistValidator):
 
 @deconstructible
 class OrganizerSlugBanlistValidator(BanlistValidator):
-
     banlist = [
         'download',
         'healthcheck',
@@ -61,7 +58,6 @@ class OrganizerSlugBanlistValidator(BanlistValidator):
 
 @deconstructible
 class EmailBanlistValidator(BanlistValidator):
-
     banlist = [
         settings.PRETIX_EMAIL_NONE_VALUE,
     ]
