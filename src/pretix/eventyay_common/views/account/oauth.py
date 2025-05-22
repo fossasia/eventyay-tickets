@@ -15,7 +15,7 @@ from oauth2_provider.views import (
 from oauth2_provider.generators import generate_client_secret
 
 from pretix.api.models import (
-    OAuthAccessToken, OAuthApplication, OAuthRefreshToken
+    OAuthAccessToken, OAuthApplication
 )
 from pretix.control.signals import oauth_application_registered
 

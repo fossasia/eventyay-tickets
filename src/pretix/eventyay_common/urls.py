@@ -28,7 +28,6 @@ urlpatterns = [
         path('video-access/', event.VideoAccessAuthenticator.as_view(), name='event.create_access_to_video'),
     ])),
     path('orders/', MyOrdersView.as_view(), name='orders'),
-    # TODO: We may move other /control/settings/xxx pages (which are for User settings) to under this "account" section as well.
     path('account/', RedirectView.as_view(pattern_name='eventyay_common:account.general'), name='account'),
     path('account/general', account.GeneralSettingsView.as_view(), name='account.general'),
     path('account/notifications', account.NotificationSettingsView.as_view(), name='account.notifications'),

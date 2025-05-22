@@ -1,64 +1,25 @@
-import base64
-import json
-from datetime import datetime, UTC
 from logging import getLogger
 from collections import defaultdict
-from urllib.parse import quote, urlencode, urlparse
-from typing import cast
 
-import webauthn
 from django.urls import reverse
-from django.shortcuts import redirect, get_object_or_404
-from django.conf import settings
+from django.shortcuts import redirect
 from django.http import HttpRequest, HttpResponse
-from django.forms import BaseForm
-from django.views.generic import UpdateView, TemplateView, FormView, ListView
+from django.views.generic import UpdateView, TemplateView, ListView
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
-from django.utils import timezone
-from django.utils.crypto import get_random_string
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django_otp.plugins.otp_static.models import StaticDevice
-from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from webauthn.helpers import generate_challenge, generate_user_handle
-
-from pretix.common.consts import KEY_LAST_FORCE_LOGIN
-from pretix.base.models import User, Event, NotificationSetting, WebAuthnDevice, U2FDevice, LogEntry
+from pretix.base.models import User, Event, NotificationSetting, LogEntry
 from pretix.base.notifications import get_all_notification_types
-from pretix.base.forms.user import UserSettingsForm, User2FADeviceAddForm
-from pretix.helpers.u2f import websafe_encode
+from pretix.base.forms.user import UserSettingsForm
 from ...navigation import get_account_navigation
 from .common import AccountMenuMixIn
 
 
-REAL_DEVICE_TYPES = (TOTPDevice, WebAuthnDevice, U2FDevice)
 logger = getLogger(__name__)
-
-
-class RecentAuthenticationRequiredMixin:
-    max_time = 3600
-
-    def dispatch(self, request: HttpRequest, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(reverse('control:user.login'))
-        user = cast(User, request.user)
-        last_login_secs = cast(float | None, request.session.get(KEY_LAST_FORCE_LOGIN))
-        if not last_login_secs:
-            logger.warning('Something wrong with our authentication system. User %s has no last_login set.', user)
-            messages.error(request, _('Something went wrong, you cannot access this page now.'))
-            return redirect('/')
-        last_login = datetime.fromtimestamp(last_login_secs, tz=UTC)
-        logger.info('User %s last login: %s', user, last_login)
-        delta = timezone.now() - last_login
-        if delta.total_seconds() > self.max_time:
-            auth_url = reverse('control:user.reauth')
-            auth_url = '{}?{}'.format(auth_url, urlencode({'next': request.path}))
-            return redirect(auth_url)
-        return super().dispatch(request, *args, **kwargs)
 
 
 # Copied from src/pretix/control/views/user.py and modified.
@@ -86,7 +47,7 @@ class GeneralSettingsView(LoginRequiredMixin, AccountMenuMixIn, UpdateView):
         data = {}
         for k in form.changed_data:
             if k not in ('old_pw', 'new_pw_repeat'):
-                if 'new_pw' == k:
+                if k == 'new_pw':
                     data['new_pw'] = True
                 else:
                     data[k] = form.cleaned_data[k]
@@ -96,12 +57,13 @@ class GeneralSettingsView(LoginRequiredMixin, AccountMenuMixIn, UpdateView):
         if 'new_pw' in form.changed_data:
             msgs.append(_('Your password has been changed.'))
 
+        email_addr = form.cleaned_data['email']
         if 'email' in form.changed_data:
-            msgs.append(_('Your email address has been changed to {email}.').format(email=form.cleaned_data['email']))
+            msgs.append(_('Your email address has been changed to {email}.').format(email=email_addr))
 
         if msgs:
-            self.request.user.send_security_notice(msgs, email=form.cleaned_data['email'])
-            if self._old_email != form.cleaned_data['email']:
+            self.request.user.send_security_notice(msgs, email=email_addr)
+            if self._old_email != email_addr:
                 self.request.user.send_security_notice(msgs, email=self._old_email)
 
         sup = super().form_valid(form)
@@ -152,7 +114,7 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
         return set_per_method
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        if "notifications_send" in request.POST:
+        if 'notifications_send' in request.POST:
             request.user.notifications_send = request.POST.get("notifications_send", "") == "on"
             request.user.save()
 
@@ -161,10 +123,10 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
                 self.request.user.log_action('pretix.user.settings.notifications.disabled', user=self.request.user)
             else:
                 self.request.user.log_action('pretix.user.settings.notifications.enabled', user=self.request.user)
-            return redirect(
-                reverse('eventyay_common:account.notifications') +
-                ('?event={}'.format(self.event.pk) if self.event else '')
-            )
+            dest = reverse('eventyay_common:account.notifications')
+            if self.event:
+                dest += '?event={}'.format(self.event.pk)
+            return redirect(dest)
         else:
             for method, __ in NotificationSetting.CHANNELS:
                 old_enabled = self.currently_set[method]
@@ -198,10 +160,10 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
 
             messages.success(request, _('Your notification settings have been saved.'))
             self.request.user.log_action('pretix.user.settings.notifications.changed', user=self.request.user)
-            return redirect(
-                reverse('eventyay_common:account.notifications') +
-                ('?event={}'.format(self.event.pk) if self.event else '')
-            )
+            dest = reverse('eventyay_common:account.notifications')
+            if self.event:
+                dest += '?event={}'.format(self.event.pk)
+            return redirect(dest)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -218,333 +180,6 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
         if self.event:
             ctx['permset'] = self.request.user.get_event_permission_set(self.event.organizer, self.event)
         return ctx
-
-
-class TwoFactorAuthSettingsView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
-    template_name = 'eventyay_common/account/2fa-main-settings.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data()
-
-        try:
-            ctx['static_tokens'] = StaticDevice.objects.get(user=self.request.user, name='emergency').token_set.all()
-        except StaticDevice.MultipleObjectsReturned:
-            ctx['static_tokens'] = StaticDevice.objects.filter(
-                user=self.request.user, name='emergency'
-            ).first().token_set.all()
-        except StaticDevice.DoesNotExist:
-            d = StaticDevice.objects.create(user=self.request.user, name='emergency')
-            for i in range(10):
-                d.token_set.create(token=get_random_string(length=12, allowed_chars='1234567890'))
-            ctx['static_tokens'] = d.token_set.all()
-
-        ctx['devices'] = []
-        for dt in REAL_DEVICE_TYPES:
-            objs = list(dt.objects.filter(user=self.request.user, confirmed=True))
-            for obj in objs:
-                if dt == TOTPDevice:
-                    obj.devicetype = 'totp'
-                elif dt == U2FDevice:
-                    obj.devicetype = 'u2f'
-                elif dt == WebAuthnDevice:
-                    obj.devicetype = 'webauthn'
-            ctx['devices'] += objs
-
-        return ctx
-
-
-class TwoFactorAuthEnableView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
-    template_name = 'eventyay_common/account/2fa-enable.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if not any(dt.objects.filter(user=self.request.user, confirmed=True) for dt in REAL_DEVICE_TYPES):
-            messages.error(request, _('Please configure at least one device before enabling two-factor '
-                                      'authentication.'))
-            return redirect(reverse('eventyay_common:account.2fa'))
-        return super().dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.request.user.require_2fa = True
-        self.request.user.save()
-        self.request.user.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
-        messages.success(request, _('Two-factor authentication is now enabled for your account.'))
-        self.request.user.send_security_notice([
-            _('Two-factor authentication has been enabled.')
-        ])
-        self.request.user.update_session_token()
-        update_session_auth_hash(self.request, self.request.user)
-        return redirect(reverse('eventyay_common:account.2fa'))
-
-
-class TwoFactorAuthDisableView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
-    template_name = 'eventyay_common/account/2fa-disable.html'
-
-    def post(self, request, *args, **kwargs):
-        self.request.user.require_2fa = False
-        self.request.user.save()
-        self.request.user.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
-        messages.success(request, _('Two-factor authentication is now disabled for your account.'))
-        self.request.user.send_security_notice([
-            _('Two-factor authentication has been disabled.')
-        ])
-        self.request.user.update_session_token()
-        update_session_auth_hash(self.request, self.request.user)
-        return redirect(reverse('eventyay_common:account.2fa'))
-
-
-class TwoFactorAuthDeviceAddView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, FormView):
-    form_class = User2FADeviceAddForm
-    template_name = 'eventyay_common/account/2fa-add.html'
-
-    def form_valid(self, form: BaseForm) -> HttpResponse:
-        if form.cleaned_data['devicetype'] == 'totp':
-            dev = TOTPDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
-        elif form.cleaned_data['devicetype'] == 'webauthn':
-            if not self.request.is_secure():
-                messages.error(self.request,
-                               _('Security devices are only available if pretix is served via HTTPS.'))
-                return self.get(self.request, self.args, self.kwargs)
-            dev = WebAuthnDevice.objects.create(user=self.request.user, confirmed=False, name=form.cleaned_data['name'])
-        next_url_name = 'eventyay_common:account.2fa.confirm.{}'.format(form.cleaned_data['devicetype'])
-        return redirect(reverse(next_url_name, kwargs={
-            'device_id': dev.pk
-        }))
-
-    def form_invalid(self, form: BaseForm) -> HttpResponse:
-        messages.error(self.request, _('We could not save your changes. See below for details.'))
-        return super().form_invalid(form)
-
-
-class TwoFactorAuthDeviceConfirmTOTPView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
-    template_name = 'eventyay_common/account/2fa-confirm-totp.html'
-
-    @cached_property
-    def device(self) -> TOTPDevice:
-        return get_object_or_404(TOTPDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=False)
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data()
-
-        ctx['secret'] = base64.b32encode(self.device.bin_key).decode('utf-8')
-        ctx['secretGrouped'] = "  ".join([ctx['secret'].lower()[(i * 4): (i + 1) * 4] for i in range(len(ctx['secret']) // 4)])
-        label = f"{settings.INSTANCE_NAME}: {self.request.user.email}"
-        ctx['qrdata'] = 'otpauth://totp/{}?{}'.format(
-            quote(label),
-            urlencode({
-                'issuer': settings.INSTANCE_NAME,
-                'secret': ctx['secret'],
-                'digits': self.device.digits
-            })
-        )
-        ctx['device'] = self.device
-        return ctx
-
-    def post(self, request: HttpRequest, *args, **kwargs):
-        token = request.POST.get('token', '')
-        activate = request.POST.get('activate', '')
-        user = cast(User, request.user)
-        if self.device.verify_token(token):
-            self.device.confirmed = True
-            self.device.save()
-            user.log_action('pretix.user.settings.2fa.device.added', user=user, data={
-                'id': self.device.pk,
-                'name': self.device.name,
-                'devicetype': 'totp'
-            })
-            notices = [
-                _('A new two-factor authentication device has been added to your account.')
-            ]
-            if activate == 'on' and not user.require_2fa:
-                user.require_2fa = True
-                user.save()
-                user.log_action('pretix.user.settings.2fa.enabled', user=user)
-                notices.append(
-                    _('Two-factor authentication has been enabled.')
-                )
-            user.send_security_notice(notices)
-            user.update_session_token()
-            update_session_auth_hash(self.request, user)
-
-            note = ''
-            if not user.require_2fa:
-                note = ' ' + str(_('Please note that you still need to enable two-factor authentication for your '
-                                   'account using the buttons below to make a second factor required for logging '
-                                   'into your account.'))
-            messages.success(request, str(_('The device has been verified and can now be used.')) + note)
-            return redirect(reverse('eventyay_common:account.2fa'))
-        else:
-            messages.error(request, _('The code you entered was not valid. If this problem persists, please check '
-                                      'that the date and time of your phone are configured correctly.'))
-            return redirect(reverse('eventyay_common:account.2fa.confirm.totp', kwargs={
-                'device_id': self.device.pk
-            }))
-
-
-class TwoFactorAuthDeviceConfirmWebAuthnView(RecentAuthenticationRequiredMixin, TemplateView):
-    template_name = 'eventyay_common/account/2fa-confirm-webauthn.html'
-
-    @cached_property
-    def device(self):
-        return get_object_or_404(WebAuthnDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=False)
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data()
-        ctx['device'] = self.device
-
-        if 'webauthn_register_ukey' in self.request.session:
-            del self.request.session['webauthn_register_ukey']
-        if 'webauthn_challenge' in self.request.session:
-            del self.request.session['webauthn_challenge']
-
-        challenge = generate_challenge()
-        ukey = generate_user_handle()
-
-        self.request.session['webauthn_challenge'] = base64.b64encode(challenge).decode()
-        self.request.session['webauthn_register_ukey'] = base64.b64encode(ukey).decode()
-
-        devices = [
-            device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.request.user)
-        ] + [
-            device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.request.user)
-        ]
-        make_credential_options = webauthn.generate_registration_options(
-            rp_id=get_webauthn_rp_id(self.request),
-            rp_name=get_webauthn_rp_id(self.request),
-            user_id=ukey,
-            user_name=self.request.user.email,
-            challenge=challenge,
-            exclude_credentials=devices,
-        )
-        ctx['jsondata'] = webauthn.options_to_json(make_credential_options)
-
-        return ctx
-
-    def post(self, request, *args, **kwargs):
-        try:
-            challenge = self.request.session['webauthn_challenge']
-            ukey = self.request.session['webauthn_register_ukey']
-            resp = json.loads(self.request.POST.get("token"))
-            registration_verification = webauthn.verify_registration_response(
-                credential=resp,
-                expected_challenge=base64.b64decode(challenge),
-                expected_rp_id=get_webauthn_rp_id(self.request),
-                expected_origin=settings.SITE_URL,
-            )
-            # Check that the credentialId is not yet registered to any other user.
-            # If registration is requested for a credential that is already registered
-            # to a different user, the Relying Party SHOULD fail this registration
-            # ceremony, or it MAY decide to accept the registration, e.g. while deleting
-            # the older registration.
-            credential_id_exists = WebAuthnDevice.objects.filter(
-                credential_id=registration_verification.credential_id
-            ).first()
-            if credential_id_exists:
-                messages.error(request, _('This security device is already registered.'))
-                return redirect(reverse('eventyay_common:account.2fa.confirm.webauthn', kwargs={
-                    'device_id': self.device.pk
-                }))
-
-            self.device.credential_id = websafe_encode(registration_verification.credential_id)
-            self.device.ukey = websafe_encode(ukey)
-            self.device.pub_key = websafe_encode(registration_verification.credential_public_key)
-            self.device.sign_count = registration_verification.sign_count
-            self.device.rp_id = get_webauthn_rp_id(request)
-            self.device.icon_url = settings.SITE_URL
-            self.device.confirmed = True
-            self.device.save()
-            self.request.user.log_action('pretix.user.settings.2fa.device.added', user=self.request.user, data={
-                'id': self.device.pk,
-                'devicetype': 'u2f',
-                'name': self.device.name,
-            })
-            notices = [
-                _('A new two-factor authentication device has been added to your account.')
-            ]
-            activate = request.POST.get('activate', '')
-            if activate == 'on' and not self.request.user.require_2fa:
-                self.request.user.require_2fa = True
-                self.request.user.save()
-                self.request.user.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
-                notices.append(
-                    _('Two-factor authentication has been enabled.')
-                )
-            self.request.user.send_security_notice(notices)
-            self.request.user.update_session_token()
-            update_session_auth_hash(self.request, self.request.user)
-
-            note = ''
-            if not self.request.user.require_2fa:
-                note = ' ' + str(_('Please note that you still need to enable two-factor authentication for your '
-                                   'account using the buttons below to make a second factor required for logging '
-                                   'into your account.'))
-            messages.success(request, str(_('The device has been verified and can now be used.')) + note)
-            return redirect(reverse('eventyay_common:account.2fa'))
-        except Exception as e:
-            msg = f'WebAuthn registration failed: {e}'
-            logger.exception(msg)
-            messages.error(request, _('The registration could not be completed. Please try again.'))
-            return redirect(reverse('eventyay_common:account.2fa.confirm.webauthn', kwargs={
-                'device_id': self.device.pk
-            }))
-
-
-class TwoFactorAuthDeviceDeleteView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
-    template_name = 'eventyay_common/account/2fa-delete.html'
-
-    @cached_property
-    def device(self):
-        if self.kwargs['devicetype'] == 'totp':
-            return get_object_or_404(TOTPDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=True)
-        elif self.kwargs['devicetype'] == 'webauthn':
-            return get_object_or_404(WebAuthnDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=True)
-        elif self.kwargs['devicetype'] == 'u2f':
-            return get_object_or_404(U2FDevice, user=self.request.user, pk=self.kwargs['device_id'], confirmed=True)
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data()
-        ctx['device'] = self.device
-        return ctx
-
-    def post(self, request, *args, **kwargs):
-        self.request.user.log_action('pretix.user.settings.2fa.device.deleted', user=self.request.user, data={
-            'id': self.device.pk,
-            'name': self.device.name,
-            'devicetype': self.kwargs['devicetype']
-        })
-        self.device.delete()
-        msgs = [
-            _('A two-factor authentication device has been removed from your account.')
-        ]
-        if not any(dt.objects.filter(user=self.request.user, confirmed=True) for dt in REAL_DEVICE_TYPES):
-            self.request.user.require_2fa = False
-            self.request.user.save()
-            self.request.user.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
-            msgs.append(_('Two-factor authentication has been disabled.'))
-
-        self.request.user.send_security_notice(msgs)
-        self.request.user.update_session_token()
-        update_session_auth_hash(self.request, self.request.user)
-        messages.success(request, _('The device has been removed.'))
-        return redirect(reverse('eventyay_common:account.2fa'))
-
-
-class TwoFactorAuthRegenerateEmergencyView(RecentAuthenticationRequiredMixin, AccountMenuMixIn, TemplateView):
-    template_name = 'eventyay_common/account/2fa-regenemergency.html'
-
-    def post(self, request, *args, **kwargs):
-        StaticDevice.objects.filter(user=self.request.user, name='emergency').delete()
-        d = StaticDevice.objects.create(user=self.request.user, name='emergency')
-        for i in range(10):
-            d.token_set.create(token=get_random_string(length=12, allowed_chars='1234567890'))
-        self.request.user.log_action('eventyay_common:account.2fa.regenemergency', user=self.request.user)
-        self.request.user.send_security_notice([
-            _('Your two-factor emergency codes have been regenerated.')
-        ])
-        self.request.user.update_session_token()
-        update_session_auth_hash(self.request, self.request.user)
-        messages.success(request, _('Your emergency codes have been newly generated. Remember to store them in a safe '
-                                    'place in case you lose access to your devices.'))
-        return redirect(reverse('eventyay_common:account.2fa'))
 
 
 class HistoryView(AccountMenuMixIn, ListView):
@@ -576,12 +211,3 @@ class HistoryView(AccountMenuMixIn, ListView):
 # This view is just a placeholder for the URL patterns that we haven't implemented views for yet.
 class DummyView(TemplateView):
     template_name = 'eventyay_common/base.html'
-
-
-
-def get_u2f_appid(request: HttpRequest):
-    return settings.SITE_URL
-
-
-def get_webauthn_rp_id(request: HttpRequest):
-    return urlparse(settings.SITE_URL).hostname
