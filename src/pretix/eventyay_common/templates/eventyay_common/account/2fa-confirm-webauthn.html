@@ -1,13 +1,26 @@
-{% extends "eventyay_common/base.html" %}
+{% extends 'eventyay_common/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
 {% load static %}
 {% load compress %}
-{% block title %}{{ _('Add a two-factor authentication device') }}{% endblock %}
+{% block title %}{{ _('Add a two-factor authentication device') }}{% endblock title %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
 {% block content %}
     <h1>{{ _('Add a two-factor authentication device') }}</h1>
-    <p id="webauthn-progress">
-        <span class="fa fa-cog fa-spin"></span>
+    <p id='webauthn-progress'>
+        <span class='fa fa-cog fa-spin'></span>
         {{ _('Please connect your WebAuthn device. If it has a button, touch it now. You might have to unplug the device and plug it back in again.') }}
     </p>
     <form class='form form-inline' method='post' action='' id='webauthn-form'>
@@ -27,11 +40,9 @@
     </div>
     <script type='text/json' id='webauthn-enroll'>
         {{ jsondata|safe }}
-
-
     </script>
     {% compress js %}
         <script type='text/javascript' src="{% static 'pretixcontrol/js/base64js.js' %}"></script>
         <script type='text/javascript' src="{% static 'pretixcontrol/js/ui/webauthn.js' %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock content %}

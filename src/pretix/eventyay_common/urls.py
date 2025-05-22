@@ -35,6 +35,7 @@ urlpatterns = [
     path('account/', RedirectView.as_view(pattern_name='eventyay_common:account.general'), name='account'),
     path('account/general', account.GeneralSettingsView.as_view(), name='account.general'),
     path('account/notifications', account.NotificationSettingsView.as_view(), name='account.notifications'),
+    path('account/notifications/off/<int:id>/<str:token>', account.NotificationFlipOffView.as_view(), name='account.notifications.flip-off'),
     path('account/2fa/', account.TwoFactorAuthSettingsView.as_view(), name='account.2fa'),
     path('account/2fa/enable', account.TwoFactorAuthEnableView.as_view(), name='account.2fa.enable'),
     path('account/2fa/disable', account.TwoFactorAuthDisableView.as_view(), name='account.2fa.disable'),

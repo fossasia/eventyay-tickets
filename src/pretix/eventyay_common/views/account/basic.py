@@ -2,7 +2,7 @@ from logging import getLogger
 from collections import defaultdict
 
 from django.urls import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import UpdateView, TemplateView, ListView
 from django.contrib.contenttypes.models import ContentType
@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django_scopes import scopes_disabled
 
 from pretix.base.models import User, Event, NotificationSetting, LogEntry
 from pretix.base.notifications import get_all_notification_types
@@ -180,6 +181,22 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
         if self.event:
             ctx['permset'] = self.request.user.get_event_permission_set(self.event.organizer, self.event)
         return ctx
+
+
+class NotificationFlipOffView(TemplateView):
+    template_name = 'eventyay_common/account/notification-flip-off.html'
+
+    @scopes_disabled()
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        user = get_object_or_404(User, notifications_token=kwargs.get('token'), pk=kwargs.get('id'))
+        user.notifications_send = False
+        user.save()
+        messages.success(request, _('Your notifications have been disabled.'))
+        dest = reverse('eventyay_common:account.notifications') if request.user.is_authenticated else reverse('control:auth.login')
+        return redirect(dest)
 
 
 class HistoryView(AccountMenuMixIn, ListView):

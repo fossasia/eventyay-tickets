@@ -1,25 +1,38 @@
-{% extends "eventyay_common/base.html" %}
+{% extends 'eventyay_common/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% block title %}{% trans "Delete a two-factor authentication device" %}{% endblock %}
+{% block title %}{{ _('Delete a two-factor authentication device') }}{% endblock title %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
 {% block content %}
-    <h1>{% trans "Delete a two-factor authentication device" %}</h1>
-    <form action="" method="post" class="form-horizontal">
+    <h1>{{ _('Delete a two-factor authentication device') }}</h1>
+    <form action='' method='post' class='form-horizontal'>
         {% csrf_token %}
         <p>{% blocktrans trimmed with device=device.name %}
             Are you sure you want to delete the authentication device "{{ device }}"?
         {% endblocktrans %}</p>
-        <p>{% trans "You will no longer be able to use this device to log in to pretix." %}</p>
+        <p>{{ _('You will no longer be able to use this device to log in to pretix.') }}</p>
         <p>
-            {% trans "If this is the only device connected to your account, we will disable two-factor authentication." %}
+            {{ _('If this is the only device connected to your account, we will disable two-factor authentication.') }}
         </p>
-        <div class="form-group submit-group">
-            <a href="{% url "eventay_common:account.2fa" %}" class="btn btn-default btn-cancel">
-                {% trans "Cancel" %}
+        <div class='form-group submit-group'>
+            <a href="{% url 'eventay_common:account.2fa' %}" class='btn btn-default btn-cancel'>
+                {{ _('Cancel') }}
             </a>
-            <button type="submit" class="btn btn-delete btn-danger btn-save">
-                {% trans "Delete" %}
+            <button type='submit' class='btn btn-delete btn-danger btn-save'>
+                {{ _('Delete') }}
             </button>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}
