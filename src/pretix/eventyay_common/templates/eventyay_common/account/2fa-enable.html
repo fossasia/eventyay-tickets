@@ -1,0 +1,38 @@
+{% extends 'eventyay_common/base.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{{ _('Enable two-factor authentication') }}{% endblock title %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
+{% block content %}
+    <h1>{{ _('Enable two-factor authentication') }}</h1>
+    <form action='' method='post' class='form-horizontal'>
+        {% csrf_token %}
+        <p>
+            {{ _('Do you really want to enable two-factor authentication?') }}
+        </p>
+        <p>
+            {{ _('You will no longer be able to log in without one of your configured devices.') }}
+            {{ _('Please make sure to print out or copy the emergency tokens and store them in a safe place.') }}
+        </p>
+        <div class='form-group submit-group'>
+            <a href="{% url 'eventyay_common:account.2fa' %}" class='btn btn-default btn-cancel'>
+                {{ _('Cancel') }}
+            </a>
+            <button type='submit' class='btn btn-danger btn-save'>
+                {{ _('Enable') }}
+            </button>
+        </div>
+    </form>
+{% endblock content %}

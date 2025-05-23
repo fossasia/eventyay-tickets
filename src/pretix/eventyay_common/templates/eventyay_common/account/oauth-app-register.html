@@ -1,0 +1,29 @@
+{% extends 'eventyay_common/base.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{{ _('Register a new application') }}{% endblock title %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
+{% block content %}
+    <h1>{{ _('Register a new application') }}</h1>
+    <form class='form-horizontal' method='post' action=''>
+        {% csrf_token %}
+        {% bootstrap_form form layout='control' %}
+        <div class='form-group submit-group'>
+            <button type='submit' class='btn btn-primary btn-save'>
+                {{ _('Save') }}
+            </button>
+        </div>
+    </form>
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends 'eventyay_common/base.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{{ _('Your applications') }}{% endblock title %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
+{% block content %}
+    <h1>{{ _('Your applications') }}</h1>
+    {% if applications %}
+        <div class='table-responsive'>
+            <table class='table table-condensed table-hover'>
+                <thead>
+                <tr>
+                    <th>{{ _('Name') }}</th>
+                    <th class='action-col-2'></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td><strong><a href="{% url 'eventyay_common:account.oauth.app' pk=application.pk %}">{{ application.name }}</a></strong></td>
+                        <td class='text-right flip'>
+                            <a href="{% url 'eventyay_common:account.oauth.app' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-edit'></i></a>
+                            <a href="{% url 'eventyay_common:account.oauth.app.roll' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-repeat'></i></a>
+                            <a href="{% url 'eventyay_common:account.oauth.app.disable' pk=application.pk %}" class='btn btn-delete btn-danger btn-sm'><i class='fa fa-trash'></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <a class='btn btn-primary' href="{% url 'eventyay_common:account.oauth.app.register' %}">
+                <span class='fa fa-plus'></span>
+                {{ _('Create new application') }}
+            </a>
+        </p>
+    {% else %}
+        <div class='empty-collection'>
+            <p>{{ _('No applications registered yet.') }}</p>
+
+            <a href="{% url 'eventyay_common:account.oauth.app.register' %}"
+               class='btn btn-primary btn-lg'>
+                {{ _('Register a new application') }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock content %}
