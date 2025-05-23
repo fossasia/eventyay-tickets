@@ -1,3 +1,4 @@
+import logging
 from typing import List, TypedDict
 
 from django.http import HttpRequest
@@ -7,6 +8,9 @@ from django.utils.translation import gettext_lazy as _
 from pretix.base.models import Event
 from pretix.control.navigation import merge_in
 from pretix.control.signals import nav_event, nav_global
+
+
+logger = logging.getLogger(__name__)
 
 
 class MenuItem(TypedDict):
@@ -109,36 +113,37 @@ def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
     resolver_match = request.resolver_match
     if not resolver_match:
         return []
-    nav = [
+    # Note that it does not include the "eventyay_common" namespace.
+    matched_url_name = resolver_match.url_name
+    return [
         {
             'label': _('General'),
             'url': reverse('eventyay_common:account.general'),
-            'active': 'general' in resolver_match.url_name,
+            'active': matched_url_name.startswith('account.general'),
             'icon': 'user',
         },
         {
             'label': _('Notifications'),
             'url': reverse('eventyay_common:account.notifications'),
-            'active': 'notifications' in resolver_match.url_name,
+            'active': matched_url_name.startswith('account.notifications'),
             'icon': 'bell',
         },
         {
             'label': _('Two-factor authentication'),
             'url': reverse('eventyay_common:account.2fa'),
-            'active': '2fa' in resolver_match.url_name,
+            'active': matched_url_name.startswith('account.2fa'),
             'icon': 'lock',
         },
         {
             'label': _('OAuth applications'),
             'url': reverse('eventyay_common:account.oauth.authorized-apps'),
-            'active': 'oauth' in resolver_match.url_name,
+            'active': matched_url_name.startswith('account.oauth'),
             'icon': 'key',
         },
         {
             'label': _('History'),
             'url': reverse('eventyay_common:account.history'),
-            'active': 'history' in resolver_match.url_name,
+            'active': matched_url_name.startswith('account.history'),
             'icon': 'history',
         }
     ]
-    return nav
