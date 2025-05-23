@@ -139,7 +139,7 @@ urlpatterns = [
     url(r'^organizer/(?P<organizer>[^/]+)/export/$', organizer.ExportView.as_view(), name='organizer.export'),
     url(r'^organizer/(?P<organizer>[^/]+)/export/do$', organizer.ExportDoView.as_view(), name='organizer.export.do'),
     url(r'^nav/typeahead/$', typeahead.nav_context_list, name='nav.typeahead'),
-    url(r'^events/$', main.EventList.as_view(), name='events'),
+    url(r'^events/$', RedirectView.as_view(pattern_name='eventyay_common:events', permanent=True, query_string=True), name='events'),
     url(r'^events/add$', main.EventWizard.as_view(), name='events.add'),
     url(r'^events/typeahead/$', typeahead.event_list, name='events.typeahead'),
     url(r'^events/typeahead/meta/$', typeahead.meta_values, name='events.meta.typeahead'),
