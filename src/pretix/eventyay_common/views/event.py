@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import F, Max, Min, Prefetch, Q
+from django.db.models import Case, F, Max, Min, Prefetch, Q, Sum, When, IntegerField
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -43,6 +43,12 @@ class EventList(PaginationMixin, ListView):
     model = Event
     context_object_name = "events"
     template_name = "eventyay_common/events/index.html"
+    ordering_fields = [
+        'name', 'slug', 'organizer', 
+        'date_from', 'date_to', 
+        'total_quota', 'live',
+        'order_from', 'order_to'
+    ]
 
     def get_queryset(self):
         query_set = (
@@ -58,7 +64,6 @@ class EventList(PaginationMixin, ListView):
                     to_attr="meta_values_cached",
                 ),
             )
-            .order_by("-date_from")
         )
 
         query_set = query_set.annotate(
@@ -66,12 +71,34 @@ class EventList(PaginationMixin, ListView):
             max_from=Max("subevents__date_from"),
             max_to=Max("subevents__date_to"),
             max_fromto=Greatest(Max("subevents__date_to"), Max("subevents__date_from")),
+            total_quota=Sum(
+                Case(
+                    When(quotas__subevent__isnull=True, then='quotas__size'),
+                    default=0,
+                    output_field=IntegerField()
+                )
+            )
         ).annotate(
             order_from=Coalesce("min_from", "date_from"),
             order_to=Coalesce(
                 "max_fromto", "max_to", "max_from", "date_to", "date_from"
             ),
         )
+
+        ordering = self.request.GET.get('ordering')
+        if ordering and ordering.lstrip('-') in self.ordering_fields:
+            if ordering == 'date_from':
+                query_set = query_set.order_by('order_from')
+            elif ordering == '-date_from':
+                query_set = query_set.order_by('-order_from')
+            elif ordering == 'date_to':
+                query_set = query_set.order_by('order_to')
+            elif ordering == '-date_to':
+                query_set = query_set.order_by('-order_to')
+            else:
+                query_set = query_set.order_by(ordering)
+        else:
+            query_set = query_set.order_by("-date_from")
 
         query_set = query_set.prefetch_related(
             Prefetch(
