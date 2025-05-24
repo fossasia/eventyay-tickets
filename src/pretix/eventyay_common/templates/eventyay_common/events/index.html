@@ -71,6 +71,16 @@
                     <a href="?{% url_replace request 'ordering' '-date_to' %}"><i class="fa fa-caret-down"></i></a>
                     <a href="?{% url_replace request 'ordering' 'date_to' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
+                <th>
+                    {% trans "Paid tickets per quota" %}
+                    <a href="?{% url_replace request 'ordering' '-total_quota' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'ordering' 'total_quota' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
+                <th>
+                    {% trans "Shop" %}
+                    <a href="?{% url_replace request 'ordering' '-live' %}"><i class="fa fa-caret-down"></i></a>
+                    <a href="?{% url_replace request 'ordering' 'live' %}"><i class="fa fa-caret-up"></i></a>
+                </th>
                 <th class="text-right flip">
                     {% trans "Actions" %}
                 </th>
@@ -103,6 +113,29 @@
                         {% endif %}
                         {% if e.settings.timezone != request.timezone %}
                             <span class="fa fa-globe text-muted" data-toggle="tooltip" title="{{ e.timezone }}"></span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% for q in e.first_quotas|slice:":3" %}
+                            {% include "pretixcontrol/fragment_quota_box_paid.html" with quota=q %}
+                        {% endfor %}
+                        {% if e.first_quotas|length > 3 %}
+                            <a href="{% url 'control:event.items.quotas' organizer=e.organizer.slug event=e.slug %}"
+                               class="quotabox-more" data-toggle="tooltip" title="{% trans 'More quotas' %}"
+                               aria-label="{% trans 'More quotas' %}" data-placement="top">
+                                &middot;&middot;&middot;
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not e.live %}
+                            <span class="label label-danger">{% trans "Shop disabled" %}</span>
+                        {% elif e.presale_has_ended %}
+                            <span class="label label-warning">{% trans "Presale over" %}</span>
+                        {% elif not e.presale_is_running %}
+                            <span class="label label-warning">{% trans "Presale not started" %}</span>
+                        {% else %}
+                            <span class="label label-success">{% trans "On sale" %}</span>
                         {% endif %}
                     </td>
                     <td class="text-right flip">

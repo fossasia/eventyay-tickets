@@ -5,6 +5,8 @@
 {% load statici18n %}
 {% load thumb %}
 {% load eventurl %}
+
+{% get_media_prefix as MEDIA_PREFIX %}
 <!DOCTYPE html>
 <html{% if rtl %} dir="rtl" class="rtl"{% endif %} lang="{{ html_locale }}">
 <head>
@@ -51,9 +53,10 @@
 </head>
 <body class="nojs" data-locale="{{ request.LANGUAGE_CODE }}" data-now="{% now "U.u" %}" data-datetimeformat="{{ js_datetime_format }}" data-timeformat="{{ js_time_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}" data-currency="{{ request.event.currency }}">
 {{ html_page_header|safe }}
-    <div id="top-bg" class="header bg-primary" {% if event_logo %} {% endif %}>
+    <div id="top-bg" class="header bg-primary">
         {% if event_logo %}
-            <img id="header-image" src="{{ event_logo|thumb:'1170x5000' }}" alt="{{ event.name }}" class="event-logo" />
+            {# We use full image because the user may use big screen #}
+            <img id="header-image" src="{{ MEDIA_PREFIX }}{{ event_logo }}" alt="{{ event.name }}" class="event-logo" />
         {% endif %}
 </div>
 <header {% if event_logo %} class="custom-header" {% endif %}>
