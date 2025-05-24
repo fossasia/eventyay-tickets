@@ -235,8 +235,6 @@ class EventCreateView(SafeSessionWizardView):
         create_for = self.storage.extra_data.get("create_for")
 
         self.request.organizer = foundation_data["organizer"]
-        has_permission = check_create_permission(self.request)
-        final_is_video_creation = foundation_data.get("is_video_creation", True) and has_permission
 
         if create_for == EventCreatedFor.TALK:
             event_dict = {
@@ -255,7 +253,7 @@ class EventCreateView(SafeSessionWizardView):
                 "timezone": str(basics_data.get("timezone")),
                 "locale": basics_data.get("locale"),
                 "locales": foundation_data.get("locales"),
-                "is_video_creation": final_is_video_creation,
+                "is_video_creation": foundation_data.get("is_video_creation"),
             }
             send_event_webhook.delay(
                 user_id=self.request.user.id, event=event_dict, action="create"
@@ -267,7 +265,10 @@ class EventCreateView(SafeSessionWizardView):
                 event.organizer = foundation_data["organizer"]
                 event.plugins = settings.PRETIX_PLUGINS_DEFAULT
                 event.has_subevents = foundation_data["has_subevents"]
-                event.is_video_creation = final_is_video_creation
+                if check_create_permission(self.request):
+                    event.is_video_creation = foundation_data["is_video_creation"]
+                else:
+                    event.is_video_creation = False
                 event.testmode = True
                 form_dict["basics"].save()
 
@@ -287,7 +288,7 @@ class EventCreateView(SafeSessionWizardView):
                         "timezone": str(basics_data.get("timezone")),
                         "locale": event.settings.locale,
                         "locales": event.settings.locales,
-                        "is_video_creation": final_is_video_creation,
+                        "is_video_creation": foundation_data.get("is_video_creation"),
                     }
                     send_event_webhook.delay(
                         user_id=self.request.user.id, event=event_dict, action="create"
@@ -304,7 +305,7 @@ class EventCreateView(SafeSessionWizardView):
             token=generate_token(self.request),
         )
         create_world.delay(
-            is_video_creation=final_is_video_creation, event_data=event_data
+            is_video_creation=foundation_data.get("is_video_creation"), event_data=event_data
         )
 
         return redirect(reverse("eventyay_common:event.index", kwargs={
