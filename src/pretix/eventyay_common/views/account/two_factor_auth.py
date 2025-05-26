@@ -74,7 +74,7 @@ class TwoFactorAuthSettingsView(TwoFactorAuthPageMixin, TemplateView):
             ).first().token_set.all()
         except StaticDevice.DoesNotExist:
             d = StaticDevice.objects.create(user=self.request.user, name='emergency')
-            for i in range(10):
+            for _i in range(10):
                 d.token_set.create(token=get_random_string(length=12, allowed_chars='1234567890'))
             ctx['static_tokens'] = d.token_set.all()
 
