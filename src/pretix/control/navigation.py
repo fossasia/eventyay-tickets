@@ -302,39 +302,6 @@ def get_global_navigation(request):
             'active': 'search.orders' in url.url_name,
             'icon': 'search',
         },
-        {
-            'label': _('Account'),
-            'url': reverse('control:user.settings'),
-            'active': False,
-            'icon': 'user',
-            'children': [
-                {
-                    'label': _('General'),
-                    'url': reverse('control:user.settings'),
-                    'active': 'user.settings' == url.url_name,
-                },
-                {
-                    'label': _('Notifications'),
-                    'url': reverse('control:user.settings.notifications'),
-                    'active': 'user.settings.notifications' == url.url_name,
-                },
-                {
-                    'label': _('2FA'),
-                    'url': reverse('control:user.settings.2fa'),
-                    'active': 'user.settings.2fa' in url.url_name,
-                },
-                {
-                    'label': _('Authorized apps'),
-                    'url': reverse('control:user.settings.oauth.list'),
-                    'active': 'user.settings.oauth' in url.url_name,
-                },
-                {
-                    'label': _('Account history'),
-                    'url': reverse('eventyay_common:account.history'),
-                    'active': 'user.settings.history' in url.url_name,
-                },
-            ]
-        },
     ]
 
     merge_in(nav, sorted(
