@@ -115,7 +115,7 @@ class PermissionMiddleware:
                 return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
 
         if not request.user.require_2fa and settings.PRETIX_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
-            next_url = reverse('control:user.settings.2fa')
+            next_url = reverse('eventyay_common:account.2fa')
             logger.info(
                 'This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s',
                 next_url,

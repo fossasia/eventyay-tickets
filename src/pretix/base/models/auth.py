@@ -194,7 +194,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
                 {
                     'user': self,
                     'messages': msg,
-                    'url': build_absolute_uri('control:user.settings')
+                    'url': build_absolute_uri('eventyay_common:account.general'),
                 },
                 event=None,
                 user=self,
