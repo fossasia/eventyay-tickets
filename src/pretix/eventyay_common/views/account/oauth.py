@@ -50,7 +50,7 @@ class OAuthOwnAppListView(AccountMenuMixIn, ApplicationList):
 
 
 class OAuthApplicationRegistrationView(AccountMenuMixIn, ApplicationRegistration):
-    template_name = 'pretixcontrol/oauth/app_register.html'
+    template_name = 'eventyay_common/account/oauth-app-register.html'
 
     def get_form_class(self):
         return forms.modelform_factory(
