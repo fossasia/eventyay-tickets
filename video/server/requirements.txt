@@ -29,7 +29,7 @@ pytz
 redis==6.1.0
 reportlab==4.4.*
 requests==2.32.*
-sentry-sdk==2.28.*
+sentry-sdk==2.29.*
 tqdm==4.67.*
 websockets==15.*
 
