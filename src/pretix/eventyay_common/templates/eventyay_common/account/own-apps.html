@@ -29,7 +29,7 @@
                 <tbody>
                 {% for application in applications %}
                     <tr>
-                        <td><strong><a href="{% url 'eventyay_common:account.oauth.own-apps' pk=application.pk %}">{{ application.name }}</a></strong></td>
+                        <td><strong><a href="{% url 'eventyay_common:account.oauth.own-app' pk=application.pk %}">{{ application.name }}</a></strong></td>
                         <td class='text-right flip'>
                             <a href="{% url 'eventyay_common:account.oauth.own-app' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-edit'></i></a>
                             <a href="{% url 'eventyay_common:account.oauth.own-app.roll' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-repeat'></i></a>
