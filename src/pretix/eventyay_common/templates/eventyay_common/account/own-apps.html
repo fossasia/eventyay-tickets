@@ -29,11 +29,11 @@
                 <tbody>
                 {% for application in applications %}
                     <tr>
-                        <td><strong><a href="{% url 'eventyay_common:account.oauth.app' pk=application.pk %}">{{ application.name }}</a></strong></td>
+                        <td><strong><a href="{% url 'eventyay_common:account.oauth.own-apps' pk=application.pk %}">{{ application.name }}</a></strong></td>
                         <td class='text-right flip'>
-                            <a href="{% url 'eventyay_common:account.oauth.app' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-edit'></i></a>
-                            <a href="{% url 'eventyay_common:account.oauth.app.roll' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-repeat'></i></a>
-                            <a href="{% url 'eventyay_common:account.oauth.app.disable' pk=application.pk %}" class='btn btn-delete btn-danger btn-sm'><i class='fa fa-trash'></i></a>
+                            <a href="{% url 'eventyay_common:account.oauth.own-app' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-edit'></i></a>
+                            <a href="{% url 'eventyay_common:account.oauth.own-app.roll' pk=application.pk %}" class='btn btn-default btn-sm'><i class='fa fa-repeat'></i></a>
+                            <a href="{% url 'eventyay_common:account.oauth.own-app.disable' pk=application.pk %}" class='btn btn-delete btn-danger btn-sm'><i class='fa fa-trash'></i></a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -41,7 +41,7 @@
             </table>
         </div>
         <p>
-            <a class='btn btn-primary' href="{% url 'eventyay_common:account.oauth.app.register' %}">
+            <a class='btn btn-primary' href="{% url 'eventyay_common:account.oauth.own-app.register' %}">
                 <span class='fa fa-plus'></span>
                 {{ _('Create new application') }}
             </a>
@@ -50,7 +50,7 @@
         <div class='empty-collection'>
             <p>{{ _('No applications registered yet.') }}</p>
 
-            <a href="{% url 'eventyay_common:account.oauth.app.register' %}"
+            <a href="{% url 'eventyay_common:account.oauth.own-app.register' %}"
                class='btn btn-primary btn-lg'>
                 {{ _('Register a new application') }}
             </a>
