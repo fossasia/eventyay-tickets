@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
+from django.shortcuts import redirect
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.models import get_application_model
 from oauth2_provider.views import (
@@ -15,7 +16,7 @@ from oauth2_provider.views import (
 from oauth2_provider.generators import generate_client_secret
 
 from pretix.api.models import (
-    OAuthAccessToken, OAuthApplication
+    OAuthAccessToken, OAuthApplication, OAuthRefreshToken
 )
 from pretix.control.signals import oauth_application_registered
 
@@ -40,6 +41,28 @@ class OAuthAuthorizedAppListView(AccountMenuMixIn, ListView):
         for t in ctx['tokens']:
             t.scopes_descriptions = [all_scopes[scope] for scope in t.scopes]
         return ctx
+
+
+class OAuthAuthorizedAppRevokeView(DetailView):
+    template_name = 'eventyay_common/account/authorized-app-revoke.html'
+    success_url = reverse_lazy('eventyay_common:account.oauth.authorized-apps')
+
+    def get_queryset(self):
+        return OAuthAccessToken.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['application'] = self.get_object().application
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        o = self.get_object()
+        for rt in OAuthRefreshToken.objects.filter(access_token=o):
+            rt.revoke()
+        o.delete()
+
+        messages.success(request, _('Access for the selected application has been revoked.'))
+        return redirect(self.success_url)
 
 
 class OAuthOwnAppListView(AccountMenuMixIn, ApplicationList):

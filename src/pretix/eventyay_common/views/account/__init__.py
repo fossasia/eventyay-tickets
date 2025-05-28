@@ -11,6 +11,7 @@ from .two_factor_auth import (
 )
 from .oauth import (
     OAuthAuthorizedAppListView,
+    OAuthAuthorizedAppRevokeView,
     OAuthOwnAppListView,
     OAuthApplicationRegistrationView,
     OAuthApplicationUpdateView,

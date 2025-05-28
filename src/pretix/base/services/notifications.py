@@ -98,10 +98,10 @@ def send_notification_mail(notification: Notification, user: User):
         'color': settings.PRETIX_PRIMARY_COLOR,
         'notification': notification,
         'settings_url': build_absolute_uri(
-            'control:user.settings.notifications',
+            'eventyay_common:account.notifications',
         ),
         'disable_url': build_absolute_uri(
-            'control:user.settings.notifications.off',
+            'eventyay_common:account.notification.flip-off',
             kwargs={
                 'token': user.notifications_token,
                 'id': user.pk
