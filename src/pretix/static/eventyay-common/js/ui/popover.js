@@ -9,9 +9,12 @@ $(function () {
 
     const logoutParams = new URLSearchParams({back: backUrl});
 
+    // TODO: The URL hardcode here is ugly, but we will implement a new dropdown menu in the future.
+
     const ticketsPath = `/control/`;
     const talksPath = `${talkHostNamePath}orga/event/`
     const mainDashboardPath = `/common/`;
+    const orderPath = `/common/orders/`;
     const eventPath = `/common/events/`;
     const organizerPath = `/common/organizers/`;
 
@@ -47,6 +50,11 @@ $(function () {
                 </div>
             </div>
 
+            <div class="profile-menu">
+                <a href="${basePath}${orderPath}" target="_self" class="btn btn-outline-success">
+                    <i class="fa fa-shopping-cart"></i> ${window.gettext('My orders')}
+                </a>
+            </div>
             <div class="profile-menu">
                 <a href="${basePath}${eventPath}" target="_self" class="btn btn-outline-success">
                     <i class="fa fa-calendar"></i> ${window.gettext('My Events')}
