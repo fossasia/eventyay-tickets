@@ -1000,6 +1000,7 @@ class EventFilterForm(FilterForm):
         label=_('Status'),
         choices=(
             ('', _('All events')),
+            ('my_events', _('My Events')),
             ('live', _('Shop live')),
             ('running', _('Shop live and presale running')),
             ('notlive', _('Shop not live')),
@@ -1067,7 +1068,14 @@ class EventFilterForm(FilterForm):
     def filter_qs(self, qs):
         fdata = self.cleaned_data
 
-        if fdata.get('status') == 'live':
+        if fdata.get('status') == 'my_events':
+            # Filter events where the current user is the owner or has specific permissions
+            user_id = self.request.user.pk
+            qs = qs.filter(
+                Q(organizer__teams__members__pk=user_id) & Q(organizer__teams__all_events=True) |
+                Q(organizer__teams__members__pk=user_id) & Q(organizer__teams__limit_events__pk=F('pk'))
+            ).distinct()
+        elif fdata.get('status') == 'live':
             qs = qs.filter(live=True)
         elif fdata.get('status') == 'running':
             qs = qs.filter(
