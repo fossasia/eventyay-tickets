@@ -13,11 +13,6 @@
                     You currently do not have access to any events.
                 {% endblocktrans %}
             </p>
-
-            <a href='{% url "control:events.add" %}' class="btn btn-primary btn-lg">
-                <span class="fa fa-plus"></span>
-                {% trans "Create a new event" %}
-            </a>
         </div>
     {% else %}
         <div class="panel panel-default">
@@ -51,12 +46,6 @@
                 </form>
             </div>
         </div>
-        <p>
-            <a href='{% url "control:events.add" %}' class="btn btn-default">
-                <span class="fa fa-plus"></span>
-                {% trans "Create a new event" %}
-            </a>
-        </p>
         <table class="table table-condensed table-hover">
             <thead>
             <tr>

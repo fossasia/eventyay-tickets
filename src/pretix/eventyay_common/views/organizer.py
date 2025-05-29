@@ -99,7 +99,7 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["talk_edit_url"] = urljoin(settings.TALK_HOSTNAME, f"orga/organiser/{self.object.slug}")
+        ctx["talk_edit_url"] = urljoin(settings.TALK_HOSTNAME, f"orga/organiser/{self.object.slug}/settings/")
         return ctx
 
     @transaction.atomic

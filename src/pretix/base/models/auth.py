@@ -1,6 +1,7 @@
 import binascii
 import json
 from datetime import timedelta
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.contrib.auth.models import (
@@ -114,6 +115,11 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     notifications_token = models.CharField(max_length=255, default=generate_notifications_token)
     auth_backend = models.CharField(max_length=255, default='native')
     session_token = models.CharField(max_length=32, default=generate_session_token)
+    if TYPE_CHECKING:
+        from django.db.models import QuerySet
+        from pretix.base.models import NotificationSetting
+
+        notification_settings: QuerySet[NotificationSetting]
 
     objects = UserManager()
 
@@ -188,7 +194,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
                 {
                     'user': self,
                     'messages': msg,
-                    'url': build_absolute_uri('control:user.settings')
+                    'url': build_absolute_uri('eventyay_common:account.general')
                 },
                 event=None,
                 user=self,
