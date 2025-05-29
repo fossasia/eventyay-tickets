@@ -24,13 +24,16 @@
 {% endblock scripts %}
 
 {% block content %}
-    <h2>
-        {% if form.instance.question %}
-            {% translate "Question" %}: {{ form.instance.question }}
-        {% else %}
-            {% translate "New question" %}
-        {% endif %}
-    </h2>
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>
+            {% if form.instance.question %}
+                {% translate "Question" %}: {{ form.instance.question }}
+            {% else %}
+                {% translate "New question" %}
+            {% endif %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% include "common/forms/errors.html" %}

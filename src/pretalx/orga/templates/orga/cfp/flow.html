@@ -28,7 +28,10 @@
 {% block extra_title %}{% translate "CfP Editor" %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h1>{% translate "CfP Editor" %}</h1>
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>{% translate "CfP Editor" %}</h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     <p>
         {% blocktranslate trimmed %}
             This is the {{ site_name }} CfP editor. This page allows you to change the

@@ -25,6 +25,9 @@
                 <label for="toggle-button" class="toggle-label">{% translate "Proposals" %}</label>
                 <input type="checkbox" id="toggle-button" name="stats-toggle" role="button">
                 <label for="toggle-button" class="toggle-label">{{ phrases.schedule.sessions }}</label>
+                <div class="ml-2">
+                    {% include "orga/event/component_link.html" %}
+                </div>
             </div>
         </h2>
 

@@ -27,7 +27,10 @@
     <form method="post" class="d-flex flex-column">
         {% csrf_token %}
 
-        <h2>{% translate "Review settings" %}</h2>
+        <div id="main-title" class="d-md-flex justify-content-between">
+            <h2>{% translate "Review settings" %}</h2>
+            {% include "orga/event/component_link.html" %}
+        </div>
 
         {% include "orga/includes/tablist.html" %}
 

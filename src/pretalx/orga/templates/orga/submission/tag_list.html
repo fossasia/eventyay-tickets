@@ -6,7 +6,10 @@
 {% block extra_title %}{% translate "Tags" %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h2>{% translate "Tags" %}</h2>
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>{% translate "Tags" %}</h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     {% has_perm "orga.add_tags" request.user request.event as can_edit_tags %}
     {% if can_edit_tags %}
         <div class="d-flex justify-content-end mb-3">

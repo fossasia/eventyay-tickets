@@ -19,13 +19,16 @@
 {% endblock extra_title %}
 
 {% block content %}
-    <h2>
-        {% if form.instance.tag %}
-            {% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}
-        {% else %}
-            {% translate "New tag" %}
-        {% endif %}
-    </h2>
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>
+            {% if form.instance.tag %}
+                {% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}
+            {% else %}
+                {% translate "New tag" %}
+            {% endif %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
 
     {% include "orga/includes/base_form.html" %}
 

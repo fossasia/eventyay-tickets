@@ -26,6 +26,7 @@ from pretalx.common.text.daterange import daterange
 from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
+from urllib.parse import urlparse
 
 # Slugs need to start and end with an alphanumeric character,
 # but may contain dashes and dots in between.
@@ -380,6 +381,14 @@ class Event(PretalxModel):
         questions = "{base}questions/"
         answers = "{base}answers/"
         tags = "{base}tags/"
+    
+    class tickets_urls(EventUrls):
+        _full_base_path = settings.EVENTYAY_TICKET_BASE_PATH
+        base_path = urlparse(_full_base_path).path.rstrip('/')
+        base = "{base_path}/control/"
+        common = "{base_path}/common/"
+        tickets_home_common = "{common}event/{self.organiser.slug}/{self.slug}/"
+        tickets_dashboard_url = "{base}event/{self.organiser.slug}/{self.slug}/"
 
     class Meta:
         ordering = ("date_from",)

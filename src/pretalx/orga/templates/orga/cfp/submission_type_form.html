@@ -7,13 +7,16 @@
 {% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New Session Type" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h2>
-        {% if form.instance.name %}
-            {% translate "Session type" %}: {{ form.instance.name }}
-        {% else %}
-            {% translate "New Session Type" %}
-        {% endif %}
-    </h2>
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>
+            {% if form.instance.name %}
+                {% translate "Session type" %}: {{ form.instance.name }}
+            {% else %}
+                {% translate "New Session Type" %}
+            {% endif %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
 
     {% include "orga/includes/base_form.html" %}
 

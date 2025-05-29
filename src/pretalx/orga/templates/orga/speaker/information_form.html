@@ -5,13 +5,16 @@
 {% block extra_title %}{% blocktranslate trimmed count count=1 %}Speaker Information Note{% plural %}Speaker Information Notes{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h2>
-        {% blocktranslate trimmed count count=1 %}
-            Speaker Information Note
-        {% plural %}
-            Speaker Information Notes
-        {% endblocktranslate %}
-    </h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>
+            {% blocktranslate trimmed count count=1 %}
+                Speaker Information Note
+            {% plural %}
+                Speaker Information Notes
+            {% endblocktranslate %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
 
     {% include "orga/includes/base_form.html" %}
 

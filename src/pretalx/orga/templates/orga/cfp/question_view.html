@@ -22,12 +22,15 @@
 {% endblock scripts %}
 
 {% block content %}
-    <h2>
-        {% translate "Questions" %}
-        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-            <i class="fa fa-question-circle-o text-info"></i>
-        </span>
-    </h2>
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>
+            {% translate "Questions" %}
+            <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+                <i class="fa fa-question-circle-o text-info"></i>
+            </span>
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     <dialog id="info-dialog">
         <div class="alert alert-info">
             {% blocktranslate trimmed %}

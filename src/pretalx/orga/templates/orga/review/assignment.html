@@ -22,7 +22,10 @@
     {% compress js %}
         <script defer src="{% static "orga/js/reviewAssignment.js" %}"></script>
     {% endcompress %}
-    <h2>{% translate "Assign reviewers" %}</h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>{% translate "Assign reviewers" %}</h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
 
     {% include "orga/includes/tablist.html" %}
 

@@ -6,14 +6,17 @@
 {% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}submitter{% plural %}submitters{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h2>
-        {{ page_obj.paginator.count }}
-        {% blocktranslate trimmed count count=page_obj.paginator.count %}
-            submitter
-        {% plural %}
-            submitters
-        {% endblocktranslate %}
-    </h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>
+            {{ page_obj.paginator.count }}
+            {% blocktranslate trimmed count count=page_obj.paginator.count %}
+                submitter
+            {% plural %}
+                submitters
+            {% endblocktranslate %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
 
     {% include "common/includes/search_form.html" %}
 

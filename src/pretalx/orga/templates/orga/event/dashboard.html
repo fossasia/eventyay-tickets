@@ -24,12 +24,15 @@
             {% endblocktranslate %}
         </div>
     {% endif %}
-    <h2 id="main-title">
-        <span>
-            {{ request.event.name }}
-            <small class="text-muted small">{{ request.event.get_date_range_display }}</small>
-        </span>
-    </h2>
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>
+            <span>
+                {{ request.event.name }}
+                <small class="text-muted small">{{ request.event.get_date_range_display }}</small>
+            </span>
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     <div id="timeline-steps" class="stages">
         {% for stp in timeline %}
             <div {% if stp.phase == "done" and stp.url %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">

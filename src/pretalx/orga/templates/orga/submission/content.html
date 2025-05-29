@@ -24,7 +24,10 @@
     <form method="post" enctype="multipart/form-data">
         <fieldset>
             {% if not submission %}
-                <legend>{% translate "Create proposal" %}</legend>
+                <div id="main-title" class="d-md-flex justify-content-between">
+                    <h2>{% translate "Create proposal" %}</h2>
+                    {% include "orga/event/component_link.html" %}
+                </div>
             {% endif %}
 
             {% if submission.access_code %}

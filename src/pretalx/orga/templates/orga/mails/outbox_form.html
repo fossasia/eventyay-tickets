@@ -14,7 +14,10 @@
     {% endif %}
     <form method="post">
         {% csrf_token %}
-        <h2>{% translate "Mail Editor" %}</h2>
+        <div class="d-md-flex justify-content-between">
+            <h2>{% translate "Mail Editor" %}</h2>
+            {% include "orga/event/component_link.html" %}
+        </div>
 
         {% if not form.read_only %}
             {{ form }}

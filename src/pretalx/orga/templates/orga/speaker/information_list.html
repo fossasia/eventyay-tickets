@@ -19,17 +19,20 @@
 {% block extra_title %}{{ information.count }} {% blocktranslate trimmed count count=information.count %}Speaker Information Note{% plural %}Speaker Information Notes{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h2>
-        {{ information.count }}
-        {% blocktranslate trimmed count count=information.count %}
-            Speaker Information Note
-        {% plural %}
-            Speaker Information Notes
-        {% endblocktranslate %}
-        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-            <i class="fa fa-question-circle-o text-info"></i>
-        </span>
-    </h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>
+            {{ information.count }}
+            {% blocktranslate trimmed count count=information.count %}
+                Speaker Information Note
+            {% plural %}
+                Speaker Information Notes
+            {% endblocktranslate %}
+            <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+                <i class="fa fa-question-circle-o text-info"></i>
+            </span>
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     <dialog class="info-dialog" id="info-dialog">
         <div class="alert alert-info">
             {% blocktranslate trimmed %}

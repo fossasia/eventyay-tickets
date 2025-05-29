@@ -206,7 +206,7 @@ urlpatterns = [
                         ]
                     ),
                 ),
-                path("cfp/text", cfp.CfPTextDetail.as_view(), name="cfp.text.view"),
+                path("cfp/text/", cfp.CfPTextDetail.as_view(), name="cfp.text.view"),
                 path(
                     "cfp/types/",
                     cfp.SubmissionTypeList.as_view(),

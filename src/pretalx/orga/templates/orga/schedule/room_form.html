@@ -9,13 +9,16 @@
 {% block content %}
     {% include "common/availabilities.html" %}
 
-    <h2>
-        {% if form.instance.pk %}
-            {% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
-        {% else %}
-            {% translate "New room" %}
-        {% endif %}
-    </h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>
+            {% if form.instance.pk %}
+                {% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
+            {% else %}
+                {% translate "New room" %}
+            {% endif %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     <form method="post">
         {% csrf_token %}
         {% include "common/forms/errors.html" %}

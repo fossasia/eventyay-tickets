@@ -3,10 +3,13 @@
 {% load i18n %}
 
 {% block mail_content %}
-    <h2>
-        {{ page_obj.paginator.count }}
-        {% translate "Sent Mails" %}
-    </h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>
+            {{ page_obj.paginator.count }}
+            {% translate "Sent Mails" %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     {% include "common/includes/search_form.html" %}
     <div class="table-responsive-sm">
         <table class="table table-sm table-hover table-flip table-sticky">

@@ -3,16 +3,19 @@
 {% load i18n %}
 
 {% block mail_content %}
-    <h2>
-        <span>
-            {{ page_obj.paginator.count }}
-            {% blocktranslate trimmed count count=page_obj.paginator.count %}
-                pending mail
-            {% plural %}
-                pending mails
-            {% endblocktranslate %}
-        </span>
-    </h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>
+            <span>
+                {{ page_obj.paginator.count }}
+                {% blocktranslate trimmed count count=page_obj.paginator.count %}
+                    pending mail
+                {% plural %}
+                    pending mails
+                {% endblocktranslate %}
+            </span>
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
     <div class="submit-group">
         <div>
             {% include "common/includes/search_form.html" with omit_wrapper=True %}

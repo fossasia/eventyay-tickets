@@ -20,14 +20,17 @@
 
 {% block content %}
     <div>
-        <h2>
-            {{ request.event.rooms.count }}
-            {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}
-                Room
-            {% plural %}
-                Rooms
-            {% endblocktranslate %}
-        </h2>
+        <div class="d-md-flex justify-content-between">
+            <h2>
+                {{ request.event.rooms.count }}
+                {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}
+                    Room
+                {% plural %}
+                    Rooms
+                {% endblocktranslate %}
+            </h2>
+            {% include "orga/event/component_link.html" %}
+        </div>
 
         <div class="table-responsive-sm">
             <table class="table table-sm table-hover table-flip table-sticky">

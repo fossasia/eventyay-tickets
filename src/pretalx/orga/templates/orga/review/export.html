@@ -5,7 +5,10 @@
 {% block extra_title %}{% translate "Export review data" %} :: {% endblock extra_title %}
 
 {% block content %}
-    <h2>{% translate "Export review data" %}</h2>
+    <div class="d-md-flex justify-content-between">
+        <h2>{% translate "Export review data" %}</h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
 
     {% include "orga/includes/tablist.html" %}
 
