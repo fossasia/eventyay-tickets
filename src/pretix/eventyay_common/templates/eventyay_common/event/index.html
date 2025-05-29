@@ -4,6 +4,7 @@
 {% load bootstrap3 %}
 {% load static %}
 {% load eventsignal %}
+{% load urlreplace %}
 {% block title %}{{ request.event.name }}{% endblock %}
 {% block content %}
     <nav id="event-nav" class="header-nav">
@@ -25,6 +26,37 @@
     </nav>
 
     {% eventsignal request.event "pretix.control.signals.event_dashboard_top" request=request %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% trans "Filter" %}</h3>
+        </div>
+        <div class="panel-body">
+            <form class="" action="" method="get">
+                <div class="row filter-form">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        {% bootstrap_field filter_form.query layout='inline' %}
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        {% bootstrap_field filter_form.status layout='inline' %}
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        {% bootstrap_field filter_form.organizer layout='inline' %}
+                    </div>
+                    {% for mf in meta_fields %}
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            {% bootstrap_field mf layout='inline' %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-primary" type="submit">
+                        <span class="fa fa-filter"></span>
+                        <span class="hidden-md">{% trans "Filter" %}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     {% if actions|length > 0 %}
         <div class="panel panel-danger">
             <div class="panel-heading">
@@ -62,7 +94,7 @@
         </form>
     {% endif %}
     <br>
-    {% include "eventyay_common/event/fragment_dashboard.html" %}
+    {%include "eventyay_common/event/fragment_dashboard.html" %}
     {% if not request.event.has_subevents or subevent %}
         {% include "pretixcontrol/event/fragment_timeline.html" %}
     {% endif %}
@@ -80,7 +112,7 @@
                 {% elif w.link %}
                     <a href="{{ w.link }}" class="widget">
                         {% if w.lazy %}
-                            <span class="fa fa-cog fa-4x´"></span>
+                            <span class="fa fa-cog fa-4x"></span>
                         {% else %}
                             {{ w.content|safe }}
                         {% endif %}
