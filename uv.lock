@@ -1238,7 +1238,7 @@ requires-dist = [
     { name = "oauthlib", specifier = "==3.2.*" },
     { name = "pillow", specifier = "~=11.0.0" },
     { name = "pretalx-downstream", git = "https://github.com/fossasia/eventyay-talk-downstream.git?rev=main" },
-    { name = "pretalx-pages", git = "https://github.com/fossasia/eventyay-talk-pages.git?rev=main" },
+    { name = "pretalx-pages", git = "https://github.com/hongquan/eventyay-talk-pages.git?rev=2956f13" },
     { name = "pretalx-venueless", git = "https://github.com/fossasia/eventyay-talk-video.git?rev=main" },
     { name = "psycopg2-binary", specifier = "==2.9.10" },
     { name = "psycopg2-binary", marker = "extra == 'postgres'", specifier = "~=2.9.0" },
@@ -1302,7 +1302,7 @@ source = { git = "https://github.com/fossasia/eventyay-talk-downstream.git?rev=m
 [[package]]
 name = "pretalx-pages"
 version = "1.6.0"
-source = { git = "https://github.com/fossasia/eventyay-talk-pages.git?rev=main#a726a10459644f0bfde5019be8abf4f66b77cd27" }
+source = { git = "https://github.com/hongquan/eventyay-talk-pages.git?rev=2956f13#2956f13a3016817afcea244c98aab2123a8555e4" }
 
 [[package]]
 name = "pretalx-venueless"
