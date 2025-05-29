@@ -113,6 +113,62 @@ def get_event_navigation(request: HttpRequest):
             })
 
     if 'can_change_items' in request.eventpermset:
+        children = [
+            {
+                'label': _('Products'),
+                'url': reverse('control:event.items', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
+                'active': url.url_name in (
+                    'event.item', 'event.items.add', 'event.items') or "event.item." in url.url_name,
+            },
+            {
+                'label': _('Quotas'),
+                'url': reverse('control:event.items.quotas', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
+                'active': 'event.items.quota' in url.url_name,
+            },
+            {
+                'label': _('Categories'),
+                'url': reverse('control:event.items.categories', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
+                'active': 'event.items.categories' in url.url_name,
+            },
+            {
+                'label': _('Questions'),
+                'url': reverse('control:event.items.questions', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
+                'active': 'event.items.questions' in url.url_name,
+            },
+        ]
+
+        if 'can_view_vouchers' in request.eventpermset:
+            children.extend([
+                {
+                    'label': _('All vouchers'),
+                    'url': reverse('control:event.vouchers', kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    }),
+                    'active': url.url_name != 'event.vouchers.tags' and "event.vouchers" in url.url_name,
+                },
+                {
+                    'label': _('Voucher Tags'),
+                    'url': reverse('control:event.vouchers.tags', kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    }),
+                    'active': 'event.vouchers.tags' in url.url_name,
+                },
+            ])
+
         nav.append({
             'label': _('Products'),
             'url': reverse('control:event.items', kwargs={
@@ -121,41 +177,7 @@ def get_event_navigation(request: HttpRequest):
             }),
             'active': False,
             'icon': 'ticket',
-            'children': [
-                {
-                    'label': _('Products'),
-                    'url': reverse('control:event.items', kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    }),
-                    'active': url.url_name in (
-                        'event.item', 'event.items.add', 'event.items') or "event.item." in url.url_name,
-                },
-                {
-                    'label': _('Quotas'),
-                    'url': reverse('control:event.items.quotas', kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    }),
-                    'active': 'event.items.quota' in url.url_name,
-                },
-                {
-                    'label': _('Categories'),
-                    'url': reverse('control:event.items.categories', kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    }),
-                    'active': 'event.items.categories' in url.url_name,
-                },
-                {
-                    'label': _('Questions'),
-                    'url': reverse('control:event.items.questions', kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    }),
-                    'active': 'event.items.questions' in url.url_name,
-                },
-            ]
+            'children': children
         })
 
     if 'can_view_orders' in request.eventpermset:
@@ -219,35 +241,6 @@ def get_event_navigation(request: HttpRequest):
             'active': False,
             'icon': 'shopping-cart',
             'children': children
-        })
-
-    if 'can_view_vouchers' in request.eventpermset:
-        nav.append({
-            'label': _('Vouchers'),
-            'url': reverse('control:event.vouchers', kwargs={
-                'event': request.event.slug,
-                'organizer': request.event.organizer.slug,
-            }),
-            'active': False,
-            'icon': 'tags',
-            'children': [
-                {
-                    'label': _('All vouchers'),
-                    'url': reverse('control:event.vouchers', kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    }),
-                    'active': url.url_name != 'event.vouchers.tags' and "event.vouchers" in url.url_name,
-                },
-                {
-                    'label': _('Tags'),
-                    'url': reverse('control:event.vouchers.tags', kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    }),
-                    'active': 'event.vouchers.tags' in url.url_name,
-                },
-            ]
         })
 
     if 'can_view_orders' in request.eventpermset:
