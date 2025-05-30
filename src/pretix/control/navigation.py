@@ -534,6 +534,12 @@ def get_admin_navigation(request):
                 },
             ]
         },
+        {
+            'label': _('Talk admin config'),
+            'url': '/talk/orga/admin/',
+            'active': False,
+            'icon': 'group',
+        },
     ]
 
     merge_in(nav, sorted(
