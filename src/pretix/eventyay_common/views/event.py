@@ -141,6 +141,8 @@ class EventList(PaginationMixin, ListView):
                         else 100
                     ),
                 )
+        print("DEBUG filter_form fields:", list(self.filter_form.fields.keys()))
+
         return ctx
 
     @cached_property
