@@ -21,16 +21,17 @@
         {{ request.event.urls.base }}
     {% endif %}
 {% endblock nav_link %}
+
 {% block header_tabs %}
-    <a href="{{ request.event.urls.schedule }}" class='header-tab {% if "/schedule/" in request.path_info %}active{% endif %}'>
+    <a href="{{ request.event.urls.schedule }}" class="header-tab {% if "/schedule/" in request.path_info %}active{% endif %}">
         <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}
     </a>
     {% if request.event.display_settings.schedule_display != "list" %}
-        <a href="{{ request.event.urls.talks }}" class='header-tab {% if "/talk/" in request.path_info %} active{% endif %}'>
+        <a href="{{ request.event.urls.talks }}" class="header-tab {% if "/talk/" in request.path_info %} active{% endif %}">
             <i class="fa fa-comments-o"></i> {{ phrases.schedule.sessions }}
         </a>
     {% endif %}
-    <a href="{{ request.event.urls.speakers }}" class='header-tab {% if "/speaker/" in request.path_info %} active{% endif %}'>
+    <a href="{{ request.event.urls.speakers }}" class="header-tab {% if "/speaker/" in request.path_info %} active{% endif %}">
         <i class="fa fa-group"></i> {{ phrases.schedule.speakers }}
     </a>
     {% for link in header_links %}
@@ -50,7 +51,6 @@
 {% endblock header_tabs %}
 
 {% block content %}
-    {% include "agenda/header_row.html" %}
     {% if not request.event|get_feature_flag:"show_schedule" and not request.user.is_anonymous and not hide_visibility_warning %}
         <div id="event-nonpublic" class="d-print-none">
             <i class="fa fa-user-secret"></i>

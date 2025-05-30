@@ -109,9 +109,6 @@ html_theme_path = [os.path.abspath('_themes')]
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'pretalxdoc'
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': ('https://docs.python.org/3', None)}
-
 linkcheck_ignore = [
     'https://pretalx.yourdomain.com',
     'http://localhost',

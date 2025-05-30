@@ -31,6 +31,13 @@ class SubmitterSerializer(ModelSerializer):
             )
         return ""
 
+    def get_biography(self, obj):
+        if self.event:
+            return getattr(
+                obj.profiles.filter(event=self.event).first(), "biography", ""
+            )
+        return ""
+
 
 class SubmitterOrgaSerializer(SubmitterSerializer):
     class Meta(SubmitterSerializer.Meta):
@@ -57,7 +64,8 @@ class SpeakerSerializer(ModelSerializer):
 
     @staticmethod
     def get_avatar(obj):
-        return obj.user.get_avatar_url(event=obj.event)
+        if obj.event.cfp.request_avatar:
+            return obj.user.get_avatar_url(event=obj.event)
 
     @staticmethod
     def get_avatar_source(obj):

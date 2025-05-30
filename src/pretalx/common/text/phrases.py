@@ -36,17 +36,24 @@ phrases = PhraseBook()
 
 
 class BasePhrases(Phrases, app="base"):
-    """
-    This class contains base phrases that are guaranteed to remain the same.
+    """This class contains base phrases that are guaranteed to remain the same
+    (i.e., are not randomly chosen).
+
+    They are still provided as a list to make it possible to combine
+    them with new phrases in other classes.
     """
 
+    # Translators: This is the label on buttons that trigger the sending of emails.
     send = _("Send")
+    # Translators: This is the label on save buttons.
     save = _("Save")
     cancel = _("Cancel")
     # Translators: This is the label on edit buttons.
     edit = _("Edit")
     all_choices = _("all")
+    # Translators: This is a label on navigation elements leading to the previous page.
     back_button = _("Back")
+    # Translators: This is a label on delete buttons.
     delete_button = _("Delete")
 
     delete_confirm_heading = _("Confirm deletion")
@@ -56,6 +63,8 @@ class BasePhrases(Phrases, app="base"):
 
     saved = _("Your changes have been saved.")
     back_try_again = _("Please go back and try again.")
+
+    # Translators: This is an established term in the context of software development.
     bad_request = _("Bad request.")
     error_sending_mail = _(
         "There was an error sending the mail. Please try again later."
@@ -94,15 +103,25 @@ class BasePhrases(Phrases, app="base"):
     password_reset_success = _("The password was reset.")
 
     use_markdown = _("You can use {link_start}Markdown{link_end} here.").format(
-        link_start='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank" rel="noopener">',
+        link_start='<a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">',
         link_end="</a>",
     )
     public_content = _("This content will be shown publicly.")
+
     quotation_open = pgettext_lazy("opening quotation mark", "“")
     quotation_close = pgettext_lazy("closing quotation mark", "”")
+
+    # Translators: Used both for language selection for users, and for the language
+    # attribute of events and sessions.
     language = _("Language")
+
+    # Translators: Used as settings/section heading
     general = _("General")
+
     email_subject = pgettext_lazy("email subject", "Subject")
+    # Translators: Text is used to describe the main text body of an email, or of
+    # similar options like the main text of the CfP or a review. It's separate from
+    # the "text" input type used in questions.
     text_body = _("Text")
 
 

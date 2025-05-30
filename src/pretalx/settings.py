@@ -250,6 +250,11 @@ LOGGING = {
     },
     "loggers": {
         "": {"handlers": ["file", "console"], "level": loglevel, "propagate": True},
+        "rules": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": True,
+        },
         "django.request": {
             "handlers": ["file", "console"],
             "level": "ERROR",  # Otherwise, we log 404s at WARNING/whatever, which sucks

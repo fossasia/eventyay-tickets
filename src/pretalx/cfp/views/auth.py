@@ -27,16 +27,16 @@ logger = logging.getLogger(__name__)
 class LogoutView(View):
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
         logout(request)
-        return self.get(request, *args, **kwargs)
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
-        response = redirect(
-            reverse("cfp:event.start", kwargs={"event": self.request.event.slug})
-        )
+        response = self.get(request, *args, **kwargs)
         # Remove the JWT cookie
         response.delete_cookie("sso_token")  # Same domain used when setting the cookie
         response.delete_cookie("customer_sso_token")
         return response
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
+        return redirect(
+            reverse("cfp:event.start", kwargs={"event": self.request.event.slug})
+        )
 
 
 class LoginView(GenericLoginView):

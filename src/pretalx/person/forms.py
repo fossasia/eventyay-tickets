@@ -302,6 +302,9 @@ class SpeakerProfileForm(
         field_classes = {
             "avatar": ImageField,
         }
+        field_classes = {
+            "avatar": ImageField,
+        }
         request_require = {"biography", "availabilities"}
 
 

@@ -42,18 +42,16 @@
                     {{ phrases.agenda.view_schedule_preview }}
                 </a>
             {% endif %}
-            {% if request.user.is_authenticated %}
-            {% if has_submissions or request.user.is_anonymous %}
-            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
-                {{ phrases.agenda.view_own_submissions }}
-            </a>
-        {% endif %}
+            {% if has_submissions and request.user.is_authenticated %}
+		        <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user_submissions }}">
+		            {{ phrases.agenda.view_own_submissions }}
+		        </a>
+            {% endif %}
 
-        {% if has_submissions or request.user.is_anonymous %}
-            <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user }}">
-                {% translate "View or edit speaker profile" %}
-            </a>
-        {% endif %}
+            {% if has_submissions and request.user.is_authenticated %}
+		        <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.user }}">
+		            {% translate "View or edit speaker profile" %}
+		        </a>
             {% endif %}
 
             <a class="btn btn-success btn-lg btn-block {% if not cfp.is_open and not access_code.is_valid %}disabled{% endif %}"

@@ -7,6 +7,7 @@
     overflow-x: auto;
   }
 }
+
 .has-join-popup #join-video-popupmodal, .has-join-popup #join-video-popupmodal-missing-config {
     opacity: 1;
     visibility: visible;
@@ -14,6 +15,7 @@
     -moz-transition: opacity .5s ease-in-out;
     -webkit-transition: opacity .5s ease-in-out;
 }
+
 #join-video-popupmodal, #join-video-popupmodal-missing-config {
   position: fixed;
   top: 0;
@@ -72,6 +74,7 @@
       }
   }
 }
+
 #main-container.main-schedule {
   min-width: min-content;
   margin: 0 auto;
@@ -281,10 +284,7 @@ article .pretalx-session .pretalx-session-info .abstract {
         flex-wrap: wrap;
         justify-content: flex-end;
         .btn-outline-info {
-          // display: none;
-          .calendar-text {
-            display: none;
-          }
+          display: none;
         }
       }
     }
@@ -293,12 +293,6 @@ article .pretalx-session .pretalx-session-info .abstract {
 @media (max-width: 992px) {
   #fahrplan #schedule-nav {
     flex-direction: column;
-    .navigation {
-        flex-wrap: wrap;
-        .btn-outline-success {
-            margin: 5px;
-        }
-    }
   }
   #main-container.main-schedule {
     max-width: 100%;
@@ -353,17 +347,6 @@ article .pretalx-session .pretalx-session-info .abstract {
       filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.17));
     }
   }
-}
-#fahrplan.list {
-  .pretalx-tab-content {
-    margin: 20px;
-    margin-top: 8px;
-  }
-}
-
-.btn-default {
-  box-shadow: 0px 0px 0px 1px #cccccc inset;
-  box-sizing: border-box;
 }
 
 @media (max-width: 700px) {

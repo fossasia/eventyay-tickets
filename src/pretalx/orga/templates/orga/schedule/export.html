@@ -134,15 +134,18 @@
             <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
  curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.submissions.full }} </pre>
 
-        <div class="submit-group"><span></span><span>
-            <a class="btn btn-lg btn-info" href="#">
-                <i class="fa fa-book"></i>
-                {% translate "Documentation" %}
-            </a>
-            <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
-                {% translate "Go to API" %}
-            </a>
-        </span>
+==== BASE ====
+            <div class="submit-group"><span></span><span>
+                <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
+                    <i class="fa fa-book"></i>
+                    {% translate "Documentation" %}
+                </a>
+                <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
+                    {% translate "Go to API" %}
+                </a>
+            </span>
+            </div>
+==== BASE ====
         </div>
     </section>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>

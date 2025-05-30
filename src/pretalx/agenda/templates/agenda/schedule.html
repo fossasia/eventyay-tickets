@@ -10,6 +10,7 @@
 {% block agenda_custom_header %}
     <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
 {% endblock agenda_custom_header %}
+
 {% block header_right %}
     <details class="dropdown mr-2" aria-haspopup="menu" role="menu">
         <summary>

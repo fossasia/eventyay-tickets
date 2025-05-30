@@ -12,6 +12,11 @@ on:
       - 'doc/**'
       - 'src/pretalx/locale/**'
 
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true

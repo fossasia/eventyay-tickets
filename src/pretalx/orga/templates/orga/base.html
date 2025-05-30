@@ -248,7 +248,7 @@
                                 <span class="has-children">
                                     <a class="nav-link nav-link-inner" href="{{ request.event.cfp.urls.text }}">
                                         <i class="fa fa-bullhorn"></i>
-                                        <span class="sidebar-text">{% translate "Call for Speakers" %}</span>
+                                        <span class="sidebar-text">{% translate "Call for Proposals" %}</span>
                                     </a>
                                     <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseCfP" aria-controls="collapseCfP">
                                         <i class="fa fa-angle-down"></i>
@@ -456,10 +456,7 @@
                             <i class="fa fa-calendar-o"></i>
                             <span>{% translate "Events" %}</span>
                         </a>
-                    {% endif %}
-                    {% has_perm "orga.view_organisers" request.user request as can_see_organisers %}
-                    {% if can_see_organisers %}
-                        <a class='nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}' href='{% url "orga:organiser.list" %}'>
+                        <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="{% url "orga:organiser.list" %}">
                             <i class="fa fa-users"></i>
                             <span>{% translate "Organisers" %}</span>
                         </a>
@@ -467,7 +464,7 @@
                     {% if request.user.is_administrator %}
                         <div class="nav-fold">
                             <span class="has-children">
-                                <a class="nav-link nav-link-inner" href='{% url "orga:admin.dashboard" %}'>
+                                <a class="nav-link nav-link-inner" href="{% url "orga:admin.dashboard" %}">
                                     <i class="fa fa-cogs"></i>
                                     <span class="sidebar-text">
                                         {% translate "Administration" %}
@@ -477,15 +474,12 @@
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                             </span>
-                            <div class="collapse in{% if "/orga/admin/" in request.path_info %} show{% endif %}" aria-expand="true" id="collapseAdmin">
-                                <a class="nav-link nav-link-second-level {% if "/orga/admin/" == request.path_info %} active{% endif %}" href='{% url "orga:admin.dashboard" %}'>
+                            <div class="collapse in{% if "/orga/admin/" in request.path %} show{% endif %}" aria-expand="true" id="collapseAdmin">
+                                <a class="nav-link nav-link-second-level {% if "/orga/admin/" == request.path %} active{% endif %}" href="{% url "orga:admin.dashboard" %}">
                                     <span>{% translate "Admin information" %}</span>
                                 </a>
-                                <a href='{% url "orga:admin.user.list" %}' class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path_info %} active{% endif %}">
+                                <a href="{% url "orga:admin.user.list" %}" class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path %} active{% endif %}">
                                     <span>{% translate "Users" %}</span>
-                                </a>
-                                <a href='{% url "orga:admin.sso.settings" %}' class="nav-link nav-link-second-level{% if "/orga/admin/sso/settings" in request.path_info %} active{% endif %}">
-                                    <span>{% translate "SSO settings" %}</span>
                                 </a>
                             </div>
                         </div>

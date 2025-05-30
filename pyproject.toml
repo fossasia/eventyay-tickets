@@ -60,7 +60,7 @@ dependencies = [
   "vobject~=0.9.0",
   "whitenoise~=6.8.0",
   "zxcvbn~=4.4.0",
-  "pretalx_pages @ git+https://github.com/fossasia/eventyay-talk-pages.git@main",
+  "pretalx_pages @ git+https://github.com/hongquan/eventyay-talk-pages.git@2956f13",
   "pretalx_venueless @ git+https://github.com/fossasia/eventyay-talk-video.git@main",
   "pretalx-downstream @ git+https://github.com/fossasia/eventyay-talk-downstream.git@main",
   "django-allauth~=0.63.3",
