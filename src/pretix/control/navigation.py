@@ -157,6 +157,82 @@ def get_event_navigation(request: HttpRequest):
             )
 
     if 'can_change_items' in request.eventpermset:
+        children = [
+            {
+                'label': _('Products'),
+                'url': reverse(
+                    'control:event.items',
+                    kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    },
+                ),
+                'active': url.url_name in ('event.item', 'event.items.add', 'event.items')
+                or 'event.item.' in url.url_name,
+            },
+            {
+                'label': _('Quotas'),
+                'url': reverse(
+                    'control:event.items.quotas',
+                    kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    },
+                ),
+                'active': 'event.items.quota' in url.url_name,
+            },
+            {
+                'label': _('Categories'),
+                'url': reverse(
+                    'control:event.items.categories',
+                    kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    },
+                ),
+                'active': 'event.items.categories' in url.url_name,
+            },
+            {
+                'label': _('Questions'),
+                'url': reverse(
+                    'control:event.items.questions',
+                    kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    },
+                ),
+                'active': 'event.items.questions' in url.url_name,
+            },
+        ]
+
+        if 'can_view_vouchers' in request.eventpermset:
+            children.extend(
+                [
+                    {
+                        'label': _('All vouchers'),
+                        'url': reverse(
+                            'control:event.vouchers',
+                            kwargs={
+                                'event': request.event.slug,
+                                'organizer': request.event.organizer.slug,
+                            },
+                        ),
+                        'active': url.url_name != 'event.vouchers.tags' and 'event.vouchers' in url.url_name,
+                    },
+                    {
+                        'label': _('Voucher Tags'),
+                        'url': reverse(
+                            'control:event.vouchers.tags',
+                            kwargs={
+                                'event': request.event.slug,
+                                'organizer': request.event.organizer.slug,
+                            },
+                        ),
+                        'active': 'event.vouchers.tags' in url.url_name,
+                    },
+                ]
+            )
+
         nav.append(
             {
                 'label': _('Products'),
@@ -169,53 +245,7 @@ def get_event_navigation(request: HttpRequest):
                 ),
                 'active': False,
                 'icon': 'ticket',
-                'children': [
-                    {
-                        'label': _('Products'),
-                        'url': reverse(
-                            'control:event.items',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': url.url_name in ('event.item', 'event.items.add', 'event.items')
-                        or 'event.item.' in url.url_name,
-                    },
-                    {
-                        'label': _('Quotas'),
-                        'url': reverse(
-                            'control:event.items.quotas',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.items.quota' in url.url_name,
-                    },
-                    {
-                        'label': _('Categories'),
-                        'url': reverse(
-                            'control:event.items.categories',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.items.categories' in url.url_name,
-                    },
-                    {
-                        'label': _('Questions'),
-                        'url': reverse(
-                            'control:event.items.questions',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.items.questions' in url.url_name,
-                    },
-                ],
+                'children': children,
             }
         )
 
@@ -308,46 +338,6 @@ def get_event_navigation(request: HttpRequest):
             }
         )
 
-    if 'can_view_vouchers' in request.eventpermset:
-        nav.append(
-            {
-                'label': _('Vouchers'),
-                'url': reverse(
-                    'control:event.vouchers',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
-                'active': False,
-                'icon': 'tags',
-                'children': [
-                    {
-                        'label': _('All vouchers'),
-                        'url': reverse(
-                            'control:event.vouchers',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': url.url_name != 'event.vouchers.tags' and 'event.vouchers' in url.url_name,
-                    },
-                    {
-                        'label': _('Tags'),
-                        'url': reverse(
-                            'control:event.vouchers.tags',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.vouchers.tags' in url.url_name,
-                    },
-                ],
-            }
-        )
-
     if 'can_view_orders' in request.eventpermset:
         nav.append(
             {
@@ -395,7 +385,7 @@ def get_global_navigation(request):
     nav = [
         {
             'label': _('My events'),
-            'url': reverse('control:events'),
+            'url': reverse('eventyay_common:events'),
             'active': 'events' in url.url_name,
             'icon': 'calendar',
         },
@@ -410,39 +400,6 @@ def get_global_navigation(request):
             'url': reverse('control:search.orders'),
             'active': 'search.orders' in url.url_name,
             'icon': 'search',
-        },
-        {
-            'label': _('Account'),
-            'url': reverse('control:user.settings'),
-            'active': False,
-            'icon': 'user',
-            'children': [
-                {
-                    'label': _('General'),
-                    'url': reverse('control:user.settings'),
-                    'active': 'user.settings' == url.url_name,
-                },
-                {
-                    'label': _('Notifications'),
-                    'url': reverse('control:user.settings.notifications'),
-                    'active': 'user.settings.notifications' == url.url_name,
-                },
-                {
-                    'label': _('2FA'),
-                    'url': reverse('control:user.settings.2fa'),
-                    'active': 'user.settings.2fa' in url.url_name,
-                },
-                {
-                    'label': _('Authorized apps'),
-                    'url': reverse('control:user.settings.oauth.list'),
-                    'active': 'user.settings.oauth' in url.url_name,
-                },
-                {
-                    'label': _('Account history'),
-                    'url': reverse('control:user.settings.history'),
-                    'active': 'user.settings.history' in url.url_name,
-                },
-            ],
         },
     ]
 
@@ -699,6 +656,12 @@ def get_admin_navigation(request):
                     'active': (url.url_name == 'admin.toggle.billing.validation'),
                 },
             ],
+        },
+        {
+            'label': _('Talk admin config'),
+            'url': '/talk/orga/admin/',
+            'active': False,
+            'icon': 'group',
         },
     ]
 

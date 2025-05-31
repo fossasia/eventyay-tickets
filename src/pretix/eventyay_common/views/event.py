@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import F, Max, Min, Prefetch, Q
+from django.db.models import Case, F, Max, Min, Prefetch, Q, Sum, When, IntegerField
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -49,22 +49,29 @@ class EventList(PaginationMixin, ListView):
     model = Event
     context_object_name = 'events'
     template_name = 'eventyay_common/events/index.html'
+    ordering_fields = [
+        'name',
+        'slug',
+        'organizer',
+        'date_from',
+        'date_to',
+        'total_quota',
+        'live',
+        'order_from',
+        'order_to',
+    ]
 
     def get_queryset(self):
-        query_set = (
-            self.request.user.get_events_with_any_permission(self.request)
-            .prefetch_related(
-                'organizer',
-                '_settings_objects',
-                'organizer___settings_objects',
-                'organizer__meta_properties',
-                Prefetch(
-                    'meta_values',
-                    EventMetaValue.objects.select_related('property'),
-                    to_attr='meta_values_cached',
-                ),
-            )
-            .order_by('-date_from')
+        query_set = self.request.user.get_events_with_any_permission(self.request).prefetch_related(
+            'organizer',
+            '_settings_objects',
+            'organizer___settings_objects',
+            'organizer__meta_properties',
+            Prefetch(
+                'meta_values',
+                EventMetaValue.objects.select_related('property'),
+                to_attr='meta_values_cached',
+            ),
         )
 
         query_set = query_set.annotate(
@@ -72,10 +79,28 @@ class EventList(PaginationMixin, ListView):
             max_from=Max('subevents__date_from'),
             max_to=Max('subevents__date_to'),
             max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
+            total_quota=Sum(
+                Case(When(quotas__subevent__isnull=True, then='quotas__size'), default=0, output_field=IntegerField())
+            ),
         ).annotate(
             order_from=Coalesce('min_from', 'date_from'),
             order_to=Coalesce('max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'),
         )
+
+        ordering = self.request.GET.get('ordering')
+        if ordering and ordering.lstrip('-') in self.ordering_fields:
+            if ordering == 'date_from':
+                query_set = query_set.order_by('order_from')
+            elif ordering == '-date_from':
+                query_set = query_set.order_by('-order_from')
+            elif ordering == 'date_to':
+                query_set = query_set.order_by('order_to')
+            elif ordering == '-date_to':
+                query_set = query_set.order_by('-order_to')
+            else:
+                query_set = query_set.order_by(ordering)
+        else:
+            query_set = query_set.order_by('-date_from')
 
         query_set = query_set.prefetch_related(
             Prefetch(
@@ -135,17 +160,19 @@ class EventCreateView(SafeSessionWizardView):
         request_user = self.request.user
         request_get = self.request.GET
 
-        if step == 'foundation' and 'organizer' in request_get:
-            try:
-                queryset = Organizer.objects.all()
-                if not request_user.has_active_staff_session(self.request.session.session_key):
-                    queryset = queryset.filter(
-                        id__in=request_user.teams.filter(can_create_events=True).values_list('organizer', flat=True)
-                    )
-                initial_form['organizer'] = queryset.get(slug=request_get.get('organizer'))
-            except Organizer.DoesNotExist:
-                pass
-
+        # Set is_video_creation to True by default for the foundation form
+        if step == 'foundation':
+            initial_form['is_video_creation'] = True
+            if 'organizer' in request_get:
+                try:
+                    queryset = Organizer.objects.all()
+                    if not request_user.has_active_staff_session(self.request.session.session_key):
+                        queryset = queryset.filter(
+                            id__in=request_user.teams.filter(can_create_events=True).values_list('organizer', flat=True)
+                        )
+                    initial_form['organizer'] = queryset.get(slug=request_get.get('organizer'))
+                except Organizer.DoesNotExist:
+                    pass
         return initial_form
 
     def dispatch(self, request, *args, **kwargs):
@@ -182,6 +209,7 @@ class EventCreateView(SafeSessionWizardView):
                     'organizer': Organizer(slug='_nonexisting'),
                     'has_subevents': False,
                     'locales': ['en'],
+                    'is_video_creation': True,
                 }
             kwargs.update(form_data)
         return kwargs
@@ -196,6 +224,8 @@ class EventCreateView(SafeSessionWizardView):
         create_for = self.storage.extra_data.get('create_for')
 
         self.request.organizer = foundation_data['organizer']
+        has_permission = check_create_permission(self.request)
+        final_is_video_creation = foundation_data.get('is_video_creation', True) and has_permission
 
         if create_for == EventCreatedFor.TALK:
             event_dict = {
@@ -208,20 +238,16 @@ class EventCreateView(SafeSessionWizardView):
                 'timezone': str(basics_data.get('timezone')),
                 'locale': basics_data.get('locale'),
                 'locales': foundation_data.get('locales'),
-                'is_video_creation': foundation_data.get('is_video_creation'),
+                'is_video_creation': final_is_video_creation,
             }
             send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
-
         else:
             with transaction.atomic(), language(basics_data['locale']):
                 event = form_dict['basics'].instance
                 event.organizer = foundation_data['organizer']
                 event.plugins = settings.PRETIX_PLUGINS_DEFAULT
                 event.has_subevents = foundation_data['has_subevents']
-                if check_create_permission(self.request):
-                    event.is_video_creation = foundation_data['is_video_creation']
-                else:
-                    event.is_video_creation = False
+                event.is_video_creation = final_is_video_creation
                 event.testmode = True
                 form_dict['basics'].save()
 
@@ -241,7 +267,7 @@ class EventCreateView(SafeSessionWizardView):
                         'timezone': str(basics_data.get('timezone')),
                         'locale': event.settings.locale,
                         'locales': event.settings.locales,
-                        'is_video_creation': foundation_data.get('is_video_creation'),
+                        'is_video_creation': final_is_video_creation,
                     }
                     send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
                 event.settings.set('create_for', create_for)
@@ -252,13 +278,10 @@ class EventCreateView(SafeSessionWizardView):
             title=basics_data.get('name').data,
             timezone=basics_data.get('timezone'),
             locale=basics_data.get('locale'),
-            has_permission=check_create_permission(self.request),
+            has_permission=has_permission,
             token=generate_token(self.request),
         )
-        create_world.delay(
-            is_video_creation=foundation_data.get('is_video_creation'),
-            event_data=event_data,
-        )
+        create_world.delay(is_video_creation=final_is_video_creation, event_data=event_data)
 
         return redirect(
             reverse(

@@ -7,7 +7,7 @@
     </h1>
     {% if "can_create_events" in request.orgapermset %}
         <p>
-            <a href="{% url "control:events.add" %}?organizer={{ request.organizer.slug }}" class="btn btn-primary">
+            <a href="{% url "eventyay_common:events.add" %}?organizer={{ request.organizer.slug }}" class="btn btn-primary">
                 <span class="fa fa-plus"></span>
                 {% trans "Create a new event" %}
             </a>

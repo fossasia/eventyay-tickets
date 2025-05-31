@@ -1,0 +1,74 @@
+{% extends 'eventyay_common/base.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{{ _('Authorized applications') }}{% endblock %}
+
+{% block nav_top_header %}
+    <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
+        <span class='fa-stack fa-lg'>
+            <i class='fa fa-circle fa-stack-2x'></i>
+            <i class='fa fa-user fa-stack-1x fa-inverse'></i>
+        </span>
+        <div class='context-indicator'>
+            <span class='context-name'>{{ _('Account') }}</span>
+        </div>
+    </a>
+{% endblock nav_top_header %}
+
+{% block content %}
+    <h1>{{ _('Authorized applications') }}</h1>
+    <p>
+        <a href="{% url 'eventyay_common:account.oauth.own-apps' %}" class='btn btn-default'>
+            {{ _('Manage your own apps') }}
+        </a>
+    </p>
+    {% if tokens %}
+        <div class='table-responsive'>
+            <table class='table table-condensed table-hover table-quotas'>
+                <thead>
+                <tr>
+                    <th>{{ _('Name') }}</th>
+                    <th>{{ _('Permissions') }}</th>
+                    <th>{{ _('Organizers') }}</th>
+                    <th class='action-col-2'></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for token in tokens %}
+                    <tr>
+                        <td><strong>{{ token.application.name }}</strong></td>
+                        <td>
+                            <ul>
+                                {% for scope in token.scopes_descriptions %}
+                                    <li>
+                                        {{ scope }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                {% for o in token.organizers.all %}
+                                    <li>
+                                        <a href="{% url 'control:organizer' organizer=o.slug %}">
+                                            {{ o.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td class='text-right flip'>
+                            <a href="{% url 'eventyay_common:account.oauth.own-app.revoke' pk=token.pk %}"
+                               class='btn btn-danger btn-sm'>{{ _('Revoke access') }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class='empty-collection'>
+            <p>{{ _('No applications have access to your eventyay account.') }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

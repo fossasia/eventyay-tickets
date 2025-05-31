@@ -1,4 +1,5 @@
-from typing import Any, Dict, List
+import logging
+from typing import List, TypedDict
 
 from django.http import HttpRequest
 from django.urls import reverse
@@ -9,7 +10,17 @@ from pretix.control.navigation import merge_in
 from pretix.control.signals import nav_event, nav_global
 
 
-def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
+logger = logging.getLogger(__name__)
+
+
+class MenuItem(TypedDict):
+    label: str
+    url: str
+    active: bool
+    icon: str
+
+
+def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
     """Generate navigation items for global."""
     url = request.resolver_match
     if not url:
@@ -57,7 +68,7 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     return nav
 
 
-def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, Any]]:
+def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     """Generate navigation items for an event."""
     url = request.resolver_match
     if not url:
@@ -91,3 +102,44 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, A
     merge_in(nav, sorted_plugin_items)
 
     return nav
+
+
+def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
+    """Generate navigation items for account."""
+    resolver_match = request.resolver_match
+    if not resolver_match:
+        return []
+    # Note that it does not include the "eventyay_common" namespace.
+    matched_url_name = resolver_match.url_name
+    return [
+        {
+            'label': _('General'),
+            'url': reverse('eventyay_common:account.general'),
+            'active': matched_url_name.startswith('account.general'),
+            'icon': 'user',
+        },
+        {
+            'label': _('Notifications'),
+            'url': reverse('eventyay_common:account.notifications'),
+            'active': matched_url_name.startswith('account.notifications'),
+            'icon': 'bell',
+        },
+        {
+            'label': _('Two-factor authentication'),
+            'url': reverse('eventyay_common:account.2fa'),
+            'active': matched_url_name.startswith('account.2fa'),
+            'icon': 'lock',
+        },
+        {
+            'label': _('OAuth applications'),
+            'url': reverse('eventyay_common:account.oauth.authorized-apps'),
+            'active': matched_url_name.startswith('account.oauth'),
+            'icon': 'key',
+        },
+        {
+            'label': _('History'),
+            'url': reverse('eventyay_common:account.history'),
+            'active': matched_url_name.startswith('account.history'),
+            'icon': 'history',
+        },
+    ]

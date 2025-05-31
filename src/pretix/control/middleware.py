@@ -46,14 +46,14 @@ class PermissionMiddleware:
     )
 
     EXCEPTIONS_2FA = (
-        'user.settings.2fa',
-        'user.settings.2fa.add',
-        'user.settings.2fa.enable',
-        'user.settings.2fa.disable',
-        'user.settings.2fa.regenemergency',
-        'user.settings.2fa.confirm.totp',
-        'user.settings.2fa.confirm.u2f',
-        'user.settings.2fa.delete',
+        'eventyay_common:account.2fa',
+        'eventyay_common:account.2fa.add',
+        'eventyay_common:account.2fa.enable',
+        'eventyay_common:account.2fa.disable',
+        'eventyay_common:account.2fa.regenemergency',
+        'eventyay_common:account.2fa.confirm.totp',
+        'eventyay_common:account.2fa.confirm.webauthn',
+        'eventyay_common:account.2fa.delete',
         'auth.logout',
         'user.reauth',
     )
@@ -98,6 +98,7 @@ class PermissionMiddleware:
             return redirect(new_url)
 
         # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
+        # TODO: Instead of hardcoding URL, we should check the `request.resolver_match`.
         if request.path.startswith(get_script_prefix() + 'control/oauth2/'):
             return self.get_response(request)
 
@@ -117,12 +118,12 @@ class PermissionMiddleware:
                 return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
 
         if not request.user.require_2fa and settings.PRETIX_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
-            next_url = reverse('control:user.settings.2fa')
+            page_2fa_setting_url = reverse('eventyay_common:account.2fa')
             logger.info(
                 'This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s',
-                next_url,
+                page_2fa_setting_url,
             )
-            return redirect(next_url)
+            return redirect(page_2fa_setting_url)
 
         if 'event' in url.kwargs and 'organizer' in url.kwargs:
             with scope(organizer=None):

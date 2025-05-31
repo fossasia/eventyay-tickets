@@ -360,7 +360,7 @@ def welcome_wizard_widget(sender, **kwargs):
                     'To start selling tickets, you need to create products or quotas. The fastest way to create '
                     'this is to use our setup tool.'
                 ),
-                'button_text': _('Set up event'),
+                'button_text': _('Set up Ticketing'),
                 'button_url': reverse('control:event.quick', kwargs=kwargs),
             }
         )

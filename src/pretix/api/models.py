@@ -50,7 +50,7 @@ class OAuthApplication(AbstractApplication):
     active = models.BooleanField(default=True)
 
     def get_absolute_url(self):
-        return reverse('control:user.settings.oauth.app', kwargs={'pk': self.id})
+        return reverse('eventyay_common:account.oauth.own-app', kwargs={'pk': self.id})
 
     def is_usable(self, request):
         return self.active and super().is_usable(request)
