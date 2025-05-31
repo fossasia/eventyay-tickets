@@ -25,16 +25,19 @@ class ActionTypesField(serializers.Field):
 
 
 class WebHookSerializer(I18nAwareModelSerializer):
-    limit_events = EventRelatedField(
-        slug_field='slug',
-        queryset=Event.objects.none(),
-        many=True
-    )
+    limit_events = EventRelatedField(slug_field='slug', queryset=Event.objects.none(), many=True)
     action_types = ActionTypesField(source='*')
 
     class Meta:
         model = WebHook
-        fields = ('id', 'enabled', 'target_url', 'all_events', 'limit_events', 'action_types')
+        fields = (
+            'id',
+            'enabled',
+            'target_url',
+            'all_events',
+            'limit_events',
+            'action_types',
+        )
 
     def validate(self, data):
         data = super().validate(data)

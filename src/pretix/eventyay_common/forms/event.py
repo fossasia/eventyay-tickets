@@ -9,12 +9,12 @@ from pretix.base.settings import validate_event_settings
 class EventCommonSettingsForm(SettingsForm):
     timezone = forms.ChoiceField(
         choices=((a, a) for a in common_timezones),
-        label=_("Event timezone"),
+        label=_('Event timezone'),
     )
 
     auto_fields = [
-        "locales",
-        "locale",
+        'locales',
+        'locale',
     ]
 
     def clean(self):
@@ -25,5 +25,5 @@ class EventCommonSettingsForm(SettingsForm):
         return data
 
     def __init__(self, *args, **kwargs):
-        self.event = kwargs["obj"]
+        self.event = kwargs['obj']
         super().__init__(*args, **kwargs)

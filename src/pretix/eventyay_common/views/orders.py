@@ -17,9 +17,7 @@ class MyOrdersView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        qs = Order.objects.filter(
-            Q(email__iexact=user.email)
-        ).select_related('event').order_by('-datetime')
+        qs = Order.objects.filter(Q(email__iexact=user.email)).select_related('event').order_by('-datetime')
 
         # Filter by event if provided
         filter_form = UserOrderFilterForm(self.request.GET, user=user)

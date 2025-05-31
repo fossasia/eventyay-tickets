@@ -41,20 +41,24 @@ class PropagatedNode(Node):
             </div>
             """.format(
                 body=body,
-                text_inh=_("Organizer-level settings") if isinstance(event, Event) else _('Site-level settings'),
+                text_inh=_('Organizer-level settings') if isinstance(event, Event) else _('Site-level settings'),
                 fnames=','.join(self.field_names),
                 text_expl=_(
                     'These settings are currently set on organizer level. This way, you can easily change them for '
                     'all of your events at the same time. You can either go to the organizer settings to change them '
                     'or decouple them from the organizer account to change them for this event individually.'
-                ) if isinstance(event, Event) else _(
+                )
+                if isinstance(event, Event)
+                else _(
                     'These settings are currently set on global level. This way, you can easily change them for '
                     'all organizers at the same time. You can either go to the global settings to change them '
                     'or decouple them from the global settings to change them for this event individually.'
                 ),
-                text_unlink=_('Change only for this event') if isinstance(event, Event) else _('Change only for this organizer'),
+                text_unlink=_('Change only for this event')
+                if isinstance(event, Event)
+                else _('Change only for this organizer'),
                 text_orga=_('Change for all events') if isinstance(event, Event) else _('Change for all organizers'),
-                url=url
+                url=url,
             )
 
         return body
@@ -65,9 +69,7 @@ def propagated(parser, token):
     try:
         tag, event, url, *args = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError(
-            "%r tag requires at least three arguments" % token.contents.split()[0]
-        )
+        raise template.TemplateSyntaxError('%r tag requires at least three arguments' % token.contents.split()[0])
 
     nodelist = parser.parse(('endpropagated',))
     parser.delete_first_token()

@@ -89,9 +89,11 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
     def event(self):
         if self.request.GET.get('event'):
             try:
-                return self.request.user.get_events_with_any_permission().select_related(
-                    'organizer'
-                ).get(pk=self.request.GET.get('event'))
+                return (
+                    self.request.user.get_events_with_any_permission()
+                    .select_related('organizer')
+                    .get(pk=self.request.GET.get('event'))
+                )
             except Event.DoesNotExist:
                 return None
         return None
@@ -116,7 +118,7 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if 'notifications_send' in request.POST:
-            request.user.notifications_send = request.POST.get("notifications_send", "") == "on"
+            request.user.notifications_send = request.POST.get('notifications_send', '') == 'on'
             request.user.save()
 
             messages.success(request, _('Your notification settings have been saved.'))
@@ -150,7 +152,10 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
                     # None → True/False
                     if old_enabled.get(at) is None and val in ('on', 'off'):
                         self.request.user.notification_settings.create(
-                            event=self.event, action_type=at, method=method, enabled=(val == 'on'),
+                            event=self.event,
+                            action_type=at,
+                            method=method,
+                            enabled=(val == 'on'),
                         )
 
                     # False → True
@@ -195,7 +200,11 @@ class NotificationFlipOffView(TemplateView):
         user.notifications_send = False
         user.save()
         messages.success(request, _('Your notifications have been disabled.'))
-        dest = reverse('eventyay_common:account.notifications') if request.user.is_authenticated else reverse('control:auth.login')
+        dest = (
+            reverse('eventyay_common:account.notifications')
+            if request.user.is_authenticated
+            else reverse('control:auth.login')
+        )
         return redirect(dest)
 
 
@@ -206,12 +215,13 @@ class HistoryView(AccountMenuMixIn, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        qs = LogEntry.objects.filter(
-            content_type=ContentType.objects.get_for_model(User),
-            object_id=self.request.user.pk
-        ).select_related(
-            'user', 'content_type', 'api_token', 'oauth_application', 'device'
-        ).order_by('-datetime')
+        qs = (
+            LogEntry.objects.filter(
+                content_type=ContentType.objects.get_for_model(User), object_id=self.request.user.pk
+            )
+            .select_related('user', 'content_type', 'api_token', 'oauth_application', 'device')
+            .order_by('-datetime')
+        )
         return qs
 
     def get_context_data(self, **kwargs):

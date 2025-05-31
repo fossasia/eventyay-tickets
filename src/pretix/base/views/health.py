@@ -13,13 +13,13 @@ def healthcheck(request):
     if settings.HAS_REDIS:
         import django_redis
 
-        redis = django_redis.get_redis_connection("redis")
-        redis.set("_healthcheck", 1)
-        if not redis.exists("_healthcheck"):
-            return HttpResponse("Redis not available.", status=503)
+        redis = django_redis.get_redis_connection('redis')
+        redis.set('_healthcheck', 1)
+        if not redis.exists('_healthcheck'):
+            return HttpResponse('Redis not available.', status=503)
 
-    cache.cache.set("_healthcheck", "1")
-    if not cache.cache.get("_healthcheck") == "1":
-        return HttpResponse("Cache not available.", status=503)
+    cache.cache.set('_healthcheck', '1')
+    if not cache.cache.get('_healthcheck') == '1':
+        return HttpResponse('Cache not available.', status=503)
 
     return HttpResponse()

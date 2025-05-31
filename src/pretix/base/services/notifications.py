@@ -35,9 +35,9 @@ def notify(logentry_ids: list):
             _event = logentry.event
             _at = logentry.action_type
             # All users that have the permission to get the notification
-            users = logentry.event.get_users_with_permission(
-                notification_type.required_permission
-            ).filter(notifications_send=True, is_active=True)
+            users = logentry.event.get_users_with_permission(notification_type.required_permission).filter(
+                notifications_send=True, is_active=True
+            )
             if logentry.user:
                 users = users.exclude(pk=logentry.user.pk)
 
@@ -47,7 +47,7 @@ def notify(logentry_ids: list):
                 for ns in NotificationSetting.objects.filter(
                     event=logentry.event,
                     action_type=notification_type.action_type,
-                    user__pk__in=users.values_list('pk', flat=True)
+                    user__pk__in=users.values_list('pk', flat=True),
                 )
             }
             notify_global = {
@@ -55,7 +55,7 @@ def notify(logentry_ids: list):
                 for ns in NotificationSetting.objects.filter(
                     event__isnull=True,
                     action_type=notification_type.action_type,
-                    user__pk__in=users.values_list('pk', flat=True)
+                    user__pk__in=users.values_list('pk', flat=True),
                 )
             }
 
@@ -74,9 +74,14 @@ def notify(logentry_ids: list):
 def send_notification(logentry_id: int, action_type: str, user_id: int, method: str):
     logentry = LogEntry.all.get(id=logentry_id)
     if logentry.event:
-        def sm(): return scope(organizer=logentry.event.organizer)  # noqa
+
+        def sm():
+            return scope(organizer=logentry.event.organizer)  # noqa
     else:
-        def sm(): return scopes_disabled()  # noqa
+
+        def sm():
+            return scopes_disabled()  # noqa
+
     with sm():
         user = User.objects.get(id=user_id)
         types = get_all_notification_types(logentry.event)
@@ -84,10 +89,13 @@ def send_notification(logentry_id: int, action_type: str, user_id: int, method: 
         if not notification_type:
             return  # Ignore, e.g. plugin not active for this event
 
-        with language(user.locale), override(logentry.event.timezone if logentry.event else user.timezone):
+        with (
+            language(user.locale),
+            override(logentry.event.timezone if logentry.event else user.timezone),
+        ):
             notification = notification_type.build_notification(logentry)
 
-            if method == "mail":
+            if method == 'mail':
                 send_notification_mail(notification, user)
 
 
@@ -101,12 +109,8 @@ def send_notification_mail(notification: Notification, user: User):
             'eventyay_common:account.notifications',
         ),
         'disable_url': build_absolute_uri(
-            'eventyay_common:account.notification.flip-off',
-            kwargs={
-                'token': user.notifications_token,
-                'id': user.pk
-            }
-        )
+            'eventyay_common:account.notification.flip-off', kwargs={'token': user.notifications_token, 'id': user.pk}
+        ),
     }
 
     tpl_html = get_template('pretixbase/email/notification.html')
@@ -114,16 +118,18 @@ def send_notification_mail(notification: Notification, user: User):
     tpl_plain = get_template('pretixbase/email/notification.txt')
     body_plain = tpl_plain.render(ctx)
 
-    mail_send_task.apply_async(kwargs={
-        'to': [user.email],
-        'subject': '[{}] {}: {}'.format(
-            settings.INSTANCE_NAME,
-            notification.event.settings.mail_prefix or notification.event.slug.upper(),
-            notification.title
-        ),
-        'body': body_plain,
-        'html': body_html,
-        'sender': settings.MAIL_FROM,
-        'headers': {},
-        'user': user.pk
-    })
+    mail_send_task.apply_async(
+        kwargs={
+            'to': [user.email],
+            'subject': '[{}] {}: {}'.format(
+                settings.INSTANCE_NAME,
+                notification.event.settings.mail_prefix or notification.event.slug.upper(),
+                notification.title,
+            ),
+            'body': body_plain,
+            'html': body_html,
+            'sender': settings.MAIL_FROM,
+            'headers': {},
+            'user': user.pk,
+        }
+    )

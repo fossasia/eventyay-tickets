@@ -47,8 +47,13 @@ class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = [
-            'organizer', 'device_id', 'unique_serial', 'api_token',
-            'name', 'security_profile', 'gate'
+            'organizer',
+            'device_id',
+            'unique_serial',
+            'api_token',
+            'name',
+            'security_profile',
+            'gate',
         ]
 
 
@@ -131,37 +136,41 @@ class EventSelectionView(APIView):
 
     @property
     def base_event_qs(self):
-        qs = self.request.auth.get_events_with_any_permission().annotate(
-            first_date=Coalesce('date_admission', 'date_from'),
-            last_date=Coalesce('date_to', 'date_from'),
-        ).filter(
-            live=True,
-            has_subevents=False
-        ).order_by('first_date')
-        if self.request.auth.gate:
-            has_cl = CheckinList.objects.filter(
-                event=OuterRef('pk'),
-                gates__in=[self.request.auth.gate]
+        qs = (
+            self.request.auth.get_events_with_any_permission()
+            .annotate(
+                first_date=Coalesce('date_admission', 'date_from'),
+                last_date=Coalesce('date_to', 'date_from'),
             )
+            .filter(live=True, has_subevents=False)
+            .order_by('first_date')
+        )
+        if self.request.auth.gate:
+            has_cl = CheckinList.objects.filter(event=OuterRef('pk'), gates__in=[self.request.auth.gate])
             qs = qs.annotate(has_cl=Exists(has_cl)).filter(has_cl=True)
         return qs
 
     @property
     def base_subevent_qs(self):
-        qs = SubEvent.objects.annotate(
-            first_date=Coalesce('date_admission', 'date_from'),
-            last_date=Coalesce('date_to', 'date_from'),
-        ).filter(
-            event__organizer=self.request.auth.organizer,
-            event__live=True,
-            event__in=self.request.auth.get_events_with_any_permission(),
-            active=True,
-        ).select_related('event').order_by('first_date')
+        qs = (
+            SubEvent.objects.annotate(
+                first_date=Coalesce('date_admission', 'date_from'),
+                last_date=Coalesce('date_to', 'date_from'),
+            )
+            .filter(
+                event__organizer=self.request.auth.organizer,
+                event__live=True,
+                event__in=self.request.auth.get_events_with_any_permission(),
+                active=True,
+            )
+            .select_related('event')
+            .order_by('first_date')
+        )
         if self.request.auth.gate:
             has_cl = CheckinList.objects.filter(
                 Q(subevent__isnull=True) | Q(subevent=OuterRef('pk')),
                 event_id=OuterRef('event_id'),
-                gates__in=[self.request.auth.gate]
+                gates__in=[self.request.auth.gate],
             )
             qs = qs.annotate(has_cl=Exists(has_cl)).filter(has_cl=True)
         return qs
@@ -188,8 +197,10 @@ class EventSelectionView(APIView):
         # The event that is selected is not currently running. We cannot rely on all events having a proper end date.
         # In any case, we'll need to decide between the event that last started (and might still be running) and the
         # event that starts next (and might already be letting people in), so let's get these two!
-        last_started_ev = self.base_event_qs.filter(first_date__lte=now()).last() or self.base_subevent_qs.filter(
-            first_date__lte=now()).last()
+        last_started_ev = (
+            self.base_event_qs.filter(first_date__lte=now()).last()
+            or self.base_subevent_qs.filter(first_date__lte=now()).last()
+        )
 
         upcoming_event = self.base_event_qs.filter(first_date__gt=now()).first()
         upcoming_subevent = self.base_subevent_qs.filter(first_date__gt=now()).first()
@@ -269,11 +280,13 @@ class EventSelectionView(APIView):
             },
             'subevent': (
                 int(self.request.query_params.get('current_subevent'))
-                if self.request.query_params.get('current_subevent') else None
+                if self.request.query_params.get('current_subevent')
+                else None
             ),
             'checkinlist': (
                 int(self.request.query_params.get('current_checkinlist'))
-                if self.request.query_params.get('current_checkinlist') else None
+                if self.request.query_params.get('current_checkinlist')
+                else None
             ),
         }:
             return Response(status=status.HTTP_304_NOT_MODIFIED)

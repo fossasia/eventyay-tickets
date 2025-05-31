@@ -7,6 +7,7 @@ Usage:
     @task(base=TransactionAwareTask)
     def task_…():
 """
+
 import cProfile
 import os
 import random
@@ -17,7 +18,8 @@ from django.db import transaction
 from django_scopes import scope, scopes_disabled
 
 from pretix.base.metrics import (
-    pretix_task_duration_seconds, pretix_task_runs_total,
+    pretix_task_duration_seconds,
+    pretix_task_runs_total,
 )
 from pretix.base.models import Event, Organizer, User
 from pretix.celery_app import app
@@ -25,7 +27,6 @@ from pretix.celery_app import app
 
 class ProfiledTask(app.Task):
     def __call__(self, *args, **kwargs):
-
         if settings.PROFILING_RATE > 0 and random.random() < settings.PROFILING_RATE / 100:
             profiler = cProfile.Profile()
             profiler.enable()
@@ -33,9 +34,12 @@ class ProfiledTask(app.Task):
             ret = super().__call__(*args, **kwargs)
             tottime = time.perf_counter() - t0
             profiler.disable()
-            profiler.dump_stats(os.path.join(settings.PROFILE_DIR, '{time:.0f}_{tottime:.3f}_celery_{t}.pstat'.format(
-                t=self.name, tottime=tottime, time=time.time()
-            )))
+            profiler.dump_stats(
+                os.path.join(
+                    settings.PROFILE_DIR,
+                    '{time:.0f}_{tottime:.3f}_celery_{t}.pstat'.format(t=self.name, tottime=tottime, time=time.time()),
+                )
+            )
         else:
             t0 = time.perf_counter()
             ret = super().__call__(*args, **kwargs)
@@ -52,13 +56,13 @@ class ProfiledTask(app.Task):
                 if isinstance(exc, t):
                     expected = True
                     break
-            pretix_task_runs_total.inc(1, task_name=self.name, status="expected-error" if expected else "error")
+            pretix_task_runs_total.inc(1, task_name=self.name, status='expected-error' if expected else 'error')
 
         return super().on_failure(exc, task_id, args, kwargs, einfo)
 
     def on_success(self, retval, task_id, args, kwargs):
         if settings.METRICS_ENABLED:
-            pretix_task_runs_total.inc(1, task_name=self.name, status="success")
+            pretix_task_runs_total.inc(1, task_name=self.name, status='success')
 
         return super().on_success(retval, task_id, args, kwargs)
 
@@ -124,18 +128,13 @@ class TransactionAwareTask(ProfiledTask):
         Unlike the default task in celery, this task does not return an async
         result
         """
-        transaction.on_commit(
-            lambda: super(TransactionAwareTask, self).apply_async(*args, **kwargs)
-        )
+        transaction.on_commit(lambda: super(TransactionAwareTask, self).apply_async(*args, **kwargs))
 
 
 class TransactionAwareProfiledEventTask(ProfiledEventTask):
-
     def apply_async(self, *args, **kwargs):
         """
         Unlike the default task in celery, this task does not return an async
         result
         """
-        transaction.on_commit(
-            lambda: super(TransactionAwareProfiledEventTask, self).apply_async(*args, **kwargs)
-        )
+        transaction.on_commit(lambda: super(TransactionAwareProfiledEventTask, self).apply_async(*args, **kwargs))

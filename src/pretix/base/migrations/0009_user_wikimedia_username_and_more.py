@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('pretixbase', '0008_cartposition_job_title_orderposition_job_title'),
     ]

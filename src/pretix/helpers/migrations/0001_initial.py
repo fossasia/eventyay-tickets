@@ -4,17 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Thumbnail',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('source', models.CharField(max_length=255)),
                 ('size', models.CharField(max_length=255)),
                 ('thumb', models.FileField(max_length=255, upload_to='pub/thumbs/')),

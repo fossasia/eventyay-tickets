@@ -13,26 +13,19 @@ def bg_name(instance, filename: str) -> str:
         org=instance.event.organizer.slug,
         ev=instance.event.slug,
         id=instance.pk,
-        secret=secret
+        secret=secret,
     )
 
 
 class TicketLayout(LoggedModel):
-    event = models.ForeignKey(
-        'pretixbase.Event',
-        on_delete=models.CASCADE,
-        related_name='ticket_layouts'
-    )
+    event = models.ForeignKey('pretixbase.Event', on_delete=models.CASCADE, related_name='ticket_layouts')
     default = models.BooleanField(
         verbose_name=_('Default'),
         default=False,
     )
-    name = models.CharField(
-        max_length=190,
-        verbose_name=_('Name')
-    )
+    name = models.CharField(max_length=190, verbose_name=_('Name'))
     layout = models.TextField(
-        default='''[{
+        default="""[{
         "type":"textarea",
         "left":"17.50",
         "bottom":"274.60",
@@ -215,23 +208,28 @@ class TicketLayout(LoggedModel):
         "bottom":"10.00",
         "size":"20.00",
         "content":"dark"
-    }]'''
+    }]"""
     )
     background = models.FileField(null=True, blank=True, upload_to=bg_name, max_length=255)
 
     class Meta:
-        ordering = ("name",)
+        ordering = ('name',)
 
     def __str__(self):
         return self.name
 
 
 class TicketLayoutItem(models.Model):
-    item = models.ForeignKey('pretixbase.Item', null=True, blank=True, related_name='ticketlayout_assignments',
-                             on_delete=models.CASCADE)
+    item = models.ForeignKey(
+        'pretixbase.Item',
+        null=True,
+        blank=True,
+        related_name='ticketlayout_assignments',
+        on_delete=models.CASCADE,
+    )
     layout = models.ForeignKey('TicketLayout', on_delete=models.CASCADE, related_name='item_assignments')
     sales_channel = models.CharField(max_length=190, default='web')
 
     class Meta:
         unique_together = (('item', 'layout', 'sales_channel'),)
-        ordering = ("id",)
+        ordering = ('id',)
