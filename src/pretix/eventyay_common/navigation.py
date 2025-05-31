@@ -105,6 +105,23 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     # Merge plugin items into default navigation
     merge_in(nav, sorted_plugin_items)
 
+    # Filter out unwanted menu items if their URL contains one of these paths
+    unwanted_menu_paths = [
+        "/badges",
+        "/exhibitors",
+        "/sendmail",
+        "/statistics",
+        "/webcheckin",
+    ]
+
+    nav = [
+        item for item in nav
+        if not any(
+            path in item.get("url", "").lower()
+            for path in unwanted_menu_paths
+        )
+    ]
+
     return nav
 
 
