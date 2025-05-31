@@ -58,9 +58,14 @@
                         <span class="fa fa-edit"></span>
                     </a>
                     <a href='{% url "eventyay_common:organizer.teams" organizer=organizer.slug  %}'
-                            class="btn btn-sm btn-default" title='{% trans "Teams" %}'
+                            class="btn btn-sm btn-default" title='{% trans "Ticket Teams" %}'
                             data-toggle="tooltip">
-                        <span class="fa fa-fw fa-group"></span>
+                        <span class="fa fa-fw fa-tags"></span>
+                    </a>
+                    <a href='/talk/orga/organiser/{{ organizer.slug }}/teams/'
+                            class="btn btn-sm btn-default" title='{% trans "Talk Teams" %}'
+                            data-toggle="tooltip">
+                        <span class="fa fa-fw fa-comments"></span>
                     </a>
                 </td>
 			</tr>
