@@ -630,12 +630,8 @@ class EventSettingsForm(SettingsForm):
             (k, "{scheme}: {samples}".format(scheme=v[0], samples=", ".join(v[1])))
             for k, v in PERSON_NAME_TITLE_GROUPS.items()
         ]
-        # if not self.event.has_subevents:
-        #     del self.fields["frontpage_subevent_ordering"]
-        #     del self.fields["event_list_type"]
-        #     del self.fields["event_list_available_only"]
-        if not self.event.has_subevents: # pragma: no branch
-            if 'frontpage_subevent_ordering' in self.fields: # check because it might be removed by auto_fields
+        if not self.event.has_subevents:
+            if 'frontpage_subevent_ordering' in self.fields:
                 del self.fields["frontpage_subevent_ordering"]
             if 'event_list_type' in self.fields:
                 del self.fields["event_list_type"]
