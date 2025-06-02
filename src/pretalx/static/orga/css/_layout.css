@@ -417,8 +417,9 @@ nav.navbar,
   z-index: 200;
   height: 50px;
   color: var(--color-primary);
-  background-color: var(--color-offwhite);
-  border-bottom: 4px var(--color-primary-event, var(--color-primary)) solid;
+  background-color: var(--color-primary);
+  border: 1px solid transparent;
+  border-color: var(--color-border-navbar);
   padding: 0.25rem;
   box-shadow:
     1px 1px 3px rgb(0 0 0 / 0.12),
@@ -465,10 +466,10 @@ nav.navbar,
 
   a,
   button {
-    color: var(--color-primary);
+    color: var(--color-offwhite);
     &:hover {
       text-decoration: none;
-      color: var(--color-primary);
+      color: var(--color-white);
     }
   }
   button {
