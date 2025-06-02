@@ -15,6 +15,17 @@ class EventCommonSettingsForm(SettingsForm):
     auto_fields = [
         "locales",
         "locale",
+        "logo_image",
+        "logo_image_large",
+        "logo_show_title",
+        "og_image",
+        "primary_color",
+        "theme_color_success",
+        "theme_color_danger",
+        "theme_color_background",
+        "hover_button_color",
+        "theme_round_borders",
+        "primary_font",
     ]
 
     def clean(self):
