@@ -1,3 +1,4 @@
+{# pretix/eventyay_common/event/settings.html #}
 {% extends "eventyay_common/event/settings_base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
@@ -20,7 +21,7 @@
                     <i class="fa fa-home"></i> {% trans "Home" %}
                 </a>
                 <a href='{% url "control:event.index" organizer=request.organizer.slug event=request.event.slug %}'
-                   class="header-nav btn btn-outline-success">
+                   class="header_nav btn btn-outline-success">
                     <i class="fa fa-ticket"></i> {% trans "Tickets" %}
                 </a>
                 {% if is_talk_event_created %}
@@ -41,6 +42,7 @@
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
+        {% bootstrap_form_errors sform %} {# Added to show sform errors #}
         <div class="tabbed-form">
             <fieldset>
                 <legend>{% trans "Basics" %}</legend>
@@ -48,82 +50,21 @@
                 {% bootstrap_field form.slug layout="control" %}
                 {% bootstrap_field form.date_from layout="control" %}
                 {% bootstrap_field form.date_to layout="control" %}
-                {% bootstrap_field form.currency layout="control" %}
+                {% bootstrap_field form.date_admission layout="control" %} 
+                {% bootstrap_field form.location layout="control" %} 
+                {% bootstrap_field form.geo_lat layout="control" %}
+                {% bootstrap_field form.geo_lon layout="control" %} 
+                {% bootstrap_field form.is_public layout="control" %} 
                 {% bootstrap_field form.sales_channels layout="control" %}
-                <div class="setting-part">
-                    <div class="form-group setting-form">
-                        <label class="col-md-3 control-label">{% trans "Tickets system" %}</label>
-                        <div class="col-md-9 col-value">
-                            <button type="button" class="btn btn-sm btn-default enabled-btn" data-toggle="modal"
-                                    data-target="#alert-modal-disabled">
-                                {% trans "Enabled" %}
-                            </button>
-                            <a href='{% url "control:event.index" organizer=request.organizer.slug event=request.event.slug %}'
-                            class="btn btn-sm btn-default" title='{% trans "Dashboard" %}'
-                            data-toggle="tooltip">
-                                <span class="fa fa-dashboard"></span>
-                            </a>
-                            <a href='{% url "control:event.settings" organizer=request.organizer.slug event=request.event.slug %}'
-                            class="btn btn-sm btn-default" title='{% trans "Setting" %}'
-                            data-toggle="tooltip">
-                                <span class="fa fa-edit"></span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="form-group setting-form">
-                        <label class="col-md-3 control-label">{% trans "Talks system" %}</label>
-                        <div class="col-md-9 col-value">
-                            {% if is_talk_event_created %}
-                                <button type="button" class="btn btn-sm btn-default enabled-btn" data-toggle="modal"
-                                        data-target="#alert-modal-disabled">
-                                    {% trans "Enabled" %}
-                                </button>
-                                <a href='{{ request.event.talk_dashboard_url }}'
-                                    class="btn btn-sm btn-default" title='{% trans "Dashboard" %}'
-                                    data-toggle="tooltip">
-                                    <span class="fa fa-dashboard"></span>
-                                </a>
-                                <a href='{{ request.event.talk_settings_url }}'
-                                    class="btn btn-sm btn-default" title='{% trans "Settings" %}'
-                                    data-toggle="tooltip">
-                                    <span class="fa fa-edit"></span>
-                                </a>
-                            {% else %}
-                                <button type="button" class="btn btn-sm btn-default disabled-btn" data-toggle="modal"
-                                        data-target="#alert-modal-enable-talk">
-                                    {% trans "Disabled" %}
-                                </button>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="form-group custom-form">
-                        <label class="col-md-3 control-label">{% trans "Video system" %}</label>
-                        <div class="col-md-9 col-value">
-                            {% if is_video_enabled %}
-                                <button type="button" class="btn btn-sm btn-default enabled-btn" data-toggle="modal"
-                                        data-target="#alert-modal-disabled">
-                                    {% trans "Enabled" %}
-                                </button>
-                                <a href='{% url "eventyay_common:event.create_access_to_video" organizer=request.organizer.slug event=request.event.slug %}'
-                                        class="btn btn-sm btn-default" title='{% trans "Video Configuration" %}'
-                                        data-toggle="tooltip">
-                                    <span class="fa fa-edit"></span>
-                                </a>
-                            {% else %}
-                                <button type="button" class="btn btn-sm btn-default disabled-btn" data-toggle="modal"
-                                        data-target="#alert-modal-enable-video">
-                                    {% trans "Disabled" %}
-                                </button>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+                {% bootstrap_field sform.contact_mail layout="control" %} 
+                {% bootstrap_field sform.imprint_url layout="control" %}
             </fieldset>
             <fieldset>
                 <legend>{% trans "Localization" %}</legend>
                 {% bootstrap_field sform.locales layout="control" %}
                 {% bootstrap_field sform.locale layout="control" %}
                 {% bootstrap_field sform.timezone layout="control" %}
+                {% bootstrap_field sform.region layout="control" %} 
             </fieldset>
         </div>
         <div class="form-group submit-group">

@@ -15,6 +15,10 @@ class EventCommonSettingsForm(SettingsForm):
     auto_fields = [
         "locales",
         "locale",
+        "region",
+        "contact_mail",
+        "imprint_url",
+   
     ]
 
     def clean(self):
