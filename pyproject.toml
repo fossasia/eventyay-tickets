@@ -87,7 +87,7 @@ dependencies = [
         'cryptography>=3.4.2',
         'pycryptodome==3.20.*',
         'sepaxml==2.6.*',
-        'geoip2==4.*',
+        'geoip2==5.*',
         'sendgrid==6.11.*',
         'importlib_metadata==8.*',
         'qrcode==7.4.*',
