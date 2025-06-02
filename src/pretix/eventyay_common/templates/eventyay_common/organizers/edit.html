@@ -13,20 +13,28 @@
             {% bootstrap_field form.slug layout="horizontal" %}
         </fieldset>
         <fieldset>
-            <h4>{% trans "Settings for Tickets system" %}
+            <h4>{{ _('Tickets system:') }}
+                <a href='{% url "control:organizer.teams" organizer=organizer.slug  %}'
+                        class="btn btn-sm btn-default"
+                        data-toggle="tooltip">Ticket Teams
+                </a>
                 <a href='{% url "control:organizer.edit" organizer=organizer.slug  %}'
-                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
+                        class="btn btn-sm btn-default" title='{% trans "Settings" %}'
                         data-toggle="tooltip">
-                    <span class="fa fa-edit"></span>
+                    <span class="fa fa-cog"></span>
                 </a>
             </h4>
         </fieldset>
         <fieldset>
-            <h4>{% trans "Settings for Talk system" %}
+            <h4>{{ _('Talk system:') }}
+                <a href='{{ talk_teams_url }}'
+                            class="btn btn-sm btn-default"
+                            data-toggle="tooltip">Talk Teams
+                </a>
                 <a href='{{ talk_edit_url }}'
-                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
+                        class="btn btn-sm btn-default" title='{% trans "Settings" %}'
                         data-toggle="tooltip">
-                    <span class="fa fa-edit"></span>
+                    <span class="fa fa-cog"></span>
                 </a>
             </h4>
         </fieldset>
