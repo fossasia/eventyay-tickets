@@ -126,7 +126,7 @@
                 {% bootstrap_field sform.timezone layout="control" %}
             </fieldset>
             <fieldset>
-                <legend>{% trans "Design" %}</legend>
+                <legend>{{ _('Design') }}</legend>
                 {% bootstrap_field sform.logo_image layout="control" %}
                 {% bootstrap_field sform.logo_image_large layout="control" %}
                 {% bootstrap_field sform.logo_show_title layout="control" %}
@@ -211,6 +211,5 @@
                 </div>
             </div>
         </div>
-
     </form>
 {% endblock %}
