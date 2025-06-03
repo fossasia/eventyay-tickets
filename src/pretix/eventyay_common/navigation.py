@@ -44,12 +44,6 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
             "active": "organizers" in url.url_name,
             "icon": "group",
         },
-        {
-            "label": _("Account"),
-            "url": reverse("eventyay_common:account"),
-            "active": "account" in url.url_name,
-            "icon": "user",
-        },
     ]
 
     # Merge plugin-provided navigation items
