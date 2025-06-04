@@ -44,12 +44,6 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
             'active': 'organizers' in url.url_name,
             'icon': 'group',
         },
-        {
-            'label': _('Account'),
-            'url': reverse('eventyay_common:account'),
-            'active': 'account' in url.url_name,
-            'icon': 'user',
-        },
     ]
 
     # Merge plugin-provided navigation items
@@ -87,19 +81,6 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
             'icon': 'wrench',
         },
     ]
-
-    # Merge plugin-provided navigation items
-    plugin_responses = nav_event.send(event, request=request)
-    plugin_nav_items = []
-    for receiver, response in plugin_responses:
-        if response:
-            plugin_nav_items.extend(response)
-
-    # Sort navigation items, prioritizing non-parent items and alphabetically
-    sorted_plugin_items = sorted(plugin_nav_items, key=lambda r: (1 if r.get('parent') else 0, r['label']))
-
-    # Merge plugin items into default navigation
-    merge_in(nav, sorted_plugin_items)
 
     return nav
 

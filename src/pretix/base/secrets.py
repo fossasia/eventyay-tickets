@@ -131,7 +131,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
     """
 
     verbose_name = _(
-        'signature scheme 1 (for very large events, does not work with pretixSCAN on iOS and '
+        'signature scheme 1 (for very large events, does not work on all apps in the ecosystem and '
         'changes semantics of offline scanning – please refer to documentation or support for details)'
     )
     identifier = 'pretix_sig1'

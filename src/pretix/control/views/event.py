@@ -1542,10 +1542,25 @@ class QuickSetupView(FormView):
         if form.is_valid() and self.formset.is_valid():
             return self.form_valid(form)
         else:
-            messages.error(
-                self.request,
-                _('We could not save your changes. See below for details.'),
-            )
+            plugins_active = self.request.event.get_plugins()
+            payment_plugins = {
+                'pretix.plugins.banktransfer',
+                'pretix.plugins.stripe',
+                'pretix.plugins.paypal',
+                'pretix.plugins.manualpayment',
+            }
+            if not payment_plugins.intersection(plugins_active):
+                messages.error(
+                    self.request,
+                    _("""We could not save your changes. See below for details.
+
+                To start accepting orders, please activate a payment option.
+                ->Open "Plugins" and switch on one or more payment plugins.
+                ->Then go to the "Payments" tab to configure your chosen methods.
+                Save your changes to begin accepting payments."""),
+                )
+            else:
+                messages.error(self.request, _('We could not save your changes. See below for details.'))
             return self.form_invalid(form)
 
     @transaction.atomic

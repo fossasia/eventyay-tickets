@@ -323,7 +323,7 @@ class VoucherBulkForm(VoucherForm):
             'valid_until': SplitDateTimePickerWidget(),
         }
         labels = {'max_usages': _('Maximum usages per voucher')}
-        help_texts = {'max_usages': _('Number of times times EACH of these vouchers can be redeemed.')}
+        help_texts = {'max_usages': _('Number of times EACH of these vouchers can be redeemed.')}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
