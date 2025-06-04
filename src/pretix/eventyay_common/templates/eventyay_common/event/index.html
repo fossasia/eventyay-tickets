@@ -112,7 +112,7 @@
                 {% elif w.link %}
                     <a href="{{ w.link }}" class="widget">
                         {% if w.lazy %}
-                            <span class="fa fa-cog fa-4x"></span>
+                            <span class="fa fa-cog fa-4x" aria-hidden="true"></span>
                         {% else %}
                             {{ w.content|safe }}
                         {% endif %}
