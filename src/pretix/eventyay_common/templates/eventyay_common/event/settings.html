@@ -125,6 +125,23 @@
                 {% bootstrap_field sform.locale layout="control" %}
                 {% bootstrap_field sform.timezone layout="control" %}
             </fieldset>
+            <fieldset>
+                <legend>{{ _('Design') }}</legend>
+                {% bootstrap_field sform.logo_image layout="control" %}
+                {% bootstrap_field sform.logo_image_large layout="control" %}
+                {% bootstrap_field sform.logo_show_title layout="control" %}
+                {% bootstrap_field sform.og_image layout="control" %}
+                {% url "control:organizer.edit" organizer=request.organizer.slug as org_url %}
+                {% propagated request.event org_url "primary_color" "primary_font" "theme_color_success" "theme_color_danger" %}
+                    {% bootstrap_field sform.primary_color layout="control" %}
+                    {% bootstrap_field sform.theme_color_success layout="control" %}
+                    {% bootstrap_field sform.theme_color_danger layout="control" %}
+                    {% bootstrap_field sform.theme_color_background layout="control" %}
+                    {% bootstrap_field sform.hover_button_color layout="control" %}
+                    {% bootstrap_field sform.theme_round_borders layout="control" %}
+                    {% bootstrap_field sform.primary_font layout="control" %}
+                {% endpropagated %}
+            </fieldset>
         </div>
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">
@@ -194,6 +211,5 @@
                 </div>
             </div>
         </div>
-
     </form>
 {% endblock %}
