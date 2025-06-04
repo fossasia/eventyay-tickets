@@ -287,7 +287,7 @@ class VoucherBulkForm(VoucherForm):
             'max_usages': _('Maximum usages per voucher')
         }
         help_texts = {
-            'max_usages': _('Number of times times EACH of these vouchers can be redeemed.')
+            'max_usages': _('Number of times EACH of these vouchers can be redeemed.')
         }
 
     def __init__(self, *args, **kwargs):
