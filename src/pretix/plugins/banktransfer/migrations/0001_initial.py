@@ -4,17 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='BankImportJob',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('state', models.CharField(default='pending', max_length=32)),
             ],
@@ -25,7 +26,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='BankTransaction',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('state', models.CharField(default='imported', max_length=32)),
                 ('message', models.TextField()),
                 ('checksum', models.CharField(db_index=True, max_length=190)),
@@ -45,7 +49,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RefundExport',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('datetime', models.DateTimeField(auto_now_add=True)),
                 ('testmode', models.BooleanField(default=False)),
                 ('rows', models.TextField(default='[]')),

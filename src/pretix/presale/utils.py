@@ -15,7 +15,8 @@ from django_scopes import scope
 from pretix.base.middleware import LocaleMiddleware
 from pretix.base.models import Event, Organizer
 from pretix.multidomain.urlreverse import (
-    get_event_domain, get_organizer_domain,
+    get_event_domain,
+    get_organizer_domain,
 )
 from pretix.presale.signals import process_request, process_response
 
@@ -42,7 +43,7 @@ def _detect_event(request, require_live=True, require_plugin=None):
             if 'organizer' in url.kwargs and url.kwargs['organizer']:
                 if url.kwargs['organizer'] != request.organizer.slug:
                     raise Http404(_('The selected event was not found.'))
-                path = "/" + request.get_full_path().split("/", 2)[-1]
+                path = '/' + request.get_full_path().split('/', 2)[-1]
                 return redirect(path)
 
             request.event = request.organizer.events.using(db).get(
@@ -56,34 +57,33 @@ def _detect_event(request, require_live=True, require_plugin=None):
             if domain:
                 if request.port and request.port not in (80, 443):
                     domain = '%s:%d' % (domain, request.port)
-                path = request.get_full_path().split("/", 2)[-1]
+                path = request.get_full_path().split('/', 2)[-1]
                 r = redirect(urljoin('%s://%s' % (request.scheme, domain), path))
                 r['Access-Control-Allow-Origin'] = '*'
                 return r
         else:
             # We are on our main domain
             if 'event' in url.kwargs and 'organizer' in url.kwargs:
-                request.event = Event.objects \
-                    .select_related('organizer') \
-                    .using(db) \
+                request.event = (
+                    Event.objects.select_related('organizer')
+                    .using(db)
                     .get(
                         slug=url.kwargs['event'],
-                        organizer__slug=url.kwargs['organizer']
+                        organizer__slug=url.kwargs['organizer'],
                     )
+                )
                 request.organizer = request.event.organizer
 
                 domain = get_event_domain(request.event)
                 if domain:
                     if request.port and request.port not in (80, 443):
                         domain = '%s:%d' % (domain, request.port)
-                    path = request.get_full_path().split("/", 3)[-1]
+                    path = request.get_full_path().split('/', 3)[-1]
                     r = redirect(urljoin('%s://%s' % (request.scheme, domain), path))
                     r['Access-Control-Allow-Origin'] = '*'
                     return r
             elif 'organizer' in url.kwargs:
-                request.organizer = Organizer.objects.using(db).get(
-                    slug=url.kwargs['organizer']
-                )
+                request.organizer = Organizer.objects.using(db).get(slug=url.kwargs['organizer'])
             else:
                 raise Http404()
 
@@ -91,7 +91,7 @@ def _detect_event(request, require_live=True, require_plugin=None):
             if domain:
                 if request.port and request.port not in (80, 443):
                     domain = '%s:%d' % (domain, request.port)
-                path = request.get_full_path().split("/", 2)[-1]
+                path = request.get_full_path().split('/', 2)[-1]
                 r = redirect(urljoin('%s://%s' % (request.scheme, domain), path))
                 r['Access-Control-Allow-Origin'] = '*'
                 return r
@@ -99,13 +99,9 @@ def _detect_event(request, require_live=True, require_plugin=None):
             LocaleMiddleware(NotImplementedError).process_request(request)
 
             if require_live and not request.event.live:
-                can_access = (
-                    url.url_name == 'event.auth'
-                    or (
-                        request.user.is_authenticated
-                        and request.user.has_event_permission(request.organizer, request.event, request=request)
-                    )
-
+                can_access = url.url_name == 'event.auth' or (
+                    request.user.is_authenticated
+                    and request.user.has_event_permission(request.organizer, request.event, request=request)
                 )
                 if not can_access and 'pretix_event_access_{}'.format(request.event.pk) in request.session:
                     sparent = SessionStore(request.session.get('pretix_event_access_{}'.format(request.event.pk)))
@@ -118,7 +114,8 @@ def _detect_event(request, require_live=True, require_plugin=None):
 
                 if not can_access:
                     return permission_denied(
-                        request, PermissionDenied(_('The selected ticket shop is currently not available.'))
+                        request,
+                        PermissionDenied(_('The selected ticket shop is currently not available.')),
                     )
 
             if require_plugin:
@@ -144,7 +141,7 @@ def _detect_event(request, require_live=True, require_plugin=None):
                 if 'event' in url.kwargs and 'organizer' in url.kwargs:
                     event = Event.objects.select_related('organizer').get(
                         slug__iexact=url.kwargs['event'],
-                        organizer__slug__iexact=url.kwargs['organizer']
+                        organizer__slug__iexact=url.kwargs['organizer'],
                     )
                     pathparts = request.get_full_path().split('/')
                     pathparts[1] = event.organizer.slug
@@ -156,9 +153,7 @@ def _detect_event(request, require_live=True, require_plugin=None):
     except Organizer.DoesNotExist:
         if 'organizer' in url.kwargs:
             try:
-                organizer = Organizer.objects.get(
-                    slug__iexact=url.kwargs['organizer']
-                )
+                organizer = Organizer.objects.get(slug__iexact=url.kwargs['organizer'])
             except Organizer.DoesNotExist:
                 raise Http404(_('The selected organizer was not found.'))
             pathparts = request.get_full_path().split('/')
@@ -198,9 +193,11 @@ def _event_view(function=None, require_live=True, require_plugin=None):
 
 
 def event_view(function=None, require_live=True):
-    warnings.warn('The event_view decorator is deprecated since it will be automatically applied by the URL routing '
-                  'layer when you use event_urls.',
-                  DeprecationWarning)
+    warnings.warn(
+        'The event_view decorator is deprecated since it will be automatically applied by the URL routing '
+        'layer when you use event_urls.',
+        DeprecationWarning,
+    )
 
     def noop(fn):
         return fn

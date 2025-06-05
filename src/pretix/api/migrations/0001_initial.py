@@ -8,17 +8,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='ApiCall',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('idempotency_key', models.CharField(db_index=True, max_length=190)),
                 ('auth_hash', models.CharField(db_index=True, max_length=190)),
                 ('created', models.DateTimeField(auto_now_add=True)),
@@ -56,8 +57,23 @@ class Migration(migrations.Migration):
                 ('algorithm', models.CharField(default='', max_length=5)),
                 ('name', models.CharField(max_length=255)),
                 ('redirect_uris', models.TextField()),
-                ('client_id', models.CharField(db_index=True, default=oauth2_provider.generators.generate_client_id, max_length=100, unique=True)),
-                ('client_secret', models.CharField(db_index=True, default=oauth2_provider.generators.generate_client_secret, max_length=255)),
+                (
+                    'client_id',
+                    models.CharField(
+                        db_index=True,
+                        default=oauth2_provider.generators.generate_client_id,
+                        max_length=100,
+                        unique=True,
+                    ),
+                ),
+                (
+                    'client_secret',
+                    models.CharField(
+                        db_index=True,
+                        default=oauth2_provider.generators.generate_client_secret,
+                        max_length=255,
+                    ),
+                ),
                 ('active', models.BooleanField(default=True)),
             ],
             options={
@@ -113,7 +129,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='WebHook',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('enabled', models.BooleanField(default=True)),
                 ('target_url', models.URLField()),
                 ('all_events', models.BooleanField(default=True)),
@@ -125,9 +144,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='WebHookEventListener',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('action_type', models.CharField(max_length=255)),
-                ('webhook', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='listeners', to='pretixapi.webhook')),
+                (
+                    'webhook',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='listeners',
+                        to='pretixapi.webhook',
+                    ),
+                ),
             ],
             options={
                 'ordering': ('action_type',),
@@ -136,7 +165,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='WebHookCall',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.AutoField(auto_created=True, primary_key=True, serialize=False),
+                ),
                 ('datetime', models.DateTimeField(auto_now_add=True)),
                 ('target_url', models.URLField()),
                 ('action_type', models.CharField(max_length=255)),
@@ -146,7 +178,14 @@ class Migration(migrations.Migration):
                 ('success', models.BooleanField(default=False)),
                 ('payload', models.TextField()),
                 ('response_body', models.TextField()),
-                ('webhook', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='calls', to='pretixapi.webhook')),
+                (
+                    'webhook',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='calls',
+                        to='pretixapi.webhook',
+                    ),
+                ),
             ],
             options={
                 'ordering': ('-datetime',),

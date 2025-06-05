@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,16 +16,30 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='badgelayout',
             name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='badge_layouts', to='pretixbase.event'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='badge_layouts',
+                to='pretixbase.event',
+            ),
         ),
         migrations.AddField(
             model_name='badgeitem',
             name='item',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='badge_assignment', to='pretixbase.item'),
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='badge_assignment',
+                to='pretixbase.item',
+            ),
         ),
         migrations.AddField(
             model_name='badgeitem',
             name='layout',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='item_assignments', to='badges.badgelayout'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='item_assignments',
+                to='badges.badgelayout',
+            ),
         ),
     ]

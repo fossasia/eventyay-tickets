@@ -8,7 +8,11 @@ from django_scopes import scopes_disabled
 
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedCombinedTicket, CachedTicket, Event, InvoiceAddress, Order,
+    CachedCombinedTicket,
+    CachedTicket,
+    Event,
+    InvoiceAddress,
+    Order,
     OrderPosition,
 )
 from pretix.base.services.tasks import EventTask, ProfiledTask
@@ -32,8 +36,13 @@ def generate_orderposition(order_position: int, provider: str):
                 path, ext = os.path.splitext(filename)
                 for ct in CachedTicket.objects.filter(order_position=order_position, provider=provider):
                     ct.delete()
-                ct = CachedTicket.objects.create(order_position=order_position, provider=provider,
-                                                 extension=ext, type=ttype, file=None)
+                ct = CachedTicket.objects.create(
+                    order_position=order_position,
+                    provider=provider,
+                    extension=ext,
+                    type=ttype,
+                    file=None,
+                )
                 ct.file.save(filename, ContentFile(data))
                 return ct.pk
 
@@ -53,8 +62,9 @@ def generate_order(order: int, provider: str):
                 path, ext = os.path.splitext(filename)
                 for ct in CachedCombinedTicket.objects.filter(order=order, provider=provider):
                     ct.delete()
-                ct = CachedCombinedTicket.objects.create(order=order, provider=provider, extension=ext,
-                                                         type=ttype, file=None)
+                ct = CachedCombinedTicket.objects.create(
+                    order=order, provider=provider, extension=ext, type=ttype, file=None
+                )
                 ct.file.save(filename, ContentFile(data))
                 return ct.pk
 
@@ -75,25 +85,49 @@ class DummyRollbackException(Exception):  # NOQA: N818
 def preview(event: int, provider: str):
     event = Event.objects.get(id=event)
 
-    with rolledback_transaction(), language(event.settings.locale, event.settings.region):
-        item = event.items.create(name=_("Sample product"), default_price=42.23,
-                                  description=_("Sample product description"))
-        item2 = event.items.create(name=_("Sample workshop"), default_price=23.40)
+    with (
+        rolledback_transaction(),
+        language(event.settings.locale, event.settings.region),
+    ):
+        item = event.items.create(
+            name=_('Sample product'),
+            default_price=42.23,
+            description=_('Sample product description'),
+        )
+        item2 = event.items.create(name=_('Sample workshop'), default_price=23.40)
 
         from pretix.base.models import Order
-        order = event.orders.create(status=Order.STATUS_PENDING, datetime=now(),
-                                    email='sample@eventyay.com',
-                                    locale=event.settings.locale,
-                                    expires=now(), code="PREVIEW1234", total=119)
+
+        order = event.orders.create(
+            status=Order.STATUS_PENDING,
+            datetime=now(),
+            email='sample@eventyay.com',
+            locale=event.settings.locale,
+            expires=now(),
+            code='PREVIEW1234',
+            total=119,
+        )
 
         scheme = PERSON_NAME_SCHEMES[event.settings.name_scheme]
         sample = {k: str(v) for k, v in scheme['sample'].items()}
         p = order.positions.create(item=item, attendee_name_parts=sample, price=item.default_price)
         s = event.subevents.first()
-        order.positions.create(item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p, subevent=s)
-        order.positions.create(item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p, subevent=s)
+        order.positions.create(
+            item=item2,
+            attendee_name_parts=sample,
+            price=item.default_price,
+            addon_to=p,
+            subevent=s,
+        )
+        order.positions.create(
+            item=item2,
+            attendee_name_parts=sample,
+            price=item.default_price,
+            addon_to=p,
+            subevent=s,
+        )
 
-        InvoiceAddress.objects.create(order=order, name_parts=sample, company=_("Sample company"))
+        InvoiceAddress.objects.create(order=order, name_parts=sample, company=_('Sample company'))
 
         responses = register_ticket_outputs.send(event)
         for receiver, response in responses:
@@ -109,20 +143,14 @@ def get_tickets_for_order(order, base_position=None):
     if not order.ticket_download_available:
         return []
 
-    providers = [
-        response(order.event)
-        for receiver, response
-        in register_ticket_outputs.send(order.event)
-    ]
+    providers = [response(order.event) for receiver, response in register_ticket_outputs.send(order.event)]
 
     tickets = []
 
     positions = list(order.positions_with_tickets)
     if base_position:
         # Only the given position and its children
-        positions = [
-            p for p in positions if p.pk == base_position.pk or p.addon_to_id == base_position.pk
-        ]
+        positions = [p for p in positions if p.pk == base_position.pk or p.addon_to_id == base_position.pk]
 
     for p in providers:
         if not p.is_enabled:
@@ -132,20 +160,23 @@ def get_tickets_for_order(order, base_position=None):
             try:
                 if len(positions) == 0:
                     continue
-                ct = CachedCombinedTicket.objects.filter(
-                    order=order, provider=p.identifier, file__isnull=False
-                ).last()
+                ct = CachedCombinedTicket.objects.filter(order=order, provider=p.identifier, file__isnull=False).last()
                 if not ct or not ct.file:
                     retval = generate_order(order.pk, p.identifier)
                     if not retval:
                         continue
                     ct = CachedCombinedTicket.objects.get(pk=retval)
-                tickets.append((
-                    "{}-{}-{}{}".format(
-                        order.event.slug.upper(), order.code, ct.provider, ct.extension,
-                    ),
-                    ct
-                ))
+                tickets.append(
+                    (
+                        '{}-{}-{}{}'.format(
+                            order.event.slug.upper(),
+                            order.code,
+                            ct.provider,
+                            ct.extension,
+                        ),
+                        ct,
+                    )
+                )
             except:
                 logger.exception('Failed to generate ticket.')
         else:
@@ -165,20 +196,23 @@ def get_tickets_for_order(order, base_position=None):
 
                     if pos.subevent:
                         # Subevent date in filename improves accessibility e.g. for screen reader users
-                        fname = "{}-{}-{}-{}-{}{}".format(
-                            order.event.slug.upper(), order.code, pos.positionid,
+                        fname = '{}-{}-{}-{}-{}{}'.format(
+                            order.event.slug.upper(),
+                            order.code,
+                            pos.positionid,
                             pos.subevent.date_from.strftime('%Y_%m_%d'),
-                            ct.provider, ct.extension
+                            ct.provider,
+                            ct.extension,
                         )
                     else:
-                        fname = "{}-{}-{}-{}{}".format(
-                            order.event.slug.upper(), order.code, pos.positionid,
-                            ct.provider, ct.extension
+                        fname = '{}-{}-{}-{}{}'.format(
+                            order.event.slug.upper(),
+                            order.code,
+                            pos.positionid,
+                            ct.provider,
+                            ct.extension,
                         )
-                    tickets.append((
-                        fname,
-                        ct
-                    ))
+                    tickets.append((fname, ct))
                 except:
                     logger.exception('Failed to generate ticket.')
 
@@ -186,7 +220,7 @@ def get_tickets_for_order(order, base_position=None):
 
 
 @app.task(base=EventTask, acks_late=True)
-def invalidate_cache(event: Event, item: int=None, provider: str=None, order: int=None, **kwargs):
+def invalidate_cache(event: Event, item: int = None, provider: str = None, order: int = None, **kwargs):
     qs = CachedTicket.objects.filter(order_position__order__event=event)
     qsc = CachedCombinedTicket.objects.filter(order__event=event)
 

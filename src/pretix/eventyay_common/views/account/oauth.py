@@ -10,14 +10,15 @@ from django.shortcuts import redirect
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.models import get_application_model
 from oauth2_provider.views import (
-    ApplicationDelete, ApplicationDetail, ApplicationList,
-    ApplicationRegistration, ApplicationUpdate,
+    ApplicationDelete,
+    ApplicationDetail,
+    ApplicationList,
+    ApplicationRegistration,
+    ApplicationUpdate,
 )
 from oauth2_provider.generators import generate_client_secret
 
-from pretix.api.models import (
-    OAuthAccessToken, OAuthApplication, OAuthRefreshToken
-)
+from pretix.api.models import OAuthAccessToken, OAuthApplication, OAuthRefreshToken
 from pretix.control.signals import oauth_application_registered
 
 from .common import AccountMenuMixIn
@@ -31,9 +32,11 @@ class OAuthAuthorizedAppListView(AccountMenuMixIn, ListView):
     context_object_name = 'tokens'
 
     def get_queryset(self):
-        return OAuthAccessToken.objects.filter(
-            user=self.request.user
-        ).select_related('application').prefetch_related('organizers')
+        return (
+            OAuthAccessToken.objects.filter(user=self.request.user)
+            .select_related('application')
+            .prefetch_related('organizers')
+        )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -76,19 +79,12 @@ class OAuthApplicationRegistrationView(AccountMenuMixIn, ApplicationRegistration
     template_name = 'eventyay_common/account/oauth-app-register.html'
 
     def get_form_class(self):
-        return forms.modelform_factory(
-            get_application_model(),
-            fields=(
-                'name', 'redirect_uris'
-            )
-        )
+        return forms.modelform_factory(get_application_model(), fields=('name', 'redirect_uris'))
 
     def form_valid(self, form):
         form.instance.client_type = 'confidential'
         form.instance.authorization_grant_type = 'authorization-code'
-        oauth_application_registered.send(
-            sender=self.request, user=self.request.user, application=form.instance
-        )
+        oauth_application_registered.send(sender=self.request, user=self.request.user, application=form.instance)
         return super().form_valid(form)
 
 
@@ -125,7 +121,7 @@ class OAuthApplicationRollView(ApplicationDetail):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         obj = self.get_object()
-        confirm_message = _("Are you sure you want to generate a new client secret for the application {code}?")
+        confirm_message = _('Are you sure you want to generate a new client secret for the application {code}?')
         ctx['confirm_message'] = confirm_message.format(code=f'<strong>{obj}</strong>')
         return ctx
 
@@ -142,7 +138,7 @@ class OAuthApplicationRollView(ApplicationDetail):
 
 class OAuthApplicationDeleteView(ApplicationDelete):
     template_name = 'eventyay_common/account/oauth-app-delete.html'
-    success_url = reverse_lazy("eventyay_common:account.oauth.own-apps")
+    success_url = reverse_lazy('eventyay_common:account.oauth.own-apps')
 
     def get_queryset(self):
         return super().get_queryset().filter(active=True)
@@ -150,7 +146,7 @@ class OAuthApplicationDeleteView(ApplicationDelete):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         obj = self.get_object()
-        confirm_message = _("Are you sure you want to disable the application {code} permanently?")
+        confirm_message = _('Are you sure you want to disable the application {code} permanently?')
         ctx['confirm_message'] = confirm_message.format(code=f'<strong>{obj}</strong>')
         return ctx
 

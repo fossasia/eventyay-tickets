@@ -33,7 +33,7 @@ class SalesChannel:
         """
         The name of a Font Awesome icon to represent this channel
         """
-        return "circle"
+        return 'circle'
 
     @property
     def testmode_supported(self) -> bool:
@@ -80,13 +80,11 @@ def get_all_sales_channels():
 
 
 class WebshopSalesChannel(SalesChannel):
-    identifier = "web"
+    identifier = 'web'
     verbose_name = _('Online shop')
-    icon = "globe"
+    icon = 'globe'
 
 
-@receiver(register_sales_channels, dispatch_uid="base_register_default_sales_channels")
+@receiver(register_sales_channels, dispatch_uid='base_register_default_sales_channels')
 def base_sales_channels(sender, **kwargs):
-    return (
-        WebshopSalesChannel(),
-    )
+    return (WebshopSalesChannel(),)

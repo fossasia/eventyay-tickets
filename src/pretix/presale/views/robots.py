@@ -5,7 +5,7 @@ from django.views.decorators.cache import cache_page
 class NoSearchIndexViewMixin:
     def dispatch(self, request, *args, **kwargs):
         resp = super().dispatch(request, *args, **kwargs)
-        resp['X-Robots-Tag'] = "noindex"
+        resp['X-Robots-Tag'] = 'noindex'
         return resp
 
 
@@ -21,5 +21,6 @@ Disallow: /control/
 Disallow: /download/
 Disallow: /redirect/
 Disallow: /api/
-""", content_type='text/plain'
+""",
+        content_type='text/plain',
     )

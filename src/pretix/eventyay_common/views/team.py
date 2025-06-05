@@ -61,13 +61,17 @@ class TeamCreateView(OrganizerDetailViewMixin, CreateView, OrganizerPermissionRe
         return response
 
     def form_invalid(self, form):
-        messages.error(self.request, gettext_lazy('Something went wrong, your changes could not be saved.'))
+        messages.error(
+            self.request,
+            gettext_lazy('Something went wrong, your changes could not be saved.'),
+        )
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('eventyay_common:organizer.teams', kwargs={
-            'organizer': self.request.organizer.slug
-        })
+        return reverse(
+            'eventyay_common:organizer.teams',
+            kwargs={'organizer': self.request.organizer.slug},
+        )
 
 
 class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
@@ -93,9 +97,10 @@ class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         return ctx
 
     def get_success_url(self):
-        return reverse('eventyay_common:organizer.teams', kwargs={
-            'organizer': self.request.organizer.slug
-        })
+        return reverse(
+            'eventyay_common:organizer.teams',
+            kwargs={'organizer': self.request.organizer.slug},
+        )
 
     @transaction.atomic
     def form_valid(self, form):
@@ -118,7 +123,10 @@ class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         return response
 
     def form_invalid(self, form):
-        messages.error(self.request, gettext_lazy('Something went wrong, your changes could not be saved.'))
+        messages.error(
+            self.request,
+            gettext_lazy('Something went wrong, your changes could not be saved.'),
+        )
         return super().form_invalid(form)
 
 
@@ -137,9 +145,11 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         return context
 
     def can_deleted(self) -> bool:
-        return self.request.organizer.teams.exclude(pk=self.kwargs.get('team')).filter(
-            can_change_teams=True, members__isnull=False
-        ).exists()
+        return (
+            self.request.organizer.teams.exclude(pk=self.kwargs.get('team'))
+            .filter(can_change_teams=True, members__isnull=False)
+            .exists()
+        )
 
     @transaction.atomic
     def form_valid(self, form):
@@ -160,6 +170,9 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
             return redirect(success_url)
 
     def get_success_url(self):
-        return reverse('eventyay_common:organizer.teams', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'eventyay_common:organizer.teams',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )

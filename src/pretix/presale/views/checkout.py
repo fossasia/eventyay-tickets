@@ -12,7 +12,9 @@ from pretix.base.signals import validate_cart
 from pretix.multidomain.urlreverse import eventreverse
 from pretix.presale.checkoutflow import get_checkout_flow
 from pretix.presale.views import (
-    allow_frame_if_namespaced, cart_exists, get_cart,
+    allow_frame_if_namespaced,
+    cart_exists,
+    get_cart,
     iframe_entry_view_wrapper,
 )
 
@@ -20,7 +22,6 @@ from pretix.presale.views import (
 @method_decorator(allow_frame_if_namespaced, 'dispatch')
 @method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class CheckoutView(View):
-
     def get_index_url(self, request):
         kwargs = {}
         if 'cart_namespace' in self.kwargs:
@@ -30,12 +31,12 @@ class CheckoutView(View):
     def dispatch(self, request, *args, **kwargs):
         self.request = request
 
-        if not cart_exists(request) and "async_id" not in request.GET:
-            messages.error(request, _("Your cart is empty"))
+        if not cart_exists(request) and 'async_id' not in request.GET:
+            messages.error(request, _('Your cart is empty'))
             return self.redirect(self.get_index_url(self.request))
 
         if not request.event.presale_is_running:
-            messages.error(request, _("The presale for this event is over or has not yet started."))
+            messages.error(request, _('The presale for this event is over or has not yet started.'))
             return self.redirect(self.get_index_url(self.request))
 
         cart_error = None
@@ -51,12 +52,18 @@ class CheckoutView(View):
                 continue
             if step.requires_valid_cart and cart_error:
                 messages.error(request, str(cart_error))
-                return self.redirect(previous_step.get_step_url(request) if previous_step else self.get_index_url(request))
+                return self.redirect(
+                    previous_step.get_step_url(request) if previous_step else self.get_index_url(request)
+                )
 
             if 'step' not in kwargs:
                 return self.redirect(step.get_step_url(request))
-            is_selected = (step.identifier == kwargs.get('step', ''))
-            if "async_id" not in request.GET and not is_selected and not step.is_completed(request, warn=not is_selected):
+            is_selected = step.identifier == kwargs.get('step', '')
+            if (
+                'async_id' not in request.GET
+                and not is_selected
+                and not step.is_completed(request, warn=not is_selected)
+            ):
                 return self.redirect(step.get_step_url(request))
             if is_selected:
                 if request.method.lower() in self.http_method_names:

@@ -29,14 +29,17 @@ def export(event: Event, shredders: List[str], session_key=None) -> None:
             )
             zipfile.writestr(
                 'index.json',
-                json.dumps({
-                    'instance': settings.SITE_URL,
-                    'organizer': event.organizer.slug,
-                    'event': event.slug,
-                    'time': now().isoformat(),
-                    'shredders': shredders,
-                    'confirm_code': ccode
-                }, indent=4)
+                json.dumps(
+                    {
+                        'instance': settings.SITE_URL,
+                        'organizer': event.organizer.slug,
+                        'event': event.slug,
+                        'time': now().isoformat(),
+                        'shredders': shredders,
+                        'confirm_code': ccode,
+                    },
+                    indent=4,
+                ),
             )
             for s in shredders:
                 shredder = known_shredders.get(s)
@@ -70,11 +73,11 @@ def shred(event: Event, fileid: str, confirm_code: str) -> None:
     try:
         cf = CachedFile.objects.get(pk=fileid)
     except CachedFile.DoesNotExist:
-        raise ShredError(_("The download file could no longer be found on the server, please try to start again."))
+        raise ShredError(_('The download file could no longer be found on the server, please try to start again.'))
     with ZipFile(cf.file.file, 'r') as zipfile:
         indexdata = json.loads(zipfile.read('index.json').decode())
     if indexdata['organizer'] != event.organizer.slug or indexdata['event'] != event.slug:
-        raise ShredError(_("This file is from a different event."))
+        raise ShredError(_('This file is from a different event.'))
     shredders = []
     for s in indexdata['shredders']:
         shredder = known_shredders.get(s)
@@ -83,9 +86,9 @@ def shred(event: Event, fileid: str, confirm_code: str) -> None:
         shredders.append(shredder)
     if any(shredder.require_download_confirmation for shredder in shredders):
         if indexdata['confirm_code'] != confirm_code:
-            raise ShredError(_("The confirm code you entered was incorrect."))
+            raise ShredError(_('The confirm code you entered was incorrect.'))
     if event.logentry_set.filter(datetime__gte=parse(indexdata['time'])):
-        raise ShredError(_("Something happened in your event after the export, please try again."))
+        raise ShredError(_('Something happened in your event after the export, please try again.'))
 
     for shredder in shredders:
         shredder.shred_data()

@@ -18,4 +18,4 @@ class CustomJSONEncoder(I18nJSONEncoder):
 
 
 def safe_string(original):
-    return original.replace("<", "\\u003C").replace(">", "\\u003E")
+    return original.replace('<', '\\u003C').replace('>', '\\u003E')

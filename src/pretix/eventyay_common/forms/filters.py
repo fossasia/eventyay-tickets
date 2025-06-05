@@ -10,7 +10,7 @@ class UserOrderFilterForm(forms.Form):
         required=False,
         label=_('Event'),
         widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label=_('Select an Event')
+        empty_label=_('Select an Event'),
     )
 
     def __init__(self, *args, **kwargs):

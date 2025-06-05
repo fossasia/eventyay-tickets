@@ -84,12 +84,17 @@ class BaseTicketOutput:
             with ZipFile(os.path.join(d, 'tmp.zip'), 'w') as zipf:
                 for pos in order.positions_with_tickets:
                     fname, __, content = self.generate(pos)
-                    zipf.writestr('{}-{}{}'.format(
-                        order.code, pos.positionid, os.path.splitext(fname)[1]
-                    ), content)
+                    zipf.writestr(
+                        '{}-{}{}'.format(order.code, pos.positionid, os.path.splitext(fname)[1]),
+                        content,
+                    )
 
             with open(os.path.join(d, 'tmp.zip'), 'rb') as zipf:
-                return '{}-{}.zip'.format(order.code, self.identifier), 'application/zip', zipf.read()
+                return (
+                    '{}-{}.zip'.format(order.code, self.identifier),
+                    'application/zip',
+                    zipf.read(),
+                )
 
     @property
     def verbose_name(self) -> str:
@@ -139,13 +144,17 @@ class BaseTicketOutput:
         .. WARNING:: It is highly discouraged to alter the ``_enabled`` field of the default
                      implementation.
         """
-        return OrderedDict([
-            ('_enabled',
-             forms.BooleanField(
-                 label=_('Enable ticket format'),
-                 required=False,
-             )),
-        ])
+        return OrderedDict(
+            [
+                (
+                    '_enabled',
+                    forms.BooleanField(
+                        label=_('Enable ticket format'),
+                        required=False,
+                    ),
+                ),
+            ]
+        )
 
     def settings_content_render(self, request: HttpRequest) -> str:
         """

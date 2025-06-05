@@ -8,7 +8,7 @@ from django.db.models import Expression, JSONField
 
 
 def postgres_compile_json_path(key_transforms):
-    return "{" + ','.join(key_transforms) + "}"
+    return '{' + ','.join(key_transforms) + '}'
 
 
 def sqlite_compile_json_path(key_transforms):
@@ -36,7 +36,15 @@ class JSONExtract(Expression):
         c.source_expression = c.source_expression.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 
-    def as_sql(self, compiler, connection, function=None, template=None, arg_joiner=None, **extra_context):
+    def as_sql(
+        self,
+        compiler,
+        connection,
+        function=None,
+        template=None,
+        arg_joiner=None,
+        **extra_context,
+    ):
         if '.postgresql' in connection.settings_dict['ENGINE']:
             params = []
             arg_sql, arg_params = compiler.compile(self.source_expression)
@@ -46,9 +54,7 @@ class JSONExtract(Expression):
             template = '{} #> %s'.format(arg_sql)
             return template, params
         else:
-            raise NotSupportedError(
-                'Functions on JSONFields are only supported on PostgreSQL.'
-            )
+            raise NotSupportedError('Functions on JSONFields are only supported on PostgreSQL.')
 
     def copy(self):
         c = super().copy()

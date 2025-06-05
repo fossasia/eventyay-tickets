@@ -22,30 +22,41 @@ class DekodiNREIExporter(BaseExporter):
     # Specification: http://manuals.dekodi.de/nexuspub/schnittstellenbuch/
 
     def _encode_invoice(self, invoice: Invoice):
-        p_last = invoice.order.payments.filter(state=[OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED]).last()
+        p_last = invoice.order.payments.filter(
+            state=[
+                OrderPayment.PAYMENT_STATE_CONFIRMED,
+                OrderPayment.PAYMENT_STATE_REFUNDED,
+            ]
+        ).last()
         gross_total = Decimal('0.00')
         net_total = Decimal('0.00')
 
         positions = []
         for l in invoice.lines.all():
-            positions.append({
-                'ADes': l.description.replace("<br />", "\n"),
-                'ANetA': round(float((-1 if invoice.is_cancellation else 1) * l.net_value), 2),
-                'ANo': self.event.slug,
-                'AQ': -1 if invoice.is_cancellation else 1,
-                'AVatP': round(float(l.tax_rate), 2),
-                'DIDt': (l.subevent or invoice.order.event).date_from.isoformat().replace('Z', '+00:00'),
-                'PosGrossA': round(float(l.gross_value), 2),
-                'PosNetA': round(float(l.net_value), 2),
-            })
+            positions.append(
+                {
+                    'ADes': l.description.replace('<br />', '\n'),
+                    'ANetA': round(float((-1 if invoice.is_cancellation else 1) * l.net_value), 2),
+                    'ANo': self.event.slug,
+                    'AQ': -1 if invoice.is_cancellation else 1,
+                    'AVatP': round(float(l.tax_rate), 2),
+                    'DIDt': (l.subevent or invoice.order.event).date_from.isoformat().replace('Z', '+00:00'),
+                    'PosGrossA': round(float(l.gross_value), 2),
+                    'PosNetA': round(float(l.net_value), 2),
+                }
+            )
             gross_total += l.gross_value
             net_total += l.net_value
 
         payments = []
         paypal_email = None
         for p in invoice.order.payments.filter(
-                state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_PENDING,
-                           OrderPayment.PAYMENT_STATE_CREATED, OrderPayment.PAYMENT_STATE_REFUNDED)
+            state__in=(
+                OrderPayment.PAYMENT_STATE_CONFIRMED,
+                OrderPayment.PAYMENT_STATE_PENDING,
+                OrderPayment.PAYMENT_STATE_CREATED,
+                OrderPayment.PAYMENT_STATE_REFUNDED,
+            )
         ):
             if p.provider == 'paypal':
                 paypal_email = p.info_data.get('payer', {}).get('payer_info', {}).get('email')
@@ -53,71 +64,76 @@ class DekodiNREIExporter(BaseExporter):
                     ppid = p.info_data['transactions'][0]['related_resources'][0]['sale']['id']
                 except:
                     ppid = p.info_data.get('id')
-                payments.append({
-                    'PTID': '1',
-                    'PTN': 'PayPal',
-                    'PTNo1': ppid,
-                    'PTNo2': p.info_data.get('id'),
-                    'PTNo7': round(float(p.amount), 2),
-                    'PTNo8': str(self.event.currency),
-                    'PTNo11': paypal_email or '',
-                    'PTNo15': p.full_id or '',
-                })
+                payments.append(
+                    {
+                        'PTID': '1',
+                        'PTN': 'PayPal',
+                        'PTNo1': ppid,
+                        'PTNo2': p.info_data.get('id'),
+                        'PTNo7': round(float(p.amount), 2),
+                        'PTNo8': str(self.event.currency),
+                        'PTNo11': paypal_email or '',
+                        'PTNo15': p.full_id or '',
+                    }
+                )
             elif p.provider == 'banktransfer':
-                payments.append({
-                    'PTID': '4',
-                    'PTN': 'Vorkasse',
-                    'PTNo4': p.info_data.get('reference') or p.payment_provider._code(invoice.order),
-                    'PTNo7': round(float(p.amount), 2),
-                    'PTNo8': str(self.event.currency),
-                    'PTNo10': p.info_data.get('payer') or '',
-                    'PTNo14': p.info_data.get('date') or '',
-                    'PTNo15': p.full_id or '',
-                })
+                payments.append(
+                    {
+                        'PTID': '4',
+                        'PTN': 'Vorkasse',
+                        'PTNo4': p.info_data.get('reference') or p.payment_provider._code(invoice.order),
+                        'PTNo7': round(float(p.amount), 2),
+                        'PTNo8': str(self.event.currency),
+                        'PTNo10': p.info_data.get('payer') or '',
+                        'PTNo14': p.info_data.get('date') or '',
+                        'PTNo15': p.full_id or '',
+                    }
+                )
             elif p.provider == 'sepadebit':
                 with language(invoice.order.locale):
-                    payments.append({
-                        'PTID': '5',
-                        'PTN': 'Lastschrift',
-                        'PTNo4': gettext('Event ticket {event}-{code}').format(
-                            event=self.event.slug.upper(),
-                            code=invoice.order.code
-                        ),
-                        'PTNo5': p.info_data.get('iban') or '',
-                        'PTNo6': p.info_data.get('bic') or '',
-                        'PTNo7': round(float(p.amount), 2),
-                        'PTNo8': str(self.event.currency) or '',
-                        'PTNo9': p.info_data.get('date') or '',
-                        'PTNo10': p.info_data.get('account') or '',
-                        'PTNo14': p.info_data.get('reference') or '',
-                        'PTNo15': p.full_id or '',
-                    })
+                    payments.append(
+                        {
+                            'PTID': '5',
+                            'PTN': 'Lastschrift',
+                            'PTNo4': gettext('Event ticket {event}-{code}').format(
+                                event=self.event.slug.upper(), code=invoice.order.code
+                            ),
+                            'PTNo5': p.info_data.get('iban') or '',
+                            'PTNo6': p.info_data.get('bic') or '',
+                            'PTNo7': round(float(p.amount), 2),
+                            'PTNo8': str(self.event.currency) or '',
+                            'PTNo9': p.info_data.get('date') or '',
+                            'PTNo10': p.info_data.get('account') or '',
+                            'PTNo14': p.info_data.get('reference') or '',
+                            'PTNo15': p.full_id or '',
+                        }
+                    )
             elif p.provider.startswith('stripe'):
-                src = p.info_data.get("source", p.info_data)
-                payments.append({
-                    'PTID': '81',
-                    'PTN': 'Stripe',
-                    'PTNo1': p.info_data.get("id") or '',
-                    'PTNo5': src.get("card", {}).get("last4") or '',
-                    'PTNo7': round(float(p.amount), 2) or '',
-                    'PTNo8': str(self.event.currency) or '',
-                    'PTNo10': src.get('owner', {}).get('verified_name') or src.get('owner', {}).get('name') or '',
-                    'PTNo15': p.full_id or '',
-                })
+                src = p.info_data.get('source', p.info_data)
+                payments.append(
+                    {
+                        'PTID': '81',
+                        'PTN': 'Stripe',
+                        'PTNo1': p.info_data.get('id') or '',
+                        'PTNo5': src.get('card', {}).get('last4') or '',
+                        'PTNo7': round(float(p.amount), 2) or '',
+                        'PTNo8': str(self.event.currency) or '',
+                        'PTNo10': src.get('owner', {}).get('verified_name') or src.get('owner', {}).get('name') or '',
+                        'PTNo15': p.full_id or '',
+                    }
+                )
             else:
-                payments.append({
-                    'PTID': '0',
-                    'PTN': p.provider,
-                    'PTNo7': round(float(p.amount), 2) or '',
-                    'PTNo8': str(self.event.currency) or '',
-                    'PTNo15': p.full_id or '',
-                })
+                payments.append(
+                    {
+                        'PTID': '0',
+                        'PTN': p.provider,
+                        'PTNo7': round(float(p.amount), 2) or '',
+                        'PTNo8': str(self.event.currency) or '',
+                        'PTNo15': p.full_id or '',
+                    }
+                )
 
-        payments = [
-            {
-                k: v for k, v in p.items() if v is not None
-            } for p in payments
-        ]
+        payments = [{k: v for k, v in p.items() if v is not None} for p in payments]
 
         hdr = {
             'C': str(invoice.invoice_to_country) or self.event.settings.invoice_address_from_country,
@@ -132,7 +148,8 @@ class DekodiNREIExporter(BaseExporter):
             'FamN': invoice.invoice_to_name.rsplit(' ', 1)[-1] if invoice.invoice_to_name else '',
             'FN': (
                 invoice.invoice_to_name.rsplit(' ', 1)[0]
-                if invoice.invoice_to_name and ' ' in invoice.invoice_to_name else ''
+                if invoice.invoice_to_name and ' ' in invoice.invoice_to_name
+                else ''
             ),
             'IDt': invoice.date.isoformat() + 'T08:00:00+01:00',
             'INo': invoice.full_invoice_no,
@@ -146,10 +163,10 @@ class DekodiNREIExporter(BaseExporter):
             'TNetA': round(float(net_total), 2),
             'TVatA': round(float(gross_total - net_total), 2),
             'VatDp': False,
-            'Zip': invoice.invoice_to_zipcode
+            'Zip': invoice.invoice_to_zipcode,
         }
         if not hdr['FamN'] and not hdr['CN']:
-            hdr['CN'] = "Unbekannter Kunde"
+            hdr['CN'] = 'Unbekannter Kunde'
 
         if invoice.refers:
             hdr['PvrINo'] = invoice.refers.full_invoice_no
@@ -165,7 +182,7 @@ class DekodiNREIExporter(BaseExporter):
             'Hdr': hdr,
             'InvcPstns': positions,
             'PmIs': payments,
-            'ValidationMessage': ''
+            'ValidationMessage': '',
         }
 
     def render(self, form_data):
@@ -187,36 +204,46 @@ class DekodiNREIExporter(BaseExporter):
             'Format': 'NREI',
             'Version': '18.10.2.0',
             'SourceSystem': 'pretix',
-            'Data': [
-                self._encode_invoice(i) for i in qs
-            ]
+            'Data': [self._encode_invoice(i) for i in qs],
         }
-        return '{}_nrei.json'.format(self.event.slug), 'application/json', json.dumps(jo, cls=DjangoJSONEncoder, indent=4)
+        return (
+            '{}_nrei.json'.format(self.event.slug),
+            'application/json',
+            json.dumps(jo, cls=DjangoJSONEncoder, indent=4),
+        )
 
     @property
     def export_form_fields(self):
         return OrderedDict(
             [
-                ('date_from',
-                 forms.DateField(
-                     label=gettext_lazy('Start date'),
-                     widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                     required=False,
-                     help_text=gettext_lazy('Only include invoices issued on or after this date. Note that the invoice date does '
-                                            'not always correspond to the order or payment date.')
-                 )),
-                ('date_to',
-                 forms.DateField(
-                     label=gettext_lazy('End date'),
-                     widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                     required=False,
-                     help_text=gettext_lazy('Only include invoices issued on or before this date. Note that the invoice date '
-                                            'does not always correspond to the order or payment date.')
-                 )),
+                (
+                    'date_from',
+                    forms.DateField(
+                        label=gettext_lazy('Start date'),
+                        widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                        required=False,
+                        help_text=gettext_lazy(
+                            'Only include invoices issued on or after this date. Note that the invoice date does '
+                            'not always correspond to the order or payment date.'
+                        ),
+                    ),
+                ),
+                (
+                    'date_to',
+                    forms.DateField(
+                        label=gettext_lazy('End date'),
+                        widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                        required=False,
+                        help_text=gettext_lazy(
+                            'Only include invoices issued on or before this date. Note that the invoice date '
+                            'does not always correspond to the order or payment date.'
+                        ),
+                    ),
+                ),
             ]
         )
 
 
-@receiver(register_data_exporters, dispatch_uid="exporter_dekodi_nrei")
+@receiver(register_data_exporters, dispatch_uid='exporter_dekodi_nrei')
 def register_dekodi_export(sender, **kwargs):
     return DekodiNREIExporter

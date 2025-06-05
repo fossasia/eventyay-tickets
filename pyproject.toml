@@ -111,16 +111,12 @@ dependencies = [
 memcached = ["pylibmc"]
 dev = [
             'django-debug-toolbar==4.4.*',
-            'pycodestyle==2.12.*',
-            'pyflakes==3.2.*',
-            'flake8==7.1.*',
-            'pep8-naming==0.14.*',
+            'ruff>=0.11.0,<0.12.0',
             'coveralls',
             'coverage',
             'pytest==8.3.*',
             'pytest-django==4.*',
             'pytest-xdist==3.6.*',
-            'isort==5.13.*',
             'pytest-mock==3.14.*',
             'pytest-rerunfailures==14.*',
             'responses',
@@ -160,3 +156,20 @@ version = {attr = "pretix.__version__"}
 where = ["src"]
 include = ["pretix*"]
 namespaces = false
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "single"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E722", "E741"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pretix"]
+
+[tool.ruff.lint.per-file-ignores]
+"*/settings.py" = ["F405"]

@@ -21,7 +21,8 @@ from webauthn.helpers import generate_challenge
 from pretix.base.auth import get_auth_backends
 from pretix.base.forms.auth import ReauthForm
 from pretix.base.models import (
-    Order, U2FDevice,
+    Order,
+    U2FDevice,
     WebAuthnDevice,
 )
 from pretix.base.models.auth import StaffSession
@@ -30,7 +31,8 @@ from pretix.control.forms.organizer_forms.user_orders_form import (
 )
 from pretix.control.forms.users import StaffSessionForm
 from pretix.control.permissions import (
-    AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
+    AdministratorPermissionRequiredMixin,
+    StaffMemberRequiredMixin,
 )
 from pretix.control.views.auth import get_u2f_appid, get_webauthn_rp_id
 
@@ -51,7 +53,7 @@ class ReauthView(TemplateView):
     template_name = 'pretixcontrol/user/reauth.html'
 
     def post(self, request, *args, **kwargs):
-        r = request.POST.get("webauthn", "")
+        r = request.POST.get('webauthn', '')
         valid = False
 
         if 'webauthn_challenge' in self.request.session and r.startswith('{'):
@@ -59,7 +61,7 @@ class ReauthView(TemplateView):
 
             resp = json.loads(r)
             try:
-                devices = [WebAuthnDevice.objects.get(user=self.request.user, credential_id=resp.get("id"))]
+                devices = [WebAuthnDevice.objects.get(user=self.request.user, credential_id=resp.get('id'))]
             except WebAuthnDevice.DoesNotExist:
                 devices = U2FDevice.objects.filter(user=self.request.user)
 
@@ -76,7 +78,7 @@ class ReauthView(TemplateView):
                     )
                     sign_count = webauthn_assertion_response.new_sign_count
                     if sign_count < credential_current_sign_count:
-                        raise Exception("Possible replay attack, sign count not higher")
+                        raise Exception('Possible replay attack, sign count not higher')
                 except Exception:
                     if isinstance(d, U2FDevice):
                         try:
@@ -89,7 +91,7 @@ class ReauthView(TemplateView):
                                 credential_current_sign_count=credential_current_sign_count,
                             )
                             if webauthn_assertion_response.new_sign_count < 1:
-                                raise Exception("Possible replay attack, sign count set")
+                                raise Exception('Possible replay attack, sign count set')
                         except Exception:
                             logger.exception('U2F login failed')
                         else:
@@ -139,9 +141,7 @@ class ReauthView(TemplateView):
         self.request.session['webauthn_challenge'] = base64.b64encode(challenge).decode()
         devices = [
             device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.request.user)
-        ] + [
-            device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.request.user)
-        ]
+        ] + [device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.request.user)]
         if devices:
             auth_options = webauthn.generate_authentication_options(
                 rp_id=get_webauthn_rp_id(self.request),
@@ -149,7 +149,7 @@ class ReauthView(TemplateView):
                 allow_credentials=devices,
             )
             j = json.loads(webauthn.options_to_json(auth_options))
-            j["extensions"] = {"appid": get_u2f_appid(self.request)}
+            j['extensions'] = {'appid': get_u2f_appid(self.request)}
             ctx['jsondata'] = json.dumps(j)
         ctx['form'] = self.form
         return ctx
@@ -160,10 +160,10 @@ class ReauthView(TemplateView):
             user=self.request.user,
             backend=get_auth_backends()[self.request.user.auth_backend],
             request=self.request,
-            data=self.request.POST if self.request.method == "POST" else None,
+            data=self.request.POST if self.request.method == 'POST' else None,
             initial={
                 'email': self.request.user.email,
-            }
+            },
         )
 
 
@@ -172,29 +172,27 @@ class StartStaffSession(StaffMemberRequiredMixin, RecentAuthenticationRequiredMi
 
     def post(self, request, *args, **kwargs):
         if not request.user.has_active_staff_session(request.session.session_key):
-            StaffSession.objects.create(
-                user=request.user,
-                session_key=request.session.session_key
-            )
+            StaffSession.objects.create(user=request.user, session_key=request.session.session_key)
 
-        if "next" in request.GET and url_has_allowed_host_and_scheme(request.GET.get("next"), allowed_hosts=None):
-            return redirect(request.GET.get("next"))
+        if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
+            return redirect(request.GET.get('next'))
         else:
-            return redirect(reverse("control:index"))
+            return redirect(reverse('control:index'))
 
 
 class StopStaffSession(StaffMemberRequiredMixin, View):
-
     def get(self, request, *args, **kwargs):
         session = StaffSession.objects.filter(
-            date_end__isnull=True, session_key=request.session.session_key, user=request.user,
+            date_end__isnull=True,
+            session_key=request.session.session_key,
+            user=request.user,
         ).first()
         if not session:
-            return redirect(reverse("control:index"))
+            return redirect(reverse('control:index'))
 
         session.date_end = now()
         session.save()
-        return redirect(reverse("control:admin.user.sudo.edit", kwargs={'id': session.pk}))
+        return redirect(reverse('control:admin.user.sudo.edit', kwargs={'id': session.pk}))
 
 
 class StaffSessionList(AdministratorPermissionRequiredMixin, ListView):
@@ -213,7 +211,7 @@ class EditStaffSession(StaffMemberRequiredMixin, UpdateView):
     form_class = StaffSessionForm
 
     def get_success_url(self):
-        return reverse("control:admin.user.sudo.edit", kwargs={'id': self.object.pk})
+        return reverse('control:admin.user.sudo.edit', kwargs={'id': self.object.pk})
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -237,9 +235,9 @@ class UserOrdersView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        qs = Order.objects.filter(
-            Q(email__iexact=self.request.user.email)
-        ).select_related('event').order_by('-datetime')
+        qs = (
+            Order.objects.filter(Q(email__iexact=self.request.user.email)).select_related('event').order_by('-datetime')
+        )
 
         # Filter by event if provided
         event_id = self.request.GET.get('event')

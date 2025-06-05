@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('pretixapi', '0003_oauthapplication_post_logout_redirect_uris_and_more'),
     ]
@@ -35,7 +34,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='oauthapplication',
             name='client_secret',
-            field=oauth2_provider.models.ClientSecretField(db_index=True, default=oauth2_provider.generators.generate_client_secret, max_length=255),
+            field=oauth2_provider.models.ClientSecretField(
+                db_index=True,
+                default=oauth2_provider.generators.generate_client_secret,
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
             model_name='webhook',
