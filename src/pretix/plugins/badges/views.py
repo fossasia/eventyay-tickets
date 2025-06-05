@@ -30,8 +30,15 @@ from pretix.plugins.badges.tasks import badges_create_pdf
 
 from .models import BadgeLayout
 
+class BadgePluginEnabledCheck:
 
-class LayoutListView(EventPermissionRequiredMixin, ListView):
+    def dispatch(self, request, *args, **kwargs):
+        if 'pretix.plugins.badges' not in request.event.get_plugins():
+            raise Http404(_("The requested resource does not exist."))
+        return super().dispatch(request, *args, **kwargs)
+
+
+class LayoutListView(BadgePluginEnabledCheck, EventPermissionRequiredMixin, ListView):
     model = BadgeLayout
     permission = ('can_change_event_settings', 'can_view_orders')
     template_name = 'pretixplugins/badges/index.html'
@@ -41,7 +48,7 @@ class LayoutListView(EventPermissionRequiredMixin, ListView):
         return self.request.event.badge_layouts.prefetch_related('item_assignments')
 
 
-class LayoutCreate(EventPermissionRequiredMixin, CreateView):
+class LayoutCreate(BadgePluginEnabledCheck, EventPermissionRequiredMixin, CreateView):
     model = BadgeLayout
     form_class = BadgeLayoutForm
     template_name = 'pretixplugins/badges/edit.html'
@@ -101,7 +108,7 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
         return kwargs
 
 
-class LayoutSetDefault(EventPermissionRequiredMixin, DetailView):
+class LayoutSetDefault(BadgePluginEnabledCheck, EventPermissionRequiredMixin, DetailView):
     model = BadgeLayout
     permission = 'can_change_event_settings'
 
@@ -130,7 +137,7 @@ class LayoutSetDefault(EventPermissionRequiredMixin, DetailView):
         )
 
 
-class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
+class LayoutDelete(BadgePluginEnabledCheck, EventPermissionRequiredMixin, DeleteView):
     model = BadgeLayout
     template_name = 'pretixplugins/badges/delete.html'
     permission = 'can_change_event_settings'
@@ -222,7 +229,7 @@ class LayoutEditorView(BaseEditorView):
         self.layout.background.save('background.pdf', f.file)
 
 
-class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
+class OrderPrintDo(BadgePluginEnabledCheck, EventPermissionRequiredMixin, AsyncAction, View):
     task = badges_create_pdf
     permission = 'can_view_orders'
     known_errortypes = ['OrderError']
