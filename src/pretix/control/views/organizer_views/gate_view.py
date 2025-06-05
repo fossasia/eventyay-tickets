@@ -38,17 +38,22 @@ class GateCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         return get_object_or_404(Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate'))
 
     def get_success_url(self):
-        return reverse('control:organizer.gates', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'control:organizer.gates',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )
 
     def form_valid(self, form):
         messages.success(self.request, _('The gate has been created.'))
         form.instance.organizer = self.request.organizer
         ret = super().form_valid(form)
-        form.instance.log_action('pretix.gate.created', user=self.request.user, data={
-            k: getattr(self.object, k) for k in form.changed_data
-        })
+        form.instance.log_action(
+            'pretix.gate.created',
+            user=self.request.user,
+            data={k: getattr(self.object, k) for k in form.changed_data},
+        )
         return ret
 
     def form_invalid(self, form):
@@ -72,16 +77,20 @@ class GateUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         return get_object_or_404(Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate'))
 
     def get_success_url(self):
-        return reverse('control:organizer.gates', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'control:organizer.gates',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )
 
     def form_valid(self, form):
         if form.has_changed():
-            self.object.log_action('pretix.gate.changed', user=self.request.user, data={
-                k: getattr(self.object, k)
-                for k in form.changed_data
-            })
+            self.object.log_action(
+                'pretix.gate.changed',
+                user=self.request.user,
+                data={k: getattr(self.object, k) for k in form.changed_data},
+            )
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
 
@@ -100,9 +109,12 @@ class GateDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         return get_object_or_404(Gate, organizer=self.request.organizer, pk=self.kwargs.get('gate'))
 
     def get_success_url(self):
-        return reverse('control:organizer.gates', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'control:organizer.gates',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )
 
     @transaction.atomic
     def form_valid(self, form):

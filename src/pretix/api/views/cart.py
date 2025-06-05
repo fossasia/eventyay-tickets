@@ -5,7 +5,8 @@ from rest_framework.mixins import CreateModelMixin, DestroyModelMixin
 from rest_framework.response import Response
 
 from pretix.api.serializers.cart import (
-    CartPositionCreateSerializer, CartPositionSerializer,
+    CartPositionCreateSerializer,
+    CartPositionSerializer,
 )
 from pretix.base.models import CartPosition
 
@@ -21,10 +22,11 @@ class CartPositionViewSet(CreateModelMixin, DestroyModelMixin, viewsets.ReadOnly
     write_permission = 'can_change_orders'
 
     def get_queryset(self):
-        return CartPosition.objects.filter(
-            event=self.request.event,
-            cart_id__endswith="@api"
-        ).select_related('seat').prefetch_related('answers')
+        return (
+            CartPosition.objects.filter(event=self.request.event, cart_id__endswith='@api')
+            .select_related('seat')
+            .prefetch_related('answers')
+        )
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()

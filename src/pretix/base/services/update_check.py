@@ -5,7 +5,8 @@ from datetime import timedelta
 import requests
 from django.dispatch import receiver
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _, gettext_noop
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 from django_scopes import scopes_disabled
 from i18nfield.strings import LazyI18nString
 
@@ -42,9 +43,7 @@ def update_check():
 
     if 'runserver' in sys.argv:
         gs.settings.set('update_check_last', now())
-        gs.settings.set('update_check_result', {
-            'error': 'development'
-        })
+        gs.settings.set('update_check_result', {'error': 'development'})
         return
 
     check_payload = {
@@ -54,20 +53,13 @@ def update_check():
             'total': Event.objects.count(),
             'live': Event.objects.filter(live=True).count(),
         },
-        'plugins': [
-            {
-                'name': p.module,
-                'version': p.version
-            } for p in get_all_plugins()
-        ]
+        'plugins': [{'name': p.module, 'version': p.version} for p in get_all_plugins()],
     }
     try:
         r = requests.post('https://eventyay.org/.update_check/', json=check_payload)
         gs.settings.set('update_check_last', now())
         if r.status_code != 200:
-            gs.settings.set('update_check_result', {
-                'error': 'http_error'
-            })
+            gs.settings.set('update_check_result', {'error': 'http_error'})
         else:
             rdata = r.json()
             update_available = rdata['version']['updatable'] or any(p['updatable'] for p in rdata['plugins'].values())
@@ -77,9 +69,7 @@ def update_check():
             gs.settings.set('update_check_result', rdata)
     except requests.RequestException:
         gs.settings.set('update_check_last', now())
-        gs.settings.set('update_check_result', {
-            'error': 'unavailable'
-        })
+        gs.settings.set('update_check_result', {'error': 'unavailable'})
 
 
 def send_update_notification_email():
@@ -99,9 +89,7 @@ def send_update_notification_email():
                 '\n\nBest,\n\nyour pretix developers'
             )
         ),
-        {
-            'url': build_absolute_uri('control:admin.global.update')
-        },
+        {'url': build_absolute_uri('control:admin.global.update')},
     )
 
 
@@ -109,9 +97,7 @@ def check_result_table():
     gs = GlobalSettingsObject()
     res = gs.settings.update_check_result
     if not res:
-        return {
-            'error': 'no_result'
-        }
+        return {'error': 'no_result'}
 
     if 'error' in res:
         return res
@@ -121,7 +107,14 @@ def check_result_table():
     for p in get_all_plugins():
         if p.module in res['plugins']:
             pdata = res['plugins'][p.module]
-            table.append((_('Plugin: %s') % p.name, p.version, pdata['latest'], pdata['updatable']))
+            table.append(
+                (
+                    _('Plugin: %s') % p.name,
+                    p.version,
+                    pdata['latest'],
+                    pdata['updatable'],
+                )
+            )
         else:
             table.append((_('Plugin: %s') % p.name, p.version, '?', False))
 

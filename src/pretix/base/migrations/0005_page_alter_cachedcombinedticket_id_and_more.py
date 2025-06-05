@@ -7,31 +7,28 @@ import pretix.base.models.base
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("pretixbase", "0004_create_billing_invoice"),
+        ('pretixbase', '0004_create_billing_invoice'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="Page",
+            name='Page',
             fields=[
                 (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True, primary_key=True, serialize=False
-                    ),
+                    'id',
+                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
                 ),
-                ("title", i18nfield.fields.I18nCharField()),
-                ("slug", models.SlugField(max_length=150)),
-                ("link_on_website_start_page", models.BooleanField(default=False)),
-                ("link_in_header", models.BooleanField(default=False)),
-                ("link_in_footer", models.BooleanField(default=False)),
-                ("confirmation_required", models.BooleanField(default=False)),
-                ("text", i18nfield.fields.I18nTextField()),
+                ('title', i18nfield.fields.I18nCharField()),
+                ('slug', models.SlugField(max_length=150)),
+                ('link_on_website_start_page', models.BooleanField(default=False)),
+                ('link_in_header', models.BooleanField(default=False)),
+                ('link_in_footer', models.BooleanField(default=False)),
+                ('confirmation_required', models.BooleanField(default=False)),
+                ('text', i18nfield.fields.I18nTextField()),
             ],
             options={
-                "abstract": False,
+                'abstract': False,
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         )

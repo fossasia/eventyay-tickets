@@ -27,28 +27,22 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
         return []
     nav = [
         {
-            "label": _("My Orders"),
-            "url": reverse("eventyay_common:orders"),
-            "active": "orders" in url.url_name,
-            "icon": "shopping-cart",
+            'label': _('My Orders'),
+            'url': reverse('eventyay_common:orders'),
+            'active': 'orders' in url.url_name,
+            'icon': 'shopping-cart',
         },
         {
-            "label": _("My Events"),
-            "url": reverse("eventyay_common:events"),
-            "active": "events" in url.url_name,
-            "icon": "calendar",
+            'label': _('My Events'),
+            'url': reverse('eventyay_common:events'),
+            'active': 'events' in url.url_name,
+            'icon': 'calendar',
         },
         {
-            "label": _("Organizers"),
-            "url": reverse("eventyay_common:organizers"),
-            "active": "organizers" in url.url_name,
-            "icon": "group",
-        },
-        {
-            "label": _("Account"),
-            "url": reverse("eventyay_common:account"),
-            "active": "account" in url.url_name,
-            "icon": "user",
+            'label': _('Organizers'),
+            'url': reverse('eventyay_common:organizers'),
+            'active': 'organizers' in url.url_name,
+            'icon': 'group',
         },
     ]
 
@@ -60,9 +54,7 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
             plugin_nav_items.extend(response)
 
     # Sort navigation items, prioritizing non-parent items and alphabetically
-    sorted_plugin_items = sorted(
-        plugin_nav_items, key=lambda r: (1 if r.get("parent") else 0, r["label"])
-    )
+    sorted_plugin_items = sorted(plugin_nav_items, key=lambda r: (1 if r.get('parent') else 0, r['label']))
 
     # Merge plugin items into default navigation
     merge_in(nav, sorted_plugin_items)
@@ -77,33 +69,18 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
         return []
     nav = [
         {
-            "label": _("Settings"),
-            "url": reverse(
-                "eventyay_common:event.update",
+            'label': _('Settings'),
+            'url': reverse(
+                'eventyay_common:event.update',
                 kwargs={
-                    "event": event.slug,
-                    "organizer": event.organizer.slug,
+                    'event': event.slug,
+                    'organizer': event.organizer.slug,
                 },
             ),
-            "active": (url.url_name == "event.update"),
-            "icon": "wrench",
+            'active': (url.url_name == 'event.update'),
+            'icon': 'wrench',
         },
     ]
-
-    # Merge plugin-provided navigation items
-    plugin_responses = nav_event.send(event, request=request)
-    plugin_nav_items = []
-    for receiver, response in plugin_responses:
-        if response:
-            plugin_nav_items.extend(response)
-
-    # Sort navigation items, prioritizing non-parent items and alphabetically
-    sorted_plugin_items = sorted(
-        plugin_nav_items, key=lambda r: (1 if r.get("parent") else 0, r["label"])
-    )
-
-    # Merge plugin items into default navigation
-    merge_in(nav, sorted_plugin_items)
 
     return nav
 
@@ -145,5 +122,5 @@ def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
             'url': reverse('eventyay_common:account.history'),
             'active': matched_url_name.startswith('account.history'),
             'icon': 'history',
-        }
+        },
     ]

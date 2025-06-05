@@ -80,8 +80,8 @@ class BankTransaction(models.Model):
         return str(hasher.hexdigest())
 
     def shred_private_data(self):
-        self.payer = ""
-        self.reference = ""
+        self.payer = ''
+        self.reference = ''
 
     class Meta:
         unique_together = ('event', 'organizer', 'checksum')
@@ -89,11 +89,23 @@ class BankTransaction(models.Model):
 
 
 class RefundExport(models.Model):
-    event = models.ForeignKey('pretixbase.Event', related_name='banktransfer_refund_exports', on_delete=models.CASCADE, null=True, blank=True)
-    organizer = models.ForeignKey('pretixbase.Organizer', related_name='banktransfer_refund_exports', on_delete=models.PROTECT, null=True, blank=True)
+    event = models.ForeignKey(
+        'pretixbase.Event',
+        related_name='banktransfer_refund_exports',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    organizer = models.ForeignKey(
+        'pretixbase.Organizer',
+        related_name='banktransfer_refund_exports',
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
     datetime = models.DateTimeField(auto_now_add=True)
     testmode = models.BooleanField(default=False)
-    rows = models.TextField(default="[]")
+    rows = models.TextField(default='[]')
     downloaded = models.BooleanField(default=False)
 
     @cached_property
@@ -115,7 +127,7 @@ class RefundExport(models.Model):
 
     @property
     def sum(self):
-        return sum(Decimal(row["amount"]) for row in self.rows_data)
+        return sum(Decimal(row['amount']) for row in self.rows_data)
 
     @property
     def cnt(self):

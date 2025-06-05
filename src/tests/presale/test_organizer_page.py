@@ -12,9 +12,12 @@ from pretix.base.models import Event, Organizer
 def env():
     o = Organizer.objects.create(name='MRMCD e.V.', slug='mrmcd')
     event = Event.objects.create(
-        organizer=o, name='MRMCD2015', slug='2015',
+        organizer=o,
+        name='MRMCD2015',
+        slug='2015',
         date_from=now() + timedelta(days=10),
-        live=True, is_public=False
+        live=True,
+        is_public=False,
     )
     return o, event
 
@@ -111,8 +114,11 @@ def test_empty_message(env, client):
 def test_different_organizer_not_shown(env, client):
     o = Organizer.objects.create(name='CCC e.V.', slug='ccc')
     Event.objects.create(
-        organizer=o, name='32C3', slug='32c3',
-        date_from=now() + timedelta(days=10), is_public=True
+        organizer=o,
+        name='32C3',
+        slug='32c3',
+        date_from=now() + timedelta(days=10),
+        is_public=True,
     )
     r = client.get('/mrmcd/')
     assert '32C3' not in r.rendered_content
@@ -122,9 +128,12 @@ def test_different_organizer_not_shown(env, client):
 def test_calendar(env, client):
     env[0].settings.event_list_type = 'calendar'
     e = Event.objects.create(
-        organizer=env[0], name='MRMCD2017', slug='2017',
+        organizer=env[0],
+        name='MRMCD2017',
+        slug='2017',
         date_from=datetime(now().year + 1, 9, 1, tzinfo=UTC),
-        live=True, is_public=False
+        live=True,
+        is_public=False,
     )
     r = client.get('/mrmcd/?style=calendar')
     assert 'MRMCD2017' not in r.rendered_content
@@ -142,9 +151,12 @@ def test_calendar(env, client):
 def test_week_calendar(env, client):
     env[0].settings.event_list_type = 'calendar'
     e = Event.objects.create(
-        organizer=env[0], name='MRMCD2017', slug='2017',
+        organizer=env[0],
+        name='MRMCD2017',
+        slug='2017',
         date_from=datetime(now().year + 1, 9, 1, tzinfo=UTC),
-        live=True, is_public=False
+        live=True,
+        is_public=False,
     )
     r = client.get('/mrmcd/?style=week')
     assert 'MRMCD2017' not in r.rendered_content
@@ -160,9 +172,12 @@ def test_week_calendar(env, client):
 def test_attributes_in_calendar(env, client):
     env[0].settings.event_list_type = 'calendar'
     e = Event.objects.create(
-        organizer=env[0], name='MRMCD2017', slug='2017',
+        organizer=env[0],
+        name='MRMCD2017',
+        slug='2017',
         date_from=datetime(now().year + 1, 9, 1, tzinfo=UTC),
-        live=True, is_public=True
+        live=True,
+        is_public=True,
     )
     prop = env[0].meta_properties.create(name='loc')
     e.meta_values.create(value='HD', property=prop)
@@ -176,9 +191,12 @@ def test_attributes_in_calendar(env, client):
 @pytest.mark.django_db
 def test_ics(env, client):
     e = Event.objects.create(
-        organizer=env[0], name='MRMCD2017', slug='2017',
+        organizer=env[0],
+        name='MRMCD2017',
+        slug='2017',
         date_from=datetime(now().year + 1, 9, 1, tzinfo=UTC),
-        live=True, is_public=False
+        live=True,
+        is_public=False,
     )
     r = client.get('/mrmcd/events/ical/')
     assert b'MRMCD2017' not in r.content
@@ -191,9 +209,13 @@ def test_ics(env, client):
 @pytest.mark.django_db
 def test_ics_subevents(env, client):
     e = Event.objects.create(
-        organizer=env[0], name='MRMCD2017', slug='2017',
+        organizer=env[0],
+        name='MRMCD2017',
+        slug='2017',
         date_from=datetime(now().year + 1, 9, 1, tzinfo=UTC),
-        live=True, is_public=True, has_subevents=True
+        live=True,
+        is_public=True,
+        has_subevents=True,
     )
     with scopes_disabled():
         e.subevents.create(date_from=now(), name='SE1', active=True)
@@ -205,14 +227,21 @@ def test_ics_subevents(env, client):
 @pytest.mark.django_db
 def test_ics_subevents_attributes(env, client):
     e0 = Event.objects.create(
-        organizer=env[0], name='DS2017', slug='DS2017',
+        organizer=env[0],
+        name='DS2017',
+        slug='DS2017',
         date_from=datetime(now().year + 1, 9, 1, tzinfo=UTC),
-        live=True, is_public=True
+        live=True,
+        is_public=True,
     )
     e = Event.objects.create(
-        organizer=env[0], name='MRMCD2017', slug='2017',
+        organizer=env[0],
+        name='MRMCD2017',
+        slug='2017',
         date_from=datetime(now().year + 1, 9, 1, tzinfo=UTC),
-        live=True, is_public=True, has_subevents=True
+        live=True,
+        is_public=True,
+        has_subevents=True,
     )
     with scopes_disabled():
         se1 = e.subevents.create(date_from=now(), name='SE1', active=True)

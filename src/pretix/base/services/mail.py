@@ -18,20 +18,29 @@ from celery import chain
 from celery.exceptions import MaxRetriesExceededError
 from django.conf import settings
 from django.core.mail import (
-    EmailMultiAlternatives, SafeMIMEMultipart, get_connection,
+    EmailMultiAlternatives,
+    SafeMIMEMultipart,
+    get_connection,
 )
 from django.core.mail.message import SafeMIMEText
 from django.db import transaction
 from django.template.loader import get_template
 from django.utils.timezone import override
-from django.utils.translation import gettext as _, pgettext
+from django.utils.translation import gettext as _
+from django.utils.translation import pgettext
 from django_scopes import scope, scopes_disabled
 from i18nfield.strings import LazyI18nString
 
 from pretix.base.email import ClassicMailRenderer
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Event, Invoice, InvoiceAddress, Order, OrderPosition, User,
+    CachedFile,
+    Event,
+    Invoice,
+    InvoiceAddress,
+    Order,
+    OrderPosition,
+    User,
 )
 from pretix.base.services.invoices import invoice_pdf_task
 from pretix.base.services.tasks import TransactionAwareTask
@@ -47,7 +56,6 @@ INVALID_ADDRESS = 'invalid-pretix-mail-address'
 
 
 class TolerantDict(dict):
-
     def __missing__(self, key):
         return key
 
@@ -56,11 +64,25 @@ class SendMailException(Exception):  # NOQA: N818
     pass
 
 
-def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, LazyI18nString],
-         context: Dict[str, Any] = None, event: Event = None, locale: str = None, order: Order = None,
-         position: OrderPosition = None, *, headers: dict = None, sender: str = None,
-         invoices: Sequence = None, attach_tickets=False, auto_email=True, user=None, attach_ical=False,
-         attach_cached_files: Sequence = None):
+def mail(
+    email: Union[str, Sequence[str]],
+    subject: str,
+    template: Union[str, LazyI18nString],
+    context: Dict[str, Any] = None,
+    event: Event = None,
+    locale: str = None,
+    order: Order = None,
+    position: OrderPosition = None,
+    *,
+    headers: dict = None,
+    sender: str = None,
+    invoices: Sequence = None,
+    attach_tickets=False,
+    auto_email=True,
+    user=None,
+    attach_ical=False,
+    attach_cached_files: Sequence = None,
+):
     """
     Sends out an email to a user. The mail will be sent synchronously or asynchronously depending on the installation.
 
@@ -121,15 +143,14 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
 
         if isinstance(context, dict) and order:
             try:
-                context.update({
-                    'invoice_name': order.invoice_address.name,
-                    'invoice_company': order.invoice_address.company
-                })
+                context.update(
+                    {
+                        'invoice_name': order.invoice_address.name,
+                        'invoice_company': order.invoice_address.company,
+                    }
+                )
             except InvoiceAddress.DoesNotExist:
-                context.update({
-                    'invoice_name': '',
-                    'invoice_company': ''
-                })
+                context.update({'invoice_name': '', 'invoice_company': ''})
         renderer = ClassicMailRenderer(None)
         content_plain = body_plain = render_mail(template, context)
         subject = str(subject).format_map(TolerantDict(context))
@@ -137,14 +158,14 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
         if event:
             sender_name = str(event.name)
             if len(sender_name) > 75:
-                sender_name = sender_name[:75] + "..."
+                sender_name = sender_name[:75] + '...'
             sender_name = event.settings.mail_from_name or sender_name
             sender = formataddr((sender_name, sender))
         else:
             sender = formataddr((settings.INSTANCE_NAME, sender))
 
         subject = raw_subject = str(subject)
-        signature = ""
+        signature = ''
 
         bcc = []
 
@@ -155,58 +176,72 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
                 for bcc_mail in event.settings.mail_bcc.split(','):
                     bcc.append(bcc_mail.strip())
 
-            if event.settings.mail_from == settings.DEFAULT_FROM_EMAIL and event.settings.contact_mail and not headers.get('Reply-To'):
+            if (
+                event.settings.mail_from == settings.DEFAULT_FROM_EMAIL
+                and event.settings.contact_mail
+                and not headers.get('Reply-To')
+            ):
                 headers['Reply-To'] = event.settings.contact_mail
 
             prefix = event.settings.get('mail_prefix')
             if prefix and prefix.startswith('[') and prefix.endswith(']'):
                 prefix = prefix[1:-1]
             if prefix:
-                subject = "[%s] %s" % (prefix, subject)
+                subject = '[%s] %s' % (prefix, subject)
 
-            body_plain += "\r\n\r\n-- \r\n"
+            body_plain += '\r\n\r\n-- \r\n'
 
             signature = str(event.settings.get('mail_text_signature'))
             if signature:
                 signature = signature.format(event=event.name)
                 body_plain += signature
-                body_plain += "\r\n\r\n-- \r\n"
+                body_plain += '\r\n\r\n-- \r\n'
             if order and order.testmode:
-                subject = "[TESTMODE] " + subject
+                subject = '[TESTMODE] ' + subject
 
             if order and position:
                 body_plain += _(
-                    "You are receiving this email because someone placed an order for {event} for you."
+                    'You are receiving this email because someone placed an order for {event} for you.'
                 ).format(event=event.name)
-                body_plain += "\r\n"
-                body_plain += _(
-                    "You can view your order details at the following URL:\n{orderurl}."
-                ).replace("\n", "\r\n").format(
-                    event=event.name, orderurl=build_absolute_uri(
-                        order.event, 'presale:event.order.position', kwargs={
-                            'order': order.code,
-                            'secret': position.web_secret,
-                            'position': position.positionid,
-                        }
+                body_plain += '\r\n'
+                body_plain += (
+                    _('You can view your order details at the following URL:\n{orderurl}.')
+                    .replace('\n', '\r\n')
+                    .format(
+                        event=event.name,
+                        orderurl=build_absolute_uri(
+                            order.event,
+                            'presale:event.order.position',
+                            kwargs={
+                                'order': order.code,
+                                'secret': position.web_secret,
+                                'position': position.positionid,
+                            },
+                        ),
                     )
                 )
             elif order:
-                body_plain += _(
-                    "You are receiving this email because you placed an order for {event}."
-                ).format(event=event.name)
-                body_plain += "\r\n"
-                body_plain += _(
-                    "You can view your order details at the following URL:\n{orderurl}."
-                ).replace("\n", "\r\n").format(
-                    event=event.name, orderurl=build_absolute_uri(
-                        order.event, 'presale:event.order.open', kwargs={
-                            'order': order.code,
-                            'secret': order.secret,
-                            'hash': order.email_confirm_hash()
-                        }
+                body_plain += _('You are receiving this email because you placed an order for {event}.').format(
+                    event=event.name
+                )
+                body_plain += '\r\n'
+                body_plain += (
+                    _('You can view your order details at the following URL:\n{orderurl}.')
+                    .replace('\n', '\r\n')
+                    .format(
+                        event=event.name,
+                        orderurl=build_absolute_uri(
+                            order.event,
+                            'presale:event.order.open',
+                            kwargs={
+                                'order': order.code,
+                                'secret': order.secret,
+                                'hash': order.email_confirm_hash(),
+                            },
+                        ),
                     )
                 )
-            body_plain += "\r\n"
+            body_plain += '\r\n'
         elif user:
             timezone = pytz.timezone(user.timezone)
         else:
@@ -218,9 +253,10 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
                     body_html = renderer.render(content_plain, signature, raw_subject, order, position)
                 else:
                     # Backwards compatibility
-                    warnings.warn('E-mail renderer called without position argument because position argument is not '
-                                  'supported.',
-                                  DeprecationWarning)
+                    warnings.warn(
+                        'E-mail renderer called without position argument because position argument is not supported.',
+                        DeprecationWarning,
+                    )
                     body_html = renderer.render(content_plain, signature, raw_subject, order)
             except:
                 logger.exception('Could not render HTML body')
@@ -241,7 +277,9 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
             attach_tickets=attach_tickets,
             attach_ical=attach_ical,
             user=user.pk if user else None,
-            attach_cached_files=[(cf.id if isinstance(cf, CachedFile) else cf) for cf in attach_cached_files] if attach_cached_files else [],
+            attach_cached_files=[(cf.id if isinstance(cf, CachedFile) else cf) for cf in attach_cached_files]
+            if attach_cached_files
+            else [],
         )
 
         if invoices:
@@ -256,9 +294,7 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
             # Django's unit tests work
             chain(*task_chain).apply_async()
         else:
-            transaction.on_commit(
-                lambda: chain(*task_chain).apply_async()
-            )
+            transaction.on_commit(lambda: chain(*task_chain).apply_async())
 
 
 class CustomEmail(EmailMultiAlternatives):
@@ -276,18 +312,34 @@ class CustomEmail(EmailMultiAlternatives):
 
 
 @app.task(base=TransactionAwareTask, bind=True, acks_late=True)
-def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: str, sender: str,
-                   event: int = None, position: int = None, headers: dict = None, bcc: List[str] = None,
-                   invoices: List[int] = None, order: int = None, attach_tickets=False, user=None,
-                   attach_ical=False, attach_cached_files: List[int] = None, attach_file_base64: str = None,
-                   attach_file_name: str = None) -> bool:
+def mail_send_task(
+    self,
+    *args,
+    to: List[str],
+    subject: str,
+    body: str,
+    html: str,
+    sender: str,
+    event: int = None,
+    position: int = None,
+    headers: dict = None,
+    bcc: List[str] = None,
+    invoices: List[int] = None,
+    order: int = None,
+    attach_tickets=False,
+    user=None,
+    attach_ical=False,
+    attach_cached_files: List[int] = None,
+    attach_file_base64: str = None,
+    attach_file_name: str = None,
+) -> bool:
     email = CustomEmail(subject, body, sender, to=to, bcc=bcc, headers=headers)
     if html is not None:
         html_message = SafeMIMEMultipart(_subtype='related', encoding=settings.DEFAULT_CHARSET)
         html_with_cid, cid_images = replace_images_with_cid_paths(html)
         html_message.attach(SafeMIMEText(html_with_cid, 'html', settings.DEFAULT_CHARSET))
         attach_cid_images(html_message, cid_images, verify_ssl=True)
-        email.attach_alternative(html_message, "multipart/related")
+        email.attach_alternative(html_message, 'multipart/related')
 
     if user:
         user = User.objects.get(pk=user)
@@ -296,12 +348,16 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
         with scopes_disabled():
             event = Event.objects.get(id=event)
         backend = event.get_mail_backend()
-        def cm(): return scope(organizer=event.organizer)  # noqa
+
+        def cm():
+            return scope(organizer=event.organizer)  # noqa
     else:
         backend = get_mail_backend()
-        def cm(): return scopes_disabled()  # noqa
-    with cm():
 
+        def cm():
+            return scopes_disabled()  # noqa
+
+    with cm():
         if event:
             if order:
                 try:
@@ -337,10 +393,12 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                                     'pretix.event.order.email.attachments.skipped',
                                     data={
                                         'subject': 'Attachments skipped',
-                                        'message': 'Attachment have not been send because {} bytes are likely too large to arrive.'.format(attach_size),
+                                        'message': 'Attachment have not been send because {} bytes are likely too large to arrive.'.format(
+                                            attach_size
+                                        ),
                                         'recipient': '',
                                         'invoices': [],
-                                    }
+                                    },
                                 )
                         if attach_ical:
                             ical_events = set()
@@ -355,7 +413,11 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
 
                             for i, e in enumerate(ical_events):
                                 cal = get_ical([e])
-                                email.attach('event-{}.ics'.format(i), cal.serialize(), 'text/calendar')
+                                email.attach(
+                                    'event-{}.ics'.format(i),
+                                    cal.serialize(),
+                                    'text/calendar',
+                                )
 
             email = email_filter.send_chained(event, 'message', message=email, order=order, user=user)
 
@@ -368,7 +430,7 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                             email.attach(
                                 pgettext('invoice', 'Invoice {num}').format(num=inv.number).replace(' ', '_') + '.pdf',
                                 inv.file.file.read(),
-                                'application/pdf'
+                                'application/pdf',
                             )
                     except:
                         logger.exception('Could not attach invoice to email')
@@ -390,7 +452,7 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
         email = global_email_filter.send_chained(event, 'message', message=email, user=user, order=order)
         if attach_file_base64:
             attach_file_content = base64.b64decode(attach_file_base64)
-            email.attach(attach_file_name, attach_file_content, "application/pdf")
+            email.attach(attach_file_name, attach_file_content, 'application/pdf')
 
         try:
             backend.send_messages([email])
@@ -398,17 +460,21 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
             if e.smtp_code in (101, 111, 421, 422, 431, 442, 447, 452):
                 # Most likely temporary, retry again (but pretty soon)
                 try:
-                    self.retry(max_retries=5, countdown=2 ** (self.request.retries * 3))  # max is 2 ** (4*3) = 4096 seconds = 68 minutes
+                    self.retry(
+                        max_retries=5, countdown=2 ** (self.request.retries * 3)
+                    )  # max is 2 ** (4*3) = 4096 seconds = 68 minutes
                 except MaxRetriesExceededError:
                     if order:
                         order.log_action(
                             'pretix.event.order.email.error',
                             data={
                                 'subject': 'SMTP code {}, max retries exceeded'.format(e.smtp_code),
-                                'message': e.smtp_error.decode() if isinstance(e.smtp_error, bytes) else str(e.smtp_error),
+                                'message': e.smtp_error.decode()
+                                if isinstance(e.smtp_error, bytes)
+                                else str(e.smtp_error),
                                 'recipient': '',
                                 'invoices': [],
-                            }
+                            },
                         )
                     raise e
 
@@ -421,7 +487,7 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                         'message': e.smtp_error.decode() if isinstance(e.smtp_error, bytes) else str(e.smtp_error),
                         'recipient': '',
                         'invoices': [],
-                    }
+                    },
                 )
 
             raise SendMailException('Failed to send an email to {}.'.format(to))
@@ -431,7 +497,9 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
             if not any(c >= 500 for c in smtp_codes):
                 # Not a permanent failure (mailbox full, service unavailable), retry later, but with large intervals
                 try:
-                    self.retry(max_retries=5, countdown=2 ** (self.request.retries * 3) * 4)  # max is 2 ** (4*3) * 4 = 16384 seconds = approx 4.5 hours
+                    self.retry(
+                        max_retries=5, countdown=2 ** (self.request.retries * 3) * 4
+                    )  # max is 2 ** (4*3) * 4 = 16384 seconds = approx 4.5 hours
                 except MaxRetriesExceededError:
                     # ignore and go on with logging the error
                     pass
@@ -449,14 +517,24 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                         'message': '\n'.join(message),
                         'recipient': '',
                         'invoices': [],
-                    }
+                    },
                 )
 
             raise SendMailException('Failed to send an email to {}.'.format(to))
         except Exception as e:
-            if isinstance(e, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError, ssl.SSLError, OSError)):
+            if isinstance(
+                e,
+                (
+                    smtplib.SMTPServerDisconnected,
+                    smtplib.SMTPConnectError,
+                    ssl.SSLError,
+                    OSError,
+                ),
+            ):
                 try:
-                    self.retry(max_retries=5, countdown=2 ** (self.request.retries * 3))  # max is 2 ** (4*3) = 4096 seconds = 68 minutes
+                    self.retry(
+                        max_retries=5, countdown=2 ** (self.request.retries * 3)
+                    )  # max is 2 ** (4*3) = 4096 seconds = 68 minutes
                 except MaxRetriesExceededError:
                     if order:
                         order.log_action(
@@ -466,7 +544,7 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                                 'message': 'Max retries exceeded',
                                 'recipient': '',
                                 'invoices': [],
-                            }
+                            },
                         )
                     raise e
             if order:
@@ -477,7 +555,7 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                         'message': str(e),
                         'recipient': '',
                         'invoices': [],
-                    }
+                    },
                 )
             logger.exception('Error sending email')
             raise SendMailException('Failed to send an email to {}.'.format(to))
@@ -500,18 +578,18 @@ def render_mail(template, context):
 
 def replace_images_with_cid_paths(body_html):
     if body_html:
-        email = BeautifulSoup(body_html, "lxml")
+        email = BeautifulSoup(body_html, 'lxml')
         cid_images = []
         for image in email.findAll('img'):
             original_image_src = image['src']
 
             try:
-                cid_id = "image_%s" % cid_images.index(original_image_src)
+                cid_id = 'image_%s' % cid_images.index(original_image_src)
             except ValueError:
                 cid_images.append(original_image_src)
-                cid_id = "image_%s" % (len(cid_images) - 1)
+                cid_id = 'image_%s' % (len(cid_images) - 1)
 
-            image['src'] = "cid:%s" % cid_id
+            image['src'] = 'cid:%s' % cid_id
 
         return str(email), cid_images
     else:
@@ -520,17 +598,15 @@ def replace_images_with_cid_paths(body_html):
 
 def attach_cid_images(msg, cid_images, verify_ssl=True):
     if cid_images and len(cid_images) > 0:
-
         msg.mixed_subtype = 'mixed'
         for key, image in enumerate(cid_images):
             cid = 'image_%s' % key
             try:
-                mime_image = convert_image_to_cid(
-                    image, cid, verify_ssl)
+                mime_image = convert_image_to_cid(image, cid, verify_ssl)
                 if mime_image:
                     msg.attach(mime_image)
             except:
-                logger.exception("ERROR attaching CID image %s[%s]" % (cid, image))
+                logger.exception('ERROR attaching CID image %s[%s]' % (cid, image))
 
 
 def encoder_linelength(msg):
@@ -539,13 +615,13 @@ def encoder_linelength(msg):
     https://www.w3.org/Protocols/rfc1341/5_Content-Transfer-Encoding.html section 5.2
     """
 
-    orig = msg.get_payload(decode=True).replace(b"\n", b"").replace(b"\r", b"")
+    orig = msg.get_payload(decode=True).replace(b'\n', b'').replace(b'\r', b'')
     max_length = 76
     pieces = []
     for i in range(0, len(orig), max_length):
-        chunk = orig[i:i + max_length]
+        chunk = orig[i : i + max_length]
         pieces.append(chunk)
-    msg.set_payload(b"\r\n".join(pieces))
+    msg.set_payload(b'\r\n'.join(pieces))
 
 
 def convert_image_to_cid(image_src, cid_id, verify_ssl=True):
@@ -556,7 +632,7 @@ def convert_image_to_cid(image_src, cid_id, verify_ssl=True):
             mime_image = MIMEImage(image_content, _subtype=image_type, _encoder=encoder_linelength)
             mime_image.add_header('Content-Transfer-Encoding', 'base64')
         elif image_src.startswith('data:'):
-            logger.exception("ERROR creating MIME element %s[%s]" % (cid_id, image_src))
+            logger.exception('ERROR creating MIME element %s[%s]' % (cid_id, image_src))
             return None
         else:
             image_src = normalize_image_url(image_src)
@@ -565,14 +641,13 @@ def convert_image_to_cid(image_src, cid_id, verify_ssl=True):
             guess_subtype = os.path.splitext(path)[1][1:]
 
             response = requests.get(image_src, verify=verify_ssl)
-            mime_image = MIMEImage(
-                response.content, _subtype=guess_subtype)
+            mime_image = MIMEImage(response.content, _subtype=guess_subtype)
 
         mime_image.add_header('Content-ID', '<%s>' % cid_id)
 
         return mime_image
     except:
-        logger.exception("ERROR creating mime_image %s[%s]" % (cid_id, image_src))
+        logger.exception('ERROR creating mime_image %s[%s]' % (cid_id, image_src))
         return None
 
 
@@ -610,7 +685,7 @@ def get_mail_backend(timeout=None):
     gs = GlobalSettingsObject()
 
     if gs.settings.email_vendor is not None:
-        if gs.settings.email_vendor == "sendgrid":
+        if gs.settings.email_vendor == 'sendgrid':
             return SendGridEmail(api_key=gs.settings.send_grid_api_key)
         else:
             return CustomSMTPBackend(

@@ -35,7 +35,7 @@ class AsyncMixin:
     def _ajax_response_data(self):
         return {}
 
-    def _return_ajax_result(self, res, timeout=.5):
+    def _return_ajax_result(self, res, timeout=0.5):
         if not res.ready():
             try:
                 res.get(timeout=timeout, propagate=False)
@@ -44,19 +44,18 @@ class AsyncMixin:
             except ConnectionError:
                 # Redis probably just restarted, let's just report not ready and retry next time
                 data = self._ajax_response_data()
-                data.update({
-                    'async_id': res.id,
-                    'ready': False
-                })
+                data.update({'async_id': res.id, 'ready': False})
                 return data
 
         ready = res.ready()
         data = self._ajax_response_data()
-        data.update({
-            'async_id': res.id,
-            'ready': ready,
-            'started': False,
-        })
+        data.update(
+            {
+                'async_id': res.id,
+                'ready': ready,
+                'started': False,
+            }
+        )
         if ready:
             if res.successful() and not isinstance(res.info, Exception):
                 smes = self.get_success_message(res.info)
@@ -64,29 +63,32 @@ class AsyncMixin:
                     messages.success(self.request, smes)
                 # TODO: Do not store message if the ajax client states that it will not redirect
                 # but handle the message itself
-                data.update({
-                    'redirect': self.get_success_url(res.info),
-                    'success': True,
-                    'message': str(self.get_success_message(res.info))
-                })
+                data.update(
+                    {
+                        'redirect': self.get_success_url(res.info),
+                        'success': True,
+                        'message': str(self.get_success_message(res.info)),
+                    }
+                )
             else:
                 messages.error(self.request, self.get_error_message(res.info))
                 # TODO: Do not store message if the ajax client states that it will not redirect
                 # but handle the message itself
-                data.update({
-                    'redirect': self.get_error_url(),
-                    'success': False,
-                    'message': str(self.get_error_message(res.info))
-                })
+                data.update(
+                    {
+                        'redirect': self.get_error_url(),
+                        'success': False,
+                        'message': str(self.get_error_message(res.info)),
+                    }
+                )
         elif res.state == 'PROGRESS':
-            data.update({
-                'started': True,
-                'percentage': res.result.get('value', 0)
-            })
+            data.update({'started': True, 'percentage': res.result.get('value', 0)})
         elif res.state == 'STARTED':
-            data.update({
-                'started': True,
-            })
+            data.update(
+                {
+                    'started': True,
+                }
+            )
         return data
 
     def get_result(self, request):
@@ -105,24 +107,28 @@ class AsyncMixin:
         smes = self.get_success_message(value)
         if smes:
             messages.success(self.request, smes)
-        if "ajax" in self.request.POST or "ajax" in self.request.GET:
-            return JsonResponse({
-                'ready': True,
-                'success': True,
-                'redirect': self.get_success_url(value),
-                'message': str(self.get_success_message(value))
-            })
+        if 'ajax' in self.request.POST or 'ajax' in self.request.GET:
+            return JsonResponse(
+                {
+                    'ready': True,
+                    'success': True,
+                    'redirect': self.get_success_url(value),
+                    'message': str(self.get_success_message(value)),
+                }
+            )
         return redirect(self.get_success_url(value))
 
     def error(self, exception):
         messages.error(self.request, self.get_error_message(exception))
-        if "ajax" in self.request.POST or "ajax" in self.request.GET:
-            return JsonResponse({
-                'ready': True,
-                'success': False,
-                'redirect': self.get_error_url(),
-                'message': str(self.get_error_message(exception))
-            })
+        if 'ajax' in self.request.POST or 'ajax' in self.request.GET:
+            return JsonResponse(
+                {
+                    'ready': True,
+                    'success': False,
+                    'redirect': self.get_error_url(),
+                    'message': str(self.get_error_message(exception)),
+                }
+            )
         return redirect(self.get_error_url())
 
     def get_error_message(self, exception):
@@ -177,6 +183,7 @@ class AsyncFormView(AsyncMixin, FormView):
     may depend on the request object unless specifically supported by this class.
     Also, all form keyword arguments except ``instance`` need to be serializable.
     """
+
     known_errortypes = ['ValidationError']
 
     def __init_subclass__(cls):
@@ -203,7 +210,7 @@ class AsyncFormView(AsyncMixin, FormView):
             base=ProfiledEventTask,
             bind=True,
             name=cls.__module__ + '.' + cls.__name__ + '.async_execute',
-            throws=(ValidationError,)
+            throws=(ValidationError,),
         )(async_execute)
 
     def async_form_valid(self, task, form):
@@ -220,9 +227,7 @@ class AsyncFormView(AsyncMixin, FormView):
     def form_valid(self, form):
         if form.files:
             raise TypeError('File upload currently not supported in AsyncFormView')
-        form_kwargs = {
-            k: v for k, v in self.get_form_kwargs().items()
-        }
+        form_kwargs = {k: v for k, v in self.get_form_kwargs().items()}
         if form_kwargs.get('instance'):
             if form_kwargs['instance'].pk:
                 form_kwargs['instance'] = form_kwargs['instance'].pk

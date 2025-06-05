@@ -9,15 +9,28 @@ from django.utils.timezone import now
 from django_scopes import scope
 
 from pretix.base.models import (
-    CachedCombinedTicket, CachedTicket, Event, InvoiceAddress, Order,
-    OrderPayment, OrderPosition, Organizer, QuestionAnswer,
+    CachedCombinedTicket,
+    CachedTicket,
+    Event,
+    InvoiceAddress,
+    Order,
+    OrderPayment,
+    OrderPosition,
+    Organizer,
+    QuestionAnswer,
 )
 from pretix.base.services.invoices import generate_invoice, invoice_pdf_task
 from pretix.base.services.tickets import generate
 from pretix.base.shredder import (
-    AttendeeInfoShredder, CachedTicketShredder, EmailAddressShredder,
-    InvoiceAddressShredder, InvoiceShredder, PaymentInfoShredder,
-    QuestionAnswerShredder, WaitingListShredder, shred_constraints,
+    AttendeeInfoShredder,
+    CachedTicketShredder,
+    EmailAddressShredder,
+    InvoiceAddressShredder,
+    InvoiceShredder,
+    PaymentInfoShredder,
+    QuestionAnswerShredder,
+    WaitingListShredder,
+    shred_constraints,
 )
 
 
@@ -25,8 +38,11 @@ from pretix.base.shredder import (
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy',
-        date_from=now(), plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf'
+        organizer=o,
+        name='Dummy',
+        slug='dummy',
+        date_from=now(),
+        plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf',
     )
     with scope(organizer=o):
         yield event
@@ -34,20 +50,20 @@ def event():
 
 @pytest.fixture
 def item(event):
-    return event.items.create(
-        name='Early-bird ticket',
-        category=None, default_price=23,
-        admission=True
-    )
+    return event.items.create(name='Early-bird ticket', category=None, default_price=23, admission=True)
 
 
 @pytest.fixture
 def order(event, item):
     o = Order.objects.create(
-        code='FOO', event=event, email='dummy@dummy.test',
+        code='FOO',
+        event=event,
+        email='dummy@dummy.test',
         status=Order.STATUS_PENDING,
-        datetime=now(), expires=now() + timedelta(days=10),
-        total=14, locale='en'
+        datetime=now(),
+        expires=now() + timedelta(days=10),
+        total=14,
+        locale='en',
     )
     event.settings.set('attendee_names_asked', True)
     event.settings.set('locales', ['en', 'de'])
@@ -55,9 +71,9 @@ def order(event, item):
         order=o,
         item=item,
         variation=None,
-        price=Decimal("14"),
-        attendee_name_parts={'full_name': "Peter", "_scheme": "full"},
-        attendee_email="foo@example.org",
+        price=Decimal('14'),
+        attendee_name_parts={'full_name': 'Peter', '_scheme': 'full'},
+        attendee_email='foo@example.org',
         company='Foobar',
     )
     return o
@@ -65,9 +81,9 @@ def order(event, item):
 
 @pytest.fixture
 def question(event, item):
-    q = event.questions.create(question="T-Shirt size", type="C", identifier="ABC")
+    q = event.questions.create(question='T-Shirt size', type='C', identifier='ABC')
     q.items.add(item)
-    q.options.create(answer="XL", identifier="LVETRWVU")
+    q.options.create(answer='XL', identifier='LVETRWVU')
     return q
 
 
@@ -78,25 +94,21 @@ def test_email_shredder(event, order):
         data={
             'recipient': 'dummy@dummy.test',
             'message': 'Hello Peter@,',
-            'subject': 'Foo'
-        }
+            'subject': 'Foo',
+        },
     )
     l2 = order.log_action(
         'pretix.event.order.contact.changed',
         data={
             'old_email': 'dummy@dummy.test',
             'new_email': 'foo@bar.com',
-        }
+        },
     )
 
     s = EmailAddressShredder(event)
     f = list(s.generate_files())
-    assert json.loads(f[0][2]) == {
-        order.code: 'dummy@dummy.test'
-    }
-    assert json.loads(f[1][2]) == {
-        '{}-{}'.format(order.code, 1): 'foo@example.org'
-    }
+    assert json.loads(f[0][2]) == {order.code: 'dummy@dummy.test'}
+    assert json.loads(f[1][2]) == {'{}-{}'.format(order.code, 1): 'foo@example.org'}
     s.shred_data()
     order.refresh_from_db()
     assert order.email is None
@@ -113,7 +125,10 @@ def test_waitinglist_shredder(event, item):
     q = event.quotas.create(size=5)
     q.items.add(item)
     wle = event.waitinglistentries.create(
-        item=item, email='foo@example.org', name_parts={'_legacy': 'Peter'}, phone='+49891234567'
+        item=item,
+        email='foo@example.org',
+        name_parts={'_legacy': 'Peter'},
+        phone='+49891234567',
     )
     wle.send_voucher()
     assert '@' in wle.voucher.comment
@@ -133,7 +148,7 @@ def test_waitinglist_shredder(event, item):
             'name': 'Peter',
             'name_parts': {'_legacy': 'Peter'},
             'email': 'foo@example.org',
-            'phone': '+49891234567'
+            'phone': '+49891234567',
         }
     ]
     s.shred_data()
@@ -151,9 +166,9 @@ def test_attendee_name_shredder(event, order):
     l1 = order.log_action(
         'pretix.event.order.modified',
         data={
-            "data": [{"attendee_name": "Peter", "question_1": "Test", "company": "Foobar"}],
-            "invoice_data": {"name": "Foo"}
-        }
+            'data': [{'attendee_name': 'Peter', 'question_1': 'Test', 'company': 'Foobar'}],
+            'invoice_data': {'name': 'Foo'},
+        },
     )
 
     s = AttendeeInfoShredder(event)
@@ -166,7 +181,7 @@ def test_attendee_name_shredder(event, order):
             'zipcode': None,
             'city': None,
             'country': None,
-            'state': None
+            'state': None,
         }
     }
     s.shred_data()
@@ -184,15 +199,28 @@ def test_invoice_address_shredder(event, order):
     l1 = order.log_action(
         'pretix.event.order.modified',
         data={
-            "data": [{"attendee_name": "Hans", "question_1": "Test"}],
-            "invoice_data": {"name": "Peter", "country": "DE", "is_business": False, "internal_reference": "",
-                             "state": "",
-                             "company": "ACME", "street": "Sesam Street", "city": "Sample City", "zipcode": "12345"}
-        }
+            'data': [{'attendee_name': 'Hans', 'question_1': 'Test'}],
+            'invoice_data': {
+                'name': 'Peter',
+                'country': 'DE',
+                'is_business': False,
+                'internal_reference': '',
+                'state': '',
+                'company': 'ACME',
+                'street': 'Sesam Street',
+                'city': 'Sample City',
+                'zipcode': '12345',
+            },
+        },
     )
-    ia = InvoiceAddress.objects.create(company='Acme Company', street='221B Baker Street',
-                                       zipcode='12345', city='London', country='UK',
-                                       order=order)
+    ia = InvoiceAddress.objects.create(
+        company='Acme Company',
+        street='221B Baker Street',
+        zipcode='12345',
+        city='London',
+        country='UK',
+        order=order,
+    )
     s = InvoiceAddressShredder(event)
     f = list(s.generate_files())
     assert json.loads(f[0][2]) == {
@@ -209,7 +237,7 @@ def test_invoice_address_shredder(event, order):
             'street': '221B Baker Street',
             'vat_id': '',
             'vat_id_validated': False,
-            'zipcode': '12345'
+            'zipcode': '12345',
         }
     }
     s.shred_data()
@@ -217,37 +245,38 @@ def test_invoice_address_shredder(event, order):
     assert not InvoiceAddress.objects.filter(order=order).exists()
     l1.refresh_from_db()
     assert l1.parsed_data == {
-        "data": [{"attendee_name": "Hans", "question_1": "Test"}],
-        "invoice_data": {"name": "█", "country": "█", "is_business": False, "internal_reference": "", "company": "█",
-                         "street": "█", "city": "█", "zipcode": "█", "state": ""}
+        'data': [{'attendee_name': 'Hans', 'question_1': 'Test'}],
+        'invoice_data': {
+            'name': '█',
+            'country': '█',
+            'is_business': False,
+            'internal_reference': '',
+            'company': '█',
+            'street': '█',
+            'city': '█',
+            'zipcode': '█',
+            'state': '',
+        },
     }
 
 
 @pytest.mark.django_db
 def test_question_answer_shredder(event, order, question):
     opt = question.options.first()
-    q2 = event.questions.create(question="Photo", type="F", identifier="DEF")
+    q2 = event.questions.create(question='Photo', type='F', identifier='DEF')
     l1 = order.log_action(
         'pretix.event.order.modified',
         data={
-            "data": [
+            'data': [
                 {
-                    "attendee_name": "Hans",
-                    "question_%d" % question.pk: [{"id": opt.pk, "type": "QuestionOption"}]
+                    'attendee_name': 'Hans',
+                    'question_%d' % question.pk: [{'id': opt.pk, 'type': 'QuestionOption'}],
                 }
             ],
-        }
+        },
     )
-    qa = QuestionAnswer.objects.create(
-        orderposition=order.positions.first(),
-        question=question,
-        answer='S'
-    )
-    qa2 = QuestionAnswer.objects.create(
-        orderposition=order.positions.first(),
-        question=q2,
-        answer='file:///foo.pdf'
-    )
+    qa = QuestionAnswer.objects.create(orderposition=order.positions.first(), question=question, answer='S')
+    qa2 = QuestionAnswer.objects.create(orderposition=order.positions.first(), question=q2, answer='file:///foo.pdf')
     qa.file.save('foo.pdf', ContentFile('foo'))
     fname = qa.file.path
     assert os.path.exists(fname)
@@ -255,19 +284,22 @@ def test_question_answer_shredder(event, order, question):
     s = QuestionAnswerShredder(event)
     f = list(s.generate_files())
     assert json.loads(f[-1][2]) == {
-        '{}-1'.format(order.code): [{
-            'question': question.pk,
-            'answer': 'S',
-            'question_identifier': question.identifier,
-            'options': [opt.pk],
-            'option_identifiers': [opt.identifier],
-        }, {
-            'question': q2.pk,
-            'answer': f'/api/v1/organizers/dummy/events/dummy/orderpositions/{qa2.orderposition_id}/answer/{qa2.question_id}/',
-            'question_identifier': q2.identifier,
-            'options': [],
-            'option_identifiers': [],
-        }]
+        '{}-1'.format(order.code): [
+            {
+                'question': question.pk,
+                'answer': 'S',
+                'question_identifier': question.identifier,
+                'options': [opt.pk],
+                'option_identifiers': [opt.identifier],
+            },
+            {
+                'question': q2.pk,
+                'answer': f'/api/v1/organizers/dummy/events/dummy/orderpositions/{qa2.orderposition_id}/answer/{qa2.question_id}/',
+                'question_identifier': q2.identifier,
+                'options': [],
+                'option_identifiers': [],
+            },
+        ]
     }
     assert f[0][0].endswith('.pdf')
     s.shred_data()
@@ -276,19 +308,24 @@ def test_question_answer_shredder(event, order, question):
     assert not QuestionAnswer.objects.filter(pk=qa.pk).exists()
     l1.refresh_from_db()
     assert l1.parsed_data == {
-        "data": [{"attendee_name": "Hans", "question_%d" % question.pk: "█"}],
+        'data': [{'attendee_name': 'Hans', 'question_%d' % question.pk: '█'}],
     }
 
 
 @pytest.mark.django_db
 def test_invoice_shredder(event, order):
-    InvoiceAddress.objects.create(company='Acme Company', street='221B Baker Street',
-                                  zipcode='12345', city='London', country='UK',
-                                  order=order)
+    InvoiceAddress.objects.create(
+        company='Acme Company',
+        street='221B Baker Street',
+        zipcode='12345',
+        city='London',
+        country='UK',
+        order=order,
+    )
     inv = generate_invoice(order)
     invoice_pdf_task.apply(args=(inv.pk,))
     inv.refresh_from_db()
-    assert inv.invoice_to == "Acme Company\n221B Baker Street\n12345 London"
+    assert inv.invoice_to == 'Acme Company\n221B Baker Street\n12345 London'
     assert inv.file
     fname = inv.file.path
     assert os.path.exists(fname)
@@ -298,8 +335,8 @@ def test_invoice_shredder(event, order):
     s.shred_data()
     inv.refresh_from_db()
 
-    assert "Acme" not in inv.invoice_to
-    assert "icket" not in inv.lines.first().description
+    assert 'Acme' not in inv.invoice_to
+    assert 'icket' not in inv.lines.first().description
     assert not inv.file
     assert not os.path.exists(fname)
 
@@ -329,12 +366,19 @@ def test_cached_tickets(event, order):
 
 @pytest.mark.django_db
 def test_payment_info_shredder(event, order):
-    order.payments.create(info=json.dumps({
-        'reference': 'Verwendungszweck 1',
-        'date': '2018-05-01',
-        'payer': 'Hans',
-        'trans_id': 12
-    }), provider='banktransfer', amount=order.total, state=OrderPayment.PAYMENT_STATE_PENDING)
+    order.payments.create(
+        info=json.dumps(
+            {
+                'reference': 'Verwendungszweck 1',
+                'date': '2018-05-01',
+                'payer': 'Hans',
+                'trans_id': 12,
+            }
+        ),
+        provider='banktransfer',
+        amount=order.total,
+        state=OrderPayment.PAYMENT_STATE_PENDING,
+    )
     order.save()
 
     s = PaymentInfoShredder(event)
@@ -347,7 +391,7 @@ def test_payment_info_shredder(event, order):
         'reference': '█',
         'date': '2018-05-01',
         'payer': '█',
-        'trans_id': 12
+        'trans_id': 12,
     }
 
 
@@ -377,13 +421,7 @@ def test_shred_constraint_30_days_subevents(event):
     event.has_subevents = True
     event.live = False
 
-    event.subevents.create(
-        date_from=now() - timedelta(days=32),
-        date_to=now() - timedelta(days=32)
-    )
+    event.subevents.create(date_from=now() - timedelta(days=32), date_to=now() - timedelta(days=32))
     assert shred_constraints(event) is None
-    event.subevents.create(
-        date_from=now() - timedelta(days=22),
-        date_to=now() - timedelta(days=32)
-    )
+    event.subevents.create(date_from=now() - timedelta(days=22), date_to=now() - timedelta(days=32))
     assert shred_constraints(event)

@@ -8,7 +8,8 @@ from django.urls import reverse
 from django.utils.dates import MONTHS, WEEKDAYS
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 from i18nfield.forms import I18nInlineFormSet
 
 from pretix.base.forms import I18nModelForm
@@ -75,8 +76,10 @@ class SubEventBulkForm(SubEventForm):
     )
     rel_presale_end = RelativeDateTimeField(
         label=_('End of presale'),
-        help_text=_('Optional. No products will be sold after this date. If you do not set this value, the presale '
-                    'will end after the end date of your event.'),
+        help_text=_(
+            'Optional. No products will be sold after this date. If you do not set this value, the presale '
+            'will end after the end date of your event.'
+        ),
         required=False,
         limit_choices=('date_from', 'date_to'),
     )
@@ -124,7 +127,13 @@ class SubEventBulkEditForm(I18nModelForm):
             self.fields[k].widget.is_required = False
             self.fields[k].required = False
 
-        for k in ('date_from', 'date_to', 'date_admission', 'presale_start', 'presale_end'):
+        for k in (
+            'date_from',
+            'date_to',
+            'date_admission',
+            'presale_start',
+            'presale_end',
+        ):
             self.fields[k + '_day'] = forms.DateField(
                 label=self._meta.model._meta.get_field(k).verbose_name,
                 help_text=self._meta.model._meta.get_field(k).help_text,
@@ -150,10 +159,8 @@ class SubEventBulkEditForm(I18nModelForm):
             'is_public',
             'active',
         ]
-        field_classes = {
-        }
-        widgets = {
-        }
+        field_classes = {}
+        widgets = {}
 
     def save(self, commit=True):
         objs = list(self.queryset)
@@ -190,7 +197,7 @@ class SubEventBulkEditForm(I18nModelForm):
                             year=cval.year,
                             month=cval.month,
                             day=cval.day,
-                            tzinfo=self.event.timezone
+                            tzinfo=self.event.timezone,
                         )
                     setattr(obj, k.replace('_day', ''), newval)
                 fields.add(k.replace('_day', ''))
@@ -237,33 +244,32 @@ class SubEventItemOrVariationFormMixin:
 class SubEventItemForm(SubEventItemOrVariationFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['price'].widget.attrs['placeholder'] = money_filter(self.item.default_price, self.item.event.currency, hide_currency=True)
+        self.fields['price'].widget.attrs['placeholder'] = money_filter(
+            self.item.default_price, self.item.event.currency, hide_currency=True
+        )
         self.fields['price'].label = str(self.item)
 
     class Meta:
         model = SubEventItem
         fields = ['price', 'disabled']
-        widgets = {
-            'price': forms.TextInput
-        }
+        widgets = {'price': forms.TextInput}
 
 
 class SubEventItemVariationForm(SubEventItemOrVariationFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['price'].widget.attrs['placeholder'] = money_filter(self.variation.price, self.item.event.currency, hide_currency=True)
+        self.fields['price'].widget.attrs['placeholder'] = money_filter(
+            self.variation.price, self.item.event.currency, hide_currency=True
+        )
         self.fields['price'].label = '{} – {}'.format(str(self.item), self.variation.value)
 
     class Meta:
         model = SubEventItem
         fields = ['price', 'disabled']
-        widgets = {
-            'price': forms.TextInput
-        }
+        widgets = {'price': forms.TextInput}
 
 
 class QuotaFormSet(I18nInlineFormSet):
-
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event', None)
         self.locales = self.event.settings.get('locales')
@@ -289,14 +295,13 @@ class QuotaFormSet(I18nInlineFormSet):
             use_required_attribute=False,
             locales=self.locales,
             event=self.event,
-            items=self.items
+            items=self.items,
         )
         self.add_fields(form, None)
         return form
 
 
 class SubEventMetaValueForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         self.property = kwargs.pop('property')
         self.default = kwargs.pop('default', None)
@@ -306,17 +311,27 @@ class SubEventMetaValueForm(forms.ModelForm):
             self.fields['value'] = forms.ChoiceField(
                 label=self.property.name,
                 choices=[
-                    ('', _('Default ({value})').format(value=self.default or self.property.default) if self.default or self.property.default else ''),
-                ] + [(a.strip(), a.strip()) for a in self.property.allowed_values.splitlines()],
+                    (
+                        '',
+                        _('Default ({value})').format(value=self.default or self.property.default)
+                        if self.default or self.property.default
+                        else '',
+                    ),
+                ]
+                + [(a.strip(), a.strip()) for a in self.property.allowed_values.splitlines()],
             )
         else:
             self.fields['value'].label = self.property.name
             self.fields['value'].widget.attrs['placeholder'] = self.default or self.property.default
             self.fields['value'].widget.attrs['data-typeahead-url'] = (
-                reverse('control:events.meta.typeahead') + '?' + urlencode({
-                    'property': self.property.name,
-                    'organizer': self.property.organizer.slug,
-                })
+                reverse('control:events.meta.typeahead')
+                + '?'
+                + urlencode(
+                    {
+                        'property': self.property.name,
+                        'organizer': self.property.organizer.slug,
+                    }
+                )
             )
         self.fields['value'].required = False
         if self.disabled:
@@ -330,13 +345,10 @@ class SubEventMetaValueForm(forms.ModelForm):
     class Meta:
         model = SubEventMetaValue
         fields = ['value']
-        widgets = {
-            'value': forms.TextInput
-        }
+        widgets = {'value': forms.TextInput}
 
 
 class CheckinListFormSet(I18nInlineFormSet):
-
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event', None)
         self.locales = self.event.settings.get('locales')
@@ -365,10 +377,7 @@ class CheckinListFormSet(I18nInlineFormSet):
 
 class RRuleForm(forms.Form):
     # TODO: calendar.setfirstweekday
-    exclude = forms.BooleanField(
-        label=_('Exclude these dates instead of adding them.'),
-        required=False
-    )
+    exclude = forms.BooleanField(label=_('Exclude these dates instead of adding them.'), required=False)
     freq = forms.ChoiceField(
         choices=[
             ('yearly', _('year(s)')),
@@ -376,21 +385,13 @@ class RRuleForm(forms.Form):
             ('weekly', _('week(s)')),
             ('daily', _('day(s)')),
         ],
-        initial='weekly'
+        initial='weekly',
     )
-    interval = forms.IntegerField(
-        label=_('Interval'),
-        initial=1
-    )
+    interval = forms.IntegerField(label=_('Interval'), initial=1)
     dtstart = forms.DateField(
         label=_('Start date'),
-        widget=forms.DateInput(
-            attrs={
-                'class': 'datepickerfield',
-                'required': 'required'
-            }
-        ),
-        initial=lambda: now().date()
+        widget=forms.DateInput(attrs={'class': 'datepickerfield', 'required': 'required'}),
+        initial=lambda: now().date(),
     )
 
     end = forms.ChoiceField(
@@ -399,22 +400,14 @@ class RRuleForm(forms.Form):
             ('until', ''),
         ],
         initial='count',
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
     )
-    count = forms.IntegerField(
-        label=_('Number of repetitions'),
-        initial=10
-    )
+    count = forms.IntegerField(label=_('Number of repetitions'), initial=10)
     until = forms.DateField(
-        widget=forms.DateInput(
-            attrs={
-                'class': 'datepickerfield',
-                'required': 'required'
-            }
-        ),
+        widget=forms.DateInput(attrs={'class': 'datepickerfield', 'required': 'required'}),
         label=_('Last date'),
         required=True,
-        initial=lambda: now() + timedelta(days=365)
+        initial=lambda: now() + timedelta(days=365),
     )
 
     yearly_bysetpos = forms.ChoiceField(
@@ -424,7 +417,7 @@ class RRuleForm(forms.Form):
             ('3', pgettext_lazy('rrule', 'third')),
             ('-1', pgettext_lazy('rrule', 'last')),
         ],
-        required=False
+        required=False,
     )
     yearly_same = forms.ChoiceField(
         choices=[
@@ -432,7 +425,7 @@ class RRuleForm(forms.Form):
             ('off', ''),
         ],
         initial='on',
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
     )
     yearly_byweekday = forms.ChoiceField(
         choices=[
@@ -447,14 +440,9 @@ class RRuleForm(forms.Form):
             ('MO,TU,WE,TH,FR', _('Weekday')),
             ('SA,SU', _('Weekend day')),
         ],
-        required=False
+        required=False,
     )
-    yearly_bymonth = forms.ChoiceField(
-        choices=[
-            (str(i), MONTHS[i]) for i in range(1, 13)
-        ],
-        required=False
-    )
+    yearly_bymonth = forms.ChoiceField(choices=[(str(i), MONTHS[i]) for i in range(1, 13)], required=False)
 
     monthly_same = forms.ChoiceField(
         choices=[
@@ -462,7 +450,7 @@ class RRuleForm(forms.Form):
             ('off', ''),
         ],
         initial='on',
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
     )
     monthly_bysetpos = forms.ChoiceField(
         choices=[
@@ -471,7 +459,7 @@ class RRuleForm(forms.Form):
             ('3', pgettext_lazy('rrule', 'third')),
             ('-1', pgettext_lazy('rrule', 'last')),
         ],
-        required=False
+        required=False,
     )
     monthly_byweekday = forms.ChoiceField(
         choices=[
@@ -486,7 +474,7 @@ class RRuleForm(forms.Form):
             ('MO,TU,WE,TH,FR', _('Weekday')),
             ('SA,SU', _('Weekend day')),
         ],
-        required=False
+        required=False,
     )
 
     weekly_byweekday = forms.MultipleChoiceField(
@@ -500,51 +488,36 @@ class RRuleForm(forms.Form):
             ('SU', WEEKDAYS[6]),
         ],
         required=False,
-        widget=forms.CheckboxSelectMultiple
+        widget=forms.CheckboxSelectMultiple,
     )
 
     def parse_weekdays(self, value):
-        m = {
-            'MO': 0,
-            'TU': 1,
-            'WE': 2,
-            'TH': 3,
-            'FR': 4,
-            'SA': 5,
-            'SU': 6
-        }
+        m = {'MO': 0, 'TU': 1, 'WE': 2, 'TH': 3, 'FR': 4, 'SA': 5, 'SU': 6}
         if ',' in value:
             return [m.get(a) for a in value.split(',')]
         else:
             return m.get(value)
 
 
-RRuleFormSet = formset_factory(
-    RRuleForm,
-    can_order=False, can_delete=True, extra=1
-)
+RRuleFormSet = formset_factory(RRuleForm, can_order=False, can_delete=True, extra=1)
 
 
 class TimeForm(forms.Form):
     time_from = forms.TimeField(
         label=_('Event start time'),
         widget=forms.TimeInput(attrs={'class': 'timepickerfield'}),
-        required=True
+        required=True,
     )
     time_to = forms.TimeField(
         label=_('Event end time'),
         widget=forms.TimeInput(attrs={'class': 'timepickerfield'}),
-        required=False
+        required=False,
     )
     time_admission = forms.TimeField(
         label=_('Admission time'),
         widget=forms.TimeInput(attrs={'class': 'timepickerfield'}),
-        required=False
+        required=False,
     )
 
 
-TimeFormSet = formset_factory(
-    TimeForm,
-    min_num=1,
-    can_order=False, can_delete=True, extra=1, validate_min=True
-)
+TimeFormSet = formset_factory(TimeForm, min_num=1, can_order=False, can_delete=True, extra=1, validate_min=True)

@@ -13,7 +13,7 @@ from pretix.multidomain.urlreverse import build_absolute_uri
 
 def get_ical(events):
     cal = vobject.iCalendar()
-    cal.add('prodid').value = '-//pretix//{}//'.format(settings.INSTANCE_NAME.replace(" ", "_"))
+    cal.add('prodid').value = '-//pretix//{}//'.format(settings.INSTANCE_NAME.replace(' ', '_'))
     creation_time = datetime.datetime.now(pytz.utc)
 
     for ev in events:
@@ -22,9 +22,7 @@ def get_ical(events):
         if isinstance(ev, Event):
             url = build_absolute_uri(event, 'presale:event.index')
         else:
-            url = build_absolute_uri(event, 'presale:event.index', {
-                'subevent': ev.pk
-            })
+            url = build_absolute_uri(event, 'presale:event.index', {'subevent': ev.pk})
 
         vevent = cal.add('vevent')
         vevent.add('summary').value = str(ev.name)
@@ -32,9 +30,10 @@ def get_ical(events):
         if ev.location:
             vevent.add('location').value = str(ev.location)
         vevent.add('uid').value = 'pretix-{}-{}-{}@{}'.format(
-            event.organizer.slug, event.slug,
+            event.organizer.slug,
+            event.slug,
             ev.pk if not isinstance(ev, Event) else '0',
-            urlparse(url).netloc
+            urlparse(url).netloc,
         )
 
         if event.settings.show_times:
@@ -54,9 +53,11 @@ def get_ical(events):
         descr.append(_('Tickets: {url}').format(url=url))
 
         if ev.date_admission:
-            descr.append(str(_('Admission: {datetime}')).format(
-                datetime=date_format(ev.date_admission.astimezone(tz), 'SHORT_DATETIME_FORMAT')
-            ))
+            descr.append(
+                str(_('Admission: {datetime}')).format(
+                    datetime=date_format(ev.date_admission.astimezone(tz), 'SHORT_DATETIME_FORMAT')
+                )
+            )
 
         descr.append(_('Organizer: {organizer}').format(organizer=event.organizer.name))
 

@@ -4,6 +4,7 @@ run when there are things we have no migrations for. Usually, this is intended, 
 "makemigrations" can really screw up the environment of a user, so we want to prevent novice
 users from doing that by going really dirty and filtering it from the output.
 """
+
 import sys
 
 from django.core.management.base import OutputWrapper
@@ -12,8 +13,8 @@ from django.core.management.commands.migrate import Command as Parent
 
 class OutputFilter(OutputWrapper):
     banlist = (
-        "Your models have changes that are not yet reflected",
-        "Run 'manage.py makemigrations' to make new "
+        'Your models have changes that are not yet reflected',
+        "Run 'manage.py makemigrations' to make new ",
     )
 
     def write(self, msg, style_func=None, ending=None):

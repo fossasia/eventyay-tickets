@@ -38,7 +38,12 @@ class PlaceholderValidator(BaseValidator):
             raise ValidationError(
                 _('Invalid placeholder(s): %(value)s'),
                 code='invalid_placeholders',
-                params={'value': ", ".join(invalid_placeholders,)})
+                params={
+                    'value': ', '.join(
+                        invalid_placeholders,
+                    )
+                },
+            )
 
     def clean(self, x):
         return x

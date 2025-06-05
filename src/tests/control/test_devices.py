@@ -13,10 +13,7 @@ def organizer():
 
 @pytest.fixture
 def event(organizer):
-    event = Event.objects.create(
-        organizer=organizer, name='Dummy', slug='dummy',
-        date_from=now()
-    )
+    event = Event.objects.create(organizer=organizer, name='Dummy', slug='dummy', date_from=now())
     return event
 
 
@@ -47,11 +44,15 @@ def test_list_of_devices(event, admin_user, client, device):
 @pytest.mark.django_db
 def test_create_device(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    resp = client.post('/control/organizer/dummy/device/add', {
-        'name': 'Foo',
-        'limit_events': str(event.pk),
-        'security_profile': 'full',
-    }, follow=True)
+    resp = client.post(
+        '/control/organizer/dummy/device/add',
+        {
+            'name': 'Foo',
+            'limit_events': str(event.pk),
+            'security_profile': 'full',
+        },
+        follow=True,
+    )
     with scopes_disabled():
         d = Device.objects.last()
         assert d.name == 'Foo'
@@ -63,11 +64,15 @@ def test_create_device(event, admin_user, admin_team, client):
 @pytest.mark.django_db
 def test_update_device(event, admin_user, admin_team, device, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    client.post('/control/organizer/dummy/device/{}/edit'.format(device.pk), {
-        'name': 'Cashdesk 2',
-        'limit_events': str(event.pk),
-        'security_profile': 'full',
-    }, follow=True)
+    client.post(
+        '/control/organizer/dummy/device/{}/edit'.format(device.pk),
+        {
+            'name': 'Cashdesk 2',
+            'limit_events': str(event.pk),
+            'security_profile': 'full',
+        },
+        follow=True,
+    )
     device.refresh_from_db()
     assert device.name == 'Cashdesk 2'
     assert not device.all_events

@@ -5,16 +5,19 @@ from django.conf import settings
 from django.utils import translation
 from django.utils.formats import date_format, number_format
 from django.utils.translation import gettext
-
-from pretix.base.templatetags.money import money_filter
-
 from i18nfield.fields import (  # noqa
-    I18nCharField, I18nTextarea, I18nTextField, I18nTextInput,
+    I18nCharField,
+    I18nTextarea,
+    I18nTextField,
+    I18nTextInput,
 )
 from i18nfield.forms import I18nFormField  # noqa
+
 # Compatibility imports
 from i18nfield.strings import LazyI18nString  # noqa
 from i18nfield.utils import I18nJSONEncoder  # noqa
+
+from pretix.base.templatetags.money import money_filter
 
 
 class LazyDate:
@@ -25,7 +28,7 @@ class LazyDate:
         return self.__str__()
 
     def __str__(self):
-        return date_format(self.value, "SHORT_DATE_FORMAT")
+        return date_format(self.value, 'SHORT_DATE_FORMAT')
 
 
 class LazyExpiresDate:
@@ -38,9 +41,9 @@ class LazyExpiresDate:
     def __str__(self):
         at_end_of_day = self.value.hour == 23 and self.value.minute == 59 and self.value.second >= 59
         if at_end_of_day:
-            return date_format(self.value, "SHORT_DATE_FORMAT")
+            return date_format(self.value, 'SHORT_DATE_FORMAT')
         else:
-            return date_format(self.value, "SHORT_DATETIME_FORMAT")
+            return date_format(self.value, 'SHORT_DATETIME_FORMAT')
 
 
 class LazyCurrencyNumber:

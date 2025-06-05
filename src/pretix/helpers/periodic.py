@@ -19,6 +19,7 @@ def minimum_interval(minutes_after_success, minutes_after_error=0, minutes_runni
     ``minutes_running_timeout`` have passed. This locking mechanism is naive and not safe of
     race-conditions, it should not be relied upon.
     """
+
     def deco(f):
         @wraps(f)
         def wrapper(*args, **kwargs):

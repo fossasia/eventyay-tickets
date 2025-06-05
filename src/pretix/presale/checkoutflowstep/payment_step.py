@@ -4,7 +4,8 @@ from decimal import Decimal
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 
 from pretix.base.services.cart import get_fees
 from pretix.presale.views import CartMixin, get_cart, get_cart_total
@@ -14,8 +15,8 @@ from .template_flow_step import TemplateFlowStep
 
 class PaymentStep(CartMixin, TemplateFlowStep):
     priority = 200
-    identifier = "payment"
-    template_name = "pretixpresale/event/checkout_payment.html"
+    identifier = 'payment'
+    template_name = 'pretixpresale/event/checkout_payment.html'
     label = pgettext_lazy('checkoutflow', 'Payment')
     icon = 'credit-card'
 
@@ -23,8 +24,19 @@ class PaymentStep(CartMixin, TemplateFlowStep):
     def _total_order_value(self):
         cart = get_cart(self.request)
         total = get_cart_total(self.request)
-        total += sum([f.value for f in get_fees(self.request.event, self.request, total, self.invoice_address, None,
-                                                cart)])
+        total += sum(
+            [
+                f.value
+                for f in get_fees(
+                    self.request.event,
+                    self.request,
+                    total,
+                    self.invoice_address,
+                    None,
+                    cart,
+                )
+            ]
+        )
         return Decimal(total)
 
     @cached_property
@@ -46,12 +58,14 @@ class PaymentStep(CartMixin, TemplateFlowStep):
                 form = provider.payment_form_render(self.request)
 
             # Append provider info to list
-            providers.append({
-                'provider': provider,
-                'fee': fee,
-                'total': self._total_order_value + fee,
-                'form': form
-            })
+            providers.append(
+                {
+                    'provider': provider,
+                    'fee': fee,
+                    'total': self._total_order_value + fee,
+                    'form': form,
+                }
+            )
 
         return providers
 
@@ -72,7 +86,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
                 else:
                     return self.render()
 
-        messages.error(self.request, _("Please select a payment method."))
+        messages.error(self.request, _('Please select a payment method.'))
         return self.render()
 
     def get_context_data(self, **kwargs):
@@ -98,9 +112,11 @@ class PaymentStep(CartMixin, TemplateFlowStep):
             if warn:
                 messages.error(request, _('The payment information you entered was incomplete.'))
             return False
-        if not self.payment_provider.payment_is_valid_session(request) or \
-                not self.payment_provider.is_enabled or \
-                not self._is_allowed(self.payment_provider, request):
+        if (
+            not self.payment_provider.payment_is_valid_session(request)
+            or not self.payment_provider.is_enabled
+            or not self._is_allowed(self.payment_provider, request)
+        ):
             if warn:
                 messages.error(request, _('The payment information you entered was incomplete.'))
             return False

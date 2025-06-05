@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,42 +16,76 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='refundexport',
             name='event',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='banktransfer_refund_exports', to='pretixbase.event'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='banktransfer_refund_exports',
+                to='pretixbase.event',
+            ),
         ),
         migrations.AddField(
             model_name='refundexport',
             name='organizer',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='banktransfer_refund_exports', to='pretixbase.organizer'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='banktransfer_refund_exports',
+                to='pretixbase.organizer',
+            ),
         ),
         migrations.AddField(
             model_name='banktransaction',
             name='event',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='pretixbase.event'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='pretixbase.event',
+            ),
         ),
         migrations.AddField(
             model_name='banktransaction',
             name='import_job',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transactions', to='banktransfer.bankimportjob'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='transactions',
+                to='banktransfer.bankimportjob',
+            ),
         ),
         migrations.AddField(
             model_name='banktransaction',
             name='order',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='pretixbase.order'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='pretixbase.order',
+            ),
         ),
         migrations.AddField(
             model_name='banktransaction',
             name='organizer',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='pretixbase.organizer'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='pretixbase.organizer',
+            ),
         ),
         migrations.AddField(
             model_name='bankimportjob',
             name='event',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='pretixbase.event'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='pretixbase.event',
+            ),
         ),
         migrations.AddField(
             model_name='bankimportjob',
             name='organizer',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='pretixbase.organizer'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='pretixbase.organizer',
+            ),
         ),
         migrations.AlterUniqueTogether(
             name='banktransaction',

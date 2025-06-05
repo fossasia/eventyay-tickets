@@ -13,6 +13,7 @@ In particular, we changed:
 * Fully passing tests against shared tests suite at 2020-04-19
 * Option to add custom operations
 """
+
 import logging
 from functools import reduce
 
@@ -60,9 +61,7 @@ def less(a, b, *args):
 
 def less_or_equal(a, b, *args):
     """Implements the '<=' operator with JS-style type coertion."""
-    return (
-        less(a, b) or soft_equals(a, b)
-    ) and (not args or less_or_equal(b, *args))
+    return (less(a, b) or soft_equals(a, b)) and (not args or less_or_equal(b, *args))
 
 
 def to_numeric(arg):
@@ -101,9 +100,9 @@ def merge(*args):
     return ret
 
 
-def get_var(data, var_name="", not_found=None):
+def get_var(data, var_name='', not_found=None):
     """Gets variable value from data dictionary."""
-    if var_name == "" or var_name is None:
+    if var_name == '' or var_name is None:
         return data
     try:
         for key in str(var_name).split('.'):
@@ -147,37 +146,37 @@ def missing_some(data, min_required, args):
 
 
 operations = {
-    "==": soft_equals,
-    "===": hard_equals,
-    "!=": lambda a, b: not soft_equals(a, b),
-    "!==": lambda a, b: not hard_equals(a, b),
-    ">": lambda a, b: less(b, a),
-    ">=": lambda a, b: less(b, a) or soft_equals(a, b),
-    "<": less,
-    "<=": less_or_equal,
-    "!": lambda a: not a,
-    "!!": bool,
-    "%": lambda a, b: a % b,
-    "and": lambda *args: reduce(lambda total, arg: total and arg, args, True),
-    "or": lambda *args: reduce(lambda total, arg: total or arg, args, False),
-    "?:": lambda a, b, c: b if a else c,
-    "if": if_,
-    "log": lambda a: logger.info(a) or a,
-    "in": lambda a, b: a in b if "__contains__" in dir(b) else False,
-    "cat": lambda *args: "".join(str(arg) for arg in args),
-    "+": plus,
-    "*": lambda *args: reduce(lambda total, arg: total * float(arg), args, 1),
-    "-": minus,
-    "/": lambda a, b=None: a if b is None else float(a) / float(b),
-    "min": lambda *args: min(args),
-    "max": lambda *args: max(args),
-    "merge": merge,
-    "count": lambda *args: sum(1 if a else 0 for a in args),
-    "substr": lambda a, b, c=None: a[b:] if c is None else a[b:][:c],
+    '==': soft_equals,
+    '===': hard_equals,
+    '!=': lambda a, b: not soft_equals(a, b),
+    '!==': lambda a, b: not hard_equals(a, b),
+    '>': lambda a, b: less(b, a),
+    '>=': lambda a, b: less(b, a) or soft_equals(a, b),
+    '<': less,
+    '<=': less_or_equal,
+    '!': lambda a: not a,
+    '!!': bool,
+    '%': lambda a, b: a % b,
+    'and': lambda *args: reduce(lambda total, arg: total and arg, args, True),
+    'or': lambda *args: reduce(lambda total, arg: total or arg, args, False),
+    '?:': lambda a, b, c: b if a else c,
+    'if': if_,
+    'log': lambda a: logger.info(a) or a,
+    'in': lambda a, b: a in b if '__contains__' in dir(b) else False,
+    'cat': lambda *args: ''.join(str(arg) for arg in args),
+    '+': plus,
+    '*': lambda *args: reduce(lambda total, arg: total * float(arg), args, 1),
+    '-': minus,
+    '/': lambda a, b=None: a if b is None else float(a) / float(b),
+    'min': lambda *args: min(args),
+    'max': lambda *args: max(args),
+    'merge': merge,
+    'count': lambda *args: sum(1 if a else 0 for a in args),
+    'substr': lambda a, b, c=None: a[b:] if c is None else a[b:][:c],
 }
 
 
-class Logic():
+class Logic:
     def __init__(self):
         self._operations = {}
 
@@ -214,17 +213,12 @@ class Logic():
             return reduce(
                 lambda acc, el: self.apply(values[1], {'current': el, 'accumulator': acc}),
                 self.apply(values[0], data) or [],
-                self.apply(values[2], data)
+                self.apply(values[2], data),
             )
         if operator == 'map':
-            return [
-                self.apply(values[1], i) for i in (self.apply(values[0], data) or [])
-            ]
+            return [self.apply(values[1], i) for i in (self.apply(values[0], data) or [])]
         if operator == 'filter':
-            return [
-                i for i in self.apply(values[0], data)
-                if self.apply(values[1], i)
-            ]
+            return [i for i in self.apply(values[0], data) if self.apply(values[1], i)]
 
         # Recursion!
         values = [self.apply(val, data) for val in values]
@@ -241,4 +235,4 @@ class Logic():
         elif operator in self._operations:
             return self._operations[operator](*values)
         else:
-            raise ValueError("Unrecognized operation %s" % operator)
+            raise ValueError('Unrecognized operation %s' % operator)

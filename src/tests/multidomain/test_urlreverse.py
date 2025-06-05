@@ -3,20 +3,17 @@ from django.conf import settings
 from django.test import override_settings
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
-from tests import assert_num_queries
 
 from pretix.base.models import Event, Organizer
 from pretix.multidomain.models import KnownDomain
 from pretix.multidomain.urlreverse import build_absolute_uri, eventreverse
+from tests import assert_num_queries
 
 
 @pytest.fixture
 def env():
     o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
-    event = Event.objects.create(
-        organizer=o, name='MRMCD2015', slug='2015',
-        date_from=now()
-    )
+    event = Event.objects.create(organizer=o, name='MRMCD2015', slug='2015', date_from=now())
     settings.SITE_URL = 'http://example.com'
     event.get_cache().clear()
     return o, event
@@ -83,12 +80,14 @@ def test_event_org_domain_keep_scheme(env):
 
 
 @pytest.mark.django_db
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+@override_settings(
+    CACHES={
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
     }
-})
+)
 def test_event_main_domain_cache(env):
     env[0].get_cache().clear()
     with assert_num_queries(1):
@@ -98,12 +97,14 @@ def test_event_main_domain_cache(env):
 
 
 @pytest.mark.django_db
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+@override_settings(
+    CACHES={
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
     }
-})
+)
 def test_event_org_domain_cache(env):
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
     env[0].get_cache().clear()
@@ -114,12 +115,14 @@ def test_event_org_domain_cache(env):
 
 
 @pytest.mark.django_db
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+@override_settings(
+    CACHES={
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
     }
-})
+)
 def test_event_custom_domain_cache(env):
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
     KnownDomain.objects.create(domainname='barfoo', organizer=env[0], event=env[1])
@@ -131,12 +134,14 @@ def test_event_custom_domain_cache(env):
 
 
 @pytest.mark.django_db
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+@override_settings(
+    CACHES={
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
     }
-})
+)
 @scopes_disabled()
 def test_event_org_domain_cache_clear(env):
     kd = KnownDomain.objects.create(domainname='foobar', organizer=env[0])
@@ -153,12 +158,14 @@ def test_event_org_domain_cache_clear(env):
 
 
 @pytest.mark.django_db
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+@override_settings(
+    CACHES={
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
     }
-})
+)
 @scopes_disabled()
 def test_event_custom_domain_cache_clear(env):
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])

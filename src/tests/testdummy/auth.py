@@ -12,17 +12,16 @@ class TestFormAuthBackend(BaseAuthBackend):
 
     @property
     def login_form_fields(self) -> dict:
-        return OrderedDict([
-            ('username', forms.CharField(max_length=100)),
-            ('password', forms.CharField(max_length=100)),
-        ])
+        return OrderedDict(
+            [
+                ('username', forms.CharField(max_length=100)),
+                ('password', forms.CharField(max_length=100)),
+            ]
+        )
 
     def form_authenticate(self, request, form_data):
         if form_data['username'] == 'foo' and form_data['password'] == 'bar':
-            return User.objects.get_or_create(
-                email='foo@example.com',
-                auth_backend='test_form'
-            )[0]
+            return User.objects.get_or_create(email='foo@example.com', auth_backend='test_form')[0]
 
 
 class TestRequestAuthBackend(BaseAuthBackend):
@@ -32,10 +31,7 @@ class TestRequestAuthBackend(BaseAuthBackend):
 
     def request_authenticate(self, request):
         if 'X-Login-Email' in request.headers:
-            return User.objects.get_or_create(
-                email=request.headers['X-Login-Email'],
-                auth_backend='test_request'
-            )[0]
+            return User.objects.get_or_create(email=request.headers['X-Login-Email'], auth_backend='test_request')[0]
 
     def get_next_url(self, request):
         if 'state' in request.GET:

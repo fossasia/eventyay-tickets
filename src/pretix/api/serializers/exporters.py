@@ -22,7 +22,11 @@ simple_mappings = (
     (forms.TimeField, serializers.TimeField, ()),
     (forms.SplitDateTimeField, serializers.DateTimeField, ()),
     (forms.DateTimeField, serializers.DateTimeField, ()),
-    (forms.DecimalField, serializers.DecimalField, ('max_digits', 'decimal_places', 'min_value', 'max_value')),
+    (
+        forms.DecimalField,
+        serializers.DecimalField,
+        ('max_digits', 'decimal_places', 'min_value', 'max_value'),
+    ),
     (forms.FloatField, serializers.FloatField, ()),
     (forms.IntegerField, serializers.IntegerField, ()),
     (forms.EmailField, serializers.EmailField, ()),
@@ -66,12 +70,12 @@ class JobRunSerializer(serializers.Serializer):
         events = kwargs.pop('events', None)
         super().__init__(*args, **kwargs)
         if events is not None:
-            self.fields["events"] = serializers.SlugRelatedField(
+            self.fields['events'] = serializers.SlugRelatedField(
                 queryset=events,
                 required=True,
                 allow_empty=False,
                 slug_field='slug',
-                many=True
+                many=True,
             )
         for k, v in ex.export_form_fields.items():
             for m_from, m_to, m_kwargs in simple_mappings:
@@ -80,7 +84,7 @@ class JobRunSerializer(serializers.Serializer):
                         required=v.required,
                         allow_null=not v.required,
                         validators=v.validators,
-                        **{kwarg: getattr(v, kwargs, None) for kwarg in m_kwargs}
+                        **{kwarg: getattr(v, kwargs, None) for kwarg in m_kwargs},
                     )
                     break
 
@@ -90,7 +94,7 @@ class JobRunSerializer(serializers.Serializer):
                     required=v.required,
                     allow_empty=not v.required,
                     validators=v.validators,
-                    many=True
+                    many=True,
                 )
             elif isinstance(v, forms.ModelChoiceField):
                 self.fields[k] = PrimaryKeyRelatedField(

@@ -14,7 +14,7 @@ from pretix.celery_app import app
 
 
 @app.task(base=EventTask)
-def assign_automatically(event: Event, user_id: int=None, subevent_id: int=None):
+def assign_automatically(event: Event, user_id: int = None, subevent_id: int = None):
     if user_id:
         user = User.objects.get(id=user_id)
     else:
@@ -23,11 +23,12 @@ def assign_automatically(event: Event, user_id: int=None, subevent_id: int=None)
     quota_cache = {}
     gone = set()
 
-    qs = WaitingListEntry.objects.filter(
-        event=event, voucher__isnull=True
-    ).select_related('item', 'variation', 'subevent').prefetch_related(
-        'item__quotas', 'variation__quotas'
-    ).order_by('-priority', 'created')
+    qs = (
+        WaitingListEntry.objects.filter(event=event, voucher__isnull=True)
+        .select_related('item', 'variation', 'subevent')
+        .prefetch_related('item__quotas', 'variation__quotas')
+        .order_by('-priority', 'created')
+    )
 
     if subevent_id and event.has_subevents:
         subevent = event.subevents.get(id=subevent_id)
@@ -40,7 +41,7 @@ def assign_automatically(event: Event, user_id: int=None, subevent_id: int=None)
             if (wle.item, wle.variation, wle.subevent) in gone:
                 continue
 
-            ev = (wle.subevent or event)
+            ev = wle.subevent or event
             if not ev.presale_is_running or (wle.subevent and not wle.subevent.active):
                 continue
             if wle.subevent and not wle.subevent.presale_is_running:
@@ -49,9 +50,11 @@ def assign_automatically(event: Event, user_id: int=None, subevent_id: int=None)
                 gone.add((wle.item, wle.variation, wle.subevent))
                 continue
 
-            quotas = (wle.variation.quotas.filter(subevent=wle.subevent)
-                      if wle.variation
-                      else wle.item.quotas.filter(subevent=wle.subevent))
+            quotas = (
+                wle.variation.quotas.filter(subevent=wle.subevent)
+                if wle.variation
+                else wle.item.quotas.filter(subevent=wle.subevent)
+            )
             availability = (
                 wle.variation.check_quotas(count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent)
                 if wle.variation
@@ -68,7 +71,7 @@ def assign_automatically(event: Event, user_id: int=None, subevent_id: int=None)
                 for q in quotas:
                     quota_cache[q.pk] = (
                         quota_cache[q.pk][0] if quota_cache[q.pk][0] > 1 else 0,
-                        quota_cache[q.pk][1] - 1 if quota_cache[q.pk][1] is not None else sys.maxsize
+                        quota_cache[q.pk][1] - 1 if quota_cache[q.pk][1] is not None else sys.maxsize,
                     )
             else:
                 gone.add((wle.item, wle.variation, wle.subevent))
@@ -79,14 +82,17 @@ def assign_automatically(event: Event, user_id: int=None, subevent_id: int=None)
 @receiver(signal=periodic_task)
 @scopes_disabled()
 def process_waitinglist(sender, **kwargs):
-    qs = Event.objects.filter(
-        live=True
-    ).exclude(
-        Q(date_to__isnull=True) | Q(date_to__lt=now() - timedelta(days=14)),
-        Q(presale_end__isnull=True) | Q(presale_end__lt=now() - timedelta(days=14)),
-        has_subevents=False,
-        date_from__lt=now() - timedelta(days=14),
-    ).prefetch_related('_settings_objects', 'organizer___settings_objects').select_related('organizer')
+    qs = (
+        Event.objects.filter(live=True)
+        .exclude(
+            Q(date_to__isnull=True) | Q(date_to__lt=now() - timedelta(days=14)),
+            Q(presale_end__isnull=True) | Q(presale_end__lt=now() - timedelta(days=14)),
+            has_subevents=False,
+            date_from__lt=now() - timedelta(days=14),
+        )
+        .prefetch_related('_settings_objects', 'organizer___settings_objects')
+        .select_related('organizer')
+    )
     for e in qs:
         if e.settings.waiting_list_auto and (e.presale_is_running or e.has_subevents):
             assign_automatically.apply_async(args=(e.pk,))
