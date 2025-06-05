@@ -13,13 +13,7 @@
     width: 340px;
     max-width: calc(100% - 16px);
     border-radius: 4px;
-    box-shadow: var(--shadow-lighter);
-    border-radius: var(--size-border-radius);
     user-select: none;
-
-    &:hover {
-      box-shadow: var(--shadow-light);
-    }
   }
 
   .dashboard-block-wrapper {
@@ -71,13 +65,14 @@
 
   .dashboard-block {
     color: var(--color-primary);
-    background: var(--color-grey-lightest);
+    background: var(--color-grey-ultralight);
     overflow-wrap: break-word;
     &.dashboard-block-extended {
       min-height: 100px;
     }
     &:hover {
-      color: var(--color-primary);
+      color: var(--color-primary-text-dark);
+      background-color: var(--color-grey-pale);
       text-decoration: none;
     }
 

@@ -109,11 +109,12 @@ table {
   tr {
     vertical-align: middle;
     &:hover {
-      background-color: var(--color-grey-lightest);
+      background-color: var(--color-grey-ultralight);
     }
   }
   a:hover {
     text-decoration: none;
+    color: var(--color-primary-text-dark);
   }
 }
 
