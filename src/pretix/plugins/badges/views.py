@@ -30,7 +30,7 @@ from pretix.plugins.badges.tasks import badges_create_pdf
 
 from .models import BadgeLayout
 
-class BadgePluginEnabledCheck:
+class BadgePluginEnabledMixin:
 
     def dispatch(self, request, *args, **kwargs):
         if 'pretix.plugins.badges' not in request.event.get_plugins():
@@ -38,7 +38,7 @@ class BadgePluginEnabledCheck:
         return super().dispatch(request, *args, **kwargs)
 
 
-class LayoutListView(BadgePluginEnabledCheck, EventPermissionRequiredMixin, ListView):
+class LayoutListView(BadgePluginEnabledMixin, EventPermissionRequiredMixin, ListView):
     model = BadgeLayout
     permission = ('can_change_event_settings', 'can_view_orders')
     template_name = 'pretixplugins/badges/index.html'
@@ -48,7 +48,7 @@ class LayoutListView(BadgePluginEnabledCheck, EventPermissionRequiredMixin, List
         return self.request.event.badge_layouts.prefetch_related('item_assignments')
 
 
-class LayoutCreate(BadgePluginEnabledCheck, EventPermissionRequiredMixin, CreateView):
+class LayoutCreate(BadgePluginEnabledMixin, EventPermissionRequiredMixin, CreateView):
     model = BadgeLayout
     form_class = BadgeLayoutForm
     template_name = 'pretixplugins/badges/edit.html'
@@ -108,7 +108,7 @@ class LayoutCreate(BadgePluginEnabledCheck, EventPermissionRequiredMixin, Create
         return kwargs
 
 
-class LayoutSetDefault(BadgePluginEnabledCheck, EventPermissionRequiredMixin, DetailView):
+class LayoutSetDefault(BadgePluginEnabledMixin, EventPermissionRequiredMixin, DetailView):
     model = BadgeLayout
     permission = 'can_change_event_settings'
 
@@ -137,7 +137,7 @@ class LayoutSetDefault(BadgePluginEnabledCheck, EventPermissionRequiredMixin, De
         )
 
 
-class LayoutDelete(BadgePluginEnabledCheck, EventPermissionRequiredMixin, DeleteView):
+class LayoutDelete(BadgePluginEnabledMixin, EventPermissionRequiredMixin, DeleteView):
     model = BadgeLayout
     template_name = 'pretixplugins/badges/delete.html'
     permission = 'can_change_event_settings'
@@ -229,7 +229,7 @@ class LayoutEditorView(BaseEditorView):
         self.layout.background.save('background.pdf', f.file)
 
 
-class OrderPrintDo(BadgePluginEnabledCheck, EventPermissionRequiredMixin, AsyncAction, View):
+class OrderPrintDo(BadgePluginEnabledMixin, EventPermissionRequiredMixin, AsyncAction, View):
     task = badges_create_pdf
     permission = 'can_view_orders'
     known_errortypes = ['OrderError']
