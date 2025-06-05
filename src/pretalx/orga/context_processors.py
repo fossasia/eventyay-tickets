@@ -1,6 +1,7 @@
 import logging
 from configparser import RawConfigParser
 from typing import cast
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.utils.module_loading import import_string
@@ -33,6 +34,7 @@ def orga_events(request):
     site_config = dict(config.items("site"))
     context["site_config"] = site_config
     context["base_path"] = settings.BASE_PATH
+    context["tickets_common"] = urljoin(settings.EVENTYAY_TICKET_BASE_PATH, "common")
     # Login button label
     key = site_config.get("call_for_speaker_login_button_label", "default")
     button_label = CALL_FOR_SPEAKER_LOGIN_BTN_LABELS.get(key)

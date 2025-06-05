@@ -4,6 +4,7 @@
 {% load rules %}
 {% load static %}
 {% load vite %}
+{% blocktranslate with site_name=site_config.name asvar logo_alt_text %}The {{ site_name }} logo{% endblocktranslate %}
 
 <!DOCTYPE html>
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
@@ -75,8 +76,8 @@
                     </a>
                 </li>
             </ul>
-            <a class="navbar-brand" href="{% url "orga:event.list" %}">
-                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The {{ site_config.name }} logo" %}">
+            <a class="navbar-brand" href="{{ tickets_common }}">
+                <img loading="lazy" src="{% static 'common/img/icons/icon.svg' %}" alt="{{ logo_alt_text }}">
                 {{ site_config.name }}
             </a>
             <div class="navbar-collapse" id="navbartoggle">
