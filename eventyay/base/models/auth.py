@@ -109,7 +109,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     session_token = models.CharField(max_length=32, default=generate_session_token)
     if TYPE_CHECKING:
         from django.db.models import QuerySet
-        from pretix.base.models import NotificationSetting
+        from eventyay.base.models import NotificationSetting
 
         notification_settings: QuerySet[NotificationSetting]
 
@@ -216,7 +216,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
 
     @property
     def all_logentries(self):
-        from pretix.base.models import LogEntry
+        from eventyay.base.models import LogEntry
 
         return LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(User), object_id=self.pk)
 
@@ -388,7 +388,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         """
         Return an HMAC that needs to
         """
-        key_salt = 'pretix.base.models.User.get_session_auth_hash'
+        key_salt = "eventyay.base.models.User.get_session_auth_hash"
         payload = self.password
         payload += self.email
         payload += self.session_token
