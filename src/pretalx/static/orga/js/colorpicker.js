@@ -39,6 +39,7 @@ const initColorPicker = (field) => {
 }
 
 const updateContrast = (field, color) => {
+    field.value = color.hex.slice(0, 7)
     field.parentNode.parentNode.querySelector(
         ".colorpicker-preview",
     ).style.backgroundColor = color.hex
