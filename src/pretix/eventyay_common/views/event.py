@@ -137,8 +137,6 @@ class EventList(PaginationMixin, ListView):
                     100,
                     (round(q.cached_availability_paid_orders / q.size * 100) if q.size > 0 else 100),
                 )
-        print("DEBUG filter_form fields:", list(self.filter_form.fields.keys()))
-
         return ctx
 
     @cached_property
