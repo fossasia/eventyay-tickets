@@ -462,7 +462,6 @@ class EventSettingsForm(SettingsForm):
     )
 
     auto_fields = [
-        'imprint_url',
         'checkout_email_helptext',
         'presale_has_ended_text',
         'voucher_explanation_text',
@@ -473,9 +472,6 @@ class EventSettingsForm(SettingsForm):
         'show_items_outside_presale_period',
         'display_net_prices',
         'presale_start_show_date',
-        'locales',
-        'locale',
-        'region',
         'show_quota_left',
         'waiting_list_enabled',
         'waiting_list_hours',
@@ -487,7 +483,6 @@ class EventSettingsForm(SettingsForm):
         'waiting_list_phones_explanation_text',
         'max_items_per_order',
         'reservation_time',
-        'contact_mail',
         'show_variations_expanded',
         'hide_sold_out',
         'meta_noindex',
@@ -578,9 +573,12 @@ class EventSettingsForm(SettingsForm):
             for k, v in PERSON_NAME_TITLE_GROUPS.items()
         ]
         if not self.event.has_subevents:
-            del self.fields['frontpage_subevent_ordering']
-            del self.fields['event_list_type']
-            del self.fields['event_list_available_only']
+            if 'frontpage_subevent_ordering' in self.fields:
+                del self.fields["frontpage_subevent_ordering"]
+            if 'event_list_type' in self.fields:
+                del self.fields["event_list_type"]
+            if 'event_list_available_only' in self.fields:
+                del self.fields["event_list_available_only"]
 
         # create "virtual" fields for better UX when editing <name>_asked and <name>_required fields
         self.virtual_keys = []
@@ -608,13 +606,12 @@ class EventSettingsForm(SettingsForm):
             )
             self.virtual_keys.append(virtual_key)
 
-            if self.initial[required_key]:
-                self.initial[virtual_key] = 'required'
-            elif self.initial[asked_key]:
-                self.initial[virtual_key] = 'optional'
+            if self.initial.get(required_key): # Use .get for safety
+                self.initial[virtual_key] = "required"
+            elif self.initial.get(asked_key): # Use .get for safety
+                self.initial[virtual_key] = "optional"
             else:
                 self.initial[virtual_key] = 'do_not_ask'
-
 
 class CancelSettingsForm(SettingsForm):
     auto_fields = [
