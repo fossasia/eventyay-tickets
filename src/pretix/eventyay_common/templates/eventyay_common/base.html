@@ -8,7 +8,7 @@
 <html{% if rtl %} dir="rtl" class="rtl"{% endif %}>
 	<head>
 		<title>{% block title %}{% endblock %}{% if url_name != "index" %} :: {% endif %}
-            {{ settings.INSTANCE_NAME_COMMON }}</title>
+            {{ settings.INSTANCE_NAME }}</title>
 		{% compress css %}
     		<link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
             <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
@@ -103,11 +103,47 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href='{% url "eventyay_common:dashboard" %}'>
-                        <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
-                        {{ settings.INSTANCE_NAME_COMMON }}
+                    {% if request.event %}
+                        {% if has_domain and not request.event.live %}
+                            <form action="{% eventurl request.event 'presale:event.auth' %}" method="post"
+                                    target="_blank" class="mobile-navbar-view-form visible-xs-block">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ new_session }}" name="session">
+                                <button type="submit" class="btn btn-link navbar-toggle">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </form>
+                        {% else %}
+                            <a href="{% eventurl request.event 'presale:event.index' %}" title="{% translate "View event" %}"
+                                    target="_blank" class="navbar-toggle mobile-navbar-view-link">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    <a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}">
+                        <img src="{% static 'pretixbase/img/eventyay-icon.svg' %}" />
+                        {{ settings.INSTANCE_NAME }}
                     </a>
                 </div>
+                <ul class="nav navbar-nav navbar-top-links navbar-left flip hidden-xs">
+                    {% if request.event %}
+                        <li>
+                            {% if has_domain and not request.event.live %}
+                                <form action="{% eventurl request.event 'presale:event.auth' %}" method="post" target="_blank">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ new_session }}" name="session">
+                                    <button type="submit" class="btn btn-link" id="button-shop">
+                                       <i class="fa fa-eye"></i> {% translate "View event" %}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <a href="{% eventurl request.event 'presale:event.index' %}" title="{% translate 'View event' %}"  target="_blank">
+                                    <i class="fa fa-eye"></i> {% translate 'View event' %}
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                </ul>
                 <ul class="nav navbar-nav navbar-top-links navbar-right flip">
                     {% if request.user.is_staff and not staff_session %}
                         <li>
