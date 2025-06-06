@@ -34,9 +34,10 @@ class BadgePluginEnabledMixin:
 
     def dispatch(self, request, *args, **kwargs):
         if 'pretix.plugins.badges' not in request.event.get_plugins():
-            raise Http404(_("The requested resource does not exist."))
+            return redirect('control:event.settings.plugins', 
+                          organizer=request.event.organizer.slug, 
+                          event=request.event.slug)
         return super().dispatch(request, *args, **kwargs)
-
 
 class LayoutListView(BadgePluginEnabledMixin, EventPermissionRequiredMixin, ListView):
     model = BadgeLayout
