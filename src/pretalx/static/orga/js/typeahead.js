@@ -1,6 +1,6 @@
 const initNavSearch = () => {
     const wrapper = document.querySelector("#nav-search-wrapper")
-    const summary = wrapper.querySelector("summary")
+    const summary = wrapper.querySelector(".summary-div")
     const searchInput = wrapper.querySelector("input")
     const searchWrapper = wrapper.querySelector("#nav-search-input-wrapper")
     const apiURL = searchWrapper.getAttribute("data-source")
