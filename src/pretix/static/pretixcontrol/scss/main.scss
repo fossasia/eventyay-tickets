@@ -33,10 +33,28 @@ footer {
 nav.navbar {
     margin: 0;
 }
+
 .navbar-brand img {
-    height: 100%;
-    width: auto;
-    display: inline;
+    height: 30px ;
+    width: auto ;
+    margin-right: 8px ;
+    display: inline-block ;
+    vertical-align: middle ;
+}
+
+.navbar-brand {
+    font-weight: 500 ;
+    font-size: 19px ;
+    display: flex ;
+    align-items: center ;
+    line-height: 30px ;
+    color: #ffffff ;
+    text-decoration: none ;
+    
+    &:hover, &:focus {
+        color: #ffffff ;
+        text-decoration: none ;
+    }
 }
 
 #side-menu img.fa-img {
