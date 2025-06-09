@@ -34,27 +34,37 @@ nav.navbar {
     margin: 0;
 }
 
-.navbar-brand img {
-    height: 30px ;
-    width: auto ;
-    margin-right: 8px ;
-    display: inline-block ;
-    vertical-align: middle ;
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    color: $navbar-inverse-link-color;
+    padding: 0 !important;
+    font-size: 1.75rem;
+    line-height: 30px;
+    font-weight: 500;
+    white-space: nowrap;
+    
+    &:hover,
+    &:focus {
+        color: $navbar-inverse-link-hover-color;
+        text-decoration: none;
+       
+        outline: none;
+        box-shadow: 0 0 0 0px rgba($navbar-inverse-link-hover-color, 0.5);
+    }
 }
 
-.navbar-brand {
-    font-weight: 500 ;
-    font-size: 19px ;
-    display: flex ;
-    align-items: center ;
-    line-height: 30px ;
-    color: #ffffff ;
-    text-decoration: none ;
-    
-    &:hover, &:focus {
-        color: #ffffff ;
-        text-decoration: none ;
-    }
+.navbar-brand img {
+    height: 30px;
+    width: auto;
+    margin-right: 0.5rem;
+    margin-left: 1rem;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.navbar-brand span {
+    margin-top: -0.625rem; // -10px equivalent to match eventyay-talk
 }
 
 #side-menu img.fa-img {
