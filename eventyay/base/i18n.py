@@ -1,3 +1,6 @@
+from contextlib import contextmanager
+from django.utils import translation
+from django.conf import settings
 
 @contextmanager
 def language(lng, region=None):

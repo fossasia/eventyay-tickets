@@ -9,8 +9,21 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import configparser
+import os
 from pathlib import Path
+
+from eventyay.helpers.config import EnvOrParserConfig
+
+_config = configparser.RawConfigParser()
+if 'PRETIX_CONFIG_FILE' in os.environ:
+    _config.read_file(open(os.envron.get('PRETIX_CONFIG_FILE'), encoding='utf-8'))
+else:
+    _config.read(
+        ['/etc/pretix/pretix.cfg', os.path.expanduser('~/.pretix.cfg'), 'pretix.cfg'],
+        encoding='utf-8',
+    )
+config = EnvOrParserConfig(_config)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +34,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-_sesosamnd81fm%go!+5inrmln^p1c%b&$abp6j(lw8$xx(ria'
-
+SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

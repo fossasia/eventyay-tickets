@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 
-from pretix.helpers.json import CustomJSONEncoder
+from eventyay.helpers.json import CustomJSONEncoder
 
 
 def cachedfile_name(instance, filename: str) -> str:

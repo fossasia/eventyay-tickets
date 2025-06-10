@@ -2,7 +2,7 @@ from django.core.files import File
 from i18nfield.utils import I18nJSONEncoder
 from phonenumber_field.phonenumber import PhoneNumber
 
-from pretix.base.reldate import RelativeDateWrapper
+from eventyay.base.reldate import RelativeDateWrapper
 
 
 class CustomJSONEncoder(I18nJSONEncoder):
