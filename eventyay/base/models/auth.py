@@ -20,8 +20,8 @@ from django_otp.models import Device
 from django_scopes import scopes_disabled
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
-from pretix.base.i18n import language
-from pretix.helpers.urls import build_absolute_uri
+from eventyay.base.i18n import language
+from eventyay.helpers.urls import build_absolute_uri
 
 from ...helpers.u2f import pub_key_from_der, websafe_decode
 from .base import LoggingMixin
