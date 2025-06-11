@@ -35,13 +35,13 @@ nav.navbar {
 }
 
 .navbar-brand {
+    font-weight: 500; 
+    padding-top: 0.3125rem; 
+    padding-bottom: 0.3125rem;
     display: flex;
     align-items: center;
     color: $navbar-inverse-link-color;
-    padding: 0 !important;
-    font-size: 1.75rem;
-    line-height: 30px;
-    font-weight: 500;
+    font-size: 2rem;
     white-space: nowrap;
     
     &:hover,
