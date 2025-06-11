@@ -1,0 +1,348 @@
+/* Sidebar toggle styles */
+/* Burger button styling - increased size and improved visibility */
+.navbar-toggle#sidebar-toggle {
+    float: left;
+    margin-right: 0;
+    margin-left: 15px;
+    padding: 12px 14px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display: block !important;
+    cursor: pointer;
+    min-width: 50px;
+    min-height: 38px;
+    
+    .fa-bars {
+        color: white;
+        font-size: 20px !important; /* Increased icon size for better visibility */
+        font-weight: bold;
+    }
+    
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    &:focus {
+        outline: 2px solid rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* Override Bootstrap's default hiding of navbar-toggle on desktop */
+@media (min-width: 768px) {
+    .navbar-toggle#sidebar-toggle {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Mobile sidebar styles */
+@media (max-width: 767px) {
+    .sidebar {
+        position: fixed;
+        top: 50px;
+        left: -250px;
+        width: 250px;
+        height: calc(100vh - 50px);
+        z-index: 1000;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        background-color: white; /* White background like in your image */
+        border-right: 1px solid #e0e0e0;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar.sidebar-visible {
+        left: 0;
+    }
+    
+    #page-wrapper {
+        margin-left: 0 !important;
+    }
+    
+    /* Add overlay when sidebar is visible */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+        transition: opacity 0.3s ease;
+    }
+    
+    body.sidebar-overlay::after {
+        display: block;
+        opacity: 1;
+    }
+}
+
+/* Desktop sidebar behavior - push content instead of overlay */
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 50px;
+        left: 0;
+        width: 60px; /* Collapsed width - shows only icons */
+        height: calc(100vh - 50px);
+        z-index: 999;
+        transition: width 0.3s ease;
+        overflow: hidden;
+        background-color: white; /* White background like in your image */
+        border-right: 1px solid #e0e0e0;
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar.sidebar-expanded {
+        width: 250px;
+        background-color: white;
+    }
+    
+    /* Adjust main content margin based on sidebar state - push content */
+    #page-wrapper {
+        margin-left: 60px;
+        transition: margin-left 0.3s ease;
+    }
+    
+    #page-wrapper.sidebar-expanded {
+        margin-left: 250px;
+    }
+    
+    /* Navigation item styling - center icons in collapsed state */
+    .sidebar .nav > li > a {
+        padding: 12px 0;
+        color: #2185d0; /* Blue text color like in your image */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-height: 44px;
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    /* Hide ALL text content in collapsed state */
+    .sidebar:not(.sidebar-expanded):not(:hover) .nav > li > a span:not(.fa):not(.fa-stack):not([class*="fa-"]) {
+        display: none !important;
+    }
+    
+    .sidebar:not(.sidebar-expanded):not(:hover) .nav > li > a .nav-label {
+        display: none !important;
+    }
+    
+    .sidebar:not(.sidebar-expanded):not(:hover) .nav > li > a {
+        font-size: 0;
+    }
+    
+    /* Ensure icons remain visible with proper font-size and blue color */
+    .sidebar:not(.sidebar-expanded):not(:hover) .nav > li > a .fa,
+    .sidebar:not(.sidebar-expanded):not(:hover) .nav > li > a .fa-stack,
+    .sidebar:not(.sidebar-expanded):not(:hover) .nav > li > a i {
+        font-size: 16px;
+        color: #2185d0 !important; /* Blue icons like in your image */
+    }
+    
+    /* Show text when expanded */
+    .sidebar.sidebar-expanded .nav > li > a {
+        justify-content: flex-start;
+        padding: 12px 20px;
+        font-size: inherit;
+        color: #2185d0;
+    }
+    
+    .sidebar.sidebar-expanded .nav > li > a span:not(.fa):not(.fa-stack) {
+        display: inline !important;
+        margin-left: 10px;
+        color: #2185d0;
+    }
+    
+    /* Icon styling - ensure icons are always visible and centered */
+    .sidebar .nav > li > a .fa,
+    .sidebar .nav > li > a .fa-stack,
+    .sidebar .nav > li > a i {
+        margin: 0;
+        width: 20px;
+        text-align: center;
+        transition: margin 0.3s ease;
+        flex-shrink: 0;
+        display: inline-block;
+        font-size: 16px;
+        color: #2185d0 !important; /* Blue icons */
+    }
+    
+    .sidebar.sidebar-expanded .nav > li > a .fa,
+    .sidebar.sidebar-expanded .nav > li > a .fa-stack,
+    .sidebar.sidebar-expanded .nav > li > a i {
+        margin-right: 10px;
+    }
+    
+    /* Context selector styling - dashboard icon always visible and centered */
+    .sidebar .context-selector {
+        padding: 15px 0;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: center;
+        background-color: #f8f9fa;
+    }
+    
+    .sidebar .context-selector .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #2185d0;
+        font-size: 0; /* Hide text in collapsed state */
+    }
+    
+    /* Dashboard icon specific styling - ensure stacked icons are visible */
+    .sidebar .context-selector .fa-stack {
+        color: #2185d0 !important;
+        font-size: 20px !important;
+    }
+    
+    .sidebar .context-selector .fa-stack .fa-circle {
+        color: #2185d0 !important;
+    }
+    
+    .sidebar .context-selector .fa-stack .fa-dashboard,
+    .sidebar .context-selector .fa-stack .fa-group {
+        color: white !important; /* White icon for contrast against blue circle */
+    }
+    
+    /* Hide context selector text in collapsed state */
+    .sidebar:not(.sidebar-expanded):not(:hover) .context-selector .dropdown-toggle span:not(.fa):not(.fa-stack) {
+        display: none !important;
+    }
+    
+    .sidebar:not(.sidebar-expanded):not(:hover) .context-selector .dropdown-toggle .context-indicator {
+        display: none !important;
+    }
+    
+    /* Show context text when expanded */
+    .sidebar.sidebar-expanded .context-selector {
+        padding: 15px 20px;
+    }
+    
+    .sidebar.sidebar-expanded .context-selector .dropdown-toggle {
+        justify-content: flex-start;
+        font-size: inherit;
+        color: #2185d0;
+    }
+    
+    .sidebar.sidebar-expanded .context-selector .dropdown-toggle span:not(.fa):not(.fa-stack) {
+        display: inline !important;
+        margin-left: 10px;
+        color: #2185d0;
+    }
+    
+    .sidebar.sidebar-expanded .context-selector .dropdown-toggle .context-indicator {
+        display: inline !important;
+        margin-left: 10px;
+        color: #666;
+    }
+    
+    /* Hide arrow indicators in collapsed state */
+    .sidebar:not(.sidebar-expanded):not(:hover) .arrow {
+        display: none !important;
+    }
+    
+    .sidebar.sidebar-expanded .arrow {
+        display: inline !important;
+        color: #2185d0;
+    }
+    
+    /* Hover effects for navigation items */
+    .sidebar .nav > li > a:hover {
+        background-color: #f0f8ff;
+        color: #1e7bb8 !important;
+    }
+    
+    .sidebar .context-selector .dropdown-toggle:hover {
+        background-color: #f0f8ff;
+        border-radius: 4px;
+    }
+}
+
+/* Hover effect for desktop collapsed sidebar */
+@media (min-width: 768px) {
+    .sidebar:hover {
+        width: 250px;
+        z-index: 1001;
+        background-color: white;
+    }
+    
+    .sidebar:hover .nav > li > a {
+        justify-content: flex-start;
+        padding: 12px 20px;
+        font-size: inherit;
+        color: #2185d0;
+    }
+    
+    .sidebar:hover .nav > li > a span:not(.fa):not(.fa-stack) {
+        display: inline !important;
+        margin-left: 10px;
+        color: #2185d0;
+    }
+    
+    .sidebar:hover .nav > li > a .fa,
+    .sidebar:hover .nav > li > a .fa-stack,
+    .sidebar:hover .nav > li > a i {
+        margin-right: 10px;
+    }
+    
+    .sidebar:hover .context-selector {
+        padding: 15px 20px;
+    }
+    
+    .sidebar:hover .context-selector .dropdown-toggle {
+        justify-content: flex-start;
+        font-size: inherit;
+        color: #2185d0;
+    }
+    
+    .sidebar:hover .context-selector .dropdown-toggle span:not(.fa):not(.fa-stack) {
+        display: inline !important;
+        margin-left: 10px;
+        color: #2185d0;
+    }
+    
+    .sidebar:hover .arrow {
+        display: inline !important;
+        color: #2185d0;
+    }
+    
+    .sidebar:hover .nav-second-level {
+        display: block;
+    }
+}
+
+/* Ensure navbar has proper z-index and no bottom margin */
+.navbar {
+    margin-bottom: 0 !important;
+    z-index: 1030;
+    position: relative;
+    height: 50px !important;
+    min-height: 50px !important;
+}
+
+/* Remove any potential spacing from wrapper */
+#wrapper {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+/* Ensure page content doesn't overlap with navbar */
+#page-wrapper {
+    padding-top: 0;
+    margin-top: 0;
+}
