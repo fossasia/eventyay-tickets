@@ -112,7 +112,7 @@ class LoggedModel(models.Model, LoggingMixin):
 
     @cached_property
     def all_logentries_link(self):
-        from pretix.base.models import Event
+        from eventyay.base.models import Event
 
         if isinstance(self, Event):
             event = self
