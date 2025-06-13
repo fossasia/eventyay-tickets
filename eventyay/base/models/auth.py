@@ -173,7 +173,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
             return self.email
 
     def send_security_notice(self, messages, email=None):
-        from eventyay.base.services.mail import SendMailException, mail
+        from pretix.base.services.mail import SendMailException, mail
 
         try:
             with language(self.locale):
@@ -182,7 +182,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
             mail(
                 email or self.email,
                 _('Account information changed'),
-                'eventyaycontrol/email/security_notice.txt',
+                'pretixcontrol/email/security_notice.txt',
                 {'user': self, 'messages': msg, 'url': build_absolute_uri('eventyay_common:account.general')},
                 event=None,
                 user=self,
@@ -192,12 +192,12 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
             pass  # Already logged
 
     def send_password_reset(self):
-        from eventyay.base.services.mail import mail
+        from pretix.base.services.mail import mail
 
         mail(
             self.email,
             _('Password recovery'),
-            'eventyaycontrol/email/forgot.txt',
+            'pretixcontrol/email/forgot.txt',
             {
                 'user': self,
                 'url': (
