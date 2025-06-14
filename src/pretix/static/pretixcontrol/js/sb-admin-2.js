@@ -32,4 +32,39 @@ $(function () {
     $('#side-menu').metisMenu({
         'toggle': false,
     });
+    
+    // Enhanced click handler for nested submenu behavior
+    $('#side-menu').on('click', 'a.has-children', function(e) {
+        e.preventDefault();
+        
+        var $this = $(this);
+        var $parent = $this.parent('li');
+        var $submenu = $parent.find('ul.nav-second-level').first();
+        var isMobile = $(window).width() < 768;
+        
+        if (isMobile) {
+            // Mobile behavior: accordion-style (close others at same level)
+            var $siblings = $parent.siblings('li').find('ul.nav-second-level');
+            $siblings.removeClass('in show mobile-submenu-open').slideUp(200);
+            $siblings.parent().removeClass('active');
+            
+            // Toggle current submenu
+            if ($submenu.hasClass('in')) {
+                $submenu.removeClass('in show mobile-submenu-open').slideUp(200);
+                $parent.removeClass('active');
+            } else {
+                $submenu.addClass('in show mobile-submenu-open').slideDown(200);
+                $parent.addClass('active');
+            }
+        } else {
+            // Desktop behavior: allow multiple submenus open
+            if ($submenu.hasClass('in')) {
+                $submenu.removeClass('in show').slideUp(200);
+                $parent.removeClass('active');
+            } else {
+                $submenu.addClass('in show').slideDown(200);
+                $parent.addClass('active');
+            }
+        }
+    });
 });
