@@ -11,7 +11,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import get_current_timezone, make_aware, now
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.models.base import LoggedModel
+from eventyay.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
 
 from ..settings import settings_hierarkey
