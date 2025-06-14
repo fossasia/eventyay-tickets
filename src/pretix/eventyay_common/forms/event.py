@@ -26,6 +26,7 @@ class EventCommonSettingsForm(SettingsForm):
         'hover_button_color',
         'theme_round_borders',
         'primary_font',
+        'frontpage_text',
     ]
 
     def clean(self):
