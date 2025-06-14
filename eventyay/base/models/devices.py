@@ -7,7 +7,11 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager, scopes_disabled
 
+<<<<<<< HEAD
 from pretix.api.auth.devicesecurity import DEVICE_SECURITY_PROFILES
+=======
+from eventyay.api.auth.devicesecurity import DEVICE_SECURITY_PROFILES
+>>>>>>> 1706dbfbc (Enext Migrations)
 from eventyay.base.models import LoggedModel
 
 
