@@ -13,8 +13,11 @@ class EventCommonSettingsForm(SettingsForm):
     )
 
     auto_fields = [
-        'locales',
-        'locale',
+        "locales",
+        "locale",
+        "region",
+        "contact_mail",
+        "imprint_url",
         'logo_image',
         'logo_image_large',
         'logo_show_title',
