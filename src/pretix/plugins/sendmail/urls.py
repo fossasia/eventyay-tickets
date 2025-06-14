@@ -13,4 +13,9 @@ urlpatterns = [
         views.EmailHistoryView.as_view(),
         name='history',
     ),
+    url(
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/sendmail/templates/',
+        views.MailTemplatesView.as_view(),
+        name='templates',
+    ),
 ]
