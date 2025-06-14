@@ -10,10 +10,10 @@ from django.utils.translation import pgettext
 from i18nfield.fields import I18nCharField
 from i18nfield.strings import LazyI18nString
 
-from pretix.base.decimal import round_decimal
+from eventyay.base.decimal import round_decimal
 from eventyay.base.models.base import LoggedModel
-from pretix.base.templatetags.money import money_filter
-from pretix.helpers.countries import FastCountryField
+from eventyay.base.templatetags.money import money_filter
+from eventyay.helpers.countries import FastCountryField
 
 
 class TaxedPrice:

@@ -2,7 +2,7 @@ from django.core.cache import cache
 from django_countries import Countries
 from django_countries.fields import CountryField
 
-from pretix.base.i18n import get_language_without_region
+from eventyay.base.i18n import get_language_without_region
 
 
 class CachedCountries(Countries):

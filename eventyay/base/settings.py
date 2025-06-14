@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from hierarkey.models import GlobalSettingsBase, Hierarkey
 from i18nfield.strings import LazyI18nString
 
-from pretix.base.configurations import (
+from eventyay.base.configurations import (
     COUNTRIES_WITH_STATE,
     CSS_SETTINGS,
     DEFAULT_SETTINGS,
@@ -16,10 +16,10 @@ from pretix.base.configurations import (
     NAME_SCHEMES,
     TITLE_GROUP,
 )
-from pretix.base.configurations.lazy_i18n_string_list_base import (
+from eventyay.base.configurations.lazy_i18n_string_list_base import (
     LazyI18nStringList,
 )
-from pretix.base.reldate import RelativeDateWrapper
+from eventyay.base.reldate import RelativeDateWrapper
 
 DEFAULTS = DEFAULT_SETTINGS.copy()
 SETTINGS_AFFECTING_CSS = CSS_SETTINGS.copy()

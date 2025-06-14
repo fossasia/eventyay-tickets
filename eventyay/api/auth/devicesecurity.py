@@ -22,9 +22,9 @@ class AllowListSecurityProfile:
         return key in self.allowlist
 
 
-class PretixScanSecurityProfile(AllowListSecurityProfile):
-    identifier = 'pretixscan'
-    verbose_name = _('pretixSCAN')
+class EventyayCheckinSecurityProfile(AllowListSecurityProfile):
+    identifier = 'eventyay_checkin'
+    verbose_name = _('eventyay_checkin')
     allowlist = (
         ('GET', 'api-v1:version'),
         ('GET', 'api-v1:device.eventselection'),
@@ -52,9 +52,9 @@ class PretixScanSecurityProfile(AllowListSecurityProfile):
     )
 
 
-class PretixScanNoSyncSecurityProfile(AllowListSecurityProfile):
-    identifier = 'pretixscan_online_kiosk'
-    verbose_name = _('pretixSCAN (kiosk mode, online only)')
+class EventyayCheckinNoSyncSecurityProfile(AllowListSecurityProfile):
+    identifier = 'eventyay_checkin_online_kiosk'
+    verbose_name = _('eventyay_checkin (kiosk mode, online only)')
     allowlist = (
         ('GET', 'api-v1:version'),
         ('GET', 'api-v1:device.eventselection'),
@@ -80,9 +80,9 @@ class PretixScanNoSyncSecurityProfile(AllowListSecurityProfile):
     )
 
 
-class PretixPosSecurityProfile(AllowListSecurityProfile):
-    identifier = 'pretixpos'
-    verbose_name = _('pretixPOS')
+class EventyayCheckinSecurityProfile(AllowListSecurityProfile):
+    identifier = 'eventyay_checkin_offline_kiosk'
+    verbose_name = _('eventyay_checkin (kiosk mode, offline)')
     allowlist = (
         ('GET', 'api-v1:version'),
         ('GET', 'api-v1:device.eventselection'),
@@ -135,8 +135,8 @@ DEVICE_SECURITY_PROFILES = {
     k.identifier: k()
     for k in (
         FullAccessSecurityProfile,
-        PretixScanSecurityProfile,
-        PretixScanNoSyncSecurityProfile,
-        PretixPosSecurityProfile,
+        EventyayCheckinSecurityProfile,
+        EventyayCheckinNoSyncSecurityProfile,
+        EventyayCheckinSecurityProfile,
     )
 }

@@ -6,7 +6,7 @@ from django.core.files.storage import default_storage
 from PIL import Image, ImageOps
 from PIL.Image import Resampling
 
-from pretix.helpers.models import Thumbnail
+from eventyay.helpers.models import Thumbnail
 
 
 class ThumbnailError(Exception):
