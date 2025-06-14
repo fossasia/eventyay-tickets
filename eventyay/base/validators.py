@@ -59,5 +59,5 @@ class OrganizerSlugBanlistValidator(BanlistValidator):
 @deconstructible
 class EmailBanlistValidator(BanlistValidator):
     banlist = [
-        settings.PRETIX_EMAIL_NONE_VALUE,
+        settings.EVENTYAY_EMAIL_NONE_VALUE,
     ]

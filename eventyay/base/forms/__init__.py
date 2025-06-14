@@ -10,7 +10,7 @@ from formtools.wizard.views import SessionWizardView
 from hierarkey.forms import HierarkeyForm
 from i18nfield.strings import LazyI18nString
 
-from pretix.base.reldate import RelativeDateField, RelativeDateTimeField
+from eventyay.base.reldate import RelativeDateField, RelativeDateTimeField
 
 from .validators import PlaceholderValidator  # NOQA
 

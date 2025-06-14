@@ -30,15 +30,15 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager, scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretix.base.models.base import LoggedModel
-from pretix.base.models.fields import MultiStringField
-from pretix.base.reldate import RelativeDateWrapper
-from pretix.base.settings import GlobalSettingsObject
-from pretix.base.validators import EventSlugBanlistValidator
-from pretix.helpers.database import GroupConcat
-from pretix.helpers.daterange import daterange
-from pretix.helpers.json import safe_string
-from pretix.helpers.thumb import get_thumbnail
+from eventyay.base.models.base import LoggedModel
+from eventyay.base.models.fields import MultiStringField
+from eventyay.base.reldate import RelativeDateWrapper
+from eventyay.base.settings import GlobalSettingsObject
+from eventyay.base.validators import EventSlugBanlistValidator
+from eventyay.helpers.database import GroupConcat
+from eventyay.helpers.daterange import daterange
+from eventyay.helpers.json import safe_string
+from eventyay.helpers.thumb import get_thumbnail
 
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team

@@ -24,30 +24,30 @@ from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 from i18nfield.strings import LazyI18nString
 from rest_framework import serializers
 
-from pretix.api.serializers.fields import (
+from eventyay.api.serializers.fields import (
     ListMultipleChoiceField,
     UploadedFileField,
 )
-from pretix.api.serializers.i18n import I18nField, I18nURLField
-from pretix.base.configurations.lazy_i18n_string_list_base import (
+from eventyay.api.serializers.i18n import I18nField, I18nURLField
+from eventyay.base.configurations.lazy_i18n_string_list_base import (
     LazyI18nStringList,
 )
-from pretix.base.forms import I18nURLFormField
-from pretix.base.models.tax import TaxRule
-from pretix.base.reldate import (
+from eventyay.base.forms import I18nURLFormField
+from eventyay.base.models.tax import TaxRule
+from eventyay.base.reldate import (
     RelativeDateField,
     RelativeDateTimeField,
     RelativeDateWrapper,
     SerializerRelativeDateField,
     SerializerRelativeDateTimeField,
 )
-from pretix.control.forms import (
+from eventyay.control.forms import (
     ExtFileField,
     FontSelect,
     MultipleLanguagesWidget,
     SingleLanguageWidget,
 )
-from pretix.helpers.countries import CachedCountries
+from eventyay.helpers.countries import CachedCountries
 
 
 def country_choice_kwargs():
@@ -1900,7 +1900,7 @@ Your {event} team"""
     'smtp_use_tls': {'default': 'True', 'type': bool},
     'smtp_use_ssl': {'default': 'False', 'type': bool},
     'primary_color': {
-        'default': settings.PRETIX_PRIMARY_COLOR,
+        'default': settings.EVENTYAY_PRIMARY_COLOR,
         'type': str,
         'form_class': forms.CharField,
         'serializer_class': serializers.CharField,

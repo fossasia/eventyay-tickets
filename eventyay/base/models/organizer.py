@@ -12,7 +12,7 @@ from django.utils.timezone import get_current_timezone, make_aware, now
 from django.utils.translation import gettext_lazy as _
 
 from eventyay.base.models.base import LoggedModel
-from pretix.base.validators import OrganizerSlugBanlistValidator
+from eventyay.base.validators import OrganizerSlugBanlistValidator
 
 from ..settings import settings_hierarkey
 from . import BillingInvoice

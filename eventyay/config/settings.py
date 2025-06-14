@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 from eventyay.helpers.config import EnvOrParserConfig
+from pycountry import currencies
 
 _config = configparser.RawConfigParser()
 if 'PRETIX_CONFIG_FILE' in os.environ:
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'eventyay.base',
+    'eventyay.helpers',
 ]
 
 MIDDLEWARE = [
@@ -114,6 +116,42 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+ENTROPY = {
+    'order_code': config.getint('entropy', 'order_code', fallback=5),
+    'ticket_secret': config.getint('entropy', 'ticket_secret', fallback=32),
+    'voucher_code': config.getint('entropy', 'voucher_code', fallback=16),
+    'giftcard_secret': config.getint('entropy', 'giftcard_secret', fallback=12),
+}
+EVENTYAY_PRIMARY_COLOR = '#2185d0'
+
+
+DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
+CURRENCY_PLACES = {
+    # default is 2
+    'BIF': 0,
+    'CLP': 0,
+    'DJF': 0,
+    'GNF': 0,
+    'JPY': 0,
+    'KMF': 0,
+    'KRW': 0,
+    'MGA': 0,
+    'PYG': 0,
+    'RWF': 0,
+    'VND': 0,
+    'VUV': 0,
+    'XAF': 0,
+    'XOF': 0,
+    'XPF': 0,
+}
+
+CURRENCIES = list(currencies)
+
+EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
+MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
+
+
+TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
