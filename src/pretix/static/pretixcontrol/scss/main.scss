@@ -876,16 +876,14 @@ h1 .label {
 
 @media (max-width: $screen-sm-max) {
     .dashboard-item {
-       
         min-height: 44px;
-        
+        position: relative; // Add relative positioning to establish context
         
         &:active {
             background-color: darken($btn-primary-bg, 5%) !important;
         }
         
         &.menu-open {
-           
             &::after {
                 content: '';
                 position: fixed;
@@ -900,18 +898,19 @@ h1 .label {
         }
         
         #submenu {
-            
-            position: fixed;
-            top: auto;
-            right: 10px;
-            left: 10px;
+            // Change from fixed to absolute positioning
+            position: absolute;
+            top: 100%; // Position directly below parent
+            left: 0;
+            right: 0;
+            width: 100%; // Match parent width exactly
+            max-width: 100%; // Prevent overflow
             z-index: 10000;
             background: white;
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            
-            
-           
+            margin: 0; // Remove any default margins
+            // Remove the old left: 10px and right: 10px rules
         }
     }
 }

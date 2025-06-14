@@ -43,15 +43,30 @@ function handleProfileMenuClick() {
     });
     
     
+    // Modified click outside handler for two-step closing
     $(document).off('click.submenu').on('click.submenu', function (event) {
         if (window.innerWidth <= 768) {
-            
+            // Check if click is outside both dropdown and submenu
             if (!$(event.target).closest('.dashboard-item, #submenu').length) {
-                $('.dashboard-item').removeClass('menu-open');
+                // Check if submenu is currently open
+                if ($('#submenu').is(':visible') || $('.dashboard-item.menu-open #submenu').length > 0) {
+                    // First click: close submenu only, keep dropdown open
+                    $('#submenu').hide();
+                    // Add a flag to indicate submenu was just closed
+                    $('.dashboard-item.menu-open').attr('data-submenu-closed', 'true');
+                } else if ($('.dashboard-item.menu-open').length > 0) {
+                    // Second click: close dropdown menu
+                    $('.dashboard-item').removeClass('menu-open').removeAttr('data-submenu-closed');
+                }
+            } else {
+                // Click inside - reset the submenu-closed flag
+                $('.dashboard-item.menu-open').removeAttr('data-submenu-closed');
             }
         }
     });
     
+    // Remove the duplicate backdrop handler since we're handling it above
+    $(document).off('click.backdrop');
     
     $(document).off('click.backdrop').on('click.backdrop', function (event) {
         if (window.innerWidth <= 768) {
