@@ -6,7 +6,7 @@
 {% load rules %}
 {% load static %}
 {% load vite %}
-{% blocktranslate with site_name=site_config.name asvar logo_alt_text %}The {{ site_name }} logo{% endblocktranslate %}
+{% blocktranslate trimmed with site_name=site_config.name asvar logo_alt_text %}The {{ site_name }} logo{% endblocktranslate %}
 
 <!DOCTYPE html>
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
@@ -166,36 +166,38 @@
             {% if request.user.is_authenticated %}
             <aside class="nav flex-column sidebar">
                 <div class="dropdown nav-link p-0" id="nav-search-wrapper">
-                    <a href="{% get_dashboard_url %}" style="text-decoration: none; color: inherit;">
-                        <div id="nav-search" class="dropdown-toggle summary-div" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span id="search-context-icon" class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa {% get_top_menu_item_icon_class %} fa-stack-1x fa-inverse"></i>
-                                </span>
-                                <div id="search-context-text">
-                                    {% if request.event %}
-                                        <span class="context-name font-weight-bold">{{ request.event.name }}</span>
-                                        <span class="context-meta">{{ request.event.get_date_range_display }}</span>
-                                    {% elif request.organiser %}
-                                        <span class="context-name font-weight-bold">{{ request.organiser.name }}</span>
-                                        <span class="context-meta">{% translate "Organiser account" %}</span>
-                                    {% else %}
-                                        <span class="context-name font-weight-bold">{{ request.user.get_display_name }}</span>
-                                    {% endif %}
+                    {% block nav_top_header %}
+                        <a href="{% get_dashboard_url %}" style="text-decoration: none; color: inherit;">
+                            <div id="nav-search" class="dropdown-toggle summary-div" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span id="search-context-icon" class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa {% get_top_menu_item_icon_class %} fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                    <div id="search-context-text">
+                                        {% if request.event %}
+                                            <span class="context-name font-weight-bold">{{ request.event.name }}</span>
+                                            <span class="context-meta">{{ request.event.get_date_range_display }}</span>
+                                        {% elif request.organiser %}
+                                            <span class="context-name font-weight-bold">{{ request.organiser.name }}</span>
+                                            <span class="context-meta">{% translate "Organiser account" %}</span>
+                                        {% else %}
+                                            <span class="context-name font-weight-bold">{% translate "Talk dashboard" %}</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="nav-search-input-wrapper" class="d-none dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url 'orga:nav.typeahead' %}" data-event-typeahead data-organiser="{% if request.event %}{{ request.event.organiser.pk }}{% elif request.organiser %}{{ request.organiser.pk }}{% endif %}">
-                            <div class="query-holder">
-                                <div class="form-box">
-                                    <input type="search" class="form-control" placeholder="{% translate 'Search' %} (Alt + k)" data-typeahead-query>
+                            <div id="nav-search-input-wrapper" class="d-none dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url 'orga:nav.typeahead' %}" data-event-typeahead data-organiser="{% if request.event %}{{ request.event.organiser.pk }}{% elif request.organiser %}{{ request.organiser.pk }}{% endif %}">
+                                <div class="query-holder">
+                                    <div class="form-box">
+                                        <input type="search" class="form-control" placeholder="{% translate 'Search' %} (Alt + k)" data-typeahead-query>
+                                    </div>
                                 </div>
+                                <ul id="search-results">
+                                </ul>
                             </div>
-                            <ul id="search-results">
-                            </ul>
-                        </div>
-                    </a>
+                        </a>
+                    {% endblock %}
                 </div>
                 {% if request.event %}
                     {% has_perm "orga.view_orga_area" request.user request.event as can_see_orga_area %}
