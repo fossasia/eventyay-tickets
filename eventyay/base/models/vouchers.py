@@ -13,7 +13,7 @@ from django.utils.translation import pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
 
 from pretix.base.banlist import banned
-from pretix.base.models import Seat, SeatCategoryMapping
+from eventyay.base.models import Seat, SeatCategoryMapping
 
 from ..decimal import round_decimal
 from .base import LoggedModel

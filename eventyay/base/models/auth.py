@@ -65,7 +65,7 @@ class SuperuserPermissionSet:
 
 class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     """
-    This is the user model used by pretix for authentication.
+    This is the user model used by eventyay for authentication.
 
     :param email: The user's email address, used for identification.
     :type email: str

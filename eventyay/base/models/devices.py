@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager, scopes_disabled
 
 from pretix.api.auth.devicesecurity import DEVICE_SECURITY_PROFILES
-from pretix.base.models import LoggedModel
+from eventyay.base.models import LoggedModel
 
 
 @scopes_disabled()

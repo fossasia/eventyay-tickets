@@ -11,7 +11,7 @@ from i18nfield.fields import I18nCharField
 from i18nfield.strings import LazyI18nString
 
 from pretix.base.decimal import round_decimal
-from pretix.base.models.base import LoggedModel
+from eventyay.base.models.base import LoggedModel
 from pretix.base.templatetags.money import money_filter
 from pretix.helpers.countries import FastCountryField
 
@@ -168,7 +168,7 @@ class TaxRule(LoggedModel):
         pass
 
     def allow_delete(self):
-        from pretix.base.models.orders import OrderFee, OrderPosition
+        from eventyay.base.models.orders import OrderFee, OrderPosition
 
         return (
             not OrderFee.objects.filter(tax_rule=self, order__event=self.event).exists()
