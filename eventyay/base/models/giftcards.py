@@ -9,7 +9,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
-from pretix.base.banlist import banned
+from eventyay.base.banlist import banned
 from eventyay.base.models import LoggedModel
 
 

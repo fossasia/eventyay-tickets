@@ -88,7 +88,7 @@ class Organizer(LoggedModel):
         this organizer, so you don't have to prefix your cache keys. In addition, the cache
         is being cleared every time the organizer changes.
         """
-        from pretix.base.cache import ObjectRelatedCache
+        from eventyay.base.cache import ObjectRelatedCache
 
         return ObjectRelatedCache(self)
 
@@ -454,7 +454,7 @@ class OrganizerBillingModel(models.Model):
     )
 
     invoice_voucher = models.ForeignKey(
-        'pretixbase.InvoiceVoucher',
+        'eventyaybase.InvoiceVoucher',
         on_delete=models.CASCADE,
         related_name='billing',
         null=True,

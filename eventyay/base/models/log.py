@@ -9,7 +9,7 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
-from pretix.base.signals import logentry_object_link
+from eventyay.base.signals import logentry_object_link
 
 
 class VisibleOnlyManager(models.Manager):
@@ -31,20 +31,24 @@ class LogEntry(models.Model):
        used to look up the renderer used to describe the action in a human-
        readable way. This should be some namespaced value using dotted
        notation to avoid duplicates, e.g.
-       ``"pretix.plugins.banktransfer.incoming_transfer"``.
+       ``"eventyay.plugins.banktransfer.incoming_transfer"``.
     :type action_type: str
     :param data: Arbitrary data that can be used by the log action renderer
     :type data: str
     """
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        related_name='eventyay_log_entries'
+    )
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
-    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT)
+    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT, related_name='eventyay_log_entries')
     api_token = models.ForeignKey('TeamAPIToken', null=True, blank=True, on_delete=models.PROTECT)
     device = models.ForeignKey('Device', null=True, blank=True, on_delete=models.PROTECT)
-    oauth_application = models.ForeignKey('pretixapi.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)
+    oauth_application = models.ForeignKey('eventyayapi.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)
     event = models.ForeignKey('Event', null=True, blank=True, on_delete=models.SET_NULL)
     action_type = models.CharField(max_length=255)
     data = models.TextField(default='{}')
@@ -67,7 +71,7 @@ class LogEntry(models.Model):
 
     @property
     def webhook_type(self):
-        from pretix.api.webhooks import get_all_webhook_events
+        from eventyay.api.webhooks import get_all_webhook_events
 
         wh_types = get_all_webhook_events()
         wh_type = None
@@ -79,7 +83,7 @@ class LogEntry(models.Model):
 
     @property
     def notification_type(self):
-        from pretix.base.notifications import get_all_notification_types
+        from eventyay.base.notifications import get_all_notification_types
 
         no_type = None
         no_types = get_all_notification_types()
@@ -252,7 +256,7 @@ class LogEntry(models.Model):
 
     @classmethod
     def bulk_postprocess(cls, objects):
-        from pretix.api.webhooks import notify_webhooks
+        from eventyay.api.webhooks import notify_webhooks
 
         from ..services.notifications import notify
 

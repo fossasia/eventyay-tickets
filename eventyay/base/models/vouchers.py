@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
 
-from pretix.base.banlist import banned
+from eventyay.base.banlist import banned
 from eventyay.base.models import Seat, SeatCategoryMapping
 
 from ..decimal import round_decimal

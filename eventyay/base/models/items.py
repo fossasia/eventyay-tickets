@@ -471,7 +471,7 @@ class Item(LoggedModel):
         default=False,
     )
     # !!! Attention: If you add new fields here, also add them to the copying code in
-    # pretix/control/forms/item.py if applicable.
+    # eventyay/control/forms/item.py if applicable.
 
     class Meta:
         verbose_name = _('Product')
@@ -652,7 +652,7 @@ class Item(LoggedModel):
         return res
 
     def allow_delete(self):
-        from pretix.base.models.orders import OrderPosition
+        from eventyay.base.models.orders import OrderPosition
 
         return not OrderPosition.all.filter(item=self).exists()
 
@@ -911,7 +911,7 @@ class ItemVariation(models.Model):
         return self.position < other.position
 
     def allow_delete(self):
-        from pretix.base.models.orders import CartPosition, OrderPosition
+        from eventyay.base.models.orders import CartPosition, OrderPosition
 
         return (
             not OrderPosition.objects.filter(variation=self).exists()

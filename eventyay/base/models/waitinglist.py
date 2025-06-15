@@ -9,11 +9,11 @@ from django.utils.translation import pgettext_lazy
 from django_scopes import ScopedManager
 from phonenumber_field.modelfields import PhoneNumberField
 
-from pretix.base.email import get_email_context
-from pretix.base.i18n import language
-from pretix.base.models import Voucher
-from pretix.base.services.mail import mail
-from pretix.base.settings import PERSON_NAME_SCHEMES
+from eventyay.base.email import get_email_context
+from eventyay.base.i18n import language
+from eventyay.base.models import Voucher
+from eventyay.base.services.mail import mail
+from eventyay.base.settings import PERSON_NAME_SCHEMES
 
 from .base import LoggedModel
 from .event import Event, SubEvent
@@ -137,7 +137,7 @@ class WaitingListEntry(LoggedModel):
                 subevent=self.subevent,
             )
             v.log_action(
-                'pretix.voucher.added.waitinglist',
+                'eventyay.voucher.added.waitinglist',
                 {
                     'item': self.item.pk,
                     'variation': self.variation.pk if self.variation else None,
@@ -152,7 +152,7 @@ class WaitingListEntry(LoggedModel):
                 user=user,
                 auth=auth,
             )
-            self.log_action('pretix.waitinglist.voucher', user=user, auth=auth)
+            self.log_action('eventyay.waitinglist.voucher', user=user, auth=auth)
             self.voucher = v
             self.save()
 

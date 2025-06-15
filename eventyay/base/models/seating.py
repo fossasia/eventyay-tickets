@@ -106,7 +106,7 @@ class SeatingPlan(LoggedModel):
 class SeatCategoryMapping(models.Model):
     """
     Input seating plans have abstract "categories", such as "Balcony seat", etc. This model maps them to actual
-    pretix product on a per-(sub)event level.
+    eventyay product on a per-(sub)event level.
     """
 
     event = models.ForeignKey(Event, related_name='seat_category_mappings', on_delete=models.CASCADE)

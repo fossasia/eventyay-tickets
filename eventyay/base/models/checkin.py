@@ -162,10 +162,10 @@ class CheckinList(LoggedModel):
         # SQL queries, which is not a full implementation of JSON logic right now, but makes some assumptions,
         # e.g. it does not support something like (a AND b) == (c OR D)
         # Every change to our supported JSON logic must be done
-        # * in pretix.base.services.checkin
-        # * in pretix.base.models.checkin
+        # * in eventyay.base.services.checkin
+        # * in eventyay.base.models.checkin
         # * in checkinrules.js
-        # * in libpretixsync
+        # * in libeventyaysync
         top_level_operators = {
             '<',
             '<=',
@@ -238,25 +238,25 @@ class Checkin(models.Model):
         (TYPE_ENTRY, _('Entry')),
         (TYPE_EXIT, _('Exit')),
     )
-    position = models.ForeignKey('pretixbase.OrderPosition', related_name='checkins', on_delete=models.CASCADE)
+    position = models.ForeignKey('eventyaybase.OrderPosition', related_name='checkins', on_delete=models.CASCADE)
     datetime = models.DateTimeField(default=now)
     nonce = models.CharField(max_length=190, null=True, blank=True)
     list = models.ForeignKey(
-        'pretixbase.CheckinList',
+        'eventyaybase.CheckinList',
         related_name='checkins',
         on_delete=models.PROTECT,
     )
     type = models.CharField(max_length=100, choices=CHECKIN_TYPES, default=TYPE_ENTRY)
     forced = models.BooleanField(default=False)
     device = models.ForeignKey(
-        'pretixbase.Device',
+        'eventyaybase.Device',
         related_name='checkins',
         on_delete=models.PROTECT,
         null=True,
         blank=True,
     )
     gate = models.ForeignKey(
-        'pretixbase.Gate',
+        'eventyaybase.Gate',
         related_name='checkins',
         on_delete=models.SET_NULL,
         null=True,

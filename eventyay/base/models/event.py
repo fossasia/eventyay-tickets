@@ -205,7 +205,7 @@ class EventMixin:
 
     @classmethod
     def annotated(cls, qs, channel='web'):
-        from pretix.base.models import Item, ItemVariation, Quota
+        from eventyay.base.models import Item, ItemVariation, Quota
 
         sq_active_item = (
             Item.objects.using(settings.DATABASE_REPLICA)
@@ -474,7 +474,7 @@ class Event(EventMixin, LoggedModel):
     def set_defaults(self):
         """
         This will be called after event creation, but only if the event was not created by copying an existing one.
-        This way, we can use this to introduce new default settings to pretix that do not affect existing events.
+        This way, we can use this to introduce new default settings to eventyay that do not affect existing events.
         """
         self.settings.invoice_renderer = 'modern1'
         self.settings.invoice_include_expire_date = True
@@ -486,7 +486,7 @@ class Event(EventMixin, LoggedModel):
 
     @property
     def social_image(self):
-        from pretix.multidomain.urlreverse import build_absolute_uri
+        from eventyay.multidomain.urlreverse import build_absolute_uri
 
         img = None
         logo_file = self.settings.get('logo_image', as_type=str, default='')[7:]
@@ -565,7 +565,7 @@ class Event(EventMixin, LoggedModel):
         this event, so you don't have to prefix your cache keys. In addition, the cache
         is being cleared every time the event or one of its related objects change.
         """
-        from pretix.base.cache import ObjectRelatedCache
+        from eventyay.base.cache import ObjectRelatedCache
 
         return ObjectRelatedCache(self)
 
@@ -573,7 +573,7 @@ class Event(EventMixin, LoggedModel):
         """
         Returns a contextmanager that can be used to lock an event for bookings.
         """
-        from pretix.base.services import locking
+        from eventyay.base.services import locking
 
         return locking.LockManager(self)
 
@@ -582,7 +582,7 @@ class Event(EventMixin, LoggedModel):
         Returns an email server connection, either by using the system-wide connection
         or by returning a custom one based on the event's settings.
         """
-        from pretix.base.email import CustomSMTPBackend, SendGridEmail
+        from eventyay.base.email import CustomSMTPBackend, SendGridEmail
 
         gs = GlobalSettingsObject()
 
@@ -648,7 +648,7 @@ class Event(EventMixin, LoggedModel):
             self.date_admission = self.date_from + (other.date_admission - other.date_from)
         self.testmode = other.testmode
         self.save()
-        self.log_action('pretix.object.cloned', data={'source': other.slug, 'source_id': other.pk})
+        self.log_action('eventyay.object.cloned', data={'source': other.slug, 'source_id': other.pk})
 
         tax_map = {}
         for t in other.tax_rules.all():
@@ -656,7 +656,7 @@ class Event(EventMixin, LoggedModel):
             t.pk = None
             t.event = self
             t.save()
-            t.log_action('pretix.object.cloned')
+            t.log_action('eventyay.object.cloned')
 
         category_map = {}
         for c in ItemCategory.objects.filter(event=other):
@@ -664,7 +664,7 @@ class Event(EventMixin, LoggedModel):
             c.pk = None
             c.event = self
             c.save()
-            c.log_action('pretix.object.cloned')
+            c.log_action('eventyay.object.cloned')
 
         item_meta_properties_map = {}
         for imp in other.item_meta_properties.all():
@@ -672,7 +672,7 @@ class Event(EventMixin, LoggedModel):
             imp.pk = None
             imp.event = self
             imp.save()
-            imp.log_action('pretix.object.cloned')
+            imp.log_action('eventyay.object.cloned')
 
         item_map = {}
         variation_map = {}
@@ -688,7 +688,7 @@ class Event(EventMixin, LoggedModel):
             if i.tax_rule_id:
                 i.tax_rule = tax_map[i.tax_rule_id]
             i.save()
-            i.log_action('pretix.object.cloned')
+            i.log_action('eventyay.object.cloned')
             for v in vars:
                 variation_map[v.pk] = v
                 v.pk = None
@@ -725,7 +725,7 @@ class Event(EventMixin, LoggedModel):
             q.event = self
             q.closed = False
             q.save()
-            q.log_action('pretix.object.cloned')
+            q.log_action('eventyay.object.cloned')
             for i in items:
                 if i.pk in item_map:
                     q.items.add(item_map[i.pk])
@@ -741,7 +741,7 @@ class Event(EventMixin, LoggedModel):
             q.pk = None
             q.event = self
             q.save()
-            q.log_action('pretix.object.cloned')
+            q.log_action('eventyay.object.cloned')
 
             for i in items:
                 q.items.add(item_map[i.pk])
@@ -778,7 +778,7 @@ class Event(EventMixin, LoggedModel):
             _walk_rules(rules)
             cl.rules = rules
             cl.save()
-            cl.log_action('pretix.object.cloned')
+            cl.log_action('eventyay.object.cloned')
             for i in items:
                 cl.limit_products.add(item_map[i.pk])
 
@@ -803,8 +803,8 @@ class Event(EventMixin, LoggedModel):
             s.save()
 
         skip_settings = (
-            'ticket_secrets_pretix_sig1_pubkey',
-            'ticket_secrets_pretix_sig1_privkey',
+            'ticket_secrets_eventyay_sig1_pubkey',
+            'ticket_secrets_eventyay_sig1_privkey',
         )
         for s in other.settings._objects.all():
             if s.key in skip_settings:
@@ -1055,7 +1055,7 @@ class Event(EventMixin, LoggedModel):
 
     @cached_property
     def live_issues(self):
-        from pretix.base.signals import event_live_issues
+        from eventyay.base.signals import event_live_issues
 
         issues = []
 
@@ -1152,7 +1152,7 @@ class Event(EventMixin, LoggedModel):
         self.subevents.all().delete()
 
     def set_active_plugins(self, modules, allow_restricted=False):
-        from pretix.base.plugins import get_all_plugins
+        from eventyay.base.plugins import get_all_plugins
 
         plugins_active = self.get_plugins()
         plugins_available = {
@@ -1171,7 +1171,7 @@ class Event(EventMixin, LoggedModel):
 
     def enable_plugin(self, module, allow_restricted=False):
         plugins_active = self.get_plugins()
-        from pretix.presale.style import regenerate_css
+        from eventyay.presale.style import regenerate_css
 
         if module not in plugins_active:
             plugins_active.append(module)
@@ -1181,7 +1181,7 @@ class Event(EventMixin, LoggedModel):
 
     def disable_plugin(self, module):
         plugins_active = self.get_plugins()
-        from pretix.presale.style import regenerate_css
+        from eventyay.presale.style import regenerate_css
 
         if module in plugins_active:
             plugins_active.remove(module)
@@ -1443,7 +1443,7 @@ class RequiredAction(models.Model):
        used to look up the renderer used to describe the action in a human-
        readable way. This should be some namespaced value using dotted
        notation to avoid duplicates, e.g.
-       ``"pretix.plugins.banktransfer.incoming_transfer"``.
+       ``"eventyay.plugins.banktransfer.incoming_transfer"``.
     :type action_type: str
     :param data: Arbitrary data that can be used by the log action renderer
     :type data: str
@@ -1476,7 +1476,7 @@ class RequiredAction(models.Model):
 
             logentry = LogEntry.objects.create(
                 content_object=self,
-                action_type='pretix.event.action_required',
+                action_type='eventyay.event.action_required',
                 event=self.event,
                 visible=False,
             )

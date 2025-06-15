@@ -11,8 +11,8 @@ from django.utils.functional import cached_property
 from django.utils.translation import pgettext
 from django_scopes import ScopedManager
 
-from pretix.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
-from pretix.helpers.countries import FastCountryField
+from eventyay.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
+from eventyay.helpers.countries import FastCountryField
 
 
 def invoice_filename(instance, filename: str) -> str:
