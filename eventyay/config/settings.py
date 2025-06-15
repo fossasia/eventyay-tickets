@@ -14,14 +14,15 @@ import os
 from pathlib import Path
 
 from eventyay.helpers.config import EnvOrParserConfig
+from .settings_helpers import build_db_tls_config, build_redis_tls_config
 from pycountry import currencies
 
 _config = configparser.RawConfigParser()
-if 'PRETIX_CONFIG_FILE' in os.environ:
-    _config.read_file(open(os.envron.get('PRETIX_CONFIG_FILE'), encoding='utf-8'))
+if 'EVENTYAY_CONFIG_FILE' in os.environ:
+    _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
 else:
     _config.read(
-        ['/etc/pretix/pretix.cfg', os.path.expanduser('~/.pretix.cfg'), 'pretix.cfg'],
+        ['/etc/eventyay/eventyay.cfg', os.path.expanduser('~/.eventyay.cfg'), 'eventyay.cfg'],
         encoding='utf-8',
     )
 config = EnvOrParserConfig(_config)
@@ -44,6 +45,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+AUTH_USER_MODEL = 'eventyaybase.User'
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,8 +54,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
+    'eventyay.api',
     'eventyay.base',
     'eventyay.helpers',
+    'eventyay.multidomain',
+    'eventyay.presale'
 ]
 
 MIDDLEWARE = [
@@ -162,6 +169,65 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
+METRICS_USER = config.get('metrics', 'user', fallback='metrics')
+METRICS_PASSPHRASE = config.get('metrics', 'passphrase', fallback='')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'eventyay.helpers.cache.CustomDummyCache',
+    }
+}
+REAL_CACHE_USED = False
+SESSION_ENGINE = None
+
+HAS_MEMCACHED = config.has_option('memcached', 'location')
+if HAS_MEMCACHED:
+    REAL_CACHE_USED = True
+    CACHES['default'] = {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': config.get('memcached', 'location'),
+    }
+
+HAS_REDIS = config.has_option('redis', 'location')
+if HAS_REDIS:
+    redis_options = {
+        'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        'REDIS_CLIENT_KWARGS': {'health_check_interval': 30},
+    }
+    redis_tls_config = build_redis_tls_config(config)
+    if redis_tls_config is not None:
+        redis_options['CONNECTION_POOL_KWARGS'] = redis_tls_config
+        redis_options['REDIS_CLIENT_KWARGS'].update(redis_tls_config)
+
+    if config.has_option('redis', 'password'):
+        redis_options['PASSWORD'] = config.get('redis', 'password')
+
+    CACHES['redis'] = {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': config.get('redis', 'location'),
+        'OPTIONS': redis_options,
+    }
+    CACHES['redis_sessions'] = {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': config.get('redis', 'location'),
+        'TIMEOUT': 3600 * 24 * 30,
+        'OPTIONS': redis_options,
+    }
+    if not HAS_MEMCACHED:
+        CACHES['default'] = CACHES['redis']
+        REAL_CACHE_USED = True
+    if config.getboolean('redis', 'sessions', fallback=False):
+        SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+        SESSION_CACHE_ALIAS = 'redis_sessions'
+
+if not SESSION_ENGINE:
+    if REAL_CACHE_USED:
+        SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+    else:
+        SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 
 # Static files (CSS, JavaScript, Images)

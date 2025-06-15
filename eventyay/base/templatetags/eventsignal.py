@@ -3,7 +3,7 @@ import importlib
 from django import template
 from django.utils.safestring import mark_safe
 
-from pretix.base.models import Event
+from eventyay.base.models import Event
 
 register = template.Library()
 

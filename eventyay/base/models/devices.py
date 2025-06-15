@@ -7,11 +7,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager, scopes_disabled
 
-<<<<<<< HEAD
-from pretix.api.auth.devicesecurity import DEVICE_SECURITY_PROFILES
-=======
 from eventyay.api.auth.devicesecurity import DEVICE_SECURITY_PROFILES
->>>>>>> 1706dbfbc (Enext Migrations)
 from eventyay.base.models import LoggedModel
 
 
@@ -40,7 +36,7 @@ def generate_api_token():
 
 
 class Gate(LoggedModel):
-    organizer = models.ForeignKey('pretixbase.Organizer', on_delete=models.PROTECT, related_name='gates')
+    organizer = models.ForeignKey('eventyaybase.Organizer', on_delete=models.PROTECT, related_name='gates')
     name = models.CharField(
         verbose_name=_('Name'),
         max_length=190,
@@ -84,9 +80,9 @@ class Gate(LoggedModel):
 
 
 class Device(LoggedModel):
-    organizer = models.ForeignKey('pretixbase.Organizer', on_delete=models.PROTECT, related_name='devices')
+    organizer = models.ForeignKey('eventyaybase.Organizer', on_delete=models.PROTECT, related_name='devices')
     gate = models.ForeignKey(
-        'pretixbase.Gate',
+        'eventyaybase.Gate',
         verbose_name=_('Gate'),
         on_delete=models.SET_NULL,
         null=True,

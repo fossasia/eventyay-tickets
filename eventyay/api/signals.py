@@ -1,0 +1,30 @@
+from datetime import timedelta
+
+from django.dispatch import Signal, receiver
+from django.utils.timezone import now
+from django_scopes import scopes_disabled
+
+from eventyay.api.models import ApiCall, WebHookCall
+from eventyay.base.signals import periodic_task
+from eventyay.helpers.periodic import minimum_interval
+
+register_webhook_events = Signal()
+"""
+This signal is sent out to get all known webhook events. Receivers should return an
+instance of a subclass of pretix.api.webhooks.WebhookEvent or a list of such
+instances.
+"""
+
+
+@receiver(periodic_task)
+@scopes_disabled()
+@minimum_interval(minutes_after_success=12 * 60)
+def cleanup_webhook_logs(sender, **kwargs):
+    WebHookCall.objects.filter(datetime__lte=now() - timedelta(days=30)).delete()
+
+
+@receiver(periodic_task)
+@scopes_disabled()
+@minimum_interval(minutes_after_success=12 * 60)
+def cleanup_api_logs(sender, **kwargs):
+    ApiCall.objects.filter(created__lte=now() - timedelta(hours=24)).delete()

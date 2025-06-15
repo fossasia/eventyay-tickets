@@ -46,15 +46,15 @@ from phonenumber_field.modelfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
-from pretix.base.banlist import banned
-from pretix.base.decimal import round_decimal
-from pretix.base.email import get_email_context
-from pretix.base.i18n import language
-from pretix.base.models import User
-from pretix.base.reldate import RelativeDateWrapper
-from pretix.base.services.locking import NoLockManager
-from pretix.base.settings import PERSON_NAME_SCHEMES
-from pretix.base.signals import order_gracefully_delete
+from eventyay.base.banlist import banned
+from eventyay.base.decimal import round_decimal
+from eventyay.base.email import get_email_context
+from eventyay.base.i18n import language
+from eventyay.base.models import User
+from eventyay.base.reldate import RelativeDateWrapper
+from eventyay.base.services.locking import NoLockManager
+from eventyay.base.settings import PERSON_NAME_SCHEMES
+from eventyay.base.signals import order_gracefully_delete
 
 from ...helpers.countries import CachedCountries, FastCountryField
 from .base import LockModel, LoggedModel
@@ -226,7 +226,7 @@ class Order(LockModel, LoggedModel):
         if not self.testmode:
             raise TypeError('Only test mode orders can be deleted.')
         self.event.log_action(
-            'pretix.event.order.deleted',
+            'eventyay.event.order.deleted',
             user=user,
             auth=auth,
             data={
@@ -937,7 +937,7 @@ class Order(LockModel, LoggedModel):
         subject: str,
         template: Union[str, LazyI18nString],
         context: Dict[str, Any] = None,
-        log_entry_type: str = 'pretix.event.order.email.sent',
+        log_entry_type: str = 'eventyay.event.order.email.sent',
         user: User = None,
         headers: dict = None,
         sender: str = None,
@@ -951,13 +951,13 @@ class Order(LockModel, LoggedModel):
         """
         Sends an email to the user that placed this order. Basically, this method does two things:
 
-        * Call ``pretix.base.services.mail.mail`` with useful values for the ``event``, ``locale``, ``recipient`` and
+        * Call ``eventyay.base.services.mail.mail`` with useful values for the ``event``, ``locale``, ``recipient`` and
           ``order`` parameters.
 
         * Create a ``LogEntry`` with the email contents.
 
         :param subject: Subject of the email
-        :param template: LazyI18nString or template filename, see ``pretix.base.services.mail.mail`` for more details
+        :param template: LazyI18nString or template filename, see ``eventyay.base.services.mail.mail`` for more details
         :param context: Dictionary to use for rendering the template
         :param log_entry_type: Key to be used for the log entry
         :param user: Administrative user who triggered this mail to be sent
@@ -969,7 +969,7 @@ class Order(LockModel, LoggedModel):
                          only be attached for this position and child positions, the link will only point to the
                          position and the attendee email will be used if available.
         """
-        from pretix.base.services.mail import (
+        from eventyay.base.services.mail import (
             SendMailException,
             TolerantDict,
             mail,
@@ -1033,7 +1033,7 @@ class Order(LockModel, LoggedModel):
                 email_subject,
                 email_template,
                 email_context,
-                'pretix.event.order.email.resend',
+                'eventyay.event.order.email.resend',
                 user=user,
                 auth=auth,
                 attach_tickets=True,
@@ -1118,7 +1118,7 @@ class QuestionAnswer(models.Model):
 
     @property
     def frontend_file_url(self):
-        from pretix.multidomain.urlreverse import eventreverse
+        from eventyay.multidomain.urlreverse import eventreverse
 
         if self.file:
             if self.orderposition:
@@ -1397,7 +1397,7 @@ class AbstractPosition(models.Model):
 
     @property
     def state_for_address(self):
-        from pretix.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
+        from eventyay.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
 
         if not self.state or str(self.country) not in COUNTRIES_WITH_STATE_IN_ADDRESS:
             return ''
@@ -1442,7 +1442,7 @@ class OrderPayment(models.Model):
     :param info: Provider-specific meta information (in JSON format)
     :type info: str
     :param fee: The ``OrderFee`` object used to track the fee for this order.
-    :type fee: pretix.base.models.OrderFee
+    :type fee: eventyay.base.models.OrderFee
     """
 
     PAYMENT_STATE_CREATED = 'created'
@@ -1511,12 +1511,12 @@ class OrderPayment(models.Model):
 
     @transaction.atomic()
     def _mark_paid(self, force, count_waitinglist, user, auth, ignore_date=False, overpaid=False):
-        from pretix.base.signals import order_paid
+        from eventyay.base.signals import order_paid
 
         can_be_paid = self.order._can_be_paid(count_waitinglist=count_waitinglist, ignore_date=ignore_date, force=force)
         if can_be_paid is not True:
             self.order.log_action(
-                'pretix.event.order.quotaexceeded',
+                'eventyay.event.order.quotaexceeded',
                 {'message': can_be_paid},
                 user=user,
                 auth=auth,
@@ -1526,7 +1526,7 @@ class OrderPayment(models.Model):
         self.order.save(update_fields=['status'])
 
         self.order.log_action(
-            'pretix.event.order.paid',
+            'eventyay.event.order.paid',
             {
                 'provider': self.provider,
                 'info': self.info,
@@ -1538,7 +1538,7 @@ class OrderPayment(models.Model):
         )
 
         if overpaid:
-            self.order.log_action('pretix.event.order.overpaid', {}, user=user, auth=auth)
+            self.order.log_action('eventyay.event.order.overpaid', {}, user=user, auth=auth)
         order_paid.send(self.order.event, order=self.order)
 
     def fail(self, info=None, user=None, auth=None):
@@ -1571,7 +1571,7 @@ class OrderPayment(models.Model):
 
         self.refresh_from_db()
         self.order.log_action(
-            'pretix.event.order.payment.failed',
+            'eventyay.event.order.payment.failed',
             {
                 'local_id': self.local_id,
                 'provider': self.provider,
@@ -1612,7 +1612,7 @@ class OrderPayment(models.Model):
         :type mail_text: str
         :raises Quota.QuotaExceededException: if the quota is exceeded and ``force`` is ``False``
         """
-        from pretix.base.services.invoices import (
+        from eventyay.base.services.invoices import (
             generate_invoice,
             invoice_qualified,
         )
@@ -1641,7 +1641,7 @@ class OrderPayment(models.Model):
         self.refresh_from_db()
 
         self.order.log_action(
-            'pretix.event.order.payment.confirmed',
+            'eventyay.event.order.payment.confirmed',
             {
                 'local_id': self.local_id,
                 'provider': self.provider,
@@ -1710,7 +1710,7 @@ class OrderPayment(models.Model):
                         self._send_paid_mail_attendee(p, user)
 
     def _send_paid_mail_attendee(self, position, user):
-        from pretix.base.services.mail import SendMailException
+        from eventyay.base.services.mail import SendMailException
 
         with language(self.order.locale, self.order.event.settings.region):
             email_template = self.order.event.settings.mail_text_order_paid_attendee
@@ -1721,7 +1721,7 @@ class OrderPayment(models.Model):
                     email_subject,
                     email_template,
                     email_context,
-                    'pretix.event.order.email.order_paid',
+                    'eventyay.event.order.email.order_paid',
                     user,
                     invoices=[],
                     position=position,
@@ -1732,7 +1732,7 @@ class OrderPayment(models.Model):
                 logger.exception('Order paid email could not be sent')
 
     def _send_paid_mail(self, invoice, user, mail_text):
-        from pretix.base.services.mail import SendMailException
+        from eventyay.base.services.mail import SendMailException
 
         with language(self.order.locale, self.order.event.settings.region):
             email_template = self.order.event.settings.mail_text_order_paid
@@ -1743,7 +1743,7 @@ class OrderPayment(models.Model):
                     email_subject,
                     email_template,
                     email_context,
-                    'pretix.event.order.email.order_paid',
+                    'eventyay.event.order.email.order_paid',
                     user,
                     invoices=[invoice] if invoice and self.order.event.settings.invoice_email_attachment else [],
                     attach_tickets=True,
@@ -1805,7 +1805,7 @@ class OrderPayment(models.Model):
             info=info,
         )
         self.order.log_action(
-            'pretix.event.order.refund.created.externally',
+            'eventyay.event.order.refund.created.externally',
             {
                 'local_id': r.local_id,
                 'provider': r.provider,
@@ -1939,7 +1939,7 @@ class OrderRefund(models.Model):
         self.save()
 
         self.order.log_action(
-            'pretix.event.order.refund.done',
+            'eventyay.event.order.refund.done',
             {
                 'local_id': self.local_id,
                 'provider': self.provider,
@@ -2182,7 +2182,7 @@ class OrderPosition(AbstractPosition):
                 answ.save()
             if cartpos.voucher:
                 Voucher.objects.filter(pk=cartpos.voucher.pk).update(redeemed=F('redeemed') + 1)
-                cartpos.voucher.log_action('pretix.voucher.redeemed', {'order_code': order.code})
+                cartpos.voucher.log_action('eventyay.voucher.redeemed', {'order_code': order.code})
 
         # Delete afterwards. Deleting in between might cause deletion of things related to add-ons
         # due to the deletion cascade.
@@ -2226,7 +2226,7 @@ class OrderPosition(AbstractPosition):
             self.tax_rate = Decimal('0.00')
 
     def save(self, *args, **kwargs):
-        from pretix.base.secrets import assign_ticket_secret
+        from eventyay.base.secrets import assign_ticket_secret
 
         if self.tax_rate is None:
             self._calculate_tax()
@@ -2275,7 +2275,7 @@ class OrderPosition(AbstractPosition):
         subject: str,
         template: Union[str, LazyI18nString],
         context: Dict[str, Any] = None,
-        log_entry_type: str = 'pretix.event.order.email.sent',
+        log_entry_type: str = 'eventyay.event.order.email.sent',
         user: User = None,
         headers: dict = None,
         sender: str = None,
@@ -2286,13 +2286,13 @@ class OrderPosition(AbstractPosition):
         """
         Sends an email to the attendee. Basically, this method does two things:
 
-        * Call ``pretix.base.services.mail.mail`` with useful values for the ``event``, ``locale``, ``recipient`` and
+        * Call ``eventyay.base.services.mail.mail`` with useful values for the ``event``, ``locale``, ``recipient`` and
           ``order`` parameters.
 
         * Create a ``LogEntry`` with the email contents.
 
         :param subject: Subject of the email
-        :param template: LazyI18nString or template filename, see ``pretix.base.services.mail.mail`` for more details
+        :param template: LazyI18nString or template filename, see ``eventyay.base.services.mail.mail`` for more details
         :param context: Dictionary to use for rendering the template
         :param log_entry_type: Key to be used for the log entry
         :param user: Administrative user who triggered this mail to be sent
@@ -2300,7 +2300,7 @@ class OrderPosition(AbstractPosition):
         :param sender: Custom email sender.
         :param attach_tickets: Attach tickets of this order, if they are existing and ready to download
         """
-        from pretix.base.services.mail import (
+        from eventyay.base.services.mail import (
             SendMailException,
             mail,
             render_mail,
@@ -2355,7 +2355,7 @@ class OrderPosition(AbstractPosition):
                 email_subject,
                 email_template,
                 email_context,
-                'pretix.event.order.email.resend',
+                'eventyay.event.order.email.resend',
                 user=user,
                 auth=auth,
                 attach_tickets=True,
@@ -2498,7 +2498,7 @@ class InvoiceAddress(models.Model):
 
     @property
     def state_for_address(self):
-        from pretix.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
+        from eventyay.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
 
         if not self.state or str(self.country) not in COUNTRIES_WITH_STATE_IN_ADDRESS:
             return ''

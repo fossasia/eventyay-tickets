@@ -50,8 +50,8 @@ class LoggingMixin:
         :param data: Any JSON-serializable object
         :param user: The user performing the action (optional)
         """
-        from pretix.api.models import OAuthAccessToken, OAuthApplication
-        from pretix.api.webhooks import notify_webhooks
+        from eventyay.api.models import OAuthAccessToken, OAuthApplication
+        from eventyay.api.webhooks import notify_webhooks
 
         from ..services.notifications import notify
         from .devices import Device
