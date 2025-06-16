@@ -14,6 +14,8 @@ from pretix.base.models import CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
 
+MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
+
 def contains_web_channel_validate(value):
     if 'web' not in value:
         raise ValidationError(_("The 'web' sales channel must be selected."))
@@ -218,10 +220,7 @@ class MailContentSettingsForm(SettingsForm):
     )
     mail_send_order_placed_attendee = forms.BooleanField(
         label=_('Send an email to attendees'),
-        help_text=_(
-            'If the order contains attendees with email addresses different from the person who orders the '
-            'tickets, the following email will be sent out to the attendees.'
-        ),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
         required=False,
     )
     mail_text_order_placed_attendee = I18nFormField(
@@ -237,10 +236,7 @@ class MailContentSettingsForm(SettingsForm):
     )
     mail_send_order_paid_attendee = forms.BooleanField(
         label=_('Send an email to attendees'),
-        help_text=_(
-            'If the order contains attendees with email addresses different from the person who orders the '
-            'tickets, the following email will be sent out to the attendees.'
-        ),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
         required=False,
     )
     mail_text_order_paid_attendee = I18nFormField(
@@ -256,10 +252,7 @@ class MailContentSettingsForm(SettingsForm):
     )
     mail_send_order_free_attendee = forms.BooleanField(
         label=_('Send an email to attendees'),
-        help_text=_(
-            'If the order contains attendees with email addresses different from the person who orders the '
-            'tickets, the following email will be sent out to the attendees.'
-        ),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
         required=False,
     )
     mail_text_order_free_attendee = I18nFormField(
@@ -325,10 +318,7 @@ class MailContentSettingsForm(SettingsForm):
     )
     mail_send_download_reminder_attendee = forms.BooleanField(
         label=_('Send an email to attendees'),
-        help_text=_(
-            'If the order contains attendees with email addresses different from the person who orders the '
-            'tickets, the following email will be sent out to the attendees.'
-        ),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
         required=False,
     )
     mail_text_download_reminder_attendee = I18nFormField(
@@ -410,7 +400,7 @@ class MailContentSettingsForm(SettingsForm):
         phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
-            self.fields[fn].help_text += ' ' + str(ht)
+            self.fields[fn].help_text += f' {str(ht)}'
         else:
             self.fields[fn].help_text = ht
         self.fields[fn].validators.append(PlaceholderValidator(phs))

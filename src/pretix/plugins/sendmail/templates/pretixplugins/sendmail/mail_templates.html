@@ -14,7 +14,7 @@
     </nav>
     {% block inside %}
         <form action="" method="post" class="form-horizontal" enctype="multipart/form-data"
-                mail-preview-url="{% url "control:event.settings.mail.preview" event=request.event.slug organizer=request.event.organizer.slug %}">
+                mail-preview-url="{% url 'control:event.settings.mail.preview' event=request.event.slug organizer=request.event.organizer.slug %}">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             <div class="form">
@@ -35,7 +35,7 @@
                     {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_changed" title=title_order_changed items="mail_text_order_changed" %}
 
                     {% blocktrans asvar title_payment_reminder %}Payment reminder{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_expirew" title=title_payment_reminder items="mail_days_order_expire_warning,mail_text_order_expire_warning" exclude="mail_days_order_expire_warning" %}
+                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_expires" title=title_payment_reminder items="mail_days_order_expire_warning,mail_text_order_expire_warning" exclude="mail_days_order_expire_warning" %}
 
                     {% blocktrans asvar title_waiting_list_notification %}Waiting list notification{% endblocktrans %}
                     {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="waiting_list" title=title_waiting_list_notification items="mail_text_waiting_list" %}
@@ -50,7 +50,7 @@
                     {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="ticket_reminder" title=title_download_tickets_reminder items="mail_days_download_reminder,mail_text_download_reminder,mail_send_download_reminder_attendee,mail_text_download_reminder_attendee,mail_sales_channel_download_reminder" exclude="mail_days_download_reminder,mail_send_download_reminder_attendee,mail_sales_channel_download_reminder" %}
 
                     {% blocktrans asvar title_require_approval %}Order approval process{% endblocktrans %}
-                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="ticket_reminder" title=title_require_approval  items="mail_text_order_placed_require_approval,mail_text_order_approved,mail_text_order_approved_free,mail_text_order_denied" %}
+                    {% include "pretixcontrol/event/mail_settings_fragment.html" with pid="order_approval" title=title_require_approval  items="mail_text_order_placed_require_approval,mail_text_order_approved,mail_text_order_approved_free,mail_text_order_denied" %}
                 </div>
             </div>
             <div class="form-group submit-group">

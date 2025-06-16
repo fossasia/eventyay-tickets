@@ -274,15 +274,15 @@ class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        if form.is_valid():
-            form.save()
-            if form.has_changed():
-                self.request.event.log_action(
-                    'pretix.event.settings',
-                    user=self.request.user,
-                    data={k: form.cleaned_data.get(k) for k in form.changed_data},
-                )
-            messages.success(self.request, _('Your changes have been saved.'))
-            return redirect(self.get_success_url())
-        else:
+        if not form.is_valid():
             return self.form_invalid(form)
+        
+        form.save()
+        if form.has_changed():
+            self.request.event.log_action(
+                'pretix.event.settings',
+                user=self.request.user,
+                data={k: form.cleaned_data.get(k) for k in form.changed_data},
+            )
+        messages.success(self.request, _('Your changes have been saved.'))
+        return redirect(self.get_success_url())
