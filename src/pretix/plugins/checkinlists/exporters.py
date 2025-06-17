@@ -313,7 +313,7 @@ class PDFCheckinList(ReportlabExportMixin, CheckInListMixin, BaseExporter):
     def get_story(self, doc, form_data):
         cl = self.event.checkin_lists.get(pk=form_data['list'])
 
-        questions = list(Question.objects.filter(event=self.event, id__in=form_data['questions']))
+        questions = tuple(Question.objects.filter(event=self.event, id__in=form_data['questions']))
 
         headlinestyle = self.get_style()
         headlinestyle.fontSize = 15
