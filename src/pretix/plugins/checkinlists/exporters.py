@@ -387,7 +387,8 @@ class PDFCheckinList(ReportlabExportMixin, CheckInListMixin, BaseExporter):
             try:
                 ian = op.order.invoice_address.name
                 iac = op.order.invoice_address.company
-            except:
+            except AttributeError as e:
+                logger.error('Error accessing invoice address for order position %s: %s', op.pk, e)
                 ian = ''
                 iac = ''
 
