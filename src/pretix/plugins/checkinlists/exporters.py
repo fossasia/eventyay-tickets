@@ -299,7 +299,9 @@ class PDFCheckinList(ReportlabExportMixin, CheckInListMixin, BaseExporter):
         f = self._fields
         del f['secrets']
         # We are exporting to PDF, which has limited space, so we tell user not to create too many columns.
-        f['questions'].help_text = _('Please not pick too many questions, they may not fit the PDF page width.')
+        f['questions'].help_text = _(
+            'Please do not pick too many questions, as they may not fit within the PDF page width.'
+        )
         return f
 
     @property
@@ -458,7 +460,7 @@ class PDFCheckinList(ReportlabExportMixin, CheckInListMixin, BaseExporter):
                 ]
             tdata.append(row)
 
-        logger.info('To create table with %s rows and %s columns', len(tdata), len(tdata[0]))
+        logger.debug('To create table with %s rows and %s columns', len(tdata), len(tdata[0]))
         table = Table(tdata, colWidths=colwidths, repeatRows=1)
         table.setStyle(TableStyle(tstyledata))
         story.append(table)
