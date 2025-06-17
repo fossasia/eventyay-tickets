@@ -871,12 +871,6 @@ h1 .label {
 @import "../../bootstrap/scss/_rtl.scss";
 @import "_rtl.scss";
 
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 .dashboard-item {
     cursor: pointer;
     
