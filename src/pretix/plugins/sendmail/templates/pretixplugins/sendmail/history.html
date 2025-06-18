@@ -1,12 +1,18 @@
 {% extends "pretixcontrol/event/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% block title %}{% trans "Send out emails" %}{% endblock %}
+{% block title %}{% translate "Mails" %}{% endblock %}
 {% block content %}
     <nav id="event-nav" class="header-nav">
         <div class="navigation">
             <div class="navigation-title">
-                <h1>{% trans "Email history" %}</h1>
+                <h1>
+                    {% if logs|length == 0 %}
+                        {% translate "Sent emails" %}
+                    {% else %}
+                        {{ logs|length }} {% translate "Sent emails" %}
+                    {% endif %}
+                </h1>
             </div>
             {% include "pretixcontrol/event/component_link.html" %}
         </div>
