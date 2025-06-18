@@ -727,6 +727,44 @@ class MailSettings(EventSettingsViewMixin, EventSettingsFormView):
         ctx['renderers'] = self.request.event.get_html_mail_renderers()
         return ctx
 
+    def get_form(self):
+        form = super().get_form()
+
+        # List of email-content fields to exclude
+        exclude_fields = [
+            'mail_text_order_placed',
+            'mail_send_order_placed_attendee',
+            'mail_text_order_placed_attendee',
+            'mail_text_order_paid',
+            'mail_send_order_paid_attendee',
+            'mail_text_order_paid_attendee',
+            'mail_text_order_free',
+            'mail_send_order_free_attendee',
+            'mail_text_order_free_attendee',
+            'mail_text_resend_link',
+            'mail_text_resend_all_links',
+            'mail_text_order_changed',
+            'mail_days_order_expire_warning',
+            'mail_text_order_expire_warning',
+            'mail_text_waiting_list',
+            'mail_text_order_canceled',
+            'mail_text_order_custom_mail',
+            'mail_text_download_reminder',
+            'mail_send_download_reminder_attendee',
+            'mail_text_download_reminder_attendee',
+            'mail_days_download_reminder',
+            'mail_sales_channel_download_reminder',
+            'mail_text_order_placed_require_approval',
+            'mail_text_order_approved',
+            'mail_text_order_approved_free',
+            'mail_text_order_denied',
+        ]
+
+        for field in exclude_fields:
+            form.fields.pop(field, None)
+
+        return form
+
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = self.get_form()
