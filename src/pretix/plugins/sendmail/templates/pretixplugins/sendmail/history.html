@@ -7,11 +7,11 @@
         <div class="navigation">
             <div class="navigation-title">
                 <h1>
-                    {% if logs|length == 0 %}
-                        {% translate "Sent emails" %}
-                    {% else %}
-                        {{ logs|length }} {% translate "Sent emails" %}
-                    {% endif %}
+                    {% blocktranslate count log_count=logs|length %}
+                        Sent emails
+                    {% plural %}
+                        {{ log_count }} Sent emails
+                    {% endblocktranslate %}
                 </h1>
             </div>
             {% include "pretixcontrol/event/component_link.html" %}
