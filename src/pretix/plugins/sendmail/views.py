@@ -3,21 +3,25 @@ import logging
 import bleach
 import dateutil
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
 from django.http import Http404
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, ListView
 
 from pretix.base.email import get_available_placeholders
 from pretix.base.i18n import LazyI18nString, language
-from pretix.base.models import LogEntry, Order, OrderPosition
+from pretix.base.models import Event, LogEntry, Order, OrderPosition
 from pretix.base.models.event import SubEvent
 from pretix.base.services.mail import TolerantDict
 from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.plugins.sendmail.tasks import send_mails
+from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
+from .forms import MailContentSettingsForm
 
 from . import forms
 
@@ -244,3 +248,41 @@ class EmailHistoryView(EventPermissionRequiredMixin, ListView):
                     pass
 
         return ctx
+
+class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
+    model = Event
+    template_name = 'pretixplugins/sendmail/mail_templates.html'
+    form_class = MailContentSettingsForm
+    permission = 'can_change_event_settings'
+
+    def get_success_url(self) -> str:
+        return reverse(
+            'plugins:sendmail:templates',
+            kwargs={
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+            },
+        )
+
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            _('We could not save your changes. See below for details.'),
+        )
+        return super().form_invalid(form)
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if not form.is_valid():
+            return self.form_invalid(form)
+        
+        form.save()
+        if form.has_changed():
+            self.request.event.log_action(
+                'pretix.event.settings',
+                user=self.request.user,
+                data={k: form.cleaned_data.get(k) for k in form.changed_data},
+            )
+        messages.success(self.request, _('Your changes have been saved.'))
+        return redirect(self.get_success_url())
