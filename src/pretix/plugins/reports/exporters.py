@@ -1,4 +1,5 @@
 import copy
+import logging
 import tempfile
 from collections import OrderedDict, defaultdict
 from datetime import date, datetime, time, timedelta
@@ -29,6 +30,8 @@ from pretix.base.models.event import SubEvent
 from pretix.base.models.orders import OrderFee, OrderPayment
 from pretix.base.services.stats import order_overview
 from pretix.control.forms.filter import OverviewFilterForm
+
+logger = logging.getLogger(__name__)
 
 
 class ReportlabExportMixin:
@@ -74,10 +77,12 @@ class ReportlabExportMixin:
         from reportlab.platypus import PageTemplate
 
         with tempfile.NamedTemporaryFile(suffix='.pdf') as f:
+            # TODO: Support Arabic and RTL languages
             Report.register_fonts()
+            page_size = self.pagesize
             doc = self.get_doc_template()(
                 f.name,
-                pagesize=self.pagesize,
+                pagesize=page_size,
                 leftMargin=15 * mm,
                 rightMargin=15 * mm,
                 topMargin=20 * mm,
@@ -89,7 +94,7 @@ class ReportlabExportMixin:
                         id='All',
                         frames=self.get_frames(doc),
                         onPage=self.on_page,
-                        pagesize=self.pagesize,
+                        pagesize=page_size,
                     )
                 ]
             )

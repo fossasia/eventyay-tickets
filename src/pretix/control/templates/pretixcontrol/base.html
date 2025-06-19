@@ -107,6 +107,7 @@
                         {% if has_domain and not request.event.live %}
                             <form action="{% eventurl request.event "presale:event.auth" %}" method="post"
                                     target="_blank" class="mobile-navbar-view-form visible-xs-block">
+                                {% csrf_token %}
                                 <input type="hidden" value="{{ new_session }}" name="session">
                                 <button type="submit" class="btn btn-link navbar-toggle">
                                     <i class="fa fa-eye"></i>
@@ -124,7 +125,7 @@
                             <i class="fa fa-eye"></i>
                         </a>
                     {% endif %}
-                    <a class="navbar-brand" href="{% url "control:index" %}">
+                    <a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}">
                         <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
                         {{ django_settings.INSTANCE_NAME }}
                     </a>

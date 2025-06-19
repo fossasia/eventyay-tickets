@@ -5,34 +5,6 @@
 {% block title %}{% trans "Events management" %}{% endblock %}
 {% block content %}
     <h1>{% trans "Events" %}</h1>
-
-    <!--Filter box always visible-->
-    <div class="panel panel-default" style="margin-bottom: 30px;">
-    <div class="panel-heading">
-        <h3 class="panel-title">{% trans "Filter" %}</h3>
-    </div>
-    <div class="panel-body">
-        <form action="" method="get">
-            <div class="row filter-form" style="align-items: flex-end;">
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    {% bootstrap_field filter_form.query layout='inline' placeholder=_("Event name") %}
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-12">
-                    {% bootstrap_field filter_form.status layout='inline' placeholder=_("All events") %}
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-12">
-                    {% bootstrap_field filter_form.organizer layout='inline' placeholder=_("All organizers") %}
-                </div>
-                <div class="col-md-2 col-sm-6 col-xs-12 text-right">
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        <span class="fa fa-filter"></span>
-                        {% trans "Filter" %}
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-    </div>
     {% if events|length == 0 and not filter_form.filtered %}
         <div class="empty-collection">
             <p>
@@ -40,12 +12,36 @@
                     You currently do not have access to any events.
                 {% endblocktrans %}
             </p>
+
             <a href='{% url "eventyay_common:events.add" %}' class="btn btn-primary btn-lg">
                 <span class="fa fa-plus"></span>
                 {% trans "Create a new event" %}
             </a>
         </div>
     {% else %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{% trans "Filter" %}</h3>
+            </div>
+            <div class="panel-body">
+                <form class="" action="" method="get">
+                    <div class="row filter-form">
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            {% bootstrap_field filter_form.query layout='inline' %}
+                        </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            {% bootstrap_field filter_form.organizer layout='inline' %}
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary" type="submit">
+                            <span class="fa fa-filter"></span>
+                            <span class="hidden-md">{% trans "Filter" %}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <p>
             <a href='{% url "eventyay_common:events.add" %}' class="btn btn-default">
                 <span class="fa fa-plus"></span>
