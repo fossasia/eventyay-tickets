@@ -1,0 +1,38 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<p>
+    <a href="{% url "control:auth.signup" %}" class="btn">
+    {% trans "Add new user" %}
+    </a>
+</p>
+<table>
+    <thead>
+    <tr>
+        <th>{% trans "User name" %}</th>
+        <th>{% trans "Name" %}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>
+            <b>{{ user.username }}</b>
+        </td>
+        <td>
+            {{ user.first_name }}
+            {{ user.last_name }}
+        </td>
+        <td class="text-right">
+            <a href="{% url 'control:user.update' pk=user.pk %}">
+                {% trans "Edit" %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

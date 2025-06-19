@@ -1,0 +1,58 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<table>
+    <thead>
+    <tr>
+        <th>{% trans "Timestamp" %}</th>
+        <th>{% trans "Module" %}</th>
+        <th>{% trans "World" %}</th>
+        <th>{% trans "Message" %}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for s in feedbacks %}
+    <tr>
+        <td>
+            {{ s.timestamp|date:"SHORT_DATETIME_FORMAT" }}
+        </td>
+        <td>
+            {{ s.module }}
+        </td>
+        <td>
+            {{ s.world }}
+        </td>
+        <td>
+            {{ s.message }}
+        </td>
+        <td class="text-right">
+            <a href="{% url 'control:feedback.detail' pk=s.pk %}">
+                {% trans "Details" %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

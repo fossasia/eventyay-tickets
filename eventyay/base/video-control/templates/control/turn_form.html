@@ -1,0 +1,14 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+{% load formset_tags %}
+
+{% block content %}
+<h1>{% trans "Create or update server" %}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+
+    <button type="submit">{% trans "Save" %}</button>
+</form>
+{% endblock %}

@@ -8,6 +8,7 @@ from django.utils.functional import cached_property
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
+from django.conf import settings
 
 from eventyay.base.signals import logentry_object_link
 
@@ -45,7 +46,7 @@ class LogEntry(models.Model):
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
-    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT, related_name='eventyay_log_entries')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT, related_name='eventyay_log_entries')
     api_token = models.ForeignKey('TeamAPIToken', null=True, blank=True, on_delete=models.PROTECT)
     device = models.ForeignKey('Device', null=True, blank=True, on_delete=models.PROTECT)
     oauth_application = models.ForeignKey('eventyayapi.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)

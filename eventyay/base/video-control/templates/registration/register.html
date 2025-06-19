@@ -1,0 +1,19 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+
+{% block title %}New staff user{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "New staff user" %}</h1>
+{% if form.errors %}
+<p>The passwords didn't match, please try again.</p>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create user!">
+</form>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "control/base.html" %}
+{% load i18n %}
+{% load formset_tags %}
+
+{% block content %}
+<h1>{% trans "Sync conftool posters" %}</h1>
+
+{% if "task_id" in request.GET %}
+    <div class="messages">
+        {% if task_state == "SUCCESS" %}
+            <div class="success">
+                {% trans "Completed." %}
+            </div>
+        {% elif task_state == "FAILURE" %}
+            <div class="error">
+                {% trans "Failed." %}
+                <br>
+                {{ task.result }}
+            </div>
+        {% elif task_state == "STARTED" %}
+            <div class="info">
+                {% trans "Task is running." %}
+            </div>
+            <meta http-equiv="refresh" content="1">
+        {% elif task_state == "PENDING" %}
+            <div class="info">
+                {% trans "Task is waiting to start." %}
+            </div>
+            <meta http-equiv="refresh" content="1">
+        {% else %}
+            <div class="error">
+                {{ task_state }}
+            </div>
+        {% endif %}
+    </div>
+{% else %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% trans "Sync" %}</button>
+    </form>
+{% endif %}
+{% endblock %}
