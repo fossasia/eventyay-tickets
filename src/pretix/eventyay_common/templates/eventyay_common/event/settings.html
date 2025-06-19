@@ -47,13 +47,14 @@
                 <legend>{% trans "Basics" %}</legend>
                 {% bootstrap_field form.name layout="control" %}
                 {% bootstrap_field form.slug layout="control" %}
+                {% if form.domain %} {# Conditionally show if domain field is added to form #}
+                    {% bootstrap_field form.domain layout="control" %}
+                {% endif %}
                 {% bootstrap_field form.date_from layout="control" %}
                 {% bootstrap_field form.date_to layout="control" %}
-                {% bootstrap_field form.date_admission layout="control" %} 
-                {% bootstrap_field form.location layout="control" %} 
-                {% bootstrap_field form.geo_lat layout="control" %}
-                {% bootstrap_field form.geo_lon layout="control" %} 
-                {% bootstrap_field sform.contact_mail layout="control" %} 
+                {% bootstrap_field form.date_admission layout="control" %}
+                {% include "pretixcontrol/event/fragment_geodata.html" %}
+                {% bootstrap_field sform.contact_mail layout="control" %}
                 {% bootstrap_field sform.imprint_url layout="control" %}
                 {% bootstrap_field form.is_public layout="control" %} 
                 <div class="setting-part">
@@ -130,7 +131,7 @@
                 {% bootstrap_field sform.locales layout="control" %}
                 {% bootstrap_field sform.locale layout="control" %}
                 {% bootstrap_field sform.timezone layout="control" %}
-                {% bootstrap_field sform.region layout="control" %} 
+                {% bootstrap_field sform.region layout="control" %}
             </fieldset>
             <fieldset>
                 <legend>{{ _('Design') }}</legend>

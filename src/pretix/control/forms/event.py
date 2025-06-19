@@ -334,7 +334,8 @@ class EventMetaValueForm(forms.ModelForm):
 
 class EventUpdateForm(I18nModelForm):
     def __init__(self, *args, **kwargs):
-        self.change_slug = kwargs.pop('change_slug', False)
+        # change_slug is now handled by eventyay_common.forms.event.EventUpdateForm
+        # self.change_slug = kwargs.pop('change_slug', False)
         self.domain = kwargs.pop('domain', False)
 
         kwargs.setdefault('initial', {})
@@ -345,10 +346,11 @@ class EventUpdateForm(I18nModelForm):
                 kwargs['initial'].setdefault('domain', initial_domain.domainname)
 
         super().__init__(*args, **kwargs)
-        if not self.change_slug:
-            self.fields['slug'].widget.attrs['readonly'] = 'readonly'
-        self.fields['location'].widget.attrs['rows'] = '3'
-        self.fields['location'].widget.attrs['placeholder'] = _('Sample Conference Center\nHeidelberg, Germany')
+        # Slug and location fields are moved to eventyay_common form
+        # if not self.change_slug:
+        #    self.fields['slug'].widget.attrs['readonly'] = 'readonly'
+        # self.fields['location'].widget.attrs['rows'] = '3'
+        # self.fields['location'].widget.attrs['placeholder'] = _('Sample Conference Center\nHeidelberg, Germany')
         if self.domain:
             self.fields['domain'] = forms.CharField(
                 max_length=255,
@@ -364,7 +366,7 @@ class EventUpdateForm(I18nModelForm):
             choices=((c.identifier, c.verbose_name) for c in get_all_sales_channels().values()),
             widget=forms.CheckboxSelectMultiple,
         )
-
+    
     def clean_domain(self):
         d = self.cleaned_data['domain']
         if d:
@@ -400,50 +402,47 @@ class EventUpdateForm(I18nModelForm):
         return instance
 
     def clean_slug(self):
-        if self.change_slug:
-            return self.cleaned_data['slug']
+        # Slug is now handled by eventyay_common.forms.event.EventUpdateForm
+        # if self.change_slug:
+        #    return self.cleaned_data['slug']
         return self.instance.slug
 
     class Meta:
         model = Event
         localized_fields = '__all__'
         fields = [
-            'name',
-            'slug',
+            # 'name',
+            # 'slug',
             'currency',
-            'date_from',
-            'date_to',
-            'date_admission',
-            'is_public',
+            # 'date_from',
+            # 'date_to',
+            # 'date_admission',
+            # 'is_public',
             'presale_start',
             'presale_end',
-            'location',
-            'geo_lat',
-            'geo_lon',
+            # 'location',
+            # 'geo_lat',
+            # 'geo_lon',
             'sales_channels',
         ]
         field_classes = {
-            'date_from': SplitDateTimeField,
-            'date_to': SplitDateTimeField,
-            'date_admission': SplitDateTimeField,
+            # 'date_from': SplitDateTimeField,
+            # 'date_to': SplitDateTimeField,
+            # 'date_admission': SplitDateTimeField,
             'presale_start': SplitDateTimeField,
             'presale_end': SplitDateTimeField,
         }
         widgets = {
-            'date_from': SplitDateTimePickerWidget(),
-            'date_to': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_date_from_0'}),
-            'date_admission': SplitDateTimePickerWidget(attrs={'data-date-default': '#id_date_from_0'}),
+            # 'date_from': SplitDateTimePickerWidget(),
+            # 'date_to': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_date_from_0'}),
+            # 'date_admission': SplitDateTimePickerWidget(attrs={'data-date-default': '#id_date_from_0'}),
             'presale_start': SplitDateTimePickerWidget(),
             'presale_end': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_presale_start_0'}),
             'sales_channels': CheckboxSelectMultiple(),
         }
 
 
-class EventSettingsForm(SettingsForm):
-    timezone = forms.ChoiceField(
-        choices=((a, a) for a in common_timezones),
-        label=_('Event timezone'),
-    )
+class EventSettingsForm(SettingsForm): 
     name_scheme = forms.ChoiceField(
         label=_('Name format'),
         help_text=_(
