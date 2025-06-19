@@ -33,38 +33,10 @@ footer {
 nav.navbar {
     margin: 0;
 }
-
-.navbar-brand {
-    font-weight: 600; 
-    padding-top: 0.3125rem; 
-    padding-bottom: 0.3125rem;
-    display: flex;
-    align-items: center;
-    color: $navbar-inverse-link-color;
-    font-size: 1.75rem;
-    white-space: nowrap;
-    
-    &:hover,
-    &:focus {
-        color: $navbar-inverse-link-hover-color;
-        text-decoration: none;
-       
-        outline: none;
-        box-shadow: 0 0 0 0px rgba($navbar-inverse-link-hover-color, 0.5);
-    }
-}
-
 .navbar-brand img {
-    height: 30px;
+    height: 100%;
     width: auto;
-    margin-right: 0.5rem;
-    margin-left: 1rem;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.navbar-brand span {
-    margin-top: -0.625rem; // -10px equivalent to match eventyay-talk
+    display: inline;
 }
 
 #side-menu img.fa-img {
@@ -721,20 +693,17 @@ h1 .label {
         margin-bottom: 5px;
     }
 }
-// Override Bootstrap popover padding
-.popover {
+.popover{
     padding: 0;
 }
-
 .popover-content {
-    padding: 0; // Consolidate the duplicate rules
     position: relative;
+    padding: 5px 0;
     min-width: 200px;
-    
     #submenu {
         position: absolute;
         top: 0;
-        right: 100%;
+        right: 100%;  
         font-size: 16px;
         font-weight: normal;
         cursor: pointer;
@@ -871,6 +840,7 @@ h1 .label {
 @import "../../bootstrap/scss/_rtl.scss";
 @import "_rtl.scss";
 
+
 .dashboard-item {
     cursor: pointer;
     
@@ -878,16 +848,26 @@ h1 .label {
         display: none;
     }
     
-    // CHANGE: Restrict hover to desktop only (≥992px)
-    @media (min-width: $screen-md-min) {
-        &:hover {
-            #submenu {
-                display: block;
-            }
+    
+    &:hover {
+        #submenu {
+            display: block;
         }
     }
     
-    // Click behavior works for all screen sizes
+  
+    &.desktop-menu-open {
+        
+    }
+    
+   
+    &.desktop-submenu-open {
+        #submenu {
+            display: block;
+        }
+    }
+    
+  
     &.menu-open {
         #submenu {
             display: block;
@@ -899,18 +879,19 @@ h1 .label {
     }
 }
 
-// Mobile and tablet styles (≤991px)
+
 @media (max-width: $screen-sm-max) {
     .dashboard-item {
         min-height: 44px;
-        position: relative; // Add relative positioning to establish context
         
         &:active {
             background-color: darken($btn-primary-bg, 5%) !important;
         }
         
         &.menu-open {
+          
             &::after {
+                display: none;
                 content: '';
                 position: fixed;
                 top: 0;
@@ -919,39 +900,67 @@ h1 .label {
                 bottom: 0;
                 background: rgba(0, 0, 0, 0.3);
                 z-index: 9999;
-                pointer-events: auto;
             }
         }
         
         #submenu {
-            // Change from fixed to absolute positioning
+           
             position: absolute;
-            top: 100%; // Position directly below parent
+            top: 100%; 
             left: 0;
-            right: 0;
-            width: 100%; // Match parent width exactly
-            max-width: 100%; // Prevent overflow
-            z-index: 10000;
+            right: auto;
+            width: 100%; 
+            max-width: 300px;
+            z-index: 100;
             background: white;
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            margin: 0; // Remove any default margins
-            // Remove the old left: 10px and right: 10px rules
+            
+            // Add smooth animation
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.2s ease-in-out;
+            
+            .submenu-item {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                
+                a {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    width: 100%;
+                    padding: 12px 16px;
+                    text-decoration: none;
+                    border-bottom: 1px solid #f0f0f0;
+                    text-align: left;
+                    
+                    i {
+                        margin-right: 8px;
+                        width: 16px;
+                        text-align: center;
+                        flex-shrink: 0;
+                    }
+                    
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+            
+            
+            &.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+       
+        &.menu-open #submenu {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
         }
     }
 }
-
-// FIXED: Accessible focus styles instead of removing outline
-&[tabindex] {
-    outline: none; // Remove default
-    
-    &:focus {
-        outline: 2px solid $brand-primary;
-        outline-offset: 2px;
-    }
-    
-    &:focus:not(:focus-visible) {
-        outline: none;
-    }
-}
-
