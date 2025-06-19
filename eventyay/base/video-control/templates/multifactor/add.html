@@ -1,0 +1,32 @@
+{% extends "multifactor/base.html" %}
+{% load static %}
+
+{% block card_title %}Add a New Factor{% endblock %}
+{% block container_class %}{% endblock %}
+
+{% block content %}
+
+    <p>To protect your account and this system from intrusion we request a second verification factor.</p>
+
+    <div class="columns">
+        <div class="column">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-header-title is-centered">FIDO2 Device</h5>
+                </div>
+                <div class="card-content">
+                    <p>A broad range of devices: <a
+                            href="https://support.microsoft.com/en-gb/help/4028017/windows-learn-about-windows-hello-and-set-it-up">Windows
+                        Hello</a> (fingerprint, facial recognition), Google Chrome, Google Android (via biometrics or
+                        location), or FIDO2 USB and NFC keys.
+                    <p>On-device options are convenient but will lock you to that device. USB keys are more
+                        portable.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'multifactor:fido2_start' %}" class="button is-100 is-primary">Add FIDO2 Device</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

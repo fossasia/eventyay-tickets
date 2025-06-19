@@ -1,8 +1,15 @@
 from django import template
 
-from pretix.helpers.safedownload import get_token
+
 
 from ..views.redirect import safelink as sl
+
+def get_token(request, answer):
+    if not request.session.session_key:
+        request.session.create()
+    payload = '{}:{}'.format(request.session.session_key, answer.pk)
+    signer = TimestampSigner()
+    return signer.sign(hashlib.sha1(payload.encode()).hexdigest())
 
 register = template.Library()
 
