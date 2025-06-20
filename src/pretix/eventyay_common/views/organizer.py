@@ -30,8 +30,6 @@ class OrganizerList(PaginationMixin, ListView):
         qs = Organizer.objects.all()
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
-        if not self.request.user.has_active_staff_session(self.request.session.session_key):
-            qs = qs.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
         return qs
 
     def get_context_data(self, **kwargs):
@@ -49,11 +47,6 @@ class OrganizerCreate(CreateView):
     form_class = OrganizerForm
     template_name = 'eventyay_common/organizers/create.html'
     context_object_name = 'organizer'
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_active_staff_session(self.request.session.session_key):
-            raise PermissionDenied()
-        return super().dispatch(request, *args, **kwargs)
 
     @transaction.atomic
     def form_valid(self, form):
