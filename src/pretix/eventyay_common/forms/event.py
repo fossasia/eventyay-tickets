@@ -43,6 +43,8 @@ class EventCommonSettingsForm(SettingsForm):
         'contact_mail',
         'imprint_url',
         'region', 
+        'frontpage_text',
+
     ]
 
     def clean(self):

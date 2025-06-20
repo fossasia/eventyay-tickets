@@ -441,6 +441,7 @@ class EventUpdate(
                         'is_video_creation': request.event.is_video_creation,
                     }
                     send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='update')
+                messages.success(self.request, _("Your changes have been saved."))
                 return self.form_valid(form)
             else:
                 messages.error(

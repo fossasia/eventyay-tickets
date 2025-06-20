@@ -134,6 +134,10 @@
                 {% bootstrap_field sform.region layout="control" %}
             </fieldset>
             <fieldset>
+                <legend>{{ _('Texts') }}</legend>
+                {% bootstrap_field sform.frontpage_text layout="control" %}
+            </fieldset>
+            <fieldset>
                 <legend>{{ _('Design') }}</legend>
                 {% bootstrap_field sform.logo_image layout="control" %}
                 {% bootstrap_field sform.logo_image_large layout="control" %}
