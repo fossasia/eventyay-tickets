@@ -49,6 +49,7 @@ from django.views.generic import (
 )
 from i18nfield.strings import LazyI18nString
 
+from pretix.base.exporter import BaseExporter
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.decimal import round_decimal
 from pretix.base.email import get_email_context
@@ -2485,7 +2486,7 @@ class OrderGo(EventPermissionRequiredMixin, View):
 
 class ExportMixin:
     @cached_property
-    def exporters(self):
+    def exporters(self) -> list[BaseExporter]:
         exporters = []
         responses = register_data_exporters.send(self.request.event)
         for ex in sorted(
@@ -2528,21 +2529,18 @@ class ExportDoView(EventPermissionRequiredMixin, ExportMixin, AsyncAction, Templ
     def get_success_url(self, value):
         return reverse('cachedfile.download', kwargs={'id': str(value)})
 
-    def get_error_url(self):
-        return (
-            reverse(
-                'control:event.orders.export',
-                kwargs={
-                    'event': self.request.event.slug,
-                    'organizer': self.request.event.organizer.slug,
-                },
-            )
-            + '?identifier='
-            + self.exporter.identifier
-        )
+    def get_error_url(self) -> str:
+        query: dict[str, str] = {}
+        if self.exporter:
+            query['identifier'] = self.exporter.identifier
+        base_url = reverse('control:event.orders.export', kwargs={
+            'event': self.request.event.slug,
+            'organizer': self.request.event.organizer.slug,
+        })
+        return f"{base_url}?{urlencode(query)}" if query else base_url
 
     @cached_property
-    def exporter(self):
+    def exporter(self) -> BaseExporter | None:
         for ex in self.exporters:
             if ex.identifier == self.request.POST.get('exporter'):
                 return ex

@@ -78,8 +78,8 @@ dependencies = [
         'oauthlib==3.2.*',
         'django-phonenumber-field==7.3.*',
         'phonenumberslite==8.13.*',
-        'python-bidi==0.6.*',  # Support for Arabic in reportlab
-        'arabic-reshaper==3.0.0',  # Support for Arabic in reportlab
+        'python-bidi==0.6.*', # Support for Arabic in reportlab
+        'arabic-reshaper==3.0.0', # Support for Arabic in reportlab
         'packaging',
         'tlds>=2020041600',
         'text-unidecode==1.*',
@@ -104,7 +104,8 @@ dependencies = [
         'cron-descriptor==1.4.5',
         'django-allauth[socialaccount] @ git+https://codeberg.org/quan/django-allauth.git@f151589949',
         'eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@master',
-        'pydantic==2.10.4'
+        'pydantic==2.10.4',
+        "nh3>=0.2.21",
 ]
 
 [project.optional-dependencies]
