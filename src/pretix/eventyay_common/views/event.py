@@ -33,7 +33,7 @@ from pretix.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
 from pretix.eventyay_common.tasks import create_world, send_event_webhook
-from pretix.eventyay_common.utils import (#noqa
+from pretix.eventyay_common.utils import (
     EventCreatedFor,
     check_create_permission,
     encode_email,
