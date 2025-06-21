@@ -1,0 +1,123 @@
+{% extends "orga/base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block extra_title %}{% translate "Export speaker data" %} :: {% endblock extra_title %}
+
+{% block content %}
+    <div class="d-md-flex justify-content-between">
+        <h2>{% translate "Export speaker data" %}</h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
+
+    {% include "orga/includes/tablist.html" %}
+
+    <section role="tabpanel" id="tabpanel-custom" aria-labelledby="tab-custom" tabindex="0" aria-hidden="false">
+        <p>
+            {% blocktranslate trimmed %}
+                Build your own custom export here, by selecting all the data you need,
+                and the export format. CSV exports can be opened with Excel and similar
+                applications, while JSON exports are often used for integration with
+                other tools.
+            {% endblocktranslate %}
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <fieldset>
+                <legend>{% translate "Dataset" %}</legend>
+                {{ form.target.as_field_group }}
+            </fieldset>
+            <fieldset>
+                <legend>{% translate "Data fields" %}</legend>
+                <div class="d-flex">
+                    <div class="ml-auto form-check">
+                        <input type="checkbox" id="select-all" name="select-all">
+                        <label for="select-all">{% translate "Select all" %}</label>
+                    </div>
+                </div>
+                {% for field in form.export_fields %}
+                    {{ field.as_field_group }}
+                {% endfor %}
+            </fieldset>
+            <fieldset>
+                <legend>{% translate "Export settings" %}</legend>
+                {{ form.export_format.as_field_group }}
+                <div id="data-delimiter">
+                    {{ form.data_delimiter.as_field_group }}
+                </div>
+            </fieldset>
+
+            {% include "orga/includes/submit_row.html" %}
+
+        </form>
+
+    </section>
+    <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="true">
+        <p>
+            {% blocktranslate trimmed %}
+                eventyay provides a range of exports. If none of these match what you are looking
+                for, you can also provide a custom plugin to export the data – please ask
+                your administrator to install the plugin.
+            {% endblocktranslate %}
+            {% blocktranslate trimmed %}
+                If you are looking for exports of proposals, sessions or schedule data, please head
+                here:
+            {% endblocktranslate %}
+            <a class="btn btn-outline-info btn-sm" href="{{ request.event.orga_urls.schedule_export }}">{% translate "Schedule exports" %}</a>
+        </p>
+        <p>
+            {% blocktranslate trimmed %}
+                You can either create exactly the export you need in the “Custom” tab, or use these pre-built exports:
+            {% endblocktranslate %}
+        </p>
+        <ul>
+            {% for exporter in exporters %}
+                <li>
+                    <a href="{{ exporter.urls.base }}">
+                        {% if exporter.icon|slice:":3" == "fa-" %}
+                            <i class="fa {{ exporter.icon }}"></i>
+                        {% else %}
+                            {{ exporter.icon }}
+                        {% endif %}
+                        {{ exporter.verbose_name }}
+                        {% if exporter.show_qrcode %}
+                            <span class="export-qrcode">
+                                <i class="fa fa-qrcode"></i>
+                                <div class="export-qrcode-image">{{ exporter.get_qrcode }}</div>
+                            </span>
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section role="tabpanel" id="tabpanel-api" aria-labelledby="tab-api" tabindex="0" aria-hidden="true">
+        <p>
+            {% translate "You can also use the API to export or use data." %}
+        </p>
+
+        <p>
+            {% blocktranslate trimmed %}
+                Some of the general exports are only accessible for organisers, or include
+                more information when accessed with your organiser account. If you want to
+                access the organiser version in automatic integrations, you’ll have to
+                provide your authentication token just like in the API, like this:
+            {% endblocktranslate %}
+        </p>
+
+            <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.speakers.full }} </pre>
+
+        <div class="submit-group"><span></span><span>
+            <a class="btn btn-lg btn-info" href="#">
+                <i class="fa fa-book"></i>
+                {% translate "Documentation" %}
+            </a>
+            <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
+                {% translate "Go to API" %}
+            </a>
+        </span>
+        </div>
+    </section>
+    <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
+{% endblock content %}

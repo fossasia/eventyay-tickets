@@ -1,0 +1,106 @@
+{% extends "orga/mails/base.html" %}
+{% load i18n %}
+{% load rich_text %}
+
+{% block extra_title %}{% translate "Mail Editor" %} :: {% endblock extra_title %}
+
+{% block mail_content %}
+    {% if form.instance.sent %}
+        <div class="alert alert-info">
+            {% blocktranslate trimmed with timestamp=form.instance.sent %}
+                This email was sent on {{ timestamp }}.
+            {% endblocktranslate %}
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-md-flex justify-content-between">
+            <h2>{% translate "Mail Editor" %}</h2>
+            {% include "orga/event/component_link.html" %}
+        </div>
+
+        {% if not form.read_only %}
+            {{ form }}
+        {% else %}
+            <div class="d-flex flex-column">
+                <div class="row form-group">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
+                        <div class="font-weight-bold">To</div>
+                    </div>
+                    <div class="col col-md-9">{{ form.instance.to|default:"-" }}</div>
+                </div>
+
+                {% if form.to_users %}
+                    <div class="row form-group">
+                        <div class="col col-md-3 flip text-right font-weight-bold">
+                            <div class="font-weight-bold">To Users</div>
+                        </div>
+                        <div class="col col-md-9">
+                            {% for user in form.instance.to_users.all %}
+                                {% if user in request.event.submitters %}
+                                    <a href="{% url "orga:speakers.view" event=request.event.slug code=user.code %}">{{ user }}</a>
+                                {% else %}
+                                    {{ user }}{% endif %}{% if not forloop.last %},
+                                    {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row form-group">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
+                        <div class="font-weight-bold">Reply-To</div>
+                    </div>
+                    <div class="col col-md-9">{{ form.instance.reply_to|default:"-" }}</div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
+                        <div class="font-weight-bold">CC</div>
+                    </div>
+                    <div class="col col-md-9">{{ form.instance.cc|default:"-" }}</div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
+                        <div class="font-weight-bold">BCC</div>
+                    </div>
+                    <div class="col col-md-9">{{ form.instance.bcc|default:"-" }}</div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
+                        <div class="font-weight-bold">Subject</div>
+                    </div>
+                    <div class="col col-md-9">{{ form.instance.subject }}</div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col col-md-3 flip text-right font-weight-bold">
+                        <div class="font-weight-bold">Text</div>
+                    </div>
+                    <div class="col col-md-9">{{ form.instance.text|rich_text }}</div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="submit-group">
+            {% if action == "edit" %}
+                <a class="btn btn-lg btn-danger mr-1" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
+                <a class="btn btn-lg btn-outline-danger flip mr-auto" href="{{ form.instance.urls.delete }}?all">{% translate "Discard all from this template" %}</a>
+                <span></span>
+                <button type="submit" class="btn btn-lg btn-success mr-1" name="form" value="save">
+                    {{ phrases.base.save }}
+                </button>
+                <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
+            {% elif action == "view" %}
+                {% if form.instance.sent %}
+                    <a class="btn btn-lg btn-success ml-auto flip" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails_sessions }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
+                        {% translate "Copy to draft" %}
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </form>
+
+{% endblock mail_content %}

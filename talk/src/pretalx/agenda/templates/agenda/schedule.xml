@@ -1,0 +1,59 @@
+{% load xmlescape %}<?xml version='1.0' encoding='utf-8' ?>
+<!-- Made with love by pretalx v{{ version }}. -->
+<schedule>
+    <generator name="pretalx" version="{{ version }}" />
+    <version>{{ schedule.version|xmlescape }}</version>
+    <conference>
+        <title>{{ event.name|xmlescape }}</title>
+        <acronym>{{ event.slug }}</acronym>
+        <start>{{ event.date_from|date:"c" }}</start>
+        <end>{{ event.date_to|date:"c" }}</end>
+        <days>{{ event.duration }}</days>
+        <timeslot_duration>00:05</timeslot_duration>
+        <base_url>{{ metadata.base_url }}</base_url>
+        {% if event.logo %}<logo>{{ base_url }}{{ event.logo.url }}</logo>{% endif %}
+        <time_zone_name>{{ event.timezone }}</time_zone_name>
+        {% if event.color %}<color>{{ event.color }}</color>{% endif %}
+        {% for track in event.tracks.all %}
+        <track name="{{ track.name }}" slug="{{ track.slug }}" {% if track.color %} color="{{ track.color.lower }}"{% endif %}{% if talk.submission.track %}{{ talk.submission.track.name }}{% endif %} />
+        {% endfor %}
+    </conference>
+    {% for day in data %}<day index='{{ day.index }}' date='{{ day.start.date|date:"c" }}' start='{{ day.start|date:"c" }}' end='{{ day.end|date:"c" }}'>
+        {% for room in day.rooms %}<room name='{{ room.name|xmlescape }}' guid='{{ room.guid }}'>
+            {% for talk in room.talks %}<event guid='{{ talk.uuid }}' id='{{ talk.submission.id }}'>
+                <room>{{ room.name|xmlescape }}</room>
+                <title>{{ talk.submission.title|xmlescape }}</title>
+                <subtitle></subtitle>
+                <type>{{ talk.submission.submission_type.name|xmlescape }}</type>
+                <date>{{ talk.start|date:"c" }}</date>
+                <start>{{ talk.start|date:"H:i" }}</start>
+                <duration>{{ talk.export_duration }}</duration>
+                <abstract>{{ talk.submission.abstract|xmlescape }}</abstract>
+                <slug>{{ talk.frab_slug }}</slug>
+                <track>{% if talk.submission.track %}{{ talk.submission.track.name }}{% endif %}</track>
+                {% if talk.submission.urls.image %}<logo>{{ talk.submission.urls.image }}</logo>{% endif %}
+                <persons>
+                    {% for person in talk.submission.speakers.all %}<person id='{{ person.id }}'>{{ person.get_display_name|xmlescape }}</person>{% endfor %}
+                </persons>
+                {% if talk.submission.content_locale %}<language>{{ talk.submission.content_locale }}</language>{% endif %}
+                {% if talk.submission.description %}<description>{{ talk.submission.description|xmlescape }}</description>{% endif %}
+                <recording>
+                    <license>{{ talk.submission.license|xmlescape }}</license>
+                    <optout>{{ talk.submission.do_not_record|yesno:"true,false" }}</optout>
+                </recording>
+                <links>{% for resource in submission.resources.all %}{% if resource.link %}
+                    <link href="{{ resource.link }}">{{ resource.description }}</link>
+                {% endif %}{% endfor %}</links>
+                <attachments>{% for resource in submission.resources.all %}{% if resource.resource %}
+                    <attachment href="{{ base_url }}{{ resource.resource.url }}">{{ resource.description }}</attachment>
+                {% endif %}{% endfor %}</attachments>
+
+                <url>{{ talk.submission.urls.public.full }}</url>
+                <feedback_url>{% if event.feature_flags.use_feedback %}{{ talk.submission.urls.feedback.full }}{% endif %}</feedback_url>
+            </event>
+            {% endfor %}
+        </room>
+        {% endfor %}
+    </day>
+    {% endfor %}
+</schedule>

@@ -1,0 +1,61 @@
+{% extends "orga/base.html" %}
+{% load i18n %}
+{% load rules %}
+
+{% block extra_title %}{% translate "Teams" %} :: {{ request.organiser.name }} :: {% endblock extra_title %}
+
+{% block content %}
+    <fieldset>
+        <legend>{% translate "Teams" %}</legend>
+        <div class="table-responsive-sm">
+            <table class="table table-hover table-sm table-flip table-sticky">
+                <thead>
+                    <tr>
+                        <th>{% translate "Team" %}</th>
+                        <th class="numeric">{% translate "Members" %}</th>
+                        <th>{% translate "All events" %}</th>
+                        <th>{% translate "Reviewer" %}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if teams %}{% for team in teams %}
+                        <tr>
+                            <td>
+                                <a href="{{ team.orga_urls.base }}">
+                                    {{ team.name }}
+                                    {% if request.user in team.members.all %}
+                                        <i class="fa fa-star text-warning" title="{% translate "You are a member of this team" %}"></i>
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td class="numeric">{{ team.members.count }}</td>
+                            <td>
+                                <i class="fa fa-{{ team.all_events|yesno:"check-circle text-success,times-circle text-danger" }}"></i>
+                            </td>
+                            <td>
+                                <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}"></i>
+                            </td>
+                            <td>
+                                <a href="{{ team.orga_urls.base }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a href="{{ team.orga_urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}{% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="submit-group">
+            <span></span>
+            <span>
+                <a href="{{ request.organiser.orga_urls.new_team }}" class="btn btn-info">
+                    <i class="fa fa-plus"></i> {% translate "New team" %}
+                </a>
+            </span>
+        </div>
+    </fieldset>
+{% endblock content %}

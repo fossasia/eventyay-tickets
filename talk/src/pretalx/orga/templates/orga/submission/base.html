@@ -1,0 +1,113 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load event_tags %}
+{% load i18n %}
+{% load rules %}
+{% load static %}
+
+{% block extra_title %}
+    {% block submission_title %}{% endblock submission_title %}
+    {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
+    {% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %} ::
+{% endblock extra_title %}
+
+{% block alternate_link %}
+    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
+{% endblock alternate_link %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block content %}
+    {% if submission %}
+        {% has_perm "submission.edit_submission" request.user submission as can_edit_submission %}
+        {% has_perm "orga.view_reviews" request.user request.event as can_view_reviews %}
+        {% has_perm "submission.review_submission" request.user submission as can_review %}
+        {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
+        {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
+        <div id="main-title" class="d-md-flex justify-content-between">
+            <h2>
+                <span>
+                    {{ quotation_open }}{% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}{{ quotation_close }}
+                    {% if submission.speakers.exists and can_view_speakers %}
+                        – {% include "orga/includes/submission_speaker_names.html" with lightbox=True %}
+                    {% endif %}
+                    {% if can_edit_submission %}
+                        {% include "orga/submission/state_dropdown.html" with submission=submission %}
+                    {% else %}
+                        {% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}
+                    {% endif %}
+                </span>
+            </h2>
+            {% include "orga/event/component_link.html" %}
+        </div>
+
+        <div role="tablist" class="mb-4">
+            <a role="tab" href="{{ submission.orga_urls.base }}" {% if "submissions.content" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                {% translate "Content" %}
+            </a>
+            {% if can_view_speakers %}
+                <a role="tab" href="{{ submission.orga_urls.speakers }}" {% if "submissions.speakers" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {{ phrases.schedule.speakers }}
+                </a>
+            {% endif %}
+            {% if can_edit_submission and has_anonymised_review %}
+                <a role="tab" href="{{ submission.orga_urls.anonymise }}" {% if "submissions.anonymise" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {% translate "Anonymisation" %}
+                </a>
+            {% endif %}
+            {% if submission.feedback.count and request.event|get_feature_flag:"use_feedback" %}
+                <a role="tab" href="{{ submission.orga_urls.feedback }}" {% if "submissions.feedback" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {% translate "Feedback" %}
+                </a>
+            {% endif %}
+            {% if can_view_reviews or can_review %}
+                <a role="tab" href="{{ submission.orga_urls.reviews }}" {% if "submissions.reviews" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {% translate "Reviews" %}
+                </a>
+            {% endif %}
+            <div class="ml-auto flip d-flex">
+                {% if can_send_mails %}
+                    <a class="btn btn-outline-info mr-2 mb-1" href="{{ request.event.orga_urls.compose_mails_sessions }}?submissions={{ submission.code }}">
+                        <i class="fa fa-envelope"></i>
+                        {% translate "Send email to speakers" %}
+                    </a>
+                {% endif %}
+                {% if submission.state == "confirmed" or can_view_speakers %}
+                    <details class="dropdown" aria-haspopup="menu" role="menu">
+                        <summary class="color-primary" role="button">
+                            {% translate "Links" %} <i class="fa fa-caret-down"></i>
+                        </summary>
+                        <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                            {% if is_publicly_visible or submission.state == "accepted" or submission.state == "confirmed" %}
+                                <a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank role="menuitem" tabindex="-1">
+                                    <i class="fa fa-link"></i>
+                                    {% translate "Public link" %}
+                                    {% if not is_publicly_visible %}
+                                        ({% translate "not public yet" %})
+                                    {% endif %}
+                                </a>
+                            {% endif %}
+                            {% if can_view_speakers and request.event|get_feature_flag:"submission_public_review" %}
+                                <a href="{{ submission.urls.review.full }}" class="dropdown-item" target="_blank" role="menuitem" tabindex="-1">
+                                    <i class="fa fa-eye"></i>
+                                    {% translate "Secret public link" %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </details>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+    {% block submission_content %}{% endblock submission_content %}
+{% endblock content %}

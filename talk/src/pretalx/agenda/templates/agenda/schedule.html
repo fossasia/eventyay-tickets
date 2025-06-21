@@ -1,0 +1,85 @@
+{% extends "agenda/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+{% load phrases %}
+
+{% block container_width %} {% if not show_talk_list %}main-schedule{% else %}list-schedule{% endif %}{% endblock container_width %}
+
+{% block agenda_custom_header %}
+    <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
+{% endblock agenda_custom_header %}
+
+{% block header_right %}
+    <details class="dropdown mr-2" aria-haspopup="menu" role="menu">
+        <summary>
+            <span>{{ phrases.schedule.version }} {{ schedule.version|default:'-' }}</span>
+            <i class="fa fa-caret-down ml-1"></i>
+        </summary>
+        <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+            <a class="dropdown-item" href="{{ request.event.urls.changelog }}" role="menuitem" tabindex="-1">
+                <i class="fa fa-book"></i>
+                {% translate "Changelog" %}
+            </a>
+            <hr>
+            {% for exporter in exporters %}
+                <a class="dropdown-item" href="{{ exporter.urls.base }}" role="menuitem" tabindex="-1">
+                    {% if exporter.icon|slice:":3" == "fa-" %}
+                        <span class="fa {{ exporter.icon }} export-icon"></span>
+                    {% else %}
+                        <span class="export-icon">{{ exporter.icon }}</span>
+                    {% endif %}
+                    {{ exporter.verbose_name }}
+                    {% if exporter.show_qrcode %}
+                        <span class="export-qrcode">
+                            <i class="fa fa-qrcode"></i>
+                            <div class="export-qrcode-image">{{ exporter.get_qrcode }}</div>
+                        </span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </details>
+{% endblock header_right %}
+
+{% block agenda_content %}
+    <div id="fahrplan" class="{% if show_talk_list %}list{% else %}grid{% endif %}">
+        {% if schedule != schedule.event.current_schedule %}
+            <div class="alert alert-warning m-3">
+                <span>
+                    {% if not schedule.version %}
+                        {{ phrases.schedule.wip_version }}
+                    {% else %}
+                        {{ phrases.schedule.old_version }}
+                    {% endif %}
+                    {% if request.event.current_schedule %}
+                        {% phrase "phrases.schedule.current_version" current_url=schedule.event.urls.schedule %}
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+
+        <script type="text/javascript" src="{{ request.event.urls.schedule_widget_script }}" async></script>
+
+        <pretalx-schedule
+            event-url="{{ request.event.urls.base }}"
+            version="{{ schedule.version|default:"wip"|urlencode }}"
+            locale="{{ request.LANGUAGE_CODE }}"
+            timezone="{{ request.event.timezone }}"
+            {% if show_talk_list %}format="list"{% endif %}
+            style="--pretalx-clr-primary: {{ request.event.visible_primary_color }}"
+        ></pretalx-schedule>
+        <noscript class="d-block">
+            <div class="alert alert-info m-4">
+                <div></div>
+                <div>
+                    {% blocktranslate trimmed with href=request.event.urls.schedule_nojs %}
+                        To see our schedule, please either enable JavaScript or go <a href="{{ href }}">here</a> for our NoJS schedule.
+                    {% endblocktranslate %}
+                </div>
+            </div>
+        </noscript>
+    </div>
+
+{% endblock agenda_content %}

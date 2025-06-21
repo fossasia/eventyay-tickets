@@ -1,0 +1,96 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block extra_title %}{% translate "Session types" %} :: {% endblock extra_title %}
+
+{% block content %}
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>
+            {% translate "Session types" %}
+            <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+                <i class="fa fa-question-circle-o text-info"></i>
+            </span>
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
+    <dialog class="info-dialog" id="info-dialog">
+        <div class="alert alert-info">
+            {% blocktranslate trimmed %}
+                Different session types may help to guide speakers into different slot
+                lengths (short sessions vs long sessions) or different presentation formats
+                (talk vs workshop vs metal concert).
+            {% endblocktranslate %}
+        </div>
+    </dialog>
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-info" href="{{ request.event.cfp.urls.new_type }}">
+            <i class="fa fa-plus"></i>
+            {% translate "New type" %}
+        </a>
+    </div>
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-hover table-flip table-sticky">
+            <thead>
+                <tr>
+                    <th>{% translate "Session type" %}</th>
+                    <th class="numeric">{% translate "Proposals" %}</th>
+                    <th class="numeric">{% translate "Default duration" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for type in types %}
+                    <tr>
+                        <td>
+                            {% if type.requires_access_code %}
+                                <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
+                            {% endif %}
+                            <a href="{{ type.urls.edit }}">{{ type.name }}</a>
+                        </td>
+                        <td class="pl-4 numeric">
+                            <a href="{{ request.event.orga_urls.submissions }}?submission_type={{ type.id }}">{{ type.submissions.all.count }}</a>
+                        </td>
+                        <td class="numeric">{{ type.default_duration }}</td>
+                        <td class="text-right">
+                            {% if request.event.cfp.default_type == type %}
+                                <a><i class="fa fa-check"></i> {% translate "Default" %}</a>
+                            {% else %}
+                                <a href="{{ type.urls.default }}" class="btn btn-sm btn-info">Make default</a>
+                            {% endif %}
+                            <a href="{{ type.urls.prefilled_cfp.full }}"
+                               title="{% translate "Go to pre-filled CfP form" %}"
+                               class="btn btn-sm btn-info">
+                                <i class="fa fa-link"></i>
+                            </a>
+                            <a href="{{ type.urls.edit }}" class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a href="{{ type.urls.delete }}" class="btn btn-sm btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include "orga/includes/pagination.html" %}
+
+{% endblock content %}

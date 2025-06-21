@@ -1,0 +1,40 @@
+name: Deploy Sphinx Documentation to GitHub Pages
+
+on:
+  push:
+    branches: [ development, main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      
+      - name: Install system packages
+        run: sudo apt update && sudo apt install libffi-dev gettext
+
+      - name: Install dependencies
+        run: uv sync --group doc --no-install-project
+
+      - name: Build documentation
+        run: make html
+        working-directory: doc
+
+      - name: Copy CNAME to deploy directory
+        run: cp doc/CNAME doc/_build/html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: doc/_build/html

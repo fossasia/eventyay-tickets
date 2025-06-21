@@ -1,0 +1,35 @@
+{% load i18n %}
+
+<div class="submit-group search-submit-group">
+    <form class="search-form"{% block form_attrs %}{% endblock %} role="search">
+        {{ filter_form.q.as_field_group }}
+        {% if show_submission_types and filter_form.submission_type %}{{ filter_form.submission_type.as_field_group }}{% endif %}
+        <div class="d-flex flex-column form-group">
+            {{ filter_form.state.as_field_group }}
+            <div id="pending" class="ml-1 d-none">{{ filter_form.pending_state__isnull.as_field_group }}</div>
+        </div>
+        {% if filter_form.track %}{{ filter_form.track.as_field_group }}{% endif %}
+        {% if filter_form.tags %}{{ filter_form.tags.as_field_group }}{% endif %}
+        {% if filter_form.content_locale %}{{ filter_form.content_locale.as_field_group }}{% endif %}
+        {% block extra_filter_fields %}{% endblock extra_filter_fields %}
+        {# These fields are hidden, but included to keep question search intact #}
+        {% if request.GET.question %} <input type="hidden" name="question" value="{{ request.GET.question }}"> {% endif %}
+        {% if request.GET.answer__options %} <input type="hidden" name="answer__options" value="{{ request.GET.answer__options }}"> {% endif %}
+        {% if request.GET.answer %} <input type="hidden" name="answer" value="{{ request.GET.answer }}"> {% endif %}
+        {% if request.GET.unanswered %} <input type="hidden" name="unanswered" value="{{ request.GET.unanswered }}"> {% endif %}
+
+        <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
+    </form>
+    {% if filter_form.is_valid and filter_form.cleaned_data.question %}
+        <p class="text-muted ml-2">
+            <span class="fa fa-filter"></span>
+            {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
+                List filtered by answers to question “{{ question }}”.
+            {% endblocktranslate %}
+            <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
+                <span class="fa fa-times"></span>
+                {% translate "Remove filter" %}
+            </a>
+        </p>
+    {% endif %}
+</div>

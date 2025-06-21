@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="markdown-nav" role="tablist" id="nav-tab-{{ widget.name }}">
+  <input role="tab" type="radio" id="tab-markdown-{{ widget.name }}-text" name="markdown-nav-{{ widget.name }}" aria-controls="tabpanel-markdown-{{ widget.name }}-text" aria-selected="true" checked>
+  <label for="tab-markdown-{{ widget.name }}-text">{% translate "Text" %}</label>
+  <input role="tab" type="radio" id="tab-markdown-{{ widget.name }}-preview" name="markdown-nav-{{ widget.name }}" aria-controls="tabpanel-markdown-{{ widget.name }}-preview" aria-selected="false">
+  <label for="tab-markdown-{{ widget.name }}-preview">{% translate "Preview" %}</label>
+</div>
+
+<div class="markdown-wrapper">
+  <div role="tabpanel" id="tabpanel-markdown-{{ widget.name }}-text" aria-labelledby="tab-markdown-{{ widget.name }}-text" tabindex="0" aria-hidden="false">
+    {% include "django/forms/widgets/textarea.html" %}
+  </div>
+  <div role="tabpanel" id="tabpanel-markdown-{{ widget.name }}-preview" class="markdown-preview" aria-labelledby="tab-markdown-{{ widget.name }}-preview" tabindex="0" aria-hidden="true"></div>
+</div>

@@ -1,0 +1,150 @@
+{% load i18n %}
+{% load rich_text %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=false">
+    </head>
+    <style type="text/css">
+        body {
+            background-color: #eee;
+            background-position: top;
+            background-repeat: repeat-x;
+            font-family: "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 22px;
+            color: #333;
+            margin: 0;
+            padding-top: 20px;
+            {% if rtl %}direction: rtl;{% endif %}
+        }
+
+        {% if rtl %}
+            table.layout tr td {
+                text-align: right;
+            }
+        {% endif %}
+
+        .header h1 {
+            margin-top: 0px;
+            font-size: 26px;
+            line-height: 30px;
+        }
+        .header h2 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 22px;
+            line-height: 26px;
+        }
+        .header h2 a {
+            text-decoration: none;
+        }
+        table.layout tr td.header {
+            text-align: center;
+        }
+
+        a {
+            color: {{ color }};
+            font-weight: bold;
+        }
+
+        a:hover, a:focus {
+            color: {{ color }};
+            text-decoration: underline;
+        }
+
+        a:hover, a:active {
+            outline: 0;
+        }
+
+        p {
+            margin: 0 0 10px;
+        }
+
+        .footer {
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .content {
+            padding: 20px 28px 0 28px;
+        }
+
+        ::selection {
+            background: {{ color }};
+            color: #fff;
+        }
+
+        table.layout {
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            border-spacing: 0px;
+            border-collapse: separate;
+            margin: auto;
+
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+            -ms-word-break: break-all;
+
+            -ms-hyphens: auto;
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            hyphens: auto;
+        }
+        table.layout tr.signature {
+            color: #999;
+            font-size: 12px;
+        }
+        table.layout tr.signature td {
+            padding: 0 28px;
+            text-align: center;
+            padding-top: 20px;
+        }
+        table.layout tr.last {
+            height: 40px;
+        }
+
+        @media (max-width: 480px) {
+        }
+
+        {% block addcss %}{% endblock addcss %}
+    </style>
+    <body{% if rtl %} dir="rtl" class="rtl"{% endif %}>
+        <table width="600" cellspacing="0" border="0" class="layout">
+            <tr>
+                <td class="header" background="" align="center">
+                    {% if event %}
+                        <h2>
+                            <a href="{{ event.urls.base.full }}" target="_blank" rel="noopener">{{ event.name }}</a>
+                        </h2>
+                    {% endif %}
+                    {% block header %}<h1>{{ subject }}</h1>{% endblock header %}
+                </td>
+            </tr>
+            <tr>
+                <td class="containertd">
+                    <div class="content">{{ body|safe }}</div>
+                </td>
+            </tr>
+            {% if signature and signature.strip %}
+                <tr class="signature">
+                    <td>{{ signature|rich_text }}</td>
+                </tr>
+            {% else %}
+                <tr class="last"></tr>
+            {% endif %}
+        </table>
+        <div class="footer">
+
+            {% include "common/powered_by.html" %}
+
+        </div>
+        <br />
+        <br />
+    </body>
+</html>
