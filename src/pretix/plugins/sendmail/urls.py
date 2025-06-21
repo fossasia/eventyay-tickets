@@ -4,6 +4,31 @@ from . import views
 
 urlpatterns = [
     path(
+        'control/event/<str:organizer>/<str:event>/outbox/',
+        views.OutboxListView.as_view(),
+        name='outbox',
+    ),
+    path(
+        'control/event/<str:organizer>/<str:event>/outbox/send/', 
+        views.SendAllQueuedMailsView.as_view(), 
+        name='send_all'
+        ),
+    path(
+        'control/event/<str:organizer>/<str:event>/outbox/send/<int:pk>/', 
+        views.SendQueuedMailView.as_view(), 
+        name='send_single'
+        ),
+    path(
+        'control/event/<str:organizer>/<str:event>/outbox/delete/<int:pk>/', 
+        views.DeleteQueuedMailView.as_view(), 
+        name='delete_single'
+        ),
+    path(
+        'control/event/<str:organizer>/<str:event>/outbox/purge/', 
+        views.PurgeQueuedMailsView.as_view(), 
+        name='purge_all'
+        ),
+    path(
         'control/event/<str:organizer>/<str:event>/sendmail/',
         views.SenderView.as_view(),
         name='send',

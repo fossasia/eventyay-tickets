@@ -25,6 +25,17 @@ def control_nav_import(sender, request=None, **kwargs):
             'icon': 'envelope',
             'children': [
                 {
+                    'label': _('Outbox'),
+                    'url': reverse(
+                        'plugins:sendmail:outbox',
+                        kwargs={
+                            'event': request.event.slug,
+                            'organizer': request.event.organizer.slug,
+                        },
+                    ),
+                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'outbox'),
+                },
+                {
                     'label': _('Compose emails'),
                     'url': reverse(
                         'plugins:sendmail:send',

@@ -1,0 +1,65 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% translate "Queued Emails" %}</h2>
+
+<form method="post" action="{% url 'plugins:sendmail:send_all' organizer=request.event.organizer.slug event=request.event.slug %}">
+    {% csrf_token %}
+    <button class="btn btn-success">{% translate "Send all" %}</button>
+</form>
+<form method="post" action="{% url 'plugins:sendmail:purge_all' organizer=request.event.organizer.slug event=request.event.slug %}" class="mt-2">
+    {% csrf_token %}
+    <button class="btn btn-danger">{% translate "Discard all" %}</button>
+</form>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>{% translate "Subject" %}</th>
+            <th>{% translate "To" %}</th>
+            <th>{% translate "Order" %}</th>
+            <th>{% translate "Created" %}</th>
+            <th>{% translate "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for mail in mails %}
+        <tr>
+            <td>{{ mail.subject }}</td>
+            <td>{{ mail.recipient }}</td>
+            <td>
+                {% if mail.order %}
+                    <a href="{% url 'control:event.order' organizer=request.event.organizer.slug event=request.event.slug code=mail.order.code %}" target="_blank">
+                        {{ mail.order.code }}
+                    </a>
+                {% else %}
+                    <em>{% translate "N/A" %}</em>
+                {% endif %}
+            </td>
+            <td>{{ mail.created|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td>
+                <form method="post" action="{% url 'plugins:sendmail:send_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-success" title="{% translate 'Send this email' %}">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </form>
+                <form method="post" action="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-danger" title="{% translate 'Delete this email' %}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">{% translate "No queued mails." %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include "pretixcontrol/pagination.html" with page=mails %}
+{% endblock %}
