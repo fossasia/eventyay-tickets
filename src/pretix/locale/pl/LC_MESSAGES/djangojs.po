@@ -409,7 +409,7 @@ msgstr "Miejsce na kod kreskowy"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "Wygenerowane przez pretix"
+msgstr "Wygenerowane przez eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

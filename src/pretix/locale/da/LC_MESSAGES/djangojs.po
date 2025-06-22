@@ -404,7 +404,7 @@ msgstr "QR-kode-område"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "Drevet af pretix"
+msgstr "Drevet af eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

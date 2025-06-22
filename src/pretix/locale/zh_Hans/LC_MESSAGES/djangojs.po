@@ -403,7 +403,7 @@ msgstr "条码区"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "由pretix驱动"
+msgstr "由eventyay驱动"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

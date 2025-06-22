@@ -406,7 +406,7 @@ msgstr "Zone de code-barres"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "Généré par pretix"
+msgstr "Généré par eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

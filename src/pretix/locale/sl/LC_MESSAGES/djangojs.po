@@ -406,7 +406,7 @@ msgstr "Področje za črtno kodo"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "Powered by pretix"
+msgstr "Powered by eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

@@ -390,7 +390,7 @@ msgstr "Barcode gebied"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "Mogelijk gemaakt door pretix"
+msgstr "Mogelijk gemaakt door eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-27 03:50+0000\n"
+"POT-Creation-Date: 2025-06-22 21:52+0700\n"
 "PO-Revision-Date: 2016-03-18 21:22+0100\n"
 "Last-Translator: Raphael Michel <mail@raphaelmichel.de>\n"
 "Language-Team: German (http://www.transifex.com/django/django/language/de/)\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.7\n"
 
-#: pretix/helpers/daterange.py:32
+#: helpers/daterange.py:39
 #, python-brace-format
 msgid "{date_from} – {date_to}"
 msgstr ""
