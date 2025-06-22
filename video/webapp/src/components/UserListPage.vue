@@ -1,0 +1,232 @@
+<template lang="pug">
+.c-userlist
+	UserSearch.user-list(v-if="showList", :placeholder="$t('UserSearch:placeholder:text')", @selected="selectUser")
+	.profile(v-if="showProfile")
+		bunt-progress-circular(size="huge", v-if="loading")
+		template(v-else-if="selectedUser")
+			.ui-page-header(v-if="$mq.below['s']")
+				bunt-icon-button(@click="toggleView=!toggleView") arrow_left
+				h2 {{ $t('UserSearch:placeholder:text') }}
+			scrollbars.content(y)
+				avatar(:user="selectedUser", :size="128")
+				h1.display-name
+					| {{ selectedUser.profile ? selectedUser.profile.display_name : (selectedUser.id ? selectedUser.id : '(unknown user)') }}
+					.ui-badge(v-for="badge in selectedUser.badges") {{ badge }}
+				.state {{ userStates.join(', ') }}
+				ProfileFields(:user="selectedUser")
+				.exhibitions(v-if="exhibitors.length > 0")
+					h3 {{ $t('UserListPage:staffed-exhibitions:text') }}
+					.exhibitors
+						router-link.exhibitor(v-for="exhibitor of exhibitors", :to="{name: 'exhibitor', params: {exhibitorId: exhibitor.id}}")
+							img.logo(:src="exhibitor.banner_list ? exhibitor.banner_list : exhibitor.logo", :alt="exhibitor.name")
+							.short-text {{ exhibitor.short_text }}
+							.actions
+								bunt-button {{ $t('Exhibition:more:label') }}
+			.actions(v-if="selectedUser.id !== user.id && selectedUser.id")
+				.action-row
+					bunt-button.btn-dm(v-if="hasPermission('world:chat.direct')", @click="openDM") {{ $t('UserAction:action.dm:label') }}
+					bunt-button.btn-call(v-if="hasPermission('world:chat.direct')", @click="startCall") {{ $t('UserAction:action.call:label') }}
+					bunt-button.unblock(v-if="isBlocked", @click="userAction = 'unblock'") {{ $t('UserAction:action.unblock:label') }}
+					bunt-button.block(v-else, @click="userAction = 'block'") {{ $t('UserAction:action.block:label') }}
+				template(v-if="hasPermission('room:chat.moderate') && selectedUser.id !== user.id")
+					.devider {{ $t('UserAction:moderator-actions:title') }}
+					.action-row
+						bunt-button.reactivate(v-if="selectedUser.moderation_state", @click="userAction = 'reactivate'")
+							| {{ selectedUser.moderation_state === 'banned' ? $t('UserAction:action.unban:label') : $t('UserAction:action.unsilence:label') }}
+						bunt-button.ban(v-if="selectedUser.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('UserAction:action.ban:label') }}
+						bunt-button.silence(v-if="!selectedUser.moderation_state", @click="userAction = 'silence'") {{ $t('UserAction:action.silence:label') }}
+		.placeholder(v-else)
+			h2 {{ $t('UserListPage:placeholder:text') }}
+	user-action-prompt(v-if="userAction", :action="userAction", :user="selectedUser", @close="updateProfile")
+</template>
+<script>
+import { mapState, mapGetters } from 'vuex'
+import api from 'lib/api'
+import Avatar from 'components/Avatar'
+import UserSearch from 'components/UserSearch'
+import UserActionPrompt from 'components/UserActionPrompt'
+import ProfileFields from 'components/profile/ProfileFields'
+
+export default {
+	components: { Avatar, UserSearch, UserActionPrompt, ProfileFields },
+	props: {
+		room: Object,
+		module: {
+			type: Object,
+			required: true
+		}
+	},
+	data() {
+		return {
+			toggleView: false,
+			loading: false,
+			blockedUsers: null,
+			selectedUser: null,
+			userAction: null,
+			moderationError: null,
+			exhibitors: []
+		}
+	},
+	computed: {
+		...mapState(['user', 'world']),
+		...mapGetters(['hasPermission']),
+		showProfile() {
+			if (!this.$mq.below.s) return true
+			return this.toggleView
+		},
+		showList() {
+			if (!this.$mq.below.s) return true
+			return !this.toggleView
+		},
+		isBlocked() {
+			if (!this.blockedUsers) return
+			return this.blockedUsers.some(user => user.id === this.selectedUser.id)
+		},
+		userStates() {
+			const states = []
+			if (this.isBlocked) {
+				states.push(this.$t('User:state:blocked'))
+			}
+			if (this.selectedUser.moderation_state) {
+				states.push(this.selectedUser.moderation_state)
+			}
+			return states
+		}
+	},
+	async created() {
+		this.blockedUsers = (await api.call('user.list.blocked')).users
+	},
+	methods: {
+		async updateProfile() {
+			this.loading = true
+			this.userAction = null
+			this.blockedUsers = (await api.call('user.list.blocked')).users
+			this.selectedUser = await api.call('user.fetch', {id: this.selectedUser.id})
+			this.loading = false
+		},
+		async selectUser(user) {
+			this.loading = true
+			this.toggleView = !this.toggleView
+			this.selectedUser = user
+			this.exhibitors = (await api.call('exhibition.get.staffed_by_user', {user_id: user.id})).exhibitors
+			this.loading = false
+		},
+		async openDM() {
+			await this.$store.dispatch('chat/openDirectMessage', {users: [this.selectedUser]})
+		},
+		async startCall() {
+			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.selectedUser]})
+			await this.$store.dispatch('chat/startCall', {channel})
+		}
+	}
+}
+</script>
+<style lang="stylus">
+$grid-size = 280px
+$logo-height = 130px
+
+.c-userlist
+	flex auto
+	background-color $clr-white
+	display flex
+	flex-direction row
+	+below('s')
+		flex-direction column
+		min-height: 0
+	.ui-page-header
+		padding 0
+	.user-list
+		flex none
+		display flex
+		flex-direction column
+		width 30%
+		max-width 500px
+		border-right border-separator()
+		min-height 0
+		height 100%
+		+below('s')
+			width 100%
+			border-left none
+			max-width none
+	.placeholder
+		flex auto
+		display flex
+		padding 16px 0px 0px 32px
+	.profile
+		flex auto
+		display flex
+		flex-direction column
+		min-height 0
+		max-height 100%
+		.content
+			display flex
+			padding 16px 0px 0px 32px
+			h1
+				margin 0
+				.display-name
+					margin auto 8px
+					flex auto
+					ellipsis()
+			.state
+				height 16px
+				margin-bottom 8px
+			.exhibitors
+				flex auto
+				display grid
+				grid-template-columns repeat(auto-fill, $grid-size)
+				grid-auto-rows $grid-size
+				gap 16px
+				padding 16px
+				justify-content center
+				.exhibitor
+					grid-area span 1 / span 2
+					background-color $clr-white
+					border border-separator()
+					border-radius 4px
+					display flex
+					flex-direction column
+					padding 8px
+					cursor pointer
+					&:hover
+						border 1px solid var(--clr-primary)
+					img.logo
+						object-fit contain
+						max-width 100%
+						height $logo-height
+						min-height $logo-height
+						margin 0 1px
+					.short-text
+						margin-top 12px
+						color $clr-primary-text-light
+						display -webkit-box
+						-webkit-line-clamp 5
+						-webkit-box-orient vertical
+						overflow hidden
+					.actions
+						flex auto
+						display flex
+						justify-content flex-end
+						align-items flex-end
+						border-top none
+						.bunt-button
+							themed-button-secondary()
+		.actions
+			margin-top auto
+			border-top border-separator()
+			padding-left 32px
+			.action-row
+				margin 8px 0px 8px 0px
+				display flex
+				align-self stretch
+				justify-content flex-start
+				.bunt-button
+					button-style(style: clear)
+				.bunt-icon-button
+					icon-button-style(style: clear)
+			.devider
+				color $clr-secondary-text-light
+				font-weight 500
+				font-size 12px
+				margin 0px 8px
+
+</style>

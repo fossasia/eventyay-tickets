@@ -1,0 +1,55 @@
+name: webapp
+
+on:
+  push:
+    branches: [ development, main ]
+    paths:
+      - 'webapp/**'
+  pull_request:
+    branches: [ development, main ]
+    paths:
+      - 'webapp/**'
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Use Node.js 14
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./webapp
+    - name: Build webapp
+      run: npm run build
+      working-directory: ./webapp
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Use Node.js 14
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./webapp
+    - name: Lint webapp
+      run: npm run lint:nofix
+      working-directory: ./webapp

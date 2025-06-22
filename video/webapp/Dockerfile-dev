@@ -1,0 +1,8 @@
+FROM node:14
+
+COPY package*.json /
+ENV PATH /node_modules/.bin:$PATH
+
+RUN cd / && npm ci
+WORKDIR /app
+ENV NODE_PATH=/node_modules

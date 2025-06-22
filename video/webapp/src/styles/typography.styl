@@ -1,0 +1,62 @@
+link()
+	color: var(--clr-primary)
+	text-decoration: none
+	transition()
+
+	hover-underline()
+	&:hover
+		color: var(--clr-primary-darken-15)
+
+	&:visited
+		opacity: .8
+
+text-selection()
+	::selection
+		background: var(--clr-input-primary-bg)
+		color: var(--clr-input-primary-fg)
+
+blockquote()
+	border-left: 4px solid var(--clr-primary)
+	margin: 1em 0
+	padding-left: 1.5em
+	group()
+
+	> p
+		font-weight: 300
+		font-size: 127%
+		font-size: 1.27rem
+		line-height: 127%
+		line-height: 1.27rem
+		margin-top: 0
+
+	> cite, > footer, > figcaption
+		color: #888888
+		&:before
+			content: '\2014'
+
+// Alias: blockquo
+blockquo = blockquote
+
+shadow-stroke()
+	text-shadow: -1px -1px 0 var(--clr-primary), 1px -1px 0 var(--clr-primary), -1px 1px 0 var(--clr-primary), 1px 1px 0 var(--clr-primary)
+
+typography()
+	bold-italic()
+	headers()
+	lists()
+	text-selection()
+
+	p
+		paragraph()
+
+	small
+		small()
+
+	a[href]:not([class])
+		link()
+
+	blockquote
+		blockquo()
+
+	.hyphenation
+		hyphenation()

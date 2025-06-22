@@ -1,0 +1,66 @@
+.ui-page-header
+	flex: none
+	display: flex
+	align-items: center
+	padding: 8px
+	height: 56px
+	box-sizing: border-box
+	border-bottom: border-separator()
+	h1
+		flex: auto
+		font-size: 24px
+		font-weight: 500
+		margin: 1px 16px 0 0
+		ellipsis()
+
+.ui-form-actions
+	flex: none
+	display: flex
+	align-items: center
+	padding: 8px
+	height: 56px
+	box-sizing: border-box
+	border-top: border-separator()
+	background-color: $clr-grey-50
+	.btn-save
+		themed-button-primary()
+	.errors
+		color: $clr-danger
+		font-weight: 600
+		margin-left: 16px
+
+.ui-form-body
+	flex: auto
+	display: flex
+	flex-direction: column
+	max-width: 640px
+	padding: 16px
+
+	h2
+		font-size: 24px
+		margin: 16px 0 4px 0
+
+#app.has-background-room
+	.ui-page-header
+		padding-right: 8px + 280px + 4px
+
+.ui-badge
+	display: inline-block
+	font-size: 11px
+	font-weight: 500
+	box-sizing: border-box
+	height: 16px
+	line-height: 13px
+	vertical-align: middle
+	border: 2px solid var(--clr-primary)
+	border-radius: 8px
+	padding: 0 4px
+	margin-left: 4px
+
+.ui-background-blocker
+	position: fixed
+	top: 0
+	left: 0
+	width: 100vw
+	height: var(--vh100)
+	z-index: 800

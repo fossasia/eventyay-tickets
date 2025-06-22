@@ -1,0 +1,14 @@
+module.exports = {
+  "minify": true,
+  "options": [
+  ],
+  "feature-detects": [
+    "css/flexbox",
+    "es6/collections",
+    "es6/object",
+    "es6/promises",
+    "network/fetch",
+    "webanimations",
+    "websockets"
+  ]
+}

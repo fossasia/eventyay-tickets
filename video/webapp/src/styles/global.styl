@@ -1,0 +1,26 @@
+@import 'variables'
+variables()
+normalize-css()
+base()
+@import 'typography'
+typography()
+components()
+scrollbars()
+@import 'themed-buntpapier'
+themed-buntpapier()
+@import 'common-ui'
+
+a
+	color: var(--clr-primary)
+	text-decoration: none
+
+body
+	background-color: transparent
+
+html, body, #app
+	margin: 0
+	height: 100%
+	overflow: hidden
+
+.bunt-scrollbar
+	min-height: 0 // firefox can fuck off into space
