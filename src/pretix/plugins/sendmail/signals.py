@@ -58,6 +58,17 @@ def control_nav_import(sender, request=None, **kwargs):
                     'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'history'),
                 },
                 {
+                    'label': _('Sent emails'),
+                    'url': reverse(
+                        'plugins:sendmail:sent',
+                        kwargs={
+                            'event': request.event.slug,
+                            'organizer': request.event.organizer.slug,
+                        },
+                    ),
+                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'sent'),
+                },
+                {
                     'label': _('Templates'),
                     'url': reverse(
                         'plugins:sendmail:templates',

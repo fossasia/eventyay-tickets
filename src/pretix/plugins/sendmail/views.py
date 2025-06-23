@@ -23,6 +23,7 @@ from pretix.plugins.sendmail.models import QueuedMail
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
 from .forms import MailContentSettingsForm
 from . import forms
+from .forms import QueuedMailFilterForm
 
 
 logger = logging.getLogger('pretix.plugins.sendmail')
@@ -288,6 +289,34 @@ class EmailHistoryView(EventPermissionRequiredMixin, ListView):
         return ctx
 
 
+class SentMailView(EventPermissionRequiredMixin, ListView):
+    model = QueuedMail
+    model1 = QueuedMail
+    context_object_name = "mails"
+    template_name = "pretixplugins/sendmail/sent_list.html"
+    default_filters = (
+        "recipient__icontains",
+        "subject__icontains",
+    )
+    default_sort_field = "-created"
+    sortable_fields = ("recipient", "subject", "created")
+    paginate_by = 25
+    permission_required = "can_change_orders"
+
+    def get_filter_form(self):
+        return QueuedMailFilterForm(
+            self.request.GET, event=self.request.event, sent=True
+        )
+
+    def get_queryset(self):
+        return (
+            self.request.event.queued_mails
+            .select_related("user", "order", "position")
+            .filter(sent=True)
+            .order_by("-created")
+        )
+
+
 class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     template_name = 'pretixplugins/sendmail/mail_templates.html'
@@ -336,19 +365,6 @@ class OutboxListView(EventPermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         return QueuedMail.objects.filter(event=self.request.event, sent=False).order_by('-created')
-    
-class OutboxListView(EventPermissionRequiredMixin, ListView):
-    model = QueuedMail
-    context_object_name = 'mails'
-    template_name = 'pretixplugins/sendmail/outbox_list.html'
-    permission_required = 'can_change_orders'
-    paginate_by = 25
-
-    def get_queryset(self):
-        ordering = self.request.GET.get("ordering", "-created")
-        if ordering not in ["created", "-created"]:
-            ordering = "-created"  # Fallback to safe default
-        return QueuedMail.objects.filter(event=self.request.event, sent=False).order_by(ordering)
 
 
 class SendAllQueuedMailsView(EventPermissionRequiredMixin, View):

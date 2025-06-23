@@ -411,3 +411,22 @@ class MailContentSettingsForm(SettingsForm):
         for k, v in self.base_context.items():
             if k in self.fields:
                 self._set_field_placeholders(k, v)
+
+
+class QueuedMailFilterForm(forms.Form):
+    subject = forms.CharField(required=False, label="Subject contains")
+    recipient = forms.CharField(required=False, label="Recipient contains")
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop("event", None)
+        self.sent = kwargs.pop("sent", None)
+        super().__init__(*args, **kwargs)
+
+    def filter_queryset(self, qs):
+        if self.cleaned_data.get("subject"):
+            qs = qs.filter(subject__icontains=self.cleaned_data["subject"])
+        if self.cleaned_data.get("recipient"):
+            qs = qs.filter(recipient__icontains=self.cleaned_data["recipient"])
+        if self.sent is not None:
+            qs = qs.filter(sent=self.sent)
+        return qs

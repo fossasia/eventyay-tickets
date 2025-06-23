@@ -39,6 +39,11 @@ urlpatterns = [
         name='history',
     ),
     path(
+        'control/event/<str:organizer>/<str:event>/sendmail/sent/',
+        views.SentMailView.as_view(),
+        name='sent',
+    ),
+    path(
         'control/event/<str:organizer>/<str:event>/sendmail/templates/',
         views.MailTemplatesView.as_view(),
         name='templates',
