@@ -1,0 +1,449 @@
+{
+  "world": {
+    "id": "sample",
+    "title": "Unsere tolle Online-Konferenz",
+    "pretalx": {
+      "domain": "https://pretalx.com/",
+      "event": "democon"
+    },
+    "bbb_defaults": {
+      "record": false
+    },
+    "connection_limit": 2,
+    "user_list": {
+      "search_min_chars": 0,
+      "page_size": 50
+    },
+    "profile_fields": [
+      {
+        "id": "dd8fdb7a-4d83-4000-b2fe-e38ca50f92fe",
+        "label": "Organization",
+        "type": "text",
+        "searchable": true
+      },
+      {
+        "id": "8228cc22-b63d-472a-bf66-f7b2fde8b504",
+        "label": "Bio",
+        "type": "textarea",
+        "searchable": true
+      },
+      {
+        "id": "4326602d-5ae5-43e7-92a2-95d4d81b55d1",
+        "label": "Hashtags",
+        "type": "select",
+        "choices": "Frontend, Backend, Disruptor, Tech, Social",
+        "searchable": true
+      }
+    ],
+    "JWT_secrets": [
+      {
+        "secret": "FaZaa4KeeZoo2ahgoh2uenahd3Uta4Ei",
+        "issuer": "https://pretix.eu/",
+        "audience": "demo-event"
+      },
+      {
+        "secret": "lol",
+        "issuer": "https://example.org/",
+        "audience": "demo-event"
+      }
+    ]
+  },
+  "roles": {
+    "attendee": [
+      "world:view"
+    ],
+    "viewer": [
+      "world:view",
+      "room:view",
+      "room:chat.read"
+    ],
+    "participant": [
+      "world:view",
+      "world:chat.direct",
+      "room:view",
+      "room:chat.read",
+      "room:bbb.join",
+      "room:chat.send",
+      "room:chat.join",
+      "room:roulette.join",
+      "room:question.read",
+      "room:question.ask",
+      "room:question.vote",
+      "room:poll.read",
+      "room:poll.vote",
+      "world:exhibition.contact"
+    ],
+    "room_creator": [
+      "world:rooms.create.chat"
+    ],
+    "room_owner": [
+      "world:view",
+      "world:chat.direct",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:roulette.join",
+      "room:invite",
+      "room:delete",
+      "world:exhibition.contact"
+    ],
+    "speaker": [
+      "world:view",
+      "world:chat.direct",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate",
+      "room:roulette.join",
+      "world:exhibition.contact"
+    ],
+    "moderator": [
+      "world:view",
+      "world:chat.direct",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate",
+      "room:bbb.recordings",
+      "room:roulette.join",
+      "room:chat.moderate",
+      "room:viewers",
+      "room:announce",
+      "world:exhibition.contact",
+      "room:question.read",
+      "room:question.ask",
+      "room:question.vote",
+      "room:question.moderate",
+      "room:poll.manage",
+      "room:poll.read",
+      "room:poll.vote",
+      "world:announce"
+    ],
+    "admin": [
+      "world:view",
+      "world:chat.direct",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate",
+      "room:bbb.recordings",
+      "room:chat.moderate",
+      "room:announce",
+      "room:roulette.join",
+      "world:exhibition.contact",
+      "world:rooms.create.stage",
+      "world:rooms.create.chat",
+      "world:rooms.create.bbb",
+      "world:rooms.create.exhibition",
+      "world:announce",
+      "world:connections.unlimited",
+      "world:graphs",
+      "world:update",
+      "world:users.list",
+      "world:users.manage",
+      "room:delete",
+      "room:update"
+    ],
+    "apiuser": [
+      "world:view",
+      "world:chat.direct",
+      "room:view",
+      "room:chat.read",
+      "room:chat.join",
+      "room:chat.send",
+      "room:bbb.join",
+      "room:bbb.moderate",
+      "room:bbb.recordings",
+      "room:chat.moderate",
+      "room:announce",
+      "room:roulette.join",
+      "world:exhibition.contact",
+      "world:rooms.create.stage",
+      "world:rooms.create.chat",
+      "world:rooms.create.bbb",
+      "world:rooms.create.exhibition",
+      "world:announce",
+      "world:update",
+      "world:users.list",
+      "world:users.manage",
+      "room:delete",
+      "room:update",
+      "world:api",
+      "world:secrets"
+    ],
+    "scheduleuser": [
+      "world:api"
+    ]
+  },
+  "trait_grants": {
+    "attendee": [],
+    "viewer": [
+      "global-viewer"
+    ],
+    "participant": [
+      "global-participant"
+    ],
+    "room_creator": [
+      "room-creator"
+    ],
+    "room_owner": [
+      "room-owner"
+    ],
+    "speaker": [
+      "speaker"
+    ],
+    "moderator": [
+      "moderator"
+    ],
+    "admin": [
+      "admin"
+    ],
+    "apiuser": [
+      "api"
+    ],
+    "scheduleuser": [
+      "schedule-update"
+    ]
+  },
+  "rooms": [
+    {
+      "id": "about",
+      "name": "About",
+      "description": "UNUSED",
+      "picture": "UNUSED",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "page.landing",
+          "config": {
+            "header_background_color": "#673ab7",
+            "header_image": "/eventyay-video-logo.svg",
+            "content": "# Welcome to this example event!\n\nYou might notice that the dates for the current sessions are not actually your current time and that time does not progress. That's because we froze time – only in this demo of course – with the power of programming!\n\nHave a look around!"
+          }
+        }
+      ]
+    },
+    {
+      "id": "a-page",
+      "name": "More Info",
+      "description": "UNUSED",
+      "picture": "UNUSED",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "page.markdown",
+          "config": {
+            "content": "# Unsere tolle Online-Konferenz\n\nHallo!\nDas ist ein Markdowntext!"
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_0",
+      "name": "Plenum",
+      "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
+      "picture": "https://via.placeholder.com/150",
+      "pretalx_id": 130,
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "livestream.native",
+          "config": {
+            "hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"
+          }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": true
+          }
+        },
+        {
+          "type": "poll",
+          "config": {
+            "active": true
+          }
+        },
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_1",
+      "name": "Gruppenraum 1",
+      "description": "Hier findet die Eröffnungs- und End-Veranstaltung statt",
+      "picture": "https://via.placeholder.com/150",
+      "pretalx_id": 131,
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "call.bigbluebutton",
+          "config": {
+            "record": false
+          }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": true,
+            "requires_moderation": false
+          }
+        },
+        {
+          "type": "poll",
+          "config": {
+            "active": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_2",
+      "name": "Stage 2",
+      "description": "Hier findet mehr Zeug statt",
+      "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "livestream.native",
+          "config": {
+            "hls_url": "https://s1.live.pretix.eu/hls/sample.m3u8"
+          }
+        },
+        {
+          "type": "question",
+          "config": {
+            "active": false
+          }
+        },
+        {
+          "type": "poll",
+          "config": {
+            "active": false
+          }
+        },
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_3",
+      "name": "Not Streaming",
+      "description": "Non-Working Stream",
+      "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "livestream.native",
+          "config": {
+            "hls_url": "https://s1.live.pretix.eu/hls/broken.m3u8"
+          }
+        },
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "chat",
+      "name": "Chat",
+      "description": "Standalone Chat",
+      "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "chat.native",
+          "config": {
+            "volatile": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "room_4",
+      "name": "Exhibition Hall",
+      "description": "Much stands, very networking",
+      "picture": "https://via.placeholder.com/150",
+      "trait_grants": {
+        "viewer": [],
+        "participant": []
+      },
+      "modules": [
+        {
+          "type": "exhibition.native",
+          "config": {}
+        }
+      ]
+    }
+  ],
+  "exhibitors": [
+    {
+      "name": "Messebau Schmidt UG",
+      "tagline": "Handwerk aus Leidenschaft",
+      "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
+      "logo": "https://via.placeholder.com/150",
+      "text": "# Wir liefern wovon andere nur reden\n\nHallo!\nDas ist ein Markdowntext!",
+      "size": "1x1",
+      "room": "room_4",
+      "links": [
+        {"display_text": "Info Broschüre", "url": "https://de.wikipedia.org/wiki/Messebau"},
+        {"display_text": "Website", "url": "http://example.org/"}
+      ],
+      "social_media_links": [
+        {"display_text": "XING", "url": "https://www.xing.com/"}
+      ]
+    },
+    {
+      "name": "Tube GmbH",
+      "tagline": "Ihr Partner im Großhandel",
+      "short_text": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea tak",
+      "logo": "https://via.placeholder.com/150",
+      "text": "# Gastro und mehr\n\nVon Apfel bis Zebra, wir liefern!",
+      "size": "1x1",
+      "room": "room_4",
+      "social_media_links": [
+        {"display_text": "linkedin", "url": "https://www.linkedin.com/"}
+      ]
+    }
+  ]
+}

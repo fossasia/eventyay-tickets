@@ -1,0 +1,32 @@
+:root {
+    --border-radius: 0;
+    --loader-bg: {{ world.config.theme.colors.bbb_background|default:"#333333" }};
+    --color-primary: {{ world.config.theme.colors.primary|default:"#673ab7" }};
+    --list-item-focus-border: {{ world.config.theme.colors.primary|default:"#673ab7" }};
+    --toast-info-color: {{ world.config.theme.colors.bbb_background|default:"#333333" }};
+}
+
+.overlay--1aTlbi, body, .layout--Z2pPMwf, .presentationContainer--1wqUYG {
+    background-color: {{ world.config.theme.colors.bbb_background|default:"#333333" }} !important;
+}
+
+.userNameSub--1RuGj6 span {
+    display: none;
+}
+
+.chatListItem--Z2sTdzU {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.speaking--Z2tUpzD {
+    overflow-x: hidden !important;
+}
+
+.panel--1n3JpJ { /* fix invite view  */
+    overflow: auto !important;
+}
+
+button span:first-child {
+    box-shadow: none !important;
+}

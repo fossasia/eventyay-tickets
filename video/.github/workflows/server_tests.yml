@@ -1,0 +1,95 @@
+name: Server tests
+on:
+  push:
+    branches: [ development, main ]
+    paths:
+      - 'server/**'
+  pull_request:
+    branches: [ development, main ]
+    paths:
+      - 'server/**'
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    container: python:3.11
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        pubsub: ["no"]
+        experimental: [false]
+        include:
+          - pubsub: "yes"
+            experimental: true
+    services:
+      redis:
+        image: redis:latest
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: venueless
+          POSTGRES_DB: venueless
+          POSTGRES_USER: venueless
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+      - name: Install Python dependencies
+        run: pip3 install -U pip wheel setuptools && pip3 install -Ur requirements.txt
+        working-directory: ./server
+      - name: Run checks
+        run: python manage.py check
+        working-directory: ./server
+      - name: Run collectstatic
+        run: python manage.py collectstatic
+        working-directory: ./server
+      - name: Run tests
+        working-directory: ./server
+        run: py.test tests/ --cov=./ --reruns 3 --reruns-delay 1
+        env:
+          VENUELESS_REDIS_USE_PUBSUB: '${{ matrix.pubsub }}'
+          VENUELESS_REDIS_HOST: 'redis'
+          VENUELESS_DB_TYPE: 'postgresql'
+          VENUELESS_DB_NAME: 'venueless'
+          VENUELESS_DB_USER: 'venueless'
+          VENUELESS_DB_PASS: 'venueless'
+          VENUELESS_DB_HOST: 'postgres'
+
+      - name: Build coverage info
+        working-directory: ./server
+        run: |
+          python -m coverage json
+
+          export TOTAL_COV=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
+          echo "TOTAL_COV=$TOTAL_COV" >> $GITHUB_ENV
+          echo "## Test coverage: $TOTAL_COV%" >> $GITHUB_STEP_SUMMARY
+          python -m coverage report --skip-covered --skip-empty --show-missing --format=markdown >> $GITHUB_STEP_SUMMARY
+
+          python -m coverage report --fail-under=70
+        if: matrix.pubsub == 'no' && matrix.experimental == false
+
+      - name: "Make badge"
+        uses: schneegans/dynamic-badges-action@v1.6.0
+        with:
+          # GIST_TOKEN is a GitHub personal access token with scope "gist".
+          auth: ${{ secrets.GIST_TOKEN }}
+          gistID: f7aede37157ab0a7e1fb2a5beaf78abc
+          filename: covbadge.json
+          label: coverage
+          message: ${{ env.TOTAL_COV }}%
+          valColorRange: ${{ env.TOTAL_COV }}
+          maxColorRange: 90
+          minColorRange: 50
+        if: env.TOTAL_COV && github.ref == 'refs/heads/dev'

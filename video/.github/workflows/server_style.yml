@@ -1,0 +1,70 @@
+name: Server style
+on:
+  workflow_dispatch:
+  push:
+    branches: [ development, main ]
+    paths:
+      - 'server/**'
+  pull_request:
+    branches: [ development, main ]
+    paths:
+      - 'server/**'
+
+jobs:
+  black:
+    name: black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.11
+      - name: Install Python dependencies
+        run: pip3 install -U pip wheel setuptools && pip3 install -U black
+        working-directory: ./server
+      - name: Run checks
+        run: black --check venueless tests
+        working-directory: ./server
+  flake8:
+    name: flake8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.11
+      - name: Install Python dependencies
+        run: pip3 install -U pip wheel setuptools && pip3 install -U flake8
+        working-directory: ./server
+      - name: Run checks
+        run: flake8 venueless tests
+        working-directory: ./server
+  isort:
+    name: isort
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.11
+      - name: Install Python dependencies
+        run: pip3 install -U pip wheel setuptools && pip3 install -U "isort==5.*"
+        working-directory: ./server
+      - name: Run checks
+        run: isort -c venueless tests
+        working-directory: ./server

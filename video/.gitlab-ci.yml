@@ -1,0 +1,86 @@
+py_style:
+  stage: build
+  script:
+    - cd server
+    - python -m venv env
+    - source env/bin/activate
+    - pip install -U pip wheel setuptools
+    - XDG_CACHE_HOME=/cache pip install black flake8 isort==5.*
+    - black --check venueless tests
+    - flake8 venueless tests
+    - isort -rc -c venueless tests
+  interruptible: true
+  allow_failure: true  # We check this in Github, and if it's urgent, we don't want to skip deployments because of this
+  tags:
+    - python3
+
+py_test:
+  stage: build
+  retry: 2
+  services:
+    - redis:latest
+    - postgres:15
+  script:
+    - cd server
+    - python -m venv env
+    - source env/bin/activate
+    - pip install -U pip wheel setuptools
+    - XDG_CACHE_HOME=/cache pip install -Ur requirements.txt
+    - python manage.py collectstatic
+    - VENUELESS_REDIS_HOST=redis VENUELESS_DB_TYPE=postgresql VENUELESS_DB_NAME=venueless VENUELESS_DB_USER=venueless VENUELESS_DB_PASS=venueless VENUELESS_DB_HOST=postgres py.test tests/ --reruns 3 --reruns-delay 1
+  interruptible: true
+  allow_failure: true  # We check this in Github, and if it's urgent, we don't want to skip deployments because of this
+  tags:
+    - python3
+
+variables:
+  POSTGRES_DB: stayseeated
+  POSTGRES_USER: venueless
+  POSTGRES_PASSWORD: venueless
+  POSTGRES_HOST_AUTH_METHOD: trust
+
+build_container:
+  stage: build
+  script:
+    - echo $CI_COMMIT_SHA > release.txt
+    - docker build --build-arg=COMMIT=$(git rev-parse --short HEAD) -t venueless . 
+    - docker tag venueless docker.rami.io/venueless/venueless:$CI_COMMIT_REF_NAME
+  tags:
+    - docker
+    - venuelessbuild
+
+upload_container:
+  stage: upload
+  script:
+    - docker login -u ciuser -p $DOCKERPW docker.rami.io
+    - docker push docker.rami.io/venueless/venueless:$CI_COMMIT_REF_NAME
+  only:
+    - prod
+    - master
+  tags:
+    - docker
+    - venuelessbuild
+
+deploy:
+  stage: deploy
+  script:
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME pull
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web2.rami.io $CI_COMMIT_REF_NAME pull
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web3.rami.io $CI_COMMIT_REF_NAME pull
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web4.rami.io $CI_COMMIT_REF_NAME pull
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web5.rami.io $CI_COMMIT_REF_NAME pull
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web1.rami.io $CI_COMMIT_REF_NAME upgrade
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web2.rami.io $CI_COMMIT_REF_NAME upgrade
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web3.rami.io $CI_COMMIT_REF_NAME upgrade
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web4.rami.io $CI_COMMIT_REF_NAME upgrade
+    - ssh -o UserKnownHostsFile=/keys/known_hosts -i /keys/id_rsa deployer@venueless-web5.rami.io $CI_COMMIT_REF_NAME upgrade
+  only:
+    - prod
+    - master
+  tags:
+    - venuelessdeploy
+
+stages:
+  - build
+  - upload
+  - deploy
