@@ -1,0 +1,13 @@
+{% if widget.value and widget.value.url %}
+    <div class="form-image-preview">
+        <a href="{{ widget.value.url }}" data-lightbox="{{ widget.value.url }}">
+            <img loading="lazy" src="{{ widget.value.url }}">
+        </a>
+    </div>
+    <br>
+{% endif %}
+{% if widget.is_initial %}<span class="form-image-initial">{{ widget.initial_text }}: <a href="{{ widget.value.url }}" data-lightbox="{{ widget.value.url }}">{{ widget.value }}</a>{% if not widget.is_required %}
+    <span class="form-image-clear"><input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}>
+        <label for="{{ widget.checkbox_id }}">{{ widget.clear_checkbox_label }}</label></span>{% endif %}</span><br>
+    {{ widget.input_text }}:{% endif %}
+<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>

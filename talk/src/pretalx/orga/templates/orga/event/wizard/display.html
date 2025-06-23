@@ -1,0 +1,22 @@
+{% extends "orga/event/wizard/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/headers-uncompressed.css" %}" />
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "vendored/vanilla-picker/vanilla-picker.min.js" %}"></script>
+        <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block wizard_content %}
+    <div class="alert alert-info col-md-9 offset-md-3">
+        {% translate "Choose your inital customisations here – you can always change them later, or enhance them with custom CSS." %}
+    </div>
+{% endblock wizard_content %}

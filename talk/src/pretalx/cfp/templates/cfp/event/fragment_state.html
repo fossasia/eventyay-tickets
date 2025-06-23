@@ -1,0 +1,21 @@
+{% load i18n %}
+
+{% if as_badge %}<span class="badge submission-state submission-state-{{ state }}">{% endif %}
+{% if state == "submitted" %}
+    <i class="fa fa-inbox"></i> <span class="state-fragment">{{ phrases.submission.submitted }}</span>
+{% elif state == "review" %}
+    <i class="fa fa-inbox"></i> <span class="state-fragment">{{ phrases.submission.in_review }}</span>
+{% elif state == "rejected" %}
+    <i class="fa fa-ban"></i> <span class="state-fragment">{{ phrases.submission.not_accepted }}</span>
+{% elif state == "accepted" %}
+    <i class="fa fa-check-circle"></i> <span class="state-fragment">{% translate "accepted" %}</span>
+{% elif state == "confirmed" %}
+    <i class="fa fa-check-circle"></i> <span class="state-fragment">{% translate "confirmed" %}</span>
+{% elif state == "canceled" %}
+    <i class="fa fa-times-circle"></i> <span class="state-fragment">{% translate "canceled" %}</span>
+{% elif state == "withdrawn" %}
+    <i class="fa fa-times-circle"></i> <span class="state-fragment">{% translate "withdrawn" %}</span>
+{% elif state == "deleted" %}
+    <i class="fa fa-times-circle"></i> <span class="state-fragment">{{ phrases.submission.deleted }}</span>
+{% endif %}
+{% if as_badge %}</span>{% endif %}

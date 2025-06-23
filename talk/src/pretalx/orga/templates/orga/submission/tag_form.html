@@ -1,0 +1,35 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "vendored/vanilla-picker/vanilla-picker.min.js" %}"></script>
+        <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block extra_title %}
+    {% if form.instance.tag %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %} ::
+{% endblock extra_title %}
+
+{% block content %}
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>
+            {% if form.instance.tag %}
+                {% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}
+            {% else %}
+                {% translate "New tag" %}
+            {% endif %}
+        </h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
+
+    {% include "orga/includes/base_form.html" %}
+
+{% endblock content %}

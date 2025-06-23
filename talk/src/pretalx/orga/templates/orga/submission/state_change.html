@@ -1,0 +1,38 @@
+{% extends "orga/submission/base.html" %}
+
+{% load i18n %}
+
+{% block submission_title %}→ {{ target }} :: {% endblock submission_title %}
+
+{% block submission_content %}
+    <div class="col-md-9 offset-md-3">
+        <h3>
+
+            {% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}
+
+            <i class="fa fa-arrow-right"></i>
+
+            {% include "cfp/event/fragment_state.html" with state=target as_badge=True %}
+
+        </h3>
+        <p>{% translate "Please confirm that you really want to change the state of this proposal." %}</p>
+
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {{ form.pending.as_field_group }}
+
+        <div class="submit-group" id="submission-state-change"><span></span><span>
+            <a
+                class="btn btn-lg btn-outline-info"
+                href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ submission.orga_urls.base }}{% endif %}"
+            >
+                {{ phrases.base.back_button }}
+            </a>
+            <button type="submit" class="btn btn-lg submission-state-{{ target }}">
+                {% translate "Do it" %}
+            </button>
+        </span></div>
+    </form>
+{% endblock submission_content %}

@@ -1,0 +1,285 @@
+{% extends "orga/settings/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load formset_tags %}
+{% load static %}
+
+{% block extra_title %}{% translate "Review settings" %} :: {% endblock extra_title %}
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "js/jquery.js" %}"></script>
+        <script defer src="{% static "js/jquery.formset.js" %}"></script>
+        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+        <script defer src="{% static "orga/js/reviewSettings.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block settings_content %}
+    <form method="post" class="d-flex flex-column">
+        {% csrf_token %}
+
+        <div id="main-title" class="d-md-flex justify-content-between">
+            <h2>{% translate "Review settings" %}</h2>
+            {% include "orga/event/component_link.html" %}
+        </div>
+
+        {% include "orga/includes/tablist.html" %}
+
+        <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
+            {% include "common/forms/errors.html" %}
+            {{ form.score_mandatory.as_field_group }}
+            {{ form.text_mandatory.as_field_group }}
+            <div class="col-md-9 flip ml-auto mb-4">
+                <div class="text-muted">
+                    {% blocktranslate trimmed %}
+                        If you require neither a review score nor a review text, reviewers will
+                        be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
+                        button when reviewing proposals.
+                    {% endblocktranslate %}
+                </div>
+            </div>
+            {{ form.aggregate_method.as_field_group }}
+            {{ form.score_format.as_field_group }}
+            {{ form.review_help_text.as_field_group }}
+
+        </section>
+        <section role="tabpanel" id="tabpanel-scores" aria-labelledby="tab-scores" tabindex="0" aria-hidden="true">
+            <dialog id="info-review-scoring">
+                <div class="alert alert-info">
+                    <p>
+                        {% blocktranslate trimmed %}
+                            You can ask reviewers to provide one or multiple scores. If you ask for multiple scores,
+                            they will be added up to a final total score. If you want, this total score can be weighted.
+                            Currently, the total score is calculated as:
+                        {% endblocktranslate %}
+                        <span class="text-center d-block">
+                            <strong><span id="total-score"></span></strong>
+                        </span>
+                    </p>
+                </div>
+            </dialog>
+
+            <div id="score-formset" class="formset" data-formset data-formset-prefix="{{ scores_formset.prefix }}">
+                {{ scores_formset.management_form }}
+                {{ scores_formset.non_form_errors }}
+                <div data-formset-body class="card"><div class="list-group list-group-flush">
+                    {% for form in scores_formset %}
+                        <div data-formset-form class="score-group list-group-item">
+                            <h3 class="d-flex offset-md-3 flex-wrap align-items-start mt-2 hide-label">
+                                <span class="m-2">{% translate "Review Score category" %}
+
+                                </span>
+                                {{ form.name.as_field_group }}
+                                {% if forloop.first %}
+                                    <span class="dialog-anchor" data-target="#info-review-scoring" data-toggle="dialog">
+                                        <i class="fa fa-question-circle-o text-info ml-2"></i>
+                                    </span>
+                                {% endif %}
+                                {% if action != "view" %}
+                                    <button type="button" class="btn btn-xs btn-danger ml-auto" data-formset-delete-button>
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                {% endif %}
+                            </h3>
+                            <div class="sr-only">
+                                {{ form.id }}
+                                {{ form.new_scores }}
+                                {{ form.DELETE }}
+                            </div>
+                            <div class="score-row flip ml-auto score-input{% if action == "view" %} disabled{% endif %}">
+                                {% include "common/forms/errors.html" %}
+                                {{ form.is_independent.as_field_group }}
+                                {{ form.weight.as_field_group }}
+                                {{ form.required.as_field_group }}
+                                {{ form.active.as_field_group }}
+
+                                {% if form.limit_tracks %}{{ form.limit_tracks.as_field_group }}{% endif %}
+
+                                {% for label_pair in form.get_label_fields %}
+                                    <div class="row form-group">
+                                        {% if forloop.first %}
+                                            <label class="col-md-3 col-form-label">
+                                                {% translate "Scores" %}
+                                            </label>
+                                        {% endif %}
+                                        <div class="col-md-9 flip ml-auto d-flex hide-label">
+                                            <div class="mr-2 score-score">
+                                                {{ label_pair.0.as_field_group }}
+                                            </div>
+                                            <div class="score-label">
+                                                {{ label_pair.1.as_field_group }}
+                                            </div>
+                                            {% if forloop.first %}
+                                                <div role="button" class="new-score btn btn-info flip ml-auto align-self-start"><i class="fa fa-plus"></i></div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="row form-group">
+                                        <label class="col-md-3 col-form-label">
+                                            {% translate "Scores" %}
+                                        </label>
+                                        <div class="col-md-9 flip ml-auto d-flex">
+                                            <div role="button" class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                    <script type="form-template" data-formset-empty-form>
+                        {% escapescript %}
+                            <div data-formset-form class="score-group list-group-item p-3">
+                            <h3 class="d-flex offset-md-3 flex-wrap align-items-start mt-2 hide-label">
+                            <span class="m-2">{% translate "Score Category" %}</span>
+                            {{ scores_formset.empty_form.name.as_field_group }}
+                            {% if action != "view" %}
+                                <div class="score-delete flip ml-auto">
+                                <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                <i class="fa fa-trash"></i></button>
+                                </div>
+                            {% endif %}
+                            </h3>
+                            <div class="sr-only">
+                            {{ scores_formset.empty_form.id }}
+                            {{ scores_formset.empty_form.new_scores }}
+                            {{ scores_formset.empty_form.DELETE }}
+                            </div>
+                            <div class="score-row flip ml-auto score-input">
+                            {{ scores_formset.empty_form.is_independent.as_field_group }}
+                            {{ scores_formset.empty_form.weight.as_field_group }}
+                            {{ scores_formset.empty_form.required.as_field_group }}
+                            {{ scores_formset.empty_form.active.as_field_group }}
+                            <div class="row form-group">
+                            <label class="col-md-3 col-form-label">
+                            {% translate "Scores" %}
+                            </label>
+                            <div class="col-md-9 d-flex hide-label">
+                            <div class="mr-2 score-score"></div>
+                            <div class="score-label"></div>
+                            <div role="button" class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                        {% endescapescript %}
+                    </script>
+                </div>
+                <div class="d-flex lg-action">
+                    <button type="button" id="score-add" class="btn btn btn-info flip ml-auto m-3" data-formset-add>
+                        <i class="fa fa-plus"></i> {% translate "Add another score category" %}
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section role="tabpanel" id="tabpanel-phases" aria-labelledby="tab-phases" tabindex="0" aria-hidden="true">
+
+            <dialog id="info-review-phases">
+                <div class="alert alert-info">
+                    {% blocktranslate trimmed %}
+                        Review phases allow you to structure your review process.
+                        By default, there are two review phases: The review itself, and
+                        the selection process once the review phase is over. But you could for example
+                        add another review and selection phase after that, if you require additional
+                        review rounds.
+                    {% endblocktranslate %}
+                </div>
+            </dialog>
+            <div class="formset" data-formset data-formset-prefix="{{ phases_formset.prefix }}" id="review-phases-formset">
+                {{ phases_formset.management_form }}
+                {{ phases_formset.non_form_errors }}
+                <div data-formset-body class="card"><div class="list-group list-group-flush">
+                    {% for form in phases_formset %}
+                        <div data-formset-form class="list-group-item review-phase">
+                            <h3 class="d-flex offset-md-3 flex-wrap mt-2 hide-label">
+                                <span class="m-2">{% translate "Review Phase" %}</span>
+                                {{ form.name.as_field_group }}
+                                {% if forloop.first %}
+                                    <span class="dialog-anchor" data-target="#info-review-phases" data-toggle="dialog">
+                                        <i class="fa fa-question-circle-o text-info ml-2"></i>
+                                    </span>
+                                {% endif %}
+                                {% if action != "view" %}
+                                    <div class="phase-option-delete flip ml-auto">
+                                        {% if not form.instance.is_active %}
+                                            <a href="{{ form.instance.urls.activate }}"
+                                               class="btn btn-outline-warning flip ml-auto mr-2 keep-scroll-position"
+                                               title="{% translate "Activate phase" %}">
+                                                <i class="fa fa-star"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href=""
+                                               class="btn btn-warning flip ml-auto mr-2 keep-scroll-position"
+                                               title="{% translate "Phase is active" %}">
+                                                <i class="fa fa-star"></i>
+                                            </a>
+                                        {% endif %}
+                                        <button type="button" class="btn btn-xs btn-danger ml-auto" data-formset-delete-button>
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </h3>
+                            <div class="sr-only">
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                            </div>
+                            <div class="phase-option-row flip ml-auto">
+                                <div class="phase-option-input{% if action == "view" %} disabled{% endif %}">
+                                    {% include "common/forms/errors.html" %}
+                                    {% for field in form %}
+                                        {% if field.name != "DELETE" and field.name != "name" and field.name != "id" %}
+                                            {{ field.as_field_group }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <script type="form-template" data-formset-empty-form>
+                        {% escapescript %}
+                            <div data-formset-form class="list-group-item review-phase p-3">
+                            <h3 class="d-flex offset-md-3 mt-2 hide-label">
+                            <span class="m-2">{% translate "Review Phase" %}</span>
+                            {{ phases_formset.empty_form.name.as_field_group }}
+                            <div class="phase-option-delete flip ml-auto mr-2">
+                            <button type="button" class="btn btn-danger" data-formset-delete-button>
+                            <i class="fa fa-trash"></i></button>
+                            </div>
+                            </h3>
+                            <div class="sr-only">
+                            {{ phases_formset.empty_form.id }}
+                            {{ phases_formset.empty_form.DELETE }}
+                            </div>
+                            <div class="phase-option-row flip ml-auto"><div class="phase-option-input">
+                            {% for field in phases_formset.empty_form %}
+                                {% if field.name != "DELETE" and field.name != "name" and field.name != "id" %}
+                                    {{ field.as_field_group }}
+                                {% endif %}
+                            {% endfor %}
+                            </div></div>
+                            </div>
+                        {% endescapescript %}
+                    </script>
+                </div>
+                </div>
+                <div class="d-flex lg-action">
+                    <button type="button" id="phase-add" class="btn btn btn-info flip ml-auto m-3" data-formset-add>
+                        <i class="fa fa-plus"></i> {% translate "Add another phase" %}
+                    </button>
+                </div>
+            </div>
+        </section>
+        {% include "orga/includes/submit_row.html" %}
+    </form>
+{% endblock settings_content %}

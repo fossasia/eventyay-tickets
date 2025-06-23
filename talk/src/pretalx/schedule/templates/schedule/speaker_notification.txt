@@ -1,0 +1,3 @@
+{% load i18n %}{% for slot in create %}
+{% blocktranslate with title=slot.submission.title location=slot.room.name start=slot.local_start|date:START_DATE_FORMAT trimmed %}- Your session “{{ title }}” will take place at {{ start }} in {{ location }}{% endblocktranslate %}{% if slot.room.speaker_info %} ({{ slot.room.speaker_info }}){% endif %}.{% endfor %}{% for slot in update %}
+{% blocktranslate with title=slot.submission.title location=slot.new_room start=slot.new_start|date:START_DATE_FORMAT trimmed %} - Your session “{{ title }}” has been moved to {{ start }} in {{ location }}{% endblocktranslate %}{% if new_info %}({{ new_info }}){% endif %}.{% endfor %}

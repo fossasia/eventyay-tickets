@@ -1,0 +1,107 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load rules %}
+{% load static %}
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
+    {% if form.biography %}
+        <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+        <script defer src="{% static "vendored/purify.min.js" %}"></script>
+    {% endif %}
+{% endblock scripts %}
+
+{% block extra_title %}{{ form.instance.user.get_display_name }} :: {% endblock extra_title %}
+
+{% block alternate_link %}
+    <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ form.instance.code }}" />
+{% endblock alternate_link %}
+
+{% block content %}
+    {% has_perm "orga.change_speaker" request.user form.instance as can_edit_speaker %}
+    {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
+    <h2 class="d-flex justify-content-between align-items-baseline">
+        {% include "orga/includes/user_name.html" with user=form.instance.user lightbox=True %}
+        <span class="ml-2">
+            ({{ submissions.count }}
+            {% blocktranslate asvar proposal_title trimmed count count=submissions.count %}
+                proposal
+            {% plural %}
+                proposals
+            {% endblocktranslate %}
+            {{ proposal_title }})
+        </span>
+        <div class="ml-auto mb-1">
+            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip">{{ phrases.base.password_reset_heading }}</a>
+            {% if can_send_mails %}
+                <a class="btn btn-outline-info ml-2" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ form.instance.user.code }}">
+                    <i class="fa fa-envelope"></i>
+                    {% translate "Send email" %}
+                </a>
+            {% endif %}
+        </div>
+    </h2>
+    <div class="alert alert-info col-md-9 flip offset-md-3">
+        <span>
+            <h5>
+                {{ proposal_title|capfirst }}
+            </h5>
+            <ul>
+                {% for submission in submissions %}
+                    <li>
+                        <a href="{{ submission.orga_urls.base }}">
+                            {{ submission.title }}
+                            ({% include "cfp/event/fragment_state.html" with state=submission.state %}{% if submission.pending_state %}, {% translate "pending" %}{% include "cfp/event/fragment_state.html" with state=submission.pending_state %}{% endif %})
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </span>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include "common/forms/errors.html" %}
+
+        {{ form.name.as_field_group }}
+        {{ form.email.as_field_group }}
+        {% if form.avatar %}
+            {% include "common/avatar.html" with user=form.instance.user form=form %}
+        {% endif %}
+        {% if form.avatar_source %}{{ form.avatar_source.as_field_group }}{% endif %}
+        {% if form.avatar_license %}{{ form.avatar_license.as_field_group }}{% endif %}
+
+        {% if form.biography %}
+            {{ form.biography.as_field_group }}
+        {% endif %}
+        {% if form.availabilities %}
+            {% include "common/availabilities.html" %}
+
+            {{ form.availabilities.as_field_group }}
+        {% endif %}
+
+        {{ questions_form }}
+
+        {% include "orga/includes/submit_row.html" %}
+
+    </form>
+
+    <h3>{% translate "Emails" %}</h3>
+    {% if mails %}
+
+        {% include "common/mail_log.html" %}
+
+    {% else %}
+        {% translate "No mails were sent to this speaker yet." %}
+    {% endif %}
+
+{% endblock content %}

@@ -1,0 +1,14 @@
+/* FONT PATH
+ * -------------------------- */
+
+@font-face {
+  font-family: '#{$fa-font-family}';
+  src: url(static('#{$fa-font-path}/forkawesome-webfont.eot'));
+  src: url(static('#{$fa-font-path}/forkawesome-webfont.eot')) format('embedded-opentype'),
+    url(static('#{$fa-font-path}/forkawesome-webfont.woff2')) format('woff2'),
+    url(static('#{$fa-font-path}/forkawesome-webfont.woff')) format('woff'),
+    url(static('#{$fa-font-path}/forkawesome-webfont.ttf')) format('truetype'),
+    url(static('#{$fa-font-path}/forkawesome-webfont.svg')) format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

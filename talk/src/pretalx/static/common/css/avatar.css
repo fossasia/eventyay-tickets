@@ -1,0 +1,23 @@
+.avatar-form {
+  display: flex;
+  align-items: flex-start;
+
+  .form-image-preview {
+    margin-left: 6px;
+  }
+
+  .avatar-upload .form-group {
+    display: block;
+
+    .col-md-9 br:first-of-type {
+      display: none;
+    }
+
+    padding-top: 8px;
+
+    input[type="file"] {
+      display: inline-block;
+      width: auto;
+    }
+  }
+}
