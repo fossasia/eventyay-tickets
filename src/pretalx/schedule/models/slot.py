@@ -1,6 +1,7 @@
 import datetime as dt
 import re
 import string
+import unicodedata
 import uuid
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
@@ -13,9 +14,11 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
+from pretalx.agenda.rules import is_agenda_submission_visible, is_agenda_visible
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import get_base_url
+from pretalx.submission.rules import is_break, is_wip, orga_can_change_submissions
 
 INSTANCE_IDENTIFIER = None
 
@@ -66,6 +69,19 @@ class TalkSlot(PretalxModel):
 
     class Meta:
         ordering = ("start",)
+        rules_permissions = {
+            "list": is_agenda_visible | orga_can_change_submissions,
+            "view": (
+                # public view is only possible for non-wip slots
+                ~is_wip
+                # visibility then is down to the submission being visible in the
+                # agenda or the slot being a break. further filtering for is_visible
+                # is down to the API/view
+                & ((is_break & is_agenda_visible) | is_agenda_submission_visible)
+            )
+            | orga_can_change_submissions,
+            "update": is_wip & orga_can_change_submissions,
+        }
 
     def __str__(self):
         """Help when debugging."""
@@ -168,12 +184,15 @@ class TalkSlot(PretalxModel):
     @cached_property
     def frab_slug(self):
         title = re.sub(r"\W+", "-", self.submission.title)
+        title = title.lower()
+        title = unicodedata.normalize("NFD", title).encode("ASCII", "ignore").decode()
         legal_chars = string.ascii_letters + string.digits + "-"
         pattern = f"[^{legal_chars}]+"
         title = re.sub(pattern, "", title)
-        title = title.lower()
-        title = title.strip("_")
-        return f"{self.event.slug}-{self.submission.pk}{self.id_suffix}-{title}"
+        title = title.strip("-")
+        if title:
+            return f"{self.event.slug}-{self.submission.pk}{self.id_suffix}-{title}"
+        return f"{self.event.slug}-{self.submission.pk}{self.id_suffix}"
 
     @cached_property
     def uuid(self):
@@ -211,7 +230,7 @@ class TalkSlot(PretalxModel):
         netloc = urlparse(settings.SITE_URL).netloc
         cal = vobject.iCalendar()
         cal.add("prodid").value = "-//pretalx//{}//{}".format(
-            netloc, self.submission.code
+            netloc, self.submission.code if self.submission else self.pk
         )
         self.build_ical(cal)
         return cal

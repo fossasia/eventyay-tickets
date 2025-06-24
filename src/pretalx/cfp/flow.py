@@ -106,7 +106,7 @@ class BaseCfPStep:
     def is_applicable(self, request):
         return True
 
-    def is_completed(self, request, warn=False):
+    def is_completed(self, request):
         raise NotImplementedError()
 
     @cached_property
@@ -298,10 +298,16 @@ class GenericFlowStep:
     def text(self):
         return i18n_string(self.config.get("text", self._text), self.event.locales)
 
+    def get_extra_form_kwargs(self):
+        # Used for form kwargs that do not depend on the request/event, but should
+        # always be used, particularly in the CfP editor
+        return {}
+
     def get_form_kwargs(self):
         return {
             "event": self.request.event,
             "field_configuration": self.config.get("fields"),
+            **self.get_extra_form_kwargs(),
         }
 
     def get_context_data(self, **kwargs):
@@ -426,12 +432,18 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
             )
         return questions.exists()
 
+    def get_extra_form_kwargs(self):
+        return {"target": ""}
+
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
         info_data = self.cfp_session.get("data", {}).get("info", {})
-        result["target"] = ""
         result["track"] = info_data.get("track")
-        result["submission_type"] = info_data.get("submission_type")
+        access_code = getattr(self.request, "access_code", None)
+        if access_code and access_code.submission_type:
+            result["submission_type"] = access_code.submission_type
+        else:
+            result["submission_type"] = info_data.get("submission_type")
         if not self.request.user.is_anonymous:
             result["speaker"] = self.request.user
         return result
@@ -445,7 +457,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
 
     @property
     def label(self):
-        return phrases.cfp.questions
+        return _("Additional information")
 
     @property
     def _title(self):
@@ -467,6 +479,12 @@ class UserStep(GenericFlowStep, FormFlowStep):
 
     def is_applicable(self, request):
         return not request.user.is_authenticated
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Needed for support for external auth providers
+        context["success_url"] = context["next_url"]
+        return context
 
     def done(self, request, draft=False):
         if not getattr(request.user, "is_authenticated", False):
@@ -553,7 +571,10 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
         )
 
     def get_csp_update(self, request):
-        return {"img-src": "https://www.gravatar.com"}
+        return {
+            "img-src": "https://www.gravatar.com",
+            "connect-src": "https://www.gravatar.com",
+        }
 
 
 DEFAULT_STEPS = (
@@ -653,6 +674,7 @@ class CfPFlow:
                         for key, field in step.form_class(
                             event=self.event,
                             field_configuration=step_config.get("fields"),
+                            **step.get_extra_form_kwargs(),
                         ).fields.items()
                     ],
                 }

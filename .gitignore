@@ -80,6 +80,7 @@ ENV/
 .pydevproject
 .vscode
 .helix
+.zed
 
 # IDEA / pycharm
 .idea/

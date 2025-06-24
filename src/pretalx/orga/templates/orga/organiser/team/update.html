@@ -1,0 +1,85 @@
+{% extends "orga/organiser/team/_form.html" %}
+{% load i18n %}
+
+{% block form %}
+    <form method="post">
+        <fieldset>
+            <legend id="members">{% translate "Members" %}</legend>
+            {% csrf_token %}
+            <div class="table-responsive-sm">
+                <table class="table table-sm table-flip table-sticky">
+                    <thead>
+                        <tr>
+                            <th>{% translate "Name" %}</th>
+                            <th>{% translate "Email" %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                            <tr>
+                                <td>
+                                    {% include "orga/includes/user_name.html" with user=member lightbox=True %}
+                                </td>
+                                <td>
+                                    <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                                </td>
+                                <td class="flip text-right">
+                                    <a href="{{ request.organiser.orga_urls.teams }}{{ team.id }}/members/{{ member.id }}/reset/" class="btn btn-sm btn-warning">
+                                        {{ phrases.base.password_reset_heading }}
+                                    </a>
+                                    <a href="{{ request.organiser.orga_urls.teams }}{{ team.id }}/members/{{ member.id }}/delete/"
+                                       class="btn btn-sm btn-danger" title="{% translate "Remove team member" %}"
+                                    >
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% for member in team.invites.all %}
+                            <tr>
+                                <td>
+                                    <em>({% translate "pending Invitation" %})</em>
+                                </td>
+                                <td>
+                                    {{ member.email }}
+                                    <a href="{{ member.invitation_url }}">
+                                        <i class="fa fa-link"></i>
+                                    </a>
+                                </td>
+                                <td class="flip text-right">
+                                    <a href="{{ team.orga_urls.base }}invites/{{ member.id }}/resend/" class="btn btn-sm btn-outline-warning" >
+                                        {% translate "Resend invite" %}
+                                    </a>
+                                    <a href="{{ team.orga_urls.base }}invites/{{ member.id }}/uninvite/" class="btn btn-sm btn-danger" >
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>
+                                <strong>{% translate "Add member" %}</strong>
+                                <br>
+                                <small><em><a id="bulk-email" href="">{% translate "Add multiple team members?" %}</a></em></small>
+                            </td>
+                            <td class="w-50">
+                                {% csrf_token %}
+                                <div id="single-invite">
+                                    <select multiple name="invite-email" id="id_invite-email" class="form-control" placeholder="{{ invite_form.email.label }}"> </select>
+                                </div>
+                                <div id="bulk-invite" class="d-none">
+                                    {{ invite_form.bulk_email.as_field_group }}
+                                </div>
+                            </td>
+                            <td class="flip text-right">
+                                <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        {{ block.super }}
+{% endblock form %}

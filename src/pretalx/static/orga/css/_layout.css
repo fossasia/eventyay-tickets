@@ -453,6 +453,7 @@ nav.navbar,
     flex-direction: row;
     padding-left: 0;
     margin-bottom: 0;
+    margin-top: 0;
     list-style: none;
     align-items: center;
   }
@@ -561,6 +562,11 @@ footer {
     }
   }
 }
+.submit-group.search-submit-group {
+  form > .form-group {
+    padding-bottom: 8px;
+  }
+}
 .submit-group form {
   .form-group,
   button {
@@ -601,6 +607,16 @@ footer {
 td.reviewer {
   display: flex;
   flex-direction: row;
+}
+td.review-text,
+th.review-text {
+  min-width: 20em;
+}
+.markdown-mt-0 > p:first-child {
+  margin-top: 0;
+}
+#review-form .submission-state.badge {
+  padding: 0.2em 0.5em;
 }
 
 form #id_header_pattern,
@@ -1421,6 +1437,47 @@ h2 .user-name-display img {
 #pending .form-group-inline {
   flex-direction: row;
   align-items: center;
+}
+
+[data-dialog-target] {
+  cursor: pointer;
+}
+
+.comments-list {
+  margin-bottom: 2rem;
+}
+.comment-header {
+  display: flex;
+  align-items: baseline;
+}
+.comment-content > p:last-child {
+  margin-bottom: 0;
+}
+.submission-comment-count {
+  font-size: 0.8em;
+  margin-left: 0.5em;
+  background: var(--color-primary-light);
+  position: relative;
+  color: var(--color-text);
+  border-radius: 1em;
+  padding: 0.25em 0.5em;
+  min-width: 2.5em;
+  display: inline-block;
+  text-align: center;
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border: 12px solid transparent;
+    border-top-color: var(--color-primary-light);
+    border-bottom: 0;
+    border-left: 0;
+    margin-left: 2px;
+    margin-bottom: -5px;
+  }
 }
 
 @media print {

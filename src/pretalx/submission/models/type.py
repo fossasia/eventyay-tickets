@@ -3,8 +3,11 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField
 
+from pretalx.agenda.rules import is_agenda_visible
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.urls import EventUrls
+from pretalx.event.rules import can_change_event_settings
+from pretalx.submission.rules import is_cfp_open, orga_can_change_submissions
 
 
 def pleasing_number(number):
@@ -48,10 +51,24 @@ class SubmissionType(PretalxModel):
         default=False,
     )
 
+    log_prefix = "pretalx.submission_type"
+
+    class Meta:
+        ordering = ["default_duration"]
+        rules_permissions = {
+            "list": is_cfp_open | is_agenda_visible | orga_can_change_submissions,
+            "view": is_cfp_open | is_agenda_visible | orga_can_change_submissions,
+            "orga_list": orga_can_change_submissions,
+            "orga_view": orga_can_change_submissions,
+            "create": can_change_event_settings,
+            "update": can_change_event_settings,
+            "delete": can_change_event_settings,
+        }
+
     class urls(EventUrls):
         base = edit = "{self.event.cfp.urls.types}{self.pk}/"
         default = "{base}default"
-        delete = "{base}delete"
+        delete = "{base}delete/"
         prefilled_cfp = "{self.event.cfp.urls.public}?submission_type={self.slug}"
 
     def __str__(self) -> str:
@@ -71,6 +88,10 @@ class SubmissionType(PretalxModel):
         return _("{name} ({duration} minutes)").format(
             name=self.name, duration=self.default_duration
         )
+
+    @property
+    def log_parent(self):
+        return self.event
 
     @property
     def slug(self) -> str:

@@ -56,24 +56,46 @@ def test_edit_cfp_timezones(orga_client, event):
 @pytest.mark.django_db
 def test_edit_cfp_flow(orga_client, event):
     response = orga_client.get(event.cfp.urls.editor)
-    assert response.status_code == 200, response.content.decode()
+    assert response.status_code == 200, response.text
     response = orga_client.post(
         event.cfp.urls.editor, {"action": "reset"}, content_type="application/json"
     )
-    assert response.status_code == 200, response.content.decode()
+    assert response.status_code == 200, response.text
     response = orga_client.post(
         event.cfp.urls.editor,
         "not actually useful data",
         content_type="application/json",
     )
-    assert response.status_code == 400, response.content.decode()
+    assert response.status_code == 400, response.text
     with scope(event=event):
         response = orga_client.post(
             event.cfp.urls.editor,
             event.cfp_flow.get_editor_config(json_compat=True),
             content_type="application/json",
         )
-    assert response.status_code == 200, response.content.decode()
+    assert response.status_code == 200, response.text
+
+
+@pytest.mark.django_db
+def test_edit_cfp_flow_shows_in_frontend(orga_client, event):
+    with scope(event=event):
+        new_config = event.cfp_flow.get_editor_config(json_compat=True)
+
+    new_config[0]["title"]["en"] = "TEST CFP WOO"
+    new_config[0]["text"]["en"] = "PLS SUBMIT HERE THX"
+    new_config[0]["fields"][0]["help_text"]["en"] = "titles are hard, y'know"
+    response = orga_client.post(
+        event.cfp.urls.editor,
+        new_config,
+        content_type="application/json",
+    )
+    assert response.status_code == 200, response.text
+
+    response = orga_client.get(event.cfp.urls.submit, follow=True)
+    assert response.status_code == 200
+    assert "TEST CFP WOO" in response.text
+    assert "PLS SUBMIT HERE THX" in response.text
+    assert "titles are hard, y'know" in response.text
 
 
 @pytest.mark.django_db
@@ -183,8 +205,8 @@ def test_all_questions_in_list(orga_client, question, inactive_question, event):
         assert event.questions.count() == 1
         assert Question.all_objects.filter(event=event).count() == 2
     response = orga_client.get(event.cfp.urls.questions, follow=True)
-    assert question.question in response.content.decode()
-    assert inactive_question.question in response.content.decode()
+    assert question.question in response.text
+    assert inactive_question.question in response.text
 
 
 @pytest.mark.django_db
@@ -268,10 +290,10 @@ def test_can_add_simple_question(orga_client, event):
         assert q.variant == "string"
     response = orga_client.get(q.urls.base + "?role=true", follow=True)
     with scope(event=event):
-        assert str(q.question) in response.content.decode()
+        assert str(q.question) in response.text
     response = orga_client.get(q.urls.base + "?role=false", follow=True)
     with scope(event=event):
-        assert str(q.question) in response.content.decode()
+        assert str(q.question) in response.text
 
 
 @pytest.mark.django_db
@@ -300,10 +322,10 @@ def test_can_add_simple_question_required_freeze(orga_client, event):
         assert q.variant == "string"
     response = orga_client.get(q.urls.base + "?role=true", follow=True)
     with scope(event=event):
-        assert str(q.question) in response.content.decode()
+        assert str(q.question) in response.text
     response = orga_client.get(q.urls.base + "?role=false", follow=True)
     with scope(event=event):
-        assert str(q.question) in response.content.decode()
+        assert str(q.question) in response.text
 
 
 @pytest.mark.django_db
@@ -335,10 +357,10 @@ def test_can_add_simple_question_after_deadline(orga_client, event):
         )
     response = orga_client.get(q.urls.base + "?role=true", follow=True)
     with scope(event=event):
-        assert str(q.question) in response.content.decode()
+        assert str(q.question) in response.text
     response = orga_client.get(q.urls.base + "?role=false", follow=True)
     with scope(event=event):
-        assert str(q.question) in response.content.decode()
+        assert str(q.question) in response.text
 
 
 @pytest.mark.django_db
@@ -516,7 +538,7 @@ def test_can_remind_submission_question_broken_filter(
         event.cfp.urls.remind_questions, {"role": "hahaha"}, follow=True
     )
     assert response.status_code == 200
-    assert "Could not send mails" in response.content.decode()
+    assert "Could not send mails" in response.text
 
 
 @pytest.mark.parametrize("role,count", (("accepted", 0), ("confirmed", 0), ("", 0)))
@@ -586,14 +608,14 @@ def test_can_activate_inactive_question(orga_client, inactive_question):
 def test_can_see_tracks(orga_client, track):
     response = orga_client.get(track.event.cfp.urls.tracks)
     assert response.status_code == 200
-    assert track.name in response.content.decode()
+    assert track.name in response.text
 
 
 @pytest.mark.django_db
 def test_can_see_single_track(orga_client, track):
     response = orga_client.get(track.urls.base)
     assert response.status_code == 200
-    assert track.name in response.content.decode()
+    assert track.name in response.text
 
 
 @pytest.mark.django_db
@@ -662,14 +684,14 @@ def test_cannot_delete_used_track(orga_client, track, event, submission):
 def test_can_see_access_codes(orga_client, access_code):
     response = orga_client.get(access_code.event.cfp.urls.access_codes)
     assert response.status_code == 200
-    assert access_code.code in response.content.decode()
+    assert access_code.code in response.text
 
 
 @pytest.mark.django_db
 def test_can_see_single_access_code(orga_client, access_code):
     response = orga_client.get(access_code.urls.edit)
     assert response.status_code == 200
-    assert access_code.code in response.content.decode()
+    assert access_code.code in response.text
 
 
 @pytest.mark.django_db

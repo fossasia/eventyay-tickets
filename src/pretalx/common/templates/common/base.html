@@ -56,6 +56,7 @@
         {% if request.event and request.event.custom_css %}<link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>{% endif %}
         {% compress js %}
             <script defer src="{% static "common/js/base.js" %}"></script>
+            <script defer src="{% static "common/js/lightbox.js" %}"></script>
             <script src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
             <script src="{% static "agenda/js/join-online-event.js" %}"></script>
         {% endcompress %}
@@ -96,7 +97,7 @@
                         {% if request.event and request.event.locales|length > 1 and not is_html_export %}
                             <div class="locales">
                                 {% for l, name in request.event.named_locales %}
-                                    <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}"
+                                    <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{% querystring locale=None %}{% endif %}"
                                        class="{% if l|lower == request.LANGUAGE_CODE|lower %}active{% endif %}">{{ name }}</a>
                                 {% endfor %}
                                 •&nbsp;
@@ -105,7 +106,7 @@
                         {% block header_right %}{% endblock header_right %}
                         {% if request.event and request.user.is_authenticated and not is_html_export %}
                             <details id="user-dropdown-label" class="dropdown" aria-haspopup="menu" role="menu">
-                                {% has_perm "orga.view_orga_area" request.user request.event as can_see_orga_area %}
+                                {% has_perm "event.orga_access_event" request.user request.event as can_see_orga_area %}
                                 <summary>
                                     {{ request.user.get_display_name }} <i class="fa fa-caret-down ml-1"></i>
                                 </summary>
@@ -182,5 +183,6 @@
                 {% endfor %}
             </footer>
         </div>
+        {% include "common/includes/modals.html" %}
     </body>
 </html>

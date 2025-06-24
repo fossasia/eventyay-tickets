@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from contextlib import suppress
 
 from django import forms
@@ -194,20 +195,31 @@ class ReviewAssignmentForm(forms.Form):
             User.objects.filter(teams__in=self.event.teams.filter(is_reviewer=True))
             .order_by("name")
             .distinct()
-        ).prefetch_related("assigned_reviews")
-        self.submissions = self.event.submissions.order_by("title").prefetch_related(
-            "assigned_reviewers"
+        ).prefetch_related("assigned_reviews", "teams", "teams__limit_tracks")
+        self.submissions = (
+            self.event.submissions.order_by("title")
+            .select_related("track")
+            .prefetch_related("assigned_reviewers")
         )
+        self.reviewers_by_track = defaultdict(set)
+        for team in self.event.teams.filter(is_reviewer=True).prefetch_related(
+            "members", "limit_tracks"
+        ):
+            if team.limit_tracks.exists():
+                for track in team.limit_tracks.all():
+                    self.reviewers_by_track[track].update(team.members.all())
+            else:
+                self.reviewers_by_track[None].update(team.members.all())
         super().__init__(*args, **kwargs)
 
 
 class ReviewerForProposalForm(ReviewAssignmentForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        review_choices = [(reviewer.id, reviewer.name) for reviewer in self.reviewers]
+        self._review_choices_by_track = {}
         for submission in self.submissions:
             self.fields[submission.code] = forms.MultipleChoiceField(
-                choices=review_choices,
+                choices=self.get_review_choices_by_track(submission.track),
                 widget=EnhancedSelectMultiple,
                 initial=list(
                     submission.assigned_reviewers.values_list("id", flat=True)
@@ -215,6 +227,18 @@ class ReviewerForProposalForm(ReviewAssignmentForm):
                 label=submission.title,
                 required=False,
             )
+
+    def get_review_choices_by_track(self, track):
+        """cache() may leak memory, so we use a manual cache here"""
+        if track in self._review_choices_by_track:
+            return self._review_choices_by_track[track]
+        reviewers = list(self.reviewers_by_track[track] | self.reviewers_by_track[None])
+        result = [
+            (reviewer.id, reviewer.name)
+            for reviewer in sorted(reviewers, key=lambda x: (x.name or "").lower())
+        ]
+        self._review_choices_by_track[track] = result
+        return result
 
     def save(self, *args, **kwargs):
         for submission in self.submissions:
@@ -224,15 +248,42 @@ class ReviewerForProposalForm(ReviewAssignmentForm):
 class ProposalForReviewerForm(ReviewAssignmentForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        submission_choices = [(sub.id, sub.title) for sub in self.submissions]
+        self.submissions_by_track = defaultdict(set)
+        for submission in self.submissions:
+            self.submissions_by_track[submission.track_id].add(
+                (submission.id, submission.title)
+            )
+        self._submission_choices_by_track = {}
+        self.all_submission_choices = sorted(
+            [(submission.id, submission.title) for submission in self.submissions],
+            key=lambda s: (s[1] or "").lower(),
+        )
         for reviewer in self.reviewers:
+            track_limit = []
+            if reviewer not in self.reviewers_by_track[None]:
+                for track, reviewers in self.reviewers_by_track.items():
+                    if reviewer in reviewers:
+                        track_limit.append(track.id)
             self.fields[reviewer.code] = forms.MultipleChoiceField(
-                choices=submission_choices,
+                choices=self.get_submission_choices_by_tracks(track_limit),
                 widget=EnhancedSelectMultiple,
                 initial=list(reviewer.assigned_reviews.values_list("id", flat=True)),
                 label=reviewer.name,
                 required=False,
             )
+
+    def get_submission_choices_by_tracks(self, track_limit):
+        if not track_limit:
+            return self.all_submission_choices
+        cache_key = ",".join(str(t) for t in sorted(track_limit))
+        if result := self._submission_choices_by_track.get(cache_key):
+            return result
+        submissions = set()
+        for track in track_limit:
+            submissions.update(self.submissions_by_track[track])
+        return sorted(
+            list(submissions), key=lambda submission: (submission[1] or "").lower()
+        )
 
     def save(self, *args, **kwargs):
         for reviewer in self.reviewers:
@@ -251,6 +302,7 @@ class ReviewExportForm(ExportForm):
             ("rejected", SubmissionStates.display_values[SubmissionStates.REJECTED]),
         ),
         widget=forms.RadioSelect,
+        initial="all",
     )
     submission_id = forms.BooleanField(
         required=False,

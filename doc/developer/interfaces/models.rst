@@ -48,7 +48,7 @@ Submissions are the most central model to pretalx, and everything else is
 connected to submissions.
 
 .. autoclass:: pretalx.submission.models.submission.Submission(*args, **kwargs)
-   :members: get_duration,update_duration,update_talk_slots,make_submitted,confirm,accept,reject,cancel,withdraw,delete,uuid,public_slots,slot,display_speaker_names,median_score,availabilities,uuid
+   :members: get_duration,update_duration,update_talk_slots,make_submitted,confirm,accept,reject,cancel,withdraw,delete,public_slots,slot,display_speaker_names,median_score,availabilities
 
 .. autoclass:: pretalx.submission.models.review.Review(*args, **kwargs)
    :members: find_missing_reviews, display_score
@@ -81,7 +81,7 @@ Schedules and talk slots
 ------------------------
 
 .. autoclass:: pretalx.schedule.models.schedule.Schedule(*args, **kwargs)
-   :members: freeze,unfreeze,scheduled_talks,slots,previous_schedule,changes,warnings,speakers_concerned,notifications,notify_speakers
+   :members: freeze,unfreeze,scheduled_talks,slots,previous_schedule,changes,warnings,speakers_concerned
 
 .. autoclass:: pretalx.schedule.models.slot.TalkSlot(*args, **kwargs)
    :members: duration,real_end,as_availability,copy_to_schedule,is_same_slot
@@ -105,4 +105,4 @@ Utility models
 --------------
 
 .. autoclass:: pretalx.common.models.log.ActivityLog
-   :members: display,get_orga_url,get_public_url
+   :members: display

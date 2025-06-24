@@ -2,10 +2,6 @@
 
 #main-container.list-schedule {
   min-width: 0;
-  #main-card main {
-    /* make this the scrollparent so that the schedule widget knows where to go */
-    overflow-x: auto;
-  }
 }
 
 .has-join-popup #join-video-popupmodal, .has-join-popup #join-video-popupmodal-missing-config {

@@ -17,9 +17,8 @@
     <form class="mb-4 m-2">
         <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
     </form>
-    {% has_perm "orga.change_organiser_settings" request.user None as can_create_organiser %}
     <div class="dashboard-list event-blocks">
-        {% if can_create_organiser %}
+        {% if request.user.is_administrator %}
             <a class="dashboard-block symbol" href="{% url "orga:organiser.create" %}">
                 <i class="fa fa-plus-circle"></i>
             </a>

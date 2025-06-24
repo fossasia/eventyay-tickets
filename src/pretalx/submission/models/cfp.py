@@ -45,7 +45,7 @@ def default_fields():
         "avatar": {"visibility": "optional"},
         "avatar_source": {"visibility": "optional"},
         "avatar_license": {"visibility": "optional"},
-        "availabilities": {"visibility": "optional"},
+        "availabilities": {"visibility": "do_not_ask"},
         "notes": {"visibility": "optional"},
         "do_not_record": {"visibility": "optional"},
         "image": {"visibility": "optional"},
@@ -117,15 +117,15 @@ class CfP(PretalxModel):
         base = "{self.event.orga_urls.cfp}"
         editor = "{base}flow/"
         questions = "{base}questions/"
-        new_question = "{questions}new"
-        remind_questions = "{questions}remind"
+        new_question = "{questions}new/"
+        remind_questions = "{questions}remind/"
         text = edit_text = "{base}text"
         types = "{base}types/"
         new_type = "{types}new"
         tracks = "{base}tracks/"
-        new_track = "{tracks}new"
+        new_track = "{tracks}new/"
         access_codes = "{base}access-codes/"
-        new_access_code = "{access_codes}new"
+        new_access_code = "{access_codes}new/"
         public = "{self.event.urls.base}cfp"
         submit = "{self.event.urls.base}submit/"
 

@@ -1,0 +1,12 @@
+{% extends "orga/submission/base.html" %}
+
+{% load i18n %}
+
+{% block submission_content %}
+    <div class="dashboard-history">
+
+        {% include "common/logs.html" with entries=log_entries hide_object=True %}
+        {% include "orga/includes/pagination.html" %}
+
+    </div>
+{% endblock submission_content %}

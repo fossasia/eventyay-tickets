@@ -57,7 +57,7 @@ name               string               The human-readable name of your plugin
 author             string               Your name
 version            string               A human-readable version code of your plugin. If you publish your
                                         plugin on PyPI, this should match the package version.
-description        string               A more verbose description of what your plugin does.
+description        string               A more verbose description of what your plugin does. You can use Markdown here.
 category           string               A category for your plugin, used to group it in the plugin list.
                                         Supported categories are ``FEATURE``, ``INTEGRATION``, ``CUSTOMIZATION``,
                                         ``EXPORTER``, ``RECORDING``, ``LANGUAGE``, ``OTHER`` (default).
@@ -197,9 +197,6 @@ Which you can use in your code like this::
 
    from django.conf import settings
    assert settings.PLUGIN_SETTINGS["pretalx_soap"]["endpoint"] == "https://example.com"
-
-.. versionadded:: 1.1
-   The ``PLUGIN_SETTINGS`` configuration was added in pretalx 1.1.
 
 .. _Django application: https://docs.djangoproject.com/en/stable/ref/applications/
 .. _signal dispatcher: https://docs.djangoproject.com/en/stable/topics/signals/

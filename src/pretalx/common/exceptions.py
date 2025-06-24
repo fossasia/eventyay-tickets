@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.functional import cached_property
 from django.utils.log import AdminEmailHandler
 from django.views.debug import ExceptionReporter
 
@@ -20,11 +21,13 @@ class VideoIntegrationError(Exception):
 
 
 class PretalxExceptionReporter(ExceptionReporter):
+
     def get_traceback_text(self):  # pragma: no cover
         traceback_text = super().get_traceback_text()
-        # Don't try to send fancy emails in dev, or when the exception comes from a task
-        if settings.DEBUG or not self.is_email or not getattr(self, "request", None):
+        # Don't try to send fancy emails in dev
+        if settings.DEBUG or not self.is_email:
             return traceback_text
+
         exception = (
             self.exc_type.__name__ if getattr(self, "exc_type", None) else "Exception"
         )
@@ -36,11 +39,6 @@ class PretalxExceptionReporter(ExceptionReporter):
         if frame:
             location = f"{frame.get('filename')}:{frame.get('lineno')}"
 
-        if self.request.user.is_anonymous:
-            user = "an anonymous user"
-        else:
-            user = f"{self.request.user.name} <{self.request.user.email}>"
-
         intro = f"""
 You are receiving this email because an error occurred in your pretalx installation at {settings.SITE_URL}.
 You can find the technical details below – if you find that the problem was not due to a configuration error,
@@ -49,16 +47,61 @@ please report this issue at
     https://github.com/pretalx/pretalx/issues/new/choose
 
 The error was {exception} at {location}.
-It occurred when {user} accessed {self.request.path}.
 """
-        tldr = f"tl;dr: An exception occurred when {user} accessed {self.request.path}"
+        tldr = self.get_tldr()
+        intro += self.get_extra_intro()
+        return f"{tldr}\n{intro}\n\n{traceback_text}\n{tldr}\n"
+
+    @cached_property
+    def user(self):
+        user = getattr(self.request, "user", None)
+        if not user:
+            return ""
+        if self.request.user.is_anonymous:
+            return "an anonymous user"
+        return f"{self.request.user.name} <{self.request.user.email}>"
+
+    def get_tldr(self):
+        if not self.request:
+            return ""
+        tldr = f"tl;dr: An exception occurred when {self.user} accessed {self.request.path}"
+        event = getattr(self.request, "event", None)
+        if event:
+            tldr += f", an event page of {event.name}."
+        return tldr
+
+    def get_extra_intro(self):
+        if not self.request:
+            return ""
+        intro = "\nIt occurred when {self.user} accessed {self.request.path}."
         event = getattr(self.request, "event", None)
         if event:
             intro += (
-                f"This page belongs to {event.name} <{event.orga_urls.base.full()}>."
+                f"\nThis page belongs to {event.name} <{event.orga_urls.base.full()}>."
             )
-            tldr += f", an event page of {event.name}."
-        return f"{tldr}\n{intro}\n\n{traceback_text}\n{tldr}\n"
+        return intro
+
+
+class PretalxCeleryExceptionReporter(PretalxExceptionReporter):
+    def __init__(self, *args, task_id=False, celery_args=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.task_id = task_id
+        self.celery_args = celery_args
+
+    def get_tldr(self):
+        return f"tl;dr: An exception occurred in task {self.task_id}"
+
+    def get_extra_intro(self):
+        intro = ""
+        if self.celery_args and len(self.celery_args) == 2:
+            cargs, ckwargs = self.celery_args
+            if cargs and hasattr(cargs, "__iter__"):
+                cargs = ", ".join(cargs)
+            if cargs:
+                intro += f"\nTask args: {cargs}"
+            if ckwargs:
+                intro += f"\nTask kwargs: {ckwargs}"
+        return intro
 
 
 class PretalxAdminEmailHandler(AdminEmailHandler):

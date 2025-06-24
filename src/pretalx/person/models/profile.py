@@ -2,9 +2,17 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
+from pretalx.agenda.rules import can_view_schedule, is_speaker_viewable
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
+from pretalx.orga.rules import can_view_speaker_names
+from pretalx.person.rules import (
+    can_mark_speakers_arrived,
+    is_administrator,
+    is_reviewer,
+)
+from pretalx.submission.rules import orga_can_change_submissions
 
 
 class SpeakerProfile(PretalxModel):
@@ -36,6 +44,26 @@ class SpeakerProfile(PretalxModel):
     has_arrived = models.BooleanField(
         default=False, verbose_name=_("The speaker has arrived")
     )
+
+    log_prefix = "pretalx.user.profile"
+
+    class Meta:
+        # These permissions largely apply to event-scoped user actions
+        rules_permissions = {
+            "list": can_view_schedule | (is_reviewer & can_view_speaker_names),
+            "reviewer_list": is_reviewer & can_view_speaker_names,
+            "orga_list": orga_can_change_submissions
+            | (is_reviewer & can_view_speaker_names),
+            "view": is_speaker_viewable
+            | orga_can_change_submissions
+            | (is_reviewer & can_view_speaker_names),
+            "orga_view": orga_can_change_submissions
+            | (is_reviewer & can_view_speaker_names),
+            "create": is_administrator,
+            "update": orga_can_change_submissions,
+            "mark_arrived": orga_can_change_submissions & can_mark_speakers_arrived,
+            "delete": is_administrator,
+        }
 
     class urls(EventUrls):
         public = "{self.event.urls.base}speaker/{self.user.code}/"
@@ -99,3 +127,13 @@ class SpeakerProfile(PretalxModel):
         return self.answers.filter(question__is_visible_to_reviewers=True).order_by(
             "question__position"
         )
+
+    @cached_property
+    def avatar(self):
+        if self.event.cfp.request_avatar:
+            return self.user.avatar
+
+    @cached_property
+    def avatar_url(self):
+        if self.event.cfp.request_avatar:
+            return self.user.get_avatar_url(event=self.event)

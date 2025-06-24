@@ -21,11 +21,11 @@
 {% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}session{% plural %}sessions{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% has_perm "orga.create_submission" request.user request.event as can_create_submission %}
-    {% has_perm "orga.change_submission_state" request.user request.event as can_change_submission %}
-    {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
-    {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
-    <h2 class="d-md-flex align-items-center">
+    {% has_perm "submission.create_submission" request.user request.event as can_create_submission %}
+    {% has_perm "submission.state_change_submission" request.user request.event as can_change_submission %}
+    {% has_perm "person.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
+    {% has_perm "mail.send_queuedmail" request.user request.event as can_send_mails %}
+    <h2 class="d-flex align-items-center">
         <span>
             {{ page_obj.paginator.count }}
             {% blocktranslate trimmed count count=page_obj.paginator.count %}
@@ -37,13 +37,13 @@
         <p class="flip ml-auto">
             <div>
                 {% if can_send_mails %}
-                    <a class="btn btn-outline-info mt-2" href="{{ request.event.orga_urls.compose_mails_sessions }}{% querystring page="" %}">
+                    <a class="btn btn-outline-info mt-2" href="{{ request.event.orga_urls.compose_mails_sessions }}{% querystring page='' %}">
                         <i class="fa fa-envelope"></i>
                         {% translate "Send email" %}
                     </a>
                 {% endif %}
                 {% if pending_changes and can_change_submission %}
-                    <a class="btn btn-info mt-2" href="{{ request.event.orga_urls.apply_pending }}">
+                    <a class="btn btn-info mt-2" href="{{ request.event.orga_urls.apply_pending }}{% querystring %}">
                         {% translate "Apply pending changes" %} ({{ pending_changes }})
                     </a>
                 {% endif %}
@@ -51,7 +51,7 @@
                     <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
                         <i class="fa fa-plus"></i> {% translate "Add new session or proposal" %}
                     </a>
-                    <a class="btn btn-link" href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
+                    <a class="btn btn-link" href="{{ request.event.orga_urls.submission_feed }}" title="{% translate 'Proposal feed' %}">
                         <i class="fa fa-feed"></i>
                     </a>
                 {% endif %}
@@ -65,7 +65,7 @@
     {% include "orga/includes/submission_filter_form.html" %}
 
     <div class="table-responsive-sm">
-        <table class="table table-sm table-hover table-flip table-sticky">
+        <table class="table table-sm table-flip table-sticky">
             <thead>
                 <tr>
                     <th>

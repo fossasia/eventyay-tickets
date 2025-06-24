@@ -60,6 +60,7 @@ class BasePhrases(Phrases, app="base"):
     delete_warning = _(
         "Please make sure that this is the item you want to delete. This action cannot be undone!"
     )
+    deleted = _("The item has been deleted.")
 
     saved = _("Your changes have been saved.")
     back_try_again = _("Please go back and try again.")
