@@ -81,6 +81,9 @@
                     <a href="?{% url_replace request 'ordering' '-live' %}"><i class="fa fa-caret-down"></i></a>
                     <a href="?{% url_replace request 'ordering' 'live' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
                 <th class="text-right flip">
                     {% trans "Actions" %}
                 </th>
@@ -136,6 +139,14 @@
                             <span class="label label-warning">{% trans "Presale not started" %}</span>
                         {% else %}
                             <span class="label label-success">{% trans "On sale" %}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if e.status %}
+                            {% if e.status == "upcoming" %}{% trans "Upcoming" %}
+                            {% elif e.status == "live" %}{% trans "Live" %}
+                            {% elif e.status == "ended" %}{% trans "Ended" %}
+                            {% else %}{{ e.status }}{% endif %}
                         {% endif %}
                     </td>
                     <td class="text-right flip">

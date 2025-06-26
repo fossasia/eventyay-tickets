@@ -15,8 +15,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.views.generic import ListView
-from pytz import timezone
+#from pytz import timezone
 from rest_framework import views
 
 from pretix.base.forms import SafeSessionWizardView
@@ -137,6 +138,16 @@ class EventList(PaginationMixin, ListView):
                     100,
                     (round(q.cached_availability_paid_orders / q.size * 100) if q.size > 0 else 100),
                 )
+        now = timezone.now()
+        for event in ctx["events"]:
+            if event.date_from > now:
+                event.status = "upcoming"
+            elif event.date_from <= now <= (event.date_to or event.date_from):
+                event.status = "live"
+            elif event.date_to and event.date_to < now:
+                event.status = "ended"
+            else:
+                event.status = "upcoming"  
         return ctx
 
     @cached_property
