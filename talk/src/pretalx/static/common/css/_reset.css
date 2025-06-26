@@ -6,10 +6,6 @@
   box-sizing: border-box;
 }
 
-* {
-  margin: 0;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   :root {
     scroll-behavior: smooth;
@@ -18,13 +14,16 @@
 
 body {
   margin: 0;
-  line-height: 1.5;
   color: var(--color-text);
   background-color: white;
 
   font-size: 1rem;
   font-weight: normal;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  text-size-adjust: none;
+  text-decoration-skip-ink: auto;
+  font-optical-sizing: auto;
 }
 
 img,
@@ -44,6 +43,14 @@ select {
   line-height: inherit;
 }
 
+/* Typography */
+b,
+strong {
+  font-weight: bolder;
+}
+small {
+  font-size: 80%;
+}
 p,
 h1,
 h2,
@@ -52,4 +59,124 @@ h4,
 h5,
 h6 {
   overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: wrap;
+  hypens: auto;
+  hyphenate-limit-chars: 7 4 3;
+  hyphenate-limit-lines: 2;
+  hyphenate-limit-zone: 8%;
+  hyphenate-limit-last: always;
+}
+
+table,
+.numeric,
+math,
+time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Block elements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+h1 {
+  font-size: 2.5rem;
+}
+h2 {
+  font-size: 1.75rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
+h4 {
+  font-size: 1.5rem;
+}
+h5 {
+  font-size: 1.25rem;
+}
+h6 {
+  font-size: 1rem;
+}
+
+p,
+blockquote,
+ol,
+ul,
+pre,
+figure,
+table {
+  margin-bottom: var(--size-spacer);
+}
+
+hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+  margin: var(--size-spacer) 0;
+  border: 0;
+  border-top: 1px solid rgb(0 0 0 / 0.1);
+}
+
+code {
+  font-size: 87.5%;
+  color: var(--color-code);
+  word-wrap: break-word;
+  a > & {
+    color: inherit;
+  }
+}
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  word-break: break-all;
+  word-wrap: break-word;
+  overflow: auto;
+  color: #333;
+  background-color: var(--color-grey-lightest);
+  border: 1px solid var(--color-border);
+  border-radius: var(--size-border-radius);
+  code {
+    font-size: inherit;
+    color: inherit;
+    word-break: normal;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  th,
+  td {
+    vertical-align: top;
+  }
+  thead th {
+    vertical-align: bottom;
+    white-space: nowrap;
+    text-align: left;
+  }
+  th {
+    font-weight: bold;
+  }
+  tr {
+    vertical-align: middle;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+&:focus:not(:focus-visible) {
+  outline: none;
 }

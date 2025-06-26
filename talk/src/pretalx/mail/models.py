@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+import rules
 from django.conf import settings
 from django.db import models, transaction
 from django.template.loader import get_template
@@ -12,8 +13,10 @@ from i18nfield.fields import I18nCharField, I18nTextField
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.urls import EventUrls
-from pretalx.mail.context import get_mail_context
+from pretalx.mail.context import get_available_placeholders, get_mail_context
+from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from pretalx.mail.signals import queuedmail_post_send, queuedmail_pre_send
+from pretalx.submission.rules import orga_can_change_submissions
 
 
 def get_prefixed_subject(event, subject):
@@ -21,6 +24,8 @@ def get_prefixed_subject(event, subject):
         return subject
     if not (prefix.startswith("[") and prefix.endswith("]")):
         prefix = f"[{prefix}]"
+    if subject.startswith(prefix):
+        return subject
     return f"{prefix} {subject}"
 
 
@@ -37,8 +42,20 @@ class MailTemplateRoles(models.TextChoices):
     EXISTING_SPEAKER_INVITE = "speaker.invite.existing", _(
         "Add a speaker to a proposal (existing account)"
     )
-    QUESTION_REMINDER = "question.reminder", _("Unanswered questions reminder")
+    QUESTION_REMINDER = "question.reminder", _("Custom fields reminder")
     NEW_SCHEDULE = "schedule.new", _("New schedule published")
+
+
+PLACEHOLDER_KWARGS = {
+    MailTemplateRoles.NEW_SUBMISSION: ["submission", "event", "user", "slot"],
+    MailTemplateRoles.NEW_SUBMISSION_INTERNAL: ["submission", "event"],
+    MailTemplateRoles.SUBMISSION_ACCEPT: ["submission", "event", "user"],
+    MailTemplateRoles.SUBMISSION_REJECT: ["submission", "event", "user"],
+    MailTemplateRoles.NEW_SPEAKER_INVITE: ["submission", "event", "user"],
+    MailTemplateRoles.EXISTING_SPEAKER_INVITE: ["submission", "event", "user"],
+    MailTemplateRoles.QUESTION_REMINDER: ["event", "user"],
+    MailTemplateRoles.NEW_SCHEDULE: ["event", "user"],
+}
 
 
 class MailTemplate(PretalxModel):
@@ -50,6 +67,8 @@ class MailTemplate(PretalxModel):
     special cases, for now.
     """
 
+    log_prefix = "pretalx.mail_template"
+
     event = models.ForeignKey(
         to="event.Event",
         on_delete=models.PROTECT,
@@ -60,6 +79,7 @@ class MailTemplate(PretalxModel):
         max_length=30,
         null=True,
         default=None,
+        editable=False,
     )
     subject = I18nCharField(
         max_length=200,
@@ -92,14 +112,25 @@ class MailTemplate(PretalxModel):
 
     class Meta:
         unique_together = (("event", "role"),)
+        rules_permissions = {
+            "list": orga_can_change_submissions,
+            "view": orga_can_change_submissions,
+            "create": orga_can_change_submissions,
+            "update": orga_can_change_submissions,
+            "delete": orga_can_change_submissions,
+        }
 
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail_templates}{self.pk}/"
-        delete = "{base}delete"
+        delete = "{base}delete/"
 
     def __str__(self):
         """Help with debugging."""
         return f"MailTemplate(event={self.event.slug}, subject={self.subject})"
+
+    @property
+    def log_parent(self):
+        return self.event
 
     def to_mail(
         self,
@@ -198,6 +229,55 @@ class MailTemplate(PretalxModel):
 
     to_mail.alters_data = True
 
+    @cached_property
+    def valid_placeholders(self):
+        valid_placeholders = {}
+        if self.role == MailTemplateRoles.QUESTION_REMINDER:
+            valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
+                "questions",
+                ["user"],
+                None,
+                _("- First missing field\n- Second missing field"),
+                _(
+                    "The list of custom fields that the user has not responded to, as bullet points"
+                ),
+            )
+            valid_placeholders["url"] = SimpleFunctionalMailTextPlaceholder(
+                "url",
+                ["event", "user"],
+                None,
+                "https://pretalx.example.com/democon/me/submissions/",
+                is_visible=False,
+            )
+            kwargs = ["event", "user"]
+        elif self.role == MailTemplateRoles.NEW_SPEAKER_INVITE:
+            valid_placeholders["invitation_link"] = SimpleFunctionalMailTextPlaceholder(
+                "invitation_link",
+                ["event", "user"],
+                None,
+                "https://pretalx.example.com/democon/invitation/123abc/",
+            )
+        elif self.role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
+            valid_placeholders["orga_url"] = SimpleFunctionalMailTextPlaceholder(
+                "orga_url",
+                ["event", "submission"],
+                None,
+                "https://pretalx.example.com/orga/events/democon/submissions/124ABCD/",
+            )
+
+        kwargs = ["event", "user", "submission", "slot"]
+        if self.role:
+            kwargs = PLACEHOLDER_KWARGS[self.role]
+        valid_placeholders.update(
+            get_available_placeholders(event=self.event, kwargs=kwargs)
+        )
+        return valid_placeholders
+
+
+@rules.predicate
+def can_edit_mail(user, obj):
+    return getattr(obj, "sent", False) is None
+
 
 class QueuedMail(PretalxModel):
     """Emails in pretalx are rarely sent directly, hence the name QueuedMail.
@@ -270,6 +350,16 @@ class QueuedMail(PretalxModel):
         related_name="mails",
     )
 
+    class Meta:
+        rules_permissions = {
+            "list": orga_can_change_submissions,
+            "view": orga_can_change_submissions,
+            "create": orga_can_change_submissions,
+            "update": can_edit_mail & orga_can_change_submissions,
+            "delete": orga_can_change_submissions,
+            "send": orga_can_change_submissions,
+        }
+
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail}{self.pk}/"
         delete = "{base}delete"
@@ -297,7 +387,7 @@ class QueuedMail(PretalxModel):
             "color": (event.primary_color if event else "")
             or settings.DEFAULT_EVENT_PRIMARY_COLOR,
             "locale": self.locale,
-            "rtl": self.locale in settings.LANGUAGES_RTL,
+            "rtl": self.locale in settings.LANGUAGES_BIDI,
             "subject": self.subject,
             "signature": sig,
         }

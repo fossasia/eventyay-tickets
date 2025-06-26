@@ -20,7 +20,7 @@
 {% endblock cfp_header %}
 
 {% block content %}
-    {% has_perm "cfp.add_speakers" request.user submission as can_invite_speakers %}
+    {% has_perm "submission.add_speaker_submission" request.user submission as can_invite_speakers %}
 
     {% include "cfp/includes/user_submission_header.html" %}
 
@@ -147,9 +147,4 @@
             </p>
         {% endif %}
 
-        <div class="user-logs">
-
-            {% include "common/logs.html" with entries=submission.logged_actions hide_orga="true" %}
-
-        </div>
 {% endblock content %}

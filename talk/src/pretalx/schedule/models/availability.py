@@ -65,10 +65,12 @@ class Availability(PretalxModel):
         complete day."""
         return self.start.time() == zerotime and self.end.time() == zerotime
 
-    def serialize(self) -> dict:
-        from pretalx.api.serializers.room import AvailabilitySerializer
-
-        return AvailabilitySerializer(self).data
+    def serialize(self, full=True) -> dict:
+        result = {"start": self.start.isoformat(), "end": self.end.isoformat()}
+        if full:
+            result["id"] = self.id
+            result["allDay"] = self.all_day
+        return result
 
     def overlaps(self, other: "Availability", strict: bool) -> bool:
         """Test if two Availabilities overlap.

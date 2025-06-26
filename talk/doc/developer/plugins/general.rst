@@ -13,7 +13,7 @@ Core
 ----
 
 .. automodule:: pretalx.common.signals
-   :members: periodic_task, register_locales, register_data_exporters, register_my_data_exporters
+   :members: periodic_task, register_locales, auth_html, register_data_exporters, register_my_data_exporters
 
 .. automodule:: pretalx.submission.signals
    :members: submission_state_change
@@ -22,7 +22,10 @@ Core
    :members: schedule_release, register_my_data_exporters
 
 .. automodule:: pretalx.mail.signals
-   :members: register_mail_placeholders, queuedmail_post_send, queuedmail_pre_send
+   :members: register_mail_placeholders, queuedmail_post_send, queuedmail_pre_send, request_pre_send
+
+.. automodule:: pretalx.person.signals
+   :members: delete_user
 
 Exporters
 ---------
@@ -50,3 +53,7 @@ Display
 
 .. automodule:: pretalx.agenda.signals
    :members: register_recording_provider, html_above_session_pages, html_below_session_pages
+
+.. automodule:: pretalx.common.signals
+   :no-index:
+   :members: profile_bottom_html

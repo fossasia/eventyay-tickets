@@ -1,0 +1,19 @@
+{% extends "orga/base.html" %}
+
+{% block extra_title %}{{ generic_title }} :: {% endblock extra_title %}
+
+{% block content %}
+    <h2 class="d-flex">
+        {% block page_title %}{{ generic_title }}{% endblock page_title %}
+        {% if has_create_permission %}
+            <div class="ml-auto mb-3">
+                <a class="btn btn-success" href="{{ create_url }}">
+                    <i class="fa fa-plus"></i>
+                    {% block create_button_label %}{% endblock create_button_label %}
+                </a>
+                {% block title_actions %}{% endblock title_actions %}
+            </div>
+        {% endif %}
+    </h2>
+    {% block list_content %}{% endblock list_content %}
+{% endblock %}

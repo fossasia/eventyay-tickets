@@ -302,8 +302,8 @@ def test_replace_availabilities(availabilitiesform):
                 end=dt.datetime(2017, 1, 1, 12, tzinfo=ZoneInfo("UTC")),
             ),
             {
-                "start": "2017-01-01T10:00:00Z",
-                "end": "2017-01-01T12:00:00Z",
+                "start": "2017-01-01T10:00:00+00:00",
+                "end": "2017-01-01T12:00:00+00:00",
                 "allDay": False,
             },
         ),
@@ -313,8 +313,8 @@ def test_replace_availabilities(availabilitiesform):
                 end=dt.datetime(2017, 1, 2, tzinfo=ZoneInfo("UTC")),
             ),
             {
-                "start": "2017-01-01T10:00:00Z",
-                "end": "2017-01-02T00:00:00Z",
+                "start": "2017-01-01T10:00:00+00:00",
+                "end": "2017-01-02T00:00:00+00:00",
                 "allDay": False,
             },
         ),
@@ -324,8 +324,8 @@ def test_replace_availabilities(availabilitiesform):
                 end=dt.datetime(2017, 1, 1, 10, tzinfo=ZoneInfo("UTC")),
             ),
             {
-                "start": "2017-01-01T00:00:00Z",
-                "end": "2017-01-01T10:00:00Z",
+                "start": "2017-01-01T00:00:00+00:00",
+                "end": "2017-01-01T10:00:00+00:00",
                 "allDay": False,
             },
         ),
@@ -335,8 +335,8 @@ def test_replace_availabilities(availabilitiesform):
                 end=dt.datetime(2017, 1, 2, tzinfo=ZoneInfo("UTC")),
             ),
             {
-                "start": "2017-01-01T10:00:00Z",
-                "end": "2017-01-02T00:00:00Z",
+                "start": "2017-01-01T10:00:00+00:00",
+                "end": "2017-01-02T00:00:00+00:00",
                 "allDay": False,
             },
         ),
@@ -346,8 +346,8 @@ def test_replace_availabilities(availabilitiesform):
                 end=dt.datetime(2017, 1, 2, tzinfo=ZoneInfo("UTC")),
             ),
             {
-                "start": "2017-01-01T00:00:00Z",
-                "end": "2017-01-02T00:00:00Z",
+                "start": "2017-01-01T00:00:00+00:00",
+                "end": "2017-01-02T00:00:00+00:00",
                 "allDay": True,
             },
         ),
@@ -355,7 +355,7 @@ def test_replace_availabilities(availabilitiesform):
 )
 def test_serialize_availability(availabilitiesform, avail, expected):
     with timezone.override(ZoneInfo("UTC")):
-        actual = avail.serialize()
+        actual = avail.serialize(full=True)
     del actual["id"]
     assert actual == expected
 
@@ -371,22 +371,57 @@ def test_serialize_availability(availabilitiesform, avail, expected):
                     end=dt.datetime(2017, 1, 1, 12, tzinfo=ZoneInfo("UTC")),
                 )
             ],
-            '{"availabilities": [{"id": 1, "start": "2017-01-01T10:00:00Z", "end": "2017-01-01T12:00:00Z", "allDay": false}], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+            {
+                "availabilities": [
+                    {
+                        "id": 1,
+                        "start": "2017-01-01T10:00:00+00:00",
+                        "end": "2017-01-01T12:00:00+00:00",
+                        "allDay": False,
+                    }
+                ],
+                "event": {
+                    "timezone": "UTC",
+                    "date_from": "2017-01-01",
+                    "date_to": "2017-01-02",
+                },
+            },
             "UTC",
         ),
         (
             [],
-            '{"availabilities": [], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+            {
+                "availabilities": [],
+                "event": {
+                    "timezone": "UTC",
+                    "date_from": "2017-01-01",
+                    "date_to": "2017-01-02",
+                },
+            },
             "UTC",
         ),
         (
             None,
-            '{"availabilities": [], "event": {"timezone": "UTC", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+            {
+                "availabilities": [],
+                "event": {
+                    "timezone": "UTC",
+                    "date_from": "2017-01-01",
+                    "date_to": "2017-01-02",
+                },
+            },
             "UTC",
         ),
         (
             None,
-            '{"availabilities": [], "event": {"timezone": "America/New_York", "date_from": "2017-01-01", "date_to": "2017-01-02"}}',
+            {
+                "availabilities": [],
+                "event": {
+                    "timezone": "America/New_York",
+                    "date_from": "2017-01-01",
+                    "date_to": "2017-01-02",
+                },
+            },
             "America/New_York",
         ),
     ),
@@ -406,12 +441,12 @@ def test_serialize(availabilitiesform, avails, expected, tzname):
             instance = None
 
         if avails:
-            expected = json.loads(expected)
             for a, j in zip(avails, expected["availabilities"]):
                 j["id"] = a.pk
-            expected = json.dumps(expected)
 
-        actual = availabilitiesform._serialize(availabilitiesform.event, instance)
+        actual = json.loads(
+            availabilitiesform._serialize(availabilitiesform.event, instance)
+        )
         assert actual == expected
 
 

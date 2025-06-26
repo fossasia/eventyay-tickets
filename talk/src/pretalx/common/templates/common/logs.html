@@ -12,19 +12,11 @@
                         <span class="person">
                             {% if log.person %}
                                 {% if log.is_orga_action %}
-                                    <br>
-                                    <i class="fa fa-check-circle fa-fw"
-                                       data-toggle="tooltip"
-                                       title="{% translate "This change was performed by a member of the event orga." %}">
-                                    </i>
+                                    <i class="fa fa-check-circle fa-fw text-success" title="{% translate "This change was performed by an event organiser." %}"></i>
                                 {% else %}
                                     <i class="fa fa-user fa-fw"></i>
                                 {% endif %}
-                                {% if log.is_orga_action and hide_orga %}
-                                    {% translate "An organiser" %}
-                                {% else %}
-                                    {{ log.person.get_display_name }}
-                                {% endif %}
+                                {% include "orga/includes/user_name.html" with user=log.person lightbox=True %}
                             {% endif %}
                         </span>
                     {% endif %}
@@ -36,9 +28,11 @@
                             {% endif %}
                         </span>
                     {% endif %}
-                    <span class="log-object">
-                        {% if not hide_orga and log.display_object %}<i class="fa fa-flag"></i>{{ log.display_object|safe }}{% endif %}
-                    </span>
+                    {% if not hide_object %}
+                        <span class="log-object">
+                            {% if log.display_object %}<i class="fa fa-flag"></i>{{ log.display_object|safe }}{% endif %}
+                        </span>
+                    {% endif %}
                     <span class="log-text">{{ log.display }}</span>
                 </li>
             {% endfor %}

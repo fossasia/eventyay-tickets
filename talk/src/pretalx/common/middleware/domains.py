@@ -179,6 +179,7 @@ class SessionMiddleware(BaseSessionMiddleware):
                         path=settings.SESSION_COOKIE_PATH,
                         secure=request.scheme == "https",
                         httponly=settings.SESSION_COOKIE_HTTPONLY or None,
+                        samesite=settings.SESSION_COOKIE_SAMESITE,
                     )
         return response
 
@@ -195,7 +196,7 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
     depending on whether we are on the main domain or a custom domain.
     """
 
-    def _set_cookie_csrf(self, request, response):
+    def _set_csrf_cookie(self, request, response):
         # If CSRF_COOKIE is unset, then CsrfViewMiddleware.process_view was
         # never called, probably because a request middleware returned a response
         # (for example, contrib.auth redirecting to a login page).
@@ -213,6 +214,7 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
                 path=settings.CSRF_COOKIE_PATH,
                 secure=request.scheme == "https",
                 httponly=settings.CSRF_COOKIE_HTTPONLY,
+                samesite=settings.CSRF_COOKIE_SAMESITE,
             )
             # Content varies with the CSRF cookie, so set the Vary header.
             patch_vary_headers(response, ("Cookie",))

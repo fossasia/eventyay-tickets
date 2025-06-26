@@ -20,11 +20,11 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     [
         ("event.dashboard", 200, 200),
         ("event.history", 200, 404),
-        ("cfp.questions.view", 200, 404),
+        ("cfp.questions.list", 200, 404),
         ("cfp.questions.create", 200, 404),
         ("cfp.questions.remind", 200, 404),
         ("cfp.text.view", 200, 404),
-        ("cfp.types.view", 200, 404),
+        ("cfp.types.list", 200, 404),
         ("mails.templates.list", 200, 404),
         ("mails.templates.create", 200, 404),
         ("mails.compose.choose", 200, 404),
@@ -46,7 +46,7 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
         ("settings.plugins.select", 200, 404),
         ("settings.widget", 200, 404),
         ("schedule.main", 200, 200),
-        ("schedule.export", 200, 200),
+        ("schedule.export", 200, 404),
         ("schedule.rooms.list", 200, 404),
         ("schedule.rooms.create", 200, 404),
         ("schedule.api.talks", 200, 404),
@@ -116,7 +116,7 @@ def test_dev_settings_warning(orga_client, event):
     response = orga_client.get(
         reverse("orga:event.dashboard", kwargs={"event": event.slug}), follow=True
     )
-    assert "running in development mode" in response.content.decode()
+    assert "running in development mode" in response.text
 
 
 @pytest.mark.django_db
@@ -131,7 +131,7 @@ def test_update_check_warning(orga_user, orga_client, event):
     response = orga_client.get(
         reverse("orga:event.dashboard", kwargs={"event": event.slug}), follow=True
     )
-    assert "fa-bell" in response.content.decode()
+    assert "fa-bell" in response.text
 
 
 @pytest.mark.django_db

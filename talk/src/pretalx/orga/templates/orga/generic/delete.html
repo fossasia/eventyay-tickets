@@ -1,0 +1,9 @@
+{% extends "orga/base.html" %}
+
+{% block extra_title %}{{ generic_title }} :: {% endblock extra_title %}
+
+{% block content %}
+
+    {% include "common/includes/action_confirm.html" with action_object_name=generic_title %}
+
+{% endblock content %}

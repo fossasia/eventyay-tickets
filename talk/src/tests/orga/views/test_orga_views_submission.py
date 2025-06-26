@@ -14,7 +14,7 @@ from pretalx.submission.models.question import QuestionRequired, QuestionVariant
 def test_orga_can_see_submissions(orga_client, event, submission):
     response = orga_client.get(event.orga_urls.submissions, follow=True)
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
 
 
 @pytest.mark.django_db
@@ -23,7 +23,7 @@ def test_orga_can_search_submissions(orga_client, event, submission):
         event.orga_urls.submissions + f"?q={submission.title[:5]}", follow=True
     )
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
 
 
 @pytest.mark.django_db
@@ -33,7 +33,7 @@ def test_orga_can_search_submissions_by_speaker(orga_client, event, submission):
         follow=True,
     )
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
 
 
 @pytest.mark.django_db
@@ -44,7 +44,7 @@ def test_reviewer_can_search_submissions_by_speaker(review_client, event, submis
         follow=True,
     )
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
 
 
 @pytest.mark.django_db
@@ -54,13 +54,13 @@ def test_reviewer_cannot_search_submissions_by_speaker_when_anonymised(
     with scope(event=event):
         submission.event.active_review_phase.can_see_speaker_names = False
         submission.event.active_review_phase.save()
-        assert not review_user.has_perm("orga.view_speakers", event)
+        assert not review_user.has_perm("person.orga_list_speakerprofile", event)
     response = review_client.get(
         event.orga_urls.submissions + f"?q={submission.speakers.first().name[:5]}",
         follow=True,
     )
     assert response.status_code == 200
-    assert submission.title not in response.content.decode()
+    assert submission.title not in response.text
 
 
 @pytest.mark.django_db
@@ -72,13 +72,13 @@ def test_reviewer_cannot_search_submissions_by_speaker_when_anonymised_on_team_l
         team.force_hide_speaker_names = True
         team.save()
         assert submission.event.active_review_phase.can_see_speaker_names
-        assert not review_user.has_perm("orga.view_speakers", event)
+        assert not review_user.has_perm("person.orga_list_speakerprofile", event)
     response = review_client.get(
         event.orga_urls.submissions + f"?q={submission.speakers.first().name[:5]}",
         follow=True,
     )
     assert response.status_code == 200
-    assert submission.title not in response.content.decode()
+    assert submission.title not in response.text
 
 
 @pytest.mark.django_db
@@ -87,21 +87,21 @@ def test_orga_can_miss_search_submissions(orga_client, event, submission):
         event.orga_urls.submissions + f"?q={submission.title[:5]}xxy", follow=True
     )
     assert response.status_code == 200
-    assert submission.title not in response.content.decode()
+    assert submission.title not in response.text
 
 
 @pytest.mark.django_db
 def test_orga_can_see_single_submission(orga_client, event, submission):
     response = orga_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
 
 
 @pytest.mark.django_db
 def test_orga_can_see_submission_404(orga_client, event, submission):
     response = orga_client.get(submission.orga_urls.base + "JJ", follow=True)
     assert response.status_code == 404
-    assert submission.title not in response.content.decode()
+    assert submission.title not in response.text
 
 
 @pytest.mark.django_db
@@ -110,9 +110,9 @@ def test_reviewer_can_see_single_submission(review_client, event, submission, an
     event.save()
     response = review_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
     with scope(event=event):
-        assert answer.question.question in response.content.decode()
+        assert answer.question.question in response.text
 
 
 @pytest.mark.django_db
@@ -126,16 +126,16 @@ def test_reviewer_can_see_single_submission_but_hide_question(
     event.save()
     response = review_client.get(submission.orga_urls.base, follow=True)
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
     with scope(event=event):
-        assert answer.question.question not in response.content.decode()
+        assert answer.question.question not in response.text
 
 
 @pytest.mark.django_db
 def test_orga_can_see_single_submission_feedback(orga_client, event, feedback):
     response = orga_client.get(feedback.talk.orga_urls.feedback, follow=True)
     assert response.status_code == 200
-    assert feedback.review in response.content.decode()
+    assert feedback.review in response.text
 
 
 @pytest.mark.django_db
@@ -148,7 +148,7 @@ def test_orga_can_see_single_submission_speakers(orga_client, event, submission)
 def test_orga_can_see_single_submission_in_feed(orga_client, event, submission):
     response = orga_client.get(submission.event.orga_urls.submission_feed, follow=True)
     assert response.status_code == 200
-    assert submission.title in response.content.decode()
+    assert submission.title in response.text
 
 
 @pytest.mark.django_db
@@ -157,7 +157,7 @@ def test_wrong_user_cannot_see_single_submission_in_feed(
 ):
     user.teams.remove(user.teams.first())
     response = client.get(submission.event.orga_urls.submission_feed, follow=True)
-    assert submission.title not in response.content.decode()
+    assert submission.title not in response.text
 
 
 @pytest.mark.django_db
@@ -354,7 +354,7 @@ def test_orga_can_remove_wrong_speaker(orga_client, submission, other_speaker):
     submission.refresh_from_db()
     assert response.status_code == 200
     assert submission.speakers.count() == 1
-    assert "not part of this proposal" in response.content.decode()
+    assert "not part of this proposal" in response.text
 
 
 @pytest.mark.django_db
@@ -655,8 +655,8 @@ def test_orga_can_edit_submission_wrong_datetime_answer(
 def test_orga_can_see_all_feedback(orga_client, event, feedback):
     response = orga_client.get(event.orga_urls.feedback, follow=True)
     assert response.status_code == 200
-    assert feedback.talk.title in response.content.decode()
-    assert feedback.review in response.content.decode()
+    assert feedback.talk.title in response.text
+    assert feedback.review in response.text
 
 
 @pytest.mark.django_db
@@ -672,7 +672,7 @@ def test_orga_can_anonymise_submission(
     with scope(event=submission.event):
         submission.event.active_review_phase.can_see_speaker_names = False
         submission.event.active_review_phase.save()
-        assert not review_user.has_perm("orga.view_speakers", submission)
+        assert not review_user.has_perm("person.orga_list_speakerprofile", submission)
     response = orga_client.post(
         submission.orga_urls.anonymise, follow=True, data={"description": "CENSORED!"}
     )
@@ -707,18 +707,18 @@ def test_orga_can_anonymise_submission(
 
     response = orga_client.get(submission.orga_urls.reviews)
     assert response.status_code == 200
-    assert "CENSORED" in response.content.decode()
+    assert "CENSORED" in response.text
     response = orga_client.get(submission.orga_urls.base)
     assert response.status_code == 200
-    assert "CENSORED" not in response.content.decode()
+    assert "CENSORED" not in response.text
 
     orga_client.force_login(review_user)
     response = orga_client.get(submission.orga_urls.reviews)
     assert response.status_code == 200
-    assert "CENSORED" in response.content.decode()
+    assert "CENSORED" in response.text
     response = orga_client.get(submission.orga_urls.base)
     assert response.status_code == 200
-    assert "CENSORED" in response.content.decode()
+    assert "CENSORED" in response.text
 
 
 @pytest.mark.django_db
@@ -773,10 +773,27 @@ def test_submission_apply_pending(submission, orga_client):
 
 
 @pytest.mark.django_db
+def test_submission_apply_pending_single(submission, orga_client):
+    with scope(event=submission.event):
+        submission.state = "submitted"
+        submission.pending_state = "accepted"
+        submission.save()
+        assert submission.event.queued_mails.count() == 0
+
+    response = orga_client.post(submission.orga_urls.apply_pending)
+    assert response.status_code == 302
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.state == "accepted"
+        assert submission.pending_state is None
+        assert submission.event.queued_mails.count() == 1
+
+
+@pytest.mark.django_db
 def test_can_see_tags(orga_client, tag):
     response = orga_client.get(tag.event.orga_urls.tags)
     assert response.status_code == 200
-    assert tag.tag in response.content.decode()
+    assert tag.tag in response.text
 
 
 @pytest.mark.django_db
@@ -799,7 +816,7 @@ def test_can_create_tag_no_duplicates(orga_client, tag):
         follow=True,
     )
     assert response.status_code == 200
-    assert "You already have a tag by this name!" in response.content.decode()
+    assert "You already have a tag by this name!" in response.text
     with scope(event=tag.event):
         assert tag.event.tags.count() == count + 1
 
@@ -808,7 +825,7 @@ def test_can_create_tag_no_duplicates(orga_client, tag):
 def test_can_see_single_tag(orga_client, tag):
     response = orga_client.get(tag.urls.base)
     assert response.status_code == 200
-    assert tag.tag in response.content.decode()
+    assert tag.tag in response.text
 
 
 @pytest.mark.django_db
@@ -871,3 +888,38 @@ def test_can_delete_used_tag(orga_client, tag, event, submission):
         assert event.tags.count() == 0
         submission.refresh_from_db()
         assert submission.tags.count() == 0
+
+
+@pytest.mark.django_db
+def test_orga_can_see_submission_comments(orga_client, submission, submission_comment):
+    response = orga_client.get(submission.orga_urls.comments, follow=True)
+    assert response.status_code == 200
+    assert submission_comment.text in response.text
+
+
+@pytest.mark.django_db
+def test_orga_can_post_submission_comment(orga_client, submission):
+    response = orga_client.post(
+        submission.orga_urls.comments,
+        data={"text": "Here is a new comment!"},
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.comments.count() == 1
+        comment = submission.comments.first()
+        assert comment.text == "Here is a new comment!"
+
+
+@pytest.mark.django_db
+def test_orga_cannot_post_empty_submission_comment(orga_client, submission):
+    response = orga_client.post(
+        submission.orga_urls.comments,
+        data={"text": ""},
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scope(event=submission.event):
+        submission.refresh_from_db()
+        assert submission.comments.count() == 0

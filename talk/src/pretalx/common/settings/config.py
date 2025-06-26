@@ -184,10 +184,11 @@ def read_config_files(config: RawConfigParser) -> tuple[RawConfigParser, list[st
             ],
             encoding="utf-8",
         )
+    # .read() returns None if there are no config files
     return (
         config,
         config_files or [],
-    )  # .read() returns None if there are no config files
+    )
 
 
 def reduce_dict(data):

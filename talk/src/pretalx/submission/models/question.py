@@ -5,11 +5,15 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
+from pretalx.agenda.rules import is_agenda_visible
 from pretalx.common.models.choices import Choices
 from pretalx.common.models.mixins import OrderedModel, PretalxModel
 from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
+from pretalx.event.rules import can_change_event_settings
+from pretalx.person.rules import is_reviewer
+from pretalx.submission.rules import is_cfp_open, orga_can_change_submissions
 
 
 def answer_file_path(instance, filename):
@@ -82,6 +86,18 @@ class QuestionRequired(Choices):
     ]
 
 
+# Question and question option permissions should be in sync
+QUESTION_PERMISSIONS = {
+    "list": is_cfp_open | is_agenda_visible | orga_can_change_submissions | is_reviewer,
+    "orga_list": orga_can_change_submissions,
+    "view": is_cfp_open | is_agenda_visible | orga_can_change_submissions | is_reviewer,
+    "orga_view": orga_can_change_submissions,
+    "create": can_change_event_settings,
+    "update": can_change_event_settings,
+    "delete": can_change_event_settings,
+}
+
+
 class Question(OrderedModel, PretalxModel):
     """Questions can be asked per.
 
@@ -122,7 +138,7 @@ class Question(OrderedModel, PretalxModel):
         max_length=QuestionTarget.get_max_length(),
         choices=QuestionTarget.get_choices(),
         default=QuestionTarget.SUBMISSION,
-        verbose_name=_("question type"),
+        verbose_name=_("Field type"),
         help_text=_(
             "Do you require an answer from every speaker or for every session?"
         ),
@@ -131,27 +147,27 @@ class Question(OrderedModel, PretalxModel):
         null=True,
         blank=True,
         verbose_name=_("Deadline"),
-        help_text=_(
-            "Set a deadline to make this question required after the given date."
-        ),
+        help_text=_("Set a deadline to make this field required after the given date."),
     )
     freeze_after = models.DateTimeField(
         null=True,
         blank=True,
         verbose_name=_("freeze after"),
-        help_text=_("Set a deadline to stop changes to answers after the given date."),
+        help_text=_(
+            "Set a deadline to stop changes to responses after the given date."
+        ),
     )
     question_required = models.CharField(
         max_length=QuestionRequired.get_max_length(),
         choices=QuestionRequired.get_choices(),
         default=QuestionRequired.OPTIONAL,
-        verbose_name=_("question required"),
+        verbose_name=_("Field required"),
     )
     tracks = models.ManyToManyField(
         to="submission.Track",
         related_name="questions",
         help_text=_(
-            "You can limit this question to some tracks. Leave this field empty to apply to all tracks."
+            "You can limit this field to some tracks. Leave empty to apply to all tracks."
         ),
         verbose_name=_("Tracks"),
         blank=True,
@@ -160,18 +176,18 @@ class Question(OrderedModel, PretalxModel):
         to="submission.SubmissionType",
         related_name="questions",
         help_text=_(
-            "You can limit this question to some session types. Leave this field empty to apply to all session types."
+            "You can limit this field to some session types. Leave empty to apply to all session types."
         ),
         verbose_name=_("Session Types"),
         blank=True,
     )
-    question = I18nCharField(max_length=800, verbose_name=_("question"))
+    question = I18nCharField(max_length=800, verbose_name=_("Label"))
     help_text = I18nCharField(
         null=True,
         blank=True,
         max_length=800,
         verbose_name=_("help text"),
-        help_text=_("Will appear just like this text below the question input field.")
+        help_text=_("Will appear just like this text below the custom input field.")
         + " "
         + phrases.base.use_markdown,
     )
@@ -182,13 +198,13 @@ class Question(OrderedModel, PretalxModel):
     active = models.BooleanField(
         default=True,
         verbose_name=_("active"),
-        help_text=_("Inactive questions will no longer be asked."),
+        help_text=_("Inactive fields will no longer be shown."),
     )
     contains_personal_data = models.BooleanField(
         default=True,
-        verbose_name=_("Answers contain personal data"),
+        verbose_name=_("Responses contain personal data"),
         help_text=_(
-            "If a user deletes their account, answers of questions for personal data will be removed, too."
+            "If a user deletes their account, responses containing personal data will be removed, too."
         ),
     )
     min_length = models.PositiveIntegerField(
@@ -243,18 +259,28 @@ class Question(OrderedModel, PretalxModel):
         default=False,
         verbose_name=_("Publish answers"),
         help_text=_(
-            "Answers will be shown on session or speaker pages as appropriate. Please note that you cannot make a question public after the first answers have been given, to allow speakers explicit consent before publishing information."
+            "Responses will be shown on session or speaker pages as appropriate. Please note that you cannot make a field public after the first answers have been given, to allow speakers explicit consent before publishing information."
         ),
     )
     is_visible_to_reviewers = models.BooleanField(
         default=True,
         verbose_name=_("Show answers to reviewers"),
         help_text=_(
-            "Should answers to this question be shown to reviewers? This is helpful if you want to collect personal information, but use anonymous reviews."
+            "Should responses to this field be shown to reviewers? This is helpful if you want to collect personal information, but use anonymous reviews."
         ),
     )
     objects = ScopedManager(event="event", _manager_class=QuestionManager)
     all_objects = ScopedManager(event="event", _manager_class=AllQuestionManager)
+
+    log_prefix = "pretalx.question"
+
+    class Meta:
+        ordering = ("position", "id")
+        rules_permissions = QUESTION_PERMISSIONS
+
+    @property
+    def log_parent(self):
+        return self.event
 
     @cached_property
     def required(self):
@@ -274,9 +300,9 @@ class Question(OrderedModel, PretalxModel):
 
     class urls(EventUrls):
         base = "{self.event.cfp.urls.questions}{self.pk}/"
-        edit = "{base}edit"
-        delete = "{base}delete"
-        toggle = "{base}toggle"
+        edit = "{base}edit/"
+        delete = "{base}delete/"
+        toggle = "{self.event.cfp.urls.questions}{self.pk}/toggle/"
 
     def __str__(self):
         return str(self.question)
@@ -291,7 +317,7 @@ class Question(OrderedModel, PretalxModel):
         """Returns how many answers are still missing or this question.
 
         This method only supports submission questions and speaker questions.
-        For missing reviews, please use the Review.find_missing_reviews method.
+        For missing reviews, please use the get_missing_reviews method.
 
         :param filter_speakers: Apply only to these speakers.
         :param filter_talks: Apply only to these talks.
@@ -318,9 +344,6 @@ class Question(OrderedModel, PretalxModel):
             return max(users.count() - answer_count, 0)
         return 0
 
-    class Meta:
-        ordering = ("position", "id")
-
 
 class AnswerOption(PretalxModel):
     """Provides the possible answers for.
@@ -332,21 +355,27 @@ class AnswerOption(PretalxModel):
     question = models.ForeignKey(
         to="submission.Question", on_delete=models.PROTECT, related_name="options"
     )
-    answer = I18nCharField(verbose_name=_("Answer"))
+    answer = I18nCharField(verbose_name=_("Response"))
     position = models.IntegerField(default=0)
 
     objects = ScopedManager(event="question__event")
+    log_prefix = "pretalx.question.option"
+
+    class Meta:
+        ordering = ("position", "id")
+        rules_permissions = QUESTION_PERMISSIONS
 
     @cached_property
     def event(self):
         return self.question.event
 
+    @property
+    def log_parent(self):
+        return self.question
+
     def __str__(self):
         """Used in choice forms."""
         return str(self.answer)
-
-    class Meta:
-        ordering = ("position", "id")
 
 
 class Answer(PretalxModel):
@@ -390,9 +419,28 @@ class Answer(PretalxModel):
 
     objects = ScopedManager(event="question__event")
 
+    class Meta:
+        rules_permissions = {
+            # Getting the answer API right is even trickier than getting the
+            # question API right. Questions and options follow the same logic:
+            # if you can see or change the question, the same goes for the option.
+            # Not so with answers: Not all answers to public questions are public,
+            # for example, and answers to reviewer questions are visible to people
+            # depending on both their role and the current review phase.
+            # To escape this complexity, we restrict the entire endpoint to people
+            # with "change_event_settings" permissions for now, and tackle this
+            # properly if there is demand and a) funding or b) contributions.
+            "api": can_change_event_settings
+            & orga_can_change_submissions
+        }
+
     @cached_property
     def event(self):
         return self.question.event
+
+    @property
+    def log_parent(self):
+        return self.event
 
     def __str__(self):
         """Help when debugging."""
@@ -431,3 +479,13 @@ class Answer(PretalxModel):
     @property
     def is_answered(self):
         return bool(self.answer_string)
+
+    def log_action(self, *args, content_object=None, **kwargs):
+        if not content_object:
+            if self.question.target == QuestionTarget.SPEAKER:
+                content_object = self.person
+            elif self.question.target == QuestionTarget.SUBMISSION:
+                content_object = self.submission
+            elif self.question.target == QuestionTarget.REVIEWER:
+                content_object = self.review
+        return super().log_action(*args, content_object=content_object, **kwargs)

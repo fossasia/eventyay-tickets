@@ -8,6 +8,21 @@ an instance of a subclass of pretalx.mail.placeholder.BaseMailTextPlaceholder or
 As with all event-plugin signals, the ``sender`` keyword argument will contain the event.
 """
 
+request_pre_send = EventPluginSignal()
+"""
+This signal is sent out before an email sending action is taken via the web interface –
+either bulk email or individual emails. The signal is not called when emails are just
+placed in the outbox without being sent.
+
+Receivers may raise a ``pretalx.common.exceptions.SendMailException`` in order to stop
+emails from being sent. The exception message (if any) will be shown to the requesting
+user.
+
+As with all event-plugin signals, the ``sender`` keyword argument will contain the
+event. Additionally, the ``request`` keyword argument contains the request that
+triggered the request to be sent.
+"""
+
 queuedmail_pre_send = EventPluginSignal()
 """
 This signal is sent out before a ``QueuedMail`` will been sent.

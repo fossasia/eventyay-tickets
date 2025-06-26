@@ -1,3 +1,4 @@
+import sys
 from argparse import RawTextHelpFormatter
 from os import environ
 from urllib.parse import urljoin
@@ -51,14 +52,32 @@ class Command(BaseCommand):  # pragma: no cover
                 "\nWelcome to pretalx! This is my initialization command, please use it only once."
             )
         )
-        self.stdout.write(
-            "You can abort this command at any time using C-c, and it will save no data."
-        )
+
+        if options["interactive"]:
+            self.stdout.write(
+                "You can abort this command at any time using C-c, and it will save no data."
+            )
+        else:
+            required_env_vars = (
+                "DJANGO_SUPERUSER_EMAIL",
+                "DJANGO_SUPERUSER_EMAIL",
+                organiser_name_env,
+                organiser_slug_env,
+            )
+            for env_var in required_env_vars:
+                if not environ.get(env_var):
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"You must provide the environment variable {env_var} "
+                            "if you run this command in non-interactive mode.\n"
+                            "Please refer to the documentation: https://docs.pretalx.org/administrator/commands/#init"
+                        )
+                    )
+                    sys.exit(-1)
 
         self.stdout.write(
             "\nLet's get you a user with the right to create new events and access every event on this pretalx instance."
         )
-
         call_command("createsuperuser", interactive=options["interactive"])
 
         user = User.objects.order_by("-id").filter(is_administrator=True).first()
@@ -85,7 +104,7 @@ class Command(BaseCommand):  # pragma: no cover
         team_url = urljoin(
             settings.SITE_URL,
             reverse(
-                "orga:organiser.teams.view",
+                "orga:organiser.teams.update",
                 kwargs={"organiser": organiser.slug, "pk": team.pk},
             ),
         )

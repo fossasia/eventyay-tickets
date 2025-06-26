@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<dialog id="lightbox-dialog" role="alertdialog" aria-labelledby="lightbox-label">
+    <form method="dialog" class="modal-card">
+        <div class="modal-card-content">
+            <figure class="text-center text-muted">
+                <img />
+                <figcaption id="lightbox-label"></figcaption>
+            </figure>
+            <button id="lightbox-close" class="btn btn-default btn-xs" aria-label="{% translate "Close" %}"><i class="fa fa-times"></i></button>
+        </div>
+    </form>
+</dialog>

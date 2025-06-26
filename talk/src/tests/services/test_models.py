@@ -9,5 +9,5 @@ def test_no_outstanding_migrations():
     out = StringIO()
     try:
         call_command("makemigrations", "--check", stdout=out, stderr=StringIO())
-    except SystemExit:
+    except SystemExit:  # pragma: no cover
         raise AssertionError(f"Pending migrations:\n{out.getvalue()}") from None

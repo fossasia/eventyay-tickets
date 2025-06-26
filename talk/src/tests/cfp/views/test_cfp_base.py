@@ -75,7 +75,7 @@ def test_no_crash_on_root_view(client, event, other_event):
     response = client.get(
         "/",
     )
-    content = response.content.decode()
+    content = response.text
     assert response.status_code == 200
     assert event.slug in content
     assert other_event.slug not in content
@@ -88,7 +88,7 @@ def test_no_crash_on_root_view_as_organiser(orga_client, event, other_event):
     response = orga_client.get(
         "/",
     )
-    content = response.content.decode()
+    content = response.text
     assert response.status_code == 200
     assert event.slug in content
     assert other_event.slug not in content
