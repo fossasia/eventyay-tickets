@@ -1,0 +1,82 @@
+:root {
+  --color-text: rgb(13, 15, 16);
+  --color-code: #e83e8c;
+  --color-text-input: var(--color-grey-dark);
+  --color-text-muted: var(--color-grey-medium);
+  --color-text-lighter: rgb(0 0 0 / 0.6);
+
+  /* We're making the text colour version of the primary colour a tad darker for contrast */
+  --color-pretalx: #2185d0;
+
+  --color-primary: var(--color-pretalx);
+  --color-primary-text: color-mix(in srgb, var(--color-primary), black 10%);
+  --color-primary-text-dark: color-mix(
+    in srgb,
+    var(--color-primary),
+    black 40%
+  );
+  --color-primary-light: color-mix(in srgb, var(--color-primary), white 45%);
+  --color-primary-lighter: color-mix(in srgb, var(--color-primary), white 72%);
+  --color-secondary: var(--color-grey-medium);
+
+  --color-success: var(--color-pretalx);
+  --color-success-text: color-mix(in srgb, var(--color-success), black 10%);
+  --color-success-text-dark: color-mix(
+    in srgb,
+    var(--color-success),
+    black 40%
+  );
+  --color-success-light: color-mix(in srgb, var(--color-success), white 10%);
+  --color-bg: var(--color-white);
+
+  --color-info: #4697c9;
+  --color-info-text: color-mix(in srgb, var(--color-info), black 10%);
+  --color-info-text-dark: color-mix(in srgb, var(--color-info), black 40%);
+
+  --color-warning: #f9a557;
+  --color-warning-text: color-mix(in srgb, var(--color-warning), black 10%);
+  --color-warning-text-dark: color-mix(
+    in srgb,
+    var(--color-warning),
+    black 50%
+  );
+
+  --color-danger: #b23e65;
+  --color-danger-text: color-mix(in srgb, var(--color-danger), black 10%);
+  --color-danger-text-dark: color-mix(in srgb, var(--color-danger), black 40%);
+
+  --color-white: #fff;
+  --color-offwhite: #f8f9fa;
+  --color-grey-ultralight: #f8f8f8;
+  --color-grey-pale: #eeeeee;
+  --color-grey-lightest: color-mix(in srgb, #f8f9fa 95%, var(--color-primary));
+  --color-grey-lighter: color-mix(in srgb, #e9ecef 95%, var(--color-primary));
+  --color-grey-light: color-mix(in srgb, #dae0e4 90%, var(--color-primary));
+  --color-grey-medium-lighter: #5f7273;
+  --color-grey-medium-light: #636c72;
+  --color-grey-medium: #6c757d;
+  --color-grey-dark: #495057;
+  --color-grey: color-mix(in srgb, #8590a4 90%, var(--color-primary));
+
+  --color-card-border: rgb(0 0 0 / 0.125);
+  --color-card-header: rgb(0 0 0 / 0.03);
+  --color-border: #ced4da;
+  --color-border-navbar: #1a69a4;
+
+  --size-border-radius: 0.25rem;
+  --size-spacer: 1rem;
+
+  --shadow-lightest: 0 1px 2px rgb(0 0 0 / 0.24);
+  --shadow-lighter: 0 1px 3px rgb(0 0 0 / 0.12), var(--shadow-lightest);
+  --shadow-light: 0 0 6px 1px rgb(0 0 0 / 0.1), var(--shadow-lighter);
+  --shadow-wide: 0 0 10px 1px rgb(0 0 0 / 0.2), var(--shadow-lighter);
+  --shadow-focus: 0 0 1px 2px
+    color-mix(in srgb, var(--color-primary), white 70%);
+  --shadow-dialog: 0 0 10px rgb(0 0 0 / 0.5), var(--shadow-lightest);
+  --shadow-checkbox: 0 0 2px var(--color-grey-medium-lighter);
+
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}

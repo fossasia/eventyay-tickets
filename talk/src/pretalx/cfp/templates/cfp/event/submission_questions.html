@@ -1,0 +1,27 @@
+{% extends "cfp/event/submission_base.html" %}
+
+{% load i18n %}
+{% load orga_edit_link %}
+
+{% block orga_edit_link %}
+    {% orga_edit_link request.event.cfp.urls.questions %}
+{% endblock orga_edit_link %}
+
+{% block inner %}
+    {% if form.submission_fields %}
+        {% if form.speaker_fields and form.submission_fields %}
+            <h4>{% translate "… about your proposal:" %}</h4>
+        {% endif %}
+        {% for field in form.submission_fields %}
+            {{ field.as_field_group }}
+        {% endfor %}
+    {% endif %}
+    {% if form.speaker_fields %}
+        {% if form.speaker_fields and form.submission_fields %}
+            <h4>{% translate "… about yourself:" %}</h4>
+        {% endif %}
+        {% for field in form.speaker_fields %}
+            {{ field.as_field_group }}
+        {% endfor %}
+    {% endif %}
+{% endblock inner %}

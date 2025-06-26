@@ -1,0 +1,38 @@
+name: Code Style
+
+on:
+  push:
+    branches: [ development ]
+    paths-ignore:
+      - 'src/pretalx/locale/**'
+      - 'src/pretalx/static/**'
+      - 'doc/**'
+  pull_request:
+    branches: [ development ]
+    paths-ignore:
+      - 'src/pretalx/locale/**'
+      - 'src/pretalx/static/**'
+      - 'doc/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # TODO: Run Ruff
+  html:
+    name: HTML checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: ".github/workflows/python-version.txt"
+          cache: "pip"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Run djhtml
+        run: uv run --only-group lint djhtml pretalx/
+        working-directory: ./src
+      - name: Make sure we always use trimmed translation strings
+        run: "! git grep ' blocktranslate ' | grep -v trimmed"

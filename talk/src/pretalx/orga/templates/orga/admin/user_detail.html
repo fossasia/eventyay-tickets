@@ -1,0 +1,155 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load copyable %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block extra_title %}{{ user.name }} :: {% endblock extra_title %}
+
+{% block scripts %}
+  <script defer src="{% static "common/js/copy.js" %}"></script>
+{% endblock scripts %}
+
+{% block content %}
+  <h2 class="d-flex">{{ user.name }}
+    <form method="post">
+      {% csrf_token %}
+      <button class="btn btn-warning btn-sm ml-1 mr-1" type="submit" name="action" value="pw-reset">
+        <i class="fa fa-key"></i>
+        {{ phrases.base.password_reset_heading }}
+      </button>
+      {% if user.is_active %}
+        <button class="btn btn-danger btn-sm ml-1 mr-1" type="submit" name="action" value="deactivate">
+          <i class="fa fa-ban"></i>
+          {% translate "Deactivate account" %}
+        </button>
+      {% else %}
+        <button class="btn btn-success btn-sm ml-1 mr-1" type="submit" name="action" value="activate">
+          <i class="fa fa-check"></i>
+          {% translate "Activate account" %}
+        </button>
+      {% endif %}
+      <a href="{% url "orga:admin.user.delete" code=user.code %}" class="btn btn-danger btn-sm ml-1 mr-1"><i class="fa fa-trash"></i></a>
+    </form>
+  </h2>
+
+  <div class="d-flex justify-content-between">
+    <table class="table table-sm table-flip col-4">
+      <tr>
+        <th>{% translate "Email" %}</th>
+        <td>{{ user.email|copyable }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Last login" %}</th>
+        <td>{{ user.last_login|default:"-" }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Password reset time" %}</th>
+        <td>{{ user.pw_reset_time|default:"-" }}</td>
+      </tr>
+      <tr>
+        <th>{{ phrases.base.language }}</th>
+        <td>{{ user.locale }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Timezone" %}</th>
+        <td>{{ user.timezone }}</td>
+      </tr>
+    </table>
+    <div class="ml-auto">
+      {% if user.avatar %}
+        <div class="speaker-avatar">
+          <a href="{{ user.avatar.url }}" data-lightbox>
+            <img loading="lazy" width="100%" src="{{ user.avatar|thumbnail:"default" }}" alt="{% translate "Profile picture" %}">
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% include "orga/includes/tablist.html" %}
+
+  <section role="tabpanel" id="tabpanel-teams" aria-labelledby="tab-teams" tabindex="0" aria-hidden="false">
+    <div class="table-responsive">
+      <table class="table table-sm table-flip">
+        <thead>
+          <tr>
+            <th>{% translate "Team" %}</th>
+            <th>{% translate "Organiser" %}</th>
+            <th>{% translate "Events" %}</th>
+            <th>{% translate "Permissions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for team in user.teams.all %}
+            <tr>
+              <td><a href="{{ team.urls.base }}">{{ team.name }}</a></td>
+              <td><a href="{{ team.organiser.orga_urls.base }}">{{ team.organiser.name }}</a></td>
+              <td>
+                {% if team.limit_events.all %}
+                  {% for event in team.limit_events.all %}
+                    <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>{% if not forloop.last %},{% endif %}
+                  {% endfor %}
+                {% else %}
+                  {% translate "All events" %}:
+                  {% for event in team.organiser.events.all %}
+                    <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>{% if not forloop.last %},{% endif %}
+                  {% endfor %}
+                {% endif %}
+              </td>
+
+              <td>
+                <ul>
+                  {% for permission in team.permission_set_display %}
+                    <li>{{ permission }}</li>
+                  {% endfor %}
+                </ul>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4">{% translate "User isn't in any teams" %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="tabpanel-submissions" aria-labelledby="tab-submissions" tabindex="0" aria-hidden="true">
+    <div class="table-responsive">
+      <table class="table table-sm table-flip">
+        <thead>
+          <tr>
+            <th>{% translate "Title" %}</th>
+            <th>{% blocktranslate trimmed count count=1 %}Event{% plural %}Events{% endblocktranslate %}</th>
+            <th>{% translate "State" %}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for submission in submissions %}
+            <tr>
+              <td><a href="{{ submission.orga_urls.base }}">{{ submission.title }}</a></td>
+              <td><a href="{{ submission.event.orga_urls.base }}">{{ submission.event.name }}</a></td>
+              <td>{% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}</td>
+              <td>{{ submission.created | date }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4">{% translate "User hasn't submitted any proposals" %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="tabpanel-actions" aria-labelledby="tab-actions" tabindex="0" aria-hidden="true">
+    <div class="dashboard-history">
+      {% include "common/logs.html" with entries=last_actions hide_user=True show_event=True %}
+    </div>
+  </section>
+{% endblock content %}

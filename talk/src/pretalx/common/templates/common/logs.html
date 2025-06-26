@@ -1,0 +1,41 @@
+{% load i18n %}
+
+{% if entries|length %}
+    <div class="card">
+        <ul class="list-group list-group-flush">
+            {% for log in entries %}
+                <li class="list-group-item logentry">
+                    <span class="time">
+                        <i class="fa fa-clock-o"></i> {{ log.timestamp|date:"SHORT_DATETIME_FORMAT" }}
+                    </span>
+                    {% if not hide_user %}
+                        <span class="person">
+                            {% if log.person %}
+                                {% if log.is_orga_action %}
+                                    <i class="fa fa-check-circle fa-fw text-success" title="{% translate "This change was performed by an event organiser." %}"></i>
+                                {% else %}
+                                    <i class="fa fa-user fa-fw"></i>
+                                {% endif %}
+                                {% include "orga/includes/user_name.html" with user=log.person lightbox=True %}
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                    {% if show_event %}
+                        <span class="event">
+                            {% if log.event %}
+                                <i class="fa fa-calendar"></i>
+                                <a href="{{ log.event.orga_urls.base }}">{{ log.event.name }}</a>
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                    {% if not hide_object %}
+                        <span class="log-object">
+                            {% if log.display_object %}<i class="fa fa-flag"></i>{{ log.display_object|safe }}{% endif %}
+                        </span>
+                    {% endif %}
+                    <span class="log-text">{{ log.display }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

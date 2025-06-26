@@ -1,0 +1,9 @@
+sphinx
+sphinx-autobuild
+sphinx-autodoc-typehints
+sphinx-copybutton
+sphinxcontrib-django
+sphinxcontrib-httpdomain
+sphinxcontrib-spelling
+
+-e .

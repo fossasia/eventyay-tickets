@@ -1,0 +1,104 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+{% load times %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/apexcharts/apexcharts.css" %}" />
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "vendored/apexcharts/apexcharts.min.js" %}"></script>
+        <script defer src="{% static "orga/js/question_stats.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block extra_title %}{{ quotation_open }}{{ question.question }}{{ quotation_close }} :: {% endblock extra_title %}
+
+{% block content %}
+    <h4>
+        {{ quotation_open }}{{ question.question }}{{ quotation_close }}
+        <small>({{ question.get_variant_display }})</small>
+        {% if has_update_permission %}
+            <a href="{{ question.urls.edit }}" class="btn btn-sm btn-outline-info">
+                <i class="fa fa-edit"></i>
+            </a>
+        {% endif %}
+    </h4>
+
+    {% if answer_count %}
+        <div class="pb-4">
+            <form class="form-inline filter-form">
+                {{ filter_form }}
+                <button class="btn btn-info" type="submit">{% translate "Filter" %}</button>
+            </form>
+        </div>
+    {% endif %}
+
+    <p>
+        {% if question.active %}
+            {% translate "This field is currently active, it will be asked during submission." %}
+            <a class="btn btn-sm btn-danger" href="{{ question.urls.toggle }}">{% translate "Hide field" %}</a>
+        {% else %}
+            {% translate "This field is currently inactive, and will not be asked during submission." %}
+            <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% translate "Activate field" %}</a>
+        {% endif %}
+    </p>
+
+    {% if not answer_count %}
+        {% translate "Nobody has responded to this field at the moment." %}
+    {% else %}
+        <p>
+            {% if missing_answers %}
+                {% blocktranslate with count=answer_count|times missing=missing_answers href=base_search_url trimmed %}
+                    This field has <strong>{{ count }}</strong> responses, <strong>{{ missing }}</strong> <a href="{{ base_search_url }}unanswered=1">are still missing</a>.
+                {% endblocktranslate %}
+            {% else %}
+                {% blocktranslate with count=question.answers.count|times trimmed %}
+                    This field has <strong>{{ count }}</strong> responses, and no answers are missing.
+                {% endblocktranslate %}
+            {% endif %}
+        </p>
+        <div id="question-data" class="d-none"
+             data-states='{{ grouped_answers_json }}'
+             data-url="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}{{ answer.options|urlencode }}{% endif %}"
+        >
+        </div>
+        <div id="question-stats" class="d-flex mt-4 pt-4">
+            {% if question.variant != "file" and grouped_answers|length < 50 %}
+                <div id="question-answers"></div>
+                <div class="table-responsive-sm">
+                    <table class="table table-flip table-sticky">
+                        <thead>
+                            <th>{% translate "Response" %}</th>
+                            <th class="numeric">{% translate "Count" %}</th>
+                            <th class="numeric">{% translate "%" %}</th>
+                        </thead>
+                        <tbody>
+                            {% for answer in grouped_answers %}
+                                <tr>
+                                    <td>
+                                        {% if question.target != "reviewer" %}
+                                            <a href="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
+                                        {% endif %}
+                                        {% if answer.answer %}
+                                            {{ answer.answer|truncatechars:140 }}
+                                        {% else %}
+                                            {{ answer.options__answer|truncatechars:140 }}
+                                        {% endif %}
+                                        {% if question.target != "reviewer" %}</a>{% endif %}
+                                    </td>
+                                    <td class="numeric">{{ answer.count }}</td>
+                                    <td class="numeric">{% widthratio answer.count answer_count 100 %}&nbsp;%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            {% endif %}
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,75 @@
+{% extends "orga/submission/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load rich_text %}
+{% load rules %}
+{% load static %}
+
+{% block submission_title %}{% translate "Anonymisation" %} :: {% endblock submission_title %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% compress js %}
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+        <script defer src="{% static "orga/js/anonymise.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block submission_content %}
+    <form method="post" enctype="multipart/form-data"><fieldset>
+        {% include "common/forms/errors.html" %}
+        {% csrf_token %}
+
+        <div id="anonymise">
+            <div>
+                <div class="plaintext">
+                    <h2>{% translate "Original" %}</h2>
+                </div>
+                <div class="anonymised">
+                    <h2>
+                        {% translate "Anonymised" %}
+                        <span data-dialog-target="#info-dialog" data-toggle="dialog">
+                            <i class="fa fa-question-circle-o text-info"></i>
+                        </span>
+                    </h2>
+                </div>
+            </div>
+            <dialog class="info-dialog" id="info-dialog">
+                <div class="alert alert-info">
+                    {% blocktranslate trimmed %}
+                        If a review phase with anonymisation is currently active, all reviewers
+                        who have no permissions to change this proposal will be shown the anonymised
+                        proposal content.
+                    {% endblocktranslate %}
+                </div>
+            </dialog>
+            {% for field in form %}
+                <h4>{{ field.label }}</h4>
+                <div>
+                    <div class="plaintext"><p>{{ field.field.plaintext|rich_text }}</p></div>
+                    <div class="anonymised">{{ field.as_field_group }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="submit-group panel">
+            <span></span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg" name="action" value="save">
+                    <i class="fa fa-check"></i>
+                    {{ phrases.base.save }}
+                </button>
+                {% if next_unanonymised %}
+                    <button type="submit" class="btn btn-info btn-lg" name="action" value="next">
+                        <i class="fa fa-arrow-right"></i>
+                        {% translate "Save and go to next unanonymised" %}
+                    </button>
+                {% endif %}
+            </span>
+        </div>
+    </fieldset></form>
+
+    <div id="anon-menu" class="d-none">
+        <button>{% translate "Replace selection with █" %}</button>
+    </div>
+{% endblock submission_content %}

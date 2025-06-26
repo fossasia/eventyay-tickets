@@ -1,0 +1,30 @@
+{% extends "orga/base.html" %}
+
+{% load i18n %}
+
+{% block extra_title %}{% translate "Organiser" %} :: {{ request.organiser.name }} :: {% endblock extra_title %}
+
+{% block content %}
+    <h2>{% translate "Settings" %}</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form }}
+
+        <div class="submit-group panel">
+            <span>
+                {% if request.user.is_administrator %}
+                    <a class="btn-outline-danger btn-lg" role="button" href="{{ request.organiser.orga_urls.delete }}">
+                        {% translate "Delete organiser" %}
+                    </a>
+                {% endif %}
+            </span>
+            <span>
+                <button type="submit" class="btn-success btn-lg">
+                    <i class="fa fa-check"></i>
+                    {{ phrases.base.save }}
+                </button>
+            </span>
+        </div>
+    </form>
+{% endblock content %}

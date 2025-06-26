@@ -1,0 +1,44 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/headers-uncompressed.css" %}" />
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/flow.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {{ current_configuration|json_script:"currentConfiguration" }}
+    {{ event_configuration|json_script:"eventConfiguration" }}
+
+    {% if debug %}
+        <script defer src="{% static "vendored/vue.js" %}"></script>
+    {% else %}
+        <script defer src="{% static "vendored/vue.min.js" %}"></script>
+    {% endif %}
+    <script defer src="{% static "vendored/marked.min.js" %}"></script> {# do not compress #}
+    <script defer src="{% static "vendored/purify.min.js" %}"></script>
+    <script defer src="{% static "orga/js/cfp_flow.js" %}"></script>
+{% endblock scripts %}
+
+{% block extra_title %}{% translate "CfP Editor" %} :: {% endblock extra_title %}
+
+{% block content %}
+    <div id="main-title" class="d-md-flex justify-content-between">
+        <h2>{% translate "CfP Editor" %}</h2>
+        {% include "orga/event/component_link.html" %}
+    </div>
+    <p>
+        {% blocktranslate trimmed %}
+            This is the {{ site_name }} CfP editor. This page allows you to change the
+            headline and information text on all of the individual CfP steps. You
+            can also add a custom help text to individual fields. Just click on the
+            item you want to change!
+        {% endblocktranslate %}
+    </p>
+    <div id="flow"></div>
+{% endblock content %}

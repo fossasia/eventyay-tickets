@@ -1,0 +1,127 @@
+.dashboard-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  padding-bottom: 20px;
+
+  > .dashboard-block,
+  > .dashboard-block-wrapper {
+    /* Outermost unit, either with wrapper or without */
+    margin: 8px;
+    padding: 12px 4px;
+    min-height: 160px;
+    width: 340px;
+    max-width: calc(100% - 16px);
+    border-radius: 4px;
+    user-select: none;
+  }
+
+  .dashboard-block-wrapper {
+    padding: 0;
+    max-width: 100%;
+    > .dashboard-block {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .dashboard-block-extension {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      .dashboard-block-addon {
+        flex: 1;
+        font-weight: 400;
+        &:first-child {
+          border-right: 2px solid var(--color-grey-light);
+        }
+        &:hover {
+          background: var(--color-grey-lightest);
+          color: var(--color-primary);
+          text-decoration: none;
+        }
+        &.dashboard-block-addon-success {
+          color: var(--color-grey-lightest);
+          background-color: var(--color-success);
+        }
+        &.dashboard-block-addon-info {
+          color: var(--color-grey-lightest);
+          background-color: var(--color-info);
+        }
+        &.dashboard-block-addon-error {
+          color: var(--color-grey-lightest);
+          background-color: var(--color-danger);
+        }
+        &.dashboard-block-addon-secondary {
+          color: var(--color-grey-lightest);
+          background-color: var(--color-secondary);
+        }
+      }
+    }
+  }
+
+  .dashboard-block {
+    color: var(--color-primary);
+    background: var(--color-grey-ultralight);
+    overflow-wrap: break-word;
+    &.dashboard-block-extended {
+      min-height: 100px;
+    }
+    &:hover {
+      color: var(--color-primary-text-dark);
+      background-color: var(--color-grey-pale);
+      text-decoration: none;
+    }
+
+    &.symbol {
+      display: flex;
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+      i {
+        font-size: 56px;
+      }
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: normal;
+
+      .fa {
+        padding-right: 0.3em;
+      }
+    }
+
+    .dashboard-description {
+      padding: 0 8px;
+      font-size: 20px;
+
+      ul {
+        text-align: left;
+      }
+    }
+  }
+}
+
+.dashboard-block-wrapper,
+.dashboard-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 0 auto;
+  position: relative;
+  text-align: center;
+}
+
+.dashboard-live {
+  margin: 6px;
+  font-size: 22px;
+}
+
+.dashboard-live-text,
+.dashboard-live {
+  margin-top: 12px;
+}

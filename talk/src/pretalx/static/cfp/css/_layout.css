@@ -1,0 +1,260 @@
+body {
+  background: var(--color-grey-lightest);
+}
+
+#top-bg {
+  background-color: var(--color-primary);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 240px;
+  z-index: -1;
+  display: flex;
+
+  #header-image {
+    object-fit: cover;
+    width: 100%;
+  }
+}
+
+h1 a {
+  color: white;
+
+  &:hover {
+    color: white;
+    text-decoration: none;
+  }
+}
+
+header {
+  z-index: 1000;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  word-break: normal;
+
+  #event-logo {
+    max-height: 140px;
+  }
+
+  .header-wrapper {
+    width: 100%;
+    max-width: calc(100vw - 8px);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    word-break: break-word;
+  }
+  #header-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    z-index: 400;
+    background: var(--color-bg);
+    border-radius: var(--size-border-radius) var(--size-border-radius) 0 0;
+    margin-bottom: -4px;
+    padding-bottom: 4px;
+    a.header-tab {
+      padding: 8px 10px 4px 10px;
+      border-bottom: 2px solid transparent;
+      &:hover {
+        text-decoration: none;
+        border-bottom: 2px dotted var(--color-primary);
+      }
+      &.active {
+        border-bottom: 2px solid var(--color-primary);
+      }
+    }
+  }
+  .header-row-right {
+    padding-bottom: 4px;
+    color: white;
+    margin-left: auto;
+    display: flex;
+    flex-wrap: wrap;
+
+    .locales {
+      margin-right: 20px;
+    }
+
+    .locales a:hover {
+      border-bottom: 1px dashed white;
+      text-decoration: none;
+    }
+    a {
+      color: white;
+    }
+
+    .locales a:hover {
+      border-bottom: 1px dashed white;
+      text-decoration: none;
+    }
+
+    .locales a.active {
+      border-bottom: 1px solid white;
+    }
+  }
+}
+
+#main-card {
+  min-height: 300px;
+  box-shadow: 0 5px 10px rgb(0 0 0 / 0.2);
+  padding: 0;
+  border: none;
+
+  main {
+    padding: var(--size-spacer);
+  }
+}
+
+#event-nonpublic {
+  background: var(--color-danger);
+  padding: 5px 20px;
+  color: white;
+  text-align: center;
+
+  a {
+    color: white;
+    font-weight: bold;
+  }
+}
+
+footer {
+  padding: 20px 0;
+  text-align: center;
+  font-size: 11px;
+  max-width: calc(100vw - 12px);
+  position: sticky;
+  left: 0;
+
+  img {
+    max-height: 50px;
+  }
+}
+
+#main-container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1140px;
+}
+
+.url-links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: stretch;
+  padding: 10px;
+  margin-right: -15px;
+  margin-left: -15px;
+  margin-bottom: var(--size-spacer);
+
+  a,
+  button {
+    margin: 5px;
+    flex-basis: 100px;
+    flex-grow: 1;
+  }
+}
+
+@media (max-width: 992px) {
+  #main-container {
+    max-width: 960px;
+  }
+}
+
+@media (max-width: 768px) {
+  #main-container {
+    max-width: 720px;
+    header .header-wrapper {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  #main-container {
+    padding: 0;
+    padding-top: 20px;
+    width: 100%;
+
+    main {
+      width: 100%;
+      padding: 16px;
+    }
+
+    header {
+      padding: 0;
+      #event-logo {
+        max-height: 120px;
+      }
+    }
+
+    .user-row {
+      flex-direction: column;
+    }
+
+    .btn-success {
+      width: 100%;
+    }
+
+    .col-form-label {
+      text-align: left;
+      display: flex;
+
+      span {
+        padding-left: 4px;
+      }
+    }
+
+    .url-links {
+      flex-direction: column-reverse;
+
+      a {
+        flex-basis: 0;
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    .orga-edit-link {
+      max-height: 40px;
+    }
+
+    #user-dropdown {
+      right: 0;
+    }
+
+    .table td.text-right {
+      display: flex;
+      flex-direction: row;
+      margin-left: auto;
+
+      > * {
+        margin-left: 4px;
+      }
+    }
+
+    .formset {
+      padding-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+
+      .resource-option-fields {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 2px var(--color-grey-lighter) solid;
+        margin-bottom: 8px;
+      }
+
+      .btn-info {
+        width: 100%;
+      }
+    }
+  }
+}

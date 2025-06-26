@@ -1,0 +1,17 @@
+name: Docker PR Build
+
+on:
+  pull_request:
+    branches: [development, main]
+
+jobs:
+  build_docker_image:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t eventyay-talk:${{ github.sha }} .

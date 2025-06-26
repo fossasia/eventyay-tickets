@@ -1,0 +1,112 @@
+{% extends "cfp/event/base.html" %}
+{% load compress %}
+{% load html_signal %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% translate "Your Profile" %} :: {% endblock title %}
+
+{% block cfp_header %}
+    {% include "cfp/includes/forms_header.html" %}
+    {% compress js %}
+        <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
+        <script defer src="{% static 'common/js/password_strength.js' %}"></script>
+    {% endcompress %}
+{% endblock cfp_header %}
+
+{% block content %}
+    {% html_signal "pretalx.cfp.signals.html_above_profile_page" sender=request.event request=request %}
+
+    <h2>{% translate "Your Profile" %}</h2>
+    <p>
+        {% translate "This data will be displayed publicly if your proposal is accepted. It is also visible to reviewers." %}
+    </p>
+    <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
+        {% csrf_token %}
+        {% include "common/forms/errors.html" with form=profile_form %}
+
+        {{ profile_form.name.as_field_group }}
+        {% if profile_form.biography %}
+            {{ profile_form.biography.as_field_group }}
+        {% endif %}
+        {% if request.event.cfp.request_avatar %}
+            {% include "common/avatar.html" with user=request.user form=profile_form %}
+        {% endif %}
+        {% if profile_form.avatar_source %}{{ profile_form.avatar_source.as_field_group }}{% endif %}
+        {% if profile_form.avatar_license %}{{ profile_form.avatar_license.as_field_group }}{% endif %}
+        {% if profile_form.availabilities %}
+            {% include "common/availabilities.html" %}
+            {{ profile_form.availabilities.as_field_group }}
+        {% endif %}
+        <div class="row">
+            <div class="col-md-4 flip ml-auto">
+                <input type="hidden" name="form" value="profile">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {{ phrases.base.save }}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% if questions_exist %}
+        <h2>{% translate "We have some questions" %}</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ questions_form }}
+            <div class="row">
+                <div class="col-md-4 flip ml-auto">
+                    <input type="hidden" name="form" value="questions">
+                    <button type="submit" class="btn btn-block btn-success btn-lg">
+                        {{ phrases.base.save }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+
+    <h2>{% translate "Your Account" %}</h2>
+    <p>{% translate "You can change your log in data here." %}</p>
+    <form method="post" class="form password-input-form">
+        {% csrf_token %}
+        {{ login_form.media }}
+        {{ login_form.old_password.as_field_group }}
+        {{ login_form.email.as_field_group }}
+        {{ login_form.password.as_field_group }}
+        {{ login_form.password_repeat.as_field_group }}
+        <div class="row">
+            <div class="col-md-4 flip ml-auto">
+                <input type="hidden" name="form" value="login">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
+                    {{ phrases.base.save }}
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% html_signal "pretalx.common.signals.profile_bottom_html" sender=request.event user=user %}
+
+    <div>&nbsp;</div>
+    <h3>{% translate "Account deletion" %}</h3>
+    <form action="{{ request.event.urls.user_delete }}" method="post" class="form">
+        {% csrf_token %}
+        <div class="alert alert-danger">
+            <div>
+                {% translate "You can delete your account here – all names, emails, and other personal information will be overwritten. <strong>This action is irreversible.</strong>" %}
+            </div>
+        </div>
+        <div class="form-group"{% if not "really" in request.GET %} style="visibility:hidden;"{% endif %}>
+            <input type="checkbox" name="really" id="really">
+            <label class="form-control-label" for="really">
+                {% translate "I really do want to delete my account, losing access to my proposals and sessions, and overriding my public and private data." %}
+            </label>
+        </div>
+        <div class="row">
+            <div class="col-md-4 flip ml-auto">
+                <input type="hidden" name="form" value="">
+                <button type="submit" class="btn btn-block btn-danger btn-lg">
+                    {% translate "Delete my account" %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
