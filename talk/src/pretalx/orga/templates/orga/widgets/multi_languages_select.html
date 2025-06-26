@@ -1,5 +1,0 @@
-{% with id=widget.attrs.id %}<div{% if id %} id="{{ id }}"{% endif %} class="{{ widget.attrs.class }} checkbox">{% for group, options, index in widget.optgroups %}{% if group %}
-  <div class="checkbox-group"><div class="checkbox-group-legend"><span>{% if group.2 %}<i class="{{ group.2 }} mr-1" aria-hidden="true"></i> {% endif %}{{ group.0 }}</span></div><div class="text-muted mb-2">{{ group.1|safe }}</div>{% endif %}{% for option in options %}<div class="checkbox">
-    {% include option.template_name with widget=option %}</div>{% endfor %}{% if group %}
-      </div>{% endif %}{% endfor %}
-</div>{% endwith %}

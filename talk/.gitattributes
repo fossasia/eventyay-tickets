@@ -1,3 +1,0 @@
-src/pretalx/static/vendored/* linguist-vendored
-doc/* linguist-documentation
-*.py diff=python

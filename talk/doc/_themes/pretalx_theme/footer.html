@@ -1,9 +1,0 @@
-<footer>
-  {% if pagename != "search" %}
-    <a href="https://{{ github_host|default("github.com") }}/{{ github_user }}/{{ github_repo }}/blob/{{ github_version }}{{ conf_py_path }}{{ pagename }}{{ page_source_suffix }}" class="fa fa-github"> Edit this page</a> &middot;
-  {% endif %}
-  {% trans copyright=copyright|e %}&copy; Copyright {{ copyright }}.{% endtrans %}
-  <div>
-  {%- block extrafooter %} {% endblock %}
-  </div>
-</footer>
