@@ -2,8 +2,20 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% translate "Sent Emails" %}</h2>
-
+<nav id="event-nav" class="header-nav">
+    <div class="navigation">
+        <div class="navigation-title">
+            <h1>
+                {% blocktranslate count mail_count=mails|length %}
+                    Sent emails
+                {% plural %}
+                    {{ mail_count }} Sent emails
+                {% endblocktranslate %}
+            </h1>
+        </div>
+        {% include "pretixcontrol/event/component_link.html" %}
+    </div>
+</nav>
 <table class="table mt-4">
     <thead>
         <tr>
@@ -16,7 +28,12 @@
     <tbody>
         {% for mail in mails %}
         <tr>
-            <td>{{ mail.subject }}</td>
+            <td>
+                <a class="text-body text-decoration-none"
+                href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                    {{ mail.subject }}
+                </a>
+            </td>
             <td>{{ mail.recipient }}</td>
             <td>
                 {% if mail.order %}

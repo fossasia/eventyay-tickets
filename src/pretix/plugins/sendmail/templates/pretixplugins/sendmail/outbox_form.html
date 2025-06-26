@@ -1,0 +1,93 @@
+{% extends "pretixcontrol/event/settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load rich_text %}
+
+{% block title %}
+    {% translate "Mail Editor" %}
+{% endblock %}
+
+{% block inside %}
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% translate "Mail Editor" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
+
+    {% if read_only %}
+        <div class="alert alert-info">
+            {% blocktranslate trimmed with timestamp=form.instance.sent_at %}
+                This email was sent on {{ timestamp }}.
+            {% endblocktranslate %}
+        </div>
+
+        <div class="d-flex flex-column">
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "To" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.recipient }}</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "Reply-To" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.reply_to|default:"-" }}</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "BCC" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.bcc|default:"-" }}</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "Subject" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.subject }}</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "Message" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.message|rich_text }}</div>
+            </div>
+        </div>
+
+        <div class="submit-group">
+            <a class="btn btn-info" href="#">
+                {% translate "Copy to draft" %}
+            </a>
+        </div>
+    {% else %}
+        <!-- Main edit form -->
+        <form method="post" class="form-horizontal" id="edit-form">
+            {% csrf_token %}
+            {% bootstrap_form_errors form %}
+            <fieldset>
+                {% bootstrap_field form.recipient layout="horizontal" %}
+                {% bootstrap_field form.reply_to layout="horizontal" %}
+                {% bootstrap_field form.bcc layout="horizontal" %}
+                {% bootstrap_field form.subject layout="horizontal" %}
+                {% bootstrap_field form.message layout="horizontal" %}
+            </fieldset>
+        </form>
+
+        <!-- Button container outside the main form -->
+        <div class="form-group submit-group d-flex justify-content-between align-items-center flex-wrap gap-2 w-100 mb-3">
+            <!-- Discard button on the left -->
+            <form method="post"
+                  style="display: inline;"
+                  action="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=form.instance.pk %}"
+                  onsubmit="return confirm('{% translate "Are you sure you want to discard this email? This action cannot be undone." %}');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="fa fa-trash"></i> {% translate "Discard" %}
+                </button>
+            </form>
+
+            <!-- Save buttons on the right -->
+            <div class="d-flex gap-2">
+                <button type="submit" name="action" value="save" form="edit-form" class="btn btn-primary btn-lg">
+                    {% translate "Save changes" %}
+                </button>
+                <button type="submit" name="action" value="save_and_send" form="edit-form" class="btn btn-primary btn-lg">
+                    {% translate "Save and Send" %}
+                </button>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

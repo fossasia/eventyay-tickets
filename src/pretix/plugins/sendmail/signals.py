@@ -15,7 +15,7 @@ def control_nav_import(sender, request=None, **kwargs):
         {
             'label': _('Mails'),
             'url': reverse(
-                'plugins:sendmail:send',
+                'plugins:sendmail:outbox',
                 kwargs={
                     'event': request.event.slug,
                     'organizer': request.event.organizer.slug,

@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, ListView, View
+from django.views.generic import FormView, ListView, UpdateView, View
 
 from pretix.base.email import get_available_placeholders, get_email_context
 from pretix.base.i18n import LazyI18nString, language
@@ -24,6 +24,7 @@ from pretix.control.views.event import EventSettingsFormView, EventSettingsViewM
 from .forms import MailContentSettingsForm
 from . import forms
 from .forms import QueuedMailFilterForm
+from .forms import QueuedMailEditForm
 
 
 logger = logging.getLogger('pretix.plugins.sendmail')
@@ -291,7 +292,6 @@ class EmailHistoryView(EventPermissionRequiredMixin, ListView):
 
 class SentMailView(EventPermissionRequiredMixin, ListView):
     model = QueuedMail
-    model1 = QueuedMail
     context_object_name = "mails"
     template_name = "pretixplugins/sendmail/sent_list.html"
     default_filters = (
@@ -397,6 +397,45 @@ class SendQueuedMailView(EventPermissionRequiredMixin, View):
             'organizer': request.event.organizer.slug,
             'event': request.event.slug
         }))
+
+
+class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
+    model = QueuedMail
+    form_class = QueuedMailEditForm
+    template_name = 'pretixplugins/sendmail/outbox_form.html'
+    permission_required = 'can_change_orders'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(QueuedMail, event=self.request.event, pk=self.kwargs["pk"])
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['read_only'] = self.object.sent  # Make the form read-only if already sent
+        return ctx
+
+    def form_valid(self, form):
+        if form.instance.sent:
+            messages.error(self.request, _('This email has already been sent and cannot be edited.'))
+            return self.form_invalid(form)
+        
+        response = super().form_valid(form)
+        
+        # Check if "Save and Send" was clicked
+        if self.request.POST.get('action') == 'save_and_send':
+            if self.object.send():
+                messages.success(self.request, _('Your changes have been saved and the email has been sent.'))
+            else:
+                messages.error(self.request, _('Your changes have been saved, but there was an error sending the email.'))
+        else:
+            messages.success(self.request, _('Your changes have been saved.'))
+        
+        return response
+
+    def get_success_url(self):
+        return reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': self.request.event.organizer.slug,
+            'event': self.request.event.slug
+        })
 
 
 class DeleteQueuedMailView(EventPermissionRequiredMixin, View):

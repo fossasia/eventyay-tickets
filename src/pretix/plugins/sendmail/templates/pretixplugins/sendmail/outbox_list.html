@@ -2,11 +2,24 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% translate "Queued Emails" %}</h2>
+<nav id="event-nav" class="header-nav">
+    <div class="navigation">
+        <div class="navigation-title">
+            <h1>
+                {% blocktranslate count mail_count=mails|length %}
+                    {{ mail_count }} Queued emails
+                {% plural %}
+                    Queued email
+                {% endblocktranslate %}
+            </h1>
+        </div>
+        {% include "pretixcontrol/event/component_link.html" %}
+    </div>
+</nav>
 
 <form method="post" action="{% url 'plugins:sendmail:send_all' organizer=request.event.organizer.slug event=request.event.slug %}">
     {% csrf_token %}
-    <button class="btn btn-success">{% translate "Send all" %}</button>
+    <button class="btn btn-primary">{% translate "Send all" %}</button>
 </form>
 <form method="post" action="{% url 'plugins:sendmail:purge_all' organizer=request.event.organizer.slug event=request.event.slug %}" class="mt-2">
     {% csrf_token %}
@@ -19,14 +32,18 @@
             <th>{% translate "Subject" %}</th>
             <th>{% translate "To" %}</th>
             <th>{% translate "Order" %}</th>
-            <th>{% translate "Created" %}</th>
             <th>{% translate "Actions" %}</th>
         </tr>
     </thead>
     <tbody>
         {% for mail in mails %}
         <tr>
-            <td>{{ mail.subject }}</td>
+            <td>
+                <a class="text-body text-decoration-none"
+                href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                    {{ mail.subject }}
+                </a>
+            </td>
             <td>{{ mail.recipient }}</td>
             <td>
                 {% if mail.order %}
@@ -37,14 +54,22 @@
                     <em>{% translate "N/A" %}</em>
                 {% endif %}
             </td>
-            <td>{{ mail.created|date:"SHORT_DATETIME_FORMAT" }}</td>
             <td>
+                <!-- Send -->
                 <form method="post" action="{% url 'plugins:sendmail:send_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}" style="display:inline;">
                     {% csrf_token %}
-                    <button class="btn btn-sm btn-success" title="{% translate 'Send this email' %}">
-                        <i class="fa fa-paper-plane"></i>
+                    <button class="btn btn-sm btn-primary" title="{% translate 'Send this email' %}">
+                        <i class="fa fa-mail-forward"></i>
                     </button>
                 </form>
+                
+                <!-- Edit -->
+                <a class="btn btn-sm btn-primary" title="{% translate 'Edit this email' %}"
+                href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                    <i class="fa fa-edit"></i>
+                </a>
+
+                <!-- Delete -->
                 <form method="post" action="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}" style="display:inline;">
                     {% csrf_token %}
                     <button class="btn btn-sm btn-danger" title="{% translate 'Delete this email' %}">

@@ -13,6 +13,7 @@ from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
+from .models import QueuedMail
 
 MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
 
@@ -430,3 +431,25 @@ class QueuedMailFilterForm(forms.Form):
         if self.sent is not None:
             qs = qs.filter(sent=self.sent)
         return qs
+
+
+class QueuedMailEditForm(forms.ModelForm):
+    class Meta:
+        model = QueuedMail
+        fields = [
+            'recipient',
+            'reply_to',
+            'bcc',
+            'subject',
+            'message',
+        ]
+        labels = {
+            'recipient': 'To',
+        }
+        widgets = {
+            'subject': forms.TextInput(attrs={'class': 'form-control'}),
+            'recipient': forms.EmailInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
+            'reply_to': forms.TextInput(attrs={'class': 'form-control'}),
+            'bcc': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+        }
