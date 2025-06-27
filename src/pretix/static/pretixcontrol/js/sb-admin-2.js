@@ -12,9 +12,9 @@ $(function () {
     'use strict';
 
     // Sidebar toggle logic (variables moved up for broader scope if needed, and for clarity)
-    var $sidebarToggleButton = $('.navbar-toggle-sidebar'); // Our custom button, now hidden on mobile
-    var $defaultBurgerButton = $('.navbar-header > button.navbar-toggle'); // Default Bootstrap/sb-admin-2 button
-    var $body = $('body');
+    const $sidebarToggleButton = $('.navbar-toggle-sidebar'); // Our custom button, now hidden on mobile
+    const $defaultBurgerButton = $('.navbar-header > button.navbar-toggle'); // Default Bootstrap/sb-admin-2 button
+    const $body = $('body');
     // var $wrapper = $('#wrapper'); // Not directly used in the proposed JS changes
 
     function isMobileView() {
@@ -22,7 +22,7 @@ $(function () {
     }
 
     function applyInitialSidebarState() {
-        var minimized = localStorage.getItem('sidebarMinimized');
+        const minimized = localStorage.getItem('sidebarMinimized');
         if (isMobileView()) {
             // On mobile, 'minimized' means hidden off-canvas. Default to hidden.
             if (minimized === 'false') { // Show only if explicitly set to expanded
@@ -100,8 +100,8 @@ $(function () {
     });
 
     $(window).bind("load resize", function () {
-        var topOffset = 50;
-        var width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
+        let topOffset = 50;
+        const width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
     
         if (width < 768) { // Mobile view
             $('div.navbar-collapse').addClass('collapse'); // Collapse Bootstrap top navbar
@@ -122,7 +122,7 @@ $(function () {
         }
         
         // Adjust page wrapper min-height (original sb-admin-2 logic)
-        var height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
+        let height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
         height = height - topOffset;
         if (height < 1) height = 1;
         if (height > topOffset) {
@@ -141,7 +141,7 @@ $(function () {
         // e.preventDefault(); - Remove this line
         
         // Get the URL from the href attribute
-        var url = $(this).attr('href');
+        const url = $(this).attr('href');
         
         // If it's a valid URL (not # or javascript:void(0)), navigate to it
         if (url && url !== '#' && !url.startsWith('javascript:')) {
@@ -150,52 +150,52 @@ $(function () {
         }
         
         // The rest of the code will only execute for non-navigational links
-        var $this = $(this);
-        var $parent = $this.parent('li');
-        var $submenu = $parent.find('ul.nav-second-level').first();
-        var isMobile = $(window).width() < 768;
+        const $this = $(this);
+        const $parent = $this.parent('li');
+        const $submenu = $parent.find('ul.nav-second-level').first();
+        const isMobile = $(window).width() < 768;
         
         if (isMobile) {
-                    // Mobile behavior: accordion-style (close others at same level)
-                    var $siblings = $parent.siblings('li').find('ul.nav-second-level');
-                    $siblings.removeClass('in show mobile-submenu-open').slideUp(200);
-                    $siblings.parent().removeClass('active');
-
-                    // Toggle current submenu
-                    if ($submenu.hasClass('in')) {
-                        $submenu.removeClass('in show mobile-submenu-open').slideUp(200);
-                        $parent.removeClass('active');
-                    } else {
-                        $submenu.addClass('in show mobile-submenu-open').slideDown(200);
-                        $parent.addClass('active');
-                    }
-                }
-        else if ($submenu.hasClass('in')) {
-                        $submenu.removeClass('in show').slideUp(200);
-                        $parent.removeClass('active');
-                    }
-        else {
-                        $submenu.addClass('in show').slideDown(200);
-                        $parent.addClass('active');
-                    }
-
+            // Mobile behavior: accordion-style (close others at same level)
+            const $siblings = $parent.siblings('li').find('ul.nav-second-level');
+            $siblings.removeClass('in show mobile-submenu-open').slideUp(200);
+            $siblings.parent().removeClass('active');
+            
+            // Toggle current submenu
+            if ($submenu.hasClass('in')) {
+                $submenu.removeClass('in show mobile-submenu-open').slideUp(200);
+                $parent.removeClass('active');
+            } else {
+                $submenu.addClass('in show mobile-submenu-open').slideDown(200);
+                $parent.addClass('active');
+            }
+        } else {
+            // Desktop behavior: allow multiple submenus open
+            if ($submenu.hasClass('in')) {
+                $submenu.removeClass('in show').slideUp(200);
+                $parent.removeClass('active');
+            } else {
+                $submenu.addClass('in show').slideDown(200);
+                $parent.addClass('active');
+            }
+        }
     });
     
     // Add hover functionality for desktop
-    function setupSidebarHover() {
-    var $sidebar = $('.sidebar');
-    var $body = $('body');
-    var hoverTimeout;
+    const setupSidebarHover = function() {
+    const $sidebar = $('.sidebar');
+    const $body = $('body');
+    let hoverTimeout;
 
     if ($('#sidebar-hover-area').length === 0) {
         $('<div id="sidebar-hover-area"></div>').insertAfter($sidebar);
     }
 
-    var $hoverArea = $('#sidebar-hover-area');
+    const $hoverArea = $('#sidebar-hover-area');
 
-    function updateHoverArea() {
+    const updateHoverArea = function() {
         if ($body.hasClass('sidebar-minimized')) {
-            var sidebarPos = $sidebar.offset();
+            const sidebarPos = $sidebar.offset();
             $hoverArea.css({
                 position: 'fixed',
                 top: sidebarPos ? sidebarPos.top : '0',
@@ -214,7 +214,7 @@ $(function () {
     $(window).on('resize', updateHoverArea);
 
     // Clear hover logic
-    function expandSidebar() {
+    const expandSidebar = function() {
         clearTimeout(hoverTimeout);
         if ($body.hasClass('sidebar-minimized')) {
             $body.removeClass('sidebar-minimized').addClass('hover-temp-open');
@@ -223,7 +223,7 @@ $(function () {
         }
     }
 
-    function collapseSidebar() {
+    const collapseSidebar = function() {
         hoverTimeout = setTimeout(function () {
             $body.addClass('sidebar-minimized').removeClass('hover-temp-open');
             updateHoverArea();
@@ -236,7 +236,7 @@ $(function () {
     // Detect when mouse leaves the entire sidebar region
     $(document).on('mousemove', function (e) {
         if ($body.hasClass('hover-temp-open')) {
-            var sidebarRect = $sidebar[0].getBoundingClientRect();
+            const sidebarRect = $sidebar[0].getBoundingClientRect();
             if (
                 e.clientX > sidebarRect.right + 20 ||  // moved too far right
                 e.clientY < sidebarRect.top - 20 ||    // moved too far up
