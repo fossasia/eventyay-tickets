@@ -24,6 +24,10 @@
 <body>
     <div id="wrapper">
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <button type="button" class="navbar-toggle-sidebar navbar-toggle" id="sidebar-toggle" data-toggle="sidebar">
+                <span class="sr-only">Toggle sidebar</span>
+                <i class="fa fa-bars fa-lg"></i>
+            </button>
             <div class="navbar-header">
                 <a class="navbar-brand" href='{% url "control:index" %}'>
                     <img src='{% static "pretixbase/img/eventyay-icon.svg" %}' />
