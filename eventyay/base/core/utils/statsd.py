@@ -68,7 +68,7 @@ class StatsD:
             stats = [stats]
         data = {}
         for stat in stats:
-            stat += f",env={settings.VENUELESS_ENVIRONMENT}"
+            stat += f",env={settings.EVENTYAY_ENVIRONMENT}"
             data[stat] = f"{delta}|{metric}"
         self.protocol.send(data)
 

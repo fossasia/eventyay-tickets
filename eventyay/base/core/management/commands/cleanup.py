@@ -6,7 +6,7 @@ from django.db.models import F
 from django.utils.timezone import now
 
 from eventyay.base.models import RouletteRequest
-from venueless.core.models.auth import ShortToken
+from eventyay.base.core.models.auth import ShortToken
 from eventyay.base.models.room import AnonymousInvite, RoomView
 from eventyay.base.models.world import WorldView
 from eventyay.base.storage.models import StoredFile

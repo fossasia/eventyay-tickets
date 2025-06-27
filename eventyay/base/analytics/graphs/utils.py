@@ -8,7 +8,7 @@ from pdfrw.toreportlab import makerl
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.platypus import Flowable
 
-from venueless.core.models import World
+from eventyay.base.models import World
 
 logger = logging.getLogger(__name__)
 

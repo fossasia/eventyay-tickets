@@ -18,9 +18,9 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
-from venueless.core.models import Feedback, World
-from venueless.core.models.auth import ShortToken
-from venueless.core.models.room import AnonymousInvite
+from eventyay.base.models import Feedback, World
+from eventyay.base.core.models.auth import ShortToken
+from eventyay.base.models.room import AnonymousInvite
 
 
 class SourceCache:
@@ -50,16 +50,16 @@ class ManifestView(View):
             "theme_color": "#180044",
             "icons": [
                 {
-                    "src": "/venueless-logo.192.png",
+                    "src": "/eventyay-logo.192.png",
                     "type": "image/png",
                     "sizes": "192x192",
                 },
                 {
-                    "src": "/venueless-logo.512.png",
+                    "src": "/eventyay-logo.512.png",
                     "type": "image/png",
                     "sizes": "512x512",
                 },
-                {"src": "/venueless-logo.svg", "sizes": "192x192 512x512"},
+                {"src": "/eventyay-logo.svg", "sizes": "192x192 512x512"},
             ],
             "start_url": ".",
             "display": "standalone",
@@ -89,7 +89,7 @@ class AppView(View):
             # The sysadmin has set up a separate domain for short URLs
             if request.path == "/":
                 # This must be a 200, not a 302 or 404, so the domain is considered "active"
-                # by our auto-SSL setup in the venueless.events production deployment
+                # by our auto-SSL setup in the eventyay.events production deployment
                 return render(request, "live/short_domain_index.html")
             else:
                 try:
@@ -138,7 +138,7 @@ class AppView(View):
         )
         source = source.replace(
             "<body>",
-            "<script>window.venueless={}</script><body>".format(
+            "<script>window.eventyay={}</script><body>".format(
                 json.dumps(
                     {
                         "api": {

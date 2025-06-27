@@ -74,7 +74,7 @@ from .organizer import (
 )
 from .poll import Poll, PollOption, PollVote
 from .poster import Poster, PosterLink, PosterPresenter, PosterVote
-from .question import Question, QuestionVote
+from .question import RoomQuestion, QuestionVote
 from .room import Reaction, Room, RoomView
 from .roulette import RoulettePairing, RouletteRequest
 from .seating import Seat, SeatCategoryMapping, SeatingPlan
@@ -149,7 +149,6 @@ __all__ = [
     "PosterLink",
     "PosterPresenter",
     "PosterVote",
-    "Question",
     "QuestionAnswer",
     "QuestionOption",
     "QuestionVote",
@@ -158,6 +157,7 @@ __all__ = [
     "RequiredAction",
     "RevokedTicketSecret",
     "Room",
+    "RoomQuestion",
     "RoomView",
     "RoulettePairing",
     "RouletteRequest",

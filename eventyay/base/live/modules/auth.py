@@ -12,17 +12,17 @@ from django.core.signing import dumps
 from django.urls import reverse
 from sentry_sdk import configure_scope
 
-from venueless.core.models import User
-from venueless.core.models.auth import ShortToken
-from venueless.core.permissions import Permission
-from venueless.core.services.announcement import get_announcements
-from venueless.core.services.chat import ChatService
-from venueless.core.services.connections import (
+from eventyay.base.core.models import User
+from eventyay.base.core.models.auth import ShortToken
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.announcement import get_announcements
+from eventyay.base.core.services.chat import ChatService
+from eventyay.base.core.services.connections import (
     get_user_connection_count,
     register_user_connection,
     unregister_user_connection,
 )
-from venueless.core.services.user import (
+from eventyay.base.core.services.user import (
     AuthError,
     block_user,
     delete_user,
@@ -40,12 +40,12 @@ from venueless.core.services.user import (
     update_user,
     user_broadcast,
 )
-from venueless.core.utils.redis import aredis
-from venueless.core.utils.statsd import statsd
-from venueless.importers.tasks import conftool_update_schedule
-from venueless.live.channels import GROUP_USER, GROUP_WORLD
-from venueless.live.decorators import command, require_world_permission
-from venueless.live.modules.base import BaseModule
+from eventyay.base.core.utils.redis import aredis
+from eventyay.base.core.utils.statsd import statsd
+from eventyay.base.data.importers.tasks import conftool_update_schedule
+from eventyay.base.live.channels import GROUP_USER, GROUP_WORLD
+from eventyay.base.live.decorators import command, require_world_permission
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 
@@ -539,7 +539,7 @@ class AuthModule(BaseModule):
             "world": self.consumer.world.pk,
             "user": str(self.consumer.user.pk),
         }
-        token = dumps(payload, salt="venueless.social.start", compress=True)
+        token = dumps(payload, salt="eventyay.base.social.start", compress=True)
 
         await self.consumer.send_success(
             {

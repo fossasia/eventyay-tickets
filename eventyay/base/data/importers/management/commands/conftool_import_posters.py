@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from venueless.core.models import World
-from venueless.importers.conftool import create_posters_from_conftool
+from eventyay.base.models import World
+from eventyay.base.data.importers.conftool import create_posters_from_conftool
 
 
 class Command(BaseCommand):

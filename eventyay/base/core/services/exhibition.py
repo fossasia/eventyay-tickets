@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 
-from venueless.core.models import (
+from eventyay.base.models import (
     AuditLog,
     ContactRequest,
     Exhibitor,
@@ -10,8 +10,8 @@ from venueless.core.models import (
     ExhibitorStaff,
     Room,
 )
-from venueless.core.models.exhibitor import ExhibitorView
-from venueless.core.services.user import get_user_by_id
+from eventyay.base.models.exhibitor import ExhibitorView
+from eventyay.base.core.services.user import get_user_by_id
 
 
 def get_exhibitor_by_id(world_id, id):

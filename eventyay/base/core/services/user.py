@@ -15,12 +15,12 @@ from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 
-from ...live.channels import GROUP_USER
-from ..models import AuditLog
-from ..models.auth import User
-from ..models.room import AnonymousInvite
-from ..models.world import World, WorldView
-from ..permissions import Permission
+from eventyay.base.live.channels import GROUP_USER
+from eventyay.base.models import AuditLog
+from eventyay.base.core.models.auth import User
+from eventyay.base.models.room import AnonymousInvite
+from eventyay.base.models.world import World, WorldView
+from eventyay.base.core.permissions import Permission
 
 
 def get_user_by_id(world_id, user_id):

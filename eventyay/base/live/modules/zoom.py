@@ -3,10 +3,10 @@ import re
 from django.core import signing
 from django.urls import reverse
 
-from venueless.core.permissions import Permission
-from venueless.live.decorators import command, room_action
-from venueless.live.exceptions import ConsumerException
-from venueless.live.modules.base import BaseModule
+from eventyay.base.core.permissions import Permission
+from eventyay.base.live.decorators import command, room_action
+from eventyay.base.live.exceptions import ConsumerException
+from eventyay.base.live.modules.base import BaseModule
 
 
 class ZoomModule(BaseModule):

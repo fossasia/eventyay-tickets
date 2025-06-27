@@ -1,15 +1,15 @@
 import logging
 
-from venueless.core.permissions import Permission
-from venueless.core.services.announcement import (
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.announcement import (
     create_announcement,
     get_announcement,
     get_announcements,
     update_announcement,
 )
-from venueless.live.channels import GROUP_WORLD
-from venueless.live.decorators import command, event, require_world_permission
-from venueless.live.modules.base import BaseModule
+from eventyay.base.live.channels import GROUP_WORLD
+from eventyay.base.live.decorators import command, event, require_world_permission
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 

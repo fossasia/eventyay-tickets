@@ -1,10 +1,10 @@
 import functools
 from typing import List, Union
 
-from venueless.core.permissions import Permission
-from venueless.core.services.chat import get_channel
-from venueless.core.services.world import get_room
-from venueless.live.exceptions import ConsumerException
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.chat import get_channel
+from eventyay.base.core.services.world import get_room
+from eventyay.base.live.exceptions import ConsumerException
 
 
 def command(event_name):

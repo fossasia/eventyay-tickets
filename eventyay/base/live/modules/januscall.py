@@ -7,21 +7,21 @@ from django.conf import settings
 from redis.asyncio.lock import Lock
 from sentry_sdk import capture_exception
 
-from venueless.core.models import JanusServer
-from venueless.core.permissions import Permission
-from venueless.core.services import turn
-from venueless.core.services.janus import (
+from eventyay.base.models import JanusServer
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services import turn
+from eventyay.base.core.services.janus import (
     JanusError,
     choose_server,
     create_videoroom,
     videoroom_add_token_if_exists,
 )
-from venueless.core.services.roulette import is_member_of_roulette_call
-from venueless.core.services.user import get_public_user
-from venueless.core.utils.redis import aredis
-from venueless.live.decorators import command, require_world_permission, room_action
-from venueless.live.exceptions import ConsumerException
-from venueless.live.modules.base import BaseModule
+from eventyay.base.core.services.roulette import is_member_of_roulette_call
+from eventyay.base.core.services.user import get_public_user
+from eventyay.base.core.utils.redis import aredis
+from eventyay.base.live.decorators import command, require_world_permission, room_action
+from eventyay.base.live.exceptions import ConsumerException
+from eventyay.base.live.modules.base import BaseModule
 
 
 class JanusCallModule(BaseModule):

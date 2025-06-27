@@ -11,11 +11,11 @@ from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from sentry_sdk import add_breadcrumb, configure_scope
 
-from venueless.core.models.room import AnonymousInvite, RoomConfigSerializer
-from venueless.core.permissions import Permission
-from venueless.core.services.poll import get_polls, get_voted_polls
-from venueless.core.services.reactions import store_reaction
-from venueless.core.services.room import (
+from eventyay.base.models.room import AnonymousInvite, RoomConfigSerializer
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.poll import get_polls, get_voted_polls
+from eventyay.base.core.services.reactions import store_reaction
+from eventyay.base.core.services.room import (
     delete_room,
     end_view,
     get_viewers,
@@ -23,14 +23,14 @@ from venueless.core.services.room import (
     save_room,
     start_view,
 )
-from venueless.core.services.world import (
+from eventyay.base.core.services.world import (
     create_room,
     get_room_config_for_user,
     get_rooms,
     notify_world_change,
 )
-from venueless.core.utils.redis import aredis
-from venueless.live.channels import (
+from eventyay.base.core.utils.redis import aredis
+from eventyay.base.live.channels import (
     GROUP_ROOM,
     GROUP_ROOM_POLL_ALL_RESULTS,
     GROUP_ROOM_POLL_MANAGE,
@@ -41,14 +41,14 @@ from venueless.live.channels import (
     GROUP_ROOM_VIEWERS,
     GROUP_WORLD,
 )
-from venueless.live.decorators import (
+from eventyay.base.live.decorators import (
     command,
     event,
     require_world_permission,
     room_action,
 )
-from venueless.live.exceptions import ConsumerException
-from venueless.live.modules.base import BaseModule
+from eventyay.base.live.exceptions import ConsumerException
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 

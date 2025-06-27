@@ -2,16 +2,16 @@ import logging
 
 from channels.db import database_sync_to_async
 
-from venueless.core.permissions import Permission
-from venueless.core.services.exhibition import ExhibitionService
-from venueless.live.channels import GROUP_USER
-from venueless.live.decorators import (
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.exhibition import ExhibitionService
+from eventyay.base.live.channels import GROUP_USER
+from eventyay.base.live.decorators import (
     command,
     event,
     require_world_permission,
     room_action,
 )
-from venueless.live.modules.base import BaseModule
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 

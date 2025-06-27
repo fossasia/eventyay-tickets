@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 
-from venueless.core.models import (
+from eventyay.base.models import (
     AuditLog,
     Channel,
     Poster,
@@ -10,7 +10,7 @@ from venueless.core.models import (
     PosterVote,
     Room,
 )
-from venueless.core.services.user import get_user_by_id
+from eventyay.base.core.services.user import get_user_by_id
 
 
 def get_poster_by_id(world_id, id):

@@ -4,8 +4,8 @@ from asgiref.sync import sync_to_async
 from celery.result import AsyncResult
 from channels.db import database_sync_to_async
 
-from venueless.core.permissions import Permission
-from venueless.core.services.world import (
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.world import (
     _config_serializer,
     generate_tokens,
     get_audit_log,
@@ -14,7 +14,7 @@ from venueless.core.services.world import (
     notify_world_change,
     save_world,
 )
-from venueless.graphs.tasks import (
+from eventyay.base.analytics.graphs.tasks import (
     generate_attendee_list,
     generate_attendee_session_list,
     generate_chat_history,
@@ -25,9 +25,9 @@ from venueless.graphs.tasks import (
     generate_session_views,
     generate_views,
 )
-from venueless.importers.tasks import conftool_update_schedule
-from venueless.live.decorators import command, event, require_world_permission
-from venueless.live.modules.base import BaseModule
+from eventyay.base.data.importers.tasks import conftool_update_schedule
+from eventyay.base.live.decorators import command, event, require_world_permission
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,8 @@
-from venueless.core.permissions import Permission
-from venueless.core.services.bbb import BBBService
-from venueless.live.decorators import command, room_action
-from venueless.live.exceptions import ConsumerException
-from venueless.live.modules.base import BaseModule
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.bbb import BBBService
+from eventyay.base.live.decorators import command, room_action
+from eventyay.base.live.exceptions import ConsumerException
+from eventyay.base.live.modules.base import BaseModule
 
 
 class BBBModule(BaseModule):

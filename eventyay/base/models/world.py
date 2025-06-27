@@ -11,14 +11,28 @@ from django.db import models
 from django.db.models import JSONField
 from django.utils.crypto import get_random_string
 
-from venueless.core.models import User
-from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import (
+from eventyay.base.models import User
+from eventyay.base.models.cache import VersionedModel
+from eventyay.base.core.permissions import (
     MAX_PERMISSIONS_IF_SILENCED,
     SYSTEM_ROLES,
     Permission,
 )
-from venueless.core.utils.json import CustomJSONEncoder
+from eventyay.base.core.utils.json import CustomJSONEncoder
+from eventyay.base.models import (
+    ChatEvent,
+    ContactRequest,
+    ExhibitorStaff,
+    ExhibitorView,
+    Feedback,
+    Membership,
+    Poll,
+    PosterPresenter,
+    Question,
+    Reaction,
+    RoomView,
+)
+from eventyay.base.storage.models import StoredFile
 
 
 def default_roles():
@@ -382,8 +396,8 @@ class World(VersionedModel):
         self.save()
 
     def clone_from(self, old, new_secrets):
-        from venueless.core.models import Channel
-        from venueless.storage.models import StoredFile
+        from eventyay.base.models import Channel
+        from eventyay.base.storage.models import StoredFile
 
         if self.pk == old.pk:
             raise ValueError("Illegal attempt to clone into same world")
@@ -433,7 +447,7 @@ class World(VersionedModel):
             self.config["JWT_secrets"] = [
                 {
                     "issuer": "any",
-                    "audience": "venueless",
+                    "audience": "eventyay",
                     "secret": secret,
                 }
             ]

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from venueless.core.models import User
+from eventyay.base.models import User
 
 
 class Command(BaseCommand):

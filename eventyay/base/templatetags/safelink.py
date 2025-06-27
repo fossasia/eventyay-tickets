@@ -1,6 +1,6 @@
 from django import template
 
-from pretix.helpers.safedownload import get_token
+
 
 from ..views.redirect import safelink as sl
 

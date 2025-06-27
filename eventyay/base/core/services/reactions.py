@@ -1,6 +1,6 @@
 from channels.db import database_sync_to_async
 
-from venueless.core.models.room import Reaction
+from eventyay.base.models.room import Reaction
 
 
 @database_sync_to_async

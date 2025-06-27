@@ -2,7 +2,7 @@ import time
 
 from django.conf import settings
 
-from venueless.core.utils.redis import aredis
+from eventyay.base.core.utils.redis import aredis
 
 
 async def register_connection():
@@ -10,11 +10,11 @@ async def register_connection():
         tr = redis.pipeline(transaction=False)
         tr.hincrby(
             "connections",
-            f"{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+            f"{settings.EVENTYAY_COMMIT}.{settings.EVENTYAY_ENVIRONMENT}",
             1,
         )
         tr.setex(
-            f"connections:{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+            f"connections:{settings.EVENTYAY_COMMIT}.{settings.EVENTYAY_ENVIRONMENT}",
             60,
             "exists",
         )
@@ -25,7 +25,7 @@ async def unregister_connection():
     async with aredis() as redis:
         await redis.hincrby(
             "connections",
-            f"{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+            f"{settings.EVENTYAY_COMMIT}.{settings.EVENTYAY_ENVIRONMENT}",
             -1,
         )
 
@@ -78,7 +78,7 @@ async def ping_connection(last_ping, user=None):
                 90,
             )
         tr.setex(
-            f"connections:{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+            f"connections:{settings.EVENTYAY_COMMIT}.{settings.EVENTYAY_ENVIRONMENT}",
             60,
             "exists",
         )

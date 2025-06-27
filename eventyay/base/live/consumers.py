@@ -12,13 +12,13 @@ from django.db import OperationalError
 from sentry_sdk import capture_exception, configure_scope
 from websockets import ConnectionClosed
 
-from venueless.core.services.connections import (
+from eventyay.base.core.services.connections import (
     ping_connection,
     register_connection,
     unregister_connection,
 )
-from venueless.core.services.world import get_world
-from venueless.live.exceptions import ConsumerException
+from eventyay.base.core.services.world import get_world
+from eventyay.base.live.exceptions import ConsumerException
 
 from ..core.utils.redis import aredis
 from ..core.utils.statsd import statsd
@@ -64,19 +64,19 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         if settings.REDIS_USE_PUBSUB:
             async with aredis() as redis:
                 await redis.zadd(
-                    f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+                    f"version.{settings.EVENTYAY_COMMIT}.{settings.EVENTYAY_ENVIRONMENT}",
                     dict([(self.channel_name, int(time.time()))]),
                 )
                 await redis.expire(
-                    f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+                    f"version.{settings.EVENTYAY_COMMIT}.{settings.EVENTYAY_ENVIRONMENT}",
                     24 * 3600,
                 )
         else:
             await self.channel_layer.group_add(
                 GROUP_VERSION.format(
-                    label=settings.VENUELESS_COMMIT
+                    label=settings.EVENTYAY_COMMIT
                     + "."
-                    + settings.VENUELESS_ENVIRONMENT
+                    + settings.EVENTYAY_ENVIRONMENT
                 ),
                 self.channel_name,
             )
@@ -126,15 +126,15 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         if settings.REDIS_USE_PUBSUB:
             async with aredis() as redis:
                 await redis.zrem(
-                    f"version.{settings.VENUELESS_COMMIT}.{settings.VENUELESS_ENVIRONMENT}",
+                    f"version.{settings.EVENTYAY_COMMIT}.{settings.EVENTYAY_ENVIRONMENT}",
                     self.channel_name,
                 )
         else:
             await self.channel_layer.group_discard(
                 GROUP_VERSION.format(
-                    label=settings.VENUELESS_COMMIT
+                    label=settings.EVENTYAY_COMMIT
                     + "."
-                    + settings.VENUELESS_ENVIRONMENT
+                    + settings.EVENTYAY_ENVIRONMENT
                 ),
                 self.channel_name,
             )

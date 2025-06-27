@@ -13,10 +13,10 @@ from django.db.models import Count, Max, OuterRef, Subquery
 from pytz import common_timezones
 from rest_framework import serializers
 
-from venueless.core.models import AuditLog, Channel, Room, World
-from venueless.core.models.auth import ShortToken
-from venueless.core.models.room import RoomConfigSerializer, RoomView
-from venueless.core.permissions import Permission
+from eventyay.base.models import AuditLog, Channel, Room, World
+from eventyay.base.core.models.auth import ShortToken
+from eventyay.base.models.room import RoomConfigSerializer, RoomView
+from eventyay.base.core.permissions import Permission
 
 
 class WorldConfigSerializer(serializers.Serializer):
@@ -62,13 +62,13 @@ class WorldConfigSerializer(serializers.Serializer):
         if "twitter" in val and not settings.TWITTER_CLIENT_ID:
             raise ValidationError(
                 "Twitter login can't be enabled since there's no Twitter API keys set for this "
-                "Venueless installation."
+                "Eventyay installation."
             )
 
         if "linkedin" in val and not settings.LINKEDIN_CLIENT_ID:
             raise ValidationError(
                 "LinkedIn login can't be enabled since there's no LinkedIn API keys set for this "
-                "Venueless installation."
+                "Eventyay installation."
             )
 
         return val

@@ -4,8 +4,7 @@ from contextlib import asynccontextmanager
 
 import redis
 from channels.layers import get_channel_layer
-from eventyay.base.live.channels import GROUP_VERSION
-from eventyay.base.core.utils.redis.utils import create_pool
+from channels_redis.utils import create_pool
 from django.conf import settings
 from redis import asyncio as aioredis
 from redis.asyncio.retry import Retry

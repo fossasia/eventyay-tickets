@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
-from venueless.core.models import World
+from eventyay.base.models import World
 
 
 def generate_signature(data):
@@ -96,7 +96,7 @@ class MeetingView(ZoomViewMixin, TemplateView):
                 "user_name": inp["un"],
                 "user_email": "{}@zoom.fake.{}".format(
                     inp["ui"],
-                    "debug.venueless.events" if settings.DEBUG else self.world.domain,
+                    "debug.eventyay.events" if settings.DEBUG else self.world.domain,
                 ),
                 "support_chat": not inp["dc"],
                 "debug": settings.DEBUG,

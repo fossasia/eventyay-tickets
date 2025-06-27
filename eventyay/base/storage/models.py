@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.crypto import get_random_string
 
-from venueless.core.models import User, World
+
 
 
 def storedfile_name(instance, filename: str) -> str:
@@ -23,7 +23,7 @@ class StoredFile(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    world = models.ForeignKey(World, on_delete=models.PROTECT)
+    world = models.ForeignKey("eventyaybase.World", on_delete=models.PROTECT)
     expires = models.DateTimeField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
     filename = models.CharField(max_length=255)
@@ -32,7 +32,7 @@ class StoredFile(models.Model):
         null=True, blank=True, upload_to=storedfile_name, max_length=999
     )
     public = models.BooleanField(default=False)
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.PROTECT)
+    user = models.ForeignKey("eventyaybase.User", null=True, blank=True, on_delete=models.PROTECT)
     source_url = models.CharField(max_length=255, null=True, blank=True)
 
     def full_delete(self):

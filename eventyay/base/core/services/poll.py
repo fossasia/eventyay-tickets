@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from django.db.models import Q
 
-from venueless.core.models.poll import Poll, PollOption, PollVote
+from eventyay.base.models.poll import Poll, PollOption, PollVote
 
 
 @database_sync_to_async

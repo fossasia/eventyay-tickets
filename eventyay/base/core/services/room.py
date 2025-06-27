@@ -4,9 +4,9 @@ from channels.db import database_sync_to_async
 from django.db.transaction import atomic
 from django.utils.timezone import now
 
-from venueless.core.models import AuditLog, Channel, User, World
-from venueless.core.models.room import Room, RoomConfigSerializer, RoomView
-from venueless.core.services.user import get_public_users
+from eventyay.base.models import AuditLog, Channel, User, World
+from eventyay.base.models.room import Room, RoomConfigSerializer, RoomView
+from eventyay.base.core.services.user import get_public_users
 
 
 @database_sync_to_async

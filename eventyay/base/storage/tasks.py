@@ -4,12 +4,12 @@ from contextlib import suppress
 import asgiref
 import channels
 
-from venueless.celery_app import app
-from venueless.core.models import ChatEvent
-from venueless.core.services.chat import ChatService
-from venueless.core.tasks import WorldTask
-from venueless.live.channels import GROUP_CHAT
-from venueless.storage.external import fetch_preview_data
+from eventyay.celery_app import app
+from eventyay.base.models import ChatEvent
+from eventyay.base.core.services.chat import ChatService
+from eventyay.base.core.tasks import WorldTask
+from eventyay.base.live.channels import GROUP_CHAT
+from eventyay.base.storage.external import fetch_preview_data
 
 
 @app.task(base=WorldTask)

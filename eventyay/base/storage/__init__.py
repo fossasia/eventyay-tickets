@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class StorageConfig(AppConfig):
-    name = "venueless.storage"
+    name = "eventyay.base.storage"
     label = "storage"

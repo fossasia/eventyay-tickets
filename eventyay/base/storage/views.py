@@ -16,12 +16,12 @@ from PIL import Image, ImageOps
 from PIL.Image import Resampling
 from rest_framework.authentication import get_authorization_header
 
-from venueless.core.models import World
-from venueless.core.permissions import Permission
-from venueless.core.services.user import AuthError, login
-from venueless.core.services.world import notify_schedule_change
-from venueless.storage.models import StoredFile
-from venueless.storage.schedule_to_json import convert
+from eventyay.base.models import World
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.user import AuthError, login
+from eventyay.base.core.services.world import notify_schedule_change
+from eventyay.base.storage.models import StoredFile
+from eventyay.base.storage.schedule_to_json import convert
 
 logger = logging.getLogger(__name__)
 

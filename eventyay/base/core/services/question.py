@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from django.db.models import Exists, OuterRef, Q
 
-from venueless.core.models.question import Question, QuestionVote
+from eventyay.base.models.question import RoomQuestion, QuestionVote
 
 
 @database_sync_to_async

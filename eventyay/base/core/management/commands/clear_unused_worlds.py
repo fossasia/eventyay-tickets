@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Max, Q
 from django.utils.timezone import now
 
-from venueless.core.models import ChatEvent, RoomView, World
+from eventyay.base.models import ChatEvent, RoomView, World
 
 
 class Command(BaseCommand):

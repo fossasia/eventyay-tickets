@@ -6,9 +6,9 @@ from django.db.models.expressions import RawSQL, Value
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
-from venueless.core.models import User
-from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import SYSTEM_ROLES, Permission
+from eventyay.base.models import User
+from eventyay.base.models.cache import VersionedModel
+from eventyay.base.core.permissions import SYSTEM_ROLES, Permission
 
 
 def empty_module_config():
@@ -143,7 +143,7 @@ class Room(VersionedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     deleted = models.BooleanField(default=False)
     world = models.ForeignKey(
-        to="core.World", related_name="rooms", on_delete=models.PROTECT
+        to="eventyaybase.World", related_name="rooms", on_delete=models.PROTECT
     )
     trait_grants = JSONField(null=True, blank=True, default=default_grants)
     module_config = JSONField(null=True, default=empty_module_config)
@@ -226,7 +226,7 @@ class AnonymousInvite(models.Model):
         max_length=150,
     )
     world = models.ForeignKey(
-        "World", related_name="anonymous_invites", on_delete=models.CASCADE
+        "eventyaybase.World", related_name="anonymous_invites", on_delete=models.CASCADE
     )
     room = models.ForeignKey(
         "Room", related_name="anonymous_invites", on_delete=models.CASCADE

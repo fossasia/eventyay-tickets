@@ -17,8 +17,8 @@ from django.db.models import (
 )
 from django.utils.timezone import now
 
-from ...live.channels import GROUP_CHAT
-from ..models import (
+from eventyay.base.live.channels import GROUP_CHAT
+from eventyay.base.models import (
     AuditLog,
     BBBCall,
     Channel,
@@ -27,11 +27,11 @@ from ..models import (
     Membership,
     User,
 )
-from ..models.chat import ChatEventNotification
-from ..permissions import Permission
-from ..utils.redis import aredis
-from .bbb import choose_server
-from .user import get_public_users, user_broadcast
+from eventyay.base.models.chat import ChatEventNotification
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.utils.redis import aredis
+from eventyay.base.core.services.bbb import choose_server
+from eventyay.base.core.services.user import get_public_users, user_broadcast
 
 MENTION_RE = re.compile(
     r"@([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"

@@ -40,7 +40,7 @@ def choose_server(world, room=None, prefer_server=None):
 
     # If we're looking for a server to put a direct message on (no room), we'll take a server with
     # the lowest 'cost', which means it is least used *right now*.
-    # If we're looking to place a room, this makes less sense since 95% of Venueless rooms are created
+    # If we're looking to place a room, this makes less sense since 95% of Eventyay rooms are created
     # *days* before their peak usage times. However, peak usage often coincides for rooms in the same
     # world, so we'll try to distribute them evenly.
     if not room:
@@ -107,7 +107,7 @@ def get_create_params_for_call_id(call_id, record, user):
         "attendeePW": call.attendee_pw,
         "moderatorPW": call.moderator_pw,
         "record": "true" if record else "false",
-        "meta_Source": "venueless",
+        "meta_Source": "eventyay",
         "meta_Call": str(call_id),
         "lockSettingsDisablePrivateChat": "true",
     }
@@ -158,7 +158,7 @@ def get_create_params_for_room(
         "attendeePW": call.attendee_pw,
         "moderatorPW": call.moderator_pw,
         "record": "true" if record else "false",
-        "meta_Source": "venueless",
+        "meta_Source": "eventyay",
         "meta_World": room.world_id,
         "meta_Room": str(room.id),
         "muteOnStart": ("true" if config.get("bbb_mute_on_start", False) else "false"),

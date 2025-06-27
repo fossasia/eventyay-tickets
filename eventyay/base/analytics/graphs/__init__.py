@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class GraphsConfig(AppConfig):
-    name = "venueless.graphs"
+    name = "eventyay.base.analytics.graphs"
     label = "graphs"

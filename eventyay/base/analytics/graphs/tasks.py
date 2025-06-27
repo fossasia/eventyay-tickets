@@ -12,13 +12,13 @@ from django.utils.translation import override
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
-from venueless.celery_app import app
-from venueless.core.models import Channel, ExhibitorView, PollVote, Room, RoomView, User
-from venueless.core.models.world import WorldView
-from venueless.core.tasks import WorldTask
-from venueless.graphs.report import ReportGenerator
-from venueless.graphs.utils import get_schedule, pretalx_uni18n
-from venueless.storage.models import StoredFile
+from eventyay.celery_app import app
+from eventyay.base.models import Channel, ExhibitorView, PollVote, Room, RoomView, User
+from eventyay.base.models.world import WorldView
+from eventyay.base.core.tasks import WorldTask
+from eventyay.base.analytics.graphs.report import ReportGenerator
+from eventyay.base.analytics.graphs.utils import get_schedule, pretalx_uni18n
+from eventyay.base.storage.models import StoredFile
 
 
 @app.task(base=WorldTask)

@@ -36,12 +36,12 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from venueless.core.models import Channel, ChatEvent, Room, User
-from venueless.core.models.exhibitor import ContactRequest, ExhibitorView
-from venueless.core.models.room import RoomView
-from venueless.graphs.utils import PdfImage, get_schedule, median_value, pretalx_uni18n
-from venueless.graphs.views import build_room_view_fig
-from venueless.storage.models import StoredFile
+from eventyay.base.models import Channel, ChatEvent, Room, User
+from eventyay.base.models.exhibitor import ContactRequest, ExhibitorView
+from eventyay.base.models.room import RoomView
+from eventyay.base.analytics.graphs.utils import PdfImage, get_schedule, median_value, pretalx_uni18n
+from eventyay.base.analytics.graphs.views import build_room_view_fig
+from eventyay.base.storage.models import StoredFile
 
 
 class ReportGenerator:
@@ -138,7 +138,7 @@ class ReportGenerator:
         )
 
     def get_right_header_string(self):
-        return "venueless"
+        return "eventyay"
 
     def get_left_header_string(self):
         return self.world.title

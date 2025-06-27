@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from venueless.core.models import World
+from eventyay.base.models import World
 
 
 class Command(BaseCommand):

@@ -5,14 +5,14 @@ from asgiref.sync import async_to_sync
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 
-from venueless.celery_app import app
-from venueless.core.services.world import notify_schedule_change
-from venueless.core.tasks import WorldTask
-from venueless.importers.conftool import (
+from eventyay.celery_app import app
+from eventyay.base.core.services.world import notify_schedule_change
+from eventyay.base.core.tasks import WorldTask
+from eventyay.base.data.importers.conftool import (
     create_posters_from_conftool,
     fetch_schedule_from_conftool,
 )
-from venueless.storage.models import StoredFile
+from eventyay.base.storage.models import StoredFile
 
 
 @app.task(base=WorldTask)

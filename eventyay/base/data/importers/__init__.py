@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class ImportersConfig(AppConfig):
-    name = "venueless.importers"
+    name = "eventyay.base.data.importers"
     label = "importers"

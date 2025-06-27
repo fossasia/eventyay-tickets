@@ -717,7 +717,7 @@ def base_placeholders(sender, **kwargs):
             _('John Doe'),
         ),
     ]
-    if 'pretix_venueless' in sender.get_plugins():
+    if 'pretix_eventyay' in sender.get_plugins():
         ph.append(
             SimpleFunctionalMailTextPlaceholder(
                 'join_online_event',

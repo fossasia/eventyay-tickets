@@ -1,9 +1,9 @@
 import logging
 
-from venueless.core.permissions import Permission
-from venueless.core.services.poster import PosterService
-from venueless.live.decorators import command, require_world_permission, room_action
-from venueless.live.modules.base import BaseModule
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.poster import PosterService
+from eventyay.base.live.decorators import command, require_world_permission, room_action
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 

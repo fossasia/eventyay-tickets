@@ -1,6 +1,6 @@
 import logging
 
-from venueless.live.exceptions import ConsumerException
+from eventyay.base.live.exceptions import ConsumerException
 
 logger = logging.getLogger(__name__)
 

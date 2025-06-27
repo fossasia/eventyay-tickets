@@ -9,7 +9,7 @@ class QuestionManager(models.Manager):
         return self.get_queryset().annotate(_score=models.Count("votes"))
 
 
-class Question(models.Model):
+class RoomQuestion(models.Model):
     class States(models.TextChoices):
         VISIBLE = "visible"
         MOD_QUEUE = "mod_queue"  # This question is waiting to be moderated
@@ -26,8 +26,8 @@ class Question(models.Model):
 
     room = models.ForeignKey(
         to="Room",
-        related_name="questions",
         on_delete=models.CASCADE,
+        related_name="questions",
     )
     sender = models.ForeignKey(
         "User",
@@ -73,7 +73,7 @@ class Question(models.Model):
 
 class QuestionVote(models.Model):
     question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, related_name="votes"
+        RoomQuestion, on_delete=models.CASCADE, related_name="votes"
     )
     sender = models.ForeignKey(
         "User",

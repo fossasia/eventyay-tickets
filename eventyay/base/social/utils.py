@@ -3,8 +3,8 @@ import logging
 import requests
 from django.core.files.base import ContentFile
 
-from venueless.core.models import User
-from venueless.storage.models import StoredFile
+from eventyay.base.models import User
+from eventyay.base.storage.models import StoredFile
 
 
 def update_user_profile_from_social(

@@ -9,7 +9,7 @@ from django.db.models import JSONField
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 
-from venueless.core.models.cache import VersionedModel
+from eventyay.base.models.cache import VersionedModel
 
 
 class User(VersionedModel):
@@ -56,7 +56,7 @@ class User(VersionedModel):
         unique_together = (("token_id", "world"), ("client_id", "world"))
 
     def soft_delete(self):
-        from venueless.storage.models import StoredFile
+        from eventyay.base.storage.models import StoredFile
 
         self.bbb_invites.clear()
         self.room_grants.all().delete()
@@ -113,7 +113,7 @@ class User(VersionedModel):
         trait_badges_map=None,
         include_client_state=False,
     ):
-        # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
+        # Important: If this is updated, eventyay.base.core.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
         d = {
             "id": str(self.id),

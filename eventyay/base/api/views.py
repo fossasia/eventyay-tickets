@@ -136,7 +136,7 @@ class CreateWorldView(APIView):
                 "JWT_secrets": [
                     {
                         "issuer": "any",
-                        "audience": "venueless",
+                        "audience": "eventyay",
                         "secret": secret,
                     }
                 ]
@@ -345,7 +345,7 @@ def get_domain(path):
 @api_view(http_method_names=["POST"])
 @permission_classes([ApiAccessRequiredPermission])
 def schedule_update(request, **kwargs):
-    """POST endpoint to notify venueless that schedule data has changed.
+    """POST endpoint to notify eventyay that schedule data has changed.
 
     Optionally, the request may contain data for the ``pretalx`` field in the
     world config.

@@ -8,24 +8,24 @@ import emoji
 from channels.db import database_sync_to_async
 from sentry_sdk import configure_scope
 
-from venueless.core.permissions import Permission
-from venueless.core.services.chat import (
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.chat import (
     ChatService,
     extract_mentioned_user_ids,
     get_channel,
 )
-from venueless.core.services.user import get_public_users
-from venueless.core.utils.redis import aredis
-from venueless.live.channels import GROUP_CHAT, GROUP_USER
-from venueless.live.decorators import (
+from eventyay.base.core.services.user import get_public_users
+from eventyay.base.core.utils.redis import aredis
+from eventyay.base.live.channels import GROUP_CHAT, GROUP_USER
+from eventyay.base.live.decorators import (
     command,
     event,
     require_world_permission,
     room_action,
 )
-from venueless.live.exceptions import ConsumerException
-from venueless.live.modules.base import BaseModule
-from venueless.storage.tasks import retrieve_preview_information
+from eventyay.base.live.exceptions import ConsumerException
+from eventyay.base.live.modules.base import BaseModule
+from eventyay.base.storage.tasks import retrieve_preview_information
 
 logger = logging.getLogger(__name__)
 

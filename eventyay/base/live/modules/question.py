@@ -1,8 +1,8 @@
 import logging
 
-from venueless.core.models.question import Question
-from venueless.core.permissions import Permission
-from venueless.core.services.question import (
+from eventyay.base.models.question import RoomQuestion
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.question import (
     create_question,
     delete_question,
     get_question,
@@ -12,12 +12,12 @@ from venueless.core.services.question import (
     update_question,
     vote_on_question,
 )
-from venueless.live.channels import (
+from eventyay.base.live.channels import (
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
 )
-from venueless.live.decorators import command, event, room_action
-from venueless.live.modules.base import BaseModule
+from eventyay.base.live.decorators import command, event, room_action
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 

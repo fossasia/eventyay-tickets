@@ -8,7 +8,7 @@ import requests
 from celery import shared_task
 from django.conf import settings
 
-from venueless.core.models.auth import ShortToken
+from eventyay.base.core.models.auth import ShortToken
 from eventyay.base.models.world import World
 
 logger = logging.getLogger(__name__)

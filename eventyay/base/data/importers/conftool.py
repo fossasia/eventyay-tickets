@@ -14,8 +14,8 @@ from django.utils.timezone import make_aware, now
 from lxml import etree
 from pdf2image import convert_from_bytes
 
-from venueless.core.models import Poster
-from venueless.storage.models import StoredFile
+from eventyay.base.models import Poster
+from eventyay.base.storage.models import StoredFile
 
 logger = logging.getLogger(__name__)
 

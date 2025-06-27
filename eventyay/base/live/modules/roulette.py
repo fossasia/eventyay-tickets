@@ -1,13 +1,13 @@
-from venueless.core.permissions import Permission
-from venueless.core.services.roulette import (
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.roulette import (
     is_member_of_roulette_call,
     roulette_cleanup,
     roulette_request,
 )
-from venueless.live.channels import GROUP_ROULETTE_CALL, GROUP_USER
-from venueless.live.decorators import command, event, room_action
-from venueless.live.exceptions import ConsumerException
-from venueless.live.modules.base import BaseModule
+from eventyay.base.live.channels import GROUP_ROULETTE_CALL, GROUP_USER
+from eventyay.base.live.decorators import command, event, room_action
+from eventyay.base.live.exceptions import ConsumerException
+from eventyay.base.live.modules.base import BaseModule
 
 
 class RouletteModule(BaseModule):

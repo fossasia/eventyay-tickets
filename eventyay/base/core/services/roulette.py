@@ -5,7 +5,7 @@ from django.db import DatabaseError, transaction
 from django.db.models import Exists, OuterRef, Q
 from django.utils.timezone import now
 
-from venueless.core.models import RoulettePairing, RouletteRequest, User
+from eventyay.base.models import RoulettePairing, RouletteRequest, User
 
 
 @database_sync_to_async

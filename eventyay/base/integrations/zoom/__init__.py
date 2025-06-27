@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class ZoomConfig(AppConfig):
-    name = "venueless.zoom"
+    name = "eventyay.base.integrations.zoom"
     label = "zoom"

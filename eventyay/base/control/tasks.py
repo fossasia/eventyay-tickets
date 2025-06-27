@@ -1,5 +1,5 @@
-from venueless.celery_app import app
-from venueless.core.tasks import WorldTask
+from eventyay.celery_app import app
+from eventyay.base.core.tasks import WorldTask
 
 
 @app.task(base=WorldTask)

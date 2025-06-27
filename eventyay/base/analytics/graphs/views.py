@@ -19,9 +19,9 @@ from django.views import View
 from matplotlib import cbook, dates, pyplot
 from matplotlib.figure import Figure
 
-from venueless.core.models import Room, User, World
-from venueless.core.models.room import RoomView
-from venueless.core.permissions import Permission
+from eventyay.base.models import Room, User, World
+from eventyay.base.models.room import RoomView
+from eventyay.base.core.permissions import Permission
 
 logger = logging.getLogger(__name__)
 

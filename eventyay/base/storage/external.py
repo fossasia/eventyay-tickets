@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 
-from venueless.storage.models import StoredFile
+from eventyay.base.storage.models import StoredFile
 
 
 def get_extension_from_response(response):
@@ -73,7 +73,7 @@ def fetch_preview_data(url, world):
     - url: Extracted from og:url, falling back to the original URL
     - title: Extracted from og:title, falling back to <title>
     - description: Extracted from og:description, falling back to description
-    - format: Extracted from twitter:card, one of “summary”, “summary_large_image”, “app”, or “player”
+    - format: Extracted from twitter:card, one of "summary", "summary_large_image", "app", or "player"
     - image: a URL, extracted and cached from og:image
     - video: a video URL, extracted from og:video
     """

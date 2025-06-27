@@ -10,7 +10,7 @@ from django.core.files import File
 from django.core.files.storage import Storage
 
 """
-This file contains a Django storage backend for the minimal CDN used by the venueless SaaS service. The architecture
+This file contains a Django storage backend for the minimal CDN used by the eventyay SaaS service. The architecture
 of the CDN is described at https://behind.pretix.eu/2018/03/20/high-available-cdn/
 """
 

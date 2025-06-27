@@ -1,9 +1,9 @@
 import logging
 
-from venueless.core.models.poll import Poll
-from venueless.core.permissions import Permission
-from venueless.core.services.chat import ChatService, get_channel
-from venueless.core.services.poll import (
+from eventyay.base.models.poll import Poll
+from eventyay.base.core.permissions import Permission
+from eventyay.base.core.services.chat import ChatService, get_channel
+from eventyay.base.core.services.poll import (
     create_poll,
     delete_poll,
     get_poll,
@@ -13,15 +13,15 @@ from venueless.core.services.poll import (
     update_poll,
     vote_on_poll,
 )
-from venueless.live.channels import (
+from eventyay.base.live.channels import (
     GROUP_CHAT,
     GROUP_ROOM_POLL_ALL_RESULTS,
     GROUP_ROOM_POLL_MANAGE,
     GROUP_ROOM_POLL_READ,
     GROUP_ROOM_POLL_RESULTS,
 )
-from venueless.live.decorators import command, event, room_action
-from venueless.live.modules.base import BaseModule
+from eventyay.base.live.decorators import command, event, room_action
+from eventyay.base.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
 

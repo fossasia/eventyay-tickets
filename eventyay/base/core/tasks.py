@@ -1,4 +1,4 @@
-from venueless.celery_app import app
+from eventyay.celery_app import app
 from eventyay.base.models import World
 
 

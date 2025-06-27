@@ -250,7 +250,7 @@ class WorldCreate(FormsetMixin, AdminBase, CreateView):
             "JWT_secrets": [
                 {
                     "issuer": "any",
-                    "audience": "venueless",
+                    "audience": "eventyay",
                     "secret": secret,
                 }
             ]
@@ -562,7 +562,7 @@ class WorldCalendar(AdminBase, View):
         return HttpResponse(
             calendar.to_ical(),
             content_type="text/calendar",
-            headers={"Content-Disposition": 'attachment; filename="venueless.ics"'},
+            headers={"Content-Disposition": 'attachment; filename="eventyay.ics"'},
         )
 
 
