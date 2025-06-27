@@ -2,6 +2,7 @@ import logging
 
 import bleach
 import dateutil
+import uuid
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
@@ -14,7 +15,7 @@ from django.views.generic import FormView, ListView, UpdateView, View
 
 from pretix.base.email import get_available_placeholders, get_email_context
 from pretix.base.i18n import LazyI18nString, language
-from pretix.base.models import Event, LogEntry, Order, OrderPosition
+from pretix.base.models import CachedFile, Event, LogEntry, Order, OrderPosition
 from pretix.base.models.event import SubEvent
 from pretix.base.services.mail import TolerantDict
 from pretix.base.templatetags.rich_text import markdown_compile_email
@@ -194,6 +195,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                             reply_to=self.request.event.settings.get('contact_mail'),
                             bcc=self.request.event.settings.get('mail_bcc'),  # already comma-separated
                             # optionally add attachments
+                            attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else None,
                         )
 
             if 'attendees' in form.cleaned_data['recipients'] or 'both' in form.cleaned_data['recipients']:
@@ -215,6 +217,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                             locale=o.locale,
                             reply_to=self.request.event.settings.get('contact_mail'),
                             bcc=self.request.event.settings.get('mail_bcc'),  # already comma-separated
+                            attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else None,
                         )
         
         # self.request.event.log_action(
@@ -225,8 +228,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
         messages.success(
             self.request,
             _(
-                'Your message has been queued and will be sent to the contact addresses of %d '
-                'orders in the next few minutes.'
+                '%d emails have been saved to the outbox - you can make individual changes there or just send them all.'
             )
             % len(orders),
         )
@@ -408,9 +410,21 @@ class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return get_object_or_404(QueuedMail, event=self.request.event, pk=self.kwargs["pk"])
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['read_only'] = self.object.sent  # Make the form read-only if already sent
+
+        if self.object.attachments:
+            ctx['attachments_files'] = CachedFile.objects.filter(
+                id__in=[uuid.UUID(att_id) for att_id in self.object.attachments]
+            )
+        else:
+            ctx['attachments_files'] = []
         return ctx
 
     def form_valid(self, form):

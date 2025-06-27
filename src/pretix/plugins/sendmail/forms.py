@@ -10,7 +10,7 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.email import get_available_placeholders
 from pretix.base.forms import PlaceholderValidator, SettingsForm
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
-from pretix.base.models import CheckinList, Item, Order, SubEvent
+from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
 from .models import QueuedMail
@@ -434,6 +434,13 @@ class QueuedMailFilterForm(forms.Form):
 
 
 class QueuedMailEditForm(forms.ModelForm):
+    #
+    new_attachment = forms.FileField(
+        required=False,
+        label="New attachment",
+        help_text="Upload a new file to replace the existing one."
+    )
+    
     class Meta:
         model = QueuedMail
         fields = [
@@ -453,3 +460,19 @@ class QueuedMailEditForm(forms.ModelForm):
             'reply_to': forms.TextInput(attrs={'class': 'form-control'}),
             'bcc': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
         }
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event', None)
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        if self.cleaned_data.get('new_attachment'):
+            uploaded_file = self.cleaned_data['new_attachment']
+            cf = CachedFile.objects.create(file=uploaded_file, filename=uploaded_file.name)
+            instance.attachments = [str(cf.id)]
+
+        if commit:
+            instance.save()
+        return instance

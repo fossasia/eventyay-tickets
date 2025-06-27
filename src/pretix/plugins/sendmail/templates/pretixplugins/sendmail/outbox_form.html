@@ -45,6 +45,24 @@
                 <label class="col-md-3 control-label text-right">{% translate "Message" %}</label>
                 <div class="col-md-9 pt-2">{{ form.instance.message|rich_text }}</div>
             </div>
+            {% if attachments_files %}
+                <div class="row form-group">
+                    <label class="col-md-3 control-label text-right">
+                        {% translate "Attachments" %}
+                    </label>
+                    <div class="col-md-9 pt-2">
+                        <ul class="list-unstyled">
+                            {% for file in attachments_files %}
+                                <li>
+                                    <a href="{{ file.file.url }}" target="_blank" rel="noopener">
+                                        {{ file.filename }} ({{ file.type }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
         <div class="submit-group">
@@ -54,7 +72,7 @@
         </div>
     {% else %}
         <!-- Main edit form -->
-        <form method="post" class="form-horizontal" id="edit-form">
+        <form method="post" enctype="multipart/form-data" class="form-horizontal" id="edit-form">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             <fieldset>
@@ -63,6 +81,27 @@
                 {% bootstrap_field form.bcc layout="horizontal" %}
                 {% bootstrap_field form.subject layout="horizontal" %}
                 {% bootstrap_field form.message layout="horizontal" %}
+
+                {% if attachments_files %}
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label text-right">
+                            {% translate "Existing attachment" %}
+                        </label>
+                        <div class="col-md-9 pt-2">
+                            <ul class="list-unstyled">
+                                {% for file in attachments_files %}
+                                    <li>
+                                        <a href="{{ file.file.url }}" target="_blank" rel="noopener">
+                                            {{ file.filename }} ({{ file.type }})
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% bootstrap_field form.new_attachment layout="horizontal" %}
             </fieldset>
         </form>
 
