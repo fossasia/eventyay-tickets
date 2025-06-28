@@ -10,6 +10,8 @@ class QueuedMail(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     position = models.ForeignKey(OrderPosition, null=True, blank=True, on_delete=models.SET_NULL)
     recipient = models.EmailField()
+    raw_subject = models.TextField(null=True, blank=True)  # This stores the raw subject (i.e. with placeholders)
+    raw_message = models.TextField(null=True, blank=True)  # This stores the message template (i.e. with placeholders)
     subject = models.TextField()
     message = models.TextField()
     reply_to = models.CharField(max_length=1000, null=True, blank=True)
@@ -56,14 +58,5 @@ class QueuedMail(models.Model):
         self.sent = True
         self.sent_at = now()
         self.save()
-        # self.order.log_action(
-        #     'pretix.plugins.sendmail.mail.sent',
-        #     user=self.user,
-        #     data={
-        #         'recipient': self.recipient,
-        #         'subject': self.subject,
-        #         'message': self.message,
-        #         'position': self.position.positionid if self.position else None,
-        #     }
-        # )
+
         return True

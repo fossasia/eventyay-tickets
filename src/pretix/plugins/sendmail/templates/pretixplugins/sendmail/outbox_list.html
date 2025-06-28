@@ -7,9 +7,9 @@
         <div class="navigation-title">
             <h1>
                 {% blocktranslate count mail_count=mails|length %}
-                    {{ mail_count }} Queued emails
-                {% plural %}
                     Queued email
+                {% plural %}
+                    {{ mail_count }} Queued emails
                 {% endblocktranslate %}
             </h1>
         </div>

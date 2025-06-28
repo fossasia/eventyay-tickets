@@ -434,7 +434,7 @@ class QueuedMailFilterForm(forms.Form):
 
 
 class QueuedMailEditForm(forms.ModelForm):
-    #
+    
     new_attachment = forms.FileField(
         required=False,
         label="New attachment",

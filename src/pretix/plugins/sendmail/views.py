@@ -82,6 +82,42 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                         pass
             except LogEntry.DoesNotExist:
                 raise Http404(_('You supplied an invalid log entry ID'))
+        
+        import ast
+        if 'copyToDraft' in self.request.GET:
+            try:
+                mail_id = int(self.request.GET.get('copyToDraft'))
+                qm = QueuedMail.objects.get(id=mail_id, event=self.request.event)
+                kwargs['initial'] = kwargs.get('initial', {})
+
+                def parse_field(raw):
+                    try:
+                        data = ast.literal_eval(raw) if isinstance(raw, str) else raw
+                        if isinstance(data, dict):
+                            value = data.get('en') or next(iter(data.values()), '')
+                            return value.replace('\r\n', '\n')
+                    except Exception:
+                        pass
+                    return raw.replace('\r\n', '\n') if isinstance(raw, str) else ''
+
+                subject = parse_field(qm.raw_subject)
+                message = parse_field(qm.raw_message)
+
+                attachments = []
+                if qm.attachments:
+                    attachments_qs = CachedFile.objects.filter(id__in=[uuid.UUID(att_id) for att_id in qm.attachments])
+                    if attachments_qs.exists():
+                        attachments = [attachments_qs.first()]
+
+                kwargs['initial'].update({
+                    'subject': subject,
+                    'message': message,
+                })
+                if attachments:
+                    kwargs['initial']['attachment'] = attachments[0]
+            except (QueuedMail.DoesNotExist, ValueError):
+                pass
+
         return kwargs
 
     def form_invalid(self, form):
@@ -189,6 +225,8 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                             user=self.request.user,
                             order=o,
                             recipient=o.email,
+                            raw_subject=form.cleaned_data['subject'].data,
+                            raw_message=form.cleaned_data['message'].data,
                             subject=form.cleaned_data['subject'].localize(o.locale).format_map(ctx),
                             message=form.cleaned_data['message'].localize(o.locale).format_map(ctx),
                             locale=o.locale,
@@ -212,6 +250,8 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                             order=o,
                             position=p,
                             recipient=p.attendee_email,
+                            raw_subject=form.cleaned_data['subject'].data,
+                            raw_message=form.cleaned_data['message'].data,
                             subject=form.cleaned_data['subject'].localize(o.locale).format_map(ctx),
                             message=form.cleaned_data['message'].localize(o.locale).format_map(ctx),
                             locale=o.locale,
@@ -220,11 +260,6 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                             attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else None,
                         )
         
-        # self.request.event.log_action(
-        #     'pretix.plugins.sendmail.sent',
-        #     user=self.request.user,
-        #     data=dict(form.cleaned_data),
-        # )
         messages.success(
             self.request,
             _(
