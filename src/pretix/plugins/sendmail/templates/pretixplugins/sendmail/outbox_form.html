@@ -105,28 +105,25 @@
             </fieldset>
         </form>
 
-        <!-- Button container outside the main form -->
-        <div class="form-group submit-group d-flex justify-content-between align-items-center flex-wrap gap-2 w-100 mb-3">
-            <!-- Discard button on the left -->
-            <form method="post"
-                  style="display: inline;"
-                  action="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=form.instance.pk %}"
-                  onsubmit="return confirm('{% translate "Are you sure you want to discard this email? This action cannot be undone." %}');">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-lg">
+        <!-- Button container using Bootstrap 3 grid -->
+        <div class="form-group submit-group row" style="margin-bottom: 15px;">
+            <!-- Left side: Discard button -->
+            <div class="col-xs-6 text-left">
+                <a href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=form.instance.pk %}" class="btn btn-danger btn-lg">
                     <i class="fa fa-trash"></i> {% translate "Discard" %}
-                </button>
-            </form>
+                </a>
+            </div>
 
-            <!-- Save buttons on the right -->
-            <div class="d-flex gap-2">
+            <!-- Right side: Save buttons -->
+            <div class="col-xs-6 text-right">
                 <button type="submit" name="action" value="save" form="edit-form" class="btn btn-primary btn-lg">
-                    {% translate "Save changes" %}
+                    {% translate "Save" %}
                 </button>
                 <button type="submit" name="action" value="save_and_send" form="edit-form" class="btn btn-primary btn-lg">
-                    {% translate "Save and Send" %}
+                    {% translate "Save and send" %}
                 </button>
             </div>
         </div>
+
     {% endif %}
 {% endblock %}

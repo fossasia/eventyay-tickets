@@ -9,9 +9,10 @@ from django.db.models import Exists, OuterRef, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, ListView, UpdateView, View
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
+from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 
 from pretix.base.email import get_available_placeholders, get_email_context
 from pretix.base.i18n import LazyI18nString, language
@@ -259,7 +260,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                             bcc=self.request.event.settings.get('mail_bcc'),  # already comma-separated
                             attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else None,
                         )
-        
+
         messages.success(
             self.request,
             _(
@@ -487,28 +488,68 @@ class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
         })
 
 
-class DeleteQueuedMailView(EventPermissionRequiredMixin, View):
+class DeleteQueuedMailView(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/delete_confirmation.html'
     permission_required = 'can_change_orders'
 
+    @cached_property
+    def mail(self):
+        return get_object_or_404(
+            QueuedMail, event=self.request.event, pk=self.kwargs['pk']
+        )
+
+    def question(self):
+        return _("Do you really want to delete this mail?")
+    
     def post(self, request, *args, **kwargs):
-        mail = get_object_or_404(QueuedMail, event=request.event, pk=kwargs['pk'])
+        mail = self.mail
         if mail.sent:
-            messages.warning(request, _('This mail has already been sent and cannot be deleted.'))
+            messages.error(
+                request,
+                _("This mail has already been sent and cannot be deleted.")
+            )
         else:
             mail.delete()
-            messages.success(request, _('The mail has been deleted.'))
+            messages.success(
+                request,
+                _("The mail has been deleted.")
+            )
+
         return redirect(reverse('plugins:sendmail:outbox', kwargs={
             'organizer': request.event.organizer.slug,
             'event': request.event.slug
         }))
 
 
-class PurgeQueuedMailsView(EventPermissionRequiredMixin, View):
+class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
     permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/purge_confirmation.html'
+
+    def get_permission_object(self):
+        return self.request.event
+    
+    def question(self):
+        count = QueuedMail.objects.filter(event=self.request.event, sent=False).count()
+        return ngettext_lazy(
+            "Do you really want to purge this mail?",
+            "Do you really want to purge {count} mails?",
+            count
+        ).format(count=count)
 
     def post(self, request, *args, **kwargs):
-        count, _ = QueuedMail.objects.filter(event=request.event, sent=False).delete()
-        messages.success(request, _('%d mails have been discarded.') % count)
+        qs = QueuedMail.objects.filter(event=request.event, sent=False)
+        count = qs.count()
+        qs.delete()
+
+        messages.success(
+            request,
+            ngettext_lazy(
+                "One mail has been discarded.",
+                "{count} mails have been discarded.",
+                count
+            ).format(count=count)
+        )
         return redirect(reverse('plugins:sendmail:outbox', kwargs={
             'organizer': request.event.organizer.slug,
             'event': request.event.slug

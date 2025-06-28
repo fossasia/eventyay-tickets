@@ -1,0 +1,34 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}{% translate "Confirm deletion" %}{% endblock %}
+
+{% block content %}
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% translate "Confirm discard" %}</h1>
+            </div>
+        </div>
+    </nav>
+    {% block inside %}
+        <h4>{{ view.question }}</h4>
+
+        <form method="post" class="clearfix submit-group">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xs-6 text-left">
+                    <a href="{% url 'plugins:sendmail:outbox' organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default btn-lg">
+                        {% translate "Back" %}
+                    </a>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="fa fa-trash"></i> {% translate "Delete" %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    {% endblock %}
+{% endblock %}

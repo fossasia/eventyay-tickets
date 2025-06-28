@@ -17,14 +17,23 @@
     </div>
 </nav>
 
-<form method="post" action="{% url 'plugins:sendmail:send_all' organizer=request.event.organizer.slug event=request.event.slug %}">
-    {% csrf_token %}
-    <button class="btn btn-primary">{% translate "Send all" %}</button>
-</form>
-<form method="post" action="{% url 'plugins:sendmail:purge_all' organizer=request.event.organizer.slug event=request.event.slug %}" class="mt-2">
-    {% csrf_token %}
-    <button class="btn btn-danger">{% translate "Discard all" %}</button>
-</form>
+<div class="btn-toolbar" role="toolbar">
+    <!-- Send All (form submit) -->
+    <div class="btn-group" role="group">
+        <form method="post" action="{% url 'plugins:sendmail:send_all' organizer=request.event.organizer.slug event=request.event.slug %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-lg">{% translate "Send all" %}</button>
+        </form>
+    </div>
+
+    <!-- Discard All (link button) -->
+    <div class="btn-group" role="group">
+        <a href="{% url 'plugins:sendmail:purge_all' organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-danger btn-lg">
+            {% translate "Discard all" %}
+        </a>
+    </div>
+</div>
+
 
 <table class="table mt-4">
     <thead>
@@ -55,27 +64,33 @@
                 {% endif %}
             </td>
             <td>
-                <!-- Send -->
-                <form method="post" action="{% url 'plugins:sendmail:send_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button class="btn btn-sm btn-primary" title="{% translate 'Send this email' %}">
-                        <i class="fa fa-mail-forward"></i>
-                    </button>
-                </form>
-                
-                <!-- Edit -->
-                <a class="btn btn-sm btn-primary" title="{% translate 'Edit this email' %}"
-                href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
-                    <i class="fa fa-edit"></i>
-                </a>
+                <div class="btn-toolbar" role="toolbar">
+                    <!-- Send -->
+                    <div class="btn-group" role="group">
+                        <form method="post" action="{% url 'plugins:sendmail:send_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-primary" title="{% translate 'Send this email' %}">
+                                <i class="fa fa-mail-forward"></i>
+                            </button>
+                        </form>
+                    </div>
 
-                <!-- Delete -->
-                <form method="post" action="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button class="btn btn-sm btn-danger" title="{% translate 'Delete this email' %}">
-                        <i class="fa fa-trash"></i>
-                    </button>
-                </form>
+                    <!-- Edit -->
+                    <div class="btn-group" role="group">
+                        <a class="btn btn-sm btn-info" title="{% translate 'Edit this email' %}"
+                        href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </div>
+
+                    <!-- Delete -->
+                    <div class="btn-group" role="group">
+                        <a class="btn btn-sm btn-danger" title="{% translate 'Delete this email' %}"
+                        href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
             </td>
         </tr>
         {% empty %}
