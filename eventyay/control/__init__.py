@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class ControlConfig(AppConfig):
-    name = "eventyay.base.control"
+    name = "eventyay.control"
     label = "control"
 
     def ready(self):
