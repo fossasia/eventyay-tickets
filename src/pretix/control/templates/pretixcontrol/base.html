@@ -109,39 +109,41 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                        {% if request.event %}
-                            {% if has_domain and not request.event.live %}
-                                <form action="{% eventurl request.event "presale:event.auth" %}" method="post"
-                                        target="_blank" class="mobile-navbar-view-form visible-xs-block">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{ new_session }}" name="session">
-                                    <button type="submit" class="btn btn-link navbar-toggle">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                </form>
-                            {% else %}
-                                <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "View event" %}"
-                                        target="_blank" class="navbar-toggle mobile-navbar-view-link">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            {% endif %}
-                        {% elif request.organizer %}
-                            <a href="{% eventurl request.organizer "presale:organizer.index" %}" title="{% trans "Public profile" %}"  target="_blank"
-                                class="navbar-toggle mobile-navbar-view-link">
-                                <i class="fa fa-eye"></i>
-                            </a>
-                        {% endif %}
-                        <a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}">
-                            <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
-                            {{ django_settings.INSTANCE_NAME }}
-                        </a>
-                    </div>
-                    <ul class="nav navbar-nav navbar-top-links navbar-left flip hidden-xs">
-                        {% if request.event %}
-                            <li>
-                                {% if has_domain and not request.event.live %}
-                                    <form action="{% eventurl request.event "presale:event.auth" %}" method="post" target="_blank">
-                                        <input type="hidden" value="{{ new_session }}" name="session">
+					       {% if request.event %}
+			    {% if has_domain and not request.event.live %}
+				<form action="{% eventurl request.event 'presale:event.auth' %}" method="post"
+				      target="_blank" class="mobile-navbar-view-form visible-xs-block">
+				    {% csrf_token %}
+				    <input type="hidden" value="{{ new_session }}" name="session">
+				    <button type="submit" class="btn btn-link navbar-toggle">
+					<i class="fa fa-eye"></i>
+				    </button>
+				</form>
+			    {% else %}
+				<a href="{% eventurl request.event 'presale:event.index' %}" title="{% trans 'View event' %}"
+				   target="_blank" class="navbar-toggle mobile-navbar-view-link">
+				    <i class="fa fa-eye"></i>
+				</a>
+			    {% endif %}
+			{% elif request.organizer %}
+			    <a href="{% eventurl request.organizer 'presale:organizer.index' %}" title="{% trans 'Public profile' %}" target="_blank"
+			       class="navbar-toggle mobile-navbar-view-link">
+				<i class="fa fa-eye"></i>
+			    </a>
+			{% endif %}
+			<a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}">
+			    <img src="{% static 'pretixbase/img/eventyay-icon.svg' %}" />
+			    {{ django_settings.INSTANCE_NAME }}
+			</a>
+			</div>
+			
+			<ul class="nav navbar-nav navbar-top-links navbar-left flip hidden-xs">
+			    {% if request.event %}
+				<li>
+				    {% if has_domain and not request.event.live %}
+					<form action="{% eventurl request.event 'presale:event.auth' %}" method="post" target="_blank">
+					    <input type="hidden" value="{{ new_session }}" name="session">
+					<input type="hidden" value="{{ new_session }}" name="session">
                                         <button type="submit" class="btn btn-link" id="button-shop">
                                            <i class="fa fa-eye"></i> {% trans "View event" %}
                                         </button>
