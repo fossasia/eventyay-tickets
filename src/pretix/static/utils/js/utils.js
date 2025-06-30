@@ -27,9 +27,9 @@ function handleProfileMenuClick() {
         }
     });
     
-    // Desktop click functionality (screen width > 768px)
+    // Desktop click functionality (screen width > 992px)
     $('.dashboard-item').off('click.desktop').on('click.desktop', function (event) {
-        if (window.innerWidth > 768) {
+        if (window.innerWidth > 992) {
             event.preventDefault();
             event.stopPropagation();
             
@@ -47,7 +47,7 @@ function handleProfileMenuClick() {
     
     // Desktop click-outside functionality with two-step dismissal
     $(document).off('click.desktop-submenu').on('click.desktop-submenu', function (event) {
-        if (window.innerWidth > 768) {
+        if (window.innerWidth > 992) {
             const $target = $(event.target);
             const $closestDashboard = $target.closest('.dashboard-item');
             const $closestSubmenu = $target.closest('#submenu');
@@ -100,7 +100,7 @@ function handleProfileMenuClick() {
     
     // Desktop escape key support with two-step dismissal
     $(document).off('keydown.desktop-submenu').on('keydown.desktop-submenu', function (event) {
-        if (event.key === 'Escape' && window.innerWidth > 768) {
+        if (event.key === 'Escape' && window.innerWidth > 992) {
             if ($('.dashboard-item.desktop-submenu-open').length > 0) {
                 // Close submenu first
                 $('.dashboard-item').removeClass('desktop-submenu-open');
@@ -122,14 +122,14 @@ function handleProfileMenuClick() {
     
     // Prevent submenu content clicks from closing the menu (desktop)
     $(document).off('click.desktop-submenu-content').on('click.desktop-submenu-content', '#submenu', function (event) {
-        if (window.innerWidth > 768) {
+        if (window.innerWidth > 992) {
             event.stopPropagation();
         }
     });
     
     // Mobile/tablet functionality (existing code)
     $('.dashboard-item').off('click.dashboard').on('click.dashboard', function (event) {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 992) {
             event.preventDefault();
             event.stopPropagation();
             
@@ -184,7 +184,7 @@ function handleProfileMenuClick() {
     
     // Close submenu when clicking outside (mobile/tablet)
     $(document).off('click.submenu').on('click.submenu', function (event) {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 992) {
             const $target = $(event.target);
             const $closestDashboard = $target.closest('.dashboard-item');
             const $closestSubmenu = $target.closest('#submenu');
@@ -237,14 +237,14 @@ function handleProfileMenuClick() {
     
     // Prevent submenu content clicks from closing the menu (mobile/tablet)
     $(document).off('click.submenu-content').on('click.submenu-content', '#submenu', function (event) {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 992) {
             event.stopPropagation();
         }
     });
     
     // Add escape key support (mobile/tablet)
     $(document).off('keydown.submenu').on('keydown.submenu', function (event) {
-        if (event.key === 'Escape' && window.innerWidth <= 768) {
+        if (event.key === 'Escape' && window.innerWidth <= 992) {
             if ($('.dashboard-item.menu-open').length > 0) {
                 // Close submenu first
                 $('.dashboard-item').removeClass('menu-open');
