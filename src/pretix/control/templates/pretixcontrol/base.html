@@ -149,9 +149,10 @@
                                         </button>
                                     </form>
                                 {% else %}
-                                    <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "View event" %}"  target="_blank">
-                                        <i class="fa fa-eye"></i> {% trans "View event" %}
-                                    </a>
+					<a href="{% eventurl request.event 'presale:event.index' %}" title="{{ 'View event'|trans }}" target="_blank">
+					    <i class="fa fa-eye"></i> {{ 'View event'|trans }}
+					</a>
+
                                 {% endif %}
                             </li>
                         {% elif request.organizer %}
