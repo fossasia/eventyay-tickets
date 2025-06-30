@@ -156,6 +156,16 @@ section.front-page {
         color: white;
     }
 }
+.offline-banner-absolute {
+    position: absolute;
+    top: 0;
+}
+.event_logo_img_placement {
+    margin: 0 12%;
+}
+.event_logo_image {
+    max-height: 120px;
+}
 #questions_group .panel-title a {
     line-height: 22px;
 }

@@ -17,6 +17,7 @@ class EventCommonSettingsForm(SettingsForm):
         'locale',
         'logo_image',
         'logo_image_large',
+        'event_logo_image',
         'logo_show_title',
         'og_image',
         'primary_color',
