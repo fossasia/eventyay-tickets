@@ -357,15 +357,52 @@
                     </div>
                     <div class="row control-group text">
                         <div class="col-sm-12">
-                            <label>{% trans "Text content" %}</label><br>
-                            <select class="input-block-level form-control" id="toolbox-content">
+                            <label>{% trans "Event Info" %}</label><br>
+                            <select class="input-block-level form-control" id="toolbox-event-info">
+                                <option value="">{% trans "Select event info" %}</option>
+                                <option data-sample="Sample Event" value="event_name">{% trans "Event name" %}</option>
+                                <option data-sample="2024-01-15" value="event_date">{% trans "Event date" %}</option>
+                                <option data-sample="19:30" value="event_time">{% trans "Event time" %}</option>
+                                <option data-sample="Main Hall" value="event_location">{% trans "Event location" %}</option>
+                                <option data-sample="Conference" value="event_type">{% trans "Event type" %}</option>
+                                <option data-sample="Dr. Smith" value="event_organizer">{% trans "Event organizer" %}</option>
+                                <option data-sample="Technology Track" value="event_category">{% trans "Event category" %}</option>
+                                <option data-sample="60 minutes" value="event_duration">{% trans "Event duration" %}</option>
                                 {% for varname, var in variables.items %}
-                                    <option data-sample="{{ var.editor_sample }}" value="{{ varname }}">{{ var.label }}</option>
+                                    {% if 'event' in varname or 'organizer' in varname %}
+                                        <option data-sample="{{ var.editor_sample }}" value="{{ varname }}">{{ var.label }}</option>
+                                    {% endif %}
                                 {% endfor %}
                                 {% for p in request.organizer.meta_properties.all %}
                                     <option value="meta:{{ p.name }}">
                                         {% trans "Event attribute:" %} {{ p.name }}
                                     </option>
+                                {% endfor %}
+                                <option value="other">{% trans "Other…" %}</option>
+                            </select>
+                            <textarea type="text" value="" class="input-block-level form-control"
+                                    id="toolbox-event-info-other" style="display: none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="row control-group text">
+                        <div class="col-sm-12">
+                            <label>{% trans "User Info" %}</label><br>
+                            <select class="input-block-level form-control" id="toolbox-user-info">
+                                <option value="">{% trans "Select user info" %}</option>
+                                <option data-sample="John Doe" value="attendee_name">{% trans "Attendee name" %}</option>
+                                <option data-sample="john@example.com" value="attendee_email">{% trans "Attendee email" %}</option>
+                                <option data-sample="ABC123" value="ticket_code">{% trans "Ticket code" %}</option>
+                                <option data-sample="VIP" value="ticket_type">{% trans "Ticket type" %}</option>
+                                <option data-sample="A-15" value="seat_number">{% trans "Seat number" %}</option>
+                                <option data-sample="Gate B" value="entrance_gate">{% trans "Entrance gate" %}</option>
+                                <option data-sample="Premium" value="access_level">{% trans "Access level" %}</option>
+                                <option data-sample="Company Inc." value="company_name">{% trans "Company name" %}</option>
+                                <option data-sample="Manager" value="job_title">{% trans "Job title" %}</option>
+                                <option data-sample="+1234567890" value="phone_number">{% trans "Phone number" %}</option>
+                                {% for varname, var in variables.items %}
+                                    {% if 'attendee' in varname or 'ticket' in varname or 'order' in varname %}
+                                        <option data-sample="{{ var.editor_sample }}" value="{{ varname }}">{{ var.label }}</option>
+                                    {% endif %}
                                 {% endfor %}
                                 {% for p in request.event.item_meta_properties.all %}
                                     <option value="itemmeta:{{ p.name }}">
@@ -375,7 +412,7 @@
                                 <option value="other">{% trans "Other…" %}</option>
                             </select>
                             <textarea type="text" value="" class="input-block-level form-control"
-                                    id="toolbox-content-other"></textarea>
+                                    id="toolbox-user-info-other" style="display: none;"></textarea>
                         </div>
                     </div>
                 </div>
@@ -444,4 +481,3 @@
     {% endfor %}
     {% endfor %}
 {% endblock %}
-
