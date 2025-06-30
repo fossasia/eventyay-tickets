@@ -130,6 +130,61 @@ let editor = {
         return v * editor.pdf_scale / editor.pdf_page.userUnit;
     },
 
+    // Helper functions for dual dropdown system
+    _toggleOtherTextArea: function(dropdownId, otherTextAreaId) {
+        const dropdown = $("#" + dropdownId);
+        const otherTextArea = $("#" + otherTextAreaId);
+        
+        if (dropdown.val() === "other") {
+            otherTextArea.show();
+        } else {
+            otherTextArea.hide();
+        }
+    },
+
+    _clearOppositeDropdown: function(activeDropdownId, oppositeDropdownId, oppositeOtherTextAreaId) {
+        const activeDropdown = $("#" + activeDropdownId);
+        const oppositeDropdown = $("#" + oppositeDropdownId);
+        const oppositeOtherTextArea = $("#" + oppositeOtherTextAreaId);
+        
+        if (activeDropdown.val()) {
+            oppositeDropdown.val("");
+            oppositeOtherTextArea.hide();
+        }
+    },
+
+    _handleDropdownChange: function(dropdownId, otherTextAreaId, oppositeDropdownId, oppositeOtherTextAreaId) {
+        editor._toggleOtherTextArea(dropdownId, otherTextAreaId);
+        editor._clearOppositeDropdown(dropdownId, oppositeDropdownId, oppositeOtherTextAreaId);
+        editor._update_values_from_toolbox();
+    },
+
+    _bindDualDropdownEvents: function() {
+        // Event handlers for dual dropdown system
+        $("#toolbox-event-info").change(function() {
+            editor._handleDropdownChange(
+                "toolbox-event-info", 
+                "toolbox-event-info-other", 
+                "toolbox-user-info", 
+                "toolbox-user-info-other"
+            );
+        });
+        
+        $("#toolbox-user-info").change(function() {
+            editor._handleDropdownChange(
+                "toolbox-user-info", 
+                "toolbox-user-info-other", 
+                "toolbox-event-info", 
+                "toolbox-event-info-other"
+            );
+        });
+        
+        // Handle changes in "other" text areas
+        $("#toolbox-event-info-other, #toolbox-user-info-other").on('input', function() {
+            editor._update_values_from_toolbox();
+        });
+    },
+
     dump: function (objs) {
         let d = [];
         objs = objs || editor.fabric.getObjects();
@@ -1006,48 +1061,13 @@ let editor = {
         $("#toolbox-source").bind('click', editor._source_show);
         $("#source-close").bind('click', editor._source_close);
         $("#source-save").bind('click', editor._source_save);
+        
+        // Initialize dual dropdown events
+        editor._bindDualDropdownEvents();
     }
 };
 
 $(function () {
     editor.init();
-    
-    // Event handlers for dual dropdown system
-    $("#toolbox-event-info").change(function() {
-        if ($(this).val() === "other") {
-            $("#toolbox-event-info-other").show();
-        } else {
-            $("#toolbox-event-info-other").hide();
-        }
-        
-        // Clear user info selection when event info is selected
-        if ($(this).val()) {
-            $("#toolbox-user-info").val("");
-            $("#toolbox-user-info-other").hide();
-        }
-        
-        editor._update_values_from_toolbox();
-    });
-    
-    $("#toolbox-user-info").change(function() {
-        if ($(this).val() === "other") {
-            $("#toolbox-user-info-other").show();
-        } else {
-            $("#toolbox-user-info-other").hide();
-        }
-        
-        // Clear event info selection when user info is selected
-        if ($(this).val()) {
-            $("#toolbox-event-info").val("");
-            $("#toolbox-event-info-other").hide();
-        }
-        
-        editor._update_values_from_toolbox();
-    });
-    
-    // Handle changes in "other" text areas
-    $("#toolbox-event-info-other, #toolbox-user-info-other").on('input', function() {
-        editor._update_values_from_toolbox();
-    });
 });
 $(window).bind('load', editor._window_load_event);
