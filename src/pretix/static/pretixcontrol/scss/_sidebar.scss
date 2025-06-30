@@ -126,7 +126,7 @@ body.sidebar-minimized {
   
   // Ensure the sidebar doesn't overlap with the navbar
   .navbar-brand {
-    z-index: 1001; // Higher than sidebar
+    z-index: 11; // Higher than sidebar
     position: relative;
   }
 }
