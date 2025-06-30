@@ -5,7 +5,7 @@ fabric.Poweredby = fabric.util.createClass(fabric.Image, {
     initialize: function (options) {
         options || (options = {});
 
-        var el = $("#poweredby-" + options.content).get(0)
+        let el = $("#poweredby-" + options.content).get(0)
         this.callSuper('initialize', el, options);
         this.set('label', options.label || '');
     },
@@ -95,7 +95,7 @@ fabric.Textarea.fromObject = function (object, callback, forceAsync) {
 };
 
 
-var editor = {
+let editor = {
     $pdfcv: null,
     $fcv: null,
     $cva: null,
@@ -131,20 +131,20 @@ var editor = {
     },
 
     dump: function (objs) {
-        var d = [];
+        let d = [];
         objs = objs || editor.fabric.getObjects();
 
-        for (var i in objs) {
-            var o = objs[i];
-            var top = o.top;
-            var left = o.left;
+        for (let i in objs) {
+            let o = objs[i];
+            let top = o.top;
+            let left = o.left;
             if (o.group) {
                 top += o.group.top + o.group.height / 2;
                 left += o.group.left + o.group.width / 2;
             }
             if (o.type === "textarea") {
-                var col = (new fabric.Color(o.fill))._source;
-                var bottom = editor.pdf_viewport.height - o.height - top;
+                let col = (new fabric.Color(o.fill))._source;
+                let bottom = editor.pdf_viewport.height - o.height - top;
                 if (o.downward) {
                     bottom = editor.pdf_viewport.height - top;
                 }
@@ -241,7 +241,7 @@ var editor = {
             }
         }
 
-        var new_top = editor.pdf_viewport.height - editor._mm2px(d.bottom) - (o.height * o.scaleY);
+        let new_top = editor.pdf_viewport.height - editor._mm2px(d.bottom) - (o.height * o.scaleY);
         if (o.downward) {
             new_top = editor.pdf_viewport.height - editor._mm2px(d.bottom);
         }
@@ -253,8 +253,8 @@ var editor = {
 
     load: function(data) {
         editor.fabric.clear();
-        for (var i in data) {
-            var d = data[i], o;
+        for (let i in data) {
+            let d = data[i], o;
             editor._add_from_data(d);
         }
         editor.fabric.renderAll();
@@ -269,13 +269,13 @@ var editor = {
         }
         
         // Check event info dropdown first
-        var eventSample = $('#toolbox-event-info option[value='+key+']').attr('data-sample');
+        let eventSample = $('#toolbox-event-info option[value='+key+']').attr('data-sample');
         if (eventSample) {
             return eventSample;
         }
         
         // Check user info dropdown
-        var userSample = $('#toolbox-user-info option[value='+key+']').attr('data-sample');
+        let userSample = $('#toolbox-user-info option[value='+key+']').attr('data-sample');
         if (userSample) {
             return userSample;
         }
@@ -286,26 +286,26 @@ var editor = {
 
     _load_pdf: function (dump) {
         // TODO: Loading indicators
-        var url = editor.pdf_url;
+        let url = editor.pdf_url;
         // TODO: Handle cross-origin issues if static files are on a different origin
         PDFJS.workerSrc = editor.$pdfcv.attr("data-worker-url");
 
         // Asynchronous download of PDF
-        var loadingTask = PDFJS.getDocument(url);
+        let loadingTask = PDFJS.getDocument(url);
         loadingTask.promise.then(function (pdf) {
             console.log('PDF loaded');
 
             // Fetch the first page
-            var pageNumber = 1;
+            let pageNumber = 1;
             pdf.getPage(pageNumber).then(function (page) {
                 console.log('Page loaded');
-                var canvas = document.getElementById('pdf-canvas');
+                let canvas = document.getElementById('pdf-canvas');
 
-                var scale = editor.$cva.width() / page.getViewport(1.0).width;
-                var viewport = page.getViewport(scale);
+                let scale = editor.$cva.width() / page.getViewport(1.0).width;
+                let viewport = page.getViewport(scale);
 
                 // Prepare canvas using PDF page dimensions
-                var context = canvas.getContext('2d');
+                let context = canvas.getContext('2d');
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
@@ -315,18 +315,18 @@ var editor = {
                 editor.pdf_viewport = viewport;
 
                 // Render PDF page into canvas context
-                var renderContext = {
+                let renderContext = {
                     canvasContext: context,
                     viewport: viewport
                 };
-                var renderTask = page.render(renderContext);
+                let renderTask = page.render(renderContext);
                 renderTask.then(function () {
                     console.log('Page rendered');
                     editor._init_fabric(dump);
                 });
             });
         }, function (reason) {
-            var msg = gettext('The PDF background file could not be loaded for the following reason:');
+            let msg = gettext('The PDF background file could not be loaded for the following reason:');
             editor._error(msg + ' ' + reason);
         });
     },
@@ -351,7 +351,7 @@ var editor = {
         if (dump) {
             editor.load(dump);
         } else {
-            var data = $.trim($("#editor-data").text());
+            let data = $.trim($("#editor-data").text());
             if (data) {
                 editor.load(JSON.parse(data));
             }
@@ -380,10 +380,10 @@ var editor = {
     },
 
     _ready: function () {
-        var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        var isFirefox = typeof InstallTrigger !== 'undefined';
-        var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-        var isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
+        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        let isFirefox = typeof InstallTrigger !== 'undefined';
+        let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+        let isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
         if (isChrome || isOpera || isFirefox || isEdgeChromium) {
             $("#loading-container").hide();
             $("#loading-initial").remove();
@@ -398,11 +398,11 @@ var editor = {
     },
 
     _update_toolbox_values: function () {
-        var o = editor.fabric.getActiveObject();
+        let o = editor.fabric.getActiveObject();
         if (!o) {
             return;
         }
-        var bottom = editor.pdf_viewport.height - o.height * o.scaleY - o.top;
+        let bottom = editor.pdf_viewport.height - o.height * o.scaleY - o.top;
         if (o.downward) {
             bottom = editor.pdf_viewport.height - o.top;
         }
@@ -419,7 +419,7 @@ var editor = {
             $("#toolbox-squaresize").val(editor._px2mm(o.height * o.scaleY).toFixed(2));
             $("#toolbox-poweredby-style").val(o.content);
         } else if (o.type === "text" || o.type === "textarea") {
-            var col = (new fabric.Color(o.fill))._source;
+            let col = (new fabric.Color(o.fill))._source;
             $("#toolbox-col").val("#" + ((1 << 24) + (col[0] << 16) + (col[1] << 8) + col[2]).toString(16).slice(1));
             $("#toolbox-fontsize").val(editor._px2pt(o.fontSize).toFixed(1));
             $("#toolbox-fontfamily").val(o.fontFamily);
@@ -433,8 +433,8 @@ var editor = {
             $("#toolbox-textrotation").val((o.angle || 0.0).toFixed(1));
             if (o.type === "textarea") {
                 // Handle dual dropdown system
-                var eventInfoFound = false;
-                var userInfoFound = false;
+                let eventInfoFound = false;
+                let userInfoFound = false;
                 
                 // Check if content matches event info options
                 if ($("#toolbox-event-info option[value='" + o.content + "']").length > 0) {
@@ -476,12 +476,12 @@ var editor = {
     },
 
     _update_values_from_toolbox: function () {
-        var o = editor.fabric.getActiveObject();
+        let o = editor.fabric.getActiveObject();
         if (!o) {
             return;
         }
 
-        var new_top = editor.pdf_viewport.height - editor._mm2px($("#toolbox-position-y").val()) - o.height * o.scaleY;
+        let new_top = editor.pdf_viewport.height - editor._mm2px($("#toolbox-position-y").val()) - o.height * o.scaleY;
         if (o.type === "textarea" || o.type === "text") {
             if ($("#toolbox").find("button[data-action=downward]").is('.active')) {
                 new_top = editor.pdf_viewport.height - editor._mm2px($("#toolbox-position-y").val());
@@ -491,7 +491,7 @@ var editor = {
         o.set('top', new_top);
 
         if (o.type === "barcodearea") {
-            var new_h = editor._mm2px($("#toolbox-squaresize").val());
+            let new_h = editor._mm2px($("#toolbox-squaresize").val());
             new_top += o.height * o.scaleY - new_h;
             o.set('height', new_h);
             o.set('width', new_h);
@@ -499,8 +499,8 @@ var editor = {
             o.set('scaleY', 1);
             o.set('top', new_top)
         } else if (o.type === "imagearea") {
-            var new_w = editor._mm2px($("#toolbox-width").val());
-            var new_h = editor._mm2px($("#toolbox-height").val());
+            let new_w = editor._mm2px($("#toolbox-width").val());
+            let new_h = editor._mm2px($("#toolbox-height").val());
             new_top += o.height * o.scaleY - new_h;
             o.set('height', new_h);
             o.set('width', new_w);
@@ -509,7 +509,7 @@ var editor = {
             o.set('top', new_top)
             o.content = $("#toolbox-imagecontent").val();
         } else if (o.type === "poweredby") {
-            var new_h = Math.max(1, editor._mm2px($("#toolbox-squaresize").val()));
+            let new_h = Math.max(1, editor._mm2px($("#toolbox-squaresize").val()));
             new_top += o.height * o.scaleY - new_h;
             o.set('width', new_h / o.height * o.width);
             o.set('height', new_h);
@@ -517,9 +517,9 @@ var editor = {
             o.set('scaleY', 1);
             o.set('top', new_top)
             if ($("#toolbox-poweredby-style").val() !== o.content) {
-                var data = editor.dump([o]);
+                let data = editor.dump([o]);
                 data[0].content = $("#toolbox-poweredby-style").val();
-                var newo = editor._add_from_data(data[0]);
+                let newo = editor._add_from_data(data[0]);
                 editor.fabric.remove(o);
                 editor.fabric.discardActiveObject();
                 editor.fabric.setActiveObject(newo);
@@ -531,7 +531,7 @@ var editor = {
             o.set('fontFamily', $("#toolbox-fontfamily").val());
             o.set('fontWeight', $("#toolbox").find("button[data-action=bold]").is('.active') ? 'bold' : 'normal');
             o.set('fontStyle', $("#toolbox").find("button[data-action=italic]").is('.active') ? 'italic' : 'normal');
-            var align = $("#toolbox-align").find(".active").attr("data-action");
+            let align = $("#toolbox-align").find(".active").attr("data-action");
             if (align) {
                 o.set('textAlign', align);
             }
@@ -540,8 +540,8 @@ var editor = {
             o.rotate(parseFloat($("#toolbox-textrotation").val()));
             
             // Handle dual dropdown system
-            var selectedContent = "";
-            var selectedText = "";
+            let selectedContent = "";
+            let selectedText = "";
             
             // Check event info dropdown
             if ($("#toolbox-event-info").val()) {
@@ -582,12 +582,12 @@ var editor = {
     },
 
     _update_toolbox: function () {
-        var selected = editor.fabric.getActiveObjects();
+        let selected = editor.fabric.getActiveObjects();
         if (selected.length > 1) {
             $("#toolbox").attr("data-type", "group");
             $("#toolbox-heading").text(gettext("Group of objects"));
         } else if (selected.length == 1) {
-            var o = selected[0];
+            let o = selected[0];
             $("#toolbox").attr("data-type", o.type);
             if (o.type === "textarea" || o.type === "text") {
                 $("#toolbox-heading").text(gettext("Text object"));
@@ -614,7 +614,7 @@ var editor = {
     },
 
     _add_text: function () {
-        var text = new fabric.Textarea(editor._get_text_sample('event_name'), {
+        let text = new fabric.Textarea(editor._get_text_sample('event_name'), {
             left: 100,
             top: 100,
             width: editor._mm2px(50),
@@ -643,7 +643,7 @@ var editor = {
     },
 
     _add_poweredby: function (content) {
-        var rect = new fabric.Poweredby({
+        let rect = new fabric.Poweredby({
             left: 100,
             top: 100,
             height: 629,
@@ -659,7 +659,7 @@ var editor = {
     },
 
     _add_imagearea: function () {
-        var rect = new fabric.Imagearea({
+        let rect = new fabric.Imagearea({
             left: 100,
             top: 100,
             width: 100,
@@ -675,7 +675,7 @@ var editor = {
     },
 
     _add_qrcode: function () {
-        var rect = new fabric.Barcodearea({
+        let rect = new fabric.Barcodearea({
             left: 100,
             top: 100,
             width: 100,
@@ -692,7 +692,7 @@ var editor = {
 
     _cut: function () {
         editor._history_modification_in_progress = true;
-        var thing = editor.fabric.getActiveObject();
+        let thing = editor.fabric.getActiveObject();
         if (thing.type === "activeSelection") {
             editor.clipboard = editor.dump(thing._objects);
             thing.forEachObject(function (o) {
@@ -710,7 +710,7 @@ var editor = {
 
     _copy: function () {
         editor._history_modification_in_progress = true;
-        var thing = editor.fabric.getActiveObject();
+        let thing = editor.fabric.getActiveObject();
         if (thing.type === "activeSelection") {
             editor.clipboard = editor.dump(thing._objects);
         } else {
@@ -725,13 +725,13 @@ var editor = {
             return;
         }
         editor._history_modification_in_progress = true;
-        var objs = [];
-        for (var i in editor.clipboard) {
+        let objs = [];
+        for (let i in editor.clipboard) {
             objs.push(editor._add_from_data(editor.clipboard[i]));
         }
         editor.fabric.discardActiveObject();
         if (editor.clipboard.length > 1) {
-            var selection = new fabric.ActiveSelection(objs, {canvas: editor.fabric});
+            let selection = new fabric.ActiveSelection(objs, {canvas: editor.fabric});
             editor.fabric.setActiveObject(selection);
         } else {
             editor.fabric.setActiveObject(objs[0]);
@@ -741,7 +741,7 @@ var editor = {
     },
 
     _delete: function () {
-        var thing = editor.fabric.getActiveObject();
+        let thing = editor.fabric.getActiveObject();
         if (thing.type === "activeSelection") {
             thing.forEachObject(function (o) {
                 editor.fabric.remove(o);
@@ -756,8 +756,8 @@ var editor = {
     },
 
     _on_keydown: function (e) {
-        var step = e.shiftKey ? editor._mm2px(10) : editor._mm2px(1);
-        var thing = editor.fabric.getActiveObject();
+        let step = e.shiftKey ? editor._mm2px(10) : editor._mm2px(1);
+        let thing = editor.fabric.getActiveObject();
         if ($("#source-container").is(':visible')) {
             return true;
         }
@@ -822,7 +822,7 @@ var editor = {
         if (editor._history_modification_in_progress) {
             return;
         }
-        var state = editor.dump();
+        let state = editor.dump();
         if (editor._history_pos > 0) {
             editor.history.splice(-1 * editor._history_pos, editor._history_pos);
             editor._history_pos = 0;
@@ -854,7 +854,7 @@ var editor = {
 
     _save: function () {
         $("#editor-save").prop('disabled', true).prepend('<span class="fa fa-cog fa-spin"></span>');
-        var dump = editor.dump();
+        let dump = editor.dump();
         $.post(window.location.href, {
             'data': JSON.stringify(dump),
             'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(),
@@ -975,7 +975,7 @@ var editor = {
                 });
             },
             progressall: function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
+                let progress = parseInt(data.loaded / data.total * 100, 10);
                 $('#loading-upload .progress-bar').css('width', progress + '%');
             }
         }).prop('disabled', !$.support.fileInput).parent().addClass($.support.fileInput ? undefined : 'disabled');
