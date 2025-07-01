@@ -34,6 +34,16 @@ urlpatterns = [
         name='purge_all'
     ),
     path(
+        'control/event/<str:organizer>/<str:event>/mails/compose/', 
+        views.ComposeMailChoice.as_view(), 
+        name='compose_email_choice'
+    ),
+    path(
+        'control/event/<str:organizer>/<str:event>/mails/compose/teams', 
+        views.ComposeTeamsMail.as_view(), 
+        name='compose_email_teams'
+    ),
+    path(
         'control/event/<str:organizer>/<str:event>/sendmail/',
         views.SenderView.as_view(),
         name='send',

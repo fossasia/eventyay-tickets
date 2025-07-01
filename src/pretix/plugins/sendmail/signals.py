@@ -38,13 +38,13 @@ def control_nav_import(sender, request=None, **kwargs):
                 {
                     'label': _('Compose emails'),
                     'url': reverse(
-                        'plugins:sendmail:send',
+                        'plugins:sendmail:compose_email_choice',
                         kwargs={
                             'event': request.event.slug,
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'send'),
+                    'active': (url.namespace == 'plugins:compose' and url.url_name == 'compose_email_choice'),
                 },
                 {
                     'label': _('Sent emails'),

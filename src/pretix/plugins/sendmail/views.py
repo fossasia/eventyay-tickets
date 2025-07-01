@@ -23,10 +23,7 @@ from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.plugins.sendmail.models import QueuedMail
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
-from .forms import MailContentSettingsForm
-from . import forms
-from .forms import QueuedMailFilterForm
-from .forms import QueuedMailEditForm
+from .forms import MailContentSettingsForm, MailForm, QueuedMailEditForm, QueuedMailFilterForm, TeamMailForm
 
 
 logger = logging.getLogger('pretix.plugins.sendmail')
@@ -35,7 +32,7 @@ logger = logging.getLogger('pretix.plugins.sendmail')
 class SenderView(EventPermissionRequiredMixin, FormView):
     template_name = 'pretixplugins/sendmail/send_form.html'
     permission = 'can_change_orders'
-    form_class = forms.MailForm
+    form_class = MailForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -554,3 +551,103 @@ class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
             'organizer': request.event.organizer.slug,
             'event': request.event.slug
         }))
+
+
+class ComposeMailChoice(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/compose_choice.html'
+
+
+class ComposeTeamsMail(EventPermissionRequiredMixin, TemplateView, FormView):
+    template_name = 'pretixplugins/sendmail/send_team_form.html'
+    permission = 'can_change_orders'
+    form_class = TeamMailForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['output'] = getattr(self, 'output', None)
+        return ctx
+
+    def form_valid(self, form):
+        subject = form.cleaned_data['subject']
+        message = form.cleaned_data['message']
+        event = self.request.event
+        user = self.request.user
+        attachment = form.cleaned_data.get('attachment')
+
+        attachment_ids = [str(attachment.id)] if attachment else None
+
+        if self.request.POST.get('action') == 'preview':
+            self.output = {}
+            for l in event.settings.locales:
+                with language(l, event.settings.region):
+                    context_dict = {
+                        'event': event.name,
+                        'team': _('(Team name)'),
+                        'name': _('(Recipient name)')
+                    }
+
+                    subject_preview = bleach.clean(subject.localize(l), tags=[]).format_map(context_dict)
+                    message_preview = message.localize(l).format_map(context_dict)
+                    message_preview_html = markdown_compile_email(message_preview)
+
+                    self.output[l] = {
+                        'subject': _('Subject: {subject}').format(subject=subject_preview),
+                        'html': message_preview_html,
+                    }
+
+            return self.get(self.request, *self.args, **self.kwargs)
+
+        sent_emails = set()
+        count = 0
+
+        for team in form.cleaned_data['teams']:
+            for member in team.members.all():
+                if not member.email or member.email in sent_emails:
+                    continue
+
+                locale = getattr(member, 'locale', None) or event.locale
+
+                ctx = {
+                    'event': event.name,
+                    'team': team.name,
+                    'name': member.get_display_name() if hasattr(member, 'get_display_name') else member.email,
+                }
+
+                # Have to change this.
+                # Have to make QueuedMail to accept order as null and add new field named team
+                order = Order.objects.get(pk=1)
+
+                QueuedMail.objects.create(
+                    event=event,
+                    user=user,
+                    order=order,
+                    # team=team,
+                    recipient=member.email,
+                    raw_subject=subject.data,
+                    raw_message=message.data,
+                    subject=subject.localize(locale).format_map(ctx),
+                    message=message.localize(locale).format_map(ctx),
+                    locale=locale,
+                    reply_to=event.settings.get('contact_mail'),
+                    bcc=event.settings.get('mail_bcc'),
+                    attachments=attachment_ids,
+                )
+                sent_emails.add(member.email)
+                count += 1
+
+        messages.success(
+            self.request,
+            _('%d emails have been saved to the outbox - you can make individual changes there or just send them all.') % count
+        )
+
+        return redirect(
+            'plugins:sendmail:compose_email_teams',
+            event=event.slug,
+            organizer=event.organizer.slug,
+        )

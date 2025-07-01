@@ -10,10 +10,14 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.email import get_available_placeholders
 from pretix.base.forms import PlaceholderValidator, SettingsForm
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
-from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
+from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent, Team
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
 from .models import QueuedMail
+
+import logging
+logger = logging.getLogger(__name__)
+
 
 MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
 
@@ -476,3 +480,67 @@ class QueuedMailEditForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+class TeamMailForm(forms.Form):
+    attachment = CachedFileField(
+        label=_('Attachment'),
+        required=False,
+        ext_whitelist=(
+            '.png',
+            '.jpg',
+            '.gif',
+            '.jpeg',
+            '.pdf',
+            '.txt',
+            '.docx',
+            '.gif',
+            '.svg',
+            '.pptx',
+            '.ppt',
+            '.doc',
+            '.xlsx',
+            '.xls',
+            '.jfif',
+            '.heic',
+            '.heif',
+            '.pages',
+            '.bmp',
+            '.tif',
+            '.tiff',
+        ),
+        help_text=_(
+            'Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs '
+            'of no more than 2 MB in size.'
+        ),
+        max_size=10 * 1024 * 1024,
+    )  # TODO i18n
+    
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(*args, **kwargs)
+
+        locales = self.event.settings.get('locales') or [self.event.locale or 'en']
+        if isinstance(locales, str):
+            locales = [locales]
+        locales = [loc for loc in locales if loc and isinstance(loc, str)]
+        
+        self.fields['subject'] = I18nFormField(
+            label=_('Subject'),
+            widget=I18nTextInput,
+            required=True,
+            locales=locales
+        )
+        self.fields['message'] = I18nFormField(
+            label=_('Message'),
+            widget=I18nTextarea,
+            required=True,
+            locales=locales
+        )
+        self.fields['teams'] = forms.ModelMultipleChoiceField(
+            queryset=Team.objects.filter(organizer=self.event.organizer),
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+            label=_("Send to members of these teams")
+        )
+
+        self.fields['teams'].queryset = Team.objects.filter(organizer=self.event.organizer)
