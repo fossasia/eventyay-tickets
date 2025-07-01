@@ -2059,8 +2059,8 @@ Your {event} team"""
                 'If you provide a header image, it will be displayed instead of your event’s color '
                 'and/or header pattern at the top of all event pages. It will be center-aligned, '
                 'so when the window shrinks, the center parts will continue to be displayed, You '
-                'can increase the size with the setting below. and not stretched. Please do not '
-                ' upload files larger than 10.0MB!'
+                'can increase the size with the setting below. The image will not be stretched. ' 
+                'Please do not upload files larger than 10.0MB!'
             ),
         ),
         'serializer_class': UploadedFileField,

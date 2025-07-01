@@ -774,7 +774,7 @@ class EventSettingsSerializer(SettingsSerializer):
         'primary_font',
         'logo_image',
         'logo_image_large',
-        'event_logo_image'
+        'event_logo_image',
         'logo_show_title',
         'og_image',
     ]
