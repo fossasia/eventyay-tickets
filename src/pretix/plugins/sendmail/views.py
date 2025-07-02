@@ -353,15 +353,20 @@ class SentMailView(EventPermissionRequiredMixin, ListView):
             ('created', _('Sent at')),
         ]
         ctx['current_ordering'] = self.request.GET.get("ordering")
+        ctx['query'] = self.request.GET.get("q", "")
         return ctx
 
     def get_queryset(self):
-        return (
+        qs = (
             self.request.event.queued_mails
             .select_related("user", "order", "position")
             .filter(sent=True)
             .order_by(self.get_ordering())
         )
+        query = self.request.GET.get("q")
+        if query:
+            qs = qs.filter(subject__icontains=query)
+        return qs
 
 
 class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
@@ -422,8 +427,8 @@ class OutboxListView(EventPermissionRequiredMixin, ListView):
             '-team': '-team__name',
         }
         ordering = self.request.GET.get('ordering')
-        return allowed.get(ordering, '-created')  # fallback to default
-    
+        return allowed.get(ordering, '-created')  # fallback
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['headers'] = [
@@ -433,13 +438,20 @@ class OutboxListView(EventPermissionRequiredMixin, ListView):
             ('team', _('Team')),
         ]
         ctx['current_ordering'] = self.request.GET.get('ordering')
+        ctx['query'] = self.request.GET.get('q', '')
         return ctx
-    
+
     def get_queryset(self):
-        return QueuedMail.objects.filter(
+        qs = QueuedMail.objects.filter(
             event=self.request.event,
             sent=False
-        ).select_related('order', 'team').order_by(self.get_ordering())
+        ).select_related('order', 'team')
+
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(subject__icontains=query)
+
+        return qs.order_by(self.get_ordering())
 
 
 class SendAllQueuedMailsView(EventPermissionRequiredMixin, View):

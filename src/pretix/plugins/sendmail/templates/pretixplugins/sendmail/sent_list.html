@@ -16,19 +16,41 @@
         {% include "pretixcontrol/event/component_link.html" %}
     </div>
 </nav>
-<table class="table mt-4">
+
+<form method="get" class="form-inline submit-group">
+    <div class="row">
+        <div class="col-md-12 text-left">
+            <div class="form-group">
+                <input type="text" name="q" class="form-control"
+                       placeholder="{% translate 'Search' %}" value="{{ query }}">
+            </div>
+
+            {% if current_ordering %}
+                <input type="hidden" name="ordering" value="{{ current_ordering }}">
+            {% endif %}
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    {% translate "Search" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<table class="table mt-2">
     <thead>
         <tr>
             {% for field, label in headers %}
                 <th>
                     {{ label }}
                     {% with asc=field desc="-"|add:field %}
-                        <a href="?ordering={{ asc }}"
-                           class="{% if current_ordering == asc %}fw-bold{% else %}text-muted{% endif %}" title="{% translate 'Sort ascending' %}">
+                        <a href="?ordering={{ asc }}{% if query %}&q={{ query }}{% endif %}"
+                           class="text-decoration-none {% if current_ordering == asc %}fw-bold{% else %}text-muted{% endif %}" title="{% translate 'Sort ascending' %}">
                             &#9650;
                         </a>
-                        <a href="?ordering={{ desc }}"
-                           class="{% if current_ordering == desc %}fw-bold{% else %}text-muted{% endif %}" title="{% translate 'Sort descending' %}">
+                        <a href="?ordering={{ desc }}{% if query %}&q={{ query }}{% endif %}"
+                           class="text-decoration-none {% if current_ordering == desc %}fw-bold{% else %}text-muted{% endif %}" title="{% translate 'Sort descending' %}">
                             &#9660;
                         </a>
                     {% endwith %}
