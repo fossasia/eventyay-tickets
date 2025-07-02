@@ -619,15 +619,10 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, TemplateView, FormView):
                     'name': member.get_display_name() if hasattr(member, 'get_display_name') else member.email,
                 }
 
-                # Have to change this.
-                # Have to make QueuedMail to accept order as null and add new field named team
-                order = Order.objects.get(pk=1)
-
                 QueuedMail.objects.create(
                     event=event,
                     user=user,
-                    order=order,
-                    # team=team,
+                    team=team,
                     recipient=member.email,
                     raw_subject=subject.data,
                     raw_message=message.data,

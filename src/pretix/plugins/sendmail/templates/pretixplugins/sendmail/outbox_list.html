@@ -41,6 +41,7 @@
             <th>{% translate "Subject" %}</th>
             <th>{% translate "To" %}</th>
             <th>{% translate "Order" %}</th>
+            <th>{% translate "Team" %}</th>
             <th>{% translate "Actions" %}</th>
         </tr>
     </thead>
@@ -60,7 +61,16 @@
                         {{ mail.order.code }}
                     </a>
                 {% else %}
-                    <em>{% translate "N/A" %}</em>
+                    <em>{% translate "" %}</em>
+                {% endif %}
+            </td>
+            <td>
+                {% if mail.team %}
+                    <a href="{% url 'control:organizer.team' organizer=request.event.organizer.slug team=mail.team.id %}" target="_blank">
+                        {{ mail.team.name }}
+                    </a>
+                {% else %}
+                    <em>{% translate "" %}</em>
                 {% endif %}
             </td>
             <td>

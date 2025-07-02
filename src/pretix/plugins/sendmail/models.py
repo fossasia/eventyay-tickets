@@ -1,14 +1,15 @@
 from django.db import models
 from django.utils.timezone import now
-from pretix.base.models import Event, Order, OrderPosition, User
+from pretix.base.models import Event, Order, OrderPosition, Team, User
 from pretix.base.services.mail import mail
 
 
 class QueuedMail(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="queued_mails")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # sender
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.CASCADE)
     position = models.ForeignKey(OrderPosition, null=True, blank=True, on_delete=models.SET_NULL)
+    team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.CASCADE)
     recipient = models.EmailField()
     raw_subject = models.TextField(null=True, blank=True)  # This stores the raw subject (i.e. with placeholders)
     raw_message = models.TextField(null=True, blank=True)  # This stores the message template (i.e. with placeholders)
