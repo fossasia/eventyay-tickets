@@ -398,8 +398,36 @@ class OutboxListView(EventPermissionRequiredMixin, ListView):
     permission_required = 'can_change_orders'
     paginate_by = 25
 
+    def get_ordering(self):
+        allowed = {
+            'subject': 'subject',
+            'recipient': 'recipient',
+            'order': 'order__code',
+            'team': 'team__name',
+            '-subject': '-subject',
+            '-recipient': '-recipient',
+            '-order': '-order__code',
+            '-team': '-team__name',
+        }
+        ordering = self.request.GET.get('ordering')
+        return allowed.get(ordering, '-created')  # fallback to default
+    
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['headers'] = [
+            ('subject', _('Subject')),
+            ('recipient', _('To')),
+            ('order', _('Order')),
+            ('team', _('Team')),
+        ]
+        ctx['current_ordering'] = self.request.GET.get('ordering')
+        return ctx
+    
     def get_queryset(self):
-        return QueuedMail.objects.filter(event=self.request.event, sent=False).order_by('-created')
+        return QueuedMail.objects.filter(
+            event=self.request.event,
+            sent=False
+        ).select_related('order', 'team').order_by(self.get_ordering())
 
 
 class SendAllQueuedMailsView(EventPermissionRequiredMixin, View):

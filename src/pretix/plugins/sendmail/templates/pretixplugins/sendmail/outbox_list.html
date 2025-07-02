@@ -18,7 +18,7 @@
 </nav>
 
 <div class="btn-toolbar" role="toolbar">
-    <!-- Send All (form submit) -->
+    <!-- Send All -->
     <div class="btn-group" role="group">
         <form method="post" action="{% url 'plugins:sendmail:send_all' organizer=request.event.organizer.slug event=request.event.slug %}" style="display:inline;">
             {% csrf_token %}
@@ -26,7 +26,7 @@
         </form>
     </div>
 
-    <!-- Discard All (link button) -->
+    <!-- Discard All -->
     <div class="btn-group" role="group">
         <a href="{% url 'plugins:sendmail:purge_all' organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-danger btn-lg">
             {% translate "Discard all" %}
@@ -34,14 +34,24 @@
     </div>
 </div>
 
-
 <table class="table mt-4">
     <thead>
         <tr>
-            <th>{% translate "Subject" %}</th>
-            <th>{% translate "To" %}</th>
-            <th>{% translate "Order" %}</th>
-            <th>{% translate "Team" %}</th>
+            {% for field, label in headers %}
+                <th>
+                    {{ label }}
+                    {% with asc=field desc="-"|add:field %}
+                        <a href="?ordering={{ asc }}"
+                        class="{% if current_ordering == asc %}fw-bold{% else %}text-muted{% endif %}">
+                            &#9650;
+                        </a>
+                        <a href="?ordering={{ desc }}"
+                        class="{% if current_ordering == desc %}fw-bold{% else %}text-muted{% endif %}">
+                            &#9660;
+                        </a>
+                    {% endwith %}
+                </th>
+            {% endfor %}
             <th>{% translate "Actions" %}</th>
         </tr>
     </thead>
@@ -50,7 +60,7 @@
         <tr>
             <td>
                 <a class="text-body text-decoration-none"
-                href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                   href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
                     {{ mail.subject }}
                 </a>
             </td>
@@ -88,7 +98,7 @@
                     <!-- Edit -->
                     <div class="btn-group" role="group">
                         <a class="btn btn-sm btn-info" title="{% translate 'Edit this email' %}"
-                        href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                           href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
                             <i class="fa fa-edit"></i>
                         </a>
                     </div>
@@ -96,7 +106,7 @@
                     <!-- Delete -->
                     <div class="btn-group" role="group">
                         <a class="btn btn-sm btn-danger" title="{% translate 'Delete this email' %}"
-                        href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                           href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
