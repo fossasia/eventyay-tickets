@@ -19,10 +19,21 @@
 <table class="table mt-4">
     <thead>
         <tr>
-            <th>{% translate "Subject" %}</th>
-            <th>{% translate "To" %}</th>
-            <th>{% translate "Order" %}</th>
-            <th>{% translate "Sent at" %}</th>
+            {% for field, label in headers %}
+                <th>
+                    {{ label }}
+                    {% with asc=field desc="-"|add:field %}
+                        <a href="?ordering={{ asc }}"
+                           class="{% if current_ordering == asc %}fw-bold{% else %}text-muted{% endif %}" title="{% translate 'Sort ascending' %}">
+                            &#9650;
+                        </a>
+                        <a href="?ordering={{ desc }}"
+                           class="{% if current_ordering == desc %}fw-bold{% else %}text-muted{% endif %}" title="{% translate 'Sort descending' %}">
+                            &#9660;
+                        </a>
+                    {% endwith %}
+                </th>
+            {% endfor %}
         </tr>
     </thead>
     <tbody>
@@ -30,7 +41,7 @@
         <tr>
             <td>
                 <a class="text-body text-decoration-none"
-                href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                   href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
                     {{ mail.subject }}
                 </a>
             </td>

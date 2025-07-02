@@ -329,26 +329,38 @@ class SentMailView(EventPermissionRequiredMixin, ListView):
     model = QueuedMail
     context_object_name = "mails"
     template_name = "pretixplugins/sendmail/sent_list.html"
-    default_filters = (
-        "recipient__icontains",
-        "subject__icontains",
-    )
-    default_sort_field = "-created"
-    sortable_fields = ("recipient", "subject", "created")
     paginate_by = 25
     permission_required = "can_change_orders"
 
-    def get_filter_form(self):
-        return QueuedMailFilterForm(
-            self.request.GET, event=self.request.event, sent=True
-        )
+    def get_ordering(self):
+        allowed = {
+            'recipient': 'recipient',
+            '-recipient': '-recipient',
+            'subject': 'subject',
+            '-subject': '-subject',
+            'created': 'created',
+            '-created': '-created',
+        }
+        ordering = self.request.GET.get("ordering")
+        return allowed.get(ordering, '-created')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['headers'] = [
+            ('subject', _('Subject')),
+            ('recipient', _('To')),
+            ('order', _('Order')),
+            ('created', _('Sent at')),
+        ]
+        ctx['current_ordering'] = self.request.GET.get("ordering")
+        return ctx
 
     def get_queryset(self):
         return (
             self.request.event.queued_mails
             .select_related("user", "order", "position")
             .filter(sent=True)
-            .order_by("-created")
+            .order_by(self.get_ordering())
         )
 
 
