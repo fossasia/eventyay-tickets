@@ -10,9 +10,14 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.email import get_available_placeholders
 from pretix.base.forms import PlaceholderValidator, SettingsForm
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
-from pretix.base.models import CheckinList, Item, Order, SubEvent
+from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent, Team
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
+from .models import QueuedMail
+
+import logging
+logger = logging.getLogger(__name__)
+
 
 MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
 
@@ -411,3 +416,131 @@ class MailContentSettingsForm(SettingsForm):
         for k, v in self.base_context.items():
             if k in self.fields:
                 self._set_field_placeholders(k, v)
+
+
+class QueuedMailFilterForm(forms.Form):
+    subject = forms.CharField(required=False, label="Subject contains")
+    recipient = forms.CharField(required=False, label="Recipient contains")
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop("event", None)
+        self.sent = kwargs.pop("sent", None)
+        super().__init__(*args, **kwargs)
+
+    def filter_queryset(self, qs):
+        if self.cleaned_data.get("subject"):
+            qs = qs.filter(subject__icontains=self.cleaned_data["subject"])
+        if self.cleaned_data.get("recipient"):
+            qs = qs.filter(recipient__icontains=self.cleaned_data["recipient"])
+        if self.sent is not None:
+            qs = qs.filter(sent=self.sent)
+        return qs
+
+
+class QueuedMailEditForm(forms.ModelForm):
+    
+    new_attachment = forms.FileField(
+        required=False,
+        label="New attachment",
+        help_text="Upload a new file to replace the existing one."
+    )
+    
+    class Meta:
+        model = QueuedMail
+        fields = [
+            'recipient',
+            'reply_to',
+            'bcc',
+            'subject',
+            'message',
+        ]
+        labels = {
+            'recipient': 'To',
+        }
+        widgets = {
+            'subject': forms.TextInput(attrs={'class': 'form-control'}),
+            'recipient': forms.EmailInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 10}),
+            'reply_to': forms.TextInput(attrs={'class': 'form-control'}),
+            'bcc': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event', None)
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        if self.cleaned_data.get('new_attachment'):
+            uploaded_file = self.cleaned_data['new_attachment']
+            cf = CachedFile.objects.create(file=uploaded_file, filename=uploaded_file.name)
+            instance.attachments = [str(cf.id)]
+
+        if commit:
+            instance.save()
+        return instance
+
+
+class TeamMailForm(forms.Form):
+    attachment = CachedFileField(
+        label=_('Attachment'),
+        required=False,
+        ext_whitelist=(
+            '.png',
+            '.jpg',
+            '.gif',
+            '.jpeg',
+            '.pdf',
+            '.txt',
+            '.docx',
+            '.gif',
+            '.svg',
+            '.pptx',
+            '.ppt',
+            '.doc',
+            '.xlsx',
+            '.xls',
+            '.jfif',
+            '.heic',
+            '.heif',
+            '.pages',
+            '.bmp',
+            '.tif',
+            '.tiff',
+        ),
+        help_text=_(
+            'Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs '
+            'of no more than 2 MB in size.'
+        ),
+        max_size=10 * 1024 * 1024,
+    )  # TODO i18n
+    
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(*args, **kwargs)
+
+        locales = self.event.settings.get('locales') or [self.event.locale or 'en']
+        if isinstance(locales, str):
+            locales = [locales]
+        locales = [loc for loc in locales if loc and isinstance(loc, str)]
+        
+        self.fields['subject'] = I18nFormField(
+            label=_('Subject'),
+            widget=I18nTextInput,
+            required=True,
+            locales=locales
+        )
+        self.fields['message'] = I18nFormField(
+            label=_('Message'),
+            widget=I18nTextarea,
+            required=True,
+            locales=locales
+        )
+        self.fields['teams'] = forms.ModelMultipleChoiceField(
+            queryset=Team.objects.filter(organizer=self.event.organizer),
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+            label=_("Send to members of these teams")
+        )
+
+        self.fields['teams'].queryset = Team.objects.filter(organizer=self.event.organizer)

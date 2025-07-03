@@ -2,28 +2,29 @@ import logging
 
 import bleach
 import dateutil
+import uuid
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, ListView
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
+from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 
-from pretix.base.email import get_available_placeholders
+from pretix.base.email import get_available_placeholders, get_email_context
 from pretix.base.i18n import LazyI18nString, language
-from pretix.base.models import Event, LogEntry, Order, OrderPosition
+from pretix.base.models import CachedFile, Event, LogEntry, Order, OrderPosition
 from pretix.base.models.event import SubEvent
 from pretix.base.services.mail import TolerantDict
 from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.permissions import EventPermissionRequiredMixin
-from pretix.plugins.sendmail.tasks import send_mails
+from pretix.plugins.sendmail.models import QueuedMail
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
-from .forms import MailContentSettingsForm
+from .forms import MailContentSettingsForm, MailForm, QueuedMailEditForm, QueuedMailFilterForm, TeamMailForm
 
-from . import forms
 
 logger = logging.getLogger('pretix.plugins.sendmail')
 
@@ -31,7 +32,7 @@ logger = logging.getLogger('pretix.plugins.sendmail')
 class SenderView(EventPermissionRequiredMixin, FormView):
     template_name = 'pretixplugins/sendmail/send_form.html'
     permission = 'can_change_orders'
-    form_class = forms.MailForm
+    form_class = MailForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -79,6 +80,42 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                         pass
             except LogEntry.DoesNotExist:
                 raise Http404(_('You supplied an invalid log entry ID'))
+        
+        import ast
+        if 'copyToDraft' in self.request.GET:
+            try:
+                mail_id = int(self.request.GET.get('copyToDraft'))
+                qm = QueuedMail.objects.get(id=mail_id, event=self.request.event)
+                kwargs['initial'] = kwargs.get('initial', {})
+
+                def parse_field(raw):
+                    try:
+                        data = ast.literal_eval(raw) if isinstance(raw, str) else raw
+                        if isinstance(data, dict):
+                            value = data.get('en') or next(iter(data.values()), '')
+                            return value.replace('\r\n', '\n')
+                    except Exception:
+                        pass
+                    return raw.replace('\r\n', '\n') if isinstance(raw, str) else ''
+
+                subject = parse_field(qm.raw_subject)
+                message = parse_field(qm.raw_message)
+
+                attachments = []
+                if qm.attachments:
+                    attachments_qs = CachedFile.objects.filter(id__in=[uuid.UUID(att_id) for att_id in qm.attachments])
+                    if attachments_qs.exists():
+                        attachments = [attachments_qs.first()]
+
+                kwargs['initial'].update({
+                    'subject': subject,
+                    'message': message,
+                })
+                if attachments:
+                    kwargs['initial']['attachment'] = attachments[0]
+            except (QueuedMail.DoesNotExist, ValueError):
+                pass
+
         return kwargs
 
     def form_invalid(self, form):
@@ -176,17 +213,55 @@ class SenderView(EventPermissionRequiredMixin, FormView):
         if form.cleaned_data.get('attachment') is not None:
             kwargs['attachments'] = [form.cleaned_data['attachment'].id]
 
-        send_mails.apply_async(kwargs=kwargs)
-        self.request.event.log_action(
-            'pretix.plugins.sendmail.sent',
-            user=self.request.user,
-            data=dict(form.cleaned_data),
-        )
+        for o in orders:
+            if 'orders' in form.cleaned_data['recipients'] or 'both' in form.cleaned_data['recipients']:
+                if o.email:
+                    with language(o.locale, self.request.event.settings.region):
+                        ctx = get_email_context(event=self.request.event, order=o, position_or_address=o.invoice_address)
+                        QueuedMail.objects.create(
+                            event=self.request.event,
+                            user=self.request.user,
+                            order=o,
+                            recipient=o.email,
+                            raw_subject=form.cleaned_data['subject'].data,
+                            raw_message=form.cleaned_data['message'].data,
+                            subject=form.cleaned_data['subject'].localize(o.locale).format_map(ctx),
+                            message=form.cleaned_data['message'].localize(o.locale).format_map(ctx),
+                            locale=o.locale,
+                            reply_to=self.request.event.settings.get('contact_mail'),
+                            bcc=self.request.event.settings.get('mail_bcc'),  # already comma-separated
+                            # optionally add attachments
+                            attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else None,
+                        )
+
+            if 'attendees' in form.cleaned_data['recipients'] or 'both' in form.cleaned_data['recipients']:
+                for p in o.positions.prefetch_related('addons'):
+                    if not p.attendee_email:
+                        continue
+                    if p.item_id not in [i.pk for i in form.cleaned_data.get('items')]:
+                        continue
+                    with language(o.locale, self.request.event.settings.region):
+                        ctx = get_email_context(event=self.request.event, order=o, position_or_address=p, position=p)
+                        QueuedMail.objects.create(
+                            event=self.request.event,
+                            user=self.request.user,
+                            order=o,
+                            position=p,
+                            recipient=p.attendee_email,
+                            raw_subject=form.cleaned_data['subject'].data,
+                            raw_message=form.cleaned_data['message'].data,
+                            subject=form.cleaned_data['subject'].localize(o.locale).format_map(ctx),
+                            message=form.cleaned_data['message'].localize(o.locale).format_map(ctx),
+                            locale=o.locale,
+                            reply_to=self.request.event.settings.get('contact_mail'),
+                            bcc=self.request.event.settings.get('mail_bcc'),  # already comma-separated
+                            attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else None,
+                        )
+
         messages.success(
             self.request,
             _(
-                'Your message has been queued and will be sent to the contact addresses of %d '
-                'orders in the next few minutes.'
+                '%d emails have been saved to the outbox - you can make individual changes there or just send them all.'
             )
             % len(orders),
         )
@@ -249,6 +324,51 @@ class EmailHistoryView(EventPermissionRequiredMixin, ListView):
 
         return ctx
 
+
+class SentMailView(EventPermissionRequiredMixin, ListView):
+    model = QueuedMail
+    context_object_name = "mails"
+    template_name = "pretixplugins/sendmail/sent_list.html"
+    paginate_by = 25
+    permission_required = "can_change_orders"
+
+    def get_ordering(self):
+        allowed = {
+            'recipient': 'recipient',
+            '-recipient': '-recipient',
+            'subject': 'subject',
+            '-subject': '-subject',
+            'created': 'created',
+            '-created': '-created',
+        }
+        ordering = self.request.GET.get("ordering")
+        return allowed.get(ordering, '-created')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['headers'] = [
+            ('subject', _('Subject')),
+            ('recipient', _('To')),
+            ('order', _('Order')),
+            ('created', _('Sent at')),
+        ]
+        ctx['current_ordering'] = self.request.GET.get("ordering")
+        ctx['query'] = self.request.GET.get("q", "")
+        return ctx
+
+    def get_queryset(self):
+        qs = (
+            self.request.event.queued_mails
+            .select_related("user", "order", "position")
+            .filter(sent=True)
+            .order_by(self.get_ordering())
+        )
+        query = self.request.GET.get("q")
+        if query:
+            qs = qs.filter(subject__icontains=query)
+        return qs
+
+
 class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     template_name = 'pretixplugins/sendmail/mail_templates.html'
@@ -286,3 +406,295 @@ class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
             )
         messages.success(self.request, _('Your changes have been saved.'))
         return redirect(self.get_success_url())
+
+
+class OutboxListView(EventPermissionRequiredMixin, ListView):
+    model = QueuedMail
+    context_object_name = 'mails'
+    template_name = 'pretixplugins/sendmail/outbox_list.html'
+    permission_required = 'can_change_orders'
+    paginate_by = 25
+
+    def get_ordering(self):
+        allowed = {
+            'subject': 'subject',
+            'recipient': 'recipient',
+            'order': 'order__code',
+            'team': 'team__name',
+            '-subject': '-subject',
+            '-recipient': '-recipient',
+            '-order': '-order__code',
+            '-team': '-team__name',
+        }
+        ordering = self.request.GET.get('ordering')
+        return allowed.get(ordering, '-created')  # fallback
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['headers'] = [
+            ('subject', _('Subject')),
+            ('recipient', _('To')),
+            ('order', _('Order')),
+            ('team', _('Team')),
+        ]
+        ctx['current_ordering'] = self.request.GET.get('ordering')
+        ctx['query'] = self.request.GET.get('q', '')
+        return ctx
+
+    def get_queryset(self):
+        qs = QueuedMail.objects.filter(
+            event=self.request.event,
+            sent=False
+        ).select_related('order', 'team')
+
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(subject__icontains=query)
+
+        return qs.order_by(self.get_ordering())
+
+
+class SendAllQueuedMailsView(EventPermissionRequiredMixin, View):
+    permission_required = 'can_change_orders'
+
+    def post(self, request, *args, **kwargs):
+        mails = QueuedMail.objects.filter(event=request.event, sent=False)
+        count = 0
+        for mail in mails:
+            if mail.send():
+                count += 1
+        messages.success(request, _('%d mails have been sent.') % count)
+        return redirect(reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': request.event.organizer.slug,
+            'event': request.event.slug
+        }))
+
+
+class SendQueuedMailView(EventPermissionRequiredMixin, View):
+    permission_required = 'can_change_orders'
+
+    def post(self, request, *args, **kwargs):
+        mail = get_object_or_404(QueuedMail, event=request.event, pk=kwargs['pk'])
+        if mail.sent:
+            messages.warning(request, _('This mail has already been sent.'))
+        else:
+            mail.send()
+            messages.success(request, _('The mail has been sent.'))
+        return redirect(reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': request.event.organizer.slug,
+            'event': request.event.slug
+        }))
+
+
+class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
+    model = QueuedMail
+    form_class = QueuedMailEditForm
+    template_name = 'pretixplugins/sendmail/outbox_form.html'
+    permission_required = 'can_change_orders'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(QueuedMail, event=self.request.event, pk=self.kwargs["pk"])
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['read_only'] = self.object.sent  # Make the form read-only if already sent
+
+        if self.object.attachments:
+            ctx['attachments_files'] = CachedFile.objects.filter(
+                id__in=[uuid.UUID(att_id) for att_id in self.object.attachments]
+            )
+        else:
+            ctx['attachments_files'] = []
+        return ctx
+
+    def form_valid(self, form):
+        if form.instance.sent:
+            messages.error(self.request, _('This email has already been sent and cannot be edited.'))
+            return self.form_invalid(form)
+        
+        response = super().form_valid(form)
+        
+        # Check if "Save and Send" was clicked
+        if self.request.POST.get('action') == 'save_and_send':
+            if self.object.send():
+                messages.success(self.request, _('Your changes have been saved and the email has been sent.'))
+            else:
+                messages.error(self.request, _('Your changes have been saved, but there was an error sending the email.'))
+        else:
+            messages.success(self.request, _('Your changes have been saved.'))
+        
+        return response
+
+    def get_success_url(self):
+        return reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': self.request.event.organizer.slug,
+            'event': self.request.event.slug
+        })
+
+
+class DeleteQueuedMailView(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/delete_confirmation.html'
+    permission_required = 'can_change_orders'
+
+    @cached_property
+    def mail(self):
+        return get_object_or_404(
+            QueuedMail, event=self.request.event, pk=self.kwargs['pk']
+        )
+
+    def question(self):
+        return _("Do you really want to delete this mail?")
+    
+    def post(self, request, *args, **kwargs):
+        mail = self.mail
+        if mail.sent:
+            messages.error(
+                request,
+                _("This mail has already been sent and cannot be deleted.")
+            )
+        else:
+            mail.delete()
+            messages.success(
+                request,
+                _("The mail has been deleted.")
+            )
+
+        return redirect(reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': request.event.organizer.slug,
+            'event': request.event.slug
+        }))
+
+
+class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/purge_confirmation.html'
+
+    def get_permission_object(self):
+        return self.request.event
+    
+    def question(self):
+        count = QueuedMail.objects.filter(event=self.request.event, sent=False).count()
+        return ngettext_lazy(
+            "Do you really want to purge this mail?",
+            "Do you really want to purge {count} mails?",
+            count
+        ).format(count=count)
+
+    def post(self, request, *args, **kwargs):
+        qs = QueuedMail.objects.filter(event=request.event, sent=False)
+        count = qs.count()
+        qs.delete()
+
+        messages.success(
+            request,
+            ngettext_lazy(
+                "One mail has been discarded.",
+                "{count} mails have been discarded.",
+                count
+            ).format(count=count)
+        )
+        return redirect(reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': request.event.organizer.slug,
+            'event': request.event.slug
+        }))
+
+
+class ComposeMailChoice(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/compose_choice.html'
+
+
+class ComposeTeamsMail(EventPermissionRequiredMixin, TemplateView, FormView):
+    template_name = 'pretixplugins/sendmail/send_team_form.html'
+    permission = 'can_change_orders'
+    form_class = TeamMailForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['output'] = getattr(self, 'output', None)
+        return ctx
+
+    def form_valid(self, form):
+        subject = form.cleaned_data['subject']
+        message = form.cleaned_data['message']
+        event = self.request.event
+        user = self.request.user
+        attachment = form.cleaned_data.get('attachment')
+
+        attachment_ids = [str(attachment.id)] if attachment else None
+
+        if self.request.POST.get('action') == 'preview':
+            self.output = {}
+            for l in event.settings.locales:
+                with language(l, event.settings.region):
+                    context_dict = {
+                        'event': event.name,
+                        'team': _('(Team name)'),
+                        'name': _('(Recipient name)')
+                    }
+
+                    subject_preview = bleach.clean(subject.localize(l), tags=[]).format_map(context_dict)
+                    message_preview = message.localize(l).format_map(context_dict)
+                    message_preview_html = markdown_compile_email(message_preview)
+
+                    self.output[l] = {
+                        'subject': _('Subject: {subject}').format(subject=subject_preview),
+                        'html': message_preview_html,
+                    }
+
+            return self.get(self.request, *self.args, **self.kwargs)
+
+        sent_emails = set()
+        count = 0
+
+        for team in form.cleaned_data['teams']:
+            for member in team.members.all():
+                if not member.email or member.email in sent_emails:
+                    continue
+
+                locale = getattr(member, 'locale', None) or event.locale
+
+                ctx = {
+                    'event': event.name,
+                    'team': team.name,
+                    'name': member.get_display_name() if hasattr(member, 'get_display_name') else member.email,
+                }
+
+                QueuedMail.objects.create(
+                    event=event,
+                    user=user,
+                    team=team,
+                    recipient=member.email,
+                    raw_subject=subject.data,
+                    raw_message=message.data,
+                    subject=subject.localize(locale).format_map(ctx),
+                    message=message.localize(locale).format_map(ctx),
+                    locale=locale,
+                    reply_to=event.settings.get('contact_mail'),
+                    bcc=event.settings.get('mail_bcc'),
+                    attachments=attachment_ids,
+                )
+                sent_emails.add(member.email)
+                count += 1
+
+        messages.success(
+            self.request,
+            _('%d emails have been saved to the outbox - you can make individual changes there or just send them all.') % count
+        )
+
+        return redirect(
+            'plugins:sendmail:compose_email_teams',
+            event=event.slug,
+            organizer=event.organizer.slug,
+        )
