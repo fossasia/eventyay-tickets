@@ -131,7 +131,7 @@
 
     {% if request.event.has_subevents %}
         {% if not subevent %}
-            {% if event_logo and request.event.settings.logo_show_title %}
+            {% if event_logo_image and request.event.settings.logo_show_title %}
                 <h2 class="content-header">
                     {{ event.name }}
                 </h2>
@@ -192,7 +192,7 @@
             {% endif %}
         {% endif %}
     {% else %}
-        {% if event_logo and request.event.settings.logo_show_title %}
+        {% if event_logo_image and request.event.settings.logo_show_title %}
             <h2 class="content-header">
                 {{ event.name }}
                 {% if request.event.settings.show_dates_on_frontpage %}
@@ -200,7 +200,7 @@
                 {% endif %}
             </h2>
         {% endif %}
-        {% if not event_logo %}
+        {% if not event_logo_image %}
             <h2 class="content-header">
                 {{ event.name }}
                 {% if request.event.settings.show_dates_on_frontpage %}
