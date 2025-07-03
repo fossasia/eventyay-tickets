@@ -6,7 +6,7 @@ from django.db.models.expressions import RawSQL, Value
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
-from eventyay.base.models import User
+from eventyay.base.models.auth import User
 from eventyay.base.models.cache import VersionedModel
 from eventyay.base.core.permissions import SYSTEM_ROLES, Permission
 

@@ -7,9 +7,9 @@ from eventyay.base.models import (
     Exhibitor,
     ExhibitorLink,
     ExhibitorSocialMediaLink,
-    Room,
-    World,
 )
+from eventyay.base.models.room import Room
+from eventyay.base.models.world import World
 
 
 @transaction.atomic

@@ -11,7 +11,7 @@ from django.db import models
 from django.db.models import JSONField
 from django.utils.crypto import get_random_string
 
-from eventyay.base.models import User
+from eventyay.base.models.auth import User
 from eventyay.base.models.cache import VersionedModel
 from eventyay.base.core.permissions import (
     MAX_PERMISSIONS_IF_SILENCED,
@@ -19,19 +19,13 @@ from eventyay.base.core.permissions import (
     Permission,
 )
 from eventyay.base.core.utils.json import CustomJSONEncoder
-from eventyay.base.models import (
-    ChatEvent,
-    ContactRequest,
-    ExhibitorStaff,
-    ExhibitorView,
-    Feedback,
-    Membership,
-    Poll,
-    PosterPresenter,
-    Question,
-    Reaction,
-    RoomView,
-)
+from eventyay.base.models.chat import ChatEvent, Membership
+from eventyay.base.models.exhibitor import ContactRequest, ExhibitorStaff, ExhibitorView
+from eventyay.base.models.feedback import Feedback
+from eventyay.base.models.poll import Poll
+from eventyay.base.models.poster import PosterPresenter
+from eventyay.base.models.question import RoomQuestion
+from eventyay.base.models.room import Reaction, RoomView
 from eventyay.base.storage.models import StoredFile
 
 
@@ -356,21 +350,7 @@ class World(VersionedModel):
         sure all personal data is scrubbed, it also clears all uploaded files, which includes things like exhibitor
         logos.
         """
-        from venueless.core.models import (
-            ChatEvent,
-            ContactRequest,
-            ExhibitorStaff,
-            ExhibitorView,
-            Feedback,
-            Membership,
-            Poll,
-            PosterPresenter,
-            Question,
-            Reaction,
-            RoomView,
-        )
-        from venueless.storage.models import StoredFile
-
+        
         self.audit_logs.all().delete()
         self.world_grants.all().delete()
         self.room_grants.all().delete()

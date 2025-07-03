@@ -10,6 +10,8 @@ from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 
 from eventyay.base.models.cache import VersionedModel
+from eventyay.base.models.room import Room
+from eventyay.base.models.world import World
 
 
 class User(VersionedModel):

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
-from eventyay.base.live import routing as live
+from eventyay.features.live import routing as live
 
 application = ProtocolTypeRouter(
     {
