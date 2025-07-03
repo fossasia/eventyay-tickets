@@ -82,10 +82,18 @@
                     <legend>{% trans "Advanced settings" %}</legend>
                     {% bootstrap_field form.block_quota layout="control" %}
                     {% bootstrap_field form.allow_ignore_quota layout="control" %}
+                    {% bootstrap_field form.minimum_usages layout="control" %}
                     {% bootstrap_field form.budget addon_after=request.event.currency layout="control" %}
                     {% bootstrap_field form.tag layout="control" %}
                     {% bootstrap_field form.comment layout="control" %}
                     {% bootstrap_field form.show_hidden_items layout="control" %}
+                    {% bootstrap_field form.free_addons layout="control" %}
+                    {% bootstrap_field form.include_bundled layout="control" %}
+                </fieldset>
+                <fieldset>
+                    <legend>{% trans "Exhibitor" %}</legend>
+                    {% bootstrap_field form.exhibitor layout="control" %}
+                    {% bootstrap_field form.exhibitor_comment layout="control" %}
                 </fieldset>
                 {% eventsignal request.event "pretix.control.signals.voucher_form_html" form=form %}
             </div>
