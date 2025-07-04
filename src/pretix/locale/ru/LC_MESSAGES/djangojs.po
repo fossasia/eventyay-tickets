@@ -407,7 +407,7 @@ msgstr "Область штрих-кода"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "На базе pretix"
+msgstr "На базе eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"
