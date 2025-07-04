@@ -850,14 +850,34 @@ const editor = {
         $("#editor-save").on("click", editor._save);
         // Removed: $("#editor-preview").on("click", editor._preview);
         
-        // Add window resize handler for responsive scaling
-        $(window).on('resize', function() {
-            if (editor.pdf_page && editor._fabric_loaded) {
-                setTimeout(function() {
-                    editor._load_pdf(editor.dump());
-                }, 100);
+        // Debounce utility function
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+
+        // Store last known window size
+        let lastWindowWidth = $(window).width();
+        let lastWindowHeight = $(window).height();
+
+        // Add window resize handler for responsive scaling (debounced and only on significant change)
+        $(window).on('resize', debounce(function() {
+            const newWidth = $(window).width();
+            const newHeight = $(window).height();
+            // Only reload if size changed significantly (e.g., >20px)
+            if (editor.pdf_page && editor._fabric_loaded &&
+                (Math.abs(newWidth - lastWindowWidth) > 20 || Math.abs(newHeight - lastWindowHeight) > 20)) {
+                editor._load_pdf(editor.dump());
+                lastWindowWidth = newWidth;
+                lastWindowHeight = newHeight;
             }
-        });
+        }, 200));
         
         window.onbeforeunload = function () {
             if (editor.dirty) {
