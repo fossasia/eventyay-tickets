@@ -15,7 +15,6 @@ from rest_framework import serializers
 
 from eventyay.base.models.room import Room
 from eventyay.base.models.world import World
-from eventyay.base.core.models.auth import ShortToken
 from eventyay.base.models.room import RoomConfigSerializer, RoomView
 from eventyay.base.core.permissions import Permission
 
@@ -327,6 +326,7 @@ async def get_room_config_for_user(room: str, world_id: str, user):
 
 @database_sync_to_async
 def generate_tokens(world, number, traits, days, by_user, long=False):
+    from eventyay.base.models.auth import ShortToken
     jwt_config = world.config["JWT_secrets"][0]
     secret = jwt_config["secret"]
     audience = jwt_config["audience"]

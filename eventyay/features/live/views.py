@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from eventyay.base.models import Feedback, World
-from eventyay.base.core.models.auth import ShortToken
+from eventyay.base.models.auth import ShortToken
 from eventyay.base.models.room import AnonymousInvite
 
 

@@ -12,8 +12,8 @@ from django.core.signing import dumps
 from django.urls import reverse
 from sentry_sdk import configure_scope
 
-from eventyay.base.core.models import User
-from eventyay.base.core.models.auth import ShortToken
+from eventyay.base.models import User
+from eventyay.base.models.auth import ShortToken
 from eventyay.base.core.permissions import Permission
 from eventyay.base.services.announcement import get_announcements
 from eventyay.base.services.chat import ChatService

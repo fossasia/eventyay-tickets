@@ -5,7 +5,7 @@ import jwt
 from django.core.management.base import BaseCommand
 
 from eventyay.base.models import World
-from eventyay.base.core.models.auth import ShortToken
+from eventyay.base.models.auth import ShortToken
 
 
 class Command(BaseCommand):
