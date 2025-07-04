@@ -1,0 +1,83 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<nav id="event-nav" class="header-nav">
+    <div class="navigation">
+        <div class="navigation-title">
+            <h1>
+                {% blocktranslate count mail_count=mails|length %}
+                    Sent emails
+                {% plural %}
+                    {{ mail_count }} Sent emails
+                {% endblocktranslate %}
+            </h1>
+        </div>
+        {% include "pretixcontrol/event/component_link.html" %}
+    </div>
+</nav>
+
+<form method="get" class="form-inline submit-group">
+    <div class="row">
+        <div class="col-md-12 text-left">
+            <div class="form-group">
+                <input type="text" name="q" class="form-control"
+                       placeholder="{% translate 'Search' %}" value="{{ query }}">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    {% translate "Search" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            {% for field, label in headers %}
+                <th>
+                    {{ label }}
+                    {% with asc=field desc="-"|add:field %}
+                        <a href="?ordering={{ asc }}{% if query %}&q={{ query }}{% endif %}"
+                           class="text-decoration-none {% if current_ordering == asc %}fw-bold{% endif %}">
+                            &#9650;
+                        </a>
+                        <a href="?ordering={{ desc }}{% if query %}&q={{ query }}{% endif %}"
+                           class="text-decoration-none {% if current_ordering == desc %}fw-bold{% endif %}">
+                            &#9660;
+                        </a>
+                    {% endwith %}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for mail in mails %}
+        <tr>
+            <td>
+                <a class="text-body text-decoration-none"
+                   href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                    {{ mail.raw_subject }}
+                </a>
+            </td>
+            <td>
+                {% for user in mail.to_users %}
+                    {{ user.email }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    <em>{% translate "No recipients" %}</em>
+                {% endfor %}
+            </td>
+            <td>{{ mail.sent_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">{% translate "No sent mails found." %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include "pretixcontrol/pagination.html" with page=mails %}
+{% endblock %}
