@@ -135,8 +135,8 @@ const editor = {
 
         for (let i in objs) {
             let o = objs[i];
-            let {top} = o;
-            let {left} = o;
+            let top = o.top;
+            let left = o.left;
             if (o.group) {
                 top += o.group.top + o.group.height / 2;
                 left += o.group.left + o.group.width / 2;
@@ -792,7 +792,7 @@ const editor = {
 
     _replace_pdf_file: function (url) {
         editor.pdf_url = url;
-        let d = editor.dump();
+        const d = editor.dump(); 
         editor.fabric.dispose();
         editor._load_pdf(d);
     },
@@ -850,34 +850,16 @@ const editor = {
         $("#editor-save").on("click", editor._save);
         // Removed: $("#editor-preview").on("click", editor._preview);
         
-        // Debounce utility function
-        function debounce(func, wait) {
-            let timeout;
-            return function() {
-                const context = this, args = arguments;
-                clearTimeout(timeout);
-                timeout = setTimeout(function() {
-                    func.apply(context, args);
-                }, wait);
-            };
-        }
-
-        // Store last known window size
-        let lastWindowWidth = $(window).width();
-        let lastWindowHeight = $(window).height();
-
-        // Add window resize handler for responsive scaling (debounced and only on significant change)
-        $(window).on('resize', debounce(function() {
-            const newWidth = $(window).width();
-            const newHeight = $(window).height();
-            // Only reload if size changed significantly (e.g., >20px)
-            if (editor.pdf_page && editor._fabric_loaded &&
-                (Math.abs(newWidth - lastWindowWidth) > 20 || Math.abs(newHeight - lastWindowHeight) > 20)) {
-                editor._load_pdf(editor.dump());
-                lastWindowWidth = newWidth;
-                lastWindowHeight = newHeight;
+        // Implement proper debouncing for window resize
+        let resizeTimeout;
+        $(window).on('resize', function() {
+            if (editor.pdf_page && editor._fabric_loaded) {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    editor._load_pdf(editor.dump());
+                }, 250); // Increased timeout for better performance
             }
-        }, 200));
+        });
         
         window.onbeforeunload = function () {
             if (editor.dirty) {
