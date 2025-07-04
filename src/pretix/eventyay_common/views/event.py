@@ -24,11 +24,8 @@ from pretix.base.i18n import language
 from pretix.base.models import Event, EventMetaValue, Organizer, Quota
 from pretix.base.services import tickets
 from pretix.base.services.quotas import QuotaAvailability
-from pretix.control.forms.event import (
-    EventUpdateForm,
-    EventWizardBasicsForm,
-    EventWizardFoundationForm,
-)
+
+from pretix.control.forms.event import EventWizardBasicsForm, EventWizardFoundationForm
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views import PaginationMixin, UpdateView
@@ -43,7 +40,7 @@ from pretix.eventyay_common.utils import (
     generate_token,
 )
 from pretix.helpers.plugin_enable import is_video_enabled
-
+from ..forms.event import EventUpdateForm
 
 class EventList(PaginationMixin, ListView):
     model = Event
@@ -355,8 +352,10 @@ class EventUpdate(
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        if self.request.user.has_active_staff_session(self.request.session.session_key):
-            kwargs['domain'] = True
+        # Pass necessary kwargs to the EventUpdateForm in common
+        is_staff_session = self.request.user.has_active_staff_session(self.request.session.session_key)
+        kwargs['change_slug'] = is_staff_session
+        kwargs['domain'] = is_staff_session
         return kwargs
 
     def enable_talk_system(self, request: HttpRequest) -> bool:
