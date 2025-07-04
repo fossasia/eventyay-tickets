@@ -6,6 +6,7 @@
 @import "../../charts/morris.scss";
 @import "../../datetimepicker/_bootstrap-datetimepicker.scss";
 @import "_sb-admin-2.scss";
+@import "_sidebar.scss";
 @import "_forms.scss";
 @import "_flags.scss";
 @import "_orders.scss";
@@ -44,6 +45,7 @@ nav.navbar {
     font-size: 1.75rem;
     white-space: nowrap;
     
+    
     &:hover,
     &:focus {
         color: $navbar-inverse-link-hover-color;
@@ -58,7 +60,7 @@ nav.navbar {
     height: 30px;
     width: auto;
     margin-right: 0.5rem;
-    margin-left: 1rem;
+    // margin-left: 0.1rem; // Reduced from 0.25rem to bring logo closer to burger button
     display: inline-block;
     vertical-align: middle;
 }
@@ -729,7 +731,7 @@ h1 .label {
     #submenu {
         position: absolute;
         top: 0;
-        right: 101%;
+        right: 1001%;
         font-size: 16px;
         font-weight: normal;
         cursor: pointer;
@@ -741,6 +743,8 @@ h1 .label {
         background-clip: padding-box;
         border: 1px solid rgba(0, 0, 0, 0.2);
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        // Add transition for smoother interaction
+        transition: opacity 0.2s ease-in-out;
     }
     .profile-menu {
         color: darken($btn-primary-bg, 10%);
@@ -864,3 +868,5 @@ h1 .label {
 @import "../../pretixbase/scss/_rtl.scss";
 @import "../../bootstrap/scss/_rtl.scss";
 @import "_rtl.scss";
+
+
