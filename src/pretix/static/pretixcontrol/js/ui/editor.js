@@ -136,7 +136,7 @@ const editor = {
         for (let i in objs) {
             let o = objs[i];
             let top = o.top;
-            let left = o.left;
+            let {left} = o;
             if (o.group) {
                 top += o.group.top + o.group.height / 2;
                 left += o.group.left + o.group.width / 2;
