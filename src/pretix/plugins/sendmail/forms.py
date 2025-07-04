@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse
@@ -5,14 +7,17 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
+from i18nfield.fields import I18nTextInput, I18nTextarea
 
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.email import get_available_placeholders
 from pretix.base.forms import PlaceholderValidator, SettingsForm
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
-from pretix.base.models import CheckinList, Item, Order, SubEvent
+from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
+from pretix.plugins.sendmail.models import QueuedMail
+
 
 MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
 
@@ -411,3 +416,103 @@ class MailContentSettingsForm(SettingsForm):
         for k, v in self.base_context.items():
             if k in self.fields:
                 self._set_field_placeholders(k, v)
+
+
+class QueuedMailEditForm(forms.ModelForm):
+    new_attachment = forms.FileField(
+        required=False,
+        label="New attachment",
+        help_text=_("Upload a new file to replace the existing one.")
+    )
+    
+    emails = forms.CharField(
+        label=_("Recipients"),
+        help_text=_("Edit the list of recipient email addresses separated by commas."),
+        required=True,
+        widget=forms.Textarea(attrs={'rows': 2, 'class': 'form-control'})
+    )
+    
+    class Meta:
+        model = QueuedMail
+        fields = [
+            'reply_to',
+            'bcc',
+            'raw_subject',
+            'raw_message',
+        ]
+        labels = {
+            'reply_to': _('Reply-To'),
+            'bcc': _('BCC'),
+        }
+        widgets = {
+            'reply_to': forms.TextInput(attrs={'class': 'form-control'}),
+            'bcc': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event', None)
+        super().__init__(*args, **kwargs)
+
+        # Prefill emails field with existing recipient emails
+        existing_emails = [u['email'] for u in self.instance.to_users]
+        self.fields['emails'].initial = ", ".join(existing_emails)
+
+        saved_locales = set()
+        if self.instance.raw_subject and hasattr(self.instance.raw_subject, '_data'):
+            saved_locales |= set(self.instance.raw_subject._data.keys())
+        if self.instance.raw_message and hasattr(self.instance.raw_message, '_data'):
+            saved_locales |= set(self.instance.raw_message._data.keys())
+
+        configured_locales = set(self.event.settings.get('locales', [])) if self.event else set()
+        allowed_locales = saved_locales | configured_locales
+
+        self.fields['raw_subject'] = I18nFormField(
+            label=_('Subject'),
+            widget=I18nTextInput,
+            required=False,
+            locales=list(allowed_locales),
+            initial=self.instance.raw_subject
+        )
+        self.fields['raw_message'] = I18nFormField(
+            label=_('Message'),
+            widget=I18nTextarea,
+            required=False,
+            locales=list(allowed_locales),
+            initial=self.instance.raw_message
+        )
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        updated_emails = [
+            email.strip()
+            for email in self.cleaned_data['emails'].split(',')
+            if email.strip()
+        ]
+
+        new_to_users = []
+        for i, user in enumerate(instance.to_users):
+            if i < len(updated_emails):
+                user['email'] = updated_emails[i]
+                new_to_users.append(user)
+
+        for email in updated_emails[len(new_to_users):]:
+            new_to_users.append({
+                'sent': False,
+                'email': email,
+                'error': None,
+                'items': [],
+                'orders': [],
+                'positions': []
+            })
+        instance.to_users = new_to_users
+
+        # Handle new attachment
+        if self.cleaned_data.get('new_attachment'):
+            uploaded_file = self.cleaned_data['new_attachment']
+            cf = CachedFile.objects.create(file=uploaded_file, filename=uploaded_file.name)
+            instance.attachments = [str(cf.id)]
+
+        if commit:
+            instance.save()
+        return instance

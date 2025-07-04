@@ -2,30 +2,52 @@ import logging
 
 import bleach
 import dateutil
+import uuid
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Q
-from django.http import Http404
-from django.shortcuts import redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, ListView
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
+from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 
 from pretix.base.email import get_available_placeholders
 from pretix.base.i18n import LazyI18nString, language
-from pretix.base.models import Event, LogEntry, Order, OrderPosition
+from pretix.base.models import CachedFile, Event, LogEntry, Order, OrderPosition
 from pretix.base.models.event import SubEvent
 from pretix.base.services.mail import TolerantDict
 from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.permissions import EventPermissionRequiredMixin
-from pretix.plugins.sendmail.tasks import send_mails
+from pretix.plugins.sendmail.forms import QueuedMailEditForm
+from pretix.plugins.sendmail.models import QueuedMail
+from pretix.plugins.sendmail.tasks import send_queued_mail
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
 from .forms import MailContentSettingsForm
+
 
 from . import forms
 
 logger = logging.getLogger('pretix.plugins.sendmail')
+
+
+def stringify_uuids(obj):
+    """
+    Recursively converts UUIDs to strings inside a nested dict or list
+    """
+    if isinstance(obj, dict):
+        return {k: stringify_uuids(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [stringify_uuids(i) for i in obj]
+    elif isinstance(obj, uuid.UUID):
+        return str(obj)
+    return obj
+
+class ComposeMailChoice(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/compose_choice.html'
 
 
 class SenderView(EventPermissionRequiredMixin, FormView):
@@ -79,10 +101,73 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                         pass
             except LogEntry.DoesNotExist:
                 raise Http404(_('You supplied an invalid log entry ID'))
+        
+        import dateutil.parser
+        copy_id = self.request.GET.get('copyToDraft')
+        if copy_id:
+            try:
+                mail_id = int(copy_id)
+                qm = QueuedMail.objects.get(id=mail_id, event=self.request.event)
+                kwargs['initial'] = kwargs.get('initial', {})
+
+                subject = qm.raw_subject._data if hasattr(qm.raw_subject, '_data') else {'en': str(qm.raw_subject)}
+                message = qm.raw_message._data if hasattr(qm.raw_message, '_data') else {'en': str(qm.raw_message)}
+
+                attachments_qs = CachedFile.objects.filter(
+                    id__in=[uuid.UUID(att_id) for att_id in qm.attachments]
+                )
+                
+                attachment = attachments_qs.first() if attachments_qs.exists() else None
+
+                filters = qm.filters or {}
+
+                kwargs['initial'].update({
+                    'subject': subject,
+                    'message': message,
+                    'recipients': qm.recipients,
+                    'reply_to': qm.reply_to,
+                    'bcc': qm.bcc,
+                    'sendto': ['p', 'na'],  # fallback if needed
+                    'filter_checkins': filters.get('filter_checkins', False),
+                    'not_checked_in': filters.get('not_checked_in', False),
+                })
+
+                if filters.get('items'):
+                    kwargs['initial']['items'] = self.request.event.items.filter(
+                        id__in=filters['items']
+                    )
+
+                if filters.get('checkin_lists'):
+                    kwargs['initial']['checkin_lists'] = self.request.event.checkin_lists.filter(
+                        id__in=filters['checkin_lists']
+                    )
+
+                if filters.get('subevent'):
+                    try:
+                        kwargs['initial']['subevent'] = self.request.event.subevents.get(
+                            id=filters['subevent']
+                        )
+                    except SubEvent.DoesNotExist:
+                        pass
+
+                date_fields = ['subevents_from', 'subevents_to', 'created_from', 'created_to']
+                for field in date_fields:
+                    if filters.get(field):
+                        try:
+                            kwargs['initial'][field] = dateutil.parser.isoparse(filters[field])
+                        except (ValueError, TypeError):
+                            pass
+
+                if attachment:
+                    kwargs['initial']['attachment'] = attachment
+
+            except (QueuedMail.DoesNotExist, ValueError, TypeError):
+                pass
+        
         return kwargs
 
     def form_invalid(self, form):
-        messages.error(self.request, _('We could not send the email. See below for details.'))
+        messages.error(self.request, _('We could not queue the email. See below for details.'))
         return super().form_invalid(form)
 
     def form_valid(self, form):
@@ -176,17 +261,40 @@ class SenderView(EventPermissionRequiredMixin, FormView):
         if form.cleaned_data.get('attachment') is not None:
             kwargs['attachments'] = [form.cleaned_data['attachment'].id]
 
-        send_mails.apply_async(kwargs=kwargs)
-        self.request.event.log_action(
-            'pretix.plugins.sendmail.sent',
+        # Build filters JSON for later use in QueuedMail
+        filters = {
+            'orders': list(orders.values_list('pk', flat=True)),
+            'items': [i.pk for i in form.cleaned_data.get('items')],
+            'checkin_lists': [cl.pk for cl in form.cleaned_data.get('checkin_lists')],
+            'filter_checkins': form.cleaned_data.get('filter_checkins'),
+            'not_checked_in': form.cleaned_data.get('not_checked_in'),
+            'subevent': form.cleaned_data.get('subevent').pk if form.cleaned_data.get('subevent') else None,
+            'subevents_from': form.cleaned_data.get('subevents_from').isoformat() if form.cleaned_data.get('subevents_from') else None,
+            'subevents_to': form.cleaned_data.get('subevents_to').isoformat() if form.cleaned_data.get('subevents_to') else None,
+            'created_from': form.cleaned_data.get('created_from').isoformat() if form.cleaned_data.get('created_from') else None,
+            'created_to': form.cleaned_data.get('created_to').isoformat() if form.cleaned_data.get('created_to') else None,
+        }
+
+        # Save to QueuedMail
+        qm = QueuedMail.objects.create(
+            event=self.request.event,
             user=self.request.user,
-            data=dict(form.cleaned_data),
+            raw_subject=form.cleaned_data['subject'].data,
+            raw_message=form.cleaned_data['message'].data,
+            recipients=form.cleaned_data['recipients'],
+            filters=stringify_uuids(filters),
+            attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else [],
+            locale=self.request.event.settings.locale,
+            reply_to=self.request.event.settings.get('mail_from'),
+            bcc=self.request.event.settings.get('mail_bcc'),
         )
+
+        qm.populate_to_users()
+
         messages.success(
             self.request,
             _(
-                'Your message has been queued and will be sent to the contact addresses of %d '
-                'orders in the next few minutes.'
+                '%d emails have been saved to the outbox - you can make individual changes there or just send them all.'
             )
             % len(orders),
         )
@@ -249,6 +357,7 @@ class EmailHistoryView(EventPermissionRequiredMixin, ListView):
 
         return ctx
 
+
 class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     template_name = 'pretixplugins/sendmail/mail_templates.html'
@@ -286,3 +395,239 @@ class MailTemplatesView(EventSettingsViewMixin, EventSettingsFormView):
             )
         messages.success(self.request, _('Your changes have been saved.'))
         return redirect(self.get_success_url())
+
+
+class OutboxListView(EventPermissionRequiredMixin, ListView):
+    model = QueuedMail
+    context_object_name = 'mails'
+    template_name = 'pretixplugins/sendmail/outbox_list.html'
+    permission_required = 'can_change_orders'
+    paginate_by = 25
+
+    def get_ordering(self):
+        allowed = {
+            'subject': 'raw_subject',
+            'recipient': 'recipients',
+            '-subject': '-raw_subject',
+            '-recipient': '-recipients',
+        }
+        ordering = self.request.GET.get('ordering')
+        return allowed.get(ordering, '-created')  # fallback
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['headers'] = [
+            ('subject', _('Subject')),
+            ('recipient', _('To')),
+        ]
+        ctx['current_ordering'] = self.request.GET.get('ordering')
+        ctx['query'] = self.request.GET.get('q', '')
+        return ctx
+
+    def get_queryset(self):
+        qs = QueuedMail.objects.filter(
+            event=self.request.event,
+            sent=False
+        ).select_related('event', 'user')
+
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(
+                Q(raw_subject__icontains=query)
+                | Q(to_users__icontains=query)
+            )
+
+        return qs.order_by(self.get_ordering())
+
+
+class SendQueuedMailView(EventPermissionRequiredMixin, View):
+    permission_required = 'can_change_orders'
+
+    def post(self, request, *args, **kwargs):
+        mail = get_object_or_404(
+            QueuedMail,
+            event=request.event,
+            pk=kwargs['pk']
+        )
+
+        if mail.sent:
+            messages.warning(request, _('This mail has already been sent.'))
+        else:
+            # Enqueue the Celery task
+            send_queued_mail.apply_async(args=[mail.pk])
+            messages.success(
+                request,
+                _('The mail has been queued for sending. It will be sent shortly.')
+            )
+
+        return HttpResponseRedirect(reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': request.event.organizer.slug,
+            'event': request.event.slug,
+        }))
+
+
+class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
+    model = QueuedMail
+    form_class = QueuedMailEditForm
+    template_name = 'pretixplugins/sendmail/outbox_form.html'
+    permission_required = 'can_change_orders'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(
+            QueuedMail, event=self.request.event, pk=self.kwargs["pk"]
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['read_only'] = self.object.sent
+
+        if self.object.attachments:
+            ctx['attachments_files'] = CachedFile.objects.filter(
+                id__in=[uuid.UUID(att_id) for att_id in self.object.attachments]
+            )
+        else:
+            ctx['attachments_files'] = []
+        return ctx
+
+    def form_valid(self, form):
+        if form.instance.sent:
+            messages.error(self.request, _('This email has already been sent and cannot be edited.'))
+            return self.form_invalid(form)
+
+        response = super().form_valid(form)
+
+        action = self.request.POST.get('action')
+        if action == 'save_and_send':
+            if form.instance.send(async_send=True):
+                messages.success(self.request, _('Your changes have been saved and the email has been queued for sending.'))
+            else:
+                messages.error(self.request, _('Your changes have been saved, but sending the email failed.'))
+        else:
+            messages.success(self.request, _('Your changes have been saved.'))
+
+        return response
+
+    def get_success_url(self):
+        return reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': self.request.event.organizer.slug,
+            'event': self.request.event.slug
+        })
+
+
+class DeleteQueuedMailView(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/delete_confirmation.html'
+    permission_required = 'can_change_orders'
+
+    @cached_property
+    def mail(self):
+        return get_object_or_404(
+            QueuedMail, event=self.request.event, pk=self.kwargs['pk']
+        )
+
+    def question(self):
+        return _("Do you really want to delete this mail?")
+    
+    def post(self, request, *args, **kwargs):
+        mail = self.mail
+        if mail.sent:
+            messages.error(
+                request,
+                _("This mail has already been sent and cannot be deleted.")
+            )
+        else:
+            mail.delete()
+            messages.success(
+                request,
+                _("The mail has been deleted.")
+            )
+
+        return redirect(reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': request.event.organizer.slug,
+            'event': request.event.slug
+        }))
+
+
+class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
+    permission_required = 'can_change_orders'
+    template_name = 'pretixplugins/sendmail/purge_confirmation.html'
+
+    def get_permission_object(self):
+        return self.request.event
+    
+    def question(self):
+        count = QueuedMail.objects.filter(event=self.request.event, sent=False).count()
+        return ngettext_lazy(
+            "Do you really want to purge this mail?",
+            "Do you really want to purge {count} mails?",
+            count
+        ).format(count=count)
+
+    def post(self, request, *args, **kwargs):
+        qs = QueuedMail.objects.filter(event=request.event, sent=False)
+        count = qs.count()
+        qs.delete()
+
+        messages.success(
+            request,
+            ngettext_lazy(
+                "One mail has been discarded.",
+                "{count} mails have been discarded.",
+                count
+            ).format(count=count)
+        )
+        return redirect(reverse('plugins:sendmail:outbox', kwargs={
+            'organizer': request.event.organizer.slug,
+            'event': request.event.slug
+        }))
+
+
+class SentMailView(EventPermissionRequiredMixin, ListView):
+    model = QueuedMail
+    context_object_name = "mails"
+    template_name = "pretixplugins/sendmail/sent_list.html"
+    permission_required = "can_change_orders"
+    paginate_by = 25
+
+    def get_ordering(self):
+        allowed = {
+            'subject': 'raw_subject',
+            'recipient': 'to_users',
+            '-subject': '-raw_subject',
+            '-recipient': '-to_users',
+            'created': 'created',
+            '-created': '-created',
+        }
+        ordering = self.request.GET.get('ordering')
+        return allowed.get(ordering, '-created')  # fallback to newest first
+
+    def get_queryset(self):
+        qs = QueuedMail.objects.filter(
+            event=self.request.event,
+            sent=True
+        ).select_related('event', 'user')
+
+        query = self.request.GET.get('q')
+        if query:
+            qs = qs.filter(
+                Q(raw_subject__icontains=query) |
+                Q(to_users__icontains=query)    # search emails in JSON to_users
+            )
+
+        return qs.order_by(self.get_ordering())
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['headers'] = [
+            ('subject', _('Subject')),
+            ('recipient', _('To')),
+            ('created', _('Sent at')),
+        ]
+        ctx['current_ordering'] = self.request.GET.get('ordering')
+        ctx['query'] = self.request.GET.get('q', '')
+        return ctx

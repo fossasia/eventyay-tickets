@@ -110,3 +110,10 @@ def send_mails(
                     )
             except SendMailException:
                 failures.append(o.email)
+
+
+@app.task(base=ProfiledEventTask, acks_late=True)
+def send_queued_mail(queued_mail_id):
+    from pretix.plugins.sendmail.models import QueuedMail
+    qm = QueuedMail.objects.get(pk=queued_mail_id)
+    qm.send(async_send=True)
