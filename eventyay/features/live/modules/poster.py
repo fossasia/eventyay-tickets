@@ -1,6 +1,6 @@
 import logging
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.poster import PosterService
 from eventyay.features.live.decorators import command, require_world_permission, room_action
 from eventyay.features.live.modules.base import BaseModule

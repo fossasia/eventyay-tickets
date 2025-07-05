@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand
 from lxml import etree
 
 from eventyay.base.models import BBBServer
-from eventyay.base.core.services.bbb import get_url
+from eventyay.core.services.bbb import get_url
 
 logger = logging.getLogger(__name__)
 

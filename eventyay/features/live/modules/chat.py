@@ -8,14 +8,14 @@ import emoji
 from channels.db import database_sync_to_async
 from sentry_sdk import configure_scope
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.chat import (
     ChatService,
     extract_mentioned_user_ids,
     get_channel,
 )
 from eventyay.base.services.user import get_public_users
-from eventyay.base.core.utils.redis import aredis
+from eventyay.core.utils.redis import aredis
 from eventyay.features.live.channels import GROUP_CHAT, GROUP_USER
 from eventyay.features.live.decorators import (
     command,

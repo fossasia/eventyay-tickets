@@ -20,8 +20,8 @@ from eventyay.base.services.connections import (
 from eventyay.base.services.world import get_world
 from eventyay.features.live.exceptions import ConsumerException
 
-from eventyay.base.core.utils.redis import aredis
-from eventyay.base.core.utils.statsd import statsd
+from eventyay.core.utils.redis import aredis
+from eventyay.core.utils.statsd import statsd
 from .channels import GROUP_VERSION
 from .modules.announcement import AnnouncementModule
 from .modules.auth import AuthModule

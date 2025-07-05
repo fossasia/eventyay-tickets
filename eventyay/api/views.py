@@ -28,7 +28,7 @@ from eventyay.base.api.auth import (
 )
 from eventyay.base.api.serializers import RoomSerializer, WorldSerializer
 from eventyay.base.models import Channel, User
-from eventyay.base.core.services.world import notify_schedule_change, notify_world_change
+from eventyay.base.services.world import notify_schedule_change, notify_world_change
 
 from eventyay.base.models.room import Room
 from eventyay.base.models.world import World

@@ -4,7 +4,7 @@ from asgiref.sync import sync_to_async
 from celery.result import AsyncResult
 from channels.db import database_sync_to_async
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.world import (
     _config_serializer,
     generate_tokens,

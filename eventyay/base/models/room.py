@@ -8,7 +8,7 @@ from rest_framework import serializers
 
 from eventyay.base.models.auth import User
 from eventyay.base.models.cache import VersionedModel
-from eventyay.base.core.permissions import SYSTEM_ROLES, Permission
+from eventyay.core.permissions import SYSTEM_ROLES, Permission
 
 
 def empty_module_config():

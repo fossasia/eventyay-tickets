@@ -14,7 +14,7 @@ from sentry_sdk import configure_scope
 
 from eventyay.base.models import User
 from eventyay.base.models.auth import ShortToken
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.announcement import get_announcements
 from eventyay.base.services.chat import ChatService
 from eventyay.base.services.connections import (
@@ -40,8 +40,8 @@ from eventyay.base.services.user import (
     update_user,
     user_broadcast,
 )
-from eventyay.base.core.utils.redis import aredis
-from eventyay.base.core.utils.statsd import statsd
+from eventyay.core.utils.redis import aredis
+from eventyay.core.utils.statsd import statsd
 from eventyay.features.importers.tasks import conftool_update_schedule
 from eventyay.features.live.channels import GROUP_USER, GROUP_WORLD
 from eventyay.features.live.decorators import command, require_world_permission

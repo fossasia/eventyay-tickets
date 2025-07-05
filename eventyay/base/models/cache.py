@@ -8,7 +8,7 @@ from channels.db import database_sync_to_async
 from django.core.cache import caches
 from django.db import models, transaction
 
-from eventyay.base.core.utils.redis import aredis
+from eventyay.core.utils.redis import aredis
 
 SETIFHIGHER = """local c = tonumber(redis.call('get', KEYS[1]));
 if c then

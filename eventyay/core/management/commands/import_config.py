@@ -2,7 +2,7 @@ import json
 
 from django.core.management.base import BaseCommand
 
-from eventyay.base.core.utils.config import import_config
+from eventyay.core.utils.config import import_config
 
 
 class Command(BaseCommand):

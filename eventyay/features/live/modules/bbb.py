@@ -1,4 +1,4 @@
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.bbb import BBBService
 from eventyay.features.live.decorators import command, room_action
 from eventyay.features.live.exceptions import ConsumerException

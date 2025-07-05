@@ -20,7 +20,7 @@ from eventyay.base.models import AuditLog
 from eventyay.base.models.auth import User
 from eventyay.base.models.room import AnonymousInvite
 from eventyay.base.models.world import World, WorldView
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 
 
 def get_user_by_id(world_id, user_id):

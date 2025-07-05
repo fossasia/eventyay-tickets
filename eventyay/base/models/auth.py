@@ -526,7 +526,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         include_client_state=False,
     ):
         """Serialize user for public display in video/world context"""
-        # Important: If this is updated, eventyay.base.core.services.user.get_public_users also needs to be updated!
+        # Important: If this is updated, eventyay.base.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
         d = {
             "id": str(self.id),

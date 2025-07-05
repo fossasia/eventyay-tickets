@@ -13,12 +13,12 @@ from django.utils.crypto import get_random_string
 
 from eventyay.base.models.auth import User
 from eventyay.base.models.cache import VersionedModel
-from eventyay.base.core.permissions import (
+from eventyay.core.permissions import (
     MAX_PERMISSIONS_IF_SILENCED,
     SYSTEM_ROLES,
     Permission,
 )
-from eventyay.base.core.utils.json import CustomJSONEncoder
+from eventyay.core.utils.json import CustomJSONEncoder
 from eventyay.base.models.chat import ChatEvent, Membership
 from eventyay.base.models.exhibitor import ContactRequest, ExhibitorStaff, ExhibitorView
 from eventyay.base.models.feedback import Feedback

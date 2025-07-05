@@ -7,7 +7,7 @@ import channels
 from eventyay.celery_app import app
 from eventyay.base.models import ChatEvent
 from eventyay.base.services.chat import ChatService
-from eventyay.base.core.tasks import WorldTask
+from eventyay.core.tasks import WorldTask
 from eventyay.features.live.channels import GROUP_CHAT
 from eventyay.base.storage.external import fetch_preview_data
 

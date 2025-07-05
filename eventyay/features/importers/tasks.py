@@ -7,7 +7,7 @@ from django.utils.timezone import now
 
 from eventyay.celery_app import app
 from eventyay.base.services.world import notify_schedule_change
-from eventyay.base.core.tasks import WorldTask
+from eventyay.core.tasks import WorldTask
 from eventyay.features.importers.conftool import (
     create_posters_from_conftool,
     fetch_schedule_from_conftool,

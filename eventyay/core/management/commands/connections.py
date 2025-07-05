@@ -9,8 +9,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from tqdm import tqdm
 
-from eventyay.base.core.services.connections import get_connections
-from eventyay.base.core.utils.redis import aredis, flush_aredis_pool
+from eventyay.base.services.connections import get_connections
+from eventyay.core.utils.redis import aredis, flush_aredis_pool
 from eventyay.base.live.channels import GROUP_VERSION
 
 

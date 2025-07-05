@@ -1,7 +1,7 @@
 import functools
 from typing import List, Union
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.chat import get_channel
 from eventyay.base.services.world import get_room
 from eventyay.features.live.exceptions import ConsumerException

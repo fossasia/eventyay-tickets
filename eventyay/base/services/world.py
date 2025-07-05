@@ -16,7 +16,7 @@ from rest_framework import serializers
 from eventyay.base.models.room import Room
 from eventyay.base.models.world import World
 from eventyay.base.models.room import RoomConfigSerializer, RoomView
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 
 
 class WorldConfigSerializer(serializers.Serializer):

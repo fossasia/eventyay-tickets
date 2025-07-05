@@ -1,4 +1,4 @@
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.roulette import (
     is_member_of_roulette_call,
     roulette_cleanup,

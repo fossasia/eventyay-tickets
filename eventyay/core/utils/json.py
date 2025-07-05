@@ -1,6 +1,6 @@
 from django.core.serializers.json import DjangoJSONEncoder
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 
 
 class CustomJSONEncoder(DjangoJSONEncoder):

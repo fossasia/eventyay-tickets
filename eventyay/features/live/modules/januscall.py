@@ -8,7 +8,7 @@ from redis.asyncio.lock import Lock
 from sentry_sdk import capture_exception
 
 from eventyay.base.models import JanusServer
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services import turn
 from eventyay.base.services.janus import (
     JanusError,
@@ -18,7 +18,7 @@ from eventyay.base.services.janus import (
 )
 from eventyay.base.services.roulette import is_member_of_roulette_call
 from eventyay.base.services.user import get_public_user
-from eventyay.base.core.utils.redis import aredis
+from eventyay.core.utils.redis import aredis
 from eventyay.features.live.decorators import command, require_world_permission, room_action
 from eventyay.features.live.exceptions import ConsumerException
 from eventyay.features.live.modules.base import BaseModule

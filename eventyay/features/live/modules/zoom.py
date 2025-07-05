@@ -3,7 +3,7 @@ import re
 from django.core import signing
 from django.urls import reverse
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.features.live.decorators import command, room_action
 from eventyay.features.live.exceptions import ConsumerException
 from eventyay.features.live.modules.base import BaseModule

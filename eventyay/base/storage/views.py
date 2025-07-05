@@ -17,9 +17,9 @@ from PIL.Image import Resampling
 from rest_framework.authentication import get_authorization_header
 
 from eventyay.base.models import World
-from eventyay.base.core.permissions import Permission
-from eventyay.base.core.services.user import AuthError, login
-from eventyay.base.core.services.world import notify_schedule_change
+from eventyay.core.permissions import Permission
+from eventyay.base.services.user import AuthError, login
+from eventyay.base.services.world import notify_schedule_change
 from eventyay.base.storage.models import StoredFile
 from eventyay.base.storage.schedule_to_json import convert
 

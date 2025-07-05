@@ -15,7 +15,7 @@ from openpyxl.utils import get_column_letter
 from eventyay.celery_app import app
 from eventyay.base.models import Channel, ExhibitorView, PollVote, Room, RoomView, User
 from eventyay.base.models.world import WorldView
-from eventyay.base.core.tasks import WorldTask
+from eventyay.core.tasks import WorldTask
 from eventyay.features.analytics.graphs.report import ReportGenerator
 from eventyay.features.analytics.graphs.utils import get_schedule, pretalx_uni18n
 from eventyay.base.storage.models import StoredFile

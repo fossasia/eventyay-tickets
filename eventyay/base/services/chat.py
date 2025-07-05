@@ -28,8 +28,8 @@ from eventyay.base.models import (
     User,
 )
 from eventyay.base.models.chat import ChatEventNotification
-from eventyay.base.core.permissions import Permission
-from eventyay.base.core.utils.redis import aredis
+from eventyay.core.permissions import Permission
+from eventyay.core.utils.redis import aredis
 from eventyay.base.services.bbb import choose_server
 from eventyay.base.services.user import get_public_users, user_broadcast
 

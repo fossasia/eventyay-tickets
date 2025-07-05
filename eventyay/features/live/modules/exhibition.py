@@ -2,7 +2,7 @@ import logging
 
 from channels.db import database_sync_to_async
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.exhibition import ExhibitionService
 from eventyay.features.live.channels import GROUP_USER
 from eventyay.features.live.decorators import (

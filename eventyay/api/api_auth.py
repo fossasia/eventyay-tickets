@@ -4,7 +4,7 @@ from rest_framework.authentication import get_authorization_header
 
 from eventyay.base.models.room import Room
 from eventyay.base.models.world import World
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 
 
 class WorldTokenAuthentication(authentication.BaseAuthentication):

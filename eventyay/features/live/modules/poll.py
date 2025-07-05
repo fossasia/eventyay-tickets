@@ -1,7 +1,7 @@
 import logging
 
 from eventyay.base.models.poll import Poll
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.chat import ChatService, get_channel
 from eventyay.base.services.poll import (
     create_poll,

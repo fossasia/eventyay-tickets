@@ -12,7 +12,7 @@ from django.utils.timezone import now
 from sentry_sdk import add_breadcrumb, configure_scope
 
 from eventyay.base.models.room import AnonymousInvite, RoomConfigSerializer
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.poll import get_polls, get_voted_polls
 from eventyay.base.services.reactions import store_reaction
 from eventyay.base.services.room import (
@@ -29,7 +29,7 @@ from eventyay.base.services.world import (
     get_rooms,
     notify_world_change,
 )
-from eventyay.base.core.utils.redis import aredis
+from eventyay.core.utils.redis import aredis
 from eventyay.features.live.channels import (
     GROUP_ROOM,
     GROUP_ROOM_POLL_ALL_RESULTS,

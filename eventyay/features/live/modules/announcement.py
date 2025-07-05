@@ -1,6 +1,6 @@
 import logging
 
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.announcement import (
     create_announcement,
     get_announcement,

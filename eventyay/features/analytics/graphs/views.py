@@ -21,7 +21,7 @@ from matplotlib.figure import Figure
 
 from eventyay.base.models import Room, User, World
 from eventyay.base.models.room import RoomView
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 
 logger = logging.getLogger(__name__)
 

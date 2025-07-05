@@ -2,7 +2,7 @@ import time
 
 from django.conf import settings
 
-from eventyay.base.core.utils.redis import aredis
+from eventyay.core.utils.redis import aredis
 
 
 async def register_connection():

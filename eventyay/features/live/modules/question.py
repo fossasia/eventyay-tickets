@@ -1,7 +1,7 @@
 import logging
 
 from eventyay.base.models.question import RoomQuestion
-from eventyay.base.core.permissions import Permission
+from eventyay.core.permissions import Permission
 from eventyay.base.services.question import (
     create_question,
     delete_question,
