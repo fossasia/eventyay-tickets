@@ -154,6 +154,30 @@ class DeprecatedSignal(django.dispatch.Signal):
         super().connect(receiver, sender=None, weak=True, dispatch_uid=None)
 
 
+activitylog_display = EventPluginSignal()
+"""
+To display an instance of the ``ActivityLog`` model to a human user,
+``eventyay.base.signals.activitylog_display`` will be sent out with an ``activitylog``
+argument.
+
+The first received response that is not ``None`` will be used to display the log entry
+to the user. The receivers are expected to return plain (lazy) text.
+
+As with all event plugin signals, the ``sender`` keyword argument will contain the event.
+"""
+activitylog_object_link = EventPluginSignal()
+"""
+To display the relationship of an instance of the ``ActivityLog`` model to another model
+to a human user, ``pretalx.common.signals.activitylog_object_link`` will be sent out
+with an ``activitylog`` argument.
+
+The first received response that is not ``None`` will be used to display the related object
+to the user. The receivers are expected to return an HTML link as a string.
+Make sure that any user content in the HTML code you return is properly escaped!
+
+As with all event-plugin signals, the ``sender`` keyword argument will contain the event.
+"""
+
 event_live_issues = EventPluginSignal()
 """
 This signal is sent out to determine whether an event can be taken live. If you want to

@@ -9,8 +9,8 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from pytz import common_timezones
 
-from pretix.base.models import User
-from pretix.control.forms import SingleLanguageWidget
+from eventyay.base.models import User
+from eventyay.control.forms import SingleLanguageWidget
 
 
 class UserSettingsForm(forms.ModelForm):

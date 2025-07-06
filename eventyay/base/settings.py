@@ -109,8 +109,8 @@ class SettingsSandbox:
 
 
 def validate_event_settings(event, settings_dict):
-    from pretix.base.models import Event
-    from pretix.base.signals import validate_event_settings
+    from eventyay.base.models import Event
+    from eventyay.base.signals import validate_event_settings
 
     default_locale = settings_dict.get('locale')
     locales = settings_dict.get('locales', [])

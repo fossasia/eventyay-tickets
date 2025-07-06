@@ -96,7 +96,7 @@ def preview(event: int, provider: str):
         )
         item2 = event.items.create(name=_('Sample workshop'), default_price=23.40)
 
-        from pretix.base.models import Order
+        from eventyay.base.models import Order
 
         order = event.orders.create(
             status=Order.STATUS_PENDING,

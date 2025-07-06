@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 from publicsuffixlist import PublicSuffixList
 from i18nfield.strings import LazyI18nString
 
-from pretalx.common.views.redirect import safelink as sl
+from eventyay.common.views.redirect import safelink as sl
 
 register = template.Library()
 

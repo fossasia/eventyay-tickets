@@ -1,0 +1,454 @@
+{% load compress %}
+{% load static %}
+{% load i18n %}
+{% load statici18n %}
+{% load eventsignal %}
+{% load eventurl %}
+<!DOCTYPE html>
+<html{% if rtl %} dir="rtl" class="rtl"{% endif %}>
+	<head>
+		<title>{% block title %}{% endblock %}{% if url_name != "index" %} :: {% endif %}
+            {{ django_settings.INSTANCE_NAME }}</title>
+         <script src="https://js.stripe.com/v3/"></script>
+		{% compress css %}
+    		<link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
+            <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
+		{% endcompress %}
+        {% if DEBUG %}
+            <script type="text/javascript" src="{% url 'javascript-catalog' lang='en' %}"
+                    defer></script>
+        {% else %}
+            <script src="{% statici18n 'en' %}" async></script>
+        {% endif %}
+		{% compress js %}
+            <script type="text/javascript" src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
+            <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+            <script type="text/javascript" src="{% static "typeahead/typeahead.bundle.js" %}"></script>
+            <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.js" %}"></script>
+            <script type="text/javascript" src="{% static "moment/moment-with-locales.js" %}"></script>
+            <script type="text/javascript" src="{% static "datetimepicker/bootstrap-datetimepicker.js" %}"></script>
+            <script type="text/javascript" src="{% static "select2/select2.js" %}"></script>
+            <script type="text/javascript" src="{% static "select2/i18n/de.js" %}"></script>
+            <script type="text/javascript" src="{% static "select2/i18n/en.js" %}"></script>
+            <script type="text/javascript" src="{% static "charts/raphael-min.js" %}"></script>
+            <script type="text/javascript" src="{% static "charts/morris.js" %}"></script>
+            <script type="text/javascript" src="{% static "clipboard/clipboard.js" %}"></script>
+            <script type="text/javascript" src="{% static "rrule/rrule.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixpresale/js/ui/questions.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/jquery.qrcode.min.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/clipboard.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/menu.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/sb-admin-2.js" %}"></script>
+		    <script type="text/javascript" src="{% static "pretixcontrol/js/ui/main.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/quota.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/subevent.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/question.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/dragndroplist.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/mail.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/orderchange.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/typeahead.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/quicksetup.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/dashboard.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/tabs.js" %}"></script>
+            <script type="text/javascript" src="{% static "leaflet/leaflet.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/geo.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixbase/js/details.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixbase/js/asynctask.js" %}"></script>
+            <script type="text/javascript" src="{% static "sortable/Sortable.js" %}"></script>
+            <script type="text/javascript" src="{% static "colorpicker/bootstrap-colorpicker.js" %}"></script>
+            <script type="text/javascript" src="{% static "fileupload/jquery.ui.widget.js" %}"></script>
+            <script type="text/javascript" src="{% static "fileupload/jquery.fileupload.js" %}"></script>
+            <script type="text/javascript" src="{% static "lightbox/js/lightbox.min.js" %}"></script>
+            <script type="text/javascript" src="{% static "are-you-sure/jquery.are-you-sure.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/popover.js" %}"></script>
+            <script type="text/javascript" src="{% static "utils/js/utils.js" %}"></script>
+            <script type="text/javascript" src="{% static "task_management/js/task_management.js" %}"></script>
+		{% endcompress %}
+        {{ html_head|safe }}
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% if development_warning or debug_warning %}
+            <link rel="shortcut icon" href="{% static "pretixbase/img/favicon-debug.ico" %}">
+        {% else %}
+            <link rel="shortcut icon" href="{% static "pretixbase/img/favicon.ico" %}">
+            <link rel="icon" type="image/png" sizes="32x32" href="{% static "pretixbase/img/icons/favicon-32x32.png" %}">
+            <link rel="icon" type="image/png" sizes="194x194" href="{% static "pretixbase/img/icons/favicon-194x194.png" %}">
+            <link rel="icon" type="image/png" sizes="16x16" href="{% static "pretixbase/img/icons/favicon-16x16.png" %}">
+        {% endif %}
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static "pretixbase/img/icons/apple-touch-icon.png" %}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{% static "pretixbase/img/icons/android-chrome-192x192.png" %}">
+		{# <link rel="manifest" href="{% url "presale:site.webmanifest" %}"> #}
+		<link rel="manifest" href="#" %}">
+        <link rel="mask-icon" href="{% static "pretixbase/img/icons/safari-pinned-tab.svg" %}" color="#2185d0">
+        <meta name="msapplication-TileColor" content="#2185d0">
+		{# <meta name="msapplication-config" content="{% url "presale:browserconfig.xml" %}"> #}
+        <meta name="theme-color" content="#2185d0">
+        <meta name="referrer" content="origin">
+
+        {% block custom_header %}{% endblock %}
+	</head>
+	<body data-datetimeformat="{{ js_datetime_format }}" data-timeformat="{{ js_time_format }}"
+            data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}"
+            data-pretixlocale="{{ 'en' }}"
+            data-payment-weekdays-disabled="{{ js_payment_weekdays_disabled }}"
+            {% if request.organizer %}data-organizer="{{ request.organizer.slug }}"{% endif %}
+            {% if request.event %}data-event="{{ request.event.slug }}"{% endif %}
+            data-select2-locale="{{ select2locale }}" data-longdateformat="{{ js_long_date_format }}" class="nojs">
+        <div id="wrapper">
+            <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle"
+                            data-toggle="collapse" data-target=".navbar-nav-collapse">
+                        <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    {% if request.event %}
+                        {% if has_domain and not request.event.live %}
+                            <form action="{% eventurl request.event "presale:event.auth" %}" method="post"
+                                    target="_blank" class="mobile-navbar-view-form visible-xs-block">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ new_session }}" name="session">
+                                <button type="submit" class="btn btn-link navbar-toggle">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </form>
+                        {% else %}
+                            <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "View event" %}"
+                                    target="_blank" class="navbar-toggle mobile-navbar-view-link">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        {% endif %}
+                    {% elif request.organizer %}
+                        <a href="{% eventurl request.organizer "presale:organizer.index" %}" title="{% trans "Public profile" %}"  target="_blank"
+                            class="navbar-toggle mobile-navbar-view-link">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    {% endif %}
+					{# <a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}"> #}
+                    <a class="navbar-brand" href="#">
+                        <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
+                        {{ django_settings.INSTANCE_NAME }}
+                    </a>
+                </div>
+                <ul class="nav navbar-nav navbar-top-links navbar-left flip hidden-xs">
+                    {% if request.event %}
+                        <li>
+                            {% if has_domain and not request.event.live %}
+                                <form action="{% eventurl request.event "presale:event.auth" %}" method="post" target="_blank">
+                                    <input type="hidden" value="{{ new_session }}" name="session">
+                                    <button type="submit" class="btn btn-link" id="button-shop">
+                                       <i class="fa fa-eye"></i> {% trans "View event" %}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "View event" %}"  target="_blank">
+                                    <i class="fa fa-eye"></i> {% trans "View event" %}
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% elif request.organizer %}
+                        <li>
+                            <a href="{% eventurl request.organizer "presale:organizer.index" %}" title="{% trans "Public profile" %}"  target="_blank">
+                                <i class="fa fa-eye"></i> {% trans "Public profile" %}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <ul class="nav navbar-nav navbar-top-links navbar-right flip">
+                    {% for nav in nav_topbar %}
+                        <li {% if nav.children %}class="dropdown"{% endif %}>
+                            <a href="{{ nav.url }}" title="{{ nav.title }}" {% if nav.active %}class="active"{% endif %}
+                                    {% if nav.children %}class="dropdown-toggle" data-toggle="dropdown"{% endif %}>
+                                {% if nav.icon %}
+                                    {% if "<svg" in nav.icon %}
+                                        {{ nav.icon|safe }}
+                                    {% else %}
+                                        <span class="fa fa-{{ nav.icon }}"></span>
+                                    {% endif %}
+                                    <span class="visible-xs-inline">{{ nav.label }}</span>
+                                {% else %}
+                                    {{ nav.label }}
+                                {% endif %}
+                            </a>
+                            {% if nav.children %}
+                                <ul class="dropdown-menu" role="menu">
+                                    {% for item in nav.children %}
+                                        <li>
+                                            <a {% if item.url %}href="{{ item.url }}"{% endif %}
+                                                    {% if item.external %}target="_blank"{% endif %}
+                                                    {% if item.active %}class="active"{% endif %}>
+                                                {% if item.icon %}
+                                                    <span class="fa fa-fw fa-{{ item.icon }}"></span>
+                                                {% endif %}
+                                                {{ item.label|safe }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+
+                    {% if show_link_in_header_for_all_pages %}
+                        {% for page in show_link_in_header_for_all_pages %}
+                                <li>
+                                    <a href='{% url "page" slug=page.slug %}' title='{{ page.title|safe }}'>
+                                        {{ page.title|safe }}
+                                    </a>
+                                </li>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if request.user.is_staff and not staff_session %}
+                        <li>
+                            <form action="#" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link" id="button-sudo">
+                                    <i class="fa fa-id-card"></i> {% trans "Admin mode" %}
+                                </button>
+                            </form>
+                        </li>
+                    {% elif request.user.is_staff and staff_session %}
+                        <li>
+                            <a href="{% url 'control:user.sudo.stop' %}" class="danger">
+                                <i class="fa fa-id-card"></i> {% trans "End admin session" %}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if warning_update_available %}
+                        <li>
+                            <a href="{% url 'control:admin.global.update' %}" class="danger">
+                                <i class="fa fa-bell"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {{ 'popover-profile'|json_script:"popover_toggle" }}
+                    {{ base_path|json_script:"base_path" }}
+                    {{ staff_session|json_script:"is_admin_mode" }}
+                    {{ talk_hostname|json_script:"talk_hostname_url" }}
+                    <li>
+                        <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover-profile">
+                            <i class="fa fa-user"></i> {{ request.user.get_full_name }}
+                            <i class="fa fa-solid fa-caret-down"></i>
+                        </a>
+                    </li>
+                </ul>
+                <div class="navbar-default sidebar" role="navigation">
+                    <div class="sidebar-nav navbar-nav-collapse navbar-collapse">
+                        <div class="dropdown context-selector">
+                            {% block nav_top_header %}
+                                {% if request.event %}
+                                    <a href="{% url "control:event.index" organizer=request.event.organizer.slug event=request.event.slug %}" class="dropdown-toggle">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-dashboard fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{{ request.event }}</span>
+                                            <span class="context-meta">{{ request.event.get_date_range_display }}</span>
+                                        </div>
+                                    </a>
+                                {% elif request.organizer %}
+                                    <a href="#" class="dropdown-toggle">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-group fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{{ request.organizer }}</span>
+                                            <span class="context-meta">{% trans "Organizer account" %}</span>
+                                        </div>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url "control:index" %}" class="dropdown-toggle">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-dashboard fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{% trans "Tickets dashboard" %}</span>
+                                        </div>
+                                    </a>
+                                {% endif %}
+                            {% endblock %}
+                        </div>
+                        <ul class="nav" id="side-menu">
+                            {% if request.event and request.event.testmode %}
+                                <li class="testmode">
+                                    <a href="{% url "control:event.live" event=request.event.slug organizer=request.organizer.slug %}">
+                                        <i class="fa fa-warning fa-fw"></i>
+                                        {% trans "TEST MODE" %}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% block nav %}
+                                {% for nav in nav_items %}
+                                    <li>
+                                        <a href="{{ nav.url }}" {% if nav.active %}class="active"{% endif %}
+                                                {% if nav.external %}target="_blank"{% endif %}
+                                                {% if nav.children %}class="has-children"{% endif %}>
+                                            {% if nav.icon %}
+                                                {% if "<svg" in nav.icon %}
+                                                    {{ nav.icon|safe }}
+                                                {% else %}
+                                                    <span class="fa fa-fw fa-{{ nav.icon }}"></span>
+                                                {% endif %}
+                                            {% endif %}
+                                            {{ nav.label }}
+                                        </a>
+                                        {% if nav.children %}
+                                            <a href="#" class="arrow">
+                                                <span class="fa arrow"></span>
+                                            </a>
+                                            <ul class="nav nav-second-level">
+                                                {% for item in nav.children %}
+                                                    <li>
+                                                        <a href="{{ item.url }}"
+                                                                {% if item.external %}target="_blank"{% endif %}
+                                                                {% if item.active %}class="active"{% endif %}>
+                                                            {{ item.label }}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            {% endblock %}
+                        </ul>
+                        {% include "pretixcontrol/base_after_nav.html" %}
+                    </div>
+                </div>
+            </nav>
+            {% if staff_need_to_explain %}
+                <div class="impersonate-warning">
+                    <span class="fa fa-id-card"></span>
+                    {% blocktrans trimmed %}
+                        Please leave a short comment on what you did in the following admin sessions:
+                    {% endblocktrans %}
+                    <ul>
+                        {% for s in staff_need_to_explain %}
+                            <li>
+                                <a href="{% url "control:admin.user.sudo.edit" id=s.pk %}">#{{ s.pk }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% if request.user.is_hijacked %}
+                <div class="impersonate-warning">
+                    <span class="fa fa-user-secret"></span>
+                    {% blocktrans with user=request.user%}You are currently working on behalf of {{ user }}.{% endblocktrans %}
+
+                    <form action="{% url 'control:admin.users.impersonate.stop' %}" method="post" class="helper-display-inline">
+                        {% csrf_token %}
+                        <button class="btn btn-default btn-sm">
+                            {% trans "Stop impersonating" %}
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+            {% if global_settings.banner_message %}
+                <div class="impersonate-warning">
+                    <span class="fa fa-bell"></span>
+                    {{ global_settings.banner_message }}
+                    {% if global_settings.banner_message_detail %}
+                        <a href="{% url 'control:admin.global.message' %}">
+                            {% trans "Read more" %}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div id="page-wrapper">
+                <div class="container-fluid">
+                    {% signal "eventyay.control.signals.html_page_start" request %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {{ message.tags }}">
+                                {{ message|linebreaksbr }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% if complain_testmode_orders %}
+                        <div class="alert alert-warning">
+                            {% blocktrans trimmed %}
+                                Your event contains <strong>test mode orders</strong> even though <strong>test mode has been disabled</strong>.
+                                You should delete those orders to make sure they do not show up in your reports and statistics and block people from
+                                actually buying tickets.
+                            {% endblocktrans %}
+                            <strong>
+                                <a href="{% url "control:event.orders" event=request.event.slug organizer=request.organizer.slug %}?status=testmode">
+                                    {% trans "Show all test mode orders" %}
+                                </a>
+                            </strong>
+                        </div>
+                    {% endif %}
+                    {% if warning_update_check_active %}
+                        <div class="alert alert-info">
+                            <a href="{% url "control:admin.global.update" %}">
+                                {% blocktrans trimmed %}
+                                The system automatically checks for updates in the background.
+                                {% endblocktrans %}
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if debug_warning %}
+                        <div class="alert alert-danger">
+                            {% trans "system is running in debug mode. For security reasons, please never run debug mode on a production instance." %}
+                        </div>
+                    {% endif %}
+
+                    {% block content %}
+                    {% endblock %}
+                    <footer>
+                        {% if request.timezone %}
+                            <span class="fa fa-globe"></span>
+                            {% blocktrans trimmed with tz=request.timezone %}
+                                Times displayed in {{ tz }}
+                            {% endblocktrans %} &middot;
+                        {% endif %}
+                        {% with "href='https://eventyay.com'" as a_attr %}
+                            {% blocktrans trimmed %}
+                                powered by <a {{ a_attr }}>eventyay</a>
+                            {% endblocktrans %}
+                        {% endwith %}
+                        {% if development_warning %}
+                            <span class="text-warning">&middot; {% trans "running in development mode" %}</span>
+                        {% endif %}
+                        <ul class="list-inline text-center" style="margin-top: 20px">
+                            {% if show_link_in_footer_for_all_pages %}
+                                {% for page in show_link_in_footer_for_all_pages %}
+                                        <li>
+                                            <a href='{% url "page" slug=page.slug %}' title='{{ page.title|safe }}'>
+                                                {{ page.title|safe }}
+                                            </a>
+                                        </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </footer>
+                </div>
+            </div>
+        </div>
+        <div id="ajaxerr">
+        </div>
+        <div id="loadingmodal">
+            <div class="modal-card">
+                <div class="modal-card-icon">
+                    <i class="fa fa-cog big-rotating-icon"></i>
+                </div>
+                <div class="modal-card-content">
+                    <h3></h3>
+                    <p class="text"></p>
+                    <p class="status">{% trans "If this takes longer than a few minutes, please contact us." %}</p>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</body>
+</html>

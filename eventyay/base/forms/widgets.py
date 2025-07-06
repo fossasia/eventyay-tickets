@@ -85,8 +85,8 @@ class UploadedFileWidget(forms.ClearableFileInput):
 
         @property
         def url(self):
-            from pretix.base.models import OrderPosition
-            from pretix.multidomain.urlreverse import eventreverse
+            from eventyay.base.models import OrderPosition
+            from eventyay.multidomain.urlreverse import eventreverse
 
             if isinstance(self.position, OrderPosition):
                 return eventreverse(

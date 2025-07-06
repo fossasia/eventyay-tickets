@@ -11,7 +11,7 @@ from eventyay.presale.urls import (
     locale_patterns,
     organizer_patterns,
 )
-from eventyay.urls import common_patterns
+from eventyay.config.urls import common_patterns
 
 presale_patterns_main = [
     url(
