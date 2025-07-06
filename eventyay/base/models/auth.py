@@ -45,6 +45,7 @@ class UserManager(BaseUserManager):
             raise Exception('You must provide a password')
         user = self.model(email=email)
         user.is_staff = True
+        user.is_superuser = True
         user.set_password(password)
         user.save()
         return user
@@ -139,9 +140,9 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     def __str__(self):
         return self.email
 
-    @property
-    def is_superuser(self):
-        return False
+    #@property
+    #def is_superuser(self):
+    #    return False
 
     def get_short_name(self) -> str:
         """

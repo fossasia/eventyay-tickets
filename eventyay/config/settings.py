@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'eventyay.base',
     'eventyay.helpers',
     'eventyay.multidomain',
-    'eventyay.presale'
+    'eventyay.presale',
+    'eventyay.common',
 ]
 
 MIDDLEWARE = [
@@ -235,6 +236,8 @@ if not SESSION_ENGINE:
 
 STATIC_URL = 'static/'
 
+BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
+TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

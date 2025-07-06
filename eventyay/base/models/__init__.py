@@ -32,6 +32,11 @@ from .items import (
     itempicture_upload_to,
 )
 from .log import LogEntry
+from .mail import (
+    MailTemplate,
+    MailTemplateRoles,
+    QueuedMail
+)
 from .notifications import NotificationSetting
 from .orders import (
     AbstractPosition,
