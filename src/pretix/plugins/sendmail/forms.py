@@ -481,6 +481,20 @@ class QueuedMailEditForm(forms.ModelForm):
             initial=self.instance.raw_message
         )
 
+    def clean_emails(self):
+        updated_emails = [
+            email.strip()
+            for email in self.cleaned_data['emails'].split(',')
+            if email.strip()
+        ]
+
+        if len(updated_emails) > len(self.instance.to_users):
+            raise ValidationError(
+                _("You cannot add new recipients. Only editing existing email addresses is allowed.")
+            )
+        return ", ".join(updated_emails)
+
+    from django.core.exceptions import ValidationError
     def save(self, commit=True):
         instance = super().save(commit=False)
 
@@ -490,21 +504,18 @@ class QueuedMailEditForm(forms.ModelForm):
             if email.strip()
         ]
 
+        existing_users = instance.to_users or []
+        if len(updated_emails) > len(existing_users):
+            raise ValidationError(
+                _("You cannot add new recipients. Only editing existing email addresses is allowed.")
+            )
+
         new_to_users = []
-        for i, user in enumerate(instance.to_users):
+        for i, user in enumerate(existing_users):
             if i < len(updated_emails):
                 user['email'] = updated_emails[i]
-                new_to_users.append(user)
+            new_to_users.append(user)
 
-        for email in updated_emails[len(new_to_users):]:
-            new_to_users.append({
-                'sent': False,
-                'email': email,
-                'error': None,
-                'items': [],
-                'orders': [],
-                'positions': []
-            })
         instance.to_users = new_to_users
 
         # Handle new attachment

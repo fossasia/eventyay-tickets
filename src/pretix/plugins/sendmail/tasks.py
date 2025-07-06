@@ -1,3 +1,5 @@
+import logging
+
 from i18nfield.strings import LazyI18nString
 
 from pretix.base.email import get_email_context
@@ -7,6 +9,7 @@ from pretix.base.services.mail import SendMailException, mail
 from pretix.base.services.tasks import ProfiledEventTask
 from pretix.celery_app import app
 
+logger = logging.getLogger(__name__)
 
 @app.task(base=ProfiledEventTask, acks_late=True)
 def send_mails(
@@ -113,7 +116,7 @@ def send_mails(
 
 
 @app.task(base=ProfiledEventTask, acks_late=True)
-def send_queued_mail(queued_mail_id):
+def send_queued_mail(event: Event, queued_mail_id: int):
     from pretix.plugins.sendmail.models import QueuedMail
-    qm = QueuedMail.objects.get(pk=queued_mail_id)
+    qm = QueuedMail.objects.get(pk=queued_mail_id, event=event)
     qm.send(async_send=True)

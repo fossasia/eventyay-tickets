@@ -454,7 +454,7 @@ class SendQueuedMailView(EventPermissionRequiredMixin, View):
             messages.warning(request, _('This mail has already been sent.'))
         else:
             # Enqueue the Celery task
-            send_queued_mail.apply_async(args=[mail.pk])
+            send_queued_mail.apply_async(args=[request.event.pk, mail.pk])
             messages.success(
                 request,
                 _('The mail has been queued for sending. It will be sent shortly.')

@@ -7,8 +7,8 @@ from django.db import models
 from django.utils.timezone import now
 from i18nfield.fields import I18nTextField
 
-from pretix.base.email import get_available_placeholders, get_email_context
-from pretix.base.models import Event, Order, OrderPosition, User
+from pretix.base.email import get_email_context
+from pretix.base.models import Event, InvoiceAddress, Order, OrderPosition, User
 from pretix.base.i18n import LazyI18nString, language
 from pretix.base.services.mail import TolerantDict, mail
 
@@ -113,25 +113,43 @@ class QueuedMail(models.Model):
 
         changed = False
 
+        from pretix.base.services.mail import SendMailException
         for recipient in self.to_users:
             if recipient.get("sent"):
                 continue  # Already sent
 
             email = recipient.get("email")
-            order_id = recipient.get("orders", [None])[0]
-            position_id = recipient.get("positions", [None])[0]
+            orders = recipient.get("orders")
+            order_id = orders[0] if orders else None
+
+            positions = recipient.get("positions")
+            position_id = positions[0] if positions else None
+
             sender = self.event.settings.get('mail_from') if self.event else None
 
             try:
                 order = Order.objects.get(pk=order_id, event=self.event) if order_id else None
                 position = OrderPosition.objects.get(pk=position_id) if position_id else None
 
-                context = get_email_context(
-                    event=self.event,
-                    order=order,
-                    position_or_address=position or order.invoice_address if order else None,
-                    position=position,
-                )
+                # Get fallback invoice address
+                try:
+                    ia = order.invoice_address if order else None
+                except InvoiceAddress.DoesNotExist:
+                    ia = InvoiceAddress(order=order) if order else None
+
+                position_or_address = position or ia
+
+                try:
+                    context = get_email_context(
+                        event=self.event,
+                        order=order,
+                        position=position,
+                        position_or_address=position_or_address,
+                    )
+                except Exception as e:
+                    logger.exception("Error while generating email context")
+                    recipient["error"] = f"Context error: {str(e)}"
+                    continue
 
                 mail(
                     email=email,
@@ -152,8 +170,13 @@ class QueuedMail(models.Model):
                 recipient["error"] = None
                 changed = True
 
-            except Exception as e:
+            except SendMailException as e:
                 recipient["error"] = str(e)
+                recipient["sent"] = False
+                changed = True
+
+            except Exception as e:
+                recipient["error"] = f"Internal error: {str(e)}"
                 recipient["sent"] = False
                 changed = True
 
