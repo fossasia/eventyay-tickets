@@ -25,7 +25,7 @@ from eventyay.features.live.decorators import (
 )
 from eventyay.features.live.exceptions import ConsumerException
 from eventyay.features.live.modules.base import BaseModule
-from eventyay.base.storage.tasks import retrieve_preview_information
+from eventyay.storage.tasks import retrieve_preview_information
 
 logger = logging.getLogger(__name__)
 

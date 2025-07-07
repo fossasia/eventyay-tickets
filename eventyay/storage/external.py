@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 
 def get_extension_from_response(response):

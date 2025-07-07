@@ -12,7 +12,7 @@ from eventyay.features.importers.conftool import (
     create_posters_from_conftool,
     fetch_schedule_from_conftool,
 )
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 
 @app.task(base=WorldTask)

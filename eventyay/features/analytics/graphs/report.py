@@ -41,7 +41,7 @@ from eventyay.base.models.exhibitor import ContactRequest, ExhibitorView
 from eventyay.base.models.room import RoomView
 from eventyay.features.analytics.graphs.utils import PdfImage, get_schedule, median_value, pretalx_uni18n
 from eventyay.features.analytics.graphs.views import build_room_view_fig
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 
 class ReportGenerator:

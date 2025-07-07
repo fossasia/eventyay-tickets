@@ -26,7 +26,7 @@ from eventyay.base.api.auth import (
     UserDeletePermissions,
     WorldPermissions,
 )
-from eventyay.base.api.serializers import RoomSerializer, WorldSerializer
+from eventyay.api.serializers.rooms import RoomSerializer, WorldSerializer
 from eventyay.base.models import Channel, User
 from eventyay.base.services.world import notify_schedule_change, notify_world_change
 

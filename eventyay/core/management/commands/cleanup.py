@@ -9,7 +9,7 @@ from eventyay.base.models import RouletteRequest
 from eventyay.base.models.auth import ShortToken
 from eventyay.base.models.room import AnonymousInvite, RoomView
 from eventyay.base.models.world import WorldView
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 logger = logging.getLogger(__name__)
 

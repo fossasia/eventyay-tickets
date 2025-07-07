@@ -468,7 +468,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     # Video/World methods
     def soft_delete(self):
         """Soft delete for video/world functionality"""
-        from eventyay.base.storage.models import StoredFile
+        from eventyay.base.models.storage_model import StoredFile
 
         self.bbb_invites.clear()
         self.room_grants.all().delete()

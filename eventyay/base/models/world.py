@@ -26,7 +26,7 @@ from eventyay.base.models.poll import Poll
 from eventyay.base.models.poster import PosterPresenter
 from eventyay.base.models.question import RoomQuestion
 from eventyay.base.models.room import Reaction, RoomView
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 
 def default_roles():
@@ -377,7 +377,7 @@ class World(VersionedModel):
 
     def clone_from(self, old, new_secrets):
         from eventyay.base.models import Channel
-        from eventyay.base.storage.models import StoredFile
+        from eventyay.base.models.storage_model import StoredFile
 
         if self.pk == old.pk:
             raise ValueError("Illegal attempt to clone into same world")

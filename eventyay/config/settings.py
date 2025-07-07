@@ -384,7 +384,7 @@ INSTALLED_APPS = [
     "eventyay.features.live.LiveConfig",
     "eventyay.features.analytics.graphs.GraphsConfig",
     "eventyay.features.importers.ImportersConfig",
-    "eventyay.base.storage.StorageConfig",
+    "eventyay.storage.StorageConfig",
     "eventyay.features.social.SocialConfig",
     "eventyay.features.integrations.zoom.ZoomConfig",
     "eventyay.control.ControlConfig",

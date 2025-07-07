@@ -39,10 +39,10 @@ from eventyay.base.models import (
     World,
 )
 
-from ..core.models.world import PlannedUsage
-from ..core.services.bbb import get_url
-from ..importers.tasks import conftool_sync_posters
-from .forms import (
+from eventyay.base.models.world import PlannedUsage
+from eventyay.base.services.bbb import get_url
+from eventyay.features.importers.tasks import conftool_sync_posters
+from eventyay.control.forms import (
     BBBMoveRoomForm,
     BBBServerForm,
     ConftoolSyncPostersForm,
@@ -56,7 +56,7 @@ from .forms import (
     UserForm,
     WorldForm,
 )
-from .models import LogEntry
+from eventyay.base.models.control_model import LogEntry
 from .tasks import clear_world_data
 
 

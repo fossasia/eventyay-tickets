@@ -4,7 +4,7 @@ import requests
 from django.core.files.base import ContentFile
 
 from eventyay.base.models import User
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 
 def update_user_profile_from_social(

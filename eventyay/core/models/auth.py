@@ -58,7 +58,7 @@ class User(VersionedModel):
         unique_together = (("token_id", "world"), ("client_id", "world"))
 
     def soft_delete(self):
-        from eventyay.base.storage.models import StoredFile
+        from eventyay.base.models.storage_model import StoredFile
 
         self.bbb_invites.clear()
         self.room_grants.all().delete()

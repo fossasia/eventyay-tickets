@@ -15,7 +15,7 @@ from lxml import etree
 from pdf2image import convert_from_bytes
 
 from eventyay.base.models import Poster
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 logger = logging.getLogger(__name__)
 

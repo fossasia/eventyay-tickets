@@ -18,7 +18,7 @@ from eventyay.base.models.world import WorldView
 from eventyay.core.tasks import WorldTask
 from eventyay.features.analytics.graphs.report import ReportGenerator
 from eventyay.features.analytics.graphs.utils import get_schedule, pretalx_uni18n
-from eventyay.base.storage.models import StoredFile
+from eventyay.base.models.storage_model import StoredFile
 
 
 @app.task(base=WorldTask)

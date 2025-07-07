@@ -20,8 +20,8 @@ from eventyay.base.models import World
 from eventyay.core.permissions import Permission
 from eventyay.base.services.user import AuthError, login
 from eventyay.base.services.world import notify_schedule_change
-from eventyay.base.storage.models import StoredFile
-from eventyay.base.storage.schedule_to_json import convert
+from eventyay.base.models.storage_model import StoredFile
+from eventyay.storage.schedule_to_json import convert
 
 logger = logging.getLogger(__name__)
 
