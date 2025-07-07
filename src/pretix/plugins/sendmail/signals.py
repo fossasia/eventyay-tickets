@@ -33,7 +33,15 @@ def control_nav_import(sender, request=None, **kwargs):
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'outbox' or url.url_name == 'edit_mail' or url.url_name == 'delete_single' or url.url_name == 'purge_all'),
+                    'active': (
+                        url.namespace == 'plugins:sendmail' and
+                        url.url_name in {
+                            'outbox',
+                            'edit_mail',
+                            'delete_single',
+                            'purge_all'
+                        }
+                    ),
                 },
                 {
                     'label': _('Compose emails'),
@@ -44,7 +52,14 @@ def control_nav_import(sender, request=None, **kwargs):
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'compose_email_choice' or url.url_name == 'send'),
+                    'active': (
+                        url.namespace == 'plugins:sendmail' and
+                        url.url_name in {
+                            'compose_email_choice',
+                            'compose_email_teams',
+                            'send'
+                        }
+                    ),
                 },
                 {
                     'label': _('Sent emails'),

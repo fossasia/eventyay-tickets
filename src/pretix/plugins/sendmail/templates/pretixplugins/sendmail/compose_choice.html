@@ -26,7 +26,7 @@
     </li>
     <li class="list-group-item">
         <h3 class="clearfix">
-            <a href="#" class="text">
+            <a href="{% url 'plugins:sendmail:compose_email_teams' organizer=request.event.organizer.slug event=request.event.slug %}" class="text">
                 {% translate "Team members" %}
                 <i class="fa fa-chevron-right pull-right"></i>
             </a>

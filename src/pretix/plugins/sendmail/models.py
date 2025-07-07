@@ -14,6 +14,12 @@ from pretix.base.services.mail import TolerantDict, mail
 
 logger = logging.getLogger(__name__)
 
+
+class ComposingFor(models.TextChoices):
+    ATTENDEES = 'attendees', 'Attendees'
+    TEAMS = 'teams', 'Teams'
+
+
 class QueuedMail(models.Model):
     """
     Stores queued emails composed by organizers for later sending.
@@ -32,11 +38,15 @@ class QueuedMail(models.Model):
                              "positions": ["789"],
                              "items": ["1", "2"],
                              "sent": False,
-                             "error": null
+                             "error": null,
+                             "team": 10                   # Team id, the team member is present in.
                          },
                          ...
                      ]
     :type to_users: list[dict]
+
+    :param composing_for: To whom the organizer is composing email for. Either "attendees" or "teams"
+    :type raw_composing_for: str
 
     :param raw_subject: The untranslated subject, stored as an i18n-aware string.
                         (e.g., {"en": "Hello", "de": "Hallo"}).
@@ -51,8 +61,8 @@ class QueuedMail(models.Model):
                     Expected structure:
                     {
                         "recipients": "orders" | "attendees" | "both",
-                        "sendto": ["p", "na", ...],               # Order status filters
-                        "items": [1, 2, 3],                       # Selected item IDs
+                        "sendto": ["p", "na", ...],              # Order status filters
+                        "items": [1, 2, 3],                      # Selected item IDs
                         "checkin_lists": [4, 5],                 # Check-in list IDs
                         "filter_checkins": true | false,         # Enable check-in filtering
                         "not_checked_in": true | false,          # Only target not-checked-in users
@@ -62,6 +72,7 @@ class QueuedMail(models.Model):
                         "created_from": "2025-06-01T00:00:00Z",  # Order creation window
                         "created_to": "2025-06-30T00:00:00Z",
                         "orders": [101, 102, 103]                # Final matched order IDs (snapshot)
+                        "teams": [1, 2, 3]                       # Teams primary keys, used to compose emails for Teams 
                     }
     :type filters: dict
 
@@ -92,13 +103,14 @@ class QueuedMail(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="queued_mails")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     to_users = models.JSONField(null=True, blank=True)
+    composing_for = models.CharField(max_length=20, choices=ComposingFor.choices, default=ComposingFor.ATTENDEES)
 
     raw_subject = I18nTextField(null=True, blank=True)
     raw_message = I18nTextField(null=True, blank=True)
 
     filters = models.JSONField(null=True, blank=True)
 
-    reply_to = models.CharField(max_length=1000, null=True, blank=True)
+    reply_to = models.CharField(max_length=100, null=True, blank=True)
     bcc = models.TextField(null=True, blank=True)  # comma-separated
     locale = models.CharField(max_length=16, null=True, blank=True)
     attachments = models.JSONField(null=True, blank=True)
@@ -141,20 +153,35 @@ class QueuedMail(models.Model):
         # Fallback to raw string
         return self.raw_subject or ''
 
+
     def clean(self):
         """
-        Validates the structure of the filters field, if present.
-        Ensures only known filter keys are allowed.
+        Validates the structure of the filters and to_users fields, if present.
+        Ensures only known keys are allowed in each.
         """
+        # Validate to_users list
         from django.core.exceptions import ValidationError
-        if self.filters:
-            allowed_keys = {
-                'recipients', 'sendto', 'orders', 'items', 'checkin_lists', 'filter_checkins', 'not_checked_in',
-                'subevent', 'subevents_from', 'subevents_to', 'created_from', 'created_to'
+        if self.to_users:
+            allowed_user_keys = {
+                'email', 'orders', 'positions', 'items', 'sent', 'error', 'filter_checkins', 'team'
             }
-            extra_keys = set(self.filters.keys()) - allowed_keys
-            if extra_keys:
-                raise ValidationError(f"Invalid filter keys: {extra_keys}")
+
+            for i, user_dict in enumerate(self.to_users):
+                extra_user_keys = set(user_dict.keys()) - allowed_user_keys
+                if extra_user_keys:
+                    raise ValidationError(f"Invalid to_user keys in entry {i}: {extra_user_keys}")
+
+        # Validate filters dict
+        if self.filters:
+            allowed_filter_keys = {
+                'recipients', 'sendto', 'orders', 'items', 'checkin_lists', 'filter_checkins',
+                'not_checked_in', 'subevent', 'subevents_from', 'subevents_to',
+                'created_from', 'created_to', 'teams'
+            }
+            extra_filter_keys = set(self.filters.keys()) - allowed_filter_keys
+            if extra_filter_keys:
+                raise ValidationError(f"Invalid filter keys: {extra_filter_keys}")
+
 
     def subject_localized(self, locale=None):
         """
@@ -214,17 +241,25 @@ class QueuedMail(models.Model):
 
                 position_or_address = position or ia
 
-                try:
-                    context = get_email_context(
-                        event=self.event,
-                        order=order,
-                        position=position,
-                        position_or_address=position_or_address,
-                    )
-                except Exception as e:
-                    logger.exception("Error while generating email context")
-                    recipient["error"] = f"Context error: {str(e)}"
-                    continue
+                if self.composing_for == ComposingFor.ATTENDEES:
+                    try:
+                        context = get_email_context(
+                            event=self.event,
+                            order=order,
+                            position=position,
+                            position_or_address=position_or_address,
+                        )
+                    except Exception as e:
+                        logger.exception("Error while generating email context")
+                        recipient["error"] = f"Context error: {str(e)}"
+                        continue
+                else:
+                    try:
+                        context = get_email_context(event=self.event)
+                    except Exception as e:
+                        logger.exception("Error while generating email context")
+                        recipient["error"] = f"Context error: {str(e)}"
+                        continue
 
                 mail(
                     email=email,

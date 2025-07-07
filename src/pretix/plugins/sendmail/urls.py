@@ -39,9 +39,9 @@ urlpatterns = [
         name='send',
     ),
     path(
-        'control/event/<str:organizer>/<str:event>/sendmail/history/',
-        views.EmailHistoryView.as_view(),
-        name='history',
+        'control/event/<str:organizer>/<str:event>/mails/compose/teams/', 
+        views.ComposeTeamsMail.as_view(), 
+        name='compose_email_teams'
     ),
     path(
         'control/event/<str:organizer>/<str:event>/sendmail/sent/',

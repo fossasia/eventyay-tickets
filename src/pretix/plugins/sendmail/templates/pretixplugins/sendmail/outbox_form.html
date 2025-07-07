@@ -72,10 +72,17 @@
     </div>
 
     <div class="submit-group">
-        <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:send' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
-            {% translate "Copy to draft" %}
-        </a>
+        {% if form.instance.composing_for == "attendees" %}
+            <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:send' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
+                {% translate "Copy to draft" %}
+            </a>
+        {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:compose_email_teams' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
+                {% translate "Copy to draft" %}
+            </a>
+        {% endif %}
     </div>
+
 
     {% else %}
         <!-- Main edit form -->

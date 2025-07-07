@@ -22,10 +22,10 @@ from pretix.base.services.mail import TolerantDict
 from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.plugins.sendmail.forms import QueuedMailEditForm
-from pretix.plugins.sendmail.models import QueuedMail
+from pretix.plugins.sendmail.models import ComposingFor, QueuedMail
 from pretix.plugins.sendmail.tasks import send_queued_mail
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
-from .forms import MailContentSettingsForm
+from .forms import MailContentSettingsForm, TeamMailForm
 
 
 from . import forms
@@ -58,50 +58,6 @@ class SenderView(EventPermissionRequiredMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
-
-        if 'from_log' in self.request.GET:
-            try:
-                from_log_id = self.request.GET.get('from_log')
-                logentry = LogEntry.objects.get(
-                    id=from_log_id,
-                    event=self.request.event,
-                    action_type='pretix.plugins.sendmail.sent',
-                )
-                kwargs['initial'] = {
-                    'recipients': logentry.parsed_data.get('recipients', 'orders'),
-                    'message': LazyI18nString(logentry.parsed_data['message']),
-                    'subject': LazyI18nString(logentry.parsed_data['subject']),
-                    'sendto': logentry.parsed_data['sendto'],
-                }
-                if 'items' in logentry.parsed_data:
-                    kwargs['initial']['items'] = self.request.event.items.filter(
-                        id__in=[a['id'] for a in logentry.parsed_data['items']]
-                    )
-                elif logentry.parsed_data.get('item'):
-                    kwargs['initial']['items'] = self.request.event.items.filter(id=logentry.parsed_data['item']['id'])
-                if 'checkin_lists' in logentry.parsed_data:
-                    kwargs['initial']['checkin_lists'] = self.request.event.checkin_lists.filter(
-                        id__in=[c['id'] for c in logentry.parsed_data['checkin_lists']]
-                    )
-                kwargs['initial']['filter_checkins'] = logentry.parsed_data.get('filter_checkins', False)
-                kwargs['initial']['not_checked_in'] = logentry.parsed_data.get('not_checked_in', False)
-                if logentry.parsed_data.get('subevents_from'):
-                    kwargs['initial']['subevents_from'] = dateutil.parser.parse(logentry.parsed_data['subevents_from'])
-                if logentry.parsed_data.get('subevents_to'):
-                    kwargs['initial']['subevents_to'] = dateutil.parser.parse(logentry.parsed_data['subevents_to'])
-                if logentry.parsed_data.get('created_from'):
-                    kwargs['initial']['created_from'] = dateutil.parser.parse(logentry.parsed_data['created_from'])
-                if logentry.parsed_data.get('created_to'):
-                    kwargs['initial']['created_to'] = dateutil.parser.parse(logentry.parsed_data['created_to'])
-                if logentry.parsed_data.get('subevent'):
-                    try:
-                        kwargs['initial']['subevent'] = self.request.event.subevents.get(
-                            pk=logentry.parsed_data['subevent']['id']
-                        )
-                    except SubEvent.DoesNotExist:
-                        pass
-            except LogEntry.DoesNotExist:
-                raise Http404(_('You supplied an invalid log entry ID'))
         
         import dateutil.parser
         copy_id = self.request.GET.get('copyToDraft')
@@ -247,21 +203,6 @@ class SenderView(EventPermissionRequiredMixin, FormView):
 
             return self.get(self.request, *self.args, **self.kwargs)
 
-        kwargs = {
-            'recipients': form.cleaned_data['recipients'],
-            'event': self.request.event.pk,
-            'user': self.request.user.pk,
-            'subject': form.cleaned_data['subject'].data,
-            'message': form.cleaned_data['message'].data,
-            'orders': [o.pk for o in orders],
-            'items': [i.pk for i in form.cleaned_data.get('items')],
-            'not_checked_in': form.cleaned_data.get('not_checked_in'),
-            'checkin_lists': [i.pk for i in form.cleaned_data.get('checkin_lists')],
-            'filter_checkins': form.cleaned_data.get('filter_checkins'),
-        }
-        if form.cleaned_data.get('attachment') is not None:
-            kwargs['attachments'] = [form.cleaned_data['attachment'].id]
-
         # Build filters JSON for later use in QueuedMail
         filters = {
             'recipients': form.cleaned_data['recipients'],
@@ -278,7 +219,6 @@ class SenderView(EventPermissionRequiredMixin, FormView):
             'created_to': form.cleaned_data.get('created_to').isoformat() if form.cleaned_data.get('created_to') else None,
         }
 
-        # Save to QueuedMail
         qm = QueuedMail.objects.create(
             event=self.request.event,
             user=self.request.user,
@@ -630,3 +570,141 @@ class SentMailView(EventPermissionRequiredMixin, ListView):
         ctx['current_ordering'] = self.request.GET.get('ordering')
         ctx['query'] = self.request.GET.get('q', '')
         return ctx
+
+
+class ComposeTeamsMail(EventPermissionRequiredMixin, FormView):
+    template_name = 'pretixplugins/sendmail/send_team_form.html'
+    permission = 'can_change_orders'
+    form_class = TeamMailForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+
+        copy_id = self.request.GET.get('copyToDraft')
+        if copy_id:
+            try:
+                mail_id = int(copy_id)
+                qm = QueuedMail.objects.get(id=mail_id, event=self.request.event)
+                kwargs['initial'] = kwargs.get('initial', {})
+
+                subject = qm.raw_subject._data if hasattr(qm.raw_subject, '_data') else {'en': str(qm.raw_subject)}
+                message = qm.raw_message._data if hasattr(qm.raw_message, '_data') else {'en': str(qm.raw_message)}
+
+                attachments_qs = CachedFile.objects.filter(
+                    id__in=[uuid.UUID(att_id) for att_id in qm.attachments]
+                )
+                
+                attachment = attachments_qs.first() if attachments_qs.exists() else None
+
+                filters = qm.filters or {}
+
+                kwargs['initial'].update({
+                    'subject': subject,
+                    'message': message,
+                    'reply_to': qm.reply_to,
+                    'bcc': qm.bcc,
+                    'teams': filters.get('teams', []),
+                })
+
+                if attachment:
+                    kwargs['initial']['attachment'] = attachment
+
+            except (QueuedMail.DoesNotExist, ValueError, TypeError) as e:
+                logger.warning(f"Failed to load QueuedMail for copyToDraft: {e}")
+                pass
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['output'] = getattr(self, 'output', None)
+
+        return ctx
+
+    def form_valid(self, form):
+        event = self.request.event
+        user = self.request.user
+        subject = form.cleaned_data['subject']
+        message = form.cleaned_data['message']
+
+        self.output = {}
+        for l in event.settings.locales:
+            with language(l, event.settings.region):
+                context_dict = {
+                    k: '<span class="placeholder" title="{}">{}</span>'.format(
+                        _('This value will be replaced based on dynamic parameters.'),
+                        v.render_sample(self.request.event),
+                    )
+                    for k, v in get_available_placeholders(event, ['event', 'team']).items()
+                }
+
+                try:
+                    subject_preview = subject.localize(l).format_map(context_dict)
+                except KeyError as e:
+                    form.add_error('subject', _('Invalid placeholder(s): {}').format(str(e)))
+                    return self.form_invalid(form)
+
+                try:
+                    message_preview = message.localize(l).format_map(context_dict)
+                except KeyError as e:
+                    form.add_error('message', _('Invalid placeholder(s): {}').format(str(e)))
+                    return self.form_invalid(form)
+
+                if self.request.POST.get('action') == 'preview':
+                    self.output[l] = {
+                        'subject': _('Subject: {subject}').format(subject=subject_preview),
+                        'html': markdown_compile_email(message_preview),
+                    }
+
+        if self.request.POST.get('action') == 'preview':
+            return self.get(self.request, *self.args, **self.kwargs)
+
+        sent_emails = set()
+        to_users = []
+
+        for team in form.cleaned_data['teams']:
+            for member in team.members.all():
+                if not member.email or member.email in sent_emails:
+                    continue
+
+                to_users.append({
+                    "email": member.email,
+                    "team": team.pk,
+                    "orders": [],
+                    "positions": [],
+                    "items": [],
+                    "sent": False,
+                    "error": None
+                })
+
+                sent_emails.add(member.email)
+
+        if not to_users:
+            messages.error(self.request, _('There are no valid recipients for the selected teams.'))
+            return self.form_invalid(form)
+
+        QueuedMail.objects.create(
+            event=event,
+            user=user,
+            to_users=to_users,
+            composing_for=ComposingFor.TEAMS,
+            raw_subject=subject.data,
+            raw_message=message.data,
+            locale=event.settings.locale,
+            reply_to=event.settings.get('contact_mail'),
+            bcc=event.settings.get('mail_bcc'),
+            attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else [],
+            filters={'teams': [team.pk for team in form.cleaned_data['teams']]},
+        )
+
+        messages.success(
+            self.request,
+            _('Your email has been sent to the outbox.')
+        )
+
+        return redirect(
+            'plugins:sendmail:compose_email_teams',
+            event=event.slug,
+            organizer=event.organizer.slug
+        )

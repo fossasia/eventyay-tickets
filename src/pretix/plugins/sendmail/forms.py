@@ -17,6 +17,7 @@ from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
 from pretix.plugins.sendmail.models import QueuedMail
+from pretix.base.models.organizer import Team
 
 
 MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
@@ -531,3 +532,48 @@ class QueuedMailEditForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+class TeamMailForm(forms.Form):
+    attachment = CachedFileField(
+        label=_('Attachment'),
+        required=False,
+        ext_whitelist=(
+            '.png', '.jpg', '.gif', '.jpeg', '.pdf', '.txt', '.docx', '.svg', '.pptx',
+            '.ppt', '.doc', '.xlsx', '.xls', '.jfif', '.heic', '.heif', '.pages', '.bmp',
+            '.tif', '.tiff',
+        ),
+        help_text=_('Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs of no more than 2 MB in size.'),
+        max_size=10 * 1024 * 1024,
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(*args, **kwargs)
+
+        locales = self.event.settings.get('locales') or [self.event.locale or 'en']
+        
+        placeholder_keys = get_available_placeholders(self.event, ['event', 'team']).keys()
+        placeholder_text = _("Available placeholders: ") + ', '.join(f"{{{key}}}" for key in sorted(placeholder_keys))
+
+        if isinstance(locales, str):
+            locales = [locales]
+        self.fields['subject'] = I18nFormField(
+            label=_('Subject'),
+            widget=I18nTextInput,
+            required=True,
+            locales=locales,
+            help_text=placeholder_text
+        )
+        self.fields['message'] = I18nFormField(
+            label=_('Message'),
+            widget=I18nTextarea,
+            required=True,
+            locales=locales,
+            help_text=placeholder_text
+        )
+        self.fields['teams'] = forms.ModelMultipleChoiceField(
+            queryset=Team.objects.filter(organizer=self.event.organizer),
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+            label=_("Send to members of these teams")
+        )
