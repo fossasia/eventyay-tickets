@@ -346,9 +346,9 @@ class OutboxListView(EventPermissionRequiredMixin, ListView):
     def get_ordering(self):
         allowed = {
             'subject': 'raw_subject',
-            'recipient': 'recipients',
+            'recipient': 'to_users',
             '-subject': '-raw_subject',
-            '-recipient': '-recipients',
+            '-recipient': '-to_users',
         }
         ordering = self.request.GET.get('ordering')
         return allowed.get(ordering, '-created')  # fallback

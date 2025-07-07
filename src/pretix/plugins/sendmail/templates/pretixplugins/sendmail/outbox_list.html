@@ -67,6 +67,7 @@
                     {% endwith %}
                 </th>
             {% endfor %}
+            <th>{% translate "Total recipients" %}</th>
             <th>{% translate "Actions" %}</th>
         </tr>
     </thead>
@@ -90,6 +91,7 @@
                     {% endif %}
                 {% endwith %}
             </td>
+            <td>{{ mail.to_users|length }}</td>
             <td>
                 <div class="btn-toolbar" role="toolbar">
                     <!-- Send -->
