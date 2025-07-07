@@ -17,6 +17,77 @@ logger = logging.getLogger(__name__)
 class QueuedMail(models.Model):
     """
     Stores queued emails composed by organizers for later sending.
+
+    :param event: The event this queued mail is associated with.
+    :type event: Event
+    :param user: The user (organizer/admin) who queued this email.
+    :type user: User
+    :param to_users: A list of dictionaries storing metadata for each recipient,
+                     including email, matching orders, positions, and items.
+                     Format:
+                     [
+                         {
+                             "email": "user@example.com",
+                             "orders": ["123", "456"],
+                             "positions": ["789"],
+                             "items": ["1", "2"],
+                             "sent": False,
+                             "error": null
+                         },
+                         ...
+                     ]
+    :type to_users: list[dict]
+
+    :param raw_subject: The untranslated subject, stored as an i18n-aware string.
+                        (e.g., {"en": "Hello", "de": "Hallo"}).
+    :type raw_subject: I18nTextField
+
+    :param raw_message: The untranslated body of the email, also i18n-aware.
+    :type raw_message: I18nTextField
+
+    :param filters: A JSON structure capturing all user-selected filters from the MailForm
+                    that define the target audience and selection logic.
+
+                    Expected structure:
+                    {
+                        "recipients": "orders" | "attendees" | "both",
+                        "sendto": ["p", "na", ...],               # Order status filters
+                        "items": [1, 2, 3],                       # Selected item IDs
+                        "checkin_lists": [4, 5],                 # Check-in list IDs
+                        "filter_checkins": true | false,         # Enable check-in filtering
+                        "not_checked_in": true | false,          # Only target not-checked-in users
+                        "subevent": 10,                          # Single subevent ID
+                        "subevents_from": "2025-07-01T00:00:00Z",# ISO-formatted datetime
+                        "subevents_to": "2025-07-07T00:00:00Z",
+                        "created_from": "2025-06-01T00:00:00Z",  # Order creation window
+                        "created_to": "2025-06-30T00:00:00Z",
+                        "orders": [101, 102, 103]                # Final matched order IDs (snapshot)
+                    }
+    :type filters: dict
+
+    :param reply_to: Optional reply-to address to use in sent email.
+    :type reply_to: str
+
+    :param bcc: Comma-separated list of BCC recipients.
+    :type bcc: str
+
+    :param locale: Preferred default locale if not overridden per recipient.
+    :type locale: str
+
+    :param attachments: List of file UUIDs to be attached to the email.
+    :type attachments: list[str]
+
+    :param created: Timestamp of when the queued mail was created.
+    :type created: datetime
+
+    :param updated: Timestamp of the last update.
+    :type updated: datetime
+
+    :param sent: Whether the email has been fully sent to all recipients.
+    :type sent: bool
+
+    :param sent_at: When the email was sent (fully completed).
+    :type sent_at: datetime or None
     """
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="queued_mails")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
@@ -24,17 +95,6 @@ class QueuedMail(models.Model):
 
     raw_subject = I18nTextField(null=True, blank=True)
     raw_message = I18nTextField(null=True, blank=True)
-
-    # Recipient type: "orders", "attendees", or "both"
-    recipients = models.CharField(
-        max_length=20,
-        choices=[
-            ("orders", "Orders only"),
-            ("attendees", "Attendees only"),
-            ("both", "Orders and Attendees"),
-        ],
-        default="orders",
-    )
 
     filters = models.JSONField(null=True, blank=True)
 
@@ -54,7 +114,6 @@ class QueuedMail(models.Model):
     def __str__(self):
         return f"QueuedMail(event={self.event.slug}, subject={self.raw_subject[:30]}, sent={self.sent})"
     
-
     @property
     def subject_en(self):
         """
@@ -82,6 +141,20 @@ class QueuedMail(models.Model):
         # Fallback to raw string
         return self.raw_subject or ''
 
+    def clean(self):
+        """
+        Validates the structure of the filters field, if present.
+        Ensures only known filter keys are allowed.
+        """
+        from django.core.exceptions import ValidationError
+        if self.filters:
+            allowed_keys = {
+                'recipients', 'sendto', 'orders', 'items', 'checkin_lists', 'filter_checkins', 'not_checked_in',
+                'subevent', 'subevents_from', 'subevents_to', 'created_from', 'created_to'
+            }
+            extra_keys = set(self.filters.keys()) - allowed_keys
+            if extra_keys:
+                raise ValidationError(f"Invalid filter keys: {extra_keys}")
 
     def subject_localized(self, locale=None):
         """
@@ -110,6 +183,8 @@ class QueuedMail(models.Model):
 
         subject = LazyI18nString(self.raw_subject)
         message = LazyI18nString(self.raw_message)
+        bcc = self.bcc
+        reply_to = self.reply_to
 
         changed = False
 
@@ -161,6 +236,8 @@ class QueuedMail(models.Model):
                     order=order,
                     position=position,
                     sender=sender,
+                    event_bcc=bcc,
+                    event_reply_to=reply_to,
                     attach_cached_files=self.attachments,
                     user=self.user,
                     auto_email=False,
@@ -221,53 +298,62 @@ class QueuedMail(models.Model):
         this queued mail will send to.
         """
         emails = set()
+        filters = self.filters or {}
+        recipients = filters.get("recipients", "orders")
 
         orders_qs = Order.objects.filter(
-            pk__in=self.filters.get('orders', []),
+            pk__in=filters.get('orders', []),
             event=self.event
-        )
+        ).prefetch_related('positions__addons')
 
-        if self.recipients in ("both", "attendees"):
+        if recipients in ("both", "attendees"):
             for order in orders_qs:
-                positions = order.positions.prefetch_related('addons')
-                for pos in positions:
+                for pos in order.positions.all():
                     if pos.attendee_email:
                         emails.add(pos.attendee_email.strip().lower())
 
-        if self.recipients in ("both", "orders"):
+        if recipients in ("both", "orders"):
             for order in orders_qs:
                 if order.email:
                     emails.add(order.email.strip().lower())
 
         return sorted(emails)
 
-
     def populate_to_users(self, save=True):
         """
         Resolves recipients and populates `to_users` with grouped metadata.
         """
         from collections import defaultdict
-        recipients = defaultdict(lambda: {"orders": set(), "positions": set(), "items": set()})
 
-        orders_qs = Order.objects.filter(pk__in=self.filters.get('orders', []), event=self.event)
+        filters = self.filters or {}
+        recipients_mode = filters.get("recipients", "orders")
+        orders_qs = Order.objects.filter(
+            pk__in=filters.get('orders', []),
+            event=self.event
+        ).prefetch_related('positions__item', 'positions__addons')
 
-        if self.recipients in ("both", "attendees"):
+        recipients = defaultdict(lambda: {
+            "orders": set(),
+            "positions": set(),
+            "items": set()
+        })
+
+        if recipients_mode in ("both", "attendees"):
             for order in orders_qs:
-                for pos in order.positions.prefetch_related('item', 'addons'):
+                for pos in order.positions.all():
                     if pos.attendee_email:
                         email = pos.attendee_email.strip().lower()
                         recipients[email]["orders"].add(str(order.pk))
                         recipients[email]["positions"].add(str(pos.pk))
                         recipients[email]["items"].add(str(pos.item.pk))
 
-        if self.recipients in ("both", "orders"):
+        if recipients_mode in ("both", "orders"):
             for order in orders_qs:
                 if order.email:
                     email = order.email.strip().lower()
                     recipients[email]["orders"].add(str(order.pk))
-                    recipients[email]["items"].update(
-                        str(item_id) for item_id in order.positions.values_list('item__pk', flat=True)
-                    )
+                    item_ids = order.positions.values_list('item__pk', flat=True)
+                    recipients[email]["items"].update(str(iid) for iid in item_ids)
 
         # Convert sets to lists for JSON serializability
         self.to_users = [
@@ -284,3 +370,7 @@ class QueuedMail(models.Model):
 
         if save:
             self.save(update_fields=["to_users"])
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)

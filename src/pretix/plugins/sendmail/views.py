@@ -58,6 +58,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
+
         if 'from_log' in self.request.GET:
             try:
                 from_log_id = self.request.GET.get('from_log')
@@ -124,10 +125,10 @@ class SenderView(EventPermissionRequiredMixin, FormView):
                 kwargs['initial'].update({
                     'subject': subject,
                     'message': message,
-                    'recipients': qm.recipients,
+                    'recipients': filters.get('recipients', []),
                     'reply_to': qm.reply_to,
                     'bcc': qm.bcc,
-                    'sendto': ['p', 'na'],  # fallback if needed
+                    'sendto': filters.get('sendto', ['p', 'na']),
                     'filter_checkins': filters.get('filter_checkins', False),
                     'not_checked_in': filters.get('not_checked_in', False),
                 })
@@ -263,6 +264,8 @@ class SenderView(EventPermissionRequiredMixin, FormView):
 
         # Build filters JSON for later use in QueuedMail
         filters = {
+            'recipients': form.cleaned_data['recipients'],
+            'sendto': form.cleaned_data['sendto'],
             'orders': list(orders.values_list('pk', flat=True)),
             'items': [i.pk for i in form.cleaned_data.get('items')],
             'checkin_lists': [cl.pk for cl in form.cleaned_data.get('checkin_lists')],
@@ -281,11 +284,10 @@ class SenderView(EventPermissionRequiredMixin, FormView):
             user=self.request.user,
             raw_subject=form.cleaned_data['subject'].data,
             raw_message=form.cleaned_data['message'].data,
-            recipients=form.cleaned_data['recipients'],
             filters=stringify_uuids(filters),
             attachments=[str(form.cleaned_data['attachment'].id)] if form.cleaned_data.get('attachment') else [],
             locale=self.request.event.settings.locale,
-            reply_to=self.request.event.settings.get('mail_from'),
+            reply_to=self.request.event.settings.get('contact_mail'),
             bcc=self.request.event.settings.get('mail_bcc'),
         )
 
@@ -293,10 +295,7 @@ class SenderView(EventPermissionRequiredMixin, FormView):
 
         messages.success(
             self.request,
-            _(
-                '%d emails have been saved to the outbox - you can make individual changes there or just send them all.'
-            )
-            % len(orders),
+            _('Your email has been sent to the outbox.')
         )
 
         return redirect(
@@ -563,7 +562,7 @@ class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
     def question(self):
         count = QueuedMail.objects.filter(event=self.request.event, sent=False).count()
         return ngettext_lazy(
-            "Do you really want to purge this mail?",
+            "Do you really want to purge the mail?",
             "Do you really want to purge {count} mails?",
             count
         ).format(count=count)

@@ -76,6 +76,8 @@ def mail(
     *,
     headers: dict = None,
     sender: str = None,
+    event_bcc: str = None,
+    event_reply_to: str = None,
     invoices: Sequence = None,
     attach_tickets=False,
     auto_email=True,
@@ -172,11 +174,22 @@ def mail(
         if event:
             timezone = event.timezone
             renderer = event.get_html_mail_renderer()
-            if event.settings.mail_bcc:
+            if not auto_email:
+                if event_bcc is not None and event_bcc != '':  # The organizer may edit the BCC field in the queued mail editor to either specify a different BCC address or remove it entirely.
+                    for bcc_mail in event_bcc.split(','):
+                        bcc.append(bcc_mail.strip())
+            elif event.settings.mail_bcc:
                 for bcc_mail in event.settings.mail_bcc.split(','):
                     bcc.append(bcc_mail.strip())
 
-            if (
+            if not auto_email:
+                if (
+                    event_reply_to is not None 
+                    and event_reply_to != ''
+                    and not headers.get('Reply-To')
+                ):
+                    headers['Reply-To'] = event_reply_to          
+            elif (
                 event.settings.mail_from == settings.DEFAULT_FROM_EMAIL
                 and event.settings.contact_mail
                 and not headers.get('Reply-To')

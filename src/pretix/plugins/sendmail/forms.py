@@ -444,6 +444,10 @@ class QueuedMailEditForm(forms.ModelForm):
             'reply_to': _('Reply-To'),
             'bcc': _('BCC'),
         }
+        help_texts = {
+            'reply_to': _("Any changes to the Reply-To field will apply only to this queued email."),
+            'bcc': _("Any changes to the BCC field will apply only to this queued email."),
+        }
         widgets = {
             'reply_to': forms.TextInput(attrs={'class': 'form-control'}),
             'bcc': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
