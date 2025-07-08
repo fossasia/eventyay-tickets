@@ -1,0 +1,287 @@
+// Sidebar specific styles
+.navbar-toggle-sidebar {
+  display: block; // Make it visible by default
+  float: left;
+  font-size: 16px;
+  margin-left: 10px; // Increased from 5px to add more space on the left side
+  background-color: transparent; // Changed from #2185d0 to transparent
+  border: none;
+  padding: 0.5rem;
+  color: #fff; // White color for the icon
+  margin-top: 8px; // Added to vertically center the button
+  margin-right: 0;
+  padding-right: 0;
+  &:hover, &:focus {
+    background-color: transparent !important; // Ensure no background on hover with higher specificity
+    color: rgba(255, 255, 255, 0.8); // Slight transparency on hover for subtle effect
+    outline: none; // Remove outline on focus
+  }
+  
+  .fa-bars, .icon-bar {
+    color: #fff; // Ensure the icon is white
+  }
+}
+
+// Styles for when the sidebar is minimized
+body.sidebar-minimized {
+  #wrapper {
+    // Adjust padding or margin if the sidebar is fixed and page-wrapper needs to shift
+  }
+
+  .sidebar {
+    width: 60px; // Example minimized width
+    overflow: hidden; // Hide text and other overflowing content
+
+    .nav > li > a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0; // Hide all text content
+      padding: 15px 0; // Center the icon
+      text-align: center; // Ensure text alignment is centered
+      width: 100%; // Ensure the link takes full width
+      
+      span { // Assuming text labels are in spans
+        display: none; // Hide text labels
+      }
+      
+      .fa, svg { // FontAwesome icons and SVG icons
+        font-size: 1.5rem !important; // Make icons a bit larger and override any other styles
+        margin: 0 !important; // Remove any margins
+        padding: 0 !important; // Remove any padding
+        display: inline-block !important; // Better for centering than block
+        text-align: center !important; // Center icon content
+        width: auto !important; // Let icon take its natural width
+        position: relative !important; // For potential adjustments
+        left: 0 !important; // Ensure no left offset
+      }
+      
+      // Fix specifically for fa-fw icons which might have fixed width issues
+      .fa.fa-fw {
+        width: 1.25em !important; // Standard fixed width
+        text-align: center !important;
+      }
+      
+      // Show only the icon by hiding everything else
+      &::after, &::before {
+        display: none !important;
+      }
+    }
+    
+    // Special handling for arrow links
+    .nav > li > a.arrow {
+      display: none !important; // Hide arrow links completely
+    }
+
+    .sidebar-nav .nav-second-level {
+      display: none !important; // Hide submenus when minimized
+    }
+
+    .context-selector .context-indicator .context-name,
+    .context-selector .context-indicator .context-meta {
+        display: none; // Hide context name and meta in minimized state
+    }
+  }
+
+  #page-wrapper {
+    margin-left: 60px; // Adjust content margin to match minimized sidebar width
+  }
+}
+
+// Media query for mobile: by default, sb-admin-2 hides the sidebar and uses a top navbar toggle.
+@media (max-width: 767px) {
+  // Show our custom toggle on mobile
+  .navbar-toggle-sidebar {
+    display: block !important; // Override any previous display: none
+  }
+
+  // Default state of sidebar on mobile (when not explicitly minimized by our new JS)
+  // Ensure sidebar is properly positioned and visible when toggled
+  .sidebar {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    width: 250px;
+    background-color: #f8f8f8;
+    z-index: 1000;
+    transform: translateX(-100%);
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    
+    // Ensure nav items are visible
+    .nav > li > a {
+      display: block !important;
+      font-size: inherit !important;
+      
+      span {
+        display: inline !important;
+      }
+    }
+  }
+
+  // When sidebar should be shown on mobile
+  body:not(.sidebar-minimized) .sidebar {
+    transform: translateX(0%);
+  }
+  
+  // When sidebar is explicitly hidden on mobile
+  body.sidebar-minimized .sidebar {
+    transform: translateX(-100%);
+  }
+
+  #page-wrapper {
+    margin-left: 0 !important;
+  }
+  
+  // Ensure the sidebar doesn't overlap with the navbar
+  .navbar-brand {
+    z-index: 11; // Higher than sidebar
+    position: relative;
+  }
+}
+
+// Clean hover functionality for minimized sidebar (desktop only) - IDENTICAL TO ORIGINAL
+body.sidebar-minimized.sidebar-hover {
+  .sidebar {
+    width: 250px; // Back to normal width
+    overflow: visible; // Back to normal overflow
+    
+    .nav > li > a {
+      display: block; // Normal display
+      align-items: normal;
+      justify-content: normal;
+      font-size: inherit; // Normal font size
+      padding: 10px 15px; // Normal padding from sb-admin-2
+      text-align: left; // Normal text alignment
+      width: auto;
+      
+      span {
+        display: inline; // Show text labels normally
+      }
+      
+      .fa, svg {
+        font-size: inherit; // Normal icon size
+        margin: 0;
+        padding: 0;
+        display: inline;
+        text-align: inherit;
+        width: auto;
+        position: static;
+        left: auto;
+      }
+      
+      .fa.fa-fw {
+        width: 1.25em;
+        text-align: center;
+      }
+      
+      &::after, &::before {
+        display: block;
+      }
+    }
+    
+    // CRITICAL: Restore arrow functionality for dropdowns
+    .nav > li > a.arrow {
+      display: block !important; // Show arrows normally
+      position: absolute;
+      right: 0;
+      top: 0;
+      
+      .fa.arrow {
+        line-height: 19px !important;
+        width: 10px;
+        text-align: center;
+        
+        &:before {
+          content: "\f104"; // Right arrow
+        }
+      }
+    }
+    
+    // Show arrows for active/expanded items
+    .nav > li.active > a > .fa.arrow:before {
+      content: "\f107"; // Down arrow
+    }
+    
+    .nav > li > a.has-children {
+      margin-right: 40px; // Normal margin for items with children
+    }
+    
+    // CRITICAL: Restore submenu functionality with proper collapse behavior
+    .sidebar-nav .nav-second-level {
+      // Don't force display: block - let collapse classes handle it
+      &.collapse {
+        display: none; // Collapsed state
+      }
+      
+      &.collapse.in {
+        display: block; // Expanded state
+      }
+      
+      li {
+        border-bottom: none !important; // Remove borders on submenu items
+        
+        a {
+          padding-left: 37px; // Normal submenu padding from sb-admin-2
+        }
+      }
+    }
+    
+    .sidebar-nav .nav-third-level {
+      &.collapse {
+        display: none;
+      }
+      
+      &.collapse.in {
+        display: block;
+      }
+      
+      li {
+        border-bottom: none !important;
+        
+        a {
+          padding-left: 52px; // Third level padding
+        }
+      }
+    }
+    
+    // Restore list item styling
+    ul li {
+      border-bottom: 1px solid darken(#f5f5f5, 6.5%);
+      position: relative;
+      
+      a {
+        &.active {
+          background-color: #eeeeee;
+        }
+      }
+    }
+    
+    // Ensure active menu items show their submenus
+    li.active {
+      > ul.nav-second-level {
+        display: block !important;
+      }
+    }
+    
+    .context-selector {
+      .context-indicator {
+        .context-name,
+        .context-meta {
+          display: block; // Show context info normally
+        }
+      }
+    }
+  }
+  
+  #page-wrapper {
+    margin-left: 250px; // Normal page wrapper margin
+  }
+}
+
+// Make entire minimized sidebar hoverable
+body.sidebar-minimized .sidebar {
+  min-height: 100vh;
+}

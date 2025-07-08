@@ -18,6 +18,10 @@
 @import "../../colorpicker/bootstrap-colorpicker.scss";
 @import "../../eventyay-common/scss/_voucher.scss";
 @import "../../eventyay-common/scss/custom.scss";
+@import "_sidebar.scss";
+@import "../../pretixbase/scss/_rtl.scss";
+@import "../../bootstrap/scss/_rtl.scss";
+@import "_rtl.scss";
 
 /* See https://github.com/pretix/pretix/pull/761 */
 .bootstrap-datetimepicker-widget table td span {
@@ -35,6 +39,7 @@ nav.navbar {
 }
 
 .navbar-brand {
+    padding-left: 0;
     font-weight: 600; 
     padding-top: 0.3125rem; 
     padding-bottom: 0.3125rem;
@@ -860,7 +865,3 @@ h1 .label {
 .nojs .requirejs {
     display: none !important;
 }
-
-@import "../../pretixbase/scss/_rtl.scss";
-@import "../../bootstrap/scss/_rtl.scss";
-@import "_rtl.scss";
