@@ -1,97 +1,93 @@
-/* Sidebar specific styles */
 .navbar-toggle-sidebar {
   display: block;
   float: left;
   font-size: 16px;
   margin-left: 10px;
-  background-color: transparent;
+  background-color: transparent !important;
   border: none;
   padding: 0.5rem;
   color: #fff;
   margin-top: 8px;
   margin-right: 0;
   padding-right: 0;
-}
-
-.navbar-toggle-sidebar:hover,
-.navbar-toggle-sidebar:focus {
-  background-color: transparent;
-  color: rgba(255, 255, 255, 0.8);
-  outline: none;
-}
-
-.navbar-toggle-sidebar .fa-bars,
-.navbar-toggle-sidebar .icon-bar {
-  color: #fff;
-}
-
-/* Styles for when the sidebar is minimized */
-body.sidebar-minimized .sidebar {
-  width: 60px;
-  overflow: hidden;
-}
-
-body.sidebar-minimized .sidebar .nav > li > a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0; /* Hide text by setting font-size to 0 */
-  padding: 15px 0; /* Center the icon */
-  text-align: center;
-  width: 100%;
-}
-
-body.sidebar-minimized .sidebar .nav > li > a span {
-  display: none; /* Hide text labels */
-}
-
-body.sidebar-minimized .sidebar .nav > li > a .fa,
-body.sidebar-minimized .sidebar .nav > li > a svg {
-  font-size: 1.5rem; /* Make icons a bit larger */
-  margin: 0; /* Remove any margins */
-  padding: 0; /* Remove any padding */
-  display: inline-block; /* Better for centering than block */
-  text-align: center; /* Center icon content */
-  width: auto; /* Let icon take its natural width */
-  position: relative; /* For potential adjustments */
-  left: 0; /* Ensure no left offset */
-}
-
-body.sidebar-minimized .sidebar .nav > li > a .fa.fa-fw {
-  width: 1.25em; /* Standard fixed width */
-  text-align: center;
-}
-
-body.sidebar-minimized .sidebar .nav > li > a::after,
-body.sidebar-minimized .sidebar .nav > li > a::before {
-  display: none;
-}
-
-body.sidebar-minimized .sidebar .nav > li > a.arrow {
-  display: none; /* Hide arrow links completely */
-}
-
-body.sidebar-minimized .sidebar .sidebar-nav .nav-second-level {
-  display: none; /* Hide submenus when minimized */
-}
-
-body.sidebar-minimized .sidebar .context-selector .context-indicator .context-name,
-body.sidebar-minimized .sidebar .context-selector .context-indicator .context-meta {
-  display: none; /* Hide context name and meta in minimized state */
-}
-
-body.sidebar-minimized #page-wrapper {
-  margin-left: 60px; /* Adjust content margin to match minimized sidebar width */
-}
-
-/* Media query for mobile: by default, sb-admin-2 hides the sidebar and uses a top navbar toggle. */
-@media (max-width: 767px) {
-  .navbar-toggle-sidebar {
-    display: block; /* Show our custom toggle on mobile */
+  &:hover, &:focus {
+    background-color: transparent !important;
+    color: rgba(255, 255, 255, 0.8);
+    outline: none;
   }
 
-  /* Default state of sidebar on mobile (when not explicitly minimized by our new JS) */
-  /* Ensure sidebar is properly positioned and visible when toggled */
+  .fa-bars, .icon-bar {
+    color: #fff;
+  }
+}
+
+body.sidebar-minimized {
+  #wrapper {
+    // Adjust padding or margin if the sidebar is fixed and page-wrapper needs to shift
+  }
+
+  .sidebar {
+    width: 60px;
+    overflow: hidden;
+
+    .nav > li > a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0;
+      padding: 15px 0;
+      text-align: center;
+      width: 100%;
+
+      span {
+        display: none;
+      }
+
+      .fa, svg {
+        font-size: 1.5rem;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        text-align: center;
+        width: auto;
+        position: relative;
+        left: 0;
+      }
+
+      .fa.fa-fw {
+        width: 1.25em;
+        text-align: center;
+      }
+
+      &::after, &::before {
+        display: none;
+      }
+    }
+
+    .nav > li > a.arrow {
+      display: none;
+    }
+
+    .sidebar-nav .nav-second-level {
+      display: none;
+    }
+
+    .context-selector .context-indicator .context-name,
+    .context-selector .context-indicator .context-meta {
+        display: none;
+    }
+  }
+
+  #page-wrapper {
+    margin-left: 60px;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-toggle-sidebar {
+    display: block;
+  }
+
   .sidebar {
     position: fixed;
     top: 50px;
@@ -104,165 +100,167 @@ body.sidebar-minimized #page-wrapper {
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
+
+    .nav > li > a {
+      display: block;
+      font-size: inherit;
+
+      span {
+        display: inline;
+      }
+    }
   }
 
-  .sidebar .nav > li > a {
-    display: block;
-    font-size: inherit;
-  }
-
-  .sidebar .nav > li > a span {
-    display: inline;
-  }
-
-  /* When sidebar should be shown on mobile */
   body:not(.sidebar-minimized) .sidebar {
     transform: translateX(0%);
   }
-  
-  /* When sidebar is explicitly hidden on mobile */
+
   body.sidebar-minimized .sidebar {
     transform: translateX(-100%);
   }
 
   #page-wrapper {
-    margin-left: 0;
+    margin-left: 0 !important;
   }
-  
-  /* Ensure the sidebar doesn't overlap with the navbar */
+
   .navbar-brand {
-    z-index: 11; /* Higher than sidebar */
+    z-index: 11;
     position: relative;
   }
 }
 
-/* Clean hover functionality for minimized sidebar (desktop only) */
-body.sidebar-minimized.sidebar-hover .sidebar {
-  width: 250px; /* Back to normal width */
-  overflow: visible; /* Back to normal overflow */
+body.sidebar-minimized.sidebar-hover {
+  .sidebar {
+    width: 250px;
+    overflow: visible;
+
+    .nav > li > a {
+      display: block;
+      align-items: normal;
+      justify-content: normal;
+      font-size: inherit;
+      padding: 10px 15px;
+      text-align: left;
+      width: auto;
+
+      span {
+        display: inline;
+      }
+
+      .fa, svg {
+        font-size: inherit;
+        margin: 0;
+        padding: 0;
+        display: inline;
+        text-align: inherit;
+        width: auto;
+        position: static;
+        left: auto;
+      }
+
+      .fa.fa-fw {
+        width: 1.25em;
+        text-align: center;
+      }
+
+      &::after, &::before {
+        display: block;
+      }
+    }
+
+    .nav > li > a.arrow {
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      .fa.arrow {
+        line-height: 19px;
+        width: 10px;
+        text-align: center;
+
+        &:before {
+          content: "\f104";
+        }
+      }
+    }
+
+    .nav > li.active > a > .fa.arrow:before {
+      content: "\f107";
+    }
+
+    .nav > li > a.has-children {
+      margin-right: 40px;
+    }
+
+    .sidebar-nav .nav-second-level {
+      &.collapse {
+        display: none;
+      }
+
+      &.collapse.in {
+        display: block;
+      }
+
+      li {
+        border-bottom: none;
+
+        a {
+          padding-left: 37px;
+        }
+      }
+    }
+
+    .sidebar-nav .nav-third-level {
+      &.collapse {
+        display: none;
+      }
+
+      &.collapse.in {
+        display: block;
+      }
+
+      li {
+        border-bottom: none;
+
+        a {
+          padding-left: 52px;
+        }
+      }
+    }
+
+    ul li {
+      border-bottom: 1px solid darken(#f5f5f5, 6.5%);
+      position: relative;
+
+      a {
+        &.active {
+          background-color: #eeeeee;
+        }
+      }
+    }
+
+    li.active {
+      > ul.nav-second-level {
+        display: block;
+      }
+    }
+
+    .context-selector {
+      .context-indicator {
+        .context-name,
+        .context-meta {
+          display: block;
+        }
+      }
+    }
+  }
+
+  #page-wrapper {
+    margin-left: 250px;
+  }
 }
 
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a {
-  display: block; /* Normal display */
-  align-items: normal;
-  justify-content: normal;
-  font-size: inherit; /* Normal font size */
-  padding: 10px 15px; /* Normal padding from sb-admin-2 */
-  text-align: left; /* Normal text alignment */
-  width: auto;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a span {
-  display: inline; /* Show text labels normally */
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a .fa,
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a svg {
-  font-size: inherit; /* Normal icon size */
-  margin: 0;
-  padding: 0;
-  display: inline;
-  text-align: inherit;
-  width: auto;
-  position: static;
-  left: auto;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a .fa.fa-fw {
-  width: 1.25em;
-  text-align: center;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a::after,
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a::before {
-  display: block;
-}
-
-/* CRITICAL: Restore arrow functionality for dropdowns */
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a.arrow {
-  display: block; /* Show arrows normally */
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a.arrow .fa.arrow {
-  line-height: 19px;
-  width: 10px;
-  text-align: center;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a.arrow .fa.arrow:before {
-  content: "\f104"; /* Right arrow */
-}
-
-/* Show arrows for active/expanded items */
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li.active > a > .fa.arrow:before {
-  content: "\f107"; /* Down arrow */
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .nav > li > a.has-children {
-  margin-right: 40px; /* Normal margin for items with children */
-}
-
-/* CRITICAL: Restore submenu functionality with proper collapse behavior */
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-second-level.collapse {
-  display: none; /* Collapsed state */
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-second-level.collapse.in {
-  display: block; /* Expanded state */
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-second-level li {
-  border-bottom: none; /* Remove borders on submenu items */
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-second-level li a {
-  padding-left: 37px; /* Normal submenu padding from sb-admin-2 */
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-third-level.collapse {
-  display: none;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-third-level.collapse.in {
-  display: block;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-third-level li {
-  border-bottom: none;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .sidebar-nav .nav-third-level li a {
-  padding-left: 52px; /* Third level padding */
-}
-
-/* Restore list item styling */
-body.sidebar-minimized.sidebar-hover .sidebar ul li {
-  border-bottom: 1px solid #dedede; /* Equivalent to darken(#f5f5f5, 6.5%) */
-  position: relative;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar ul li a.active {
-  background-color: #eeeeee;
-}
-
-/* Ensure active menu items show their submenus */
-body.sidebar-minimized.sidebar-hover .sidebar ul li.active > ul.nav-second-level {
-  display: block;
-}
-
-body.sidebar-minimized.sidebar-hover .sidebar .context-selector .context-indicator .context-name,
-body.sidebar-minimized.sidebar-hover .sidebar .context-selector .context-indicator .context-meta {
-  display: block; /* Show context info normally */
-}
-
-body.sidebar-minimized.sidebar-hover #page-wrapper {
-  margin-left: 250px; /* Normal page wrapper margin */
-}
-
-/* Make entire minimized sidebar hoverable */
 body.sidebar-minimized .sidebar {
   min-height: 100vh;
 }
