@@ -1,3 +1,4 @@
+
 @import "../../pretixbase/scss/_variables.scss";
 @import "../../bootstrap/scss/_bootstrap.scss";
 @import "../../fontawesome/scss/font-awesome.scss";
@@ -223,7 +224,7 @@ body.loading #wrapper {
     height: 100vh;
     background: rgba(255, 255, 255, .7);
     opacity: 0;
-    z-index: 90;
+    z-index: 20;
     visibility: hidden;
     padding: 10px;
 
@@ -711,7 +712,7 @@ h1 .label {
         min-width: 200px;
         padding: 5px 0;
         border-radius: 4px;
-        z-index: 99;
+        z-index: 20;
         background-clip: padding-box;
         border: 1px solid rgba(0, 0, 0, 0.2);
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -899,7 +900,7 @@ h1 .label {
                 right: 0;
                 bottom: 0;
                 background: rgba(0, 0, 0, 0.3);
-                z-index: 99;
+                z-index: 20;
             }
         }
         
