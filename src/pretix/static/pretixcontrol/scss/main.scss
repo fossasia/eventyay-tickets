@@ -40,20 +40,20 @@ nav.navbar {
 
 .navbar-brand {
     padding-left: 0;
-    font-weight: 600; 
-    padding-top: 0.3125rem; 
+    font-weight: 600;
+    padding-top: 0.3125rem;
     padding-bottom: 0.3125rem;
     display: flex;
     align-items: center;
     color: $navbar-inverse-link-color;
     font-size: 1.75rem;
     white-space: nowrap;
-    
+
     &:hover,
     &:focus {
         color: $navbar-inverse-link-hover-color;
         text-decoration: none;
-       
+
         outline: none;
         box-shadow: 0 0 0 0px rgba($navbar-inverse-link-hover-color, 0.5);
     }
@@ -78,7 +78,7 @@ nav.navbar {
 }
 
 nav.navbar .danger, nav.navbar .danger:hover, nav.navbar .danger:active {
-    background: $brand-danger !important;
+    background: $brand-danger;
 }
 
 .navbar-header .navbar-events {
@@ -150,7 +150,7 @@ h1 .btn-sm {
 }
 .flipped-scroll-wrapper, .flipped-scroll-inner {
     /* This nasty hack puts the scroll bar at the top, so the user really
-       notices that there is one */
+        notices that there is one */
     transform: rotateX(180deg);
     -ms-transform: rotateX(180deg); /* IE 9 */
     -webkit-transform: rotateX(180deg); /* Safari and Chrome */
@@ -467,7 +467,7 @@ body.loading #wrapper {
     }
 }
 
-.dl-horizontal dt  {
+.dl-horizontal dt {
     white-space: normal;
 }
 td > .dl-horizontal {
