@@ -1,9 +1,9 @@
-from eventyay.base.models.announcement import Announcement
-from eventyay.base.models.audit import AuditLog
-from eventyay.base.models.auth import User
-from eventyay.base.models.bbb import BBBCall, BBBServer
-from eventyay.base.models.chat import Channel, ChatEvent, ChatEventReaction, Membership
-from eventyay.base.models.exhibitor import (
+from .announcement import Announcement
+from .audit import AuditLog
+from .auth import User
+from .bbb import BBBCall, BBBServer
+from .chat import Channel, ChatEvent, ChatEventReaction, Membership
+from .exhibitor import (
     ContactRequest,
     Exhibitor,
     ExhibitorLink,
@@ -11,16 +11,16 @@ from eventyay.base.models.exhibitor import (
     ExhibitorStaff,
     ExhibitorView,
 )
-from eventyay.base.models.feedback import Feedback
-from eventyay.base.models.janus import JanusServer
-from eventyay.base.models.poll import Poll, PollOption, PollVote
-from eventyay.base.models.poster import Poster, PosterLink, PosterPresenter, PosterVote
-from eventyay.base.models.question import RoomQuestion, QuestionVote
-from eventyay.base.models.room import Reaction, Room, RoomView
-from eventyay.base.models.roulette import RoulettePairing, RouletteRequest
-from eventyay.base.models.streaming import StreamingServer
-from eventyay.base.models.turn import TurnServer
-from eventyay.base.models.world import World
+from .feedback import Feedback
+from .janus import JanusServer
+from .poll import Poll, PollOption, PollVote
+from .poster import Poster, PosterLink, PosterPresenter, PosterVote
+from .question import Question, QuestionVote
+from .room import Reaction, Room, RoomView
+from .roulette import RoulettePairing, RouletteRequest
+from .streaming import StreamingServer
+from .turn import TurnServer
+from .world import World
 
 __all__ = [
     "Announcement",
@@ -41,7 +41,7 @@ __all__ = [
     "PosterLink",
     "PosterPresenter",
     "PosterVote",
-    "RoomQuestion",
+    "Question",
     "QuestionVote",
     "Reaction",
     "RoomView",
