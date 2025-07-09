@@ -8,51 +8,44 @@
 		bunt-button#btn-show(@click="showOnce") Show external content
 		bunt-checkbox(name="remember", v-model="remember") Remember my choice
 </template>
-<script setup>
-import { ref, computed, nextTick, onMounted } from 'vue'
+<script>
 import store from 'store'
-
-defineOptions({
-  inheritAttrs: false
-})
-
-const props = defineProps({
-  src: String
-})
-
-const showingOnce = ref(false)
-const remember = ref(false)
-
-const domain = computed(() => {
-  if (typeof props.src !== 'string') return
-  return new URL(props.src).host
-})
-
-const config = computed(() => {
-  console.log(store.state.world.iframe_blockers, domain.value)
-  for (const [domainPattern, domainConfig] of Object.entries(store.state.world.iframe_blockers)) {
-    if (domain.value === domainPattern || domain.value.endsWith('.' + domainPattern)) {
-      return domainConfig
-    }
-  }
-  return store.state.world.iframe_blockers.default
-})
-
-const showIframe = computed(() => {
-  return showingOnce.value ||
-    store.state.unblockedIframeDomains.has(domain.value) ||
-    !config.value.enabled
-})
-
-onMounted(async () => {
-  await nextTick()
-})
-
-function showOnce() {
-  if (remember.value) {
-    store.dispatch('unblockIframeDomain', domain.value)
-  }
-  showingOnce.value = true
+export default {
+	inheritAttrs: false,
+	props: {
+		src: String
+	},
+	data() {
+		return {
+			showingOnce: false,
+			remember: false
+		}
+	},
+	computed: {
+		domain() {
+			if (typeof this.src !== 'string') return
+			return new URL(this.src).host
+		},
+		config() {
+			for (const [domain, domainConfig] of Object.entries(store.state.world.iframe_blockers)) {
+				if (this.domain === domain || this.domain.endsWith('.' + domain)) return domainConfig
+			}
+			return store.state.world.iframe_blockers.default
+		},
+		showIframe() {
+			return this.showingOnce ||
+				store.state.unblockedIframeDomains.has(this.domain) ||
+				!this.config.enabled
+		}
+	},
+	methods: {
+		showOnce() {
+			if (this.remember) {
+				store.dispatch('unblockIframeDomain', this.domain)
+			}
+			this.showingOnce = true
+		}
+	}
 }
 </script>
 <style lang="stylus">
