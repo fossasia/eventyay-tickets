@@ -4,8 +4,6 @@ $(function () {
     const $body = $('body');
     const $sidebar = $('.sidebar');
     const $sidebarToggleButton = $('#sidebar-toggle');
-    const $navbarCollapseButton = $('.navbar-toggle[data-toggle="collapse"]');
-
     function isMobileView() {
         return window.matchMedia("(max-width: 767px)").matches;
     }
@@ -39,8 +37,6 @@ $(function () {
         if (isMobileView()) {
             // Mobile: Always start minimized, no localStorage
             $body.addClass('sidebar-minimized');
-            // Replace navbar collapse functionality with sidebar toggle
-            replaceNavbarCollapseWithSidebarToggle();
         } else {
             // Desktop/Tablet: Start minimized by default, but allow localStorage override
             if (localStorage.getItem('sidebar-minimized') === null) {
@@ -52,24 +48,11 @@ $(function () {
             } else {
                 $body.removeClass('sidebar-minimized');
             }
-            // Replace navbar collapse functionality with sidebar toggle
-            replaceNavbarCollapseWithSidebarToggle();
         }
     }
 
-    function replaceNavbarCollapseWithSidebarToggle() {
-        // Remove Bootstrap's collapse functionality from the right navbar button
-        $navbarCollapseButton.off('click.bs.collapse');
-        $navbarCollapseButton.removeAttr('data-toggle');
-        $navbarCollapseButton.removeAttr('data-target');
-        
-        // Add sidebar toggle functionality to the navbar collapse button
-        $navbarCollapseButton.on('click.sidebar-toggle', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleSidebar();
-        });
-    }
+    // Remove the replaceNavbarCollapseWithSidebarToggle function entirely
+    // since we're removing the navbar collapse button
 
     initializeSidebar();
 
@@ -98,18 +81,16 @@ $(function () {
         resizeTimeout = setTimeout(function() {
             // Re-initialize based on current screen size
             if (isMobileView()) {
-                // Mobile: Force minimized state and replace navbar collapse
+                // Mobile: Force minimized state
                 $body.addClass('sidebar-minimized');
                 $body.removeClass('sidebar-hover');
-                replaceNavbarCollapseWithSidebarToggle();
             } else {
-                // Desktop/Tablet: Restore from localStorage and replace navbar collapse
+                // Desktop/Tablet: Restore from localStorage
                 if (localStorage.getItem('sidebar-minimized') === 'true') {
                     $body.addClass('sidebar-minimized');
                 } else {
                     $body.removeClass('sidebar-minimized');
                 }
-                replaceNavbarCollapseWithSidebarToggle();
             }
         }, 250);
     });
