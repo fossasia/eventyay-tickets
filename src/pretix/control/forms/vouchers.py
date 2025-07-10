@@ -48,6 +48,11 @@ class VoucherForm(I18nModelForm):
             'subevent',
             'show_hidden_items',
             'budget',
+            'minimum_usages',
+            'free_addons',
+            'include_bundled',
+            'exhibitor',
+            'exhibitor_comment',
         ]
         field_classes = {
             'valid_until': SplitDateTimeField,
@@ -314,6 +319,11 @@ class VoucherBulkForm(VoucherForm):
             'subevent',
             'show_hidden_items',
             'budget',
+            'minimum_usages',
+            'free_addons',
+            'include_bundled',
+            'exhibitor',
+            'exhibitor_comment',
         ]
         field_classes = {
             'valid_until': SplitDateTimeField,
