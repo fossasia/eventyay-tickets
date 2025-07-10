@@ -15,36 +15,62 @@ def control_nav_import(sender, request=None, **kwargs):
         {
             'label': _('Mails'),
             'url': reverse(
-                'plugins:sendmail:send',
+                'plugins:sendmail:outbox',
                 kwargs={
                     'event': request.event.slug,
                     'organizer': request.event.organizer.slug,
                 },
             ),
-            'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'send'),
+            'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'outbox'),
             'icon': 'envelope',
             'children': [
                 {
-                    'label': _('Compose emails'),
+                    'label': _('Outbox'),
                     'url': reverse(
-                        'plugins:sendmail:send',
+                        'plugins:sendmail:outbox',
                         kwargs={
                             'event': request.event.slug,
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'send'),
+                    'active': (
+                        url.namespace == 'plugins:sendmail' and
+                        url.url_name in {
+                            'outbox',
+                            'edit_mail',
+                            'delete_single',
+                            'purge_all'
+                        }
+                    ),
+                },
+                {
+                    'label': _('Compose emails'),
+                    'url': reverse(
+                        'plugins:sendmail:compose_email_choice',
+                        kwargs={
+                            'event': request.event.slug,
+                            'organizer': request.event.organizer.slug,
+                        },
+                    ),
+                    'active': (
+                        url.namespace == 'plugins:sendmail' and
+                        url.url_name in {
+                            'compose_email_choice',
+                            'compose_email_teams',
+                            'send'
+                        }
+                    ),
                 },
                 {
                     'label': _('Sent emails'),
                     'url': reverse(
-                        'plugins:sendmail:history',
+                        'plugins:sendmail:sent',
                         kwargs={
                             'event': request.event.slug,
                             'organizer': request.event.organizer.slug,
                         },
                     ),
-                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'history'),
+                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'sent'),
                 },
                 {
                     'label': _('Templates'),
