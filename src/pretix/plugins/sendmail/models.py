@@ -153,7 +153,6 @@ class QueuedMail(models.Model):
         # Fallback to raw string
         return self.raw_subject or ''
 
-
     def clean(self):
         """
         Validates the structure of the filters and to_users fields, if present.
@@ -167,8 +166,7 @@ class QueuedMail(models.Model):
             }
 
             for i, user_dict in enumerate(self.to_users):
-                extra_user_keys = set(user_dict.keys()) - allowed_user_keys
-                if extra_user_keys:
+                if extra_user_keys := set(user_dict.keys()) - allowed_user_keys:
                     raise ValidationError(f"Invalid to_user keys in entry {i}: {extra_user_keys}")
 
         # Validate filters dict
@@ -181,7 +179,6 @@ class QueuedMail(models.Model):
             extra_filter_keys = set(self.filters.keys()) - allowed_filter_keys
             if extra_filter_keys:
                 raise ValidationError(f"Invalid filter keys: {extra_filter_keys}")
-
 
     def subject_localized(self, locale=None):
         """
@@ -204,98 +201,90 @@ class QueuedMail(models.Model):
         """
         if self.sent:
             return  # Already sent
-
         if not self.to_users:
             return False  # Nothing to send
 
         subject = LazyI18nString(self.raw_subject)
         message = LazyI18nString(self.raw_message)
-        bcc = self.bcc
-        reply_to = self.reply_to
-
         changed = False
 
-        from pretix.base.services.mail import SendMailException
         for recipient in self.to_users:
             if recipient.get("sent"):
                 continue  # Already sent
+            result = self._send_to_recipient(recipient, subject, message)
+            changed = changed or result
 
-            email = recipient.get("email")
-            orders = recipient.get("orders")
-            order_id = orders[0] if orders else None
+        self._finalize_send_status()
+        return True
 
-            positions = recipient.get("positions")
-            position_id = positions[0] if positions else None
-
-            sender = self.event.settings.get('mail_from') if self.event else None
-
-            try:
-                order = Order.objects.get(pk=order_id, event=self.event) if order_id else None
-                position = OrderPosition.objects.get(pk=position_id) if position_id else None
-
-                # Get fallback invoice address
-                try:
-                    ia = order.invoice_address if order else None
-                except InvoiceAddress.DoesNotExist:
-                    ia = InvoiceAddress(order=order) if order else None
-
-                position_or_address = position or ia
-
-                if self.composing_for == ComposingFor.ATTENDEES:
-                    try:
-                        context = get_email_context(
-                            event=self.event,
-                            order=order,
-                            position=position,
-                            position_or_address=position_or_address,
-                        )
-                    except Exception as e:
-                        logger.exception("Error while generating email context")
-                        recipient["error"] = f"Context error: {str(e)}"
-                        continue
-                else:
-                    try:
-                        context = get_email_context(event=self.event)
-                    except Exception as e:
-                        logger.exception("Error while generating email context")
-                        recipient["error"] = f"Context error: {str(e)}"
-                        continue
-
-                mail(
-                    email=email,
-                    subject=subject,
-                    template=message,
-                    context=context,
+    def _build_email_context(self, order, position, position_or_address, recipient):
+        try:
+            if self.composing_for == ComposingFor.ATTENDEES:
+                return get_email_context(
                     event=self.event,
-                    locale=order.locale if order else self.locale,
                     order=order,
                     position=position,
-                    sender=sender,
-                    event_bcc=bcc,
-                    event_reply_to=reply_to,
-                    attach_cached_files=self.attachments,
-                    user=self.user,
-                    auto_email=False,
+                    position_or_address=position_or_address,
                 )
+            else:
+                return get_email_context(event=self.event)
+        except Exception as e:
+            logger.exception("Error while generating email context")
+            recipient["error"] = f"Context error: {str(e)}"
+            return None
 
-                recipient["sent"] = True
-                recipient["error"] = None
-                changed = True
+    def _finalize_send_status(self):
+        self.sent = all(r.get("sent", False) for r in self.to_users)
+        self.sent_at = now() if self.sent else None
+        self.save(update_fields=["to_users", "sent", "sent_at"])
 
-            except SendMailException as e:
-                recipient["error"] = str(e)
-                recipient["sent"] = False
-                changed = True
+    def _send_to_recipient(self, recipient, subject, message):
+        from pretix.base.services.mail import SendMailException
+        email = recipient.get("email")
+        if not email:
+            return False
 
-            except Exception as e:
-                recipient["error"] = f"Internal error: {str(e)}"
-                recipient["sent"] = False
-                changed = True
+        order_id = (orders := recipient.get("orders")) and orders[0]
+        position_id = (positions := recipient.get("positions")) and positions[0]
 
-        if changed:
-            self.sent = all(r.get("sent", False) for r in self.to_users)
-            self.sent_at = now() if self.sent else None
-            self.save(update_fields=["to_users", "sent", "sent_at"])
+        order = Order.objects.filter(pk=order_id, event=self.event).first() if order_id else None
+        position = OrderPosition.objects.filter(pk=position_id).first() if position_id else None
+
+        try:
+            ia = order.invoice_address if order else None
+        except InvoiceAddress.DoesNotExist:
+            ia = InvoiceAddress(order=order) if order else None
+
+        position_or_address = position or ia
+        context = self._build_email_context(order, position, position_or_address, recipient)
+        if context is None:
+            return True  # Error already logged
+
+        try:
+            mail(
+                email=email,
+                subject=subject,
+                template=message,
+                context=context,
+                event=self.event,
+                locale=order.locale if order else self.locale,
+                order=order,
+                position=position,
+                sender=self.event.settings.get('mail_from'),
+                event_bcc=self.bcc,
+                event_reply_to=self.reply_to,
+                attach_cached_files=self.attachments,
+                user=self.user,
+                auto_email=False,
+            )
+            recipient["sent"] = True
+            recipient["error"] = None
+        except SendMailException as e:
+            recipient["error"] = str(e)
+            recipient["sent"] = False
+        except Exception as e:
+            recipient["error"] = f"Internal error: {str(e)}"
+            recipient["sent"] = False
 
         return True
 

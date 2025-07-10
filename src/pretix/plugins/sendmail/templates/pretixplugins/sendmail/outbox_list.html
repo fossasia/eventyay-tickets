@@ -57,11 +57,11 @@
                     {{ label }}
                     {% with asc=field desc="-"|add:field %}
                         <a href="?ordering={{ asc }}{% if query %}&q={{ query }}{% endif %}"
-                        class="{% if current_ordering == asc %}fw-bold{% else %}text-muted{% endif %}">
+                           class="{% if current_ordering == asc %}fw-bold{% else %}text-muted{% endif %}">
                             &#9650;
                         </a>
                         <a href="?ordering={{ desc }}{% if query %}&q={{ query }}{% endif %}"
-                        class="{% if current_ordering == desc %}fw-bold{% else %}text-muted{% endif %}">
+                           class="{% if current_ordering == desc %}fw-bold{% else %}text-muted{% endif %}">
                             &#9660;
                         </a>
                     {% endwith %}
@@ -77,7 +77,7 @@
         <tr>
             <td>
                 <a class="text-body text-decoration-none"
-                href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                   href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
                     {{ mail.subject_en }}
                 </a>
             </td>
@@ -90,6 +90,16 @@
                         …
                     {% endif %}
                 {% endwith %}
+
+                {% if mail.recipient_error_count %}
+                    <div class="text-danger small mt-1">
+                        {% blocktranslate count count=mail.recipient_error_count %}
+                            {{ count }} recipient failed
+                        {% plural %}
+                            {{ count }} recipients failed
+                        {% endblocktranslate %}
+                    </div>
+                {% endif %}
             </td>
             <td>{{ mail.to_users|length }}</td>
             <td>
@@ -115,20 +125,38 @@
                     <!-- Delete -->
                     <div class="btn-group" role="group">
                         <a class="btn btn-sm btn-danger" title="{% translate 'Delete this email' %}"
-                            href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
+                           href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>
                 </div>
             </td>
         </tr>
+
+        {% if mail.recipient_errors_preview %}
+        <tr>
+            <td colspan="4">
+                <div class="alert alert-warning mb-0">
+                    <strong>{% translate "Some emails failed to send:" %}</strong>
+                    <ul class="mb-0">
+                        {% for recipient in mail.recipient_errors_preview %}
+                            <li>{{ recipient.email }}: {{ recipient.error }}</li>
+                        {% endfor %}
+                        {% if mail.recipient_error_count > mail.recipient_errors_preview|length %}
+                            <li>… {% translate "and more" %}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+
         {% empty %}
         <tr>
-            <td colspan="3">{% translate "No queued mails." %}</td>
+            <td colspan="4">{% translate "No queued mails." %}</td>
         </tr>
         {% endfor %}
     </tbody>
-
 </table>
 
 {% include "pretixcontrol/pagination.html" with page=mails %}

@@ -1,5 +1,6 @@
 import logging
 
+from asyncio import exceptions
 from i18nfield.strings import LazyI18nString
 
 from pretix.base.email import get_email_context
@@ -115,8 +116,28 @@ def send_mails(
                 failures.append(o.email)
 
 
-@app.task(base=ProfiledEventTask, acks_late=True)
-def send_queued_mail(event: Event, queued_mail_id: int):
+logger = logging.getLogger(__name__)
+
+@app.task(base=ProfiledEventTask, acks_late=True, bind=True, max_retries=3, default_retry_delay=60)
+def send_queued_mail(self, event: Event, queued_mail_id: int):
     from pretix.plugins.sendmail.models import QueuedMail
-    qm = QueuedMail.objects.get(pk=queued_mail_id, event=event)
-    qm.send(async_send=True)
+    try:
+        qm = QueuedMail.objects.get(pk=queued_mail_id, event=event)
+        result = qm.send(async_send=True)
+
+        if not result:
+            logger.warning(f"[SendMail] QueuedMail ID {queued_mail_id}: no recipients to send to.")
+        elif not qm.sent:
+            logger.warning(f"[SendMail] QueuedMail ID {queued_mail_id}: partially sent, some recipients failed.")
+        else:
+            logger.info(f"[SendMail] QueuedMail ID {queued_mail_id}: all emails sent successfully.")
+
+    except QueuedMail.DoesNotExist:
+        logger.error(f"[SendMail] QueuedMail ID {queued_mail_id} not found for event {event.slug}.")
+
+    except Exception as exc:
+        logger.exception(f"[SendMail] Unexpected error for QueuedMail ID {queued_mail_id}: {exc}")
+        try:
+            self.retry(exc=exc)
+        except exceptions.MaxRetriesExceededError:
+            logger.error(f"[SendMail] Max retries exceeded for QueuedMail ID {queued_mail_id}")
