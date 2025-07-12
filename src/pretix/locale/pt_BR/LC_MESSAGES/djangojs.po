@@ -414,7 +414,7 @@ msgstr "Área de código de barras"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "Distribuído por pretix"
+msgstr "Distribuído por eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

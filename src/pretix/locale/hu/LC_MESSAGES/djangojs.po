@@ -404,7 +404,7 @@ msgstr "Vonalkód terület"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "pretix által működtetett"
+msgstr "eventyay által működtetett"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"

@@ -379,7 +379,7 @@ msgstr "Bildbereich"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "Event-Ticketshop von pretix"
+msgstr "Event-Ticketshop von eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"
