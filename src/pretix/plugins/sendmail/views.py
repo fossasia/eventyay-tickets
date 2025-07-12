@@ -303,7 +303,7 @@ class OutboxListView(EventPermissionRequiredMixin, QueryFilterOrderingMixin, Lis
         return ctx
 
     def get_queryset(self):
-        base_qs = self.model.objects.filter(event=self.request.event, sent=False).select_related('event', 'user')
+        base_qs = self.model.objects.filter(event=self.request.event, sent_at__isnull=True).select_related('event', 'user')
         return self.get_filtered_queryset(base_qs)
 
 
@@ -317,7 +317,7 @@ class SendQueuedMailView(EventPermissionRequiredMixin, View):
             pk=kwargs['pk']
         )
 
-        if mail.sent:
+        if mail.sent_at:
             messages.warning(request, _('This mail has already been sent.'))
         else:
             # Enqueue the Celery task
@@ -351,7 +351,7 @@ class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['read_only'] = self.object.sent
+        ctx['read_only'] = self.object.sent_at
 
         if self.object.attachments:
             ctx['attachments_files'] = CachedFile.objects.filter(
@@ -362,7 +362,7 @@ class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
         return ctx
 
     def form_valid(self, form):
-        if form.instance.sent:
+        if form.instance.sent_at:
             messages.error(self.request, _('This email has already been sent and cannot be edited.'))
             return self.form_invalid(form)
 
@@ -402,7 +402,7 @@ class DeleteQueuedMailView(EventPermissionRequiredMixin, TemplateView):
     
     def post(self, request, *args, **kwargs):
         mail = self.mail
-        if mail.sent:
+        if mail.sent_at:
             messages.error(
                 request,
                 _("This mail has already been sent and cannot be deleted.")
@@ -428,7 +428,7 @@ class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
         return self.request.event
     
     def question(self):
-        count = QueuedMail.objects.filter(event=self.request.event, sent=False).count()
+        count = QueuedMail.objects.filter(event=self.request.event, sent_at__isnull=True).count()
         return ngettext_lazy(
             "Do you really want to purge the mail?",
             "Do you really want to purge {count} mails?",
@@ -436,7 +436,7 @@ class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
         ).format(count=count)
 
     def post(self, request, *args, **kwargs):
-        qs = QueuedMail.objects.filter(event=request.event, sent=False)
+        qs = QueuedMail.objects.filter(event=request.event, sent_at__isnull=True)
         count = qs.count()
         qs.delete()
 
@@ -462,7 +462,7 @@ class SentMailView(EventPermissionRequiredMixin, QueryFilterOrderingMixin, ListV
     paginate_by = 25
 
     def get_queryset(self):
-        base_qs = self.model.objects.filter(event=self.request.event, sent=True).select_related('event', 'user')
+        base_qs = self.model.objects.filter(event=self.request.event, sent_at__isnull=False).select_related('event', 'user')
         return self.get_filtered_queryset(base_qs)
 
     def get_context_data(self, **kwargs):

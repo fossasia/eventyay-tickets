@@ -94,9 +94,6 @@ class QueuedMail(models.Model):
     :param updated: Timestamp of the last update.
     :type updated: datetime
 
-    :param sent: Whether the email has been fully sent to all recipients.
-    :type sent: bool
-
     :param sent_at: When the email was sent (fully completed).
     :type sent_at: datetime or None
     """
@@ -115,43 +112,15 @@ class QueuedMail(models.Model):
     locale = models.CharField(max_length=16, null=True, blank=True)
     attachments = models.JSONField(null=True, blank=True)
 
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    sent = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     sent_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        ordering = ["-created"]
+        ordering = ["-created_at"]
 
     def __str__(self):
-        return f"QueuedMail(event={self.event.slug}, subject={self.raw_subject[:30]}, sent={self.sent})"
-    
-    @property
-    def subject_en(self):
-        """
-        Returns English subject string from raw_subject.
-        Handles both JSON and Python-dict-style strings.
-        """
-        try:
-            # If already a dict (unlikely but safe)
-            if isinstance(self.raw_subject, dict):
-                return self.raw_subject.get('en', '')
-
-            # Try JSON decode
-            data = json.loads(self.raw_subject)
-            return data.get('en', '')
-
-        except (TypeError, ValueError, json.JSONDecodeError):
-            try:
-                # Fallback: Python literal eval for single-quoted dict
-                data = ast.literal_eval(self.raw_subject)
-                if isinstance(data, dict):
-                    return data.get('en', '')
-            except (ValueError, SyntaxError):
-                pass
-
-        # Fallback to raw string
-        return self.raw_subject or ''
+        return f"QueuedMail(event={self.event.slug}, subject={self.raw_subject[:30]}, sent_at={self.sent_at})"
 
     def clean(self):
         """
@@ -199,7 +168,7 @@ class QueuedMail(models.Model):
         Sends queued email to each recipient in `to_users`.
         Uses their stored metadata and updates send status individually.
         """
-        if self.sent:
+        if self.sent_at:
             return  # Already sent
         if not self.to_users:
             return False  # Nothing to send
@@ -234,9 +203,12 @@ class QueuedMail(models.Model):
             return None
 
     def _finalize_send_status(self):
-        self.sent = all(r.get("sent", False) for r in self.to_users)
-        self.sent_at = now() if self.sent else None
-        self.save(update_fields=["to_users", "sent", "sent_at"])
+        if all(r.get("sent", False) for r in self.to_users):
+            self.sent_at = now()
+        else:
+            self.sent_at = None
+        self.save(update_fields=["to_users", "sent_at"])
+
 
     def _send_to_recipient(self, recipient, subject, message):
         from pretix.base.services.mail import SendMailException
@@ -285,36 +257,9 @@ class QueuedMail(models.Model):
         except Exception as e:
             recipient["error"] = f"Internal error: {str(e)}"
             recipient["sent"] = False
+            logger.exception("Unexpected error while sending to %s: %s", email, str(e))
 
         return True
-
-    def render_preview(self):
-        """
-        Returns a dict of locale -> {subject, html body}
-        using fake placeholder context
-        """
-        from pretix.base.email import get_available_placeholders
-        from pretix.base.templatetags.rich_text import markdown_compile_email
-
-        output = {}
-        for locale in self.event.settings.locales:
-            with language(locale, self.event.settings.region):
-                context_dict = TolerantDict()
-                for k, v in get_available_placeholders(
-                    self.event, ['event', 'order', 'position_or_address']
-                ).items():
-                    context_dict[k] = v.render_sample(self.event)
-
-                subject = bleach.clean(self.subject_localized(locale), tags=[])
-                preview_subject = subject.format_map(context_dict)
-                message = self.message_localized(locale)
-                preview_text = markdown_compile_email(message.format_map(context_dict))
-
-                output[locale] = {
-                    'subject': preview_subject,
-                    'html': preview_text,
-                }
-        return output
 
     def get_recipient_emails(self):
         """

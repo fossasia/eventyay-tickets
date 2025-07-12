@@ -72,7 +72,7 @@ class CopyDraftMixin:
                         if filters.get(field):
                             form_kwargs['initial'][field] = dateutil.parser.isoparse(filters[field])
             except (QueuedMail.DoesNotExist, ValueError, TypeError) as e:
-                logger.warning(f"Failed to load QueuedMail for copyToDraft: {e}")
+                logger.warning('Failed to load QueuedMail for copyToDraft: %s' % e)
 
 
 class QueryFilterOrderingMixin:
@@ -81,12 +81,12 @@ class QueryFilterOrderingMixin:
         'recipient': 'to_users',
         '-subject': '-raw_subject',
         '-recipient': '-to_users',
-        'created': 'created',
-        '-created': '-created'
+        'created': 'created_at',
+        '-created': '-created_at'
     }
 
     def get_ordering(self):
-        return self.ordering_map.get(self.request.GET.get('ordering'), '-created')
+        return self.ordering_map.get(self.request.GET.get('ordering'), '-created_at')
 
     def get_filtered_queryset(self, base_qs):
         if query := self.request.GET.get('q'):
