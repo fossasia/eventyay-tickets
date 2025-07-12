@@ -112,8 +112,33 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
         ctx['talk_teams_url'] = urljoin(settings.TALK_HOSTNAME, f'orga/organiser/{self.object.slug}/teams/')
         return ctx
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        
+        can_edit_general_info = self.request.user.has_organizer_permission(
+            self.request.organizer,
+            'can_change_organizer_settings',
+            request=self.request
+        )
+        
+        if not can_edit_general_info:
+            form.fields['name'].disabled = True
+            form.fields['slug'].disabled = True
+
+        return form
+
     @transaction.atomic
     def form_valid(self, form):
+        can_edit_general_info = self.request.user.has_organizer_permission(
+            self.request.organizer,
+            'can_change_organizer_settings',
+            request=self.request
+        )
+
+        if not can_edit_general_info:
+            form.cleaned_data['name'] = self.object.name
+            form.cleaned_data['slug'] = self.object.slug
+
         response = super().form_valid(form)
         organizer_data = {
             'name': self.object.name,
