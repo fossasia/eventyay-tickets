@@ -356,8 +356,11 @@ def get_email_context(**kwargs):
         if not isinstance(val, (list, tuple)):
             val = [val]
         for v in val:
-            if all(rp in kwargs for rp in v.required_context):
-                ctx[v.identifier] = v.render(kwargs)
+            try:
+                if all(rp in kwargs for rp in v.required_context):
+                    ctx[v.identifier] = v.render(kwargs)
+            except (KeyError, AttributeError, TypeError, ValueError) as e:
+                logger.warning("Skipping placeholder %s due to error: %s", v.identifier, e)
     return ctx
 
 
