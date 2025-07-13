@@ -147,7 +147,7 @@ $(function () {
     evt.stopPropagation();
     togglePopover(this);
 
-    $(this).on('shown.bs.popover', function () {
+    $(this).one('shown.bs.popover', function () {
       handleProfileMenuClick();
     });
   })
