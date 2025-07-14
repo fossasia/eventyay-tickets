@@ -297,7 +297,11 @@ class OrderDetails(EventViewMixin, OrderDetailMixin, CartMixin, TicketPageMixin,
             if r.provider == 'giftcard':
                 gc = GiftCard.objects.get(pk=r.info_data.get('gift_card'))
                 r.giftcard = gc
+        
+        if self.request.user.is_authenticated:
+            ctx['viewer_email'] = self.request.user.email
 
+        ctx['can_modify_order'] = self.order.is_modification_allowed_by(ctx.get('viewer_email'))
         return ctx
 
 
@@ -847,7 +851,12 @@ class OrderModify(EventViewMixin, OrderDetailMixin, OrderQuestionsViewMixin, Tem
         self.kwargs = kwargs
         if not self.order:
             raise Http404(_('Unknown order code or not authorized to access this order.'))
-        if not self.order.can_modify_answers:
+        
+        email = ''
+        if self.request.user.is_authenticated:
+            email = self.request.user.email
+        
+        if not self.order.is_modification_allowed_by(email):
             messages.error(request, _('You cannot modify this order'))
             return redirect(self.get_order_url())
         return super().dispatch(request, *args, **kwargs)
