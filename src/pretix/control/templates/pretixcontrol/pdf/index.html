@@ -49,14 +49,15 @@
                 </div>
                 <div class="panel-body">
                     <div id="editor-canvas-area">
-                        <canvas id="pdf-canvas"
-                                data-pdf-url="{{ pdf }}"
-                                data-worker-url="{% static "pdfjs/pdf.worker.js" %}">
-
-                        </canvas>
-                        <div id="fabric-container">
-                            <canvas id="fabric-canvas">
+                        <div id="editor-canvas-wrapper">
+                            <canvas id="pdf-canvas"
+                                    data-pdf-url="{{ pdf }}"
+                                    data-worker-url="{% static "pdfjs/pdf.worker.js" %}">
                             </canvas>
+                            <div id="fabric-container">
+                                <canvas id="fabric-canvas">
+                                </canvas>
+                            </div>
                         </div>
                         <div id="source-container">
                             <div class="alert alert-warning">
@@ -393,35 +394,22 @@
                         <span class="fa fa-qrcode"></span>
                         {% trans "Attendee QR Code" %}
                     </button>
-                    <!--<button class="btn btn-default btn-block" id="editor-add-qrcode-lead"
-                            data-content="pseudonymization_id"
-                            disabled>
-                        <span class="fa fa-qrcode"></span>
-                        {% trans "QR code for Lead Scanning" %}
-                    </button>-->
                     <button class="btn btn-default btn-block" id="editor-add-poweredby"
                             data-content="dark"
                             disabled>
                         <span class="fa fa-image"></span>
                         {% trans "eventyay Logo" %}
                     </button>
-                    <!--<button class="btn btn-default btn-block" id="editor-add-image" disabled>
-                        <span class="fa fa-image"></span>
-                        {% trans "Dynamic image" %}
-                    </button>-->
                 </div>
             </div>
 
-            <form method="post" action="" id="preview-form" target="_blank">
+            <form method="post" action="" id="preview-form">
                 <div class="form-group submit-group">
                     {% csrf_token %}
                     <input type="hidden" value="" name="data">
                     <input type="hidden" value="" name="background">
-                    <input type="hidden" value="true" name="preview">
-                    <button type="submit" class="btn btn-default btn-lg" id="editor-preview">
-                        {% trans "Preview" %}
-                    </button>
-                    <button type="submit" class="btn btn-primary btn-save" id="editor-save">
+                    <!-- Preview input and button removed -->
+                    <button type="submit" class="btn btn-primary btn-lg btn-save" id="editor-save">
                         {% trans "Save" %}
                     </button>
                 </div>
