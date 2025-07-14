@@ -1210,6 +1210,28 @@ DEFAULT_SETTINGS = {
             label=_('Hide all unavailable dates from calendar or list views'),
         ),
     },
+    'allow_modifications': {
+        'default': 'order',
+        'type': str,
+        'form_class': forms.ChoiceField,
+        'serializer_class': serializers.ChoiceField,
+        'serializer_kwargs': dict(
+            choices=(
+                ('no', _('No modifications after order was submitted')),
+                ('order', _('Only the person who ordered can make changes')),
+                ('attendee', _('Both the attendee and the person who ordered can make changes')),
+            )
+        ),
+        'form_kwargs': dict(
+            label=_("Allow customers to modify their information"),
+            widget=forms.RadioSelect,
+            choices=(
+                ('no', _('No modifications after order was submitted')),
+                ('order', _('Only the person who ordered can make changes')),
+                ('attendee', _('Both the attendee and the person who ordered can make changes')),
+            )
+        ),
+    },
     'allow_modifications_after_checkin': {
         'default': 'False',
         'type': bool,
@@ -1217,6 +1239,8 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
             label=_('Allow attendees to modify their information after they checked in.'),
+            help_text=_('By default, no more modifications are possible for an order as soon as '
+                   'one of the tickets in the order has been checked in.')
         ),
     },
     'last_order_modification_date': {
