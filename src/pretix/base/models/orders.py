@@ -732,7 +732,7 @@ class Order(LockModel, LoggedModel):
                 modify_deadline.datetime(se)
                 for se in self.event.subevents.filter(id__in=self.positions.values_list('subevent', flat=True))
             ]
-            return min(dates) if dates else None
+            return min(dates, default=None)
         elif modify_deadline:
             return modify_deadline.datetime(self.event)
         return None
