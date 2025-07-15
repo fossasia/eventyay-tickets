@@ -401,7 +401,7 @@ msgstr "منطقة الباركود"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:529
 msgid "Powered by pretix"
-msgstr "مدعوم من pretix"
+msgstr "مدعوم من eventyay"
 
 #: pretix/static/pretixcontrol/js/ui/editor.js:531
 msgid "Object"
