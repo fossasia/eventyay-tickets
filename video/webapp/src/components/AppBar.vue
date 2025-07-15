@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-app-bar
-	bunt-icon-button(v-if="showActions", @click="$emit('toggleSidebar')", @touchend.native="$emit('toggleSidebar')") menu
+	bunt-icon-button(v-if="showActions", @click="$emit('toggleSidebar')", @touchend="$emit('toggleSidebar')") menu
 	router-link.logo(:to="{name: 'home'}", :class="{anonymous: isAnonymous}")
 		img(:src="theme.logo.url", :alt="world.title")
 	.user(v-if="showUser")
@@ -24,6 +24,7 @@ export default {
 			default: false
 		}
 	},
+	emits: ['toggleSidebar'],
 	data() {
 		return {
 			theme

@@ -16,7 +16,7 @@ import Prompt from 'components/Prompt'
 
 export default {
 	components: {Prompt},
-	props: {},
+	emits: ['close'],
 	data() {
 		return {
 			videoInput: localStorage.videoInput || '',
@@ -96,7 +96,7 @@ export default {
 				this.$refs.video.muted = 'muted'
 				// Refresh button list in case labels have become available
 				return navigator.mediaDevices.enumerateDevices()
-			}).catch((e) => {
+			}).catch(() => {
 				// todo
 				// possibly "overconstrained" (camera doesn't exist)
 			})

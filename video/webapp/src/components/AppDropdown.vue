@@ -1,6 +1,6 @@
 <template>
   <div
-    v-on-clickaway="away"
+    v-click-away="away"
     :class="elClass"
   >
     <bunt-button @click="toggle">
@@ -35,12 +35,27 @@
     <slot />
   </div>
 </template>
+
 <script>
-import { mixin as clickaway } from 'vue-clickaway'
+const clickAway = {
+  beforeMount(el, binding) {
+    el.clickOutsideEvent = function(event) {
+      if (!(el === event.target || el.contains(event.target))) {
+        binding.value(event);
+      }
+    };
+    document.addEventListener('click', el.clickOutsideEvent);
+  },
+  beforeUnmount(el) {
+    document.removeEventListener('click', el.clickOutsideEvent);
+  }
+};
 
 export default {
 	name: 'AppDropdown',
-	mixins: [clickaway],
+	directives: {
+		'click-away': clickAway
+	},
 	props: {
 		className: {
 			type: String,
@@ -74,18 +89,17 @@ export default {
 	}
 }
 </script>
-  <style>
-  .app-drop-down {
+
+<style>
+.app-drop-down {
     margin: 12px 4px 12px 14px;
     border-radius: 5px;
     border: 2px solid rgba(0, 0, 0, 0.38);
-  }
-
-  .app-drop-down .bunt-button {
+}
+.app-drop-down .bunt-button {
     background-color: white;
-  }
-
-  .app-drop-down .bunt-button .bunt-button-content {
+}
+.app-drop-down .bunt-button .bunt-button-content {
     text-transform: capitalize;
-  }
-  </style>
+}
+</style>
