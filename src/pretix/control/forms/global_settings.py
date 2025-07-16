@@ -281,6 +281,62 @@ class GlobalSettingsForm(SettingsForm):
             ]
         )
 
+        self.field_groups = [
+            (_('Basics'), [
+                'footer_text',
+                'footer_link',
+                'banner_message',
+                'banner_message_detail',
+            ]),
+            (_('Localization'), [
+                'region',
+            ]),
+            (_('Email'), [
+                'mail_from',
+                'email_vendor',
+                'send_grid_api_key',
+                'smtp_host',
+                'smtp_port',
+                'smtp_username',
+                'smtp_password',
+                'smtp_use_tls',
+                'smtp_use_ssl',
+            ]),
+            (_('Payment Gateways'), [
+                # PayPal (from plugin)
+                'payment_paypal_connect_client_id',  # used only in signals (paypal plugin repo)
+                'payment_paypal_connect_secret_key',  # used only in signals (paypal plugin repo)
+                'payment_paypal_connect_endpoint',  # used only in signals (paypal plugin repo)
+
+                # Stripe
+                'payment_stripe_connect_client_id',  # used only in signals (stripe plugin repo)
+                'payment_stripe_connect_secret_key',
+                'payment_stripe_connect_publishable_key',  # used only in signals (stripe plugin repo)
+                'payment_stripe_connect_test_secret_key',
+                'payment_stripe_connect_test_publishable_key',  # used only in signals (stripe plugin repo)
+                'payment_stripe_connect_app_fee_percent',
+                'payment_stripe_connect_app_fee_max',
+                'payment_stripe_connect_app_fee_min',
+
+                'payment_stripe_secret_key',  # used only in signals (this file)
+                'payment_stripe_publishable_key',
+                'payment_stripe_test_secret_key',  # used only in signals (this file)
+                'payment_stripe_test_publishable_key',  # used only in signals (this file)
+                # new stripe webhook
+                'stripe_webhook_secret_key',
+            ]),
+            (_('Ticket fee'), [
+                'ticket_fee_percentage',
+            ]),
+            (_('Maps'), [
+                'opencagedata_apikey',
+                'mapquest_apikey',
+                'leaflet_tiles',
+                'leaflet_tiles_attribution',
+            ]),
+        ]
+
+
 
 class UpdateSettingsForm(SettingsForm):
     update_check_perform = forms.BooleanField(
