@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-06 10:28+0000\n"
-"PO-Revision-Date: 2020-10-07 14:06+0000\n"
-"Last-Translator: Tobias Sundgren <syrgas@gmail.com>\n"
-"Language-Team: Swedish <https://translate.eventyay.com/projects/pretix/"
-"pretix/sv/>\n"
+"PO-Revision-Date: 2025-07-18 00:03+0000\n"
+"Last-Translator: Kristoffer Grundström <swedishsailfishosuser@tutanota.com>\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/open-event/"
+"eventyay-tickets/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10.3\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: pretix/api/auth/devicesecurity.py:6
 msgid ""
@@ -3366,7 +3366,7 @@ msgstr "Totalt"
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:15
 #: pretix/plugins/checkinlists/exporters.py:295
 msgid "Order"
-msgstr ""
+msgstr "Beställning"
 
 #: pretix/base/exporters/orderlist.py:744
 #: pretix/base/exporters/orderlist.py:850
@@ -4353,11 +4353,11 @@ msgstr ""
 
 #: pretix/base/models/event.py:490 pretix/base/models/event.py:1429
 msgid "Latitude"
-msgstr ""
+msgstr "Latitud"
 
 #: pretix/base/models/event.py:499 pretix/base/models/event.py:1438
 msgid "Longitude"
-msgstr ""
+msgstr "Longitud"
 
 #: pretix/base/models/event.py:510 pretix/control/navigation.py:34
 msgid "Plugins"
@@ -5553,7 +5553,7 @@ msgstr ""
 #: pretix/eventyay_common/templates/eventyay_common/organizers/index.html:5
 #: pretix/eventyay_common/templates/eventyay_common/organizers/index.html:7
 msgid "Organizers"
-msgstr ""
+msgstr "Organisatörer"
 
 #: pretix/base/models/organizer.py:196
 #: pretix/control/templates/pretixcontrol/organizers/teams.html:16
@@ -9627,7 +9627,7 @@ msgstr ""
 
 #: pretix/control/forms/orders.py:534
 msgid "Recipient"
-msgstr ""
+msgstr "Mottagare"
 
 #: pretix/control/forms/orders.py:540 pretix/control/forms/orders.py:554
 #: pretix/control/forms/orders.py:735 pretix/control/forms/orders.py:762
