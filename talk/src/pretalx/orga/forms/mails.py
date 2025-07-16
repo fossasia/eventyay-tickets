@@ -1,4 +1,3 @@
-import string
 from collections import defaultdict
 from contextlib import suppress
 
@@ -17,9 +16,8 @@ from pretalx.common.forms.renderers import InlineFormRenderer, TabularFormRender
 from pretalx.common.forms.widgets import EnhancedSelectMultiple, SelectMultipleWithCount
 from pretalx.common.language import language
 from pretalx.common.text.phrases import phrases
-from pretalx.mail.context import get_available_placeholders
-from pretalx.mail.models import MailTemplate, MailTemplateRoles, QueuedMail
-from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
+from pretalx.mail.context import get_available_placeholders, get_invalid_placeholders
+from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.person.models import User
 from pretalx.submission.forms import SubmissionFilterForm
 from pretalx.submission.models import Track
@@ -35,87 +33,14 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         self.fields["subject"].required = True
         self.fields["text"].required = True
 
-    def _clean_for_placeholders(self, text, valid_placeholders):
-        cleaned_data = super().clean()
-        valid_placeholders = set(valid_placeholders)
-        # We need to do this here, since we need to be sure about the valid placeholders first
-        used_placeholders = set()
-        for field in ("subject", "text"):
-            value = cleaned_data.get(field)
-            if not value:
-                continue
-            for lang in value.data.values():
-                used_placeholders |= {
-                    element[1]
-                    for element in string.Formatter().parse(lang)
-                    if element[1]
-                }
-        return used_placeholders - valid_placeholders
-
     def get_valid_placeholders(self, **kwargs):
-        kwargs = ["event", "user", "submission", "slot"]
-        valid_placeholders = {}
+        if not getattr(self.instance, "event", None):
+            self.instance.event = self.event
+        return self.instance.valid_placeholders
 
-        if self.instance and (role := self.instance.role):
-            kwarg_mapping = {
-                MailTemplateRoles.NEW_SUBMISSION: [
-                    "submission",
-                    "event",
-                    "user",
-                    "slot",
-                ],
-                MailTemplateRoles.NEW_SUBMISSION_INTERNAL: ["submission", "event"],
-                MailTemplateRoles.SUBMISSION_ACCEPT: ["submission", "event", "user"],
-                MailTemplateRoles.SUBMISSION_REJECT: ["submission", "event", "user"],
-                MailTemplateRoles.NEW_SPEAKER_INVITE: ["submission", "event", "user"],
-                MailTemplateRoles.EXISTING_SPEAKER_INVITE: [
-                    "submission",
-                    "event",
-                    "user",
-                ],
-                MailTemplateRoles.QUESTION_REMINDER: ["event", "user"],
-                MailTemplateRoles.NEW_SCHEDULE: ["event", "user"],
-            }
-            kwargs = kwarg_mapping.get(role, kwargs)
-            if self.instance.role == MailTemplateRoles.QUESTION_REMINDER:
-                valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
-                    "questions",
-                    ["user"],
-                    None,
-                    _("- First missing question\n- Second missing question"),
-                    _(
-                        "The list of questions that the user has not answered, as bullet points"
-                    ),
-                )
-                valid_placeholders["url"] = SimpleFunctionalMailTextPlaceholder(
-                    "url",
-                    ["event", "user"],
-                    None,
-                    "https://pretalx.example.com/democon/me/submissions/",
-                    is_visible=False,
-                )
-                kwargs = ["event", "user"]
-            elif role == MailTemplateRoles.NEW_SPEAKER_INVITE:
-                valid_placeholders["invitation_link"] = (
-                    SimpleFunctionalMailTextPlaceholder(
-                        "invitation_link",
-                        ["event", "user"],
-                        None,
-                        "https://pretalx.example.com/democon/invitation/123abc/",
-                    )
-                )
-            elif role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
-                valid_placeholders["orga_url"] = SimpleFunctionalMailTextPlaceholder(
-                    "orga_url",
-                    ["event", "submission"],
-                    None,
-                    "https://pretalx.example.com/orga/events/democon/submissions/124ABCD/",
-                )
-
-        valid_placeholders.update(
-            get_available_placeholders(event=self.event, kwargs=kwargs)
-        )
-        return valid_placeholders
+    @cached_property
+    def valid_placeholders(self):
+        return self.get_valid_placeholders()
 
     @cached_property
     def grouped_placeholders(self):
@@ -134,11 +59,27 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 grouped["other"].append(placeholder)
         return grouped
 
+    def clean_subject(self):
+        text = self.cleaned_data["subject"]
+        try:
+            warnings = get_invalid_placeholders(text, self.valid_placeholders)
+        except Exception:
+            raise forms.ValidationError(
+                _(
+                    "Invalid email template! "
+                    "Please check that you don’t have stray { or } somewhere, "
+                    "and that there are no spaces inside the {} blocks."
+                )
+            )
+        if warnings:
+            warnings = ", ".join("{" + warning + "}" for warning in warnings)
+            raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
+        return text
+
     def clean_text(self):
         text = self.cleaned_data["text"]
-        valid_placeholders = self.get_valid_placeholders()
         try:
-            warnings = self._clean_for_placeholders(text, valid_placeholders.keys())
+            warnings = get_invalid_placeholders(text, self.valid_placeholders)
         except Exception:
             raise forms.ValidationError(
                 _(
@@ -160,12 +101,12 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                     message.format_map(
                         {
                             key: escape(value.render_sample(self.event))
-                            for key, value in valid_placeholders.items()
+                            for key, value in self.valid_placeholders.items()
                         }
                     )
                 )
                 doc = BeautifulSoup(preview_text, "lxml")
-                for link in doc.findAll("a"):
+                for link in doc.find_all("a"):
                     if link.attrs.get("href") in (None, "", "http://", "https://"):
                         raise forms.ValidationError(
                             _(
@@ -266,15 +207,10 @@ class WriteMailBaseForm(MailTemplateForm):
         ),
     )
 
-    def clean(self):
-        cleaned_data = super().clean()
-        valid_placeholders = self.get_valid_placeholders().keys()
-        self.warnings = self._clean_for_placeholders(
-            cleaned_data.get("subject", ""), valid_placeholders
-        ) | self._clean_for_placeholders(
-            cleaned_data.get("text", ""), valid_placeholders
-        )
-        return cleaned_data
+    def __init__(self, *args, may_skip_queue=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not may_skip_queue:
+            self.fields.pop("skip_queue", None)
 
 
 class WriteTeamsMailForm(WriteMailBaseForm):

@@ -4,12 +4,6 @@
 {% load i18n %}
 {% load static %}
 
-{% block stylesheets %}
-    {% compress css %}
-        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
-    {% endcompress %}
-{% endblock stylesheets %}
-
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
@@ -21,13 +15,13 @@
 
 {% block content %}
     <div id="main-title" class="d-md-flex justify-content-between">
-        <h2>
-            {% translate "Call for Proposals" %}
-            <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-                <i class="fa fa-question-circle-o text-info"></i>
-            </span>
-        </h2>
-        {% include "orga/event/component_link.html" %}
+    <h2>
+        {% translate "Call for Proposals" %}
+        <span data-dialog-target="#info-dialog" data-toggle="dialog">
+            <i class="fa fa-question-circle-o text-info"></i>
+        </span>
+    </h2>
+    {% include "orga/event/component_link.html" %}
     </div>
     <dialog class="info-dialog" id="info-dialog">
         <div class="alert alert-info">
@@ -87,7 +81,7 @@
 
                 <legend id="information"><div>
                     {% translate "Proposal information" %}
-                    <span class="dialog-anchor" data-target="#proposal-info-dialog" data-toggle="dialog">
+                    <span data-dialog-target="#proposal-info-dialog" data-toggle="dialog">
                         <i class="fa fa-question-circle-o text-info"></i>
                     </span>
                 </div></legend>
@@ -97,7 +91,7 @@
                         <a href="{{ request.event.cfp.urls.editor }}">{% translate "Click here to view the proposal form." %}</a>
                     </span></div>
                 </dialog>
-                <div class="table-responsive-sm offset-md-3"><table class="table table-sm table-hover table-flip table-sticky cfp-option-table">
+                <div class="table-responsive-sm offset-md-3"><table class="table table-sm table-flip table-sticky cfp-option-table">
                     <thead>
                         <tr>
                             <th></th>
@@ -173,15 +167,15 @@
                 </table></div>
             </fieldset>
             <fieldset>
-                <legend id="information">
+                <legend id="speaker-information">
                     <div>
-                        {% translate "Speaker information" %}
-                        <span class="dialog-anchor" data-target="#proposal-info-dialog" data-toggle="dialog">
+                        {% translate "Speaker Information" %}
+                        <span data-dialog-target="#proposal-info-dialog" data-toggle="dialog">
                             <i class="fa fa-question-circle-o text-info"></i>
                         </span>
                     </div>
                 </legend>
-                <div class="table-responsive-sm offset-md-3"><table class="table table-sm table-hover table-flip table-sticky cfp-option-table">
+                <div class="table-responsive-sm offset-md-3"><table class="table table-sm table-flip table-sticky cfp-option-table">
                     <thead>
                         <tr>
                             <th></th>

@@ -9,21 +9,21 @@ from pretalx.mail.models import MailTemplate, MailTemplateRoles, QueuedMail
 def test_orga_can_view_pending_mails(orga_client, event, mail, other_mail):
     response = orga_client.get(event.orga_urls.outbox)
     assert response.status_code == 200
-    assert mail.subject in response.content.decode()
+    assert mail.subject in response.text
 
 
 @pytest.mark.django_db
 def test_orga_can_view_sent_mails(orga_client, event, sent_mail):
     response = orga_client.get(event.orga_urls.sent_mails)
     assert response.status_code == 200
-    assert sent_mail.subject in response.content.decode()
+    assert sent_mail.subject in response.text
 
 
 @pytest.mark.django_db
 def test_orga_can_view_pending_mail(orga_client, event, mail):
     response = orga_client.get(mail.urls.base)
     assert response.status_code == 200
-    assert mail.subject in response.content.decode()
+    assert mail.subject in response.text
 
 
 @pytest.mark.django_db
@@ -44,7 +44,7 @@ def test_orga_can_edit_pending_mail(orga_client, event, mail):
         },
     )
     assert response.status_code == 200
-    assert mail.subject in response.content.decode()
+    assert mail.subject in response.text
     mail.refresh_from_db()
     assert mail.to == "testwin@gmail.com"
     assert len(djmail.outbox) == 0
@@ -92,7 +92,7 @@ def test_orga_can_edit_and_send_pending_mail(orga_client, event, mail):
     )
     assert response.status_code == 200
     assert (
-        mail.subject not in response.content.decode()
+        mail.subject not in response.text
     )  # Is now in the sent mail view, not in the outbox
     mail.refresh_from_db()
     assert mail.to == "testwin@gmail.com"
@@ -109,7 +109,7 @@ def test_orga_can_edit_and_send_pending_mail(orga_client, event, mail):
 def test_orga_can_view_sent_mail(orga_client, event, sent_mail):
     response = orga_client.get(sent_mail.urls.base)
     assert response.status_code == 200
-    assert sent_mail.subject in response.content.decode()
+    assert sent_mail.subject in response.text
 
 
 @pytest.mark.django_db
@@ -127,7 +127,7 @@ def test_orga_cannot_edit_sent_mail(orga_client, event, sent_mail):
         },
     )
     assert response.status_code == 200
-    assert sent_mail.subject in response.content.decode()
+    assert sent_mail.subject in response.text
     sent_mail.refresh_from_db()
     assert sent_mail.to != "testfailure@gmail.com"
 
@@ -342,6 +342,9 @@ def test_orga_cannot_add_wrong_placeholder_in_template(orga_client, event):
 
 @pytest.mark.django_db
 def test_orga_can_delete_template(orga_client, event, mail_template):
+    with scope(event=event):
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices) + 1
+    response = orga_client.get(mail_template.urls.delete, follow=True)
     with scope(event=event):
         assert MailTemplate.objects.count() == len(MailTemplateRoles.choices) + 1
     response = orga_client.post(mail_template.urls.delete, follow=True)
@@ -700,7 +703,7 @@ def test_orga_can_compose_single_mail_from_template(
     )
     assert response.status_code == 200
     with scope(event=event):
-        assert str(mail_template.subject) in response.content.decode()
+        assert str(mail_template.subject) in response.text
 
 
 @pytest.mark.django_db
@@ -716,4 +719,4 @@ def test_orga_can_compose_single_mail_from_wrong_template(
     )
     assert response.status_code == 200
     with scope(event=event):
-        assert str(mail_template.subject) not in response.content.decode()
+        assert str(mail_template.subject) not in response.text

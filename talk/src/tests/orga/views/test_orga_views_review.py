@@ -50,7 +50,7 @@ def test_reviewer_can_add_review_with_tags(review_client, review_user, submissio
         },
     )
     assert response.status_code == 200
-    assert str(tag.tag) in response.content.decode()
+    assert str(tag.tag) in response.text
     with scope(event=submission.event):
         assert submission.reviews.count() == 1
         assert submission.reviews.first().score == 1
@@ -218,7 +218,7 @@ def test_reviewer_cannot_review_own_submission(review_user, review_client, submi
             "text": "LGTM",
         },
     )
-    assert response.status_code == 200, response.content.decode()
+    assert response.status_code == 200, response.text
     with scope(event=submission.event):
         assert submission.reviews.count() == 0
 
@@ -299,7 +299,7 @@ def test_cannot_see_other_review_before_own(other_review_client, review):
 
     response = other_review_client.get(review.urls.base, follow=True)
     assert response.status_code == 200
-    assert review.text not in response.content.decode()
+    assert review.text not in response.text
 
     response = other_review_client.post(
         review.urls.base,
@@ -316,15 +316,15 @@ def test_cannot_see_other_review_before_own(other_review_client, review):
         assert review.submission.reviews.count() == 2
     assert review.score != 0
     assert review.text != "My mistake."
-    assert review.text in response.content.decode()
-    assert "My mistake" in response.content.decode()
+    assert review.text in response.text
+    assert "My mistake" in response.text
 
 
 @pytest.mark.django_db
 def test_can_see_review(review_client, review):
     response = review_client.get(review.urls.base, follow=True)
     assert response.status_code == 200
-    assert review.text in response.content.decode()
+    assert review.text in response.text
 
 
 @pytest.mark.django_db
@@ -333,7 +333,7 @@ def test_can_see_review_after_accept(review_client, review):
         review.submission.accept()
     response = review_client.get(review.urls.base, follow=True)
     assert response.status_code == 200
-    assert review.text in response.content.decode()
+    assert review.text in response.text
 
 
 @pytest.mark.django_db
@@ -378,7 +378,7 @@ def test_reviewer_with_track_limit_can_see_dashboard(
     with django_assert_max_num_queries(54):
         response = review_client.get(submission.event.orga_urls.reviews)
     assert response.status_code == 200
-    assert tag.tag in response.content.decode()
+    assert tag.tag in response.text
 
 
 @pytest.mark.django_db
@@ -589,4 +589,4 @@ def test_orga_can_export_reviews(review, orga_client):
         },
     )
     assert response.status_code == 200
-    assert review.text in response.content.decode()
+    assert review.text in response.text

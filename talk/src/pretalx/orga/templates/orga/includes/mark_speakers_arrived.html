@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{# Permission check has to take place outside of this template, so we don’t run it a gazillion times in list views #}
+
+<a class="btn btn-{{ arrived_btn_class }}{{ speaker.has_arrived|yesno:"success,info" }}" href="{{ speaker.orga_urls.toggle_arrived }}?next={{ request.path|urlencode }}">
+    {% if speaker.has_arrived %}
+        {% translate "Mark speaker as not arrived" %}
+    {% else %}
+        {% translate "Mark speaker as arrived" %}
+    {% endif %}
+</a>

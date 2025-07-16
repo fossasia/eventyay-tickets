@@ -92,7 +92,7 @@
   font-style: normal;
 }
 h1, h2, h3, h4, legend, .btn, button {
-    font-family: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: var(--font-family-title);
 }
 .fa {
     font-family: inherit
@@ -108,13 +108,20 @@ h1, h2, h3, h4, legend, .btn, button {
 
 /* Page layout */
 
+:root {
+    --text-color: rgba(0,0,0,0.87);
+    --font-family-title: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-family-text: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-family-code: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+
 html {
     height: 100%;
 }
 body {
-    font-family: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: var(--font-family-text);
     font-weight: normal;
-    color: rgba(0,0,0,0.87);
+    color: var(--text-color);
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -271,8 +278,13 @@ footer a.fa {
 .nav-content {
     margin: 3.5em 6em;
     height: 100%;
-    max-width: 800px;
     line-height: 1.5;
+}
+.nav-content section > * {
+    max-width: 800px;
+}
+.nav-content section > section{
+    max-width: 100%;
 }
 
 /* Generic styles */
@@ -310,7 +322,6 @@ mark {
 }
 
 pre, code, tt, code, kbd, samp {
-    font-family: monospace, serif;
     font-size: 1em
 }
 
@@ -559,14 +570,14 @@ input:focus:invalid:focus, textarea:focus:invalid:focus, select:focus:invalid:fo
     border-color: #E74C3C
 }
 
-code, tt, code {
+code, tt {
     white-space: nowrap;
     max-width: 100%;
     background: #fff;
     border: solid 1px #e1e4e5;
     font-size: 75%;
     padding: 0 5px;
-    font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+    font-family: var(--font-family-code);
     color: #E74C3C;
     overflow-x: auto
 }
@@ -637,7 +648,7 @@ div[class^='highlight'] pre {
     white-space: pre;
     margin: 0;
     padding: 12px 12px;
-    font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+    font-family: var(--font-family-code);
     font-size: 12px;
     line-height: 1.5;
     display: block;
@@ -1075,6 +1086,102 @@ dl.field-list.simple dd {
 }
 dl.method > dt, dl.class > dt, dl.attribute > dt {
     width: 100%;
+}
+
+/* API documentation styles */
+redoc#redoc {
+    display: block;
+    max-width: calc(100% + 6em);
+    margin-left: -2.5em;
+
+    .menu-content,
+    .api-info,
+    .api-content + div,
+    .api-content > div:first-child,
+    h5 span + div { display: none }
+
+    div, button {
+        font-family: var(--font-family-text);
+        font-size: 16px;
+    }
+    h2, h3, h4, h5 {
+        font-family: var(--font-family-title);
+        color: var(--text-color);
+    }
+    h2 {
+        font-size: 28px;
+        text-transform: capitalize;
+    }
+    h3 {
+        font-size: 24px;
+    }
+
+    .api-content {
+        width: 100%;
+    }
+    .api-content > div[data-section-id] > div[data-section-id] > :nth-child(1) {
+        width: calc(50%);
+    }
+    .api-content > div[data-section-id] > div[data-section-id] > :nth-child(2) {
+        width: calc(50%);
+        background: none;
+        h3 {
+            color: var(--text-color);
+        }
+    }
+    .property-name, button .property-name {
+        font-size: 16px;
+        font-family: var(--font-family-code);
+        & + div {
+            padding-left: 2px;
+            font-size: 13px;
+            font-family: var(--font-family-code);
+        }
+    }
+    [role=tabpanel] {
+        & > div:first-child > div:first-child {
+            display: none;
+            & + div {
+                margin-top: 0;
+            }
+        }
+    }
+    table {
+        tr {
+            background-color: transparent;
+        }
+        td, th {
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+        }
+        tr > td:first-of-type {
+            padding-top: calc(1em - 4px);
+        }
+        tr > td:not(:first-of-type) {
+            border-left: none;
+        }
+        ul {
+            padding-left: 0;
+        }
+        li code, p > code {
+            /* enum lists */
+            color: var(--text-color);
+        }
+    }
+    .dEQDjv {
+        /* probably going to break any time now, but for now: fix the unbearably misaligned typesetting of faux code elements, e.g. "Item Enum: " fields */
+        padding: 5px 5px 0px 5px;
+    }
+    .react-tabs__tab-panel code {
+        background: none;
+        border: none;
+        color: white;
+    }
+    code, code span, code div {
+        font-size: 13px;
+        font-family: var(--font-family-code);
+    }
 }
 
 @media screen and (max-width: 768px) {

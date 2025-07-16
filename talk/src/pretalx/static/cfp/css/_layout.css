@@ -161,24 +161,6 @@ footer {
   }
 }
 
-.user-logs {
-  position: absolute;
-  left: 100%;
-  top: 5%;
-  width: 200px;
-  z-index: -1;
-
-  .logentry .person {
-    font-style: italic;
-  }
-}
-
-@media (max-width: 1200px) {
-  .user-logs {
-    display: none;
-  }
-}
-
 @media (max-width: 992px) {
   #main-container {
     max-width: 960px;

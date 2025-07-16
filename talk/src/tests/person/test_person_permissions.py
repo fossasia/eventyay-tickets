@@ -1,7 +1,7 @@
 import pytest
 from django_scopes import scope
 
-from pretalx.person.permissions import person_can_view_information
+from pretalx.person.rules import can_view_information
 
 
 @pytest.mark.django_db
@@ -18,6 +18,5 @@ def test_can_view_information(information, submission, target_group, expected):
         information.target_group = target_group
         information.save()
         assert (
-            person_can_view_information(submission.speakers.first(), information)
-            is expected
+            can_view_information(submission.speakers.first(), information) is expected
         )

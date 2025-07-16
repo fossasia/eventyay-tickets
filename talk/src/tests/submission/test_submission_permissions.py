@@ -2,7 +2,7 @@ import pytest
 from django_scopes import scope
 
 from pretalx.submission.models import Submission, SubmissionStates
-from pretalx.submission.permissions import (
+from pretalx.submission.rules import (
     can_be_accepted,
     can_be_canceled,
     can_be_confirmed,
@@ -13,21 +13,8 @@ from pretalx.submission.permissions import (
     can_view_all_reviews,
     can_view_reviews,
     has_reviewer_access,
-    has_submissions,
     is_speaker,
 )
-
-
-@pytest.mark.django_db
-def test_has_submission_true(event, submission, speaker):
-    with scope(event=event):
-        assert has_submissions(speaker, submission)
-
-
-@pytest.mark.django_db
-def test_has_submission_false(event, submission, orga_user):
-    with scope(event=event):
-        assert not has_submissions(orga_user, submission)
 
 
 @pytest.mark.django_db
@@ -82,8 +69,7 @@ def test_can_change_state(current_state, target_state):
 
 
 def test_reviewer_permission_degrades_gracefully():
-    with pytest.raises(Exception):  # noqa
-        has_reviewer_access(None, None)
+    assert not has_reviewer_access(None, None)
 
 
 @pytest.mark.django_db

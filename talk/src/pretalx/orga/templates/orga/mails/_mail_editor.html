@@ -66,7 +66,7 @@
         {% block email_editor_preview %}
             {% if request.method == "POST" %}
                 <fieldset class="mt-4">
-                    <legend>{% translate "Email preview" %}</legend>
+                    <legend id="preview">{% translate "Email preview" %}</legend>
                     <div class="alert alert-info">
                         {% blocktranslate trimmed with count=mail_count %}
                             Roughly {{ count }} emails will be generated.
@@ -83,7 +83,7 @@
                                     {% for w in form.warnings %}<li>&#123;{{ w }}}</li>{% endfor %}
                                 </ul>
                                 {% blocktranslate trimmed %}
-                                    Emails where placeholders are invalid will <b>not</b> be created!
+                                    Emails where placeholders are invalid will <strong>not</strong> be created!
                                     For example, if you are using {session_room}, but some proposals don’t have a room yet, only emails for proposals with a scheduled room will be created.
                                 {% endblocktranslate %}
                             </span>

@@ -12,7 +12,7 @@ def test_orga_can_access_speakers_list(orga_client, speaker, event, submission, 
     response = orga_client.get(event.orga_urls.speakers + query, follow=True)
     assert response.status_code == 200
     if not query:
-        assert speaker.name in response.content.decode()
+        assert speaker.name in response.text
 
 
 @pytest.mark.django_db
@@ -21,7 +21,7 @@ def test_orga_can_access_speaker_page(orga_client, speaker, event, submission):
         url = speaker.event_profile(event).orga_urls.base
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
-    assert speaker.name in response.content.decode()
+    assert speaker.name in response.text
 
 
 @pytest.mark.django_db
@@ -47,7 +47,7 @@ def test_reviewer_can_access_speaker_page(review_client, speaker, event, submiss
         url = speaker.event_profile(event).orga_urls.base
     response = review_client.get(url, follow=True)
     assert response.status_code == 200
-    assert speaker.name in response.content.decode()
+    assert speaker.name in response.text
 
 
 @pytest.mark.django_db
@@ -74,7 +74,7 @@ def test_reviewer_cannot_access_speaker_page_with_deleted_submission(
         url = other_speaker.event_profile(event).orga_urls.base
     response = review_client.get(url, follow=True)
     assert response.status_code == 404
-    assert other_speaker.name not in response.content.decode()
+    assert other_speaker.name not in response.text
 
 
 @pytest.mark.django_db
@@ -96,7 +96,7 @@ def test_orga_can_edit_speaker(orga_client, speaker, event, submission):
     with scope(event=event):
         speaker.refresh_from_db()
         assert count + 1 == profile.logged_actions().all().count()
-    assert speaker.name == "BESTSPEAKAR", response.content.decode()
+    assert speaker.name == "BESTSPEAKAR", response.text
     assert speaker.email == "foo@foooobar.de"
 
 
@@ -143,7 +143,7 @@ def test_orga_cannot_edit_speaker_without_filling_questions(
     assert response.status_code == 200
     with scope(event=event):
         speaker.refresh_from_db()
-    assert speaker.name == "BESTSPEAKAR", response.content.decode()
+    assert speaker.name == "BESTSPEAKAR", response.text
 
 
 @pytest.mark.django_db
@@ -166,7 +166,7 @@ def test_orga_cant_assign_duplicate_address(
     assert response.status_code == 200
     with scope(event=event):
         speaker.refresh_from_db()
-    assert speaker.name != "BESTSPEAKAR", response.content.decode()
+    assert speaker.name != "BESTSPEAKAR", response.text
     assert speaker.email != other_speaker.email
 
 
@@ -205,7 +205,7 @@ def test_reviewer_cannot_edit_speaker(review_client, speaker, event, submission)
     assert response.status_code == 200
     with scope(event=event):
         speaker.refresh_from_db()
-    assert speaker.name != "BESTSPEAKAR", response.content.decode()
+    assert speaker.name != "BESTSPEAKAR", response.text
 
 
 @pytest.mark.django_db
@@ -277,8 +277,8 @@ def test_orga_cant_export_answers_csv_empty(orga_client, speaker, event, submiss
         },
     )
     assert response.status_code == 200
-    assert (
-        response.content.decode().strip().startswith("<!DOCTYPE")
+    assert response.text.strip().startswith(
+        "<!DOCTYPE"
     )  # HTML response instead of empty download
 
 
@@ -299,7 +299,7 @@ def test_orga_cant_export_answers_csv_without_delimiter(
         },
     )
     assert response.status_code == 200
-    assert response.content.decode().strip().startswith("<!DOCTYPE")
+    assert response.text.strip().startswith("<!DOCTYPE")
 
 
 @pytest.mark.django_db
@@ -323,7 +323,7 @@ def test_orga_can_export_answers_csv(
     )
     assert response.status_code == 200
     assert (
-        response.content.decode()
+        response.text
         == f"ID,Name,Proposal IDs,{answered_choice_question.question}\r\n{speaker.code},{speaker.name},{submission.code},{answer}\r\n"
     )
 
@@ -347,7 +347,7 @@ def test_orga_can_export_answers_json(
         },
     )
     assert response.status_code == 200
-    assert json.loads(response.content.decode()) == [
+    assert json.loads(response.text) == [
         {
             "ID": speaker.code,
             "Name": speaker.name,

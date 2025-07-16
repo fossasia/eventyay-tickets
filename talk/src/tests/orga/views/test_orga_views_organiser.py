@@ -21,10 +21,10 @@ def test_orga_create_organiser(administrator_client):
         },
         follow=True,
     )
-    assert response.status_code == 200, response.content.decode()
+    assert response.status_code == 200, response.text
     assert len(Organiser.objects.all()) == 1
     organiser = Organiser.objects.all().first()
-    assert str(organiser.name) == "The bestest organiser", response.content.decode()
+    assert str(organiser.name) == "The bestest organiser", response.text
     assert str(organiser) == str(organiser.name)
 
 
@@ -36,8 +36,8 @@ def test_orga_edit_organiser(orga_client, organiser):
         follow=True,
     )
     organiser.refresh_from_db()
-    assert response.status_code == 200, response.content.decode()
-    assert str(organiser.name) == "The bestest organiser", response.content.decode()
+    assert response.status_code == 200, response.text
+    assert str(organiser.name) == "The bestest organiser", response.text
     assert str(organiser) == str(organiser.name)
 
 
@@ -45,8 +45,8 @@ def test_orga_edit_organiser(orga_client, organiser):
 def test_orga_see_organiser(orga_client, organiser):
     response = orga_client.get(organiser.orga_urls.base)
     organiser.refresh_from_db()
-    assert response.status_code == 200, response.content.decode()
-    assert str(organiser.name) in response.content.decode()
+    assert response.status_code == 200, response.text
+    assert str(organiser.name) in response.text
     assert str(organiser) == str(organiser.name)
 
 
@@ -54,7 +54,8 @@ def test_orga_see_organiser(orga_client, organiser):
 def test_orga_edit_team(orga_client, organiser, event):
     team = organiser.teams.first()
     url = reverse(
-        "orga:organiser.teams.view", kwargs={"organiser": organiser.slug, "pk": team.pk}
+        "orga:organiser.teams.update",
+        kwargs={"organiser": organiser.slug, "pk": team.pk},
     )
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
@@ -82,7 +83,8 @@ def test_orga_edit_team(orga_client, organiser, event):
 def test_orga_edit_team_illegal(orga_client, organiser, event):
     team = organiser.teams.first()
     url = reverse(
-        "orga:organiser.teams.view", kwargs={"organiser": organiser.slug, "pk": team.pk}
+        "orga:organiser.teams.update",
+        kwargs={"organiser": organiser.slug, "pk": team.pk},
     )
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
@@ -133,7 +135,7 @@ def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_
         },
     )
     assert response.status_code == 200
-    assert organiser.teams.count() == count + 1, response.content.decode()
+    assert organiser.teams.count() == count + 1, response.text
 
 
 @pytest.mark.django_db
@@ -166,7 +168,8 @@ def test_invite_orga_member_as_orga(orga_client, organiser):
     djmail.outbox = []
     team = organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     url = reverse(
-        "orga:organiser.teams.view", kwargs={"organiser": organiser.slug, "pk": team.pk}
+        "orga:organiser.teams.update",
+        kwargs={"organiser": organiser.slug, "pk": team.pk},
     )
     assert team.members.count() == 1
     assert team.invites.count() == 0
@@ -185,7 +188,8 @@ def test_invite_multiple_orga_members_as_orga(orga_client, organiser):
     djmail.outbox = []
     team = organiser.teams.get(can_change_submissions=True, is_reviewer=False)
     url = reverse(
-        "orga:organiser.teams.view", kwargs={"organiser": organiser.slug, "pk": team.pk}
+        "orga:organiser.teams.update",
+        kwargs={"organiser": organiser.slug, "pk": team.pk},
     )
     assert team.members.count() == 1
     assert team.invites.count() == 0
@@ -212,8 +216,8 @@ def test_resend_invite(orga_client, organiser, invitation):
     assert team.members.count() == 1
     assert team.invites.count() == 1
     url = reverse(
-        "orga:organiser.teams.resend",
-        kwargs={"organiser": organiser.slug, "pk": invitation.pk},
+        "orga:organiser.teams.invites.resend",
+        kwargs={"organiser": organiser.slug, "pk": team.pk, "invite_pk": invitation.pk},
     )
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
@@ -237,7 +241,7 @@ def test_reset_team_member_password(orga_client, organiser, other_orga_user):
     team.save()
     member = team.members.first()
     assert not member.pw_reset_token
-    url = organiser.orga_urls.teams + f"{team.pk}/reset/{member.pk}"
+    url = organiser.orga_urls.teams + f"{team.pk}/members/{member.pk}/reset/"
     response = orga_client.post(url, follow=True)
     assert response.status_code == 200
     member.refresh_from_db()
@@ -264,12 +268,12 @@ def test_remove_other_team_member_but_not_last_member(
     team.save()
     assert team.members.all().count() == 2
 
-    url = organiser.orga_urls.teams + f"{team.pk}/delete/{other_orga_user.pk}"
+    url = organiser.orga_urls.teams + f"{team.pk}/members/{other_orga_user.pk}/delete/"
     response = orga_client.post(url, follow=True)
     assert response.status_code == 200
     assert team.members.all().count() == 1
 
-    url = organiser.orga_urls.teams + f"{team.pk}/delete/{orga_user.pk}"
+    url = organiser.orga_urls.teams + f"{team.pk}/members/{orga_user.pk}/delete/"
     response = orga_client.post(url, follow=True)
     assert response.status_code == 200
     assert team.members.all().count() == 1

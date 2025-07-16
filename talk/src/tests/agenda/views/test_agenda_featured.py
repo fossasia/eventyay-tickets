@@ -59,7 +59,7 @@ def test_featured_visible_despite_schedule(
     with django_assert_max_num_queries(8):
         response = client.get(event.urls.featured, follow=True)
     assert response.status_code == 200
-    assert "featured" in response.content.decode()
+    assert "featured" in response.text
 
 
 @pytest.mark.django_db
@@ -79,6 +79,6 @@ def test_featured_talk_list(
     with django_assert_max_num_queries(9):
         response = client.get(event.urls.featured, follow=True)
     assert response.status_code == 200
-    content = response.content.decode()
+    content = response.text
     assert confirmed_submission.title in content
     assert other_confirmed_submission.title not in content

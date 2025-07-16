@@ -16,14 +16,14 @@
 {% block content %}
     <h2>{% translate "Users" %}</h2>
 
-    <form>
-        <input name="q" type="text" {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %}>
+    <form class="mb-3 mt-2">
+        <input name="q" type="text" {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %} placeholder="{% translate "Search users by name or email address" %}">
     </form>
 
     <form method="post">
         {% csrf_token %}
         <div class="table-responsive">
-            <table class="table table-sm table-hover table-flip">
+            <table class="table table-sm table-flip">
                 <thead>
                     <tr>
                         <th>{% translate "Name" %}</th>
@@ -41,7 +41,9 @@
                     {% for user in users %}
                         <tr>
                             <td>
-                                <a href="{% url "orga:admin.user.view" code=user.code %}">{{ user.name }}</a>
+                                <a href="{% url "orga:admin.user.view" code=user.code %}">
+                                    {% include "orga/includes/user_name.html" %}
+                                </a>
                             </td>
                             <td>{{ user.email|copyable }}</td>
                             <td>{{ user.locale }}</td>

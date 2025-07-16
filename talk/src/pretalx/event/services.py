@@ -6,6 +6,7 @@ from django_scopes import scope, scopes_disabled
 
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.celery_app import app
+from pretalx.common.models.file import CachedFile
 from pretalx.common.signals import periodic_task
 from pretalx.event.models import Event
 
@@ -105,3 +106,9 @@ def periodic_event_services(sender, **kwargs):
                     args=(event.slug,), ignore_result=True
                 )
             event.update_review_phase()
+
+
+@receiver(signal=periodic_task)
+def clean_cached_files(sender, **kwargs):
+    for cf in CachedFile.objects.filter(expires__lt=now()):
+        cf.delete()

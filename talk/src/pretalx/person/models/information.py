@@ -7,6 +7,9 @@ from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
+from pretalx.event.rules import can_change_event_settings
+from pretalx.person.rules import can_view_information
+from pretalx.submission.rules import orga_can_change_submissions
 
 
 def resource_path(instance, filename):
@@ -55,6 +58,22 @@ class SpeakerInformation(PretalxModel):
         upload_to=resource_path,
     )
 
+    log_prefix = "pretalx.speaker_information"
+
+    @property
+    def log_parent(self):
+        return self.event
+
     class orga_urls(EventUrls):
         base = edit = "{self.event.orga_urls.information}{self.pk}/"
-        delete = "{base}delete"
+        delete = "{base}delete/"
+
+    class Meta:
+        rules_permissions = {
+            "list": orga_can_change_submissions,
+            "view": can_view_information,
+            "orga_view": orga_can_change_submissions,
+            "create": can_change_event_settings,
+            "update": can_change_event_settings,
+            "delete": can_change_event_settings,
+        }

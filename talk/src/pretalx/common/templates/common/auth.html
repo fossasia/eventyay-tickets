@@ -3,6 +3,7 @@
 {% load static %}
 {% load socialaccount %}
 {% load oauth_tags %}
+{% load html_signal %}
 
 {% include "common/forms/errors.html" %}
 {% if no_form %}
@@ -31,6 +32,7 @@
                     {{ login_button_label }}
                 </a>
             </div>
+            {% html_signal "pretalx.common.signals.auth_html" sender=request.event request=request next_url=success_url %}
         </div>
     {% endif %}
     {% if not hide_register %}

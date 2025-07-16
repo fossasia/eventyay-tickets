@@ -16,8 +16,9 @@
 {% endblock scripts %}
 
 {% block submission_content %}
-    {% has_perm "orga.view_reviews" request.user submission as can_view_other_reviews %}
-    {% has_perm "orga.view_reviewer_names" request.user submission as can_view_reviewer_names %}
+    {% has_perm "submission.view_all_reviews_submission" request.user submission as can_view_other_reviews %}
+    {% has_perm "submission.list_reviewers_review" request.user submission as can_view_reviewer_names %}
+    {% has_perm "person.reviewer_list_speakerprofile" request.user submission as no_anonymisation %}
     {% if request.user in submission.speakers.all %}
         <div class="alert alert-error">
             <span>
@@ -50,8 +51,8 @@
             {% include "common/forms/errors.html" %}
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
-                <div class="col-md-9 mt-1">
-                    {% if not anonymise_review %}
+                <div class="col-md-9 mt-2">
+                    {% if no_anonymisation %}
                         {{ submission.title|default:"-" }}
                     {% else %}
                         {{ submission.anonymised.title|default:submission.title|default:"-" }}
@@ -60,19 +61,19 @@
             </div>
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Session type" %}</label>
-                <div class="col-md-9 mt-1">{{ submission.submission_type }}</div>
+                <div class="col-md-9 mt-2">{{ submission.submission_type }}</div>
             </div>
             {% if submission.track %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Track" %}</label>
-                    <div class="col-md-9 mt-1">{{ submission.track.name|default:"-" }}</div>
+                    <div class="col-md-9 mt-2">{{ submission.track.name|default:"-" }}</div>
                 </div>
             {% endif %}
             {% if request.event.cfp.request_abstract %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Abstract" %}</label>
-                    <div class="col-md-9 mt-1">
-                        {% if not anonymise_review %}
+                    <div class="col-md-9 mt-2 markdown-mt-0">
+                        {% if no_anonymisation %}
                             {{ submission.abstract|rich_text|default:"-" }}
                         {% else %}
                             {{ submission.anonymised.abstract|default:submission.abstract|rich_text|default:"-" }}
@@ -83,8 +84,8 @@
             {% if request.event.cfp.request_description %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Description" %}</label>
-                    <div class="col-md-9 mt-1">
-                        {% if not anonymise_review %}
+                    <div class="col-md-9 mt-2 markdown-mt-0">
+                        {% if no_anonymisation %}
                             {{ submission.description|rich_text|default:"-" }}
                         {% else %}
                             {{ submission.anonymised.description|default:submission.description|rich_text|default:"-" }}
@@ -95,8 +96,8 @@
             {% if request.event.cfp.request_notes %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Notes" %}</label>
-                    <div class="col-md-9 mt-1">
-                        {% if not anonymise_review %}
+                    <div class="col-md-9 mt-2 markdown-mt-0">
+                        {% if no_anonymisation %}
                             {{ submission.notes|rich_text|default:"-" }}
                         {% else %}
                             {{ submission.anonymised.notes|default:submission.notes|rich_text|default:"-" }}
@@ -107,18 +108,18 @@
             {% for answer in submission.reviewer_answers %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{{ answer.question.question }}</label>
-                    <div class="col-md-9 mt-1">
+                    <div class="col-md-9 mt-2">
 
                         {% include "common/question_answer.html" with answer=answer %}
 
                     </div>
                 </div>
             {% endfor %}
-            {% if not anonymise_review %}
+            {% if no_anonymisation %}
                 {% if submission.active_resources %}
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
-                        <div class="col-md-9 mt-1">
+                        <div class="col-md-9 mt-2">
                             {% for resource in submission.active_resources %}
 
                                 {% include "agenda/includes/submission_resource.html" %}
@@ -129,21 +130,25 @@
                     </div>
                 {% endif %}
             {% endif %}
-            {% if not anonymise_review %}
+            {% if no_anonymisation %}
                 {% for speaker in profiles %}
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label">
-                            {% translate "Biography" %}:
-                            {% include "orga/includes/user_name.html" with user=speaker.user lightbox=True %}
+                            {% translate "Biography" %}{% if profiles.count > 1 %}: {% include "orga/includes/user_name.html" with user=speaker.user lightbox=True %}{% endif %}
                         </label>
-                        <div class="col-md-9 mt-1">
+                        <div class="col-md-9 mt-2 markdown-mt-0">
                             {% if request.event.cfp.request_biography %}
                                 {{ speaker.biography|default:"-"|rich_text }}
                             {% endif %}
                             {% if speaker.submissions.count > 1 %}<br><strong>{% translate "Other proposals" %}:</strong>
-                                {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
-                                    <a href="{{ other_submission.orga_urls.reviews }}">{{ other_submission.title }}</a>{% if not forloop.last %}, {% endif %}
-                                {% endif %}{% endfor %}
+                                <ul class="mt-0 mb-0">
+                                    {% for other_submission in speaker.submissions %}{% if other_submission != submission %}
+                                        <li>
+                                            <a href="{{ other_submission.orga_urls.reviews }}">{{ other_submission.title }}</a>
+                                            {% include "cfp/event/fragment_state.html" with state=other_submission.state as_badge=True %}
+                                        </li>
+                                    {% endif %}{% endfor %}
+                                </ul>
                             {% endif %}
                         </div>
                     </div>
@@ -163,8 +168,8 @@
             {% endif %}
 
             {% if can_view_other_reviews or form.instance.pk %}
-                <div class="table-responsive-sm">
-                    <table class="table review-table table-hover table-flip table-sticky">
+                <div class="table-responsive-always">
+                    <table class="table review-table table-flip table-sticky">
                         <thead>
                             <tr>
                                 <th>{% translate "Score" %}</th>
@@ -172,7 +177,7 @@
                                     {% for cat in score_categories %}<th>{{ cat.name }}</th>{% endfor %}
                                 {% endif %}
                                 {% for field in qform %}<th>{{ field.label }}</th>{% endfor %}
-                                <th>{% translate "Review" %}</th>
+                                <th class="review-text">{% translate "Review" %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -204,18 +209,10 @@
                         </div>
                     </div>
                 {% endif %}
-==== BASE ====
-                <div class="submit-group pb-0">
+                <div class="submit-group pb-0 d-flex flex-row-reverse">
                     <div>
-                        {% if form.instance.pk %}
-                            <a href="{{ form.instance.urls.delete }}" class="btn btn-lg btn-outline-danger">{% translate "Delete review" %}</a>
-                        {% endif %}
-                        <button type="submit" class="btn btn-lg btn-outline-success" name="review_submit" value="save">{% translate "Save" %}</button>
-                    </div>
-                    <div>
-                        <div>
-                            <button type="submit" class="btn btn-lg btn-info" name="review_submit" value="skip_for_now" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal, mark this one as skipped" %}">{% translate "Skip for now" %}</button>
-==== BASE ====
+                        <div class="d-flex flex-row-reverse">
+                            <button type="submit" class="btn btn-lg btn-success ml-1" name="review_submit" value="save_and_next" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Save and next" %}</button>
                             {% if not request.event.review_settings.score_mandatory and not request.event.review_settings.text_mandatory %}
                                 <button type="submit" class="btn btn-lg btn-info ml-1" name="review_submit" value="abstain" data-toggle="tooltip" data-placement="bottom" title="{% translate "Go to random next unreviewed proposal" %}">{% translate "Abstain" %}</button>
                             {% endif %}

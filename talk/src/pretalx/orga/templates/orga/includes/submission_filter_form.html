@@ -24,7 +24,7 @@
         <p class="text-muted ml-2">
             <span class="fa fa-filter"></span>
             {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                List filtered by answers to question “{{ question }}”.
+                List filtered by responses to custom field “{{ question }}”.
             {% endblocktranslate %}
             <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
                 <span class="fa fa-times"></span>

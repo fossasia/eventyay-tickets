@@ -1,0 +1,97 @@
+{% extends "orga/generic/list.html" %}
+
+{% load compress %}
+{% load copyable %}
+{% load event_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block create_button_label %}{% translate "New access code" %}{% endblock create_button_label %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/copy.js" %}"></script>
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block page_title %}
+    {{ generic_title }}
+    <span data-dialog-target="#info-dialog" data-toggle="dialog">
+        <i class="fa fa-question-circle-o text-info ml-2"></i>
+    </span>
+{% endblock page_title %}
+
+{% block list_content %}
+    <dialog id="info-dialog">
+        <div class="alert alert-info">
+            {% blocktranslate trimmed %}
+                Access codes can be used to allow proposals even when the CfP
+                is over. You can also use them for hidden tracks or hidden session
+                types, which can only be seen with a matching access code.
+            {% endblocktranslate %}
+        </div>
+    </dialog>
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-flip table-sticky" id="access-codes">
+            <thead>
+                <tr>
+                    <th>{% translate "Code" %}</th>
+                    {% if request.event|get_feature_flag:"use_tracks" %}
+                        <th>{% translate "Track" %}</th>
+                    {% endif %}
+                    <th>{% translate "Session type" %}</th>
+                    <th class="numeric">{% translate "Uses" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for code in access_code_list %}
+                    <tr>
+                        <td>{{ code.code|copyable }}</td>
+                        {% if request.event|get_feature_flag:"use_tracks" %}
+                            <td>
+                                {% if code.track %}
+                                    <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
+                                {% else %}
+                                    –
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                        <td>
+                            {% if code.submission_type %}
+                                <a href="{{ code.submission_type.urls.base }}">{{ code.submission_type.name }}</a>
+                            {% else %}–{% endif %}
+                        </td>
+                        <td class="numeric">
+                            {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:"∞" }}
+                        </td>
+                        <td class="text-right">
+                            <div data-destination="{{ code.urls.cfp_url.full }}"
+                                 role="button"
+                                 title="{% translate "Copy access code link" %}"
+                                 class="btn btn-sm btn-info copyable-text">
+                                <i class="fa fa-copy"></i>
+                            </div>
+                            <a href="{{ code.urls.send }}"
+                               title="{% translate "Send access code as email" %}"
+                               class="btn btn-sm btn-info">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                            <a href="{{ code.urls.edit }}" class="btn btn-sm btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            {% if not code.submissions.exists %}
+                                <a href="{{ code.urls.delete }}" class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include "orga/includes/pagination.html" %}
+{% endblock list_content %}

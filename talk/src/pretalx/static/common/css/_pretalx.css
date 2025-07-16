@@ -39,11 +39,94 @@
   cursor: pointer;
 }
 
+dialog {
+  border: none;
+  background: #fff;
+  padding: 0;
+  box-shadow: var(--shadow-dialog);
+  border-radius: 0.3rem;
+  opacity: 0;
+  max-width: 70vw;
+
+  &[open] {
+    opacity: 1;
+    animation: fade-in 0.3s ease-out;
+    /* dialogs are supposed to auto-centre on the page
+     * and I can't be arsed to debug why they aren't */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 auto;
+  }
+
+  &,
+  &:focus-visible,
+  a:focus-visible,
+  button:focus-visible {
+    border: none;
+    outline: none;
+  }
+  &::backdrop {
+    background-color: rgb(0 0 0 / 0.2);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Special treatment for dialogs that are just there to show an alert box */
+  & > .alert {
+    margin: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+a[data-lightbox] img,
+img[data-lightbox],
+dialog#lightbox-dialog img {
+  box-shadow: var(--shadow-lighter);
+}
+a[data-lightbox] img:hover,
+img[data-lightbox]:hover {
+  box-shadow:
+    0 2px 5px rgb(0 0 0 / 0.25),
+    0 3px 5px rgb(0 0 0 / 0.22);
+}
+
+dialog#lightbox-dialog {
+  .modal-card-content {
+    padding: 20px;
+
+    img {
+      object-fit: contain;
+      max-height: 80vh;
+      max-width: 80vw;
+      height: 100%;
+      width: 100%;
+    }
+    #lightbox-close {
+      position: absolute;
+      top: -4px;
+      right: 0;
+      cursor: pointer;
+      color: rgb(0 0 0 / 0.7);
+      font-size: 20px;
+      border: none;
+      background: transparent;
+    }
+  }
+}
+
 .state-fragment {
   white-space: nowrap;
 }
 
-.logentry {
+.list-group .logentry.list-group-item {
   display: flex;
   flex-direction: column;
   .time {
@@ -68,7 +151,8 @@
   --submission-color-secondary: var(--color-grey);
 }
 
-.submission-state-submitted {
+.submission-state-submitted,
+.submission-state-review {
   --submission-color-primary: var(--color-info);
   --submission-color-secondary: var(--color-info);
   --highlight-color: var(--color-info);

@@ -7,6 +7,16 @@ from i18nfield.fields import I18nCharField
 
 from pretalx.common.models.mixins import OrderedModel, PretalxModel
 from pretalx.common.urls import EventUrls
+from pretalx.person.rules import is_administrator, is_reviewer
+from pretalx.submission.rules import (
+    can_be_reviewed,
+    can_view_all_reviews,
+    can_view_reviewer_names,
+    has_reviewer_access,
+    is_review_author,
+    orga_can_change_submissions,
+    reviews_are_open,
+)
 
 
 class ReviewScoreCategory(PretalxModel):
@@ -139,76 +149,29 @@ class Review(PretalxModel):
         event="submission__event", _manager_class=AllReviewManager
     )
 
+    log_prefix = "pretalx.submission.review"
+
     class Meta:
         unique_together = (("user", "submission"),)
+        rules_permissions = {
+            "list": orga_can_change_submissions | is_reviewer,
+            "list_all": orga_can_change_submissions
+            | (is_reviewer & can_view_all_reviews),
+            "list_reviewers": orga_can_change_submissions
+            | (is_reviewer & can_view_reviewer_names),
+            # Needs to be coupled with a check on has_reviewer_access & can_be_reviewed
+            # on the proposal – but we don’t have that at create time yet.
+            "create": is_reviewer & reviews_are_open,
+            "update": has_reviewer_access & is_review_author & can_be_reviewed,
+            "delete": is_administrator | (is_review_author & can_be_reviewed),
+        }
 
     def __str__(self):
         return f"Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})"
 
-    @classmethod
-    def find_reviewable_submissions(cls, event, user, ignore=None):
-        """Returns all :class:`~pretalx.submission.models.submission.Submission`
-        objects this :class:`~pretalx.person.models.user.User` is allowed to review,
-        regardless of whether they have already reviewed them.
-
-        Excludes submissions this user has submitted, and takes track
-        :class:`~pretalx.event.models.organiser.Team` permissions into account,
-        as well as assignments if the current review phase is limited to assigned
-        proposals. The result is ordered by review count.
-
-        :type event: :class:`~pretalx.event.models.event.Event`
-        :type user: :class:`~pretalx.person.models.user.User`
-        :rtype: Queryset of :class:`~pretalx.submission.models.submission.Submission` objects
-        """
-        from pretalx.submission.models import SubmissionStates
-
-        queryset = (
-            event.submissions.filter(state=SubmissionStates.SUBMITTED)
-            .exclude(speakers__in=[user])
-            .annotate(review_count=models.Count("reviews"))
-            .annotate(
-                is_assigned=models.Case(
-                    models.When(assigned_reviewers__in=[user], then=1), default=0
-                ),
-            )
-        )
-        phase = event.active_review_phase
-        if phase and phase.proposal_visibility == "assigned":
-            queryset = queryset.filter(is_assigned__gte=1)
-        else:
-            limit_tracks = user.teams.filter(
-                models.Q(all_events=True)
-                | models.Q(
-                    models.Q(all_events=False) & models.Q(limit_events__in=[event])
-                ),
-                limit_tracks__isnull=False,
-                organiser=event.organiser,
-            )
-            if limit_tracks.exists():
-                tracks = set()
-                for team in limit_tracks:
-                    tracks.update(team.limit_tracks.filter(event=event))
-                queryset = queryset.filter(track__in=tracks)
-        if ignore:
-            queryset = queryset.exclude(pk__in=ignore)
-        # This is not randomised, because order_by("review_count", "?") sets all annotated
-        # review_count values to 1.
-        return queryset.order_by("-is_assigned", "review_count")
-
-    @classmethod
-    def find_missing_reviews(cls, event, user, ignore=None):
-        """Returns all :class:`~pretalx.submission.models.submission.Submission`
-        objects this :class:`~pretalx.person.models.user.User` still has to review
-        for the given :class:`~pretalx.event.models.event.Event`. A subset of
-        ``find_reviewable_submissions``.
-
-        :type event: :class:`~pretalx.event.models.event.Event`
-        :type user: :class:`~pretalx.person.models.user.User`
-        :rtype: Queryset of :class:`~pretalx.submission.models.submission.Submission` objects
-        """
-        return cls.find_reviewable_submissions(event, user, ignore).exclude(
-            reviews__user=user
-        )
+    @property
+    def log_parent(self):
+        return self.submission
 
     @classmethod
     def calculate_score(cls, scores):

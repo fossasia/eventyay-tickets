@@ -26,11 +26,11 @@
                 </div>
             </fieldset>
             <fieldset>
-                <legend>{% translate "Dataset" %}</legend>
+                <legend id="dataset">{% translate "Dataset" %}</legend>
                 {{ form.target.as_field_group }}
             </fieldset>
             <fieldset>
-                <legend>{% translate "Data fields" %}</legend>
+                <legend id="fields">{% translate "Data fields" %}</legend>
                 <div class="d-flex">
                     <div class="ml-auto form-check">
                         <input type="checkbox" id="select-all" name="select-all">
@@ -134,18 +134,15 @@
             <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
  curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.submissions.full }} </pre>
 
-==== BASE ====
-            <div class="submit-group"><span></span><span>
-                <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
-                    <i class="fa fa-book"></i>
-                    {% translate "Documentation" %}
-                </a>
-                <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
-                    {% translate "Go to API" %}
-                </a>
-            </span>
-            </div>
-==== BASE ====
+        <div class="submit-group"><span></span><span>
+            <a class="btn btn-lg btn-info" href="https://docs.pretalx.org/en/latest/api/index.html">
+                <i class="fa fa-book"></i>
+                {% translate "Documentation" %}
+            </a>
+            <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
+                {% translate "Go to API" %}
+            </a>
+        </span>
         </div>
     </section>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>

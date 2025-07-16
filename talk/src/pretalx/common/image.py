@@ -1,15 +1,69 @@
+from functools import partial
 from io import BytesIO
 from pathlib import Path
 
+from csp.decorators import csp_update
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
+from django.utils.translation import gettext_lazy as _
 from PIL import Image, ImageOps
-from PIL.Image import Resampling
+from PIL.Image import MAX_IMAGE_PIXELS, DecompressionBombError, Resampling
 
 THUMBNAIL_SIZES = {
     "tiny": (64, 64),
     "default": (460, 460),
 }
+
+gravatar_csp = partial(
+    csp_update,
+    IMG_SRC="https://www.gravatar.com",
+    CONNECT_SRC="https://www.gravatar.com",
+)
+
+
+def validate_image(f):
+    if f is None:
+        return None
+
+    if hasattr(f, "temporary_file_path"):
+        file = f.temporary_file_path()
+    elif hasattr(f, "read"):
+        if hasattr(f, "seek") and callable(f.seek):
+            f.seek(0)
+        file = BytesIO(f.read())
+    else:
+        file = BytesIO(f["content"])
+
+    try:
+        try:
+            image = Image.open(file, formats=settings.PILLOW_FORMATS_QUESTIONS_IMAGE)
+            # verify() must be called immediately after the constructor.
+            image.verify()
+        except DecompressionBombError:
+            raise ValidationError(
+                _(
+                    "The file you uploaded has a very large number of pixels, please upload a picture with smaller dimensions."
+                )
+            )
+
+        # load() is a potential DoS vector (see Django bug #18520), so we verify the size first
+        if image.width * image.height > MAX_IMAGE_PIXELS:
+            raise ValidationError(
+                _(
+                    "The file you uploaded has a very large number of pixels, please upload a picture with smaller dimensions."
+                )
+            )
+    except Exception as exc:
+        if isinstance(exc, ValidationError):
+            raise
+        raise ValidationError(
+            _(
+                "Upload a valid image. The file you uploaded was either not an image or a corrupted image."
+            )
+        ) from exc
+    if hasattr(f, "seek") and callable(f.seek):
+        f.seek(0)
 
 
 def process_image(*, image, generate_thumbnail=False):

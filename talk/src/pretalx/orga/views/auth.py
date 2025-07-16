@@ -28,7 +28,7 @@ class LoginView(GenericLoginView):
     def event(self):
         return getattr(self.request, "event", None)
 
-    @property
+    @cached_property
     def success_url(self):
         if self.event:
             return self.event.orga_urls.base
