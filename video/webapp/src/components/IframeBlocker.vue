@@ -38,6 +38,10 @@ export default {
 				!this.config.enabled
 		}
 	},
+	async created() {},
+	async mounted() {
+		await this.$nextTick()
+	},
 	methods: {
 		showOnce() {
 			if (this.remember) {

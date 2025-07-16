@@ -176,7 +176,7 @@ export default {
 		this.$refs.video.textTracks.addEventListener('removetrack', this.onTextTracksChanged)
 		this.initializePlayer()
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.player?.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
 		this.$refs.video.textTracks.removeEventListener('addtrack', this.onTextTracksChanged)
