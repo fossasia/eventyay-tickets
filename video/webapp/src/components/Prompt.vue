@@ -20,6 +20,7 @@ export default {
 			default: true
 		}
 	},
+	emits: ['close'],
 	mounted() {
 		this.$nextTick(() => {
 			if (!this.scrollable) return

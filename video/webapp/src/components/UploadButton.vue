@@ -32,6 +32,7 @@ export default {
 		},
 		tooltipOptions: Object
 	},
+	emits: ['change'],
 	data() {
 		return {
 			id: 'file-input' + uuid() // we need to generate a unique id for label "for" to work with multiple existing upload inputs

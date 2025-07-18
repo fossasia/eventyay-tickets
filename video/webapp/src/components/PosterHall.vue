@@ -3,17 +3,18 @@
 	template(v-if="posters")
 		.list-actions
 			bunt-input-outline-container#input-search
-				.search-field(slot-scope="{focus, blur}")
-					.icon.mdi.mdi-magnify
-					.applied-filter(v-for="filter of filters", :title="`${$t(`PosterHall:filter:field-${filter.field}`)}: ${filter.value}`")
-						.field {{ $t(`PosterHall:filter:field-${filter.field}`) }}:
-						.value {{ filter.label }}
-						bunt-icon-button(@click="removeFilter(filter)") close
-					input(ref="input", name="search", v-model="search", :placeholder="$t('PosterHall:input-search:placeholder')", @focus="focus", @blur="blur", autofocus, autocomplete="off")
-			menu-dropdown(v-model="showAddFilters", placement="bottom-end", @mousedown.native.stop="")
-				template(v-slot:button="{toggle}")
+				template(#default="{focus, blur}")
+					.search-field
+						.icon.mdi.mdi-magnify
+						.applied-filter(v-for="filter of filters", :title="`${$t(`PosterHall:filter:field-${filter.field}`)}: ${filter.value}`")
+							.field {{ $t(`PosterHall:filter:field-${filter.field}`) }}:
+							.value {{ filter.label }}
+							bunt-icon-button(@click="removeFilter(filter)") close
+						input(ref="input", name="search", v-model="search", :placeholder="$t('PosterHall:input-search:placeholder')", @focus="focus", @blur="blur", autofocus, autocomplete="off")
+			menu-dropdown(v-model="showAddFilters", placement="bottom-end", @mousedown.stop="")
+				template(#button="{toggle}")
 					bunt-button(icon="filter-plus", @click="toggle") {{ $t('PosterHall:button-add-filter') }}
-				template(v-slot:menu)
+				template(#menu)
 					scrollbars.not-menu-item(y)
 						.filter
 							label {{ $t(`PosterHall:add-filter:header-categories`) }}
@@ -47,7 +48,7 @@
 // TODO
 // - put categories through config key map
 
-import intersection from 'lodash/intersection'
+import { intersection } from 'lodash'
 import api from 'lib/api'
 import MenuDropdown from 'components/MenuDropdown'
 import RichTextContent from 'components/RichTextContent'
@@ -123,7 +124,7 @@ export default {
 				categorizedPosters[poster.category || ''].push(poster)
 			}
 			// remove empty categories
-			return Object.fromEntries(Object.entries(categorizedPosters).filter(([key, value]) => value.length > 0))
+			return Object.fromEntries(Object.entries(categorizedPosters).filter(([, value]) => value.length > 0))
 		},
 		categories() {
 			return Object.entries(this.categorizedFilteredPosters).map(([key, value]) => {
