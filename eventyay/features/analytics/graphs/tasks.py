@@ -14,27 +14,27 @@ from openpyxl.utils import get_column_letter
 
 from eventyay.celery_app import app
 from eventyay.base.models import Channel, ExhibitorView, PollVote, Room, RoomView, User
-from eventyay.base.models.world import WorldView
-from eventyay.core.tasks import WorldTask
+from eventyay.base.models.event import EventView
+from eventyay.core.tasks import EventTask
 from eventyay.features.analytics.graphs.report import ReportGenerator
 from eventyay.features.analytics.graphs.utils import get_schedule, pretalx_uni18n
 from eventyay.base.models.storage_model import StoredFile
 
 
-@app.task(base=WorldTask)
-def generate_report(world, input=None):
-    with override(world.locale):
+@app.task(base=EventTask)
+def generate_report(event, input=None):
+    with override(event.locale):
         try:
-            cf = ReportGenerator(world, pdf_graphs=True).build(input)
+            cf = ReportGenerator(event, pdf_graphs=True).build(input)
         except Exception:
             # We first try to embed graphs directly into the PDF for best quality. Sometimes that fails,
             # then we fall back to PNG rendering of graphs
-            cf = ReportGenerator(world, pdf_graphs=False).build(input)
+            cf = ReportGenerator(event, pdf_graphs=False).build(input)
         return cf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_attendee_list(world, input=None):
+@app.task(base=EventTask)
+def generate_attendee_list(event, input=None):
     io = BytesIO()
 
     wb = Workbook(write_only=True)
@@ -44,15 +44,15 @@ def generate_attendee_list(world, input=None):
     ws.column_dimensions["B"].width = 30
     ws.column_dimensions["C"].width = 40
     ws.column_dimensions["D"].width = 30
-    for j in range(len(world.config.get("profile_fields", []))):
+    for j in range(len(event.config.get("profile_fields", []))):
         ws.column_dimensions[get_column_letter(5 + j)].width = 30
 
     header = ["Internal ID", "External ID", "Name", "Permission traits"]
-    for f in world.config.get("profile_fields", []):
+    for f in event.config.get("profile_fields", []):
         header.append(f.get("label"))
     ws.append(header)
 
-    for u in world.user_set.all():
+    for u in event.user_set.all():
         ws.append(
             [
                 str(u.pk),
@@ -62,7 +62,7 @@ def generate_attendee_list(world, input=None):
             ]
             + [
                 u.profile.get("fields", {}).get(f.get("id") or f.get("label")) or ""
-                for j, f in enumerate(world.config.get("profile_fields", []))
+                for j, f in enumerate(event.config.get("profile_fields", []))
             ]
         )
 
@@ -70,7 +70,7 @@ def generate_attendee_list(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),
@@ -82,10 +82,10 @@ def generate_attendee_list(world, input=None):
     return sf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_chat_history(world, input=None):
+@app.task(base=EventTask)
+def generate_chat_history(event, input=None):
     channel = Channel.objects.get(pk=input.get("channel"))
-    tz = pytz.timezone(world.timezone)
+    tz = pytz.timezone(event.timezone)
     io = BytesIO()
 
     wb = Workbook(write_only=True)
@@ -125,7 +125,7 @@ def generate_chat_history(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),
@@ -137,10 +137,10 @@ def generate_chat_history(world, input=None):
     return sf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_question_history(world, input=None):
+@app.task(base=EventTask)
+def generate_question_history(event, input=None):
     room = Room.objects.get(pk=input.get("room"))
-    tz = pytz.timezone(world.timezone)
+    tz = pytz.timezone(event.timezone)
     io = BytesIO()
 
     wb = Workbook(write_only=True)
@@ -168,7 +168,7 @@ def generate_question_history(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),
@@ -180,11 +180,11 @@ def generate_question_history(world, input=None):
     return sf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_room_views(world, input=None):
+@app.task(base=EventTask)
+def generate_room_views(event, input=None):
     wb = Workbook(write_only=True)
     io = BytesIO()
-    tz = pytz.timezone(world.timezone)
+    tz = pytz.timezone(event.timezone)
     begin = dateutil.parser.parse(input.get("begin"))
     if is_naive(begin):
         make_aware(begin, tz)
@@ -194,7 +194,7 @@ def generate_room_views(world, input=None):
         make_aware(end, tz)
     end = end.astimezone(tz)
 
-    for room in world.rooms.all():
+    for room in event.rooms.all():
         types = [m["type"] for m in room.module_config]
         if any(
             t.startswith("livestream.")
@@ -253,7 +253,7 @@ def generate_room_views(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),
@@ -265,11 +265,11 @@ def generate_room_views(world, input=None):
     return sf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_session_views(world, input=None):
+@app.task(base=EventTask)
+def generate_session_views(event, input=None):
     wb = Workbook(write_only=True)
     io = BytesIO()
-    tz = pytz.timezone(world.timezone)
+    tz = pytz.timezone(event.timezone)
     begin = dateutil.parser.parse(input.get("begin"))
     if is_naive(begin):
         make_aware(begin, tz)
@@ -291,8 +291,8 @@ def generate_session_views(world, input=None):
         ]
     )
 
-    room_cache = {r.pretalx_id: r for r in world.rooms.filter(deleted=False)}
-    schedule = get_schedule(world, fail_silently=False)
+    room_cache = {r.pretalx_id: r for r in event.rooms.filter(deleted=False)}
+    schedule = get_schedule(event, fail_silently=False)
     for talk in schedule.get("talks", []):
         talk_start = dateutil.parser.parse(talk["start"])
         talk_end = dateutil.parser.parse(talk["end"])
@@ -330,7 +330,7 @@ def generate_session_views(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),
@@ -342,11 +342,11 @@ def generate_session_views(world, input=None):
     return sf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_views(world, input=None):
+@app.task(base=EventTask)
+def generate_views(event, input=None):
     wb = Workbook(write_only=True)
     io = BytesIO()
-    tz = pytz.timezone(world.timezone)
+    tz = pytz.timezone(event.timezone)
     begin = dateutil.parser.parse(input.get("begin"))
     if is_naive(begin):
         make_aware(begin, tz)
@@ -365,14 +365,14 @@ def generate_views(world, input=None):
         "External ID",
         "User name",
     ]
-    for n in world.config.get("profile_fields", []):
+    for n in event.config.get("profile_fields", []):
         header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
         RoomView.objects.filter(
             Q(end__isnull=True) | Q(end__gte=begin),
             start__lte=end,
-            room__world=world,
+            room__event=event,
         )
         .select_related("room", "user")
         .order_by("start")
@@ -383,11 +383,11 @@ def generate_views(world, input=None):
             ws.append(
                 [
                     v.room.name,
-                    v.start.astimezone(pytz.timezone(world.timezone)).strftime(
+                    v.start.astimezone(pytz.timezone(event.timezone)).strftime(
                         "%d.%m.%Y %H:%M:%S"
                     ),
                     (v.end or now())
-                    .astimezone(pytz.timezone(world.timezone))
+                    .astimezone(pytz.timezone(event.timezone))
                     .strftime("%d.%m.%Y %H:%M:%S"),
                     str(u.pk),
                     u.token_id,
@@ -395,11 +395,11 @@ def generate_views(world, input=None):
                 ]
                 + [
                     (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in world.config.get("profile_fields", [])
+                    for n in event.config.get("profile_fields", [])
                 ]
             )
 
-    ws = wb.create_sheet("World views")
+    ws = wb.create_sheet("Event views")
     header = [
         "Start",
         "End",
@@ -407,14 +407,14 @@ def generate_views(world, input=None):
         "External ID",
         "User name",
     ]
-    for n in world.config.get("profile_fields", []):
+    for n in event.config.get("profile_fields", []):
         header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
-        WorldView.objects.filter(
+        EventView.objects.filter(
             Q(end__isnull=True) | Q(end__gte=begin),
             start__lte=end,
-            world=world,
+            event=event,
         )
         .select_related("user")
         .order_by("start")
@@ -424,11 +424,11 @@ def generate_views(world, input=None):
         if u.profile.get("display_name"):
             ws.append(
                 [
-                    v.start.astimezone(pytz.timezone(world.timezone)).strftime(
+                    v.start.astimezone(pytz.timezone(event.timezone)).strftime(
                         "%d.%m.%Y %H:%M:%S"
                     ),
                     (v.end or now())
-                    .astimezone(pytz.timezone(world.timezone))
+                    .astimezone(pytz.timezone(event.timezone))
                     .strftime("%d.%m.%Y %H:%M:%S"),
                     str(u.pk),
                     u.token_id,
@@ -436,7 +436,7 @@ def generate_views(world, input=None):
                 ]
                 + [
                     (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in world.config.get("profile_fields", [])
+                    for n in event.config.get("profile_fields", [])
                 ]
             )
 
@@ -449,14 +449,14 @@ def generate_views(world, input=None):
         "External ID",
         "User name",
     ]
-    for n in world.config.get("profile_fields", []):
+    for n in event.config.get("profile_fields", []):
         header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
         ExhibitorView.objects.filter(
             datetime__gte=begin,
             datetime__lte=end,
-            exhibitor__world=world,
+            exhibitor__event=event,
         )
         .select_related("exhibitor__room", "exhibitor", "user")
         .order_by("datetime")
@@ -468,7 +468,7 @@ def generate_views(world, input=None):
                 [
                     v.exhibitor.room.name,
                     v.exhibitor.name,
-                    v.datetime.astimezone(pytz.timezone(world.timezone)).strftime(
+                    v.datetime.astimezone(pytz.timezone(event.timezone)).strftime(
                         "%d.%m.%Y %H:%M:%S"
                     ),
                     str(u.pk),
@@ -477,7 +477,7 @@ def generate_views(world, input=None):
                 ]
                 + [
                     (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in world.config.get("profile_fields", [])
+                    for n in event.config.get("profile_fields", [])
                 ]
             )
 
@@ -485,7 +485,7 @@ def generate_views(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),
@@ -497,8 +497,8 @@ def generate_views(world, input=None):
     return sf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_poll_history(world, input=None):
+@app.task(base=EventTask)
+def generate_poll_history(event, input=None):
     room = Room.objects.get(pk=input.get("room"))
     io = BytesIO()
 
@@ -538,7 +538,7 @@ def generate_poll_history(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),
@@ -550,19 +550,19 @@ def generate_poll_history(world, input=None):
     return sf.file.url
 
 
-@app.task(base=WorldTask)
-def generate_attendee_session_list(world, input=None):
+@app.task(base=EventTask)
+def generate_attendee_session_list(event, input=None):
     io = BytesIO()
-    tz = pytz.timezone(world.timezone)
+    tz = pytz.timezone(event.timezone)
 
     wb = Workbook(write_only=True)
 
     header = ["Internal ID", "External ID", "Name", "Duration (minutes)"]
-    for f in world.config.get("profile_fields", []):
+    for f in event.config.get("profile_fields", []):
         header.append(f.get("label"))
 
-    room_cache = {r.pretalx_id: r for r in world.rooms.filter(deleted=False)}
-    schedule = get_schedule(world, fail_silently=False)
+    room_cache = {r.pretalx_id: r for r in event.rooms.filter(deleted=False)}
+    schedule = get_schedule(event, fail_silently=False)
     for talk in schedule.get("talks", []):
         name = re.sub("[^a-zA-Z0-9 ]", "", pretalx_uni18n(talk["title"]))[:30]
         ws = wb.create_sheet(name)
@@ -571,7 +571,7 @@ def generate_attendee_session_list(world, input=None):
         ws.column_dimensions["B"].width = 30
         ws.column_dimensions["C"].width = 40
         ws.column_dimensions["D"].width = 20
-        for j in range(len(world.config.get("profile_fields", []))):
+        for j in range(len(event.config.get("profile_fields", []))):
             ws.column_dimensions[get_column_letter(5 + j)].width = 30
 
         talk_start = dateutil.parser.parse(talk["start"])
@@ -590,7 +590,7 @@ def generate_attendee_session_list(world, input=None):
         ws.append(header)
 
         try:
-            qs = User.objects.filter(world=world).prefetch_related(
+            qs = User.objects.filter(event=event).prefetch_related(
                 Prefetch(
                     "views",
                     queryset=RoomView.objects.filter(
@@ -633,7 +633,7 @@ def generate_attendee_session_list(world, input=None):
                 ]
                 + [
                     u.profile.get("fields", {}).get(f.get("id") or f.get("label")) or ""
-                    for j, f in enumerate(world.config.get("profile_fields", []))
+                    for j, f in enumerate(event.config.get("profile_fields", []))
                 ]
             )
 
@@ -641,7 +641,7 @@ def generate_attendee_session_list(world, input=None):
     io.seek(0)
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename="report.xlsx",
         expires=now() + timedelta(hours=2),

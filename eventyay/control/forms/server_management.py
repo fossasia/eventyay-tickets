@@ -10,9 +10,8 @@ from eventyay.base.models import (
     Room,
     StreamingServer,
     TurnServer,
-    World,
 )
-from eventyay.base.models.world import FEATURE_FLAGS, PlannedUsage
+from eventyay.base.models.event import Event, FEATURE_FLAGS, EventPlannedUsage as PlannedUsage
 
 User = get_user_model()
 SECRET_REDACTED = "*****"
@@ -112,7 +111,7 @@ class ProfileForm(forms.ModelForm):
         fields = ("email", "username", "password")
 
 
-class WorldForm(forms.ModelForm):
+class EventForm(forms.ModelForm):
     feature_flags = forms.MultipleChoiceField(
         choices=[(a, a) for a in FEATURE_FLAGS],
         widget=forms.CheckboxSelectMultiple,
@@ -120,7 +119,7 @@ class WorldForm(forms.ModelForm):
     )
 
     class Meta:
-        model = World
+        model = Event
         fields = (
             "id",
             "title",
@@ -139,7 +138,7 @@ class WorldForm(forms.ModelForm):
     def clean_id(self):
         d = self.cleaned_data["id"]
         if not self.instance or not self.instance.pk:
-            if World.objects.filter(id__iexact=d).exists():
+            if Event.objects.filter(id__iexact=d).exists():
                 raise ValidationError("ID is already in use")
         return d
 
@@ -177,7 +176,7 @@ class PlannedUsageForm(forms.ModelForm):
 
 
 PlannedUsageFormSet = inlineformset_factory(
-    World, PlannedUsage, PlannedUsageForm, can_delete=True, extra=0
+    Event, PlannedUsage, PlannedUsageForm, can_delete=True, extra=0
 )
 
 
@@ -187,7 +186,7 @@ class BBBServerForm(HasSecretsMixin, forms.ModelForm):
         fields = (
             "url",
             "active",
-            "world_exclusive",
+            "event_exclusive",
             "rooms_only",
             "secret",
         )
@@ -201,7 +200,7 @@ class JanusServerForm(HasSecretsMixin, forms.ModelForm):
             "url",
             "active",
             "room_create_key",
-            "world_exclusive",
+            "event_exclusive",
         )
         field_classes = {"room_create_key": SecretKeyField}
 
@@ -213,7 +212,7 @@ class TurnServerForm(HasSecretsMixin, forms.ModelForm):
             "active",
             "hostname",
             "auth_secret",
-            "world_exclusive",
+            "event_exclusive",
         )
         field_classes = {"auth_secret": SecretKeyField}
 
@@ -250,7 +249,7 @@ class BBBMoveRoomForm(forms.Form):
 
 
 class ConftoolSyncPostersForm(forms.Form):
-    world = forms.ModelChoiceField(
-        label="World ID",
-        queryset=World.objects.filter(config__conftool_password__isnull=False),
+    event = forms.ModelChoiceField(
+        label="Event ID",
+        queryset=Event.objects.filter(config__conftool_password__isnull=False),
     )

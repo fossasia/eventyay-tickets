@@ -36,13 +36,13 @@ from eventyay.base.models import (
     JanusServer,
     StreamingServer,
     TurnServer,
-    World,
+    Event,
 )
 
-from eventyay.base.models.world import PlannedUsage
+from eventyay.base.models.event import EventPlannedUsage as PlannedUsage
 from eventyay.base.services.bbb import get_url
 from eventyay.features.importers.tasks import conftool_sync_posters
-from eventyay.control.forms import (
+from eventyay.control.forms.server_management import (
     BBBMoveRoomForm,
     BBBServerForm,
     ConftoolSyncPostersForm,
@@ -54,10 +54,10 @@ from eventyay.control.forms import (
     StreamKeyGeneratorForm,
     TurnServerForm,
     UserForm,
-    WorldForm,
+    EventForm,
 )
-from eventyay.base.models.control_model import LogEntry
-from .tasks import clear_world_data
+from eventyay.base.models.log import LogEntry
+from eventyay.control.tasks import clear_event_data
 
 
 class SuperuserBase(UserPassesTestMixin):
@@ -146,15 +146,15 @@ class IndexView(AdminBase, TemplateView):
     template_name = "control/index.html"
 
 
-class WorldList(AdminBase, ListView):
-    template_name = "control/world_list.html"
+class EventList(AdminBase, ListView):
+    template_name = "control/event_list.html"
     queryset = (
-        World.objects.annotate(
+        Event.objects.annotate(
             user_count=Count("user"),
             last_usage=Subquery(
-                PlannedUsage.objects.filter(world=OuterRef("pk"))
+                PlannedUsage.objects.filter(event=OuterRef("pk"))
                 .order_by()
-                .values("world")
+                .values("event")
                 .annotate(end=Max("end"))
                 .values("end")
             ),
@@ -165,25 +165,25 @@ class WorldList(AdminBase, ListView):
             F("domain").asc(nulls_last=True),
         )
     )
-    context_object_name = "worlds"
+    context_object_name = "events"
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
 
-        for world in ctx["worlds"]:
-            if world.config and world.config.get("JWT_secrets"):
-                world.admin_token = True
+        for event in ctx["events"]:
+            if event.config and event.config.get("JWT_secrets"):
+                event.admin_token = True
         return ctx
 
 
-class WorldAdminToken(AdminBase, DetailView):
-    template_name = "control/world_clear.html"
-    queryset = World.objects.all()
-    success_url = "/control/worlds/"
+class EventAdminToken(AdminBase, DetailView):
+    template_name = "control/event_clear.html"
+    queryset = Event.objects.all()
+    success_url = "/control/events/"
 
     def get(self, request, *args, **kwargs):
-        world = self.get_object()
-        jwt_config = world.config["JWT_secrets"][0]
+        event = self.get_object()
+        jwt_config = event.config["JWT_secrets"][0]
         secret = jwt_config["secret"]
         audience = jwt_config["audience"]
         issuer = jwt_config["issuer"]
@@ -199,12 +199,12 @@ class WorldAdminToken(AdminBase, DetailView):
         }
         token = jwt.encode(payload, secret, algorithm="HS256")
         LogEntry.objects.create(
-            content_object=world,
+            content_object=event,
             user=self.request.user,
-            action_type="world.adminaccess",
+            action_type="event.adminaccess",
             data={},
         )
-        return redirect(f"https://{world.domain}#token={token}")
+        return redirect(f"https://{event.domain}#token={token}")
 
 
 class FormsetMixin:
@@ -221,17 +221,17 @@ class FormsetMixin:
         return ctx
 
 
-class WorldCreate(FormsetMixin, AdminBase, CreateView):
-    template_name = "control/world_create.html"
-    form_class = WorldForm
-    success_url = "/control/worlds/"
+class EventCreate(FormsetMixin, AdminBase, CreateView):
+    template_name = "control/event_create.html"
+    form_class = EventForm
+    success_url = "/control/events/"
 
     @cached_property
     def copy_from(self):
         if self.request.GET.get("copy_from") and not getattr(self, "object", None):
             try:
-                return World.objects.get(pk=self.request.GET.get("copy_from"))
-            except World.DoesNotExist:
+                return Event.objects.get(pk=self.request.GET.get("copy_from"))
+            except Event.DoesNotExist:
                 pass
 
     def get_form_kwargs(self):
@@ -265,13 +265,13 @@ class WorldCreate(FormsetMixin, AdminBase, CreateView):
                 continue
             if self.formset._should_delete_form(f):
                 continue
-            f.instance.world = self.object
+            f.instance.event = self.object
             f.save()
 
         LogEntry.objects.create(
             content_object=form.instance,
             user=self.request.user,
-            action_type="world.created",
+            action_type="event.created",
             data={
                 "copy_from": self.copy_from.pk if self.copy_from else None,
                 **form.cleaned_data,
@@ -294,11 +294,11 @@ class WorldCreate(FormsetMixin, AdminBase, CreateView):
             return self.form_invalid(form)
 
 
-class WorldUpdate(FormsetMixin, AdminBase, UpdateView):
-    template_name = "control/world_update.html"
-    form_class = WorldForm
-    queryset = World.objects.all()
-    success_url = "/control/worlds/"
+class EventUpdate(FormsetMixin, AdminBase, UpdateView):
+    template_name = "control/event_update.html"
+    form_class = EventForm
+    queryset = Event.objects.all()
+    success_url = "/control/events/"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -310,7 +310,7 @@ class WorldUpdate(FormsetMixin, AdminBase, UpdateView):
         LogEntry.objects.create(
             content_object=self.get_object(),
             user=self.request.user,
-            action_type="world.updated",
+            action_type="event.updated",
             data=form.cleaned_data,
         )
         messages.success(self.request, _("Ok!"))
@@ -325,26 +325,26 @@ class WorldUpdate(FormsetMixin, AdminBase, UpdateView):
             return self.form_invalid(form)
 
 
-class WorldClear(AdminBase, DetailView):
-    template_name = "control/world_clear.html"
-    queryset = World.objects.all()
-    success_url = "/control/worlds/"
+class EventClear(AdminBase, DetailView):
+    template_name = "control/event_clear.html"
+    queryset = Event.objects.all()
+    success_url = "/control/events/"
 
     def post(self, request, *args, **kwargs):
         LogEntry.objects.create(
             content_object=self.get_object(),
             user=self.request.user,
-            action_type="world.cleared",
+            action_type="event.cleared",
             data={},
         )
-        clear_world_data.apply_async(kwargs={"world": self.get_object().pk})
+        clear_event_data.apply_async(kwargs={"event": self.get_object().pk})
         messages.success(request, _("The data will soon be deleted."))
         return redirect(self.success_url)
 
 
 class BBBServerList(AdminBase, ListView):
     template_name = "control/bbb_list.html"
-    queryset = BBBServer.objects.select_related("world_exclusive").order_by("url")
+    queryset = BBBServer.objects.select_related("event_exclusive").order_by("url")
     context_object_name = "servers"
 
 
@@ -408,7 +408,7 @@ class BBBServerDelete(AdminBase, DeleteView):
 
 class JanusServerList(AdminBase, ListView):
     template_name = "control/janus_list.html"
-    queryset = JanusServer.objects.select_related("world_exclusive").order_by("url")
+    queryset = JanusServer.objects.select_related("event_exclusive").order_by("url")
     context_object_name = "servers"
 
 
@@ -472,7 +472,7 @@ class JanusServerDelete(AdminBase, DeleteView):
 
 class TurnServerList(AdminBase, ListView):
     template_name = "control/turn_list.html"
-    queryset = TurnServer.objects.select_related("world_exclusive").order_by("hostname")
+    queryset = TurnServer.objects.select_related("event_exclusive").order_by("hostname")
     context_object_name = "servers"
 
 
@@ -552,9 +552,9 @@ class FeedbackDetail(AdminBase, DetailView):
         return ctx
 
 
-class WorldCalendar(AdminBase, View):
+class EventCalendar(AdminBase, View):
     def get(self, request, *args, **kwargs):
-        queryset = PlannedUsage.objects.all().select_related("world")
+        queryset = PlannedUsage.objects.all().select_related("event")
         calendar = icalendar.Calendar()
         for planned_usage in queryset:
             calendar.add_component(planned_usage.as_ical())
@@ -691,6 +691,6 @@ class ConftoolSyncPosters(AdminBase, FormView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        world = form.cleaned_data["world"]
-        r = conftool_sync_posters.apply_async(args=(str(world.pk),))
+        event = form.cleaned_data["event"]
+        r = conftool_sync_posters.apply_async(args=(str(event.pk),))
         return HttpResponseRedirect(self.request.path + "?task_id=" + r.id)

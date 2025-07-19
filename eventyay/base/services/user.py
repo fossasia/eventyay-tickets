@@ -19,34 +19,34 @@ from eventyay.features.live.channels import GROUP_USER
 from eventyay.base.models import AuditLog
 from eventyay.base.models.auth import User
 from eventyay.base.models.room import AnonymousInvite
-from eventyay.base.models.world import World, WorldView
+from eventyay.base.models.event import Event, EventView
 from eventyay.core.permissions import Permission
 
 
-def get_user_by_id(world_id, user_id):
+def get_user_by_id(event_id, user_id):
     try:
-        return User.objects.get(id=user_id, world_id=world_id)
+        return User.objects.get(id=user_id, event_id=event_id)
     except User.DoesNotExist:
         return
 
 
-def get_user_by_token_id(world_id, token_id):
+def get_user_by_token_id(event_id, token_id):
     try:
-        return User.objects.get(token_id=token_id, world_id=world_id)
+        return User.objects.get(token_id=token_id, event_id=event_id)
     except User.DoesNotExist:
         return
 
 
-def get_user_by_client_id(world_id, client_id):
+def get_user_by_client_id(event_id, client_id):
     try:
-        return User.objects.get(client_id=client_id, world_id=world_id)
+        return User.objects.get(client_id=client_id, event_id=event_id)
     except User.DoesNotExist:
         return
 
 
 @database_sync_to_async
-def get_public_user(world_id, id, include_admin_info=False, trait_badges_map=None):
-    user = get_user_by_id(world_id, id)
+def get_public_user(event_id, id, include_admin_info=False, trait_badges_map=None):
+    user = get_user_by_id(event_id, id)
     if not user:
         return None
     return user.serialize_public(
@@ -58,7 +58,7 @@ def get_public_user(world_id, id, include_admin_info=False, trait_badges_map=Non
 
 @database_sync_to_async
 def get_public_users(
-    world_id,
+    event_id,
     *,
     ids=None,
     pretalx_ids=None,
@@ -71,9 +71,9 @@ def get_public_users(
     # This method is called a lot, especially when lots of people join at once (event start, server reboot, …)
     # For performance reasons, we therefore do not initialize model instances and use serialize_public()
     if ids is not None:
-        qs = User.objects.filter(id__in=ids, world_id=world_id)
+        qs = User.objects.filter(id__in=ids, event_id=event_id)
     else:
-        qs = User.objects.filter(world_id=world_id, deleted=False).order_by(
+        qs = User.objects.filter(event_id=event_id, deleted=False).order_by(
             "profile__display_name", "id"
         )
     if require_show_publicly:
@@ -136,7 +136,7 @@ def get_public_users(
 
 
 def get_user(
-    world=None,
+    event=None,
     *,
     with_id=None,
     with_token=None,
@@ -144,21 +144,21 @@ def get_user(
     with_invite_token=None,
 ):
     if with_id:
-        user = get_user_by_id(world.id, with_id)
+        user = get_user_by_id(event.id, with_id)
         return user
 
     token_id = None
     anonymous_invite = None
     if with_token:
         token_id = with_token["uid"]
-        user = get_user_by_token_id(world.id, token_id)
+        user = get_user_by_token_id(event.id, token_id)
     elif with_client_id:
-        user = get_user_by_client_id(world.id, with_client_id)
+        user = get_user_by_client_id(event.id, with_client_id)
         if not user and with_invite_token:
             try:
                 anonymous_invite = AnonymousInvite.objects.get(
                     short_token=with_invite_token,
-                    world=world,
+                    event=event,
                     expires__gte=now(),
                 )
             except AnonymousInvite.DoesNotExist:
@@ -171,14 +171,14 @@ def get_user(
     if user:
         if with_token and (user.traits != with_token.get("traits")):
             traits = with_token["traits"]
-            update_user(world.id, id=user.id, traits=traits)
-            user = get_user_by_id(world.id, user.id)
+            update_user(event.id, id=user.id, traits=traits)
+            user = get_user_by_id(event.id, user.id)
         return user
 
     traits = with_token.get("traits") if with_token else None
-    if not anonymous_invite and not world.has_permission_implicit(
+    if not anonymous_invite and not event.has_permission_implicit(
         traits=traits or [],
-        permissions=[Permission.WORLD_VIEW],
+        permissions=[Permission.EVENT_VIEW],
     ):
         # There is no chance this user gets in, we want to do an early out to prevent empty
         # user profiles from being created
@@ -186,7 +186,7 @@ def get_user(
 
     if token_id:
         user = create_user(
-            world_id=world.id,
+            event_id=event.id,
             token_id=token_id,
             profile=with_token.get("profile") if with_token else None,
             traits=traits,
@@ -194,7 +194,7 @@ def get_user(
         )
     else:
         user = create_user(
-            world_id=world.id,
+            event_id=event.id,
             client_id=with_client_id,
             anonymous_invite=anonymous_invite,
             traits=traits,
@@ -203,7 +203,7 @@ def get_user(
 
 
 def create_user(
-    world_id,
+    event_id,
     *,
     token_id=None,
     client_id=None,
@@ -221,7 +221,7 @@ def create_user(
             }
         )
     user = User.objects.create(
-        world_id=world_id,
+        event_id=event_id,
         token_id=token_id,
         client_id=client_id,
         pretalx_id=pretalx_id,
@@ -230,9 +230,9 @@ def create_user(
         **kwargs,
     )
     if anonymous_invite:
-        user.world_grants.create(world_id=world_id, role="__anonymous_world")
+        user.event_grants.create(event_id=event_id, role="__anonymous_event")
         user.room_grants.create(
-            world_id=world_id,
+            event_id=event_id,
             room_id=anonymous_invite.room_id,
             role="__anonymous_room",
         )
@@ -241,19 +241,19 @@ def create_user(
 
 @atomic
 def update_user(
-    world_id, id, *, traits=None, data=None, is_admin=False, serialize=True
+    event_id, id, *, traits=None, data=None, is_admin=False, serialize=True
 ):
     # TODO: Exception handling
     user = (
-        User.objects.select_related("world")
+        User.objects.select_related("event")
         .select_for_update()
-        .get(id=id, world_id=world_id)
+        .get(id=id, event_id=event_id)
     )
 
     if traits is not None:
         if user.traits != traits:
             AuditLog.objects.create(
-                world_id=world_id,
+                event_id=event_id,
                 user=user,
                 type="auth.user.traits.changed",
                 data={
@@ -269,7 +269,7 @@ def update_user(
         save_fields = []
         if "profile" in data and data["profile"] != user.profile:
             AuditLog.objects.create(
-                world_id=world_id,
+                event_id=event_id,
                 user=user,
                 type="auth.user.profile.changed",
                 data={
@@ -286,7 +286,7 @@ def update_user(
 
         if is_admin and "pretalx_id" in data and data["pretalx_id"] != user.pretalx_id:
             AuditLog.objects.create(
-                world_id=world_id,
+                event_id=event_id,
                 user=user,
                 type="auth.user.pretalx_id.changed",
                 data={
@@ -312,30 +312,30 @@ def update_user(
             save_fields.append("client_state")
             # Call talk component to update favs talks
             if user.token_id is not None:
-                update_fav_talks(user.token_id, data["client_state"], world_id)
+                update_fav_talks(user.token_id, data["client_state"], event_id)
 
         if save_fields:
             user.save(update_fields=save_fields)
 
     return (
         user.serialize_public(
-            trait_badges_map=user.world.config.get("trait_badges_map")
+            trait_badges_map=user.event.config.get("trait_badges_map")
         )
         if serialize
         else user
     )
 
 
-def update_fav_talks(user_token_id, talks, world_id):
+def update_fav_talks(user_token_id, talks, event_id):
     try:
         talk_list = talks.get("schedule").get("favs")
-        world = get_object_or_404(World, id=world_id)
-        jwt_config = world.config.get("JWT_secrets")
+        event = get_object_or_404(Event, id=event_id)
+        jwt_config = event.config.get("JWT_secrets")
         if not jwt_config:
             return
         talk_token = get_user_video_token(user_token_id, jwt_config[0])
 
-        talk_config = world.config.get("pretalx")
+        talk_config = event.config.get("pretalx")
         if not talk_config:
             return
         talk_url = (
@@ -349,7 +349,7 @@ def update_fav_talks(user_token_id, talks, world_id):
             "Authorization": f"Bearer {talk_token}",
         }
         requests.post(talk_url, data=json.dumps(talk_list), headers=header)
-    except World.DoesNotExist or Exception:
+    except Event.DoesNotExist or Exception:
         pass
 
 
@@ -368,7 +368,7 @@ def get_user_video_token(user_code, video_settings):
 
 
 def start_view(user: User, delete=False):
-    # The majority of WorldView that go "abandoned" (i.e. ``end`` is never set) are likely caused by server
+    # The majority of EventView that go "abandoned" (i.e. ``end`` is never set) are likely caused by server
     # crashes or restarts, in which case ``end`` can't be set. However, after a server crash, the client
     # either reconnects automatically or the user will attempt a reconnect themselves through a page reload,
     # so the most likely end of the previous session is "just before this", and the best assumption is to set
@@ -380,18 +380,18 @@ def start_view(user: User, delete=False):
     # we only count unique users and the result "this user was present at the time" is still correct. Second,
     # the way ``end_view`` is implemented, the session from browser A will still be corrected with the accurate
     # time as soon as browser A leaves.
-    previous = WorldView.objects.filter(
-        user=user, world_id=user.world_id, end__isnull=True
+    previous = EventView.objects.filter(
+        user=user, event_id=user.event_id, end__isnull=True
     )
     if delete:
         previous.delete()
     else:
         previous.update(end=now())
-    r = WorldView.objects.create(world_id=user.world_id, user=user)
+    r = EventView.objects.create(event_id=user.event_id, user=user)
     return r
 
 
-def end_view(view: WorldView, delete=False):
+def end_view(view: EventView, delete=False):
     if delete:
         if view.pk:
             view.delete()
@@ -402,7 +402,7 @@ def end_view(view: WorldView, delete=False):
 
 LoginResult = namedtuple(
     "LoginResult",
-    "user world_config chat_channels chat_notification_counts exhibition_data view",
+    "user event_config chat_channels chat_notification_counts exhibition_data view",
 )
 
 
@@ -413,17 +413,17 @@ class AuthError(Exception):
 
 def login(
     *,
-    world=None,
+    event=None,
     token=None,
     client_id=None,
     invite_token=None,
 ) -> LoginResult:
     from .chat import ChatService
     from .exhibition import ExhibitionService
-    from .world import get_world_config_for_user
+    from .event import get_event_config_for_user
 
     user = get_user(
-        world=world,
+        event=event,
         with_client_id=client_id,
         with_token=token,
         with_invite_token=invite_token,
@@ -432,8 +432,8 @@ def login(
     if user and user.is_banned:
         raise AuthError("auth.denied")
 
-    if not user or not world.has_permission(
-        user=user, permission=Permission.WORLD_VIEW
+    if not user or not event.has_permission(
+        user=user, permission=Permission.EVENT_VIEW
     ):
         if token:
             raise AuthError("auth.denied")
@@ -443,43 +443,43 @@ def login(
     user.last_login = now()
     user.save(update_fields=["last_login"])
 
-    if world.config.get("track_world_views", False):
+    if event.config.get("track_event_views", False):
         view = start_view(user)
     else:
         view = None
 
     return LoginResult(
         user=user,
-        world_config=get_world_config_for_user(world, user),
-        chat_channels=ChatService(world).get_channels_for_user(
+        event_config=get_event_config_for_user(event, user),
+        chat_channels=ChatService(event).get_channels_for_user(
             user.pk, is_volatile=False
         ),
-        chat_notification_counts=ChatService(world).get_notification_counts(user.pk),
-        exhibition_data=ExhibitionService(world).get_exhibition_data_for_user(user.pk),
+        chat_notification_counts=ChatService(event).get_notification_counts(user.pk),
+        exhibition_data=ExhibitionService(event).get_exhibition_data_for_user(user.pk),
         view=view,
     )
 
 
 @database_sync_to_async
 @atomic
-def get_blocked_users(user, world) -> bool:
+def get_blocked_users(user, event) -> bool:
     return [
-        u.serialize_public(trait_badges_map=world.config.get("trait_badges_map"))
+        u.serialize_public(trait_badges_map=event.config.get("trait_badges_map"))
         for u in user.blocked_users.all()
     ]
 
 
 @database_sync_to_async
 @atomic
-def set_user_banned(world, user_id, by_user) -> bool:
-    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+def set_user_banned(event, user_id, by_user) -> bool:
+    user = get_user_by_id(event_id=event.pk, user_id=user_id)
     if not user:
         return False
     user.moderation_state = User.ModerationState.BANNED
     user.save(update_fields=["moderation_state"])
 
     AuditLog.objects.create(
-        world=world,
+        event=event,
         user=by_user,
         type="auth.user.banned",
         data={
@@ -491,14 +491,14 @@ def set_user_banned(world, user_id, by_user) -> bool:
 
 @database_sync_to_async
 @atomic
-def delete_user(world, user_id, by_user) -> bool:
-    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+def delete_user(event, user_id, by_user) -> bool:
+    user = get_user_by_id(event_id=event.pk, user_id=user_id)
     if not user:
         return False
     user.soft_delete()
 
     AuditLog.objects.create(
-        world=world,
+        event=event,
         user=by_user,
         type="auth.user.deleted",
         data={
@@ -510,8 +510,8 @@ def delete_user(world, user_id, by_user) -> bool:
 
 @database_sync_to_async
 @atomic
-def set_user_silenced(world, user_id, by_user) -> bool:
-    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+def set_user_silenced(event, user_id, by_user) -> bool:
+    user = get_user_by_id(event_id=event.pk, user_id=user_id)
     if not user:
         return False
     if user.moderation_state == User.ModerationState.BANNED:
@@ -519,7 +519,7 @@ def set_user_silenced(world, user_id, by_user) -> bool:
     user.moderation_state = User.ModerationState.SILENCED
     user.save(update_fields=["moderation_state"])
     AuditLog.objects.create(
-        world=world,
+        event=event,
         user=by_user,
         type="auth.user.silenced",
         data={
@@ -531,14 +531,14 @@ def set_user_silenced(world, user_id, by_user) -> bool:
 
 @database_sync_to_async
 @atomic
-def set_user_free(world, user_id, by_user) -> bool:
-    user = get_user_by_id(world_id=world.pk, user_id=user_id)
+def set_user_free(event, user_id, by_user) -> bool:
+    user = get_user_by_id(event_id=event.pk, user_id=user_id)
     if not user:
         return False
     user.moderation_state = User.ModerationState.NONE
     user.save(update_fields=["moderation_state"])
     AuditLog.objects.create(
-        world=world,
+        event=event,
         user=by_user,
         type="auth.user.reactivated",
         data={
@@ -550,15 +550,15 @@ def set_user_free(world, user_id, by_user) -> bool:
 
 @database_sync_to_async
 @atomic
-def block_user(world, blocking_user: User, blocked_user_id) -> bool:
-    blocked_user = get_user_by_id(world_id=world.pk, user_id=blocked_user_id)
+def block_user(event, blocking_user: User, blocked_user_id) -> bool:
+    blocked_user = get_user_by_id(event_id=event.pk, user_id=blocked_user_id)
     if not blocked_user:
         return False
 
     blocking_user.blocked_users.add(blocked_user)
     blocked_user.touch()
     AuditLog.objects.create(
-        world=world,
+        event=event,
         user=blocking_user,
         type="auth.user.blocked",
         data={
@@ -570,15 +570,15 @@ def block_user(world, blocking_user: User, blocked_user_id) -> bool:
 
 @database_sync_to_async
 @atomic
-def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
-    blocked_user = get_user_by_id(world_id=world.pk, user_id=blocked_user_id)
+def unblock_user(event, blocking_user: User, blocked_user_id) -> bool:
+    blocked_user = get_user_by_id(event_id=event.pk, user_id=blocked_user_id)
     if not blocked_user:
         return False
 
     blocking_user.blocked_users.remove(blocked_user)
     blocked_user.touch()
     AuditLog.objects.create(
-        world=world,
+        event=event,
         user=blocking_user,
         type="auth.user.unblocked",
         data={
@@ -590,7 +590,7 @@ def unblock_user(world, blocking_user: User, blocked_user_id) -> bool:
 
 @database_sync_to_async
 def list_users(
-    world_id,
+    event_id,
     page,
     page_size,
     search_term,
@@ -602,7 +602,7 @@ def list_users(
 ) -> object:
     qs = (
         User.objects.filter(
-            world_id=world_id,
+            event_id=event_id,
             show_publicly=True,
             deleted=False,
             type=User.UserType.PERSON,

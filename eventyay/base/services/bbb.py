@@ -35,14 +35,14 @@ def escape_name(name):
     return name.replace(":", "")
 
 
-def choose_server(world, room=None, prefer_server=None):
+def choose_server(event, room=None, prefer_server=None):
     servers = BBBServer.objects.filter(active=True)
 
     # If we're looking for a server to put a direct message on (no room), we'll take a server with
     # the lowest 'cost', which means it is least used *right now*.
     # If we're looking to place a room, this makes less sense since 95% of Eventyay rooms are created
     # *days* before their peak usage times. However, peak usage often coincides for rooms in the same
-    # world, so we'll try to distribute them evenly.
+    # event, so we'll try to distribute them evenly.
     if not room:
         servers = (
             servers.filter(rooms_only=False)
@@ -53,7 +53,7 @@ def choose_server(world, room=None, prefer_server=None):
         servers = servers.annotate(
             relevant_cost=Coalesce(
                 Subquery(
-                    BBBCall.objects.filter(room__world=world, server_id=OuterRef("pk"))
+                    BBBCall.objects.filter(room__event=event, server_id=OuterRef("pk"))
                     .values("server_id")
                     .order_by()
                     .annotate(c=Count("server_id"))
@@ -66,10 +66,10 @@ def choose_server(world, room=None, prefer_server=None):
 
     search_order = [
         servers.filter(url=prefer_server).filter(
-            Q(world_exclusive=world) | Q(world_exclusive__isnull=True)
+            Q(event_exclusive=event) | Q(event_exclusive__isnull=True)
         ),
-        servers.filter(world_exclusive=world),
-        servers.filter(world_exclusive__isnull=True),
+        servers.filter(event_exclusive=event),
+        servers.filter(event_exclusive__isnull=True),
     ]
     for qs in search_order:
         servers = list(qs)
@@ -96,7 +96,7 @@ def get_create_params_for_call_id(call_id, record, user):
     try:
         call = BBBCall.objects.get(id=call_id, invited_members__in=[user])
         if not call.server.active:
-            call.server = choose_server(world=call.world)
+            call.server = choose_server(event=call.event)
             call.save(update_fields=["server"])
     except BBBCall.DoesNotExist:
         return None, None
@@ -131,7 +131,7 @@ def get_create_params_for_room(
     try:
         call = BBBCall.objects.get(room=room)
         if not call.server.active:
-            call.server = choose_server(world=room.world, room=room)
+            call.server = choose_server(event=room.event, room=room)
             call.save(update_fields=["server"])
         if call.guest_policy != guest_policy:
             call.guest_policy = guest_policy
@@ -142,9 +142,9 @@ def get_create_params_for_room(
     except BBBCall.DoesNotExist:
         call = BBBCall.objects.create(
             room=room,
-            world=room.world,
+            event=room.event,
             server=choose_server(
-                world=room.world, room=room, prefer_server=prefer_server
+                event=room.event, room=room, prefer_server=prefer_server
             ),
             voice_bridge=voice_bridge,
             guest_policy=guest_policy,
@@ -159,12 +159,12 @@ def get_create_params_for_room(
         "moderatorPW": call.moderator_pw,
         "record": "true" if record else "false",
         "meta_Source": "eventyay",
-        "meta_World": room.world_id,
+        "meta_Event": room.event_id,
         "meta_Room": str(room.id),
         "muteOnStart": ("true" if config.get("bbb_mute_on_start", False) else "false"),
         "lockSettingsDisablePrivateChat": (
             "true"
-            if room.world.config.get("bbb_disable_privatechat", True)
+            if room.event.config.get("bbb_disable_privatechat", True)
             else "false"
         ),
         "lockSettingsDisableCam": (
@@ -182,8 +182,8 @@ def get_create_params_for_room(
 
 
 class BBBService:
-    def __init__(self, world):
-        self.world = world
+    def __init__(self, event):
+        self.event = event
 
     async def _get(self, url, timeout=30):
         try:
@@ -288,7 +288,7 @@ class BBBService:
                     else "false"
                 ),
                 "userdata-bbb_custom_style_url": scheme
-                + self.world.domain
+                + self.event.domain
                 + reverse("live:css.bbb"),
                 "userdata-bbb_show_public_chat_on_login": "false",
                 # "userdata-bbb_mirror_own_webcam": "true",  unfortunately mirrors for everyone, which breaks things
@@ -339,7 +339,7 @@ class BBBService:
                 "password": create_params["moderatorPW"],
                 "joinViaHtml5": "true",
                 "userdata-bbb_custom_style_url": scheme
-                + self.world.domain
+                + self.event.domain
                 + reverse("live:css.bbb"),
                 "userdata-bbb_show_public_chat_on_login": "false",
                 # "userdata-bbb_mirror_own_webcam": "true",  unfortunately mirrors for everyone, which breaks things
@@ -356,7 +356,7 @@ class BBBService:
     def _get_possible_servers(self):
         return list(
             BBBServer.objects.filter(
-                Q(world_exclusive=self.world) | Q(world_exclusive__isnull=True),
+                Q(event_exclusive=self.event) | Q(event_exclusive__isnull=True),
                 active=True,
             )
         )
@@ -376,7 +376,7 @@ class BBBService:
                 if root is False:
                     return []
 
-                tz = pytz.timezone(self.world.timezone)
+                tz = pytz.timezone(self.event.timezone)
                 for rec in root.xpath("recordings/recording"):
                     url_presentation = url_screenshare = url_video = url_notes = None
                     for f in rec.xpath("playback/format"):

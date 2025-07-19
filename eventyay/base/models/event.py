@@ -3,6 +3,7 @@ import uuid
 from collections import OrderedDict
 from datetime import datetime, time, timedelta
 from operator import attrgetter
+from typing import List
 from urllib.parse import urljoin
 
 import pytz
@@ -44,6 +45,110 @@ from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
 
 TALK_HOSTNAME = settings.TALK_HOSTNAME
+
+# Import permissions for the default functions
+from eventyay.core.permissions import Permission, SYSTEM_ROLES
+from eventyay.core.utils.json import CustomJSONEncoder
+
+
+def default_roles():
+    attendee = [
+        Permission.EVENT_VIEW,
+        Permission.EVENT_EXHIBITION_CONTACT,
+        Permission.EVENT_CHAT_DIRECT,
+    ]
+    viewer = attendee + [Permission.ROOM_VIEW, Permission.ROOM_CHAT_READ]
+    participant = viewer + [
+        Permission.ROOM_CHAT_JOIN,
+        Permission.ROOM_CHAT_SEND,
+        Permission.ROOM_QUESTION_READ,
+        Permission.ROOM_QUESTION_ASK,
+        Permission.ROOM_QUESTION_VOTE,
+        Permission.ROOM_POLL_READ,
+        Permission.ROOM_POLL_VOTE,
+        Permission.ROOM_ROULETTE_JOIN,
+        Permission.ROOM_BBB_JOIN,
+        Permission.ROOM_JANUSCALL_JOIN,
+        Permission.ROOM_ZOOM_JOIN,
+    ]
+    room_creator = [Permission.EVENT_ROOMS_CREATE_CHAT]
+    room_owner = participant + [
+        Permission.ROOM_INVITE,
+        Permission.ROOM_DELETE,
+    ]
+    speaker = participant + [
+        Permission.ROOM_BBB_MODERATE,
+        Permission.ROOM_JANUSCALL_MODERATE,
+        Permission.ROOM_POLL_EARLY_RESULTS,
+    ]
+    moderator = speaker + [
+        Permission.ROOM_VIEWERS,
+        Permission.ROOM_CHAT_MODERATE,
+        Permission.ROOM_ANNOUNCE,
+        Permission.ROOM_BBB_RECORDINGS,
+        Permission.ROOM_QUESTION_MODERATE,
+        Permission.ROOM_POLL_EARLY_RESULTS,
+        Permission.ROOM_POLL_MANAGE,
+        Permission.EVENT_ANNOUNCE,
+    ]
+    admin = (
+        moderator
+        + room_creator
+        + [
+            Permission.EVENT_UPDATE,
+            Permission.ROOM_DELETE,
+            Permission.ROOM_UPDATE,
+            Permission.EVENT_ROOMS_CREATE_BBB,
+            Permission.EVENT_ROOMS_CREATE_STAGE,
+            Permission.EVENT_ROOMS_CREATE_EXHIBITION,
+            Permission.EVENT_ROOMS_CREATE_POSTER,
+            Permission.EVENT_USERS_LIST,
+            Permission.EVENT_USERS_MANAGE,
+            Permission.EVENT_GRAPHS,
+            Permission.EVENT_CONNECTIONS_UNLIMITED,
+        ]
+    )
+    apiuser = admin + [Permission.EVENT_API, Permission.EVENT_SECRETS]
+    scheduleuser = [Permission.EVENT_API]
+    return {
+        "attendee": attendee,
+        "viewer": viewer,
+        "participant": participant,
+        "room_creator": room_creator,
+        "room_owner": room_owner,
+        "speaker": speaker,
+        "moderator": moderator,
+        "admin": admin,
+        "apiuser": apiuser,
+        "scheduleuser": scheduleuser,
+    }
+
+
+def default_grants():
+    return {
+        "attendee": ["attendee"],
+        "admin": ["admin"],
+        "scheduleuser": ["schedule-update"],
+    }
+
+
+FEATURE_FLAGS = [
+    "schedule-control",
+    "iframe-player",
+    "roulette",
+    "muxdata",
+    "page.landing",
+    "zoom",
+    "janus",
+    "polls",
+    "poster",
+    "conftool",
+    "cross-origin-isolation",
+]
+
+
+def default_feature_flags():
+    return ["chat-moderation"]
 
 
 class EventMixin:
@@ -460,6 +565,29 @@ class Event(EventMixin, LoggedModel):
         help_text=_('Create Video platform for Event.'),
         default=False,
     )
+    # --- Event/Room/Permissions/Config fields ---
+    config = models.JSONField(null=True, blank=True)
+    roles = models.JSONField(null=True, blank=True, default=default_roles, encoder=CustomJSONEncoder)
+    trait_grants = models.JSONField(null=True, blank=True, default=default_grants)
+    domain = models.CharField(
+        max_length=250,
+        unique=True,
+        null=True,
+        blank=True,
+        validators=[RegexValidator(regex=r"^[a-z0-9-.:]+(/[a-zA-Z0-9-_./]*)?$")],
+    )
+    locale = models.CharField(
+        max_length=100,
+        default="en",
+        choices=(
+            ("en", "English"),
+            ("de", "German"),
+        ),
+    )
+    timezone = models.CharField(max_length=120, default="Europe/Berlin")
+    feature_flags = models.JSONField(blank=True, default=default_feature_flags)
+    external_auth_url = models.URLField(null=True, blank=True)
+
     objects = ScopedManager(organizer='organizer')
 
     class Meta:
@@ -1216,6 +1344,280 @@ class Event(EventMixin, LoggedModel):
             if presale_start > presale_end:
                 raise ValidationError(_("The event's presale cannot end before it starts."))
 
+    def decode_token(self, token, allow_raise=False):
+        exc = None
+        for jwt_config in self.config["JWT_secrets"]:
+            secret = jwt_config["secret"]
+            audience = jwt_config["audience"]
+            issuer = jwt_config["issuer"]
+            try:
+                return jwt.decode(
+                    token,
+                    secret,
+                    algorithms=["HS256"],
+                    audience=audience,
+                    issuer=issuer,
+                )
+            except jwt.exceptions.ExpiredSignatureError:
+                if allow_raise:
+                    raise
+            except jwt.exceptions.InvalidTokenError as e:
+                exc = e
+        if exc and allow_raise:
+            raise exc
+
+    def has_permission_implicit(
+        self,
+        *,
+        traits,
+        permissions: List[Permission],
+        room=None,
+        allow_empty_traits=True,
+    ):
+        for role, required_traits in self.trait_grants.items():
+            if (
+                isinstance(required_traits, list)
+                and all(
+                    any(x in traits for x in (r if isinstance(r, list) else [r]))
+                    for r in required_traits
+                )
+                and (required_traits or allow_empty_traits)
+            ):
+                if any(
+                    p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                    for p in permissions
+                ):
+                    return True
+        if room:
+            for role, required_traits in getattr(room, 'trait_grants', {}).items():
+                if (
+                    isinstance(required_traits, list)
+                    and all(
+                        any(x in traits for x in (r if isinstance(r, list) else [r]))
+                        for r in required_traits
+                    )
+                    and (required_traits or allow_empty_traits)
+                ):
+                    if any(
+                        p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                        for p in permissions
+                    ):
+                        return True
+
+    def has_permission(self, *, user, permission, room=None):
+        if getattr(user, 'is_banned', False):
+            return False
+        if not isinstance(permission, list):
+            permission = [permission]
+        if getattr(user, 'is_silenced', False) and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
+            return False
+        if self.has_permission_implicit(
+            traits=getattr(user, 'traits', []),
+            permissions=permission,
+            room=room,
+            allow_empty_traits=getattr(user, 'type', None) == getattr(User, 'UserType', None) and user.type == User.UserType.PERSON,
+        ):
+            return True
+        roles = user.get_role_grants(room)
+        for r in roles:
+            if any(
+                p.value in self.roles.get(r, SYSTEM_ROLES.get(r, []))
+                for p in permission
+            ):
+                return True
+
+    async def has_permission_async(self, *, user, permission, room=None):
+        if getattr(user, 'is_banned', False):
+            return False
+        if not isinstance(permission, list):
+            permission = [permission]
+        if getattr(user, 'is_silenced', False) and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
+            return False
+        if self.has_permission_implicit(
+            traits=getattr(user, 'traits', []),
+            permissions=permission,
+            room=room,
+            allow_empty_traits=getattr(user, 'type', None) == getattr(User, 'UserType', None) and user.type == User.UserType.PERSON,
+        ):
+            return True
+        roles = await user.get_role_grants_async(room)
+        for r in roles:
+            if any(
+                p.value in self.roles.get(r, SYSTEM_ROLES.get(r, []))
+                for p in permission
+            ):
+                return True
+
+    def get_all_permissions(self, user):
+        result = defaultdict(set)
+        if getattr(user, 'is_banned', False):
+            return result
+        allow_empty_traits = getattr(user, 'type', None) == getattr(User, 'UserType', None) and user.type == User.UserType.PERSON
+        for role, required_traits in self.trait_grants.items():
+            if (
+                isinstance(required_traits, list)
+                and all(
+                    any(x in getattr(user, 'traits', [])) for x in (r if isinstance(r, list) else [r])
+                    for r in required_traits
+                )
+                and (required_traits or allow_empty_traits)
+            ):
+                result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
+        for grant in getattr(user, 'event_grants', []).all():
+            result[self].update(
+                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
+            )
+        for room in getattr(self, 'rooms', []).all():
+            for role, required_traits in getattr(room, 'trait_grants', {}).items():
+                if (
+                    isinstance(required_traits, list)
+                    and all(
+                        any(
+                            x in getattr(user, 'traits', [])
+                            for x in (r if isinstance(r, list) else [r])
+                        )
+                        for r in required_traits
+                    )
+                    and (required_traits or allow_empty_traits)
+                ):
+                    result[room].update(
+                        self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                    )
+        for grant in getattr(user, 'room_grants', []).select_related("room"):
+            result[grant.room].update(
+                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
+            )
+        if getattr(user, 'is_silenced', False):
+            for key in result.keys():
+                result[key] &= MAX_PERMISSIONS_IF_SILENCED
+        return result
+
+    def clear_data(self):
+        self.audit_logs.all().delete()
+        self.event_grants.all().delete()
+        self.room_grants.all().delete()
+        self.bbb_calls.all().delete()
+        ChatEvent.objects.filter(channel__event=self).delete()
+        Membership.objects.filter(channel__event=self).delete()
+        ExhibitorStaff.objects.filter(exhibitor__event=self).delete()
+        PosterPresenter.objects.filter(poster__event=self).delete()
+        ContactRequest.objects.filter(exhibitor__event=self).delete()
+        ExhibitorView.objects.filter(exhibitor__event=self).delete()
+        Reaction.objects.filter(room__event=self).delete()
+        RoomView.objects.filter(room__event=self).delete()
+        EventView.objects.filter(event=self).delete()
+        RoomQuestion.objects.filter(room__event=self).delete()
+        Poll.objects.filter(room__event=self).delete()
+        Feedback.objects.filter(event=self).delete()
+        for f in StoredFile.objects.filter(event=self):
+            f.full_delete()
+        self.user_set.all().delete()
+        self.domain = None
+        self.save()
+
+    def clone_from(self, old, new_secrets):
+        from eventyay.base.models import Channel
+        from eventyay.base.models.storage_model import StoredFile
+        if self.pk == old.pk:
+            raise ValueError("Illegal attempt to clone into same event")
+        def clone_stored_files(*, inst=None, attrs=None, struct=None, url=None):
+            if inst and attrs:
+                for a in attrs:
+                    if getattr(inst, a):
+                        setattr(inst, a, clone_stored_files(url=getattr(inst, a)))
+            elif url:
+                media_base = urljoin(
+                    f'http{"" if settings.DEBUG else "s"}://{old.domain}',
+                    settings.MEDIA_URL,
+                )
+                if url.startswith(media_base):
+                    mlen = len(media_base)
+                    fname = url[mlen:]
+                    try:
+                        src = StoredFile.objects.get(event=old, file=fname)
+                    except StoredFile.DoesNotExist:
+                        return url
+                    sf = StoredFile.objects.create(
+                        event=self,
+                        date=src.date,
+                        filename=src.filename,
+                        type=src.type,
+                        file=File(src.file, src.filename),
+                        public=src.public,
+                        user=None,
+                    )
+                    return sf.file.url
+                else:
+                    return url
+            elif isinstance(struct, str):
+                return clone_stored_files(url=struct)
+            elif isinstance(struct, dict):
+                return {k: clone_stored_files(struct=v) for k, v in struct.items()}
+            elif isinstance(struct, (list, tuple)):
+                return [clone_stored_files(struct=e) for e in struct]
+            else:
+                return struct
+        self.config = old.config
+        if new_secrets:
+            secret = get_random_string(length=64)
+            self.config["JWT_secrets"] = [
+                {
+                    "issuer": "any",
+                    "audience": "eventyay",
+                    "secret": secret,
+                }
+            ]
+        self.roles = old.roles
+        self.trait_grants = old.trait_grants
+        self.locale = old.locale
+        self.timezone = old.timezone
+        self.feature_flags = old.feature_flags
+        self.external_auth_url = old.external_auth_url
+        self.save()
+        room_map = {}
+        for r in old.rooms.all():
+            try:
+                has_channel = r.channel
+            except Exception:
+                has_channel = False
+            old_id = r.pk
+            r.pk = None
+            r.event = self
+            r.module_config = clone_stored_files(struct=r.module_config)
+            r.save()
+            room_map[old_id] = r
+            if has_channel:
+                Channel.objects.create(room=r, event=self)
+        for r in old.rooms.prefetch_related(
+            "exhibitors", "exhibitors__links", "exhibitors__social_media_links"
+        ):
+            for ex in r.exhibitors.all():
+                old_links = list(ex.links.all())
+                old_smlinks = list(ex.social_media_links.all())
+                ex.pk = None
+                ex.event = self
+                ex.room = room_map[ex.room_id]
+                if ex.highlighted_room_id:
+                    ex.highlighted_room = room_map[ex.highlighted_room_id]
+                clone_stored_files(
+                    inst=ex, attrs=["logo", "banner_list", "banner_detail"]
+                )
+                ex.text_content = clone_stored_files(struct=ex.text_content)
+                ex.save()
+                for link in old_smlinks:
+                    link.pk = None
+                    link.exhibitor = ex
+                    link.save()
+                for link in old_links:
+                    link.pk = None
+                    clone_stored_files(inst=link, attrs=["url"])
+                    link.exhibitor = ex
+                    link.save()
+
 
 class SubEvent(EventMixin, LoggedModel):
     """
@@ -1595,3 +1997,42 @@ class SubEventMetaValue(LoggedModel):
         super().save(*args, **kwargs)
         if self.subevent:
             self.subevent.event.cache.clear()
+
+
+class EventPlannedUsage(models.Model):
+    event = models.ForeignKey(
+        'Event', on_delete=models.CASCADE, related_name="planned_usages"
+    )
+    start = models.DateField()
+    end = models.DateField()
+    attendees = models.PositiveIntegerField()
+    notes = models.TextField(blank=True)
+    class Meta:
+        ordering = ("start",)
+    def as_ical(self):
+        event = icalendar.Event()
+        event["uid"] = f"{self.event.id}-{self.id}"
+        event["dtstart"] = self.start
+        event["dtend"] = self.start
+        event["summary"] = self.event.name if hasattr(self.event, 'name') else self.event.title
+        event["description"] = self.notes
+        event["url"] = self.event.domain
+        return event
+
+class EventView(models.Model):
+    event = models.ForeignKey(
+        'Event', related_name="views", on_delete=models.CASCADE
+    )
+    start = models.DateTimeField(
+        auto_now_add=True,
+    )
+    end = models.DateTimeField(
+        null=True, db_index=True
+    )
+    user = models.ForeignKey(
+        'User', related_name="event_views", on_delete=models.CASCADE
+    )
+    class Meta:
+        indexes = [
+            models.Index(fields=["start"]),
+        ]

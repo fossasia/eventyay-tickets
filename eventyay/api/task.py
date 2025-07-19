@@ -9,22 +9,22 @@ from celery import shared_task
 from django.conf import settings
 
 from eventyay.base.models.auth import ShortToken
-from eventyay.base.models.world import World
+from eventyay.base.models.event import Event
 
 logger = logging.getLogger(__name__)
 
 
-def generate_video_token(world, days, number, traits, long=False):
+def generate_video_token(event, days, number, traits, long=False):
     """
     Generate video token
-    :param world: World object
+    :param event: Event object
     :param days: A integer representing the number of days the token is valid
     :param number: A integer representing the number of tokens to generate
     :param traits: A dictionary representing the traits of the token
     :param long: A boolean representing if the token is long or short
     :return: A list of tokens
     """
-    jwt_secrets = world.config.get("JWT_secrets", [])
+    jwt_secrets = event.config.get("JWT_secrets", [])
     if not jwt_secrets:
         logger.error("JWT_secrets is missing or empty in the configuration")
         return
@@ -49,7 +49,7 @@ def generate_video_token(world, days, number, traits, long=False):
         if long:
             result.append(token)
         else:
-            st = ShortToken(world=world, long_token=token, expires=exp)
+            st = ShortToken(event=event, long_token=token, expires=exp)
             result.append(st.short_token)
             bulk_create.append(st)
 
@@ -80,28 +80,28 @@ def generate_talk_token(video_settings, video_tokens, event_slug):
 
 @shared_task(bind=True, max_retries=5, default_retry_delay=60)
 def configure_video_settings_for_talks(
-    self, world_id, days, number, traits, long=False
+    self, event_id, days, number, traits, long=False
 ):
     """
     Configure video settings for talks
     :param self: instance of the task
-    :param world_id: A integer representing the world id
+    :param event_id: A integer representing the event id
     :param days: A integer representing the number of days the token is valid
     :param number: A integer representing the number of tokens to generate
     :param traits: A dictionary representing the traits of the token
     :param long: A boolean representing if the token is long or short
     """
     try:
-        if not isinstance(world_id, str) or not world_id.isalnum():
-            raise ValueError("Invalid world_id format")
-        world = World.objects.get(id=world_id)
-        event_slug = world_id
-        jwt_secrets = world.config.get("JWT_secrets", [])
+        if not isinstance(event_id, str) or not event_id.isalnum():
+            raise ValueError("Invalid event_id format")
+        event = Event.objects.get(id=event_id)
+        event_slug = event_id
+        jwt_secrets = event.config.get("JWT_secrets", [])
         if not jwt_secrets:
             logger.error("JWT_secrets is missing or empty in the configuration")
             return
         jwt_config = jwt_secrets[0]
-        video_tokens = generate_video_token(world, days, number, traits, long)
+        video_tokens = generate_video_token(event, days, number, traits, long)
         talk_token = generate_talk_token(jwt_config, video_tokens, event_slug)
         header = {
             "Content-Type": "application/json",
@@ -119,13 +119,13 @@ def configure_video_settings_for_talks(
             json=payload,
             headers=header,
         )
-        world.config["pretalx"] = {
+        event.config["pretalx"] = {
             "event": event_slug,
             "domain": "{}".format(settings.EVENTYAY_TALK_BASE_PATH),
             "pushed": dt.datetime.now(dt.timezone.utc).isoformat(),
             "connected": True,
         }
-        world.save()
+        event.save()
     except requests.exceptions.ConnectionError as e:
         logger.error("Connection error: %s", e)
         self.retry(exc=e)

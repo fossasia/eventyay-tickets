@@ -17,7 +17,7 @@ from eventyay.base.services.connections import (
     register_connection,
     unregister_connection,
 )
-from eventyay.base.services.world import get_world
+from eventyay.base.services.event import get_event
 from eventyay.features.live.exceptions import ConsumerException
 
 from eventyay.core.utils.redis import aredis
@@ -34,7 +34,7 @@ from .modules.poster import PosterModule
 from .modules.question import QuestionModule
 from .modules.room import RoomModule
 from .modules.roulette import RouletteModule
-from .modules.world import WorldModule
+from .modules.event import EventModule
 from .modules.zoom import ZoomModule
 
 logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         super().__init__(*args, **kwargs)
         self.user = None
         self.socket_id = str(uuid.uuid4())
-        self.world = None
+        self.event = None
         self.room_cache = {}
         self.channel_cache = {}
         self.components = {}
@@ -53,13 +53,13 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         self.last_conn_ping = 0
 
         # known_room_id_cache: contain IDs of rooms we know this user is allowed to see. updated after login and with
-        # world update. used to quickly filter events.
+        # event update. used to quickly filter events.
         self.known_room_id_cache = set()
 
     async def connect(self):
         self.content = []
         self.conn_time = time.time()
-        world_id = self.scope["url_route"]["kwargs"]["world"]
+        event_id = self.scope["url_route"]["kwargs"]["event"]
         await self.accept()
         if settings.REDIS_USE_PUBSUB:
             async with aredis() as redis:
@@ -84,23 +84,23 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         await register_connection()
 
         try:
-            self.world = await get_world(world_id)
+            self.event = await get_event(event_id)
         except OperationalError:
             # We use connection pooling, so if the database server went away since the last connection
             # terminated, Django won't know and we'll get an OperationalError. We just silently re-try
             # once, since Django will then use a new connection.
-            self.world = await get_world(world_id)
+            self.event = await get_event(event_id)
 
-        if self.world is None:
-            await self.send_error("world.unknown_world", close=True)
+        if self.event is None:
+            await self.send_error("event.unknown_event", close=True)
             return
 
         if settings.SENTRY_DSN:
             with configure_scope() as scope:
-                scope.set_extra("world", self.world.id)
+                scope.set_extra("event", self.event.id)
 
         async with statsd() as s:
-            s.increment(f"connection.established,world={world_id}")
+            s.increment(f"connection.established,event={self.event.pk}")
 
         self.components = {
             "announcement": AnnouncementModule(self),
@@ -115,7 +115,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             "room": RoomModule(self),
             "roulette": RouletteModule(self),
             "user": AuthModule(self),
-            "world": WorldModule(self),
+            "event": EventModule(self),
         }
 
     async def disconnect(self, close_code):
@@ -152,20 +152,20 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
         if not self.user:
             if content[0] == "authenticate":
-                await self.world.refresh_from_db_if_outdated(allowed_age=30)
+                await self.event.refresh_from_db_if_outdated(allowed_age=30)
                 await self.components["user"].login(content[-1])
             else:
                 await self.send_error("protocol.unauthenticated")
             return
 
         async with statsd() as s:
-            s.increment(f"command.received,command={content[0]},world={self.world.pk}")
+            s.increment(f"command.received,command={content[0]},event={self.event.pk}")
 
         namespace = content[0].split(".")[0]
         component = self.components.get(namespace)
         if component:
             try:
-                await self.world.refresh_from_db_if_outdated(allowed_age=900)
+                await self.event.refresh_from_db_if_outdated(allowed_age=900)
                 await self.user.refresh_from_db_if_outdated(allowed_age=30)
                 await component.dispatch_command(content)
             except ConsumerException as e:
@@ -185,7 +185,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         try:
             async with statsd() as s:
                 s.increment(
-                    f"event.received,type={message['type']},world={self.world.pk if self.world else 'None'}"
+                    f"event.received,type={message['type']},event={self.event.pk if self.event else 'None'}"
                 )
 
             if message["type"] == "connection.drop":
@@ -231,7 +231,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
             await self.close()
             async with statsd() as s:
                 s.increment(
-                    f"error.fatal,world={self.world.pk if self.world else 'None'}"
+                    f"error.fatal,event={self.event.pk if self.event else 'None'}"
                 )
 
     def build_response(self, status, data):

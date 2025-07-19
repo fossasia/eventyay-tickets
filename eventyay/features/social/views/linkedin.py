@@ -9,8 +9,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 
-from venueless.core.models.auth import User
-from venueless.social.utils import update_user_profile_from_social
+from eventyay.base.models.auth import User
+from eventyay.features.social.utils import update_user_profile_from_social
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +97,7 @@ def return_view(request):
 
     user = User.objects.get(
         pk=request.session["social_linkedin_session"].get("user"),
-        world=request.session["social_linkedin_session"].get("world"),
+        event=request.session["social_linkedin_session"].get("event"),
     )
 
     user.social_login_id_linkedin = d["id"]

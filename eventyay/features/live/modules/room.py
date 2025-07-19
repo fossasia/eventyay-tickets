@@ -23,11 +23,11 @@ from eventyay.base.services.room import (
     save_room,
     start_view,
 )
-from eventyay.base.services.world import (
+from eventyay.base.services.event import (
     create_room,
     get_room_config_for_user,
     get_rooms,
-    notify_world_change,
+    notify_event_change,
 )
 from eventyay.core.utils.redis import aredis
 from eventyay.features.live.channels import (
@@ -39,12 +39,12 @@ from eventyay.features.live.channels import (
     GROUP_ROOM_QUESTION_MODERATE,
     GROUP_ROOM_QUESTION_READ,
     GROUP_ROOM_VIEWERS,
-    GROUP_WORLD,
+    GROUP_EVENT,
 )
 from eventyay.features.live.decorators import (
     command,
     event,
-    require_world_permission,
+    require_event_permission,
     room_action,
 )
 from eventyay.features.live.exceptions import ConsumerException
@@ -74,7 +74,7 @@ class RoomModule(BaseModule):
             Permission.ROOM_POLL_MANAGE: GROUP_ROOM_POLL_MANAGE,
         }
         for permission, group_name in permissions.items():
-            if await self.consumer.world.has_permission_async(
+            if await self.consumer.event.has_permission_async(
                 user=self.consumer.user,
                 room=self.room,
                 permission=permission,
@@ -84,7 +84,7 @@ class RoomModule(BaseModule):
                     self.consumer.channel_name,
                 )
 
-        if await self.consumer.world.has_permission_async(
+        if await self.consumer.event.has_permission_async(
             user=self.consumer.user,
             room=self.room,
             permission=Permission.ROOM_POLL_VOTE,
@@ -100,7 +100,7 @@ class RoomModule(BaseModule):
         self.current_views[self.room], actual_view_count = await start_view(
             self.room,
             self.consumer.user,
-            delete=not self.consumer.world.config.get("track_room_views", True),
+            delete=not self.consumer.event.config.get("track_room_views", True),
         )
         await self._update_view_count(self.room, actual_view_count)
 
@@ -110,7 +110,7 @@ class RoomModule(BaseModule):
                 {
                     "type": "room.viewer.added",
                     "user": self.consumer.user.serialize_public(
-                        trait_badges_map=self.consumer.world.config.get(
+                        trait_badges_map=self.consumer.event.config.get(
                             "trait_badges_map"
                         )
                     ),
@@ -119,7 +119,7 @@ class RoomModule(BaseModule):
 
         data = {}
 
-        if await self.consumer.world.has_permission_async(
+        if await self.consumer.event.has_permission_async(
             user=self.consumer.user,
             room=self.room,
             permission=Permission.ROOM_VIEWERS,
@@ -129,7 +129,7 @@ class RoomModule(BaseModule):
                 self.consumer.channel_name,
             )
             data["viewers"] = await get_viewers(
-                self.consumer.world,
+                self.consumer.event,
                 self.room,
             )
 
@@ -165,7 +165,7 @@ class RoomModule(BaseModule):
         if room in self.current_views:
             actual_view_count, is_last = await end_view(
                 self.current_views[room],
-                delete=not self.consumer.world.config.get("track_room_views", True),
+                delete=not self.consumer.event.config.get("track_room_views", True),
             )
             del self.current_views[room]
             await self._update_view_count(room, actual_view_count)
@@ -187,9 +187,9 @@ class RoomModule(BaseModule):
                 await redis.expire(f"room:approxcount:known:{room.pk}", 900)
                 # broadcast actual viewer count instead of approximate text
                 await self.consumer.channel_layer.group_send(
-                    GROUP_WORLD.format(id=self.consumer.world.pk),
+                    GROUP_EVENT.format(id=self.consumer.event.pk),
                     {
-                        "type": "world.user_count_change",
+                        "type": "event.user_count_change",
                         "room": str(room.pk),
                         "users": actual_view_count,
                     },
@@ -220,8 +220,8 @@ class RoomModule(BaseModule):
                 code="room.unknown_reaction", message="Unknown reaction"
             )
 
-        redis_key = f"reactions:{self.consumer.world.id}:{body['room']}"
-        redis_debounce_key = f"reactions:{self.consumer.world.id}:{body['room']}:{reaction}:{self.consumer.user.id}"
+        redis_key = f"reactions:{self.consumer.event.id}:{body['room']}"
+        redis_debounce_key = f"reactions:{self.consumer.event.id}:{body['room']}:{reaction}:{self.consumer.user.id}"
 
         # We want to send reactions out to anyone, but we want to aggregate them over short time frames ("ticks") to
         # make sure we do not send 500 messages if 500 people react in the same second, but just one.
@@ -276,18 +276,18 @@ class RoomModule(BaseModule):
             # else: We're just contributing to the reaction counter that someone else started.
 
     @command("create")
-    @require_world_permission(
+    @require_event_permission(
         [
-            Permission.WORLD_ROOMS_CREATE_STAGE,
-            Permission.WORLD_ROOMS_CREATE_BBB,
-            Permission.WORLD_ROOMS_CREATE_CHAT,
-            Permission.WORLD_ROOMS_CREATE_EXHIBITION,
+            Permission.EVENT_ROOMS_CREATE_STAGE,
+            Permission.EVENT_ROOMS_CREATE_BBB,
+            Permission.EVENT_ROOMS_CREATE_CHAT,
+            Permission.EVENT_ROOMS_CREATE_EXHIBITION,
             Permission.ROOM_UPDATE,
         ]
     )
     async def create_room(self, body):
         try:
-            room = await create_room(self.consumer.world, body, self.consumer.user)
+            room = await create_room(self.consumer.event, body, self.consumer.user)
         except ValidationError as e:
             await self.consumer.send_error(
                 code=f"room.invalid.{e.code}", message=str(e)
@@ -324,9 +324,9 @@ class RoomModule(BaseModule):
 
     @event("create", refresh_user=True)
     async def push_room_info(self, body):
-        await self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
+        await self.consumer.event.refresh_from_db_if_outdated(allowed_age=0)
         conf = await get_room_config_for_user(
-            body["room"], self.consumer.world.id, self.consumer.user
+            body["room"], self.consumer.event.id, self.consumer.user
         )
         if "room:view" not in conf["permissions"]:
             return
@@ -338,9 +338,9 @@ class RoomModule(BaseModule):
         )
 
     @command("config.list")
-    @require_world_permission(Permission.ROOM_UPDATE)
+    @require_event_permission(Permission.ROOM_UPDATE)
     async def rooms_list(self, body):
-        rooms = await database_sync_to_async(get_rooms)(self.consumer.world, user=None)
+        rooms = await database_sync_to_async(get_rooms)(self.consumer.event, user=None)
         await self.consumer.send_success(RoomConfigSerializer(rooms, many=True).data)
 
     @command("config.get")
@@ -361,33 +361,33 @@ class RoomModule(BaseModule):
                     update_fields.add(f)
 
             new = await save_room(
-                self.consumer.world,
+                self.consumer.event,
                 self.room,
                 list(update_fields),
                 old_data=old,
                 by_user=self.consumer.user,
             )
             await self.consumer.send_success(new)
-            await notify_world_change(self.consumer.world.id)
+            await notify_event_change(self.consumer.event.id)
         else:
             await self.consumer.send_error(code="config.invalid")
 
     @command("config.reorder")
-    @require_world_permission(Permission.ROOM_UPDATE)
+    @require_event_permission(Permission.ROOM_UPDATE)
     async def config_reorder(self, body):
-        await reorder_rooms(self.consumer.world, body, self.consumer.user)
-        rooms = await database_sync_to_async(get_rooms)(self.consumer.world, user=None)
+        await reorder_rooms(self.consumer.event, body, self.consumer.user)
+        rooms = await database_sync_to_async(get_rooms)(self.consumer.event, user=None)
         await self.consumer.send_success(RoomConfigSerializer(rooms, many=True).data)
-        await notify_world_change(self.consumer.world.id)
+        await notify_event_change(self.consumer.event.id)
 
     @command("delete")
     @room_action(permission_required=Permission.ROOM_DELETE)
     async def delete(self, body):
         self.room.deleted = True
-        await delete_room(self.consumer.world, self.room, by_user=self.consumer.user)
+        await delete_room(self.consumer.event, self.room, by_user=self.consumer.user)
         await self.consumer.send_success()
         await get_channel_layer().group_send(
-            f"world.{self.consumer.world.id}",
+            f"event.{self.consumer.event.id}",
             {"type": "room.delete", "room": str(self.room.id)},
         )
 
@@ -411,7 +411,7 @@ class RoomModule(BaseModule):
         await self.consumer.send_success({})
         self.room.schedule_data = data
         await save_room(
-            self.consumer.world,
+            self.consumer.event,
             self.room,
             ["schedule_data"],
             by_user=self.consumer.user,
@@ -428,9 +428,9 @@ class RoomModule(BaseModule):
 
     @event("schedule")
     async def push_schedule_data(self, body):
-        await self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
+        await self.consumer.event.refresh_from_db_if_outdated(allowed_age=0)
         config = await get_room_config_for_user(
-            body["room"], self.consumer.world.id, self.consumer.user
+            body["room"], self.consumer.event.id, self.consumer.user
         )
         if "room:view" not in config["permissions"]:
             return
@@ -455,7 +455,7 @@ class RoomModule(BaseModule):
         invite, created = await database_sync_to_async(
             AnonymousInvite.objects.get_or_create
         )(
-            world=self.consumer.world,
+            event=self.consumer.event,
             room=self.room,
             expires__gte=now() + timedelta(days=10),
             defaults=dict(

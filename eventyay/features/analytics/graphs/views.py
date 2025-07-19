@@ -19,7 +19,7 @@ from django.views import View
 from matplotlib import cbook, dates, pyplot
 from matplotlib.figure import Figure
 
-from eventyay.base.models import Room, User, World
+from eventyay.base.models import Room, User, Event
 from eventyay.base.models.room import RoomView
 from eventyay.core.permissions import Permission
 
@@ -50,9 +50,9 @@ class GraphView(View):
     }
 
     @cached_property
-    def world(self):
-        world_domain = re.sub(r":\d+$", "", self.request.get_host())
-        return get_object_or_404(World, domain=world_domain)
+    def event(self):
+        event_domain = re.sub(r":\d+$", "", self.request.get_host())
+        return get_object_or_404(Event, domain=event_domain)
 
     @cached_property
     def fig(self):
@@ -62,13 +62,13 @@ class GraphView(View):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            token = self.world.decode_token(request.GET.get("token"))
+            token = self.event.decode_token(request.GET.get("token"))
             if not token:
                 raise PermissionDenied("Invalid token.")
         except Exception:
             raise PermissionDenied("Invalid token.")
-        if not self.world.has_permission_implicit(
-            traits=token.get("traits"), permissions=[Permission.WORLD_GRAPHS]
+        if not self.event.has_permission_implicit(
+            traits=token.get("traits"), permissions=[Permission.EVENT_GRAPHS]
         ):
             raise PermissionDenied("Permission denied.")
         return super().dispatch(request, *args, **kwargs)
@@ -95,7 +95,7 @@ def build_room_view_fig(fig, room, begin, end, tz):
         (
             room.views
             if isinstance(room, Room)
-            else RoomView.objects.filter(room__world=room)
+            else RoomView.objects.filter(room__event=room)
         )
         .filter(Q(Q(end__isnull=True) | Q(end__gte=begin)) & Q(start__lte=end))
         .filter(user__type=User.UserType.PERSON)
@@ -193,10 +193,10 @@ def build_room_view_fig(fig, room, begin, end, tz):
 class RoomAttendanceGraphView(GraphView):
     @cached_property
     def room(self):
-        return get_object_or_404(self.world.rooms, pk=self.request.GET.get("room"))
+        return get_object_or_404(self.event.rooms, pk=self.request.GET.get("room"))
 
     def build(self):
-        tz = pytz.timezone(self.world.timezone)
+        tz = pytz.timezone(self.event.timezone)
 
         begin = self.room.views.aggregate(min=Min("start"))["min"]
         end = self.room.views.aggregate(max=Max("end"))["max"]

@@ -8,7 +8,7 @@ from eventyay.features.live.channels import GROUP_USER
 from eventyay.features.live.decorators import (
     command,
     event,
-    require_world_permission,
+    require_event_permission,
     room_action,
 )
 from eventyay.features.live.modules.base import BaseModule
@@ -21,7 +21,7 @@ class ExhibitionModule(BaseModule):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.service = ExhibitionService(self.consumer.world)
+        self.service = ExhibitionService(self.consumer.event)
 
     async def dispatch_disconnect(self, close_code):
         if self.consumer.user:
@@ -32,9 +32,9 @@ class ExhibitionModule(BaseModule):
 
     @command("list.all")
     async def list_all(self, body):
-        if not await self.consumer.world.has_permission_async(
+        if not await self.consumer.event.has_permission_async(
             user=self.consumer.user,
-            permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION,
+            permission=Permission.EVENT_ROOMS_CREATE_EXHIBITION,
         ):
             exhibitors = await self.service.get_all_exhibitors(
                 staff_includes_user=self.consumer.user
@@ -44,7 +44,7 @@ class ExhibitionModule(BaseModule):
         await self.consumer.send_success({"exhibitors": exhibitors})
 
     @command("delete")
-    @require_world_permission(Permission.WORLD_ROOMS_CREATE_EXHIBITION)
+    @require_event_permission(Permission.EVENT_ROOMS_CREATE_EXHIBITION)
     async def delete(self, body):
         staff = await self.service.get_staff(exhibitor_id=body["exhibitor"])
         if not await self.service.delete(
@@ -71,9 +71,9 @@ class ExhibitionModule(BaseModule):
         if body["id"] != "":
             staff += await self.service.get_staff(exhibitor_id=body["id"])
 
-        if await self.consumer.world.has_permission_async(
+        if await self.consumer.event.has_permission_async(
             user=self.consumer.user,
-            permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION,
+            permission=Permission.EVENT_ROOMS_CREATE_EXHIBITION,
         ):
             exclude_fields = set()
         elif self.consumer.user.id in staff:
@@ -92,7 +92,7 @@ class ExhibitionModule(BaseModule):
 
         exhibitor = await self.service.patch(
             exhibitor=body,
-            world=self.consumer.world,
+            event=self.consumer.event,
             by_user=self.consumer.user,
             exclude_fields=exclude_fields,
         )
@@ -140,7 +140,7 @@ class ExhibitionModule(BaseModule):
         await self.consumer.send_success({"exhibitors": exhibitors})
 
     @command("contact")
-    @require_world_permission(Permission.WORLD_EXHIBITION_CONTACT)
+    @require_event_permission(Permission.EVENT_EXHIBITION_CONTACT)
     async def contact(self, body):
         exhibitor = await self.service.get_exhibitor(exhibitor_id=body["exhibitor"])
         if not exhibitor:
@@ -160,7 +160,7 @@ class ExhibitionModule(BaseModule):
             )
 
     @command("contact_cancel")
-    @require_world_permission(Permission.WORLD_EXHIBITION_CONTACT)
+    @require_event_permission(Permission.EVENT_EXHIBITION_CONTACT)
     async def contact_cancel(self, body):
         request = await self.service.missed(contact_request_id=body["contact_request"])
         if not request:

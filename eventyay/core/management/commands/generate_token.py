@@ -4,23 +4,23 @@ import uuid
 import jwt
 from django.core.management.base import BaseCommand
 
-from eventyay.base.models import World
+from eventyay.base.models import Event
 from eventyay.base.models.auth import ShortToken
 
 
 class Command(BaseCommand):
-    help = "Generate a valid access token for a world"
+    help = "Generate a valid access token for an event"
 
     def add_arguments(self, parser):
-        parser.add_argument("world_id", type=str)
+        parser.add_argument("event_id", type=str)
         parser.add_argument("--trait", type=str, nargs="*", default=[])
         parser.add_argument("--days", type=int, default=90)
         parser.add_argument("--raw", action="store_true", default=False)
         parser.add_argument("--profile", type=str, default="{}")
 
     def handle(self, *args, **options):
-        world = World.objects.get(id=options["world_id"])
-        jwt_config = world.config["JWT_secrets"][0]
+        event = Event.objects.get(id=options["event_id"])
+        jwt_config = event.config["JWT_secrets"][0]
         secret = jwt_config["secret"]
         audience = jwt_config["audience"]
         issuer = jwt_config["issuer"]
@@ -36,7 +36,7 @@ class Command(BaseCommand):
         }
         token = jwt.encode(payload, secret, algorithm="HS256")
         if options.get("raw"):
-            self.stdout.write(f"https://{world.domain}/#token={token}\n")
+            self.stdout.write(f"https://{event.domain}/#token={token}\n")
         else:
-            st = ShortToken.objects.create(world=world, long_token=token, expires=exp)
-            self.stdout.write(f"https://{world.domain}/login/{st.short_token}\n")
+            st = ShortToken.objects.create(event=event, long_token=token, expires=exp)
+            self.stdout.write(f"https://{event.domain}/login/{st.short_token}\n")

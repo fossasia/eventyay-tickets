@@ -5,11 +5,11 @@ from django.core.management.base import BaseCommand
 from django.db.models import Max, Q
 from django.utils.timezone import now
 
-from eventyay.base.models import ChatEvent, RoomView, World
+from eventyay.base.models import ChatEvent, RoomView, Event
 
 
 class Command(BaseCommand):
-    help = "Clear all non-config data from worlds that have not been used in a while"
+    help = "Clear all non-config data from events that have not been used in a while"
 
     def add_arguments(self, parser):
         parser.add_argument("days", type=int)
@@ -17,7 +17,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cutoff = now() - timedelta(days=options["days"])
         qs = (
-            World.objects.annotate(
+            Event.objects.annotate(
                 max_login=Max("user__last_login"),
             )
             .filter(domain__isnull=False)
@@ -25,16 +25,16 @@ class Command(BaseCommand):
             .order_by("max_login")
         )
 
-        for world in qs:
-            planned_end = world.planned_usages.aggregate(m=Max("end"))["m"]
+        for event in qs:
+            planned_end = event.planned_usages.aggregate(m=Max("end"))["m"]
             checks = [
-                # Check that this world *really* had no activity recently
-                world.audit_logs.aggregate(m=Max("timestamp"))["m"],
-                world.views.aggregate(m=Max("start"))["m"],
-                RoomView.objects.filter(room__world=world).aggregate(m=Max("start"))[
+                # Check that this event *really* had no activity recently
+                event.audit_logs.aggregate(m=Max("timestamp"))["m"],
+                event.views.aggregate(m=Max("start"))["m"],
+                RoomView.objects.filter(room__event=event).aggregate(m=Max("start"))[
                     "m"
                 ],
-                ChatEvent.objects.filter(channel__world=world).aggregate(
+                ChatEvent.objects.filter(channel__event=event).aggregate(
                     m=Max("timestamp")
                 )["m"],
                 (
@@ -47,4 +47,4 @@ class Command(BaseCommand):
             if checks and max(checks) > cutoff:
                 continue
 
-            world.clear_data()
+            event.clear_data()

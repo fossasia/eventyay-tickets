@@ -2,7 +2,7 @@ import logging
 
 from eventyay.core.permissions import Permission
 from eventyay.base.services.poster import PosterService
-from eventyay.features.live.decorators import command, require_world_permission, room_action
+from eventyay.features.live.decorators import command, require_event_permission, room_action
 from eventyay.features.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
@@ -13,13 +13,13 @@ class PosterModule(BaseModule):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.service = PosterService(self.consumer.world)
+        self.service = PosterService(self.consumer.event)
 
     @command("list.all")
     async def list_all(self, body):
-        if not await self.consumer.world.has_permission_async(
+        if not await self.consumer.event.has_permission_async(
             user=self.consumer.user,
-            permission=Permission.WORLD_ROOMS_CREATE_POSTER,
+            permission=Permission.EVENT_ROOMS_CREATE_POSTER,
         ):
             posters = await self.service.get_all_posters(
                 presenter_includes_user=self.consumer.user, list_format=True
@@ -29,7 +29,7 @@ class PosterModule(BaseModule):
         await self.consumer.send_success(posters)
 
     @command("delete")
-    @require_world_permission(Permission.WORLD_ROOMS_CREATE_POSTER)
+    @require_event_permission(Permission.EVENT_ROOMS_CREATE_POSTER)
     async def delete(self, body):
         if not await self.service.delete(
             poster_id=body["poster"], by_user=self.consumer.user
@@ -43,9 +43,9 @@ class PosterModule(BaseModule):
         if body["id"] != "":
             presenters = await self.service.get_presenters(poster_id=body["id"])
 
-        if await self.consumer.world.has_permission_async(
+        if await self.consumer.event.has_permission_async(
             user=self.consumer.user,
-            permission=Permission.WORLD_ROOMS_CREATE_POSTER,
+            permission=Permission.EVENT_ROOMS_CREATE_POSTER,
         ):
             exclude_fields = set()
         elif self.consumer.user.id in presenters:
@@ -64,7 +64,7 @@ class PosterModule(BaseModule):
 
         poster = await self.service.patch(
             data=body,
-            world=self.consumer.world,
+            event=self.consumer.event,
             by_user=self.consumer.user,
             exclude_fields=exclude_fields,
         )

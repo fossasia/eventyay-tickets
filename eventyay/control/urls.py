@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from . import views
+from eventyay.control.views import admin_views as views
 
 urlpatterns = [
     path("auth/profile/", views.ProfileView.as_view(), name="auth.profile"),
@@ -87,20 +87,20 @@ urlpatterns = [
         views.StreamingServerUpdate.as_view(),
         name="streamingserver.update",
     ),
-    path("worlds/", views.WorldList.as_view(), name="world.list"),
-    path("worlds/new/", views.WorldCreate.as_view(), name="world.create"),
-    path("worlds/calendar", views.WorldCalendar.as_view(), name="world.calendar"),
+    path("events/", views.EventList.as_view(), name="event.list"),
+    path("events/new/", views.EventCreate.as_view(), name="event.create"),
+    path("events/calendar", views.EventCalendar.as_view(), name="event.calendar"),
     path(
-        "worlds/<slug:pk>/admin",
-        views.WorldAdminToken.as_view(),
-        name="world.admin",
+        "events/<slug:pk>/admin",
+        views.EventAdminToken.as_view(),
+        name="event.admin",
     ),
     path(
-        "worlds/<slug:pk>/clear",
-        views.WorldClear.as_view(),
-        name="world.clear",
+        "events/<slug:pk>/clear",
+        views.EventClear.as_view(),
+        name="event.clear",
     ),
-    path("worlds/<slug:pk>/", views.WorldUpdate.as_view(), name="world.update"),
+    path("events/<slug:pk>/", views.EventUpdate.as_view(), name="event.update"),
     path("feedback/", views.FeedbackList.as_view(), name="feedback.list"),
     path(
         "feedback/<uuid:pk>/",

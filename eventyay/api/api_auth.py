@@ -3,11 +3,11 @@ from rest_framework import authentication, exceptions, permissions
 from rest_framework.authentication import get_authorization_header
 
 from eventyay.base.models.room import Room
-from eventyay.base.models.world import World
+from eventyay.base.models.event import Event
 from eventyay.core.permissions import Permission
 
 
-class WorldTokenAuthentication(authentication.BaseAuthentication):
+class EventTokenAuthentication(authentication.BaseAuthentication):
     keyword = "Bearer"
 
     """
@@ -35,13 +35,13 @@ class WorldTokenAuthentication(authentication.BaseAuthentication):
             msg = "Invalid token header. Token string should not contain invalid characters."
             raise exceptions.AuthenticationFailed(msg)
 
-        world_id = request.resolver_match.kwargs["world_id"]
-        request.world = get_object_or_404(World, id=world_id)
-        return self.authenticate_credentials(token, request.world)
+        event_id = request.resolver_match.kwargs["event_id"]
+        request.event = get_object_or_404(Event, id=event_id)
+        return self.authenticate_credentials(token, request.event)
 
-    def authenticate_credentials(self, key, world):
+    def authenticate_credentials(self, key, event):
         try:
-            token = world.decode_token(key)
+            token = event.decode_token(key)
             if not token:
                 raise exceptions.AuthenticationFailed("Invalid token.")
         except Exception:
@@ -59,22 +59,22 @@ class ApiAccessRequiredPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if isinstance(request.user, AnonymousUser):
             return False
-        return request.world.has_permission_implicit(
+        return request.event.has_permission_implicit(
             traits=request.auth.get("traits"),
-            permissions=[Permission.WORLD_API],
+            permissions=[Permission.EVENT_API],
         )
 
 
-class WorldPermissions(permissions.BasePermission):
+class EventPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         traits = request.auth.get("traits")
-        if not request.world.has_permission_implicit(
-            traits=traits, permissions=[Permission.WORLD_SECRETS]
+        if not request.event.has_permission_implicit(
+            traits=traits, permissions=[Permission.EVENT_SECRETS]
         ):
             return False
         if request.method in ("PATCH", "PUT", "POST"):
-            return request.world.has_permission_implicit(
-                traits=traits, permissions=[Permission.WORLD_UPDATE]
+            return request.event.has_permission_implicit(
+                traits=traits, permissions=[Permission.EVENT_UPDATE]
             )
         elif request.method in ("HEAD", "GET", "OPTIONS"):
             return True
@@ -84,9 +84,9 @@ class WorldPermissions(permissions.BasePermission):
 class UserDeletePermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         traits = request.auth.get("traits")
-        return request.world.has_permission_implicit(
+        return request.event.has_permission_implicit(
             traits=traits,
-            permissions=[Permission.WORLD_USERS_MANAGE],
+            permissions=[Permission.EVENT_USERS_MANAGE],
         )
 
 
@@ -94,12 +94,12 @@ class RoomPermissions(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == "POST":
             traits = request.auth.get("traits")
-            return request.world.has_permission_implicit(
+            return request.event.has_permission_implicit(
                 traits=traits,
                 permissions=[
-                    Permission.WORLD_ROOMS_CREATE_STAGE,
-                    Permission.WORLD_ROOMS_CREATE_BBB,
-                    Permission.WORLD_ROOMS_CREATE_CHAT,
+                    Permission.EVENT_ROOMS_CREATE_STAGE,
+                    Permission.EVENT_ROOMS_CREATE_BBB,
+                    Permission.EVENT_ROOMS_CREATE_CHAT,
                 ],
             )
         else:
@@ -112,7 +112,7 @@ class RoomPermissions(permissions.BasePermission):
         elif request.method == "DELETE":
             permission = Permission.ROOM_DELETE
         if permission:
-            return request.world.has_permission_implicit(
+            return request.event.has_permission_implicit(
                 permissions=[permission], traits=request.auth.get("traits")
             )
         else:

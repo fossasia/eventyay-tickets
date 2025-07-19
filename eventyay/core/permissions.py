@@ -2,22 +2,22 @@ from enum import Enum
 
 
 class Permission(Enum):
-    WORLD_VIEW = "world:view"
-    WORLD_UPDATE = "world:update"
-    WORLD_ANNOUNCE = "world:announce"
-    WORLD_SECRETS = "world:secrets"
-    WORLD_API = "world:api"
-    WORLD_GRAPHS = "world:graphs"
-    WORLD_ROOMS_CREATE_STAGE = "world:rooms.create.stage"
-    WORLD_ROOMS_CREATE_CHAT = "world:rooms.create.chat"
-    WORLD_ROOMS_CREATE_BBB = "world:rooms.create.bbb"
-    WORLD_ROOMS_CREATE_EXHIBITION = "world:rooms.create.exhibition"
-    WORLD_ROOMS_CREATE_POSTER = "world:rooms.create.poster"
-    WORLD_USERS_LIST = "world:users.list"
-    WORLD_USERS_MANAGE = "world:users.manage"
-    WORLD_CHAT_DIRECT = "world:chat.direct"
-    WORLD_EXHIBITION_CONTACT = "world:exhibition.contact"
-    WORLD_CONNECTIONS_UNLIMITED = "world:connections.unlimited"
+    EVENT_VIEW = "event.view"
+    EVENT_UPDATE = "event.update"
+    EVENT_ANNOUNCE = "event:announce"
+    EVENT_SECRETS = "event:secrets"
+    EVENT_API = "event:api"
+    EVENT_GRAPHS = "event:graphs"
+    EVENT_ROOMS_CREATE_STAGE = "event:rooms.create.stage"
+    EVENT_ROOMS_CREATE_CHAT = "event:rooms.create.chat"
+    EVENT_ROOMS_CREATE_BBB = "event:rooms.create.bbb"
+    EVENT_ROOMS_CREATE_EXHIBITION = "event:rooms.create.exhibition"
+    EVENT_ROOMS_CREATE_POSTER = "event:rooms.create.poster"
+    EVENT_USERS_LIST = "event:users.list"
+    EVENT_USERS_MANAGE = "event:users.manage"
+    EVENT_CHAT_DIRECT = "event:chat.direct"
+    EVENT_EXHIBITION_CONTACT = "event:exhibition.contact"
+    EVENT_CONNECTIONS_UNLIMITED = "event:connections.unlimited"
     ROOM_ANNOUNCE = "room:announce"
     ROOM_VIEW = "room:view"
     ROOM_UPDATE = "room:update"
@@ -47,7 +47,7 @@ class Permission(Enum):
 
 
 MAX_PERMISSIONS_IF_SILENCED = {
-    Permission.WORLD_VIEW,
+    Permission.EVENT_VIEW,
     Permission.ROOM_VIEW,
     Permission.ROOM_CHAT_READ,
     Permission.ROOM_CHAT_JOIN,
@@ -56,7 +56,7 @@ MAX_PERMISSIONS_IF_SILENCED = {
 
 SYSTEM_ROLES = {
     "__kiosk": [
-        Permission.WORLD_VIEW.value,
+        Permission.EVENT_VIEW.value,
         Permission.ROOM_VIEW.value,
         Permission.ROOM_CHAT_READ.value,
         Permission.ROOM_QUESTION_READ.value,
@@ -65,8 +65,8 @@ SYSTEM_ROLES = {
         Permission.ROOM_VIEWERS.value,
         Permission.ROOM_INVITE_ANONYMOUS.value,
     ],
-    "__anonymous_world": [
-        Permission.WORLD_VIEW.value,
+    "__anonymous_event": [
+        Permission.EVENT_VIEW.value,
     ],
     "__anonymous_room": [
         Permission.ROOM_QUESTION_READ.value,

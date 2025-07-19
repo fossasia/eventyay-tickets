@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
-from eventyay.base.models import World
+from eventyay.base.models import Event
 
 
 def generate_signature(data):
@@ -27,7 +27,7 @@ def generate_signature(data):
     return jwt.encode(payload, data["apiSecret"], algorithm="HS256")
 
 
-def get_closest_zoom_lang(world):
+def get_closest_zoom_lang(event):
     zoom_langs = [
         "de-DE",
         "es-ES",
@@ -43,26 +43,26 @@ def get_closest_zoom_lang(world):
         "vi-VN",
     ]
     for lang in zoom_langs:
-        if lang.lower() == world.locale.lower():
+        if lang.lower() == event.locale.lower():
             return lang
     for lang in zoom_langs:
-        if lang.lower().startswith(world.locale[:2]):
+        if lang.lower().startswith(event.locale[:2]):
             return lang
     return "en-US"
 
 
 class ZoomViewMixin:
     @cached_property
-    def world(self):
-        world_domain = re.sub(r":\d+$", "", self.request.get_host())
-        w = get_object_or_404(World, domain=world_domain)
-        if not settings.DEBUG and "zoom" not in w.feature_flags:
+    def event(self):
+        event_domain = re.sub(r":\d+$", "", self.request.get_host())
+        e = get_object_or_404(Event, domain=event_domain)
+        if not settings.DEBUG and "zoom" not in e.feature_flags:
             raise PermissionDenied("Feature disabled")
-        return w
+        return e
 
     def dispatch(self, request, *args, **kwargs):
         r = super().dispatch(request, *args, **kwargs)
-        if "cross-origin-isolation" in self.world.feature_flags:
+        if "cross-origin-isolation" in self.event.feature_flags:
             r["Cross-Origin-Resource-Policy"] = "cross-origin"
             r["Cross-Origin-Embedder-Policy"] = "require-corp"
             r["Cross-Origin-Opener-Policy"] = "same-origin"
@@ -96,13 +96,13 @@ class MeetingView(ZoomViewMixin, TemplateView):
                 "user_name": inp["un"],
                 "user_email": "{}@zoom.fake.{}".format(
                     inp["ui"],
-                    "debug.eventyay.events" if settings.DEBUG else self.world.domain,
+                    "debug.eventyay.events" if settings.DEBUG else self.event.domain,
                 ),
                 "support_chat": not inp["dc"],
                 "debug": settings.DEBUG,
-                "lang": get_closest_zoom_lang(self.world),
+                "lang": get_closest_zoom_lang(self.event),
                 "langurl": (
-                    "/zoom-de-DE.json" if self.world.locale.startswith("de") else ""
+                    "/zoom-de-DE.json" if self.event.locale.startswith("de") else ""
                 ),
             }
         )

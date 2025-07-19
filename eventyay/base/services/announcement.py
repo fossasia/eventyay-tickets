@@ -13,13 +13,13 @@ def create_announcement(**kwargs):
 
 
 @database_sync_to_async
-def get_announcement(pk, world):
-    return Announcement.objects.get(pk=pk, world=world).serialize_public()
+def get_announcement(pk, event):
+    return Announcement.objects.get(pk=pk, event=event).serialize_public()
 
 
 @database_sync_to_async
-def get_announcements(world, moderator=False, **kwargs):
-    announcements = Announcement.objects.filter(world=world)
+def get_announcements(event, moderator=False, **kwargs):
+    announcements = Announcement.objects.filter(event=event)
 
     if not moderator:
         announcements = announcements.filter(
@@ -32,12 +32,12 @@ def get_announcements(world, moderator=False, **kwargs):
 @database_sync_to_async
 def update_announcement(**kwargs):
     announcement = Announcement.objects.get(
-        pk=kwargs.pop("id"), world=kwargs.pop("world")
+        pk=kwargs.pop("id"), event=kwargs.pop("event")
     )
     permitted_fields = {
         field.name
         for field in Announcement._meta.get_fields()
-        if field.name not in ("id", "world")
+        if field.name not in ("id", "event")
     }
     new_state = kwargs.pop("state", None)
     if new_state and new_state in announcement.allowed_states:

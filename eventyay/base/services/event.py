@@ -14,12 +14,12 @@ from pytz import common_timezones
 from rest_framework import serializers
 
 from eventyay.base.models.room import Room
-from eventyay.base.models.world import World
+from eventyay.base.models.event import Event
 from eventyay.base.models.room import RoomConfigSerializer, RoomView
 from eventyay.core.permissions import Permission
 
 
-class WorldConfigSerializer(serializers.Serializer):
+class EventConfigSerializer(serializers.Serializer):
     theme = serializers.DictField()
     roles = serializers.DictField()
     trait_grants = serializers.DictField()
@@ -39,7 +39,7 @@ class WorldConfigSerializer(serializers.Serializer):
     iframe_blockers = serializers.JSONField()
     track_exhibitor_views = serializers.BooleanField()
     track_room_views = serializers.BooleanField()
-    track_world_views = serializers.BooleanField()
+    track_event_views = serializers.BooleanField()
     onsite_traits = serializers.JSONField(
         required=False,
         allow_null=False,
@@ -75,18 +75,18 @@ class WorldConfigSerializer(serializers.Serializer):
 
 
 @database_sync_to_async
-def _get_world(world_id):
-    return World.objects.filter(id=world_id).first()
+def _get_event(event_id):
+    return Event.objects.filter(id=event_id).first()
 
 
-async def get_world(world_id):
-    world = await _get_world(world_id)
-    return world
+async def get_event(event_id):
+    event = await _get_event(event_id)
+    return event
 
 
-def get_rooms(world, user):
+def get_rooms(event, user):
     qs = (
-        world.rooms.filter(deleted=False)
+        event.rooms.filter(deleted=False)
         .prefetch_related("channel")
         .annotate(
             current_roomviews=Subquery(
@@ -102,7 +102,7 @@ def get_rooms(world, user):
         )
     )
     if user:
-        qs = qs.with_permission(world=world, user=user)
+        qs = qs.with_permission(event=event, user=user)
     return list(qs)
 
 
@@ -111,7 +111,7 @@ def _get_room(**kwargs):
     return (
         Room.objects.filter(deleted=False)
         .prefetch_related("channel")
-        .select_related("world")
+        .select_related("event")
         .get(**kwargs)
     )
 
@@ -131,20 +131,20 @@ def get_permissions_for_traits(rules, traits, prefixes):
     ]
 
 
-async def notify_world_change(world_id):
+async def notify_event_change(event_id):
     await get_channel_layer().group_send(
-        f"world.{world_id}",
+        f"event.{event_id}",
         {
-            "type": "world.update",
+            "type": "event.update",
         },
     )
 
 
-async def notify_schedule_change(world_id):
+async def notify_schedule_change(event_id):
     await get_channel_layer().group_send(
-        f"world.{world_id}",
+        f"event.{event_id}",
         {
-            "type": "world.schedule.update",
+            "type": "event.schedule.update",
         },
     )
 
@@ -157,7 +157,7 @@ def get_room_config(room, permissions):
         "picture": room.picture.url if room.picture else None,
         "import_id": room.import_id,
         "pretalx_id": room.pretalx_id,
-        "permissions": [p for p in permissions if not p.startswith("world:")],
+        "permissions": [p for p in permissions if not p.startswith("event:")],
         "force_join": room.force_join,
         "modules": [],
         "schedule_data": room.schedule_data or None,
@@ -177,29 +177,29 @@ def get_room_config(room, permissions):
     return room_config
 
 
-def get_world_config_for_user(world, user):
-    permissions = world.get_all_permissions(user)
+def get_event_config_for_user(event, user):
+    permissions = event.get_all_permissions(user)
     result = {
-        "world": {
-            "id": str(world.id),
-            "title": world.title,
-            "pretalx": world.config.get("pretalx", {}),
-            "profile_fields": world.config.get("profile_fields", []),
-            "social_logins": world.config.get("social_logins", []),
-            "iframe_blockers": world.config.get(
+        "event": {
+            "id": str(event.id),
+            "title": event.title,
+            "pretalx": event.config.get("pretalx", {}),
+            "profile_fields": event.config.get("profile_fields", []),
+            "social_logins": event.config.get("social_logins", []),
+            "iframe_blockers": event.config.get(
                 "iframe_blockers",
                 {"default": {"enabled": False, "policy_url": None}},
             ),
-            "onsite_traits": world.config.get("onsite_traits", []),
+            "onsite_traits": event.config.get("onsite_traits", []),
         },
-        "permissions": list(permissions[world]),
+        "permissions": list(permissions[event]),
         "rooms": [],
     }
 
-    rooms = get_rooms(world, user)
+    rooms = get_rooms(event, user)
     for room in rooms:
         result["rooms"].append(
-            get_room_config(room, permissions[world] | permissions[room])
+            get_room_config(room, permissions[event] | permissions[room])
         )
     return result
 
@@ -209,7 +209,7 @@ def get_world_config_for_user(world, user):
 def _create_room(data, with_channel=False, permission_preset="public", creator=None):
     if "sorting_priority" not in data:
         data["sorting_priority"] = (
-            Room.objects.filter(world=data["world"]).aggregate(
+            Room.objects.filter(event=data["event"]).aggregate(
                 m=Max("sorting_priority")
             )["m"]
             or 0
@@ -223,22 +223,22 @@ def _create_room(data, with_channel=False, permission_preset="public", creator=N
         data["trait_grants"] = {}
 
     if (
-        data.get("world")
+        data.get("event")
         .rooms.filter(deleted=False, name__iexact=data.get("name"))
         .exists()
     ):
         raise ValidationError("This room name is already taken.", code="name_taken")
     room = Room.objects.create(**data)
     if creator:
-        room.role_grants.create(world=room.world, user=creator, role="room_owner")
+        room.role_grants.create(event=room.event, user=creator, role="room_owner")
     channel = None
     if with_channel:
-        channel = Channel.objects.create(world_id=room.world_id, room=room)
+        channel = Channel.objects.create(event_id=room.event_id, room=room)
 
     AuditLog.objects.create(
-        world_id=room.world_id,
+        event_id=room.event_id,
         user=creator,
-        type="world.room.added",
+        type="event.room.added",
         data={
             "object": str(room.id),
             "new": RoomConfigSerializer(room).data,
@@ -247,11 +247,11 @@ def _create_room(data, with_channel=False, permission_preset="public", creator=N
     return room, channel
 
 
-async def create_room(world, data, creator):
+async def create_room(event, data, creator):
     types = {m["type"] for m in data.get("modules", [])}
     if "chat.native" in types:
-        if not await world.has_permission_async(
-            user=creator, permission=Permission.WORLD_ROOMS_CREATE_CHAT
+        if not await event.has_permission_async(
+            user=creator, permission=Permission.EVENT_ROOMS_CREATE_CHAT
         ):
             raise ValidationError(
                 "This user is not allowed to create a room of this type.",
@@ -260,19 +260,19 @@ async def create_room(world, data, creator):
         m = [m for m in data.get("modules", []) if m["type"] == "chat.native"][0]
         m["config"] = {"volatile": m.get("config", {}).get("volatile", False)}
     elif types == {"call.bigbluebutton"}:
-        if not await world.has_permission_async(
-            user=creator, permission=Permission.WORLD_ROOMS_CREATE_BBB
+        if not await event.has_permission_async(
+            user=creator, permission=Permission.EVENT_ROOMS_CREATE_BBB
         ):
             raise ValidationError(
                 "This user is not allowed to create a room of this type.",
                 code="denied",
             )
         m = [m for m in data.get("modules", []) if m["type"] == "call.bigbluebutton"][0]
-        m["config"] = world.config.get("bbb_defaults", {})
+        m["config"] = event.config.get("bbb_defaults", {})
         m["config"].pop("secret", None)  # legacy
     elif "livestream.native" in types:
-        if not await world.has_permission_async(
-            user=creator, permission=Permission.WORLD_ROOMS_CREATE_STAGE
+        if not await event.has_permission_async(
+            user=creator, permission=Permission.EVENT_ROOMS_CREATE_STAGE
         ):
             raise ValidationError(
                 "This user is not allowed to create a room of this type.",
@@ -281,7 +281,7 @@ async def create_room(world, data, creator):
         m = [m for m in data.get("modules", []) if m["type"] == "livestream.native"][0]
         m["config"] = {"hls_url": m.get("config", {}).get("hls_url", "")}
     elif types == set():
-        if not await world.has_permission_async(
+        if not await event.has_permission_async(
             user=creator, permission=Permission.ROOM_UPDATE
         ):
             raise ValidationError(
@@ -297,7 +297,7 @@ async def create_room(world, data, creator):
     # TODO input validation
     room, channel = await _create_room(
         {
-            "world": world,
+            "event": event,
             "name": data["name"],
             "description": data["description"],
             "module_config": data.get("modules", []),
@@ -309,7 +309,7 @@ async def create_room(world, data, creator):
         ),
     )
     await get_channel_layer().group_send(
-        f"world.{world.id}", {"type": "room.create", "room": str(room.id)}
+        f"event.{event.id}", {"type": "room.create", "room": str(room.id)}
     )
 
     return {
@@ -318,16 +318,16 @@ async def create_room(world, data, creator):
     }
 
 
-async def get_room_config_for_user(room: str, world_id: str, user):
-    room = await get_room(id=room, world_id=world_id)
-    permissions = await database_sync_to_async(room.world.get_all_permissions)(user)
-    return get_room_config(room, permissions[room] | permissions[room.world])
+async def get_room_config_for_user(room: str, event_id: str, user):
+    room = await get_room(id=room, event_id=event_id)
+    permissions = await database_sync_to_async(room.event.get_all_permissions)(user)
+    return get_room_config(room, permissions[room] | permissions[room.event])
 
 
 @database_sync_to_async
-def generate_tokens(world, number, traits, days, by_user, long=False):
+def generate_tokens(event, number, traits, days, by_user, long=False):
     from eventyay.base.models.auth import ShortToken
-    jwt_config = world.config["JWT_secrets"][0]
+    jwt_config = event.config["JWT_secrets"][0]
     secret = jwt_config["secret"]
     audience = jwt_config["audience"]
     issuer = jwt_config["issuer"]
@@ -348,7 +348,7 @@ def generate_tokens(world, number, traits, days, by_user, long=False):
         if long:
             result.append(token)
         else:
-            st = ShortToken(world=world, long_token=token, expires=exp)
+            st = ShortToken(event=event, long_token=token, expires=exp)
             result.append(st.short_token)
             bulk_create.append(st)
 
@@ -356,9 +356,9 @@ def generate_tokens(world, number, traits, days, by_user, long=False):
         ShortToken.objects.bulk_create(bulk_create)
 
     AuditLog.objects.create(
-        world_id=world.id,
+        event_id=event.id,
         user=by_user,
-        type="world.tokens.generate",
+        type="event.tokens.generate",
         data={
             "number": number,
             "days": days,
@@ -369,31 +369,31 @@ def generate_tokens(world, number, traits, days, by_user, long=False):
     return result
 
 
-def _config_serializer(world, *args, **kwargs):
-    bbb_defaults = world.config.get("bbb_defaults", {})
+def _config_serializer(event, *args, **kwargs):
+    bbb_defaults = event.config.get("bbb_defaults", {})
     bbb_defaults.pop("secret", None)  # Protect secret legacy contents
-    return WorldConfigSerializer(
+    return EventConfigSerializer(
         instance={
-            "theme": world.config.get("theme", {}),
-            "title": world.title,
-            "locale": world.locale,
-            "date_locale": world.config.get("date_locale", "en-ie"),
-            "roles": world.roles,
+            "theme": event.config.get("theme", {}),
+            "title": event.title,
+            "locale": event.locale,
+            "date_locale": event.config.get("date_locale", "en-ie"),
+            "roles": event.roles,
             "bbb_defaults": bbb_defaults,
-            "track_exhibitor_views": world.config.get("track_exhibitor_views", True),
-            "track_room_views": world.config.get("track_room_views", True),
-            "track_world_views": world.config.get("track_world_views", False),
-            "pretalx": world.config.get("pretalx", {}),
-            "video_player": world.config.get("video_player"),
-            "timezone": world.timezone,
-            "trait_grants": world.trait_grants,
-            "connection_limit": world.config.get("connection_limit", 0),
-            "profile_fields": world.config.get("profile_fields", []),
-            "social_logins": world.config.get("social_logins", []),
-            "onsite_traits": world.config.get("onsite_traits", []),
-            "conftool_url": world.config.get("conftool_url", ""),
-            "conftool_password": world.config.get("conftool_password", ""),
-            "iframe_blockers": world.config.get(
+            "track_exhibitor_views": event.config.get("track_exhibitor_views", True),
+            "track_room_views": event.config.get("track_room_views", True),
+            "track_event_views": event.config.get("track_event_views", False),
+            "pretalx": event.config.get("pretalx", {}),
+            "video_player": event.config.get("video_player"),
+            "timezone": event.timezone,
+            "trait_grants": event.trait_grants,
+            "connection_limit": event.config.get("connection_limit", 0),
+            "profile_fields": event.config.get("profile_fields", []),
+            "social_logins": event.config.get("social_logins", []),
+            "onsite_traits": event.config.get("onsite_traits", []),
+            "conftool_url": event.config.get("conftool_url", ""),
+            "conftool_password": event.config.get("conftool_password", ""),
+            "iframe_blockers": event.config.get(
                 "iframe_blockers",
                 {"default": {"enabled": False, "policy_url": None}},
             ),
@@ -405,14 +405,14 @@ def _config_serializer(world, *args, **kwargs):
 
 @database_sync_to_async
 @transaction.atomic
-def save_world(world, update_fields, old_data, by_user):
-    world.save(update_fields=update_fields)
-    new = _config_serializer(world).data
+def save_event(event, update_fields, old_data, by_user):
+    event.save(update_fields=update_fields)
+    new = _config_serializer(event).data
 
     AuditLog.objects.create(
-        world_id=world.id,
+        event_id=event.id,
         user=by_user,
-        type="world.updated",
+        type="event.updated",
         data={
             "old": old_data,
             "new": new,
@@ -422,10 +422,10 @@ def save_world(world, update_fields, old_data, by_user):
 
 
 @database_sync_to_async
-def get_audit_log(world):
+def get_audit_log(event):
     return [
         a.serialize_public()
         for a in AuditLog.objects.filter(
-            world_id=world.id,
+            event_id=event.id,
         ).prefetch_related("user")
     ]

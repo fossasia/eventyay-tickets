@@ -1,16 +1,16 @@
 from django.core.management.base import BaseCommand
 
-from eventyay.base.models import World
+from eventyay.base.models import Event
 
 
 class Command(BaseCommand):
-    help = "List all worlds in the database"
+    help = "List all events in the database"
 
     def handle(self, *args, **options):
         print("{:18}  {:32.32}  {}".format("ID", "Title", "URL"))
-        for w in World.objects.all():
+        for e in Event.objects.all():
             print(
                 "{:18}  {:32.32}  {}".format(
-                    w.pk, w.title, "https://" + w.domain if w.domain else ""
+                    e.pk, e.title, "https://" + e.domain if e.domain else ""
                 )
             )

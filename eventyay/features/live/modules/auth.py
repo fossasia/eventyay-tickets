@@ -43,8 +43,8 @@ from eventyay.base.services.user import (
 from eventyay.core.utils.redis import aredis
 from eventyay.core.utils.statsd import statsd
 from eventyay.features.importers.tasks import conftool_update_schedule
-from eventyay.features.live.channels import GROUP_USER, GROUP_WORLD
-from eventyay.features.live.decorators import command, require_world_permission
+from eventyay.features.live.channels import GROUP_USER, GROUP_EVENT
+from eventyay.features.live.decorators import command, require_event_permission
 from eventyay.features.live.modules.base import BaseModule
 
 logger = logging.getLogger(__name__)
@@ -59,14 +59,14 @@ class AuthModule(BaseModule):
 
     async def login(self, body):
         kwargs = {
-            "world": self.consumer.world,
+            "event": self.consumer.event,
         }
         if not body or "token" not in body:
             client_id = body.get("client_id")
             if not client_id:
                 async with statsd() as s:
                     s.increment(
-                        f"authentication.failed,reason=missing_token,world={self.consumer.world.pk}"
+                        f"authentication.failed,reason=missing_token,event={self.consumer.event.pk}"
                     )
                 await self.consumer.send_error(code="auth.missing_id_or_token")
                 return
@@ -75,20 +75,20 @@ class AuthModule(BaseModule):
                 kwargs["invite_token"] = body.get("invite_token")
         else:
             try:
-                token = self.consumer.world.decode_token(
+                token = self.consumer.event.decode_token(
                     body["token"], allow_raise=True
                 )
             except jwt.exceptions.ExpiredSignatureError:
                 async with statsd() as s:
                     s.increment(
-                        f"authentication.failed,reason=expired_token,world={self.consumer.world.pk}"
+                        f"authentication.failed,reason=expired_token,event={self.consumer.event.pk}"
                     )
                     await self.consumer.send_error(code="auth.expired_token")
                     return
             except jwt.exceptions.InvalidTokenError:
                 async with statsd() as s:
                     s.increment(
-                        f"authentication.failed,reason=invalid_token,world={self.consumer.world.pk}"
+                        f"authentication.failed,reason=invalid_token,event={self.consumer.event.pk}"
                     )
                     await self.consumer.send_error(code="auth.invalid_token")
                     return
@@ -99,7 +99,7 @@ class AuthModule(BaseModule):
         except AuthError as e:
             async with statsd() as s:
                 s.increment(
-                    f"authentication.failed,reason=denied,world={self.consumer.world.pk}"
+                    f"authentication.failed,reason=denied,event={self.consumer.event.pk}"
                 )
             await self.consumer.send_error(code=e.code)
             return
@@ -122,29 +122,29 @@ class AuthModule(BaseModule):
                 "authenticated",
                 {
                     "user.config": self.consumer.user.serialize_public(
-                        trait_badges_map=self.consumer.world.config.get(
+                        trait_badges_map=self.consumer.event.config.get(
                             "trait_badges_map"
                         ),
                         include_client_state=True,
                     ),
-                    "world.config": login_result.world_config,
+                    "event.config": login_result.event_config,
                     "chat.channels": login_result.chat_channels,
                     "chat.read_pointers": read_pointers,
                     "chat.notification_counts": login_result.chat_notification_counts,
                     "exhibition": login_result.exhibition_data,
                     "announcements": await get_announcements(
-                        world=self.consumer.world.id, moderator=False
+                        event=self.consumer.event.id, moderator=False
                     ),
                 },
             ]
         )
         self.consumer.known_room_id_cache = {
-            r["id"] for r in login_result.world_config["rooms"]
+            r["id"] for r in login_result.event_config["rooms"]
         }
 
-        if not await self.consumer.world.has_permission_async(
+        if not await self.consumer.event.has_permission_async(
             user=self.consumer.user,
-            permission=Permission.WORLD_CONNECTIONS_UNLIMITED,
+            permission=Permission.EVENT_CONNECTIONS_UNLIMITED,
         ):
             await self._enforce_connection_limit()
 
@@ -153,31 +153,31 @@ class AuthModule(BaseModule):
             self.consumer.channel_name,
         )
         await self.consumer.channel_layer.group_add(
-            GROUP_WORLD.format(id=self.consumer.world.id),
+            GROUP_EVENT.format(id=self.consumer.event.id),
             self.consumer.channel_name,
         )
 
-        await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
+        await ChatService(self.consumer.event).enforce_forced_joins(self.consumer.user)
 
         async with statsd() as s:
-            s.increment(f"authentication.completed,world={self.consumer.world.pk}")
+            s.increment(f"authentication.completed,event={self.consumer.event.pk}")
 
-        if self.consumer.world.config.get("pretalx", {}).get("conftool"):
+        if self.consumer.event.config.get("pretalx", {}).get("conftool"):
             async with aredis() as redis:
                 # This is a very hacky replacement of a cronjob. The main advantage is that it will only run while
-                # the world is in use and stop running after the event. Let's see how it works out in the real world.
+                # the event is in use and stop running after the event. Let's see how it works out in the real event.
                 if await redis.set(
-                    f"conftool:update.triggered:{self.consumer.world.pk}",
+                    f"conftool:update.triggered:{self.consumer.event.pk}",
                     "yes",
                     ex=300,
                     nx=True,
                 ):
                     await sync_to_async(conftool_update_schedule.apply_async)(
-                        kwargs={"world": str(self.consumer.world.id)}
+                        kwargs={"event": str(self.consumer.event.id)}
                     )
 
     async def _enforce_connection_limit(self):
-        connection_limit = self.consumer.world.config.get("connection_limit")
+        connection_limit = self.consumer.event.config.get("connection_limit")
         if not connection_limit:
             return
 
@@ -247,10 +247,10 @@ class AuthModule(BaseModule):
                     )
 
     @command("update")
-    @require_world_permission(Permission.WORLD_VIEW)
+    @require_event_permission(Permission.EVENT_VIEW)
     async def update(self, body):
         user = await database_sync_to_async(update_user)(
-            self.consumer.world.id,
+            self.consumer.event.id,
             self.consumer.user.id,
             data=body,
             is_admin=False,
@@ -261,20 +261,20 @@ class AuthModule(BaseModule):
         await user_broadcast(
             "user.updated",
             user.serialize_public(
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
                 include_client_state=True,
             ),
             user.pk,
             self.consumer.socket_id,
         )
         await self.consumer.user.refresh_from_db_if_outdated(allowed_age=0)
-        await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
+        await ChatService(self.consumer.event).enforce_forced_joins(self.consumer.user)
 
     @command("admin.update")
-    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    @require_event_permission(Permission.EVENT_USERS_MANAGE)
     async def admin_update(self, body):
         user = await database_sync_to_async(update_user)(
-            self.consumer.world.id,
+            self.consumer.event.id,
             body.pop("id"),
             data=body,
             is_admin=True,
@@ -283,7 +283,7 @@ class AuthModule(BaseModule):
         await user_broadcast(
             "user.updated",
             user.serialize_public(
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
                 include_client_state=user.type == User.UserType.KIOSK,
             ),
             user.pk,
@@ -292,33 +292,33 @@ class AuthModule(BaseModule):
         await self.consumer.send_success()
 
     @command("fetch")
-    @require_world_permission(Permission.WORLD_VIEW)
+    @require_event_permission(Permission.EVENT_VIEW)
     async def fetch(self, body):
-        admin = await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+        admin = await self.consumer.event.has_permission_async(
+            user=self.consumer.user, permission=Permission.EVENT_USERS_MANAGE
         )
         if "ids" in body:
             users = await get_public_users(
-                self.consumer.world.id,
+                self.consumer.event.id,
                 ids=body.get("ids")[:100],
                 include_admin_info=admin,
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
             )
             await self.consumer.send_success({u["id"]: u for u in users})
         elif "pretalx_ids" in body:
             users = await get_public_users(
-                self.consumer.world.id,
+                self.consumer.event.id,
                 pretalx_ids=body.get("pretalx_ids")[:100],
                 include_admin_info=admin,
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
             )
             await self.consumer.send_success({u["pretalx_id"]: u for u in users})
         else:
             user = await get_public_user(
-                self.consumer.world.id,
+                self.consumer.event.id,
                 body.get("id"),
                 include_admin_info=admin,
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
             )
             if user:
                 await self.consumer.send_success(user)
@@ -332,45 +332,45 @@ class AuthModule(BaseModule):
                 self.consumer.channel_name,
             )
             await self.consumer.channel_layer.group_discard(
-                GROUP_WORLD.format(id=self.consumer.world.id),
+                GROUP_EVENT.format(id=self.consumer.event.id),
                 self.consumer.channel_name,
             )
             await unregister_user_connection(
                 self.consumer.user.id, self.consumer.channel_name
             )
-        if self._current_view and self.consumer.world:
+        if self._current_view and self.consumer.event:
             await database_sync_to_async(end_view)(
                 self._current_view,
-                delete=not self.consumer.world.config.get("track_world_views", False),
+                delete=not self.consumer.event.config.get("track_event_views", False),
             )
 
     @command("list")
-    @require_world_permission(Permission.WORLD_USERS_LIST)
+    @require_event_permission(Permission.EVENT_USERS_LIST)
     async def list(self, body):
         body = body or {}
         users = await get_public_users(
-            self.consumer.world.pk,
-            include_admin_info=await self.consumer.world.has_permission_async(
+            self.consumer.event.pk,
+            include_admin_info=await self.consumer.event.has_permission_async(
                 user=self.consumer.user,
-                permission=Permission.WORLD_USERS_MANAGE,
+                permission=Permission.EVENT_USERS_MANAGE,
             ),
             type=body.get("type", User.UserType.PERSON),
             include_banned=not body
             or body.get("include_banned", True)
-            and await self.consumer.world.has_permission_async(
+            and await self.consumer.event.has_permission_async(
                 user=self.consumer.user,
-                permission=Permission.WORLD_USERS_MANAGE,
+                permission=Permission.EVENT_USERS_MANAGE,
             ),
-            trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+            trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
         )
         await self.consumer.send_success({"results": users})
 
     @command("list.search")
     async def user_list(self, body):
-        list_conf = self.consumer.world.config.get("user_list", {})
+        list_conf = self.consumer.event.config.get("user_list", {})
         page_size = list_conf.get("page_size", 20)
         search_min_chars = list_conf.get("search_min_chars", 0)
-        profile_fields = self.consumer.world.config.get("profile_fields", {})
+        profile_fields = self.consumer.event.config.get("profile_fields", {})
         badge = body.get("badge")
         search_fields = [
             field["id"]
@@ -384,33 +384,33 @@ class AuthModule(BaseModule):
             }
         else:
             result = await list_users(
-                world_id=self.consumer.world.id,
+                event_id=self.consumer.event.id,
                 page=body["page"],
                 page_size=page_size,
                 search_term=body["search_term"],
                 badge=badge,
                 search_fields=search_fields,
-                include_admin_info=await self.consumer.world.has_permission_async(
+                include_admin_info=await self.consumer.event.has_permission_async(
                     user=self.consumer.user,
-                    permission=Permission.WORLD_USERS_MANAGE,
+                    permission=Permission.EVENT_USERS_MANAGE,
                 ),
                 include_banned=body.get("include_banned", True)
-                and await self.consumer.world.has_permission_async(
+                and await self.consumer.event.has_permission_async(
                     user=self.consumer.user,
-                    permission=Permission.WORLD_USERS_MANAGE,
+                    permission=Permission.EVENT_USERS_MANAGE,
                 ),
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
             )
         await self.consumer.send_success(result)
 
     @command("delete")
-    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    @require_event_permission(Permission.EVENT_USERS_MANAGE)
     async def delete(self, body):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.delete.self")
             return
         ok = await delete_user(
-            self.consumer.world, body.get("id"), by_user=self.consumer.user
+            self.consumer.event, body.get("id"), by_user=self.consumer.user
         )
         if ok:
             await self.consumer.send_success({})
@@ -423,13 +423,13 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.not_found")
 
     @command("ban")
-    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    @require_event_permission(Permission.EVENT_USERS_MANAGE)
     async def ban(self, body):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.ban.self")
             return
         ok = await set_user_banned(
-            self.consumer.world, body.get("id"), by_user=self.consumer.user
+            self.consumer.event, body.get("id"), by_user=self.consumer.user
         )
         if ok:
             await self.consumer.send_success({})
@@ -442,13 +442,13 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.not_found")
 
     @command("silence")
-    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    @require_event_permission(Permission.EVENT_USERS_MANAGE)
     async def silence(self, body):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.silence.self")
             return
         ok = await set_user_silenced(
-            self.consumer.world, body.get("id"), by_user=self.consumer.user
+            self.consumer.event, body.get("id"), by_user=self.consumer.user
         )
         if ok:
             await self.consumer.send_success({})
@@ -461,13 +461,13 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.not_found")
 
     @command("reactivate")
-    @require_world_permission(Permission.WORLD_USERS_MANAGE)
+    @require_event_permission(Permission.EVENT_USERS_MANAGE)
     async def reactivate(self, body):
         if body.get("id") == str(self.consumer.user.id):
             await self.consumer.send_error(code="user.reactivate.self")
             return
         ok = await set_user_free(
-            self.consumer.world,
+            self.consumer.event,
             body.get("id"),
             by_user=self.consumer.user,
         )
@@ -482,7 +482,7 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.block.self")
             return
         ok = await block_user(
-            self.consumer.world,
+            self.consumer.event,
             self.consumer.user,
             body.get("id"),
         )
@@ -497,7 +497,7 @@ class AuthModule(BaseModule):
             await self.consumer.send_error(code="user.unblock.self")
             return
         ok = await unblock_user(
-            self.consumer.world,
+            self.consumer.event,
             self.consumer.user,
             body.get("id"),
         )
@@ -510,18 +510,18 @@ class AuthModule(BaseModule):
     async def list_blocked(self, body):
         users = await get_blocked_users(
             self.consumer.user,
-            self.consumer.world,
+            self.consumer.event,
         )
         await self.consumer.send_success({"users": users})
 
     @command("online_status")
-    @require_world_permission(Permission.WORLD_VIEW)
+    @require_event_permission(Permission.EVENT_VIEW)
     async def online_state(self, body):
         resp = {i: (await get_user_connection_count(i)) > 0 for i in body.get("ids")}
         await self.consumer.send_success(resp)
 
     @command("social.connect")
-    @require_world_permission(Permission.WORLD_VIEW)
+    @require_event_permission(Permission.EVENT_VIEW)
     async def social_connect(self, body):
         network = body.get("network")
 
@@ -536,7 +536,7 @@ class AuthModule(BaseModule):
         payload = {
             "network": network,
             "return_url": body.get("return_url"),
-            "world": self.consumer.world.pk,
+            "event": self.consumer.event.pk,
             "user": str(self.consumer.user.pk),
         }
         token = dumps(payload, salt="eventyay.base.social.start", compress=True)
@@ -550,7 +550,7 @@ class AuthModule(BaseModule):
         )
 
     @command("kiosk.create")
-    @require_world_permission(Permission.WORLD_UPDATE)  # TODO: stricter permission?
+    @require_event_permission(Permission.EVENT_UPDATE)  # TODO: stricter permission?
     async def kiosk_create(self, body):
         uid = str(uuid.uuid4())
 
@@ -559,14 +559,14 @@ class AuthModule(BaseModule):
             user = User.objects.create(
                 type=User.UserType.KIOSK,
                 token_id=uid,
-                world=self.consumer.world,
+                event=self.consumer.event,
                 show_publicly=False,
                 profile=(
                     body["profile"] if isinstance(body.get("profile"), dict) else {}
                 ),
                 traits=[],
             )
-            user.world_grants.create(world=self.consumer.world, role="__kiosk")
+            user.event_grants.create(event=self.consumer.event, role="__kiosk")
             return user
 
         user = await create_user()
@@ -574,13 +574,13 @@ class AuthModule(BaseModule):
         await self.consumer.send_success({"user": str(user.pk)})
 
     @command("kiosk.fetch")
-    @require_world_permission(
-        Permission.WORLD_USERS_MANAGE
+    @require_event_permission(
+        Permission.EVENT_USERS_MANAGE
     )  # TODO: stricter permission?
     async def kiosk_fetch(self, body):
         @database_sync_to_async
         def get_user(uid):
-            user = get_user_by_id(self.consumer.world.pk, uid)
+            user = get_user_by_id(self.consumer.event.pk, uid)
             if not user or user.type != User.UserType.KIOSK:
                 return None
             user = user.serialize_public(
@@ -588,7 +588,7 @@ class AuthModule(BaseModule):
                 trait_badges_map=None,
                 include_client_state=True,
             )
-            jwt_config = self.consumer.world.config["JWT_secrets"][0]
+            jwt_config = self.consumer.event.config["JWT_secrets"][0]
             iat = datetime.datetime.utcnow()
             exp = iat + datetime.timedelta(days=365)
             payload = {
@@ -601,7 +601,7 @@ class AuthModule(BaseModule):
             }
 
             token = jwt.encode(payload, jwt_config["secret"], algorithm="HS256")
-            st = ShortToken(world=self.consumer.world, long_token=token, expires=exp)
+            st = ShortToken(event=self.consumer.event, long_token=token, expires=exp)
             st.save()
             user["token"] = st.short_token
             return user

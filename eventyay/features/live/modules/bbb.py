@@ -17,13 +17,13 @@ class BBBModule(BaseModule):
         module_required="call.bigbluebutton",
     )
     async def room_url(self, body):
-        service = BBBService(self.consumer.world)
+        service = BBBService(self.consumer.event)
         if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("bbb.join.missing_profile")
         url = await service.get_join_url_for_room(
             self.room,
             self.consumer.user,
-            moderator=await self.consumer.world.has_permission_async(
+            moderator=await self.consumer.event.has_permission_async(
                 user=self.consumer.user,
                 permission=Permission.ROOM_BBB_MODERATE,
                 room=self.room,
@@ -35,7 +35,7 @@ class BBBModule(BaseModule):
 
     @command("call_url")
     async def call_url(self, body):
-        service = BBBService(self.consumer.world)
+        service = BBBService(self.consumer.event)
         if not self.consumer.user.profile.get("display_name"):
             raise ConsumerException("bbb.join.missing_profile")
         url = await service.get_join_url_for_call_id(
@@ -52,7 +52,7 @@ class BBBModule(BaseModule):
         module_required="call.bigbluebutton",
     )
     async def recordings(self, body):
-        service = BBBService(self.consumer.world)
+        service = BBBService(self.consumer.event)
         recordings = await service.get_recordings_for_room(
             self.room,
         )

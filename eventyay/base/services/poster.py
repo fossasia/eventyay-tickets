@@ -13,10 +13,10 @@ from eventyay.base.services.user import get_user_by_id
 from eventyay.base.models.room import Room
 
 
-def get_poster_by_id(world_id, id):
+def get_poster_by_id(event_id, id):
     try:
         return Poster.objects.prefetch_related("links", "votes", "presenters").get(
-            id=id, world_id=world_id
+            id=id, event_id=event_id
         )
     except Poster.DoesNotExist:
         return
@@ -57,20 +57,20 @@ def get_or_create_presenter(user, poster):
     return obj
 
 
-def get_room_by_id(world_id, id):
+def get_room_by_id(event_id, id):
     try:
-        return Room.objects.get(id=id, world__id=world_id)
+        return Room.objects.get(id=id, event__id=event_id)
     except Room.DoesNotExist:
         return
 
 
 class PosterService:
-    def __init__(self, world):
-        self.world = world
+    def __init__(self, event):
+        self.event = event
 
     @database_sync_to_async
     def get_all_posters(self, presenter_includes_user=None):
-        qs = Poster.objects.filter(world__id=self.world.pk).order_by("title")
+        qs = Poster.objects.filter(event__id=self.event.pk).order_by("title")
 
         if presenter_includes_user:
             qs = qs.filter(
@@ -91,7 +91,7 @@ class PosterService:
     @database_sync_to_async
     def get_posters(self, room_id, user=None, list_format=True):
         qs = (
-            Poster.objects.filter(world__id=self.world.pk)
+            Poster.objects.filter(event__id=self.event.pk)
             .filter(parent_room__id=room_id)
             .order_by("title")
         ).prefetch_related("links", "votes", "presenters")
@@ -100,7 +100,7 @@ class PosterService:
 
     @database_sync_to_async
     def get_poster(self, poster_id, user=None):
-        poster = get_poster_by_id(self.world.pk, poster_id)
+        poster = get_poster_by_id(self.event.pk, poster_id)
         if not poster:
             return None
         return poster.serialize(user)
@@ -108,11 +108,11 @@ class PosterService:
     @database_sync_to_async
     @atomic
     def delete(self, poster_id, by_user):
-        poster = get_poster_by_id(self.world.pk, poster_id)
+        poster = get_poster_by_id(self.event.pk, poster_id)
         if not poster:
             return None
         AuditLog.objects.create(
-            world_id=self.world.pk,
+            event_id=self.event.pk,
             user=by_user,
             type="poster.deleted",
             data={
@@ -124,14 +124,14 @@ class PosterService:
 
     @database_sync_to_async
     @atomic
-    def patch(self, data, world, by_user, exclude_fields=tuple()):
+    def patch(self, data, event, by_user, exclude_fields=tuple()):
         is_creating = False
         old = {}
         if data["id"] == "":
             is_creating = True
-            poster = Poster(world=world)
+            poster = Poster(event=event)
         else:
-            poster = get_poster_by_id(self.world.pk, data["id"])
+            poster = get_poster_by_id(self.event.pk, data["id"])
             old = poster.serialize()
             if not poster:
                 return None
@@ -142,7 +142,7 @@ class PosterService:
                 room_id = data.get(id_attr)
                 room = (
                     get_room_by_id(
-                        self.world.pk,
+                        self.event.pk,
                         room_id or getattr(poster, id_attr, None),
                     )
                     if room_id
@@ -168,7 +168,7 @@ class PosterService:
                 setattr(poster, key, value)
 
         if is_creating:
-            poster.channel = Channel.objects.create(world=poster.world)
+            poster.channel = Channel.objects.create(event=poster.event)
         poster.save()
 
         if "links" in data and "links" not in exclude_fields:
@@ -182,7 +182,7 @@ class PosterService:
         if "presenters" in data and "presenters" not in exclude_fields:
             presenters = []
             for user in data["presenters"]:
-                user = get_user_by_id(self.world.pk, user["id"])
+                user = get_user_by_id(self.event.pk, user["id"])
                 presenters.append(get_or_create_presenter(user, poster))
             for presenter in poster.presenters.all():
                 if presenter not in presenters:
@@ -190,7 +190,7 @@ class PosterService:
 
         new = poster.serialize()
         AuditLog.objects.create(
-            world_id=self.world.pk,
+            event_id=self.event.pk,
             user=by_user,
             type="poster.updated",
             data={
@@ -204,7 +204,7 @@ class PosterService:
 
     @database_sync_to_async
     def vote(self, poster_id, user):
-        poster = get_poster_by_id(self.world.pk, poster_id)
+        poster = get_poster_by_id(self.event.pk, poster_id)
         if not poster:
             return None
         vote, created = PosterVote.objects.get_or_create(user=user, poster=poster)
@@ -216,14 +216,14 @@ class PosterService:
 
     @database_sync_to_async
     def unvote(self, poster_id, user):
-        poster = get_poster_by_id(self.world.pk, poster_id)
+        poster = get_poster_by_id(self.event.pk, poster_id)
         if not poster:
             return None
         return PosterVote.objects.filter(user=user, poster=poster).delete()
 
     @database_sync_to_async
     def get_presenters(self, poster_id):
-        poster = get_poster_by_id(self.world.pk, poster_id)
+        poster = get_poster_by_id(self.event.pk, poster_id)
         if not poster:
             return None
         return list(poster.presenters.values_list("user__id", flat=True))
@@ -231,7 +231,7 @@ class PosterService:
     @database_sync_to_async
     def get_posters_presented_by_user(self, user_id):
         posters = Poster.objects.filter(
-            world__id=self.world.pk,
+            event__id=self.event.pk,
             presenters__user__id=user_id,
         ).prefetch_related("links", "votes", "presenters")
         return [poster.serialize() for poster in posters]

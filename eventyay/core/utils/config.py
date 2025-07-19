@@ -8,25 +8,25 @@ from eventyay.base.models import (
     ExhibitorLink,
     ExhibitorSocialMediaLink,
 )
+from eventyay.base.models.event import Event
 from eventyay.base.models.room import Room
-from eventyay.base.models.world import World
 
 
 @transaction.atomic
 def import_config(data):
     data = copy.deepcopy(data)
-    world_config = data.pop("world")
-    world, _ = World.objects.get_or_create(id=world_config.pop("id"))
-    world.title = world_config.pop("title")
-    world.config = world_config
-    world.trait_grants = data.pop("trait_grants", {})
-    world.roles = data.pop("roles", {})
-    world.save()
+    event_config = data.pop("event")
+    event, _ = Event.objects.get_or_create(id=event_config.pop("id"))
+    event.title = event_config.pop("title")
+    event.config = event_config
+    event.trait_grants = data.pop("trait_grants", {})
+    event.roles = data.pop("roles", {})
+    event.save()
 
     for i, room_config in enumerate(data.pop("rooms")):
         room, _ = Room.objects.get_or_create(
             import_id=room_config.pop("id"),
-            world=world,
+            event=event,
             defaults={"name": room_config["name"]},
         )
         room.name = room_config.pop("name")
@@ -41,11 +41,11 @@ def import_config(data):
 
         for module in room.module_config:
             if module["type"] == "chat.native":
-                Channel.objects.get_or_create(room=room, world=world)
+                Channel.objects.get_or_create(room=room, event=event)
 
     for i, exhibitor_config in enumerate(data.pop("exhibitors")):
         exhibitor, _ = Exhibitor.objects.get_or_create(
-            world=world,
+            event=event,
             room=Room.objects.get(import_id=exhibitor_config.pop("room")),
             name=exhibitor_config.pop("name"),
         )

@@ -2,8 +2,8 @@ import functools
 from typing import List, Union
 
 from eventyay.core.permissions import Permission
+from eventyay.base.services.event import get_room
 from eventyay.base.services.chat import get_channel
-from eventyay.base.services.world import get_room
 from eventyay.features.live.exceptions import ConsumerException
 
 
@@ -66,14 +66,14 @@ def room_action(
                     await self.room.refresh_from_db_if_outdated(allowed_age=30)
                 else:
                     self.room = await get_room(
-                        world=self.consumer.world, id=body["room"]
+                        event=self.consumer.event, id=body["room"]
                     )
                     self.consumer.room_cache[body["room"]] = self.room
             elif "channel" in body:
                 channel = self.consumer.channel_cache.get(body["channel"])
                 if not channel:
                     channel = await get_channel(
-                        world=self.consumer.world, pk=body["channel"]
+                        event=self.consumer.event, pk=body["channel"]
                     )
                     self.consumer.channel_cache[body["channel"]] = channel
                 elif channel.room:
@@ -110,7 +110,7 @@ def room_action(
                         "protocol.unauthenticated",
                         "No authentication provided.",
                     )
-                if not await self.consumer.world.has_permission_async(
+                if not await self.consumer.event.has_permission_async(
                     user=self.consumer.user,
                     permission=permission_required,
                     room=self.room,
@@ -126,7 +126,7 @@ def room_action(
     return wrapper
 
 
-def require_world_permission(permission: Permission):
+def require_event_permission(permission: Permission):
     def wrapper(func):
         @functools.wraps(func)
         async def wrapped(self, *args):
@@ -135,7 +135,7 @@ def require_world_permission(permission: Permission):
                 raise ConsumerException(
                     "protocol.unauthenticated", "No authentication provided."
                 )
-            if not await self.consumer.world.has_permission_async(
+            if not await self.consumer.event.has_permission_async(
                 user=self.consumer.user, permission=permission
             ):
                 raise ConsumerException("auth.denied", "Permission denied.")

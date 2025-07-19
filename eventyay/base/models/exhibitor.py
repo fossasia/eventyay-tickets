@@ -30,8 +30,8 @@ class Exhibitor(models.Model):
         related_name="exhibitors",
         on_delete=models.CASCADE,
     )
-    world = models.ForeignKey(
-        to="World",
+    event = models.ForeignKey(
+        to="Event",
         related_name="exhibitors",
         on_delete=models.CASCADE,
     )
@@ -58,7 +58,7 @@ class Exhibitor(models.Model):
         for staff_member in self.staff.order_by("id").all():
             staff.append(
                 staff_member.user.serialize_public(
-                    trait_badges_map=self.world.config.get("trait_badges_map")
+                    trait_badges_map=self.event.config.get("trait_badges_map")
                 )
             )
 

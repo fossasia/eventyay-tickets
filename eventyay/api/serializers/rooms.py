@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from eventyay.base.models.world import World
+from eventyay.base.models.event import Event
 
 from eventyay.base.models.room import Room
 
@@ -27,13 +27,13 @@ class RoomSerializer(serializers.ModelSerializer):
         ]
 
 
-class WorldSerializer(serializers.ModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
     config = serializers.DictField()
     trait_grants = serializers.DictField()
     roles = serializers.DictField()
 
     class Meta:
-        model = World
+        model = Event
         fields = [
             "id",
             "title",

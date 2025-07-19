@@ -45,13 +45,13 @@ from eventyay.base.models.storage_model import StoredFile
 
 
 class ReportGenerator:
-    def __init__(self, world, pdf_graphs=True):
-        self.world = world
+    def __init__(self, event, pdf_graphs=True):
+        self.event = event
         self.pdf_graphs = pdf_graphs
 
     def build(self, input):
         self.input = input
-        self.schedule = get_schedule(self.world)
+        self.schedule = get_schedule(self.event)
 
         with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
             doc = self.get_doc_template()(
@@ -75,7 +75,7 @@ class ReportGenerator:
             doc.build(self.get_story())
             f.seek(0)
             sf = StoredFile.objects.create(
-                world=self.world,
+                event=self.event,
                 date=now(),
                 expires=now() + timedelta(hours=2),
                 filename="report.pdf",
@@ -141,7 +141,7 @@ class ReportGenerator:
         return "eventyay"
 
     def get_left_header_string(self):
-        return self.world.title
+        return self.event.title
 
     def page_header(self, canvas, doc):
         from reportlab.lib.units import mm
@@ -165,12 +165,12 @@ class ReportGenerator:
 
     @cached_property
     def tz(self):
-        return pytz.timezone(self.world.timezone)
+        return pytz.timezone(self.event.timezone)
 
     @cached_property
     def date_begin(self):
         begin = RoomView.objects.filter(
-            room__world=self.world, user__type=User.UserType.PERSON
+            room__event=self.event, user__type=User.UserType.PERSON
         ).aggregate(min=Min("start"))["min"]
 
         if "begin" in self.input:
@@ -185,7 +185,7 @@ class ReportGenerator:
     @cached_property
     def date_end(self):
         end = RoomView.objects.filter(
-            room__world=self.world, user__type=User.UserType.PERSON
+            room__event=self.event, user__type=User.UserType.PERSON
         ).aggregate(max=Greatest(Max("start"), Max("end")))["max"]
 
         if "end" in self.input:
@@ -199,12 +199,12 @@ class ReportGenerator:
 
     def get_story(self):
         s = [
-            Paragraph(self.world.title, self.stylesheet["Heading1"]),
+            Paragraph(self.event.title, self.stylesheet["Heading1"]),
         ]
         s += self.global_sums()
         s += self.story_for_exhibitors()
 
-        for room in self.world.rooms.all():
+        for room in self.event.rooms.all():
             types = [m["type"] for m in room.module_config]
             if any(
                 t.startswith("livestream.")
@@ -376,7 +376,7 @@ class ReportGenerator:
                 tdata.append(
                     [
                         Paragraph(
-                            pretalx_uni18n(talk["title"], self.world.locale),
+                            pretalx_uni18n(talk["title"], self.event.locale),
                             self.stylesheet["Normal"],
                         ),
                         Paragraph(
@@ -430,7 +430,7 @@ class ReportGenerator:
             ]
         ]
 
-        qs = self.world.exhibitors.annotate(
+        qs = self.event.exhibitors.annotate(
             c_views=Subquery(
                 ExhibitorView.objects.filter(
                     exhibitor=OuterRef("pk"),
@@ -511,18 +511,18 @@ class ReportGenerator:
                 _("Report timeframe end"),
                 date_format(self.date_end, "SHORT_DATETIME_FORMAT"),
             ],
-            [_("Number of users (total)"), str(self.world.user_set.count())],
+            [_("Number of users (total)"), str(self.event.user_set.count())],
             [
                 _("Users with authenticated access (total)"),
                 str(
-                    self.world.user_set.filter(
+                    self.event.user_set.filter(
                         token_id__isnull=False, type=User.UserType.PERSON
                     ).count()
                 ),
             ],
             [
                 _("Exhibitors (total)"),
-                str(self.world.exhibitors.count()),
+                str(self.event.exhibitors.count()),
             ],
             [
                 _(
@@ -530,7 +530,7 @@ class ReportGenerator:
                 ),
                 str(
                     ChatEvent.objects.filter(
-                        channel__world=self.world,
+                        channel__event=self.event,
                         event_type="channel.message",
                         channel__room__isnull=False,
                         timestamp__gte=self.date_begin,
@@ -541,14 +541,14 @@ class ReportGenerator:
             [
                 _("Number of direct message channels (total)"),
                 str(
-                    Channel.objects.filter(world=self.world, room__isnull=True).count()
+                    Channel.objects.filter(event=self.event, room__isnull=True).count()
                 ),
             ],
             [
                 _("Number of chat messages in direct messages (in timeframe)"),
                 str(
                     ChatEvent.objects.filter(
-                        channel__world=self.world,
+                        channel__event=self.event,
                         event_type="channel.message",
                         channel__room__isnull=True,
                         timestamp__gte=self.date_begin,
@@ -560,7 +560,7 @@ class ReportGenerator:
                 _("Number of 1:1 call attempts (in timeframe)"),
                 str(
                     ChatEvent.objects.filter(
-                        channel__world=self.world,
+                        channel__event=self.event,
                         event_type="channel.message",
                         channel__room__isnull=True,
                         content__type="call",
@@ -587,7 +587,7 @@ class ReportGenerator:
             gde = day.replace(
                 hour=self.date_end.hour, minute=self.date_end.minute, second=0
             )
-            build_room_view_fig(fig, self.world, gds, gde, self.tz)
+            build_room_view_fig(fig, self.event, gds, gde, self.tz)
             s.append(
                 KeepTogether(
                     [

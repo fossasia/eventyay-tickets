@@ -6,8 +6,8 @@ from django.core.files.base import ContentFile
 from django.utils.timezone import now
 
 from eventyay.celery_app import app
-from eventyay.base.services.world import notify_schedule_change
-from eventyay.core.tasks import WorldTask
+from eventyay.base.services.event import notify_schedule_change
+from eventyay.core.tasks import EventTask
 from eventyay.features.importers.conftool import (
     create_posters_from_conftool,
     fetch_schedule_from_conftool,
@@ -15,12 +15,12 @@ from eventyay.features.importers.conftool import (
 from eventyay.base.models.storage_model import StoredFile
 
 
-@app.task(base=WorldTask)
-def conftool_update_schedule(world):
-    u = world.config.get("conftool_url")
-    p = world.config.get("conftool_password")
+@app.task(base=EventTask)
+def conftool_update_schedule(event):
+    u = event.config.get("conftool_url")
+    p = event.config.get("conftool_password")
 
-    if not u or not p or not world.config.get("pretalx").get("conftool"):
+    if not u or not p or not event.config.get("pretalx").get("conftool"):
         return "invalid"
 
     d = fetch_schedule_from_conftool(u, p)
@@ -30,27 +30,27 @@ def conftool_update_schedule(world):
     document = json.dumps(d, sort_keys=True)
 
     if StoredFile.objects.filter(
-        world=world, filename=f"conftool_schedule_{checksum}.json"
+        event=event, filename=f"conftool_schedule_{checksum}.json"
     ).exists():
         return "unchanged"
 
     sf = StoredFile.objects.create(
-        world=world,
+        event=event,
         date=now(),
         filename=f"conftool_schedule_{checksum}.json",
         type="application/json",
         file=ContentFile(document, "schedule.json"),
         public=True,
     )
-    world.config["pretalx"]["url"] = sf.file.url
-    world.config["pretalx"]["conftool"] = True
-    world.save()
-    async_to_sync(notify_schedule_change)(world.id)
+    event.config["pretalx"]["url"] = sf.file.url
+    event.config["pretalx"]["conftool"] = True
+    event.save()
+    async_to_sync(notify_schedule_change)(event.id)
     return sf.pk
 
 
-@app.task(base=WorldTask)
-def conftool_sync_posters(world):
-    u = world.config.get("conftool_url")
-    p = world.config.get("conftool_password")
-    create_posters_from_conftool(world, u, p)
+@app.task(base=EventTask)
+def conftool_sync_posters(event):
+    u = event.config.get("conftool_url")
+    p = event.config.get("conftool_password")
+    create_posters_from_conftool(event, u, p)

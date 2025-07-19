@@ -18,7 +18,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
-from eventyay.base.models import Feedback, World
+from eventyay.base.models import Feedback, Event
 from eventyay.base.models.auth import ShortToken
 from eventyay.base.models.room import AnonymousInvite
 
@@ -41,12 +41,12 @@ sh = SourceCache()
 
 class ManifestView(View):
     def get(self, request, *args, **kwargs):
-        world_domain = re.sub(r":\d+$", "", request.get_host())
-        world = get_object_or_404(World, domain=world_domain)
+        event_domain = re.sub(r":\d+$", "", request.get_host())
+        event = get_object_or_404(Event, domain=event_domain)
         # TODO: Allow to parametrize colors and logos
         source = {
-            "name": world.title,
-            "short_name": world.title,
+            "name": event.title,
+            "short_name": event.title,
             "theme_color": "#180044",
             "icons": [
                 {
@@ -84,8 +84,8 @@ class AppView(View):
     def get(self, request, *args, **kwargs):
         # Is this an anonymous invite to a room?
         short_host = self._has_separate_short_domain
-        world_domain = re.sub(r":\d+$", "", request.get_host())
-        if short_host and world_domain == short_host:
+        event_domain = re.sub(r":\d+$", "", request.get_host())
+        if short_host and event_domain == short_host:
             # The sysadmin has set up a separate domain for short URLs
             if request.path == "/":
                 # This must be a 200, not a 302 or 404, so the domain is considered "active"
@@ -101,7 +101,7 @@ class AppView(View):
                     return render(request, "live/short_domain_invalid.html", status=404)
                 return redirect(
                     urljoin(
-                        request.scheme + "://" + invite.world.domain,
+                        request.scheme + "://" + invite.event.domain,
                         f"/standalone/{invite.room_id}/anonymous#invite={invite.short_token}",
                     )
                 )
@@ -114,7 +114,7 @@ class AppView(View):
                 )
                 return redirect(
                     urljoin(
-                        request.scheme + "://" + invite.world.domain,
+                        request.scheme + "://" + invite.event.domain,
                         f"/standalone/{invite.room_id}/anonymous#invite={invite.short_token}",
                     )
                 )
@@ -123,16 +123,16 @@ class AppView(View):
                 # the frontend router.
                 pass
         try:
-            world = get_object_or_404(World, domain=world_domain)
+            event = get_object_or_404(Event, domain=event_domain)
         except OperationalError:
             # We use connection pooling, so if the database server went away since the last connection
             # terminated, Django won't know and we'll get an OperationalError. We just silently re-try
             # once, since Django will then use a new connection.
-            world = get_object_or_404(World, domain=world_domain)
+            event = get_object_or_404(Event, domain=event_domain)
         source = sh.source
         source = re.sub(
             "<title>[^<]*</title>",
-            f"<title>{world.title}</title>",
+            f"<title>{event.title}</title>",
             source,
             re.IGNORECASE | re.MULTILINE,
         )
@@ -142,28 +142,28 @@ class AppView(View):
                 json.dumps(
                     {
                         "api": {
-                            "base": reverse("api:root", kwargs={"world_id": world.id}),
-                            "socket": "{}://{}/ws/world/{}/".format(
+                            "base": reverse("api:root", kwargs={"event_id": event.id}),
+                            "socket": "{}://{}/ws/event/{}/".format(
                                 settings.WEBSOCKET_PROTOCOL,
                                 request.get_host(),
-                                world.pk,
+                                event.pk,
                             ),
                             "upload": reverse("storage:upload"),
                             "scheduleImport": reverse("storage:schedule_import"),
                             "feedback": reverse("live:feedback"),
                         },
-                        "features": world.feature_flags,
-                        "externalAuthUrl": world.external_auth_url,
-                        "locale": world.locale,
-                        "date_locale": world.config.get("date_locale", "en-ie"),
-                        "theme": world.config.get("theme", {}),
-                        "video_player": world.config.get("video_player", {}),
-                        "mux": world.config.get("mux", {}),
+                        "features": event.feature_flags,
+                        "externalAuthUrl": event.external_auth_url,
+                        "locale": event.locale,
+                        "date_locale": event.config.get("date_locale", "en-ie"),
+                        "theme": event.config.get("theme", {}),
+                        "video_player": event.config.get("video_player", {}),
+                        "mux": event.config.get("mux", {}),
                     }
                 )
             ),
         )
-        if world.config.get("theme", {}).get("css", ""):
+        if event.config.get("theme", {}).get("css", ""):
             source = source.replace(
                 "<body>",
                 "<link rel='stylesheet' href='{}'><body>".format(
@@ -171,10 +171,10 @@ class AppView(View):
                 ),
             )
 
-        source = re.sub("<html[^>]*>", f'<html lang="{world.locale}">', source)
+        source = re.sub("<html[^>]*>", f'<html lang="{event.locale}">', source)
 
         r = HttpResponse(source, content_type="text/html")
-        if "cross-origin-isolation" in world.feature_flags:
+        if "cross-origin-isolation" in event.feature_flags:
             r["Cross-Origin-Resource-Policy"] = "cross-origin"
             r["Cross-Origin-Embedder-Policy"] = "require-corp"
             r["Cross-Origin-Opener-Policy"] = "same-origin"
@@ -188,16 +188,16 @@ class HealthcheckView(View):
 
     async def get(self, request, *args, **kwargs):
         await get_channel_layer().send("healthcheck_channel", {"type": "healthcheck"})
-        await database_sync_to_async(World.objects.count)()
+        await database_sync_to_async(Event.objects.count)()
         return HttpResponse("OK")
 
 
 @method_decorator(cache_page(1 if settings.DEBUG else 60), name="dispatch")
 class CustomCSSView(View):
     def get(self, request, *args, **kwargs):
-        world_domain = re.sub(r":\d+$", "", request.get_host())
-        world = get_object_or_404(World, domain=world_domain)
-        source = world.config.get("theme", {}).get("css", "")
+        event_domain = re.sub(r":\d+$", "", request.get_host())
+        event = get_object_or_404(Event, domain=event_domain)
+        source = event.config.get("theme", {}).get("css", "")
         return HttpResponse(source, content_type="text/css")
 
 
@@ -208,17 +208,17 @@ class BBBCSSView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        world_domain = re.sub(r":\d+$", "", self.request.get_host())
-        ctx["world"] = get_object_or_404(World, domain=world_domain)
+        event_domain = re.sub(r":\d+$", "", self.request.get_host())
+        ctx["event"] = get_object_or_404(Event, domain=event_domain)
         return ctx
 
 
 class ShortTokenView(View):
     def get(self, request, token):
-        world_domain = re.sub(r":\d+$", "", self.request.get_host())
-        world = get_object_or_404(World, domain=world_domain)
+        event_domain = re.sub(r":\d+$", "", self.request.get_host())
+        event = get_object_or_404(Event, domain=event_domain)
         try:
-            st = ShortToken.objects.get(short_token=token, world=world)
+            st = ShortToken.objects.get(short_token=token, event=event)
             return redirect(f"/#token={st.long_token}")
         except ShortToken.DoesNotExist:
             return HttpResponse(
@@ -232,14 +232,14 @@ class FeedbackView(View):
         return super().dispatch(request, *args, **kwargs)
 
     @cached_property
-    def world(self):
-        world_domain = re.sub(r":\d+$", "", self.request.get_host())
-        return get_object_or_404(World, domain=world_domain)
+    def event(self):
+        event_domain = re.sub(r":\d+$", "", self.request.get_host())
+        return get_object_or_404(Event, domain=event_domain)
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         Feedback.objects.create(
-            world=self.world,
+            event=self.event,
             module=data.get("module"),
             message=data.get("message"),
             trace=data.get("trace"),

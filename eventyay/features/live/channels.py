@@ -1,5 +1,5 @@
 GROUP_USER = "user.{id}"
-GROUP_WORLD = "world.{id}"
+GROUP_EVENT = "event.{id}"
 GROUP_CHAT = "chat.{channel}"
 GROUP_VERSION = "version.{label}"
 GROUP_ROOM = "room.{id}"

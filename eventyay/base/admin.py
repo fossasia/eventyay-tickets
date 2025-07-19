@@ -8,7 +8,7 @@ from .models import (
     items, JanusServer, log, notifications, Order, OrderPayment, OrderRefund, 
     orders, organizer, page, Poll, Poster, question, Quota, Room, roulette, 
     seating, StreamingServer, tax, Team, TeamInvite, TurnServer, vouchers, 
-    WaitingListEntry, waitinglist, World, room, exhibitor, poll, poster, chat
+    WaitingListEntry, waitinglist, room, exhibitor, poll, poster, chat
 )
 from ..api.models import OAuthApplication, OAuthAccessToken, OAuthRefreshToken, OAuthIDToken, WebHook, WebHookCall, ApiCall, WebHookEventListener
 
@@ -144,9 +144,6 @@ admin.site.register(base.CachedFile)
 
 # Notifications
 admin.site.register(notifications.NotificationSetting)
-
-# World (Virtual Events)
-admin.site.register(World)
 
 # API and OAuth
 admin.site.register(OAuthApplication)

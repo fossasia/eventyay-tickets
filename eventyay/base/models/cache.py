@@ -62,7 +62,7 @@ class VersionedModel(models.Model):
             # of GET calls to redis. We add some random variance to the duration to soften
             # load spikes if all threads force-refreshed at the same time. We also do not do
             # this during unit testing, which is bad (since it means tests are different from
-            # the real world) but also necessary if we don't want to have long sleep() calls
+            # the real event) but also necessary if we don't want to have long sleep() calls
             # in our tests.
             if (
                 time.time() - self.__refresh_time

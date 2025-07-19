@@ -12,8 +12,8 @@ class Announcement(models.Model):
         ARCHIVED = "archived"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    world = models.ForeignKey(
-        "World", on_delete=models.CASCADE, related_name="announcements"
+    event = models.ForeignKey(
+        "Event", on_delete=models.CASCADE, related_name="announcements"
     )
     text = models.TextField()
     show_until = models.DateTimeField(null=True)

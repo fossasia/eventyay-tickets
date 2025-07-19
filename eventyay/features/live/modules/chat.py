@@ -20,7 +20,7 @@ from eventyay.features.live.channels import GROUP_CHAT, GROUP_USER
 from eventyay.features.live.decorators import (
     command,
     event,
-    require_world_permission,
+    require_event_permission,
     room_action,
 )
 from eventyay.features.live.exceptions import ConsumerException
@@ -49,7 +49,7 @@ def channel_action(
                 self.channel = self.consumer.channel_cache.get(body["channel"])
                 if not self.channel:
                     self.channel = await get_channel(
-                        world=self.consumer.world, pk=body["channel"]
+                        event=self.consumer.event, pk=body["channel"]
                     )
                     self.consumer.channel_cache[body["channel"]] = self.channel
                 elif self.channel.room:
@@ -80,7 +80,7 @@ def channel_action(
                 )
 
             if self.channel.room and room_permission_required is not None:
-                if not await self.consumer.world.has_permission_async(
+                if not await self.consumer.event.has_permission_async(
                     user=self.consumer.user,
                     permission=room_permission_required,
                     room=self.channel.room,
@@ -116,7 +116,7 @@ class ChatModule(BaseModule):
         self.channel_id = None
         self.channels_subscribed = set()
         self.users_known_to_client = set()
-        self.service = ChatService(self.consumer.world)
+        self.service = ChatService(self.consumer.event)
 
     async def _subscribe(self, volatile=False):
         self.users_known_to_client.clear()  # client implementation nukes cache on channel switch
@@ -138,9 +138,9 @@ class ChatModule(BaseModule):
             "members": (
                 await self.service.get_channel_users(
                     self.channel,
-                    include_admin_info=await self.consumer.world.has_permission_async(
+                    include_admin_info=await self.consumer.event.has_permission_async(
                         user=self.consumer.user,
-                        permission=Permission.WORLD_USERS_MANAGE,
+                        permission=Permission.EVENT_USERS_MANAGE,
                     ),
                 )
                 if not volatile
@@ -190,7 +190,7 @@ class ChatModule(BaseModule):
         volatile_client = body.get("volatile", volatile_config)
         if (
             volatile_client != volatile_config
-            and await self.consumer.world.has_permission_async(
+            and await self.consumer.event.has_permission_async(
                 user=self.consumer.user,
                 room=self.room,
                 permission=Permission.ROOM_CHAT_MODERATE,
@@ -211,7 +211,7 @@ class ChatModule(BaseModule):
                     content={
                         "membership": "join",
                         "user": self.consumer.user.serialize_public(
-                            trait_badges_map=self.consumer.world.config.get(
+                            trait_badges_map=self.consumer.event.config.get(
                                 "trait_badges_map"
                             )
                         ),
@@ -244,7 +244,7 @@ class ChatModule(BaseModule):
                     content={
                         "membership": "leave",
                         "user": self.consumer.user.serialize_public(
-                            trait_badges_map=self.consumer.world.config.get(
+                            trait_badges_map=self.consumer.event.config.get(
                                 "trait_badges_map"
                             )
                         ),
@@ -304,11 +304,11 @@ class ChatModule(BaseModule):
             count=count,
             skip_membership=volatile_config,
             users_known_to_client=self.users_known_to_client,
-            include_admin_info=await self.consumer.world.has_permission_async(
+            include_admin_info=await self.consumer.event.has_permission_async(
                 user=self.consumer.user,
-                permission=Permission.WORLD_USERS_MANAGE,
+                permission=Permission.EVENT_USERS_MANAGE,
             ),
-            trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+            trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
         )
         self.users_known_to_client |= set(users.keys())
         await self.consumer.send_success({"results": events, "users": users})
@@ -393,7 +393,7 @@ class ChatModule(BaseModule):
                 # and even then only delete them
                 is_moderator = (
                     self.channel.room
-                    and await self.consumer.world.has_permission_async(
+                    and await self.consumer.event.has_permission_async(
                         user=self.consumer.user,
                         room=self.channel.room,
                         permission=Permission.ROOM_CHAT_MODERATE,
@@ -484,7 +484,7 @@ class ChatModule(BaseModule):
                             "data": {
                                 "event": event,
                                 "sender": self.consumer.user.serialize_public(
-                                    trait_badges_map=self.consumer.world.config.get(
+                                    trait_badges_map=self.consumer.event.config.get(
                                         "trait_badges_map"
                                     )
                                 ),
@@ -518,15 +518,15 @@ class ChatModule(BaseModule):
                                     "channel": self.channel_id,
                                     "event_id": event["event_id"],
                                     "missed_users": await get_public_users(
-                                        self.consumer.world.id,
+                                        self.consumer.event.id,
                                         ids=list(
                                             mentioned_users - filtered_mentioned_users
                                         ),
-                                        include_admin_info=await self.consumer.world.has_permission_async(
+                                        include_admin_info=await self.consumer.event.has_permission_async(
                                             user=self.consumer.user,
-                                            permission=Permission.WORLD_USERS_MANAGE,
+                                            permission=Permission.EVENT_USERS_MANAGE,
                                         ),
-                                        trait_badges_map=self.consumer.world.config.get(
+                                        trait_badges_map=self.consumer.event.config.get(
                                             "trait_badges_map"
                                         ),
                                     ),
@@ -572,13 +572,13 @@ class ChatModule(BaseModule):
                                     "channel": self.channel_id,
                                     "event_id": event["event_id"],
                                     "missed_users": await get_public_users(
-                                        self.consumer.world.id,
+                                        self.consumer.event.id,
                                         ids=list(mentioned_users - users),
-                                        include_admin_info=await self.consumer.world.has_permission_async(
+                                        include_admin_info=await self.consumer.event.has_permission_async(
                                             user=self.consumer.user,
-                                            permission=Permission.WORLD_USERS_MANAGE,
+                                            permission=Permission.EVENT_USERS_MANAGE,
                                         ),
-                                        trait_badges_map=self.consumer.world.config.get(
+                                        trait_badges_map=self.consumer.event.config.get(
                                             "trait_badges_map"
                                         ),
                                     ),
@@ -593,7 +593,7 @@ class ChatModule(BaseModule):
                     retrieve_preview_information.apply_async
                 )(
                     kwargs={
-                        "world": str(self.consumer.world.id),
+                        "event": str(self.consumer.event.id),
                         "event_id": event["event_id"],
                     }
                 )
@@ -634,10 +634,10 @@ class ChatModule(BaseModule):
             if channel.room:
                 await channel.room.refresh_from_db_if_outdated(allowed_age=30)
         else:
-            channel = await get_channel(world=self.consumer.world, id=body["channel"])
+            channel = await get_channel(event=self.consumer.event, id=body["channel"])
             self.consumer.channel_cache[body["channel"]] = channel
 
-        if channel.room and not await self.consumer.world.has_permission_async(
+        if channel.room and not await self.consumer.event.has_permission_async(
             user=self.consumer.user,
             permission=Permission.ROOM_CHAT_READ,
             room=channel.room,
@@ -660,13 +660,13 @@ class ChatModule(BaseModule):
 
         if user_profiles_required:
             users = await get_public_users(
-                self.consumer.world.id,
+                self.consumer.event.id,
                 ids=list(user_profiles_required),
-                include_admin_info=await self.consumer.world.has_permission_async(
+                include_admin_info=await self.consumer.event.has_permission_async(
                     user=self.consumer.user,
-                    permission=Permission.WORLD_USERS_MANAGE,
+                    permission=Permission.EVENT_USERS_MANAGE,
                 ),
-                trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
             )
             for u in users:
                 data["users"][u["id"]] = u
@@ -675,7 +675,7 @@ class ChatModule(BaseModule):
         await self.consumer.send_json([body["type"], data])
 
     @command("direct.create")
-    @require_world_permission(Permission.WORLD_CHAT_DIRECT)
+    @require_event_permission(Permission.EVENT_CHAT_DIRECT)
     async def direct_create(self, body):
         user_ids = set(body.get("users", []))
         user_ids.add(self.consumer.user.id)
@@ -706,7 +706,7 @@ class ChatModule(BaseModule):
                     content={
                         "membership": "join",
                         "user": user.serialize_public(
-                            trait_badges_map=self.consumer.world.config.get(
+                            trait_badges_map=self.consumer.event.config.get(
                                 "trait_badges_map"
                             )
                         ),

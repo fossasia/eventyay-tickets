@@ -42,7 +42,7 @@ MENTION_RE = re.compile(
 def _get_channel(**kwargs):
     return (
         Channel.objects.filter(Q(room__isnull=True) | Q(room__deleted=False))
-        .select_related("world", "room")
+        .select_related("event", "room")
         .get(**kwargs)
     )
 
@@ -69,13 +69,13 @@ def extract_mentioned_user_ids(message: str) -> set:
 
 
 class ChatService:
-    def __init__(self, world):
-        self.world = world
+    def __init__(self, event):
+        self.event = event
 
     def get_channels_for_user(self, user_id, is_volatile=None, is_hidden=False):
         qs = (
             Membership.objects.filter(
-                channel__world_id=self.world.pk,
+                channel__event_id=self.event.pk,
                 user_id=user_id,
             )
             .annotate(
@@ -119,7 +119,7 @@ class ChatService:
             if not m.channel.room_id:
                 r["members"] = [
                     m.user.serialize_public(
-                        trait_badges_map=self.world.config.get("trait_badges_map")
+                        trait_badges_map=self.event.config.get("trait_badges_map")
                     )
                     for m in m.channel.direct_members
                 ]
@@ -133,10 +133,10 @@ class ChatService:
             ids=Membership.objects.filter(channel_id=channel.pk).values_list(
                 "user_id", flat=True
             ),
-            world_id=self.world.pk,
+            event_id=self.event.pk,
             include_admin_info=include_admin_info,
             include_banned=channel.room_id is None,
-            trait_badges_map=self.world.config.get("trait_badges_map"),
+            trait_badges_map=self.event.config.get("trait_badges_map"),
         )
         return users
 
@@ -175,7 +175,7 @@ class ChatService:
             result = {
                 str(u.id)
                 for u in permitted_users
-                if self.world.has_permission(
+                if self.event.has_permission(
                     user=u,
                     permission=Permission.ROOM_CHAT_READ,
                     room=channel.room,
@@ -274,19 +274,19 @@ class ChatService:
                 include_admin_info=include_admin_info,
                 trait_badges_map=trait_badges_map,
             )
-            for u in User.objects.filter(world=self.world, id__in=user_ids)
+            for u in User.objects.filter(event=self.event, id__in=user_ids)
         }
         return [e.serialize_public() for e in reversed(events)], users
 
     @database_sync_to_async
     def _store_event(self, channel, id, event_type, content, sender, replaces=None):
         if content.get("type") == "call":
-            if "janus" in self.world.feature_flags:
+            if "janus" in self.event.feature_flags:
                 content.setdefault("body", {})
                 content["body"]["type"] = "janus"
             else:
                 call = BBBCall.objects.create(
-                    world_id=self.world.pk, server=choose_server(self.world)
+                    event_id=self.event.pk, server=choose_server(self.event)
                 )
                 call.invited_members.add(*[m.user for m in channel.members.all()])
                 content.setdefault("body", {})
@@ -434,7 +434,7 @@ class ChatService:
         with transaction.atomic():
             users = list(
                 User.objects.prefetch_related("blocked_users").filter(
-                    world_id=self.world.id, id__in=user_ids
+                    event_id=self.event.id, id__in=user_ids
                 )
             )
             if (
@@ -474,13 +474,13 @@ class ChatService:
                         mcount_mismatch__isnull=True,
                         mcount_match=len(user_ids),
                         room__isnull=True,
-                        world_id=self.world.id,
+                        event_id=self.event.id,
                     ),
                     False,
                     users,
                 )
             except Channel.DoesNotExist:
-                c = Channel.objects.create(room=None, world_id=self.world.id)
+                c = Channel.objects.create(room=None, event_id=self.event.id)
                 for u in users:
                     Membership.objects.create(
                         channel=c,
@@ -507,7 +507,7 @@ class ChatService:
         event.save(update_fields=["content", "edited"])
         new = event.serialize_public()
         AuditLog.objects.create(
-            world=self.world,
+            event=self.event,
             user=by_user,
             type="chat.event.updated",
             data={
@@ -530,7 +530,7 @@ class ChatService:
             )
             .filter(
                 is_member=False,
-                world_id=self.world.pk,
+                event_id=self.event.pk,
                 room__force_join=True,
             )
             .select_related("room")
@@ -557,7 +557,7 @@ class ChatService:
             return
 
         for channel in c_to_join:
-            if not await self.world.has_permission_async(
+            if not await self.event.has_permission_async(
                 user=user,
                 room=channel.room,
                 permission=Permission.ROOM_CHAT_JOIN,
@@ -572,7 +572,7 @@ class ChatService:
                     content={
                         "membership": "join",
                         "user": user.serialize_public(
-                            trait_badges_map=self.world.config.get("trait_badges_map")
+                            trait_badges_map=self.event.config.get("trait_badges_map")
                         ),
                     },
                     sender=user,

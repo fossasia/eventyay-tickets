@@ -43,5 +43,5 @@ class ZoomModule(BaseModule):
                 "dc": self.module_config.get("disable_chat", False),
             }
         )
-        url = f'//{self.consumer.world.domain}{reverse("zoom:meeting")}?data={data}'
+        url = f'//{self.consumer.event.domain}{reverse("zoom:meeting")}?data={data}'
         await self.consumer.send_success({"url": url})

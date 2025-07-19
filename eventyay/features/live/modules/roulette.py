@@ -39,7 +39,7 @@ class RouletteModule(BaseModule):
                 {
                     "status": "match",
                     "other_user": request.user.serialize_public(
-                        trait_badges_map=self.consumer.world.config.get(
+                        trait_badges_map=self.consumer.event.config.get(
                             "trait_badges_map"
                         )
                     ),
@@ -54,7 +54,7 @@ class RouletteModule(BaseModule):
                     "data": {
                         "call_id": str(room_id),
                         "other_user": self.consumer.user.serialize_public(
-                            trait_badges_map=self.consumer.world.config.get(
+                            trait_badges_map=self.consumer.event.config.get(
                                 "trait_badges_map"
                             )
                         ),

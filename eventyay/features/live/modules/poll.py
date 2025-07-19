@@ -104,7 +104,7 @@ class PollModule(BaseModule):
             if chat_channel:
                 await self.consumer.channel_layer.group_send(
                     GROUP_CHAT.format(channel=chat_channel.id),
-                    await ChatService(self.consumer.world).create_event(
+                    await ChatService(self.consumer.event).create_event(
                         channel=chat_channel,
                         event_type="channel.poll",
                         content={
@@ -194,12 +194,12 @@ class PollModule(BaseModule):
             await self.consumer.send_error("poll.inactive")
             return
 
-        is_moderator = await self.consumer.world.has_permission_async(
+        is_moderator = await self.consumer.event.has_permission_async(
             user=self.consumer.user,
             room=self.room,
             permission=Permission.ROOM_POLL_MANAGE,
         )
-        early_results = is_moderator or await self.consumer.world.has_permission_async(
+        early_results = is_moderator or await self.consumer.event.has_permission_async(
             user=self.consumer.user,
             room=self.room,
             permission=Permission.ROOM_POLL_EARLY_RESULTS,

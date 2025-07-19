@@ -7,8 +7,8 @@ class Feedback(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     timestamp = models.DateTimeField(auto_now_add=True)
     module = models.CharField(max_length=200)
-    world = models.ForeignKey(
-        "World",
+    event = models.ForeignKey(
+        "Event",
         related_name="feedback",
         on_delete=models.SET_NULL,
         null=True,

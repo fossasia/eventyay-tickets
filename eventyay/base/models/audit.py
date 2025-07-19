@@ -6,12 +6,12 @@ class AuditLog(models.Model):
     id = models.BigAutoField(
         primary_key=True,
     )
-    world = models.ForeignKey(
-        "World",
+    event = models.ForeignKey(
+        "Event",
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        related_name="audit_logs",
+        related_name="audits",
     )
     timestamp = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(

@@ -17,6 +17,8 @@ from .event import (
     SubEvent,
     SubEventMetaValue,
     generate_invite_token,
+    EventPlannedUsage,
+    EventView,
 )
 from .exhibitor import (
     ContactRequest,
@@ -83,7 +85,6 @@ from .tax import TaxRule
 from .turn import TurnServer
 from .vouchers import InvoiceVoucher, Voucher
 from .waitinglist import WaitingListEntry
-from .world import World
 
 __all__ = [
     "AbstractPosition",
@@ -179,7 +180,8 @@ __all__ = [
     "Voucher",
     "WaitingListEntry",
     "WebAuthnDevice",
-    "World",
+    "EventPlannedUsage",
+    "EventView",
     "cachedcombinedticket_name",
     "cachedfile_name",
     "cachedticket_name",

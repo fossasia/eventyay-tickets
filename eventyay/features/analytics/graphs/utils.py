@@ -8,7 +8,7 @@ from pdfrw.toreportlab import makerl
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.platypus import Flowable
 
-from eventyay.base.models import World
+from eventyay.base.models import Event
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +88,8 @@ def median_value(queryset, term):
         )
 
 
-def get_schedule(world: World, fail_silently=True):
-    pretalx_config = world.config.get("pretalx", {})
+def get_schedule(event: Event, fail_silently=True):
+    pretalx_config = event.config.get("pretalx", {})
     if pretalx_config.get("url"):
         url = pretalx_config["url"]
     elif pretalx_config.get("domain"):
@@ -105,7 +105,7 @@ def get_schedule(world: World, fail_silently=True):
         r.raise_for_status()
         return r.json()
     except requests.RequestException:
-        logger.exception(f"Could not load schedule for world {world.pk} from {url}")
+        logger.exception(f"Could not load schedule for event {event.pk} from {url}")
         if fail_silently:
             return {}
         else:

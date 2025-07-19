@@ -11,10 +11,10 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
-from ...base.forms import I18nModelForm
+from eventyay.base.forms import I18nModelForm
 
 # Import for backwards compatibility with old import paths
-from ...base.forms.widgets import (  # noqa
+from eventyay.base.forms.widgets import (  # noqa
     DatePickerWidget,
     SplitDateTimePickerWidget,
     TimePickerWidget,

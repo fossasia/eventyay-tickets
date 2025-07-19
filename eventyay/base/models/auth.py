@@ -75,7 +75,7 @@ class SuperuserPermissionSet:
 
 class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     """
-    This is the unified user model used by eventyay for both authentication and video/world functionality.
+    This is the unified user model used by eventyay for both authentication and video/event functionality.
 
     :param email: The user's email address, used for identification.
     :type email: str
@@ -130,10 +130,10 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     auth_backend = models.CharField(max_length=255, default='native')
     session_token = models.CharField(max_length=32, default=generate_session_token)
 
-    # Video/World fields
+    # Video/Event fields
     client_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
     token_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
-    world = models.ForeignKey(to="World", db_index=True, on_delete=models.CASCADE, null=True, blank=True)
+    event = models.ForeignKey(to="Event", db_index=True, on_delete=models.CASCADE, null=True, blank=True)
     moderation_state = models.CharField(
         max_length=8,
         default=ModerationState.NONE,
@@ -183,7 +183,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         verbose_name = _('User')
         verbose_name_plural = _('Users')
         ordering = ('email',)
-        unique_together = (("token_id", "world"), ("client_id", "world"))
+        unique_together = (("token_id", "event"), ("client_id", "event"))
 
     def save(self, *args, **kwargs):
         if self.email:
@@ -465,14 +465,14 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         self.session_token = generate_session_token()
         self.save(update_fields=['session_token'])
 
-    # Video/World methods
+    # Video/Event methods
     def soft_delete(self):
-        """Soft delete for video/world functionality"""
+        """Soft delete for video/event functionality"""
         from eventyay.base.models.storage_model import StoredFile
 
         self.bbb_invites.clear()
         self.room_grants.all().delete()
-        self.world_grants.all().delete()
+        self.event_grants.all().delete()
         self.rouletterequest_set.all().delete()
         self.roulette_pairing_left.all().delete()
         self.roulette_pairing_right.all().delete()
@@ -525,7 +525,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         trait_badges_map=None,
         include_client_state=False,
     ):
-        """Serialize user for public display in video/world context"""
+        """Serialize user for public display in video/event context"""
         # Important: If this is updated, eventyay.base.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
         d = {
@@ -565,10 +565,10 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     def is_silenced(self):
         return self.moderation_state == self.ModerationState.SILENCED
 
-    # Role and grant methods (video/world)
+    # Role and grant methods (video/event)
     def _update_grant_cache(self):
         self._grant_cache = {
-            "world": set(self.world_grants.values_list("role", flat=True))
+            "event": set(self.event_grants.values_list("role", flat=True))
         }
         for v in self.room_grants.values("role", "room"):
             self._grant_cache.setdefault(v["room"], set())
@@ -578,7 +578,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         if self._grant_cache is None:
             self._update_grant_cache()
 
-        roles = self._grant_cache["world"]
+        roles = self._grant_cache["event"]
         if room:
             roles |= self._grant_cache.get(room.id, set())
         return roles
@@ -587,7 +587,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         if self._grant_cache is None:
             await database_sync_to_async(self._update_grant_cache)()
 
-        roles = self._grant_cache["world"]
+        roles = self._grant_cache["event"]
         if room:
             roles |= self._grant_cache.get(room.id, set())
         return roles
@@ -622,10 +622,10 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         self._block_cache = {}
 
 
-# Related models for video/world functionality
+# Related models for video/event functionality
 class RoomGrant(models.Model):
-    world = models.ForeignKey(
-        "World", related_name="room_grants", on_delete=models.CASCADE
+    event = models.ForeignKey(
+        "Event", related_name="room_grants", on_delete=models.CASCADE
     )
     room = models.ForeignKey(
         "Room", related_name="role_grants", on_delete=models.CASCADE
@@ -646,12 +646,12 @@ class RoomGrant(models.Model):
         return r
 
 
-class WorldGrant(models.Model):
-    world = models.ForeignKey(
-        "World", related_name="world_grants", on_delete=models.CASCADE
+class EventGrant(models.Model):
+    event = models.ForeignKey(
+        "Event", related_name="event_grants", on_delete=models.CASCADE
     )
     user = models.ForeignKey(
-        "User", related_name="world_grants", on_delete=models.CASCADE
+        "User", related_name="event_grants", on_delete=models.CASCADE
     )
     role = models.CharField(max_length=200)
 
@@ -667,8 +667,8 @@ class WorldGrant(models.Model):
 
 
 class ShortToken(models.Model):
-    world = models.ForeignKey(
-        "World", related_name="short_tokens", on_delete=models.CASCADE
+    event = models.ForeignKey(
+        "Event", related_name="short_tokens", on_delete=models.CASCADE
     )
     expires = models.DateTimeField()
     short_token = models.CharField(

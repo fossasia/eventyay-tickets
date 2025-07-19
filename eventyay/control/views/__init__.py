@@ -1,6 +1,11 @@
 # Import all views from admin_views.py to maintain backward compatibility
 from .admin_views import (
     AdminBase,
+    EventAdminToken,
+    EventCalendar,
+    EventClear,
+    EventCreate,
+    EventUpdate,
     BBBCall,
     BBBServerCreate,
     BBBServerDelete,
@@ -30,16 +35,15 @@ from .admin_views import (
     TurnServerUpdate,
     UserList,
     UserUpdate,
-    WorldAdminToken,
-    WorldCalendar,
-    WorldClear,
-    WorldCreate,
-    WorldUpdate,
 )
 
 # Make all views available at the module level
 __all__ = [
-    'AdminBase',
+    'EventAdminToken',
+    'EventCalendar',
+    'EventClear',
+    'EventCreate',
+    'EventUpdate',
     'BBBCall',
     'BBBServerCreate',
     'BBBServerDelete',
@@ -69,9 +73,4 @@ __all__ = [
     'TurnServerUpdate',
     'UserList',
     'UserUpdate',
-    'WorldAdminToken',
-    'WorldCalendar',
-    'WorldClear',
-    'WorldCreate',
-    'WorldUpdate',
 ] 

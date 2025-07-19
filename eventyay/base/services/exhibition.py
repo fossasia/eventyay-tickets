@@ -14,16 +14,16 @@ from eventyay.base.services.user import get_user_by_id
 from eventyay.base.models.room import Room
 
 
-def get_exhibitor_by_id(world_id, id):
+def get_exhibitor_by_id(event_id, id):
     try:
-        return Exhibitor.objects.get(id=id, world_id=world_id)
+        return Exhibitor.objects.get(id=id, event_id=event_id)
     except Exhibitor.DoesNotExist:
         return
 
 
-def get_request_by_id(world_id, id):
+def get_request_by_id(event_id, id):
     try:
-        return ContactRequest.objects.get(id=id, exhibitor__world_id=world_id)
+        return ContactRequest.objects.get(id=id, exhibitor__event_id=event_id)
     except ContactRequest.DoesNotExist:
         return
 
@@ -79,20 +79,20 @@ def get_or_create_staff(user, exhibitor):
     return obj
 
 
-def get_room_by_id(world_id, id):
+def get_room_by_id(event_id, id):
     try:
-        return Room.objects.get(id=id, world__id=world_id)
+        return Room.objects.get(id=id, event__id=event_id)
     except Room.DoesNotExist:
         return
 
 
 class ExhibitionService:
-    def __init__(self, world):
-        self.world = world
+    def __init__(self, event):
+        self.event = event
 
     @database_sync_to_async
     def get_all_exhibitors(self, staff_includes_user=None):
-        qs = Exhibitor.objects.filter(world__id=self.world.pk).order_by("name")
+        qs = Exhibitor.objects.filter(event__id=self.event.pk).order_by("name")
 
         if staff_includes_user:
             qs = qs.filter(
@@ -113,7 +113,7 @@ class ExhibitionService:
     @database_sync_to_async
     def get_exhibitors(self, room_id):
         qs = (
-            Exhibitor.objects.filter(world__id=self.world.pk)
+            Exhibitor.objects.filter(event__id=self.event.pk)
             .filter(room__id=room_id)
             .order_by("sorting_priority", "name")
         )
@@ -143,22 +143,22 @@ class ExhibitionService:
 
     @database_sync_to_async
     def get_exhibitor(self, exhibitor_id, track_view_for_user=None):
-        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
+        e = get_exhibitor_by_id(self.event.pk, exhibitor_id)
         if not e:
             return None
 
-        if track_view_for_user and self.world.config.get("track_exhibitor_views", True):
+        if track_view_for_user and self.event.config.get("track_exhibitor_views", True):
             ExhibitorView.objects.create(exhibitor=e, user=track_view_for_user)
         return e.serialize()
 
     @database_sync_to_async
     @atomic
     def delete(self, exhibitor_id, by_user):
-        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
+        e = get_exhibitor_by_id(self.event.pk, exhibitor_id)
         if not e:
             return None
         AuditLog.objects.create(
-            world_id=self.world.pk,
+            event_id=self.event.pk,
             user=by_user,
             type="exhibition.exhibitor.deleted",
             data={
@@ -170,19 +170,19 @@ class ExhibitionService:
 
     @database_sync_to_async
     @atomic
-    def patch(self, exhibitor, world, by_user, exclude_fields=tuple()):
+    def patch(self, exhibitor, event, by_user, exclude_fields=tuple()):
         if exhibitor["id"] == "":
             e = Exhibitor(
-                world=world,
+                event=event,
             )
             old = {}
         else:
-            e = get_exhibitor_by_id(self.world.pk, exhibitor["id"])
+            e = get_exhibitor_by_id(self.event.pk, exhibitor["id"])
             if not e:
                 return None
             old = e.serialize()
 
-        room = get_room_by_id(self.world.pk, exhibitor.get("room_id", e.room_id))
+        room = get_room_by_id(self.event.pk, exhibitor.get("room_id", e.room_id))
         if not room:
             return None
         elif "room" not in exclude_fields:
@@ -191,7 +191,7 @@ class ExhibitionService:
         if "highlighted_room_id" not in exclude_fields:
             if exhibitor.get("highlighted_room_id"):
                 e.highlighted_room = get_room_by_id(
-                    self.world.pk, exhibitor["highlighted_room_id"]
+                    self.event.pk, exhibitor["highlighted_room_id"]
                 )
             else:
                 e.highlighted_room = None
@@ -238,7 +238,7 @@ class ExhibitionService:
         if "staff" in exhibitor and "staff" not in exclude_fields:
             staff = []
             for user in exhibitor["staff"]:
-                user = get_user_by_id(self.world.pk, user["id"])
+                user = get_user_by_id(self.event.pk, user["id"])
                 staff.append(get_or_create_staff(user, e))
             for staff_member in e.staff.all():
                 if staff_member not in staff:
@@ -246,7 +246,7 @@ class ExhibitionService:
 
         new = e.serialize()
         AuditLog.objects.create(
-            world_id=self.world.pk,
+            event_id=self.event.pk,
             user=by_user,
             type="exhibition.exhibitor.updated",
             data={
@@ -260,7 +260,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def contact(self, exhibitor_id, user):
-        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
+        e = get_exhibitor_by_id(self.event.pk, exhibitor_id)
         if not e:
             return None
         request = ContactRequest.objects.create(
@@ -271,7 +271,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def missed(self, contact_request_id):
-        r = get_request_by_id(self.world.pk, contact_request_id)
+        r = get_request_by_id(self.event.pk, contact_request_id)
         if not r:
             return None
         if r.state == "answered":
@@ -282,7 +282,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def accept(self, contact_request_id, staff):
-        r = get_request_by_id(self.world.pk, contact_request_id)
+        r = get_request_by_id(self.event.pk, contact_request_id)
         if not r:
             return None
         if r.state == "answered":
@@ -294,7 +294,7 @@ class ExhibitionService:
 
     @database_sync_to_async
     def get_staff(self, exhibitor_id):
-        e = get_exhibitor_by_id(self.world.pk, exhibitor_id)
+        e = get_exhibitor_by_id(self.event.pk, exhibitor_id)
         if not e:
             return None
         return list(e.staff.values_list("user__id", flat=True))
@@ -309,14 +309,14 @@ class ExhibitionService:
     @database_sync_to_async
     def get_exhibitions_staffed_by_user(self, user_id):
         exhibitors = Exhibitor.objects.filter(
-            world__id=self.world.pk,
+            event__id=self.event.pk,
             staff__user__id=user_id,
         )
         return [ex.serialize() for ex in exhibitors]
 
     def get_exhibition_data_for_user(self, user_id):
         exhibitors = Exhibitor.objects.filter(
-            world__id=self.world.pk,
+            event__id=self.event.pk,
             staff__user__id=user_id,
         )
         contact_requests = ContactRequest.objects.filter(exhibitor__in=exhibitors)

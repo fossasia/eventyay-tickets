@@ -11,8 +11,8 @@ class Channel(models.Model):
     room = models.OneToOneField(
         to="Room", related_name="channel", on_delete=models.CASCADE, null=True
     )
-    world = models.ForeignKey(
-        to="World",
+    event = models.ForeignKey(
+        to="Event",
         related_name="channels",
         on_delete=models.CASCADE,
     )

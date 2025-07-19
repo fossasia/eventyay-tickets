@@ -32,7 +32,7 @@ def find_data(html, key):
         return elements[0].attrs.get("content")
 
 
-def store_image(response, world):  # TODO deduplicate
+def store_image(response, event):  # TODO deduplicate
     content_type, extension = get_extension_from_response(response)
     if not extension:
         return
@@ -45,7 +45,7 @@ def store_image(response, world):  # TODO deduplicate
     filename = f"{uid}{extension}"
     stored_file = StoredFile.objects.create(
         id=uid,
-        world=world,
+        event=event,
         date=now(),
         filename=filename,
         type=content_type,
@@ -62,7 +62,7 @@ def retrieve_url(url):
         return response
 
 
-def fetch_preview_data(url, world):
+def fetch_preview_data(url, event):
     """
     Fetches data from an external URL, and handles social media tags or their fallbacks,
     if any. If the URL refers to an image or the social tags include a preview image,
@@ -84,7 +84,7 @@ def fetch_preview_data(url, world):
     content_type = response.headers.get("Content-Type", "text/html")  # Assume HTML
 
     if "image/" in content_type:
-        image_url = store_image(response, world)
+        image_url = store_image(response, event)
         if image_url:  # We don't store huge images
             return {"image": image_url}
 
@@ -117,7 +117,7 @@ def fetch_preview_data(url, world):
         if image:
             response = retrieve_url(image)
             if response:
-                image_url = store_image(response, world)
+                image_url = store_image(response, event)
                 if image_url:  # We don't store huge images
                     result["image"] = image_url
 

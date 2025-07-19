@@ -19,7 +19,7 @@ from eventyay.base.services.janus import (
 from eventyay.base.services.roulette import is_member_of_roulette_call
 from eventyay.base.services.user import get_public_user
 from eventyay.core.utils.redis import aredis
-from eventyay.features.live.decorators import command, require_world_permission, room_action
+from eventyay.features.live.decorators import command, require_event_permission, room_action
 from eventyay.features.live.exceptions import ConsumerException
 from eventyay.features.live.modules.base import BaseModule
 
@@ -32,8 +32,8 @@ class JanusCallModule(BaseModule):
 
     @database_sync_to_async
     def _servers(self):
-        return choose_server(self.consumer.world), turn.choose_server(
-            self.consumer.world
+        return choose_server(self.consumer.event), turn.choose_server(
+            self.consumer.event
         )
 
     @command("room_url")
@@ -131,7 +131,7 @@ class JanusCallModule(BaseModule):
                         3600 * 24,
                     )
                     turn_server = await database_sync_to_async(turn.choose_server)(
-                        self.consumer.world
+                        self.consumer.event
                     )
 
             user_id = str(uuid.uuid4())
@@ -157,20 +157,20 @@ class JanusCallModule(BaseModule):
         )
 
     @command("identify")
-    @require_world_permission(Permission.WORLD_VIEW)
+    @require_event_permission(Permission.EVENT_VIEW)
     async def identify(self, body):
         async with aredis() as redis:
             sessionid = body.get("id", "").split("_")[0]
             userid = await redis.get(f"januscall:user:{sessionid}")
             if userid:
                 user = await get_public_user(
-                    self.consumer.world.id,
+                    self.consumer.event.id,
                     userid.decode(),
-                    include_admin_info=await self.consumer.world.has_permission_async(
+                    include_admin_info=await self.consumer.event.has_permission_async(
                         user=self.consumer.user,
-                        permission=Permission.WORLD_USERS_MANAGE,
+                        permission=Permission.EVENT_USERS_MANAGE,
                     ),
-                    trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
+                    trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
                 )
                 if user:
                     await self.consumer.send_success(user)

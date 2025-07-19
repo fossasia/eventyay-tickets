@@ -28,7 +28,7 @@ def update_user_profile_from_social(
             r.raise_for_status()
             c = ContentFile(r.content)
             sf = StoredFile.objects.create(
-                world=user.world,
+                event=user.event,
                 user=user,
                 filename=f"avatar.{ext}",
                 type=avatar_media_type or content_types.get(ext.lower(), "image/png"),
@@ -45,7 +45,7 @@ def update_user_profile_from_social(
     if url:
         user.profile.setdefault("fields", {})
 
-        for field in user.world.config.get("profile_fields", []):
+        for field in user.event.config.get("profile_fields", []):
             if field.get("type") == "link" and field.get("network") == network:
                 user.profile["fields"][field["id"]] = url
 

@@ -9,8 +9,8 @@ class BBBServer(models.Model):
     active = models.BooleanField(default=True)
     url = models.URLField()
     secret = models.CharField(max_length=300)
-    world_exclusive = models.ForeignKey(
-        "World", null=True, blank=True, on_delete=models.PROTECT
+    event = models.ForeignKey(
+        "Event", null=True, blank=True, on_delete=models.PROTECT
     )
     rooms_only = models.BooleanField(default=False)
     cost = models.IntegerField(default=0)
@@ -33,8 +33,8 @@ class BBBCall(models.Model):
     room = models.OneToOneField(
         to="Room", related_name="bbb_call", on_delete=models.CASCADE, null=True
     )
-    world = models.ForeignKey(
-        to="World",
+    event = models.ForeignKey(
+        to="Event",
         related_name="bbb_calls",
         on_delete=models.CASCADE,
     )

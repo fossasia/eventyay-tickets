@@ -20,8 +20,8 @@ class Poster(models.Model):
     poster_preview = models.URLField(null=True, blank=True)  # TODO file upload
     schedule_session = models.TextField(null=True, blank=True)
 
-    world = models.ForeignKey(
-        to="World",
+    event = models.ForeignKey(
+        to="Event",
         related_name="posters",
         on_delete=models.CASCADE,
     )
@@ -84,7 +84,7 @@ class Poster(models.Model):
             for presenter in self.presenters.order_by("id").all():
                 presenters.append(
                     presenter.user.serialize_public(
-                        trait_badges_map=self.world.config.get("trait_badges_map")
+                        trait_badges_map=self.event.config.get("trait_badges_map")
                     )
                 )
             links = list(

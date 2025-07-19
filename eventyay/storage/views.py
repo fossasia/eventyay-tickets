@@ -16,10 +16,10 @@ from PIL import Image, ImageOps
 from PIL.Image import Resampling
 from rest_framework.authentication import get_authorization_header
 
-from eventyay.base.models import World
+from eventyay.base.models import Event
 from eventyay.core.permissions import Permission
 from eventyay.base.services.user import AuthError, login
-from eventyay.base.services.world import notify_schedule_change
+from eventyay.base.services.event import notify_schedule_change
 from eventyay.base.models.storage_model import StoredFile
 from eventyay.storage.schedule_to_json import convert
 
@@ -32,9 +32,9 @@ class UploadMixin:
         return super().dispatch(request, *args, **kwargs)
 
     @cached_property
-    def world(self):
-        world_id = self.kwargs.get("world_id", None)
-        return get_object_or_404(World, id=world_id)
+    def event(self):
+        event_id = self.kwargs.get("event_id", None)
+        return get_object_or_404(Event, id=event_id)
 
     @cached_property
     def user(self):
@@ -44,24 +44,24 @@ class UploadMixin:
             raise PermissionDenied()
 
         if auth[0].lower() == "bearer":
-            token = self.world.decode_token(auth[1])
+            token = self.event.decode_token(auth[1])
             if not token:
                 raise PermissionDenied()
             try:
-                res = login(world=self.world, token=token)
+                res = login(event=self.event, token=token)
             except AuthError:
                 raise PermissionDenied()
         elif auth[0].lower() == "client":
             try:
-                res = login(world=self.world, client_id=auth[1])
+                res = login(event=self.event, client_id=auth[1])
             except AuthError:
                 raise PermissionDenied()
         else:
             raise PermissionDenied()
 
-        if any(p.value in res.world_config["permissions"] for p in self.permissions):
+        if any(p.value in res.event_config["permissions"] for p in self.permissions):
             return res.user
-        for room in res.world_config["rooms"]:
+        for room in res.event_config["rooms"]:
             if any(p.value in room["permissions"] for p in self.permissions):
                 return res.user
         raise PermissionDenied()
@@ -87,8 +87,8 @@ def resize_image(image, size):
 
 class UploadView(UploadMixin, View):
     permissions = {
-        Permission.WORLD_VIEW,
-        Permission.WORLD_UPDATE,
+        Permission.EVENT_VIEW,
+        Permission.EVENT_UPDATE,
         Permission.ROOM_UPDATE,
         Permission.ROOM_CHAT_SEND,
     }
@@ -139,7 +139,7 @@ class UploadView(UploadMixin, View):
             return JsonResponse({"error": "file.size"}, status=400)
 
         sf = StoredFile.objects.create(
-            world=self.world,
+            event=self.event,
             date=now(),
             filename=request.FILES["file"].name,
             type=content_type,
@@ -220,7 +220,7 @@ class UploadView(UploadMixin, View):
 
 
 class ScheduleImportView(UploadMixin, View):
-    permissions = {Permission.WORLD_UPDATE}
+    permissions = {Permission.EVENT_UPDATE}
     ext_whitelist = (".xlsx",)
     max_size = 2 * 1024 * 1024
 
@@ -240,14 +240,14 @@ class ScheduleImportView(UploadMixin, View):
             return JsonResponse({"error": "file.type"}, status=400)
 
         try:
-            jsondata = convert(request.FILES["file"], timezone=self.world.timezone)
+            jsondata = convert(request.FILES["file"], timezone=self.event.timezone)
         except ValidationError as e:
             return JsonResponse({"error": ", ".join(e)}, status=400)
         except ValueError as e:
             return JsonResponse({"error": str(e)}, status=400)
 
         sf = StoredFile.objects.create(
-            world=self.world,
+            event=self.event,
             date=now(),
             filename=f'schedule_{now().strftime("%Y-%m-%d-%H-%M-%S")}.json',
             type="application/json",
@@ -255,5 +255,5 @@ class ScheduleImportView(UploadMixin, View):
             public=True,
             user=self.user,
         )
-        async_to_sync(notify_schedule_change)(self.world.id)
+        async_to_sync(notify_schedule_change)(self.event.id)
         return JsonResponse({"url": sf.file.url}, status=201)

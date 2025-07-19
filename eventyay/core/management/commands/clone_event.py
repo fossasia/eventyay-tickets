@@ -4,36 +4,36 @@ import uuid
 import jwt
 from django.core.management.base import BaseCommand
 
-from eventyay.base.models import World
+from eventyay.base.models import Event
 
 
 class Command(BaseCommand):
-    help = "Clone a world (with rooms and configuration)"
+    help = "Clone an event (with rooms and configuration)"
 
     def add_arguments(self, parser):
-        parser.add_argument("world_id", type=str)
+        parser.add_argument("event_id", type=str)
         parser.add_argument("--new-secrets", action="store_true")
 
     def handle(self, *args, **options):
-        old = World.objects.get(id=options["world_id"])
-        new = World()
+        old = Event.objects.get(id=options["event_id"])
+        new = Event()
 
         while True:
-            v = input("Enter the internal ID for the new world (alphanumeric): ")
+            v = input("Enter the internal ID for the new event (alphanumeric): ")
             if v.strip() and v.strip().isalnum():
-                if World.objects.filter(id=v.strip()).exists():
-                    print("This world already exists.")
+                if Event.objects.filter(id=v.strip()).exists():
+                    print("This event already exists.")
                 else:
                     new.id = v
                     break
 
-        new.title = input("Enter the title for the new world: ")
+        new.title = input("Enter the title for the new event: ")
         new.domain = input(
-            "Enter the domain of the new world (e.g. myevent.example.org): "
+            "Enter the domain of the new event (e.g. myevent.example.org): "
         )
 
         new.clone_from(old, new_secrets=options["new_secrets"])
-        print("World cloned.")
+        print("Event cloned.")
 
         print("Default API key secrets:", new.config["JWT_secrets"])
 

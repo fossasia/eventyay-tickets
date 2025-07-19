@@ -6,12 +6,12 @@ from eventyay.core.utils.config import import_config
 
 
 class Command(BaseCommand):
-    help = "Import a JSON world config"
+    help = "Import a JSON event config"
 
     def add_arguments(self, parser):
         parser.add_argument("filename", type=str)
 
     def handle(self, *args, **options):
         with open(options["filename"]) as f:
-            world_data = json.load(f)
-            import_config(world_data)
+            event_data = json.load(f)
+            import_config(event_data)

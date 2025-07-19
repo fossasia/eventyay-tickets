@@ -163,7 +163,7 @@ class QuestionModule(BaseModule):
     @room_action(permission_required=Permission.ROOM_QUESTION_READ)
     async def list_questions(self, body):
         questions = []
-        if await self.consumer.world.has_permission_async(
+        if await self.consumer.event.has_permission_async(
             user=self.consumer.user,
             room=self.room,
             permission=Permission.ROOM_QUESTION_MODERATE,

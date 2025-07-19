@@ -6,11 +6,11 @@ from eventyay.base.models import TurnServer
 logger = logging.getLogger(__name__)
 
 
-def choose_server(world):
+def choose_server(event):
     servers = TurnServer.objects.filter(active=True)
     search_order = [
-        servers.filter(world_exclusive=world),
-        servers.filter(world_exclusive__isnull=True),
+        servers.filter(event_exclusive=event),
+        servers.filter(event_exclusive__isnull=True),
     ]
     for qs in search_order:
         servers = list(qs)

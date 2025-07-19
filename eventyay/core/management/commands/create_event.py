@@ -5,29 +5,29 @@ import jwt
 from django.core.management.base import BaseCommand
 from django.utils.crypto import get_random_string
 
-from eventyay.base.models import World
+from eventyay.base.models import Event
 
 
 class Command(BaseCommand):
-    help = "Create a new world"
+    help = "Create a new event"
 
     def handle(self, *args, **options):
-        w = World()
+        e = Event()
         while True:
-            v = input("Enter the internal ID for the new world (alphanumeric): ")
+            v = input("Enter the internal ID for the new event (alphanumeric): ")
             if v.strip() and v.strip().isalnum():
-                if World.objects.filter(id=v.strip()).exists():
-                    print("This world already exists.")
-                w.id = v
+                if Event.objects.filter(id=v.strip()).exists():
+                    print("This event already exists.")
+                e.id = v
                 break
 
-        w.title = input("Enter the title for the new world: ")
-        w.domain = input(
-            "Enter the domain of the new world (e.g. myevent.example.org): "
+        e.title = input("Enter the title for the new event: ")
+        e.domain = input(
+            "Enter the domain of the new event (e.g. myevent.example.org): "
         )
 
         secret = get_random_string(length=64)
-        w.config = {
+        e.config = {
             "JWT_secrets": [
                 {
                     "issuer": "any",
@@ -36,10 +36,10 @@ class Command(BaseCommand):
                 }
             ]
         }
-        w.save()
+        e.save()
 
-        print("World created.")
-        print("Default API key secrets:", w.config["JWT_secrets"])
+        print("Event created.")
+        print("Default API key secrets:", e.config["JWT_secrets"])
 
         print("Admin url:")
         iat = datetime.datetime.utcnow()
@@ -53,4 +53,4 @@ class Command(BaseCommand):
             "traits": ["admin"],
         }
         token = jwt.encode(payload, secret, algorithm="HS256")
-        print(f"https://{w.domain}/#token={token}")
+        print(f"https://{e.domain}/#token={token}")

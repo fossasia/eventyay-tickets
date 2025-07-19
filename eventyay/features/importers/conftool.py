@@ -189,7 +189,7 @@ def fetch_schedule_from_conftool(url, password):
     return result
 
 
-def mirror_conftool_file(world, url, password, nonce, preview=False):
+def mirror_conftool_file(event, url, password, nonce, preview=False):
     logger.debug(f"Downloading {url}…")
     try:
         passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
@@ -228,7 +228,7 @@ def mirror_conftool_file(world, url, password, nonce, preview=False):
         filename = f"poster_{contenthash}.{content_types[content_type]}"
 
         sf, created = StoredFile.objects.get_or_create(
-            world=world,
+            event=event,
             filename=filename,
             type=content_type,
             public=True,
@@ -243,7 +243,7 @@ def mirror_conftool_file(world, url, password, nonce, preview=False):
         if content_type == "application/pdf" and preview:
             logger.debug(f"Creating a preview for {url}…")
             psf, created = StoredFile.objects.get_or_create(
-                world=world,
+                event=event,
                 filename=f"poster_{contenthash}_preview.png",
                 type="image/png",
                 public=True,
@@ -278,7 +278,7 @@ def mirror_conftool_file(world, url, password, nonce, preview=False):
 
 
 def create_posters_from_conftool(
-    world, url, password, status="-3", session_as_category=True
+    event, url, password, status="-3", session_as_category=True
 ):
     nonce = int(time.time())
     passhash = hashlib.sha256((str(nonce) + password).encode()).hexdigest()
@@ -304,16 +304,16 @@ def create_posters_from_conftool(
     for paper in root.xpath("paper"):
         try:
             poster = Poster.objects.get(
-                world=world,
+                event=event,
                 import_id=f"conftool/{paper.xpath('paperID')[0].text}",
             )
         except Poster.DoesNotExist:
             poster = Poster(
-                world=world,
+                event=event,
                 import_id=f"conftool/{paper.xpath('paperID')[0].text}",
                 parent_room=[
                     r
-                    for r in world.rooms.all()
+                    for r in event.rooms.all()
                     if any(m["type"] == "poster.native" for m in r.module_config)
                 ][
                     0
@@ -399,7 +399,7 @@ def create_posters_from_conftool(
         if poster_url and "downloadPaper" in poster_url:
             nonce += 1
             poster_url, preview_url = mirror_conftool_file(
-                world, poster_url, password, nonce, preview=True
+                event, poster_url, password, nonce, preview=True
             )
             poster.poster_url = poster_url
             poster.poster_preview = preview_url
@@ -425,7 +425,7 @@ def create_posters_from_conftool(
 
             nonce += 1
             download_url, preview_url = mirror_conftool_file(
-                world,
+                event,
                 paper.xpath(f"download_final_link_{fileindex}")[0].text,
                 password,
                 nonce,
