@@ -3,10 +3,10 @@ from django import template
 register = template.Library()
 
 @register.filter
-def to_user_emails(to_users):
+def split(value, delimiter=','):
     """
-    Extracts emails from to_users and returns a comma-separated string.
+    Usage: {{ value|split:"," }}
     """
-    if isinstance(to_users, list):
-        return ", ".join([u.get("email", "") for u in to_users if u.get("email")])
-    return ""
+    if not isinstance(value, str):
+        return []
+    return [v.strip() for v in value.split(delimiter)]

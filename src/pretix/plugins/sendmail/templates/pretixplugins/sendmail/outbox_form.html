@@ -29,7 +29,7 @@
         <div class="row form-group">
             <label class="col-md-3 control-label text-right">{% translate "To" %}</label>
             <div class="col-md-9 pt-2">
-                {{ form.instance.to_users|to_user_emails }}
+                {{ form.instance.get_recipient_emails|join:", " }}
             </div>
         </div>
         <div class="row form-group">
@@ -42,12 +42,12 @@
         </div>
         <div class="row form-group">
             <div class="col-md-12 pt-2 text-right">
-                {% bootstrap_field form.raw_subject layout='horizontal' %}
+                {% bootstrap_field form.subject layout='horizontal' %}
             </div>
         </div>
         <div class="row form-group">
             <div class="col-md-12 pt-2 text-right">
-                {% bootstrap_field form.raw_message layout='horizontal' %}
+                {% bootstrap_field form.message layout='horizontal' %}
             </div>
         </div>
 
@@ -120,8 +120,8 @@
                 <!-- New attachment -->
                 {% bootstrap_field form.new_attachment layout="horizontal" %}
 
-                {% bootstrap_field form.raw_subject layout='horizontal' %}
-                {% bootstrap_field form.raw_message layout='horizontal' %}
+                {% bootstrap_field form.subject layout='horizontal' %}
+                {% bootstrap_field form.message layout='horizontal' %}
 
         <!-- Button container -->
         <div class="form-group submit-group row" style="margin-bottom: 15px;">
@@ -134,9 +134,6 @@
                 <button type="submit" name="action" value="save" form="edit-form" class="btn btn-primary btn-lg">
                     {% translate "Save" %}
                 </button>
-                {% comment %} <button type="submit" name="action" value="save_and_send" form="edit-form" class="btn btn-primary btn-lg">
-                    {% translate "Save and send" %}
-                </button> {% endcomment %}
             </div>
         </div>
     {% endif %}

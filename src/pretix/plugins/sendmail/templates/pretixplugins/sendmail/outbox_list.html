@@ -1,5 +1,6 @@
 {% extends "pretixcontrol/event/base.html" %}
 {% load i18n %}
+{% load sendmail_extras %}
 
 {% block content %}
 <nav id="event-nav" class="header-nav">
@@ -78,15 +79,15 @@
             <td>
                 <a class="text-body text-decoration-none"
                    href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
-                    {{ mail.raw_subject }}
+                    {{ mail.subject }}
                 </a>
             </td>
             <td>
-                {% with mail.to_users|slice:":3" as first_three %}
-                    {% for user in first_three %}
-                        {{ user.email }}{% if not forloop.last %}, {% endif %}
+                {% with mail.recipient_emails_display|split:"," as first_three %}
+                    {% for email in first_three|slice:":3" %}
+                        {{ email }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}
-                    {% if mail.to_users|length > 3 %}
+                    {% if first_three|length > 3 %}
                         …
                     {% endif %}
                 {% endwith %}
@@ -101,7 +102,7 @@
                     </div>
                 {% endif %}
             </td>
-            <td>{{ mail.to_users|length }}</td>
+            <td>{{ mail.recipient_emails_display|split:","|length }}</td>
             <td>
                 <div class="btn-toolbar" role="toolbar">
                     <!-- Send -->

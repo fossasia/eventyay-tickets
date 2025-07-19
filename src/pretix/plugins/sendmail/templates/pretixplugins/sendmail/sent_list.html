@@ -59,12 +59,12 @@
             <td>
                 <a class="text-body text-decoration-none"
                    href="{% url 'plugins:sendmail:edit_mail' organizer=request.event.organizer.slug event=request.event.slug pk=mail.pk %}">
-                    {{ mail.raw_subject }}
+                    {{ mail.subject }}
                 </a>
             </td>
             <td>
-                {% for user in mail.to_users %}
-                    {{ user.email }}{% if not forloop.last %}, {% endif %}
+                {% for email in mail.recipient_preview %}
+                    {{ email }}{% if not forloop.last %}, {% endif %}
                 {% empty %}
                     <em>{% translate "No recipients" %}</em>
                 {% endfor %}

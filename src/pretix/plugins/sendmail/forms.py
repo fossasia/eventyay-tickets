@@ -16,7 +16,7 @@ from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
-from pretix.plugins.sendmail.models import QueuedMail
+from pretix.plugins.sendmail.models import QueuedMail, QueuedMailToUsers
 from pretix.base.models.organizer import Team
 
 
@@ -217,6 +217,7 @@ class MailForm(forms.Form):
             del self.fields['subevent']
             del self.fields['subevents_from']
             del self.fields['subevents_to']
+
 
 class MailContentSettingsForm(SettingsForm):
     mail_text_order_placed = I18nFormField(
@@ -422,24 +423,22 @@ class MailContentSettingsForm(SettingsForm):
 class QueuedMailEditForm(forms.ModelForm):
     new_attachment = forms.FileField(
         required=False,
-        label="New attachment",
+        label=_("New attachment"),
         help_text=_("Upload a new file to replace the existing one.")
     )
-    
+
     emails = forms.CharField(
         label=_("Recipients"),
         help_text=_("Edit the list of recipient email addresses separated by commas."),
         required=True,
         widget=forms.Textarea(attrs={'rows': 2, 'class': 'form-control'})
     )
-    
+
     class Meta:
         model = QueuedMail
         fields = [
             'reply_to',
             'bcc',
-            'raw_subject',
-            'raw_message',
         ]
         labels = {
             'reply_to': _('Reply-To'),
@@ -458,32 +457,32 @@ class QueuedMailEditForm(forms.ModelForm):
         self.event = kwargs.pop('event', None)
         super().__init__(*args, **kwargs)
 
-        # Prefill emails field with existing recipient emails
-        existing_emails = [u['email'] for u in self.instance.to_users]
-        self.fields['emails'].initial = ", ".join(existing_emails)
+        existing_recipients = QueuedMailToUsers.objects.filter(mail=self.instance).order_by('id')
+        self.recipient_objects = list(existing_recipients)
+        self.fields['emails'].initial = ", ".join([u.email for u in self.recipient_objects])
 
         saved_locales = set()
-        if self.instance.raw_subject and hasattr(self.instance.raw_subject, '_data'):
-            saved_locales |= set(self.instance.raw_subject._data.keys())
-        if self.instance.raw_message and hasattr(self.instance.raw_message, '_data'):
-            saved_locales |= set(self.instance.raw_message._data.keys())
+        if self.instance.subject and hasattr(self.instance.subject, '_data'):
+            saved_locales |= set(self.instance.subject._data.keys())
+        if self.instance.message and hasattr(self.instance.message, '_data'):
+            saved_locales |= set(self.instance.message._data.keys())
 
         configured_locales = set(self.event.settings.get('locales', [])) if self.event else set()
         allowed_locales = saved_locales | configured_locales
 
-        self.fields['raw_subject'] = I18nFormField(
+        self.fields['subject'] = I18nFormField(
             label=_('Subject'),
             widget=I18nTextInput,
             required=False,
             locales=list(allowed_locales),
-            initial=self.instance.raw_subject
+            initial=self.instance.subject
         )
-        self.fields['raw_message'] = I18nFormField(
+        self.fields['message'] = I18nFormField(
             label=_('Message'),
             widget=I18nTextarea,
             required=False,
             locales=list(allowed_locales),
-            initial=self.instance.raw_message
+            initial=self.instance.message
         )
 
     def clean_emails(self):
@@ -493,44 +492,34 @@ class QueuedMailEditForm(forms.ModelForm):
             if email.strip()
         ]
 
-        if len(updated_emails) > len(self.instance.to_users):
+        if len(updated_emails) > len(self.recipient_objects):
             raise ValidationError(
                 _("You cannot add new recipients. Only editing existing email addresses is allowed.")
             )
-        return ", ".join(updated_emails)
+        return updated_emails
 
-    from django.core.exceptions import ValidationError
     def save(self, commit=True):
         instance = super().save(commit=False)
 
-        updated_emails = [
-            email.strip()
-            for email in self.cleaned_data['emails'].split(',')
-            if email.strip()
-        ]
+        updated_emails = self.cleaned_data['emails']
 
-        existing_users = instance.to_users or []
-        if len(updated_emails) > len(existing_users):
-            raise ValidationError(
-                _("You cannot add new recipients. Only editing existing email addresses is allowed.")
-            )
-
-        new_to_users = []
-        for i, user in enumerate(existing_users):
-            if i < len(updated_emails):
-                user['email'] = updated_emails[i]
-            new_to_users.append(user)
-
-        instance.to_users = new_to_users
+        for i, email in enumerate(updated_emails):
+            self.recipient_objects[i].email = email
+            if commit:
+                self.recipient_objects[i].save()
 
         # Handle new attachment
         if self.cleaned_data.get('new_attachment'):
             uploaded_file = self.cleaned_data['new_attachment']
             cf = CachedFile.objects.create(file=uploaded_file, filename=uploaded_file.name)
-            instance.attachments = [str(cf.id)]
+            instance.attachments = [cf.id]
+
+        instance.subject = self.cleaned_data['subject']
+        instance.message = self.cleaned_data['message']
 
         if commit:
             instance.save()
+
         return instance
 
 
@@ -543,7 +532,10 @@ class TeamMailForm(forms.Form):
             '.ppt', '.doc', '.xlsx', '.xls', '.jfif', '.heic', '.heif', '.pages', '.bmp',
             '.tif', '.tiff',
         ),
-        help_text=_('Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs of no more than 2 MB in size.'),
+        help_text=_(
+            'Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. '
+            'We recommend only using PDFs of no more than 2 MB in size.'
+        ),
         max_size=10 * 1024 * 1024,
     )
 
@@ -552,12 +544,12 @@ class TeamMailForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         locales = self.event.settings.get('locales') or [self.event.locale or 'en']
-        
-        placeholder_keys = get_available_placeholders(self.event, ['event', 'team']).keys()
-        placeholder_text = _("Available placeholders: ") + ', '.join(f"{{{key}}}" for key in sorted(placeholder_keys))
-
         if isinstance(locales, str):
             locales = [locales]
+
+        placeholder_keys = get_available_placeholders(self.event, ['event', 'team']).keys()                        
+        placeholder_text = _("Available placeholders: ") + ', '.join(f"{{{key}}}" for key in sorted(placeholder_keys))
+
         self.fields['subject'] = I18nFormField(
             label=_('Subject'),
             widget=I18nTextInput,
