@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge Editor - Dual Dropdown Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 60px;
+            resize: vertical;
+        }
+        .hidden {
+            display: none;
+        }
+        .demo-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .result {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Badge Editor - Dual Dropdown System Test</h1>
+    
+    <div class="demo-section">
+        <h2>Event Information Placeholders</h2>
+        <div class="form-group">
+            <label for="toolbox-event-info">Event Info</label>
+            <select id="toolbox-event-info">
+                <option value="">Select event info</option>
+                <option data-sample="Sample Event" value="event_name">Event name</option>
+                <option data-sample="2024-01-15" value="event_date">Event date</option>
+                <option data-sample="19:30" value="event_time">Event time</option>
+                <option data-sample="Main Hall" value="event_location">Event location</option>
+                <option data-sample="Conference" value="event_type">Event type</option>
+                <option data-sample="Dr. Smith" value="event_organizer">Event organizer</option>
+                <option data-sample="Technology Track" value="event_category">Event category</option>
+                <option data-sample="60 minutes" value="event_duration">Event duration</option>
+                <option value="other">Other…</option>
+            </select>
+            <textarea id="toolbox-event-info-other" class="hidden" placeholder="Enter custom event text..."></textarea>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>User/Attendee Information Placeholders</h2>
+        <div class="form-group">
+            <label for="toolbox-user-info">User Info</label>
+            <select id="toolbox-user-info">
+                <option value="">Select user info</option>
+                <option data-sample="John Doe" value="attendee_name">Attendee name</option>
+                <option data-sample="john@example.com" value="attendee_email">Attendee email</option>
+                <option data-sample="ABC123" value="ticket_code">Ticket code</option>
+                <option data-sample="VIP" value="ticket_type">Ticket type</option>
+                <option data-sample="A-15" value="seat_number">Seat number</option>
+                <option data-sample="Gate B" value="entrance_gate">Entrance gate</option>
+                <option data-sample="Premium" value="access_level">Access level</option>
+                <option data-sample="Company Inc." value="company_name">Company name</option>
+                <option data-sample="Manager" value="job_title">Job title</option>
+                <option data-sample="+1234567890" value="phone_number">Phone number</option>
+                <option value="other">Other…</option>
+            </select>
+            <textarea id="toolbox-user-info-other" class="hidden" placeholder="Enter custom user text..."></textarea>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Preview</h2>
+        <div class="result">
+            <strong>Selected Content:</strong> <span id="selected-content">None</span><br>
+            <strong>Sample Text:</strong> <span id="sample-text">None</span>
+        </div>
+    </div>
+    
+    <script>
+        // Simulate the dual dropdown functionality
+        function updatePreview() {
+            const eventSelect = document.getElementById('toolbox-event-info');
+            const userSelect = document.getElementById('toolbox-user-info');
+            const eventOther = document.getElementById('toolbox-event-info-other');
+            const userOther = document.getElementById('toolbox-user-info-other');
+            const selectedContent = document.getElementById('selected-content');
+            const sampleText = document.getElementById('sample-text');
+            
+            let content = '';
+            let text = '';
+            
+            if (eventSelect.value) {
+                content = eventSelect.value;
+                if (content === 'other') {
+                    text = eventOther.value || 'Custom event text';
+                } else {
+                    const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+                    text = selectedOption.getAttribute('data-sample') || content;
+                }
+            } else if (userSelect.value) {
+                content = userSelect.value;
+                if (content === 'other') {
+                    text = userOther.value || 'Custom user text';
+                } else {
+                    const selectedOption = userSelect.options[userSelect.selectedIndex];
+                    text = selectedOption.getAttribute('data-sample') || content;
+                }
+            }
+            
+            selectedContent.textContent = content || 'None';
+            sampleText.textContent = text || 'None';
+        }
+        
+        // Event handlers for dual dropdown system
+        document.getElementById('toolbox-event-info').addEventListener('change', function() {
+            const eventOther = document.getElementById('toolbox-event-info-other');
+            const userSelect = document.getElementById('toolbox-user-info');
+            const userOther = document.getElementById('toolbox-user-info-other');
+            
+            if (this.value === 'other') {
+                eventOther.classList.remove('hidden');
+            } else {
+                eventOther.classList.add('hidden');
+            }
+            
+            // Clear user info selection when event info is selected
+            if (this.value) {
+                userSelect.value = '';
+                userOther.classList.add('hidden');
+            }
+            
+            updatePreview();
+        });
+        
+        document.getElementById('toolbox-user-info').addEventListener('change', function() {
+            const userOther = document.getElementById('toolbox-user-info-other');
+            const eventSelect = document.getElementById('toolbox-event-info');
+            const eventOther = document.getElementById('toolbox-event-info-other');
+            
+            if (this.value === 'other') {
+                userOther.classList.remove('hidden');
+            } else {
+                userOther.classList.add('hidden');
+            }
+            
+            // Clear event info selection when user info is selected
+            if (this.value) {
+                eventSelect.value = '';
+                eventOther.classList.add('hidden');
+            }
+            
+            updatePreview();
+        });
+        
+        // Handle changes in "other" text areas
+        document.getElementById('toolbox-event-info-other').addEventListener('input', updatePreview);
+        document.getElementById('toolbox-user-info-other').addEventListener('input', updatePreview);
+        
+        // Initial update
+        updatePreview();
+    </script>
+</body>
+</html>
