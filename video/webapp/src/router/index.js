@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import App from 'App'
 import RoomHeader from 'views/rooms/RoomHeader'
 import Room from 'views/rooms/item'
@@ -15,7 +14,6 @@ import ContactRequests from 'views/contact-requests'
 import Preferences from 'views/preferences'
 import config from 'config'
 
-Vue.use(VueRouter)
 
 const routes = [
 	{
@@ -282,10 +280,9 @@ const routes = [
 	}
 ]
 
-const router = new VueRouter({
-	mode: 'history',
-	base: config.basePath,
-	routes
+const router = createRouter({
+ 	history: createWebHistory(config.basePath),
+  	routes
 })
 
 export default router
