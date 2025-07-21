@@ -123,18 +123,42 @@
                 {% bootstrap_field form.subject layout='horizontal' %}
                 {% bootstrap_field form.message layout='horizontal' %}
 
-        <!-- Button container -->
-        <div class="form-group submit-group row" style="margin-bottom: 15px;">
-            <div class="col-xs-6 text-left">
-                <a href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=form.instance.pk %}" class="btn btn-danger btn-lg">
-                    <i class="fa fa-trash"></i> {% translate "Discard" %}
-                </a>
+            </fieldset>
+
+            {% if request.method == "POST" %}
+            <fieldset>
+            <legend>{% translate "E-mail preview" %}</legend>
+                <div class="tab-pane mail-preview-group">
+                    {% for locale, out in output.items %}
+                        <div lang="{{ locale }}" class="mail-preview">
+                            <strong>{{ out.subject|safe }}</strong><br><br>
+                            {{ out.html|safe }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            {% endif %}
+
+            <!-- Button container -->
+            <div class="form-group submit-group row" style="margin-bottom: 15px;">
+                <div class="col-xs-6 text-left">
+                    <a href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=form.instance.pk %}" class="btn btn-danger btn-lg">
+                        <i class="fa fa-trash"></i> {% translate "Discard" %}
+                    </a>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <!-- Preview Button -->
+                    <button type="submit" class="btn btn-default btn-save" name="action" value="preview">
+                        {% translate "Preview email" %}
+                    </button>
+
+                    <!-- Save Button -->
+                    <button type="submit" name="action" value="save" form="edit-form" class="btn btn-primary btn-lg">
+                        {% translate "Save" %}
+                    </button>
+                </div>
             </div>
-            <div class="col-xs-6 text-right">
-                <button type="submit" name="action" value="save" form="edit-form" class="btn btn-primary btn-lg">
-                    {% translate "Save" %}
-                </button>
-            </div>
-        </div>
+        </form>
+
     {% endif %}
 {% endblock %}

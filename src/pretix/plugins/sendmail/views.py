@@ -312,6 +312,7 @@ class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
+        kwargs['read_only'] = bool(self.object.sent_at)
         return kwargs
     
     def get_context_data(self, **kwargs):
@@ -324,16 +325,61 @@ class EditQueuedMailView(EventPermissionRequiredMixin, UpdateView):
             )
         else:
             ctx['attachments_files'] = []
+
+        ctx['output'] = getattr(self, 'output', None)
+        
         return ctx
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('We could save the email. See below for details.'))
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         if form.instance.sent_at:
             messages.error(self.request, _('This email has already been sent and cannot be edited.'))
             return self.form_invalid(form)
 
+        if self.request.POST.get('action') == 'preview':
+            self.output = {}
+            event = self.request.event
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+
+            if form.instance.composing_for == ComposingFor.TEAMS:
+                base_placeholders = ['event', 'team']
+            else:
+                base_placeholders = ['event', 'order', 'position_or_address']
+
+            for l in event.settings.locales:
+                with language(l, event.settings.region):
+                    context_dict = {
+                        k: f"""<span class="placeholder" title="{
+                            _('This value will be replaced based on dynamic parameters.')
+                            }">{v.render_sample(self.request.event)}</span>"""
+                        for k, v in get_available_placeholders(event, base_placeholders).items()
+                    }
+
+                    try:
+                        subject_preview = subject.localize(l).format_map(context_dict)
+                    except KeyError as e:
+                        form.add_error('subject', _('Invalid placeholder(s): {}').format(str(e)))
+                        return self.form_invalid(form)
+
+                    try:
+                        message_preview = message.localize(l).format_map(context_dict)
+                    except KeyError as e:
+                        form.add_error('message', _('Invalid placeholder(s): {}').format(str(e)))
+                        return self.form_invalid(form)
+
+                    self.output[l] = {
+                        'subject': _('Subject: {subject}').format(subject=subject_preview),
+                        'html': markdown_compile_email(message_preview),
+                    }
+
+            return self.get(self.request, *self.args, **self.kwargs)
+
         response = super().form_valid(form)
         messages.success(self.request, _('Your changes have been saved.'))
-
         return response
 
     def get_success_url(self):
@@ -475,6 +521,10 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, FormView):
 
         return ctx
 
+    def form_invalid(self, form):
+        messages.error(self.request, _('We could save the email. See below for details.'))
+        return super().form_invalid(form)
+
     def form_valid(self, form):
         event = self.request.event
         user = self.request.user
@@ -550,7 +600,6 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, FormView):
         # Create associated filter data for teams
         QueuedMailFilter.objects.create(
             mail=mail_instance,
-            recipients=None,
             sendto=[],
             items=[],
             checkin_lists=[],
@@ -570,9 +619,6 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, FormView):
             QueuedMailToUsers(
                 mail=mail_instance,
                 email=rec["email"],
-                orders=rec["orders"],
-                positions=rec["positions"],
-                items=rec["items"],
                 team=rec["team"],
                 sent=rec["sent"],
                 error=rec["error"]

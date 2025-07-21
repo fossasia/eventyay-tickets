@@ -1,5 +1,3 @@
-import json
-
 from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse
@@ -16,7 +14,7 @@ from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
-from pretix.plugins.sendmail.models import QueuedMail, QueuedMailToUsers
+from pretix.plugins.sendmail.models import ComposingFor, QueuedMail, QueuedMailToUsers
 from pretix.base.models.organizer import Team
 
 
@@ -455,7 +453,13 @@ class QueuedMailEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event', None)
+        self.read_only = kwargs.pop('read_only', False)
         super().__init__(*args, **kwargs)
+
+        if self.instance.composing_for == ComposingFor.TEAMS:
+            base_placeholders = ['event', 'team']
+        else:
+            base_placeholders = ['event', 'order', 'position_or_address']
 
         existing_recipients = QueuedMailToUsers.objects.filter(mail=self.instance).order_by('id')
         self.recipient_objects = list(existing_recipients)
@@ -484,6 +488,19 @@ class QueuedMailEditForm(forms.ModelForm):
             locales=list(allowed_locales),
             initial=self.instance.message
         )
+
+        if not self.read_only:
+            self._set_field_placeholders('subject', base_placeholders)
+            self._set_field_placeholders('message', base_placeholders)
+
+    def _set_field_placeholders(self, fn, base_parameters):
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        ht = _('Available placeholders: {list}').format(list=', '.join(phs))
+        if self.fields[fn].help_text:
+            self.fields[fn].help_text += ' ' + str(ht)
+        else:
+            self.fields[fn].help_text = ht
+        self.fields[fn].validators.append(PlaceholderValidator(phs))
 
     def clean_emails(self):
         updated_emails = [

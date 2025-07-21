@@ -84,7 +84,7 @@ class QueuedMail(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"QueuedMail(event={self.event.slug}, subject={self.subject[:30]}, sent_at={self.sent_at})"
+        return f"QueuedMail(event={self.event.slug}, sent_at={self.sent_at})"
 
     def subject_localized(self, locale=None):
         """
@@ -382,7 +382,8 @@ class QueuedMailFilter(models.Model):
     recipients = models.CharField(
         max_length=10,
         choices=[("orders", "Orders"), ("attendees", "Attendees"), ("both", "Both")],
-        default="orders"
+        default="orders",
+        blank=True
     )
     sendto = ArrayField(models.CharField(max_length=20), blank=True, default=list)
     items = ArrayField(models.IntegerField(), blank=True, default=list)
@@ -399,4 +400,3 @@ class QueuedMailFilter(models.Model):
 
     def __str__(self):
         return f"Filters for mail {self.mail_id}"
-
