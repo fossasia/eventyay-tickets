@@ -17,25 +17,37 @@
 <form class="form-horizontal" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form_errors form %}
-
-    {% bootstrap_field form.teams layout='horizontal' %}
-    {% bootstrap_field form.subject layout='horizontal' %}
-    {% bootstrap_field form.message layout='horizontal' %}
-    {% bootstrap_field form.attachment layout='horizontal' %}
+    
+    <div class="tabbed-form">
+        <!-- Recipients Section -->
+        <fieldset>
+            <legend>{% translate "Recipients" %}</legend>
+            {% bootstrap_form_errors form %}
+            {% bootstrap_field form.teams layout='horizontal' %}
+        </fieldset>
+        
+        <!-- Content Section -->
+        <fieldset>
+            <legend>{% translate "Content" %}</legend>
+            {% bootstrap_form_errors form %}
+            {% bootstrap_field form.subject layout='horizontal' %}
+            {% bootstrap_field form.message layout='horizontal' %}
+            {% bootstrap_field form.attachment layout='horizontal' %}
+        </fieldset>
+    </div>
 
     {% if request.method == "POST" and output %}
-    <fieldset>
-        <legend>{% translate "Email preview" %}</legend>
-        <div class="tab-pane mail-preview-group">
-            {% for locale, out in output.items %}
-                <div lang="{{ locale }}" class="mail-preview">
-                    <strong>{{ out.subject|safe }}</strong><br><br>
-                    {{ out.html|safe }}
-                </div>
-                <hr>
-            {% endfor %}
-        </div>
-    </fieldset>
+        <fieldset>
+            <legend>{% translate "E-mail preview" %}</legend>
+            <div class="tab-pane mail-preview-group">
+                {% for locale, out in output.items %}
+                    <div lang="{{ locale }}" class="mail-preview">
+                        <strong>{{ out.subject|safe }}</strong><br><br>
+                        {{ out.html|safe }}
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
     {% endif %}
 
     <div class="form-group submit-group">

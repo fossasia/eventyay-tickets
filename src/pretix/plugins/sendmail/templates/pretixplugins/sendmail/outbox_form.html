@@ -19,70 +19,69 @@
     </nav>
 
     {% if read_only %}
-    <div class="alert alert-info">
-        {% blocktranslate trimmed with timestamp=form.instance.sent_at %}
-            This email was sent on {{ timestamp }}.
-        {% endblocktranslate %}
-    </div>
-
-    <div class="d-flex flex-column">
-        <div class="row form-group">
-            <label class="col-md-3 control-label text-right">{% translate "To" %}</label>
-            <div class="col-md-9 pt-2">
-                {{ form.instance.get_recipient_emails|join:", " }}
-            </div>
-        </div>
-        <div class="row form-group">
-            <label class="col-md-3 control-label text-right">{% translate "Reply-To" %}</label>
-            <div class="col-md-9 pt-2">{{ form.instance.reply_to|default:"-" }}</div>
-        </div>
-        <div class="row form-group">
-            <label class="col-md-3 control-label text-right">{% translate "BCC" %}</label>
-            <div class="col-md-9 pt-2">{{ form.instance.bcc|default:"-" }}</div>
-        </div>
-        <div class="row form-group">
-            <div class="col-md-12 pt-2 text-right">
-                {% bootstrap_field form.subject layout='horizontal' %}
-            </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-md-12 pt-2 text-right">
-                {% bootstrap_field form.message layout='horizontal' %}
-            </div>
+        <div class="alert alert-info">
+            {% blocktranslate trimmed with timestamp=form.instance.sent_at %}
+                This email was sent on {{ timestamp }}.
+            {% endblocktranslate %}
         </div>
 
-        {% if attachments_files %}
+        <div class="d-flex flex-column">
             <div class="row form-group">
-                <label class="col-md-3 control-label text-right">
-                    {% translate "Attachments" %}
-                </label>
+                <label class="col-md-3 control-label text-right">{% translate "To" %}</label>
                 <div class="col-md-9 pt-2">
-                    <ul class="list-unstyled">
-                        {% for file in attachments_files %}
-                            <li>
-                                <a href="{{ file.file.url }}" target="_blank" rel="noopener">
-                                    {{ file.filename }} ({{ file.type }})
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    {{ form.instance.get_recipient_emails|join:", " }}
                 </div>
             </div>
-        {% endif %}
-    </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "Reply-To" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.reply_to|default:"-" }}</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "BCC" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.bcc|default:"-" }}</div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 pt-2 text-right">
+                    {% bootstrap_field form.subject layout='horizontal' %}
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 pt-2 text-right">
+                    {% bootstrap_field form.message layout='horizontal' %}
+                </div>
+            </div>
 
-    <div class="submit-group">
-        {% if form.instance.composing_for == "attendees" %}
-            <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:send' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
-                {% translate "Copy to draft" %}
-            </a>
-        {% else %}
-            <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:compose_email_teams' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
-                {% translate "Copy to draft" %}
-            </a>
-        {% endif %}
-    </div>
+            {% if attachments_files %}
+                <div class="row form-group">
+                    <label class="col-md-3 control-label text-right">
+                        {% translate "Attachments" %}
+                    </label>
+                    <div class="col-md-9 pt-2">
+                        <ul class="list-unstyled">
+                            {% for file in attachments_files %}
+                                <li>
+                                    <a href="{{ file.file.url }}" target="_blank" rel="noopener">
+                                        {{ file.filename }} ({{ file.type }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
 
+        <div class="submit-group">
+            {% if form.instance.composing_for == "attendees" %}
+                <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:send' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
+                    {% translate "Copy to draft" %}
+                </a>
+            {% else %}
+                <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:compose_email_teams' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
+                    {% translate "Copy to draft" %}
+                </a>
+            {% endif %}
+        </div>
 
     {% else %}
         <!-- Main edit form -->
@@ -126,17 +125,17 @@
             </fieldset>
 
             {% if request.method == "POST" %}
-            <fieldset>
-            <legend>{% translate "E-mail preview" %}</legend>
-                <div class="tab-pane mail-preview-group">
-                    {% for locale, out in output.items %}
-                        <div lang="{{ locale }}" class="mail-preview">
-                            <strong>{{ out.subject|safe }}</strong><br><br>
-                            {{ out.html|safe }}
+                <fieldset>
+                    <legend>{% translate "E-mail preview" %}</legend>
+                        <div class="tab-pane mail-preview-group">
+                            {% for locale, out in output.items %}
+                                <div lang="{{ locale }}" class="mail-preview">
+                                    <strong>{{ out.subject|safe }}</strong><br><br>
+                                    {{ out.html|safe }}
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
+                </fieldset>
             {% endif %}
 
             <!-- Button container -->
