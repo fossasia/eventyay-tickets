@@ -69,8 +69,6 @@ class QueuedMail(models.Model):
     subject = I18nTextField(null=True, blank=True)
     message = I18nTextField(null=True, blank=True)
 
-    filters = models.JSONField(null=True, blank=True)
-
     reply_to = models.CharField(max_length=100, null=True, blank=True)
     bcc = models.TextField(null=True, blank=True)  # comma-separated
     locale = models.CharField(max_length=16, null=True, blank=True)
