@@ -41,7 +41,6 @@ from pretix.control.forms import (
 )
 from pretix.control.forms.widgets import Select2
 from pretix.helpers.countries import CachedCountries
-from pretix.multidomain.models import KnownDomain
 from pretix.multidomain.urlreverse import build_absolute_uri
 from pretix.plugins.banktransfer.payment import BankTransfer
 
@@ -334,23 +333,10 @@ class EventMetaValueForm(forms.ModelForm):
 
 class EventUpdateForm(I18nModelForm):
     def __init__(self, *args, **kwargs):
-        self.domain = kwargs.pop('domain', False)
 
         kwargs.setdefault('initial', {})
         self.instance = kwargs['instance']
-        if self.domain and self.instance:
-            initial_domain = self.instance.domains.first()
-            if initial_domain:
-                kwargs['initial'].setdefault('domain', initial_domain.domainname)
-
         super().__init__(*args, **kwargs)
-        if self.domain:
-            self.fields['domain'] = forms.CharField(
-                max_length=255,
-                label=_('Custom domain'),
-                required=False,
-                help_text=_('You need to configure the custom domain in the webserver beforehand.'),
-            )
         self.fields['sales_channels'] = forms.MultipleChoiceField(
             label=self.fields['sales_channels'].label,
             help_text=self.fields['sales_channels'].help_text,
@@ -360,38 +346,8 @@ class EventUpdateForm(I18nModelForm):
             widget=forms.CheckboxSelectMultiple,
         )
 
-    def clean_domain(self):
-        d = self.cleaned_data['domain']
-        if d:
-            if d == urlparse(settings.SITE_URL).hostname:
-                raise ValidationError(_('You cannot choose the base domain of this installation.'))
-            if KnownDomain.objects.filter(domainname=d).exclude(event=self.instance.pk).exists():
-                raise ValidationError(_('This domain is already in use for a different event or organizer.'))
-        return d
-
     def save(self, commit=True):
         instance = super().save(commit)
-
-        if self.domain:
-            current_domain = instance.domains.first()
-            if self.cleaned_data['domain']:
-                if current_domain and current_domain.domainname != self.cleaned_data['domain']:
-                    current_domain.delete()
-                    KnownDomain.objects.create(
-                        organizer=instance.organizer,
-                        event=instance,
-                        domainname=self.cleaned_data['domain'],
-                    )
-                elif not current_domain:
-                    KnownDomain.objects.create(
-                        organizer=instance.organizer,
-                        event=instance,
-                        domainname=self.cleaned_data['domain'],
-                    )
-            elif current_domain:
-                current_domain.delete()
-            instance.cache.clear()
-
         return instance
 
     def clean_slug(self):
