@@ -5,14 +5,18 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
+from i18nfield.fields import I18nTextInput, I18nTextarea
 
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.email import get_available_placeholders
 from pretix.base.forms import PlaceholderValidator, SettingsForm
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
-from pretix.base.models import CheckinList, Item, Order, SubEvent
+from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
+from pretix.plugins.sendmail.models import ComposingFor, QueuedMail, QueuedMailToUser
+from pretix.base.models.organizer import Team
+
 
 MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
 
@@ -211,6 +215,7 @@ class MailForm(forms.Form):
             del self.fields['subevent']
             del self.fields['subevents_from']
             del self.fields['subevents_to']
+
 
 class MailContentSettingsForm(SettingsForm):
     mail_text_order_placed = I18nFormField(
@@ -411,3 +416,173 @@ class MailContentSettingsForm(SettingsForm):
         for k, v in self.base_context.items():
             if k in self.fields:
                 self._set_field_placeholders(k, v)
+
+
+class QueuedMailEditForm(forms.ModelForm):
+    new_attachment = forms.FileField(
+        required=False,
+        label=_("New attachment"),
+        help_text=_("Upload a new file to replace the existing one.")
+    )
+
+    emails = forms.CharField(
+        label=_("Recipients"),
+        help_text=_("Edit the list of recipient email addresses separated by commas."),
+        required=True,
+        widget=forms.Textarea(attrs={'rows': 2, 'class': 'form-control'})
+    )
+
+    class Meta:
+        model = QueuedMail
+        fields = [
+            'reply_to',
+            'bcc',
+        ]
+        labels = {
+            'reply_to': _('Reply-To'),
+            'bcc': _('BCC'),
+        }
+        help_texts = {
+            'reply_to': _("Any changes to the Reply-To field will apply only to this queued email."),
+            'bcc': _("Any changes to the BCC field will apply only to this queued email."),
+        }
+        widgets = {
+            'reply_to': forms.TextInput(attrs={'class': 'form-control'}),
+            'bcc': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event', None)
+        self.read_only = kwargs.pop('read_only', False)
+        super().__init__(*args, **kwargs)
+
+        if self.instance.composing_for == ComposingFor.TEAMS:
+            base_placeholders = ['event', 'team']
+        else:
+            base_placeholders = ['event', 'order', 'position_or_address']
+
+        existing_recipients = QueuedMailToUser.objects.filter(mail=self.instance).order_by('id')
+        self.recipient_objects = list(existing_recipients)
+        self.fields['emails'].initial = ", ".join([u.email for u in self.recipient_objects])
+
+        saved_locales = set()
+        if self.instance.subject and hasattr(self.instance.subject, '_data'):
+            saved_locales |= set(self.instance.subject._data.keys())
+        if self.instance.message and hasattr(self.instance.message, '_data'):
+            saved_locales |= set(self.instance.message._data.keys())
+
+        configured_locales = set(self.event.settings.get('locales', [])) if self.event else set()
+        allowed_locales = saved_locales | configured_locales
+
+        self.fields['subject'] = I18nFormField(
+            label=_('Subject'),
+            widget=I18nTextInput,
+            required=False,
+            locales=list(allowed_locales),
+            initial=self.instance.subject
+        )
+        self.fields['message'] = I18nFormField(
+            label=_('Message'),
+            widget=I18nTextarea,
+            required=False,
+            locales=list(allowed_locales),
+            initial=self.instance.message
+        )
+
+        if not self.read_only:
+            self._set_field_placeholders('subject', base_placeholders)
+            self._set_field_placeholders('message', base_placeholders)
+
+    def _set_field_placeholders(self, fn, base_parameters):
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        ht = _('Available placeholders: {list}').format(list=', '.join(phs))
+        if self.fields[fn].help_text:
+            self.fields[fn].help_text += ' ' + str(ht)
+        else:
+            self.fields[fn].help_text = ht
+        self.fields[fn].validators.append(PlaceholderValidator(phs))
+
+    def clean_emails(self):
+        updated_emails = [
+            email.strip()
+            for email in self.cleaned_data['emails'].split(',')
+            if email.strip()
+        ]
+
+        if len(updated_emails) > len(self.recipient_objects):
+            raise ValidationError(
+                _("You cannot add new recipients. Only editing existing email addresses is allowed.")
+            )
+        return updated_emails
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        updated_emails = self.cleaned_data['emails']
+
+        for i, email in enumerate(updated_emails):
+            self.recipient_objects[i].email = email
+            if commit:
+                self.recipient_objects[i].save()
+
+        # Handle new attachment
+        if self.cleaned_data.get('new_attachment'):
+            uploaded_file = self.cleaned_data['new_attachment']
+            cf = CachedFile.objects.create(file=uploaded_file, filename=uploaded_file.name)
+            instance.attachments = [cf.id]
+
+        instance.subject = self.cleaned_data['subject']
+        instance.message = self.cleaned_data['message']
+
+        if commit:
+            instance.save()
+
+        return instance
+
+
+class TeamMailForm(forms.Form):
+    attachment = CachedFileField(
+        label=_('Attachment'),
+        required=False,
+        ext_whitelist=(
+            '.png', '.jpg', '.gif', '.jpeg', '.pdf', '.txt', '.docx', '.svg', '.pptx',
+            '.ppt', '.doc', '.xlsx', '.xls', '.jfif', '.heic', '.heif', '.pages', '.bmp',
+            '.tif', '.tiff',
+        ),
+        help_text=_(
+            'Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. '
+            'We recommend only using PDFs of no more than 2 MB in size.'
+        ),
+        max_size=10 * 1024 * 1024,
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(*args, **kwargs)
+
+        locales = self.event.settings.get('locales') or [self.event.locale or 'en']
+        if isinstance(locales, str):
+            locales = [locales]
+
+        placeholder_keys = get_available_placeholders(self.event, ['event', 'team']).keys()                        
+        placeholder_text = _("Available placeholders: ") + ', '.join(f"{{{key}}}" for key in sorted(placeholder_keys))
+
+        self.fields['subject'] = I18nFormField(
+            label=_('Subject'),
+            widget=I18nTextInput,
+            required=True,
+            locales=locales,
+            help_text=placeholder_text
+        )
+        self.fields['message'] = I18nFormField(
+            label=_('Message'),
+            widget=I18nTextarea,
+            required=True,
+            locales=locales,
+            help_text=placeholder_text
+        )
+        self.fields['teams'] = forms.ModelMultipleChoiceField(
+            queryset=Team.objects.filter(organizer=self.event.organizer),
+            widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+            label=_("Send to members of these teams")
+        )

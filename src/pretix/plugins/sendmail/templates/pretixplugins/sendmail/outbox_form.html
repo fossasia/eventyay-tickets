@@ -1,0 +1,163 @@
+{% extends "pretixcontrol/event/settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load rich_text %}
+{% load sendmail_extras %}
+
+{% block title %}
+    {% translate "Mail Editor" %}
+{% endblock %}
+
+{% block inside %}
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% translate "Mail Editor" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
+
+    {% if read_only %}
+        <div class="alert alert-info">
+            {% blocktranslate trimmed with timestamp=form.instance.sent_at %}
+                This email was sent on {{ timestamp }}.
+            {% endblocktranslate %}
+        </div>
+
+        <div class="d-flex flex-column">
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "To" %}</label>
+                <div class="col-md-9 pt-2">
+                    {{ form.instance.get_recipient_emails|join:", " }}
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "Reply-To" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.reply_to|default:"-" }}</div>
+            </div>
+            <div class="row form-group">
+                <label class="col-md-3 control-label text-right">{% translate "BCC" %}</label>
+                <div class="col-md-9 pt-2">{{ form.instance.bcc|default:"-" }}</div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 pt-2 text-right">
+                    {% bootstrap_field form.subject layout='horizontal' %}
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-12 pt-2 text-right">
+                    {% bootstrap_field form.message layout='horizontal' %}
+                </div>
+            </div>
+
+            {% if attachments_files %}
+                <div class="row form-group">
+                    <label class="col-md-3 control-label text-right">
+                        {% translate "Attachments" %}
+                    </label>
+                    <div class="col-md-9 pt-2">
+                        <ul class="list-unstyled">
+                            {% for file in attachments_files %}
+                                <li>
+                                    <a href="{{ file.file.url }}" target="_blank" rel="noopener">
+                                        {{ file.filename }} ({{ file.type }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="submit-group">
+            {% if form.instance.composing_for == "attendees" %}
+                <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:send' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
+                    {% translate "Copy to draft" %}
+                </a>
+            {% else %}
+                <a class="btn btn-primary btn-lg" href="{% url 'plugins:sendmail:compose_email_teams' organizer=request.event.organizer.slug event=request.event.slug %}?copyToDraft={{ form.instance.id }}">
+                    {% translate "Copy to draft" %}
+                </a>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <!-- Main edit form -->
+        <form method="post" enctype="multipart/form-data" class="form-horizontal" id="edit-form">
+            {% csrf_token %}
+            {% bootstrap_form_errors form %}
+            <fieldset>
+                {% bootstrap_field form.emails layout="horizontal" %}
+                {% bootstrap_field form.reply_to layout="horizontal" %}
+                {% bootstrap_field form.bcc layout="horizontal" %}
+
+                <!-- Existing attachments -->
+                {% if attachments_files %}
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">
+                            {% translate "Existing attachments" %}
+                        </label>
+                        <div class="col-md-9 pt-2">
+                            <ul class="list-unstyled">
+                                {% for file in attachments_files %}
+                                    <li>
+                                        <a href="{{ file.file.url }}" target="_blank" rel="noopener">
+                                            {{ file.filename }} ({{ file.type }})
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <p class="help-block">
+                                {% translate "These attachments will remain unless you remove them manually in file settings." %}
+                            </p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- New attachment -->
+                {% bootstrap_field form.new_attachment layout="horizontal" %}
+
+                {% bootstrap_field form.subject layout='horizontal' %}
+                {% bootstrap_field form.message layout='horizontal' %}
+
+            </fieldset>
+
+            {% if request.method == "POST" %}
+                <fieldset>
+                    <legend>{% translate "E-mail preview" %}</legend>
+                        <div class="tab-pane mail-preview-group">
+                            {% for locale, out in output.items %}
+                                <div lang="{{ locale }}" class="mail-preview">
+                                    <strong>{{ out.subject|safe }}</strong><br><br>
+                                    {{ out.html|safe }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                </fieldset>
+            {% endif %}
+
+            <!-- Button container -->
+            <div class="form-group submit-group row" style="margin-bottom: 15px;">
+                <div class="col-xs-6 text-left">
+                    <a href="{% url 'plugins:sendmail:delete_single' organizer=request.event.organizer.slug event=request.event.slug pk=form.instance.pk %}" class="btn btn-danger btn-lg">
+                        <i class="fa fa-trash"></i> {% translate "Discard" %}
+                    </a>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <!-- Preview Button -->
+                    <button type="submit" class="btn btn-default btn-save" name="action" value="preview">
+                        {% translate "Preview email" %}
+                    </button>
+
+                    <!-- Save Button -->
+                    <button type="submit" name="action" value="save" form="edit-form" class="btn btn-primary btn-lg">
+                        {% translate "Save" %}
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    {% endif %}
+{% endblock %}
