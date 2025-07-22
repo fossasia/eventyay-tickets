@@ -14,7 +14,7 @@ from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import CachedFile, CheckinList, Item, Order, SubEvent
 from pretix.control.forms import CachedFileField
 from pretix.control.forms.widgets import Select2, Select2Multiple
-from pretix.plugins.sendmail.models import ComposingFor, QueuedMail, QueuedMailToUsers
+from pretix.plugins.sendmail.models import ComposingFor, QueuedMail, QueuedMailToUser
 from pretix.base.models.organizer import Team
 
 
@@ -461,7 +461,7 @@ class QueuedMailEditForm(forms.ModelForm):
         else:
             base_placeholders = ['event', 'order', 'position_or_address']
 
-        existing_recipients = QueuedMailToUsers.objects.filter(mail=self.instance).order_by('id')
+        existing_recipients = QueuedMailToUser.objects.filter(mail=self.instance).order_by('id')
         self.recipient_objects = list(existing_recipients)
         self.fields['emails'].initial = ", ".join([u.email for u in self.recipient_objects])
 

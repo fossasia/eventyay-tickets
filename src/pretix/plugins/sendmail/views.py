@@ -22,7 +22,7 @@ from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.plugins.sendmail.forms import QueuedMailEditForm
 from pretix.plugins.sendmail.mixins import CopyDraftMixin, QueryFilterOrderingMixin
-from pretix.plugins.sendmail.models import ComposingFor, QueuedMail, QueuedMailFilter, QueuedMailToUsers
+from pretix.plugins.sendmail.models import ComposingFor, QueuedMail, QueuedMailFilter, QueuedMailToUser
 from pretix.plugins.sendmail.tasks import send_queued_mail
 from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
 from .forms import MailContentSettingsForm, TeamMailForm
@@ -258,7 +258,7 @@ class OutboxListView(EventPermissionRequiredMixin, QueryFilterOrderingMixin, Lis
         return self.get_filtered_queryset(base_qs)
 
     def get_queryset(self):
-        first_recipient_email = QueuedMailToUsers.objects.filter(
+        first_recipient_email = QueuedMailToUser.objects.filter(
             mail=OuterRef('pk')
         ).order_by('id').values('email')[:1]
 
@@ -412,7 +412,7 @@ class DeleteQueuedMailView(EventPermissionRequiredMixin, TemplateView):
             )
         else:
             QueuedMailFilter.objects.filter(mail=mail).delete()
-            QueuedMailToUsers.objects.filter(mail=mail).delete()
+            QueuedMailToUser.objects.filter(mail=mail).delete()
             mail.delete()
 
             messages.success(
@@ -445,7 +445,7 @@ class PurgeQueuedMailsView(EventPermissionRequiredMixin, TemplateView):
         mails = QueuedMail.objects.filter(event=request.event, sent_at__isnull=True)
 
         QueuedMailFilter.objects.filter(mail__in=mails).delete()
-        QueuedMailToUsers.objects.filter(mail__in=mails).delete()
+        QueuedMailToUser.objects.filter(mail__in=mails).delete()
         count = mails.count()
         mails.delete()
 
@@ -472,7 +472,7 @@ class SentMailView(EventPermissionRequiredMixin, QueryFilterOrderingMixin, ListV
     paginate_by = 25
 
     def get_queryset(self):
-        first_recipient_email = QueuedMailToUsers.objects.filter(
+        first_recipient_email = QueuedMailToUser.objects.filter(
             mail=OuterRef('pk')
         ).order_by('pk').values('email')[:1]
 
@@ -497,9 +497,9 @@ class SentMailView(EventPermissionRequiredMixin, QueryFilterOrderingMixin, ListV
 
         MAX_RECIPIENTS_TO_SHOW = 3
         for mail in ctx['mails']:
-            users = QueuedMailToUsers.objects.filter(mail=mail).order_by('pk')[:MAX_RECIPIENTS_TO_SHOW]
+            users = QueuedMailToUser.objects.filter(mail=mail).order_by('pk')[:MAX_RECIPIENTS_TO_SHOW]
             mail.recipient_preview = [u.email or u.user_display or u.order_code for u in users]
-            mail.recipient_total = QueuedMailToUsers.objects.filter(mail=mail).count()
+            mail.recipient_total = QueuedMailToUser.objects.filter(mail=mail).count()
 
         return ctx
 
@@ -616,7 +616,7 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, FormView):
 
         # Create recipient entries for each team member
         recipient_objs = [
-            QueuedMailToUsers(
+            QueuedMailToUser(
                 mail=mail_instance,
                 email=rec["email"],
                 team=rec["team"],
@@ -625,7 +625,7 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, FormView):
             )
             for rec in recipients_list
         ]
-        QueuedMailToUsers.objects.bulk_create(recipient_objs)
+        QueuedMailToUser.objects.bulk_create(recipient_objs)
 
         messages.success(
             self.request,

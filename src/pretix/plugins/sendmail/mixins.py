@@ -1,5 +1,4 @@
 import logging
-import uuid
 import dateutil.parser
 
 from django.db.models import Q

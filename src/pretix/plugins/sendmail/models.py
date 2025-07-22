@@ -1,6 +1,3 @@
-import ast
-import bleach
-import json
 import logging
 
 from django.contrib.postgres.fields import ArrayField
@@ -10,8 +7,8 @@ from i18nfield.fields import I18nTextField
 
 from pretix.base.email import get_email_context
 from pretix.base.models import Event, InvoiceAddress, Order, OrderPosition, User
-from pretix.base.i18n import LazyI18nString, language
-from pretix.base.services.mail import TolerantDict, mail
+from pretix.base.i18n import LazyI18nString
+from pretix.base.services.mail import mail
 
 
 logger = logging.getLogger(__name__)
@@ -196,7 +193,7 @@ class QueuedMail(models.Model):
             recipient.sent = False
             recipient.error = f"Internal error: {str(e)}"
             recipient.save(update_fields=["sent", "error"])
-            logger.exception("Unexpected error while sending to %s: %s", email, str(e))
+            logger.exception("Unexpected error while sending to %s", email)
 
         recipient.save(update_fields=["sent", "error"])
         return True
@@ -268,7 +265,7 @@ class QueuedMail(models.Model):
         self.recipients.all().delete()
 
         objs = [
-            QueuedMailToUsers(
+            QueuedMailToUser(
                 mail=self,
                 email=email,
                 orders=list(data["orders"]),
@@ -280,12 +277,12 @@ class QueuedMail(models.Model):
             for email, data in recipients.items()
         ]
 
-        QueuedMailToUsers.objects.bulk_create(objs)
+        QueuedMailToUser.objects.bulk_create(objs)
         if save:
             self.save()
 
 
-class QueuedMailToUsers(models.Model):
+class QueuedMailToUser(models.Model):
     """
     Represents a single recipient of a QueuedMail.
 
