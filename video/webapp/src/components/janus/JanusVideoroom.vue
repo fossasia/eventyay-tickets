@@ -64,7 +64,7 @@
 					bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
 </template>
 <script>
-import {Janus} from 'janus-gateway'
+import Janus from 'lib/janus'
 import {mapState} from 'vuex'
 import api from 'lib/api'
 import ChatUserCard from 'components/ChatUserCard'
@@ -158,6 +158,7 @@ export default {
 			default: 'normal'
 		},
 	},
+	emits: ['hangup'],
 	data() {
 		return {
 			// State machines
@@ -235,7 +236,7 @@ export default {
 			this.onResize()
 		}
 	},
-	destroyed() {
+	unmounted() {
 		if (this.janus) {
 			this.cleanup()
 		}
@@ -258,7 +259,7 @@ export default {
 		}, 10000)
 		this.soundMeterInterval = window.setInterval(() => {
 			for (const idx in this.soundMeters) {
-				this.$set(this.soundLevels, idx, this.soundMeters[idx].slow.toFixed(2))
+				this.soundLevels[idx] = this.soundMeters[idx].slow.toFixed(2)
 			}
 		}, 200)
 	},
@@ -686,7 +687,7 @@ export default {
 							remoteFeed.hasVideo = true
 						}
 						this.initSoundMeter(stream, remoteFeed.rfid)
-						this.$set(this.feeds, rfindex, remoteFeed) // force reactivity
+						this.feeds[rfindex] = remoteFeed
 					})
 				},
 			})
@@ -900,7 +901,7 @@ export default {
 				const actx = new AudioContext()
 				const soundmeter = new SoundMeter(actx)
 				soundmeter.connectToSource(stream)
-				this.$set(this.soundMeters, refname, soundmeter)
+				this.soundMeters[refname] = soundmeter
 			} catch (e) {
 				log('venueless', 'error', 'Could not init sound meter: ' + e)
 				// do not fail visibly, it is a nice-to-have feature
@@ -943,7 +944,7 @@ export default {
 		async fetchUser(feed) {
 			feed.venueless_user = await api.call('januscall.identify', {id: feed.rfid})
 			const rfindex = this.feeds.findIndex((rf) => rf.rfid === feed.rfid)
-			this.$set(this.feeds, rfindex, feed) // force reactivity
+			this.feeds[rfindex] = feed
 		},
 	},
 }

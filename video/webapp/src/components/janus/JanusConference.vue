@@ -73,7 +73,7 @@
 					bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
 </template>
 <script>
-import {Janus} from 'janus-gateway'
+import Janus from 'lib/janus'
 import {mapState} from 'vuex'
 import api from 'lib/api'
 import ChatUserCard from 'components/ChatUserCard'
@@ -166,6 +166,7 @@ export default {
 			default: 'normal'
 		},
 	},
+	emits: ['hangup'],
 	data() {
 		return {
 			// State machines
@@ -258,7 +259,7 @@ export default {
 			this.onResize()
 		}
 	},
-	destroyed() {
+	unmounted() {
 		if (this.janus) {
 			this.cleanup()
 		}
@@ -714,7 +715,7 @@ export default {
 
 					remoteFeed.rfattached = true
 					remoteFeed.hasVideo = videoTracks && videoTracks.length > 0
-					this.$set(this.feeds, rfindex, remoteFeed) // force reactivity
+					this.feeds[rfindex] = remoteFeed
 					this.$nextTick(() => {
 						Janus.attachMediaStream(this.$refs.peerVideo[rfindex], stream)
 					})
@@ -1145,7 +1146,7 @@ export default {
 			}
 			feed.venueless_user = user
 			const rfindex = this.feeds.findIndex((rf) => rf.rfid === feed.rfid)
-			this.$set(this.feeds, rfindex, feed) // force reactivity
+			this.feeds[rfindex] = feed
 		},
 	},
 }
