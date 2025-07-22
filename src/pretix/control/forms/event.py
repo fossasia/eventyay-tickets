@@ -41,7 +41,6 @@ from pretix.control.forms import (
 )
 from pretix.control.forms.widgets import Select2
 from pretix.helpers.countries import CachedCountries
-from pretix.multidomain.models import KnownDomain
 from pretix.multidomain.urlreverse import build_absolute_uri
 from pretix.plugins.banktransfer.payment import BankTransfer
 
