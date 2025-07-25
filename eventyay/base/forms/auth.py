@@ -42,7 +42,7 @@ class LoginForm(forms.Form):
             self.fields[k] = f
 
         # Authentication backends which use urls cannot have long sessions.
-        if not settings.PRETIX_LONG_SESSIONS or backend.url:
+        if not settings.EVENTYAY_LONG_SESSIONS or backend.url:
             del self.fields['keep_logged_in']
         else:
             move_to_end(self.fields, 'keep_logged_in')
@@ -133,7 +133,7 @@ class RegistrationForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not settings.PRETIX_LONG_SESSIONS:
+        if not settings.EVENTYAY_LONG_SESSIONS:
             del self.fields['keep_logged_in']
 
     def clean(self):

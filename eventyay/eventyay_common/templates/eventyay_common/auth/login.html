@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/auth/base.html" %}
+{% extends "eventyay_common/auth/base.html" %}
 {% load bootstrap3 %}
 {% load i18n %}
 {% load static %}
@@ -36,12 +36,12 @@
                 {% endif %}
                 {% if backend.identifier == "native" %}
                     {% if can_reset %}
-                        <a href="{% url "control:auth.forgot" %}" class="btn btn-link btn-block">
+                        <a href="{% url "auth.forgot" %}" class="btn btn-link btn-block">
                             {% trans "Lost password?" %}
                         </a>
                     {% endif %}
                     {% if can_register %}
-                        <a href='{% url "control:auth.register" %}{% append_next request.GET.next %}' class="btn btn-link btn-block">
+                        <a href='{% url "auth.register" %}{% append_next request.GET.next %}' class="btn btn-link btn-block">
                             {% trans "Register" %}
                         </a>
                     {% endif %}
@@ -64,6 +64,6 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-        </div
+        </div>
     </form>
 {% endblock %}

@@ -68,11 +68,15 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'djangoformsetjs',
     'oauth2_provider',
+    'bootstrap3',
+    'pretix',
+    'compressor',
     'eventyay.api',
     'eventyay.base',
     'eventyay.helpers',
     'eventyay.multidomain',
     'eventyay.presale',
+    'eventyay.eventyay_common',
     'eventyay.common',
     'eventyay.control',
     'statici18n',
@@ -282,3 +286,24 @@ TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Adjustable settings
+INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')
+EVENTYAY_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=True)
+EVENTYAY_PASSWORD_RESET = config.getboolean('eventyay', 'password_reset', fallback=True)
+EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
+EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(',')
+
+# Django allauth settings for social login
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+#COMEBACK
+SOCIALACCOUNT_ADAPTER = 'pretix.plugins.socialauth.adapter.CustomSocialAccountAdapter'
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET = True

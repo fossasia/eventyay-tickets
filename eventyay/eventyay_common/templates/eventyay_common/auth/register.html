@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/auth/base.html" %}
+{% extends "eventyay_common/auth/base.html" %}
 {% load bootstrap3 %}
 {% load static %}
 {% load i18n %}
@@ -25,7 +25,7 @@
             {% bootstrap_field form.keep_logged_in %}
         {% endif %}
         <div class="form-group buttons">
-            <a href="{% url "control:auth.login" %}" class="btn btn-link">
+            <a href="{% url "auth.login" %}" class="btn btn-link">
                 &laquo; {% trans "Login" %}
             </a>
 
