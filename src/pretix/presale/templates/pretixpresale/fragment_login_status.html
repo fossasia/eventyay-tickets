@@ -2,25 +2,23 @@
 {% load eventurl %}
 {% load login_url %}
 
-{% if request.organizer.settings.customer_accounts %}
-    {{ request.event.organizer.slug|json_script:"organizer_name" }}
-    {{ request.event.slug|json_script:"event_slug" }}
-    {{ show_organizer_area|json_script:"show_organizer_area" }}
-    {{ 'popover-profile'|json_script:"popover_toggle" }}
-    {{ base_path|json_script:"base_path" }}
-    <nav class="login-hdr" aria-label='{% trans "account" %}'>
-        {% if request.user.is_authenticated %}
-            <div class="navigation-button">
-                <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover-profile">
-                    <i class="fa fa-user"></i> {{ request.user.fullname|default:request.user.email }}
-                    <i class="fa fa-solid fa-caret-down"></i>
-                </a>
-            </div>
-        {% else %}
-            <a href="{% build_login_url %}">
-                {% trans "Log in" %}
+{{ request.event.organizer.slug|json_script:"organizer_name" }}
+{{ request.event.slug|json_script:"event_slug" }}
+{{ show_organizer_area|json_script:"show_organizer_area" }}
+{{ 'popover-profile'|json_script:"popover_toggle" }}
+{{ base_path|json_script:"base_path" }}
+<nav class="login-hdr" aria-label='{% translate "account" %}'>
+    {% if request.user.is_authenticated %}
+        <div class="navigation-button">
+            <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover-profile">
+                <i class="fa fa-user"></i> {{ request.user.fullname|default:request.user.email }}
+                <i class="fa fa-solid fa-caret-down"></i>
             </a>
+        </div>
+    {% else %}
+        <a href="{% build_login_url %}">
+            {% translate "Log in" %}
+        </a>
 
-        {% endif %}
-    </nav>
-{% endif %}
+    {% endif %}
+</nav>
