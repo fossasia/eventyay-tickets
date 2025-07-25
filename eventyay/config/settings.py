@@ -415,7 +415,6 @@ MIDDLEWARE = [
     "eventyay.control.middleware.MessageMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "eventyay.config.middleware.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = "eventyay.config.urls"
