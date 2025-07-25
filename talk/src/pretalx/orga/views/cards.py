@@ -120,7 +120,7 @@ class SubmissionCard(Flowable):
 
 
 class SubmissionCards(EventPermissionRequired, View):
-    permission_required = "orga.view_submission_cards"
+    permission_required = "submission.orga_update_submission"
 
     def get_queryset(self):
         return (

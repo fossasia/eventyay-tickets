@@ -1,0 +1,147 @@
+{% extends "orga/generic/_form.html" %}
+
+{% load compress %}
+{% load formset_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "js/jquery.js" %}"></script>
+        <script defer src="{% static "js/jquery.formset.js" %}"></script>
+        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
+        <script defer src="{% static "orga/js/questionForm.js" %}"></script>
+        <script defer src="{% static "orga/js/dragsort.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block form %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include "common/forms/errors.html" %}
+
+        {% block warnings %}{% endblock warnings %}
+
+        {{ form.target.as_field_group }}
+        {{ form.variant.as_field_group }}
+        {{ form.question.as_field_group }}
+        {{ form.help_text.as_field_group }}
+        <div class="alert alert-info col-md-9 offset-md-3" id="alert-required-boolean">
+            {% blocktranslate trimmed %}
+                If you mark a Yes/No field as required, it means that the user has to select Yes and No is not
+                accepted. If you want to allow both options, do not make this field required.
+            {% endblocktranslate %}
+        </div>
+        {{ form.is_public.as_field_group }}
+        {{ form.contains_personal_data.as_field_group }}
+        <span id="is-visible-to-reviewers">{{ form.is_visible_to_reviewers.as_field_group }}</span>
+        <fieldset class="limit-submission">
+            <legend id="limit">{% translate "Limit to specific proposals" %}</legend>
+            {% if form.tracks %}
+                <span class="limit-submission">{{ form.tracks.as_field_group }}</span>
+            {% endif %}
+            {% if form.submission_types %}
+                <span class="limit-submission">{{ form.submission_types.as_field_group }}</span>
+            {% endif %}
+        </fieldset>
+        <fieldset>
+            <legend id="validation">{% translate "Input validation" %}</legend>
+            {{ form.question_required.as_field_group }}
+            {{ form.deadline.as_field_group }}
+            {{ form.freeze_after.as_field_group }}
+            <span id="limit-length">
+                {{ form.min_length.as_field_group }}
+                {{ form.max_length.as_field_group }}
+            </span>
+            <span id="limit-number">
+                {{ form.min_number.as_field_group }}
+                {{ form.max_number.as_field_group }}
+            </span>
+            <span id="limit-date">
+                {{ form.min_date.as_field_group }}
+                {{ form.max_date.as_field_group }}
+            </span>
+            <span id="limit-datetime">
+                {{ form.min_datetime.as_field_group }}
+                {{ form.max_datetime.as_field_group }}
+            </span>
+        </fieldset>
+
+        <fieldset id="answer-options">
+            <legend id="options">{% translate "Response options" %}</legend>
+            <details class="col-md-9 offset-md-3 mb-3 hide-label" {% if form.errors.options or form.errors.options_replace %}open{% endif %}>
+                <summary>{% translate "Upload options" %}</summary>
+                <div class="pt-3"></div>
+                {{ form.options.as_field_group }}
+                {{ form.options_replace.as_field_group }}
+                <hr>
+            </details>
+            <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
+                {{ formset.management_form }}
+                {{ formset.non_form_errors }}
+                <div data-formset-body dragsort-url="{{ form.instance.urls.base }}">
+                    {% for form in formset %}
+                        <div data-formset-form dragsort-id="{{ form.instance.id }}">
+                            <div class="sr-only">
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                            </div>
+                            <div class="question-option-row flip ml-auto col-md-9 mb-2 d-flex hide-label">
+                                <div class="question-option-input w-100{% if action == "view" %} disabled{% endif %}">
+                                    {% include "common/forms/errors.html" %}
+                                    {{ form.answer.as_field_group }}
+                                </div>
+                                {% if action != "view" %}
+                                    <div class="question-option-delete d-flex align-items-start">
+                                        <button draggable="true" type="button" class="btn btn-primary ml-1 mr-1 dragsort-button" title="{% translate "Move item" %}">
+                                            <i class="fa fa-arrows"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div data-formset-form>
+                        <div class="sr-only">
+                        {{ formset.empty_form.id }}
+                        {{ formset.empty_form.DELETE }}
+                        </div>
+                        <div class="question-option-row flip ml-auto col-md-9 mb-2 d-flex hide-label">
+                        <div class="question-option-input w-100">
+                        {{ formset.empty_form.answer.as_field_group }}
+                        </div>
+                        <div class="question-option-delete ml-2">
+                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                        <i class="fa fa-trash"></i></button>
+                        </div>
+                        </div>
+                        </div>
+                    {% endescapescript %}
+                </script>
+                {% if action != "view" %}
+                    <p class="col-md-9 flip ml-auto">
+                        <button type="button" class="btn btn-info" data-formset-add>
+                            <i class="fa fa-plus"></i> {% translate "Add a new option" %}
+                        </button>
+                    </p>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        {% include "orga/includes/submit_row.html" %}
+
+    </form>
+{% endblock form %}

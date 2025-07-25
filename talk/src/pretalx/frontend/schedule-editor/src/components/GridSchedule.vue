@@ -508,7 +508,7 @@ export default {
 				cursor: not-allowed !important
 		> .room
 			position: sticky
-			top: calc(48px)
+			top: 48px
 			display: flex
 			justify-content: center
 			align-items: center

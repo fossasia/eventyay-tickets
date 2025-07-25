@@ -1,0 +1,27 @@
+{% extends "orga/cfp/question/_form.html" %}
+
+{% load i18n %}
+
+{% block warnings %}
+    {% if question.answers.count %}
+        <div class="alert alert-warning col-md-9 offset-md-3">
+            {% blocktranslate trimmed %}
+                This custom field already has responses from some speakers – please consider
+                carefully if modifying it would render those answers obsolete. You could also
+                deactivate this field and create a new one instead.
+            {% endblocktranslate %}
+        </div>
+    {% endif %}
+    <div class="alert alert-info col-md-9 offset-md-3">
+        <span>
+            {% if question.active %}
+                {% translate "This field is currently active, it will be asked during submission." %}
+                <a class="btn btn-sm btn-outline-danger"
+                   href="{{ question.urls.toggle }}">{% translate "Hide field" %}</a>
+            {% else %}
+                {% translate "This field is currently inactive, and will not be asked during submission." %}
+                <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% translate "Activate field" %}</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock warnings %}

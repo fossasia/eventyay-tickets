@@ -19,7 +19,7 @@ from pretalx.submission.models.submission import submission_image_path
     ),
 )
 @pytest.mark.django_db
-def test_accept_success(submission, state, mocker):
+def test_accept_success(submission, state):
     submission.event.plugins = "tests"
     submission.event.save()
     with scope(event=submission.event):

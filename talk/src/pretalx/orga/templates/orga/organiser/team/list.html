@@ -1,0 +1,54 @@
+{% extends "orga/generic/list.html" %}
+{% load i18n %}
+{% load rules %}
+
+{% block create_button_label %}{% translate "New team" %}{% endblock create_button_label %}
+
+{% block list_content %}
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-flip table-sticky">
+            <thead>
+                <tr>
+                    <th>{% translate "Team" %}</th>
+                    <th class="numeric">{% translate "Members" %}</th>
+                    <th class="text-center">{% translate "All events" %}</th>
+                    <th class="text-center">{% translate "Reviewer" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if team_list %}{% for team in team_list %}
+                    <tr>
+                        <td>
+                            <a href="{{ team.orga_urls.base }}">
+                                {{ team.name }}
+                                {% if request.user in team.members.all %}
+                                    <i class="fa fa-star text-warning" title="{% translate "You are a member of this team" %}"></i>
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td class="numeric">{{ team.members.count }}</td>
+                        <td class="text-center">
+                            <i class="fa fa-{{ team.all_events|yesno:"check-circle text-success,times-circle text-danger" }}"></i>
+                        </td>
+                        <td class="text-center">
+                            <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}"></i>
+                        </td>
+                        <td class="text-right">
+                            {% if has_update_permission %}
+                                <a href="{{ team.orga_urls.base }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            {% endif %}
+                            {% if has_delete_permission %}
+                                <a href="{{ team.orga_urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}{% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock list_content %}

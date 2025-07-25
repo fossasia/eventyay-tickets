@@ -1,7 +1,9 @@
 html.rtl {
   direction: rtl;
 
-  body {
+  body,
+  input,
+  textarea {
     direction: rtl;
   }
 
@@ -140,10 +142,6 @@ html.rtl {
   .form-group .col-md-9 {
     text-align: right;
   }
-  .user-logs {
-    right: 100%;
-    left: 0;
-  }
   .stages {
     .step {
       &::before {
@@ -154,4 +152,15 @@ html.rtl {
       }
     }
   }
+}
+/* Not grouping under the html.rtl tag as these input fields will appear in multilingual events as part of use of django-i18nfield */
+input[lang="ar"],
+textarea[lang="ar"],
+div[lang="ar"],
+pre[lang="ar"],
+input[lang="he"],
+textarea[lang="he"],
+div[lang="he"],
+pre[lang="he"] {
+  direction: rtl;
 }

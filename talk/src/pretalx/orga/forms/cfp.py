@@ -183,7 +183,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     options = forms.FileField(
         label=_("Upload options"),
         help_text=_(
-            "You can upload question options here, one option per line. "
+            "You can upload options here, one option per line. "
             "To use multiple languages, please upload a JSON file with a list of "
             "options:"
         )
@@ -194,7 +194,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         label=_("Replace existing options"),
         help_text=_(
             "If you upload new options, do you want to replace the existing ones? "
-            "Please note that this will DELETE all existing answers to this question! "
+            "Please note that this will DELETE all existing responses to this custom field! "
             "If you do not check this, the uploaded options will be added to the "
             "existing ones, without adding duplicates."
         ),
@@ -253,7 +253,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 "deadline",
                 forms.ValidationError(
                     _(
-                        "Please select a deadline after which the question should become mandatory."
+                        "Please select a deadline after which the field should become mandatory."
                     )
                 ),
             )
@@ -265,7 +265,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             self.add_error(
                 "options_replace",
                 forms.ValidationError(
-                    _("You cannot replace answer options without uploading new ones.")
+                    _("You cannot replace options without uploading new ones.")
                 ),
             )
 
@@ -378,6 +378,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         instance = super().save(*args, **kwargs)
         if instance.pk and "duration" in self.changed_data:
             instance.update_duration()
+        return instance
 
     class Meta:
         model = SubmissionType
@@ -606,8 +607,8 @@ class ReminderFilterForm(QuestionFilterForm):
     questions = SafeModelMultipleChoiceField(
         Question.objects.none(),
         required=False,
-        help_text=_("If you select no question, all questions will be used."),
-        label=phrases.cfp.questions,
+        help_text=_("If you select no custom field, all will be used."),
+        label=phrases.cfp.custom_fields,
         widget=EnhancedSelectMultiple,
     )
 

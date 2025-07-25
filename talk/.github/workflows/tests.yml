@@ -2,15 +2,15 @@ name: Tests
 
 on:
   push:
-    branches: [ development ]
+    branches: [development]
     paths-ignore:
-      - 'doc/**'
-      - 'src/pretalx/locale/**'
+      - "doc/**"
+      - "src/pretalx/locale/**"
   pull_request:
-    branches: [ development ]
+    branches: [development]
     paths-ignore:
-      - 'doc/**'
-      - 'src/pretalx/locale/**'
+      - "doc/**"
+      - "src/pretalx/locale/**"
 
 permissions:
   contents: write
@@ -31,8 +31,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ 3.11 ]
-        database: [ sqlite, postgres ]
+        python-version: [3.11]
+        database: [sqlite, postgres]
     services:
       postgres:
         image: postgres:15
@@ -56,7 +56,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v4
         with:
-          node-version: 'latest'
+          node-version: "latest"
       - name: Install system dependencies
         run: |
           sudo apt update
@@ -64,7 +64,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       - name: Install Python dependencies
-        run: uv sync --group test --no-install-project
+        run: uv sync --group test --no-install-project && uv pip install Faker
       - name: Install Postgres dependencies
         run: uv sync --extra postgres --group test --no-install-project
         if: matrix.database == 'postgres'
@@ -88,10 +88,10 @@ jobs:
             --cov-report=term-missing:skip-covered \
             tests | tee pytest-coverage.txt
         env:
-          PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
+          PRETALX_CONFIG_FILE: "tests/ci_${{ matrix.database }}.cfg"
       - name: Show coverage as build info
         working-directory: ./src
-        shell: bash  # needed to make echo work as expected
+        shell: bash # needed to make echo work as expected
         run: |
           uv run -m coverage json
 

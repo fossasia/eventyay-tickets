@@ -170,28 +170,6 @@ def test_add_custom_css_as_administrator(event, administrator_client, path):
     assert event.custom_css
 
 
-@pytest.mark.skip
-@pytest.mark.django_db
-def test_add_logo(event, orga_client):
-    assert not event.logo
-    response = orga_client.get(event.urls.base, follow=True)
-    assert '<img loading="lazy" "src="/media' not in response.content.decode()
-    with open("../assets/icon.png", "rb") as logo:
-        data = get_settings_form_data(event)
-        data["logo"] = logo
-        data["slug"] = "logotest"
-        data["primary_color"] = "#00ff00"
-        response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
-    event.refresh_from_db()
-    assert event.primary_color == "#00ff00"
-    assert response.status_code == 200
-    assert event.logo
-    response = orga_client.get(event.urls.base, follow=True)
-    assert (
-        '<img loading="lazy" src="/media' in response.content.decode()
-    ), response.content.decode()
-
-
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "domain,result",
@@ -364,7 +342,7 @@ def test_toggle_event_cannot_activate_due_to_plugin(event, orga_client):
         event.orga_urls.live, {"action": "activate"}, follow=True
     )
     assert response.status_code == 200
-    assert "It's not safe to go alone take this" in response.content.decode()
+    assert "It's not safe to go alone take this" in response.text
     event.refresh_from_db()
     assert not event.is_public
 
@@ -379,7 +357,7 @@ def test_toggle_event_can_take_live_with_plugins(event, orga_client):
         event.orga_urls.live, {"action": "activate"}, follow=True
     )
     assert response.status_code == 200
-    assert "It's not safe to go alone take this" not in response.content.decode()
+    assert "It's not safe to go alone take this" not in response.text
     event.refresh_from_db()
     assert event.is_public
 
@@ -396,7 +374,7 @@ def test_invite_orga_member(orga_client, event):
     )
     assert response.status_code == 200
     assert team.members.count() == 1
-    assert team.invites.count() == 1, response.content.decode()
+    assert team.invites.count() == 1, response.text
     assert str(team) in str(team.invites.first())
 
 
@@ -410,16 +388,16 @@ def test_retract_invitation(orga_client, event):
     )
     assert response.status_code == 200
     assert team.members.count() == 1
-    assert team.invites.count() == 1, response.content.decode()
+    assert team.invites.count() == 1, response.text
     invite = team.invites.first()
     response = orga_client.get(
-        team.organiser.orga_urls.teams + f"{invite.id}/uninvite", follow=True
+        team.orga_urls.base + f"invites/{invite.id}/uninvite/", follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
-    assert team.invites.count() == 1, response.content.decode()
+    assert team.invites.count() == 1, response.text
     response = orga_client.post(
-        team.organiser.orga_urls.teams + f"{invite.id}/uninvite", follow=True
+        team.orga_urls.base + f"invites/{invite.id}/uninvite/", follow=True
     )
     assert response.status_code == 200
     assert team.members.count() == 1
@@ -433,7 +411,7 @@ def test_delete_team_member(orga_client, event, other_orga_user):
     team.save()
     member = team.members.first()
     count = team.members.count()
-    url = team.orga_urls.delete + f"/{member.pk}"
+    url = team.orga_urls.base + f"members/{member.pk}/delete/"
     assert count
     response = orga_client.get(url, follow=True)
     assert response.status_code == 200
@@ -451,7 +429,7 @@ def test_reset_team_member_password(orga_client, event, other_orga_user):
     team.save()
     member = team.members.first()
     assert not member.pw_reset_token
-    url = team.orga_urls.base + f"reset/{member.pk}"
+    url = team.orga_urls.base + f"members/{member.pk}/reset/"
     response = orga_client.post(url, follow=True)
     assert response.status_code == 200
     member.refresh_from_db()
@@ -571,7 +549,7 @@ def test_edit_review_settings(orga_client, event):
     with scope(event=event):
         # Did not save
         assert event.score_categories.filter(is_independent=False).exists()
-        assert "non-independent" in response.content.decode()
+        assert "non-independent" in response.text
 
 
 @pytest.mark.django_db
@@ -848,7 +826,7 @@ def test_edit_review_settings_new_review_phase_wrong_dates(orga_client, event):
         follow=True,
     )
     assert response.status_code == 200
-    assert "The end of a phase has to be after its start." in response.content.decode()
+    assert "The end of a phase has to be after its start." in response.text
     event = Event.objects.get(slug=event.slug)
     with scope(event=event):
         assert event.review_phases.count() == 2
@@ -871,7 +849,7 @@ def test_edit_review_settings_activate_review_phase(orga_client, event):
 def test_organiser_can_see_event_suggestions(orga_client, event):
     response = orga_client.get("/orga/nav/typeahead/")
     assert response.status_code == 200
-    content = json.loads(response.content.decode())["results"]
+    content = json.loads(response.text)["results"]
     assert len(content) == 3
     assert content[0]["type"] == "user"
     assert content[1]["type"] == "organiser"
@@ -884,7 +862,7 @@ def test_organiser_can_see_event_suggestions(orga_client, event):
 def test_speaker_cannot_see_event_suggestions(speaker_client, event):
     response = speaker_client.get("/orga/nav/typeahead/")
     assert response.status_code == 200
-    content = json.loads(response.content.decode())["results"]
+    content = json.loads(response.text)["results"]
     assert len(content) == 1
     assert content[0]["type"] == "user"
 

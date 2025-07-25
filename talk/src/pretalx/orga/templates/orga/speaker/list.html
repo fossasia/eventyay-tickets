@@ -24,7 +24,7 @@
         <p class="text-muted ml-2">
             <span class="fa fa-filter"></span>
             {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                List filtered by answers to question “{{ question }}”.
+                List filtered by responses to custom field “{{ question }}”.
             {% endblocktranslate %}
             <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
                 <span class="fa fa-times"></span>
@@ -33,16 +33,15 @@
         </p>
     {% endif %}
 
-    {% has_perm "orga.mark_speakers_arrived" request.user request.event as can_mark_speaker %}
-    {% has_perm "orga.see_speakers_arrival" request.user request.event as can_see_speaker_status %}
+    {% has_perm "person.mark_arrived_speakerprofile" request.user request.event as can_mark_speaker %}
     <div class="table-responsive-md">
-        <table class="table table-sm table-hover table-flip table-sticky">
+        <table class="table table-sm table-flip table-sticky">
             <thead>
                 <tr>
                     <th>{% translate "Name" %}</th>
                     <th class="numeric">{% translate "Accepted Proposals" %}</th>
                     <th class="numeric">{% translate "Proposals" %}</th>
-                    {% if can_mark_speaker or can_see_speaker_status %}<th></th>{% endif %}
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -55,28 +54,26 @@
                         </td>
                         <td class="numeric">{{ profile.accepted_submission_count }}</td>
                         <td class="numeric">{{ profile.submission_count }}</td>
-                        {% if can_mark_speaker or can_see_speaker_status %}
-                            <td class="text-right">
-                                {% if profile.accepted_submission_count %}
-                                    {% if can_mark_speaker %}
-                                        <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:"success,info" }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
-                                            {% if profile.has_arrived %}
-                                                {% translate "Mark speaker as not arrived" %}
-                                            {% else %}
-                                                {% translate "Mark speaker as arrived" %}
-                                            {% endif %}
-                                        </a>
-                                    {% else %}
+                        <td class="text-right">
+                            {% if profile.accepted_submission_count %}
+                                {% if can_mark_speaker %}
+                                    <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:"success,info" }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
                                         {% if profile.has_arrived %}
-                                            <a><i class="fa fa-check"></i> {% translate "Arrived" %}</a>
+                                            {% translate "Mark speaker as not arrived" %}
                                         {% else %}
-                                            <a><i class="fa fa-times"></i> {% translate "Not arrived" %}</a>
+                                            {% translate "Mark speaker as arrived" %}
                                         {% endif %}
+                                    </a>
+                                {% else %}
+                                    {% if profile.has_arrived %}
+                                        <a><i class="fa fa-check"></i> {% translate "Arrived" %}</a>
+                                    {% else %}
+                                        <a><i class="fa fa-times"></i> {% translate "Not arrived" %}</a>
                                     {% endif %}
                                 {% endif %}
-                            </td>
-                        {% endif %}
-                    </tr>
+                                </td>
+                            {% endif %}
+                        </tr>
                 {% endfor %}
             </tbody>
         </table>

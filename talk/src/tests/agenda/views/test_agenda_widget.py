@@ -15,16 +15,14 @@ from django_scopes import scope
     ),
 )
 @pytest.mark.django_db
+@pytest.mark.usefixtures("slot", "other_slot")
 def test_widget_pages(
     event,
-    schedule,
     client,
     url,
     show_schedule,
     show_widget_if_not_public,
     expected,
-    slot,
-    other_slot,
 ):
     event.feature_flags["show_schedule"] = show_schedule
     event.feature_flags["show_widget_if_not_public"] = show_widget_if_not_public
@@ -34,12 +32,10 @@ def test_widget_pages(
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures("slot", "other_slot")
 def test_widget_data(
     client,
     event,
-    schedule,
-    slot,
-    other_slot,
     django_assert_num_queries,
 ):
     event.feature_flags["show_schedule"] = True
@@ -52,7 +48,8 @@ def test_widget_data(
 
 
 @pytest.mark.django_db
-def test_versioned_widget_data(client, event, schedule, slot):
+@pytest.mark.usefixtures("slot")
+def test_versioned_widget_data(client, event, schedule):
     with scope(event=event):
         event.wip_schedule.freeze("new")
 
@@ -63,18 +60,21 @@ def test_versioned_widget_data(client, event, schedule, slot):
 
 
 @pytest.mark.django_db
-def test_bogus_versioned_widget_data(client, event, schedule, slot):
+@pytest.mark.usefixtures("slot")
+def test_bogus_versioned_widget_data(client, event):
     response = client.get(event.urls.schedule + "widgets/schedule.json?v=nopedinope")
     assert response.status_code == 200
 
 
 @pytest.mark.django_db
-def test_anon_cannot_access_wip_schedule(client, event, schedule, slot):
+@pytest.mark.usefixtures("slot")
+def test_anon_cannot_access_wip_schedule(client, event):
     response = client.get(event.urls.schedule + "widgets/schedule.json?v=wip")
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
-def test_orga_can_access_wip_schedule(orga_client, event, schedule, slot):
+@pytest.mark.usefixtures("slot")
+def test_orga_can_access_wip_schedule(orga_client, event):
     response = orga_client.get(event.urls.schedule + "widgets/schedule.json?v=wip")
     assert response.status_code == 200

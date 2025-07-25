@@ -55,10 +55,12 @@ iframes
 informations
 installable
 integrations
+IPython
 iterable
 Jorian
 jQuery
 libffi
+lifecycle
 lightbox
 linters
 localhost
@@ -74,6 +76,7 @@ nginx
 nodejs
 noopener
 npm
+OAuth
 plugin
 plugins
 prepend
@@ -84,6 +87,7 @@ px
 pytest
 queryset
 redis
+referer
 ro
 scrollbar
 slugified
@@ -99,6 +103,7 @@ subtractive
 systemd
 templating
 textboxes
+tracebacks
 transactional
 txt
 typeahead

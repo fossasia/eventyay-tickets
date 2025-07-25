@@ -1,0 +1,92 @@
+{% extends "orga/generic/list.html" %}
+
+{% load i18n %}
+{% load event_tags %}
+
+{% block create_button_label %}{% translate "New speaker information" %}{% endblock create_button_label %}
+
+{% block page_title %}
+    {{ generic_title }}
+{% endblock page_title %}
+
+{% block list_content %}
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-flip table-sticky">
+            <thead>
+                <tr>
+                    <th>{% translate "Title" %}</th>
+                    <th>{% translate "Target group" %}</th>
+                    {% if request.event|get_feature_flag:"use_tracks" %}
+                        <th>{% translate "Tracks" %}</th>
+                    {% endif %}
+                    <th>{% translate "Session types" %}</th>
+                    <th>{% translate "Resource" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for info in information_list %}
+                    <tr>
+                        <td>
+                            {% if has_update_permission %}
+                                <a href="{{ info.orga_urls.edit }}">{{ info.title }}</a>
+                            {% else %}
+                                {{ info.title }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if info.target_group == "submitters" %}
+                                {% translate "All submitters" %}
+                            {% elif info.target_group == "accepted" %}
+                                {% translate "All accepted speakers" %}
+                            {% elif info.target_group == "confirmed" %}
+                                {% translate "Only confirmed speakers" %}
+                            {% endif %}
+                        </td>
+                        {% if request.event|get_feature_flag:"use_tracks" %}
+                            <td>
+                                {% if info.limit_tracks.exists %}
+                                    {% for track in info.limit_tracks.all %}
+                                        {{ track.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% translate "All tracks" %}
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                        <td>
+                            {% if info.limit_types.exists %}
+                                {% for type in info.limit_types.all %}
+                                    {{ type.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% translate "All session types" %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if info.resource %}
+                                <a href="{{ info.resource.url }}">
+                                    <i class="fa fa-file-o"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td class="text-right">
+                            {% if has_update_permission %}
+                                <a href="{{ info.orga_urls.edit }}" class="btn btn-sm btn-info">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            {% endif %}
+                            {% if has_delete_permission %}
+                                <a href="{{ info.orga_urls.delete }}" class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include "orga/includes/pagination.html" %}
+{% endblock list_content %}

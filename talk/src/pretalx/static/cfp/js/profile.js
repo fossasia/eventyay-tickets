@@ -8,10 +8,8 @@ function setImage(url) {
     imageWrapper.classList.remove('d-none');
 }
 
-/* TODO: rewrite without jquery */
-
 const updateFileInput = (ev) => {
-    const imateSelected = ev.target.value !== '';
+    const imageSelected = ev.target.value !== '';
 
     if (imageSelected) {
         ev.target.closest('.avatar-form').querySelector('input[type=checkbox]').checked = false;
@@ -46,29 +44,52 @@ const updateCheckbox = (ev) => {
     }
 }
 
-const updateGravatarInput = (ev) => {
-    if (ev.target.checked) {
-        ev.target.closest('.avatar-form').querySelector('input[type=file]').value = '';
-        setImage(`https://www.gravatar.com/avatar/${ev.target.closest('.avatar-form').querySelector('img').dataset.gravatar}?s=512`);
-    } else if (ev.target.closest('.avatar-form').querySelector('img').dataset.avatar) {
-        setImage(ev.target.closest('.avatar-form').querySelector('img').dataset.avatar);
-    } else {
-        ev.target.closest('.avatar-form').querySelector('.form-image-preview').classList.add('d-none');
+const updateGravatarInput = async (ev) => {
+    const checkbox = ev.target;
+    const form = checkbox.closest('.avatar-form');
+    const gravatarHash = form.querySelector('img').dataset.gravatar;
+    const avatarUrl = form.querySelector('img').dataset.avatar;
+    const imagePreview = form.querySelector('.form-image-preview');
+
+    if (checkbox.checked) {
+        const gravatarCheckUrl = `https://www.gravatar.com/avatar/${gravatarHash}?d=404`;
+        const response = await fetch(gravatarCheckUrl);
+
+        if (response.status === 404) {
+            checkbox.checked = false;
+            checkbox.disabled = true;
+            const helpText = checkbox.parentElement.querySelector(".form-text")
+            helpText.classList.add("text-warning")
+            helpText.classList.remove("text-muted")
+            checkbox.parentElement.querySelector("label").classList.add("text-muted")
+        } else {
+            form.querySelector('input[type=file]').value = '';
+            setImage(`https://www.gravatar.com/avatar/${gravatarHash}?s=512`);
+            form.querySelector(".avatar-upload").classList.add("d-none")
+        }
+    }
+    if (!checkbox.checked) {
+        form.querySelector(".avatar-upload").classList.remove("d-none")
+        if (avatarUrl) {
+            setImage(avatarUrl);
+        } else {
+            imagePreview.classList.add('d-none');
+        }
     }
 }
 
 const initFileInput = function () {
-    document.querySelectorAll('.avatar-form .avatar-upload input[type=file]').forEach((element) => {
-        element.addEventListener('change', updateFileInput)
-    })
-    document.querySelectorAll('.avatar-form #id_get_gravatar').forEach((element) => {
-        element.addEventListener('change', updateGravatarInput)
-    })
-    document.querySelectorAll('.avatar-form .avatar-upload input[type=checkbox]').forEach((element) => {
-        element.addEventListener('change', updateCheckbox)
-    })
-    document.querySelectorAll('.avatar-form .form-group .form-image-preview').forEach((element) => {
-        element.classList.add('d-none')
+    document.querySelectorAll(".avatar-form").forEach(form => {
+        form.querySelector(".form-image-preview").remove() // remove default preview
+        document.querySelectorAll('.avatar-upload input[type=file]').forEach((element) => {
+            element.addEventListener('change', updateFileInput)
+        })
+        document.querySelectorAll('#id_get_gravatar').forEach((checkbox) => {
+            checkbox.addEventListener('change', updateGravatarInput)
+        })
+        document.querySelectorAll('.avatar-upload input[type=checkbox]').forEach((element) => {
+            element.addEventListener('change', updateCheckbox)
+        })
     })
 }
 

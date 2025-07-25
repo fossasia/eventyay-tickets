@@ -1,0 +1,6529 @@
+openapi: 3.0.3
+info:
+  title: pretalx API
+  version: ''
+paths:
+  /api/events/:
+    get:
+      operationId: api_events_list
+      summary: List Events
+      parameters:
+      - in: query
+        name: is_public
+        schema:
+          type: boolean
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"name"`.
+      tags:
+      - events
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventList'
+          description: ''
+  /api/events/{event}/:
+    get:
+      operationId: root_retrieve
+      summary: Show Events
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          title: Short form
+          description: The slug may only contain letters, numbers, dots and dashes.
+        required: true
+      tags:
+      - events
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+  /api/events/{event}/access-codes/:
+    get:
+      operationId: access_codes_list
+      summary: List Access Codes
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_type
+            - track
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"code"`.
+      tags:
+      - access-codes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubmitterAccessCodeList'
+          description: ''
+    post:
+      operationId: access_codes_create
+      summary: Create Access Code
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - access-codes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitterAccessCodeRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitterAccessCode'
+          description: ''
+  /api/events/{event}/access-codes/{id}/:
+    get:
+      operationId: access_codes_retrieve
+      summary: Show Access Code
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_type
+            - track
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submitter access code.
+        required: true
+      tags:
+      - access-codes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitterAccessCode'
+          description: ''
+    put:
+      operationId: access_codes_update
+      summary: Update Access Code
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submitter access code.
+        required: true
+      tags:
+      - access-codes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitterAccessCodeRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitterAccessCode'
+          description: ''
+    patch:
+      operationId: access_codes_partial_update
+      summary: Update Access Code (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submitter access code.
+        required: true
+      tags:
+      - access-codes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitterAccessCodeRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitterAccessCode'
+          description: ''
+    delete:
+      operationId: access_codes_destroy
+      summary: Delete Access Code
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submitter access code.
+        required: true
+      tags:
+      - access-codes
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/answers/:
+    get:
+      operationId: answers_list
+      summary: List Answers
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - options
+            - question
+            - question.submission_types
+            - question.tracks
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: person
+        schema:
+          type: string
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"answer"`.
+      - in: query
+        name: question
+        schema:
+          type: number
+      - in: query
+        name: review
+        schema:
+          type: number
+      - in: query
+        name: submission
+        schema:
+          type: string
+      tags:
+      - answers
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAnswerList'
+          description: ''
+    post:
+      operationId: answers_create
+      summary: Create Answer
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - answers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerCreateRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerCreate'
+          description: ''
+  /api/events/{event}/answers/{id}/:
+    get:
+      operationId: answers_retrieve
+      summary: Show Answer
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - options
+            - question
+            - question.submission_types
+            - question.tracks
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer.
+        required: true
+      tags:
+      - answers
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    put:
+      operationId: answers_update
+      description: Please note that you cannot change an answer’s related objects
+        (question, submission, review, person).
+      summary: Update Answer
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer.
+        required: true
+      tags:
+      - answers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    patch:
+      operationId: answers_partial_update
+      description: Please note that you cannot change an answer’s related objects
+        (question, submission, review, person).
+      summary: Update Answer (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer.
+        required: true
+      tags:
+      - answers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    delete:
+      operationId: answers_destroy
+      summary: Delete Answer
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer.
+        required: true
+      tags:
+      - answers
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/mail-templates/:
+    get:
+      operationId: mail_templates_list
+      summary: List Mail Templates
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"role"`,`"subject"`.
+      tags:
+      - mail-templates
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMailTemplateList'
+          description: ''
+    post:
+      operationId: mail_templates_create
+      summary: Create Mail Template
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - mail-templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailTemplateRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailTemplate'
+          description: ''
+  /api/events/{event}/mail-templates/{id}/:
+    get:
+      operationId: mail_templates_retrieve
+      summary: Show Mail Template
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mail template.
+        required: true
+      tags:
+      - mail-templates
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailTemplate'
+          description: ''
+    put:
+      operationId: mail_templates_update
+      summary: Update Mail Template
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mail template.
+        required: true
+      tags:
+      - mail-templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailTemplateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailTemplate'
+          description: ''
+    patch:
+      operationId: mail_templates_partial_update
+      summary: Update Mail Template (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mail template.
+        required: true
+      tags:
+      - mail-templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailTemplateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailTemplate'
+          description: ''
+    delete:
+      operationId: mail_templates_destroy
+      summary: Delete Mail Template
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mail template.
+        required: true
+      tags:
+      - mail-templates
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/question-options/:
+    get:
+      operationId: question_options_list
+      summary: List Question Options
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - question
+            - question.submission_types
+            - question.tracks
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"answer"`.
+      - in: query
+        name: question
+        schema:
+          type: integer
+      tags:
+      - question-options
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAnswerOptionList'
+          description: ''
+    post:
+      operationId: question_options_create
+      summary: Create Question Option
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - question-options
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerOptionCreateRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerOptionCreate'
+          description: ''
+  /api/events/{event}/question-options/{id}/:
+    get:
+      operationId: question_options_retrieve
+      summary: Show Question Option
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - question
+            - question.submission_types
+            - question.tracks
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer option.
+        required: true
+      tags:
+      - question-options
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerOption'
+          description: ''
+    put:
+      operationId: question_options_update
+      summary: Update Question Option
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer option.
+        required: true
+      tags:
+      - question-options
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerOptionRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerOption'
+          description: ''
+    patch:
+      operationId: question_options_partial_update
+      summary: Update Question Option (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer option.
+        required: true
+      tags:
+      - question-options
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerOptionRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerOption'
+          description: ''
+    delete:
+      operationId: question_options_destroy
+      description: Deleting a question option is only possible if it hasn't been used
+        in any answers yet.
+      summary: Delete Question Option
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this answer option.
+        required: true
+      tags:
+      - question-options
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/questions/:
+    get:
+      operationId: questions_list
+      summary: List Questions
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - options
+            - submission_types
+            - tracks
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: query
+        name: is_public
+        schema:
+          type: boolean
+      - in: query
+        name: is_visible_to_reviewers
+        schema:
+          type: boolean
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"question"`.
+      - in: query
+        name: target
+        schema:
+          type: string
+          title: Field type
+          enum:
+          - reviewer
+          - speaker
+          - submission
+        description: |-
+          Do you require an answer from every speaker or for every session?
+
+          * `submission` - per proposal
+          * `speaker` - per speaker
+          * `reviewer` - for reviewers
+      - in: query
+        name: variant
+        schema:
+          type: string
+          enum:
+          - boolean
+          - choices
+          - date
+          - datetime
+          - file
+          - multiple_choice
+          - number
+          - string
+          - text
+          - url
+        description: |-
+          * `number` - Number
+          * `string` - Text (one-line)
+          * `text` - Multi-line text
+          * `url` - URL
+          * `date` - Date
+          * `datetime` - Date and time
+          * `boolean` - Yes/No
+          * `file` - File upload
+          * `choices` - Choose one from a list
+          * `multiple_choice` - Choose multiple from a list
+      tags:
+      - questions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuestionList'
+          description: ''
+    post:
+      operationId: questions_create
+      summary: Create Question
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - questions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionOrgaRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionOrga'
+          description: ''
+  /api/events/{event}/questions/{id}/:
+    get:
+      operationId: questions_retrieve
+      summary: Show Question
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - options
+            - submission_types
+            - tracks
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - questions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    put:
+      operationId: questions_update
+      description: Please note that any update to the options field will delete the
+        existing question options (if still possible) and replace them with the new
+        ones. Use the AnswerOption API for granular question option modifications.
+      summary: Update Question
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - questions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionOrgaRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionOrga'
+          description: ''
+    patch:
+      operationId: questions_partial_update
+      description: Please note that any update to the options field will delete the
+        existing question options (if still possible) and replace them with the new
+        ones. Use the AnswerOption API for granular question option modifications.
+      summary: Update Question (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - questions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionOrgaRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionOrga'
+          description: ''
+    delete:
+      operationId: questions_destroy
+      summary: Delete Question
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - questions
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/reviews/:
+    get:
+      operationId: reviews_list
+      summary: List Reviews
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - scores.category
+            - submission
+            - submission.speakers
+            - submission.submission_type
+            - submission.tags
+            - submission.track
+            - user
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"submission.title"`,`"user.name"`.
+      - in: query
+        name: speaker
+        schema:
+          type: integer
+        description: Filter by speaker code (for the submission being reviewed)
+      - in: query
+        name: submission
+        schema:
+          type: integer
+        description: Filter by submission code
+      - in: query
+        name: user
+        schema:
+          type: integer
+        description: Filter by reviewer code
+      tags:
+      - reviews
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviewList'
+          description: ''
+    post:
+      operationId: reviews_create
+      summary: Create Review
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewWriteRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+  /api/events/{event}/reviews/{id}/:
+    get:
+      operationId: reviews_retrieve
+      summary: Show Review
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - scores.category
+            - submission
+            - user
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - reviews
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    put:
+      operationId: reviews_update
+      summary: Update Reviews
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewWriteRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    patch:
+      operationId: reviews_partial_update
+      summary: Update Reviews (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewWriteRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+    delete:
+      operationId: reviews_destroy
+      summary: Delete Reviews
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this review.
+        required: true
+      tags:
+      - reviews
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/rooms/:
+    get:
+      operationId: rooms_list
+      summary: List Rooms
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"name"`.
+      tags:
+      - rooms
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRoomList'
+          description: ''
+    post:
+      operationId: rooms_create
+      summary: Create Rooms
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - rooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomOrgaRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOrga'
+          description: ''
+  /api/events/{event}/rooms/{id}/:
+    get:
+      operationId: rooms_retrieve
+      summary: Show Rooms
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this room.
+        required: true
+      tags:
+      - rooms
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+          description: ''
+    put:
+      operationId: rooms_update
+      summary: Update Rooms
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this room.
+        required: true
+      tags:
+      - rooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomOrgaRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOrga'
+          description: ''
+    patch:
+      operationId: rooms_partial_update
+      summary: Update Rooms (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this room.
+        required: true
+      tags:
+      - rooms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomOrgaRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomOrga'
+          description: ''
+    delete:
+      operationId: rooms_destroy
+      summary: Delete Rooms
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this room.
+        required: true
+      tags:
+      - rooms
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/schedules/:
+    get:
+      operationId: schedules_list
+      description: This endpoint returns a list of schedules. As schedule data can
+        get very complex when expanded, the list endpoint only contains metadata.
+        Please refer to the detail endpoint documentation to see how to retrieve slots,
+        submissions and speakers.
+      summary: List Schedules
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"version"`.
+      tags:
+      - schedules
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScheduleListList'
+          description: ''
+  /api/events/{event}/schedules/{id}/:
+    get:
+      operationId: schedules_retrieve
+      description: In addition to the standard lookup by ID, you can also use the
+        special /wip/ and /latest/ URL paths to access the unpublished and latest
+        published schedules. To receive most schedule data, query the endpoint with
+        ``?expand=room,slots.submission.speakers``.
+      summary: Show Schedule
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - room
+            - slots
+            - slots.submission
+            - slots.submission.speakers
+            - slots.submission.submission_type
+            - slots.submission.track
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - schedules
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+  /api/events/{event}/schedules/{id}/exporters/{name}/:
+    get:
+      operationId: schedules_exporters_retrieve
+      description: Retrieve the content of a specific schedule exporter by name.
+      summary: Get Exporter Content
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: query
+        name: lang
+        schema:
+          type: string
+        description: Language code for the export content.
+      - in: path
+        name: name
+        schema:
+          type: string
+        description: The name of the exporter.
+        required: true
+      tags:
+      - schedules
+      responses:
+        '200':
+          description: Format depends on the chosen exporter.
+        '404':
+          description: Exporter or schedule not found.
+  /api/events/{event}/schedules/by-version/:
+    get:
+      operationId: schedules_by_version_retrieve
+      description: This endpoint redirects to a specific schedule using its version
+        name (e.g., '1.0', 'My Release') instead of its numeric ID.
+      summary: Redirect to a schedule by its version
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: version
+        schema:
+          type: string
+        description: The version string/name of the schedule (e.g., '1.0', 'Final
+          Version').
+        required: true
+      tags:
+      - schedules
+      responses:
+        '302':
+          description: No response body
+        '404':
+          description: No response body
+  /api/events/{event}/schedules/release/:
+    post:
+      operationId: schedules_release_create
+      description: Freezes the current Work-in-Progress (WIP) schedule, creating a
+        new named version. This makes the WIP schedule available under the given version
+        name and creates a new empty WIP schedule.
+      summary: Release a new schedule version
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - schedules
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleReleaseRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: Schedule released successfully.
+        '400':
+          description: Invalid data provided (e.g., version name already exists).
+        '403':
+          description: Permission denied.
+  /api/events/{event}/slots/:
+    get:
+      operationId: slots_list
+      description: This endpoint always returns a filtered list. If you don’t provide
+        any filters of your own, it will be filtered to show only talk slots in the
+        latest published schedule.
+      summary: List Talk Slots
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - room
+            - schedule
+            - submission
+            - submission.answers
+            - submission.answers.question
+            - submission.resources
+            - submission.speakers
+            - submission.submission_type
+            - submission.track
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: query
+        name: is_visible
+        schema:
+          type: boolean
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"submission.title"`,`"submission.speakers.name"`.
+      - in: query
+        name: room
+        schema:
+          type: integer
+      - in: query
+        name: schedule
+        schema:
+          type: integer
+      - in: query
+        name: schedule_version
+        schema:
+          type: string
+          nullable: true
+      - in: query
+        name: speaker
+        schema:
+          type: integer
+      - in: query
+        name: submission
+        schema:
+          type: integer
+      tags:
+      - slots
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTalkSlotList'
+          description: ''
+  /api/events/{event}/slots/{id}/:
+    get:
+      operationId: slots_retrieve
+      summary: Show Talk Slot
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - room
+            - schedule
+            - submission
+            - submission.answers
+            - submission.answers.question
+            - submission.resources
+            - submission.speakers
+            - submission.submission_type
+            - submission.track
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this talk slot.
+        required: true
+      tags:
+      - slots
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TalkSlot'
+          description: ''
+    put:
+      operationId: slots_update
+      description: Only talk slots in the WIP schedule can be changed – once a schedule
+        version is frozen, its talk slots can’t be modified anymore.
+      summary: Update Talk Slot
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this talk slot.
+        required: true
+      tags:
+      - slots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TalkSlotRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TalkSlot'
+          description: ''
+    patch:
+      operationId: slots_partial_update
+      description: Only talk slots in the WIP schedule can be changed – once a schedule
+        version is frozen, its talk slots can’t be modified anymore.
+      summary: Update Talk Slot (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this talk slot.
+        required: true
+      tags:
+      - slots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TalkSlotRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TalkSlot'
+          description: ''
+  /api/events/{event}/slots/{id}/ical/:
+    get:
+      operationId: slots_ical_retrieve
+      description: Export a single talk slot as an iCalendar file.
+      summary: Export Talk Slot as iCalendar file
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this talk slot.
+        required: true
+      tags:
+      - slots
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TalkSlot'
+          description: ''
+  /api/events/{event}/speaker-information/:
+    get:
+      operationId: speaker_information_list
+      summary: List Speaker Information
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - limit_tracks
+            - limit_types
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"title"`.
+      tags:
+      - speaker-information
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSpeakerInformationList'
+          description: ''
+    post:
+      operationId: speaker_information_create
+      summary: Create Speaker Information
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - speaker-information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeakerInformationRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakerInformation'
+          description: ''
+  /api/events/{event}/speaker-information/{id}/:
+    get:
+      operationId: speaker_information_retrieve
+      summary: Show Speaker Information
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - limit_tracks
+            - limit_types
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this speaker information.
+        required: true
+      tags:
+      - speaker-information
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakerInformation'
+          description: ''
+    put:
+      operationId: speaker_information_update
+      summary: Update Speaker Information
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this speaker information.
+        required: true
+      tags:
+      - speaker-information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeakerInformationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakerInformation'
+          description: ''
+    patch:
+      operationId: speaker_information_partial_update
+      summary: Update Speaker Information (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this speaker information.
+        required: true
+      tags:
+      - speaker-information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeakerInformationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakerInformation'
+          description: ''
+    delete:
+      operationId: speaker_information_destroy
+      summary: Delete Speaker Information
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this speaker information.
+        required: true
+      tags:
+      - speaker-information
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/speakers/:
+    get:
+      operationId: speakers_list
+      summary: List Speakers
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - answers
+            - answers.question
+            - submissions
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"name"`. Organiser search also includes
+          email addresses.
+      tags:
+      - speakers
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSpeakerList'
+          description: ''
+  /api/events/{event}/speakers/{user__code__iexact}/:
+    get:
+      operationId: speakers_retrieve
+      summary: Show Speaker
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - answers
+            - answers.question
+            - submissions
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: user__code__iexact
+        schema:
+          type: string
+        required: true
+      tags:
+      - speakers
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Speaker'
+          description: ''
+    put:
+      operationId: speakers_update
+      summary: Update Speaker
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: user__code__iexact
+        schema:
+          type: string
+        required: true
+      tags:
+      - speakers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeakerUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakerOrga'
+          description: ''
+    patch:
+      operationId: speakers_partial_update
+      summary: Update Speaker (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: user__code__iexact
+        schema:
+          type: string
+        required: true
+      tags:
+      - speakers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeakerUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpeakerOrga'
+          description: ''
+  /api/events/{event}/submission-types/:
+    get:
+      operationId: submission_types_list
+      summary: List Submission Types
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"name"`.
+      tags:
+      - submission-types
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubmissionTypeList'
+          description: ''
+    post:
+      operationId: submission_types_create
+      summary: Create Submission Types
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submission-types
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionTypeRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionType'
+          description: ''
+  /api/events/{event}/submission-types/{id}/:
+    get:
+      operationId: submission_types_retrieve
+      summary: Show Submission Types
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submission type.
+        required: true
+      tags:
+      - submission-types
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionType'
+          description: ''
+    put:
+      operationId: submission_types_update
+      summary: Update Submission Types
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submission type.
+        required: true
+      tags:
+      - submission-types
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionTypeRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionType'
+          description: ''
+    patch:
+      operationId: submission_types_partial_update
+      summary: Update Submission Types (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submission type.
+        required: true
+      tags:
+      - submission-types
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionTypeRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionType'
+          description: ''
+    delete:
+      operationId: submission_types_destroy
+      summary: Delete Submission Types
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this submission type.
+        required: true
+      tags:
+      - submission-types
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/submissions/:
+    get:
+      operationId: submissions_list
+      summary: List Submissions
+      parameters:
+      - in: query
+        name: content_locale
+        schema:
+          type: string
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - answers
+            - answers.question
+            - resources
+            - slots
+            - slots.room
+            - speakers
+            - speakers.answers
+            - submission_type
+            - tags
+            - track
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"title"`,`"speaker.name"`.
+      - in: query
+        name: state
+        schema:
+          type: array
+          items:
+            type: string
+            title: Proposal state
+            enum:
+            - accepted
+            - canceled
+            - confirmed
+            - deleted
+            - draft
+            - rejected
+            - submitted
+            - withdrawn
+        description: |-
+          * `submitted` - submitted
+          * `accepted` - accepted
+          * `confirmed` - confirmed
+          * `rejected` - rejected
+          * `canceled` - canceled
+          * `withdrawn` - withdrawn
+          * `deleted` - deleted
+          * `draft` - draft
+        explode: true
+        style: form
+      - in: query
+        name: submission_type
+        schema:
+          type: integer
+      tags:
+      - submissions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubmissionList'
+          description: ''
+    post:
+      operationId: submissions_create
+      description: Note that a submission created via the API will start in the submitted
+        state and without speakers. No notification emails will be sent, and the submission
+        may be in an invalid state (e.g. if the event has required custom fields).
+      summary: Create Submission
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionOrgaRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionOrga'
+          description: ''
+  /api/events/{event}/submissions/{code__iexact}/:
+    get:
+      operationId: submissions_retrieve
+      summary: Show Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - answers
+            - resources
+            - slots
+            - slots.room
+            - speakers
+            - submission_type
+            - tags
+            - track
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      tags:
+      - submissions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+    put:
+      operationId: submissions_update
+      summary: Update Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionOrgaRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionOrga'
+          description: ''
+    patch:
+      operationId: submissions_partial_update
+      summary: Update Submission (Partial Update)
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionOrgaRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionOrga'
+          description: ''
+    delete:
+      operationId: submissions_destroy
+      description: This endpoint is only available to server administrators.
+      summary: Delete Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/submissions/{code__iexact}/accept/:
+    post:
+      operationId: submissions_accept_create
+      summary: Accept Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/events/{event}/submissions/{code__iexact}/add-speaker/:
+    post:
+      operationId: submissions_add_speaker_create
+      summary: Add Speaker to Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddSpeakerRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionOrga'
+          description: ''
+  /api/events/{event}/submissions/{code__iexact}/cancel/:
+    post:
+      operationId: submissions_cancel_create
+      summary: Cancel Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/events/{event}/submissions/{code__iexact}/confirm/:
+    post:
+      operationId: submissions_confirm_create
+      summary: Confirm Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/events/{event}/submissions/{code__iexact}/make-submitted/:
+    post:
+      operationId: submissions_make_submitted_create
+      summary: Make Submission Submitted
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/events/{event}/submissions/{code__iexact}/reject/:
+    post:
+      operationId: submissions_reject_create
+      summary: Reject Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/events/{event}/submissions/{code__iexact}/remove-speaker/:
+    post:
+      operationId: submissions_remove_speaker_create
+      summary: Remove Speaker from Submission
+      parameters:
+      - in: path
+        name: code__iexact
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveSpeakerRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionOrga'
+          description: ''
+  /api/events/{event}/submissions/{code}/favourite/:
+    post:
+      operationId: submissions_favourite_create
+      description: This endpoint is used by the schedule widget and uses session authentication.
+      summary: Add or remove a submission from favourites
+      parameters:
+      - in: path
+        name: code
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      responses:
+        '200':
+          description: No response body
+        '404':
+          description: Submission not found.
+    delete:
+      operationId: submissions_favourite_destroy
+      description: This endpoint is used by the schedule widget and uses session authentication.
+      summary: Add or remove a submission from favourites
+      parameters:
+      - in: path
+        name: code
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      responses:
+        '200':
+          description: No response body
+        '404':
+          description: Submission not found.
+  /api/events/{event}/submissions/favourites/:
+    get:
+      operationId: submissions_favourites_retrieve
+      description: This endpoint is used by the schedule widget and uses session authentication.
+      summary: List favourite submissions
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - submissions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+          description: ''
+  /api/events/{event}/tags/:
+    get:
+      operationId: tags_list
+      summary: List tags
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"tag"`.
+      tags:
+      - tags
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTagList'
+          description: ''
+    post:
+      operationId: tags_create
+      summary: Create Tags
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+  /api/events/{event}/tags/{id}/:
+    get:
+      operationId: tags_retrieve
+      summary: Show Tags
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - tags
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    put:
+      operationId: tags_update
+      summary: Update Tags
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    patch:
+      operationId: tags_partial_update
+      summary: Update Tags (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    delete:
+      operationId: tags_destroy
+      summary: Delete Tags
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - tags
+      responses:
+        '204':
+          description: No response body
+  /api/events/{event}/tracks/:
+    get:
+      operationId: tracks_list
+      summary: List Tracks
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"name"`.
+      tags:
+      - tracks
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTrackList'
+          description: ''
+    post:
+      operationId: tracks_create
+      summary: Create Tracks
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - tracks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+          description: ''
+  /api/events/{event}/tracks/{id}/:
+    get:
+      operationId: tracks_retrieve
+      summary: Show Tracks
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this track.
+        required: true
+      tags:
+      - tracks
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+          description: ''
+    put:
+      operationId: tracks_update
+      summary: Update Tracks
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this track.
+        required: true
+      tags:
+      - tracks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+          description: ''
+    patch:
+      operationId: tracks_partial_update
+      summary: Update Tracks (Partial Update)
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this track.
+        required: true
+      tags:
+      - tracks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+          description: ''
+    delete:
+      operationId: tracks_destroy
+      summary: Delete Tracks
+      parameters:
+      - in: path
+        name: event
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this track.
+        required: true
+      tags:
+      - tracks
+      responses:
+        '204':
+          description: No response body
+  /api/organisers/{organiser}/teams/:
+    get:
+      operationId: api_organisers_teams_list
+      summary: List Teams
+      parameters:
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - invites
+            - limit_tracks
+            - members
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+        description: A search term, searching in `"name"`.
+      tags:
+      - teams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTeamList'
+          description: ''
+    post:
+      operationId: api_organisers_teams_create
+      summary: Create Team
+      parameters:
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+          description: ''
+  /api/organisers/{organiser}/teams/{id}/:
+    get:
+      operationId: api_organisers_teams_retrieve
+      summary: Show Team
+      parameters:
+      - in: query
+        name: expand
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - invites
+            - limit_tracks
+            - members
+        description: Select fields to <a href="https://docs.pretalx.org/api/fundamentals/#expanding-linked-resources">expand</a>.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team.
+        required: true
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+          description: ''
+    put:
+      operationId: api_organisers_teams_update
+      summary: Update Team
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team.
+        required: true
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+          description: ''
+    patch:
+      operationId: api_organisers_teams_partial_update
+      summary: Update Team (Partial Update)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team.
+        required: true
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+          description: ''
+    delete:
+      operationId: api_organisers_teams_destroy
+      summary: Delete Team
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team.
+        required: true
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      responses:
+        '204':
+          description: No response body
+  /api/organisers/{organiser}/teams/{id}/invite/:
+    post:
+      operationId: api_organisers_teams_invite_create
+      description: Creates a team invite, and sends an invite.
+      summary: Invite Member to Team
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team.
+        required: true
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamInviteCreateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+          description: ''
+  /api/organisers/{organiser}/teams/{id}/invites/{invite_id}/:
+    delete:
+      operationId: api_organisers_teams_invites_destroy
+      summary: Delete Team Invite
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team.
+        required: true
+      - in: path
+        name: invite_id
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      responses:
+        '204':
+          description: No response body
+  /api/organisers/{organiser}/teams/{id}/remove_member/:
+    post:
+      operationId: api_organisers_teams_remove_member_create
+      summary: Remove Member from Team
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this team.
+        required: true
+      - in: path
+        name: organiser
+        schema:
+          type: string
+          description: The event’s slug
+        required: true
+      tags:
+      - teams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberRemoveRequest'
+        required: true
+      responses:
+        '204':
+          description: Member removed successfully.
+        '400':
+          description: Member cannot be removed as it may leave events inaccessible.
+  /api/upload/:
+    post:
+      operationId: File upload
+      description: 'Upload a file (image or PDF) for temporary storage. Allowed file
+        types: PNG, JPEG, GIF, SVG, PDF.'
+      tags:
+      - file-uploads
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileResponse'
+              examples:
+                ? ''
+                : value:
+                    id: file:1234-5678
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Validation error
+          description: ''
+components:
+  schemas:
+    AddSpeakerRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        name:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+      required:
+      - email
+    Answer:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          type: integer
+          readOnly: true
+        answer:
+          type: string
+        answer_file:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        submission:
+          type: string
+          readOnly: true
+        review:
+          type: integer
+          readOnly: true
+        person:
+          type: string
+          nullable: true
+          readOnly: true
+        options:
+          type: array
+          items:
+            type: integer
+      required:
+      - answer
+      - id
+      - options
+      - person
+      - question
+      - review
+      - submission
+    AnswerCreate:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          type: integer
+        answer:
+          type: string
+        answer_file:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        submission:
+          type: string
+          nullable: true
+        review:
+          type: integer
+          nullable: true
+        person:
+          type: string
+          nullable: true
+        options:
+          type: array
+          items:
+            type: integer
+      required:
+      - answer
+      - id
+      - question
+    AnswerCreateRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        question:
+          type: integer
+        answer:
+          type: string
+          minLength: 1
+        answer_file:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        submission:
+          type: string
+          minLength: 1
+          nullable: true
+        review:
+          type: integer
+          nullable: true
+        person:
+          type: string
+          nullable: true
+          minLength: 1
+        options:
+          type: array
+          items:
+            type: integer
+      required:
+      - answer
+      - question
+    AnswerOption:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          type: integer
+          readOnly: true
+        answer:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Response
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - answer
+      - id
+      - question
+    AnswerOptionCreate:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          type: integer
+        answer:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Response
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - answer
+      - id
+      - question
+    AnswerOptionCreateRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        question:
+          type: integer
+        answer:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Response
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - answer
+      - question
+    AnswerOptionRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        answer:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Response
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - answer
+    AnswerRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        answer:
+          type: string
+          minLength: 1
+        answer_file:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        options:
+          type: array
+          items:
+            type: integer
+      required:
+      - answer
+      - options
+    Availability:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        allDay:
+          type: boolean
+          readOnly: true
+          description: Computed field indicating if an availability fills an entire
+            day.
+      required:
+      - allDay
+      - end
+      - start
+    AvailabilityRequest:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+      required:
+      - end
+      - start
+    BlankEnum:
+      enum:
+      - ''
+    Event:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        slug:
+          type: string
+          title: Short form
+          description: The slug may only contain letters, numbers, dots and dashes.
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?$
+          maxLength: 50
+        is_public:
+          type: boolean
+          title: Event is public
+        date_from:
+          type: string
+          format: date
+          title: Event start date
+        date_to:
+          type: string
+          format: date
+          title: Event end date
+        timezone:
+          allOf:
+          - $ref: '#/components/schemas/TimezoneEnum'
+          description: |+
+            All event dates will be localised and interpreted to be in this timezone.
+
+        email:
+          type: string
+          format: email
+          title: Organiser email address
+          description: Will be used as Reply-To in emails.
+          maxLength: 254
+        primary_color:
+          type: string
+          nullable: true
+          title: Main event colour
+          description: 'Provide a hex value like #00ff00 if you want to style pretalx
+            in your event’s colour scheme.'
+          pattern: '#([0-9A-Fa-f]{3}){1,2}'
+          maxLength: 7
+        custom_domain:
+          type: string
+          format: uri
+          nullable: true
+          description: Enter a custom domain, such as https://my.event.example.org
+          maxLength: 200
+        logo:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        header_image:
+          type: string
+          format: uri
+          nullable: true
+          description: If you provide a header image, it will be displayed instead
+            of your event’s color and/or header pattern at the top of all event pages.
+            It will be center-aligned, so when the window shrinks, the center parts
+            will continue to be displayed, and not stretched.
+        locale:
+          allOf:
+          - $ref: '#/components/schemas/LocaleEnum'
+          title: Default language
+        locales:
+          type: array
+          items:
+            type: string
+          description: Is a list of active event locales.
+          readOnly: true
+        content_locales:
+          type: array
+          items:
+            type: string
+          description: Is a list of active content locales.
+          readOnly: true
+      required:
+      - content_locales
+      - date_from
+      - date_to
+      - email
+      - locales
+      - name
+      - slug
+    EventList:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        slug:
+          type: string
+          title: Short form
+          description: The slug may only contain letters, numbers, dots and dashes.
+          pattern: ^[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?$
+          maxLength: 50
+        is_public:
+          type: boolean
+          title: Event is public
+        date_from:
+          type: string
+          format: date
+          title: Event start date
+        date_to:
+          type: string
+          format: date
+          title: Event end date
+        timezone:
+          allOf:
+          - $ref: '#/components/schemas/TimezoneEnum'
+          description: |+
+            All event dates will be localised and interpreted to be in this timezone.
+
+      required:
+      - date_from
+      - date_to
+      - name
+      - slug
+    FileResponse:
+      type: object
+      description: Serializer for file upload response.
+      properties:
+        id:
+          type: string
+          description: Cached file identifier
+      required:
+      - id
+    LocaleEnum:
+      enum:
+      - en
+      - de
+      - de-formal
+      - ar
+      - cs
+      - el
+      - es
+      - fr
+      - it
+      - ja-jp
+      - nl
+      - pl
+      - pt-br
+      - pt-pt
+      - vi
+      - zh-hant
+      - zh-hans
+      type: string
+      description: |-
+        * `en` - English
+        * `de` - German
+        * `de-formal` - German (formal)
+        * `ar` - Arabic
+        * `cs` - Czech
+        * `el` - Greek
+        * `es` - Spanish
+        * `fr` - French
+        * `it` - Italian
+        * `ja-jp` - Japanese
+        * `nl` - Dutch
+        * `pl` - Polish
+        * `pt-br` - Brasilian Portuguese
+        * `pt-pt` - Portuguese
+        * `vi` - Vietnamese
+        * `zh-hant` - Traditional Chinese (Taiwan)
+        * `zh-hans` - Simplified Chinese
+    MailTemplate:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        role:
+          nullable: true
+          $ref: '#/components/schemas/RoleEnum'
+        subject:
+          $ref: '#/components/schemas/Multi-language string'
+        text:
+          $ref: '#/components/schemas/Multi-language string'
+        reply_to:
+          type: string
+          nullable: true
+          description: Change the Reply-To address if you do not want to use the default
+            organiser address
+          maxLength: 200
+        bcc:
+          type: string
+          nullable: true
+          description: Enter comma separated addresses. Will receive a blind copy
+            of every mail sent from this template. This may be a LOT!
+          maxLength: 1000
+      required:
+      - id
+      - role
+      - subject
+      - text
+    MailTemplateRequest:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        subject:
+          $ref: '#/components/schemas/Multi-language string'
+        text:
+          $ref: '#/components/schemas/Multi-language string'
+        reply_to:
+          type: string
+          nullable: true
+          description: Change the Reply-To address if you do not want to use the default
+            organiser address
+          maxLength: 200
+        bcc:
+          type: string
+          nullable: true
+          description: Enter comma separated addresses. Will receive a blind copy
+            of every mail sent from this template. This may be a LOT!
+          maxLength: 1000
+      required:
+      - subject
+      - text
+    Multi-language string:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        en: English text
+        de: Deutscher Text
+    NestedAnswerOption:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        answer:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Response
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - answer
+      - id
+    NestedAnswerOptionRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        answer:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Response
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - answer
+    NullEnum:
+      enum:
+      - null
+    PaginatedAnswerList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+    PaginatedAnswerOptionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerOption'
+    PaginatedMailTemplateList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MailTemplate'
+    PaginatedQuestionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+    PaginatedReviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+    PaginatedRoomList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Room'
+    PaginatedScheduleListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleList'
+    PaginatedSpeakerInformationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SpeakerInformation'
+    PaginatedSpeakerList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Speaker'
+    PaginatedSubmissionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Submission'
+    PaginatedSubmissionTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmissionType'
+    PaginatedSubmitterAccessCodeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmitterAccessCode'
+    PaginatedTagList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    PaginatedTalkSlotList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TalkSlot'
+    PaginatedTeamList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+    PaginatedTrackList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+    PendingStateEnum:
+      enum:
+      - submitted
+      - accepted
+      - confirmed
+      - rejected
+      - canceled
+      - withdrawn
+      - deleted
+      - draft
+      type: string
+      description: |-
+        * `submitted` - submitted
+        * `accepted` - accepted
+        * `confirmed` - confirmed
+        * `rejected` - rejected
+        * `canceled` - canceled
+        * `withdrawn` - withdrawn
+        * `deleted` - deleted
+        * `draft` - draft
+    Question:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Label
+        help_text:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          description: Will appear just like this text below the custom input field.
+            You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank"
+            rel="noopener">Markdown</a> here.
+        default_answer:
+          type: string
+          nullable: true
+        variant:
+          $ref: '#/components/schemas/VariantEnum'
+        target:
+          allOf:
+          - $ref: '#/components/schemas/TargetEnum'
+          title: Field type
+          description: |-
+            Do you require an answer from every speaker or for every session?
+
+            * `submission` - per proposal
+            * `speaker` - per speaker
+            * `reviewer` - for reviewers
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+          description: Set a deadline to make this field required after the given
+            date.
+        freeze_after:
+          type: string
+          format: date-time
+          nullable: true
+          description: Set a deadline to stop changes to responses after the given
+            date.
+        question_required:
+          allOf:
+          - $ref: '#/components/schemas/QuestionRequiredEnum'
+          title: Field required
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        tracks:
+          type: array
+          items:
+            type: integer
+          description: You can limit this field to some tracks. Leave empty to apply
+            to all tracks.
+        submission_types:
+          type: array
+          items:
+            type: integer
+            title: Session Types
+          title: Session Types
+          description: You can limit this field to some session types. Leave empty
+            to apply to all session types.
+        options:
+          type: array
+          items:
+            type: integer
+        min_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Minimum text length
+          description: Minimum allowed text in characters or words (set in CfP settings).
+        max_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Maximum text length
+          description: Maximum allowed text length in characters or words (set in
+            CfP settings).
+        min_number:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,6})?$
+          nullable: true
+          title: Minimum value
+        max_number:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,6})?$
+          nullable: true
+          title: Maximum value
+        min_date:
+          type: string
+          format: date
+          nullable: true
+          title: Minimum value
+        max_date:
+          type: string
+          format: date
+          nullable: true
+          title: Maximum value
+        min_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          title: Minimum value
+        max_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          title: Maximum value
+      required:
+      - id
+      - options
+      - question
+    QuestionOrga:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Label
+        help_text:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          description: Will appear just like this text below the custom input field.
+            You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank"
+            rel="noopener">Markdown</a> here.
+        default_answer:
+          type: string
+          nullable: true
+        variant:
+          $ref: '#/components/schemas/VariantEnum'
+        target:
+          allOf:
+          - $ref: '#/components/schemas/TargetEnum'
+          title: Field type
+          description: |-
+            Do you require an answer from every speaker or for every session?
+
+            * `submission` - per proposal
+            * `speaker` - per speaker
+            * `reviewer` - for reviewers
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+          description: Set a deadline to make this field required after the given
+            date.
+        freeze_after:
+          type: string
+          format: date-time
+          nullable: true
+          description: Set a deadline to stop changes to responses after the given
+            date.
+        question_required:
+          allOf:
+          - $ref: '#/components/schemas/QuestionRequiredEnum'
+          title: Field required
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        tracks:
+          type: array
+          items:
+            type: integer
+          description: You can limit this field to some tracks. Leave empty to apply
+            to all tracks.
+        submission_types:
+          type: array
+          items:
+            type: integer
+            title: Session Types
+          title: Session Types
+          description: You can limit this field to some session types. Leave empty
+            to apply to all session types.
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedAnswerOption'
+        min_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Minimum text length
+          description: Minimum allowed text in characters or words (set in CfP settings).
+        max_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Maximum text length
+          description: Maximum allowed text length in characters or words (set in
+            CfP settings).
+        min_number:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,6})?$
+          nullable: true
+          title: Minimum value
+        max_number:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,6})?$
+          nullable: true
+          title: Maximum value
+        min_date:
+          type: string
+          format: date
+          nullable: true
+          title: Minimum value
+        max_date:
+          type: string
+          format: date
+          nullable: true
+          title: Maximum value
+        min_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          title: Minimum value
+        max_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          title: Maximum value
+        active:
+          type: boolean
+          description: Inactive fields will no longer be shown.
+        is_public:
+          type: boolean
+          title: Publish answers
+          description: Responses will be shown on session or speaker pages as appropriate.
+            Please note that you cannot make a field public after the first answers
+            have been given, to allow speakers explicit consent before publishing
+            information.
+        contains_personal_data:
+          type: boolean
+          title: Responses contain personal data
+          description: If a user deletes their account, responses containing personal
+            data will be removed, too.
+        is_visible_to_reviewers:
+          type: boolean
+          title: Show answers to reviewers
+          description: Should responses to this field be shown to reviewers? This
+            is helpful if you want to collect personal information, but use anonymous
+            reviews.
+      required:
+      - id
+      - question
+    QuestionOrgaRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        question:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Label
+        help_text:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          description: Will appear just like this text below the custom input field.
+            You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank"
+            rel="noopener">Markdown</a> here.
+        default_answer:
+          type: string
+          nullable: true
+        variant:
+          $ref: '#/components/schemas/VariantEnum'
+        target:
+          allOf:
+          - $ref: '#/components/schemas/TargetEnum'
+          title: Field type
+          description: |-
+            Do you require an answer from every speaker or for every session?
+
+            * `submission` - per proposal
+            * `speaker` - per speaker
+            * `reviewer` - for reviewers
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+          description: Set a deadline to make this field required after the given
+            date.
+        freeze_after:
+          type: string
+          format: date-time
+          nullable: true
+          description: Set a deadline to stop changes to responses after the given
+            date.
+        question_required:
+          allOf:
+          - $ref: '#/components/schemas/QuestionRequiredEnum'
+          title: Field required
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        tracks:
+          type: array
+          items:
+            type: integer
+          description: You can limit this field to some tracks. Leave empty to apply
+            to all tracks.
+        submission_types:
+          type: array
+          items:
+            type: integer
+            title: Session Types
+          title: Session Types
+          description: You can limit this field to some session types. Leave empty
+            to apply to all session types.
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedAnswerOptionRequest'
+        min_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Minimum text length
+          description: Minimum allowed text in characters or words (set in CfP settings).
+        max_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          title: Maximum text length
+          description: Maximum allowed text length in characters or words (set in
+            CfP settings).
+        min_number:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,6})?$
+          nullable: true
+          title: Minimum value
+        max_number:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,6})?$
+          nullable: true
+          title: Maximum value
+        min_date:
+          type: string
+          format: date
+          nullable: true
+          title: Minimum value
+        max_date:
+          type: string
+          format: date
+          nullable: true
+          title: Maximum value
+        min_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          title: Minimum value
+        max_datetime:
+          type: string
+          format: date-time
+          nullable: true
+          title: Maximum value
+        active:
+          type: boolean
+          description: Inactive fields will no longer be shown.
+        is_public:
+          type: boolean
+          title: Publish answers
+          description: Responses will be shown on session or speaker pages as appropriate.
+            Please note that you cannot make a field public after the first answers
+            have been given, to allow speakers explicit consent before publishing
+            information.
+        contains_personal_data:
+          type: boolean
+          title: Responses contain personal data
+          description: If a user deletes their account, responses containing personal
+            data will be removed, too.
+        is_visible_to_reviewers:
+          type: boolean
+          title: Show answers to reviewers
+          description: Should responses to this field be shown to reviewers? This
+            is helpful if you want to collect personal information, but use anonymous
+            reviews.
+      required:
+      - question
+    QuestionRequiredEnum:
+      enum:
+      - optional
+      - required
+      - after_deadline
+      type: string
+      description: |-
+        * `optional` - always optional
+        * `required` - always required
+        * `after_deadline` - required after a deadline
+    RemoveSpeakerRequest:
+      type: object
+      properties:
+        user:
+          type: string
+          minLength: 1
+      required:
+      - user
+    Review:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        submission:
+          type: string
+        text:
+          type: string
+          nullable: true
+          title: What do you think?
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewScore'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+          readOnly: true
+        user:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - answers
+      - id
+      - score
+      - scores
+      - submission
+      - user
+    ReviewScore:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category:
+          type: integer
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+        label:
+          type: string
+          nullable: true
+          maxLength: 200
+      required:
+      - category
+      - id
+      - value
+    ReviewWriteRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        submission:
+          type: string
+          minLength: 1
+        text:
+          type: string
+          nullable: true
+          title: What do you think?
+        scores:
+          type: array
+          items:
+            type: integer
+        answers:
+          type: array
+          items:
+            type: integer
+      required:
+      - scores
+      - submission
+    Room:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        description:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          description: A description for attendees, for example directions.
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: The uuid field is equal the the guid field if a guid has been
+            set. Otherwise, it will contain a computed (stable) UUID.
+        guid:
+          type: string
+          format: uuid
+          nullable: true
+          description: Unique identifier (UUID) to help external tools identify the
+            room.
+        capacity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          description: How many people can fit in the room?
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+      required:
+      - id
+      - name
+      - uuid
+    RoomOrga:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        description:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          description: A description for attendees, for example directions.
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: The uuid field is equal the the guid field if a guid has been
+            set. Otherwise, it will contain a computed (stable) UUID.
+        guid:
+          type: string
+          format: uuid
+          nullable: true
+          description: Unique identifier (UUID) to help external tools identify the
+            room.
+        capacity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          description: How many people can fit in the room?
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        speaker_info:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          title: Speaker Information
+          description: Information relevant for speakers scheduled in this room, for
+            example room size, special directions, available adaptors for video input
+            …
+        availabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Availability'
+      required:
+      - id
+      - name
+      - uuid
+    RoomOrgaRequest:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        description:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          description: A description for attendees, for example directions.
+        guid:
+          type: string
+          format: uuid
+          nullable: true
+          description: Unique identifier (UUID) to help external tools identify the
+            room.
+        capacity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          description: How many people can fit in the room?
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        speaker_info:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          title: Speaker Information
+          description: Information relevant for speakers scheduled in this room, for
+            example room size, special directions, available adaptors for video input
+            …
+        availabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailabilityRequest'
+      required:
+      - name
+    Schedule:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        version:
+          type: string
+        published:
+          type: string
+          format: date-time
+          nullable: true
+        comment:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+          description: This text will be shown in the public changelog and the RSS
+            feed. You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank"
+            rel="noopener">Markdown</a> here.
+        slots:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+      required:
+      - id
+      - slots
+      - version
+    ScheduleList:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        version:
+          type: string
+        published:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - version
+    ScheduleReleaseRequest:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        version:
+          type: string
+          minLength: 1
+        comment:
+          type: string
+          nullable: true
+      required:
+      - version
+    Speaker:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        code:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        biography:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        submissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        avatar_url:
+          type: string
+          format: uri
+          readOnly: true
+        answers:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+      required:
+      - answers
+      - avatar_url
+      - code
+      - name
+      - submissions
+    SpeakerInformation:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        target_group:
+          $ref: '#/components/schemas/TargetGroupEnum'
+        title:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Subject
+        text:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        resource:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        limit_tracks:
+          type: array
+          items:
+            type: integer
+            title: Limit to tracks
+          title: Limit to tracks
+          description: Leave empty to show this information to all tracks.
+        limit_types:
+          type: array
+          items:
+            type: integer
+            title: Limit to proposal types
+          title: Limit to proposal types
+          description: Leave empty to show this information for all proposal types.
+      required:
+      - id
+      - text
+      - title
+    SpeakerInformationRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        target_group:
+          $ref: '#/components/schemas/TargetGroupEnum'
+        title:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          title: Subject
+        text:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        resource:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        limit_tracks:
+          type: array
+          items:
+            type: integer
+            title: Limit to tracks
+          title: Limit to tracks
+          description: Leave empty to show this information to all tracks.
+        limit_types:
+          type: array
+          items:
+            type: integer
+            title: Limit to proposal types
+          title: Limit to proposal types
+          description: Leave empty to show this information for all proposal types.
+      required:
+      - text
+      - title
+    SpeakerOrga:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        code:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        biography:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        submissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        avatar_url:
+          type: string
+          format: uri
+          readOnly: true
+        answers:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+        timezone:
+          type: string
+          readOnly: true
+        locale:
+          type: string
+          readOnly: true
+        has_arrived:
+          type: boolean
+          title: The speaker has arrived
+        availabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Availability'
+      required:
+      - answers
+      - avatar_url
+      - code
+      - email
+      - locale
+      - name
+      - submissions
+      - timezone
+    SpeakerUpdateRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        name:
+          type: string
+          minLength: 1
+        biography:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        email:
+          type: string
+          format: email
+          minLength: 1
+        has_arrived:
+          type: boolean
+          title: The speaker has arrived
+        availabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailabilityRequest'
+        avatar:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+      required:
+      - email
+      - name
+    StateEnum:
+      enum:
+      - submitted
+      - accepted
+      - confirmed
+      - rejected
+      - canceled
+      - withdrawn
+      - deleted
+      - draft
+      type: string
+      description: |-
+        * `submitted` - submitted
+        * `accepted` - accepted
+        * `confirmed` - confirmed
+        * `rejected` - rejected
+        * `canceled` - canceled
+        * `withdrawn` - withdrawn
+        * `deleted` - deleted
+        * `draft` - draft
+    Submission:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          title: Proposal title
+          maxLength: 200
+        speakers:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        submission_type:
+          type: integer
+        track:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: integer
+        state:
+          allOf:
+          - $ref: '#/components/schemas/StateEnum'
+          readOnly: true
+          title: Proposal state
+        abstract:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        description:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        duration:
+          type: integer
+          description: Defaults to the submission type’s duration
+        slot_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: How many times this session will take place.
+        content_locale:
+          type: string
+          title: Language
+          maxLength: 32
+        do_not_record:
+          type: boolean
+          title: Don’t record this session.
+        image:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        resources:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        slots:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        answers:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+      required:
+      - answers
+      - code
+      - resources
+      - slots
+      - speakers
+      - state
+      - submission_type
+      - title
+    SubmissionOrga:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          title: Proposal title
+          maxLength: 200
+        speakers:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        submission_type:
+          type: integer
+        track:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: integer
+        state:
+          allOf:
+          - $ref: '#/components/schemas/StateEnum'
+          readOnly: true
+          title: Proposal state
+        abstract:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        description:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        duration:
+          type: integer
+          description: Defaults to the submission type’s duration
+        slot_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: How many times this session will take place.
+        content_locale:
+          type: string
+          title: Language
+          maxLength: 32
+        do_not_record:
+          type: boolean
+          title: Don’t record this session.
+        image:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        resources:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        slots:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        answers:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        pending_state:
+          nullable: true
+          title: Pending proposal state
+          oneOf:
+          - $ref: '#/components/schemas/PendingStateEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_featured:
+          type: boolean
+          title: Show this session in public list of featured sessions.
+        notes:
+          type: string
+          nullable: true
+          description: These notes are meant for the organiser and won’t be made public.
+        internal_notes:
+          type: string
+          nullable: true
+          description: Internal notes for other organisers/reviewers. Not visible
+            to the speakers or the public.
+        invitation_token:
+          type: string
+          maxLength: 32
+        access_code:
+          type: integer
+          nullable: true
+        review_code:
+          type: string
+          nullable: true
+          maxLength: 32
+        anonymised_data:
+          type: string
+          nullable: true
+        reviews:
+          type: array
+          items:
+            type: integer
+        assigned_reviewers:
+          type: array
+          items:
+            type: string
+            nullable: true
+        is_anonymised:
+          type: boolean
+          readOnly: true
+        median_score:
+          type: number
+          format: double
+          nullable: true
+          readOnly: true
+        mean_score:
+          type: number
+          format: double
+          nullable: true
+          readOnly: true
+      required:
+      - answers
+      - code
+      - is_anonymised
+      - mean_score
+      - median_score
+      - resources
+      - slots
+      - speakers
+      - state
+      - submission_type
+      - title
+    SubmissionOrgaRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: Proposal title
+          maxLength: 200
+        submission_type:
+          type: integer
+        track:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: integer
+        abstract:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        description:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        duration:
+          type: integer
+          description: Defaults to the submission type’s duration
+        slot_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: How many times this session will take place.
+        content_locale:
+          type: string
+          minLength: 1
+          title: Language
+          maxLength: 32
+        do_not_record:
+          type: boolean
+          title: Don’t record this session.
+        image:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+        pending_state:
+          nullable: true
+          title: Pending proposal state
+          oneOf:
+          - $ref: '#/components/schemas/PendingStateEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        is_featured:
+          type: boolean
+          title: Show this session in public list of featured sessions.
+        notes:
+          type: string
+          nullable: true
+          description: These notes are meant for the organiser and won’t be made public.
+        internal_notes:
+          type: string
+          nullable: true
+          description: Internal notes for other organisers/reviewers. Not visible
+            to the speakers or the public.
+        invitation_token:
+          type: string
+          minLength: 1
+          maxLength: 32
+        access_code:
+          type: integer
+          nullable: true
+        review_code:
+          type: string
+          nullable: true
+          maxLength: 32
+        anonymised_data:
+          type: string
+          nullable: true
+        reviews:
+          type: array
+          items:
+            type: integer
+        assigned_reviewers:
+          type: array
+          items:
+            type: string
+            nullable: true
+            minLength: 1
+      required:
+      - submission_type
+      - title
+    SubmissionRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: Proposal title
+          maxLength: 200
+        submission_type:
+          type: integer
+        track:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: integer
+        abstract:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        description:
+          type: string
+          nullable: true
+          description: You can use <a href="https://docs.pretalx.org/user/markdown/"
+            target="_blank" rel="noopener">Markdown</a> here.
+        duration:
+          type: integer
+          description: Defaults to the submission type’s duration
+        slot_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 1
+          description: How many times this session will take place.
+        content_locale:
+          type: string
+          minLength: 1
+          title: Language
+          maxLength: 32
+        do_not_record:
+          type: boolean
+          title: Don’t record this session.
+        image:
+          type: str
+          description: When reading data, a URL pointing to a downloadable file. When
+            writing adata, a reference to a file uploaded via the <a href="https://docs.pretalx.org/api/fundamentals/#file-uploads">file
+            uploads endpoint</a>.
+      required:
+      - submission_type
+      - title
+    SubmissionType:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        default_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default duration in minutes
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+          description: If you want a different deadline than the global deadline for
+            this session type, enter it here.
+        requires_access_code:
+          type: boolean
+          description: This session type will only be shown to submitters with a matching
+            access code.
+      required:
+      - id
+      - name
+    SubmissionTypeRequest:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        default_duration:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default duration in minutes
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+          description: If you want a different deadline than the global deadline for
+            this session type, enter it here.
+        requires_access_code:
+          type: boolean
+          description: This session type will only be shown to submitters with a matching
+            access code.
+      required:
+      - name
+    SubmitterAccessCode:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          title: Access code
+          pattern: ^[a-zA-Z0-9]+$
+          maxLength: 255
+        track:
+          type: integer
+          nullable: true
+          description: You can restrict the access code to a single track, or leave
+            it open for all tracks.
+        submission_type:
+          type: integer
+          nullable: true
+          title: Session Type
+          description: You can restrict the access code to a single session type,
+            or leave it open for all session types.
+        valid_until:
+          type: string
+          format: date-time
+          nullable: true
+          description: You can set or change this date later to invalidate the access
+            code.
+        maximum_uses:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          description: Numbers of times this access code can be used to submit a proposal.
+            Leave empty for no limit.
+        redeemed:
+          type: integer
+          readOnly: true
+      required:
+      - code
+      - id
+      - redeemed
+    SubmitterAccessCodeRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        code:
+          type: string
+          minLength: 1
+          title: Access code
+          pattern: ^[a-zA-Z0-9]+$
+          maxLength: 255
+        track:
+          type: integer
+          nullable: true
+          description: You can restrict the access code to a single track, or leave
+            it open for all tracks.
+        submission_type:
+          type: integer
+          nullable: true
+          title: Session Type
+          description: You can restrict the access code to a single session type,
+            or leave it open for all session types.
+        valid_until:
+          type: string
+          format: date-time
+          nullable: true
+          description: You can set or change this date later to invalidate the access
+            code.
+        maximum_uses:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          description: Numbers of times this access code can be used to submit a proposal.
+            Leave empty for no limit.
+      required:
+      - code
+    Tag:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        tag:
+          type: string
+          maxLength: 50
+        description:
+          $ref: '#/components/schemas/Multi-language string'
+        color:
+          type: string
+          pattern: '#([0-9A-Fa-f]{3}){1,2}'
+          maxLength: 7
+        is_public:
+          type: boolean
+          title: Show tag publicly
+          description: Tags are currently only in use for organisers and reviewers.
+            They will be visible publicly in a future release of pretalx.
+      required:
+      - color
+      - id
+      - tag
+    TagRequest:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        tag:
+          type: string
+          minLength: 1
+          maxLength: 50
+        description:
+          $ref: '#/components/schemas/Multi-language string'
+        color:
+          type: string
+          minLength: 1
+          pattern: '#([0-9A-Fa-f]{3}){1,2}'
+          maxLength: 7
+        is_public:
+          type: boolean
+          title: Show tag publicly
+          description: Tags are currently only in use for organisers and reviewers.
+            They will be visible publicly in a future release of pretalx.
+      required:
+      - color
+      - tag
+    TalkSlot:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        room:
+          type: integer
+          nullable: true
+          description: The room this talk is scheduled in, if any
+        start:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the talk starts, if it is currently scheduled
+        end:
+          type: string
+          format: date-time
+        submission:
+          type: string
+          readOnly: true
+        schedule:
+          type: integer
+          readOnly: true
+        description:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+        duration:
+          type: integer
+          description: |-
+            Returns the actual duration in minutes if the talk is scheduled, and
+            the planned duration in minutes otherwise.
+          readOnly: true
+      required:
+      - duration
+      - end
+      - id
+      - schedule
+      - submission
+    TalkSlotRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        room:
+          type: integer
+          nullable: true
+          description: The room this talk is scheduled in, if any
+        start:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the talk starts, if it is currently scheduled
+        end:
+          type: string
+          format: date-time
+        description:
+          allOf:
+          - $ref: '#/components/schemas/Multi-language string'
+          nullable: true
+      required:
+      - end
+    TargetEnum:
+      enum:
+      - submission
+      - speaker
+      - reviewer
+      type: string
+      description: |-
+        * `submission` - per proposal
+        * `speaker` - per speaker
+        * `reviewer` - for reviewers
+    TargetGroupEnum:
+      enum:
+      - submitters
+      - accepted
+      - confirmed
+      type: string
+      description: |-
+        * `submitters` - all
+        * `accepted` - All accepted speakers
+        * `confirmed` - Only confirmed speakers
+    Team:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Team name
+          maxLength: 190
+        members:
+          type: array
+          items:
+            type: string
+            nullable: true
+        invites:
+          type: array
+          items:
+            type: integer
+        all_events:
+          type: boolean
+          title: Apply permissions to all events by this organiser (including newly
+            created ones)
+        limit_events:
+          type: array
+          items:
+            type: string
+            title: Short form
+            description: The slug may only contain letters, numbers, dots and dashes.
+        limit_tracks:
+          type: array
+          items:
+            type: integer
+        can_create_events:
+          type: boolean
+        can_change_teams:
+          type: boolean
+          title: Can change teams and permissions
+        can_change_organiser_settings:
+          type: boolean
+        can_change_event_settings:
+          type: boolean
+        can_change_submissions:
+          type: boolean
+          title: Can work with and change proposals
+        is_reviewer:
+          type: boolean
+          title: Is a reviewer
+        force_hide_speaker_names:
+          type: boolean
+          title: Always hide speaker names
+          description: Normally, anonymisation is configured in the event review settings.
+            This setting will <b>override the event settings</b> and always hide speaker
+            names for this team.
+      required:
+      - id
+      - name
+    TeamInviteCreateRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+      required:
+      - email
+    TeamMemberRemoveRequest:
+      type: object
+      properties:
+        user_code:
+          type: string
+          minLength: 1
+      required:
+      - user_code
+    TeamRequest:
+      type: object
+      description: |-
+        A ModelSerializer that takes additional arguments for
+        "fields", "omit" and "expand" in order to
+        control which fields are displayed, and whether to replace simple
+        values with complex, nested serializations
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Team name
+          maxLength: 190
+        members:
+          type: array
+          items:
+            type: string
+            nullable: true
+            minLength: 1
+        invites:
+          type: array
+          items:
+            type: integer
+        all_events:
+          type: boolean
+          title: Apply permissions to all events by this organiser (including newly
+            created ones)
+        limit_events:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            title: Short form
+            description: The slug may only contain letters, numbers, dots and dashes.
+        limit_tracks:
+          type: array
+          items:
+            type: integer
+        can_create_events:
+          type: boolean
+        can_change_teams:
+          type: boolean
+          title: Can change teams and permissions
+        can_change_organiser_settings:
+          type: boolean
+        can_change_event_settings:
+          type: boolean
+        can_change_submissions:
+          type: boolean
+          title: Can work with and change proposals
+        is_reviewer:
+          type: boolean
+          title: Is a reviewer
+        force_hide_speaker_names:
+          type: boolean
+          title: Always hide speaker names
+          description: Normally, anonymisation is configured in the event review settings.
+            This setting will <b>override the event settings</b> and always hide speaker
+            names for this team.
+      required:
+      - name
+    TimezoneEnum:
+      enum: []
+    Track:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        description:
+          $ref: '#/components/schemas/Multi-language string'
+        color:
+          type: string
+          pattern: '#([0-9A-Fa-f]{3}){1,2}'
+          maxLength: 7
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          description: The position field is used to determine the order that tracks
+            are displayed in (lowest first).
+        requires_access_code:
+          type: boolean
+          description: This track will only be shown to submitters with a matching
+            access code.
+      required:
+      - color
+      - id
+      - name
+    TrackRequest:
+      type: object
+      description: |-
+        This serializer class will behave like the i18nfield serializer,
+        outputting a dict/object for internationalized strings, unless if
+        when it was initialized with an ``override_locale`` (taken from
+        a URL queryparam, usually), in which case the string will be cast
+        to the locale in question – relying on either a view or a middleware
+        to apply the locale manager.
+      properties:
+        name:
+          $ref: '#/components/schemas/Multi-language string'
+        description:
+          $ref: '#/components/schemas/Multi-language string'
+        color:
+          type: string
+          minLength: 1
+          pattern: '#([0-9A-Fa-f]{3}){1,2}'
+          maxLength: 7
+        position:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+          description: The position field is used to determine the order that tracks
+            are displayed in (lowest first).
+        requires_access_code:
+          type: boolean
+          description: This track will only be shown to submitters with a matching
+            access code.
+      required:
+      - color
+      - name
+    VariantEnum:
+      enum:
+      - number
+      - string
+      - text
+      - url
+      - date
+      - datetime
+      - boolean
+      - file
+      - choices
+      - multiple_choice
+      type: string
+      description: |-
+        * `number` - Number
+        * `string` - Text (one-line)
+        * `text` - Multi-line text
+        * `url` - URL
+        * `date` - Date
+        * `datetime` - Date and time
+        * `boolean` - Yes/No
+        * `file` - File upload
+        * `choices` - Choose one from a list
+        * `multiple_choice` - Choose multiple from a list
+    RoleEnum:
+      enum:
+      - submission.new
+      - submission.new.internal
+      - submission.state.accepted
+      - submission.state.rejected
+      - speaker.invite
+      - speaker.invite.existing
+      - question.reminder
+      - schedule.new
+      type: string
+      description: |-
+        * `submission.new` - Acknowledge proposal submission
+        * `submission.new.internal` - New proposal (organiser notification)
+        * `submission.state.accepted` - Proposal accepted
+        * `submission.state.rejected` - Proposal rejected
+        * `speaker.invite` - Add a speaker to a proposal (new account)
+        * `speaker.invite.existing` - Add a speaker to a proposal (existing account)
+        * `question.reminder` - Custom fields reminder
+        * `schedule.new` - New schedule published
+servers:
+- url: https://pretalx.com
+externalDocs:
+  url: https://docs.pretalx.org/api/
+tags:
+- name: events
+  description: The events endpoints are currently read-only, though we hope to add
+    write actions for event settings eventually.
+- name: teams
+  description: Access permissions for events are organised in teams within an organiser.
+    This is the only API endpoint that does not use the event setting on your access
+    token, as teams exist outside the event structure.
+- name: submissions
+  description: Submissions are the central component of pretalx. The submissions available
+    to an authenticated user via the API depend on their permissions within the event,
+    the current review phase, and so on. To a non-authenticated user, only submissions
+    that are a part of the current public schedule will be visible. Note that changing
+    the speakers and state of a submission requires you to use the individual action
+    endpoints rather than a plain update.
+  externalDocs:
+    url: https://docs.pretalx.org/user/sessions/
+    description: User documentation
+- name: speakers
+  description: Speakers can currently only updated, not created or deleted, as a speaker
+    refers to a user object, and users can only be deleted by administrators. Organisers
+    will see additional fields in the API, in line with the response to the update
+    actions.
+- name: schedules
+  description: In pretalx, an event’s schedule is versioned, and each version is a
+    schedule object in the API. In addition to the normal ID based routing, you can
+    use the `latest` shortcut to see the current public schedule, and as organiser,
+    the `wip` shortcut will show the current unpublished working copy. As retrieving
+    the fully expanded endpoint is expensive on the pretalx side, consider using the
+    redirect offered at ``by-version/?version=latest`` to check for a new release.
+- name: slots
+  description: Every block in a published pretalx schedule is a talk slot. Note that
+    there are talk slots without associated submission (e.g. breaks). Each slot belongs
+    to a schedule version – refer to the schedule endpoint for further documentation.
+    Note that slots cannot be created or deleted via the API – this happens automatically
+    when a submission’s state changes.
+- name: rooms
+  description: Rooms are part of conference schedules. Only once the conference schedule
+    is public will the rooms API be available to unauthenticated users. Authenticated
+    organisers will see additional fields in the API, in line with the create and
+    update actions.
+- name: submission-types
+  description: Submission types define the types of proposals that can be submitted
+    to an event, including their default duration.
+  externalDocs:
+    url: https://docs.pretalx.org/user/sessions/#session-types
+    description: User documentation
+- name: tags
+  description: Tags are currently only used in the organiser backend and not publicly.
+    As such, all tag endpoints require authentication.
+  externalDocs:
+    url: https://docs.pretalx.org/user/sessions/#tags
+    description: User documentation
+- name: tracks
+  description: Tracks are a way to organise proposals and talks into categories, usually
+    for thematic grouping.
+  externalDocs:
+    url: https://docs.pretalx.org/user/sessions/#tracks
+    description: User documentation
+- name: questions
+  description: The questions resource represents all fields created by organisers
+    via the flexible “custom fields” model, with the answers available under the ``/answers/``
+    endpoint.
+- name: question-options
+  description: 'Question options are used in questions of type ``CHOICE`` and ``MULTIPLE_CHOICE``. '
+- name: answers
+  description: 'The answers resource represents all data collected by organisers via
+    the flexible “custom fields” model, which allows for nearly arbitrary data collection
+    from speakers or reviewers. '
+- name: reviews
+  description: Reviews can be created, updated and deleted in the API depending on
+    permissions (user, token and team), the current review phase, and so on. As with
+    the other endpoints, this endpoint is not available to users/tokens with only
+    reviewer permissions while an anonymised review phase is active. Otherwise, the
+    reviews available depend on the current review phase and the user’s access permissions,
+    so e.g. only the user’s own reviews may be available.
+- name: mail-templates
+  description: Mail templates are used to define standardized mail formats for standard
+    situations, like acceptance or rejection mails, or to add custom email templates
+    for your own use. Please note that the role attribute cannot be changed.
+- name: speaker-information
+  description: Speaker information can be used to provide important information to
+    speakers, either to all speakers or only to accepted or confirmed speakers.
+- name: access-codes
+  description: Access codes can be used to grant access to restricted tracks, or to
+    allow for proposals to be submitted past the public deadline.
+- name: file-uploads
+  description: Upload files for further use in other resources of the pretalx API.
+  externalDocs:
+    url: https://docs.pretalx.org/api/fundamentals/#file-uploads
+    description: API documentation

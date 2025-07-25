@@ -77,7 +77,8 @@ The site section
 ~~~~~~~~~
 
 - Decides if pretalx runs in debug mode. Please use this mode for development and debugging, not
-  for live usage.
+  for live usage. pretalx behaves differently when ``debug`` is on, so you should run **all**
+  your production commands, like e.g. ``rebuild`` with ``debug`` turned off.
 - **Environment variable:** ``PRETALX_DEBUG``
 - **Default:** ``True`` if you’re executing ``runserver``, ``False`` otherwise. **Never run a
   production server in debug mode.**

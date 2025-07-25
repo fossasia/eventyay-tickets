@@ -1,0 +1,14 @@
+{% extends "orga/base.html" %}
+
+{% block extra_title %}{{ generic_title }} :: {% endblock extra_title %}
+
+{% block content %}
+    <h2>
+        {% block inline_title %}{{ generic_title }}{% endblock inline_title %}
+    </h2>
+
+    {% block form %}
+        {% include "orga/includes/base_form.html" %}
+    {% endblock form %}
+
+{% endblock content %}

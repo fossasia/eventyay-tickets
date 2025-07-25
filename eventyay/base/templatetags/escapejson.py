@@ -3,7 +3,7 @@ import json
 from django import template
 from django.template.defaultfilters import stringfilter
 
-from pretix.helpers.escapejson import escapejson
+from eventyay.helpers.escapejson import escapejson
 
 register = template.Library()
 

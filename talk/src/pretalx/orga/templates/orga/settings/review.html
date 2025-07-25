@@ -7,12 +7,6 @@
 
 {% block extra_title %}{% translate "Review settings" %} :: {% endblock extra_title %}
 
-{% block stylesheets %}
-    {% compress css %}
-        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
-    {% endcompress %}
-{% endblock stylesheets %}
-
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "js/jquery.js" %}"></script>
@@ -36,6 +30,7 @@
 
         <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
             {% include "common/forms/errors.html" %}
+            {{ form.use_submission_comments.as_field_group }}
             {{ form.score_mandatory.as_field_group }}
             {{ form.text_mandatory.as_field_group }}
             <div class="col-md-9 flip ml-auto mb-4">
@@ -80,7 +75,7 @@
                                 </span>
                                 {{ form.name.as_field_group }}
                                 {% if forloop.first %}
-                                    <span class="dialog-anchor" data-target="#info-review-scoring" data-toggle="dialog">
+                                    <span data-dialog-target="#info-review-scoring" data-toggle="dialog">
                                         <i class="fa fa-question-circle-o text-info ml-2"></i>
                                     </span>
                                 {% endif %}
@@ -205,7 +200,7 @@
                                 <span class="m-2">{% translate "Review Phase" %}</span>
                                 {{ form.name.as_field_group }}
                                 {% if forloop.first %}
-                                    <span class="dialog-anchor" data-target="#info-review-phases" data-toggle="dialog">
+                                    <span data-dialog-target="#info-review-phases" data-toggle="dialog">
                                         <i class="fa fa-question-circle-o text-info ml-2"></i>
                                     </span>
                                 {% endif %}

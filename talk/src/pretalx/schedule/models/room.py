@@ -6,9 +6,12 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField
 
+from pretalx.agenda.rules import is_agenda_visible
 from pretalx.common.models.mixins import OrderedModel, PretalxModel
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.urls import EventUrls
+from pretalx.event.rules import can_change_event_settings
+from pretalx.submission.rules import orga_can_change_submissions
 
 
 class Room(OrderedModel, PretalxModel):
@@ -17,6 +20,8 @@ class Room(OrderedModel, PretalxModel):
     The Room object stores some meta information. Most, like capacity,
     are not in use right now.
     """
+
+    log_prefix = "pretalx.room"
 
     event = models.ForeignKey(
         to="event.Event", on_delete=models.PROTECT, related_name="rooms"
@@ -57,13 +62,26 @@ class Room(OrderedModel, PretalxModel):
     class Meta:
         ordering = ("position",)
         unique_together = ("event", "guid")
+        rules_permissions = {
+            "list": is_agenda_visible | orga_can_change_submissions,
+            "view": is_agenda_visible | orga_can_change_submissions,
+            "orga_list": orga_can_change_submissions,
+            "orga_view": orga_can_change_submissions,
+            "create": can_change_event_settings,
+            "update": can_change_event_settings,
+            "delete": can_change_event_settings,
+        }
 
     class urls(EventUrls):
         settings_base = edit = "{self.event.orga_urls.room_settings}{self.pk}/"
-        delete = "{settings_base}delete"
+        delete = "{settings_base}delete/"
 
     def __str__(self) -> str:
         return str(self.name)
+
+    @property
+    def log_parent(self):
+        return self.event
 
     @staticmethod
     def get_order_queryset(event):

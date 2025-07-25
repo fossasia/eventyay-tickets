@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.syndication.views import Feed
 from django.db import transaction
-from django.db.models import Exists, OuterRef, Q, Subquery
+from django.db.models import Q
 from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -18,12 +18,13 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 
-from pretalx.agenda.permissions import is_submission_visible
+from pretalx.agenda.rules import is_agenda_submission_visible
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.forms.fields import SizeFileInput
 from pretalx.common.models import ActivityLog
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views.generic import OrgaCRUDView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
@@ -41,9 +42,11 @@ from pretalx.orga.forms.submission import (
     SubmissionStateChangeForm,
 )
 from pretalx.person.models import User
+from pretalx.person.rules import is_only_reviewer
 from pretalx.submission.forms import (
     QuestionsForm,
     ResourceForm,
+    SubmissionCommentForm,
     SubmissionFilterForm,
     TagForm,
 )
@@ -51,8 +54,14 @@ from pretalx.submission.models import (
     Feedback,
     Resource,
     Submission,
+    SubmissionComment,
     SubmissionStates,
     Tag,
+)
+from pretalx.submission.rules import (
+    annotate_assigned,
+    get_reviewer_tracks,
+    limit_for_reviewers,
 )
 
 
@@ -87,40 +96,19 @@ class SubmissionViewMixin(PermissionRequired):
     @context
     @cached_property
     def is_publicly_visible(self):
-        # check if the anonymous user could see this submission's page
-        return is_submission_visible(None, self.object)
+        # Check if an anonymous user could see this submission's page
+        return is_agenda_submission_visible(None, self.object)
 
 
 class ReviewerSubmissionFilter:
     @cached_property
-    def limit_tracks(self):
-        if self.user_permissions == {"is_reviewer"}:
-            teams = self.request.user.teams.filter(
-                Q(all_events=True)
-                | Q(Q(all_events=False) & Q(limit_events__in=[self.request.event])),
-                limit_tracks__isnull=False,
-                organiser=self.request.event.organiser,
-            ).prefetch_related("limit_tracks", "limit_tracks__event")
-            tracks = set()
-            for team in teams:
-                tracks.update(team.limit_tracks.filter(event=self.request.event))
-            return tracks
-
-    def limit_for_reviewers(self, queryset):
-        phase = self.request.event.active_review_phase
-        if not phase:
-            return queryset
-
-        if phase.proposal_visibility == "assigned":
-            return queryset.filter(is_assigned__gte=1)
-
-        if self.limit_tracks:
-            return queryset.filter(track__in=self.limit_tracks)
-        return queryset
+    def is_only_reviewer(self):
+        return is_only_reviewer(self.request.user, self.request.event)
 
     @cached_property
-    def user_permissions(self):
-        return self.request.user.get_permissions_for_event(self.request.event)
+    def limit_tracks(self):
+        if self.is_only_reviewer:
+            return get_reviewer_tracks(self.request.event, self.request.user)
 
     def get_queryset(self, for_review=False):
         queryset = (
@@ -128,19 +116,22 @@ class ReviewerSubmissionFilter:
             .select_related("submission_type", "event", "track")
             .prefetch_related("speakers")
         )
-        if "is_reviewer" in self.user_permissions or for_review:
-            assigned = self.request.user.assigned_reviews.filter(
-                event=self.request.event, pk=OuterRef("pk")
+        if self.is_only_reviewer:
+            queryset = limit_for_reviewers(
+                queryset, self.request.event, self.request.user, self.limit_tracks
             )
-            queryset = queryset.annotate(is_assigned=Exists(Subquery(assigned)))
-        if self.user_permissions == {"is_reviewer"}:
-            queryset = self.limit_for_reviewers(queryset)
+        if for_review or "is_reviewer" in self.request.user.get_permissions_for_event(
+            self.request.event
+        ):
+            queryset = annotate_assigned(
+                queryset, self.request.event, self.request.user
+            )
         return queryset
 
 
 class SubmissionStateChange(SubmissionViewMixin, FormView):
     form_class = SubmissionStateChangeForm
-    permission_required = "orga.change_submission_state"
+    permission_required = "submission.state_change_submission"
     template_name = "orga/submission/state_change.html"
     TARGETS = {
         "submit": SubmissionStates.SUBMITTED,
@@ -239,7 +230,7 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
 
 
 class SubmissionSpeakersDelete(SubmissionViewMixin, View):
-    permission_required = "submission.edit_speaker_list"
+    permission_required = "submission.update_submission"
 
     def dispatch(self, request, *args, **kwargs):
         super().dispatch(request, *args, **kwargs)
@@ -247,10 +238,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
         speaker = get_object_or_404(User, pk=request.GET.get("id"))
 
         if submission in speaker.submissions.all():
-            speaker.submissions.remove(submission)
-            submission.log_action(
-                "pretalx.submission.speakers.remove", person=request.user, orga=True
-            )
+            submission.remove_speaker(speaker, user=self.request.user)
             messages.success(
                 request, _("The speaker has been removed from the proposal.")
             )
@@ -261,7 +249,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 
 class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, FormView):
     template_name = "orga/submission/speakers.html"
-    permission_required = "orga.view_speakers"
+    permission_required = "person.orga_list_speakerprofile"
     form_class = AddSpeakerInlineForm
 
     @context
@@ -308,7 +296,7 @@ class SubmissionContent(
     model = Submission
     form_class = SubmissionForm
     template_name = "orga/submission/content.html"
-    permission_required = "orga.view_submissions"
+    permission_required = "submission.orga_list_submission"
 
     def get_object(self):
         try:
@@ -321,8 +309,8 @@ class SubmissionContent(
     @cached_property
     def write_permission_required(self):
         if self.kwargs.get("code"):
-            return "submission.edit_submission"
-        return "orga.create_submission"
+            return "submission.update_submission"
+        return "submission.create_submission"
 
     @context
     def size_warning(self):
@@ -366,22 +354,26 @@ class SubmissionContent(
     def _questions_form(self):
         submission = self.get_object()
         form_kwargs = self.get_form_kwargs()
-        return QuestionsForm(
-            self.request.POST if self.request.method == "POST" else None,
-            files=self.request.FILES if self.request.method == "POST" else None,
-            target="submission",
-            submission=submission,
-            event=self.request.event,
-            for_reviewers=(
+        kwargs = {
+            "data": self.request.POST if self.request.method == "POST" else None,
+            "files": self.request.FILES if self.request.method == "POST" else None,
+            "target": "submission",
+            "submission": submission,
+            "event": self.request.event,
+            "for_reviewers": (
                 not self.request.user.has_perm(
-                    "orga.change_submissions", self.request.event
+                    "submission.orga_update_submission", self.request.event
                 )
                 and self.request.user.has_perm(
-                    "orga.view_review_dashboard", self.request.event
+                    "submission.list_review", self.request.event
                 )
             ),
-            readonly=form_kwargs["read_only"],
-        )
+            "readonly": form_kwargs["read_only"],
+        }
+        # When creating a new submission, filter out track/type specific questions
+        if not submission:
+            kwargs["skip_limited_questions"] = True
+        return QuestionsForm(**kwargs)
 
     @context
     def questions_form(self):
@@ -410,7 +402,9 @@ class SubmissionContent(
                 }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
-                    "pretalx.submission.resource.update", person=self.request.user
+                    "pretalx.submission.resource.update",
+                    person=self.request.user,
+                    orga=True,
                 )
 
         extra_forms = [
@@ -434,8 +428,8 @@ class SubmissionContent(
 
     def get_permission_required(self):
         if "code" in self.kwargs:
-            return ["orga.view_submissions"]
-        return ["orga.create_submission"]
+            return ["submission.orga_list_submission"]
+        return ["submission.create_submission"]
 
     @property
     def permission_object(self):
@@ -453,6 +447,7 @@ class SubmissionContent(
         self.object = form.instance
         self._questions_form.submission = self.object
         if not self._questions_form.is_valid():
+            messages.error(self.request, phrases.base.error_saving_changes)
             return self.get(self.request, *self.args, **self.kwargs)
         form.instance.event = self.request.event
         form.save()
@@ -461,7 +456,10 @@ class SubmissionContent(
         if created:
             if not self.new_speaker_form.is_valid():
                 if self.new_speaker_form.errors:
-                    messages.error(self.request, self.new_speaker_form.errors[0])
+                    for field, errors in self.new_speaker_form.errors.items():
+                        for error in errors:
+                            messages.error(self.request, f"{field}: {error}")
+                        break  # Only show errors for the first field
                 return self.form_invalid(form)
             elif email := self.new_speaker_form.cleaned_data["email"]:
                 form.instance.add_speaker(
@@ -487,7 +485,9 @@ class SubmissionContent(
         instance = kwargs.get("instance")
         kwargs["anonymise"] = getattr(
             instance, "pk", None
-        ) and not self.request.user.has_perm("orga.view_speakers", instance)
+        ) and not self.request.user.has_perm(
+            "person.orga_list_speakerprofile", instance
+        )
         kwargs["read_only"] = kwargs["read_only"] or kwargs["anonymise"]
         return kwargs
 
@@ -495,7 +495,7 @@ class SubmissionContent(
     @cached_property
     def can_edit(self):
         return self.object and self.request.user.has_perm(
-            "orga.change_submissions", self.request.event
+            "submission.orga_update_submission", self.request.event
         )
 
 
@@ -529,7 +529,9 @@ class BaseSubmissionList(Sortable, ReviewerSubmissionFilter, PaginationMixin, Li
 
     def get_default_filters(self, *args, **kwargs):
         default_filters = {"code__icontains", "title__icontains"}
-        if self.request.user.has_perm("orga.view_speakers", self.request.event):
+        if self.request.user.has_perm(
+            "person.orga_list_speakerprofile", self.request.event
+        ):
             default_filters.add("speakers__name__icontains")
         return default_filters
 
@@ -547,7 +549,7 @@ class BaseSubmissionList(Sortable, ReviewerSubmissionFilter, PaginationMixin, Li
 
 class SubmissionList(EventPermissionRequired, BaseSubmissionList):
     template_name = "orga/submission/list.html"
-    permission_required = "orga.view_submissions"
+    permission_required = "submission.orga_list_submission"
     paginate_by = 25
     default_sort_field = "state"
     secondary_sort = {"state": ("pending_state",)}
@@ -559,9 +561,7 @@ class SubmissionList(EventPermissionRequired, BaseSubmissionList):
     @context
     @cached_property
     def pending_changes(self):
-        return self.request.event.submissions.filter(
-            pending_state__isnull=False
-        ).count()
+        return self.get_queryset().filter(pending_state__isnull=False).count()
 
     @context
     def show_tracks(self):
@@ -575,7 +575,7 @@ class FeedbackList(SubmissionViewMixin, PaginationMixin, ListView):
     template_name = "orga/submission/feedback_list.html"
     context_object_name = "feedback"
     paginate_by = 25
-    permission_required = "submission.view_feedback"
+    permission_required = "submission.view_feedback_submission"
 
     def get_queryset(self):
         return self.submission.feedback.all().order_by("pk")
@@ -595,7 +595,7 @@ class FeedbackList(SubmissionViewMixin, PaginationMixin, ListView):
 
 
 class ToggleFeatured(SubmissionViewMixin, View):
-    permission_required = "orga.change_submissions"
+    permission_required = "submission.orga_update_submission"
 
     def get_permission_object(self):
         return self.object or self.request.event
@@ -606,8 +606,20 @@ class ToggleFeatured(SubmissionViewMixin, View):
         return HttpResponse()
 
 
+class ApplyPending(SubmissionViewMixin, View):
+    permission_required = "submission.state_change_submission"
+
+    def post(self, request, *args, **kwargs):
+        submission = self.object
+        try:
+            submission.apply_pending_state(person=request.user)
+        except Exception:
+            submission.apply_pending_state(person=request.user, force=True)
+        return redirect(submission.orga_urls.base)
+
+
 class Anonymise(SubmissionViewMixin, UpdateView):
-    permission_required = "orga.change_submissions"
+    permission_required = "submission.orga_update_submission"
     template_name = "orga/submission/anonymise.html"
     form_class = AnonymiseForm
 
@@ -633,8 +645,40 @@ class Anonymise(SubmissionViewMixin, UpdateView):
         return redirect(self.object.orga_urls.anonymise)
 
 
+class SubmissionHistory(SubmissionViewMixin, ListView):
+    template_name = "orga/submission/history.html"
+    permission_required = "person.administrator_user"
+    paginate_by = 200
+    context_object_name = "log_entries"
+
+    @context
+    @cached_property
+    def submission(self):
+        return get_object_or_404(
+            Submission.objects.filter(event=self.request.event),
+            code__iexact=self.kwargs.get("code"),
+        )
+
+    @context
+    @cached_property
+    def object(self):
+        return self.submission
+
+    def get_queryset(self):
+        # TODO: This does not include everything regarding this submission. Missing:
+        # - scheduling changes
+        # - new comments
+        # - new feedback
+        # - emails sent to speakers (important?)
+        # - reviews written and changes
+        return self.submission.logged_actions().all()
+
+    def get_permission_object(self):
+        return self.request.event
+
+
 class SubmissionFeed(PermissionRequired, Feed):
-    permission_required = "orga.view_submission"
+    permission_required = "submission.orga_list_submission"
     feed_type = feedgenerator.Atom1Feed
 
     def get_object(self, request, *args, **kwargs):
@@ -670,12 +714,9 @@ class SubmissionFeed(PermissionRequired, Feed):
         return item.created
 
 
-class SubmissionStats(PermissionRequired, TemplateView):
+class SubmissionStats(EventPermissionRequired, TemplateView):
     template_name = "orga/submission/stats.html"
-    permission_required = "orga.view_submissions"
-
-    def get_permission_object(self):
-        return self.request.event
+    permission_required = "submission.orga_list_submission"
 
     @context
     def show_submission_types(self):
@@ -904,8 +945,7 @@ class AllFeedbacksList(EventPermissionRequired, PaginationMixin, ListView):
     model = Feedback
     context_object_name = "feedback"
     template_name = "orga/submission/feedbacks_list.html"
-
-    permission_required = "orga.view_submissions"
+    permission_required = "submission.orga_list_submission"
     paginate_by = 25
 
     def get_queryset(self):
@@ -916,77 +956,83 @@ class AllFeedbacksList(EventPermissionRequired, PaginationMixin, ListView):
         )
 
 
-class TagList(EventPermissionRequired, PaginationMixin, ListView):
-    template_name = "orga/submission/tag_list.html"
-    context_object_name = "tags"
-    permission_required = "orga.view_submissions"
+class TagView(OrgaCRUDView):
+    model = Tag
+    form_class = TagForm
+    template_namespace = "orga/submission"
 
     def get_queryset(self):
         return self.request.event.tags.all().order_by("tag")
 
+    def get_generic_title(self, instance=None):
+        if instance:
+            return (
+                _("Tag")
+                + f" {phrases.base.quotation_open}{instance.tag}{phrases.base.quotation_close}"
+            )
+        if self.action == "create":
+            return _("New tag")
+        return _("Tags")
 
-class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
-    model = Tag
-    form_class = TagForm
-    template_name = "orga/submission/tag_form.html"
-    permission_required = "orga.view_submissions"
-    write_permission_required = "orga.edit_tags"
-    create_permission_required = "orga.add_tags"
 
-    def get_success_url(self) -> str:
-        return self.request.event.orga_urls.tags
-
-    def get_object(self):
-        return self.request.event.tags.filter(pk=self.kwargs.get("pk")).first()
-
-    def get_permission_object(self):
-        return self.get_object() or self.request.event
+class CommentList(SubmissionViewMixin, FormView):
+    template_name = "orga/submission/comments.html"
+    permission_required = "submission.view_submissioncomment"
+    write_permission_required = "submission.add_submissioncomment"
+    form_class = SubmissionCommentForm
 
     def get_form_kwargs(self):
-        result = super().get_form_kwargs()
-        result["event"] = self.request.event
-        return result
+        kwargs = super().get_form_kwargs()
+        kwargs["submission"] = self.object
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    @context
+    @cached_property
+    def comments(self):
+        return self.object.comments.all().select_related("user").order_by("created")
 
     def form_valid(self, form):
-        form.instance.event = self.request.event
-        result = super().form_valid(form)
+        form.save()
         messages.success(self.request, phrases.base.saved)
-        if form.has_changed():
-            action = "pretalx.tag." + ("update" if self.object else "create")
-            form.instance.log_action(action, person=self.request.user, orga=True)
-        return result
+        return redirect(self.object.orga_urls.comments)
 
 
-class TagDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
-    permission_required = "orga.remove_tags"
+class CommentDelete(SubmissionViewMixin, ActionConfirmMixin, TemplateView):
+    permission_required = "submission.delete_submissioncomment"
+
+    @property
+    def action_back_url(self):
+        return self.object.submission.orga_urls.comments
+
+    @property
+    def action_object_name(self):
+        return _("Your comment on “{title}”").format(title=self.object.submission.title)
 
     def get_object(self):
-        return get_object_or_404(self.request.event.tags, pk=self.kwargs.get("pk"))
-
-    def action_object_name(self):
-        return _("Tag") + f": {self.get_object().tag}"
-
-    def action_back_url(self):
-        return self.request.event.orga_urls.tags
+        return get_object_or_404(
+            SubmissionComment,
+            submission__code__iexact=self.kwargs["code"],
+            pk=self.kwargs["pk"],
+        )
 
     def post(self, request, *args, **kwargs):
-        tag = self.get_object()
-
-        tag.delete()
-        request.event.log_action(
-            "pretalx.tag.delete", person=self.request.user, orga=True
+        comment = self.get_object()
+        comment.submission.log_action(
+            "pretalx.submission.comment.delete", person=request.user, orga=True
         )
-        messages.success(request, _("The tag has been deleted."))
-        return redirect(self.request.event.orga_urls.tags)
+        comment.delete()
+        messages.success(request, _("The comment has been deleted."))
+        return redirect(comment.submission.orga_urls.comments)
 
 
-class ApplyPending(EventPermissionRequired, TemplateView):
-    permission_required = "orga.change_submissions"
+class ApplyPendingBulk(EventPermissionRequired, BaseSubmissionList):
+    permission_required = "submission.state_change_submission"
     template_name = "orga/submission/apply_pending.html"
 
     @cached_property
     def submissions(self):
-        return self.request.event.submissions.filter(pending_state__isnull=False)
+        return self.get_queryset().filter(pending_state__isnull=False)
 
     @context
     @cached_property

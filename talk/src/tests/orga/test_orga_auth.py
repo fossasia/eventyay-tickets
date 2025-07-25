@@ -41,7 +41,7 @@ def test_orga_redirect_login(client, orga_user, event):
         follow=True,
     )
     assert response.status_code == 200
-    assert event.name in response.content.decode()
+    assert event.name in response.text
     assert response.redirect_chain[-1][0] == request_url
 
 
@@ -178,6 +178,44 @@ def test_orga_incorrect_invite_token(client, event, invitation):
 
 
 @pytest.mark.django_db
+def test_can_reset_password_by_email(orga_user, client, event):
+    djmail.outbox = []
+    response = client.post(
+        "/orga/reset/", data={"login_email": orga_user.email}, follow=True
+    )
+    orga_user.refresh_from_db()
+    reset_token = orga_user.pw_reset_token
+    assert response.status_code == 200
+    assert reset_token
+    assert len(djmail.outbox) == 1
+
+    # Make sure we can do this only once
+    response = client.post(
+        "/orga/reset/", data={"login_email": orga_user.email}, follow=True
+    )
+    orga_user.refresh_from_db()
+    assert response.status_code == 200
+    assert orga_user.pw_reset_token
+    assert orga_user.pw_reset_token == reset_token
+    assert len(djmail.outbox) == 1
+
+    response = client.post(
+        f"/orga/reset/{orga_user.pw_reset_token}",
+        data={"password": "mynewpassword1!", "password_repeat": "mynewpassword1!"},
+        follow=True,
+    )
+    assert response.status_code == 200
+    orga_user.refresh_from_db()
+    assert not orga_user.pw_reset_token
+    response = client.post(
+        event.urls.login,
+        data={"login_email": orga_user.email, "login_password": "mynewpassword1!"},
+        follow=True,
+    )
+    assert orga_user.get_display_name() in response.text
+
+
+@pytest.mark.django_db
 def test_cannot_use_incorrect_token(orga_user, client, event):
     response = client.post(
         "/orga/reset/abcdefg",
@@ -208,7 +246,7 @@ def test_cannot_reset_password_with_incorrect_input(orga_user, client, event):
         data={"login_email": orga_user.email, "login_password": "mynewpassword1!"},
         follow=True,
     )
-    assert orga_user.get_display_name() not in response.content.decode()
+    assert orga_user.get_display_name() not in response.text
 
 
 @pytest.mark.django_db
@@ -232,7 +270,7 @@ def test_cannot_reset_password_to_insecure_password(orga_user, client, event):
         data={"login_email": orga_user.email, "login_password": "password"},
         follow=True,
     )
-    assert orga_user.get_display_name() not in response.content.decode()
+    assert orga_user.get_display_name() not in response.text
 
 
 @pytest.mark.django_db

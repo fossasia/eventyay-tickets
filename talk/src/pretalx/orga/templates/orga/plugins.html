@@ -1,6 +1,7 @@
 {% extends "orga/base.html" %}
 
 {% load i18n %}
+{% load rich_text %}
 
 {% block extra_title %}{% translate "Plugins" %} :: {% endblock extra_title %}
 {% block content %}
@@ -42,7 +43,7 @@
                                                 {% endblocktranslate %}
                                             </p>
                                         {% endif %}
-                                        {{ plugin.description }}
+                                        {{ plugin.description|rich_text }}
                                     </li>
                                 </ul>
                             </div>
