@@ -26,7 +26,7 @@ from django.utils.timezone import get_current_timezone, now
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy, pgettext
 
-from pretix.base.models import (
+from eventyay.base.models import (
     GiftCard,
     GiftCardTransaction,
     Invoice,
@@ -35,9 +35,9 @@ from pretix.base.models import (
     OrderPosition,
     Question,
 )
-from pretix.base.models.orders import OrderFee, OrderPayment, OrderRefund
-from pretix.base.services.quotas import QuotaAvailability
-from pretix.base.settings import PERSON_NAME_SCHEMES
+from eventyay.base.models.orders import OrderFee, OrderPayment, OrderRefund
+from eventyay.base.services.quotas import QuotaAvailability
+from eventyay.base.settings import PERSON_NAME_SCHEMES
 
 from ...control.forms.filter import get_all_payment_providers
 from ...helpers import GroupConcat

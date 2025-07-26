@@ -1,4 +1,4 @@
-from pretalx.common.signals import EventPluginSignal
+from eventyay.common.signals import EventPluginSignal
 
 footer_link = EventPluginSignal()
 """

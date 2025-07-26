@@ -8,8 +8,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.dispatch import receiver
 from django.utils.translation import gettext, gettext_lazy
 
-from pretix.base.i18n import language
-from pretix.base.models import Invoice, OrderPayment
+from eventyay.base.i18n import language
+from eventyay.base.models import Invoice, OrderPayment
 
 from ..exporter import BaseExporter
 from ..signals import register_data_exporters

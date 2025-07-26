@@ -6,7 +6,7 @@ import re
 from django.utils import translation
 from django.utils.formats import get_format
 
-from pretix import settings
+from eventyay.config import settings
 
 date_conversion_to_moment = {
     '%a': 'ddd',

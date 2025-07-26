@@ -11,10 +11,9 @@ from django.test import RequestFactory
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 
-from pretix.base.models import User
-from pretix.base.services.tasks import ProfiledEventTask
-from pretix.celery_app import app
-
+from eventyay.base.models import User
+from eventyay.base.services.tasks import ProfiledEventTask
+from eventyay.celery_app import app
 logger = logging.getLogger('pretix.base.tasks')
 
 

@@ -8,7 +8,7 @@ from defusedxml import ElementTree
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
-from pretalx.common.urls import EventUrls
+from eventyay.common.urls import EventUrls
 
 
 class BaseExporter:

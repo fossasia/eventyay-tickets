@@ -13,7 +13,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext, pgettext
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.models import Invoice, InvoiceLine, OrderPayment
+from eventyay.base.models import Invoice, InvoiceLine, OrderPayment
 
 from ...control.forms.filter import get_all_payment_providers
 from ...helpers import GroupConcat

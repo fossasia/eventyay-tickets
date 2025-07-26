@@ -35,11 +35,11 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from pretix.base.decimal import round_decimal
-from pretix.base.models import Event, Invoice, Order
-from pretix.base.signals import register_invoice_renderers
-from pretix.base.templatetags.money import money_filter
-from pretix.helpers.reportlab import ThumbnailingImageReader
+from eventyay.base.decimal import round_decimal
+from eventyay.base.models import Event, Invoice, Order
+from eventyay.base.signals import register_invoice_renderers
+from eventyay.base.templatetags.money import money_filter
+from eventyay.helpers.reportlab import ThumbnailingImageReader
 
 logger = logging.getLogger(__name__)
 

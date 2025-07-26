@@ -4,7 +4,7 @@ from django import forms
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.models import OrderPosition
+from eventyay.base.models import OrderPosition
 
 from ..exporter import BaseExporter
 from ..models import Order

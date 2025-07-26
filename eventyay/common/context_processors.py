@@ -8,11 +8,12 @@ from django.http import Http404
 from django.urls import resolve
 from django.utils import translation
 from django.utils.formats import get_format
+from django_scopes import get_scope
 
-from pretalx.cfp.signals import footer_link, html_head
-from pretalx.common.models.settings import GlobalSettings
-from pretalx.common.text.phrases import phrases
-from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
+from eventyay.cfp.signals import footer_link, html_head
+from eventyay.base.models import GlobalSettings
+from eventyay.common.text.phrases import phrases
+from eventyay.helpers.i18n import get_javascript_format, get_moment_locale
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ def locale_context(request):
         "quotation_open": phrases.base.quotation_open,
         "quotation_close": phrases.base.quotation_close,
         "DAY_MONTH_DATE_FORMAT": get_day_month_date_format(),
-        "rtl": getattr(request, "LANGUAGE_CODE", "en") in settings.LANGUAGES_RTL,
+        "rtl": getattr(request, "LANGUAGE_CODE", "en") in settings.LANGUAGES_BIDI,
         "AVAILABLE_CALENDAR_LOCALES": AVAILABLE_CALENDAR_LOCALES,
     }
 
@@ -78,7 +79,7 @@ def system_information(request):
         context["footer_links"] = []
         context["header_links"] = []
 
-        if event:
+        if event and get_scope():
             context["footer_links"] = [
                 {"label": link.label, "url": link.url}
                 for link in event.extra_links.all()
@@ -100,7 +101,7 @@ def system_information(request):
                 )
         context["footer_links"] += _footer
 
-        if event:
+        if event and get_scope():
             for _receiver, response in html_head.send(event, request=request):
                 _head.append(response)
             context["html_head"] = "".join(_head)

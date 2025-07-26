@@ -5,17 +5,21 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
 
-from pretalx.common.models.log import ActivityLog
-from pretalx.common.signals import activitylog_display, activitylog_object_link
-from pretalx.common.text.phrases import phrases
-from pretalx.event.models.event import Event
-from pretalx.mail.models import MailTemplate, QueuedMail
-from pretalx.submission.models import (
+from eventyay.base.signals import activitylog_display, activitylog_object_link
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import (
+    ActivityLog,
     Answer,
     AnswerOption,
     CfP,
-    Question,
+    Event,
+    MailTemplate,
+    TalkQuestion,
+    QueuedMail,
+    Review,
+    SpeakerProfile,
     Submission,
+    SubmissionComment,
     SubmissionStates,
 )
 
@@ -61,6 +65,7 @@ LOG_NAMES = {
         "The invitation to the review team was retracted."
     ),
     "pretalx.invite.reviewer.send": _("The invitation to the review team was sent."),
+    "pretalx.team.member.remove": _("A team member was removed"),
     "pretalx.mail.create": _("An email was created."),
     "pretalx.mail.delete": _("A pending email was deleted."),
     "pretalx.mail.delete_all": _("All pending emails were deleted."),
@@ -69,16 +74,18 @@ LOG_NAMES = {
     "pretalx.mail_template.create": _("A mail template was added."),
     "pretalx.mail_template.delete": _("A mail template was deleted."),
     "pretalx.mail_template.update": _("A mail template was modified."),
-    "pretalx.question.create": _("A question was added."),
-    "pretalx.question.delete": _("A question was deleted."),
-    "pretalx.question.update": _("A question was modified."),
-    "pretalx.question.option.create": _("A question option was added."),
-    "pretalx.question.option.delete": _("A question option was deleted."),
-    "pretalx.question.option.update": _("A question option was modified."),
+    "pretalx.question.create": _("A custom field was added."),
+    "pretalx.question.delete": _("A custom field was deleted."),
+    "pretalx.question.update": _("A custom field was modified."),
+    "pretalx.question.option.create": _("A custom field option was added."),
+    "pretalx.question.option.delete": _("A custom field option was deleted."),
+    "pretalx.question.option.update": _("A custom field option was modified."),
     "pretalx.tag.create": _("A tag was added."),
     "pretalx.tag.delete": _("A tag was deleted."),
     "pretalx.tag.update": _("A tag was modified."),
     "pretalx.room.create": _("A new room was added."),
+    "pretalx.room.update": _("A room was modified."),
+    "pretalx.room.delete": _("A room was deleted."),
     "pretalx.schedule.release": _("A new schedule version was released."),
     "pretalx.submission.accept": _("The proposal was accepted."),
     "pretalx.submission.cancel": _("The proposal was cancelled."),
@@ -89,14 +96,19 @@ LOG_NAMES = {
     "pretalx.submission.resource.create": _("A proposal resource was added."),
     "pretalx.submission.resource.delete": _("A proposal resource was deleted."),
     "pretalx.submission.resource.update": _("A proposal resource was modified."),
+    "pretalx.submission.review.delete": _("A review was deleted."),
+    "pretalx.submission.review.update": _("A review was modified."),
+    "pretalx.submission.review.create": _("A review was added."),
     "pretalx.submission.speakers.add": _("A speaker was added to the proposal."),
     "pretalx.submission.speakers.invite": _("A speaker was invited to the proposal."),
     "pretalx.submission.speakers.remove": _("A speaker was removed from the proposal."),
     "pretalx.submission.unconfirm": _("The proposal was unconfirmed."),
     "pretalx.submission.update": _("The proposal was modified."),
     "pretalx.submission.withdraw": _("The proposal was withdrawn."),
-    "pretalx.submission.answer.update": _("A proposal answer was modified."),
-    "pretalx.submission.answer.create": _("A proposal answer was added."),
+    "pretalx.submission.answer.update": _("A custom field response was modified."),
+    "pretalx.submission.answer.create": _("A custom field response was added."),
+    "pretalx.submission.comment.create": _("A proposal comment was added."),
+    "pretalx.submission.comment.delete": _("A proposal comment was deleted."),
     "pretalx.submission_type.create": _("A session type was added."),
     "pretalx.submission_type.delete": _("A session type was deleted."),
     "pretalx.submission_type.make_default": _("The session type was made default."),
@@ -110,7 +122,14 @@ LOG_NAMES = {
     "pretalx.track.update": _("A track was modified."),
     "pretalx.speaker.arrived": _("A speaker has been marked as arrived."),
     "pretalx.speaker.unarrived": _("A speaker has been marked as not arrived."),
+    "pretalx.speaker_information.create": _("A speaker information note was added."),
+    "pretalx.speaker_information.update": _("A speaker information note was modified."),
+    "pretalx.speaker_information.delete": _("A speaker information note was deleted."),
     "pretalx.user.token.reset": _("The API token was reset."),
+    "pretalx.user.token.revoke": _("The API token was revoked."),
+    "pretalx.user.token.upgrade": _(
+        "The API token was upgraded to the latest version."
+    ),
     "pretalx.user.password.reset": phrases.base.password_reset_success,
     "pretalx.user.password.update": _("The password was modified."),
     "pretalx.user.profile.update": _("The profile was modified."),
@@ -129,6 +148,16 @@ def default_activitylog_display(sender: Event, activitylog: ActivityLog, **kwarg
     return LOG_NAMES.get(action_type)
 
 
+def _submission_label_text(submission: Submission) -> str:
+    if submission.state in (
+        SubmissionStates.ACCEPTED,
+        SubmissionStates.CONFIRMED,
+    ):
+        return _n("Session", "Sessions", 1)
+    else:
+        return _n("Proposal", "Proposals", 1)
+
+
 @receiver(activitylog_object_link)
 def default_activitylog_object_link(sender: Event, activitylog: ActivityLog, **kwargs):
     if not activitylog.content_object:
@@ -139,39 +168,52 @@ def default_activitylog_object_link(sender: Event, activitylog: ActivityLog, **k
     if isinstance(activitylog.content_object, Submission):
         url = activitylog.content_object.orga_urls.base
         link_text = escape(activitylog.content_object.title)
-        if activitylog.content_object.state in (
-            SubmissionStates.ACCEPTED,
-            SubmissionStates.CONFIRMED,
-        ):
-            text = _n("Session", "Sessions", 1)
-        else:
-            text = _n("Proposal", "Proposals", 1)
-    if isinstance(activitylog.content_object, Question):
+        text = _submission_label_text(activitylog.content_object)
+    elif isinstance(activitylog.content_object, SubmissionComment):
+        url = (
+            activitylog.content_object.submission.orga_urls.comments
+            + f"#comment-{activitylog.content_object.pk}"
+        )
+        link_text = escape(activitylog.content_object.submission.title)
+        text = _submission_label_text(activitylog.content_object.submission)
+    elif isinstance(activitylog.content_object, Review):
+        url = activitylog.content_object.submission.orga_urls.reviews
+        link_text = escape(activitylog.content_object.submission.title)
+        text = _submission_label_text(activitylog.content_object.submission)
+    elif isinstance(activitylog.content_object, TalkQuestion):
         url = activitylog.content_object.urls.base
         link_text = escape(activitylog.content_object.question)
-        text = _("Question")
-    if isinstance(activitylog.content_object, AnswerOption):
+        text = _("Custom field")
+    elif isinstance(activitylog.content_object, AnswerOption):
         url = activitylog.content_object.question.urls.base
         link_text = escape(activitylog.content_object.question.question)
-        text = _("Question")
-    if isinstance(activitylog.content_object, Answer):
+        text = _("Custom field")
+    elif isinstance(activitylog.content_object, Answer):
         if activitylog.content_object.submission:
             url = activitylog.content_object.submission.orga_urls.base
         else:
             url = activitylog.content_object.question.urls.base
         link_text = escape(activitylog.content_object.question.question)
-        text = _("Answer to question")
-    if isinstance(activitylog.content_object, CfP):
+        text = _("Response to custom field")
+    elif isinstance(activitylog.content_object, CfP):
         url = activitylog.content_object.urls.text
         link_text = _("Call for Proposals")
-    if isinstance(activitylog.content_object, MailTemplate):
+    elif isinstance(activitylog.content_object, MailTemplate):
         url = activitylog.content_object.urls.base
         text = _("Mail template")
         link_text = escape(activitylog.content_object.subject)
-    if isinstance(activitylog.content_object, QueuedMail):
+    elif isinstance(activitylog.content_object, QueuedMail):
         url = activitylog.content_object.urls.base
         text = _("Email")
         link_text = escape(activitylog.content_object.subject)
+    elif isinstance(activitylog.content_object, SpeakerProfile):
+        url = activitylog.content_object.orga_urls.base
+        text = _("Speaker profile")
+        link_text = escape(activitylog.content_object.user.get_display_name())
+    elif isinstance(activitylog.content_object, Event):
+        url = activitylog.content_object.orga_urls.base
+        text = _("Event")
+        link_text = escape(activitylog.content_object.name)
     if url:
         if not link_text:
             link_text = url
