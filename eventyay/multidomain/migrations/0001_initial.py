@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('pretixbase', '0001_initial'),
+        ('eventyaybase', '0001_initial'),
     ]
 
     operations = [

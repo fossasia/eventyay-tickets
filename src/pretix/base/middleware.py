@@ -16,9 +16,9 @@ from django.utils.translation.trans_real import (
     parse_accept_lang_header,
 )
 
-from pretix.base.i18n import get_language_without_region
-from pretix.base.settings import global_settings_object
-from pretix.multidomain.urlreverse import (
+from eventyay.base.i18n import get_language_without_region
+from eventyay.base.settings import global_settings_object
+from eventyay.multidomain.urlreverse import (
     get_event_domain,
     get_organizer_domain,
 )
@@ -60,6 +60,8 @@ class LocaleMiddleware(MiddlewareMixin):
                 language += '-' + gs.settings.region
 
         translation.activate(language)
+        print("Am I here???")
+        print("--------------------------------")
         request.LANGUAGE_CODE = get_language_without_region()
 
         tzname = None

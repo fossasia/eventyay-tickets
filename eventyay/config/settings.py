@@ -28,6 +28,12 @@ else:
     )
 config = EnvOrParserConfig(_config)
 
+def instance_name(request):
+    from django.conf import settings
+    return {
+        'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')
+    }
+
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +50,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Security settings
+X_FRAME_OPTIONS = 'DENY'
+
+# URL settings
+# ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 HAS_CELERY = config.has_option('celery', 'broker')
 if HAS_CELERY:
@@ -90,6 +101,9 @@ STATICFILES_FINDERS = (
 )
 
 MIDDLEWARE = [
+    'eventyay.multidomain.middlewares.MultiDomainMiddleware',
+    'eventyay.multidomain.middlewares.SessionMiddleware',
+    'eventyay.multidomain.middlewares.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -112,6 +126,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'config.settings.instance_name',
             ],
         },
     },
@@ -145,6 +160,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'HOST': config.get('database', 'host', fallback=''),
     }
 }
 
@@ -201,6 +217,13 @@ CURRENCIES = list(currencies)
 
 EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
+
+# Internal settings
+SESSION_COOKIE_NAME = 'eventyay_session'
+LANGUAGE_COOKIE_NAME = 'eventyay_language'
+CSRF_COOKIE_NAME = 'eventyay_csrftoken'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
 
 TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
@@ -307,3 +330,28 @@ SOCIALACCOUNT_ADAPTER = 'pretix.plugins.socialauth.adapter.CustomSocialAccountAd
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Static files
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# django-compressor SCSS support
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = not DEBUG
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+
+COMPRESS_CSS_FILTERS = (
+    'compressor.filters.cssmin.CSSCompressorFilter',
+)
