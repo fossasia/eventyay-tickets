@@ -64,7 +64,7 @@ export default {
 		window.addEventListener('resize', this.computeScale)
 		this.computeScale()
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.computeScale)
 	},
 	methods: {

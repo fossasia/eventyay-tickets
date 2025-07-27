@@ -57,7 +57,7 @@
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :user="selectedUser", @close="selectedUser = null")
 </template>
 <script>
-import * as pdfjs from 'pdfjs-dist/webpack'
+import * as pdfjs from 'pdfjs-dist/webpack.mjs'
 import { createPopper } from '@popperjs/core'
 import api from 'lib/api'
 import { getIconByFileEnding } from 'lib/filetypes'
