@@ -17,21 +17,21 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, TemplateView
 from pytz import UTC
 
-from pretix.base.i18n import language
-from pretix.base.models import (
+from eventyay.base.i18n import language
+from eventyay.base.models import (
     Event,
     EventMetaValue,
     Quota,
     SubEvent,
     SubEventMetaValue,
 )
-from pretix.base.services.quotas import QuotaAvailability
-from pretix.helpers.compat import date_fromisocalendar
-from pretix.helpers.daterange import daterange
-from pretix.helpers.formats.de.formats import WEEK_FORMAT
-from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.ical import get_ical
-from pretix.presale.views import OrganizerViewMixin
+from eventyay.base.services.quotas import QuotaAvailability
+from eventyay.helpers.compat import date_fromisocalendar
+from eventyay.helpers.daterange import daterange
+from eventyay.helpers.formats.de.formats import WEEK_FORMAT
+from eventyay.multidomain.urlreverse import eventreverse
+from eventyay.presale.ical import get_ical
+from eventyay.presale.views import OrganizerViewMixin
 
 
 def filter_qs_by_attr(qs, request):

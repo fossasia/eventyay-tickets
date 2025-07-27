@@ -2,7 +2,7 @@ from django.apps import AppConfig
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from pretix import __version__ as version
+from eventyay import __version__ as version
 
 
 class BankTransferApp(AppConfig):
@@ -18,7 +18,7 @@ class BankTransferApp(AppConfig):
 
     def ready(self):
         from . import signals  # NOQA
-        from . import tasks  # NOQA
+        #from . import tasks  # NOQA
         from .templatetags import commadecimal, dotdecimal  # NOQA
 
     @cached_property

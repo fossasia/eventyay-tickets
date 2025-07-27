@@ -34,26 +34,26 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
-from pretix.base.channels import get_all_sales_channels
-from pretix.base.models import (
+from eventyay.base.channels import get_all_sales_channels
+from eventyay.base.models import (
     ItemVariation,
     Order,
     Quota,
     SeatCategoryMapping,
     Voucher,
 )
-from pretix.base.models.event import SubEvent
-from pretix.base.models.items import (
+from eventyay.base.models.event import SubEvent
+from eventyay.base.models.items import (
     ItemBundle,
     SubEventItem,
     SubEventItemVariation,
 )
-from pretix.base.services.quotas import QuotaAvailability
-from pretix.helpers.compat import date_fromisocalendar
-from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.ical import get_ical
-from pretix.presale.signals import item_description
-from pretix.presale.views.organizer import (
+from eventyay.base.services.quotas import QuotaAvailability
+from eventyay.helpers.compat import date_fromisocalendar
+from eventyay.multidomain.urlreverse import eventreverse
+from eventyay.presale.ical import get_ical
+from eventyay.presale.signals import item_description
+from eventyay.presale.views.organizer import (
     EventListMixin,
     add_subevents_for_days,
     days_for_template,
@@ -62,7 +62,7 @@ from pretix.presale.views.organizer import (
 )
 
 from ...eventyay_common.utils import encode_email
-from ...helpers.formats.en.formats import WEEK_FORMAT
+from eventyay.helpers.formats.en.formats import WEEK_FORMAT
 from . import (
     CartMixin,
     EventViewMixin,

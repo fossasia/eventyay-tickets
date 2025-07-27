@@ -11,15 +11,15 @@ from django.db.models.functions import Length
 from django.utils.translation import gettext, gettext_noop
 from django_scopes import scope, scopes_disabled
 
-from pretix.base.email import get_email_context
-from pretix.base.i18n import language
-from pretix.base.models import Event, Order, OrderPayment, Organizer, Quota
-from pretix.base.payment import PaymentException
-from pretix.base.services.locking import LockTimeoutException
-from pretix.base.services.mail import SendMailException
-from pretix.base.services.orders import change_payment_provider
-from pretix.base.services.tasks import TransactionAwareTask
-from pretix.celery_app import app
+from eventyay.base.email import get_email_context
+from eventyay.base.i18n import language
+from eventyay.base.models import Event, Order, OrderPayment, Organizer, Quota
+from eventyay.base.payment import PaymentException
+from eventyay.base.services.locking import LockTimeoutException
+from eventyay.base.services.mail import SendMailException
+from eventyay.base.services.orders import change_payment_provider
+from eventyay.base.services.tasks import TransactionAwareTask
+from eventyay.celery_app import app
 
 from .models import BankImportJob, BankTransaction
 

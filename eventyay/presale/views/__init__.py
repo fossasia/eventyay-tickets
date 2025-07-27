@@ -10,8 +10,8 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
 
-from pretix.base.i18n import language
-from pretix.base.models import (
+from eventyay.base.i18n import language
+from eventyay.base.models import (
     CartPosition,
     InvoiceAddress,
     ItemAddOn,
@@ -20,10 +20,10 @@ from pretix.base.models import (
     QuestionAnswer,
     QuestionOption,
 )
-from pretix.base.services.cart import get_fees
-from pretix.helpers.cookies import set_cookie_without_samesite
-from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.signals import question_form_fields
+from eventyay.base.services.cart import get_fees
+from eventyay.helpers.cookies import set_cookie_without_samesite
+from eventyay.multidomain.urlreverse import eventreverse
+from eventyay.presale.signals import question_form_fields
 
 
 def cached_invoice_address(request):
