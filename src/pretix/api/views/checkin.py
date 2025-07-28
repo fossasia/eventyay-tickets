@@ -700,7 +700,7 @@ def _redeem_process(
             return Response(
                 {
                     'status': 'error'
-                    'reason': e. code,
+                    'reason': e.code,
                     'message': str(e.msg),
                     'require_attention': op.require_checkin_attention,
                     'position': position_data,
