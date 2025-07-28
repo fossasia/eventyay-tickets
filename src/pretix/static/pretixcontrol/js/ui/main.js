@@ -816,7 +816,7 @@ $(function () {
         var $a = $(this);
         var id = $(this).attr("data-id");
         $a.find(".fa").removeClass("fa-eye").addClass("fa-cog fa-spin");
-        var url = '/control/logdetail/';
+        var url = '/tickets/control/logdetail/';
         if ($a.is("[data-expandrefund]")) {
             url += 'refund/'
         } else if ($a.is("[data-expandpayment]")) {
