@@ -16,9 +16,9 @@ from django.utils.encoding import force_str
 from django.utils.translation import gettext as _
 from django_scopes import scope
 
-from pretix.base.models import Event, Organizer
-from pretix.base.models.auth import SuperuserPermissionSet, User
-from pretix.helpers.security import (
+from eventyay.base.models import Event, Organizer
+from eventyay.base.models.auth import SuperuserPermissionSet, User
+from eventyay.helpers.security import (
     SessionInvalid,
     SessionReauthRequired,
     assert_session_valid,
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class PermissionMiddleware:
     """
     This middleware enforces all requests to the control app to require login.
-    Additionally, it enforces all requests to "control:event." URLs
+    Additionally, it enforces all requests to "event." URLs
     to be for an event the user has basic access to.
     """
 
@@ -46,14 +46,14 @@ class PermissionMiddleware:
     )
 
     EXCEPTIONS_2FA = (
-        'eventyay_common:account.2fa',
-        'eventyay_common:account.2fa.add',
-        'eventyay_common:account.2fa.enable',
-        'eventyay_common:account.2fa.disable',
-        'eventyay_common:account.2fa.regenemergency',
-        'eventyay_common:account.2fa.confirm.totp',
-        'eventyay_common:account.2fa.confirm.webauthn',
-        'eventyay_common:account.2fa.delete',
+        'account.2fa',
+        'account.2fa.add',
+        'account.2fa.enable',
+        'account.2fa.disable',
+        'account.2fa.regenemergency',
+        'account.2fa.confirm.totp',
+        'account.2fa.confirm.webauthn',
+        'account.2fa.delete',
         'auth.logout',
         'user.reauth',
     )
@@ -70,9 +70,9 @@ class PermissionMiddleware:
         """
         # urlparse chokes on lazy objects in Python 3, force to str
         resolved_login_url = force_str(resolve_url(settings.LOGIN_URL_CONTROL))
-        unwanted_path = reverse('control:index')
+        unwanted_path = reverse('index')
         if request.path.startswith(unwanted_path):
-            next_url = reverse('eventyay_common:dashboard')
+            next_url = reverse('index')
         else:
             next_url = request.path
         logger.info('URL to redirect to, after logging-in: %s', next_url)
@@ -92,7 +92,7 @@ class PermissionMiddleware:
             return self.get_response(request)
 
         if hasattr(request, 'organizer'):
-            # If the user is on a organizer's subdomain, he should be redirected to pretix
+            # If the user is on a organizer's subdomain, he should be redirected to eventyay
             new_url = urljoin(settings.SITE_URL, request.get_full_path())
             logger.info('Organizer info is seen, redirecting to: %s', new_url)
             return redirect(new_url)
@@ -108,17 +108,17 @@ class PermissionMiddleware:
             return self._login_redirect(request)
 
         try:
-            # If this logic is updated, make sure to also update the logic in pretix/api/auth/permission.py
+            # If this logic is updated, make sure to also update the logic in eventyay/api/auth/permission.py
             assert_session_valid(request)
         except SessionInvalid:
             logout(request)
             return self._login_redirect(request)
         except SessionReauthRequired:
             if url_name not in ('user.reauth', 'auth.logout'):
-                return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
+                return redirect(reverse('user.reauth') + '?next=' + quote(request.get_full_path()))
 
-        if not request.user.require_2fa and settings.PRETIX_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
-            page_2fa_setting_url = reverse('eventyay_common:account.2fa')
+        if not request.user.require_2fa and settings.EVENTYAY_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
+            page_2fa_setting_url = reverse('account.2fa')
             logger.info(
                 'This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s',
                 page_2fa_setting_url,

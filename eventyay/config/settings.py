@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import sys
 import configparser
 import os
+
+from django.utils.translation import gettext_lazy as _
 from pathlib import Path
+from kombu import Queue
 
 from eventyay.helpers.config import EnvOrParserConfig
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
@@ -84,6 +87,7 @@ INSTALLED_APPS = [
     'compressor',
     'eventyay.api',
     'eventyay.base',
+    'eventyay.control',
     'eventyay.helpers',
     'eventyay.multidomain',
     'eventyay.presale',
@@ -101,9 +105,6 @@ STATICFILES_FINDERS = (
 )
 
 MIDDLEWARE = [
-    'eventyay.multidomain.middlewares.MultiDomainMiddleware',
-    'eventyay.multidomain.middlewares.SessionMiddleware',
-    'eventyay.multidomain.middlewares.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -111,6 +112,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'eventyay.base.middleware.CustomCommonMiddleware',
+    'eventyay.base.middleware.LocaleMiddleware',
+    'eventyay.base.middleware.SecurityMiddleware',
+    'eventyay.multidomain.middlewares.MultiDomainMiddleware',
+    'eventyay.multidomain.middlewares.SessionMiddleware',
+    'eventyay.multidomain.middlewares.CsrfViewMiddleware',
+    'eventyay.control.middleware.PermissionMiddleware',
+    'eventyay.control.middleware.AuditLogMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -297,6 +306,22 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TASK_QUEUES = (
+    Queue('default', routing_key='default.#'),
+    Queue('background', routing_key='background.#'),
+    Queue('notifications', routing_key='notifications.#'),
+)
+CELERY_TASK_ROUTES = (
+    [
+        ('eventyay.base.services.notifications.*', {'queue': 'notifications'}),
+        ('eventyay.api.webhooks.*', {'queue': 'notifications'}),
+    ],
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -310,12 +335,22 @@ TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+BASE_PATH = config.get('eventyay', 'base_path', fallback='')
+
 # Adjustable settings
 INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')
 EVENTYAY_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=True)
 EVENTYAY_PASSWORD_RESET = config.getboolean('eventyay', 'password_reset', fallback=True)
 EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
 EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(',')
+EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
+EVENTYAY_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
+EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallback=False)
+EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
+EVENTYAY_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
+
+LOG_CSP = config.getboolean('eventyay', 'csp_log', fallback=True)
+CSP_ADDITIONAL_HEADER = config.get('eventyay', 'csp_additional_header', fallback='')
 
 # Django allauth settings for social login
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -330,6 +365,31 @@ SOCIALACCOUNT_ADAPTER = 'pretix.plugins.socialauth.adapter.CustomSocialAccountAd
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'eventyayapi.OAuthApplication'
+OAUTH2_PROVIDER_GRANT_MODEL = 'eventyayapi.OAuthGrant'
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'eventyayapi.OAuthAccessToken'
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'eventyayapi.OAuthIDToken'
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'eventyayapi.OAuthRefreshToken'
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'profile': _('User profile only'),
+        'read': _('Read access'),
+        'write': _('Write access'),
+    },
+    'OAUTH2_VALIDATOR_CLASS': 'eventyay.api.oauth.Validator',
+    'ALLOWED_REDIRECT_URI_SCHEMES': ['https'] if not DEBUG else ['http', 'https'],
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600 * 24,
+    'ROTATE_REFRESH_TOKEN': False,
+    'PKCE_REQUIRED': False,
+    'OIDC_RESPONSE_TYPES_SUPPORTED': ['code'],  # We don't support proper OIDC for now
+}
+
+AUTH_USER_MODEL = 'eventyaybase.User'
+LOGIN_URL = 'auth.login'
+LOGIN_URL_CONTROL = 'auth.login'
+# CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
+
 
 # Static files
 STATICFILES_FINDERS = (

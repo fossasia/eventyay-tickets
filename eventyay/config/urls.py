@@ -33,5 +33,5 @@ urlpatterns = [
     *control_patterns,
     *common_patterns,
 
-    path('', lambda request: HttpResponse("<div>This is a presale page.</div>"), name='presale'),
+    path('', lambda request: HttpResponse("<div>This is a blank page"), name='blank'),
 ]
