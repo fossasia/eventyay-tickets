@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import sys
 import configparser
 import os
 from pathlib import Path
@@ -27,6 +28,7 @@ else:
     )
 config = EnvOrParserConfig(_config)
 
+debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,24 +45,45 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+HAS_CELERY = config.has_option('celery', 'broker')
+if HAS_CELERY:
+    CELERY_BROKER_URL = config.get('celery', 'broker')
+    CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+else:
+    CELERY_TASK_ALWAYS_EAGER = True
+
 # Application definition
 
 AUTH_USER_MODEL = 'eventyaybase.User'
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
 INSTALLED_APPS = [
+    'bootstrap3',
+    'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
+    'djangoformsetjs',
     'oauth2_provider',
     'eventyay.api',
     'eventyay.base',
     'eventyay.helpers',
     'eventyay.multidomain',
-    'eventyay.presale'
+    'eventyay.presale',
+    'eventyay.common',
+    'eventyay.control',
+    'statici18n',
 ]
+
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -92,7 +115,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+STATICFILES_DIRS = (
+    [os.path.join(BASE_DIR, 'eventyay/static/')] if os.path.exists(os.path.join(BASE_DIR, 'eventyay/static')) else []
+)
 
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+    ('text/vue', 'pretix.helpers.compressor.VueCompiler'),
+)
+
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
+
+COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
+
+COMPRESS_CSS_FILTERS = (
+    # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
+    # However, we don't need it if we consequently use the static() function in Sass
+    # 'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSCompressorFilter',
+)
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -235,6 +276,8 @@ if not SESSION_ENGINE:
 
 STATIC_URL = 'static/'
 
+BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
+TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

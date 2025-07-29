@@ -1,5 +1,8 @@
+import html
 import re
 import urllib.parse
+from copy import copy
+from functools import partial
 
 import bleach
 import markdown
@@ -11,128 +14,99 @@ from django.core import signing
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.safestring import mark_safe
-from tlds import tld_set
+
+try:
+    from publicsuffixlist import PublicSuffixList
+    TLD_SET = sorted({suffix.rsplit(".")[-1] for suffix in PublicSuffixList()._publicsuffix}, reverse=True)
+except ImportError:
+    from tlds import tld_set
+    TLD_SET = sorted(tld_set, key=len, reverse=True)
+
+from i18nfield.strings import LazyI18nString
+from eventyay.common.views.redirect import safelink as sl
 
 register = template.Library()
 
-ALLOWED_TAGS_SNIPPET = [
-    'a',
-    'abbr',
-    'acronym',
-    'b',
-    'br',
-    'code',
-    'em',
-    'i',
-    'strong',
-    'span',
-    # Update doc/user/markdown.rst if you change this!
-]
-ALLOWED_TAGS = ALLOWED_TAGS_SNIPPET + [
-    'blockquote',
-    'li',
-    'ol',
-    'ul',
-    'p',
-    'table',
-    'tbody',
-    'thead',
-    'tr',
-    'td',
-    'th',
-    'div',
-    'hr',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'pre',
-    # Update doc/user/markdown.rst if you change this!
-]
-
-ALLOWED_ATTRIBUTES = {
-    'a': ['href', 'title', 'class'],
-    'abbr': ['title'],
-    'acronym': ['title'],
-    'table': ['width'],
-    'td': ['width', 'align'],
-    'div': ['class'],
-    'p': ['class'],
-    'span': ['class', 'title'],
-    # Update doc/user/markdown.rst if you change this!
+ALLOWED_TAGS = {
+    "a", "abbr", "acronym", "b", "blockquote", "br", "code", "del", "div",
+    "em", "hr", "i", "li", "ol", "strong", "ul", "p", "pre", "span", "table",
+    "tbody", "thead", "tr", "td", "th", "h1", "h2", "h3", "h4", "h5", "h6",
 }
 
-ALLOWED_PROTOCOLS = ['http', 'https', 'mailto', 'tel']
+ALLOWED_ATTRIBUTES = {
+    "a": ["href", "title", "class"],
+    "abbr": ["title"],
+    "acronym": ["title"],
+    "table": ["width"],
+    "td": ["width", "align"],
+    "div": ["class"],
+    "p": ["class"],
+    "span": ["class", "title"],
+}
 
-URL_RE = build_url_re(tlds=sorted(tld_set, key=len, reverse=True))
+ALLOWED_PROTOCOLS = {"http", "https", "mailto", "tel"}
 
-EMAIL_RE = build_email_re(tlds=sorted(tld_set, key=len, reverse=True))
+URL_RE = build_url_re(tlds=TLD_SET)
+EMAIL_RE = build_email_re(tlds=TLD_SET)
 
 
-def safelink_callback(attrs, new=False):
-    """
-    Makes sure that all links to a different domain are passed through a redirection handler
-    to ensure there's no passing of referers with secrets inside them.
-    """
-    url = attrs.get((None, 'href'), '/')
-    if (
-        not url_has_allowed_host_and_scheme(url, allowed_hosts=None)
-        and not url.startswith('mailto:')
-        and not url.startswith('tel:')
-    ):
-        signer = signing.Signer(salt='safe-redirect')
-        attrs[None, 'href'] = reverse('redirect') + '?url=' + urllib.parse.quote(signer.sign(url))
-        attrs[None, 'target'] = '_blank'
-        attrs[None, 'rel'] = 'noopener'
+def link_callback(attrs, is_new, safelink=True):
+    url = attrs.get((None, "href"), "/")
+    if url.startswith("mailto:") or url.startswith("tel:") or url_has_allowed_host_and_scheme(url, allowed_hosts=None):
+        return attrs
+    attrs[None, "target"] = "_blank"
+    attrs[None, "rel"] = "noopener"
+    if safelink:
+        url = html.unescape(url)
+        attrs[None, "href"] = sl(url)
+    else:
+        url = html.unescape(url)
+        attrs[None, "href"] = urllib.parse.urljoin(settings.SITE_URL, url)
     return attrs
 
+safelink_callback = partial(link_callback, safelink=True)
+abslink_callback = partial(link_callback, safelink=False)
 
-def truelink_callback(attrs, new=False):
-    """
-    Tries to prevent "phishing" attacks in which a link looks like it points to a safe place but instead
-    points somewhere else, e.g.
+CLEANER = bleach.Cleaner(
+    tags=ALLOWED_TAGS,
+    attributes=ALLOWED_ATTRIBUTES,
+    protocols=ALLOWED_PROTOCOLS,
+    filters=[
+        partial(
+            bleach.linkifier.LinkifyFilter,
+            url_re=URL_RE,
+            parse_email=True,
+            email_re=EMAIL_RE,
+            skip_tags={"pre", "code"},
+            callbacks=DEFAULT_CALLBACKS + [safelink_callback],
+        )
+    ],
+)
 
-        <a href="https://evilsite.com">https://google.com</a>
+ABSLINK_CLEANER = bleach.Cleaner(
+    tags=ALLOWED_TAGS,
+    attributes=ALLOWED_ATTRIBUTES,
+    protocols=ALLOWED_PROTOCOLS,
+    filters=[
+        partial(
+            bleach.linkifier.LinkifyFilter,
+            url_re=URL_RE,
+            parse_email=True,
+            email_re=EMAIL_RE,
+            skip_tags={"pre", "code"},
+            callbacks=DEFAULT_CALLBACKS + [abslink_callback],
+        )
+    ],
+)
 
-    At the same time, custom texts are still allowed:
+NO_LINKS_CLEANER = bleach.Cleaner(
+    tags=copy(ALLOWED_TAGS) - {"a"},
+    attributes=ALLOWED_ATTRIBUTES,
+    protocols=ALLOWED_PROTOCOLS,
+    strip=True,
+)
 
-        <a href="https://maps.google.com">Get to the event</a>
-
-    Suffixes are also allowed:
-
-        <a href="https://maps.google.com/location/foo">https://maps.google.com</a>
-    """
-    text = re.sub(r'[^a-zA-Z0-9.\-/_]', '', attrs.get('_text'))  # clean up link text
-    url = attrs.get((None, 'href'), '/')
-    href_url = urllib.parse.urlparse(url)
-    if URL_RE.match(text) and href_url.scheme not in ('tel', 'mailto'):
-        # link text looks like a url
-        if text.startswith('//'):
-            text = 'https:' + text
-        elif not text.startswith('http'):
-            text = 'https://' + text
-
-        text_url = urllib.parse.urlparse(text)
-        if text_url.netloc != href_url.netloc or not href_url.path.startswith(href_url.path):
-            # link text contains an URL that has a different base than the actual URL
-            attrs['_text'] = attrs[None, 'href']
-    return attrs
-
-
-def abslink_callback(attrs, new=False):
-    """
-    Makes sure that all links will be absolute links and will be opened in a new page with no
-    window.opener attribute.
-    """
-    url = attrs.get((None, 'href'), '/')
-    if not url.startswith('mailto:') and not url.startswith('tel:'):
-        attrs[None, 'href'] = urllib.parse.urljoin(settings.SITE_URL, url)
-        attrs[None, 'target'] = '_blank'
-        attrs[None, 'rel'] = 'noopener'
-    return attrs
-
+STRIKETHROUGH_RE = "(~{2})(.+?)(~{2})"
 
 def markdown_compile_email(source):
     linker = bleach.Linker(
@@ -156,65 +130,56 @@ def markdown_compile_email(source):
         )
     )
 
+class StrikeThroughExtension(markdown.Extension):
+    def extendMarkdown(self, md):
+        md.inlinePatterns.register(
+            markdown.inlinepatterns.SimpleTagPattern(STRIKETHROUGH_RE, "del"),
+            "strikethrough",
+            200,
+        )
 
-class SnippetExtension(markdown.extensions.Extension):
-    def extendMarkdown(self, md, *args, **kwargs):
-        md.parser.blockprocessors.deregister('olist')
-        md.parser.blockprocessors.deregister('ulist')
-        md.parser.blockprocessors.deregister('quote')
+md = markdown.Markdown(
+    extensions=[
+        "markdown.extensions.nl2br",
+        "markdown.extensions.sane_lists",
+        "markdown.extensions.tables",
+        "markdown.extensions.fenced_code",
+        "markdown.extensions.codehilite",
+        "markdown.extensions.md_in_html",
+        StrikeThroughExtension(),
+    ]
+)
 
 
-def markdown_compile(source, snippet=False):
-    tags = ALLOWED_TAGS_SNIPPET if snippet else ALLOWED_TAGS
-    exts = ['markdown.extensions.sane_lists', 'markdown.extensions.nl2br']
-    if snippet:
-        exts.append(SnippetExtension())
-    return bleach.clean(
-        markdown.markdown(source, extensions=exts),
-        strip=snippet,
-        tags=tags,
-        attributes=ALLOWED_ATTRIBUTES,
-        protocols=ALLOWED_PROTOCOLS,
-    )
-
-
-@register.filter
-def rich_text(text: str, **kwargs):
-    """
-    Processes markdown and cleans HTML in a text input.
-    """
-    text = str(text)
-    linker = bleach.Linker(
-        url_re=URL_RE,
-        email_re=EMAIL_RE,
-        callbacks=DEFAULT_CALLBACKS
-        + (
-            [truelink_callback, safelink_callback]
-            if kwargs.get('safelinks', True)
-            else [truelink_callback, abslink_callback]
-        ),
-        parse_email=True,
-    )
-    body_md = linker.linkify(markdown_compile(text))
+def render_markdown(text: str, cleaner=CLEANER) -> str:
+    if not text:
+        return ""
+    body_md = cleaner.clean(md.reset().convert(str(text)))
     return mark_safe(body_md)
 
 
+def render_markdown_abslinks(text: str) -> str:
+    return render_markdown(text, cleaner=ABSLINK_CLEANER)
+
+
 @register.filter
-def rich_text_snippet(text: str, **kwargs):
-    """
-    Processes markdown and cleans HTML in a text input.
-    """
-    text = str(text)
-    linker = bleach.Linker(
-        url_re=URL_RE,
-        email_re=EMAIL_RE,
-        callbacks=DEFAULT_CALLBACKS
-        + (
-            [truelink_callback, safelink_callback]
-            if kwargs.get('safelinks', True)
-            else [truelink_callback, abslink_callback]
-        ),
-        parse_email=True,
-    )
-    body_md = linker.linkify(markdown_compile(text, snippet=True))
-    return mark_safe(body_md)
+def rich_text(text: str):
+    return render_markdown(text, cleaner=CLEANER)
+
+
+@register.filter
+def rich_text_without_links(text: str):
+    return render_markdown(text, cleaner=NO_LINKS_CLEANER)
+
+
+@register.filter
+def rich_text_snippet(text: str):
+    return render_markdown(text, cleaner=ABSLINK_CLEANER)
+
+
+@register.filter
+def append_colon(text: LazyI18nString) -> str:
+    text = str(text).strip()
+    if not text:
+        return ""
+    return text if text[-1] in [".", "!", "?", ":", ";"] else f"{text}:"

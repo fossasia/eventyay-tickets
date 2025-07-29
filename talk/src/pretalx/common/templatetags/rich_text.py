@@ -1,3 +1,4 @@
+import html
 from copy import copy
 from functools import partial
 
@@ -9,7 +10,7 @@ from django.utils.safestring import mark_safe
 from publicsuffixlist import PublicSuffixList
 from i18nfield.strings import LazyI18nString
 
-from pretalx.common.views.redirect import safelink as sl
+from eventyay.common.views.redirect import safelink as sl
 
 register = template.Library()
 
@@ -21,6 +22,7 @@ ALLOWED_TAGS = {
     "blockquote",
     "br",
     "code",
+    "del",
     "div",
     "em",
     "hr",
@@ -83,6 +85,7 @@ def link_callback(attrs, is_new, **kwargs):
     attrs[None, "target"] = "_blank"
     attrs[None, "rel"] = "noopener"
     if safelink:
+        url = html.unescape(url)
         attrs[None, "href"] = sl(url)
     return attrs
 

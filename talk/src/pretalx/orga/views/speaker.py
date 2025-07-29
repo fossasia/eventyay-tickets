@@ -1,19 +1,19 @@
-from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count, Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView, View
 from django_context_decorator import context
 
 from pretalx.agenda.views.utils import get_schedule_exporters
 from pretalx.common.exceptions import SendMailException
+from pretalx.common.image import gravatar_csp
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views.generic import CreateOrUpdateView, OrgaCRUDView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
@@ -30,32 +30,11 @@ from pretalx.person.forms import (
     SpeakerProfileForm,
 )
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
+from pretalx.person.rules import is_only_reviewer
 from pretalx.submission.forms import QuestionsForm
 from pretalx.submission.models import Answer
 from pretalx.submission.models.submission import SubmissionStates
-
-
-def can_view_all_tracks(user, event):
-    if user.is_administrator:
-        return True
-    user_teams = event.teams.filter(members__in=[user])
-    return not all(team.limit_tracks.all().exists() for team in user_teams)
-
-
-def get_review_tracks(user, event):
-    tracks = []
-    user_teams = event.teams.filter(members__in=[user])
-    for team in user_teams:
-        tracks += list(team.limit_tracks.all())
-    return tracks
-
-
-def get_speaker_profiles_for_user(user, event):
-    users = event.submitters
-    if not can_view_all_tracks(user, event):
-        tracks = get_review_tracks(user, event)
-        users = users.filter(submissions__track__in=tracks)
-    return SpeakerProfile.objects.filter(event=event, user__in=users)
+from pretalx.submission.rules import limit_for_reviewers, speaker_profiles_for_user
 
 
 class SpeakerList(
@@ -66,12 +45,19 @@ class SpeakerList(
     default_filters = ("user__email__icontains", "user__name__icontains")
     sortable_fields = ("user__email", "user__name")
     default_sort_field = "user__name"
-    permission_required = "orga.view_speakers"
-    filter_form_class = SpeakerFilterForm
+    permission_required = "person.orga_list_speakerprofile"
+
+    def get_filter_form(self):
+        any_arrived = SpeakerProfile.objects.filter(
+            event=self.request.event, has_arrived=True
+        ).exists()
+        return SpeakerFilterForm(
+            self.request.GET, event=self.request.event, filter_arrival=any_arrived
+        )
 
     def get_queryset(self):
         qs = (
-            get_speaker_profiles_for_user(self.request.user, self.request.event)
+            speaker_profiles_for_user(self.request.event, self.request.user)
             .select_related("event", "user")
             .annotate(
                 submission_count=Count(
@@ -121,8 +107,8 @@ class SpeakerViewMixin(PermissionRequired):
     def get_object(self):
         return get_object_or_404(
             User.objects.filter(
-                profiles__in=get_speaker_profiles_for_user(
-                    self.request.user, self.request.event
+                profiles__in=speaker_profiles_for_user(
+                    self.request.event, self.request.user
                 )
             )
             .order_by("id")
@@ -147,13 +133,13 @@ class SpeakerViewMixin(PermissionRequired):
         return self.get_permission_object()
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
+@method_decorator(gravatar_csp(), name="dispatch")
 class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
     template_name = "orga/speaker/form.html"
     form_class = SpeakerProfileForm
     model = User
-    permission_required = "orga.view_speaker"
-    write_permission_required = "orga.change_speaker"
+    permission_required = "person.orga_list_speakerprofile"
+    write_permission_required = "person.update_speakerprofile"
 
     def get_success_url(self) -> str:
         return self.profile.orga_urls.base
@@ -162,9 +148,14 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
     @cached_property
     def submissions(self, **kwargs):
         qs = self.request.event.submissions.filter(speakers__in=[self.object])
-        if not can_view_all_tracks(self.request.user, self.request.event):
-            tracks = get_review_tracks(self.request.user, self.request.event)
-            qs = qs.filter(track__in=tracks)
+        if is_only_reviewer(self.request.user, self.request.event):
+            return limit_for_reviewers(qs, self.request.event, self.request.user)
+        return qs
+
+    @context
+    @cached_property
+    def accepted_submissions(self, **kwargs):
+        qs = self.submissions.filter(state__in=SubmissionStates.accepted_states)
         return qs
 
     @context
@@ -186,10 +177,10 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
             event=self.request.event,
             for_reviewers=(
                 not self.request.user.has_perm(
-                    "orga.change_submissions", self.request.event
+                    "submission.orga_update_submission", self.request.event
                 )
                 and self.request.user.has_perm(
-                    "orga.view_review_dashboard", self.request.event
+                    "submission.list_review", self.request.event
                 )
             ),
         )
@@ -216,7 +207,7 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
 
 
 class SpeakerPasswordReset(SpeakerViewMixin, ActionConfirmMixin, DetailView):
-    permission_required = "orga.change_speaker"
+    permission_required = "person.update_speakerprofile"
     model = User
     context_object_name = "speaker"
     action_confirm_icon = "key"
@@ -249,7 +240,7 @@ class SpeakerPasswordReset(SpeakerViewMixin, ActionConfirmMixin, DetailView):
 
 
 class SpeakerToggleArrived(SpeakerViewMixin, View):
-    permission_required = "orga.change_speaker"
+    permission_required = "person.update_speakerprofile"
 
     def dispatch(self, request, event, code):
         self.profile.has_arrived = not self.profile.has_arrived
@@ -265,70 +256,38 @@ class SpeakerToggleArrived(SpeakerViewMixin, View):
             person=self.request.user,
             orga=True,
         )
-        if request.GET.get("from") == "list":
-            return redirect(
-                reverse("orga:speakers.list", kwargs={"event": self.kwargs["event"]})
-            )
+        if url := self.request.GET.get("next"):
+            if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
+                return redirect(url)
         return redirect(self.profile.orga_urls.base)
 
 
-class InformationList(EventPermissionRequired, PaginationMixin, ListView):
-    queryset = SpeakerInformation.objects.none()
-    template_name = "orga/speaker/information_list.html"
-    context_object_name = "information"
-    permission_required = "orga.view_information"
-
-    def get_queryset(self):
-        return self.request.event.information.all().order_by("pk")
-
-
-class InformationDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
-    template_name = "orga/speaker/information_form.html"
+class SpeakerInformationView(OrgaCRUDView):
+    model = SpeakerInformation
     form_class = SpeakerInformationForm
-    model = SpeakerInformation
-    permission_required = "orga.view_information"
-    write_permission_required = "orga.change_information"
-
-    def get_permission_object(self):
-        return self.get_object() or self.request.event
-
-    def get_object(self):
-        if "pk" in self.kwargs:
-            return self.request.event.information.filter(pk=self.kwargs["pk"]).first()
-        return None
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.pop("read_only", None)
-        kwargs["event"] = self.request.event
-        return kwargs
-
-    def get_success_url(self):
-        return self.request.event.orga_urls.information
-
-
-class InformationDelete(PermissionRequired, ActionConfirmMixin, DetailView):
-    model = SpeakerInformation
-    permission_required = "orga.change_information"
-
-    def action_object_name(self):
-        return _("Speaker information note") + f": {self.get_object().title}"
-
-    def action_back_url(self):
-        return self.request.event.orga_urls.information
+    template_namespace = "orga/speaker"
+    context_object_name = "information"
 
     def get_queryset(self):
-        return self.request.event.information.all()
+        return (
+            self.request.event.information.all()
+            .prefetch_related("limit_tracks", "limit_types")
+            .order_by("pk")
+        )
 
-    def post(self, request, *args, **kwargs):
-        information = self.get_object()
-        information.delete()
-        messages.success(request, _("The information has been deleted."))
-        return redirect(request.event.orga_urls.information)
+    def get_permission_required(self):
+        permission_map = {"detail": "orga_detail"}
+        permission = permission_map.get(self.action, self.action)
+        return self.model.get_perm(permission)
+
+    def get_generic_title(self, instance=None):
+        if self.action != "list":
+            return _("Speaker Information Note")
+        return _("Speaker Information Notes")
 
 
 class SpeakerExport(EventPermissionRequired, FormView):
-    permission_required = "orga.view_speakers"
+    permission_required = "event.update_event"
     template_name = "orga/speaker/export.html"
     form_class = SpeakerExportForm
 

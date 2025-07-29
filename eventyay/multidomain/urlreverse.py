@@ -77,7 +77,7 @@ def mainreverse(name, kwargs=None):
         needed.
     :returns: An absolute URL (including scheme and host) as a string
     """
-    from pretix.multidomain import maindomain_urlconf
+    from eventyay.multidomain import maindomain_urlconf
 
     kwargs = kwargs or {}
     return reverse(name, kwargs=kwargs, urlconf=maindomain_urlconf)
@@ -99,7 +99,7 @@ def eventreverse(obj, name, kwargs=None):
         needed.
     :returns: An absolute URL (including scheme and host) as a string
     """
-    from pretix.multidomain import (
+    from eventyay.multidomain import (
         event_domain_urlconf,
         maindomain_urlconf,
         organizer_domain_urlconf,

@@ -14,7 +14,7 @@
 {% endblock custom_header %}
 
 {% block nav_link %}
-    {% has_perm "agenda.view_schedule" request.user request.event as can_view_schedule %}
+    {% has_perm "schedule.list_schedule" request.user request.event as can_view_schedule %}
     {% if can_view_schedule %}
         {{ request.event.urls.schedule }}
     {% else %}
@@ -23,17 +23,21 @@
 {% endblock nav_link %}
 
 {% block header_tabs %}
-    <a href="{{ request.event.urls.schedule }}" class="header-tab {% if "/schedule/" in request.path_info %}active{% endif %}">
-        <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}
-    </a>
+    {% if schedule or request.event.current_schedule %}
+        <a href="{{ request.event.urls.schedule }}" class="header-tab {% if "/schedule/" in request.path_info %}active{% endif %}">
+            <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}
+        </a>
+    {% endif %}
     {% if request.event.display_settings.schedule_display != "list" %}
         <a href="{{ request.event.urls.talks }}" class="header-tab {% if "/talk/" in request.path_info %} active{% endif %}">
             <i class="fa fa-comments-o"></i> {{ phrases.schedule.sessions }}
         </a>
     {% endif %}
-    <a href="{{ request.event.urls.speakers }}" class="header-tab {% if "/speaker/" in request.path_info %} active{% endif %}">
-        <i class="fa fa-group"></i> {{ phrases.schedule.speakers }}
-    </a>
+    {% if schedule or request.event.current_schedule %}
+        <a href="{{ request.event.urls.speakers }}" class="header-tab {% if "/speaker/" in request.path_info %} active{% endif %}">
+            <i class="fa fa-group"></i> {{ phrases.schedule.speakers }}
+        </a>
+    {% endif %}
     {% for link in header_links %}
         <a href="{% safelink link.url %}" target="_blank" rel="noopener" class="header-tab">
             <i class="fa fa-link"></i> {{ link.label }}

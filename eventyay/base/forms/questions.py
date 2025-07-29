@@ -33,37 +33,37 @@ from phonenumber_field.widgets import PhoneNumberPrefixWidget
 from phonenumbers import NumberParseException, national_significant_number
 from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
 
-from pretix.base.forms.widgets import (
+from eventyay.base.forms.widgets import (
     BusinessBooleanRadio,
     DatePickerWidget,
     SplitDateTimePickerWidget,
     TimePickerWidget,
     UploadedFileWidget,
 )
-from pretix.base.i18n import (
+from eventyay.base.i18n import (
     get_babel_locale,
     get_language_without_region,
     language,
 )
-from pretix.base.models import InvoiceAddress, Question, QuestionOption
-from pretix.base.models.tax import (
+from eventyay.base.models import InvoiceAddress, Question, QuestionOption
+from eventyay.base.models.tax import (
     EU_COUNTRIES,
     cc_to_vat_prefix,
     is_eu_country,
 )
-from pretix.base.settings import (
+from eventyay.base.settings import (
     COUNTRIES_WITH_STATE_IN_ADDRESS,
     PERSON_NAME_SALUTATIONS,
     PERSON_NAME_SCHEMES,
     PERSON_NAME_TITLE_GROUPS,
 )
-from pretix.base.templatetags.rich_text import rich_text
-from pretix.control.forms import ExtFileField, SplitDateTimeField
-from pretix.helpers.countries import CachedCountries
-from pretix.helpers.escapejson import escapejson_attr
-from pretix.helpers.http import get_client_ip
-from pretix.helpers.i18n import get_format_without_seconds
-from pretix.presale.signals import question_form_fields
+from eventyay.base.templatetags.rich_text import rich_text
+from eventyay.control.forms import ExtFileField, SplitDateTimeField
+from eventyay.helpers.countries import CachedCountries
+from eventyay.helpers.escapejson import escapejson_attr
+from eventyay.helpers.http import get_client_ip
+from eventyay.helpers.i18n import get_format_without_seconds
+from eventyay.presale.signals import question_form_fields
 
 logger = logging.getLogger(__name__)
 

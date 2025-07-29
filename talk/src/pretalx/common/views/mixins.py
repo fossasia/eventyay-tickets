@@ -10,7 +10,7 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
 from django.http import FileResponse, Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
@@ -325,16 +325,14 @@ class SocialMediaCardMixin:
 
 
 class PaginationMixin:
-    # TODO: possible make this into a PretalxListView, to make things easier for
-    # plugin developers
 
     DEFAULT_PAGINATION = 50
 
-    def get_paginate_by(self, queryset):
+    def get_paginate_by(self, queryset=None):
         skey = "stored_page_size_" + self.request.resolver_match.url_name
         default = (
             self.request.session.get(skey)
-            or self.paginate_by
+            or getattr(self, "paginate_by", None)
             or self.DEFAULT_PAGINATION
         )
         if self.request.GET.get("page_size"):
@@ -348,7 +346,11 @@ class PaginationMixin:
         return default
 
     def get_context_data(self, **kwargs):
+        from pretalx.common.views.generic import CRUDView
+
         ctx = super().get_context_data(**kwargs)
+        if isinstance(self, CRUDView) and not self.action == "list":
+            return ctx
         ctx["page_size"] = self.get_paginate_by(None)
         ctx["pagination_sizes"] = [50, 100, 250]
         return ctx
@@ -419,3 +421,22 @@ class ActionConfirmMixin:
         ctx["action_title"] = self.action_title
         ctx["action_object_name"] = self.action_object_name
         return ctx
+
+
+class OrderActionMixin:
+    """Change an ordered model with a POST endpoint to a CRUDView list view."""
+
+    extra_actions = {
+        "list": {"post": "order_handler"},
+    }
+
+    def order_handler(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if order:
+            order = order.split(",")
+            queryset = self.get_queryset()
+            for index, pk in enumerate(order):
+                obj = get_object_or_404(queryset, pk=pk)
+                obj.position = index
+                obj.save(update_fields=["position"])
+        return self.list(request, *args, **kwargs)

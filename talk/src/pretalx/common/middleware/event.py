@@ -7,6 +7,7 @@ from urllib.parse import quote, urljoin
 import jwt
 from django.conf import settings
 from django.contrib.auth import login
+from django.db.models import OuterRef, Subquery
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import resolve
@@ -20,6 +21,8 @@ from django_scopes import scope, scopes_disabled
 
 from pretalx.event.models import Event, Organiser
 from pretalx.person.models import User
+from pretalx.schedule.models import Schedule
+
 
 logger = logging.getLogger(__name__)
 
@@ -108,28 +111,6 @@ class EventPermissionMiddleware:
                 )
                 pass
 
-    @staticmethod
-    def _set_orga_events(request):
-        request.is_orga = False
-        request.orga_events = []
-        if not request.user.is_anonymous:
-            if request.user.is_administrator:
-                request.orga_events = Event.objects.order_by("date_from")
-                request.is_orga = True
-            else:
-                request.orga_events = request.user.get_events_for_permission().order_by(
-                    "date_from"
-                )
-                event = getattr(request, "event", None)
-                if event:
-                    request.is_orga = event in request.orga_events
-                    request.is_reviewer = event.teams.filter(
-                        members__in=[request.user], is_reviewer=True
-                    ).exists()
-                    request.user.team_permissions[event.slug] = (
-                        request.user.get_permissions_for_event(event)
-                    )
-
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
             return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
@@ -153,19 +134,26 @@ class EventPermissionMiddleware:
         if event_slug:
             with scopes_disabled():
                 try:
-                    request.event = get_object_or_404(
-                        Event.objects.prefetch_related(
-                            "schedules", "submissions", "extra_links"
-                        ),
-                        slug__iexact=event_slug,
+                    queryset = Event.objects.prefetch_related(
+                        "submissions", "extra_links", "schedules"
+                    ).select_related("organiser")
+                    latest_schedule_subquery = (
+                        Schedule.objects.filter(
+                            event=OuterRef("pk"), published__isnull=False
+                        )
+                        .order_by("-published")
+                        .values("pk")[:1]
                     )
+                    queryset = queryset.annotate(
+                        _current_schedule_pk=Subquery(latest_schedule_subquery)
+                    )
+                    request.event = get_object_or_404(queryset, slug__iexact=event_slug)
                 except ValueError:
                     # Happens mostly on malformed or malicious input
                     raise Http404()
         event = getattr(request, "event", None)
 
         self._handle_login(request)
-        self._set_orga_events(request)
         self._select_locale(request)
         is_exempt = (
             url.url_name == "export"
@@ -208,8 +196,8 @@ class EventPermissionMiddleware:
         )
         language = (
             self._language_from_request(request, supported)
-            or self._language_from_cookie(request, supported)
             or self._language_from_user(request, supported)
+            or self._language_from_cookie(request, supported)
             or self._language_from_browser(request, supported)
             or self._language_from_event(request, supported)
             or settings.LANGUAGE_CODE

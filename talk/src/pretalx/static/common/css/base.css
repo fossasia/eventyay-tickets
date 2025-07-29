@@ -1,107 +1,23 @@
 /* This file contains rules that should just be included everywhere.
  * It relies on reset.css being present. */
-
-/* Block elements */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-h1 {
-  font-size: 2.5rem;
-}
-h2 {
-  font-size: 1.75rem;
-}
-h3 {
-  font-size: 1.5rem;
-}
-h4 {
-  font-size: 1.5rem;
-}
-h5 {
-  font-size: 1.25rem;
-}
-h6 {
-  font-size: 1rem;
-}
-
-p,
-blockquote,
-ol,
-ul,
-pre,
-figure,
-table {
-  margin-bottom: var(--size-spacer);
-}
-
-hr {
-  box-sizing: content-box;
-  height: 0;
-  overflow: visible;
-  margin: var(--size-spacer) 0;
-  border: 0;
-  border-top: 1px solid rgb(0 0 0 / 0.1);
-}
-
-code {
-  font-size: 87.5%;
-  color: var(--color-code);
-  word-wrap: break-word;
-  a > & {
-    color: inherit;
-  }
-}
-pre {
-  display: block;
-  padding: 9.5px;
-  margin: 0 0 10px;
-  font-size: 13px;
-  word-break: break-all;
-  word-wrap: break-word;
-  overflow: auto;
-  color: #333;
-  background-color: var(--color-grey-lightest);
-  border: 1px solid var(--color-border);
-  border-radius: var(--size-border-radius);
-  code {
-    font-size: inherit;
-    color: inherit;
-    word-break: normal;
-  }
-}
-
 table {
   width: 100%;
-  border-collapse: collapse;
 
   th,
   td {
-    vertical-align: top;
     border-top: 1px solid var(--color-grey-light);
     padding: 0.3rem;
     &.numeric {
       text-align: right;
-      font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
     &.numeric-left {
-      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
   }
 
   thead th {
-    vertical-align: bottom;
     border-bottom: 2px solid var(--color-grey-light);
-    white-space: nowrap;
-    text-align: left;
   }
   th {
     font-weight: bold;
@@ -117,17 +33,12 @@ table {
     color: var(--color-primary-text-dark);
   }
 }
+table:not(.no-hover) tr:hover {
+  background-color: var(--color-grey-lightest);
+}
 
 legend {
   margin-bottom: 0.5rem;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-&:focus:not(:focus-visible) {
-  outline: none;
 }
 
 button,
@@ -144,7 +55,6 @@ summary.btn {
   text-align: center;
   user-select: none;
   text-decoration: none;
-  font-family: var(--font-family-title);
 
   border: 1px solid var(--highlight-color);
   border-radius: var(--size-border-radius);
@@ -306,15 +216,6 @@ a {
   }
 }
 
-/* Typography */
-b,
-strong {
-  font-weight: bolder;
-}
-small {
-  font-size: 80%;
-}
-
 /* Conventions and custom elements */
 
 .color-success,
@@ -468,6 +369,11 @@ small {
 
   color: var(--highlight-color-text, var(--color-text));
   background-color: var(--highlight-color, var(--color-bg));
+
+  &.card-highlight {
+    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-light);
+  }
 
   > hr {
     margin-right: 0;
@@ -1035,6 +941,9 @@ pl-0 {
 .bg-danger {
   background-color: var(--color-danger) !important;
 }
+.bg-muted {
+  background-color: var(--color-grey-lightest) !important;
+}
 
 .sr-only {
   position: absolute;
@@ -1065,6 +974,13 @@ pl-0 {
   border-radius: var(--size-border-radius);
 }
 
+.table-responsive-always {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 ::selection {
   background-color: var(--color-primary);
   color: white;
@@ -1088,7 +1004,7 @@ pl-0 {
 }
 
 @media (max-width: 768px) {
-  .table-responsive {
+  .table-responsive-always {
     display: block;
     width: 100%;
     overflow-x: auto;
@@ -1130,7 +1046,7 @@ pl-0 {
   .d-print-none {
     display: none !important;
   }
-  a:not(role="button") {
+  a:not([role="button"]) {
     text-decoration: underline;
   }
   pre {

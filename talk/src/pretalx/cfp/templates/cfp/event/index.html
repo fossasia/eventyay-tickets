@@ -7,7 +7,7 @@
 
 {% block content %}
     {% with cfp=request.event.cfp %}
-        {% has_perm "agenda.view_featured_submissions" request.user request.event as can_view_featured_submissions %}
+        {% has_perm "submission.list_featured_submission" request.user request.event as can_view_featured_submissions %}
         {% if request.event.landing_page_text %}{{ request.event.landing_page_text|rich_text }}{% endif %}
         <div class="url-links">
             {% if has_submissions or request.user.is_anonymous %}

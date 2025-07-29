@@ -221,17 +221,36 @@ const initFormChanges = (form) => {
 }
 
 const initFormButton = (form) => {
-    const submitButton = form.querySelector("button[type=submit]")
-    if (!submitButton) return
-    form.addEventListener("submit", () => {
-        // We can't disable the button immediately, because then, the browser will
-        // not send the button's value to the server. Instead, we'll just delay the
-        // disabling a bit.
-        // submitButton.disabled = true
-        submitButton.innerHTML = `<i class="fa fa-spinner fa-spin pr-0"></i> ${submitButton.textContent}`
-        setTimeout(() => {
-            submitButton.classList.add("disabled")
-        }, 1)
+    form.querySelectorAll("button[type=submit]").forEach(submitButton => {
+        const submitButtonText = submitButton.textContent
+        let lastSubmit = 0
+        form.addEventListener("submit", () => {
+            // We can't disable the button immediately, because then, the browser will
+            // not send the button's value to the server. Instead, we'll just delay the
+            // disabling a bit.
+            submitButton.innerHTML = `<i class="fa fa-spinner fa-spin pr-0"></i> ${submitButtonText}`
+            lastSubmit = Date.now()
+            setTimeout(() => {
+                submitButton.classList.add("disabled")
+            }, 1)
+        })
+
+        // If people submit the form, then navigate back with the back button,
+        // the button will still be disabled.
+        // We can’t fix this on page load, because the browser will not actually load
+        // the page again, and we can’t fix it via a single timeout, because that might
+        // take place while we’re away from the page.
+        // So instead, we’ll check periodically if the button is still disabled, and if
+        // it’s been more than 5 seconds since the last submit, we’ll re-enable it.
+        const checkButton = () => {
+            if (submitButton.classList.contains("disabled")) {
+                if (Date.now() - lastSubmit > 5000) {
+                    submitButton.classList.remove("disabled")
+                    submitButton.innerHTML = submitButtonText
+                }
+            }
+        }
+        window.setInterval(checkButton, 1000)
     })
 }
 

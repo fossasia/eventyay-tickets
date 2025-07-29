@@ -14,7 +14,7 @@
 {% endblock stylesheets %}
 
 {% block content %}
-    {% has_perm "orga.create_events" request.user request.user as can_create_event %}
+    {% has_perm "event.create_event" request.user request.user as can_create_event %}
 
     {% if current_orga_events or past_orga_events or can_create_event %}
         <form class="mb-4 m-2">

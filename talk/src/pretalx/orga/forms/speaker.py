@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User
+from pretalx.submission.models import SubmissionStates
 
 
 class SpeakerExportForm(ExportForm):
@@ -13,11 +14,10 @@ class SpeakerExportForm(ExportForm):
         label=_("Target group"),
         choices=(
             ("all", phrases.base.all_choices),
-            ("accepted", _("With accepted proposals")),
-            ("confirmed", _("With confirmed proposals")),
-            ("rejected", _("With rejected proposals")),
+            ("accepted", _("Just speakers with accepted and confirmed proposals")),
         ),
         widget=forms.RadioSelect,
+        initial="all",
     )
 
     class Meta:
@@ -81,7 +81,9 @@ class SpeakerExportForm(ExportForm):
         queryset = self.event.submitters
         if target != "all":
             queryset = queryset.filter(
-                submissions__in=self.event.submissions.filter(state=target)
+                submissions__in=self.event.submissions.filter(
+                    state__in=[SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+                )
             ).distinct()
         return queryset.prefetch_related("profiles", "profiles__event").order_by("code")
 

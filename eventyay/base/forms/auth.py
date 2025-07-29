@@ -10,9 +10,9 @@ from django.contrib.auth.password_validation import (
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.models import User
-from pretix.helpers.dicts import move_to_end
-from pretix.helpers.http import get_client_ip
+from eventyay.base.models import User
+from eventyay.helpers.dicts import move_to_end
+from eventyay.helpers.http import get_client_ip
 
 
 class LoginForm(forms.Form):

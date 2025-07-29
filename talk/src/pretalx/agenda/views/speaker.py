@@ -27,7 +27,7 @@ from pretalx.submission.models import QuestionTarget
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
     context_object_name = "speakers"
     template_name = "agenda/speakers.html"
-    permission_required = "agenda.view_schedule"
+    permission_required = "schedule.list_schedule"
     default_filters = ("user__name__icontains",)
 
     def get_queryset(self):
@@ -52,7 +52,7 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
 
 class SpeakerView(PermissionRequired, TemplateView):
     template_name = "agenda/speaker.html"
-    permission_required = "agenda.view_speaker"
+    permission_required = "person.view_speakerprofile"
     slug_field = "code"
 
     @context
@@ -97,14 +97,16 @@ class SpeakerRedirect(DetailView):
     def dispatch(self, request, **kwargs):
         speaker = self.get_object()
         profile = speaker.profiles.filter(event=self.request.event).first()
-        if profile and self.request.user.has_perm("agenda.view_speaker", profile):
+        if profile and self.request.user.has_perm(
+            "person.view_speakerprofile", profile
+        ):
             return redirect(profile.urls.public.full())
         raise Http404()
 
 
 class SpeakerTalksIcalView(PermissionRequired, DetailView):
     context_object_name = "profile"
-    permission_required = "agenda.view_speaker"
+    permission_required = "person.view_speakerprofile"
     slug_field = "code"
 
     def get_object(self, queryset=None):
@@ -146,9 +148,7 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
 
 class SpeakerSocialMediaCard(SocialMediaCardMixin, SpeakerView):
     def get_image(self):
-        user = self.profile.user
-        if user.avatar:
-            return user.avatar
+        return self.profile.avatar
 
 
 @cache_page(60 * 60)

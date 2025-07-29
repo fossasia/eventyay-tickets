@@ -3,7 +3,7 @@ This code has been taken from
 https://blog.hypertrack.io/2016/10/08/dealing-with-database-transactions-in-django-celery/
 
 Usage:
-    from pretix.base.services.async import TransactionAwareTask
+    from eventyay.base.services.async import TransactionAwareTask
     @task(base=TransactionAwareTask)
     def task_…():
 """

@@ -9,7 +9,7 @@ from django.test import override_settings
 )
 def test_event_on_unknown_domain(event, client):
     r = client.get("/{event.slug}/", HTTP_HOST="foobar")
-    assert r.status_code == 404, r.content.decode()
+    assert r.status_code == 404, r.text
 
 
 @pytest.mark.django_db
@@ -19,4 +19,4 @@ def test_event_on_unknown_domain(event, client):
 )
 def test_orga_event_on_unknown_domain(event, client):
     r = client.get("/orga/event/{event.slug}/", HTTP_HOST="foobar")
-    assert r.status_code == 404, r.content.decode()
+    assert r.status_code == 404, r.text

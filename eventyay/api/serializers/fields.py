@@ -39,7 +39,7 @@ class UploadedFileField(serializers.Field):
         super().__init__(*args, **kwargs)
 
     def to_internal_value(self, data):
-        from pretix.base.models import CachedFile
+        from eventyay.base.models import CachedFile
 
         request = self.context.get('request', None)
         try:

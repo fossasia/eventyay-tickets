@@ -5,7 +5,7 @@ from django.urls import reverse
 
 
 def build_absolute_uri(urlname, args=None, kwargs=None):
-    from pretix.multidomain import maindomain_urlconf
+    from eventyay.multidomain import maindomain_urlconf
 
     return urljoin(
         settings.SITE_URL,
