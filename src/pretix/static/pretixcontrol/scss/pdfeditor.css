@@ -3,9 +3,29 @@
     top: 0;
     left: 0;
 }
+canvas.upper-canvas{
+    border: 1px solid rgb(63, 62, 62);
+}
 #editor-canvas-area {
     position: relative;
-    min-height: 250px;
+    min-height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    max-height: calc(100vh - 200px); 
+    padding: 0px;
+}
+#editor-canvas-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    max-height: 100%;
+}
+#pdf-canvas, #fabric-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 body {
     overflow-y: scroll;
@@ -68,4 +88,13 @@ body {
 .pdf-info .help-inline p {
     margin-top: 10px;
     margin-bottom: 0;
+}
+.submit-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-save {
+    min-width: 150px;
 }
