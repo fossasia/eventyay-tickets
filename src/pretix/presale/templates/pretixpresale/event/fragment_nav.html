@@ -1,0 +1,38 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load eventurl %}
+
+<nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
+    <div class="navigation">
+        {% if request.event.settings.talk_schedule_public %}
+            <div class="navigation-button">
+                <a href="{{ request.event.talk_schedule_url }}" class="header-nav btn btn-outline-success">
+                    <i class="fa fa-calendar"></i> {% translate "Schedule" %}
+                </a>
+            </div>
+            <div class="navigation-button">
+                <a href="{{ request.event.talk_session_url }}" class="header-nav btn btn-outline-success">
+                    <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
+                </a>
+            </div>
+            <div class="navigation-button">
+                <a href="{{ request.event.talk_speaker_url }}" class="header-nav btn btn-outline-success">
+                    <i class="fa fa-group"></i> {% translate "Speakers" %}
+                </a>
+            </div>
+        {% endif %}
+        <div class="navigation-button">
+            <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover">
+                <i class="fa fa-ticket"></i> {% translate "Tickets" %}
+            </a>
+        </div>
+        {% if is_video_plugin_enabled %}
+            <div class="video-link">
+                <a join-event-link class="header-nav btn btn-outline-success join-event"
+                    href='{% eventurl request.event "presale:event.onlinevideo.join" %}'>
+                    <i class="fa fa-video-camera"></i> {% translate "Join online event" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</nav>
