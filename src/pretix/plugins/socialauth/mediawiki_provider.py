@@ -65,6 +65,11 @@ class RateLimitedOAuth2Client(OAuth2Client):
         """
         Check if we're within rate limits. Returns True if we can proceed.
         Implements a sliding window rate limiter with atomic operations to prevent race conditions.
+        
+        Note: For high-concurrency deployments, it's recommended to use a cache backend
+        that supports locking (e.g., Redis with Django 4.0+). The fallback for 
+        non-locking backends has a slight race condition that may allow excess requests
+        under extreme load, though this is better than blocking OAuth entirely.
         """
         now = time.time()
         window_start = now - self.RATE_LIMIT_WINDOW
