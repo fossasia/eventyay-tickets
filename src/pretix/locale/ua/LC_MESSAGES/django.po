@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-06 10:28+0000\n"
-"PO-Revision-Date: 2025-07-29 08:21+0000\n"
+"PO-Revision-Date: 2025-07-29 08:53+0000\n"
 "Last-Translator: Максим Горпиніч <gorpinicmaksim5@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/open-event/"
 "eventyay-tickets/uk/>\n"
@@ -18399,29 +18399,29 @@ msgstr "Зміна для всіх подій"
 
 #: pretix/control/templatetags/hierarkey_form.py:56
 msgid "Change for all organizers"
-msgstr ""
+msgstr "Зміна для всіх організаторів"
 
 #: pretix/control/views/__init__.py:145
 msgid "That page number is not an integer"
-msgstr ""
+msgstr "Номер сторінки не є цілим числом"
 
 #: pretix/control/views/__init__.py:147
 msgid "That page number is less than 1"
-msgstr ""
+msgstr "Номер цієї сторінки менший за 1"
 
 #: pretix/control/views/admin.py:198 pretix/control/views/admin.py:224
 #: pretix/control/views/vouchers.py:161 pretix/control/views/vouchers.py:211
 msgid "The requested voucher does not exist."
-msgstr ""
+msgstr "Запитаний ваучер не існує."
 
 #: pretix/control/views/admin.py:228 pretix/control/views/admin.py:237
 #: pretix/control/views/vouchers.py:165 pretix/control/views/vouchers.py:175
 msgid "A voucher can not be deleted if it already has been redeemed."
-msgstr ""
+msgstr "Ваучер не можна видалити, якщо він вже був використаний."
 
 #: pretix/control/views/admin.py:240 pretix/control/views/vouchers.py:181
 msgid "The selected voucher has been deleted."
-msgstr ""
+msgstr "Вибраний ваучер видалено."
 
 #: pretix/control/views/auth.py:200
 msgid ""
@@ -18429,20 +18429,25 @@ msgid ""
 "address bar and make sure it is correct and that the link has not been used "
 "before."
 msgstr ""
+"Ви використали недійсне посилання. Будь ласка, скопіюйте посилання з вашої "
+"електронної пошти в адресний рядок і переконайтеся, що воно правильне та що "
+"посилання не використовувалося раніше."
 
 #: pretix/control/views/auth.py:206
 msgid ""
 "You cannot accept the invitation for \"{}\" as you already are part of this "
 "team."
 msgstr ""
+"Ви не можете прийняти запрошення для \"{}\", оскільки ви вже є частиною цієї "
+"команди."
 
 #: pretix/control/views/auth.py:220
 msgid "You are now part of the team \"{}\"."
-msgstr ""
+msgstr "Тепер ви є частиною команди \"{}\"."
 
 #: pretix/control/views/auth.py:250
 msgid "Welcome to pretix! You are now part of the team \"{}\"."
-msgstr ""
+msgstr "Ласкаво просимо до pretix! Тепер ви є частиною команди \"{}\"."
 
 #: pretix/control/views/auth.py:308
 msgid ""
@@ -18450,12 +18455,17 @@ msgid ""
 "mail containing further instructions. Please note that we will send at most "
 "one email every 24 hours."
 msgstr ""
+"Якщо адреса зареєстрована для дійсного облікового запису, ми надіслали вам "
+"електронного листа з подальшими інструкціями. Зверніть увагу, що ми "
+"надсилатимемо щонайбільше один електронний лист кожні 24 години."
 
 #: pretix/control/views/auth.py:311
 msgid ""
 "If the address is registered to valid account, then we have sent you an e-"
 "mail containing further instructions."
 msgstr ""
+"Якщо адреса зареєстрована для дійсного облікового запису, ми надіслали вам "
+"електронного листа з подальшими інструкціями."
 
 #: pretix/control/views/auth.py:331
 msgid ""
@@ -18463,40 +18473,44 @@ msgid ""
 "address into your address bar. Please note that the link is only valid for "
 "three days and that the link can only be used once."
 msgstr ""
+"Ви натиснули на недійсне посилання. Перевірте, чи скопіювали ви повну веб-"
+"адресу в адресний рядок. Зверніть увагу, що посилання дійсне лише три дні та "
+"може бути використане лише один раз."
 
 #: pretix/control/views/auth.py:334
 msgid "We were unable to find the user you requested a new password for."
 msgstr ""
+"Нам не вдалося знайти користувача, для якого ви запитували новий пароль."
 
 #: pretix/control/views/auth.py:367
 msgid "You can now login using your new password."
-msgstr ""
+msgstr "Тепер ви можете увійти, використовуючи свій новий пароль."
 
 #: pretix/control/views/auth.py:412
 msgid "Please try again."
-msgstr ""
+msgstr "Будь ласка, спробуйте ще раз."
 
 #: pretix/control/views/auth.py:481
 msgid "Invalid code, please try again."
-msgstr ""
+msgstr "Недійсний код, спробуйте ще раз."
 
 #: pretix/control/views/checkin.py:118
 #: pretix/eventyay_common/views/event.py:367
 #: pretix/eventyay_common/views/event.py:397
 msgid "You do not have permission to perform this action."
-msgstr ""
+msgstr "У вас немає дозволу на виконання цієї дії."
 
 #: pretix/control/views/checkin.py:140
 msgid "The selected check-ins have been reverted."
-msgstr ""
+msgstr "Вибрані реєстрації скасовано."
 
 #: pretix/control/views/checkin.py:170
 msgid "The selected tickets have been marked as checked in."
-msgstr ""
+msgstr "Вибрані квитки позначено як зареєстровані."
 
 #: pretix/control/views/checkin.py:253
 msgid "The new check-in list has been created."
-msgstr ""
+msgstr "Новий список реєстрації створено."
 
 #: pretix/control/views/checkin.py:260 pretix/control/views/checkin.py:303
 #: pretix/control/views/event.py:218 pretix/control/views/event.py:426
@@ -18515,101 +18529,103 @@ msgstr ""
 #: pretix/plugins/badges/views.py:70
 #: pretix/plugins/ticketoutputpdf/views.py:106
 msgid "We could not save your changes. See below for details."
-msgstr ""
+msgstr "Нам не вдалося зберегти ваші зміни. Докладніше див. нижче."
 
 #: pretix/control/views/checkin.py:282 pretix/control/views/checkin.py:319
 msgid "The requested list does not exist."
-msgstr ""
+msgstr "Запитаний список не існує."
 
 #: pretix/control/views/checkin.py:328
 msgid "The selected list has been deleted."
-msgstr ""
+msgstr "Вибраний список видалено."
 
 #: pretix/control/views/dashboards.py:81
 msgid "Attendees (ordered)"
-msgstr ""
+msgstr "Учасники (упорядковані)"
 
 #: pretix/control/views/dashboards.py:91
 msgid "Attendees (paid)"
-msgstr ""
+msgstr "Учасники (платні)"
 
 #: pretix/control/views/dashboards.py:102
 #, python-brace-format
 msgid "Total revenue ({currency})"
-msgstr ""
+msgstr "Загальний дохід ({currency})"
 
 #: pretix/control/views/dashboards.py:112
 msgid "Active products"
-msgstr ""
+msgstr "Активні продукти"
 
 #: pretix/control/views/dashboards.py:177
 msgid "available to give to people on waiting list"
-msgstr ""
+msgstr "доступно для надання людям у списку очікування"
 
 #: pretix/control/views/dashboards.py:187
 msgid "total waiting list length"
-msgstr ""
+msgstr "загальна довжина списку очікування"
 
 #: pretix/control/views/dashboards.py:216
 #, python-brace-format
 msgid "{quota} left"
-msgstr ""
+msgstr "{quota} ліворуч"
 
 #: pretix/control/views/dashboards.py:236
 msgid "Your ticket shop is"
-msgstr ""
+msgstr "Ваша каса квитків"
 
 #: pretix/control/views/dashboards.py:236
 msgid "Click here to change"
-msgstr ""
+msgstr "Натисніть тут, щоб змінити"
 
 #: pretix/control/views/dashboards.py:237
 msgid "live"
-msgstr ""
+msgstr "жити"
 
 #: pretix/control/views/dashboards.py:238
 msgid "live and in test mode"
-msgstr ""
+msgstr "в режимі реального часу та тестування"
 
 #: pretix/control/views/dashboards.py:239
 msgid "not yet public"
-msgstr ""
+msgstr "ще не оприлюднено"
 
 #: pretix/control/views/dashboards.py:240
 msgid "in private test mode"
-msgstr ""
+msgstr "у режимі приватного тестування"
 
 #: pretix/control/views/dashboards.py:268
 #, python-brace-format
 msgid "Present – {list}"
-msgstr ""
+msgstr "Подарунок – {list}"
 
 #: pretix/control/views/dashboards.py:286
 msgid "Welcome"
-msgstr ""
+msgstr "Ласкаво просимо"
 
 #: pretix/control/views/dashboards.py:292
 msgid "Get started with our setup tool"
-msgstr ""
+msgstr "Почніть роботу з нашим інструментом налаштування"
 
 #: pretix/control/views/dashboards.py:293
 msgid ""
 "To start selling tickets, you need to create products or quotas. The fastest "
 "way to create this is to use our setup tool."
 msgstr ""
+"Щоб почати продавати квитки, вам потрібно створити товари або квоти. "
+"Найшвидший спосіб створити це – скористатися нашим інструментом налаштування."
 
 #: pretix/control/views/dashboards.py:295
 msgid "Set up event"
-msgstr ""
+msgstr "Налаштувати подію"
 
 #: pretix/control/views/dashboards.py:481 pretix/control/views/typeahead.py:52
 msgctxt "subevent"
 msgid "No dates"
-msgstr ""
+msgstr "Без дат"
 
 #: pretix/control/views/dashboards.py:494
 msgid "Action required"
-msgstr ""
+msgstr "Потрібна дія"
 
 #: pretix/control/views/dashboards.py:498
 #: pretix/presale/templates/pretixpresale/event/fragment_subevent_list.html:38
@@ -18618,14 +18634,14 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/organizers/index.html:120
 #: pretix/presale/views/widget.py:345
 msgid "Sale over"
-msgstr ""
+msgstr "Розпродаж закінчився"
 
 #: pretix/control/views/dashboards.py:500
 #: pretix/presale/templates/pretixpresale/fragment_calendar.html:96
 #: pretix/presale/templates/pretixpresale/fragment_week_calendar.html:82
 #: pretix/presale/views/widget.py:353
 msgid "Soon"
-msgstr ""
+msgstr "Незабаром"
 
 #: pretix/control/views/dashboards.py:525
 #, python-brace-format
@@ -18641,26 +18657,28 @@ msgid ""
 "Your changes have been saved. Please note that it can take a short period of "
 "time until your changes become active."
 msgstr ""
+"Ваші зміни збережено. Зверніть увагу, що може знадобитися деякий час, перш "
+"ніж вони набудуть чинності."
 
 #: pretix/control/views/event.py:293
 msgid "Integrations"
-msgstr ""
+msgstr "Інтеграції"
 
 #: pretix/control/views/event.py:294
 msgid "Customizations"
-msgstr ""
+msgstr "Кастомізанції"
 
 #: pretix/control/views/event.py:295
 msgid "Output and export formats"
-msgstr ""
+msgstr "Формати виводу та експорту"
 
 #: pretix/control/views/event.py:296
 msgid "API features"
-msgstr ""
+msgstr "Функції API"
 
 #: pretix/control/views/event.py:302 pretix/control/views/event.py:303
 msgid "Other"
-msgstr ""
+msgstr "Інше"
 
 #: pretix/control/views/event.py:397
 msgid ""
