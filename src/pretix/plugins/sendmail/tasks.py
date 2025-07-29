@@ -1,3 +1,5 @@
+import logging
+
 from i18nfield.strings import LazyI18nString
 
 from pretix.base.email import get_email_context
@@ -7,6 +9,8 @@ from pretix.base.services.mail import SendMailException, mail
 from pretix.base.services.tasks import ProfiledEventTask
 from pretix.celery_app import app
 
+
+logger = logging.getLogger(__name__)
 
 @app.task(base=ProfiledEventTask, acks_late=True)
 def send_mails(
@@ -110,3 +114,42 @@ def send_mails(
                     )
             except SendMailException:
                 failures.append(o.email)
+
+
+@app.task(base=ProfiledEventTask, bind=True, max_retries=3, default_retry_delay=60, acks_late=True)
+def send_queued_mail(self, event_id: int, queued_mail_id: int):
+    from pretix.plugins.sendmail.models import QueuedMail
+    from celery.exceptions import MaxRetriesExceededError
+
+    if isinstance(event_id, Event):
+        original_event_id = event_id.pk
+        event = event_id
+    else:
+        original_event_id = event_id
+        event = Event.objects.get(id=original_event_id)
+
+    try:
+        event = Event.objects.get(id=original_event_id)
+
+        qm = QueuedMail.objects.get(pk=queued_mail_id, event=event)
+        result = qm.send(async_send=True)
+
+        if not result:
+            logger.warning("[SendMail] QueuedMail ID %s: no recipients to send to.", queued_mail_id)
+        elif not qm.sent_at:
+            logger.warning("[SendMail] QueuedMail ID %s: partially sent, some recipients failed.", queued_mail_id)
+        else:
+            logger.info("[SendMail] QueuedMail ID %s: all emails sent successfully.", queued_mail_id)
+
+    except Event.DoesNotExist:
+        logger.error("[SendMail] Event ID %s not found.", original_event_id)
+
+    except QueuedMail.DoesNotExist:
+        logger.error("[SendMail] QueuedMail ID %s not found for event ID %s.", queued_mail_id, original_event_id)
+
+    except Exception as exc:
+        logger.exception("[SendMail] Unexpected error for QueuedMail ID %s", queued_mail_id)
+        try:
+            self.retry(exc=exc, args=[original_event_id, queued_mail_id])
+        except MaxRetriesExceededError:
+            logger.error("[SendMail] Max retries exceeded for QueuedMail ID %s", queued_mail_id)

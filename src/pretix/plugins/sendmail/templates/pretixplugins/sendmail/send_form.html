@@ -14,56 +14,71 @@
     {% block inner %}
         <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
-            {% bootstrap_form_errors form %}
-            {% bootstrap_field form.recipients layout='horizontal' %}
-            {% bootstrap_field form.sendto layout='horizontal' %}
-            {% if form.subevent %}
-                {% bootstrap_field form.subevent layout='horizontal' %}
-                {% bootstrap_field form.subevents_from layout='horizontal' %}
-                {% bootstrap_field form.subevents_to layout='horizontal' %}
-            {% endif %}
-            {% bootstrap_field form.created_from layout='horizontal' %}
-            {% bootstrap_field form.created_to layout='horizontal' %}
-            {% bootstrap_field form.items layout='horizontal' %}
-            <div class="row">
-                <div class="col-md-9 col-md-offset-3">
-                    <div class="panel-group">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <label data-toggle="collapse" data-target="#checkin_filter">
-                                    {{ form.filter_checkins }} {{ form.filter_checkins.label }}
-                                </label>
-                            </div>
-                            <div id="checkin_filter" class="panel-body panel-collapse collapse {% if form.filter_checkins.value %} in {% else %} out {% endif %}">
-                                {% bootstrap_field form.not_checked_in layout='horizontal' %}
-                                {% bootstrap_field form.checkin_lists layout='horizontal' %}
+            
+            <div class="tabbed-form">
+                <!-- Recipients Section -->
+                <fieldset>
+                    <legend>{% translate "Recipients" %}</legend>
+                    {% bootstrap_form_errors form %}
+                    {% bootstrap_field form.recipients layout='horizontal' %}
+                    {% bootstrap_field form.sendto layout='horizontal' %}
+                    {% if form.subevent %}
+                        {% bootstrap_field form.subevent layout='horizontal' %}
+                        {% bootstrap_field form.subevents_from layout='horizontal' %}
+                        {% bootstrap_field form.subevents_to layout='horizontal' %}
+                    {% endif %}
+                    {% bootstrap_field form.created_from layout='horizontal' %}
+                    {% bootstrap_field form.created_to layout='horizontal' %}
+                    {% bootstrap_field form.items layout='horizontal' %}
+                    <div class="row">
+                        <div class="col-md-9 col-md-offset-3">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <label data-toggle="collapse" data-target="#checkin_filter">
+                                            {{ form.filter_checkins }} {{ form.filter_checkins.label }}
+                                        </label>
+                                    </div>
+                                    <div id="checkin_filter" class="panel-body panel-collapse collapse {% if form.filter_checkins.value %} in {% else %} out {% endif %}">
+                                        {% bootstrap_field form.not_checked_in layout='horizontal' %}
+                                        {% bootstrap_field form.checkin_lists layout='horizontal' %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </fieldset>
+                
+                <!-- Content Section -->
+                <fieldset>
+                    <legend>{% translate "Content" %}</legend>
+                    {% bootstrap_form_errors form %}
+                    {% bootstrap_field form.subject layout='horizontal' %}
+                    {% bootstrap_field form.message layout='horizontal' %}
+                    {% bootstrap_field form.attachment layout='horizontal' %}
+                </fieldset>
             </div>
-            {% bootstrap_field form.subject layout='horizontal' %}
-            {% bootstrap_field form.message layout='horizontal' %}
-            {% bootstrap_field form.attachment layout='horizontal' %}
+
             {% if request.method == "POST" %}
-            <fieldset>
-            <legend>{% trans "E-mail preview" %}</legend>
-                <div class="tab-pane mail-preview-group">
-                    {% for locale, out in output.items %}
-                        <div lang="{{ locale }}" class="mail-preview">
-                            <strong>{{ out.subject|safe }}</strong><br><br>
-                            {{ out.html|safe }}
-                        </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
+                <fieldset>
+                <legend>{% translate "E-mail preview" %}</legend>
+                    <div class="tab-pane mail-preview-group">
+                        {% for locale, out in output.items %}
+                            <div lang="{{ locale }}" class="mail-preview">
+                                <strong>{{ out.subject|safe }}</strong><br><br>
+                                {{ out.html|safe }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
             {% endif %}
+            
             <div class="form-group submit-group">
-                <button type="submit" class="btn btn-default btn-save pull-left" name="action" value="preview">
-                {% trans "Preview email" %}
+                <button type="submit" class="btn btn-default btn-save" name="action" value="preview">
+                    {% translate "Preview email" %}
                 </button>
                 <button type="submit" class="btn btn-primary btn-save">
-                    {% trans "Send" %}
+                    {% translate "Send to outbox" %}
                 </button>
             </div>
         </form>

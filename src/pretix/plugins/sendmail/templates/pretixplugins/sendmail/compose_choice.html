@@ -1,0 +1,37 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}{% translate "Compose emails" %}{% endblock %}
+
+{% block content %}
+<nav id="event-nav" class="header-nav">
+    <div class="navigation">
+        <div class="navigation-title">
+            <h1>{% translate "Compose emails" %}</h1>
+        </div>
+        {% include "pretixcontrol/event/component_link.html" %}
+    </div>
+</nav>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        <h3 class="clearfix">
+            <a href="{% url 'plugins:sendmail:send' organizer=request.event.organizer.slug event=request.event.slug %}" class="text">
+                {% translate "Attendees, Orders, Tickets" %}
+                <i class="fa fa-chevron-right pull-right"></i>
+            </a>
+        </h3>
+        <p>{% translate "Send an email to attendees, orders, ticket buyers, based on their order status and other filters." %}</p>
+    </li>
+    <li class="list-group-item">
+        <h3 class="clearfix">
+            <a href="{% url 'plugins:sendmail:compose_email_teams' organizer=request.event.organizer.slug event=request.event.slug %}" class="text">
+                {% translate "Team members" %}
+                <i class="fa fa-chevron-right pull-right"></i>
+            </a>
+        </h3>
+        <p>{% translate "Send an email to your team members." %}</p>
+    </li>
+</ul>
+{% endblock %}
