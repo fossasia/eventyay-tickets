@@ -1,12 +1,12 @@
 from logging import getLogger
 
-from django.views.generic.list import ListView
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.views.generic.list import ListView
 
 from pretix.base.models import Order
-from ..forms.filters import UserOrderFilterForm
 
+from ..forms.filters import UserOrderFilterForm
 
 logger = getLogger(__name__)
 
