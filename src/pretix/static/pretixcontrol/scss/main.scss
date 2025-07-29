@@ -19,6 +19,10 @@
 @import "../../colorpicker/bootstrap-colorpicker.scss";
 @import "../../eventyay-common/scss/_voucher.scss";
 @import "../../eventyay-common/scss/custom.scss";
+@import "_sidebar.scss";
+@import "../../pretixbase/scss/_rtl.scss";
+@import "../../bootstrap/scss/_rtl.scss";
+@import "_rtl.scss";
 
 /* See https://github.com/pretix/pretix/pull/761 */
 .bootstrap-datetimepicker-widget table td span {
@@ -34,6 +38,7 @@ footer {
 nav.navbar {
     margin: 0;
 }
+
 .navbar-brand img {
     height: 100%;
     width: auto;
@@ -46,7 +51,7 @@ nav.navbar {
 }
 
 nav.navbar .danger, nav.navbar .danger:hover, nav.navbar .danger:active {
-    background: $brand-danger !important;
+    background: $brand-danger;
 }
 
 .navbar-header .navbar-events {
@@ -118,7 +123,7 @@ h1 .btn-sm {
 }
 .flipped-scroll-wrapper, .flipped-scroll-inner {
     /* This nasty hack puts the scroll bar at the top, so the user really
-       notices that there is one */
+        notices that there is one */
     transform: rotateX(180deg);
     -ms-transform: rotateX(180deg); /* IE 9 */
     -webkit-transform: rotateX(180deg); /* Safari and Chrome */
@@ -435,7 +440,7 @@ body.loading #wrapper {
     }
 }
 
-.dl-horizontal dt  {
+.dl-horizontal dt {
     white-space: normal;
 }
 td > .dl-horizontal {
