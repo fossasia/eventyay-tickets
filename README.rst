@@ -37,7 +37,7 @@ Getting Started
 
    .. code-block:: bash
 
-      git clone https://github.com/Sak1012/eventyay-tickets.git
+      git clone https://github.com/fossasia/eventyay-tickets.git
 
 2. **Create and activate a virtual environment**:
 
