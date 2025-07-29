@@ -51,9 +51,6 @@ class RateLimitedOAuth2Client(OAuth2Client):
             'Accept': 'application/json',
         })
         
-        # Set reasonable timeout
-        session.timeout = 30
-        
         return session
     
     def _get_allauth_version(self) -> str:
@@ -67,27 +64,57 @@ class RateLimitedOAuth2Client(OAuth2Client):
     def _check_rate_limit(self) -> bool:
         """
         Check if we're within rate limits. Returns True if we can proceed.
-        Implements a sliding window rate limiter.
+        Implements a sliding window rate limiter with atomic operations to prevent race conditions.
         """
         now = time.time()
         window_start = now - self.RATE_LIMIT_WINDOW
         
         # Get current requests in the window
         requests_key = f"{self.RATE_LIMIT_KEY}:requests"
-        current_requests = cache.get(requests_key, [])
+        lock_key = f"{requests_key}:lock"
         
-        # Filter out old requests outside the window
-        current_requests = [req_time for req_time in current_requests if req_time > window_start]
-        
-        # Check if we're within limits
-        if len(current_requests) >= self.MAX_REQUESTS_PER_WINDOW:
-            return False
-        
-        # Add current request timestamp
-        current_requests.append(now)
-        cache.set(requests_key, current_requests, self.RATE_LIMIT_WINDOW * 2)
-        
-        return True
+        # Try to acquire lock for atomic operations
+        try:
+            # Use Django's cache framework lock if available (Django 4.0+)
+            if hasattr(cache, 'lock'):
+                with cache.lock(lock_key, timeout=5):
+                    current_requests = cache.get(requests_key, [])
+                    
+                    # Filter out old requests outside the window
+                    current_requests = [req_time for req_time in current_requests if req_time > window_start]
+                    
+                    # Check if we're within limits
+                    if len(current_requests) >= self.MAX_REQUESTS_PER_WINDOW:
+                        return False
+                    
+                    # Add current request timestamp
+                    current_requests.append(now)
+                    cache.set(requests_key, current_requests, self.RATE_LIMIT_WINDOW * 2)
+                    
+                    return True
+            else:
+                # Fallback for cache backends without locking support
+                # This has a slight race condition but is better than crashing
+                current_requests = cache.get(requests_key, [])
+                
+                # Filter out old requests outside the window
+                current_requests = [req_time for req_time in current_requests if req_time > window_start]
+                
+                # Check if we're within limits
+                if len(current_requests) >= self.MAX_REQUESTS_PER_WINDOW:
+                    return False
+                
+                # Add current request timestamp
+                current_requests.append(now)
+                cache.set(requests_key, current_requests, self.RATE_LIMIT_WINDOW * 2)
+                
+                return True
+                
+        except Exception as e:
+            # If cache operations fail, log and allow the request to proceed
+            # This prevents cache failures from breaking OAuth entirely
+            logger.warning(f"Rate limit check failed due to cache error: {e}")
+            return True
     
     def _get_backoff_delay(self, attempt: int) -> float:
         """Calculate exponential backoff delay."""
@@ -109,6 +136,10 @@ class RateLimitedOAuth2Client(OAuth2Client):
         """
         Make HTTP request with rate limiting and retry logic.
         """
+        # Set reasonable timeout if not provided
+        if 'timeout' not in kwargs:
+            kwargs['timeout'] = 30
+            
         for attempt in range(max_retries + 1):
             # Check rate limit before making request
             if not self._check_rate_limit():
@@ -178,7 +209,13 @@ class RateLimitedOAuth2Client(OAuth2Client):
             headers={'Accept': 'application/json'}
         )
         
-        return response.json()
+        try:
+            return response.json()
+        except ValueError:
+            # Response was not JSON, or decoding failed
+            raise Exception(
+                f"Failed to decode JSON from MediaWiki API response: {response.text[:200]}"
+            )
     
     def get_user_info(self, access_token):
         """Override to use rate-limited requests for user info."""
@@ -199,7 +236,13 @@ class RateLimitedOAuth2Client(OAuth2Client):
             headers=headers
         )
         
-        return response.json()
+        try:
+            return response.json()
+        except ValueError:
+            # Response was not JSON, or decoding failed
+            raise Exception(
+                f"Failed to decode JSON from MediaWiki API response: {response.text[:200]}"
+            )
 
 
 class MediaWikiProvider(BaseMediaWikiProvider):

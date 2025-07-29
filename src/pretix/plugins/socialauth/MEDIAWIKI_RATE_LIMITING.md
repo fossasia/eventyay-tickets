@@ -1,10 +1,10 @@
 # MediaWiki OAuth Rate Limiting Fix
 
-This document describes the solution implemented to fix MediaWiki OAuth rate limiting issues in EventyAY Tickets.
+This document describes the solution implemented to fix MediaWiki OAuth rate limiting issues in EventyAY-Tickets.
 
 ## Problem
 
-The EventyAY Tickets application was experiencing rate limiting when making OAuth requests to Wikimedia's OAuth endpoints (meta.wikimedia.org). This was causing authentication failures for users trying to log in with their MediaWiki accounts.
+The EventyAY-Tickets application was experiencing rate limiting when making OAuth requests to Wikimedia's OAuth endpoints (meta.wikimedia.org). This was causing authentication failures for users trying to log in with their MediaWiki accounts.
 
 ## Root Cause
 
@@ -37,9 +37,9 @@ Added configuration for custom User-Agent strings that comply with Wikimedia req
 
 ```python
 MEDIAWIKI_USER_AGENT = (
-    f"EventyAY-Tickets/{instance_name} "
-    f"({site_url}; {contact_email}) "
-    f"requests/{requests_version}"
+    f"EventyAY-Tickets/{app_version} "
+    f"({app_site_url}; {app_contact_email}) "
+    f"requests/{app_requests_version}"
 )
 ```
 
@@ -106,9 +106,9 @@ Add to your settings file:
 ```python
 # MediaWiki OAuth settings for Wikimedia compliance
 MEDIAWIKI_USER_AGENT = (
-    f"EventyAY-Tickets/{YOUR_VERSION} "
-    f"({YOUR_SITE_URL}; {YOUR_CONTACT_EMAIL}) "
-    f"requests/{REQUESTS_VERSION}"
+    f"EventyAY-Tickets/{app_version} "
+    f"({app_site_url}; {app_contact_email}) "
+    f"requests/{app_requests_version}"
 )
 ```
 

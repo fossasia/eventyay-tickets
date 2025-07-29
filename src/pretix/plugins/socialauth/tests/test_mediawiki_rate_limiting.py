@@ -147,6 +147,25 @@ class TestRateLimitedOAuth2Client(TestCase):
         mock_sleep.assert_any_call(5.0)
     
     @patch('time.sleep')
+    def test_make_request_malformed_retry_after_header(self, mock_sleep):
+        """Test fallback logic when Retry-After header is non-integer or malformed."""
+        # Simulate a 429 response with a malformed Retry-After header
+        rate_limited_response = Mock(spec=requests.Response)
+        rate_limited_response.status_code = 429
+        rate_limited_response.headers = {'Retry-After': 'notanumber'}
+
+        success_response = Mock(spec=requests.Response)
+        success_response.status_code = 200
+
+        with patch.object(self.client.session, 'request', side_effect=[rate_limited_response, success_response]):
+            with patch.object(self.client, '_check_rate_limit', return_value=True):
+                response = self.client._make_request_with_retries('POST', 'https://example.com')
+
+        self.assertEqual(response.status_code, 200)
+        # Should fallback to exponential backoff (e.g., 1.0) if Retry-After is malformed
+        mock_sleep.assert_any_call(1.0)
+
+    @patch('time.sleep')
     def test_make_request_max_retries_exceeded(self, mock_sleep):
         """Test that exception is raised after max retries."""
         rate_limited_response = Mock(spec=requests.Response)
@@ -185,6 +204,23 @@ class TestRateLimitedOAuth2Client(TestCase):
         self.assertEqual(response.status_code, 200)
         mock_sleep.assert_called()
     
+    @patch('time.sleep')
+    def test_cache_backend_failure_handling(self, mock_sleep):
+        """Test that cache backend exceptions are handled gracefully."""
+        mock_response = Mock(spec=requests.Response)
+        mock_response.status_code = 200
+        mock_response.json.return_value = {'access_token': 'test_token'}
+        
+        # Mock cache.get to raise an exception
+        with patch('django.core.cache.cache.get', side_effect=Exception("Cache connection failed")):
+            with patch.object(self.client.session, 'request', return_value=mock_response):
+                # Should not crash and should allow the request to proceed
+                response = self.client._make_request_with_retries('POST', 'https://example.com')
+        
+        self.assertEqual(response.status_code, 200)
+        # Should not sleep since rate limiting is bypassed due to cache failure
+        mock_sleep.assert_not_called()
+    
     def test_get_access_token_integration(self):
         """Test get_access_token method integration."""
         mock_response = Mock(spec=requests.Response)
@@ -203,6 +239,19 @@ class TestRateLimitedOAuth2Client(TestCase):
             'expires_in': 3600
         }
         self.assertEqual(result, expected_result)
+    
+    def test_get_access_token_json_error_handling(self):
+        """Test get_access_token handles non-JSON responses gracefully."""
+        mock_response = Mock(spec=requests.Response)
+        mock_response.text = "Not a JSON response"
+        mock_response.json.side_effect = ValueError("No JSON object could be decoded")
+        
+        with patch.object(self.client, '_make_request_with_retries', return_value=mock_response):
+            with self.assertRaises(Exception) as context:
+                self.client.get_access_token('test_code', 'https://example.com/callback')
+            
+            self.assertIn('Failed to decode JSON from MediaWiki API response', str(context.exception))
+            self.assertIn('Not a JSON response', str(context.exception))
     
     def test_get_user_info_integration(self):
         """Test get_user_info method integration."""
@@ -223,6 +272,19 @@ class TestRateLimitedOAuth2Client(TestCase):
         
         self.assertIn('query', result)
         self.assertIn('userinfo', result['query'])
+    
+    def test_get_user_info_json_error_handling(self):
+        """Test get_user_info handles non-JSON responses gracefully."""
+        mock_response = Mock(spec=requests.Response)
+        mock_response.text = "MediaWiki API error: Invalid token"
+        mock_response.json.side_effect = ValueError("No JSON object could be decoded")
+        
+        with patch.object(self.client, '_make_request_with_retries', return_value=mock_response):
+            with self.assertRaises(Exception) as context:
+                self.client.get_user_info('test_access_token')
+            
+            self.assertIn('Failed to decode JSON from MediaWiki API response', str(context.exception))
+            self.assertIn('MediaWiki API error: Invalid token', str(context.exception))
 
 
 @pytest.mark.django_db
