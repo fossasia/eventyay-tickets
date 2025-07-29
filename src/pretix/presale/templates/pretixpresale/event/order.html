@@ -181,7 +181,8 @@
             </div>
         {% endif %}
     {% endif %}
-    {% include "pretixpresale/event/fragment_nav.html" %}
+    {% include "pretixpresale/event/fragment_nav.html" with with_margin=with_margin is_video_plugin_enabled=is_video_plugin_enabled %}
+
     {% include "pretixpresale/event/fragment_downloads.html" with position_page=False %}
     <div class="panel panel-primary cart">
         <div class="panel-heading">

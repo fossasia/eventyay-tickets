@@ -1,3 +1,4 @@
+import importlib.util
 import inspect
 import json
 import mimetypes
@@ -5,6 +6,7 @@ import os
 import re
 from collections import OrderedDict
 from decimal import Decimal
+from importlib import import_module
 
 from django import forms
 from django.conf import settings
@@ -80,6 +82,13 @@ from pretix.presale.views import (
     iframe_entry_view_wrapper,
 )
 from pretix.presale.views.robots import NoSearchIndexViewMixin
+
+package_name = 'pretix_venueless'
+
+if importlib.util.find_spec(package_name) is not None:
+    pretix_venueless = import_module(package_name)
+else:
+    pretix_venueless = None
 
 
 class OrderDetailMixin(NoSearchIndexViewMixin):
@@ -297,6 +306,19 @@ class OrderDetails(EventViewMixin, OrderDetailMixin, CartMixin, TicketPageMixin,
             if r.provider == 'giftcard':
                 gc = GiftCard.objects.get(pk=r.info_data.get('gift_card'))
                 r.giftcard = gc
+
+        ctx['is_video_plugin_enabled'] = False
+
+        if (
+            getattr(
+                getattr(getattr(pretix_venueless, 'apps', None), 'PluginApp', None),
+                'name',
+                None,
+            )
+            in self.request.event.get_plugins()
+        ):
+            ctx['is_video_plugin_enabled'] = True
+
 
         return ctx
 

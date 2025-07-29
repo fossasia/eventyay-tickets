@@ -34,7 +34,8 @@
         </script>
     {% endautoescape %}
     <main aria-label="{% if show_cart %}{% trans "Your cart, general information, add products to your cart" %}{% else %}{% trans "General information, add products to your cart" %}{% endif %}">
-        {% include "pretixpresale/event/fragment_nav.html" %}
+        {% include "pretixpresale/event/fragment_nav.html" with with_margin=with_margin is_video_plugin_enabled=is_video_plugin_enabled %}
+
     {% if show_cart %}
         <details class="panel panel-primary cart" open>
             <summary class="panel-heading">
