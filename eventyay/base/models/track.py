@@ -4,8 +4,15 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.models.mixins import OrderedModel, PretalxModel
-from pretalx.common.urls import EventUrls
+from .mixins import OrderedModel, PretalxModel
+from eventyay.common.urls import EventUrls
+from eventyay.talk_rules.agenda import is_agenda_visible
+from eventyay.talk_rules.event import can_change_event_settings
+from eventyay.talk_rules.submission import (
+    is_cfp_open,
+    orga_can_change_submissions,
+    use_tracks,
+)
 
 
 class Track(OrderedModel, PretalxModel):
@@ -17,7 +24,7 @@ class Track(OrderedModel, PretalxModel):
     """
 
     event = models.ForeignKey(
-        to="event.Event", on_delete=models.PROTECT, related_name="tracks"
+        to="Event", on_delete=models.PROTECT, related_name="tracks"
     )
     name = I18nCharField(
         max_length=200,
@@ -34,7 +41,11 @@ class Track(OrderedModel, PretalxModel):
             RegexValidator("#([0-9A-Fa-f]{3}){1,2}"),
         ],
     )
-    position = models.PositiveIntegerField(null=True, blank=True)
+    position = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="The position field is used to determine the order that tracks are displayed in (lowest first).",
+    )
     requires_access_code = models.BooleanField(
         verbose_name=_("Requires access code"),
         help_text=_(
@@ -43,16 +54,32 @@ class Track(OrderedModel, PretalxModel):
         default=False,
     )
 
+    log_prefix = "pretalx.track"
+
     class Meta:
         ordering = ("position",)
+        rules_permissions = {
+            "list": use_tracks & (is_agenda_visible | orga_can_change_submissions),
+            "view": use_tracks
+            & (is_cfp_open | is_agenda_visible | orga_can_change_submissions),
+            "orga_list": use_tracks & orga_can_change_submissions,
+            "orga_view": use_tracks & orga_can_change_submissions,
+            "create": use_tracks & can_change_event_settings,
+            "update": use_tracks & can_change_event_settings,
+            "delete": use_tracks & can_change_event_settings,
+        }
 
     class urls(EventUrls):
         base = edit = "{self.event.cfp.urls.tracks}{self.pk}/"
-        delete = "{base}delete"
+        delete = "{base}delete/"
         prefilled_cfp = "{self.event.cfp.urls.public}?track={self.slug}"
 
     def __str__(self) -> str:
         return str(self.name)
+
+    @property
+    def log_parent(self):
+        return self.event
 
     @staticmethod
     def get_order_queryset(event):

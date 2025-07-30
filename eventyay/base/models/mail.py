@@ -164,7 +164,7 @@ class MailTemplate(PretalxModel):
             remove any logging and traces.
         :param commit: Set ``False`` to return an unsaved object.
         """
-        from pretalx.person.models import User
+        from eventyay.base.models import User
 
         if isinstance(user, str):
             address = user
@@ -372,7 +372,7 @@ class QueuedMail(PretalxModel):
         return f"OutboxMail(to={self.to}, subject={self.subject}, sent={sent})"
 
     def make_html(self):
-        from pretalx.common.templatetags.rich_text import render_markdown_abslinks
+        from eventyay.base.templatetags.rich_text import render_markdown_abslinks
 
         event = getattr(self, "event", None)
         sig = None
@@ -438,7 +438,7 @@ class QueuedMail(PretalxModel):
             # so there is nothing left for us to do.
             return
 
-        from pretalx.common.mail import mail_send_task
+        from eventyay.common.mail import mail_send_task
 
         text = self.make_text()
         body_html = self.make_html()

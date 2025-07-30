@@ -3,8 +3,11 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.models.mixins import PretalxModel
-from pretalx.common.urls import EventUrls
+from .mixins import PretalxModel
+from eventyay.common.urls import EventUrls
+from eventyay.talk_rules.agenda import is_agenda_visible
+from eventyay.talk_rules.event import can_change_event_settings
+from eventyay.talk_rules.submission import is_cfp_open, orga_can_change_submissions
 
 
 def pleasing_number(number):
@@ -24,7 +27,7 @@ class SubmissionType(PretalxModel):
     """
 
     event = models.ForeignKey(
-        to="event.Event", related_name="submission_types", on_delete=models.CASCADE
+        to="Event", related_name="submission_types", on_delete=models.CASCADE
     )
     name = I18nCharField(max_length=100, verbose_name=_("name"))
     default_duration = models.PositiveIntegerField(
@@ -48,10 +51,24 @@ class SubmissionType(PretalxModel):
         default=False,
     )
 
+    log_prefix = "pretalx.submission_type"
+
+    class Meta:
+        ordering = ["default_duration"]
+        rules_permissions = {
+            "list": is_cfp_open | is_agenda_visible | orga_can_change_submissions,
+            "view": is_cfp_open | is_agenda_visible | orga_can_change_submissions,
+            "orga_list": orga_can_change_submissions,
+            "orga_view": orga_can_change_submissions,
+            "create": can_change_event_settings,
+            "update": can_change_event_settings,
+            "delete": can_change_event_settings,
+        }
+
     class urls(EventUrls):
         base = edit = "{self.event.cfp.urls.types}{self.pk}/"
         default = "{base}default"
-        delete = "{base}delete"
+        delete = "{base}delete/"
         prefilled_cfp = "{self.event.cfp.urls.public}?submission_type={self.slug}"
 
     def __str__(self) -> str:
@@ -71,6 +88,10 @@ class SubmissionType(PretalxModel):
         return _("{name} ({duration} minutes)").format(
             name=self.name, duration=self.default_duration
         )
+
+    @property
+    def log_parent(self):
+        return self.event
 
     @property
     def slug(self) -> str:

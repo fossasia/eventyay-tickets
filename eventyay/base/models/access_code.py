@@ -103,7 +103,7 @@ class SubmitterAccessCode(GenerateCode, PretalxModel):
         return self.maximum_uses - self.redeemed
 
     def send_invite(self, to, subject, text):
-        from pretalx.mail.models import QueuedMail
+        from eventyay.base.models import QueuedMail
 
         to = to.split(",") if isinstance(to, str) else to
         for invite in to:

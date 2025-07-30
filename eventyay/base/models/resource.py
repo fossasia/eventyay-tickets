@@ -6,9 +6,9 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
-from pretalx.common.models.mixins import PretalxModel
-from pretalx.common.text.path import path_with_hash
-from pretalx.common.urls import get_base_url
+from .mixins import PretalxModel
+from eventyay.common.text.path import path_with_hash
+from eventyay.common.urls import get_base_url
 
 
 def resource_path(instance, filename):
@@ -20,7 +20,7 @@ class Resource(PretalxModel):
     """Resources are file uploads belonging to a :class:`~pretalx.submission.models.submission.Submission`."""
 
     submission = models.ForeignKey(
-        to="submission.Submission", related_name="resources", on_delete=models.PROTECT
+        to="Submission", related_name="resources", on_delete=models.PROTECT
     )
     resource = models.FileField(
         verbose_name=_("File"),

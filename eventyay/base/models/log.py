@@ -323,7 +323,7 @@ class ActivityLog(models.Model):
 
     @cached_property
     def display(self):
-        from pretalx.common.signals import activitylog_display
+        from eventyay.common.signals import activitylog_display
 
         for _receiver, response in activitylog_display.send(
             self.event, activitylog=self
@@ -338,7 +338,7 @@ class ActivityLog(models.Model):
     @cached_property
     def display_object(self) -> str:
         """Returns a link (formatted HTML) to the object in question."""
-        from pretalx.common.signals import activitylog_object_link
+        from eventyay.common.signals import activitylog_object_link
 
         if not self.content_object:
             return ""
