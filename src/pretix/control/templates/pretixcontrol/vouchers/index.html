@@ -136,6 +136,10 @@
                             </th>
                         {% endif %}
                         <th></th>
+                        <th>{% trans "Min. usages" %}</th>
+                        <th>{% trans "Free add-ons" %}</th>
+                        <th>{% trans "Include bundled" %}</th>
+                        <th>{% trans "Exhibitor" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -191,6 +195,27 @@
                                     <span class="fa fa-copy"></span>
                                 </a>
                                 <a href="{% url "control:event.voucher.delete" organizer=request.event.organizer.slug event=request.event.slug voucher=v.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            </td>
+                            <td>{{ v.minimum_usages }}</td>
+                            <td>
+                                {% if v.free_addons %}
+                                    <span class="label label-success">{% trans "Yes" %}</span>
+                                {% else %}
+                                    <span class="label label-default">{% trans "No" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if v.include_bundled %}
+                                    <span class="label label-success">{% trans "Yes" %}</span>
+                                {% else %}
+                                    <span class="label label-default">{% trans "No" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ v.exhibitor }}
+                                {% if v.exhibitor_comment %}
+                                    <br><small class="text-muted">{{ v.exhibitor_comment }}</small>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
