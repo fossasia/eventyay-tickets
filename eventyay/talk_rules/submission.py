@@ -54,7 +54,7 @@ def is_cfp_open(user, obj):
 
 @rules.predicate
 def are_featured_submissions_visible(user, event):
-    from pretalx.agenda.rules import is_agenda_visible
+    from eventyay.talk_rules.agenda import is_agenda_visible
 
     show_featured = event.get_feature_flag("show_featured")
     if not event.is_public or show_featured == "never":
@@ -78,7 +78,7 @@ def is_speaker(user, obj):
 
 @rules.predicate
 def can_be_withdrawn(user, obj):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     return obj and SubmissionStates.WITHDRAWN in SubmissionStates.valid_next_states.get(
         obj.state, []
@@ -87,7 +87,7 @@ def can_be_withdrawn(user, obj):
 
 @rules.predicate
 def can_be_rejected(user, obj):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     return obj and SubmissionStates.REJECTED in SubmissionStates.valid_next_states.get(
         obj.state, []
@@ -96,7 +96,7 @@ def can_be_rejected(user, obj):
 
 @rules.predicate
 def can_be_accepted(user, obj):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     return obj and SubmissionStates.ACCEPTED in SubmissionStates.valid_next_states.get(
         obj.state, []
@@ -105,7 +105,7 @@ def can_be_accepted(user, obj):
 
 @rules.predicate
 def can_be_confirmed(user, obj):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     return obj and SubmissionStates.CONFIRMED in SubmissionStates.valid_next_states.get(
         obj.state, []
@@ -114,7 +114,7 @@ def can_be_confirmed(user, obj):
 
 @rules.predicate
 def can_be_canceled(user, obj):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     return obj and SubmissionStates.CANCELED in SubmissionStates.valid_next_states.get(
         obj.state, []
@@ -123,7 +123,7 @@ def can_be_canceled(user, obj):
 
 @rules.predicate
 def can_be_removed(user, obj):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     return obj and SubmissionStates.DELETED in SubmissionStates.valid_next_states.get(
         obj.state, []
@@ -137,7 +137,7 @@ def can_be_edited(user, obj):
 
 @rules.predicate
 def can_request_speakers(user, submission):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     return (
         submission.state != SubmissionStates.DRAFT
@@ -182,7 +182,7 @@ def can_view_reviews(user, obj):
 
 @rules.predicate
 def can_be_reviewed(user, obj):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     if not obj:
         return False
@@ -210,8 +210,8 @@ def questions_for_user(event, user):
     """Used to retrieve synced querysets in the orga list and the API list."""
     from django.db.models import Q
 
-    from pretalx.orga.rules import can_view_speaker_names
-    from pretalx.submission.models import QuestionTarget
+    from eventyay.talk_rules.orga import can_view_speaker_names
+    from eventyay.base.models import TalkQuestionTarget
 
     if user.has_perm("submission.update_question", event):
         # Organisers with edit permissions can see everything
@@ -222,7 +222,7 @@ def questions_for_user(event, user):
         and can_view_speaker_names(user, event)
     ):
         return event.questions(manager="all_objects").filter(
-            Q(is_visible_to_reviewers=True) | Q(target=QuestionTarget.REVIEWER),
+            Q(is_visible_to_reviewers=True) | Q(target= TalkQuestionTarget.REVIEWER),
             active=True,
         )
     if user.has_perm("submission.orga_list_question", event):
@@ -318,7 +318,7 @@ def submission_comments_active(user, obj):
 
 def speaker_profiles_for_user(event, user, submissions=None):
     submissions = submissions or submissions_for_user(event, user)
-    from pretalx.person.models import SpeakerProfile, User
+    from eventyay.base.models import SpeakerProfile, User
 
     return SpeakerProfile.objects.filter(
         event=event, user__in=User.objects.filter(submissions__in=submissions)
@@ -331,7 +331,7 @@ def get_reviewable_submissions(event, user, queryset=None):
     Excludes submissions this user has submitted, and takes track team permissions,
     assignments and review phases into account. The result is ordered by review count.
     """
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     if queryset is None:
         queryset = event.submissions.filter(state=SubmissionStates.SUBMITTED)
@@ -343,7 +343,7 @@ def get_reviewable_submissions(event, user, queryset=None):
 
 
 def get_missing_reviews(event, user, ignore=None):
-    from pretalx.submission.models import SubmissionStates
+    from eventyay.base.models import SubmissionStates
 
     queryset = event.submissions.filter(state=SubmissionStates.SUBMITTED).exclude(
         reviews__user=user

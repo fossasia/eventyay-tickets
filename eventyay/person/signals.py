@@ -5,7 +5,7 @@ from eventyay.common.signals import register_data_exporters
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_csv_speaker")
 def register_speaker_csv_exporter(sender, **kwargs):
-    from pretalx.person.exporters import CSVSpeakerExporter
+    from eventyay.person.exporters import CSVSpeakerExporter
 
     return CSVSpeakerExporter
 

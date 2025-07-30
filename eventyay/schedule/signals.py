@@ -21,7 +21,7 @@ and ``user`` (which may be ``None``).
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_ical")
 def register_ical_exporter(sender, **kwargs):
-    from pretalx.schedule.exporters import ICalExporter
+    from eventyay.schedule.exporters import ICalExporter
 
     return ICalExporter
 
@@ -35,14 +35,14 @@ def register_my_ical_exporter(sender, **kwargs):
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_faved_ical")
 def register_faved_ical_exporter(sender, **kwargs):
-    from pretalx.schedule.exporters import FavedICalExporter
+    from eventyay.schedule.exporters import FavedICalExporter
 
     return FavedICalExporter
 
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_xml")
 def register_xml_exporter(sender, **kwargs):
-    from pretalx.schedule.exporters import FrabXmlExporter
+    from eventyay.schedule.exporters import FrabXmlExporter
 
     return FrabXmlExporter
 
@@ -56,7 +56,7 @@ def register_my_xml_exporter(sender, **kwargs):
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_xcal")
 def register_xcal_exporter(sender, **kwargs):
-    from pretalx.schedule.exporters import FrabXCalExporter
+    from eventyay.schedule.exporters import FrabXCalExporter
 
     return FrabXCalExporter
 
@@ -70,7 +70,7 @@ def register_my_xcal_exporter(sender, **kwargs):
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_json")
 def register_json_exporter(sender, **kwargs):
-    from pretalx.schedule.exporters import FrabJsonExporter
+    from eventyay.schedule.exporters import FrabJsonExporter
 
     return FrabJsonExporter
 

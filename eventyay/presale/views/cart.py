@@ -209,7 +209,7 @@ class CartActionMixin:
 @scopes_disabled()
 def generate_cart_id(request=None, prefix=''):
     """
-    Generates a random new cart ID that is not currently in use, with an optional eventyay.
+    Generates a random new cart ID that is not currently in use, with an optional pretix.
     """
     while True:
         new_id = prefix + get_random_string(length=48 - len(prefix))
@@ -255,12 +255,12 @@ def get_or_create_cart_id(request, create=True):
     """
     This method returns the cart ID in use for this request or creates a new cart ID if required.
 
-    Before eventyay 1.8.0, the user's session cookie was used as the cart ID in the database.
+    Before pretix 1.8.0, the user's session cookie was used as the cart ID in the database.
     With the cart session data isolation introduced in 1.8.0 (see cart_session()) this changed
     drastically. Now, a different random cart ID is used for every event and stored to the
     user's session with the 'current_cart_event_42' key (with 42 being the event ID).
 
-    This became even more relevant and complex with the introduction of the eventyay widget in 1.9.0.
+    This became even more relevant and complex with the introduction of the pretix widget in 1.9.0.
     Since the widget operates from a different origin, it requires us to lower some security walls
     in order to function correctly:
 
@@ -277,7 +277,7 @@ def get_or_create_cart_id(request, create=True):
     these walls at unguessable URLs. This makes it impossible for an attacker to create an exploit with
     real-world impact.
 
-    Therefore, we introduce cart namespacing in eventyay 1.9.0. In addition to your default session that you
+    Therefore, we introduce cart namespacing in pretix 1.9.0. In addition to your default session that you
     have at /orga/event/ as usual, you will have a different cart session with a different cart ID at
     /orga/event/w/mysecretnonce123/. Such a namespace parameter can be passed to all views relevant to the
     widget (e.g. /orga/event/w/mysecretnonce123/cart/add) that are not already unguessable
@@ -346,7 +346,7 @@ def get_or_create_cart_id(request, create=True):
 
 def cart_session(request):
     """
-    Before eventyay 1.8.0, all checkout-related information (like the entered email address) was stored
+    Before pretix 1.8.0, all checkout-related information (like the entered email address) was stored
     in the user's regular session dictionary. This led to data interference and leaks for example if a
     user simultaneously buys tickets for two events.
 
