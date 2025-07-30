@@ -1,8 +1,8 @@
 from django.utils.functional import cached_property
 
-from pretix.base.views.mixins import BaseQuestionsViewMixin
-from pretix.presale.forms.checkout import QuestionsForm
-from pretix.presale.views import get_cart
+from eventyay.base.views.mixins import BaseQuestionsViewMixin
+from eventyay.presale.forms.checkout import QuestionsForm
+from eventyay.presale.views import get_cart
 
 
 class QuestionsViewMixin(BaseQuestionsViewMixin):

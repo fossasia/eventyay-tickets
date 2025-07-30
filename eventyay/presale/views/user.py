@@ -8,11 +8,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import TemplateView
 
-from pretix.base.email import get_email_context
-from pretix.base.services.mail import INVALID_ADDRESS, SendMailException, mail
-from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.forms.user import ResendLinkForm
-from pretix.presale.views import EventViewMixin
+from eventyay.base.email import get_email_context
+from eventyay.base.services.mail import INVALID_ADDRESS, SendMailException, mail
+from eventyay.multidomain.urlreverse import eventreverse
+from eventyay.presale.forms.user import ResendLinkForm
+from eventyay.presale.views import EventViewMixin
 
 
 class ResendLinkView(EventViewMixin, TemplateView):

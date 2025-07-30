@@ -565,7 +565,7 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
         return context
 
     def dispatch(self, request, *args, **kwargs):
-        from pretix.base.services.cart import error_messages
+        from eventyay.base.services.cart import error_messages
 
         err = None
         v = request.GET.get('voucher')

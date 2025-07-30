@@ -427,7 +427,7 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
     template_name = 'pretixpresale/event/index.html'
 
     def get(self, request, *args, **kwargs):
-        from pretix.presale.views.cart import get_or_create_cart_id
+        from eventyay.presale.views.cart import get_or_create_cart_id
 
         self.subevent = None
         if request.GET.get('src', '') == 'widget' and 'take_cart_id' in request.GET:
@@ -726,7 +726,7 @@ class SeatingPlanView(EventViewMixin, TemplateView):
     template_name = 'pretixpresale/event/seatingplan.html'
 
     def get(self, request, *args, **kwargs):
-        from pretix.presale.views.cart import get_or_create_cart_id
+        from eventyay.presale.views.cart import get_or_create_cart_id
 
         self.subevent = None
         if request.GET.get('src', '') == 'widget' and 'take_cart_id' in request.GET:

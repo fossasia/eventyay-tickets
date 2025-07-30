@@ -19,7 +19,7 @@ class EventURLNode(URLNode):
         super().__init__(view_name, [], kwargs, asvar)
 
     def render(self, context):
-        from pretix.multidomain.urlreverse import eventreverse
+        from eventyay.multidomain.urlreverse import eventreverse
 
         kwargs = {smart_str(k, 'ascii'): v.resolve(context) for k, v in self.kwargs.items()}
         view_name = self.view_name.resolve(context)

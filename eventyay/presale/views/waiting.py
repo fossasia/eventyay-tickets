@@ -7,10 +7,10 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 from django.views.generic import FormView
 
-from pretix.base.models.event import SubEvent
-from pretix.base.templatetags.urlreplace import url_replace
-from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.views import EventViewMixin
+from eventyay.base.models.event import SubEvent
+from eventyay.base.templatetags.urlreplace import url_replace
+from eventyay.multidomain.urlreverse import eventreverse
+from eventyay.presale.views import EventViewMixin
 
 from ...base.i18n import get_language_without_region
 from ...base.models import Item, ItemVariation, WaitingListEntry

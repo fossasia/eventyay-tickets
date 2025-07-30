@@ -28,21 +28,21 @@ from django.views.decorators.http import condition
 from django.views.i18n import JavaScriptCatalog, get_formats
 from lxml import html
 
-from pretix.base.i18n import language
-from pretix.base.js_catalog_template import js_catalog_template
-from pretix.base.models import CartPosition, Event, Quota, SubEvent, Voucher
-from pretix.base.services.cart import error_messages
-from pretix.base.settings import GlobalSettingsObject
-from pretix.base.templatetags.rich_text import rich_text
-from pretix.helpers.daterange import daterange
-from pretix.helpers.thumb import get_thumbnail
-from pretix.multidomain.urlreverse import build_absolute_uri
-from pretix.presale.views.cart import get_or_create_cart_id
-from pretix.presale.views.event import (
+from eventyay.base.i18n import language
+from eventyay.base.js_catalog_template import js_catalog_template
+from eventyay.base.models import CartPosition, Event, Quota, SubEvent, Voucher
+from eventyay.base.services.cart import error_messages
+from eventyay.base.settings import GlobalSettingsObject
+from eventyay.base.templatetags.rich_text import rich_text
+from eventyay.helpers.daterange import daterange
+from eventyay.helpers.thumb import get_thumbnail
+from eventyay.multidomain.urlreverse import build_absolute_uri
+from eventyay.presale.views.cart import get_or_create_cart_id
+from eventyay.presale.views.event import (
     get_grouped_items,
     item_group_by_category,
 )
-from pretix.presale.views.organizer import (
+from eventyay.presale.views.organizer import (
     EventListMixin,
     add_events_for_days,
     add_subevents_for_days,

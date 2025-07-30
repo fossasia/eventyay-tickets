@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import View
 
-from pretix.helpers.cookies import set_cookie_without_samesite
+from eventyay.helpers.cookies import set_cookie_without_samesite
 
 from .robots import NoSearchIndexViewMixin
 

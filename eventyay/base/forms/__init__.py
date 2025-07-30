@@ -58,7 +58,7 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
     auto_fields = []
 
     def __init__(self, *args, **kwargs):
-        from pretix.base.settings import DEFAULTS
+        from eventyay.base.settings import DEFAULTS
 
         self.obj = kwargs.get('obj', None)
         self.locales = self.obj.settings.get('locales') if self.obj else kwargs.pop('locales', None)
@@ -86,7 +86,7 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
         return super().save()
 
     def get_new_filename(self, name: str) -> str:
-        from pretix.base.models import Event
+        from eventyay.base.models import Event
 
         nonce = get_random_string(length=8)
         if isinstance(self.obj, Event):

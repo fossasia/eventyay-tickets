@@ -137,7 +137,7 @@ The {event_name} organisers"""
 
 
 def get_default_template(role):
-    from pretalx.mail.models import MailTemplateRoles
+    from eventyay.base.models import MailTemplateRoles
 
     TEMPLATE_MAPPING = {
         MailTemplateRoles.SUBMISSION_ACCEPT: (GENERIC_SUBJECT, ACCEPT_TEXT),

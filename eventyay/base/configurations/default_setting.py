@@ -57,7 +57,7 @@ def country_choice_kwargs():
 
 
 def primary_font_kwargs():
-    from pretix.presale.style import get_fonts
+    from eventyay.presale.style import get_fonts
 
     choices = [('Open Sans', 'Open Sans')]
     choices += [(a, {'title': a, 'data': v}) for a, v in get_fonts().items()]

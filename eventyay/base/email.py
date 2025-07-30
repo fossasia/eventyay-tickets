@@ -339,7 +339,7 @@ def get_available_placeholders(event, base_parameters):
 
 
 def get_email_context(**kwargs):
-    from pretix.base.models import InvoiceAddress
+    from eventyay.base.models import InvoiceAddress
 
     event = kwargs['event']
     if 'position' in kwargs:
@@ -374,7 +374,7 @@ def get_best_name(position_or_address, parts=False):
     """
     Return the best name we got for either an invoice address or an order position, falling back to the respective other
     """
-    from pretix.base.models import InvoiceAddress, OrderPosition
+    from eventyay.base.models import InvoiceAddress, OrderPosition
 
     if isinstance(position_or_address, InvoiceAddress):
         if position_or_address.name:
@@ -409,7 +409,7 @@ def generate_sample_video_url():
 
 @receiver(register_mail_placeholders, dispatch_uid='pretixbase_register_mail_placeholders')
 def base_placeholders(sender, **kwargs):
-    from pretix.multidomain.urlreverse import (
+    from eventyay.multidomain.urlreverse import (
         build_absolute_uri,
         build_join_video_url,
     )

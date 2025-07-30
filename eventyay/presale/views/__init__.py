@@ -57,7 +57,7 @@ class CartMixin:
 
     @cached_property
     def cart_session(self):
-        from pretix.presale.views.cart import cart_session
+        from eventyay.presale.views.cart import cart_session
 
         return cart_session(self.request)
 
@@ -252,7 +252,7 @@ class CartMixin:
 
 
 def cart_exists(request):
-    from pretix.presale.views.cart import get_or_create_cart_id
+    from eventyay.presale.views.cart import get_or_create_cart_id
 
     if not hasattr(request, '_cart_cache'):
         return CartPosition.objects.filter(cart_id=get_or_create_cart_id(request), event=request.event).exists()
@@ -260,7 +260,7 @@ def cart_exists(request):
 
 
 def get_cart(request):
-    from pretix.presale.views.cart import get_or_create_cart_id
+    from eventyay.presale.views.cart import get_or_create_cart_id
 
     qqs = request.event.questions.all()
     qqs = qqs.filter(ask_during_checkin=False, hidden=False)
@@ -326,7 +326,7 @@ def get_cart(request):
 
 
 def get_cart_total(request):
-    from pretix.presale.views.cart import get_or_create_cart_id
+    from eventyay.presale.views.cart import get_or_create_cart_id
 
     if not hasattr(request, '_cart_total_cache'):
         if hasattr(request, '_cart_cache'):
@@ -339,7 +339,7 @@ def get_cart_total(request):
 
 
 def get_cart_invoice_address(request):
-    from pretix.presale.views.cart import cart_session
+    from eventyay.presale.views.cart import cart_session
 
     if not hasattr(request, '_checkout_flow_invoice_address'):
         cs = cart_session(request)
@@ -356,7 +356,7 @@ def get_cart_invoice_address(request):
 
 
 def get_cart_is_free(request):
-    from pretix.presale.views.cart import cart_session
+    from eventyay.presale.views.cart import cart_session
 
     if not hasattr(request, '_cart_free_cache'):
         cs = cart_session(request)

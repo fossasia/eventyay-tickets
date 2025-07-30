@@ -27,7 +27,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import TemplateView, View
 
-from pretix.base.models import (
+from eventyay.base.models import (
     CachedTicket,
     GiftCard,
     Invoice,
@@ -36,7 +36,7 @@ from pretix.base.models import (
     Quota,
     TaxRule,
 )
-from pretix.base.models.orders import (
+from eventyay.base.models.orders import (
     CachedCombinedTicket,
     InvoiceAddress,
     OrderFee,
@@ -44,42 +44,42 @@ from pretix.base.models.orders import (
     OrderRefund,
     QuestionAnswer,
 )
-from pretix.base.payment import PaymentException
-from pretix.base.services.invoices import (
+from eventyay.base.payment import PaymentException
+from eventyay.base.services.invoices import (
     generate_cancellation,
     generate_invoice,
     invoice_pdf,
     invoice_pdf_task,
     invoice_qualified,
 )
-from pretix.base.services.mail import SendMailException
-from pretix.base.services.orders import (
+from eventyay.base.services.mail import SendMailException
+from eventyay.base.services.orders import (
     OrderChangeManager,
     OrderError,
     cancel_order,
     change_payment_provider,
 )
-from pretix.base.services.pricing import get_price
-from pretix.base.services.tickets import generate, invalidate_cache
-from pretix.base.signals import (
+from eventyay.base.services.pricing import get_price
+from eventyay.base.services.tickets import generate, invalidate_cache
+from eventyay.base.signals import (
     allow_ticket_download,
     order_modified,
     register_ticket_outputs,
 )
-from pretix.base.templatetags.money import money_filter
-from pretix.base.views.mixins import OrderQuestionsViewMixin
-from pretix.base.views.tasks import AsyncAction
-from pretix.helpers.safedownload import check_token
-from pretix.multidomain.urlreverse import build_absolute_uri, eventreverse
-from pretix.presale.forms.checkout import InvoiceAddressForm, QuestionsForm
-from pretix.presale.forms.order import OrderPositionChangeForm
-from pretix.presale.signals import question_form_fields_overrides
-from pretix.presale.views import (
+from eventyay.base.templatetags.money import money_filter
+from eventyay.base.views.mixins import OrderQuestionsViewMixin
+from eventyay.base.views.tasks import AsyncAction
+from eventyay.helpers.safedownload import check_token
+from eventyay.multidomain.urlreverse import build_absolute_uri, eventreverse
+from eventyay.presale.forms.checkout import InvoiceAddressForm, QuestionsForm
+from eventyay.presale.forms.order import OrderPositionChangeForm
+from eventyay.presale.signals import question_form_fields_overrides
+from eventyay.presale.views import (
     CartMixin,
     EventViewMixin,
     iframe_entry_view_wrapper,
 )
-from pretix.presale.views.robots import NoSearchIndexViewMixin
+from eventyay.presale.views.robots import NoSearchIndexViewMixin
 
 
 class OrderDetailMixin(NoSearchIndexViewMixin):

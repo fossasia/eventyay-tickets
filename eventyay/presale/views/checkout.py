@@ -7,11 +7,11 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import View
 
-from pretix.base.services.cart import CartError
-from pretix.base.signals import validate_cart
-from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.checkoutflow import get_checkout_flow
-from pretix.presale.views import (
+from eventyay.base.services.cart import CartError
+from eventyay.base.signals import validate_cart
+from eventyay.multidomain.urlreverse import eventreverse
+from eventyay.presale.checkoutflow import get_checkout_flow
+from eventyay.presale.views import (
     allow_frame_if_namespaced,
     cart_exists,
     get_cart,

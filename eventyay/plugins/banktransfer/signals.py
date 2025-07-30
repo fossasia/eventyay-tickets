@@ -3,8 +3,8 @@ from django.template.loader import get_template
 from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.signals import register_payment_providers
-from pretix.control.signals import html_head, nav_event, nav_organizer
+from eventyay.base.signals import register_payment_providers
+from eventyay.control.signals import html_head, nav_event, nav_organizer
 
 from .payment import BankTransfer
 
