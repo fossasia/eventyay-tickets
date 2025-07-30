@@ -2,6 +2,8 @@
 
 This document describes the solution implemented to fix MediaWiki OAuth rate limiting issues in Eventyay-Tickets.
 
+**Fixes issue #796**: Customize "User Agent" for the HTTP client which we use for talking with wikimedia.org OAuth
+
 ## Problem
 
 The Eventyay-Tickets application was experiencing rate limiting when making OAuth requests to Wikimedia's OAuth endpoints (meta.wikimedia.org). This was causing authentication failures for users trying to log in with their MediaWiki accounts.

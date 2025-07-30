@@ -1,6 +1,9 @@
 """
 Custom MediaWiki provider for django-allauth that implements proper rate limiting
 to comply with Wikimedia API usage guidelines.
+
+Fixes issue #796: Customize "User Agent" for the HTTP client which we use for
+talking with wikimedia.org OAuth
 """
 import logging
 import time
