@@ -337,13 +337,11 @@ TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
-# FORCE_SCRIPT_NAME = BASE_PATH
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# STATIC_URL = 'static/'
-STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
+STATIC_URL = 'static/'
 
 # Adjustable settings
 INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')
@@ -351,7 +349,6 @@ EVENTYAY_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=T
 EVENTYAY_PASSWORD_RESET = config.getboolean('eventyay', 'password_reset', fallback=True)
 EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
 EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(',')
-EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
 EVENTYAY_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
 EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallback=False)
 EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
@@ -368,8 +365,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
-#COMEBACK
-SOCIALACCOUNT_ADAPTER = 'pretix.plugins.socialauth.adapter.CustomSocialAccountAdapter'
+
+SOCIALACCOUNT_ADAPTER = 'eventyay.plugins.socialauth.adapter.CustomSocialAccountAdapter'
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
@@ -394,8 +391,8 @@ OAUTH2_PROVIDER = {
 }
 
 AUTH_USER_MODEL = 'eventyaybase.User'
-LOGIN_URL = 'auth.login'
-LOGIN_URL_CONTROL = 'auth.login'
+LOGIN_URL = 'common:auth.login'
+LOGIN_URL_CONTROL = 'common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
 
 

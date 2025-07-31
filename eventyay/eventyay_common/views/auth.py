@@ -156,7 +156,7 @@ def logout(request):
     """
     auth_logout(request)
     request.session['eventyay_auth_login_time'] = 0
-    next = reverse('auth.login')
+    next = reverse('common:auth.login')
     if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
         next += '?next=' + quote(request.GET.get('next'))
     if 'back' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('back'), allowed_hosts=None):
@@ -222,7 +222,7 @@ def invite(request, token):
                 'and make sure it is correct and that the link has not been used before.'
             ),
         )
-        return redirect('auth.login')
+        return redirect('common:auth.login')
 
     if request.user.is_authenticated:
         if inv.team.members.filter(pk=request.user.pk).exists():
@@ -416,7 +416,7 @@ class Recover(TemplateView):
             user.save()
             messages.success(request, _('You can now login using your new password.'))
             user.log_action('eventyay.eventyay_common.auth.user.forgot_password.recovered')
-            return redirect('auth.login')
+            return redirect('common:auth.login')
         else:
             return self.get(request, *args, **kwargs)
 
@@ -462,7 +462,7 @@ class Login2FAView(TemplateView):
             fail = True
         if fail:
             messages.error(request, _('Please try again.'))
-            return redirect('auth.login')
+            return redirect('common:auth.login')
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html{% if rtl %} dir="rtl" class="rtl"{% endif %}>
 <head>
-    <title>{{ django_settings.INSTANCE_NAME }}</title>
+    <title>{{ INSTANCE_NAME }}</title>
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/auth.scss" %}"/>
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
@@ -55,7 +55,7 @@
         </nav>
     </div>
 <div class="container">
-    <a href="{% url "auth.login" %}">
+    <a href="{% url "common:auth.login" %}">
         <img src="{% static "pretixbase/img/eventyay-logo.svg" %}" class="logo"/>
     </a>
     {% if messages %}
@@ -73,7 +73,7 @@
             <form action="{% url 'admin.users.impersonate.stop' %}" method="post" class="helper-display-inline">
                 {% csrf_token %}
                 <button class="btn btn-default btn-sm">
-                    {% trans "Stop impersonating" %}
+                    {% translate "Stop impersonating" %}
                 </button>
             </form>
         </div>

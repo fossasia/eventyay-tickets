@@ -99,7 +99,7 @@ class PermissionMiddleware:
 
         # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
         # TODO: Instead of hardcoding URL, we should check the `request.resolver_match`.
-        if request.path.startswith(get_script_prefix() + 'oauth2/'):
+        if request.path.startswith(get_script_prefix() + 'common/oauth2/'):
             return self.get_response(request)
 
         if url_name in self.EXCEPTIONS:
@@ -115,7 +115,7 @@ class PermissionMiddleware:
             return self._login_redirect(request)
         except SessionReauthRequired:
             if url_name not in ('user.reauth', 'auth.logout'):
-                return redirect(reverse('user.reauth') + '?next=' + quote(request.get_full_path()))
+                return redirect(reverse('common:user.reauth') + '?next=' + quote(request.get_full_path()))
 
         if not request.user.require_2fa and settings.EVENTYAY_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
             page_2fa_setting_url = reverse('eventyay_common:account.2fa')

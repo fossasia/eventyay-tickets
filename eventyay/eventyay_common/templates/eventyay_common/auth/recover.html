@@ -4,7 +4,7 @@
 {% load i18n %}
 {% block content %}
 	<form class="form-signin" action="" method="post">
-        <h3>{% trans "Set new password" %}</h3>
+        <h3>{% translate "Set new password" %}</h3>
         {% csrf_token %}
         {% bootstrap_form_errors form type='all' layout='inline' %}
         {% bootstrap_field form.password %}
@@ -12,7 +12,7 @@
 		<div class="form-group buttons">
 
             <button type="submit" class="btn btn-primary">
-                {% trans "Save" %}
+                {% translate "Save" %}
             </button>
 		</div>
 	</form>

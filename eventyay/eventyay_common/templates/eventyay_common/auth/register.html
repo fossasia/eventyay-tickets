@@ -4,7 +4,7 @@
 {% load i18n %}
 {% block content %}
     <form class="form-signin" action="" method="post">
-        <h3>{% trans "Create a new account" %}</h3>
+        <h3>{% translate "Create a new account" %}</h3>
         {% bootstrap_form_errors form type='all' layout='inline' %}
         {% csrf_token %}
         {% bootstrap_field form.email %}
@@ -25,12 +25,12 @@
             {% bootstrap_field form.keep_logged_in %}
         {% endif %}
         <div class="form-group buttons">
-            <a href="{% url "auth.login" %}" class="btn btn-link">
-                &laquo; {% trans "Login" %}
+            <a href="{% url "common:auth.login" %}" class="btn btn-link">
+                &laquo; {% translate "Login" %}
             </a>
 
             <button type="submit" class="btn btn-primary">
-                {% trans "Register" %}
+                {% translate "Register" %}
             </button>
         </div>
     </form>
