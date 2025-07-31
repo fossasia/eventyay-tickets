@@ -36,7 +36,7 @@
     <div id="wrapper">
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
             <div class="navbar-header">
-                <a class="navbar-brand" href='{% url "index" %}'>
+                <a class="navbar-brand" href='{% url "common:dashboard" %}'>
                     <img src='{% static "pretixbase/img/eventyay-icon.svg" %}' />
                     {{ INSTANCE_NAME }}
                 </a>
@@ -65,7 +65,7 @@
             </div>
         {% endfor %}
     {% endif %}
-    {% if request.user.is_hijacked %}
+    {% comment %} {% if request.user.is_hijacked %}
         <div class="impersonate-warning">
             <span class="fa fa-user-secret"></span>
             {% blocktrans with user=request.user%}You are currently working on behalf of {{ user }}.{% endblocktrans %}
@@ -77,7 +77,7 @@
                 </button>
             </form>
         </div>
-    {% endif %}
+    {% endif %} {% endcomment %}
 
     {% block content %}
     {% endblock %}

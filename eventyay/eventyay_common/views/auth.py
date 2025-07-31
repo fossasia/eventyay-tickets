@@ -76,7 +76,7 @@ def process_login(request, user, keep_logged_in):
         request.session['eventyay_auth_login_time'] = int(time.time())
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
             return redirect(next_url)
-        return redirect(reverse('index'))
+        return redirect(reverse('common:dashboard'))
 
 
 def process_login_and_set_cookie(request, user, keep_logged_in):
@@ -127,10 +127,10 @@ def login(request):
     if not backend.visible:
         backend = [b for b in backends if b.visible][0]
     if request.user.is_authenticated:
-        next_url = backend.get_next_url(request) or 'index'
+        next_url = backend.get_next_url(request) or 'common:dashboard'
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
             return redirect(next_url)
-        return redirect(reverse('index'))
+        return redirect(reverse('common:dashboard'))
     if request.method == 'POST':
         form = LoginForm(backend=backend, data=request.POST, request=request)
         if form.is_valid() and form.user_cache and form.user_cache.auth_backend == backend.identifier:
@@ -172,7 +172,7 @@ def register(request):
         raise PermissionDenied('Registration is disabled')
     ctx = {}
     if request.user.is_authenticated:
-        return redirect(request.GET.get('next', 'index'))
+        return redirect(request.GET.get('next', 'common:dashboard'))
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
@@ -193,7 +193,7 @@ def register(request):
             request.session['eventyay_auth_long_session'] = settings.EVENTYAY_LONG_SESSIONS and form.cleaned_data.get(
                 'keep_logged_in', False
             )
-            response = redirect(request.GET.get('next', 'index'))
+            response = redirect(request.GET.get('next', 'common:dashboard'))
             set_cookie_after_logged_in(request, response)
             return response
     else:
@@ -232,7 +232,7 @@ def invite(request, token):
                     inv.team.name
                 ),
             )
-            return redirect('index')
+            return redirect('common:dashboard')
         else:
             with transaction.atomic():
                 inv.team.members.add(request.user)
@@ -246,7 +246,7 @@ def invite(request, token):
                 )
                 inv.delete()
             messages.success(request, _('You are now part of the team "{}".').format(inv.team.name))
-            return redirect('index')
+            return redirect('common:dashboard')
 
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
@@ -285,7 +285,7 @@ def invite(request, token):
                     request,
                     _('Welcome to eventyay! You are now part of the team "{}".').format(inv.team.name),
                 )
-                return redirect('index')
+                return redirect('common:dashboard')
     else:
         form = RegistrationForm(initial={'email': inv.email})
     ctx['form'] = form
@@ -306,7 +306,7 @@ class Forgot(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(request.GET.get('next', 'index'))
+            return redirect(request.GET.get('next', 'common:dashboard'))
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -391,7 +391,7 @@ class Recover(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(request.GET.get('next', 'index'))
+            return redirect(request.GET.get('next', 'common:dashboard'))
         try:
             user = User.objects.get(id=self.request.GET.get('id'), auth_backend='native')
         except User.DoesNotExist:
@@ -528,7 +528,7 @@ class Login2FAView(TemplateView):
             del request.session['eventyay_auth_2fa_time']
             if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
                 return redirect(request.GET.get('next'))
-            return redirect(reverse('index'))
+            return redirect(reverse('common:dashboard'))
         else:
             messages.error(request, _('Invalid code, please try again.'))
             return redirect('auth.login.2fa')

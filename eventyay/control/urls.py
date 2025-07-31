@@ -1,4 +1,5 @@
-from django.urls import include
+from django.http import HttpResponse
+from django.urls import include, path
 from django.urls import re_path as url
 from django.views.generic.base import RedirectView
 
@@ -8,6 +9,7 @@ from eventyay.control.views import (
 
 
 urlpatterns = [
+    path('', lambda request: HttpResponse("<div>This is a control index page</div>"), name='index'),
     url(
         r'^admin/',
         include(

@@ -123,6 +123,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+# ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 TEMPLATES = [
     {
@@ -335,7 +336,14 @@ TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-BASE_PATH = config.get('eventyay', 'base_path', fallback='')
+BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
+# FORCE_SCRIPT_NAME = BASE_PATH
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+
+# STATIC_URL = 'static/'
+STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
 # Adjustable settings
 INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')

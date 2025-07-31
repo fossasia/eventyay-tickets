@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class PermissionMiddleware:
     """
     This middleware enforces all requests to the control app to require login.
-    Additionally, it enforces all requests to "event." URLs
+    Additionally, it enforces all requests to "control:event." URLs
     to be for an event the user has basic access to.
     """
 
@@ -46,14 +46,14 @@ class PermissionMiddleware:
     )
 
     EXCEPTIONS_2FA = (
-        'account.2fa',
-        'account.2fa.add',
-        'account.2fa.enable',
-        'account.2fa.disable',
-        'account.2fa.regenemergency',
-        'account.2fa.confirm.totp',
-        'account.2fa.confirm.webauthn',
-        'account.2fa.delete',
+        'eventyay_common:account.2fa',
+        'eventyay_common:account.2fa.add',
+        'eventyay_common:account.2fa.enable',
+        'eventyay_common:account.2fa.disable',
+        'eventyay_common:account.2fa.regenemergency',
+        'eventyay_common:account.2fa.confirm.totp',
+        'eventyay_common:account.2fa.confirm.webauthn',
+        'eventyay_common:account.2fa.delete',
         'auth.logout',
         'user.reauth',
     )
@@ -70,9 +70,9 @@ class PermissionMiddleware:
         """
         # urlparse chokes on lazy objects in Python 3, force to str
         resolved_login_url = force_str(resolve_url(settings.LOGIN_URL_CONTROL))
-        unwanted_path = reverse('index')
+        unwanted_path = reverse('control:index')
         if request.path.startswith(unwanted_path):
-            next_url = reverse('index')
+            next_url = reverse('eventyay_common:dashboard')
         else:
             next_url = request.path
         logger.info('URL to redirect to, after logging-in: %s', next_url)
@@ -99,7 +99,7 @@ class PermissionMiddleware:
 
         # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
         # TODO: Instead of hardcoding URL, we should check the `request.resolver_match`.
-        if request.path.startswith(get_script_prefix() + 'control/oauth2/'):
+        if request.path.startswith(get_script_prefix() + 'oauth2/'):
             return self.get_response(request)
 
         if url_name in self.EXCEPTIONS:
@@ -118,7 +118,7 @@ class PermissionMiddleware:
                 return redirect(reverse('user.reauth') + '?next=' + quote(request.get_full_path()))
 
         if not request.user.require_2fa and settings.EVENTYAY_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
-            page_2fa_setting_url = reverse('account.2fa')
+            page_2fa_setting_url = reverse('eventyay_common:account.2fa')
             logger.info(
                 'This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s',
                 page_2fa_setting_url,
