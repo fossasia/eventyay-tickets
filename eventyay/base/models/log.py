@@ -349,3 +349,4 @@ class ActivityLog(models.Model):
                 if response:
                     return response
         return ""
+

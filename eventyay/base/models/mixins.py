@@ -47,7 +47,7 @@ class LogMixin:
                 f"Logged data should always be a dictionary, not {type(data)}."
             )
 
-        from pretalx.common.models import ActivityLog
+        from eventyay.base.models import ActivityLog
 
         return ActivityLog.objects.create(
             event=getattr(self, "event", None),
@@ -59,7 +59,7 @@ class LogMixin:
         )
 
     def logged_actions(self):
-        from pretalx.common.models import ActivityLog
+        from eventyay.base.models import ActivityLog
 
         return (
             ActivityLog.objects.filter(
@@ -111,7 +111,7 @@ class FileCleanupMixin:
                     # that triggered this task might still fail, so we schedule the
                     # deletion for 10 seconds in the future, and pass the file field
                     # to check if the file is still in use.
-                    from pretalx.common.tasks import task_cleanup_file
+                    from eventyay.common.tasks import task_cleanup_file
 
                     task_cleanup_file.apply_async(
                         kwargs={
@@ -136,7 +136,7 @@ class FileCleanupMixin:
         return super().delete(*args, **kwargs)
 
     def process_image(self, field, generate_thumbnail=False):
-        from pretalx.common.tasks import task_process_image
+        from eventyay.common.tasks import task_process_image
 
         task_process_image.apply_async(
             kwargs={
@@ -257,4 +257,3 @@ class OrderedModel:
                 element.save()
 
     move.alters_data = True
-
