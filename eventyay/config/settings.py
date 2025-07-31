@@ -82,18 +82,15 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'djangoformsetjs',
     'oauth2_provider',
-    'bootstrap3',
     'pretix',
-    'compressor',
     'eventyay.api',
     'eventyay.base',
+    'eventyay.common',
     'eventyay.control',
+    'eventyay.eventyay_common',
     'eventyay.helpers',
     'eventyay.multidomain',
     'eventyay.presale',
-    'eventyay.eventyay_common',
-    'eventyay.common',
-    'eventyay.control',
     'statici18n',
 ]
 
@@ -336,13 +333,6 @@ TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = 'static/'
-
 # Adjustable settings
 INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')
 EVENTYAY_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=True)
@@ -396,18 +386,7 @@ LOGIN_URL_CONTROL = 'common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
 
 
-# Static files
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
-)
-
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
 
 # django-compressor SCSS support
 COMPRESS_ENABLED = True
