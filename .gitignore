@@ -42,3 +42,6 @@ build/
 src/production_settings.py
 .npm/
 .bash_history
+
+# enext specific
+eventyay/config/static.dist

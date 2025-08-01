@@ -16,9 +16,9 @@ from django.utils.encoding import force_str
 from django.utils.translation import gettext as _
 from django_scopes import scope
 
-from pretix.base.models import Event, Organizer
-from pretix.base.models.auth import SuperuserPermissionSet, User
-from pretix.helpers.security import (
+from eventyay.base.models import Event, Organizer
+from eventyay.base.models.auth import SuperuserPermissionSet, User
+from eventyay.helpers.security import (
     SessionInvalid,
     SessionReauthRequired,
     assert_session_valid,
@@ -92,14 +92,14 @@ class PermissionMiddleware:
             return self.get_response(request)
 
         if hasattr(request, 'organizer'):
-            # If the user is on a organizer's subdomain, he should be redirected to pretix
+            # If the user is on a organizer's subdomain, he should be redirected to eventyay
             new_url = urljoin(settings.SITE_URL, request.get_full_path())
             logger.info('Organizer info is seen, redirecting to: %s', new_url)
             return redirect(new_url)
 
         # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
         # TODO: Instead of hardcoding URL, we should check the `request.resolver_match`.
-        if request.path.startswith(get_script_prefix() + 'control/oauth2/'):
+        if request.path.startswith(get_script_prefix() + 'common/oauth2/'):
             return self.get_response(request)
 
         if url_name in self.EXCEPTIONS:
@@ -108,16 +108,16 @@ class PermissionMiddleware:
             return self._login_redirect(request)
 
         try:
-            # If this logic is updated, make sure to also update the logic in pretix/api/auth/permission.py
+            # If this logic is updated, make sure to also update the logic in eventyay/api/auth/permission.py
             assert_session_valid(request)
         except SessionInvalid:
             logout(request)
             return self._login_redirect(request)
         except SessionReauthRequired:
             if url_name not in ('user.reauth', 'auth.logout'):
-                return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
+                return redirect(reverse('eventyay_common:user.reauth') + '?next=' + quote(request.get_full_path()))
 
-        if not request.user.require_2fa and settings.PRETIX_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
+        if not request.user.require_2fa and settings.EVENTYAY_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
             page_2fa_setting_url = reverse('eventyay_common:account.2fa')
             logger.info(
                 'This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s',

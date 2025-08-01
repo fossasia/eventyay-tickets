@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 def get_auth_backends():
     backends = {}
-    for b in settings.PRETIX_AUTH_BACKENDS:
+    for b in settings.EVENTYAY_AUTH_BACKENDS:
         mod, name = b.rsplit('.', 1)
         b = getattr(import_module(mod), name)()
         backends[b.identifier] = b
@@ -19,7 +19,7 @@ def get_auth_backends():
 class BaseAuthBackend:
     """
     This base class defines the interface that needs to be implemented by every class that supplies
-    an authentication method to pretix. Please note that pretix authentication backends are different
+    an authentication method to eventyay. Please note that eventyay authentication backends are different
     from plain Django authentication backends! Be sure to read the documentation chapter on authentication
     backends before you implement one.
     """
@@ -87,7 +87,7 @@ class BaseAuthBackend:
 
     def get_next_url(self, request):
         """
-        This method will be called after a successful login to determine the next URL. Pretix in general uses the
+        This method will be called after a successful login to determine the next URL. Eventyay in general uses the
         ``'next'`` query parameter. However, external authentication methods could use custom attributes with hardcoded
         names for security purposes. For example, OAuth uses ``'state'`` for keeping track of application state.
         """

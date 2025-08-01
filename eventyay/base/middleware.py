@@ -16,9 +16,9 @@ from django.utils.translation.trans_real import (
     parse_accept_lang_header,
 )
 
-from pretix.base.i18n import get_language_without_region
-from pretix.base.settings import global_settings_object
-from pretix.multidomain.urlreverse import (
+from eventyay.base.i18n import get_language_without_region
+from eventyay.base.settings import global_settings_object
+from eventyay.multidomain.urlreverse import (
     get_event_domain,
     get_organizer_domain,
 )
@@ -35,7 +35,7 @@ class LocaleMiddleware(MiddlewareMixin):
     def process_request(self, request: HttpRequest):
         language = get_language_from_request(request)
         # Normally, this middleware runs *before* the event is set. However, on event frontend pages it
-        # might be run a second time by pretix.presale.EventMiddleware and in this case the event is already
+        # might be run a second time by eventyay.presale.EventMiddleware and in this case the event is already
         # set and can be taken into account for the decision.
         if not request.path.startswith(get_script_prefix() + 'control'):
             if hasattr(request, 'event'):

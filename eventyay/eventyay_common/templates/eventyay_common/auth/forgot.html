@@ -1,17 +1,17 @@
-{% extends "pretixcontrol/auth/base.html" %}
+{% extends "eventyay_common/auth/base.html" %}
 {% load bootstrap3 %}
 {% load static %}
 {% load i18n %}
 {% block content %}
 	<form class="form-signin" action="" method="post">
-        <h3>{% trans "Password recovery" %}</h3>
+        <h3>{% translate "Password recovery" %}</h3>
         {% csrf_token %}
         {% bootstrap_form_errors form type='all' layout='inline' %}
         {% bootstrap_field form.email %}
 		<div class="form-group buttons">
 
             <button type="submit" class="btn btn-primary">
-                {% trans "Send recovery information" %}
+                {% translate "Send recovery information" %}
             </button>
 		</div>
 	</form>

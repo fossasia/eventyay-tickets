@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/auth/base.html" %}
+{% extends "eventyay_common/auth/base.html" %}
 {% load bootstrap3 %}
 {% load i18n %}
 {% load static %}
@@ -26,7 +26,7 @@
             <div class="form-group buttons">
                 {% if backend.login_form_fields %}
                 <button type="submit" class="btn btn-primary btn-block">
-                    {% trans "Log in" %}
+                    {% translate "Log in" %}
                 </button>
                 {% endif %}
                 {% if backend.url %}
@@ -36,13 +36,13 @@
                 {% endif %}
                 {% if backend.identifier == "native" %}
                     {% if can_reset %}
-                        <a href="{% url "control:auth.forgot" %}" class="btn btn-link btn-block">
-                            {% trans "Lost password?" %}
+                        <a href="{% url "eventyay_common:auth.forgot" %}" class="btn btn-link btn-block">
+                            {% translate "Lost password?" %}
                         </a>
                     {% endif %}
                     {% if can_register %}
-                        <a href='{% url "control:auth.register" %}{% append_next request.GET.next %}' class="btn btn-link btn-block">
-                            {% trans "Register" %}
+                        <a href='{% url "eventyay_common:auth.register" %}{% append_next request.GET.next %}' class="btn btn-link btn-block">
+                            {% translate "Register" %}
                         </a>
                     {% endif %}
                 {% endif %}
@@ -50,7 +50,7 @@
         </div>
         <div class="form-group buttons">
             <button type="button" id="toggle-login" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#login-form">
-                {% trans "Login with Email" %}
+                {% translate "Login with Email" %}
             </button>
             {% if login_providers %}
                 {% for provider, settings in login_providers.items %}
@@ -58,12 +58,12 @@
                         <a href='{% url "plugins:socialauth:social.oauth.login" provider %}{% append_next request.GET.next %}' 
                            data-method="post" class="btn btn-primary btn-block">
                             {% with provider|capfirst as provider_capitalized %}
-                                {% blocktrans %}Login with {{ provider_capitalized }}{% endblocktrans %}
+                                {% blocktranslate %}Login with {{ provider_capitalized }}{% endblocktranslate %}
                             {% endwith %}
                         </a>
                     {% endif %}
                 {% endfor %}
             {% endif %}
-        </div
+        </div>
     </form>
 {% endblock %}

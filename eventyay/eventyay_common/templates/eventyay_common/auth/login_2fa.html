@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/auth/base.html" %}
+{% extends "eventyay_common/auth/base.html" %}
 {% load bootstrap3 %}
 {% load i18n %}
 {% load static %}
@@ -6,25 +6,25 @@
 {% block content %}
     <form class="form-signin" action="" method="post" id="webauthn-form">
         {% csrf_token %}
-        <h3>{% trans "Welcome back!" %}</h3>
+        <h3>{% translate "Welcome back!" %}</h3>
         <p>
-            {% trans "You configured your account to require authentication with a second medium, e.g. your phone. Please enter your verification code here:" %}
+            {% translate "You configured your account to require authentication with a second medium, e.g. your phone. Please enter your verification code here:" %}
         </p>
         <div class="form-group">
-            <input class="form-control" name="token" placeholder="{% trans "Token" %}"
+            <input class="form-control" name="token" placeholder="{% translate "Token" %}"
                     type="text" required="required" autofocus="autofocus" id="webauthn-response">
         </div>
         <div class="sr-only alert alert-danger" id="webauthn-error">
-            {% trans "WebAuthn failed. Check that the correct authentication device is correctly plugged in." %}
+            {% translate "WebAuthn failed. Check that the correct authentication device is correctly plugged in." %}
         </div>
         {% if jsondata %}
             <p><small>
-                {% trans "Alternatively, connect your WebAuthn device. If it has a button, touch it now. You might have to unplug the device and plug it back in again." %}
+                {% translate "Alternatively, connect your WebAuthn device. If it has a button, touch it now. You might have to unplug the device and plug it back in again." %}
             </small></p>
         {% endif %}
         <div class="form-group buttons">
             <button type="submit" class="btn btn-primary">
-                {% trans "Continue" %}
+                {% translate "Continue" %}
             </button>
         </div>
     </form>
