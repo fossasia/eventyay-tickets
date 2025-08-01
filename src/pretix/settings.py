@@ -831,3 +831,8 @@ SOCIALACCOUNT_ADAPTER = 'pretix.plugins.socialauth.adapter.CustomSocialAccountAd
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# MediaWiki OAuth settings for user-friendly rate limiting (Issue #817)
+# Provides vague time descriptions instead of exact retry times to avoid rushing users
+# Override MEDIAWIKI_USER_AGENT only if you need a custom User-Agent string
+# MEDIAWIKI_USER_AGENT = None  # Auto-generate following Wikimedia conventions
