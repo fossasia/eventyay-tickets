@@ -82,7 +82,6 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'djangoformsetjs',
     'oauth2_provider',
-    'pretix',
     'eventyay.api',
     'eventyay.base',
     'eventyay.common',
@@ -381,8 +380,8 @@ OAUTH2_PROVIDER = {
 }
 
 AUTH_USER_MODEL = 'eventyaybase.User'
-LOGIN_URL = 'common:auth.login'
-LOGIN_URL_CONTROL = 'common:auth.login'
+LOGIN_URL = 'eventyay_common:auth.login'
+LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
 
 

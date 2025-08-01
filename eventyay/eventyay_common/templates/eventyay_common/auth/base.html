@@ -36,7 +36,7 @@
     <div id="wrapper">
         <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
             <div class="navbar-header">
-                <a class="navbar-brand" href='{% url "common:dashboard" %}'>
+                <a class="navbar-brand" href='{% url "eventyay_common:dashboard" %}'>
                     <img src='{% static "pretixbase/img/eventyay-icon.svg" %}' />
                     {{ INSTANCE_NAME }}
                 </a>
@@ -55,7 +55,7 @@
         </nav>
     </div>
 <div class="container">
-    <a href="{% url "common:auth.login" %}">
+    <a href="{% url "eventyay_common:auth.login" %}">
         <img src="{% static "pretixbase/img/eventyay-logo.svg" %}" class="logo"/>
     </a>
     {% if messages %}

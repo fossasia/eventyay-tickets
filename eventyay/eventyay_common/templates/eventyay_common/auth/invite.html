@@ -6,7 +6,7 @@
 	<form class="form-signin" action="" method="post">
         <h3>{% translate "Accept an invitation" %}</h3>
         <p>
-            {% url "common:auth.login" as loginurl %}
+            {% url "eventyay_common:auth.login" as loginurl %}
             {% blocktrans trimmed with login_href='href="'|add:loginurl|add:'"'|safe %}
                 If you already have an account on this site with a different email address, you can
                 <a {{ login_href }}>log in</a> first and then click this link again to accept the
@@ -19,7 +19,7 @@
 		{% bootstrap_field form.password %}
         {% bootstrap_field form.password_repeat %}
 		<div class="form-group buttons">
-            <a href="{% url "common:auth.login" %}" class="btn btn-link">
+            <a href="{% url "eventyay_common:auth.login" %}" class="btn btn-link">
                 &laquo; {% translate "Login" %}
             </a>
 
