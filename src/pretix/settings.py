@@ -833,9 +833,7 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # MediaWiki OAuth settings for Wikimedia compliance
-MEDIAWIKI_USER_AGENT = (
-    f"EventyAY-Tickets/{config.get('pretix', 'instance_name', fallback='1.0')} "
-    f"({config.get('site', 'url', fallback='https://eventyay.com')}; "
-    f"{config.get('pretix', 'email', fallback='contact@eventyay.com')}) "
-    f"requests/{config.get('pretix', 'requests_version', fallback='2.31.0')}"
-)
+# User-Agent will be auto-generated following Wikimedia conventions
+# Format: ToolName/Version (URL; contact@email.com) LibraryName/Version
+# Override MEDIAWIKI_USER_AGENT only if you need a custom User-Agent string
+# MEDIAWIKI_USER_AGENT = None  # Auto-generate following conventions
