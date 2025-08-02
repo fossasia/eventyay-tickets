@@ -32,7 +32,7 @@ from django.views.generic import (
 from eventyay.base.models import (
     BBBCall,
     BBBServer,
-    Feedback,
+    SystemLog,
     JanusServer,
     StreamingServer,
     TurnServer,
@@ -534,17 +534,17 @@ class TurnServerDelete(AdminBase, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class FeedbackList(AdminBase, ListView):
-    template_name = "control/feedback_list.html"
-    queryset = Feedback.objects.order_by("-timestamp")
-    context_object_name = "feedbacks"
+class SystemLogList(AdminBase, ListView):
+    template_name = "control/systemlog_list.html"
+    queryset = SystemLog.objects.order_by("-timestamp")
+    context_object_name = "systemlogs"
     paginate_by = 25
 
 
-class FeedbackDetail(AdminBase, DetailView):
-    template_name = "control/feedback_detail.html"
-    queryset = Feedback.objects.all()
-    context_object_name = "feedback"
+class SystemLogDetail(AdminBase, DetailView):
+    template_name = "control/systemlog_detail.html"
+    queryset = SystemLog.objects.all()
+    context_object_name = "systemlog"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

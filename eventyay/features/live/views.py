@@ -18,7 +18,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
-from eventyay.base.models import Feedback, Event
+from eventyay.base.models import SystemLog, Event
 from eventyay.base.models.auth import ShortToken
 from eventyay.base.models.room import AnonymousInvite
 
@@ -150,7 +150,7 @@ class AppView(View):
                             ),
                             "upload": reverse("storage:upload"),
                             "scheduleImport": reverse("storage:schedule_import"),
-                            "feedback": reverse("live:feedback"),
+                            "systemlog": reverse("live:systemlog"),
                         },
                         "features": event.feature_flags,
                         "externalAuthUrl": event.external_auth_url,
@@ -226,7 +226,7 @@ class ShortTokenView(View):
             )
 
 
-class FeedbackView(View):
+class SystemLogView(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -238,7 +238,7 @@ class FeedbackView(View):
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-        Feedback.objects.create(
+        SystemLog.objects.create(
             event=self.event,
             module=data.get("module"),
             message=data.get("message"),

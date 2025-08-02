@@ -9,9 +9,9 @@ urlpatterns = [
         name="token.short",
     ),
     path(
-        "_feedback/",
-        views.FeedbackView.as_view(),
-        name="feedback",
+        "_systemlog/",
+        views.SystemLogView.as_view(),
+        name="systemlog",
     ),
     re_path("_custom.css$", views.CustomCSSView.as_view(), name="css.custom"),
     re_path("_bbb.css$", views.BBBCSSView.as_view(), name="css.bbb"),

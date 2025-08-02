@@ -28,7 +28,7 @@ from .exhibitor import (
     ExhibitorStaff,
     ExhibitorView,
 )
-from .feedback import Feedback
+from .systemlog import SystemLog
 from .giftcards import GiftCard, GiftCardAcceptance, GiftCardTransaction
 from .invoices import Invoice, InvoiceLine, invoice_filename
 from .items import (
@@ -114,7 +114,7 @@ __all__ = [
     "ExhibitorSocialMediaLink",
     "ExhibitorStaff",
     "ExhibitorView",
-    "Feedback",
+    "SystemLog",
     "Gate",
     "GiftCard",
     "GiftCardAcceptance",

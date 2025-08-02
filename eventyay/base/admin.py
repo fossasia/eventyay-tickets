@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import (
     Announcement, AuditLog, auth, base, BBBCall, BBBServer, BillingInvoice, 
     billing, Channel, ChatEvent, checkin, choices, Device, devices, event, 
-    Exhibitor, Feedback, fields, Gate, GiftCard, GiftCardAcceptance, 
+    Exhibitor, SystemLog, fields, Gate, GiftCard, GiftCardAcceptance, 
     GiftCardTransaction, giftcards, Invoice, invoices, Item, ItemCategory, 
     items, JanusServer, log, notifications, Order, OrderPayment, OrderRefund, 
     orders, organizer, page, Poll, Poster, question, Quota, Room, roulette, 
@@ -135,7 +135,7 @@ admin.site.register(tax.TaxRule)
 # Pages and Content
 admin.site.register(page.Page)
 admin.site.register(Announcement)
-admin.site.register(Feedback)
+admin.site.register(SystemLog)
 
 # Logging and Audit
 admin.site.register(log.LogEntry)

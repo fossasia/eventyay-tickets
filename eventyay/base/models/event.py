@@ -1512,7 +1512,7 @@ class Event(EventMixin, LoggedModel):
         EventView.objects.filter(event=self).delete()
         RoomQuestion.objects.filter(room__event=self).delete()
         Poll.objects.filter(room__event=self).delete()
-        Feedback.objects.filter(event=self).delete()
+        SystemLog.objects.filter(event=self).delete()
         for f in StoredFile.objects.filter(event=self):
             f.full_delete()
         self.user_set.all().delete()
