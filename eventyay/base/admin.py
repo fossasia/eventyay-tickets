@@ -6,7 +6,7 @@ from .models import (
     Exhibitor, SystemLog, fields, Gate, GiftCard, GiftCardAcceptance, 
     GiftCardTransaction, giftcards, Invoice, invoices, Item, ItemCategory, 
     items, JanusServer, log, notifications, Order, OrderPayment, OrderRefund, 
-    orders, organizer, page, Poll, Poster, question, Quota, Room, roulette, 
+    orders, organizer, page, Poll, Poster, roomquestion, Quota, Room, roulette, 
     seating, StreamingServer, tax, Team, TeamInvite, TurnServer, vouchers, 
     WaitingListEntry, waitinglist, room, exhibitor, poll, poster, chat
 )
@@ -102,8 +102,8 @@ admin.site.register(exhibitor.ContactRequest)
 admin.site.register(Poll)
 admin.site.register(poll.PollOption)
 admin.site.register(poll.PollVote)
-admin.site.register(question.RoomQuestion)
-admin.site.register(question.QuestionVote)
+admin.site.register(roomquestion.RoomQuestion)
+admin.site.register(roomquestion.QuestionVote)
 
 # Posters
 admin.site.register(Poster)

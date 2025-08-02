@@ -76,7 +76,7 @@ from .organizer import (
 )
 from .poll import Poll, PollOption, PollVote
 from .poster import Poster, PosterLink, PosterPresenter, PosterVote
-from .question import RoomQuestion, QuestionVote
+from .roomquestion import RoomQuestion, QuestionVote
 from .room import Reaction, Room, RoomView
 from .roulette import RoulettePairing, RouletteRequest
 from .seating import Seat, SeatCategoryMapping, SeatingPlan

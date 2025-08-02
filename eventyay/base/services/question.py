@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from django.db.models import Exists, OuterRef, Q
 
-from eventyay.base.models.question import RoomQuestion, QuestionVote
+from eventyay.base.models.roomquestion import RoomQuestion, QuestionVote
 
 
 @database_sync_to_async
