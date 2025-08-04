@@ -1181,7 +1181,10 @@ class EventCheckoutView(views.APIView):
             response_data['errors'] = errors
             response_data['message'] += f' {len(errors)} errors occurred.'
 
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(
+            response_data,
+            status=status.HTTP_200_OK if not errors else status.HTTP_207_MULTI_STATUS
+        )
 
 
 class CheckinSearchView(ListAPIView):
