@@ -1,19 +1,9 @@
-"""
-MediaWiki OAuth2 provider with user-friendly rate limiting.
-
-This module implements MediaWiki OAuth2 authentication with enhanced rate limiting
-that provides user-friendly error messages without exposing specific retry times.
-Addresses issue #817 by giving users vague but helpful guidance on when to retry.
-"""
-
 import logging
-import time
+import http
 from django.utils.translation import gettext_lazy as _
 from allauth.socialaccount.providers.oauth2.client import OAuth2Error
 from allauth.socialaccount.providers.oauth2.views import OAuth2LoginView, OAuth2CallbackView
 from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
-from allauth.socialaccount.providers.base import ProviderAccount
-from allauth.socialaccount import app_settings
 from pretix.base.i18n import LazyLocaleException
 
 logger = logging.getLogger(__name__)
@@ -21,10 +11,9 @@ logger = logging.getLogger(__name__)
 
 class MediaWikiRateLimitException(LazyLocaleException):
     """
-    User-friendly exception for MediaWiki rate limiting.
-    
-    This exception provides vague time descriptions instead of exact retry times
-    to avoid rushing users while still giving helpful guidance.
+    exception for MediaWiki rate limit.
+
+    Simple, consistent message without specific time estimates
     """
     
     def __init__(self, retry_after_seconds=None, message=None):
@@ -33,31 +22,9 @@ class MediaWikiRateLimitException(LazyLocaleException):
         if message:
             super().__init__(message)
         else:
-            friendly_time = self._get_friendly_time_description(retry_after_seconds)
             super().__init__(
-                _("MediaWiki is currently experiencing high traffic. "
-                  "Please try again in {time}.").format(time=friendly_time)
+                _("MediaWiki server is busy now, please try again after a few minutes.")
             )
-    
-    def _get_friendly_time_description(self, seconds):
-        """
-        Convert exact seconds to user-friendly vague descriptions.
-        
-        This ensures users get helpful guidance without feeling rushed
-        by exact countdown timers.
-        """
-        if not seconds or seconds <= 0:
-            return _("a moment")
-        elif seconds <= 30:
-            return _("a minute")
-        elif seconds <= 120:
-            return _("a couple of minutes") 
-        elif seconds <= 300:
-            return _("a few minutes")
-        elif seconds <= 600:
-            return _("several minutes")
-        else:
-            return _("a little while")
 
 
 class RateLimitedOAuth2Client:
@@ -81,36 +48,10 @@ class RateLimitedOAuth2Client:
         try:
             return self.client.get_access_token(code, pkce_code_verifier)
         except OAuth2Error as e:
-            if hasattr(e, 'response') and e.response.status_code == 429:
-                # Extract retry-after header if present
-                retry_after = None
-                if 'Retry-After' in e.response.headers:
-                    try:
-                        retry_after = int(e.response.headers['Retry-After'])
-                    except (ValueError, TypeError):
-                        retry_after = None
-                
-                logger.warning(
-                    "MediaWiki OAuth rate limit hit, returning user-friendly error. "
-                    "Original retry-after: %s seconds", 
-                    retry_after
-                )
-                
-                raise MediaWikiRateLimitException(retry_after)
+            if hasattr(e, 'response') and e.response.status_code == http.HTTPStatus.TOO_MANY_REQUESTS:
+                logger.warning("MediaWiki OAuth rate limit hit, returning user-friendly error.")
+                raise MediaWikiRateLimitException() from e
             raise
-
-
-class MediaWikiAccount(ProviderAccount):
-    """MediaWiki account representation."""
-    
-    def get_profile_url(self):
-        return self.account.extra_data.get('profile_url')
-    
-    def get_avatar_url(self):
-        return None  # MediaWiki doesn't provide avatar URLs via OAuth
-    
-    def to_str(self):
-        return self.account.extra_data.get('username', super().to_str())
 
 
 class MediaWikiProvider(OAuth2Provider):
@@ -123,7 +64,6 @@ class MediaWikiProvider(OAuth2Provider):
     
     id = 'mediawiki'
     name = 'MediaWiki'
-    account_class = MediaWikiAccount
     
     def get_default_scope(self):
         """Default OAuth2 scope for MediaWiki."""
