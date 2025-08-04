@@ -113,7 +113,7 @@ if config.has_section('replica'):
     }
     DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
 
-BASE_PATH = ""
+BASE_PATH = config.get('pretix', 'base_path', fallback='/tickets')
 
 FORCE_SCRIPT_NAME = BASE_PATH
 
@@ -384,7 +384,6 @@ CORE_MODULES = {
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'pretix.api.middleware.IdempotencyMiddleware',
     'pretix.multidomain.middlewares.MultiDomainMiddleware',
@@ -405,11 +404,6 @@ MIDDLEWARE = [
 ]
 
 # Configure CORS for testing
-CORS_ALLOWED_ORIGINS = [
-'http://localhost:8080']
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
 
 # Configure the authentication backends
 AUTHENTICATION_BACKENDS = (
@@ -625,7 +619,7 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'default': {'format': '%(levelname)s %(asctime)s %(name)s %(module)s %(message)s'},
+        'default': {'format': '%(levelname)s %(asctime)s %(module)s %(message)s'},
     },
     'filters': {
         'require_admin_enabled': {
@@ -693,6 +687,12 @@ LOGGING = {
             'handlers': ['file', 'console'],
             'level': 'WARNING',
         },
+        'pretix': {
+            'handlers': ['file', 'console'],
+            # We intentionally to collect logs of all levels from `pretix`, to debug.
+            'level': 'DEBUG',
+            'propagate': False,
+        }
     },
 }
 
