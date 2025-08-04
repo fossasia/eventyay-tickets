@@ -1,23 +1,14 @@
 import uuid
-from functools import cached_property
 
 from django.db import models
 from django.db.models import Exists, JSONField, OuterRef, Q
 from django.db.models.expressions import RawSQL, Value
 from django.utils.crypto import get_random_string
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from i18nfield.fields import I18nCharField
 
-from eventyay.base.models import GlobalSettings, OrderedModel, PretalxModel
 from eventyay.base.models.auth import User
 from eventyay.base.models.cache import VersionedModel
 from eventyay.core.permissions import SYSTEM_ROLES, Permission
-from eventyay.common.urls import EventUrls
-from eventyay.talk_rules.agenda import is_agenda_visible
-from eventyay.talk_rules.event import can_change_event_settings
-from eventyay.talk_rules.submission import orga_can_change_submissions
 
 
 def empty_module_config():
@@ -141,38 +132,23 @@ class RoomQuerySet(models.QuerySet):
                 )
             requirements |= Q(**{f"has_role_{i}": True})
 
-        return qs.filter(requirements, event=event)
+        qs = qs.filter(
+            requirements,
+            event=event,
+        )
+        return qs
 
 
-class Room(VersionedModel, OrderedModel, PretalxModel):
-    log_prefix = "pretalx.room"
-
+class Room(VersionedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     deleted = models.BooleanField(default=False)
     event = models.ForeignKey(
-        to="eventyaybase.Event", on_delete=models.PROTECT, related_name="rooms"
+        to="eventyaybase.Event", related_name="rooms", on_delete=models.PROTECT
     )
-    name = I18nCharField(max_length=300, verbose_name=_("Name"))  # Increased to match room.py
-    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))  # Keep TextField for unlimited length
-
-    # Pretalx-specific fields
-    guid = models.UUIDField(
-        null=True, blank=True, verbose_name=_("GUID"),
-        help_text=_("Unique identifier (UUID) to help external tools identify the room.")
-    )
-    speaker_info = I18nCharField(
-        max_length=1000, null=True, blank=True, verbose_name=_("Speaker Information"),
-        help_text=_("Information relevant for speakers scheduled in this room, for example room size, special directions, available adaptors for video input …")
-    )
-    capacity = models.PositiveIntegerField(
-        null=True, blank=True, verbose_name=_("Capacity"),
-        help_text=_("How many people can fit in the room?")
-    )
-    position = models.PositiveIntegerField(null=True, blank=True)  # From OrderedModel
-
-    # Video/interactive platform fields
     trait_grants = JSONField(null=True, blank=True, default=default_grants)
     module_config = JSONField(null=True, default=empty_module_config)
+    name = models.CharField(max_length=300)
+    description = models.TextField(null=True, blank=True)
     picture = models.FileField(null=True, blank=True)
     sorting_priority = models.IntegerField(default=0)
     import_id = models.CharField(max_length=100, null=True, blank=True)
@@ -183,51 +159,13 @@ class Room(VersionedModel, OrderedModel, PretalxModel):
     objects = RoomQuerySet.as_manager()
 
     class Meta:
-        # WARNING: Conflicting ordering fields - both position and sorting_priority exist
-        # Consider using only one for consistency
-        ordering = ("position", "sorting_priority", "name")
-        unique_together = ("event", "guid")
-        # Note: VersionedModel, OrderedModel, PretalxModel may have conflicting Meta options
-        rules_permissions = {
-            "list": is_agenda_visible | orga_can_change_submissions,
-            "view": is_agenda_visible | orga_can_change_submissions,
-            "orga_list": orga_can_change_submissions,
-            "orga_view": orga_can_change_submissions,
-            "create": can_change_event_settings,
-            "update": can_change_event_settings,
-            "delete": can_change_event_settings,
-        }
-
-    class urls(EventUrls):
-        settings_base = edit = "{self.event.orga_urls.room_settings}{self.pk}/"
-        delete = "{settings_base}delete/"
-
-    def __str__(self):
-        return str(self.name)
-
-    @property
-    def log_parent(self):
-        return self.event
-
-    @staticmethod
-    def get_order_queryset(event):
-        return event.rooms.all()
-
-    @cached_property
-    def uuid(self):
-        if self.guid:
-            return self.guid
-        if not self.pk:
-            return ""
-        return uuid.uuid5(GlobalSettings().get_instance_identifier(), f"room:{self.pk}")
-
-    @property
-    def slug(self):
-        return f"{self.id}-{slugify(self.name)}"
+        ordering = ("sorting_priority", "name")
 
 
 class Reaction(models.Model):
-    room = models.ForeignKey("Room", related_name="reactions", on_delete=models.CASCADE)
+    room = models.ForeignKey(
+        to="Room", related_name="reactions", on_delete=models.CASCADE
+    )
     datetime = models.DateTimeField(auto_now_add=True)
     reaction = models.CharField(max_length=100)
     amount = models.IntegerField()
