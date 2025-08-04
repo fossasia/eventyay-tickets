@@ -418,7 +418,8 @@ def base_placeholders(sender: Event, **kwargs):
 
     def render_video_join_link(event: Event, order: Order) -> str:
         url = build_join_video_url(event, order)
-        return '<a href="{}" class="button">{}</a>'.format(url, 'Join online event')
+        # TODO: Make the label translatable.
+        return f'<a href="{url}" class="button">Join online event</a>'
 
     ph = [
         SimpleFunctionalMailTextPlaceholder('event', ['event'], lambda event: event.name, lambda event: event.name),

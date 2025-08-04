@@ -175,7 +175,7 @@ def build_join_video_url(event: Event, order: Order) -> str:
     # Check if any item in order item is allowed to join
     if any(item in event.settings.venueless_items for item in order_item_ids):
         return generate_video_token_url_from_order(event, order, position)
-    logger.error('order %s does not have any item that is allowed to join the event.' % order.code)
+    logger.error('order %s does not have any item that is allowed to join the event.', order.code)
     # Log more to help debugging
     logger.info('Order items: %s', order_item_ids)
     logger.info('Event allowed items: %s', event.settings.venueless_items)
