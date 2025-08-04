@@ -23,7 +23,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_scopes import scopes_disabled
-from rest_framework import views, viewsets
+from rest_framework import status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import DateTimeField
@@ -1080,6 +1080,110 @@ class CheckinRedeemView(views.APIView):
         )
 
 
+class EventCheckoutView(views.APIView):
+    """
+    API endpoint to checkout all attendees for an entire event.
+    This will create exit checkins for all currently checked-in attendees.
+    """
+    permission = ('can_change_orders', 'can_checkin_orders')
+
+    def post(self, request, *args, **kwargs):
+        auth = request.auth
+        user = request.user
+        event = request.event
+
+        # Validate permissions
+        if isinstance(auth, (TeamAPIToken, Device)):
+            events = auth.get_events_with_permission(('can_change_orders', 'can_checkin_orders'))
+        elif user.is_authenticated:
+            events = user.get_events_with_permission(
+                ('can_change_orders', 'can_checkin_orders'), request
+            ).filter(organizer=request.organizer)
+        else:
+            raise PermissionDenied('Authentication required')
+
+        if event not in events:
+            raise PermissionDenied('You do not have permission to checkout attendees for this event.')
+
+        # Get all checkin lists for this event
+        checkin_lists = event.checkin_lists.all()
+        
+        if not checkin_lists.exists():
+            return Response(
+                {'error': 'No check-in lists found for this event.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        checkout_count = 0
+        errors = []
+
+        # Process checkout for each checkin list
+        for clist in checkin_lists:
+            try:
+                # Get all currently checked-in positions for this list
+                checked_in_positions = clist.positions_inside
+                
+                for position in checked_in_positions:
+                    try:
+                        # Use the proper checkin service for consistency
+                        perform_checkin(
+                            op=position,
+                            clist=clist,
+                            given_answers={},
+                            force=True,
+                            ignore_unpaid=True,
+                            datetime=now(),
+                            questions_supported=False,
+                            user=user,
+                            auth=auth,
+                            type=Checkin.TYPE_EXIT,
+                        )
+                        checkout_count += 1
+                        
+                    except (CheckInError, RequiredQuestionsError) as e:
+                        errors.append({
+                            'position_id': position.id,
+                            'order_code': position.order.code,
+                            'error': str(e)
+                        })
+                    except Exception as e:
+                        errors.append({
+                            'position_id': position.id,
+                            'order_code': position.order.code,
+                            'error': f'Unexpected error: {str(e)}'
+                        })
+                        
+            except Exception as e:
+                errors.append({
+                    'checkin_list': clist.name,
+                    'error': f'List processing error: {str(e)}'
+                })
+
+        # Log the event-wide checkout action
+        event.log_action(
+            'pretix.event.checkout_all',
+            data={
+                'checkout_count': checkout_count,
+                'errors_count': len(errors),
+                'datetime': now().isoformat(),
+            },
+            user=user,
+            auth=auth,
+        )
+
+        response_data = {
+            'status': 'success' if not errors else 'partial_success',
+            'checkout_count': checkout_count,
+            'message': f'Successfully checked out {checkout_count} attendees.'
+        }
+        
+        if errors:
+            response_data['errors'] = errors
+            response_data['message'] += f' {len(errors)} errors occurred.'
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
 class CheckinSearchView(ListAPIView):
     serializer_class = CheckinListOrderPositionSerializer
     queryset = OrderPosition.all.none()
@@ -1161,7 +1265,8 @@ class CheckinSearchView(ListAPIView):
 
     def get_queryset(self, ignore_status=False, ignore_products=False):
         params = self.request.query_params
-        search_len = len(params.get('search', ''))
+        search_term = params.get('search', '')
+        search_len = len(search_term)
         min_search_len = 3
 
         queryset = _checkin_list_position_queryset(
@@ -1172,6 +1277,12 @@ class CheckinSearchView(ListAPIView):
             expand=params.getlist('expand'),
         )
 
+        # If no search term is provided, return empty queryset for security
+        if not search_term:
+            return queryset.none()
+        
+        # For users without full access, require minimum search length
+        # But still allow search if they have proper permissions for the lists
         if search_len < min_search_len and not self.has_full_access_permission:
             return queryset.none()
 
