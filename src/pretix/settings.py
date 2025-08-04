@@ -619,7 +619,7 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'default': {'format': '%(levelname)s %(asctime)s %(name)s %(module)s %(message)s'},
+        'default': {'format': '%(levelname)s %(asctime)s %(module)s %(message)s'},
     },
     'filters': {
         'require_admin_enabled': {
@@ -687,6 +687,12 @@ LOGGING = {
             'handlers': ['file', 'console'],
             'level': 'WARNING',
         },
+        'pretix': {
+            'handlers': ['file', 'console'],
+            # We intentionally to collect logs of all levels from `pretix`, to debug.
+            'level': 'DEBUG',
+            'propagate': False,
+        }
     },
 }
 
