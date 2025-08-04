@@ -1172,7 +1172,7 @@ class EventCheckoutView(views.APIView):
         )
 
         response_data = {
-            'status': 'success' if not errors else 'partial_success',
+            'status': 'partial_success' if errors else 'success',
             'checkout_count': checkout_count,
             'message': f'Successfully checked out {checkout_count} attendees.'
         }
