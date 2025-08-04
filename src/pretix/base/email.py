@@ -27,7 +27,7 @@ from pretix.base.i18n import (
     LazyExpiresDate,
     LazyNumber,
 )
-from pretix.base.models import Event, Order
+from pretix.base.models import Event
 from pretix.base.settings import PERSON_NAME_SCHEMES
 from pretix.base.signals import (
     register_html_mail_renderers,
@@ -415,7 +415,7 @@ def base_placeholders(sender: Event, **kwargs):
         build_absolute_uri,
         build_join_video_url,
     )
-
+    from pretix.base.models import Order
     def render_video_join_link(event: Event, order: Order) -> str:
         url = build_join_video_url(event, order)
         # TODO: Make the label translatable.
