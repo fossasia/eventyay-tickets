@@ -115,9 +115,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-STATICFILES_DIRS = (
-    [os.path.join(BASE_DIR, 'eventyay/static/')] if os.path.exists(os.path.join(BASE_DIR, 'eventyay/static')) else []
-)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
@@ -274,7 +274,8 @@ if not SESSION_ENGINE:
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static.dist")
 
 BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
 TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
