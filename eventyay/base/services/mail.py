@@ -680,7 +680,7 @@ def get_mail_backend(timeout=None):
     Returns an email server connection, either by using the system-wide connection
     or by returning a custom one based on the system's settings.
     """
-    from pretix.base.email import CustomSMTPBackend, SendGridEmail
+    from eventyay.base.email import CustomSMTPBackend, SendGridEmail
 
     gs = GlobalSettingsObject()
 

@@ -64,7 +64,7 @@
 
         <pretalx-schedule
             event-url="{{ request.event.urls.base }}"
-            version="{{ schedule.version|default:"wip"|urlencode }}"
+            version="{{ schedule.url_version }}"
             locale="{{ request.LANGUAGE_CODE }}"
             timezone="{{ request.event.timezone }}"
             {% if show_talk_list %}format="list"{% endif %}

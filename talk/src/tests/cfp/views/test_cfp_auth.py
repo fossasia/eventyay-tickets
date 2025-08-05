@@ -9,7 +9,7 @@ def test_can_login_with_email(speaker, client, event):
         follow=True,
     )
     assert response.status_code == 200
-    assert speaker.get_display_name() in response.content.decode()
+    assert speaker.get_display_name() in response.text
 
 
 @pytest.mark.django_db
@@ -20,7 +20,7 @@ def test_cannot_login_with_incorrect_email(client, event, speaker):
         follow=True,
     )
     assert response.status_code == 200
-    assert speaker.get_display_name() not in response.content.decode()
+    assert speaker.get_display_name() not in response.text
 
 
 @pytest.mark.django_db
@@ -30,13 +30,13 @@ def test_cfp_logout(speaker_client, event, speaker):
         follow=True,
     )
     assert response.status_code == 200
-    assert speaker.get_display_name() in response.content.decode()
+    assert speaker.get_display_name() in response.text
     response = speaker_client.post(
         event.urls.logout,
         follow=True,
     )
     assert response.status_code == 200
-    assert speaker.get_display_name() not in response.content.decode()
+    assert speaker.get_display_name() not in response.text
 
 
 @pytest.mark.django_db
@@ -64,7 +64,7 @@ def test_can_reset_password_by_email(speaker, client, event):
         data={"login_email": speaker.email, "login_password": "mynewpassword1!"},
         follow=True,
     )
-    assert speaker.get_display_name() in response.content.decode()
+    assert speaker.get_display_name() in response.text
 
 
 @pytest.mark.django_db
@@ -102,7 +102,7 @@ def test_cannot_reset_password_with_incorrect_input(speaker, client, event):
         data={"login_email": speaker.email, "login_password": "mynewpassword1!"},
         follow=True,
     )
-    assert speaker.get_display_name() not in response.content.decode()
+    assert speaker.get_display_name() not in response.text
 
 
 @pytest.mark.django_db
@@ -130,7 +130,7 @@ def test_cannot_reset_password_to_insecure_password(speaker, client, event):
         data={"login_email": speaker.email, "login_password": "mynewpassword1!"},
         follow=True,
     )
-    assert speaker.get_display_name() not in response.content.decode()
+    assert speaker.get_display_name() not in response.text
 
 
 @pytest.mark.django_db

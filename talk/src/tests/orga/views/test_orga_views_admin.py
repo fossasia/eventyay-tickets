@@ -14,9 +14,7 @@ def test_admin_dashboard_only_for_admin_user(orga_user, orga_client, is_administ
     orga_user.save()
     response = orga_client.get("/orga/admin/")
     assert (response.status_code == 200) is is_administrator
-    assert (
-        "Administrator information" in response.content.decode()
-    ) is is_administrator
+    assert ("Administrator information" in response.text) is is_administrator
 
 
 @pytest.fixture
@@ -43,25 +41,16 @@ def test_update_notice_displayed(client, user):
     client.login(email="dummy@dummy.dummy", password="dummy")
 
     r = client.get("/orga/", follow=True)
-    assert (
-        "eventyay automatically checks for updates in the background"
-        not in r.content.decode()
-    )
+    assert "pretalx automatically checks for updates in the background" not in r.text
 
     user.is_administrator = True
     user.save()
     r = client.get("/orga/", follow=True)
-    assert (
-        "eventyay automatically checks for updates in the background"
-        in r.content.decode()
-    )
+    assert "pretalx automatically checks for updates in the background" in r.text
 
     client.get("/orga/admin/update/")  # Click it
     r = client.get("/orga/", follow=True)
-    assert (
-        "eventyay automatically checks for updates in the background"
-        not in r.content.decode()
-    )
+    assert "pretalx automatically checks for updates in the background" not in r.text
 
 
 @pytest.mark.django_db

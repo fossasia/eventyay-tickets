@@ -1,4 +1,5 @@
 import datetime as dt
+import os
 import subprocess
 from contextlib import suppress
 
@@ -23,6 +24,10 @@ def test_common_runperiodic():
     call_command("runperiodic")
 
 
+@pytest.mark.skipif(
+    "CI" not in os.environ or not os.environ["CI"],
+    reason="Having Faker installed increases test runtime, so we just test this on CI.",
+)
 @pytest.mark.parametrize("stage", ("cfp", "review", "over", "schedule"))
 @pytest.mark.django_db
 def test_common_test_event(administrator, stage):
@@ -30,12 +35,20 @@ def test_common_test_event(administrator, stage):
     assert Event.objects.get(slug="democon")
 
 
+@pytest.mark.skipif(
+    "CI" not in os.environ or not os.environ["CI"],
+    reason="Having Faker installed increases test runtime, so we just test this on CI.",
+)
 @pytest.mark.django_db
 def test_common_test_event_with_seed(administrator):
     call_command("create_test_event", seed=1)
     assert Event.objects.get(slug="democon")
 
 
+@pytest.mark.skipif(
+    "CI" not in os.environ or not os.environ["CI"],
+    reason="Having Faker installed increases test runtime, so we just test this on CI.",
+)
 @pytest.mark.django_db
 def test_common_test_event_without_user():
     call_command("create_test_event")
@@ -47,7 +60,7 @@ def test_common_uncallable(event):
     with pytest.raises(OSError):
         call_command("init")
     with pytest.raises(Exception):  # noqa
-        call_command("shell_scoped")
+        call_command("shell", "--unsafe-disable-scopes")
 
 
 @pytest.mark.django_db
@@ -90,3 +103,9 @@ def test_common_move_event(event, slot):
     with scope(event=event):
         event.refresh_from_db()
         assert event.date_from == old_start
+
+
+@pytest.mark.django_db
+def test_generate_api_docs():
+    # Just make sure there is no exception
+    call_command("spectacular")

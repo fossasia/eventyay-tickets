@@ -62,15 +62,14 @@ def test_overlaps(one, two, expected_strict, expected):
     one = Availability(start=dt.datetime(*one[0]), end=dt.datetime(*one[1]))
     two = Availability(start=dt.datetime(*two[0]), end=dt.datetime(*two[1]))
 
-    def test(strict, expected):
-        nonlocal one, two
+    def test(strict, expected, one, two):
         actual1 = one.overlaps(two, strict)
         actual2 = two.overlaps(one, strict)
         assert expected == actual1
         assert expected == actual2
 
-    test(True, expected_strict)
-    test(False, expected)
+    test(True, expected_strict, one, two)
+    test(False, expected, one, two)
 
 
 @pytest.mark.parametrize(

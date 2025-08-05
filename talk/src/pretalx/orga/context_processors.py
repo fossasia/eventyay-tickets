@@ -17,8 +17,8 @@ def collect_signal(signal, kwargs):
     result = []
     for _, response in signal.send_robust(**kwargs):
         if isinstance(response, list):
-            result += response
-        else:
+            result += [r for r in response if not isinstance(r, Exception)]
+        elif not isinstance(response, Exception):
             result.append(response)
     return result
 
@@ -76,7 +76,7 @@ def orga_events(request):
     if (
         not request.event.is_public
         and request.event.custom_domain
-        and request.user.has_perm("cfp.view_event", request.event)
+        and request.user.has_perm("event.view_event", request.event)
     ):
         child_session_key = f"child_session_{request.event.pk}"
         child_session = request.session.get(child_session_key)

@@ -19,8 +19,8 @@
 {% endblock scripts %}
 
 {% block submission_content %}
-    {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
-    {% has_perm "orga.view_all_reviews" request.user request.event as can_view_all_reviews %}
+    {% has_perm "mail.send_queuedmail" request.user request.event as can_send_mails %}
+    {% has_perm "submission.list_all_review" request.user request.event as can_view_all_reviews %}
     <form method="post" enctype="multipart/form-data">
         <fieldset>
             {% if not submission %}
@@ -46,11 +46,11 @@
                 {{ form.state.as_field_group }}
                 </fieldset>
                 <fieldset>
-                    <legend>{% translate "Speaker" %}</legend>
+                    <legend id="speaker">{% translate "Speaker" %}</legend>
                     {{ new_speaker_form }}
                 </fieldset>
                 <fieldset>
-                    <legend>{% translate "Proposal" %}</legend>
+                    <legend id="proposal">{% translate "Proposal" %}</legend>
             {% endif %}
             {% if form.room %}
                 <div id="show-if-state" {% if action == "create" %}class="d-none"{% endif %}>
@@ -88,7 +88,7 @@
                 {% include "cfp/includes/submission_resources_form.html" %}
             {% endif %}
             {% if questions_form and questions_form.fields %}
-                <div><legend>{% translate "Questions" %}</legend></div>
+                <div><legend id="custom">{{ phrases.cfp.custom_fields }}</legend></div>
                 {{ questions_form }}
             {% endif %}
 

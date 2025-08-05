@@ -8,11 +8,8 @@ def is_event_visible(user, event):
 
 
 def get_events_for_user(user, queryset=None):
-<<<<<<< HEAD
-    from pretalx.event.models import Event
-=======
     from eventyay.base.models import Event
->>>>>>> upstream/enext
+
 
     queryset = queryset or Event.objects.all()
     if user.is_anonymous:

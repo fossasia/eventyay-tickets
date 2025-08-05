@@ -8,7 +8,6 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
 {% endblock stylesheets %}
 
 {% block scripts %}
@@ -16,15 +15,14 @@
         <script defer src="{% static "vendored/rslider/rSlider.min.js" %}"></script>
         <script defer src="{% static "orga/js/submission_filter.js" %}"></script>
         <script defer src="{% static "orga/js/review.js" %}"></script>
-        <script defer src="{% static "common/js/lightbox.js" %}"></script>
     {% endcompress %}
 {% endblock scripts %}
 
 {% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% has_perm "orga.perform_reviews" request.user request.event as can_review %}
-    {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
+    {% has_perm "submission.create_review" request.user request.event as can_review %}
+    {% has_perm "person.reviewer_list_speakerprofile" request.user request.event as can_view_speakers %}
     <div class="alert alert-info">
         <div>
             {% if can_review and next_submission %}
@@ -57,7 +55,7 @@
             <summary class="btn btn-secondary">
                 {% translate "Columns" %} <i class="fa fa-caret-down"></i>
             </summary>
-            <div id="column-select" class="dropdown-content dropdown-content-s{% if rtl %}w{% else %}e{% endif %}">
+            <div id="column-select" class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                 {% if can_see_all_reviews %}
                     <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-score-avg" checked autocomplete=off>
@@ -85,7 +83,7 @@
                 {% for question in short_questions %}
                     <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-question-{{ question.id }}" autocomplete=off>
-                        <label for="col-question-{{ question.id }}">{% translate "Question" %}: {{ question.question }}</label>
+                        <label for="col-question-{{ question.id }}">{% translate "Custom field" %}: {{ question.question }}</label>
                     </li>
                 {% endfor %}
                 <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
@@ -112,19 +110,21 @@
                 </li>
             </div>
         </details>
-        <details class="dropdown flip fix-height" role="menu">
-            <summary class="btn btn-info">
-                {% translate "Actions" %} <i class="fa fa-caret-down"></i>
-            </summary>
-            <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate" role="menuitem" tabindex="-1">
-                    <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
-                </a>
-                <a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}" role="menuitem" tabindex="-1">
-                    <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
-                </a>
-            </div>
-        </details>
+        {% if can_change_submissions %}
+            <details class="dropdown flip fix-height" role="menu">
+                <summary class="btn btn-info">
+                    {% translate "Actions" %} <i class="fa fa-caret-down"></i>
+                </summary>
+                <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                    <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate" role="menuitem" tabindex="-1">
+                        <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
+                    </a>
+                    <a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path|urlencode }}" role="menuitem" tabindex="-1">
+                        <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
+                    </a>
+                </div>
+            </details>
+        {% endif %}
     </div>
 
     {% include "orga/includes/review_filter_form.html" %}
@@ -132,7 +132,7 @@
     <form method="post">
         {% csrf_token %}
         <div class="table-responsive-sm">
-            <table class="table table-sm review-table table-hover table-flip table-sticky">
+            <table class="table table-sm review-table table-flip table-sticky">
                 <colgroup>
                     {% if can_see_all_reviews %}
                         <col class="col-score-avg nowrap numeric">
@@ -168,11 +168,9 @@
                                 <a href="{% querystring sort="score" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
                                 <a href="{% querystring sort="-score" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
                             </th>
-                            {% if independent_categories %}
-                                {% for category in independent_categories %}
-                                    <th class="col-score-avg numeric"> {{ category.name }}</th>
-                                {% endfor %}
-                            {% endif %}
+                            {% for category in independent_categories %}
+                                <th class="col-score-avg numeric"> {{ category.name }}</th>
+                            {% endfor %}
                         {% endif %}
                         {% if can_review or submissions_reviewed %}
                             <th class="col-score-user numeric">
@@ -197,9 +195,9 @@
                             <th class="col-question-{{ question.id }} d-none">{{ question.question }}</th>
                         {% endfor %}
                         {% if filter_form.track %}<th class="col-track">{% translate "Track" %}</th>{% endif %}
+                        {% if filter_form.tags %}<th class="col-tags">{% translate "Tags" %}</th>{% endif %}
                         <th class="d-none col-duration">{% translate "Duration" %}</th>
                         {% if show_submission_types %}<th class="col-subtype d-none">{% translate "Type" %}</th>{% endif %}
-                        {% if filter_form.tags %}<th class="col-tags">{% translate "Tags" %}</th>{% endif %}
                         <th class="col-state">{% translate "State" %}</th>
                         <th><span class="action-row d-flex justify-space-around">
                             {% if can_accept_submissions %}
@@ -223,17 +221,15 @@
                                 <td class="text-center col-score-avg numeric">
                                     {% review_score submission %}
                                 </td>
-                                {% if independent_categories %}
-                                    {% for score in submission.independent_scores %}
-                                        <td class="col-score-avg numeric"> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
-                                    {% endfor %}
-                                {% endif %}
+                                {% for score in submission.independent_scores %}
+                                    <td class="col-score-avg numeric"> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
+                                {% endfor %}
                             {% endif %}
                             {% if can_review or submissions_reviewed %}
                                 <td class="text-center col-score-user numeric">
                                     {% review_score submission True %}
                                 </td>
-                                {% if not can_see_all_reviews and independent_categories %}
+                                {% if independent_categories and not can_see_all_reviews %}
                                     {% for score in submission.independent_scores %}
                                         <td class="col-score-user numeric"> {% if score is None %}-{% else %}{{ score }}{% endif %}</td>
                                     {% endfor %}
@@ -261,16 +257,12 @@
                                     {% include "orga/includes/user_name.html" with user=speaker lightbox=True %}<br>
                                 {% endfor %}
                             </td>{% endif %}
-                            {% if short_questions %}
-                                {% for answer in submission.short_answers %}
-                                    <td class="col-question-{{ answer.question_id }} d-none">
-                                        {{ answer.answer_string }}
-                                    </td>
-                                {% endfor %}
-                            {% endif %}
+                            {% for answer in submission.short_answers %}
+                                <td class="col-question-{{ answer.question_id }} d-none">
+                                    {{ answer.answer_string }}
+                                </td>
+                            {% endfor %}
                             {% if filter_form.track %}<td class="col-track">{{ submission.track.name }}</td>{% endif %}
-                            <td class="d-none col-duration">{{ submission.export_duration }}</td>
-                            {% if show_submission_types %}<td class="col-subtype d-none">{{ submission.submission_type.name }}</td>{% endif %}
                             {% if filter_form.tags %}<td class="col-tags">
                                 <div class="d-flex flex-column">
                                     {% for tag in submission.tags.all %}
@@ -278,6 +270,8 @@
                                     {% endfor %}
                                 </div>
                             </td>{% endif %}
+                            <td class="d-none col-duration">{{ submission.export_duration }}</td>
+                            {% if show_submission_types %}<td class="col-subtype d-none">{{ submission.submission_type.name }}</td>{% endif %}
                             <td class="nowrap col-state">
                                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
                                 {% if submission.pending_state %}<br>

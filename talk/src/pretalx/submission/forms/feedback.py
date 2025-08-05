@@ -13,8 +13,11 @@ class FeedbackForm(ReadOnlyFlag, forms.ModelForm):
     def __init__(self, talk, **kwargs):
         super().__init__(**kwargs)
         self.instance.talk = talk
-        self.fields["speaker"].queryset = self.instance.talk.speakers.all()
+        speakers = talk.speakers.all()
+        self.fields["speaker"].queryset = speakers
         self.fields["speaker"].empty_label = _("All speakers")
+        if len(speakers) == 1:
+            self.fields["speaker"].widget = forms.HiddenInput()
 
     def save(self, *args, **kwargs):
         if (

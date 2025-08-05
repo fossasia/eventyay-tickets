@@ -1,5 +1,7 @@
 from django.dispatch import receiver
 
+from pretalx.agenda.recording import BaseRecordingProvider
+from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.signals import footer_link, html_above_profile_page, html_head
 from pretalx.common.signals import register_locales
 from pretalx.orga.signals import (
@@ -60,3 +62,16 @@ def activate_event_test(sender, request, **kwargs):
 def submission_state_change_test(sender, submission, **kwargs):
     submission._state_change_called = getattr(submission, "_state_change_called", 0) + 1
     submission.event.settings.submission_state_change_called = submission.code
+
+
+class DummyRecordingProvider(BaseRecordingProvider):
+    def get_recording(self, submission):
+        return {
+            "iframe": f"<iframe src='http://localhost/{submission.code}'></iframe>'",
+            "csp_header": "localhost",
+        }
+
+
+@receiver(register_recording_provider)
+def dummy_recording_provider(sender, **kwargs):
+    return DummyRecordingProvider(sender)

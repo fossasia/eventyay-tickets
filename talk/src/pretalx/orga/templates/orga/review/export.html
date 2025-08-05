@@ -24,11 +24,11 @@
         <form method="post">
             {% csrf_token %}
             <fieldset>
-                <legend>{% translate "Dataset" %}</legend>
+                <legend id="dataset">{% translate "Dataset" %}</legend>
                 {{ form.target.as_field_group }}
             </fieldset>
             <fieldset>
-                <legend>{% translate "Data fields" %}</legend>
+                <legend id="fields">{% translate "Data fields" %}</legend>
                 <div class="d-flex">
                     <div class="ml-auto form-check">
                         <input type="checkbox" id="select-all" name="select-all">
@@ -40,7 +40,7 @@
                 {% endfor %}
             </fieldset>
             <fieldset>
-                <legend>{% translate "Export settings" %}</legend>
+                <legend id="settings">{% translate "Export settings" %}</legend>
                 {{ form.export_format.as_field_group }}
             </fieldset>
 

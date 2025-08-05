@@ -15,6 +15,7 @@ updating it in the coming months.
    :maxdepth: 2
    :caption: Contents:
 
+   sessions
    event/widget
    markdown
    faq

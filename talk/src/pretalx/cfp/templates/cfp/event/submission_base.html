@@ -43,7 +43,7 @@
             {{ wizard.management_form }}
             <div class="d-flex align-items-start">
                 <h2>{% block submission_step_title %}{{ title|default:'' }}{% endblock submission_step_title %}</h2>
-                {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
+                {% has_perm "event.update_event" request.user request.event as can_edit_cfp %}
                 {% if can_edit_cfp %}{% block orga_edit_link %}{% orga_edit_link request.event.cfp.urls.editor %}{% endblock %}{% endif %}
             </div>
             {% block submission_step_text %}<p>{{ text|rich_text }}</p>{% endblock %}
@@ -67,7 +67,9 @@
                             </button>
                             <button type="submit" class="btn btn-link text-center" name="action" value="draft">
                                 {% translate "or save as draft for now" %}
-                                <i class="fa fa-question-circle" title="{% translate "You can save your proposal as a draft and submit it later. Organisers will not be able to see your proposal, though they will be able to send you reminder emails about the upcoming deadline." %}"></i>
+                                <span data-toggle="tooltip" data-placement="bottom-left" class="tooltip-textbox" title="{% translate 'You can save your proposal as a draft and submit it later. Organisers will not be able to see your proposal, though they will be able to send you reminder emails about the upcoming deadline.' %}">
+                                    <i class="fa fa-question-circle"></i>
+                                </span>
                             </button>
                         {% endif %}
                     </div>

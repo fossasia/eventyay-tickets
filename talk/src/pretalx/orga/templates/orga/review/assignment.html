@@ -7,17 +7,6 @@
 
 {% block extra_title %}{% translate "Assign reviewers" %} :: {% endblock extra_title %}
 
-{% block scripts %}
-    {% compress js %}
-        <script defer src="{% static "common/js/lightbox.js" %}"></script>
-    {% endcompress %}
-{% endblock scripts %}
-{% block stylesheets %}
-    {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{% static "common/css/dialog.css" %}">
-    {% endcompress %}
-{% endblock stylesheets %}
-
 {% block content %}
     {% compress js %}
         <script defer src="{% static "orga/js/reviewAssignment.js" %}"></script>
@@ -46,7 +35,7 @@
                 <i class="fa fa-plus"></i> {% translate "New team" %}
             </a>
         </div>
-        <table class="table table-sm table-hover table-flip">
+        <table class="table table-sm table-flip">
             <thead>
                 <tr>
                     <th class="col col-md-4">{% translate "Team" %}</th>
@@ -61,7 +50,7 @@
                 {% for team in review_teams %}
                     <tr>
                         <td>
-                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}">
+                            <a href="{{ team.orga_urls.base }}?next={{ request.path|urlencode }}">
                                 {{ team.name }}
                                 {% if request.user in team.members.all %}
                                     <i class="fa fa-star text-warning" title="{% translate "You are a member of this team" %}"></i>
@@ -92,10 +81,10 @@
                             </td>
                         {% endif %}
                         <td class="text-right">
-                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
+                            <a href="{{ team.orga_urls.base }}?next={{ request.path|urlencode }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a href="{{ team.orga_urls.delete }}?next={{ request.path }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
+                            <a href="{{ team.orga_urls.delete }}?next={{ request.path|urlencode }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </td>
@@ -109,12 +98,12 @@
         <div class="alert alert-info"><p>
             {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
                 {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                    Reviewers will be able to see and review <b>only their assigned</b> proposals.
+                    Reviewers will be able to see and review <strong>only their assigned</strong> proposals.
                     You can change this in your <a href="{{ href }}">review settings</a>.
                 {% endblocktranslate %}
             {% else %}
                 {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                    Reviewers will be able to see and review <b>all proposals</b>,
+                    Reviewers will be able to see and review <strong>all proposals</strong>,
                     but their assigned reviews will appear highlighted, and they
                     will be directed to them first. You can change this in your <a
                         href="{{ href }}">review settings</a>.

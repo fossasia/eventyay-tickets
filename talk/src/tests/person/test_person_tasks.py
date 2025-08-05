@@ -1,5 +1,6 @@
 import pytest
 
+from pretalx.person import tasks
 from pretalx.person.models import User
 
 
@@ -19,7 +20,6 @@ def test_gravatar_refetch_called(user, caplog, mocker, event):
     # patch requests.get to return a 404
     mocker.patch("pretalx.person.tasks.get", mock_get_404)
     mocker.patch("requests.get", mock_get_404)
-    from pretalx.person import tasks
 
     tasks.refetch_gravatars(sender=event)
 
@@ -49,18 +49,13 @@ def test_gravatar_refetch_called_on_save(user, caplog, mocker):
 
 
 @pytest.mark.django_db
-def test_gravatar_refetch_on_incorrect_user(user, mocker, caplog):
-    from pretalx.person import tasks
-
+def test_gravatar_refetch_on_incorrect_user(user):
     tasks.gravatar_cache(user.pk)
     user.refresh_from_db()
     assert user.get_gravatar is False
-    assert f"gravatar_cache() was called for user {user.id}, but user was not found or user has gravatar disabled"
 
 
 @pytest.mark.django_db
-def test_gravatar_refetch_on_missing_user(mocker, caplog):
-    from pretalx.person import tasks
-
+def test_gravatar_refetch_on_missing_user():
+    # Just make sure that the task doesn’t throw an exception
     tasks.gravatar_cache(1001)
-    assert "gravatar_cache() was called for user 1001, but user was not found or user has gravatar disabled"
