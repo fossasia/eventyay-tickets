@@ -6,9 +6,9 @@ from django.db.models.expressions import RawSQL, Value
 from django.utils.crypto import get_random_string
 from rest_framework import serializers
 
-from venueless.core.models import User
-from venueless.core.models.cache import VersionedModel
-from venueless.core.permissions import SYSTEM_ROLES, Permission
+from eventyay.base.models.auth import User
+from eventyay.base.models.cache import VersionedModel
+from eventyay.core.permissions import SYSTEM_ROLES, Permission
 
 
 def empty_module_config():
@@ -23,13 +23,13 @@ def default_grants():
 
 class RoomQuerySet(models.QuerySet):
     def with_permission(
-        self, *, user=None, traits=None, world, permission=Permission.ROOM_VIEW
+        self, *, user=None, traits=None, event, permission=Permission.ROOM_VIEW
     ):
-        from .auth import RoomGrant, WorldGrant
+        from .auth import RoomGrant, EventGrant
 
         traits = traits or user.traits
         allow_empty_traits = not user or user.type == User.UserType.PERSON
-        if world.has_permission_implicit(
+        if event.has_permission_implicit(
             traits=traits,
             permissions=[permission],
             allow_empty_traits=allow_empty_traits,
@@ -41,7 +41,7 @@ class RoomQuerySet(models.QuerySet):
         roles = [
             role
             for role, permissions in [
-                *world.roles.items(),
+                *event.roles.items(),
                 *SYSTEM_ROLES.items(),
             ]
             if permission.value in permissions
@@ -53,16 +53,16 @@ class RoomQuerySet(models.QuerySet):
 
         if user:
             sq_user_has_room_grant = RoomGrant.objects.filter(
-                user=user, world=world, room_id=OuterRef("pk"), role__in=roles
+                user=user, event=event, room_id=OuterRef("pk"), role__in=roles
             )
-            sq_user_has_world_grant = WorldGrant.objects.filter(
-                user=user, world=world, role__in=roles
+            sq_user_has_event_grant = EventGrant.objects.filter(
+                user=user, event=event, role__in=roles
             )
             qs = self.annotate(
                 user_has_room_grant=Exists(sq_user_has_room_grant),
-                user_has_world_grant=Exists(sq_user_has_world_grant),
+                user_has_event_grant=Exists(sq_user_has_event_grant),
             )
-            requirements = Q(user_has_room_grant=True) | Q(user_has_world_grant=True)
+            requirements = Q(user_has_room_grant=True) | Q(user_has_event_grant=True)
         else:
             qs = self
             requirements = Q()
@@ -134,7 +134,7 @@ class RoomQuerySet(models.QuerySet):
 
         qs = qs.filter(
             requirements,
-            world=world,
+            event=event,
         )
         return qs
 
@@ -142,8 +142,8 @@ class RoomQuerySet(models.QuerySet):
 class Room(VersionedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     deleted = models.BooleanField(default=False)
-    world = models.ForeignKey(
-        to="core.World", related_name="rooms", on_delete=models.PROTECT
+    event = models.ForeignKey(
+        to="eventyaybase.Event", related_name="rooms", on_delete=models.PROTECT
     )
     trait_grants = JSONField(null=True, blank=True, default=default_grants)
     module_config = JSONField(null=True, default=empty_module_config)
@@ -225,8 +225,8 @@ class AnonymousInvite(models.Model):
         default=generate_short_token,
         max_length=150,
     )
-    world = models.ForeignKey(
-        "World", related_name="anonymous_invites", on_delete=models.CASCADE
+    event = models.ForeignKey(
+        "eventyaybase.Event", related_name="anonymous_invites", on_delete=models.CASCADE
     )
     room = models.ForeignKey(
         "Room", related_name="anonymous_invites", on_delete=models.CASCADE

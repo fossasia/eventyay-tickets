@@ -10,6 +10,7 @@ def is_event_visible(user, event):
 def get_events_for_user(user, queryset=None):
     from eventyay.base.models import Event
 
+
     queryset = queryset or Event.objects.all()
     if user.is_anonymous:
         queryset = queryset.filter(is_public=True)
