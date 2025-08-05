@@ -104,6 +104,11 @@ urlpatterns = [
         name='event.settings',
     ),
     url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/checkout/$',
+        checkin.EventCheckoutView.as_view(),
+        name='event.checkout',
+    ),
+    url(
         r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/',
         include(event_router.urls),
     ),

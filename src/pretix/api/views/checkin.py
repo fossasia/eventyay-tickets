@@ -23,7 +23,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_scopes import scopes_disabled
-from rest_framework import views, viewsets
+from rest_framework import status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import DateTimeField
@@ -58,7 +58,105 @@ from pretix.base.services.checkin import (
     SQLLogic,
     perform_checkin,
 )
+from pretix.base.services.tasks import ProfiledEventTask
+from pretix.celery_app import app
 from pretix.helpers.database import FixedOrderBy
+
+
+@app.task(base=ProfiledEventTask, bind=True)
+def bulk_checkout_task(self, event_id, user_id=None, auth_id=None, auth_type=None):
+    """
+    Background task to perform bulk checkout for all attendees in an event.
+    """
+    from django.utils.timezone import now
+    from pretix.base.models import Event, User, TeamAPIToken, Device
+    
+    with scopes_disabled():
+        event = Event.objects.get(pk=event_id)
+        user = User.objects.get(pk=user_id) if user_id else None
+        
+        # Reconstruct auth object if needed
+        auth = None
+        if auth_type == 'TeamAPIToken' and auth_id:
+            auth = TeamAPIToken.objects.get(pk=auth_id)
+        elif auth_type == 'Device' and auth_id:
+            auth = Device.objects.get(pk=auth_id)
+    
+    # Get all checkin lists for this event
+    checkin_lists = event.checkin_lists.all()
+    
+    if not checkin_lists.exists():
+        return {
+            'status': 'error',
+            'message': 'No check-in lists found for this event.',
+            'checkout_count': 0,
+            'errors': []
+        }
+
+    checkout_count = 0
+    errors = []
+
+    # Process checkout for each checkin list
+    for clist in checkin_lists:
+        try:
+            # Get all currently checked-in positions for this list
+            checked_in_positions = clist.positions_inside
+            
+            for position in checked_in_positions:
+                try:
+                    # Use the proper checkin service for consistency
+                    perform_checkin(
+                        op=position,
+                        clist=clist,
+                        given_answers={},
+                        force=True,
+                        ignore_unpaid=True,
+                        datetime=now(),
+                        questions_supported=False,
+                        user=user,
+                        auth=auth,
+                        type=Checkin.TYPE_EXIT,
+                    )
+                    checkout_count += 1
+                    
+                except (CheckInError, RequiredQuestionsError) as e:
+                    errors.append({
+                        'position_id': position.id,
+                        'order_code': position.order.code,
+                        'error': str(e)
+                    })
+                except Exception as e:
+                    errors.append({
+                        'position_id': position.id,
+                        'order_code': position.order.code,
+                        'error': f'Unexpected error: {str(e)}'
+                    })
+                    
+        except Exception as e:
+            errors.append({
+                'checkin_list': clist.name,
+                'error': f'List processing error: {str(e)}'
+            })
+
+    # Log the event-wide checkout action
+    event.log_action(
+        'pretix.event.checkout_all',
+        data={
+            'checkout_count': checkout_count,
+            'errors_count': len(errors),
+            'datetime': now().isoformat(),
+        },
+        user=user,
+        auth=auth,
+    )
+
+    return {
+        'status': 'partial_success' if errors else 'success',
+        'checkout_count': checkout_count,
+        'errors': errors,
+        'message': f'Successfully checked out {checkout_count} attendees.'
+    }
+
 
 with scopes_disabled():
 
@@ -1080,6 +1178,88 @@ class CheckinRedeemView(views.APIView):
         )
 
 
+class EventCheckoutView(views.APIView):
+    """
+    API endpoint to checkout all attendees for an entire event.
+    This will create exit checkins for all currently checked-in attendees.
+    """
+    permission_classes = ('can_change_orders', 'can_checkin_orders')
+
+    def post(self, request, *args, **kwargs):
+        from django.conf import settings
+        
+        auth = request.auth
+        user = request.user
+        event = request.event
+
+        # Validate permissions
+        if isinstance(auth, (TeamAPIToken, Device)):
+            events = auth.get_events_with_permission(('can_change_orders', 'can_checkin_orders'))
+        elif user.is_authenticated:
+            events = user.get_events_with_permission(
+                ('can_change_orders', 'can_checkin_orders'), request
+            ).filter(organizer=request.organizer)
+        else:
+            raise PermissionDenied('Authentication required')
+
+        if event not in events:
+            raise PermissionDenied('You do not have permission to checkout attendees for this event.')
+
+        # Get all checkin lists for this event
+        checkin_lists = event.checkin_lists.all()
+        
+        if not checkin_lists.exists():
+            return Response(
+                {'error': 'No check-in lists found for this event.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Prepare task arguments
+        user_id = user.pk if user.is_authenticated else None
+        auth_id = None
+        auth_type = None
+        
+        if isinstance(auth, TeamAPIToken):
+            auth_id = auth.pk
+            auth_type = 'TeamAPIToken'
+        elif isinstance(auth, Device):
+            auth_id = auth.pk
+            auth_type = 'Device'
+
+        # Check if Celery is available for background processing
+        if settings.HAS_CELERY:
+            # Run as background task
+            task_result = bulk_checkout_task.apply_async(
+                kwargs={
+                    'event_id': event.pk,
+                    'user_id': user_id,
+                    'auth_id': auth_id,
+                    'auth_type': auth_type,
+                },
+                queue='background'  # Use background queue for long-running tasks
+            )
+            
+            return Response({
+                'status': 'accepted',
+                'message': 'Bulk checkout has been queued for background processing.',
+                'task_id': task_result.id,
+                'note': 'Use the task_id to check the status of the operation.'
+            }, status=status.HTTP_202_ACCEPTED)
+        else:
+            # Run synchronously if Celery is not available
+            result = bulk_checkout_task(
+                event_id=event.pk,
+                user_id=user_id,
+                auth_id=auth_id,
+                auth_type=auth_type,
+            )
+            
+            return Response(
+                result,
+                status=status.HTTP_200_OK if result['status'] == 'success' else status.HTTP_207_MULTI_STATUS
+            )
+
+
 class CheckinSearchView(ListAPIView):
     serializer_class = CheckinListOrderPositionSerializer
     queryset = OrderPosition.all.none()
@@ -1161,7 +1341,8 @@ class CheckinSearchView(ListAPIView):
 
     def get_queryset(self, ignore_status=False, ignore_products=False):
         params = self.request.query_params
-        search_len = len(params.get('search', ''))
+        search_term = params.get('search', '')
+        search_len = len(search_term)
         min_search_len = 3
 
         queryset = _checkin_list_position_queryset(
@@ -1172,7 +1353,13 @@ class CheckinSearchView(ListAPIView):
             expand=params.getlist('expand'),
         )
 
-        if search_len < min_search_len and not self.has_full_access_permission:
+        # If no search term is provided, return empty queryset for security
+        if not search_term:
+            return queryset.none()
+        
+        # For users without full access, require minimum search length
+        # But still allow search if they have proper permissions for the lists
+        if search_len < min_search_len and not self.has_full_access_permission():
             return queryset.none()
 
         return queryset
