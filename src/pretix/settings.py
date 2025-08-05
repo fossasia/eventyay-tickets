@@ -837,3 +837,9 @@ SOCIALACCOUNT_ADAPTER = 'pretix.plugins.socialauth.adapter.CustomSocialAccountAd
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# MediaWiki OAuth settings for Wikimedia compliance
+# User-Agent will be auto-generated following Wikimedia conventions
+# Format: ToolName/Version (URL; contact@email.com) LibraryName/Version
+# Override MEDIAWIKI_USER_AGENT only if you need a custom User-Agent string
+# MEDIAWIKI_USER_AGENT = None  # Auto-generate following conventions
