@@ -37,11 +37,12 @@ def instance_name(request):
         'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')
     }
 
+
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+BASE_PATH = ""
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -69,7 +70,6 @@ else:
 # Application definition
 
 AUTH_USER_MODEL = 'eventyaybase.User'
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
 INSTALLED_APPS = [
     'bootstrap3',
     'compressor',
@@ -94,11 +94,6 @@ INSTALLED_APPS = [
 ]
 
 
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
-)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -140,25 +135,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
 
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-    ('text/vue', 'pretix.helpers.compressor.VueCompiler'),
-)
-
-COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
-
-COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
-
-COMPRESS_CSS_FILTERS = (
-    # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
-    # However, we don't need it if we consequently use the static() function in Sass
-    # 'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.cssmin.CSSCompressorFilter',
-)
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -323,8 +300,32 @@ CELERY_TASK_ROUTES = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static.dist")
+STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+    ('text/vue', 'eventyay.helpers.compressor.VueCompiler'),
+)
+
+COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
+COMPRESS_CSS_FILTERS = (
+    # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
+    # However, we don't need it if we consequently use the static() function in Sass
+    # 'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSCompressorFilter',
+)
 
 BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
 TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
@@ -384,18 +385,3 @@ AUTH_USER_MODEL = 'eventyaybase.User'
 LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
-
-
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
-# django-compressor SCSS support
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = not DEBUG
-
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
-
-COMPRESS_CSS_FILTERS = (
-    'compressor.filters.cssmin.CSSCompressorFilter',
-)

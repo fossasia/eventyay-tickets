@@ -9,7 +9,6 @@ from django.utils.translation import gettext as _
 
 from django.http import HttpResponse
 
-from eventyay.eventyay_common.views import auth
 
 
 import eventyay.control.urls
@@ -17,13 +16,15 @@ import eventyay.eventyay_common.urls
 
 from eventyay.base.views import health
 
+
 def blank_view(request):
     index_url = reverse('eventyay_common:dashboard')
     content = _(
         '<a href="%(url)s">Click to login here</a>.'
     ) % {'url': escape(index_url)}
-    
+
     return HttpResponse(f"<p>{content}</p>")
+
 
 base_patterns = [
     url(r'^healthcheck/$', health.healthcheck, name='healthcheck'),
