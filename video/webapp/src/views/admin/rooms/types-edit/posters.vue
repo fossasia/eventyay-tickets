@@ -31,7 +31,7 @@ export default {
 	},
 	methods: {
 		addCategory() {
-			if (!this.module.config.categories) this.$set(this.module.config, 'categories', [])
+			if (!this.module.config.categories) this.module.config.categories = []
 			this.module.config.categories.push({
 				new: true, // mark as new to autogenerate id
 				id: '',
@@ -42,7 +42,7 @@ export default {
 			this.module.config.categories.splice(this.module.config.categories.indexOf(category), 1)
 		},
 		addTag() {
-			if (!this.module.config.tags) this.$set(this.module.config, 'tags', [])
+			if (!this.module.config.tags) this.module.config.tags = []
 			this.module.config.tags.push({
 				new: true, // mark as new to autogenerate id
 				id: '',
