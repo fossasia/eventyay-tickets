@@ -1,9 +1,16 @@
 from django.http import HttpResponse
-from django.urls import path
+from django.urls import path, reverse
+from django.utils.html import escape
 
 from eventyay.eventyay_common.views import auth
 
 app_name = 'eventyay_common'
+
+
+def dashboard_view(request):
+    logout_url = reverse('eventyay_common:auth.logout')
+    content = f'<p>Welcome to the common dashboard. <a href="{escape(logout_url)}">Logout</a></p>'
+    return HttpResponse(content)
 
 urlpatterns = [
     path('logout/', auth.logout, name='auth.logout'),
@@ -13,5 +20,5 @@ urlpatterns = [
     path('forgot/', auth.Forgot.as_view(), name='auth.forgot'),
     path('forgot/recover/', auth.Recover.as_view(), name='auth.forgot.recover'),
     
-    path('', lambda request: HttpResponse("<div>This is a common dashboard page</div>"), name='dashboard'),
+    path('', dashboard_view, name='dashboard'),
 ]
