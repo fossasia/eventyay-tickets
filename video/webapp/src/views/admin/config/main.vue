@@ -7,14 +7,14 @@
 		.error(v-if="error") We could not fetch the current configuration.
 		.ui-form-body(v-if="config")
 			h2 System details
-			bunt-input(v-model="config.title", label="Title", name="title", :validation="$v.config.title")
+			bunt-input(v-model="config.title", label="Title", name="title", :validation="v$.config.title")
 			bunt-select(v-model="config.locale", label="Language", name="locale", :options="locales", option-value="code", option-label="nativeLabel")
 			bunt-select(v-model="config.date_locale", label="Date locale", name="date_locale", :options="momentLocales")
-			bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="$v.config.timezone")
-			bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
+			bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="v$.config.timezone")
+			bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="v$.config.connection_limit")
 			template(v-if="$features.enabled('conftool')")
 				h2 Conftool
-				bunt-input(v-model="config.conftool_url", label="Conftool REST API URL", name="conftool_url", :validation="$v.config.conftool_url")
+				bunt-input(v-model="config.conftool_url", label="Conftool REST API URL", name="conftool_url", :validation="v$.config.conftool_url")
 				bunt-input(v-model="config.conftool_password", label="Conftool REST API Password", name="conftool_password")
 			h2 Tracking and statistics
 			bunt-checkbox(v-model="config.track_room_views", label="Track room views", name="track_room_views")
@@ -26,18 +26,20 @@
 			bunt-checkbox(v-model="config.bbb_defaults.waiting_room", label="Put new users in waiting room first (needs to be set before first join)", name="waiting_room")
 			bunt-checkbox(v-model="config.bbb_defaults.auto_microphone", label="Auto-join users with microphone on (skip dialog asking how to join)", name="auto_microphone")
 			bunt-checkbox(v-model="config.bbb_defaults.auto_camera", label="Auto-join users with camera on", name="auto_camera")
-			bunt-checkbox(v-model="config.bbb_defaults.bbb_mute_on_start", label="Auto-mute users" name="bbb_mute_on_start")
+			bunt-checkbox(v-model="config.bbb_defaults.bbb_mute_on_start", label="Auto-mute users", name="bbb_mute_on_start")
 			bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_cam", label="Disable camera for non-moderators", name="bbb_disable_cam")
 			bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_chat", label="Disable public chat for non-moderators", name="bbb_disable_chat")
 			h2 Settings for stages
-			bunt-input-outline-container(label="hls.js config", :class="{error: $v.hlsConfig.$invalid}")
-				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="hlsConfig")
-			.json-error-message {{ $v.hlsConfig.$params.isJson.message }}
+			bunt-input-outline-container(label="hls.js config", :class="{error: v$.hlsConfig.$invalid}")
+				template(#default="{focus, blur}")
+					textarea(@focus="focus", @blur="blur", v-model="hlsConfig")
+			.json-error-message {{ v$.hlsConfig.isJson.$message }}
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
 import api from 'lib/api'
 import { locales } from 'locales'
 import { required, integer, isJson, url } from 'lib/validators'
@@ -58,6 +60,7 @@ const momentLocaleSet = [
 
 export default {
 	mixins: [ValidationErrorsMixin],
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			config: null,
@@ -108,8 +111,8 @@ export default {
 	},
 	methods: {
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			// TODO validate connection limit is a number
 			this.saving = true
 			const patch = {

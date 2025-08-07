@@ -28,12 +28,14 @@
 		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
+import {useVuelidate} from '@vuelidate/core'
 import api from 'lib/api'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
 
 export default {
 	components: { },
 	mixins: [ValidationErrorsMixin],
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			// We do not use the global config object since we cannot rely on it being up to date (theme is only updated
@@ -80,8 +82,8 @@ export default {
 	},
 	methods: {
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 
 			const iframeBlockers = Object.fromEntries(this.iframeDomains.map(({domain, enabled, policy_url}) => [
 				domain,

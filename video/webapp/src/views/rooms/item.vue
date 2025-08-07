@@ -48,79 +48,80 @@ import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 import AudioTranslationDropdown from 'components/AudioTranslationDropdown'
 
 export default {
-	name: 'Room',
-	components: {
-		Chat,
-		Exhibition,
-		LandingPage,
-		MarkdownPage,
-		StaticPage,
-		IframePage,
-		ReactionsBar,
-		ReactionsOverlay,
-		UserListPage,
-		Roulette,
-		Polls,
-		PosterHall,
-		Questions,
-		MediaSourcePlaceholder,
-		AudioTranslationDropdown
-	},
-	props: {
-		room: Object,
-		modules: Object
-	},
-	data() {
-		return {
-			activeSidebarTab: null, // chat, questions, polls
-			unreadTabs: {
-				chat: false,
-				questions: false,
-				polls: false
-			},
-			activeStageTool: null, // reaction, qa
-			languages: [] // Languages for the dropdown menu
-		}
-	},
-	computed: {
-		unreadTabsClasses() {
-			return Object.entries(this.unreadTabs).filter(([tab, value]) => value).map(([tab]) => `tab-${tab}-unread`)
-		}
-	},
-	watch: {
-		activeSidebarTab(tab) {
-			this.unreadTabs[tab] = false
-		},
-		room: 'initializeLanguages'
-	},
-	created() {
-		if (this.modules['chat.native']) {
-			this.activeSidebarTab = 'chat'
-		} else if (this.modules.question) {
-			this.activeSidebarTab = 'questions'
-		} else if (this.modules.poll) {
-			this.activeSidebarTab = 'polls'
-		}
-		this.initializeLanguages()
-	},
-	methods: {
-		changedTabContent(tab) {
-			if (tab === this.activeSidebarTab) return
-			this.unreadTabs[tab] = true
-		},
-		handleLanguageChange(languageUrl) {
-			this.$root.$emit('languageChanged', languageUrl)
-		},
-		initializeLanguages() {
-			this.languages = []
-			if (this.modules['livestream.youtube'] && this.modules['livestream.youtube'].config.languageUrls) {
-				this.languages = this.modules['livestream.youtube'].config.languageUrls
-			}
-			if (!this.languages.find(lang => lang.language === 'Original')) {
-				this.languages.unshift({language: 'Original', url: ''})
-			}
-		}
-	}
+    name: 'Room',
+    emits: ['languageChanged'],
+    components: {
+        Chat,
+        Exhibition,
+        LandingPage,
+        MarkdownPage,
+        StaticPage,
+        IframePage,
+        ReactionsBar,
+        ReactionsOverlay,
+        UserListPage,
+        Roulette,
+        Polls,
+        PosterHall,
+        Questions,
+        MediaSourcePlaceholder,
+        AudioTranslationDropdown
+    },
+    props: {
+        room: Object,
+        modules: Object
+    },
+    data() {
+        return {
+            activeSidebarTab: null, // chat, questions, polls
+            unreadTabs: {
+                chat: false,
+                questions: false,
+                polls: false
+            },
+            activeStageTool: null, // reaction, qa
+            languages: [] // Languages for the dropdown menu
+        }
+    },
+    computed: {
+        unreadTabsClasses() {
+            return Object.entries(this.unreadTabs).filter(([tab, value]) => value).map(([tab]) => `tab-${tab}-unread`)
+        }
+    },
+    watch: {
+        activeSidebarTab(tab) {
+            this.unreadTabs[tab] = false
+        },
+        room: 'initializeLanguages'
+    },
+    mounted() {
+        if (this.modules['chat.native']) {
+            this.activeSidebarTab = 'chat'
+        } else if (this.modules.question) {
+            this.activeSidebarTab = 'questions'
+        } else if (this.modules.poll) {
+            this.activeSidebarTab = 'polls'
+        }
+        this.initializeLanguages()
+    },
+    methods: {
+        changedTabContent(tab) {
+            if (tab === this.activeSidebarTab) return
+            this.unreadTabs[tab] = true
+        },
+        handleLanguageChange(languageUrl) {
+            this.$emit('languageChanged', languageUrl)
+        },
+        initializeLanguages() {
+            this.languages = []
+            if (this.modules['livestream.youtube'] && this.modules['livestream.youtube'].config.languageUrls) {
+                this.languages = this.modules['livestream.youtube'].config.languageUrls
+            }
+            if (!this.languages.find(lang => lang.language === 'Original')) {
+                this.languages.unshift({language: 'Original', url: ''})
+            }
+        }
+    }
 }
 </script>
 <style lang="stylus">
@@ -187,7 +188,7 @@ export default {
 				height: 2px
 				width: calc(100% - 16px)
 				background-color: var(--clr-primary)
-		+below('m')
+			+below('m')
 			justify-content: space-between
 	.stage-tool-blocker
 		position: fixed

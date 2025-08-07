@@ -5,13 +5,14 @@
 		h1 New kiosk
 	.scroll-wrapper(v-scrollbar.y="")
 		.ui-form-body
-			bunt-input(name="name", v-model="profile.display_name", label="Name", :validation="$v.profile.display_name")
-			bunt-select(v-model="profile.room_id", label="Room", name="room", :options="rooms", option-label="name", :validation="$v.profile.room_id")
+			bunt-input(name="name", v-model="profile.display_name", label="Name", :validation="v$.profile.display_name")
+			bunt-select(v-model="profile.room_id", label="Room", name="room", :options="rooms", option-label="name", :validation="v$.profile.room_id")
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") create
 		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
 import api from 'lib/api'
 import { required } from 'lib/validators'
 import { inferRoomType } from 'lib/room-types'
@@ -20,6 +21,7 @@ import ValidationErrorsMixin from 'components/mixins/validation-errors'
 export default {
 	components: {},
 	mixins: [ValidationErrorsMixin],
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			profile: {
@@ -47,8 +49,8 @@ export default {
 	methods: {
 		async save() {
 			this.error = null
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			this.saving = true
 			try {
 				const response = await api.call('user.kiosk.create', {

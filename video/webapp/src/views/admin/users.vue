@@ -27,7 +27,7 @@
 						v-if="user.moderation_state",
 						:loading="user.updating === 'reactivate'",
 						:error-message="(user.error && user.error.action === 'reactivate') ? user.error.message : null",
-						tooltipPlacement="left",
+						tooltipPlacement="left", 
 						@click="doAction(user, 'reactivate', null)", :key="`${user.id}-reactivate`")
 						| {{ user.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
 					bunt-button.btn-ban(
@@ -101,7 +101,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-@import '~styles/flex-table'
+@import 'flex-table'
 
 .c-admin-users
 	display: flex

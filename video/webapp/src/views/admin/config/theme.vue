@@ -7,12 +7,12 @@
 		.error(v-if="error") We could not fetch the current configuration.
 		template(v-if="config")
 			.ui-form-body
-				color-picker(name="colors_primary", v-model="config.theme.colors.primary", label="Primary color", :validation="$v.config.theme.colors.primary")
-				color-picker(name="colors_sidebar", v-model="config.theme.colors.sidebar", label="Sidebar color", :validation="$v.config.theme.colors.sidebar")
-				color-picker(name="colors_bbb_background", v-model="config.theme.colors.bbb_background", label="BBB background color", :validation="$v.config.theme.colors.bbb_background")
-				upload-url-input(name="logo_url", v-model="config.theme.logo.url", label="Logo", :validation="$v.config.theme.logo.url")
+				color-picker(name="colors_primary", v-model="config.theme.colors.primary", label="Primary color", :validation="v$.config.theme.colors.primary")
+				color-picker(name="colors_sidebar", v-model="config.theme.colors.sidebar", label="Sidebar color", :validation="v$.config.theme.colors.sidebar")
+				color-picker(name="colors_bbb_background", v-model="config.theme.colors.bbb_background", label="BBB background color", :validation="v$.config.theme.colors.bbb_background")
+				upload-url-input(name="logo_url", v-model="config.theme.logo.url", label="Logo", :validation="v$.config.theme.logo.url")
 				bunt-checkbox(name="logo_fit", v-model="config.theme.logo.fitToWidth", label="Fit logo to width")
-				upload-url-input(name="streamoffline_url", v-model="config.theme.streamOfflineImage", label="Stream offline image", :validation="$v.config.theme.streamOfflineImage")
+				upload-url-input(name="streamoffline_url", v-model="config.theme.streamOfflineImage", label="Stream offline image", :validation="v$.config.theme.streamOfflineImage")
 				bunt-select#select-identicon-style(name="identicon-style", v-model="config.theme.identicons.style", label="Identicon style", :options="identiconStyles")
 			.text-overwrites
 				.header
@@ -28,6 +28,7 @@
 		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
 import api from 'lib/api'
 import { DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS } from 'theme'
 import i18n from 'i18n'
@@ -40,6 +41,7 @@ import { renderers as identiconRenderers } from 'lib/identicons'
 export default {
 	components: { ColorPicker, UploadUrlInput },
 	mixins: [ValidationErrorsMixin],
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			// We do not use the global config object since we cannot rely on it being up to date (theme is only updated
@@ -107,13 +109,13 @@ export default {
 	},
 	methods: {
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 
 			// Cleanup empty strings in text overwrites
 			for (const key of Object.keys(this.config.theme.textOverwrites)) {
 				if (!this.config.theme.textOverwrites[key]) {
-					this.$delete(this.config.theme.textOverwrites, key)
+					delete this.config.theme.textOverwrites[key]
 				}
 			}
 
