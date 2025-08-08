@@ -1,13 +1,14 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <template lang="pug">
 .c-room-edit-form
 	.scroll-wrapper(v-scrollbar.y="")
 		.ui-form-body
 			.generic-settings
-				bunt-input(name="name", v-model="config.name", label="Name", :validation="$v.config.name")
+				bunt-input(name="name", v-model="config.name", label="Name", :validation="v$.config.name")
 				bunt-input(name="description", v-model="config.description", label="Description")
-				bunt-input(name="sorting_priority", v-model="config.sorting_priority", label="Sorting priority", :validation="$v.config.sorting_priority")
+				bunt-input(name="sorting_priority", v-model="config.sorting_priority", label="Sorting priority", :validation="v$.config.sorting_priority")
 				template(v-if="inferredType")
-					bunt-input(v-if="inferredType.id === 'stage' || inferredType.id === 'channel.bbb'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="$v.config.pretalx_id")
+					bunt-input(v-if="inferredType.id === 'stage' || inferredType.id === 'channel.bbb'", name="pretalx_id", v-model="config.pretalx_id", label="pretalx ID", :validation="v$.config.pretalx_id")
 					bunt-checkbox(v-if="inferredType.id === 'channel-text'", name="force_join", v-model="config.force_join", label="Force join on login (use for non-volatile, text-based chats only!!)")
 			component.stage-settings(ref="settings", v-if="inferredType && typeComponents[inferredType.id]", :is="typeComponents[inferredType.id]", :config="config", :modules="modules")
 	.ui-form-actions
@@ -15,6 +16,8 @@
 		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
+import { markRaw } from 'vue'
+import { useVuelidate } from '@vuelidate/core'
 import api from 'lib/api'
 import Prompt from 'components/Prompt'
 import { required, integer } from 'lib/validators'
@@ -43,9 +46,10 @@ export default {
 			default: false
 		}
 	},
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
-			typeComponents: {
+			typeComponents: markRaw({
 				stage: Stage,
 				'page-static': PageStatic,
 				'page-iframe': PageIframe,
@@ -55,7 +59,7 @@ export default {
 				'channel-janus': ChannelJanus,
 				'channel-zoom': ChannelZoom,
 				posters: Posters
-			},
+			}),
 			saving: false,
 			error: null
 		}
@@ -91,8 +95,8 @@ export default {
 	methods: {
 		async save() {
 			this.error = null
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			this.$refs.settings?.beforeSave?.()
 			this.saving = true
 			try {

@@ -8,7 +8,7 @@
 			bunt-select(name="source", label="Schedule source", v-model="source", :options="sourceOptions")
 			template(v-if="source === 'pretalx'")
 				p To use eventyay-talk for your event, enter the domain of the eventyay-talk server you use and the short form name of your event. We'll then pull in the schedule automatically and keep it updated.
-				bunt-input(name="domain", label="eventyay-talk domain", v-model="config.pretalx.domain", placeholder="e.g. https://wikimania-dev.eventyay.com/", hint="must have the format https://…/", :validation="$v.config.pretalx.domain")
+				bunt-input(name="domain", label="eventyay-talk domain", v-model="config.pretalx.domain", placeholder="e.g. https://wikimania-dev.eventyay.com/", hint="must have the format https://…/", :validation="v$.config.pretalx.domain")
 				bunt-input(name="event", label="eventyay-talk event slug", v-model="config.pretalx.event", placeholder="e.g. wikimania")
 				h2 Eventyay-talk Connection
 				template(v-if="config.pretalx.connected")
@@ -28,14 +28,14 @@
 					bunt-button#btn-pretalx-connect(:disabled="!isPretalxPluginInstalled", :loading="connecting", @click="startPretalxConnect") {{ !config.pretalx.connected ? 'Connect to eventyay-talk' : 'Reconnect to eventyay-talk' }}
 			template(v-else-if="source === 'url'")
 				p To automatically load the schedule from an external system, enter an URL here. Note that the URL must be a JSON file compliant with the eventyay-talk schedule widget API version 2.
-				bunt-input(name="url", label="JSON URL", v-model="config.pretalx.url", placeholder="e.g. https://website.com/event.json", :validation="$v.config.pretalx.url")
+				bunt-input(name="url", label="JSON URL", v-model="config.pretalx.url", placeholder="e.g. https://website.com/event.json", :validation="v$.config.pretalx.url")
 			template(v-else-if="source === 'file'")
 				p If you don't use eventyay-talk, you can upload your schedule as a Microsoft Excel file (XLSX) with a specific setup.
 				p
 					a(href="/schedule_ex_en.xlsx", target="_blank") Download English sample file
 					| {{ " / " }}
 					a(href="/schedule_ex_de.xlsx", target="_blank") Download German sample file
-				upload-url-input(name="schedule-file", v-model="config.pretalx.url", label="Schedule file", :upload-url="uploadUrl", accept="application/vnd.ms-excel, .xlsx", :validation="$v.config.pretalx.url")
+				upload-url-input(name="schedule-file", v-model="config.pretalx.url", label="Schedule file", :upload-url="uploadUrl", accept="application/vnd.ms-excel, .xlsx", :validation="v$.config.pretalx.url")
 			template(v-else-if="source === 'conftool'")
 				p conftool is controlled by the main conftool settings.
 	.ui-form-actions
@@ -46,6 +46,7 @@
 // TODO:
 // - trailing slash validation/enforcement for prexalx domain
 // - immediately disconnect pretalx here if domain or event changes
+import { useVuelidate } from '@vuelidate/core'
 import moment from 'moment'
 import config from 'config'
 import api from 'lib/api'
@@ -56,6 +57,7 @@ import ValidationErrorsMixin from 'components/mixins/validation-errors'
 export default {
 	components: { UploadUrlInput },
 	mixins: [ValidationErrorsMixin],
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			uploadUrl: config.api.scheduleImport,
@@ -207,8 +209,8 @@ export default {
 			window.location = `${this.pretalxDomain}orga/event/${this.config.pretalx.event}/settings/p/eventyay-video/?url=${apiUrl}&token=${token}&returnUrl=${window.location.href}`
 		},
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return false
+			this.v$.$touch()
+			if (this.v$.$invalid) return false
 			this.saving = true
 			await api.call('world.config.patch', {pretalx: this.config.pretalx})
 			// TODO error handling

@@ -11,11 +11,11 @@
 			.ui-form-body
 				bunt-select(name="parent_room", v-model="poster.parent_room_id", :label="$t('poster-manager/poster:input-parent-room:label')", :options="rooms", option-label="name")
 				template(v-if="room")
-					bunt-input(name="title", v-model="poster.title", :label="$t('poster-manager/poster:input-title:label')", :validation="$v.poster.title")
+					bunt-input(name="title", v-model="poster.title", :label="$t('poster-manager/poster:input-title:label')", :validation="v$.poster.title")
 					rich-text-editor(v-model="poster.abstract", :label="$t('poster-manager/poster:input-abstract:label')")
 					bunt-select(name="category", v-model="poster.category", :options="posterModule.config.categories", :label="$t('poster-manager/poster:input-category:label')")
 					bunt-input(name="tags", v-model="tags", :label="$t('poster-manager/poster:input-tags:label')", hint="comma separated tag keys")
-					upload-url-input(name="poster-pdf", v-model="poster.poster_url", :label="$t('poster-manager/poster:input-poster-pdf:label')", @input="generatePosterPreview")
+					upload-url-input(name="poster-pdf", v-model="poster.poster_url", :label="$t('poster-manager/poster:input-poster-pdf:label')", @update:modelValue="generatePosterPreview")
 					img(:src="poster.poster_preview")
 					h2 {{ $t('poster-manager/poster:authors:headline') }}
 					.authors
@@ -27,14 +27,14 @@
 						.author(v-for="(author, index) of poster.authors.authors")
 							bunt-input.name(name="name", v-model="author.name", :label="$t('poster-manager/poster:authors:input-name:label')")
 							.orgs
-								bunt-checkbox.org(v-for="(org, index) of poster.authors.organizations", name="org", :value="author.orgs.includes(index)", @input="toggleAuthorOrg(author, index)")
+								bunt-checkbox.org(v-for="(org, index) of poster.authors.organizations", name="org", :modelValue="author.orgs.includes(index)", @update:modelValue="toggleAuthorOrg(author, index)")
 							bunt-icon-button(@click="poster.authors.authors.splice(index, 1)") delete-outline
 					bunt-button(@click="addAuthor") {{ $t('poster-manager/poster:btn-add-author') }}
 					h3 {{ $t('poster-manager/poster:organizations:headline') }}
 					.organizations
 						.organization(v-for="(organization, index) of poster.authors.organizations")
 							.index {{ index + 1 }}.
-							bunt-input(name="organization", :value="organization", @input="$set(poster.authors.organizations, index, $event)")
+							bunt-input(name="organization", :modelValue="organization", @update:modelValue="poster.authors.organizations[index] = $event")
 							bunt-icon-button(@click="poster.authors.organizations.splice(index, 1)") delete-outline
 					bunt-button(@click="poster.authors.organizations.push('')") {{ $t('poster-manager/poster:btn-add-organization') }}
 					h2 {{ $t('poster-manager/poster:presenters:headline') }}
@@ -86,10 +86,11 @@
 // TODO
 // - better tag input
 
-import * as pdfjs from 'pdfjs-dist/webpack'
+import * as pdfjs from 'pdfjs-dist/webpack.mjs'
 import Quill from 'quill'
 import { mapGetters } from 'vuex'
-import { required} from 'buntpapier/src/vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
+import { required } from 'lib/validators'
 import api from 'lib/api'
 import router from 'router'
 import Avatar from 'components/Avatar'
@@ -107,6 +108,7 @@ export default {
 		create: Boolean,
 		posterId: String
 	},
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			error: null,
@@ -215,8 +217,8 @@ export default {
 			this.poster.presenters.splice(index, 1)
 		},
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			this.saving = true
 			this.poster.tags = this.tags === '' ? [] : this.tags.split(',').map(tag => tag.trim())
 			let poster = Object.assign({}, this.poster)
