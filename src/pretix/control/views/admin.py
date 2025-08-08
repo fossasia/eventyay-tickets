@@ -1,8 +1,10 @@
 from zoneinfo import ZoneInfo
+import dateutil.parser
 
 from cron_descriptor import Options, get_description
 from django.conf import settings
 from django.contrib import messages
+from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -17,14 +19,21 @@ from django.views.generic import (
     UpdateView,
 )
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
+from pytz import UTC
 
-from pretix.base.models import Organizer
+from pretix.base.models import Checkin, OrderPosition, Organizer
 from pretix.base.models.vouchers import InvoiceVoucher
 from pretix.control.forms.admin.vouchers import InvoiceVoucherForm
 from pretix.control.forms.filter import OrganizerFilterForm, TaskFilterForm
 from pretix.control.permissions import AdministratorPermissionRequiredMixin
 from pretix.control.views import PaginationMixin
 from pretix.control.views.main import EventList
+
+from django_scopes import scopes_disabled
+from django.utils.timezone import make_aware, is_aware
+
+from django.utils.functional import cached_property
+from pretix.control.forms.filter import AttendeeFilterForm
 
 
 class AdminDashboard(AdministratorPermissionRequiredMixin, TemplateView):
@@ -63,6 +72,89 @@ class AdminEventList(EventList):
     """Inherit from EventList to add a custom template for the admin event list."""
 
     template_name = 'pretixcontrol/admin/events/index.html'
+
+
+class AttendeeListView(ListView):
+    template_name = 'pretixcontrol/admin/attendees/index.html'
+    context_object_name = 'attendees'
+    paginate_by = 50
+
+    @cached_property
+    def filter_form(self):
+        return AttendeeFilterForm(data=self.request.GET)
+
+    def get_queryset(self):
+        with scopes_disabled():
+            qs = (
+                OrderPosition.objects.select_related('order', 'item', 'order__event')
+                .prefetch_related('checkins')
+                .filter(order__status='p')
+            )
+
+            if self.filter_form.is_valid():
+                qs = self.filter_form.filter_qs(qs)
+
+            attendees = []
+
+            for pos in qs:
+                name = pos.attendee_name or '-'
+                email = pos.order.email or '-'
+                event = pos.order.event.name
+                order_code = pos.order.code
+                secret = pos.order.secret
+                product = str(pos.item.name)
+
+                checkins = pos.checkins.all()
+                entry_checkin = checkins.filter(type=Checkin.TYPE_ENTRY).order_by('-datetime').first()
+                exit_checkin = checkins.filter(type=Checkin.TYPE_EXIT).order_by('-datetime').first()
+
+                def parse_datetime(dt):
+                    if not dt:
+                        return None
+                    if isinstance(dt, str):
+                        return make_aware(dateutil.parser.parse(dt), UTC)
+                    if not is_aware(dt):
+                        return make_aware(dt, UTC)
+                    return dt
+
+                entry_time = parse_datetime(entry_checkin.datetime if entry_checkin else None)
+                exit_time = parse_datetime(exit_checkin.datetime if exit_checkin else None)
+
+                if not entry_time:
+                    status = "Not checked in"
+                elif entry_time and (not exit_time or exit_time < entry_time):
+                    status = "Present"
+                else:
+                    status = "Checked in but left"
+
+                attendees.append({
+                    'name': name,
+                    'email': email,
+                    'event': event,
+                    'order_code': order_code,
+                    'secret': secret,
+                    'product': product,
+                    'status': status,
+                })
+
+            # Apply post-filter for checkin status
+            status_filter = self.filter_form._checkin_status
+            if status_filter:
+                if status_filter == 'present':
+                    attendees = [a for a in attendees if a['status'] == 'Present']
+                elif status_filter == 'left':
+                    attendees = [a for a in attendees if a['status'] == 'Checked in but left']
+                elif status_filter == 'checked_in':
+                    attendees = [a for a in attendees if a['status'] in ['Present', 'Checked in but left']]
+                elif status_filter == 'not_checked_in':
+                    attendees = [a for a in attendees if a['status'] == 'Not checked in']
+
+            return attendees
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['filter_form'] = self.filter_form
+        return ctx
 
 
 class TaskList(PaginationMixin, ListView):

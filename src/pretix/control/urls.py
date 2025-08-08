@@ -598,6 +598,7 @@ urlpatterns = [
                 url(r'^$', admin.AdminDashboard.as_view(), name='admin.dashboard'),
                 url(r'^organizers/$', admin.OrganizerList.as_view(), name='admin.organizers'),
                 url(r'^events/$', admin.AdminEventList.as_view(), name='admin.events'),
+                url(r'^attendees/$', admin.AttendeeListView.as_view(), name='admin.attendees'),
                 url(r'^task_management', admin.TaskList.as_view(), name='admin.task_management'),
                 url(r'^sudo/(?P<id>\d+)/$', user.EditStaffSession.as_view(), name='admin.user.sudo.edit'),
                 url(r'^sudo/sessions/$', user.StaffSessionList.as_view(), name='admin.user.sudo.list'),

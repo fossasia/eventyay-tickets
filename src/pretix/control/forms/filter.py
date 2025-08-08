@@ -891,6 +891,70 @@ class OrganizerFilterForm(FilterForm):
         return qs
 
 
+class AttendeeFilterForm(FilterForm):
+    query = forms.CharField(
+        label=_("Name or email"),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Name or email')}),
+    )
+
+    event_query = forms.CharField(
+        label=_("Event name"),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Event name')}),
+    )
+
+    event_status = forms.ChoiceField(
+        label=_("Event filter"),
+        choices=(
+            ('', _('All events')),
+            ('ongoing', _('Ongoing events')),
+            ('recent', _('Recent events')),
+        ),
+        required=False,
+    )
+
+    checkin_status = forms.ChoiceField(
+        label=_("Check-in status"),
+        choices=(
+            ('', _('All attendees')),
+            ('present', _('Present')),
+            ('left', _('Checked in but left')),
+            ('checked_in', _('Checked in')),
+            ('not_checked_in', _('Not checked in')),
+        ),
+        required=False,
+    )
+
+    def filter_qs(self, qs):
+        fdata = self.cleaned_data
+
+        if fdata.get('query'):
+            qs = qs.filter(
+                Q(attendee_name__icontains=fdata['query']) |
+                Q(order__email__icontains=fdata['query'])
+            )
+
+        if fdata.get('event_query'):
+            qs = qs.filter(
+                Q(order__event__name__icontains=fdata['event_query']) |
+                Q(order__event__slug__icontains=fdata['event_query'])
+            )
+
+        if fdata.get('event_status'):
+            now_ = now()
+            if fdata['event_status'] == 'ongoing':
+                qs = qs.filter(
+                    Q(order__event__presale_start__lte=now_) | Q(order__event__presale_start__isnull=True),
+                    Q(order__event__presale_end__gte=now_) | Q(order__event__presale_end__isnull=True)
+                )
+            elif fdata['event_status'] == 'recent':
+                qs = qs.filter(order__event__date_from__gte=now_ - timedelta(days=30))
+
+        self._checkin_status = fdata.get('checkin_status')
+        return qs
+
+
 class GiftCardFilterForm(FilterForm):
     orders = {
         'issuance': 'issuance',
