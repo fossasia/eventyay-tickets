@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-chat-message(:class="[mode, {selected, readonly, 'system-message': isSystemMessage, 'merge-with-previous-message': mergeWithPreviousMessage, 'merge-with-next-message': mergeWithNextMessage, 'sender-deleted': sender.deleted}]")
 	.avatar-column(v-if="message.event_type !== 'channel.poll'")
-		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click.native="$emit('showUserCard', $event, sender, 'right-start')", ref="avatar")
+		avatar(v-if="!mergeWithPreviousMessage", :user="sender", :size="avatarSize", @click="$emit('showUserCard', $event, sender, 'right-start')", ref="avatar")
 		.timestamp(v-if="mergeWithPreviousMessage") {{ shortTimestamp }}
 	template(v-if="message.event_type === 'channel.message'")
 		.content-wrapper
@@ -101,6 +101,7 @@ export default {
 			default: false
 		}
 	},
+	emits: ['showUserCard'],
 	data() {
 		return {
 			selected: false,

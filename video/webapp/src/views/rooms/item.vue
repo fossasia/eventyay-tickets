@@ -188,7 +188,7 @@ export default {
 				height: 2px
 				width: calc(100% - 16px)
 				background-color: var(--clr-primary)
-			+below('m')
+		+below('m')
 			justify-content: space-between
 	.stage-tool-blocker
 		position: fixed

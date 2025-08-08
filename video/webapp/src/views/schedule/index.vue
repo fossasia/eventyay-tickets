@@ -3,7 +3,7 @@
 	template(v-if="schedule")
 		div.filter-actions
 			app-dropdown(v-for="item in filter", :key="item.refKey", className="schedule")
-				template(slot="toggler")
+				template(#toggler)
 					span {{item.title}}
 					app-dropdown-content(className="schedule")
 						app-dropdown-item(v-for="track in item.data", :key="track.value")
@@ -231,9 +231,11 @@ export default {
 		},
 		changeDayByScroll(day) {
 			this.currentDay = day
-			const tabEl = this.$refs.tabs.$refs.tabElements.find(el => el.id === day.toISOString())
-			// TODO smooth scroll, seems to not work with chrome {behavior: 'smooth', block: 'center', inline: 'center'}
-			tabEl?.$el.scrollIntoView()
+			if (this.$refs.tabs) {
+				const tabElements = this.$refs.tabs.$refs.tabElements || []
+				const tabEl = tabElements.find(el => el.id === day.toISOString())
+				tabEl?.$el?.scrollIntoView()
+			}
 		},
 		getTrackName(track) {
 			const languageTrack = localStorage.userLanguage

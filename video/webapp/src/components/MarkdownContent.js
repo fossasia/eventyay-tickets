@@ -33,22 +33,17 @@ const handleClick = function(event) {
 }
 
 export default {
-	functional: true,
-	props: {
-		markdown: String
-	},
-	render(createElement, ctx) {
-		if (!ctx.props.markdown) return
-		return createElement('section', {
-			class: 'markdown-content rich-text-content',
-			domProps: {
-				innerHTML: sanitizeHtml(markdownIt.render(ctx.props.markdown), {
-					allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'iframe', 'img']
-				})
-			},
-			on: {
-				click: handleClick
-			}
-		})
-	},
+  props: {
+    markdown: String
+  },
+  render() {
+    if (!this.markdown) return null
+    return this.$createElement('section', {
+      class: 'markdown-content rich-text-content',
+      innerHTML: sanitizeHtml(markdownIt.render(this.markdown), {
+        allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'iframe', 'img']
+      }),
+      onClick: handleClick
+    })
+  }
 }

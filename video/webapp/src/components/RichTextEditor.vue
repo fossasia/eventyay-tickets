@@ -34,6 +34,7 @@ bunt-input-outline-container.c-rich-text-editor(ref="outline", :label="label")
 </template>
 <script>
 /* global ENV_DEVELOPMENT */
+import { markRaw } from 'vue'
 import Quill from 'quill'
 import BuntTheme from 'lib/quill/BuntTheme'
 import VideoResponsive from 'lib/quill/VideoResponsive'
@@ -45,9 +46,10 @@ const Delta = Quill.import('delta')
 
 export default {
 	props: {
-		value: [Delta, Object],
+		modelValue: [Delta, Object],
 		label: String
 	},
+	emits: ['update:modelValue'],
 	data() {
 		return {
 			quill: null,
@@ -59,7 +61,7 @@ export default {
 		Quill.register('themes/bunt', BuntTheme, false)
 		Quill.register(VideoResponsive)
 		Quill.register(fullWidthFormat)
-		this.quill = new Quill(this.$refs.editor, {
+		this.quill = markRaw(new Quill(this.$refs.editor, {
 			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
 			theme: 'bunt',
 			modules: {
@@ -78,7 +80,7 @@ export default {
 									api.uploadFilePromise(file, file.name).then(data => {
 										if (data.error) {
 											alert(`Upload error: ${data.error}`) // Proper user-friendly messages
-											this.$emit('input', '')
+											this.$emit('update:modelValue', '')
 										} else {
 											const range = this.quill.getSelection(true)
 											this.quill.updateContents(new Delta()
@@ -102,20 +104,20 @@ export default {
 				}
 			},
 			bounds: this.$refs.editor,
-		})
-		if (this.value) {
-			this.quill.setContents(this.value)
+		}))
+		if (this.modelValue) {
+			this.quill.setContents(this.modelValue)
 		}
 		this.quill.on('selection-change', this.onSelectionchange)
 		this.quill.on('text-change', this.onTextchange)
 	},
-	destroyed() {
+	unmounted() {
 		this.quill.off('selection-change', this.onSelectionchange)
 		this.quill.off('text-change', this.onTextchange)
 	},
 	methods: {
 		onTextchange(delta, oldContents, source) {
-			this.$emit('input', this.quill.getContents())
+			this.$emit('update:modelValue', this.quill.getContents())
 		},
 		onSelectionchange(range, oldRange, source) {
 			if (range === null && oldRange !== null) {

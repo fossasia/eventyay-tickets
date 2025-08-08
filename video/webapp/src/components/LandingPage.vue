@@ -5,7 +5,7 @@
 	.sponsors.splide(ref="sponsors")
 		.splide__track
 			ul.splide__list
-				li.splide__slide(v-for="sponsor of sponsors")
+				li.splide__slide(v-for="sponsor of sponsors", :key="sponsor.id")
 					img.sponsor(:src="sponsor.logo", :alt="sponsor.name", @load="onSponsorImageLoad(sponsor.id)")
 	.content-container
 		.content
@@ -17,6 +17,7 @@
 				.sessions
 					session(
 						v-for="session of featuredSessions",
+						:key="session.id",
 						:session="session",
 						:faved="favs.includes(session.id)",
 						@fav="$store.dispatch('schedule/fav', $event)",
@@ -28,6 +29,7 @@
 			.sessions
 				session(
 					v-for="session of nextSessions",
+					:key="session.id",
 					:session="session",
 					:faved="favs.includes(session.id)",
 					@fav="$store.dispatch('schedule/fav', $event)",
@@ -38,7 +40,7 @@
 				h3 {{ $t('LandingPage:speakers:header', {speakers: speakers.length}) }}
 				bunt-link-button(:to="{name: 'schedule:speakers'}") {{ $t('LandingPage:speakers:link') }}
 			.speakers-list
-				router-link.speaker(v-for="speaker of speakers.slice(0, 32)", :to="speaker.attendee ? {name: '', params: {}} : { name: 'schedule:speaker', params: { speakerId: speaker.code } }")
+				router-link.speaker(v-for="speaker of speakers.slice(0, 32)", :key="speaker.code", :to="speaker.attendee ? {name: '', params: {}} : { name: 'schedule:speaker', params: { speakerId: speaker.code } }")
 					img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
 					identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
 					.name {{ speaker.name }}

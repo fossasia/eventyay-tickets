@@ -5,7 +5,7 @@
 			.description
 				.hint {{ $t('MediaSource:room:hint') }}
 				.room-name(v-if="room") {{ room.name }}
-				.room-name(v-else) {{ $t('MediaSource:call:label') }}
+				.room-name(v-else="call") {{ $t('MediaSource:call:label') }}
 			.global-placeholder
 			bunt-icon-button(@click.prevent.stop="$emit('close')") close
 	livestream(v-if="room && module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
@@ -36,10 +36,9 @@ export default {
 	data() {
 		return {
 			iframeError: null,
-			iframe: null,
-			languageAudioUrl: null,
-			languageIframeUrl: null,
-			isUnmounted: false
+			iframe: null, // Track the iframe element
+			languageAudioUrl: null, // URL for the selected language audio
+			languageIframeUrl: null // URL for the language iframe // Added languageIframeUrl to data
 		}
 	},
 	computed: {
@@ -87,8 +86,7 @@ export default {
 		this.initializeIframe(false)
 		this.$root.$on('languageChanged', this.handleLanguageChange)
 	},
-	beforeUnmount() {
-		this.isUnmounted = true
+	beforeDestroy() {
 		this.iframe?.remove()
 		if (api.socketState !== 'open') return
 		// TODO move to store?
@@ -123,7 +121,7 @@ export default {
 						break
 					}
 				}
-				if (!iframeUrl || !this.$el || this.isUnmounted) return
+				if (!iframeUrl || !this.$el || this._isDestroyed) return
 				const iframe = document.createElement('iframe')
 				iframe.src = iframeUrl
 				iframe.classList.add('iframe-media-source')
@@ -133,7 +131,7 @@ export default {
 				iframe.allow = 'screen-wake-lock *; camera *; microphone *; fullscreen *; display-capture *' + (this.autoplay ? '; autoplay *' : '')
 				iframe.allowfullscreen = true
 				iframe.allowusermedia = true
-				iframe.setAttribute('allowfullscreen', '')
+				iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox#media-source-iframes
 				const container = document.querySelector('#media-source-iframes')
 				container.appendChild(iframe)
 				this.iframe = iframe
@@ -166,10 +164,11 @@ export default {
 			return true
 		},
 		handleLanguageChange(languageUrl) {
-			this.languageAudioUrl = languageUrl
-			const mute = !!languageUrl
+			this.languageAudioUrl = languageUrl // Set the audio source to the selected language URL
+			const mute = !!languageUrl // Mute if language URL is present, otherwise unmute
 			this.destroyIframe()
-			this.initializeIframe(mute)
+			this.initializeIframe(mute) // Initialize iframe with the appropriate mute state
+			// Set the language iframe URL when language changes
 			this.languageIframeUrl = this.getLanguageIframeUrl(languageUrl)
 		},
 		getYoutubeUrl(ytid, autoplay, mute, hideControls, noRelated, showinfo, disableKb, loop, modestBranding, enablePrivacyEnhancedMode) {
@@ -188,9 +187,10 @@ export default {
 			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com'
 			return `https://${domain}/embed/${ytid}?${params}`
 		},
-		getLanguageIframeUrl(languageUrl) {
+		// Added method to get the language iframe URL
+		getLanguageIframeUrl(languageUrl, enablePrivacyEnhancedMode) {
+			// Checks if the languageUrl is not provided the retun null
 			if (!languageUrl) return null
-			const enablePrivacyEnhancedMode = false
 			const params = new URLSearchParams({
 				enablejsapi: '1',
 				autoplay: '1',

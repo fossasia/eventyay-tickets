@@ -1,3 +1,4 @@
+import { reactive } from 'vue'
 import throttle from 'lodash/throttle'
 
 // TODO check semantics with rupture
@@ -11,7 +12,7 @@ const SCALE = {
 }
 
 const Plugin = {
-	install(Vue) {
+	install(app) {
 		const match = function(value, direction) {
 			if (SCALE[value]) value = SCALE[value] + (direction === 'min' ? 1 : 0) + 'px'
 			return window.matchMedia(`(${direction}-width: ${value})`).matches
@@ -20,20 +21,20 @@ const Plugin = {
 			return {
 				get(target, property, receiver) {
 					if (typeof property !== 'symbol' && property !== '_isVue') {
-						Vue.set(target, property, match(property, direction))
+						target[property] = match(property, direction)
 					}
 					return Reflect.get(...arguments)
 				}
 			}
 		}
 
-		const mq = Vue.observable({
+		const mq = reactive({
 			above: new Proxy({}, proxyHandler('min')),
 			below: new Proxy({}, proxyHandler('max'))
 		})
 		const updateMatches = function(object, direction) {
 			for (const key of Object.keys(object)) {
-				Vue.set(object, key, match(key, direction))
+				object[key] = match(key, direction)
 			}
 		}
 		const throttleResize = throttle(() => {
@@ -42,11 +43,7 @@ const Plugin = {
 		}, 200)
 
 		window.addEventListener('resize', throttleResize)
-		Object.defineProperty(Vue.prototype, '$mq', {
-			get() {
-				return mq
-			}
-		})
+		app.config.globalProperties.$mq = mq
 	}
 }
 

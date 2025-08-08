@@ -5,8 +5,8 @@
 			scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled", v-resize-observer="onResize", @resize="onResize")
 				infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
 					div
-				template(v-for="(message, index) of filteredTimeline")
-					chat-message(:message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", :key="message.event_id", @showUserCard="showUserCard")
+				template(v-for="(message, index) of filteredTimeline", :key="message.event_id")
+					chat-message(:message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", @showUserCard="showUserCard")
 			.warning(v-if="mergedWarning")
 				.content
 					ChatContent(:content="$t('Chat:warning:missed-users', {count: mergedWarning.missed_users.length, missedUsers: mergedWarning.missed_users})", @clickMention="showUserCard")
@@ -34,7 +34,7 @@
 import { mapState, mapGetters } from 'vuex'
 import { createPopper } from '@popperjs/core'
 
-// import ChatContent from 'components/ChatContent'
+import ChatContent from 'components/ChatContent'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
@@ -42,7 +42,8 @@ import ChatMessage from './ChatMessage'
 import InfiniteScroll from './InfiniteScroll'
 
 export default {
-	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput },
+	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput, ChatContent },
+	emits: ['change'],
 	props: {
 		room: Object,
 		module: {
@@ -81,21 +82,21 @@ export default {
 			)
 		},
 		sortedMembers() {
-			return this.members.slice().sort((a, b) => {
+			return [...this.members].sort((a, b) => {
 				const aBadges = a.badges?.length || 0
 				const bBadges = b.badges?.length || 0
-				if (!!aBadges === !!bBadges) {
-					const aName = a.profile?.display_name || ''
-					const bName = b.profile?.display_name || ''
-					return aName.localeCompare(bName)
+				if (aBadges === bBadges) {
+					return (a.profile?.display_name || '').localeCompare(b.profile?.display_name || '')
 				}
 				return bBadges - aBadges
 			})
 		},
 		mergedWarning() {
-			if (this.warnings.length === 0) return null
-			// TODO dedupe users
-			return { missed_users: this.warnings.map(warning => warning.missed_users.map(user => '@' + user.id)).flat() }
+			if (!this.warnings.length) return null
+			return { 
+				missed_users: this.warnings.flatMap(warning => 
+					warning.missed_users.map(user => '@' + user.id))
+			}
 		}
 	},
 	watch: {
@@ -117,7 +118,7 @@ export default {
 	created() {
 		this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.$store.dispatch('chat/unsubscribe')
 	},
 	methods: {
