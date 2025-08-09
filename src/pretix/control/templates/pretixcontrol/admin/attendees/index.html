@@ -19,6 +19,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">{% translate "Filter" %}</h3>
         </div>
+
         <div class="panel-body">
             <form method="get" class="row filter-form">
                 <div class="col-md-3 col-sm-6 col-xs-12">
@@ -110,8 +111,12 @@
                 <tbody>
                     {% for attendee in attendees %}
                         <tr>
-                            <td>{{ attendee.name }}</td>
-                            <td>{{ attendee.email }}</td>
+                            <td>
+                                {{ attendee.name }}
+                            </td>
+                            <td>
+                                {{ attendee.email }}
+                            </td>
                             <td>
                                 <strong>
                                     <a href="{% url 'control:event.index' organizer=attendee.organizer_slug event=attendee.event_slug %}">
@@ -154,6 +159,7 @@
         </div>
 
         {% include "pretixcontrol/pagination.html" %}
+        
     {% else %}
         <div class="empty-collection">
             <p>
