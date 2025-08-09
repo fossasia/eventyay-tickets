@@ -892,6 +892,10 @@ class OrganizerFilterForm(FilterForm):
 
 
 class AttendeeFilterForm(FilterForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._checkin_status = None
+
     query = forms.CharField(
         label=_("Name or email"),
         required=False,
@@ -926,32 +930,42 @@ class AttendeeFilterForm(FilterForm):
         required=False,
     )
 
+    ordering = forms.CharField(required=False, widget=forms.HiddenInput())
+
     def filter_qs(self, qs):
         fdata = self.cleaned_data
 
+        # Search by attendee name or email
         if fdata.get('query'):
             qs = qs.filter(
-                Q(attendee_name__icontains=fdata['query']) |
+                Q(attendee_name_cached__icontains=fdata['query']) |
                 Q(order__email__icontains=fdata['query'])
             )
 
+        # Search by event name
         if fdata.get('event_query'):
             qs = qs.filter(
                 Q(order__event__name__icontains=fdata['event_query']) |
                 Q(order__event__slug__icontains=fdata['event_query'])
             )
 
+        # Event status filter
         if fdata.get('event_status'):
             now_ = now()
             if fdata['event_status'] == 'ongoing':
                 qs = qs.filter(
-                    Q(order__event__presale_start__lte=now_) | Q(order__event__presale_start__isnull=True),
-                    Q(order__event__presale_end__gte=now_) | Q(order__event__presale_end__isnull=True)
+                    Q(order__event__date_from__lte=now_) &
+                    (Q(order__event__date_to__gte=now_) | Q(order__event__date_to__isnull=True))
                 )
             elif fdata['event_status'] == 'recent':
-                qs = qs.filter(order__event__date_from__gte=now_ - timedelta(days=30))
+                qs = qs.filter(
+                    Q(order__event__date_to__lt=now_) |
+                    (Q(order__event__date_to__isnull=True) & Q(order__event__date_from__lt=now_))
+                )
 
+        # Store checkin status for post-filtering in the view
         self._checkin_status = fdata.get('checkin_status')
+
         return qs
 
 

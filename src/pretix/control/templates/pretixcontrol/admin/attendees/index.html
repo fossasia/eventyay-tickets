@@ -1,37 +1,44 @@
 {% extends "pretixcontrol/admin/base.html" %}
 {% load i18n %}
+{% load urlreplace %}
 {% load bootstrap3 %}
 
-{% block title %}{% translate "Attendees" %}{% endblock %}
+{% block title %}
+    {% translate "Attendees" %}
+{% endblock %}
 
 {% block content %}
-    <h1>{% translate "Attendees" %}</h1>
-    <p>{% translate "This is a list of all paid attendees and their check-in status." %}</p>
+    <h1>
+        {% translate "Attendees" %}
+    </h1>
+    <p>
+        {% translate "This is a list of all paid attendees and their check-in status." %}
+    </p>
 
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">{% translate "Filter" %}</h3>
         </div>
         <div class="panel-body">
-            <form method="get">
-                <div class="row filter-form">
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        {% bootstrap_field filter_form.query layout='inline' %}
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        {% bootstrap_field filter_form.event_query layout='inline' %}
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        {% bootstrap_field filter_form.event_status layout='inline' %}
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        {% bootstrap_field filter_form.checkin_status layout='inline' %}
-                    </div>
+            <form method="get" class="row filter-form">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.query layout='inline' %}
                 </div>
-                <div class="text-right">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.event_query layout='inline' %}
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.event_status layout='inline' %}
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.checkin_status layout='inline' %}
+                </div>
+                <div class="col-xs-12 text-right" style="margin-top:10px;">
                     <button class="btn btn-primary" type="submit">
                         <span class="fa fa-filter"></span>
-                        <span class="hidden-md">{% translate "Filter" %}</span>
+                        <span class="hidden-md">
+                            {% translate "Filter" %}
+                        </span>
                     </button>
                 </div>
             </form>
@@ -39,34 +46,119 @@
     </div>
 
     {% if attendees %}
-        <table class="table table-condensed table-hover">
-            <thead>
-                <tr>
-                    <th>{% translate "Name" %}</th>
-                    <th>{% translate "Email" %}</th>
-                    <th>{% translate "Event" %}</th>
-                    <th>{% translate "Order Code" %}</th>
-                    <th>{% translate "Product" %}</th>
-                    <th>{% translate "Status" %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for attendee in attendees %}
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover">
+                <thead>
                     <tr>
-                        <td>{{ attendee.name }}</td>
-                        <td>{{ attendee.email }}</td>
-                        <td>{{ attendee.event }}</td>
-                        <td>{{ attendee.order_code }}</td>
-                        <td>{{ attendee.product }}</td>
-                        <td>{{ attendee.status }}</td>
+                        <th>
+                            {% translate "Name" %}
+                            <a href="?{% url_replace request 'ordering' 'name' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-name' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Email" %}
+                            <a href="?{% url_replace request 'ordering' 'email' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-email' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Event" %}
+                            <a href="?{% url_replace request 'ordering' 'event' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-event' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Order Code" %}
+                            <a href="?{% url_replace request 'ordering' 'order_code' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-order_code' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Product" %}
+                            <a href="?{% url_replace request 'ordering' 'product' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-product' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Check in Status" %}
+                            <a href="?{% url_replace request 'ordering' 'check_in_status' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-check_in_status' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    {% for attendee in attendees %}
+                        <tr>
+                            <td>{{ attendee.name }}</td>
+                            <td>{{ attendee.email }}</td>
+                            <td>
+                                <strong>
+                                    <a href="{% url 'control:event.index' organizer=attendee.organizer_slug event=attendee.event_slug %}">
+                                        {{ attendee.event }}
+                                    </a>
+                                </strong>
+                            </td>
+                            <td>
+                                <strong>
+                                    <a href="{% url 'control:event.order' event=attendee.event_slug organizer=attendee.organizer_slug code=attendee.order_code %}">
+                                        {{ attendee.order_code }}
+                                    </a>
+                                </strong>
+                                {% if attendee.testmode %}
+                                    <span class="label label-warning">{% translate "TEST MODE" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ attendee.product }}</td>
+                            <td>
+                                {% if attendee.check_in_status == "Not checked in" %}
+                                    <span class="label label-danger">
+                                        {{ attendee.check_in_status }}
+                                    </span>
+                                {% elif attendee.check_in_status == "Checked in but left" %}
+                                    <span class="label label-success">
+                                        {{ attendee.check_in_status }}
+                                    </span>
+                                {% elif attendee.check_in_status == "Checked in" %}
+                                    <span class="label label-success">
+                                        {{ attendee.check_in_status }}
+                                    </span>
+                                {% else %}
+                                    {{ attendee.check_in_status }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
         {% include "pretixcontrol/pagination.html" %}
     {% else %}
         <div class="empty-collection">
-            <p>{% translate "There are no attendees to show." %}</p>
+            <p>
+                {% translate "There are no attendees to show." %}
+            </p>
         </div>
     {% endif %}
 {% endblock %}

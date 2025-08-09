@@ -84,72 +84,104 @@ class AttendeeListView(ListView):
         return AttendeeFilterForm(data=self.request.GET)
 
     def get_queryset(self):
-        with scopes_disabled():
-            qs = (
-                OrderPosition.objects.select_related('order', 'item', 'order__event')
-                .prefetch_related('checkins')
-                .filter(order__status='p')
-            )
+        qs = (
+            OrderPosition.objects
+            .select_related('order', 'item', 'order__event', 'order__event__organizer')
+            .prefetch_related('checkins')
+            .filter(order__status='p')
+        )
 
-            if self.filter_form.is_valid():
-                qs = self.filter_form.filter_qs(qs)
+        if not self.request.user.has_active_staff_session(self.request.session.session_key):
+            allowed_organizers = self.request.user.teams.values_list('organizer', flat=True)
+            qs = qs.filter(order__event__organizer_id__in=allowed_organizers)
 
-            attendees = []
+        if self.filter_form.is_valid():
+            qs = self.filter_form.filter_qs(qs)
 
-            for pos in qs:
-                name = pos.attendee_name or '-'
-                email = pos.order.email or '-'
-                event = pos.order.event.name
-                order_code = pos.order.code
-                secret = pos.order.secret
-                product = str(pos.item.name)
+        ordering = self.request.GET.get('ordering')
+        if not ordering:
+            qs = qs.order_by('-order__event__date_from', 'order__event__name')
+        else:
+            ordering_map = {
+                'name': 'attendee_name_cached',
+                '-name': '-attendee_name_cached',
+                'email': 'attendee_email',
+                '-email': '-attendee_email',
+                'event': 'order__event__name',
+                '-event': '-order__event__name',
+                'order_code': 'order__code',
+                '-order_code': '-order__code',
+                'product': 'item__name',
+                '-product': '-item__name',
+            }
+            if ordering in ordering_map:
+                qs = qs.order_by(ordering_map[ordering])
 
-                checkins = pos.checkins.all()
-                entry_checkin = checkins.filter(type=Checkin.TYPE_ENTRY).order_by('-datetime').first()
-                exit_checkin = checkins.filter(type=Checkin.TYPE_EXIT).order_by('-datetime').first()
+        status_filter = getattr(self.filter_form, '_checkin_status', None)
+        
+        attendees = []
 
-                def parse_datetime(dt):
-                    if not dt:
-                        return None
-                    if isinstance(dt, str):
-                        return make_aware(dateutil.parser.parse(dt), UTC)
-                    if not is_aware(dt):
-                        return make_aware(dt, UTC)
-                    return dt
+        for pos in qs:
+            name = pos.attendee_name_cached or ''
+            email = pos.attendee_email or pos.order.email
+            event = pos.order.event.name
+            order_code = pos.order.code
+            product = str(pos.item.name)
 
-                entry_time = parse_datetime(entry_checkin.datetime if entry_checkin else None)
-                exit_time = parse_datetime(exit_checkin.datetime if exit_checkin else None)
+            event_slug = pos.order.event.slug
+            organizer_slug = pos.order.event.organizer.slug
+            testmode = pos.order.testmode
 
-                if not entry_time:
-                    status = "Not checked in"
-                elif entry_time and (not exit_time or exit_time < entry_time):
-                    status = "Present"
-                else:
-                    status = "Checked in but left"
+            checkins = pos.checkins.all()
+            entry_checkin = checkins.filter(type=Checkin.TYPE_ENTRY).order_by('-datetime').first()
+            exit_checkin = checkins.filter(type=Checkin.TYPE_EXIT).order_by('-datetime').first()
 
-                attendees.append({
-                    'name': name,
-                    'email': email,
-                    'event': event,
-                    'order_code': order_code,
-                    'secret': secret,
-                    'product': product,
-                    'status': status,
-                })
+            def parse_datetime(dt):
+                if not dt:
+                    return None
+                if isinstance(dt, str):
+                    return make_aware(dateutil.parser.parse(dt), UTC)
+                if not is_aware(dt):
+                    return make_aware(dt, UTC)
+                return dt
 
-            # Apply post-filter for checkin status
-            status_filter = self.filter_form._checkin_status
-            if status_filter:
-                if status_filter == 'present':
-                    attendees = [a for a in attendees if a['status'] == 'Present']
-                elif status_filter == 'left':
-                    attendees = [a for a in attendees if a['status'] == 'Checked in but left']
-                elif status_filter == 'checked_in':
-                    attendees = [a for a in attendees if a['status'] in ['Present', 'Checked in but left']]
-                elif status_filter == 'not_checked_in':
-                    attendees = [a for a in attendees if a['status'] == 'Not checked in']
+            entry_time = parse_datetime(entry_checkin.datetime if entry_checkin else None)
+            exit_time = parse_datetime(exit_checkin.datetime if exit_checkin else None)
 
-            return attendees
+            if not entry_time:
+                check_in_status = "Not checked in"
+            elif entry_time and (not exit_time or exit_time < entry_time):
+                check_in_status = "Checked in"
+            else:
+                check_in_status = "Checked in but left"
+
+            attendees.append({
+                'name': name,
+                'email': email,
+                'event': event,
+                'event_slug': event_slug,
+                'organizer_slug': organizer_slug,
+                'order_code': order_code,
+                'product': product,
+                'check_in_status': check_in_status,
+                'testmode': testmode,
+            })
+
+        if ordering in ('check_in_status', '-check_in_status'):
+            reverse_sort = ordering.startswith('-')
+            attendees.sort(key=lambda x: x['check_in_status'], reverse=reverse_sort)
+
+        if status_filter:
+            if status_filter == 'present':
+                attendees = [a for a in attendees if a['check_in_status'] == 'Checked in']
+            elif status_filter == 'left':
+                attendees = [a for a in attendees if a['check_in_status'] == 'Checked in but left']
+            elif status_filter == 'checked_in':
+                attendees = [a for a in attendees if a['check_in_status'] in ['Checked in', 'Checked in but left']]
+            elif status_filter == 'not_checked_in':
+                attendees = [a for a in attendees if a['check_in_status'] == 'Not checked in']
+
+        return attendees
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
