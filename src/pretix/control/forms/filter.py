@@ -939,7 +939,8 @@ class AttendeeFilterForm(FilterForm):
         if fdata.get('query'):
             qs = qs.filter(
                 Q(attendee_name_cached__icontains=fdata['query']) |
-                Q(order__email__icontains=fdata['query'])
+                Q(order__email__icontains=fdata['query']) |
+                Q(attendee_email__icontains=fdata['query'])
             )
 
         # Search by event name
@@ -962,9 +963,30 @@ class AttendeeFilterForm(FilterForm):
                     Q(order__event__date_to__lt=now_) |
                     (Q(order__event__date_to__isnull=True) & Q(order__event__date_from__lt=now_))
                 )
-
-        # Store checkin status for post-filtering in the view
-        self._checkin_status = fdata.get('checkin_status')
+        
+        # Check-in status filter
+        checkin_status = fdata.get('checkin_status')
+        if checkin_status:
+            qs = qs.annotate(
+                entry_time=Max(
+                    'checkins__datetime',
+                    filter=Q(checkins__type=Checkin.TYPE_ENTRY)
+                ),
+                exit_time=Max(
+                    'checkins__datetime',
+                    filter=Q(checkins__type=Checkin.TYPE_EXIT)
+                )
+            )
+            if checkin_status == 'present':
+                qs = qs.filter(entry_time__isnull=False).filter(
+                    Q(exit_time__isnull=True) | Q(exit_time__lt=F('entry_time'))
+                )
+            elif checkin_status == 'left':
+                qs = qs.filter(exit_time__isnull=False, exit_time__gt=F('entry_time'))
+            elif checkin_status == 'checked_in':
+                qs = qs.filter(entry_time__isnull=False)
+            elif checkin_status == 'not_checked_in':
+                qs = qs.filter(entry_time__isnull=True)
 
         return qs
 

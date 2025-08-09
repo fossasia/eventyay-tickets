@@ -117,8 +117,6 @@ class AttendeeListView(ListView):
             if ordering in ordering_map:
                 qs = qs.order_by(ordering_map[ordering])
 
-        status_filter = getattr(self.filter_form, '_checkin_status', None)
-        
         attendees = []
 
         for pos in qs:
@@ -141,19 +139,27 @@ class AttendeeListView(ListView):
                     return None
                 if isinstance(dt, str):
                     return make_aware(dateutil.parser.parse(dt), UTC)
-                if not is_aware(dt):
+                elif not is_aware(dt):
                     return make_aware(dt, UTC)
-                return dt
-
+                else:
+                    return dt
+            
             entry_time = parse_datetime(entry_checkin.datetime if entry_checkin else None)
             exit_time = parse_datetime(exit_checkin.datetime if exit_checkin else None)
 
-            if not entry_time:
+            if not entry_time and not exit_time:
                 check_in_status = "Not checked in"
-            elif entry_time and (not exit_time or exit_time < entry_time):
+            elif entry_time and not exit_time:
                 check_in_status = "Checked in"
+            elif not entry_time and exit_time:
+                check_in_status = "Checked out (no entry record)"
+            elif exit_time < entry_time:
+                check_in_status = "Invalid check-in data (exit before entry)"
+            elif exit_time == entry_time:
+                check_in_status = "Checked in and out at same time"
             else:
                 check_in_status = "Checked in but left"
+
 
             attendees.append({
                 'name': name,
@@ -170,16 +176,6 @@ class AttendeeListView(ListView):
         if ordering in ('check_in_status', '-check_in_status'):
             reverse_sort = ordering.startswith('-')
             attendees.sort(key=lambda x: x['check_in_status'], reverse=reverse_sort)
-
-        if status_filter:
-            if status_filter == 'present':
-                attendees = [a for a in attendees if a['check_in_status'] == 'Checked in']
-            elif status_filter == 'left':
-                attendees = [a for a in attendees if a['check_in_status'] == 'Checked in but left']
-            elif status_filter == 'checked_in':
-                attendees = [a for a in attendees if a['check_in_status'] in ['Checked in', 'Checked in but left']]
-            elif status_filter == 'not_checked_in':
-                attendees = [a for a in attendees if a['check_in_status'] == 'Not checked in']
 
         return attendees
 
