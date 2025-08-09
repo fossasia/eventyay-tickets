@@ -10,7 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from i18nfield.fields import I18nCharField
 
-from eventyay.base.models import GlobalSettings, OrderedModel, PretalxModel
+from eventyay.base.models.settings import GlobalSettings
+from eventyay.base.models import OrderedModel, PretalxModel
 from eventyay.base.models.auth import User
 from eventyay.base.models.cache import VersionedModel
 from eventyay.core.permissions import SYSTEM_ROLES, Permission

@@ -13,7 +13,8 @@ from django.utils.translation import pgettext_lazy
 from i18nfield.fields import I18nTextField
 
 from eventyay.agenda.tasks import export_schedule_html
-from eventyay.base.models import PretalxModel, SubmissionFavourite
+from eventyay.base.models import PretalxModel
+from eventyay.base.models.submission import SubmissionFavourite
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.schedule.notifications import render_notifications

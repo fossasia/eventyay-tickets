@@ -11,7 +11,7 @@ from django.utils.formats import get_format
 from django_scopes import get_scope
 
 from eventyay.cfp.signals import footer_link, html_head
-from eventyay.base.models import GlobalSettings
+from eventyay.base.models.settings import GlobalSettings
 from eventyay.common.text.phrases import phrases
 from eventyay.helpers.i18n import get_javascript_format, get_moment_locale
 

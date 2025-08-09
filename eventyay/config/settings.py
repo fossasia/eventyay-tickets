@@ -247,7 +247,7 @@ STATIC_URL = os.getenv(
 MEDIA_URL = os.getenv(
     "EVENTYAY_MEDIA_URL", config.get("urls", "media", fallback="/media/")
 )
-EVENTYAY_TALK_BASE_PATH = config.get(
+TALK_BASE_PATH = config.get(
     "urls", "eventyay-talk", fallback="https://app-test.eventyay.com/talk"
 )
 
