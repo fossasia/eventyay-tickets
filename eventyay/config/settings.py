@@ -409,10 +409,10 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "eventyay.control.middleware.SessionMiddleware",
-    "eventyay.control.middleware.AuthenticationMiddleware",
+    "eventyay.control.video.middleware.SessionMiddleware",
+    "eventyay.control.video.middleware.AuthenticationMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "eventyay.control.middleware.MessageMiddleware",
+    "eventyay.control.video.middleware.MessageMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
