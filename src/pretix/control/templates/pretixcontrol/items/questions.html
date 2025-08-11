@@ -1,5 +1,6 @@
 {% extends "pretixcontrol/items/base.html" %}
 {% load i18n %}
+{% load rich_text %}
 {% block title %}{% trans "Questions" %}{% endblock %}
 {% block inside %}
     <nav id="event-nav" class="header-nav">
@@ -49,7 +50,7 @@
                                     <a href="{% url "control:event.items.questions.show" organizer=request.event.organizer.slug event=request.event.slug question=q.id %}">
                                 {% endif %}
                             {% endif %}
-                            {{ q.question }}
+                            {{ q.question|rich_text_snippet }}
                             {% if q.pk %}
                                 </a>
                             {% endif %}
