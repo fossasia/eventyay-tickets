@@ -18,7 +18,7 @@
 			h1 {{ $t('App:fatal-connection-error:else:headline') }}
 		p.code error code: {{ fatalConnectionError.code }}
 	template(v-else-if="world")
-		app-bar(v-if="$mq.below['l']", @toggleSidebar="toggleSidebar")
+		app-bar(v-if="$mq.below['l']", @toggle-sidebar="toggleSidebar")
 		transition(name="backdrop")
 			.sidebar-backdrop(v-if="$mq.below['l'] && showSidebar && !overrideSidebarCollapse", @pointerup="showSidebar = false")
 		rooms-sidebar(:show="$mq.above['l'] || showSidebar || overrideSidebarCollapse", @close="showSidebar = false")
@@ -54,6 +54,7 @@ const chatbarModules = ['chat.native', 'question', 'poll']
 
 export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
+	emits: ['toggle-sidebar'],
 	data() {
 		return {
 			themeVariables,
@@ -139,7 +140,7 @@ export default {
 		window.addEventListener('resize', this.onResize)
 		window.addEventListener('focus', this.onFocus, true)
 	},
-	destroyed() {
+	unmounted() {
 		window.removeEventListener('resize', this.onResize)
 		window.removeEventListener('focus', this.onFocus)
 	},

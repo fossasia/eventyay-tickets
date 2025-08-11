@@ -12,6 +12,7 @@
 			h2 {{ $t('schedule/speakers/item:sessions:header') }}
 			session(
 				v-for="session of sessions",
+				:key="session.id",
 				:session="session",
 				:faved="favs.includes(session.id)",
 				@fav="$store.dispatch('schedule/fav', $event)",
@@ -65,7 +66,7 @@ export default {
 	mounted() {},
 	methods: {
 		generateSessionLinkUrl(sessionData) {
-			const publicPath = process.env.BASE_URL || '/video/'
+			const publicPath = import.meta.env.BASE_URL || '/video/'
 			return `${publicPath}schedule/talks/${sessionData.session.id}`
 		}
 	}

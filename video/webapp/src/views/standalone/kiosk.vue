@@ -11,6 +11,7 @@ import VoteSlide from './Vote'
 import QuestionSlide from './Question'
 import NextSessionSlide from './NextSession'
 import ViewersSlide from './Viewers'
+import { nextTick } from 'vue'
 
 const SLIDES = [{
 	id: 'poll',
@@ -74,6 +75,7 @@ export default {
 	data() {
 		return {
 			activeSlide: SLIDES[0],
+			slideTimer: null
 		}
 	},
 	mounted() {
@@ -81,14 +83,19 @@ export default {
 		for (const slide of SLIDES) {
 			if (slide.watch) {
 				this.$watch(slide.watch.bind(this), () => {
-					if (slide.condition.call(this)) {
-						this.activeSlide = slide
-					} else {
-						this.nextSlide()
-					}
+					nextTick(() => {
+						if (slide.condition.call(this)) {
+							this.activeSlide = slide
+						} else {
+							this.nextSlide()
+						}
+					})
 				})
 			}
 		}
+	},
+	beforeUnmount() {
+		if (this.slideTimer) clearTimeout(this.slideTimer)
 	},
 	methods: {
 		isSlideEnabled(slide) {

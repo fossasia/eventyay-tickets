@@ -102,11 +102,11 @@ export default {
 			}
 		},
 		deleteRole(role) {
-			this.$delete(this.config.roles, role)
+			delete this.config.roles[role]
 		},
 		addRole() {
 			if (this.newRoleName) {
-				this.$set(this.config.roles, this.newRoleName, [])
+				this.config.roles[this.newRoleName] = []
 				this.expandedRoles.push(this.newRoleName)
 				this.newRoleName = ''
 			}
@@ -115,7 +115,7 @@ export default {
 			if (toggle) {
 				this.config.roles[role].push(perm)
 			} else {
-				this.$set(this.config.roles, role, this.config.roles[role].filter((i) => i !== perm))
+				this.config.roles[role] = this.config.roles[role].filter((i) => i !== perm)
 			}
 		},
 
