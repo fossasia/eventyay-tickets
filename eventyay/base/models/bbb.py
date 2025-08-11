@@ -9,7 +9,7 @@ class BBBServer(models.Model):
     active = models.BooleanField(default=True)
     url = models.URLField()
     secret = models.CharField(max_length=300)
-    event = models.ForeignKey(
+    event_exclusive = models.ForeignKey(
         "Event", null=True, blank=True, on_delete=models.PROTECT
     )
     rooms_only = models.BooleanField(default=False)

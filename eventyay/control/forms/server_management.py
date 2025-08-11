@@ -77,7 +77,7 @@ class SignupForm(PasswordMixin, forms.ModelForm):
     def save(self):
         user = User.objects.create(
             email=self.cleaned_data.get("email"),
-            username=self.cleaned_data.get("username"),
+
             is_staff=True,
         )
         user.set_password(self.cleaned_data.get("password"))
@@ -86,7 +86,7 @@ class SignupForm(PasswordMixin, forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("email", "username", "password")
+        fields = ("email", "password")
 
 
 class ProfileForm(forms.ModelForm):
@@ -108,7 +108,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("email", "username", "password")
+        fields = ("email", "password")
 
 
 class EventForm(forms.ModelForm):
@@ -122,7 +122,6 @@ class EventForm(forms.ModelForm):
         model = Event
         fields = (
             "id",
-            "title",
             "domain",
             "locale",
             "timezone",
@@ -147,9 +146,6 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-            "username",
-            "first_name",
-            "last_name",
             "email",
             "is_staff",
             "is_active",

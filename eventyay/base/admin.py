@@ -146,10 +146,6 @@ admin.site.register(base.CachedFile)
 admin.site.register(notifications.NotificationSetting)
 
 # API and OAuth
-admin.site.register(OAuthApplication)
-admin.site.register(OAuthAccessToken)
-admin.site.register(OAuthRefreshToken)
-admin.site.register(OAuthIDToken)
 admin.site.register(WebHook)
 admin.site.register(WebHookEventListener)
 admin.site.register(WebHookCall)

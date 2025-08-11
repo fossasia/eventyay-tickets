@@ -601,6 +601,7 @@ REST_FRAMEWORK = {
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    'compressor.finders.CompressorFinder',
 )
 
 STATICFILES_DIRS = (
@@ -774,7 +775,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 # django-compressor SCSS support
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = not DEBUG
-
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )

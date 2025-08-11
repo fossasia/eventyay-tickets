@@ -22,8 +22,8 @@
                 <a href="{% url "control:index" %}"{% if request.path == "/control/" %} class="active" {% endif %}>
                     {% trans "Dashboard" %}
                 </a>
-                <a href="{% url "control:world.list" %}"{% if request.path == "/control/worlds/" %} class="active"{% endif %}>
-                    {% trans "Worlds" %}
+                <a href="{% url "control:event.list" %}"{% if request.path == "/control/events/" %} class="active"{% endif %}>
+                    {% trans "Events" %}
                 </a>
                 <a href="{% url "control:bbbserver.list" %}"{% if request.path == "/control/bbbs/" %} class="active"{% endif %}>
                     {% trans "BBB servers" %}
