@@ -8,7 +8,7 @@ urlpatterns = [
     path("auth/", include("django.contrib.auth.urls")),
     # User Management URLs
     path("users/", views.UserList.as_view(), name="user.list"),
-    path("users/<int:pk>/", views.UserUpdate.as_view(), name="user.update"),
+    path("users/<uuid:pk>/", views.UserUpdate.as_view(), name="user.update"),
     # BBB Server Management URLs
     path("bbbs/", views.BBBServerList.as_view(), name="bbbserver.list"),
     path("bbbs/moveroom/", views.BBBMoveRoom.as_view(), name="bbbserver.moveroom"),
