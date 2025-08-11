@@ -46,9 +46,9 @@ class MultiDomainMiddleware(MiddlewareMixin):
         request.port = int(port) if port else None
         request.host = domain
         if domain == default_domain:
-            request.urlconf = 'pretix.multidomain.maindomain_urlconf'
+            request.urlconf = 'config.urls'
         elif domain:
-            cached = cache.get('pretix_multidomain_instance_{}'.format(domain))
+            cached = cache.get('eventyay_multidomain_instance_{}'.format(domain))
 
             if cached is None:
                 try:
@@ -59,7 +59,7 @@ class MultiDomainMiddleware(MiddlewareMixin):
                     orga = False
                     event = False
                 cache.set(
-                    'pretix_multidomain_instance_{}'.format(domain),
+                    'eventyay_multidomain_instance_{}'.format(domain),
                     (orga.pk if orga else None, event.pk if event else None),
                     3600,
                 )
@@ -75,13 +75,13 @@ class MultiDomainMiddleware(MiddlewareMixin):
                     with scopes_disabled():
                         request.event = Event.objects.select_related('organizer').get(pk=event)
                         request.organizer = request.event.organizer
-                request.urlconf = 'pretix.multidomain.event_domain_urlconf'
+                request.urlconf = 'config.urls'
             elif orga:
                 request.organizer_domain = True
                 request.organizer = orga if isinstance(orga, Organizer) else Organizer.objects.get(pk=orga)
-                request.urlconf = 'pretix.multidomain.organizer_domain_urlconf'
+                request.urlconf = 'config.urls'
             elif settings.DEBUG or domain in LOCAL_HOST_NAMES:
-                request.urlconf = 'pretix.multidomain.maindomain_urlconf'
+                request.urlconf = 'config.urls'
             else:
                 raise DisallowedHost('Unknown host: %r' % host)
         else:

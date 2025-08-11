@@ -31,20 +31,20 @@ from django_otp import match_token
 from oauth2_provider.views import AuthorizationView
 from webauthn.helpers import generate_challenge
 
-from pretix.base.auth import get_auth_backends
-from pretix.base.forms.auth import (
+from eventyay.base.auth import get_auth_backends
+from eventyay.base.forms.auth import (
     LoginForm,
     PasswordForgotForm,
     PasswordRecoverForm,
     RegistrationForm,
 )
-from pretix.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
-from pretix.base.models.page import Page
-from pretix.base.services.mail import SendMailException
-from pretix.base.settings import GlobalSettingsObject
-from pretix.helpers.cookies import set_cookie_without_samesite
-from pretix.helpers.jwt_generate import generate_sso_token
-from pretix.multidomain.middlewares import get_cookie_domain
+from eventyay.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
+from eventyay.base.models.page import Page
+from eventyay.base.services.mail import SendMailException
+from eventyay.base.settings import GlobalSettingsObject
+from eventyay.helpers.cookies import set_cookie_without_samesite
+from eventyay.helpers.jwt_generate import generate_sso_token
+from eventyay.multidomain.middlewares import get_cookie_domain
 
 logger = logging.getLogger(__name__)
 
@@ -62,21 +62,21 @@ def process_login(request, user, keep_logged_in):
 
     :return: This method returns a ``HttpResponse``.
     """
-    request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and keep_logged_in
+    request.session['eventyay_auth_long_session'] = settings.EVENTYAY_LONG_SESSIONS and keep_logged_in
     next_url = get_auth_backends()[user.auth_backend].get_next_url(request)
     if user.require_2fa:
-        request.session['pretix_auth_2fa_user'] = user.pk
-        request.session['pretix_auth_2fa_time'] = str(int(time.time()))
-        twofa_url = reverse('control:auth.login.2fa')
+        request.session['eventyay_auth_2fa_user'] = user.pk
+        request.session['eventyay_auth_2fa_time'] = str(int(time.time()))
+        twofa_url = reverse('auth.login.2fa')
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
             twofa_url += '?next=' + quote(next_url)
         return redirect(twofa_url)
     else:
         auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        request.session['pretix_auth_login_time'] = int(time.time())
+        request.session['eventyay_auth_login_time'] = int(time.time())
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
             return redirect(next_url)
-        return redirect(reverse('control:index'))
+        return redirect(reverse('eventyay_common:dashboard'))
 
 
 def process_login_and_set_cookie(request, user, keep_logged_in):
@@ -127,10 +127,10 @@ def login(request):
     if not backend.visible:
         backend = [b for b in backends if b.visible][0]
     if request.user.is_authenticated:
-        next_url = backend.get_next_url(request) or 'control:index'
+        next_url = backend.get_next_url(request) or 'eventyay_common:dashboard'
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
             return redirect(next_url)
-        return redirect(reverse('control:index'))
+        return redirect(reverse('eventyay_common:dashboard'))
     if request.method == 'POST':
         form = LoginForm(backend=backend, data=request.POST, request=request)
         if form.is_valid() and form.user_cache and form.user_cache.auth_backend == backend.identifier:
@@ -140,14 +140,14 @@ def login(request):
     else:
         form = LoginForm(backend=backend, request=request)
     ctx['form'] = form
-    ctx['can_register'] = settings.PRETIX_REGISTRATION
-    ctx['can_reset'] = settings.PRETIX_PASSWORD_RESET
+    ctx['can_register'] = settings.EVENTYAY_REGISTRATION
+    ctx['can_reset'] = settings.EVENTYAY_PASSWORD_RESET
     ctx['backends'] = backends
     ctx['backend'] = backend
 
     gs = GlobalSettingsObject()
     ctx['login_providers'] = gs.settings.get('login_providers', as_type=dict)
-    return render(request, 'pretixcontrol/auth/login.html', ctx)
+    return render(request, 'eventyay_common/auth/login.html', ctx)
 
 
 def logout(request):
@@ -155,8 +155,8 @@ def logout(request):
     Log the user out of the current session, then redirect to login page.
     """
     auth_logout(request)
-    request.session['pretix_auth_login_time'] = 0
-    next = reverse('control:auth.login')
+    request.session['eventyay_auth_login_time'] = 0
+    next = reverse('eventyay_common:auth.login')
     if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
         next += '?next=' + quote(request.GET.get('next'))
     if 'back' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('back'), allowed_hosts=None):
@@ -168,11 +168,11 @@ def register(request):
     """
     Render and process a basic registration form.
     """
-    if not settings.PRETIX_REGISTRATION or 'native' not in get_auth_backends():
+    if not settings.EVENTYAY_REGISTRATION or 'native' not in get_auth_backends():
         raise PermissionDenied('Registration is disabled')
     ctx = {}
     if request.user.is_authenticated:
-        return redirect(request.GET.get('next', 'control:index'))
+        return redirect(request.GET.get('next', 'eventyay_common:dashboard'))
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
@@ -187,20 +187,20 @@ def register(request):
                 email=user.email,
                 password=form.cleaned_data['password'],
             )
-            user.log_action('pretix.control.auth.user.created', user=user)
+            user.log_action('eventyay.eventyay_common.auth.user.created', user=user)
             auth_login(request, user)
-            request.session['pretix_auth_login_time'] = int(time.time())
-            request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get(
+            request.session['eventyay_auth_login_time'] = int(time.time())
+            request.session['eventyay_auth_long_session'] = settings.EVENTYAY_LONG_SESSIONS and form.cleaned_data.get(
                 'keep_logged_in', False
             )
-            response = redirect(request.GET.get('next', 'control:index'))
+            response = redirect(request.GET.get('next', 'eventyay_common:dashboard'))
             set_cookie_after_logged_in(request, response)
             return response
     else:
         form = RegistrationForm()
     ctx['form'] = form
     ctx['confirmation_required'] = Page.objects.filter(confirmation_required=True)
-    return render(request, 'pretixcontrol/auth/register.html', ctx)
+    return render(request, 'eventyay_common/auth/register.html', ctx)
 
 
 def invite(request, token):
@@ -222,7 +222,7 @@ def invite(request, token):
                 'and make sure it is correct and that the link has not been used before.'
             ),
         )
-        return redirect('control:auth.login')
+        return redirect('eventyay_common:auth.login')
 
     if request.user.is_authenticated:
         if inv.team.members.filter(pk=request.user.pk).exists():
@@ -232,12 +232,12 @@ def invite(request, token):
                     inv.team.name
                 ),
             )
-            return redirect('control:index')
+            return redirect('eventyay_common:dashboard')
         else:
             with transaction.atomic():
                 inv.team.members.add(request.user)
                 inv.team.log_action(
-                    'pretix.team.member.joined',
+                    'eventyay.team.member.joined',
                     data={
                         'email': request.user.email,
                         'invite_email': inv.email,
@@ -246,7 +246,7 @@ def invite(request, token):
                 )
                 inv.delete()
             messages.success(request, _('You are now part of the team "{}".').format(inv.team.name))
-            return redirect('control:index')
+            return redirect('eventyay_common:dashboard')
 
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
@@ -264,16 +264,16 @@ def invite(request, token):
                     email=user.email,
                     password=form.cleaned_data['password'],
                 )
-                user.log_action('pretix.control.auth.user.created', user=user)
+                user.log_action('eventyay.eventyay_common.auth.user.created', user=user)
                 auth_login(request, user)
-                request.session['pretix_auth_login_time'] = int(time.time())
-                request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get(
+                request.session['eventyay_auth_login_time'] = int(time.time())
+                request.session['eventyay_auth_long_session'] = settings.EVENTYAY_LONG_SESSIONS and form.cleaned_data.get(
                     'keep_logged_in', False
                 )
 
                 inv.team.members.add(request.user)
                 inv.team.log_action(
-                    'pretix.team.member.joined',
+                    'eventyay.team.member.joined',
                     data={
                         'email': user.email,
                         'invite_email': inv.email,
@@ -283,13 +283,13 @@ def invite(request, token):
                 inv.delete()
                 messages.success(
                     request,
-                    _('Welcome to pretix! You are now part of the team "{}".').format(inv.team.name),
+                    _('Welcome to eventyay! You are now part of the team "{}".').format(inv.team.name),
                 )
-                return redirect('control:index')
+                return redirect('eventyay_common:dashboard')
     else:
         form = RegistrationForm(initial={'email': inv.email})
     ctx['form'] = form
-    return render(request, 'pretixcontrol/auth/invite.html', ctx)
+    return render(request, 'eventyay_common/auth/invite.html', ctx)
 
 
 class RepeatedResetDenied(Exception):  # NOQA: N818
@@ -297,16 +297,16 @@ class RepeatedResetDenied(Exception):  # NOQA: N818
 
 
 class Forgot(TemplateView):
-    template_name = 'pretixcontrol/auth/forgot.html'
+    template_name = 'eventyay_common/auth/forgot.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if not settings.PRETIX_PASSWORD_RESET or 'native' not in get_auth_backends():
+        if not settings.EVENTYAY_PASSWORD_RESET or 'native' not in get_auth_backends():
             raise PermissionDenied('Password reset is disabled')
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(request.GET.get('next', 'control:index'))
+            return redirect(request.GET.get('next', 'eventyay_common:dashboard'))
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -322,11 +322,11 @@ class Forgot(TemplateView):
                     from django_redis import get_redis_connection
 
                     rc = get_redis_connection('redis')
-                    if rc.exists('pretix_pwreset_%s' % (user.id)):
-                        user.log_action('pretix.control.auth.user.forgot_password.denied.repeated')
+                    if rc.exists('eventyay_pwreset_%s' % (user.id)):
+                        user.log_action('eventyay.eventyay_common.auth.user.forgot_password.denied.repeated')
                         raise RepeatedResetDenied()
                     else:
-                        rc.setex('pretix_pwreset_%s' % (user.id), 3600 * 24, '1')
+                        rc.setex('eventyay_pwreset_%s' % (user.id), 3600 * 24, '1')
 
             except User.DoesNotExist:
                 logger.warning('Password reset for unregistered e-mail "' + email + '"requested.')
@@ -339,7 +339,7 @@ class Forgot(TemplateView):
 
             else:
                 user.send_password_reset()
-                user.log_action('pretix.control.auth.user.forgot_password.mail_sent')
+                user.log_action('eventyay.eventyay_common.auth.user.forgot_password.mail_sent')
 
             finally:
                 if has_redis:
@@ -358,7 +358,7 @@ class Forgot(TemplateView):
                         ),
                     )
 
-                return redirect('control:auth.forgot')
+                return redirect('auth.forgot')
         else:
             return self.get(request, *args, **kwargs)
 
@@ -373,7 +373,7 @@ class Forgot(TemplateView):
 
 
 class Recover(TemplateView):
-    template_name = 'pretixcontrol/auth/recover.html'
+    template_name = 'eventyay_common/auth/recover.html'
 
     error_messages = {
         'invalid': _(
@@ -385,13 +385,13 @@ class Recover(TemplateView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if not settings.PRETIX_PASSWORD_RESET or 'native' not in get_auth_backends():
+        if not settings.EVENTYAY_PASSWORD_RESET or 'native' not in get_auth_backends():
             raise PermissionDenied('Registration is disabled')
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(request.GET.get('next', 'control:index'))
+            return redirect(request.GET.get('next', 'eventyay_common:dashboard'))
         try:
             user = User.objects.get(id=self.request.GET.get('id'), auth_backend='native')
         except User.DoesNotExist:
@@ -402,7 +402,7 @@ class Recover(TemplateView):
 
     def invalid(self, msg):
         messages.error(self.request, self.error_messages[msg])
-        return redirect('control:auth.forgot')
+        return redirect('auth.forgot')
 
     def post(self, request, *args, **kwargs):
         if self.form.is_valid():
@@ -415,8 +415,8 @@ class Recover(TemplateView):
             user.set_password(self.form.cleaned_data['password'])
             user.save()
             messages.success(request, _('You can now login using your new password.'))
-            user.log_action('pretix.control.auth.user.forgot_password.recovered')
-            return redirect('control:auth.login')
+            user.log_action('eventyay.eventyay_common.auth.user.forgot_password.recovered')
+            return redirect('eventyay_common:auth.login')
         else:
             return self.get(request, *args, **kwargs)
 
@@ -442,7 +442,7 @@ def get_webauthn_rp_id(request):
 
 
 class Login2FAView(TemplateView):
-    template_name = 'pretixcontrol/auth/login_2fa.html'
+    template_name = 'eventyay_common/auth/login_2fa.html'
 
     @property
     def app_id(self):
@@ -450,19 +450,19 @@ class Login2FAView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         fail = False
-        if 'pretix_auth_2fa_user' not in request.session:
+        if 'eventyay_auth_2fa_user' not in request.session:
             fail = True
         else:
             try:
-                self.user = User.objects.get(pk=request.session['pretix_auth_2fa_user'], is_active=True)
+                self.user = User.objects.get(pk=request.session['eventyay_auth_2fa_user'], is_active=True)
             except User.DoesNotExist:
                 fail = True
-        logintime = int(request.session.get('pretix_auth_2fa_time', '1'))
+        logintime = int(request.session.get('eventyay_auth_2fa_time', '1'))
         if time.time() - logintime > 300:
             fail = True
         if fail:
             messages.error(request, _('Please try again.'))
-            return redirect('control:auth.login')
+            return redirect('eventyay_common:auth.login')
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -523,15 +523,15 @@ class Login2FAView(TemplateView):
 
         if valid:
             auth_login(request, self.user, backend='django.contrib.auth.backends.ModelBackend')
-            request.session['pretix_auth_login_time'] = int(time.time())
-            del request.session['pretix_auth_2fa_user']
-            del request.session['pretix_auth_2fa_time']
+            request.session['eventyay_auth_login_time'] = int(time.time())
+            del request.session['eventyay_auth_2fa_user']
+            del request.session['eventyay_auth_2fa_time']
             if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
                 return redirect(request.GET.get('next'))
-            return redirect(reverse('control:index'))
+            return redirect(reverse('eventyay_common:dashboard'))
         else:
             messages.error(request, _('Invalid code, please try again.'))
-            return redirect('control:auth.login.2fa')
+            return redirect('auth.login.2fa')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()

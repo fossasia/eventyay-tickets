@@ -13,7 +13,7 @@ def set_cookie_without_samesite(request, response, key, *args, **kwargs):
     if should_send_same_site_none(request.headers.get('User-Agent', '')):
         # Chromium is rolling out SameSite=Lax as a default
         # https://www.chromestatus.com/feature/5088147346030592
-        # This however breaks all pretix-in-an-iframe things, such as the pretix Widget.
+        # This however breaks all eventyay-in-an-iframe things, such as the eventyay Widget.
         # Sadly, this means we need to forcefully set SameSite=None and rely on our other
         # CSRF protections to be working.
         response.cookies[key]['samesite'] = 'None'

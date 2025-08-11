@@ -6,7 +6,7 @@ import os
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
-
+from django.utils.translation import gettext_lazy as _
 from django.utils.crypto import get_random_string
 from kombu import Queue
 from redis.asyncio.retry import Retry
@@ -55,6 +55,11 @@ else:
 
 eventyay_config = EnvOrParserConfig(_config)
 
+def instance_name(request):
+    from django.conf import settings
+    return {
+        'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')
+    }
 # Secret key configuration (Eventyay style)
 SECRET_KEY = os.environ.get(
     "EVENTYAY_DJANGO_SECRET", config.get("django", "secret", fallback="")
@@ -95,7 +100,11 @@ debug_default = "runserver" in sys.argv
 DEBUG = os.environ.get("EVENTYAY_DEBUG", str(debug_default)) == "True"
 
 # Hosts configuration
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
+X_FRAME_OPTIONS = 'DENY'
+
+# URL settings
+# ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 # Multifactor authentication
 EVENTYAY_MULTIFACTOR_REQUIRE = (
@@ -168,6 +177,7 @@ if not DATABASES["default"]["NAME"] or DATABASES["default"]["NAME"] == "eventyay
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+            'HOST': config.get('database', 'host', fallback=''),
         }
     }
 
@@ -368,12 +378,15 @@ if not SESSION_ENGINE:
 # Installed apps (merged from both projects)
 INSTALLED_APPS = [
     "daphne",
+    "bootstrap3",
+    "compressor",
     "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_celery_beat",
     "channels",
     "corsheaders",
     "rest_framework",
@@ -389,10 +402,13 @@ INSTALLED_APPS = [
     "eventyay.features.integrations.zoom.ZoomConfig",
     "eventyay.control.ControlConfig",
     "eventyay.base",
+    "eventyay.common",
+    "eventyay.eventyay_common",
     "eventyay.helpers",
     "eventyay.multidomain",
     "eventyay.presale",
     "multifactor",
+    "statici18n",
 ]
 
 try:
@@ -409,15 +425,24 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "eventyay.control.video.middleware.SessionMiddleware",
-    "eventyay.control.video.middleware.AuthenticationMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "eventyay.control.video.middleware.MessageMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'eventyay.base.middleware.CustomCommonMiddleware',
+    'eventyay.base.middleware.LocaleMiddleware',
+    'eventyay.base.middleware.SecurityMiddleware',
+    'eventyay.multidomain.middlewares.MultiDomainMiddleware',
+    'eventyay.multidomain.middlewares.SessionMiddleware',
+    'eventyay.multidomain.middlewares.CsrfViewMiddleware',
+    'eventyay.control.middleware.PermissionMiddleware',
+    'eventyay.control.middleware.AuditLogMiddleware',
+    "eventyay.control.video.middleware.SessionMiddleware",
+    "eventyay.control.video.middleware.AuthenticationMiddleware",
+    "eventyay.control.video.middleware.MessageMiddleware",
 ]
 
 ROOT_URLCONF = "eventyay.config.urls"
+# ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 # CORS configuration
 CORS_ORIGIN_REGEX_WHITELIST = [
@@ -466,6 +491,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'config.settings.instance_name',
             ],
             "loaders": template_loaders,
         },
@@ -489,8 +515,14 @@ LANGUAGES = [
 
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), "locale"),)
 
-# CSRF configuration
-CSRF_COOKIE_NAME = "eventyay_csrftoken"
+
+# Internal settings
+SESSION_COOKIE_NAME = 'eventyay_session'
+LANGUAGE_COOKIE_NAME = 'eventyay_language'
+CSRF_COOKIE_NAME = 'eventyay_csrftoken'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
+
 
 # Debug toolbar configuration
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
@@ -580,7 +612,7 @@ STATICFILES_DIRS = (
 STATICI18N_ROOT = os.path.join(BASE_DIR, "eventyay/static")
 
 # Login/Logout URLs
-LOGIN_URL = LOGOUT_REDIRECT_URL = "control:login"
+
 LOGIN_REDIRECT_URL = "/control/"
 
 # Version and environment
@@ -596,9 +628,17 @@ CELERY_TASK_DEFAULT_QUEUE = "default"
 CELERY_TASK_QUEUES = (
     Queue("default", routing_key="default.#"),
     Queue("longrunning", routing_key="longrunning.#"),
+    Queue('background', routing_key='background.#'),
+    Queue('notifications', routing_key='notifications.#'),
 )
 CELERY_TASK_ALWAYS_EAGER = os.environ.get("EVENTYAY_CELERY_EAGER", "") == "true"
 CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_ROUTES = (
+    [
+        ('eventyay.base.services.notifications.*', {'queue': 'notifications'}),
+        ('eventyay.api.webhooks.*', {'queue': 'notifications'}),
+    ],
+)
 
 # Sentry configuration
 SENTRY_DSN = os.environ.get(
@@ -675,3 +715,70 @@ MULTIFACTOR = {
     "FACTORS": ["FIDO2"],
     "FALLBACKS": {},
 }
+
+# Adjustable settings
+INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')
+EVENTYAY_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=True)
+EVENTYAY_PASSWORD_RESET = config.getboolean('eventyay', 'password_reset', fallback=True)
+EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
+EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(',')
+EVENTYAY_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
+EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallback=False)
+EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
+EVENTYAY_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
+
+LOG_CSP = config.getboolean('eventyay', 'csp_log', fallback=True)
+CSP_ADDITIONAL_HEADER = config.get('eventyay', 'csp_additional_header', fallback='')
+
+# Django allauth settings for social login
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+
+SOCIALACCOUNT_ADAPTER = 'eventyay.plugins.socialauth.adapter.CustomSocialAccountAdapter'
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'eventyayapi.OAuthApplication'
+OAUTH2_PROVIDER_GRANT_MODEL = 'eventyayapi.OAuthGrant'
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'eventyayapi.OAuthAccessToken'
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'eventyayapi.OAuthIDToken'
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'eventyayapi.OAuthRefreshToken'
+OAUTH2_PROVIDER = {
+    'SCOPES': {
+        'profile': _('User profile only'),
+        'read': _('Read access'),
+        'write': _('Write access'),
+    },
+    'OAUTH2_VALIDATOR_CLASS': 'eventyay.api.oauth.Validator',
+    'ALLOWED_REDIRECT_URI_SCHEMES': ['https'] if not DEBUG else ['http', 'https'],
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600 * 24,
+    'ROTATE_REFRESH_TOKEN': False,
+    'PKCE_REQUIRED': False,
+    'OIDC_RESPONSE_TYPES_SUPPORTED': ['code'],  # We don't support proper OIDC for now
+}
+
+
+LOGIN_URL = 'eventyay_common:auth.login'
+LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
+# CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
+
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+# django-compressor SCSS support
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = not DEBUG
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+
+COMPRESS_CSS_FILTERS = (
+    'compressor.filters.cssmin.CSSCompressorFilter',
+)
