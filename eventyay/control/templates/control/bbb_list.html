@@ -13,7 +13,7 @@
     <tr>
         <th>{% trans "ID" %}</th>
         <th>{% trans "URL" %}</th>
-        <th>{% trans "World" %}</th>
+        <th>{% trans "Event" %}</th>
         <th class="text-right">{% trans "Current cost" %}</th>
         <th></th>
         <th></th>
@@ -29,8 +29,8 @@
             {{ s.url }}
         </td>
         <td>
-            {% if s.world_exclusive %}
-                {{ s.world_exclusive }}
+            {% if s.event_exclusive %}
+                {{ s.event_exclusive }}
             {% else %}
                 {% trans "All" %}
             {% endif %}

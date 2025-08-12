@@ -13,7 +13,7 @@
     <tr>
         <th>{% trans "ID" %}</th>
         <th>{% trans "Host name" %}</th>
-        <th>{% trans "World" %}</th>
+        <th>{% trans "Event" %}</th>
         <th></th>
         <th></th>
     </tr>
@@ -28,8 +28,8 @@
             {{ s.hostname }}
         </td>
         <td>
-            {% if s.world_exclusive %}
-                {{ s.world_exclusive }}
+            {% if s.event_exclusive %}
+                {{ s.event_exclusive }}
             {% else %}
                 {% trans "All" %}
             {% endif %}

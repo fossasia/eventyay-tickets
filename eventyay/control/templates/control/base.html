@@ -43,8 +43,8 @@
                 <a href="{% url "control:streamkey" %}"{% if request.path == "/control/streamkey/" %} class="active"{% endif %}>
                     {% trans "Streamkey generator" %}
                 </a>
-                <a href="{% url "control:feedback.list" %}"{% if request.path == "/control/feedback/" %} class="active"{% endif %}>
-                    {% trans "Feedback" %}
+                <a href="{% url "control:systemlog.list" %}"{% if request.path == "/control/systemlog/" %} class="active"{% endif %}>
+                    {% trans "SystemLog" %}
                 </a>
                 <a href="{% url "control:conftool.syncposters" %}"{% if request.path == "/control/conftool/syncposters/" %} class="active"{% endif %}>
                     {% trans "Conftool posters" %}

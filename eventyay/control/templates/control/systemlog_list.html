@@ -8,13 +8,13 @@
     <tr>
         <th>{% trans "Timestamp" %}</th>
         <th>{% trans "Module" %}</th>
-        <th>{% trans "World" %}</th>
+        <th>{% trans "Event" %}</th>
         <th>{% trans "Message" %}</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    {% for s in feedbacks %}
+    {% for s in systemlogs %}
     <tr>
         <td>
             {{ s.timestamp|date:"SHORT_DATETIME_FORMAT" }}
@@ -23,13 +23,13 @@
             {{ s.module }}
         </td>
         <td>
-            {{ s.world }}
+            {{ s.event }}
         </td>
         <td>
             {{ s.message }}
         </td>
         <td class="text-right">
-            <a href="{% url 'control:feedback.detail' pk=s.pk %}">
+            <a href="{% url 'control:systemlog.detail' pk=s.pk %}">
                 {% trans "Details" %}
             </a>
         </td>

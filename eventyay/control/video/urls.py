@@ -38,9 +38,9 @@ urlpatterns = [
     path("events/<slug:pk>/admin", views.EventAdminToken.as_view(), name="event.admin"),
     path("events/<slug:pk>/clear", views.EventClear.as_view(), name="event.clear"),
     path("events/<slug:pk>/", views.EventUpdate.as_view(), name="event.update"),
-    # Feedback Management URLs
-    path("feedback/", views.SystemLogList.as_view(), name="feedback.list"),
-    path("feedback/<uuid:pk>/", views.SystemLogDetail.as_view(), name="feedback.detail"),
+    # SystemLog Management URLs
+    path("systemlog/", views.SystemLogList.as_view(), name="systemlog.list"),
+    path("systemlog/<uuid:pk>/", views.SystemLogDetail.as_view(), name="systemlog.detail"),
     # Conftool URLs
     path("conftool/syncposters/", views.ConftoolSyncPosters.as_view(), name="conftool.syncposters"),
     # Default index view

@@ -4,10 +4,10 @@
 {% block content %}
 
 <label>{% trans "Metadata" %}</label>
-<pre>{{ feedback.timestamp }} / {{ feedback.module }} / {{ feedback.world }}</pre>
+<pre>{{ systemlog.timestamp }} / {{ systemlog.module }} / {{ systemlog.event }}</pre>
 <hr>
 <label>{% trans "Message" %}</label>
-<pre>{{ feedback.message }}</pre>
+<pre>{{ systemlog.message }}</pre>
 <hr>
 <label>{% trans "User Agent" %}</label>
 <pre>{{ trace.userAgent }}</pre>
