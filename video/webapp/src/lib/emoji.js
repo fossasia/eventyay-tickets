@@ -129,7 +129,7 @@ export function emojifyString(input) {
 }
 
 export const emojiPlugin = {
-	install(Vue) {
-		Vue.prototype.$emojify = emojifyString
+	install(app) {
+		app.config.globalProperties.$emojify = emojifyString
 	}
 }
