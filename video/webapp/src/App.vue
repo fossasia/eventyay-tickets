@@ -311,7 +311,7 @@ export default {
 				background-color: $clr-secondary-text-light
 				&.backdrop-enter-active, &.backdrop-leave-active
 					transition: opacity .2s
-				&.backdrop-enter, &.backdrop-leave-to
+				&.backdrop-enter-from, &.backdrop-leave-to
 					opacity: 0
 			.fatal-connection-error
 				.mdi

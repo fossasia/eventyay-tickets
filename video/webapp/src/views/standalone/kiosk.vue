@@ -134,7 +134,7 @@ export default {
 		position: absolute
 		&.kiosk-enter-active, &.kiosk-leave-active
 			transition: translate 1s
-		&.kiosk-enter
+		&.kiosk-enter-from
 			translate: -100vw 0
 		&.kiosk-leave-to
 			translate: 100vw 0

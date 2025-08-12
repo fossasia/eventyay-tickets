@@ -525,6 +525,6 @@ export default {
 			touch-action: pan-y
 		&.sidebar-enter-active, &.sidebar-leave-active
 			transition: transform .2s
-		&.sidebar-enter, &.sidebar-leave-to
+		&.sidebar-enter-from, &.sidebar-leave-to
 			transform: translateX(calc(-1 * var(--sidebar-width)))
 </style>

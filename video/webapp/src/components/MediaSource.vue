@@ -252,7 +252,7 @@ export default {
 		transition: transform .3s ease
 	// .background-room-enter-active
 	// 	transition-delay: .1s
-	.background-room-enter, .background-room-leave-to
+	.background-room-enter-from, .background-room-leave-to
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
 .c-media-source .c-livestream, .c-media-source .c-januscall, .c-media-source .c-januschannelcall, iframe.iframe-media-source
 	position: fixed
