@@ -1,5 +1,5 @@
 /* global ENV_DEVELOPMENT */
-import cloneDeep from 'lodash/cloneDeep'
+import { cloneDeep } from 'lodash'
 let config
 if (ENV_DEVELOPMENT || !window.venueless) {
 	const hostname = window.location.hostname
