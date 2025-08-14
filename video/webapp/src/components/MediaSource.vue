@@ -5,7 +5,7 @@
 			.description
 				.hint {{ $t('MediaSource:room:hint') }}
 				.room-name(v-if="room") {{ room.name }}
-				.room-name(v-else="call") {{ $t('MediaSource:call:label') }}
+				.room-name(v-else-if="call") {{ $t('MediaSource:call:label') }}
 			.global-placeholder
 			bunt-icon-button(@click.prevent.stop="$emit('close')") close
 	livestream(v-if="room && module.type === 'livestream.native'", ref="livestream", :room="room", :module="module", :size="background ? 'tiny' : 'normal'", :key="`livestream-${room.id}`")
@@ -17,6 +17,7 @@
 <script>
 // TODO functional component?
 import { mapState, mapGetters } from 'vuex'
+import { getCurrentInstance } from 'vue'
 import isEqual from 'lodash/isEqual'
 import api from 'lib/api'
 import JanusCall from 'components/JanusCall'
@@ -33,12 +34,14 @@ export default {
 			default: false
 		}
 	},
+	emits: ['close'],
 	data() {
 		return {
 			iframeError: null,
-			iframe: null, // Track the iframe element
-			languageAudioUrl: null, // URL for the selected language audio
-			languageIframeUrl: null // URL for the language iframe // Added languageIframeUrl to data
+			iframe: null,
+			languageAudioUrl: null,
+			languageIframeUrl: null,
+			isUnmounted: false
 		}
 	},
 	computed: {
@@ -84,14 +87,25 @@ export default {
 			return
 		}
 		this.initializeIframe(false)
-		this.$root.$on('languageChanged', this.handleLanguageChange)
+		// Use global event bus: prefer appContext.config.globalProperties (Vue 3) with a safe fallback
+		const instance = getCurrentInstance && getCurrentInstance()
+		const eventBus = instance?.appContext?.config?.globalProperties?.$eventBus || this.$root?.$eventBus
+		if (eventBus) {
+			eventBus.on('languageChanged', this.handleLanguageChange)
+		}
 	},
-	beforeDestroy() {
+	beforeUnmount() {
+		this.isUnmounted = true
 		this.iframe?.remove()
 		if (api.socketState !== 'open') return
 		// TODO move to store?
 		if (this.room) api.call('room.leave', {room: this.room.id})
-		this.$root.$off('languageChanged', this.handleLanguageChange)
+		// Clean up event listener
+		const instance = getCurrentInstance && getCurrentInstance()
+		const eventBus = instance?.appContext?.config?.globalProperties?.$eventBus || this.$root?.$eventBus
+		if (eventBus) {
+			eventBus.off('languageChanged', this.handleLanguageChange)
+		}
 	},
 	methods: {
 		async initializeIframe(mute) {
@@ -121,7 +135,7 @@ export default {
 						break
 					}
 				}
-				if (!iframeUrl || !this.$el || this._isDestroyed) return
+				if (!iframeUrl || !this.$el || this.isUnmounted) return ''
 				const iframe = document.createElement('iframe')
 				iframe.src = iframeUrl
 				iframe.classList.add('iframe-media-source')
@@ -129,8 +143,8 @@ export default {
 					iframe.classList.add('hide-if-background')
 				}
 				iframe.allow = 'screen-wake-lock *; camera *; microphone *; fullscreen *; display-capture *' + (this.autoplay ? '; autoplay *' : '')
-				iframe.allowfullscreen = true
-				iframe.allowusermedia = true
+				iframe.allowFullscreen = true
+				iframe.setAttribute('allowusermedia', 'true')
 				iframe.setAttribute('allowfullscreen', '') // iframe.allowfullscreen is not enough in firefox#media-source-iframes
 				const container = document.querySelector('#media-source-iframes')
 				container.appendChild(iframe)
@@ -188,9 +202,10 @@ export default {
 			return `https://${domain}/embed/${ytid}?${params}`
 		},
 		// Added method to get the language iframe URL
-		getLanguageIframeUrl(languageUrl, enablePrivacyEnhancedMode) {
+		getLanguageIframeUrl(languageUrl) {
 			// Checks if the languageUrl is not provided the retun null
 			if (!languageUrl) return null
+			const config = this.module?.config || {}
 			const params = new URLSearchParams({
 				enablejsapi: '1',
 				autoplay: '1',
@@ -203,7 +218,7 @@ export default {
 				playlist: languageUrl,
 			})
 
-			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com'
+			const domain = config.enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com'
 			return `https://${domain}/embed/${languageUrl}?${params}`
 		}
 	}

@@ -1,15 +1,15 @@
 <script>
+import { h } from 'vue'
 import MarkdownIt from 'markdown-it'
 import store from 'store'
 import { markdownEmoji } from 'lib/emoji'
 import { getUserName } from 'lib/profile'
-// import VModal from 'vue-js-modal'
 
 const markdownIt = MarkdownIt('zero', {
 	linkify: true
 })
 markdownIt.enable('linkify')
-markdownIt.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+markdownIt.renderer.rules.link_open = function (tokens, idx, options, env, self) {
 	tokens[idx].attrPush(['target', '_blank'])
 	tokens[idx].attrPush(['rel', 'noopener noreferrer'])
 	return self.renderToken(tokens, idx, options)
@@ -25,9 +25,7 @@ export async function contentToPlainText(content) {
 	for (const string of parts) {
 		if (string.match(mentionRegex)) {
 			const userId = string.slice(1)
-			if (!store.state.chat.usersLookup[userId]) {
-				await store.dispatch('chat/fetchUsers', [userId])
-			}
+			if (!store.state.chat.usersLookup[userId]) await store.dispatch('chat/fetchUsers', [userId])
 			const user = store.state.chat.usersLookup[userId]
 			if (user) {
 				plaintext += `@${getUserName(user)}`
@@ -39,16 +37,15 @@ export async function contentToPlainText(content) {
 	return plaintext
 }
 
-const generateHTML = (input) => {
-	if (!input) return
+const generateHTML = function(input) {
+	if (!input) return ''
 	return markdownIt.renderInline(input)
 }
 
 export default {
-	functional: true,
 	components: {
-		props: ['selectedUser'],
 		'user-modal': {
+			props: ['selectedUser'],
 			template: `
         <modal name="user-modal" height="auto" @before-close="closeUserModal">
           <div class="modal-content">
@@ -84,28 +81,29 @@ export default {
 			this.$modal.hide('user-modal')
 		}
 	},
-	render(createElement, ctx) {
-		const parts = ctx.props.content.split(mentionRegex)
+	render() {
+		const parts = this.content.split(mentionRegex)
 		const content = parts.map(string => {
 			if (string.match(mentionRegex)) {
-				const user = ctx.parent.$store.state.chat.usersLookup[string.slice(1)]
+				const userId = string.slice(1)
+				const user = this.$store.state.chat.usersLookup[userId]
 				if (user) {
 					return { user }
 				}
 			}
 			return { html: generateHTML(string) }
 		})
-		return content.map(part => {
-			if (part.user) {
-				return createElement('span', {
-					class: 'mention',
-					on: {
-						click: () => ctx.parent.showUserModal(part.user)
-					}
-				}, getUserName(part.user))
-			}
-			return createElement('span', { domProps: { innerHTML: part.html } })
-		})
+		return h('span', {},
+			content.map(part => {
+				if (part.user) {
+					return h('span', {
+						class: 'mention',
+						onClick: () => this.showUserModal(part.user)
+					}, getUserName(part.user))
+				}
+				return h('span', { innerHTML: part.html })
+			})
+		)
 	}
 }
 </script>

@@ -193,7 +193,8 @@ export default {
 			return sessions
 		},
 		rooms() {
-			return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
+		  const occupiedRoomIds = this.sessions.map(s => s.room.id)
+			return this.schedule.rooms.filter(r => occupiedRoomIds.includes(r.id))
 		},
 		filter() {
 			const filter = this.defaultFilter
