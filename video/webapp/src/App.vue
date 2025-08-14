@@ -184,15 +184,19 @@ export default {
 			const isExclusive = module => module.type === 'call.bigbluebutton' || module.type === 'call.zoom'
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (this.call) return // When a DM call is running, we never want background media
+			const newRoomHasMedia = newRoom && newRoom.modules && newRoom.modules.some(module => mediaModules.includes(module.type))
 			if (oldRoom &&
 				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
 				this.$refs.primaryMediaSource.isPlaying() &&
 				// don't background bbb room when switching to new bbb room
-				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive))
+				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive)) &&
+				!newRoomHasMedia 
 			) {
 				this.backgroundRoom = oldRoom
+			} else if (newRoomHasMedia) {
+				this.backgroundRoom = null
 			}
 			// returning to room currently playing in background should maximize again
 			if (this.backgroundRoom && (
