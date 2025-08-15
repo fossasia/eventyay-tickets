@@ -184,7 +184,15 @@ def render_pdf(event, positions, opt):
     # Build category-based renderer map
     category_renderermap = {}
     for layout in event.badge_layouts.filter(category__isnull=False).select_related('category'):
+        if layout.category_id in category_renderermap:
+            # Validation: Multiple layouts assigned to the same category
+            raise ValueError(
+                f"Duplicate badge layout assignment for category ID {layout.category_id}. "
+                "Each category should have only one badge layout assigned."
+            )
         category_renderermap[layout.category_id] = _renderer(event, layout)
+    # Note: If you want to allow duplicates and document precedence, comment out the raise and add a comment:
+    # "If multiple layouts are assigned to the same category, the last one will take precedence."
     
     try:
         default_renderer = _renderer(event, event.badge_layouts.get(default=True))
