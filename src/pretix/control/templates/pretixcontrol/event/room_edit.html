@@ -1,0 +1,258 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load eventurl %}
+
+{% block title %}
+    {% if room %}
+        {% trans "Edit room" %}
+    {% else %}
+        {% trans "Create room" %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="navigation">
+    <div class="navigation-title">
+        <h1>
+            {% if room %}
+                {% trans "Edit room" %}: {{ room.name }}
+            {% else %}
+                {% trans "Create room" %}
+            {% endif %}
+        </h1>
+    </div>
+    <div class="navigation-button">
+        <a href="{% eventurl request.event "control:event.rooms" %}" class="btn btn-default">
+            <i class="fa fa-arrow-left"></i> {% trans "Back to rooms" %}
+        </a>
+    </div>
+</div>
+
+<form method="post" class="form-horizontal">
+    {% csrf_token %}
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% if room %}
+                    {% trans "Room Details" %}
+                {% else %}
+                    {% trans "New Room" %}
+                {% endif %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            {% bootstrap_form_errors form %}
+            
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.name.label }}
+                    {% if form.name.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                <div class="col-md-9">
+                    {{ form.name }}
+                    {% if form.name.help_text %}
+                        <p class="help-block">{{ form.name.help_text }}</p>
+                    {% endif %}
+                    {% if form.name.errors %}
+                        <div class="text-danger">
+                            {{ form.name.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.identifier.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.identifier.label }}
+                    {% if form.identifier.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                <div class="col-md-9">
+                    {{ form.identifier }}
+                    {% if form.identifier.help_text %}
+                        <p class="help-block">{{ form.identifier.help_text }}</p>
+                    {% endif %}
+                    {% if form.identifier.errors %}
+                        <div class="text-danger">
+                            {{ form.identifier.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.description.label }}
+                </label>
+                <div class="col-md-9">
+                    {{ form.description }}
+                    {% if form.description.help_text %}
+                        <p class="help-block">{{ form.description.help_text }}</p>
+                    {% endif %}
+                    {% if form.description.errors %}
+                        <div class="text-danger">
+                            {{ form.description.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.capacity.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.capacity.label }}
+                </label>
+                <div class="col-md-9">
+                    {{ form.capacity }}
+                    {% if form.capacity.help_text %}
+                        <p class="help-block">{{ form.capacity.help_text }}</p>
+                    {% endif %}
+                    {% if form.capacity.errors %}
+                        <div class="text-danger">
+                            {{ form.capacity.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.location.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.location.label }}
+                </label>
+                <div class="col-md-9">
+                    {{ form.location }}
+                    {% if form.location.help_text %}
+                        <p class="help-block">{{ form.location.help_text }}</p>
+                    {% endif %}
+                    {% if form.location.errors %}
+                        <div class="text-danger">
+                            {{ form.location.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if form.session_start %}
+            <div class="form-group">
+                <label for="{{ form.session_start.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.session_start.label }}
+                </label>
+                <div class="col-md-9">
+                    {{ form.session_start }}
+                    {% if form.session_start.help_text %}
+                        <p class="help-block">{{ form.session_start.help_text }}</p>
+                    {% endif %}
+                    {% if form.session_start.errors %}
+                        <div class="text-danger">
+                            {{ form.session_start.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if form.session_end %}
+            <div class="form-group">
+                <label for="{{ form.session_end.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.session_end.label }}
+                </label>
+                <div class="col-md-9">
+                    {{ form.session_end }}
+                    {% if form.session_end.help_text %}
+                        <p class="help-block">{{ form.session_end.help_text }}</p>
+                    {% endif %}
+                    {% if form.session_end.errors %}
+                        <div class="text-danger">
+                            {{ form.session_end.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if form.gate %}
+            <div class="form-group">
+                <label for="{{ form.gate.id_for_label }}" class="col-md-3 control-label">
+                    {{ form.gate.label }}
+                </label>
+                <div class="col-md-9">
+                    {{ form.gate }}
+                    {% if form.gate.help_text %}
+                        <p class="help-block">{{ form.gate.help_text }}</p>
+                    {% endif %}
+                    {% if form.gate.errors %}
+                        <div class="text-danger">
+                            {{ form.gate.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <div class="col-md-offset-3 col-md-9">
+                    <div class="checkbox">
+                        <label>
+                            {{ form.is_active }}
+                            {{ form.is_active.label }}
+                        </label>
+                        {% if form.is_active.help_text %}
+                            <p class="help-block">{{ form.is_active.help_text }}</p>
+                        {% endif %}
+                        {% if form.is_active.errors %}
+                            <div class="text-danger">
+                                {{ form.is_active.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if room %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% trans "Room Statistics" %}</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <h4>{{ current_occupancy|default:0 }}</h4>
+                        <p>{% trans "Current Occupancy" %}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <h4>{{ total_checkins_today|default:0 }}</h4>
+                        <p>{% trans "Check-ins Today" %}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <h4>{{ total_checkins|default:0 }}</h4>
+                        <p>{% trans "Total Check-ins" %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <button type="submit" class="btn btn-success">
+                {% if room %}
+                    <i class="fa fa-save"></i> {% trans "Save changes" %}
+                {% else %}
+                    <i class="fa fa-plus"></i> {% trans "Create room" %}
+                {% endif %}
+            </button>
+            <a href="{% eventurl request.event "control:event.rooms" %}" class="btn btn-default">
+                {% trans "Cancel" %}
+            </a>
+        </div>
+    </div>
+</form>
+{% endblock %}

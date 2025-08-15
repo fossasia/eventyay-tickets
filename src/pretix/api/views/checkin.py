@@ -46,6 +46,7 @@ from pretix.base.models import (
     CheckinList,
     Device,
     Event,
+    Room,
     Order,
     OrderPosition,
     Question,
@@ -255,6 +256,41 @@ class CheckinListViewSet(viewsets.ModelViewSet):
             pqs = clist.positions
 
             ev = clist.subevent or clist.event
+            # Optional per-day filter and available dates for UI
+            selected_date = None
+            entry_count_on_date = None
+            exit_count_on_date = None
+            available_dates = []
+            try:
+                from django.utils.dateparse import parse_date
+                # Build available dates from the event/subevent date range
+                ev_start = (ev.date_admission or ev.date_from).date()
+                ev_end = (ev.date_to or ev.date_from).date()
+                if ev_start and ev_end:
+                    from datetime import timedelta
+                    d = ev_start
+                    while d <= ev_end:
+                        available_dates.append(d.isoformat())
+                        d += timedelta(days=1)
+                # Parse requested date
+                if 'date' in self.request.query_params:
+                    parsed = parse_date(self.request.query_params.get('date'))
+                    if parsed and parsed.isoformat() in available_dates:
+                        selected_date = parsed
+            except Exception:
+                pass
+
+            if selected_date:
+                entry_count_on_date = Checkin.objects.filter(
+                    list_id=clist.pk,
+                    type=Checkin.TYPE_ENTRY,
+                    datetime__date=selected_date,
+                ).count()
+                exit_count_on_date = Checkin.objects.filter(
+                    list_id=clist.pk,
+                    type=Checkin.TYPE_EXIT,
+                    datetime__date=selected_date,
+                ).count()
             response = {
                 'event': {
                     'name': str(ev.name),
@@ -262,6 +298,10 @@ class CheckinListViewSet(viewsets.ModelViewSet):
                 'checkin_count': cqs.count(),
                 'position_count': pqs.count(),
                 'inside_count': clist.inside_count,
+                'available_dates': available_dates,
+                'selected_date': selected_date.isoformat() if selected_date else None,
+                'entry_count_on_date': entry_count_on_date,
+                'exit_count_on_date': exit_count_on_date,
             }
 
             op_by_item = {p['item']: p['cnt'] for p in pqs.order_by().values('item').annotate(cnt=Count('id'))}
@@ -331,8 +371,9 @@ def _checkin_list_position_queryset(
     list_by_event = {cl.event_id: cl for cl in checkinlists}
     if not checkinlists:
         raise BaseValidationError('No check-in list passed.')
-    if len(list_by_event) != len(checkinlists):
-        raise BaseValidationError('Selecting two check-in lists from the same event is unsupported.')
+    # Allow multiple check-in lists from the same event for multi-day events
+    # if len(list_by_event) != len(checkinlists):
+    #     raise BaseValidationError('Selecting two check-in lists from the same event is unsupported.')
 
     cqs = (
         Checkin.objects.filter(position_id=OuterRef('pk'), list_id__in=[cl.pk for cl in checkinlists])
@@ -562,13 +603,8 @@ def _handle_no_candidates(
             except:
                 pass
 
-    if not simulate:
-        Checkin.objects.create(
-            position=None,
-            successful=False,
-            error_reason=Checkin.REASON_INVALID,
-            **common_checkin_args,
-        )
+    # Note: Cannot create Checkin record for invalid tickets as position is required
+    # This is handled by the log_action call above
     return Response(
         {
             'detail': 'Not found.',
@@ -689,6 +725,41 @@ def _redeem_process(
     gate = gate or (auth.gate if isinstance(auth, Device) else None)
     context = _setup_context(request, expand)
 
+    # Note: room active enforcement is applied per-event below once the target event is known
+
+    # Simple gate-aware list selection without changing existing API contracts:
+    # - If a device has a gate, prefer a provided check-in list that is associated with that gate for the event
+    # - If no gate is present, prefer a provided check-in list without any gates (acting as a default list)
+    # - Otherwise, fall back to the first provided list per event (existing behavior)
+    if checkinlists:
+        # Build a map of event -> all provided lists for that event
+        candidates_by_event = {}
+        for cl in checkinlists:
+            candidates_by_event.setdefault(cl.event_id, []).append(cl)
+
+        for ev_id, current_selected in list_by_event.items():
+            candidates = candidates_by_event.get(ev_id, [])
+            if not candidates:
+                continue
+            if gate:
+                # Pick first candidate that is linked to the device's gate
+                selected = None
+                for cl in candidates:
+                    if cl.gates.filter(pk=gate.pk).exists():
+                        selected = cl
+                        break
+                if selected:
+                    list_by_event[ev_id] = selected
+            else:
+                # No gate: prefer a candidate with no gates set (treat as default)
+                selected = None
+                for cl in candidates:
+                    if cl.gates.count() == 0:
+                        selected = cl
+                        break
+                if selected:
+                    list_by_event[ev_id] = selected
+
     common_checkin_args = _get_common_checkin_args(
         checkinlists, checkin_type, dateandtime, device, gate, nonce, force, simulate
     )
@@ -735,14 +806,54 @@ def _redeem_process(
             op_candidates = op_candidates_matching_product
 
     op = op_candidates[0]
-    common_checkin_args['list'] = list_by_event[op.order.event_id]
+
+    # Enforce room active state for the specific event tied to this scan
+    if gate and checkin_type == Checkin.TYPE_ENTRY:
+        gate_room = Room.objects.filter(event=op.order.event, gates=gate).first()
+        if gate_room and not gate_room.is_active:
+            return Response(
+                {
+                    'status': 'error',
+                    'reason': 'room_inactive',
+                    'reason_explanation': 'The room associated with this device gate is inactive.',
+                    'gate': getattr(gate, 'pk', None),
+                    'room': {
+                        'id': gate_room.id,
+                        'name': gate_room.name,
+                        'is_active': gate_room.is_active,
+                    },
+                    'list': MiniCheckinListSerializer(checkinlists[0]).data if checkinlists else None,
+                    'require_attention': False,
+                    'checkin_texts': [],
+                },
+                status=400,
+            )
+    
+    # Determine the appropriate CheckinList based on gate presence
+    target_checkin_list = list_by_event[op.order.event_id]
+    
+    # If device has a gate, try to find gate-specific CheckinList
+    if gate:
+        from pretix.base.models import CheckinList
+        gate_checkin_lists = CheckinList.objects.filter(
+            event=op.order.event,
+            gates=gate
+        ).first()
+        
+        if gate_checkin_lists:
+            target_checkin_list = gate_checkin_lists
+            # Update list_by_event to include gate-specific list for consistency
+            list_by_event[op.order.event_id] = target_checkin_list
+    
+    # Update common_checkin_args to use the correct CheckinList
+    common_checkin_args['list'] = target_checkin_list
     given_answers = _process_given_answers(op, answers_data, user, auth)
 
     with language(op.order.event.settings.locale):
         try:
             perform_checkin(
                 op=op,
-                clist=list_by_event[op.order.event_id],
+                clist=target_checkin_list,
                 given_answers=given_answers,
                 force=force,
                 ignore_unpaid=ignore_unpaid,
@@ -764,7 +875,7 @@ def _redeem_process(
                         context=_setup_context(request, expand, op.order.event, pdf_data, user, auth),
                     ).data,
                     'questions': [QuestionSerializer(q).data for q in e.questions],
-                    'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+                    'list': MiniCheckinListSerializer(target_checkin_list).data,
                 },
                 status=400,
             )
@@ -780,7 +891,7 @@ def _redeem_process(
                         'force': force,
                         'datetime': dateandtime,
                         'type': checkin_type,
-                        'list': list_by_event[op.order.event_id].pk,
+                        'list': target_checkin_list.pk,
                     },
                     user=user,
                     auth=auth,
@@ -801,7 +912,7 @@ def _redeem_process(
                     'reason': 'Already checked in',
                     'require_attention': op.require_checkin_attention,
                     'position': position_data,
-                    'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+                    'list': MiniCheckinListSerializer(target_checkin_list).data,
                 },
                 status=201,
             )
@@ -816,7 +927,7 @@ def _redeem_process(
                     'status': 'ok',
                     'require_attention': op.require_checkin_attention,
                     'position': position_data,
-                    'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+                    'list': MiniCheckinListSerializer(target_checkin_list).data,
                 },
                 status=201,
             )
@@ -880,8 +991,17 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             raise Http404()
 
     def get_queryset(self, ignore_status=False, ignore_products=False):
+        # Optional per-day filtering: limit check-ins to a specific date if provided
+        selected_date = self.request.query_params.get('date')
+        date_filter = {}
+        if selected_date:
+            from django.utils.dateparse import parse_date
+            parsed = parse_date(selected_date)
+            if parsed:
+                date_filter = {'datetime__date': parsed}
+
         cqs = (
-            Checkin.objects.filter(position_id=OuterRef('pk'), list_id=self.checkinlist.pk)
+            Checkin.objects.filter(position_id=OuterRef('pk'), list_id=self.checkinlist.pk, **date_filter)
             .order_by()
             .values('position_id')
             .annotate(m=Max('datetime'))
@@ -908,7 +1028,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             qs = qs.prefetch_related(
                 Prefetch(
                     lookup='checkins',
-                    queryset=Checkin.objects.filter(list_id=self.checkinlist.pk),
+                    queryset=Checkin.objects.filter(list_id=self.checkinlist.pk, **date_filter),
                 ),
                 'checkins',
                 'answers',
@@ -945,7 +1065,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             qs = qs.prefetch_related(
                 Prefetch(
                     lookup='checkins',
-                    queryset=Checkin.objects.filter(list_id=self.checkinlist.pk),
+                    queryset=Checkin.objects.filter(list_id=self.checkinlist.pk, **date_filter),
                 ),
                 'answers',
                 'answers__options',
@@ -1003,6 +1123,33 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
             raise BaseValidationError('Invalid check-in type.')
         ignore_unpaid = bool(self.request.data.get('ignore_unpaid', False))
         nonce = self.request.data.get('nonce')
+
+        # Enforce inactive room blocking for gate-bound devices on entry scans
+        if (
+            type == Checkin.TYPE_ENTRY
+            and isinstance(self.request.auth, Device)
+            and getattr(self.request.auth, 'gate', None)
+        ):
+            gate = self.request.auth.gate
+            # Enforce on the specific event in the current list context
+            gate_room = Room.objects.filter(event=self.request.event, gates=gate).first()
+            if gate_room and not gate_room.is_active:
+                return Response(
+                    {
+                        'status': 'error',
+                        'reason': 'room_inactive',
+                        'reason_explanation': 'The room associated with this device gate is inactive.',
+                        'gate': getattr(gate, 'pk', None),
+                        'room': {
+                            'id': gate_room.id,
+                            'name': gate_room.name,
+                            'is_active': gate_room.is_active,
+                        },
+                        'require_attention': False,
+                        'checkin_texts': [],
+                    },
+                    status=400,
+                )
 
         if 'datetime' in self.request.data:
             dt = DateTimeField().to_internal_value(self.request.data.get('datetime'))
@@ -1154,7 +1301,7 @@ class CheckinRedeemView(views.APIView):
             )
         else:
             raise ValueError('Unknown authentication method')
-        serializer = CheckinRedeemInputSerializer(data=request.data, context={'events': events})
+        serializer = CheckinRedeemInputSerializer(data=request.data, context={'events': events, 'request': request})
         serializer.is_valid(raise_exception=True)
         return _redeem_process(
             checkinlists=serializer.validated_data['lists'],

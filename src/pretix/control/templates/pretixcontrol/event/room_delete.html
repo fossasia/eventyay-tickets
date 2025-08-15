@@ -1,0 +1,115 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load eventurl %}
+
+{% block title %}
+    {% trans "Delete room" %}
+{% endblock %}
+
+{% block content %}
+<div class="navigation">
+    <div class="navigation-title">
+        <h1>{% trans "Delete room" %}: {{ room.name }}</h1>
+    </div>
+    <div class="navigation-button">
+        <a href="{% eventurl request.event "control:event.rooms" %}" class="btn btn-default">
+            <i class="fa fa-arrow-left"></i> {% trans "Back to rooms" %}
+        </a>
+    </div>
+</div>
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="fa fa-warning"></i> {% trans "Confirm Deletion" %}
+        </h3>
+    </div>
+    <div class="panel-body">
+        <p class="lead">
+            {% blocktrans with room_name=room.name %}
+                Are you sure you want to delete the room "{{ room_name }}"?
+            {% endblocktrans %}
+        </p>
+        
+        <div class="alert alert-warning">
+            <h4><i class="fa fa-exclamation-triangle"></i> {% trans "Warning" %}</h4>
+            <p>{% trans "This action cannot be undone. Deleting this room will:" %}</p>
+            <ul>
+                <li>{% trans "Remove all check-in records associated with this room" %}</li>
+                <li>{% trans "Remove all device permissions for this room" %}</li>
+                <li>{% trans "Make any historical data related to this room inaccessible" %}</li>
+            </ul>
+        </div>
+        
+        {% if room.current_occupancy > 0 %}
+        <div class="alert alert-danger">
+            <h4><i class="fa fa-users"></i> {% trans "Room Currently Occupied" %}</h4>
+            <p>
+                {% blocktrans count occupancy=room.current_occupancy %}
+                    This room currently has {{ occupancy }} person checked in.
+                {% plural %}
+                    This room currently has {{ occupancy }} people checked in.
+                {% endblocktrans %}
+            </p>
+            <p>{% trans "Please ensure all attendees are checked out before deleting this room." %}</p>
+        </div>
+        {% endif %}
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h5>{% trans "Room Details" %}</h5>
+                <dl class="dl-horizontal">
+                    <dt>{% trans "Name" %}</dt>
+                    <dd>{{ room.name }}</dd>
+                    
+                    <dt>{% trans "Identifier" %}</dt>
+                    <dd>{{ room.identifier }}</dd>
+                    
+                    <dt>{% trans "Capacity" %}</dt>
+                    <dd>{{ room.capacity|default:"-" }}</dd>
+                    
+                    <dt>{% trans "Location" %}</dt>
+                    <dd>{{ room.location|default:"-" }}</dd>
+                    
+                    <dt>{% trans "Session Start" %}</dt>
+                    <dd>{{ room.session_start|date:"SHORT_DATETIME_FORMAT"|default:"-" }}</dd>
+                    
+                    <dt>{% trans "Session End" %}</dt>
+                    <dd>{{ room.session_end|date:"SHORT_DATETIME_FORMAT"|default:"-" }}</dd>
+                    
+                    <dt>{% trans "Current Occupancy" %}</dt>
+                    <dd>{{ room.current_occupancy|default:0 }}</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <h5>{% trans "Statistics" %}</h5>
+                <dl class="dl-horizontal">
+                    <dt>{% trans "Total Check-ins" %}</dt>
+                    <dd>{{ total_checkins|default:0 }}</dd>
+                    
+                    <dt>{% trans "Active Permissions" %}</dt>
+                    <dd>{{ active_permissions|default:0 }}</dd>
+                    
+                    <dt>{% trans "Created" %}</dt>
+                    <dd>{{ room.created|date:"SHORT_DATETIME_FORMAT" }}</dd>
+                    
+                    <dt>{% trans "Last Modified" %}</dt>
+                    <dd>{{ room.modified|date:"SHORT_DATETIME_FORMAT" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <button type="submit" class="btn btn-danger">
+            <i class="fa fa-trash"></i> {% trans "Yes, delete this room" %}
+        </button>
+        <a href="{% eventurl request.event "control:event.rooms" %}" class="btn btn-default">
+            {% trans "Cancel" %}
+        </a>
+    </div>
+</form>
+{% endblock %}

@@ -17,6 +17,7 @@ from .views import (
     oauth,
     order,
     organizer,
+    room,
     upload,
     user,
     version,
@@ -132,6 +133,21 @@ urlpatterns = [
         r'^organizers/(?P<organizer>[^/]+)/checkin/redeem/$',
         checkin.CheckinRedeemView.as_view(),
         name='checkin.redeem',
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/rooms/(?P<room_id>[^/]+)/checkin/$',
+        room.RoomCheckinView.as_view(),
+        name='room.checkin',
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/rooms/(?P<room_id>[^/]+)/checkout/$',
+        room.RoomCheckoutView.as_view(),
+        name='room.checkout',
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/rooms/(?P<room_id>[^/]+)/status/$',
+        room.RoomStatusView.as_view(),
+        name='room.status',
     ),
     url(
         r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orders/(?P<order>[^/]+)/',

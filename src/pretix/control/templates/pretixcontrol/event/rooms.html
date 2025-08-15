@@ -1,0 +1,173 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load money %}
+{% load eventurl %}
+
+{% block title %}{% trans "Rooms" %}{% endblock %}
+
+{% block content %}
+<div class="navigation">
+    <div class="navigation-title">
+        <h1>{% trans "Rooms" %}</h1>
+    </div>
+    <div class="navigation-button">
+        <a href="{% eventurl request.event "control:event.rooms.add" %}" class="btn btn-success">
+            <i class="fa fa-plus"></i> {% trans "Add room" %}
+        </a>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{% trans "Room Management" %}</h3>
+    </div>
+    <div class="panel-body">
+        {% if rooms %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Identifier" %}</th>
+                            <th>{% trans "Capacity" %}</th>
+                            <th>{% trans "Location" %}</th>
+                            <th>{% trans "Session Time" %}</th>
+                            <th>{% trans "Current Occupancy" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for room in rooms %}
+                            <tr>
+                                <td>
+                                    <strong>{{ room.name }}</strong>
+                                    {% if room.description %}
+                                        <br><small class="text-muted">{{ room.description|truncatechars:50 }}</small>
+                                    {% endif %}
+                                </td>
+                                <td><code>{{ room.identifier }}</code></td>
+                                <td>
+                                    {% if room.capacity %}
+                                        {{ room.capacity }}
+                                    {% else %}
+                                        <span class="text-muted">{% trans "Unlimited" %}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ room.location|default:"-" }}</td>
+                                <td>
+                                    {% if room.session_start or room.session_end %}
+                                        {% if room.session_start %}
+                                            <small class="text-muted">{% trans "Start:" %}</small> {{ room.session_start|date:"SHORT_DATETIME_FORMAT" }}<br>
+                                        {% endif %}
+                                        {% if room.session_end %}
+                                            <small class="text-muted">{% trans "End:" %}</small> {{ room.session_end|date:"SHORT_DATETIME_FORMAT" }}
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge {% if room.current_occupancy > 0 %}badge-info{% else %}badge-default{% endif %}">
+                                        {{ room.current_occupancy }}
+                                        {% if room.capacity %}
+                                            / {{ room.capacity }}
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if room.is_active %}
+                                        <span class="label label-success">{% trans "Active" %}</span>
+                                    {% else %}
+                                        <span class="label label-default">{% trans "Inactive" %}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-xs">
+                                        <a href="{% eventurl request.event "control:event.room" room=room.pk %}" 
+                                           class="btn btn-default" title="{% trans 'Edit' %}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a href="{% eventurl request.event "control:event.room.checkins" room=room.pk %}" 
+                                           class="btn btn-info" title="{% trans 'View check-ins' %}">
+                                            <i class="fa fa-list"></i>
+                                        </a>
+                                        <a href="{% eventurl request.event "control:event.room.delete" room=room.pk %}" 
+                                           class="btn btn-danger" title="{% trans 'Delete' %}">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if is_paginated %}
+                <div class="text-center">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="active"><span>{{ num }}</span></li>
+                            {% else %}
+                                <li><a href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="empty-collection">
+                <p>{% trans "You haven't created any rooms yet." %}</p>
+                <a href="{% eventurl request.event "control:event.rooms.add" %}" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> {% trans "Create your first room" %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{% trans "Room Statistics" %}</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h4>{{ total_rooms }}</h4>
+                    <p>{% trans "Total Rooms" %}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h4>{{ active_rooms }}</h4>
+                    <p>{% trans "Active Rooms" %}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h4>{{ total_occupancy }}</h4>
+                    <p>{% trans "Current Occupancy" %}</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h4>{{ total_capacity }}</h4>
+                    <p>{% trans "Total Capacity" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

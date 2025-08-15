@@ -27,6 +27,7 @@ from pretix.control.views import (
     vouchers,
     waitinglist,
 )
+from pretix.control.views.event_views import room_view
 from pretix.control.views.auth import CustomAuthorizationView
 
 oauth2_patterns = (
@@ -588,6 +589,13 @@ urlpatterns = [
                     checkin.CheckinListDelete.as_view(),
                     name='event.orders.checkinlists.delete',
                 ),
+                # Room management URLs
+                url(r'^rooms/$', room_view.RoomListView.as_view(), name='event.rooms'),
+                url(r'^rooms/add$', room_view.RoomCreateView.as_view(), name='event.rooms.add'),
+                url(r'^rooms/(?P<room>\d+)/$', room_view.RoomUpdateView.as_view(), name='event.room'),
+                url(r'^rooms/(?P<room>\d+)/delete$', room_view.RoomDeleteView.as_view(), name='event.room.delete'),
+                url(r'^rooms/(?P<room>\d+)/checkins$', room_view.RoomCheckinsView.as_view(), name='event.room.checkins'),
+
             ]
         ),
     ),

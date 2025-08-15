@@ -1177,6 +1177,11 @@ class CheckInFilterForm(FilterForm):
         required=False,
         empty_label=_('All products'),
     )
+    date = forms.ChoiceField(
+        label=_('Date'),
+        choices=(),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
@@ -1186,6 +1191,22 @@ class CheckInFilterForm(FilterForm):
             self.fields['item'].queryset = self.event.items.all()
         else:
             self.fields['item'].queryset = self.list.limit_products.all()
+
+        # Build clickable date choices only within the event/subevent date range
+        try:
+            ev = self.list.subevent or self.event
+            ev_start = (getattr(ev, 'date_admission', None) or ev.date_from).date()
+            ev_end = (ev.date_to or ev.date_from).date()
+            from datetime import timedelta
+            dates = []
+            d = ev_start
+            while d <= ev_end:
+                dates.append((d.isoformat(), date_format(d, 'SHORT_DATE_FORMAT')))
+                d += timedelta(days=1)
+            self.fields['date'].choices = [('', _('All dates'))] + dates
+        except Exception:
+            # Fallback: no date filter if event dates are not available
+            self.fields['date'].choices = [('', _('All dates'))]
 
     def filter_qs(self, qs):
         fdata = self.cleaned_data
@@ -1232,6 +1253,17 @@ class CheckInFilterForm(FilterForm):
 
         if fdata.get('item'):
             qs = qs.filter(item=fdata.get('item'))
+
+        # Per-day filter: only positions with entry check-ins on the selected date
+        if fdata.get('date'):
+            from django.utils.dateparse import parse_date
+            selected = parse_date(fdata.get('date'))
+            if selected:
+                qs = qs.filter(
+                    checkins__list=self.list,
+                    checkins__type=Checkin.TYPE_ENTRY,
+                    checkins__datetime__date=selected,
+                )
 
         return qs
 
