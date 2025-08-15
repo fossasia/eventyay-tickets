@@ -120,8 +120,8 @@ class LayoutUpdate(BadgePluginEnabledMixin, EventPermissionRequiredMixin, Update
     def get_object(self, queryset=None) -> BadgeLayout:
         try:
             return self.request.event.badge_layouts.get(id=self.kwargs['layout'])
-        except BadgeLayout.DoesNotExist:
-            raise Http404(_('The requested badge layout does not exist.'))
+        except BadgeLayout.DoesNotExist as e:
+            raise Http404(_('The requested badge layout does not exist.')) from e
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
