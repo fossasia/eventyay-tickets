@@ -175,10 +175,17 @@ def render_pdf(event, positions, opt):
 
     Renderer._register_fonts()
 
+    # Build renderer map for specific item assignments
     renderermap = {
         bi.item_id: _renderer(event, bi.layout)
         for bi in BadgeItem.objects.select_related('layout').filter(item__event=event)
     }
+    
+    # Build category-based renderer map
+    category_renderermap = {}
+    for layout in event.badge_layouts.filter(category__isnull=False).select_related('category'):
+        category_renderermap[layout.category_id] = _renderer(event, layout)
+    
     try:
         default_renderer = _renderer(event, event.badge_layouts.get(default=True))
     except BadgeLayout.DoesNotExist:
@@ -220,7 +227,12 @@ def render_pdf(event, positions, opt):
     pagebuffer = []
     outbuffer = BytesIO()
     for op in positions:
-        r = renderermap.get(op.item_id, default_renderer)
+        # Priority order: specific item assignment > category assignment > default
+        r = renderermap.get(op.item_id)
+        if not r and hasattr(op.item, 'category_id') and op.item.category_id:
+            r = category_renderermap.get(op.item.category_id)
+        if not r:
+            r = default_renderer
         if not r:
             continue
         any = True

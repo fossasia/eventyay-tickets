@@ -14,6 +14,7 @@ from .views import (
     LayoutEditorView,
     LayoutListView,
     LayoutSetDefault,
+    LayoutUpdate,
     OrderPrintDo,
 )
 
@@ -42,6 +43,11 @@ urlpatterns = [
         r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/delete$',
         LayoutDelete.as_view(),
         name='delete',
+    ),
+    url(
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/edit$',
+        LayoutUpdate.as_view(),
+        name='update',
     ),
     url(
         r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/editor',

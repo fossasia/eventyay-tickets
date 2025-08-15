@@ -25,6 +25,7 @@
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% bootstrap_field form.name layout="control" %}
+        {% bootstrap_field form.category layout="control" %}
         <div class="form-group">
             <label class="col-md-3 control-label">
                 {% trans "Badge design" %}

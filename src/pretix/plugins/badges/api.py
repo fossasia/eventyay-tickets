@@ -36,6 +36,7 @@ class BadgeLayoutSerializer(I18nAwareModelSerializer):
         fields = (
             'id',
             'name',
+            'category',
             'default',
             'layout',
             'size',
