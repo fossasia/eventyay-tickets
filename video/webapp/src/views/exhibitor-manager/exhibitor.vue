@@ -130,9 +130,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers } from '@vuelidate/validators'
+import { helpers, required as vRequired, maxLength as vMaxLength } from '@vuelidate/validators'
 import api from 'lib/api'
 import router from 'router'
 import Avatar from 'components/Avatar'
@@ -142,6 +141,9 @@ import UploadUrlInput from 'components/UploadUrlInput'
 import RichTextEditor from 'components/RichTextEditor'
 import ExhibitorPreview from 'views/exhibitors/item'
 
+// Wrap Vuelidate validators to support custom i18n messages like the previous buntpapier helpers
+const required = (message) => helpers.withMessage(message, vRequired)
+const maxLength = (len, message) => helpers.withMessage(message, vMaxLength(len))
 const absrelurl = (message) => helpers.withMessage(message, helpers.regex(/^(https?:\/\/|mailto:|\/)[^ ]+$/))
 
 export default {

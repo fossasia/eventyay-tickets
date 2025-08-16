@@ -43,8 +43,10 @@ const generateHTML = function(input) {
 }
 
 export default {
+	emits: ['close'],
 	components: {
 		'user-modal': {
+			emits: ['close'],
 			props: ['selectedUser'],
 			template: `
         <modal name="user-modal" height="auto" @before-close="closeUserModal">

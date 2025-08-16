@@ -22,19 +22,27 @@ export default {
 		traitGrants: Object,
 		config: Object
 	},
-	emits: ['changed'],
+	emits: ['changed', 'update:traitGrants'],
 	data() {
 		return {
-			newRole: null
+			newRole: null,
+			localTraitGrants: {}
 		}
 	},
 	computed: {
 		remainingRoles() {
-			const existingRoles = Object.keys(this.traitGrants)
+			const existingRoles = Object.keys(this.localTraitGrants)
 			return Object.keys(this.config.roles).filter(role => !existingRoles.includes(role))
 		}
 	},
-	created() {},
+	watch: {
+		traitGrants: {
+			immediate: true,
+			handler(val) {
+				this.localTraitGrants = JSON.parse(JSON.stringify(val || {}))
+			}
+		}
+	},
 	mounted() {
 		this.$nextTick(() => {
 		})
@@ -44,18 +52,24 @@ export default {
 			return stringifyTraitGrants(traits)
 		},
 		setTraitGrants(role, traits) {
-			if (typeof this.traitGrants[role] !== 'undefined') {
-				this.traitGrants[role] = parseTraitGrants(traits)
+			if (typeof this.localTraitGrants[role] !== 'undefined') {
+				this.localTraitGrants[role] = parseTraitGrants(traits)
 			}
+			this.$emit('update:traitGrants', JSON.parse(JSON.stringify(this.localTraitGrants)))
 			this.$emit('changed')
 		},
 		removeTraitGrant(role) {
-			delete this.traitGrants[role]
+			const copy = {...this.localTraitGrants}
+			delete copy[role]
+			this.localTraitGrants = copy
+			this.$emit('update:traitGrants', JSON.parse(JSON.stringify(this.localTraitGrants)))
 			this.$emit('changed')
 		},
 		addTraitGrant() {
-			this.traitGrants[this.newRole] = []
+			if (!this.newRole) return
+			this.localTraitGrants = { ...this.localTraitGrants, [this.newRole]: [] }
 			this.newRole = null
+			this.$emit('update:traitGrants', JSON.parse(JSON.stringify(this.localTraitGrants)))
 			this.$emit('changed')
 		}
 	}

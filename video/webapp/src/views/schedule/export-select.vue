@@ -54,6 +54,7 @@ export default {
 			required: true
 		}
 	},
+  emits: ['input', 'update:modelValue'],
 	data() {
 		return {
 			isOpen: false,
@@ -65,7 +66,7 @@ export default {
 	mounted() {
 		document.addEventListener('click', this.outsideClick)
 	},
-	beforeDestroy() {
+  beforeUnmount() {
 		document.removeEventListener('click', this.outsideClick)
 	},
 	created() {

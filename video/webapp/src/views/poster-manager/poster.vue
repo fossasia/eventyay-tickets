@@ -86,7 +86,7 @@
 // TODO
 // - better tag input
 
-import * as pdfjs from 'pdfjs-dist/webpack.mjs'
+import * as pdfjs from 'pdfjs-dist'
 import Quill from 'quill'
 import { mapGetters } from 'vuex'
 import { useVuelidate } from '@vuelidate/core'
@@ -233,6 +233,9 @@ export default {
 			this.deleting = true
 			this.deleteError = null
 			try {
+				if (!pdfjs.GlobalWorkerOptions.workerSrc) {
+					pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
+				}
 				await api.call('poster.delete', {poster: this.poster.id})
 				this.$router.replace({name: 'posters'})
 			} catch (error) {

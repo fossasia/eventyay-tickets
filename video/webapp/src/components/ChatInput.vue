@@ -47,6 +47,7 @@ const Delta = Quill.import('delta')
 
 export default {
 	components: { Avatar, EmojiPickerButton, UploadButton },
+	emits: ['send'],
 	props: {
 		message: Object // initialize with existing message to edit
 	},

@@ -2,8 +2,8 @@
 .c-scrollbars
 	.scroll-content(ref="content", @scroll="onScroll")
 		slot
-	template(v-for="dim of Object.keys(dimensions)")
-		div(:key="dim", :class="[`scrollbar-rail-${dim}`, {active: draggingDimension === dim}]", @pointerdown="onPointerdown(dim, $event)")
+	template(v-for="dim of Object.keys(dimensions)", :key="dim")
+		div(:class="[`scrollbar-rail-${dim}`, {active: draggingDimension === dim}]", @pointerdown="onPointerdown(dim, $event)")
 			.scrollbar-thumb(:ref="`thumb-${dim}`", :style="thumbStyles[dim]")
 </template>
 <script>

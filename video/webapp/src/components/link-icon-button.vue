@@ -1,7 +1,8 @@
 <template lang="pug">
 router-link.bunt-icon-button(:to="to", :class="{disabled}", v-tooltip="tooltipOptions || {text: tooltip, placement: tooltipPlacement, fixed: tooltipFixed}", :aria-disabled="disabled", :aria-label="tooltip || iconClass()")
 	i.bunt-icon.mdi(v-if="iconClass()", :class="[iconClass()]", aria-hidden="true")
-	slot(v-else)
+	template(v-else)
+		slot
 	ripple-ink(v-if!="!noInk && !disabled")
 </template>
 <script>
@@ -16,6 +17,10 @@ export default {
 	props: {
 		to: Object,
 		disabled: {
+			type: Boolean,
+			default: false
+		},
+		noInk: {
 			type: Boolean,
 			default: false
 		},
@@ -37,8 +42,9 @@ export default {
 	},
 	methods: {
 		iconClass() {
-			if (this.$slots.default[0].tag) return
-			return iconHelper.getClass(this.$slots.default[0].text)
+			const slot = this.$slots.default ? this.$slots.default() : []
+			if (slot.length && slot[0].type) return
+			return slot.length ? iconHelper.getClass(slot[0].children) : null
 		}
 	}
 }

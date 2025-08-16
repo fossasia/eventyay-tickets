@@ -73,7 +73,7 @@
 					bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
 </template>
 <script>
-import Janus from 'lib/janus'
+import Janus from 'lib/janus.js'
 import {mapState} from 'vuex'
 import api from 'lib/api'
 import ChatUserCard from 'components/ChatUserCard'
@@ -485,8 +485,9 @@ export default {
 			localStorage.videoOutput = false
 
 			for (const h of this.feeds) {
-				if (!h.rfid.includes('_screenshare_'))
+				if (!h.rfid.includes('_screenshare_')) {
 					h.hangup()
+				}
 			}
 
 			this.videoOutput = (localStorage.videoOutput !== 'false')
@@ -627,8 +628,9 @@ export default {
 					// For example, if the publisher is VP8 and this is Safari, let's avoid video
 					if (Janus.webRTCAdapter.browserDetails.browser === 'safari' &&
 						(video === 'vp9' || (video === 'vp8' && !Janus.safariVp8))) {
-						if (video)
+						if (video) {
 							video = video.toUpperCase()
+						}
 						log('venueless', 'info', 'Publisher is using ' + video + ', but Safari doesn\'t support it: disabling video')
 						subscribe.offer_video = false
 					}

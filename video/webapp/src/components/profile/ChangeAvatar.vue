@@ -8,12 +8,13 @@
 		.file-error(v-if="fileError")
 			.mdi.mdi-alert-octagon
 			.message {{ fileError }}
-		cropper(v-else-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
+		cropper.cropper(v-else-if="avatarImage", ref="cropper", :stencil-component="CircleStencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
 		identicon(v-else, :user="identiconUser", @click="changeIdenticon")
 </template>
 <script>
 import { v4 as uuid } from 'uuid'
 import { Cropper, CircleStencil } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css'
 import api from 'lib/api'
 import Identicon from 'components/Identicon'
 import UploadButton from 'components/UploadButton'

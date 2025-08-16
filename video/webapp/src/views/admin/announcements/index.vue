@@ -15,7 +15,7 @@
 					.state(:class="[announcement.state, {expired: announcement.expired}]")
 					.text {{ announcement.text }}
 					.show-until {{ announcement.show_until ? announcement.show_until.format('LLL') : '' }}
-		router-view(:announcements="rawAnnouncements")
+		router-view(:announcements="rawAnnouncements" @update:announcements="rawAnnouncements = $event")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>

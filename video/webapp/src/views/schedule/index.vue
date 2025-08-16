@@ -60,7 +60,6 @@
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
-import _ from 'lodash'
 import { mapState, mapGetters } from 'vuex'
 import LinearSchedule from 'views/schedule/schedule-components/LinearSchedule'
 import GridSchedule from 'views/schedule/schedule-components/GridSchedule'

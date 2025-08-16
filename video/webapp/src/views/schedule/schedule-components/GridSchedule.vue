@@ -48,6 +48,7 @@ const getSliceName = function(date) {
 
 export default {
 	components: { Session },
+	emits: ['fav', 'unfav', 'changeDay'],
 	props: {
 		sessions: Array,
 		rooms: Array,
@@ -218,17 +219,23 @@ export default {
 		nowSlice() {
 			let slice
 			for (const s of this.timeslices) {
-				if (this.now.isBefore(s.date)) break
+				if (this.now.isBefore(s.date)) {
+					break
+				}
 				slice = s
 			}
 			if (slice) {
 				const nextSlice = this.timeslices[this.timeslices.indexOf(slice) + 1]
-				if (!nextSlice) return null
+				if (!nextSlice) {
+					return null
+				}
 				// is on daybreak
-				if (nextSlice.date.diff(slice.date, 'minutes') > 30) return {
-					slice: nextSlice,
-					offset: 0,
-					onDaybreak: true
+				if (nextSlice.date.diff(slice.date, 'minutes') > 30) {
+					return {
+						slice: nextSlice,
+						offset: 0,
+						onDaybreak: true
+					}
 				}
 				return {
 					slice,
@@ -262,8 +269,8 @@ export default {
 		}
 		if (fragmentIsDate || !this.$refs.now) return
 		const scrollTop = this.$refs.now.offsetTop + this.getOffsetTop() - 90
-		if (this.scrollParent) {
-			this.scrollParent.scrollTop = scrollTop
+		if (this.scrollParent && typeof this.scrollParent.scrollTo === 'function') {
+			this.scrollParent.scrollTo({ top: scrollTop })
 		} else {
 			window.scroll({top: scrollTop})
 		}
@@ -309,8 +316,8 @@ export default {
 			const el = this.$refs[getSliceName(day)]?.[0]
 			if (!el) return
 			const offset = el.offsetTop + this.getOffsetTop()
-			if (this.scrollParent) {
-				this.scrollParent.scrollTop = offset
+			if (this.scrollParent && typeof this.scrollParent.scrollTo === 'function') {
+				this.scrollParent.scrollTo({ top: offset })
 			} else {
 				window.scroll({top: offset})
 			}
