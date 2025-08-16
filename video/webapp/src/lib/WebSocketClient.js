@@ -125,9 +125,11 @@ class WebSocketClient extends EventEmitter {
 		this.emit('ping')
 		setTimeout(() => {
 			if (this._socket.readyState !== 1 || this._socket !== starterSocket) return // looping on old socket, abort
-			if (timestamp > this._pingState.latestPong) // we received no pong after the last ping
+			if (timestamp > this._pingState.latestPong) { // we received no pong after the last ping
 				this._handlePingTimeout()
-			else this._ping(starterSocket)
+			} else {
+				this._ping(starterSocket)
+			}
 		}, this._config.pingInterval)
 	}
 

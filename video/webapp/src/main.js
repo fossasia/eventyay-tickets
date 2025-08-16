@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import { RouterView } from 'vue-router'
 import jwtDecode from 'jwt-decode'
 import Buntpapier from 'buntpapier'
-import VueVirtualScroller from 'vue-virtual-scroller'
+import { RecycleScroller } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { v4 as uuid } from 'uuid'
 import moment from 'lib/timetravelMoment'
@@ -18,7 +18,7 @@ import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'quill/dist/quill.core.css'
-import '@pretalx/schedule/dist/schedule.css'
+import '@pretalx/schedule/style'
 import 'styles/quill.styl'
 import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
@@ -33,7 +33,7 @@ async function init({ token, inviteToken }) {
   app.use(store)
   app.use(router)
   app.use(Buntpapier)
-  app.use(VueVirtualScroller)
+  app.component('RecycleScroller', RecycleScroller)
   app.component('scrollbars', Scrollbars)
   app.component('link-icon-button', LinkIconButton)
   app.use(MediaQueries)

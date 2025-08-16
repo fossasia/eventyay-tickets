@@ -40,8 +40,11 @@ export async function init(app) {
 			init(services, backendOptions, i18nextOptions) {},
 			async read(language, namespace, callback) {
 				try {
-					const locale = await import(/* webpackChunkName: "locale-[request]" */ `./locales/${language}.json`)
-					callback(null, locale.default)
+					const modules = import.meta.glob('./locales/*.json', { eager: false })
+					const key = `./locales/${language}.json`
+					if (!modules[key]) throw new Error(`Missing locale: ${language}`)
+					const locale = await modules[key]()
+					callback(null, locale.default || locale)
 				} catch (error) {
 					callback(error)
 				}

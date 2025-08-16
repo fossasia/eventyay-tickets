@@ -113,13 +113,17 @@ export default {
 			state.joinedChannels.push({id: channel || state.channel, unread_pointer: response.unread_pointer})
 		},
 		async fetchMessages({state, dispatch}) {
-			if (!state.beforeCursor || state.fetchingMessages) return
+			if (!state.beforeCursor || state.fetchingMessages) {
+				return
+			}
 			state.fetchingMessages = true
 			try {
 				const channel = state.channel
 				const {results, users} = await api.call('chat.fetch', {channel, count: 25, before_id: state.beforeCursor})
 				// have we left the channel already?
-				if (channel !== state.channel) return
+				if (channel !== state.channel) {
+					return
+				}
 				// rely on the backend to have resolved all edits and deletes, filter deleted messages in view
 				state.timeline.unshift(...results)
 				// cache profiles the server sent us
@@ -369,10 +373,11 @@ export default {
 				user: data.sender,
 				// TODO onClose?
 				onClick: () => {
-					if (getters.isDirectMessageChannel(channel))
+					if (getters.isDirectMessageChannel(channel)) {
 						router.push({name: 'channel', params: {channelId: channel.id}})
-					else
+					} else {
 						router.push({name: 'room', params: {roomId: rootState.rooms.find(room => room.modules.some(m => m.channel_id === channel.id)).id}})
+					}
 				}
 			}, {root: true})
 		},
