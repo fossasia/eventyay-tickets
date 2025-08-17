@@ -1,6 +1,5 @@
 /* global RELEASE */
 import { createApp } from 'vue'
-import { RouterView } from 'vue-router'
 import jwtDecode from 'jwt-decode'
 import Buntpapier from 'buntpapier'
 import { RecycleScroller } from 'vue-virtual-scroller'
@@ -9,6 +8,7 @@ import { v4 as uuid } from 'uuid'
 import moment from 'lib/timetravelMoment'
 import router from 'router'
 import store from 'store'
+import App from 'App'
 import Scrollbars from 'components/Scrollbars'
 import LinkIconButton from 'components/link-icon-button'
 import MediaQueries from 'components/mixins/media-queries'
@@ -27,7 +27,7 @@ import config from 'config'
 import theme, { computeForegroundSidebarColor, getThemeConfig } from 'theme'
 
 async function init({ token, inviteToken }) {
-  const app = createApp(RouterView)
+  const app = createApp(App)
   
   // Register plugins and components
   app.use(store)
@@ -54,6 +54,9 @@ async function init({ token, inviteToken }) {
   app.config.errorHandler = (error, vm, info) => {
     console.error('[VUE] ', info, vm, error)
   }
+  
+  const appElement = document.getElementById('app')
+  
   // Mount app
   window.vapp = app.mount('#app')
 
@@ -143,7 +146,6 @@ if (config.externalAuthUrl && !token) {
 // Clean up old service workers
 navigator.serviceWorker?.getRegistrations().then((registrations) => {
   for (const registration of registrations) {
-    console.warn('Removed old service worker')
     registration.unregister()
   }
 })

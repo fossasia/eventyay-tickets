@@ -5,40 +5,38 @@ const showBrowserBlock = function() {
 	document.body.removeChild(document.getElementById('app'))
 }
 
-// test API features without Modernizr (keeps bundlers happy)
+// Wait for DOM and load main app
+function waitForAppDiv() {
+	const appDiv = document.getElementById('app')
+	if (appDiv) {
+		import('./main').catch(e => {
+			console.error('Error loading app:', e)
+			appDiv.innerHTML = '<h1>Error loading app: ' + e.message + '</h1>'
+		})
+	} else {
+		setTimeout(waitForAppDiv, 100)
+	}
+}
+
+// Start when DOM is ready
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', waitForAppDiv)
+} else {
+	waitForAppDiv()
+}
+
+// Original compatibility checks (simplified)
 ;(function() {
 	try {
-		// Critical ES features
-		if (typeof Object.values !== 'function') throw new Error('Object.values missing')
-		if (typeof Array.prototype.at !== 'function') throw new Error('Array.prototype.at missing')
+		console.log('[PRELOADER] Starting browser compatibility checks')
+		
+		// Only check the most basic features
 		if (typeof Promise === 'undefined') throw new Error('Promise missing')
-
-		// Feature checks we previously had via Modernizr
-		const missing = []
-		// flexbox
-		if (!(window.CSS && CSS.supports && CSS.supports('display', 'flex'))) missing.push('flexbox')
-		// fetch
-		if (!('fetch' in window)) missing.push('fetch')
-		// websockets
-		if (!('WebSocket' in window)) missing.push('websockets')
-		// webanimations (polyfillable)
-		const needsWA = !('animate' in Element.prototype)
-		if (needsWA) {
-			// load web animations polyfill on demand
-			import('web-animations-js')
-		}
-		// ES6 object/collections
-		if (!('Map' in window) || !('Set' in window)) missing.push('es6')
-
-		// If any non-polyfilled critical features are missing, block
-		if (missing.some(f => f !== 'webanimations')) {
-			throw new Error(`Missing features: ${missing.join(', ')}`)
-		}
-
-	// load app
-		import('./main')
+		if (!('fetch' in window)) throw new Error('fetch missing')
+		
+		console.log('[PRELOADER] Basic compatibility checks passed')
 	} catch (e) {
-		// swallow error and show browser block
+		console.error('[PRELOADER] Compatibility check failed:', e)
 		showBrowserBlock()
 	}
 })()

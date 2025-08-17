@@ -2,7 +2,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import config from 'config'
 // Route-level code-splitting via dynamic imports
-const App = () => import('App')
 const RoomHeader = () => import('views/rooms/RoomHeader')
 const Room = () => import('views/rooms/item')
 const RoomManager = () => import('views/rooms/manage')
@@ -53,7 +52,7 @@ const routes = [
 	},
 	{
 		path: '/:worldName',
-		component: App,
+		component: { template: '<router-view />' },
 		props: true,
 		children: [
 			{
@@ -278,6 +277,10 @@ const routes = [
 				]
 			}
 		]
+	},
+	{
+		path: '/',
+		redirect: '/control'
 	}
 ]
 

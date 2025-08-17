@@ -128,9 +128,11 @@ export default defineConfig(({ mode }) => {
       }
     },
     optimizeDeps: {
+      include: [
+        'color',
+        'buntpapier'
+      ],
       exclude: [
-        'buntpapier', 
-        'color', 
         'pdfjs-dist',
         '@pretalx/schedule'
       ],

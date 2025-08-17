@@ -64,13 +64,14 @@
 
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :user="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
-		a-v-device-prompt(v-if="showDevicePrompt", @close="closeDevicePrompt")
-		feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
-		prompt.screenshare-prompt(v-if="showScreensharePrompt", @close="showScreensharePrompt=false")
-			.content
-				h1 {{ $t('JanusVideoroom:tool-screenshare:on') }}
-				form(@submit.prevent="publishOwnScreenshareFeed")
-					bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
+		template
+			a-v-device-prompt(v-if="showDevicePrompt", @close="closeDevicePrompt")
+			feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
+			prompt.screenshare-prompt(v-if="showScreensharePrompt", @close="showScreensharePrompt=false")
+				.content
+					h1 {{ $t('JanusVideoroom:tool-screenshare:on') }}
+					form(@submit.prevent="publishOwnScreenshareFeed")
+						bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
 </template>
 <script>
 import Janus from 'lib/janus.js'
