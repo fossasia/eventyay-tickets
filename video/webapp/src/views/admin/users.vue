@@ -25,24 +25,27 @@
 					bunt-button.btn-open-dm(@click="$store.dispatch('chat/openDirectMessage', {users: [user]})") message
 					bunt-button.btn-reactivate(
 						v-if="user.moderation_state",
+						:key="`${user.id}-reactivate`",
 						:loading="user.updating === 'reactivate'",
 						:error-message="(user.error && user.error.action === 'reactivate') ? user.error.message : null",
 						tooltipPlacement="left", 
-						@click="doAction(user, 'reactivate', null)", :key="`${user.id}-reactivate`")
+						@click="doAction(user, 'reactivate', null)")
 						| {{ user.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
 					bunt-button.btn-ban(
 						v-if="user.moderation_state !== 'banned'",
+						:key="`${user.id}-ban`",
 						:loading="user.updating === 'ban'",
 						:error-message="(user.error && user.error.action === 'ban') ? user.error.message : null",
 						tooltipPlacement="left",
-						@click="doAction(user, 'ban', 'banned')", :key="`${user.id}-ban`")
+						@click="doAction(user, 'ban', 'banned')")
 						| ban
 					bunt-button.btn-silence(
 						v-if="!user.moderation_state",
+						:key="`${user.id}-silence`",
 						:loading="user.updating === 'silence'",
 						:error-message="(user.error && user.error.action === 'silence') ? user.error.message : null",
 						tooltipPlacement="left",
-						@click="doAction(user, 'silence', 'silenced')", :key="`${user.id}-silence`")
+						@click="doAction(user, 'silence', 'silenced')")
 						| silence
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>

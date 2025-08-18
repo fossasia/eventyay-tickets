@@ -39,7 +39,7 @@
 					bunt-button(@click="poster.authors.organizations.push('')") {{ $t('poster-manager/poster:btn-add-organization') }}
 					h2 {{ $t('poster-manager/poster:presenters:headline') }}
 					.presenters
-						.presenter(v-for="(presenter, index) in poster.presenters")
+						.presenter(v-for="presenter in poster.presenters")
 							.user
 								avatar(:user="presenter", :size="36")
 								span.display-name {{ presenter.profile.display_name }}
@@ -86,7 +86,7 @@
 // TODO
 // - better tag input
 
-import * as pdfjs from 'pdfjs-dist'
+import * as pdfjs from 'pdfjs-dist/webpack.mjs'
 import Quill from 'quill'
 import { mapGetters } from 'vuex'
 import { useVuelidate } from '@vuelidate/core'
@@ -233,9 +233,6 @@ export default {
 			this.deleting = true
 			this.deleteError = null
 			try {
-				if (!pdfjs.GlobalWorkerOptions.workerSrc) {
-					pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
-				}
 				await api.call('poster.delete', {poster: this.poster.id})
 				this.$router.replace({name: 'posters'})
 			} catch (error) {

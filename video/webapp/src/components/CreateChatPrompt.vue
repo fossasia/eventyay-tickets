@@ -10,7 +10,7 @@ prompt.c-create-chat-prompt(@close="$emit('close')")
 					.label {{ option.label }}
 			bunt-input(name="name", :label="$t('CreateChatPrompt:name:label')", :icon="selectedType.icon", :placeholder="$t('CreateChatPrompt:name:placeholder')", v-model="name")
 			bunt-input-outline-container(:label="$t('CreateChatPrompt:description:label')")
-				template(v-slot="{ focus, blur }")
+				template(#default= "{focus, blur}")
 					textarea(v-model="description", @focus="focus", @blur="blur")
 			bunt-button(type="submit", :loading="loading") {{ $t('CreateChatPrompt:submit:label') }}
 </template>

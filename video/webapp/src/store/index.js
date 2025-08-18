@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import Vuex from 'vuex'
 import i18n from 'i18n'
 import jwtDecode from 'jwt-decode'
 import api, { initApi } from 'lib/api'
@@ -13,7 +13,7 @@ import schedule from './schedule'
 import notifications from './notifications'
 import moment from 'lib/timetravelMoment'
 
-const store = createStore({
+export default new Vuex.Store({
 	state: {
 		token: null,
 		clientId: null,
@@ -94,7 +94,7 @@ const store = createStore({
 		},
 		connect({state, dispatch, commit}) {
 			initApi({token: state.token, clientId: state.clientId, inviteToken: state.inviteToken, store: this})
-			api.on('joined', (serverState) => {
+			api.on('joined', async(serverState) => {
 				state.connected = true
 				state.socketCloseCode = null
 				state.user = serverState['user.config']
@@ -212,7 +212,7 @@ const store = createStore({
 		},
 		'api::world.updated'({state, commit, dispatch}, {world, rooms, permissions}) {
 			state.world = world
-			state.permissions = permissions
+			state.permission = permissions
 			commit('updateRooms', rooms)
 		},
 		'api::world.schedule.updated'({state, commit, dispatch}, pretalx) {
@@ -264,5 +264,3 @@ const store = createStore({
 		notifications
 	}
 })
-
-export default store

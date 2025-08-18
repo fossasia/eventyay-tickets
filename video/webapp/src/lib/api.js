@@ -1,17 +1,14 @@
 /* global ENV_DEVELOPMENT */
 import config from 'config'
 import WebSocketClient from './WebSocketClient'
-// Defer store injection to avoid circular import with Vuex store
-let storeRef = null
 
-const api = Object.create(WebSocketClient.prototype)
-api.connect = function({token, clientId, inviteToken}) {
-	if (api._socket) {
-		api.close()
-	}
-	const wsClient = new WebSocketClient(`${config.api.socket}`, {token, clientId, inviteToken})
-	Object.assign(api, wsClient)
-	WebSocketClient.prototype.connect.call(api)
+let api = null
+export { api as default }
+
+export function initApi({ store, token, clientId, inviteToken }) {
+	api = new WebSocketClient(`${config.api.socket}`, { token, clientId, inviteToken })
+	api.connect()
+
 	api.on('closed', () => {
 		console.warn('socket closed')
 	})
@@ -28,10 +25,10 @@ api.connect = function({token, clientId, inviteToken}) {
 		let [name, ...data] = message
 		if (data.length === 1) data = data[0]
 		const module = name.split('.')[0]
-		if (storeRef?._actions?.[`${module}/api::${name}`]) {
-			storeRef.dispatch(`${module}/api::${name}`, data)
-		} else if (storeRef?._actions?.[`api::${name}`]) {
-			storeRef.dispatch(`api::${name}`, data)
+		if (store._actions[`${module}/api::${name}`]) {
+			store.dispatch(`${module}/api::${name}`, data)
+		} else if (store._actions[`api::${name}`]) {
+			store.dispatch(`api::${name}`, data)
 		}
 	})
 
@@ -54,13 +51,6 @@ api.connect = function({token, clientId, inviteToken}) {
 			)
 		}
 	})
-}
-
-// Public initializer to inject the Vuex store and connect the socket
-export function initApi({ token, clientId, inviteToken, store }) {
-	storeRef = store
-	api.connect({ token, clientId, inviteToken })
-}
 
 api.uploadFile = function(file, filename, url, width, height) {
 	url = url || config.api.upload
@@ -98,5 +88,5 @@ api.uploadFilePromise = function(file, filename, url) {
 }
 
 window.api = api
+}
 
-export default api
