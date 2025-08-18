@@ -39,7 +39,7 @@ common_patterns = [
 ]
 
 admin_patterns = [
-    path('admin/', include('config.urls_admin')),
+    path('admin/', include('eventyay.config.urls_admin')),
 ]
 
 urlpatterns = [
