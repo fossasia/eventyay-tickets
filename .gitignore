@@ -45,3 +45,10 @@ src/production_settings.py
 
 # enext specific
 eventyay/config/static.dist
+app/eventyay/static/CACHE
+
+# .env files
+.env.dev
+.env.prod
+deployment/.env.dev
+deployment/.env.prod
