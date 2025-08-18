@@ -50,9 +50,9 @@ BASE_PATH = ""
 SECRET_KEY = os.environ.get("SECRET_KEY", "WhatAWonderfulWorldWeLiveIn196274623")
 SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+DEBUG = bool(os.environ.get("DEBUG", default=1))
 
-ALLOWED_HOSTS = [ "localhost" ]
+ALLOWED_HOSTS = [ "localhost", "127.0.0.1" ]
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
