@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import throttle from 'lodash/throttle'
+import { throttle } from 'lodash'
 
 // TODO check semantics with rupture
 const SCALE = {
@@ -7,8 +7,7 @@ const SCALE = {
 	s: 768,
 	m: 992,
 	l: 1400,
-	xl: 1800,
-	hd: Infinity
+	xl: 1800
 }
 
 const Plugin = {
@@ -19,18 +18,18 @@ const Plugin = {
 		}
 		const proxyHandler = function(direction) {
 			return {
-				get(target, property, receiver) {
-					if (typeof property !== 'symbol' && property !== '_isVue') {
+				get(target, property, ...args) {
+					if (typeof property !== 'symbol' && !property.startsWith('__v')) {
 						target[property] = match(property, direction)
 					}
-					return Reflect.get(...arguments)
+					return Reflect.get(target, property, ...args)
 				}
 			}
 		}
 
 		const mq = reactive({
-			above: new Proxy({}, proxyHandler('min')),
-			below: new Proxy({}, proxyHandler('max'))
+			above: new Proxy(reactive({}), proxyHandler('min')),
+			below: new Proxy(reactive({}), proxyHandler('max'))
 		})
 		const updateMatches = function(object, direction) {
 			for (const key of Object.keys(object)) {
@@ -43,7 +42,7 @@ const Plugin = {
 		}, 200)
 
 		window.addEventListener('resize', throttleResize)
-		app.config.globalProperties.$mq = mq
+		Object.defineProperty(app.config.globalProperties, '$mq', { get() { return mq } })
 	}
 }
 

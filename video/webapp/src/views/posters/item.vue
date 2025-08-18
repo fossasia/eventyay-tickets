@@ -57,17 +57,17 @@
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :user="selectedUser", @close="selectedUser = null")
 </template>
 <script>
-import * as pdfjs from 'pdfjs-dist'
+import * as pdfjs from 'pdfjs-dist/webpack.mjs'
 import { createPopper } from '@popperjs/core'
 import api from 'lib/api'
 import { getIconByFileEnding } from 'lib/filetypes'
 import Avatar from 'components/Avatar'
-import Chat from 'components/Chat'
+// import Chat from 'components/Chat' no longer used
 import ChatUserCard from 'components/ChatUserCard'
 import RichTextContent from 'components/RichTextContent'
 
 export default {
-	components: { Avatar, Chat, ChatUserCard, RichTextContent },
+	components: { Avatar, ChatUserCard, RichTextContent },
 	props: {
 		posterId: String
 	},
@@ -128,11 +128,6 @@ export default {
 			this.pdfLoadFailed = false
 			await this.$nextTick()
 			try {
-				// Ensure worker is set if not auto-resolved by bundler
-				if (!pdfjs.GlobalWorkerOptions.workerSrc) {
-					// Use the default distribution worker from the same package (ESM build)
-					pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
-				}
 				const canvas = this.$refs.pdfCanvas
 				const canvasRect = canvas.getBoundingClientRect()
 				const pdf = await pdfjs.getDocument(this.poster.poster_url).promise

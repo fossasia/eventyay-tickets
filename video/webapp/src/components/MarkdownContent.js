@@ -1,5 +1,6 @@
+import { h as createElement } from 'vue'
 import MarkdownIt from 'markdown-it'
-import sanitizeHtml from 'sanitize-html'
+import createDOMPurify from 'dompurify'
 import router from 'router'
 
 const markdownIt = MarkdownIt({
@@ -7,6 +8,8 @@ const markdownIt = MarkdownIt({
 	breaks: true,
 	html: true
 })
+
+const DOMPurify = createDOMPurify(window)
 
 markdownIt.renderer.rules.link_open = function(tokens, idx, options, env, self) {
 	const [, link] = tokens[idx].attrs.find(([attr]) => attr === 'href')
@@ -32,18 +35,13 @@ const handleClick = function(event) {
 	router.push(url.pathname + url.hash)
 }
 
-export default {
-  props: {
-    markdown: String
-  },
-  render() {
-    if (!this.markdown) return null
-    return this.$createElement('section', {
+export default function(props) {
+    if (!props.markdown) return
+    return createElement('section', {
       class: 'markdown-content rich-text-content',
-      innerHTML: sanitizeHtml(markdownIt.render(this.markdown), {
-        allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'iframe', 'img']
+      innerHTML: DOMPurify.sanitize(markdownIt.render(props.markdown), {
+        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol', 'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code', 'hr', 'br', 'div', 'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre', 'iframe', 'img']
       }),
       onClick: handleClick
     })
-  }
 }
