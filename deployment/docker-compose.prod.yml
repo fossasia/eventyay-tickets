@@ -1,0 +1,43 @@
+name: eventyay
+
+services:
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    command: gunicorn eventyay.config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/app/web/static
+    expose:
+      - 8000
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.prod
+  #nginx:
+  #  build: ./nginx
+  #  volumes:
+  #    - static_volume:/home/app/web/eventyay/staticfiles
+  #  ports:
+  #    - 1337:80
+  #  depends_on:
+  #    - web
+  nginx:
+    image: nginx:stable
+    volumes:
+      - static_volume:/home/app/web/eventyay/staticfiles
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
+volumes:
+  postgres_data_prod:
+  static_volume:

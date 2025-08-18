@@ -47,12 +47,12 @@ BASE_PATH = ""
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_sesosamnd81fm%go!+5inrmln^p1c%b&$abp6j(lw8$xx(ria'
+SECRET_KEY = os.environ.get("SECRET_KEY", "WhatAWonderfulWorldWeLiveIn196274623")
 SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG", default=1))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ "localhost", "127.0.0.1" ]
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
@@ -113,7 +113,7 @@ MIDDLEWARE = [
     'eventyay.control.middleware.AuditLogMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'eventyay.config.urls'
 # ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 TEMPLATES = [
@@ -127,25 +127,40 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'config.settings.instance_name',
+                'eventyay.config.settings.instance_name',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'eventyay.config.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'HOST': config.get('database', 'host', fallback=''),
+database_type = os.environ.get("DATABASE", "sqlite3")
+if database_type == "sqlite3":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            'CONN_MAX_AGE': 0,
+        }
     }
-}
+elif database_type == "postgres":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("POSTGRES_DB", "eventyay-db"),
+            "USER": os.environ.get("POSTGRES_USER", "user"),
+            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
+            "HOST": os.environ.get("POSTGRES_HOST", "eventyay-db"),
+            "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+            'CONN_MAX_AGE': 120,
+        }
+    }
+
 
 
 # Password validation
@@ -205,6 +220,8 @@ MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallb
 SESSION_COOKIE_NAME = 'eventyay_session'
 LANGUAGE_COOKIE_NAME = 'eventyay_language'
 CSRF_COOKIE_NAME = 'eventyay_csrftoken'
+# TODO that probably needs adjustment for the actual deployment
+CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
@@ -301,17 +318,14 @@ CELERY_TASK_ROUTES = (
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
+STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATICFILES_DIRS = [ ]
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
 
 COMPRESS_PRECOMPILERS = (

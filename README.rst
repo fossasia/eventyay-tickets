@@ -16,7 +16,7 @@ External Dependencies
 
 You should install the following dependencies on your system:
 
-- Python 3.5 or newer
+- Python 3.11 or newer
 - ``pip`` for Python 3 (Debian package: ``python3-pip``)
 - ``python-dev`` for Python 3 (Debian package: ``python3-dev``)
 - On Debian/Ubuntu: ``python-venv`` for Python 3 (Debian package: ``python3-venv``)
@@ -39,24 +39,37 @@ Getting Started
 
       git clone https://github.com/fossasia/eventyay-tickets.git
 
-2. **Create and activate a virtual environment**:
+2. **Enter the project directory**:
+
+   .. code-block:: bash
+
+      cd eventyay-tickets
+
+3. **Create and activate a virtual environment**:
+
+   Either use venv or pyenv to set up an environment and activate it.
+
+   With venv you have to activate the environment everytime you start a new shell.
 
    .. code-block:: bash
 
       python -m venv venv
       source venv/bin/activate
 
-3. **Install and update pip and setuptools**:
+   With pyenv you have to do the next only once, and can then forget. Whenever
+   you are in the `eventyay-tickets` directory, the `enext-env` will be used.
+   
+   .. code-block:: bash
+   
+      pyenv virtualenv 3.11 enext-env
+      pyenv local enext-env
+
+4. **Install and update pip and setuptools**:
 
    .. code-block:: bash
 
       pip3 install -U pip setuptools
 
-4. **Enter the project directory**:
-
-   .. code-block:: bash
-
-      cd eventyay-tickets
 
 5. **Switch to the `enext` branch**:
 
@@ -64,11 +77,11 @@ Getting Started
 
       git switch enext
 
-6. **Enter the unified Eventyay directory**:
+6. **Enter the app directory**:
 
    .. code-block:: bash
 
-      cd eventyay
+      cd app
 
 7. **Install required Python packages**:
 
@@ -95,6 +108,77 @@ Getting Started
        python manage.py runserver
 
 
+
+Docker based development
+------------------------
+
+We assume your current working directory is the checkout of this repo.
+
+1. **Create deployment/.env.dev**
+
+   .. code-block:: bash
+
+      cp deployment/env.dev-sample .env.dev
+
+2. **Edit .env.dev**
+
+   Only if necessary
+
+3. **Make sure you don't have some old volumes hanging around**
+
+   This is only necessary the first time, or if you have strange behaviour.
+   This removes the database volume and triggers a complete reinitialization.
+   After that, you have to run migrate and createsuperuser again!
+
+   .. code-block:: bash
+
+      docker volume rm eventyay_postgres_data_dev eventyay_static_volume
+
+4. **Build and run the images**
+
+   .. code-block:: bash
+
+      docker compose up -d --build
+
+5. **Create a superuser account** (for accessing the admin panel):
+
+   This should be necessary only once, since the database is persisted 
+   as docker volume. If you see strange behaviour, see the point 3.
+   on how to reset.
+
+   .. code-block:: bash
+
+      docker exec -ti eventyay-web-1 python manage.py createsuperuser
+
+6. **Visit the site**
+
+   Open `http://localhost:8000` in a browser.
+
+6. **Checking the logs**
+
+   .. code-block:: bash
+
+      docker compose logs -f
+
+
+7. **Shut down**
+
+   To shut down the development docker deployment, run
+
+   .. code-block:: bash
+
+      docker compose down
+
+The directory `app` is mounted into the docker, thus live editing is supported.
+
+
+Deployment
+----------
+
+Similar to the above, just use create `deployment/.env.prod`, make sure the `DEBUG=0`.
+and run with `docker compose -f deployment/docker-compose.prod.yml ...`.
+Prod deployment uses gunicorn and an nginx serving files.
+
 Support
 -------
 
@@ -104,11 +188,6 @@ Contributing
 ------------
 
 Please look through our issues and start contributing.
-
-Setting Up Eventyay-Tickets
----------------------------
-
-Eventyay-Tickets requires a Docker-based setup. Please follow the detailed instructions in the `development setup guide <https://github.com/fossasia/eventyay-docker/blob/main/README.development.md>`_ in the eventyay-docker repository.
 
 License
 -------
