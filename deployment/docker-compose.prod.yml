@@ -13,7 +13,7 @@ services:
     expose:
       - 8000
     env_file:
-      - ./.env.prod
+      - ./.env
     depends_on:
       - db
   db:
@@ -22,7 +22,7 @@ services:
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data/
     env_file:
-      - ./.env.prod
+      - ./.env
   #nginx:
   #  build: ./nginx
   #  volumes:

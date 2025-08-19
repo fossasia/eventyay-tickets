@@ -175,7 +175,7 @@ The directory `app` is mounted into the docker, thus live editing is supported.
 Deployment
 ----------
 
-Similar to the above, just use create `deployment/.env.prod`, make sure the `DEBUG=0`.
+Similar to the above, just use create `deployment/.env`, make sure the `DEBUG=0`.
 
 WARNING: At the moment `DEBUG=1` is *NECESSARY* otherwise static files are not served???
 
