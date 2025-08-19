@@ -50,9 +50,9 @@ BASE_PATH = ""
 SECRET_KEY = os.environ.get("SECRET_KEY", "WhatAWonderfulWorldWeLiveIn196274623")
 SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=1))
+DEBUG = bool(int(os.environ.get("DEBUG", default=1)))
 
-ALLOWED_HOSTS = [ "localhost", "127.0.0.1" ]
+ALLOWED_HOSTS = [ "*" ]
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
@@ -221,7 +221,7 @@ SESSION_COOKIE_NAME = 'eventyay_session'
 LANGUAGE_COOKIE_NAME = 'eventyay_language'
 CSRF_COOKIE_NAME = 'eventyay_csrftoken'
 # TODO that probably needs adjustment for the actual deployment
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://next.eventyay.com:1337", "https://next.eventyay.com"]
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
