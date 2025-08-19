@@ -50,7 +50,7 @@ services:
     environment:
       WATCHTOWER_NOTIFICATIONS: 'shoutrrr'
       WATCHTOWER_NOTIFICATIONS_HOSTNAME: eventyay-next
-      WATCHTOWER_POLL_INTERVAL: 30
+      WATCHTOWER_POLL_INTERVAL: 600
       WATCHTOWER_NOTIFICATION_URL: ${WATCHTOWER_NOTIFICATION_URL}
     command: watchtower eventyay-next-web --cleanup
 
