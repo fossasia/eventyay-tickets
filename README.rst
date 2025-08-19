@@ -184,6 +184,10 @@ Deployment
         chown 100:101 /home/fossasia/enext/data/static
 * copy `env.prod-sample` to `.env` in `/home/fossasia/enext`, and edit it to your
   liking
+* copy `nginx/enext-direct` to your system `/etc/nginx/sites-available`
+  The file needs to be adjusted if the `enext` dir is NOT in `/home/fossasia`!
+* Link the `enext-direct` file into `/etc/nginx/sites-enabled`
+* Restart nginx
 * Run
         docker compose up -d
 
