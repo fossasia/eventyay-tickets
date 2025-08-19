@@ -399,3 +399,21 @@ AUTH_USER_MODEL = 'eventyaybase.User'
 LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
