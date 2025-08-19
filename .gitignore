@@ -53,3 +53,4 @@ app/eventyay/static/CACHE
 deployment/.env.dev
 deployment/.env.prod
 deployment/.env
+deployment/data
