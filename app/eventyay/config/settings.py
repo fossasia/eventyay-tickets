@@ -70,7 +70,7 @@ else:
 
 # Application definition
 
-AUTH_USER_MODEL = 'eventyaybase.User'
+AUTH_USER_MODEL = 'base.User'
 INSTALLED_APPS = [
     'bootstrap3',
     'compressor',
@@ -377,11 +377,11 @@ SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-OAUTH2_PROVIDER_APPLICATION_MODEL = 'eventyayapi.OAuthApplication'
-OAUTH2_PROVIDER_GRANT_MODEL = 'eventyayapi.OAuthGrant'
-OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'eventyayapi.OAuthAccessToken'
-OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'eventyayapi.OAuthIDToken'
-OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'eventyayapi.OAuthRefreshToken'
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'api.OAuthApplication'
+OAUTH2_PROVIDER_GRANT_MODEL = 'api.OAuthGrant'
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'api.OAuthAccessToken'
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'api.OAuthIDToken'
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'api.OAuthRefreshToken'
 OAUTH2_PROVIDER = {
     'SCOPES': {
         'profile': _('User profile only'),
@@ -396,7 +396,6 @@ OAUTH2_PROVIDER = {
     'OIDC_RESPONSE_TYPES_SUPPORTED': ['code'],  # We don't support proper OIDC for now
 }
 
-AUTH_USER_MODEL = 'eventyaybase.User'
 LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'

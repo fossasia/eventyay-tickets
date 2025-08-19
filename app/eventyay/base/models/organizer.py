@@ -454,7 +454,7 @@ class OrganizerBillingModel(models.Model):
     )
 
     invoice_voucher = models.ForeignKey(
-        'eventyaybase.InvoiceVoucher',
+        'base.InvoiceVoucher',
         on_delete=models.CASCADE,
         related_name='billing',
         null=True,
