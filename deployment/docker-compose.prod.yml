@@ -2,6 +2,8 @@ name: eventyay
 
 services:
   web:
+    image: eventyay/eventyay-next:enext
+    container_name: eventyay-next-web
     build:
       context: ./app
       dockerfile: Dockerfile.prod
@@ -16,6 +18,7 @@ services:
       - db
   db:
     image: postgres:15
+    container_name: eventyay-next-db
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data/
     env_file:
@@ -30,6 +33,7 @@ services:
   #    - web
   nginx:
     image: nginx:stable
+    container_name: eventyay-next-nginx
     volumes:
       - static_volume:/home/app/web/eventyay/staticfiles
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
@@ -37,6 +41,19 @@ services:
       - 1337:80
     depends_on:
       - web
+  watchtower:
+    image: containrrr/watchtower
+    container_name: eventyay-next-watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    environment:
+      WATCHTOWER_NOTIFICATIONS: 'shoutrrr'
+      WATCHTOWER_NOTIFICATIONS_HOSTNAME: eventyay-next
+      WATCHTOWER_POLL_INTERVAL: 30
+      WATCHTOWER_NOTIFICATION_URL: ${WATCHTOWER_NOTIFICATION_URL}
+    command: watchtower eventyay-next-web --cleanup
+
 
 volumes:
   postgres_data_prod:

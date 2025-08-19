@@ -148,7 +148,7 @@ We assume your current working directory is the checkout of this repo.
 
    .. code-block:: bash
 
-      docker exec -ti eventyay-web-1 python manage.py createsuperuser
+      docker exec -ti eventyay-next-web python manage.py createsuperuser
 
 6. **Visit the site**
 
@@ -176,6 +176,9 @@ Deployment
 ----------
 
 Similar to the above, just use create `deployment/.env.prod`, make sure the `DEBUG=0`.
+
+WARNING: At the moment `DEBUG=1` is *NECESSARY* otherwise static files are not served???
+
 and run with `docker compose -f deployment/docker-compose.prod.yml ...`.
 Prod deployment uses gunicorn and an nginx serving files.
 
