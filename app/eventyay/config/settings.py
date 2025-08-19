@@ -52,7 +52,7 @@ SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get("DEBUG", default=1)))
 
-ALLOWED_HOSTS = [ "*" ]
+ALLOWED_HOSTS = [ "*", "127.0.0.1" ]
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
