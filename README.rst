@@ -175,9 +175,17 @@ The directory `app` is mounted into the docker, thus live editing is supported.
 Deployment
 ----------
 
-Similar to the above, just use create `deployment/.env`, make sure the `DEBUG=0`.
-and run with `docker compose -f deployment/docker-compose.prod.yml ...`.
-Prod deployment uses gunicorn and an nginx serving files.
+* copy all of the deployment directory onto the server as `/home/fossasia/enext`
+* prepare the used volumes in docker-compose: one for static files and one for
+  the postgres database. Create on the server:
+        /home/fossasia/enext/data/static
+        /home/fossasia/enext/data/postgres
+  and
+        chown 100:101 /home/fossasia/enext/data/static
+* copy `env.prod-sample` to `.env` in `/home/fossasia/enext`, and edit it to your
+  liking
+* Run
+        docker compose up -d
 
 Support
 -------
