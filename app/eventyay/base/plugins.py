@@ -21,6 +21,7 @@ class PluginType(Enum):
     This is only not removed yet as external plugins might have references
     to this enum.
     """
+
     RESTRICTION = 1
     PAYMENT = 2
     ADMINFEATURE = 3
@@ -57,24 +58,24 @@ def get_all_plugins(event=None) -> List[type]:
 
 # from eventyay-talk
 CATEGORY_LABELS = {
-    "FEATURE": pgettext_lazy("Type of plugin", "Features"),
-    "INTEGRATION": pgettext_lazy("Type of plugin", "Integrations"),
-    "CUSTOMIZATION": pgettext_lazy("Type of plugin", "Customizations"),
-    "EXPORTER": _("Exporters"),
-    "RECORDING": _("Recording integrations"),
-    "LANGUAGE": _("Languages"),
-    "OTHER": pgettext_lazy("category of items", "Other"),
+    'FEATURE': pgettext_lazy('Type of plugin', 'Features'),
+    'INTEGRATION': pgettext_lazy('Type of plugin', 'Integrations'),
+    'CUSTOMIZATION': pgettext_lazy('Type of plugin', 'Customizations'),
+    'EXPORTER': _('Exporters'),
+    'RECORDING': _('Recording integrations'),
+    'LANGUAGE': _('Languages'),
+    'OTHER': pgettext_lazy('category of items', 'Other'),
 }
 
 
 # from eventyay-talk
 def plugin_group_key(plugin):
-    return getattr(plugin, "category", "OTHER")
+    return getattr(plugin, 'category', 'OTHER')
 
 
 # from eventyay-talk
 def plugin_sort_key(plugin):
-    return str(plugin.name).lower().replace("pretalx ", "")
+    return str(plugin.name).lower().replace('pretalx ', '')
 
 
 # from eventyay-talk
@@ -86,17 +87,11 @@ def get_all_plugins_grouped(event=None, filter_visible=True):
     """
     plugins = get_all_plugins(event)
     if filter_visible:
-        plugins = [
-            plugin
-            for plugin in plugins
-            if not plugin.name.startswith(".") and getattr(plugin, "visible", True)
-        ]
+        plugins = [plugin for plugin in plugins if not plugin.name.startswith('.') and getattr(plugin, 'visible', True)]
     plugins_grouped = groupby(sorted(plugins, key=plugin_group_key), plugin_group_key)
     # Only keep categories with at least one plugin and sort the plugins by name.
     plugins_grouped = {
-        category: sorted(plugins, key=plugin_sort_key)
-        for category, plugins in plugins_grouped
-        if plugins
+        category: sorted(plugins, key=plugin_sort_key) for category, plugins in plugins_grouped if plugins
     }
 
     # Replace the category keys with the translated labels and sort accordingly.

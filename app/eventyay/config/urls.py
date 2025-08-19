@@ -10,7 +10,6 @@ from django.utils.translation import gettext as _
 from django.http import HttpResponse
 
 
-
 import eventyay.control.urls
 import eventyay.eventyay_common.urls
 
@@ -19,11 +18,9 @@ from eventyay.base.views import health
 
 def blank_view(request):
     index_url = reverse('eventyay_common:dashboard')
-    content = _(
-        '<a href="%(url)s">Click to login here</a>.'
-    ) % {'url': escape(index_url)}
+    content = _('<a href="%(url)s">Click to login here</a>.') % {'url': escape(index_url)}
 
-    return HttpResponse(f"<p>{content}</p>")
+    return HttpResponse(f'<p>{content}</p>')
 
 
 base_patterns = [
@@ -47,7 +44,6 @@ urlpatterns = [
     *base_patterns,
     *control_patterns,
     *common_patterns,
-
     path('', blank_view, name='blank'),
 ]
 

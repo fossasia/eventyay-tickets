@@ -298,4 +298,6 @@ eventyay_view_duration_seconds = Histogram(
     ['status_code', 'method', 'url_name'],
 )
 eventyay_task_runs_total = Counter('eventyay_task_runs_total', 'Total calls to a celery task', ['task_name', 'status'])
-eventyay_task_duration_seconds = Histogram('eventyay_task_duration_seconds', 'Call time of a celery task', ['task_name'])
+eventyay_task_duration_seconds = Histogram(
+    'eventyay_task_duration_seconds', 'Call time of a celery task', ['task_name']
+)

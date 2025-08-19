@@ -20,60 +20,56 @@ class Room(OrderedModel, PretalxModel):
     are not in use right now.
     """
 
-    log_prefix = "pretalx.room"
+    log_prefix = 'pretalx.room'
 
-    event = models.ForeignKey(
-        to="Event", on_delete=models.PROTECT, related_name="rooms"
-    )
-    name = I18nCharField(max_length=100, verbose_name=_("Name"))
+    event = models.ForeignKey(to='Event', on_delete=models.PROTECT, related_name='rooms')
+    name = I18nCharField(max_length=100, verbose_name=_('Name'))
     guid = models.UUIDField(
         null=True,
         blank=True,
-        verbose_name=_("GUID"),
-        help_text=_(
-            "Unique identifier (UUID) to help external tools identify the room."
-        ),
+        verbose_name=_('GUID'),
+        help_text=_('Unique identifier (UUID) to help external tools identify the room.'),
     )
     description = I18nCharField(
         max_length=1000,
         null=True,
         blank=True,
-        verbose_name=_("Description"),
-        help_text=_("A description for attendees, for example directions."),
+        verbose_name=_('Description'),
+        help_text=_('A description for attendees, for example directions.'),
     )
     speaker_info = I18nCharField(
         max_length=1000,
         null=True,
         blank=True,
-        verbose_name=_("Speaker Information"),
+        verbose_name=_('Speaker Information'),
         help_text=_(
-            "Information relevant for speakers scheduled in this room, for example room size, special directions, available adaptors for video input …"
+            'Information relevant for speakers scheduled in this room, for example room size, special directions, available adaptors for video input …'
         ),
     )
     capacity = models.PositiveIntegerField(
         null=True,
         blank=True,
-        verbose_name=_("Capacity"),
-        help_text=_("How many people can fit in the room?"),
+        verbose_name=_('Capacity'),
+        help_text=_('How many people can fit in the room?'),
     )
     position = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta:
-        ordering = ("position",)
-        unique_together = ("event", "guid")
+        ordering = ('position',)
+        unique_together = ('event', 'guid')
         rules_permissions = {
-            "list": is_agenda_visible | orga_can_change_submissions,
-            "view": is_agenda_visible | orga_can_change_submissions,
-            "orga_list": orga_can_change_submissions,
-            "orga_view": orga_can_change_submissions,
-            "create": can_change_event_settings,
-            "update": can_change_event_settings,
-            "delete": can_change_event_settings,
+            'list': is_agenda_visible | orga_can_change_submissions,
+            'view': is_agenda_visible | orga_can_change_submissions,
+            'orga_list': orga_can_change_submissions,
+            'orga_view': orga_can_change_submissions,
+            'create': can_change_event_settings,
+            'update': can_change_event_settings,
+            'delete': can_change_event_settings,
         }
 
     class urls(EventUrls):
-        settings_base = edit = "{self.event.orga_urls.room_settings}{self.pk}/"
-        delete = "{settings_base}delete/"
+        settings_base = edit = '{self.event.orga_urls.room_settings}{self.pk}/'
+        delete = '{settings_base}delete/'
 
     def __str__(self) -> str:
         return str(self.name)
@@ -94,9 +90,9 @@ class Room(OrderedModel, PretalxModel):
             return self.guid
 
         if not self.pk:
-            return ""
+            return ''
 
-        return uuid.uuid5(GlobalSettings().get_instance_identifier(), f"room:{self.pk}")
+        return uuid.uuid5(GlobalSettings().get_instance_identifier(), f'room:{self.pk}')
 
     @property
     def slug(self) -> str:
@@ -105,4 +101,4 @@ class Room(OrderedModel, PretalxModel):
         It consists of the ID, followed by a slugified (and, in lookups,
         optional) form of the track name.
         """
-        return f"{self.id}-{slugify(self.name)}"
+        return f'{self.id}-{slugify(self.name)}'

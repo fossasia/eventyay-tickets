@@ -9,7 +9,7 @@ from django_scopes import ScopedManager, scopes_disabled
 from i18nfield.utils import I18nJSONEncoder
 from rules.contrib.models import RulesModelBase, RulesModelMixin
 
-SENSITIVE_KEYS = ["password", "secret", "api_key"]
+SENSITIVE_KEYS = ['password', 'secret', 'api_key']
 
 
 class TimestampedModel(models.Model):
@@ -24,15 +24,13 @@ class LogMixin:
     log_prefix = None
     log_parent = None
 
-    def log_action(
-        self, action, data=None, person=None, orga=False, content_object=None
-    ):
+    def log_action(self, action, data=None, person=None, orga=False, content_object=None):
         if not self.pk:
             return
 
-        if action.startswith("."):
+        if action.startswith('.'):
             if self.log_prefix:
-                action = f"{self.log_prefix}{action}"
+                action = f'{self.log_prefix}{action}'
             else:
                 return
 
@@ -40,17 +38,15 @@ class LogMixin:
             for key, value in data.items():
                 if any(sensitive_key in key for sensitive_key in SENSITIVE_KEYS):
                     value = data[key]
-                    data[key] = "********" if value else value
+                    data[key] = '********' if value else value
             data = json.dumps(data, cls=I18nJSONEncoder)
         elif data:
-            raise TypeError(
-                f"Logged data should always be a dictionary, not {type(data)}."
-            )
+            raise TypeError(f'Logged data should always be a dictionary, not {type(data)}.')
 
         from eventyay.base.models import ActivityLog
 
         return ActivityLog.objects.create(
-            event=getattr(self, "event", None),
+            event=getattr(self, 'event', None),
             person=person,
             content_object=content_object or self,
             action_type=action,
@@ -66,16 +62,16 @@ class LogMixin:
                 content_type=ContentType.objects.get_for_model(type(self)),
                 object_id=self.pk,
             )
-            .select_related("event", "person")
-            .prefetch_related("content_object")
+            .select_related('event', 'person')
+            .prefetch_related('content_object')
         )
 
     def delete(self, *args, log_kwargs=None, **kwargs):
         parent = self.log_parent
         result = super().delete(*args, **kwargs)
-        if parent and getattr(parent, "log_action", None):
+        if parent and getattr(parent, 'log_action', None):
             log_kwargs = log_kwargs or {}
-            parent.log_action(f"{self.log_prefix}.delete", **log_kwargs)
+            parent.log_action(f'{self.log_prefix}.delete', **log_kwargs)
         return result
 
 
@@ -84,17 +80,11 @@ class FileCleanupMixin:
 
     @cached_property
     def _file_fields(self):
-        return [
-            field.name
-            for field in self._meta.fields
-            if isinstance(field, models.FileField)
-        ]
+        return [field.name for field in self._meta.fields if isinstance(field, models.FileField)]
 
     def save(self, *args, **kwargs):
-        update_fields = kwargs.get("update_fields", None)
-        if not self.pk or (
-            update_fields and not set(self._file_fields) & set(update_fields)
-        ):
+        update_fields = kwargs.get('update_fields', None)
+        if not self.pk or (update_fields and not set(self._file_fields) & set(update_fields)):
             return super().save(*args, **kwargs)
 
         try:
@@ -115,10 +105,10 @@ class FileCleanupMixin:
 
                     task_cleanup_file.apply_async(
                         kwargs={
-                            "model": str(self._meta.model_name.capitalize()),
-                            "pk": self.pk,
-                            "field": field,
-                            "path": old_value.path,
+                            'model': str(self._meta.model_name.capitalize()),
+                            'pk': self.pk,
+                            'field': field,
+                            'path': old_value.path,
                         },
                         countdown=10,
                     )
@@ -140,10 +130,10 @@ class FileCleanupMixin:
 
         task_process_image.apply_async(
             kwargs={
-                "field": field,
-                "model": str(self._meta.model_name.capitalize()),
-                "pk": self.pk,
-                "generate_thumbnail": generate_thumbnail,
+                'field': field,
+                'model': str(self._meta.model_name.capitalize()),
+                'pk': self.pk,
+                'generate_thumbnail': generate_thumbnail,
             },
             countdown=10,
         )
@@ -161,7 +151,7 @@ class PretalxModel(
     Base model for most pretalx models. Suitable for plugins.
     """
 
-    objects = ScopedManager(event="event")
+    objects = ScopedManager(event='event')
 
     class Meta:
         abstract = True
@@ -175,8 +165,8 @@ class GenerateCode:
     """
 
     _code_length = 6
-    _code_charset = list("ABCDEFGHJKLMNPQRSTUVWXYZ3789")
-    _code_property = "code"
+    _code_charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
+    _code_property = 'code'
 
     @classmethod
     def generate_code(cls, length=None):
@@ -188,9 +178,7 @@ class GenerateCode:
         while True:
             code = self.generate_code(length=length)
             with scopes_disabled():
-                if not self.__class__.objects.filter(
-                    **{f"{self._code_property}__iexact": code}
-                ).exists():
+                if not self.__class__.objects.filter(**{f'{self._code_property}__iexact': code}).exists():
                     setattr(self, self._code_property, code)
                     return
 
@@ -213,9 +201,9 @@ class OrderedModel:
     to provide the queryset to order.
     """
 
-    order_field = "position"
-    order_up_url = "urls.up"
-    order_down_url = "urls.down"
+    order_field = 'position'
+    order_up_url = 'urls.up'
+    order_down_url = 'urls.down'
 
     @staticmethod
     def get_order_queryset(**kwargs):
@@ -223,7 +211,7 @@ class OrderedModel:
 
     def _get_attribute(self, attribute):
         result = self
-        for part in attribute.split("."):
+        for part in attribute.split('.'):
             result = getattr(result, part)
         return result
 

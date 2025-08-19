@@ -26,68 +26,60 @@ class SubmissionType(PretalxModel):
     :class:`~pretalx.event.models.event.Event`.
     """
 
-    event = models.ForeignKey(
-        to="Event", related_name="submission_types", on_delete=models.CASCADE
-    )
-    name = I18nCharField(max_length=100, verbose_name=_("name"))
+    event = models.ForeignKey(to='Event', related_name='submission_types', on_delete=models.CASCADE)
+    name = I18nCharField(max_length=100, verbose_name=_('name'))
     default_duration = models.PositiveIntegerField(
         default=30,
-        verbose_name=_("default duration"),
-        help_text=_("Default duration in minutes"),
+        verbose_name=_('default duration'),
+        help_text=_('Default duration in minutes'),
     )
     deadline = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_("Deadline"),
-        help_text=_(
-            "If you want a different deadline than the global deadline for this session type, enter it here."
-        ),
+        verbose_name=_('Deadline'),
+        help_text=_('If you want a different deadline than the global deadline for this session type, enter it here.'),
     )
     requires_access_code = models.BooleanField(
-        verbose_name=_("Requires access code"),
-        help_text=_(
-            "This session type will only be shown to submitters with a matching access code."
-        ),
+        verbose_name=_('Requires access code'),
+        help_text=_('This session type will only be shown to submitters with a matching access code.'),
         default=False,
     )
 
-    log_prefix = "pretalx.submission_type"
+    log_prefix = 'pretalx.submission_type'
 
     class Meta:
-        ordering = ["default_duration"]
+        ordering = ['default_duration']
         rules_permissions = {
-            "list": is_cfp_open | is_agenda_visible | orga_can_change_submissions,
-            "view": is_cfp_open | is_agenda_visible | orga_can_change_submissions,
-            "orga_list": orga_can_change_submissions,
-            "orga_view": orga_can_change_submissions,
-            "create": can_change_event_settings,
-            "update": can_change_event_settings,
-            "delete": can_change_event_settings,
+            'list': is_cfp_open | is_agenda_visible | orga_can_change_submissions,
+            'view': is_cfp_open | is_agenda_visible | orga_can_change_submissions,
+            'orga_list': orga_can_change_submissions,
+            'orga_view': orga_can_change_submissions,
+            'create': can_change_event_settings,
+            'update': can_change_event_settings,
+            'delete': can_change_event_settings,
         }
 
     class urls(EventUrls):
-        base = edit = "{self.event.cfp.urls.types}{self.pk}/"
-        default = "{base}default"
-        delete = "{base}delete/"
-        prefilled_cfp = "{self.event.cfp.urls.public}?submission_type={self.slug}"
+        base = edit = '{self.event.cfp.urls.types}{self.pk}/'
+        default = '{base}default'
+        delete = '{base}delete/'
+        prefilled_cfp = '{self.event.cfp.urls.public}?submission_type={self.slug}'
 
     def __str__(self) -> str:
         """Used in choice drop downs."""
         if not self.default_duration:
             return str(self.name)
         if self.default_duration > 60 * 24:
-            return _("{name} ({duration} days)").format(
+            return _('{name} ({duration} days)').format(
                 name=self.name,
                 duration=pleasing_number(round(self.default_duration / 60 / 24, 1)),
             )
         if self.default_duration > 90:
-            return _("{name} ({duration} hours)").format(
+            return _('{name} ({duration} hours)').format(
                 name=self.name,
                 duration=pleasing_number(round(self.default_duration / 60, 1)),
             )
-        return _("{name} ({duration} minutes)").format(
-            name=self.name, duration=self.default_duration
-        )
+        return _('{name} ({duration} minutes)').format(name=self.name, duration=self.default_duration)
 
     @property
     def log_parent(self):
@@ -100,7 +92,7 @@ class SubmissionType(PretalxModel):
         It consists of the ID, followed by a slugified (and, in lookups,
         optional) form of the submission type name.
         """
-        return f"{self.id}-{slugify(self.name)}"
+        return f'{self.id}-{slugify(self.name)}'
 
     def update_duration(self):
         """Updates the duration of all.

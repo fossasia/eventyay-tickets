@@ -12,6 +12,7 @@ def dashboard_view(request):
     content = f'<p>Welcome to the common dashboard. <a href="{escape(logout_url)}">Logout</a></p>'
     return HttpResponse(content)
 
+
 urlpatterns = [
     path('logout/', auth.logout, name='auth.logout'),
     path('login/', auth.login, name='auth.login'),
@@ -19,6 +20,5 @@ urlpatterns = [
     path('register/', auth.register, name='auth.register'),
     path('forgot/', auth.Forgot.as_view(), name='auth.forgot'),
     path('forgot/recover/', auth.Recover.as_view(), name='auth.forgot.recover'),
-    
     path('', dashboard_view, name='dashboard'),
 ]

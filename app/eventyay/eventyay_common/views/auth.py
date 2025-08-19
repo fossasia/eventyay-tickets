@@ -267,8 +267,8 @@ def invite(request, token):
                 user.log_action('eventyay.eventyay_common.auth.user.created', user=user)
                 auth_login(request, user)
                 request.session['eventyay_auth_login_time'] = int(time.time())
-                request.session['eventyay_auth_long_session'] = settings.EVENTYAY_LONG_SESSIONS and form.cleaned_data.get(
-                    'keep_logged_in', False
+                request.session['eventyay_auth_long_session'] = (
+                    settings.EVENTYAY_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
                 )
 
                 inv.team.members.add(request.user)

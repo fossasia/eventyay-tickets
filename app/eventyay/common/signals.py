@@ -49,9 +49,9 @@ class EventPluginSignal(django.dispatch.Signal):
             app = None
             while True:
                 app = app_cache.get(searchpath)
-                if "." not in searchpath or app:  # pragma: no cover
+                if '.' not in searchpath or app:  # pragma: no cover
                     break
-                searchpath, _ = searchpath.rsplit(".", 1)
+                searchpath, _ = searchpath.rsplit('.', 1)
             return app and app.name in sender.plugin_list
         return False
 
@@ -63,13 +63,10 @@ class EventPluginSignal(django.dispatch.Signal):
         ``pretalx.event.models.Event``.
         """
         if sender and not isinstance(sender, Event):
-            raise ValueError("Sender needs to be an event.")
+            raise ValueError('Sender needs to be an event.')
 
         responses = []
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return responses
 
         if not app_cache:
@@ -93,13 +90,10 @@ class EventPluginSignal(django.dispatch.Signal):
         ``pretalx.event.models.Event``.
         """
         if sender and not isinstance(sender, Event):
-            raise ValueError("Sender needs to be an event.")
+            raise ValueError('Sender needs to be an event.')
 
         responses = []
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return []
 
         if not app_cache:  # pragma: no cover
@@ -118,9 +112,7 @@ class EventPluginSignal(django.dispatch.Signal):
             key=lambda response: (response[0].__module__, response[0].__name__),
         )
 
-    def send_chained(
-        self, sender: Event, chain_kwarg_name, **named
-    ) -> list[tuple[Callable, Any]]:
+    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> list[tuple[Callable, Any]]:
         """Send signal from sender to all connected receivers. The return value
         of the first receiver will be used as the keyword argument specified by
         ``chain_kwarg_name`` in the input to the second receiver and so on. The
@@ -130,13 +122,10 @@ class EventPluginSignal(django.dispatch.Signal):
         ``pretalx.event.models.Event``.
         """
         if sender and not isinstance(sender, Event):
-            raise ValueError("Sender needs to be an event.")
+            raise ValueError('Sender needs to be an event.')
 
         response = named.get(chain_kwarg_name)
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):  # pragma: no cover
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:  # pragma: no cover
             return response
 
         if not app_cache:  # pragma: no cover
@@ -149,9 +138,7 @@ class EventPluginSignal(django.dispatch.Signal):
         return response
 
 
-def minimum_interval(
-    minutes_after_success, minutes_after_error=0, minutes_running_timeout=30
-):
+def minimum_interval(minutes_after_success, minutes_after_error=0, minutes_running_timeout=30):
     """
     Use this decorator on receivers of the ``periodic_task`` signal to ensure the receiver
     function has at least ``minutes_after_success`` minutes between two successful runs and
@@ -164,8 +151,8 @@ def minimum_interval(
     def decorate(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            key_running = f"pretalx_periodic_{func.__module__}.{func.__name__}_running"
-            key_result = f"pretalx_periodic_{func.__module__}.{func.__name__}_result"
+            key_running = f'pretalx_periodic_{func.__module__}.{func.__name__}_running'
+            key_result = f'pretalx_periodic_{func.__module__}.{func.__name__}_result'
 
             if cache.get(key_running) or cache.get(key_result):
                 return
@@ -176,22 +163,22 @@ def minimum_interval(
                 retval = func(*args, **kwargs)
             except Exception as e:
                 try:
-                    cache.set(key_result, "error", timeout=minutes_after_error * 60)
+                    cache.set(key_result, 'error', timeout=minutes_after_error * 60)
                 except Exception:
-                    logger.exception("Could not store result")
+                    logger.exception('Could not store result')
                 raise e
             else:
                 try:
-                    cache.set(key_result, "success", timeout=minutes_after_success * 60)
+                    cache.set(key_result, 'success', timeout=minutes_after_success * 60)
                 except Exception:
-                    logger.exception("Could not store result")
+                    logger.exception('Could not store result')
                 return retval
             finally:
                 try:
                     if cache.get(key_running) == uniqid:
                         cache.delete(key_running)
                 except Exception:
-                    logger.exception("Could not release lock")
+                    logger.exception('Could not release lock')
 
         return wrapper
 

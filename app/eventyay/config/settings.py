@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+
 import sys
 import configparser
 import os
@@ -31,28 +32,28 @@ else:
     )
 config = EnvOrParserConfig(_config)
 
+
 def instance_name(request):
     from django.conf import settings
-    return {
-        'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')
-    }
+
+    return {'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')}
 
 
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-BASE_PATH = ""
+BASE_PATH = ''
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "WhatAWonderfulWorldWeLiveIn196274623")
+SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=1))
+DEBUG = bool(os.environ.get('DEBUG', default=1))
 
-ALLOWED_HOSTS = [ "localhost", "127.0.0.1" ]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
@@ -92,7 +93,6 @@ INSTALLED_APPS = [
     'eventyay.presale',
     'statici18n',
 ]
-
 
 
 MIDDLEWARE = [
@@ -139,28 +139,27 @@ WSGI_APPLICATION = 'eventyay.config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-database_type = os.environ.get("DATABASE", "sqlite3")
-if database_type == "sqlite3":
+database_type = os.environ.get('DATABASE', 'sqlite3')
+if database_type == 'sqlite3':
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
             'CONN_MAX_AGE': 0,
         }
     }
-elif database_type == "postgres":
+elif database_type == 'postgres':
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("POSTGRES_DB", "eventyay-db"),
-            "USER": os.environ.get("POSTGRES_USER", "user"),
-            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
-            "HOST": os.environ.get("POSTGRES_HOST", "eventyay-db"),
-            "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('POSTGRES_DB', 'eventyay-db'),
+            'USER': os.environ.get('POSTGRES_USER', 'user'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+            'HOST': os.environ.get('POSTGRES_HOST', 'eventyay-db'),
+            'PORT': os.environ.get('POSTGRES_PORT', '5432'),
             'CONN_MAX_AGE': 120,
         }
     }
-
 
 
 # Password validation
@@ -221,7 +220,7 @@ SESSION_COOKIE_NAME = 'eventyay_session'
 LANGUAGE_COOKIE_NAME = 'eventyay_language'
 CSRF_COOKIE_NAME = 'eventyay_csrftoken'
 # TODO that probably needs adjustment for the actual deployment
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:1337']
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
@@ -325,7 +324,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-STATICFILES_DIRS = [ ]
+STATICFILES_DIRS = []
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
 
 COMPRESS_PRECOMPILERS = (
@@ -353,7 +352,9 @@ INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')
 EVENTYAY_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=True)
 EVENTYAY_PASSWORD_RESET = config.getboolean('eventyay', 'password_reset', fallback=True)
 EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
-EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(',')
+EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(
+    ','
+)
 EVENTYAY_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
 EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallback=False)
 EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
