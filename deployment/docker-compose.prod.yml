@@ -9,7 +9,9 @@ services:
       dockerfile: Dockerfile.prod
     command: gunicorn eventyay.config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/home/app/web/static
+      - ./data/static:/home/app/web/static
+    ports:
+      - 8000:8000
     expose:
       - 8000
     env_file:
@@ -20,27 +22,9 @@ services:
     image: postgres:15
     container_name: eventyay-next-db
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data/
+      - ./data/postgres:/var/lib/postgresql/data/
     env_file:
       - ./.env
-  #nginx:
-  #  build: ./nginx
-  #  volumes:
-  #    - static_volume:/home/app/web/eventyay/staticfiles
-  #  ports:
-  #    - 1337:80
-  #  depends_on:
-  #    - web
-  nginx:
-    image: nginx:stable
-    container_name: eventyay-next-nginx
-    volumes:
-      - static_volume:/home/app/web/static
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - 1337:80
-    depends_on:
-      - web
   watchtower:
     image: containrrr/watchtower
     container_name: eventyay-next-watchtower
@@ -54,7 +38,3 @@ services:
       WATCHTOWER_NOTIFICATION_URL: ${WATCHTOWER_NOTIFICATION_URL}
     command: watchtower eventyay-next-web --cleanup
 
-
-volumes:
-  postgres_data_prod:
-  static_volume:
