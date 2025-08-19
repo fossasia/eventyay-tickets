@@ -52,3 +52,4 @@ app/eventyay/static/CACHE
 .env.prod
 deployment/.env.dev
 deployment/.env.prod
+deployment/.env
