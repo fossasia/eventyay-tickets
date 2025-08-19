@@ -15,4 +15,8 @@ python manage.py collectstatic --noinput
 python manage.py compress
 python manage.py migrate
 
+# copy all files from eventyay/static to static
+rm -rf static/*
+cp -a eventyay/static .
+
 exec "$@"

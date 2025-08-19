@@ -176,9 +176,6 @@ Deployment
 ----------
 
 Similar to the above, just use create `deployment/.env`, make sure the `DEBUG=0`.
-
-WARNING: At the moment `DEBUG=1` is *NECESSARY* otherwise static files are not served???
-
 and run with `docker compose -f deployment/docker-compose.prod.yml ...`.
 Prod deployment uses gunicorn and an nginx serving files.
 
