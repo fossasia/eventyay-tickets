@@ -7,10 +7,10 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, UpdateView
 
-from pretix.base.models.page import Page
-from pretix.control.forms.page import PageSettingsForm
-from pretix.control.permissions import AdministratorPermissionRequiredMixin
-from pretix.helpers.compat import CompatDeleteView
+from eventyay.base.models.page import Page
+from eventyay.control.forms.page import PageSettingsForm
+from eventyay.control.permissions import AdministratorPermissionRequiredMixin
+from eventyay.helpers.compat import CompatDeleteView
 
 
 class PageList(AdministratorPermissionRequiredMixin, ListView):

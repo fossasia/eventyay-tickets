@@ -12,17 +12,17 @@ from django.utils.translation import (
     gettext_lazy as _,
 )
 
-from pretix.base.models.tax import TaxedPrice
-from pretix.base.services.cart import (
+from eventyay.base.models.tax import TaxedPrice
+from eventyay.base.services.cart import (
     CartError,
     error_messages,
     set_cart_addons,
 )
-from pretix.base.signals import validate_cart_addons
-from pretix.base.views.tasks import AsyncAction
-from pretix.presale.views import CartMixin, get_cart
-from pretix.presale.views.cart import get_or_create_cart_id
-from pretix.presale.views.event import get_grouped_items
+from eventyay.base.signals import validate_cart_addons
+from eventyay.base.views.tasks import AsyncAction
+from eventyay.presale.views import CartMixin, get_cart
+from eventyay.presale.views.cart import get_or_create_cart_id
+from eventyay.presale.views.event import get_grouped_items
 
 from .template_flow_step import TemplateFlowStep
 
@@ -30,7 +30,7 @@ from .template_flow_step import TemplateFlowStep
 class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
     priority = 40
     identifier = 'addons'
-    template_name = 'pretixpresale/event/checkout_addons.html'
+    template_name = 'eventyaypresale/event/checkout_addons.html'
     task = set_cart_addons
     known_errortypes = ['CartError']
     requires_valid_cart = False

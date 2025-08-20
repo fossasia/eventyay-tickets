@@ -9,15 +9,15 @@ from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
 
-from pretix.base.forms.questions import (
+from eventyay.base.forms.questions import (
     BaseInvoiceAddressForm,
     BaseQuestionsForm,
     WrappedPhoneNumberPrefixWidget,
     guess_country,
 )
-from pretix.base.i18n import get_babel_locale, language
-from pretix.base.validators import EmailBanlistValidator
-from pretix.presale.signals import contact_form_fields
+from eventyay.base.i18n import get_babel_locale, language
+from eventyay.base.validators import EmailBanlistValidator
+from eventyay.presale.signals import contact_form_fields
 
 
 class ContactForm(forms.Form):
@@ -115,7 +115,7 @@ class QuestionsForm(BaseQuestionsForm):
 
 
 class AddOnRadioSelect(forms.RadioSelect):
-    option_template_name = 'pretixpresale/forms/addon_choice_option.html'
+    option_template_name = 'eventyaypresale/forms/addon_choice_option.html'
 
     def optgroups(self, name, value, attrs=None):
         attrs = attrs or {}
