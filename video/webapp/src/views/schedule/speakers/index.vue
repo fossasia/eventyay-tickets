@@ -13,7 +13,7 @@
 					p.biography {{ speaker.biography }}
 					.sessions(v-if="speaker.sessions.length && speaker.sessions.some(s => s)")
 						h2 {{ $t('schedule/speakers/index:speaker-sessions:header') }}:
-						.session(v-for="session of speaker.sessions", v-if="session")
+						.session(v-for="session of speaker.sessions")
 							.title {{ session.title }}
 </template>
 <script>
@@ -38,7 +38,7 @@ export default {
 			this.speakers = (await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/?limit=999`)).json()).results.sort((a, b) => a.name.localeCompare(b.name))
 			// const speakersToAttendee = await api.call('user.fetch', {pretalx_ids: this.speakers.map(speaker => speaker.code)})
 			for (const speaker of this.speakers) {
-				speaker.sessions = speaker.submissions.map(submission => this.sessionsLookup[submission])
+				speaker.sessions = speaker.submissions.map(submission => this.sessionsLookup[submission]).filter(Boolean)
 				// speaker.attendee = speakersToAttendee[speaker.code]
 			}
 		} else {

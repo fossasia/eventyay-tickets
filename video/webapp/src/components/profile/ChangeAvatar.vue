@@ -8,7 +8,7 @@
 		.file-error(v-if="fileError")
 			.mdi.mdi-alert-octagon
 			.message {{ fileError }}
-		cropper.cropper(v-else-if="avatarImage", ref="cropper", :stencil-component="CircleStencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
+		cropper(v-else-if="avatarImage", ref="cropper", class="cropper", :stencilComponent="$options.components.CircleStencil", :src="avatarImage", :stencilProps="{aspectRatio: '1/1'}", :sizeRestrictionsAlgorithm="pixelsRestrictions")
 		identicon(v-else, :user="identiconUser", @click="changeIdenticon")
 </template>
 <script>
@@ -74,7 +74,7 @@ export default {
 			const avatarFile = event.target.files[0]
 			const reader = new FileReader()
 			reader.readAsDataURL(avatarFile)
-			event.target.value = ''
+			event.target.modelValue = ''
 			reader.onload = event => {
 				if (event.target.readyState !== FileReader.DONE) return
 				const img = new Image()

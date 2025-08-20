@@ -45,9 +45,9 @@
 		.actions(v-if="!readonly")
 			emoji-picker-button(@selected="addReaction", strategy="fixed", placement="bottom-end", :offset="[36, 3]", icon-style="plus")
 			menu-dropdown(v-if="(hasPermission('room:chat.moderate') || message.sender === user.id)", v-model="selected", placement="bottom-end", strategy="fixed", :offset="[0, 3]")
-				template(v-slot:button="{toggle}")
+				template(#button="{toggle}")
 					bunt-icon-button(@click="toggle") dots-vertical
-				template(v-slot:menu)
+				template(#menu)
 					.edit-message(v-if="message.sender === user.id && message.content.type !== 'call'", @click="startEditingMessage") {{ $t('ChatMessage:message-edit:label') }}
 					.delete-message(@click="selected = false, showDeletePrompt = true") {{ $t('ChatMessage:message-delete:label') }}
 	template(v-else-if="message.event_type === 'channel.member'")
