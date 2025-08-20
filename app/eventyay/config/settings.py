@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+
 import sys
 import configparser
 import os
@@ -69,7 +70,7 @@ else:
 
 # Application definition
 
-AUTH_USER_MODEL = 'eventyaybase.User'
+AUTH_USER_MODEL = 'base.User'
 INSTALLED_APPS = [
     'bootstrap3',
     'compressor',
@@ -92,7 +93,6 @@ INSTALLED_APPS = [
     'eventyay.presale',
     'statici18n',
 ]
-
 
 
 MIDDLEWARE = [
@@ -139,28 +139,19 @@ WSGI_APPLICATION = 'eventyay.config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-database_type = os.environ.get("DATABASE", "sqlite3")
-if database_type == "sqlite3":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-            'CONN_MAX_AGE': 0,
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'eventyay-db'),
+        # When these values are `None`, "peer" connection method will be used.
+        # We just need to have a PostgreSQL user with the same name as Linux user.
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
+        'CONN_MAX_AGE': 120,
     }
-elif database_type == "postgres":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("POSTGRES_DB", "eventyay-db"),
-            "USER": os.environ.get("POSTGRES_USER", "user"),
-            "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
-            "HOST": os.environ.get("POSTGRES_HOST", "eventyay-db"),
-            "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-            'CONN_MAX_AGE': 120,
-        }
-    }
-
+}
 
 
 # Password validation
@@ -325,7 +316,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-STATICFILES_DIRS = [ ]
+STATICFILES_DIRS = []
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
 
 COMPRESS_PRECOMPILERS = (
@@ -376,11 +367,11 @@ SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-OAUTH2_PROVIDER_APPLICATION_MODEL = 'eventyayapi.OAuthApplication'
-OAUTH2_PROVIDER_GRANT_MODEL = 'eventyayapi.OAuthGrant'
-OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'eventyayapi.OAuthAccessToken'
-OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'eventyayapi.OAuthIDToken'
-OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'eventyayapi.OAuthRefreshToken'
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'api.OAuthApplication'
+OAUTH2_PROVIDER_GRANT_MODEL = 'api.OAuthGrant'
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = 'api.OAuthAccessToken'
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = 'api.OAuthIDToken'
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = 'api.OAuthRefreshToken'
 OAUTH2_PROVIDER = {
     'SCOPES': {
         'profile': _('User profile only'),
@@ -395,7 +386,6 @@ OAUTH2_PROVIDER = {
     'OIDC_RESPONSE_TYPES_SUPPORTED': ['code'],  # We don't support proper OIDC for now
 }
 
-AUTH_USER_MODEL = 'eventyaybase.User'
 LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'

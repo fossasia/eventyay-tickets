@@ -1,5 +1,5 @@
 eventyay-tickets (ENext)
-======
+========================
 
 .. image:: https://codecov.io/gh/fossasia/eventyay-tickets/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/pretix/pretix
@@ -14,21 +14,25 @@ ENext is the new and updated version of Eventyay with a unified codebase for the
 External Dependencies
 ---------------------
 
-You should install the following dependencies on your system:
+The *deb-packages.txt* file lists Debian packages we need to install.
+If you are using Debian / Ubuntu, you can install them quickly with this command:
 
-- Python 3.11 or newer
-- ``pip`` for Python 3 (Debian package: ``python3-pip``)
-- ``python-dev`` for Python 3 (Debian package: ``python3-dev``)
-- On Debian/Ubuntu: ``python-venv`` for Python 3 (Debian package: ``python3-venv``)
-- ``libffi`` (Debian package: ``libffi-dev``)
-- ``libssl`` (Debian package: ``libssl-dev``)
-- ``libxml2`` (Debian package: ``libxml2-dev``)
-- ``libxslt`` (Debian package: ``libxslt1-dev``)
-- ``libenchant1c2a`` (Debian package: ``libenchant1c2a`` or ``libenchant2-2``)
-- ``msgfmt`` (Debian package: ``gettext``)
-- ``freetype`` (Debian package: ``libfreetype-dev``)
-- ``git``
-- For Pillow: ``libjpeg`` (Debian package: ``libjpeg-dev``)
+For traditional shell:
+
+.. code-block:: bash
+
+   $ xargs -a deb-packages.txt sudo apt install
+
+For Nushell:
+
+.. code-block:: nu
+
+   > open deb-packages.txt | lines | sudo apt install ...$in
+
+
+If you are using other Linux distros, please guess the corresponding package names for that list.
+
+Other than that, please install `uv`_, the Python package manager.
 
 Getting Started
 ---------------
@@ -45,49 +49,73 @@ Getting Started
 
       cd eventyay-tickets
 
-3. **Create and activate a virtual environment**:
-
-   Either use venv or pyenv to set up an environment and activate it.
-
-   With venv you have to activate the environment everytime you start a new shell.
-
-   .. code-block:: bash
-
-      python -m venv venv
-      source venv/bin/activate
-
-   With pyenv you have to do the next only once, and can then forget. Whenever
-   you are in the `eventyay-tickets` directory, the `enext-env` will be used.
-   
-   .. code-block:: bash
-   
-      pyenv virtualenv 3.11 enext-env
-      pyenv local enext-env
-
-4. **Install and update pip and setuptools**:
-
-   .. code-block:: bash
-
-      pip3 install -U pip setuptools
-
-
-5. **Switch to the `enext` branch**:
+3. **Switch to the `enext` branch**:
 
    .. code-block:: bash
 
       git switch enext
 
-6. **Enter the app directory**:
+
+4. **Install Python packages**
+
+Use ``uv`` to create virtual environment and install Python packages at the same time.
+
+  .. code-block:: sh
+
+    uv sync --all-extras --all-groups
+
+
+5. **Create a PostgreSQL database**
+
+The default database name that the project needs is ``eventyay-db``. If you are using Linux, the simplest way
+to work with database is to use its "peer" mode (no need to remember password).
+
+Create a Postgres user with the same name as your Linux user:
+
+.. code-block:: sh
+
+   sudo -u postgres createuser -s $USER
+
+(``-s`` means *superuser*)
+
+Then just create a database owned by your user:
+
+.. code-block:: sh
+
+   createdb eventyay-db
+
+From now on, you can do everything with the database without specifying password, host and port.
+
+.. code-block:: sh
+
+   dropdb eventyay-db
+   psql eventyay-db
+
+In case you cannot take adavantage of PostgreSQL *peer* mode, you need to create a *.env* file with these values:
+
+.. code-block:: sh
+
+   POSTGRES_USER=
+   POSTGRES_PASSWORD=
+   POSTGRES_HOST=
+   POSTGRES_PORT=
+
+6. **Activate virtual environment**
+
+After running ``uv sync```, ``uv`` will activate the virtual environment. But if you are back
+to work on the project another, we don't run ``uv``, then we activate the virtual environment by:
+
+
+  .. code-block:: sh
+
+    . .venv/bin/activate
+
+
+7. **Enter the app directory**:
 
    .. code-block:: bash
 
       cd app
-
-7. **Install required Python packages**:
-
-   .. code-block:: bash
-
-      pip install -r requirements.txt
 
 8. **Initialize the database**:
 
@@ -154,14 +182,14 @@ We assume your current working directory is the checkout of this repo.
 
    Open `http://localhost:8000` in a browser.
 
-6. **Checking the logs**
+7. **Checking the logs**
 
    .. code-block:: bash
 
       docker compose logs -f
 
 
-7. **Shut down**
+8. **Shut down**
 
    To shut down the development docker deployment, run
 
@@ -197,6 +225,7 @@ See the LICENSE file for the complete license text.
 
 This project is maintained by **FOSSASIA**. See the AUTHORS file for a list of all the awesome contributors of this project.
 
+.. _uv: https://docs.astral.sh/uv/getting-started/installation/
 .. _installation guide: https://docs.eventyay.com/en/latest/admin/installation/index.html
 .. _eventyay.com: https://eventyay.com
 .. _blog: https://blog.eventyay.com

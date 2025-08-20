@@ -36,7 +36,7 @@ def generate_api_token():
 
 
 class Gate(LoggedModel):
-    organizer = models.ForeignKey('eventyaybase.Organizer', on_delete=models.PROTECT, related_name='gates')
+    organizer = models.ForeignKey('base.Organizer', on_delete=models.PROTECT, related_name='gates')
     name = models.CharField(
         verbose_name=_('Name'),
         max_length=190,
@@ -80,9 +80,9 @@ class Gate(LoggedModel):
 
 
 class Device(LoggedModel):
-    organizer = models.ForeignKey('eventyaybase.Organizer', on_delete=models.PROTECT, related_name='devices')
+    organizer = models.ForeignKey('base.Organizer', on_delete=models.PROTECT, related_name='devices')
     gate = models.ForeignKey(
-        'eventyaybase.Gate',
+        'base.Gate',
         verbose_name=_('Gate'),
         on_delete=models.SET_NULL,
         null=True,

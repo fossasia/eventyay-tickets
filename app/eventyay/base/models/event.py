@@ -43,15 +43,12 @@ from eventyay.helpers.thumb import get_thumbnail
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
+from eventyay.consts import TIMEZONE_CHOICES
 
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
 
 TALK_HOSTNAME = settings.TALK_HOSTNAME
-
-TIMEZONE_CHOICES = sorted([
-    tz for tz in zoneinfo.available_timezones() if not tz.startswith("Etc/")
-])
 
 
 class EventMixin:

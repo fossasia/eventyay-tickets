@@ -58,7 +58,7 @@ class OAuthApplication(AbstractApplication):
 
 class OAuthGrant(AbstractGrant):
     application = models.ForeignKey(OAuthApplication, on_delete=models.CASCADE)
-    organizers = models.ManyToManyField('eventyaybase.Organizer')
+    organizers = models.ManyToManyField('base.Organizer')
     redirect_uri = models.CharField(max_length=2500)  # Only 255 in AbstractGrant, which caused problems
 
 
@@ -67,7 +67,7 @@ class OAuthIDToken(AbstractIDToken):
         OAuthApplication,
         on_delete=models.CASCADE,
     )
-    organizers = models.ManyToManyField('eventyaybase.Organizer')
+    organizers = models.ManyToManyField('base.Organizer')
 
 
 class OAuthAccessToken(AbstractAccessToken):
@@ -92,7 +92,7 @@ class OAuthAccessToken(AbstractAccessToken):
         blank=True,
         null=True,
     )
-    organizers = models.ManyToManyField('eventyaybase.Organizer')
+    organizers = models.ManyToManyField('base.Organizer')
 
     def revoke(self):
         self.expires = now() - timedelta(hours=1)
@@ -111,11 +111,11 @@ class OAuthRefreshToken(AbstractRefreshToken):
 
 
 class WebHook(models.Model):
-    organizer = models.ForeignKey('eventyaybase.Organizer', on_delete=models.CASCADE, related_name='webhooks')
+    organizer = models.ForeignKey('base.Organizer', on_delete=models.CASCADE, related_name='webhooks')
     enabled = models.BooleanField(default=True, verbose_name=_('Enable webhook'))
     target_url = models.URLField(verbose_name=_('Target URL'))
     all_events = models.BooleanField(default=True, verbose_name=_('All events (including newly created ones)'))
-    limit_events = models.ManyToManyField('eventyaybase.Event', verbose_name=_('Limit to events'), blank=True)
+    limit_events = models.ManyToManyField('base.Event', verbose_name=_('Limit to events'), blank=True)
 
     class Meta:
         ordering = ('id',)
