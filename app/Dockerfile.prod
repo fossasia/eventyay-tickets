@@ -7,7 +7,9 @@ FROM python:3.12-slim-trixie AS builder
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # set work directory
-WORKDIR /usr/src/app
+ENV APP_HOME=/home/app/web
+RUN mkdir -p $APP_HOME
+WORKDIR $APP_HOME
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -60,7 +62,8 @@ COPY . $APP_HOME
 RUN chown -R app:app $APP_HOME
 
 # Copy the Python environment from the builder
-COPY --from=builder --chown=app:app /usr/src/app/.venv $APP_HOME/.venv
+# Note: The venv path in the builder must match the one in runner.
+COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
 
 # change to the app user
 USER app
