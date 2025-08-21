@@ -262,8 +262,3 @@ __all__ = [
     "invoice_filename",
     "itempicture_upload_to",
 ]
-
-
-TIMEZONE_CHOICES = [
-    tz for tz in zoneinfo.available_timezones() if not tz.startswith("Etc/")
-]
