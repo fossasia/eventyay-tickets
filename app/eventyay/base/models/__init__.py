@@ -97,6 +97,3 @@ from .availability import Availability
 from .room import Room
 from .schedule import Schedule
 from .slot import TalkSlot
-TIMEZONE_CHOICES = [
-    tz for tz in zoneinfo.available_timezones() if not tz.startswith("Etc/")
-]

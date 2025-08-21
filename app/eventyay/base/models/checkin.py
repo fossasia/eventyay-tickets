@@ -238,25 +238,25 @@ class Checkin(models.Model):
         (TYPE_ENTRY, _('Entry')),
         (TYPE_EXIT, _('Exit')),
     )
-    position = models.ForeignKey('eventyaybase.OrderPosition', related_name='checkins', on_delete=models.CASCADE)
+    position = models.ForeignKey('base.OrderPosition', related_name='checkins', on_delete=models.CASCADE)
     datetime = models.DateTimeField(default=now)
     nonce = models.CharField(max_length=190, null=True, blank=True)
     list = models.ForeignKey(
-        'eventyaybase.CheckinList',
+        'base.CheckinList',
         related_name='checkins',
         on_delete=models.PROTECT,
     )
     type = models.CharField(max_length=100, choices=CHECKIN_TYPES, default=TYPE_ENTRY)
     forced = models.BooleanField(default=False)
     device = models.ForeignKey(
-        'eventyaybase.Device',
+        'base.Device',
         related_name='checkins',
         on_delete=models.PROTECT,
         null=True,
         blank=True,
     )
     gate = models.ForeignKey(
-        'eventyaybase.Gate',
+        'base.Gate',
         related_name='checkins',
         on_delete=models.SET_NULL,
         null=True,

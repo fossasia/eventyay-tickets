@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 class EventyayBaseConfig(AppConfig):
     name = 'eventyay.base'
-    label = 'eventyaybase'
+    label = 'base'
 
     def ready(self):
         from . import exporter  # NOQA

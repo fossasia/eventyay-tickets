@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 class EventyayApiConfig(AppConfig):
     name = 'eventyay.api'
-    label = 'eventyayapi'
+    label = 'api'
 
     def ready(self):
         from . import signals, webhooks  # noqa

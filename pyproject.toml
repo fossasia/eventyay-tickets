@@ -3,7 +3,7 @@ name = "eventyay"
 dynamic = ["version"]
 description = "the open source event solution"
 readme = "README.rst"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 license = {file = "LICENSE"}
 keywords = ["tickets", "events", "web", "shop", "ecommerce"]
 authors = [ {name = "eventyay", email = "info@eventyay.com"}, ]
@@ -78,8 +78,8 @@ dependencies = [
         'oauthlib==3.2.*',
         'django-phonenumber-field==7.3.*',
         'phonenumberslite==8.13.*',
-        'python-bidi==0.6.*',  # Support for Arabic in reportlab
-        'arabic-reshaper==3.0.0',  # Support for Arabic in reportlab
+        'python-bidi==0.6.*', # Support for Arabic in reportlab
+        'arabic-reshaper==3.0.0', # Support for Arabic in reportlab
         'packaging',
         'tlds>=2020041600',
         'text-unidecode==1.*',
@@ -102,9 +102,11 @@ dependencies = [
         'eventyay-paypal @ git+https://your_token@github.com/fossasia/eventyay-tickets-paypal.git@master',
         'django_celery_beat==2.7.0',
         'cron-descriptor==1.4.5',
-        'django-allauth[socialaccount] @ git+https://codeberg.org/quan/django-allauth.git@f151589949',
+        'django-allauth[socialaccount]',
         'eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@master',
-        'pydantic==2.10.4'
+        'pydantic==2.10.4',
+        "urlman>=2.0.2",
+        "rules>=3.5",
 ]
 
 [project.optional-dependencies]
