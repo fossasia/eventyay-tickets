@@ -1638,7 +1638,7 @@ requires-dist = [
     { name = "defusedcsv", specifier = ">=2.0.0" },
     { name = "defusedxml", specifier = ">=0.7.1" },
     { name = "dj-static", specifier = ">=0.0.6" },
-    { name = "django", specifier = ">=5.1.9" },
+    { name = "django", specifier = ">=5.2.5" },
     { name = "django-allauth", specifier = ">=0.63.6" },
     { name = "django-appconf", specifier = ">=1.1.0" },
     { name = "django-bootstrap3", specifier = ">=24.3" },

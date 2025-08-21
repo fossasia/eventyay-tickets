@@ -15,7 +15,7 @@ classifiers = [
   "Environment :: Web Environment",
   "License :: OSI Approved :: Apache License, Version 2.0",
   "Programming Language :: Python :: 3.11",
-  "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
 ]
 dependencies = [
     "aiohappyeyeballs>=2.4.4",
@@ -61,7 +61,7 @@ dependencies = [
     "defusedcsv>=2.0.0",
     "defusedxml>=0.7.1",
     "dj-static>=0.0.6",
-    "django>=5.1.9",
+    "django>=5.2.5",
     "django-allauth>=0.63.6",
     "django-appconf>=1.1.0",
     "django-bootstrap3>=24.3",
