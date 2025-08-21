@@ -26,5 +26,9 @@ RUN chmod +x /usr/src/app/entrypoint.sh
 # copy project
 COPY . .
 
+# Expose virtual env
+ENV VIRTUAL_ENV=/usr/src/app/.venv
+ENV PATH="/usr/src/app/.venv/bin:$PATH"
+
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
