@@ -1,0 +1,570 @@
+{% extends "exhibitors/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block exhibitor_title %}{{ exhibitor.name }} - {% trans "Exhibitor Details" %}{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item">
+    <a href="{% url 'exhibitors:directory' %}">
+      <i class="fas fa-store"></i>
+      {% trans "Exhibitors" %}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {{ exhibitor.name }}
+  </li>
+{% endblock %}
+
+{% block extra_exhibitor_head %}
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="{{ exhibitor.name }} - {{ event.name }}">
+  <meta property="og:description" content="{{ exhibitor.tagline|default:exhibitor.description|truncatewords:20 }}">
+  {% if exhibitor.logo %}
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ exhibitor.logo.url }}">
+  {% endif %}
+  <meta property="og:type" content="business.business">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ exhibitor.name }} - {{ event.name }}">
+  <meta name="twitter:description" content="{{ exhibitor.tagline|default:exhibitor.description|truncatewords:20 }}">
+  {% if exhibitor.banner %}
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ exhibitor.banner.url }}">
+  {% elif exhibitor.logo %}
+  <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ exhibitor.logo.url }}">
+  {% endif %}
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ exhibitor.name }}",
+    {% if exhibitor.tagline %}"description": "{{ exhibitor.tagline }}",{% endif %}
+    {% if exhibitor.url %}"url": "{{ exhibitor.url }}",{% endif %}
+    {% if exhibitor.email %}"email": "{{ exhibitor.email }}",{% endif %}
+    {% if exhibitor.logo %}"logo": "{{ request.scheme }}://{{ request.get_host }}{{ exhibitor.logo.url }}",{% endif %}
+    "location": {
+      "@type": "Place",
+      "name": "{{ exhibitor.booth_name|default:exhibitor.booth_id }}"
+    },
+    "event": {
+      "@type": "Event",
+      "name": "{{ event.name }}"
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block exhibitor_content %}
+  <!-- Server-side fallback content -->
+  <div class="exhibitor-detail-fallback">
+    <div class="container">
+      <!-- Header Section -->
+      <div class="exhibitor-header">
+        {% if exhibitor.banner %}
+        <div class="banner-section">
+          {% if exhibitor.banner.name|slice:"-4:" == ".mp4" or exhibitor.banner.name|slice:"-5:" == ".webm" %}
+          <video class="banner-video" controls poster="{{ exhibitor.logo.url }}">
+            <source src="{{ exhibitor.banner.url }}" type="video/{{ exhibitor.banner.name|slice:"-3:" }}">
+            {% trans "Your browser does not support video playback." %}
+          </video>
+          {% else %}
+          <img src="{{ exhibitor.banner.url }}" alt="{{ exhibitor.name }} banner" class="banner-image">
+          {% endif %}
+          <div class="banner-overlay"></div>
+        </div>
+        {% endif %}
+        
+        <div class="header-content" {% if not exhibitor.banner %}class="no-banner"{% endif %}>
+          <div class="container">
+            <div class="row align-items-end">
+              <div class="col-md-8">
+                <div class="exhibitor-info">
+                  <!-- Logo -->
+                  <div class="logo-container">
+                    {% if exhibitor.logo %}
+                    <img src="{{ exhibitor.logo.url }}" alt="{{ exhibitor.name }} logo" class="logo-image">
+                    {% else %}
+                    <div class="logo-placeholder">
+                      <i class="fas fa-building"></i>
+                    </div>
+                    {% endif %}
+                  </div>
+                  
+                  <!-- Basic Info -->
+                  <div class="basic-info">
+                    <h1 class="exhibitor-name">{{ exhibitor.name }}</h1>
+                    {% if exhibitor.tagline %}
+                    <p class="exhibitor-tagline">{{ exhibitor.tagline }}</p>
+                    {% endif %}
+                    <div class="booth-info">
+                      <span class="booth-badge">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ exhibitor.booth_name|default:exhibitor.booth_id }}
+                      </span>
+                      {% if exhibitor.featured %}
+                      <span class="featured-badge">
+                        <i class="fas fa-star"></i>
+                        {% trans "Featured" %}
+                      </span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="action-buttons">
+                  {% if exhibitor.contact_enabled %}
+                  <button class="btn btn-primary btn-lg contact-btn" data-exhibitor-id="{{ exhibitor.id }}">
+                    <i class="fas fa-envelope"></i>
+                    {% trans "Contact Us" %}
+                  </button>
+                  {% endif %}
+                  
+                  {% if exhibitor.highlighted_room_id %}
+                  <a href="/video/room/{{ exhibitor.highlighted_room_id }}" target="_blank" class="btn btn-success btn-lg">
+                    <i class="fas fa-video"></i>
+                    {% trans "Join Virtual Booth" %}
+                  </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="row">
+          <!-- Left Column -->
+          <div class="col-lg-8">
+            <!-- Description -->
+            {% if exhibitor.description %}
+            <div class="content-section">
+              <h3>{% trans "About" %}</h3>
+              <div class="description-content">
+                {{ exhibitor.description|linebreaks }}
+              </div>
+            </div>
+            {% endif %}
+            
+            <!-- Downloads -->
+            {% if download_links %}
+            <div class="content-section">
+              <h3>{% trans "Downloads" %}</h3>
+              <div class="download-links">
+                {% for link in download_links %}
+                <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="download-link">
+                  <i class="fas fa-download"></i>
+                  {{ link.display_text }}
+                </a>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+            
+            <!-- External Links -->
+            {% if external_links %}
+            <div class="content-section">
+              <h3>{% trans "Additional Resources" %}</h3>
+              <div class="external-links">
+                {% for link in external_links %}
+                <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="external-link">
+                  <i class="fas fa-external-link-alt"></i>
+                  {{ link.display_text }}
+                </a>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+            
+            <!-- Staff Section -->
+            {% if staff %}
+            <div class="content-section">
+              <h3>{% trans "Meet Our Team" %}</h3>
+              <div class="staff-grid">
+                {% for member in staff %}
+                <div class="staff-member">
+                  <div class="staff-avatar">
+                    {% if member.user.avatar %}
+                    <img src="{{ member.user.avatar.url }}" alt="{{ member.user.get_full_name }}" class="avatar-image">
+                    {% else %}
+                    <div class="avatar-placeholder">
+                      <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="staff-info">
+                    <h5 class="staff-name">{{ member.user.get_full_name }}</h5>
+                    <p class="staff-role">{{ member.get_role_display }}</p>
+                    {% if member.user.email %}
+                    <a href="mailto:{{ member.user.email }}" class="staff-email">
+                      <i class="fas fa-envelope"></i>
+                      {% trans "Contact" %}
+                    </a>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          
+          <!-- Right Column - Sidebar -->
+          <div class="col-lg-4">
+            <div class="sidebar">
+              <!-- Contact Info -->
+              <div class="sidebar-section">
+                <h4>{% trans "Contact Information" %}</h4>
+                <div class="contact-info">
+                  {% if exhibitor.email %}
+                  <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:{{ exhibitor.email }}">{{ exhibitor.email }}</a>
+                  </div>
+                  {% endif %}
+                  {% if exhibitor.url %}
+                  <div class="contact-item">
+                    <i class="fas fa-globe"></i>
+                    <a href="{{ exhibitor.url }}" target="_blank" rel="noopener noreferrer">
+                      {{ exhibitor.url|slice:"8:" }}
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <!-- Social Media -->
+              {% if social_links %}
+              <div class="sidebar-section">
+                <h4>{% trans "Follow Us" %}</h4>
+                <div class="social-links">
+                  {% for link in social_links %}
+                  <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="social-link" title="{{ link.display_text }}">
+                    <i class="fab fa-{{ link.url|lower|slice:'facebook' and 'facebook' or link.url|lower|slice:'twitter' and 'twitter' or link.url|lower|slice:'linkedin' and 'linkedin' or link.url|lower|slice:'instagram' and 'instagram' or 'link' }}"></i>
+                    {{ link.display_text }}
+                  </a>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+              
+              <!-- Tags -->
+              {% if tags %}
+              <div class="sidebar-section">
+                <h4>{% trans "Categories" %}</h4>
+                <div class="tags">
+                  {% for tag in tags %}
+                  <span class="tag">{{ tag.name }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+              
+              <!-- Quick Actions -->
+              <div class="sidebar-section">
+                <h4>{% trans "Quick Actions" %}</h4>
+                <div class="quick-actions">
+                  {% if exhibitor.contact_enabled %}
+                  <button class="btn btn-outline-primary btn-block contact-btn" data-exhibitor-id="{{ exhibitor.id }}">
+                    <i class="fas fa-envelope"></i>
+                    {% trans "Send Message" %}
+                  </button>
+                  {% endif %}
+                  
+                  {% if exhibitor.highlighted_room_id %}
+                  <a href="/video/room/{{ exhibitor.highlighted_room_id }}" target="_blank" class="btn btn-outline-success btn-block">
+                    <i class="fas fa-video"></i>
+                    {% trans "Virtual Booth" %}
+                  </a>
+                  {% endif %}
+                  
+                  <button class="btn btn-outline-secondary btn-block share-btn">
+                    <i class="fas fa-share"></i>
+                    {% trans "Share" %}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block vue_content %}
+  <!-- Vue.js ExhibitorDetail component will enhance this page -->
+  <exhibitor-detail 
+    :booth-id="'{{ exhibitor.booth_id }}'"
+  ></exhibitor-detail>
+{% endblock %}
+
+{% block extra_exhibitor_css %}
+  <!-- Detail page styles are now in exhibitors.css -->
+
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .staff-member {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .staff-member:hover {
+      background: #e9ecef;
+      transform: translateY(-2px);
+    }
+    
+    .staff-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #dee2e6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .avatar-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .avatar-placeholder {
+      color: #6c757d;
+      font-size: 1.5rem;
+    }
+    
+    .staff-info {
+      flex: 1;
+    }
+    
+    .staff-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 0.25rem 0;
+      color: #333;
+    }
+    
+    .staff-role {
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin: 0 0 0.5rem 0;
+      text-transform: capitalize;
+    }
+    
+    .staff-email {
+      font-size: 0.85rem;
+      color: #007bff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .staff-email:hover {
+      text-decoration: underline;
+    }
+    
+    .sidebar {
+      position: sticky;
+      top: 2rem;
+    }
+    
+    .sidebar-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar-section h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+      color: #333;
+    }
+    
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .contact-item i {
+      color: #007bff;
+      width: 16px;
+      text-align: center;
+    }
+    
+    .contact-item a {
+      color: #495057;
+      text-decoration: none;
+      word-break: break-all;
+    }
+    
+    .contact-item a:hover {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    
+    .social-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem;
+      color: #495057;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    
+    .social-link:hover {
+      background: #f8f9fa;
+      color: #007bff;
+      text-decoration: none;
+    }
+    
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .tag {
+      padding: 0.25rem 0.75rem;
+      background: #e9ecef;
+      color: #495057;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .quick-actions .btn {
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .banner-section {
+        height: 200px;
+      }
+      
+      .exhibitor-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .logo-container {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .exhibitor-name {
+        font-size: 2rem;
+      }
+      
+      .action-buttons {
+        width: 100%;
+        margin-top: 1rem;
+      }
+      
+      .staff-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .staff-member {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .sidebar {
+        position: static;
+        margin-top: 2rem;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block extra_exhibitor_script %}
+  <script>
+    // Fallback JavaScript for when Vue.js is not available
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show fallback content if Vue.js doesn't load
+      setTimeout(function() {
+        const vueApp = document.querySelector('#exhibitor-vue-app [data-v-app]')
+        if (!vueApp) {
+          document.querySelector('.exhibitor-detail-fallback').style.display = 'block'
+        }
+      }, 1000)
+      
+      // Handle contact button clicks
+      const contactButtons = document.querySelectorAll('.contact-btn')
+      contactButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const exhibitorId = this.dataset.exhibitorId
+          // This would open a contact modal or redirect to contact form
+          console.log('Contact exhibitor:', exhibitorId)
+        })
+      })
+      
+      // Handle share button
+      const shareButton = document.querySelector('.share-btn')
+      if (shareButton) {
+        shareButton.addEventListener('click', function() {
+          if (navigator.share) {
+            navigator.share({
+              title: document.title,
+              url: window.location.href
+            })
+          } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(window.location.href).then(function() {
+              alert('{% trans "Link copied to clipboard!" %}')
+            })
+          }
+        })
+      }
+    })
+  </script>
+{% endblock %}

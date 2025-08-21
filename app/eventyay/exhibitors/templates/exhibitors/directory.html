@@ -1,0 +1,106 @@
+{% extends "exhibitors/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block exhibitor_title %}{% trans "Exhibitor Directory" %}{% endblock %}
+
+{% block breadcrumb_items %}
+  <li class="breadcrumb-item active" aria-current="page">
+    {% trans "Exhibitor Directory" %}
+  </li>
+{% endblock %}
+
+{% block exhibitor_content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>{% trans "Exhibitor Directory" %}</h1>
+        <p class="text-muted">{% trans "Total exhibitors:" %} {{ total_count|default:"0" }}</p>
+        
+        <!-- Simple search -->
+        <div class="mb-3">
+          <input type="text" id="exhibitor-search" class="form-control" placeholder="{% trans 'Search exhibitors...' %}" onkeyup="searchExhibitors()">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block simple_content %}
+  <!-- Simple exhibitor table -->
+  <table class="table table-striped exhibitor-table" id="exhibitor-table">
+    <thead>
+      <tr>
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "Booth" %}</th>
+        <th>{% trans "Description" %}</th>
+        <th>{% trans "Actions" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for exhibitor in exhibitors %}
+      <tr>
+        <td>
+          <strong>{{ exhibitor.name }}</strong>
+          {% if exhibitor.tagline %}
+          <br><small class="text-muted">{{ exhibitor.tagline }}</small>
+          {% endif %}
+        </td>
+        <td>{{ exhibitor.booth_name|default:exhibitor.booth_id }}</td>
+        <td>
+          {% if exhibitor.description %}
+            {{ exhibitor.description|truncatewords:15 }}
+          {% else %}
+            <em class="text-muted">{% trans "No description available" %}</em>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'exhibitors:detail' booth_id=exhibitor.booth_id %}" class="btn btn-sm btn-primary">
+            {% trans "View Details" %}
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center text-muted">
+          {% trans "No exhibitors found." %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  {% if exhibitors.has_other_pages %}
+  <nav aria-label="Exhibitor pagination">
+    <ul class="pagination justify-content-center">
+      {% if exhibitors.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ exhibitors.previous_page_number }}">
+            {% trans "Previous" %}
+          </a>
+        </li>
+      {% endif %}
+      
+      <li class="page-item active">
+        <span class="page-link">
+          {% trans "Page" %} {{ exhibitors.number }} {% trans "of" %} {{ exhibitors.paginator.num_pages }}
+        </span>
+      </li>
+      
+      {% if exhibitors.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ exhibitors.next_page_number }}">
+            {% trans "Next" %}
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+{% endblock %}
+
+{% block extra_exhibitor_css %}
+{% endblock %}
+
+{% block extra_exhibitor_script %}
+{% endblock %}

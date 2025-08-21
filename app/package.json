@@ -1,0 +1,38 @@
+{
+  "name": "eventyay-frontend",
+  "version": "1.0.0",
+  "description": "ENext Frontend Dependencies",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "axios": "^1.4.0",
+    "bootstrap": "^5.3.0",
+    "pinia": "^2.1.0",
+    "vue": "^3.3.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.0",
+    "@vue/eslint-config-prettier": "^7.1.0",
+    "eslint": "^8.39.0",
+    "eslint-plugin-vue": "^9.11.0",
+    "prettier": "^2.8.8",
+    "terser": "^5.43.1",
+    "vite": "^4.3.0"
+  },
+  "type": "module",
+  "keywords": [
+    "vue",
+    "eventyay",
+    "exhibitors",
+    "frontend"
+  ],
+  "author": "ENext Team",
+  "license": "MIT"
+}

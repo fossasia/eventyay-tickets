@@ -1,0 +1,520 @@
+{% extends 'exhibitors/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Exhibitor Management" %} - {{ event.name }}{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="{% static 'exhibitors/css/exhibitors.css' %}">
+<!-- Management page styles are now in exhibitors.css -->
+{% endblock %}
+
+{% block content %}
+<div class="exhibitor-app">
+  <!-- Management Header -->
+  <div class="management-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1 class="mb-2">{% trans "Exhibitor Management" %}</h1>
+          <p class="mb-0 opacity-75">{% trans "Manage exhibitors, view analytics, and handle contact requests" %}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Statistics Overview -->
+    <div class="management-stats">
+      <div class="row">
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number" id="total-exhibitors">{{ stats.total_exhibitors|default:"0" }}</div>
+            <div class="stat-label">{% trans "Total Exhibitors" %}</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number" id="active-exhibitors">{{ stats.active_exhibitors|default:"0" }}</div>
+            <div class="stat-label">{% trans "Active" %}</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number" id="total-leads">{{ stats.total_leads|default:"0" }}</div>
+            <div class="stat-label">{% trans "Total Leads" %}</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number" id="contact-requests">{{ stats.contact_requests|default:"0" }}</div>
+            <div class="stat-label">{% trans "Contact Requests" %}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="management-actions">
+      <h3 class="mb-3">{% trans "Quick Actions" %}</h3>
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-plus-circle"></i>
+          </div>
+          <div class="action-title">{% trans "Add Exhibitor" %}</div>
+          <div class="action-description">{% trans "Create a new exhibitor profile" %}</div>
+          <a href="{% url 'exhibitors:create' %}" class="btn btn-exhibitor btn-sm">{% trans "Create" %}</a>
+        </div>
+        
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-upload"></i>
+          </div>
+          <div class="action-title">{% trans "Import Exhibitors" %}</div>
+          <div class="action-description">{% trans "Bulk import from CSV file" %}</div>
+          <button class="btn btn-exhibitor btn-sm" onclick="showImportModal()">{% trans "Import" %}</button>
+        </div>
+        
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-download"></i>
+          </div>
+          <div class="action-title">{% trans "Export Data" %}</div>
+          <div class="action-description">{% trans "Download exhibitor data" %}</div>
+          <button class="btn btn-exhibitor btn-sm" onclick="showExportModal()">{% trans "Export" %}</button>
+        </div>
+        
+        <div class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <div class="action-title">{% trans "Analytics" %}</div>
+          <div class="action-description">{% trans "View detailed analytics" %}</div>
+          <button class="btn btn-exhibitor btn-sm" onclick="showAnalytics()">{% trans "View" %}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exhibitor Management Table -->
+    <div class="management-table">
+      <div class="table-header">
+        <h3 class="table-title">{% trans "Exhibitor List" %}</h3>
+        <div class="table-actions">
+          <button class="btn btn-outline-secondary btn-sm" onclick="refreshTable()">
+            <i class="fas fa-sync-alt"></i> {% trans "Refresh" %}
+          </button>
+          <button class="btn btn-outline-primary btn-sm" onclick="showBulkActions()">
+            <i class="fas fa-tasks"></i> {% trans "Bulk Actions" %}
+          </button>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label class="filter-label">{% trans "Status:" %}</label>
+            <select class="form-select filter-select" id="status-filter">
+              <option value="">{% trans "All Status" %}</option>
+              <option value="active">{% trans "Active" %}</option>
+              <option value="inactive">{% trans "Inactive" %}</option>
+              <option value="pending">{% trans "Pending" %}</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">{% trans "Category:" %}</label>
+            <select class="form-select filter-select" id="category-filter">
+              <option value="">{% trans "All Categories" %}</option>
+              <!-- Categories will be populated dynamically -->
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">{% trans "Search:" %}</label>
+            <input type="text" class="form-control" id="search-filter" placeholder="{% trans 'Search exhibitors...' %}">
+          </div>
+          
+          <div class="filter-group">
+            <button class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
+              <i class="fas fa-times"></i> {% trans "Clear" %}
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <div id="exhibitor-management-table">
+          <!-- Vue.js component will be mounted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{% trans "Import Exhibitors" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="import-form" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="import-file" class="form-label">{% trans "CSV File" %}</label>
+            <input type="file" class="form-control" id="import-file" name="file" accept=".csv" required>
+            <div class="form-text">{% trans "Upload a CSV file with exhibitor data" %}</div>
+          </div>
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="update-existing" name="update_existing">
+              <label class="form-check-label" for="update-existing">
+                {% trans "Update existing exhibitors" %}
+              </label>
+            </div>
+          </div>
+          <div class="alert alert-info">
+            <small>
+              <strong>{% trans "CSV Format:" %}</strong><br>
+              {% trans "Required columns: name, email, description" %}<br>
+              {% trans "Optional columns: website, phone, booth_name, category" %}
+            </small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" class="btn btn-primary" onclick="submitImport()">{% trans "Import" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{% trans "Export Exhibitor Data" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="export-form">
+          <div class="mb-3">
+            <label class="form-label">{% trans "Export Format" %}</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="format" id="format-csv" value="csv" checked>
+              <label class="form-check-label" for="format-csv">CSV</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="format" id="format-excel" value="excel">
+              <label class="form-check-label" for="format-excel">Excel</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="format" id="format-json" value="json">
+              <label class="form-check-label" for="format-json">JSON</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{% trans "Include Data" %}</label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="include-basic" value="basic" checked>
+              <label class="form-check-label" for="include-basic">{% trans "Basic Information" %}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="include-staff" value="staff">
+              <label class="form-check-label" for="include-staff">{% trans "Staff Information" %}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="include-leads" value="leads">
+              <label class="form-check-label" for="include-leads">{% trans "Lead Data" %}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="include-contacts" value="contacts">
+              <label class="form-check-label" for="include-contacts">{% trans "Contact Requests" %}</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" class="btn btn-primary" onclick="submitExport()">{% trans "Export" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Actions Modal -->
+<div class="modal fade" id="bulkActionsModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{% trans "Bulk Actions" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">{% trans "Select Action" %}</label>
+          <select class="form-select" id="bulk-action">
+            <option value="">{% trans "Choose action..." %}</option>
+            <option value="activate">{% trans "Activate Selected" %}</option>
+            <option value="deactivate">{% trans "Deactivate Selected" %}</option>
+            <option value="delete">{% trans "Delete Selected" %}</option>
+            <option value="export">{% trans "Export Selected" %}</option>
+          </select>
+        </div>
+        <div class="alert alert-warning">
+          <small>{% trans "Selected exhibitors:" %} <span id="selected-count">0</span></small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" class="btn btn-primary" onclick="executeBulkAction()">{% trans "Execute" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+// Management page functionality
+const managementApp = {
+  data() {
+    return {
+      exhibitors: [],
+      loading: false,
+      filters: {
+        status: '',
+        category: '',
+        search: ''
+      },
+      selectedExhibitors: [],
+      stats: {
+        total_exhibitors: 0,
+        active_exhibitors: 0,
+        total_leads: 0,
+        contact_requests: 0
+      }
+    }
+  },
+  
+  mounted() {
+    this.loadData();
+    this.setupEventListeners();
+  },
+  
+  methods: {
+    async loadData() {
+      this.loading = true;
+      try {
+        const [exhibitorsResponse, statsResponse] = await Promise.all([
+          fetch('/api/exhibitors/'),
+          fetch('/api/exhibitors/analytics/')
+        ]);
+        
+        this.exhibitors = await exhibitorsResponse.json();
+        this.stats = await statsResponse.json();
+        
+        this.updateStats();
+      } catch (error) {
+        console.error('Error loading data:', error);
+        this.showNotification('Error loading data', 'error');
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    updateStats() {
+      document.getElementById('total-exhibitors').textContent = this.stats.total_exhibitors || 0;
+      document.getElementById('active-exhibitors').textContent = this.stats.active_exhibitors || 0;
+      document.getElementById('total-leads').textContent = this.stats.total_leads || 0;
+      document.getElementById('contact-requests').textContent = this.stats.contact_requests || 0;
+    },
+    
+    setupEventListeners() {
+      // Filter event listeners
+      document.getElementById('status-filter').addEventListener('change', (e) => {
+        this.filters.status = e.target.value;
+        this.applyFilters();
+      });
+      
+      document.getElementById('category-filter').addEventListener('change', (e) => {
+        this.filters.category = e.target.value;
+        this.applyFilters();
+      });
+      
+      document.getElementById('search-filter').addEventListener('input', (e) => {
+        this.filters.search = e.target.value;
+        this.debounceSearch();
+      });
+    },
+    
+    debounceSearch: debounce(function() {
+      this.applyFilters();
+    }, 300),
+    
+    applyFilters() {
+      // Apply filters to exhibitor list
+      // This would typically trigger a new API call with filter parameters
+      console.log('Applying filters:', this.filters);
+    },
+    
+    showNotification(message, type = 'info') {
+      // Show notification using the exhibitor store
+      if (window.exhibitorStore) {
+        window.exhibitorStore.showNotification(message, type);
+      }
+    }
+  }
+};
+
+// Global functions for modal actions
+function showImportModal() {
+  const modal = new bootstrap.Modal(document.getElementById('importModal'));
+  modal.show();
+}
+
+function showExportModal() {
+  const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+  modal.show();
+}
+
+function showBulkActions() {
+  const modal = new bootstrap.Modal(document.getElementById('bulkActionsModal'));
+  modal.show();
+}
+
+function showAnalytics() {
+  // Navigate to analytics page or show analytics modal
+  window.location.href = '/exhibitors/analytics/';
+}
+
+function refreshTable() {
+  if (window.managementApp) {
+    window.managementApp.loadData();
+  }
+}
+
+function clearFilters() {
+  document.getElementById('status-filter').value = '';
+  document.getElementById('category-filter').value = '';
+  document.getElementById('search-filter').value = '';
+  
+  if (window.managementApp) {
+    window.managementApp.filters = { status: '', category: '', search: '' };
+    window.managementApp.applyFilters();
+  }
+}
+
+function submitImport() {
+  const form = document.getElementById('import-form');
+  const formData = new FormData(form);
+  
+  fetch('/api/exhibitors/import/', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+      window.managementApp.showNotification('Import completed successfully', 'success');
+      window.managementApp.loadData();
+    } else {
+      window.managementApp.showNotification(data.error || 'Import failed', 'error');
+    }
+  })
+  .catch(error => {
+    console.error('Import error:', error);
+    window.managementApp.showNotification('Import failed', 'error');
+  });
+}
+
+function submitExport() {
+  const form = document.getElementById('export-form');
+  const formData = new FormData(form);
+  
+  // Create download link
+  const params = new URLSearchParams();
+  for (const [key, value] of formData.entries()) {
+    params.append(key, value);
+  }
+  
+  const url = `/api/exhibitors/export/?${params.toString()}`;
+  window.open(url, '_blank');
+  
+  bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+}
+
+function executeBulkAction() {
+  const action = document.getElementById('bulk-action').value;
+  if (!action) {
+    alert('Please select an action');
+    return;
+  }
+  
+  if (window.managementApp.selectedExhibitors.length === 0) {
+    alert('Please select exhibitors');
+    return;
+  }
+  
+  if (confirm(`Are you sure you want to ${action} ${window.managementApp.selectedExhibitors.length} exhibitors?`)) {
+    // Execute bulk action
+    fetch('/api/exhibitors/bulk-action/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify({
+        action: action,
+        exhibitor_ids: window.managementApp.selectedExhibitors
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        bootstrap.Modal.getInstance(document.getElementById('bulkActionsModal')).hide();
+        window.managementApp.showNotification(`Bulk ${action} completed`, 'success');
+        window.managementApp.loadData();
+        window.managementApp.selectedExhibitors = [];
+      } else {
+        window.managementApp.showNotification(data.error || 'Bulk action failed', 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Bulk action error:', error);
+      window.managementApp.showNotification('Bulk action failed', 'error');
+    });
+  }
+}
+
+// Utility function for debouncing
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Initialize management app
+document.addEventListener('DOMContentLoaded', function() {
+  window.managementApp = Vue.createApp(managementApp).mount('#exhibitor-management-table');
+});
+</script>
+{% endblock %}

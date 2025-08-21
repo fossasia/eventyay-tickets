@@ -1,0 +1,105 @@
+{% load compress %}
+{% load static %}
+{% load i18n %}
+{% load statici18n %}
+<!DOCTYPE html>
+<html{% if rtl %} dir="rtl" class="rtl"{% endif %}>
+<head>
+    <title>{% block title %}{% endblock %}{% if url_name != "index" %} :: {% endif %}{{ django_settings.INSTANCE_NAME }}</title>
+    
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
+        <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
+    {% endcompress %}
+    
+    {% if DEBUG %}
+        <script type="text/javascript" src="{% url 'javascript-catalog' lang='en' %}" defer></script>
+    {% else %}
+        <script src="{% statici18n 'en' %}" async></script>
+    {% endif %}
+    
+    {% compress js %}
+        <script type="text/javascript" src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
+        <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.js" %}"></script>
+        <script type="text/javascript" src="{% static "pretixcontrol/js/ui/main.js" %}"></script>
+        <script type="text/javascript" src="{% static "are-you-sure/jquery.are-you-sure.js" %}"></script>
+        <script type="text/javascript" src="{% static "lightbox/js/lightbox.js" %}"></script>
+    {% endcompress %}
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    {% if development_warning or debug_warning %}
+        <link rel="shortcut icon" href="{% static "pretixbase/img/favicon-debug.ico" %}">
+    {% else %}
+        <link rel="shortcut icon" href="{% static "pretixbase/img/favicon.ico" %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static "pretixbase/img/icons/favicon-32x32.png" %}">
+        <link rel="icon" type="image/png" sizes="194x194" href="{% static "pretixbase/img/icons/favicon-194x194.png" %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static "pretixbase/img/icons/favicon-16x16.png" %}">
+    {% endif %}
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "pretixbase/img/icons/apple-touch-icon.png" %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static "pretixbase/img/icons/android-chrome-192x192.png" %}">
+    <link rel="mask-icon" href="{% static "pretixbase/img/icons/safari-pinned-tab.svg" %}" color="#2185d0">
+    <meta name="msapplication-TileColor" content="#2185d0">
+    <meta name="theme-color" content="#2185d0">
+    <meta name="referrer" content="origin">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body data-datetimeformat="{{ js_datetime_format }}" data-timeformat="{{ js_time_format }}"
+      data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}"
+      data-pretixlocale="{{ 'en' }}"
+      {% if request.organizer %}data-organizer="{{ request.organizer.slug }}"{% endif %}
+      {% if request.event %}data-event="{{ request.event.slug }}"{% endif %}
+      data-select2-locale="{{ select2locale }}" data-longdateformat="{{ js_long_date_format }}" class="nojs">
+    
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle"
+                        data-toggle="collapse" data-target=".navbar-nav-collapse">
+                    <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}">
+                    <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
+                    {{ django_settings.INSTANCE_NAME }}
+                </a>
+            </div>
+            
+            <ul class="nav navbar-nav navbar-top-links navbar-right flip">
+                {% if request.user.is_authenticated %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-user"></i> {{ request.user.get_full_name|default:request.user.email }}
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url 'eventyay_common:auth.logout' %}">
+                                    <i class="fa fa-sign-out"></i> {% trans "Logout" %}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'eventyay_common:auth.login' %}">
+                            <i class="fa fa-sign-in"></i> {% trans "Login" %}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+        {% block content %}
+        {% endblock %}
+    </div>
+    
+    {% block extra_script %}{% endblock %}
+</body>
+</html>

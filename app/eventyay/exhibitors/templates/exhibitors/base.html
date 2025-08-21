@@ -1,0 +1,117 @@
+{% extends "eventyay/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  {% block exhibitor_title %}{% trans "Exhibitors" %}{% endblock %} - {{ event.name|default:"ENext" }}
+{% endblock %}
+
+{% block extra_head %}
+  <!-- Basic exhibitor styles -->
+  <style>
+    .exhibitor-breadcrumb {
+      background: #f8f9fa;
+      padding: 1rem 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .breadcrumb {
+      margin: 0;
+      background: transparent;
+    }
+    .exhibitor-main {
+      padding: 2rem 0;
+    }
+    .exhibitor-table {
+      margin-top: 1rem;
+    }
+    .exhibitor-table th {
+      background-color: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+    }
+  </style>
+  
+  {% block extra_exhibitor_head %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+  <div class="exhibitor-app">
+    <!-- Navigation Breadcrumb -->
+    <nav aria-label="breadcrumb" class="exhibitor-breadcrumb">
+      <div class="container">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'eventyay_common:dashboard' %}">
+              {% trans "Home" %}
+            </a>
+          </li>
+          {% if event %}
+          <li class="breadcrumb-item">
+            <span>{{ event.name }}</span>
+          </li>
+          {% endif %}
+          {% block breadcrumb_items %}
+            <li class="breadcrumb-item active" aria-current="page">
+              {% trans "Exhibitors" %}
+            </li>
+          {% endblock %}
+        </ol>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="exhibitor-main">
+      {% block exhibitor_content %}
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h1>{% trans "Exhibitors" %}</h1>
+              <p class="lead">{% trans "Discover our amazing exhibitors and connect with industry leaders." %}</p>
+            </div>
+          </div>
+        </div>
+      {% endblock %}
+    </main>
+
+    <!-- Simple content area -->
+    <div class="container">
+      {% block simple_content %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_script %}
+  <!-- Basic JavaScript for simple functionality -->
+  <script>
+    // Simple search functionality
+    function searchExhibitors() {
+      const searchInput = document.getElementById('exhibitor-search');
+      const table = document.getElementById('exhibitor-table');
+      const rows = table.getElementsByTagName('tr');
+      
+      if (searchInput) {
+        const filter = searchInput.value.toLowerCase();
+        
+        for (let i = 1; i < rows.length; i++) {
+          const cells = rows[i].getElementsByTagName('td');
+          let found = false;
+          
+          for (let j = 0; j < cells.length; j++) {
+            if (cells[j].textContent.toLowerCase().indexOf(filter) > -1) {
+              found = true;
+              break;
+            }
+          }
+          
+          rows[i].style.display = found ? '' : 'none';
+        }
+      }
+    }
+  </script>
+  
+  {% block extra_exhibitor_script %}{% endblock %}
+{% endblock %}
+
+{% block extra_css %}
+  <!-- Base template styles are now in exhibitors.css -->
+  {% block extra_exhibitor_css %}{% endblock %}
+{% endblock %}
