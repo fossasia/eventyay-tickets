@@ -8,6 +8,8 @@ done
 
 echo "PostgreSQL started"
 
+. .env/bin/activate
+
 python manage.py collectstatic --noinput
 python manage.py compress
 python manage.py migrate
