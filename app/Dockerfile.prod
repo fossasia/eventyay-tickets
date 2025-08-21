@@ -3,28 +3,26 @@
 ###########
 
 # pull official base image
-FROM python:3.11-slim-bookworm as builder
+FROM python:3.12-slim-trixie AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # set work directory
 WORKDIR /usr/src/app
 
 # set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git build-essential gettext
 
-# lint
-RUN pip install --upgrade pip
-#RUN pip install flake8==6.0.0
-#COPY . /usr/src/app/
-#RUN flake8 --ignore=E501,F401 .
-
 # install python dependencies
-COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-editable
 
 
 #########
@@ -32,7 +30,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 #########
 
 # pull official base image
-FROM python:3.11-slim-bookworm
+FROM python:3.12-slim-trixie
 
 # create directory for the app user
 RUN mkdir -p /home/app
@@ -49,10 +47,6 @@ WORKDIR $APP_HOME
 
 # install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
-COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install --no-cache /wheels/*
 
 # copy entrypoint.prod.sh
 COPY ./entrypoint.prod.sh .
@@ -64,6 +58,9 @@ COPY . $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
+
+# Copy the Python environment from the builder
+COPY --from=builder --chown=app:app /usr/src/app/.venv $APP_HOME/.venv
 
 # change to the app user
 USER app

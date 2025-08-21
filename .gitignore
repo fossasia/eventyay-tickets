@@ -12,6 +12,7 @@ htmlcov/
 *.toc
 *.mo
 *~
+*.egg-info
 .ropeproject
 __pycache__/
 .cache

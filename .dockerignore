@@ -7,4 +7,4 @@ pretixeu/
 src/data/
 src/pretix/static.dist/
 src/dist/
-
+.venv
