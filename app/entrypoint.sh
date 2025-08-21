@@ -8,8 +8,6 @@ done
 
 echo "PostgreSQL started"
 
-. .venv/bin/activate
-
 python manage.py flush --no-input
 python manage.py migrate
 

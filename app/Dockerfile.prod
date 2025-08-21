@@ -70,7 +70,7 @@ USER app
 
 # Expose virtual env
 ENV VIRTUAL_ENV="$APP_HOME/.venv"
-ENV PATH="$APP_HOME/bin:$PATH"
+ENV PATH="$APP_HOME/.venv/bin:$PATH"
 
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]

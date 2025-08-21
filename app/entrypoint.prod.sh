@@ -8,8 +8,6 @@ done
 
 echo "PostgreSQL started"
 
-. .venv/bin/activate
-
 python manage.py collectstatic --noinput
 python manage.py compress
 python manage.py migrate
