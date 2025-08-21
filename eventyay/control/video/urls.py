@@ -5,7 +5,6 @@ urlpatterns = [
     # Authentication URLs
     path("auth/profile/", views.ProfileView.as_view(), name="auth.profile"),
     path("auth/signup", views.SignupView.as_view(), name="auth.signup"),
-    path("auth/", include("django.contrib.auth.urls")),
     # User Management URLs
     path("users/", views.UserList.as_view(), name="user.list"),
     path("users/<uuid:pk>/", views.UserUpdate.as_view(), name="user.update"),

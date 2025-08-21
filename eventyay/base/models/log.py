@@ -1,7 +1,7 @@
 import json
 import logging
 from contextlib import suppress
-
+from django.core.serializers.json import DjangoJSONEncoder
 from django_scopes import ScopedManager
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -45,7 +45,7 @@ class LogEntry(models.Model):
         on_delete=models.CASCADE,
         related_name='eventyay_log_entries'
     )
-    object_id = models.PositiveIntegerField(db_index=True)
+    object_id = models.JSONField(encoder=DjangoJSONEncoder)
     content_object = GenericForeignKey('content_type', 'object_id')
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT, related_name='eventyay_log_entries')

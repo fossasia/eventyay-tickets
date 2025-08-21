@@ -11,9 +11,9 @@
         <header>
             {% if request.user.is_authenticated %}
                 <a href="{% url 'control:auth.profile' %}">Profile</a> ·
-                <a href="{% url 'control:logout' %}">Logout</a>
+                <a href="/common/logout">Logout</a>
             {% else %}
-                <a href="{% url 'control:login' %}">Login</a>
+                <a href="/common/login">Login</a>
             {% endif %}
         </header>
         <div id="main-container">
