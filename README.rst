@@ -43,11 +43,11 @@ Getting Started
 
       git clone https://github.com/fossasia/eventyay-tickets.git
 
-2. **Enter the project directory**:
+2. **Enter the project directory and app directory**:
 
    .. code-block:: bash
 
-      cd eventyay-tickets
+      cd eventyay-tickets/app
 
 3. **Switch to the `enext` branch**:
 
@@ -111,38 +111,34 @@ to work on the project another, we don't run ``uv``, then we activate the virtua
     . .venv/bin/activate
 
 
-7. **Enter the app directory**:
-
-   .. code-block:: bash
-
-      cd app
-
-8. **Initialize the database**:
+7. **Initialize the database**:
 
    .. code-block:: bash
 
       python manage.py migrate
 
-9. **Create a superuser account** (for accessing the admin panel):
+8. **Create a superuser account** (for accessing the admin panel):
 
    .. code-block:: bash
 
       python manage.py createsuperuser
 
-10. **Run the development server**:
+9. **Run the development server**:
 
     .. code-block:: bash
 
        python manage.py runserver
 
 
+Notes: If you get permission errors for eventyay/static/CACHE, make sure that the directory and
+all below it are own by you.
 
 Docker based development
 ------------------------
 
 We assume your current working directory is the checkout of this repo.
 
-1. **Create deployment/.env.dev**
+1. **Create .env.dev**
 
    .. code-block:: bash
 
@@ -197,7 +193,7 @@ We assume your current working directory is the checkout of this repo.
 
       docker compose down
 
-The directory `app` is mounted into the docker, thus live editing is supported.
+The directory `app/eventyay` is mounted into the docker, thus live editing is supported.
 
 
 Deployment

@@ -8,3 +8,5 @@ src/data/
 src/pretix/static.dist/
 src/dist/
 .venv
+app/.venv
+app/eventyay/static/CACHE
