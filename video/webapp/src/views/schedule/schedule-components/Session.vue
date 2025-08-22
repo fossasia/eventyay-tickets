@@ -13,7 +13,7 @@ a.c-linear-schedule-session(:class="{faved}", :style="style", :href="link", @cli
 			.avatars
 				template(v-for="speaker of session.speakers")
 					.speaker-info
-						img(v-if="speaker.avatar", :src="speaker.avatar")
+						img(v-if="speaker.avatar || speaker.avatar_url", :src="speaker.avatar || speaker.avatar_url")
 						.names {{ speaker.name }}
 		.do_not_record
 			svg(v-if="session.do_not_record", viewBox="0 -1 24 24", width="22px", height="22px", fill="none", xmlns="http://www.w3.org/2000/svg")
