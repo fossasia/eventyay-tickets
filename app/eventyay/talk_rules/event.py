@@ -10,7 +10,6 @@ def is_event_visible(user, event):
 def get_events_for_user(user, queryset=None):
     from eventyay.base.models import Event
 
-
     queryset = queryset or Event.objects.all()
     if user.is_anonymous:
         queryset = queryset.filter(is_public=True)
@@ -85,3 +84,4 @@ def can_create_events(user, obj):
 @rules.predicate
 def is_any_organiser(user, obj):
     return user.is_administrator or user.teams.all().exists()
+

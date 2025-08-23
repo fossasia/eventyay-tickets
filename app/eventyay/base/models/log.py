@@ -46,6 +46,7 @@ class LogEntry(models.Model):
         related_name='eventyay_log_entries'
     )
     object_id = models.JSONField(encoder=DjangoJSONEncoder)
+
     content_object = GenericForeignKey('content_type', 'object_id')
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT, related_name='eventyay_log_entries')

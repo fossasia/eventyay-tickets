@@ -48,14 +48,11 @@ from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.core.permissions import Permission, SYSTEM_ROLES
 from eventyay.core.utils.json import CustomJSONEncoder
+from eventyay.consts import TIMEZONE_CHOICES
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
 
 TALK_HOSTNAME = settings.TALK_HOSTNAME
-
-TIMEZONE_CHOICES = sorted([
-    tz for tz in zoneinfo.available_timezones() if not tz.startswith("Etc/")
-])
 LANGUAGE_NAMES = {code: name for code, name in settings.LANGUAGES}
 
 def event_css_path(instance, filename):
@@ -1620,7 +1617,6 @@ class Event(EventMixin, LoggedModel):
                     clone_stored_files(inst=link, attrs=["url"])
                     link.exhibitor = ex
                     link.save()
-
 
     def get_payment_providers(self, cached=False) -> dict:
         """

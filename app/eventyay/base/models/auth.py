@@ -67,15 +67,16 @@ def generate_session_token():
 def generate_short_token():
     return get_random_string(length=24)
 
-
 class SuperuserPermissionSet:
     def __contains__(self, item):
         return True
 
 
+
 class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     """
     This is the unified user model used by eventyay for both authentication and video/event functionality.
+
 
     :param email: The user's email address, used for identification.
     :type email: str
@@ -130,6 +131,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     auth_backend = models.CharField(max_length=255, default='native')
     session_token = models.CharField(max_length=32, default=generate_session_token)
 
+
     # Video/Event fields
     client_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
     token_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
@@ -163,7 +165,6 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     _grant_cache = None
     _membership_cache = None
     _block_cache = {}
-
     if TYPE_CHECKING:
         from django.db.models import QuerySet
         from eventyay.base.models import NotificationSetting
@@ -175,22 +176,22 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._teamcache = {}
+
         self._grant_cache = None
         self._membership_cache = None
         self._block_cache = {}
+
 
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
         ordering = ('email',)
-        unique_together = (("token_id", "event"), ("client_id", "event"))
 
     def save(self, *args, **kwargs):
-        if self.email:
-            self.email = self.email.lower()
+        self.email = self.email.lower()
         is_new = not self.pk
         super().save(*args, **kwargs)
-        if is_new and self.email:
+        if is_new:
             self.notification_settings.create(
                 action_type='eventyay.event.order.refund.requested',
                 event=None,
@@ -199,9 +200,12 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
             )
 
     def __str__(self):
-        return self.email or str(self.id)
+        return self.email
 
-    # Original ticketing methods
+    #@property
+    #def is_superuser(self):
+    #    return False
+
     def get_short_name(self) -> str:
         """
         Returns the first of the following user properties that is found to exist:
@@ -214,7 +218,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         if self.fullname:
             return self.fullname
         else:
-            return self.email or str(self.id)
+            return self.email
 
     def get_full_name(self) -> str:
         """
@@ -229,13 +233,11 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         elif self.wikimedia_username:
             return self.wikimedia_username
         else:
-            return self.email or str(self.id)
+            return self.email
 
     def send_security_notice(self, messages, email=None):
         from eventyay.base.services.mail import SendMailException, mail
 
-        if not self.email:
-            return  # Cannot send email without email address
 
         try:
             with language(self.locale):
@@ -255,9 +257,6 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
 
     def send_password_reset(self):
         from eventyay.base.services.mail import mail
-
-        if not self.email:
-            return  # Cannot send email without email address
 
         mail(
             self.email,
@@ -285,7 +284,6 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
 
         return LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(User), object_id=self.pk)
 
-    # Team and permission methods (ticketing)
     def _get_teams_for_organizer(self, organizer):
         if 'o{}'.format(organizer.pk) not in self._teamcache:
             self._teamcache['o{}'.format(organizer.pk)] = list(self.teams.filter(organizer=organizer))
@@ -424,7 +422,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
 
         return Organizer.objects.filter(id__in=self.teams.filter(**kwargs).values_list('organizer', flat=True))
 
-    # Staff session methods (ticketing)
+
     def has_active_staff_session(self, session_key=None):
         """
         Returns whether or not a user has an active staff session (formerly known as superuser session)
@@ -457,7 +455,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         """
         key_salt = "eventyay.base.models.User.get_session_auth_hash"
         payload = self.password
-        payload += self.email or ''
+        payload += self.email
         payload += self.session_token
         return salted_hmac(key_salt, payload).hexdigest()
 
@@ -703,7 +701,6 @@ class StaffSessionAuditLog(models.Model):
         ordering = ('datetime',)
 
 
-# 2FA Device models (from ticketing)
 class U2FDevice(Device):
     json_data = models.TextField()
 

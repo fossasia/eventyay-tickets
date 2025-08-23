@@ -4,6 +4,7 @@ from django.urls import re_path as url
 from django.views.generic.base import RedirectView
 from eventyay.control.views import admin
 
+
 urlpatterns = [
     path('', lambda request: HttpResponse("<div>This is a control index page</div>"), name='index'),
     url(

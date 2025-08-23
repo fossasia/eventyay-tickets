@@ -1,0 +1,76 @@
+###########
+# BUILDER #
+###########
+
+# pull official base image
+FROM python:3.12-slim-trixie AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# set work directory
+ENV APP_HOME=/home/app/web
+RUN mkdir -p $APP_HOME
+WORKDIR $APP_HOME
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git build-essential gettext
+
+# install python dependencies
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-editable
+
+
+#########
+# FINAL #
+#########
+
+# pull official base image
+FROM python:3.12-slim-trixie
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create the app user
+RUN addgroup --system app && adduser --system --group app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/static
+WORKDIR $APP_HOME
+
+# install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
+
+# copy entrypoint.prod.sh
+COPY ./entrypoint.prod.sh .
+RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
+RUN chmod +x  $APP_HOME/entrypoint.prod.sh
+
+# copy project
+COPY . $APP_HOME
+
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# Copy the Python environment from the builder
+# Note: The venv path in the builder must match the one in runner.
+COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
+
+# change to the app user
+USER app
+
+# Expose virtual env
+ENV VIRTUAL_ENV="$APP_HOME/.venv"
+ENV PATH="$APP_HOME/.venv/bin:$PATH"
+
+# run entrypoint.prod.sh
+ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]

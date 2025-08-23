@@ -1,0 +1,25 @@
+name: eventyay
+
+services:
+  web:
+    build: ./app
+    container_name: eventyay-next-web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/eventyay:/usr/src/app/eventyay
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    container_name: eventyay-next-db
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.dev
+
+volumes:
+  postgres_data_dev:
