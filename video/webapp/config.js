@@ -1,5 +1,5 @@
 /* global ENV_DEVELOPMENT */
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 let config
 if (ENV_DEVELOPMENT || !window.venueless) {
 	const hostname = window.location.hostname
@@ -10,11 +10,11 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 	const worldName = pathSegments.length > 2 ? pathSegments[2] : 'sample'
 	config = {
 		api: {
-			base: `${httpProtocol}//${hostname}:8375/api/v1/worlds/${worldName}/`,
-			socket: `${wsProtocol}://${hostname}:8375/ws/world/${worldName}/`,
-			upload: `${httpProtocol}//${hostname}:8375/storage/${worldName}/upload/`,
-			scheduleImport: `${httpProtocol}//${hostname}:8375/storage/${worldName}/schedule_import/`,
-			feedback: `${httpProtocol}//${hostname}:8375/_feedback/`,
+			base: `${httpProtocol}//${hostname}:8443/api/v1/worlds/${worldName}/`,
+			socket: `${wsProtocol}://${hostname}:8443/ws/world/${worldName}/`,
+			upload: `${httpProtocol}//${hostname}:8443/storage/${worldName}/upload/`,
+			scheduleImport: `${httpProtocol}//${hostname}:8443/storage/${worldName}/schedule_import/`,
+			feedback: `${httpProtocol}//${hostname}:8443/_feedback/`,
 		},
 		defaultLocale: 'en',
 		locales: ['en', 'de', 'pt_BR', 'ar', 'fr', 'es', 'uk', 'ru'],

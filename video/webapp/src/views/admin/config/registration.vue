@@ -25,7 +25,7 @@
 									th Include in search queries
 									th
 							tbody
-								tr(v-for="(field, index) in config.profile_fields", :key="field.id")
+								tr(v-for="(field, index) in config.profile_fields")
 									td
 										bunt-input(v-model="field.label", label="Label", name="label")
 									td
@@ -36,7 +36,7 @@
 									td
 										bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
 										bunt-select.link-network(v-if="field.type === 'link'", v-model="field.network", label="Link Type", name="link-type", :options="socialNetworks")
-											template(v-slot="{ option }")
+											template(#default="{ option }")
 												.mdi(:class="`mdi-${option}`")
 												.label {{ option }}
 									td
@@ -115,8 +115,8 @@ export default {
 		addField() {
 			this.config.profile_fields.push({id: uuid(), label: '', type: 'text', searchable: false})
 		},
-		removeField(field) {
-			this.config.profile_fields.splice(field, 1)
+		removeField(index) {
+			this.config.profile_fields.splice(index, 1)
 		},
 		async save() {
 			this.saving = true

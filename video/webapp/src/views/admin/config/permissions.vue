@@ -34,7 +34,7 @@
 						h4 {{ key }}
 						bunt-icon-button(@click.stop="deleteRole(key)") delete-outline
 					.role-config-permissions(v-if="expandedRoles.includes(key)", @click.stop="")
-						bunt-checkbox(v-for="p of config.available_permissions", :label="p", :value="val.includes(p)", name="p", @input="togglePermission(key, p, $event)")
+						bunt-checkbox(v-for="p of config.available_permissions", :label="p", :modelValue="val.includes(p)", name="p", @update:modelValue="togglePermission(key, p, $event)")
 				.role-add
 					.role-head
 						bunt-input(label="role name", v-model="newRoleName", name="newRoleName")
