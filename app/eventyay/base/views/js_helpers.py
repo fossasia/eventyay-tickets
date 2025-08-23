@@ -1,7 +1,7 @@
 import pycountry
 from django.http import JsonResponse
 
-from pretix.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
+from eventyay.base.settings import COUNTRIES_WITH_STATE_IN_ADDRESS
 
 
 def states(request):

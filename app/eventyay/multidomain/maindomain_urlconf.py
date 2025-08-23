@@ -39,7 +39,7 @@ presale_patterns_main = [
 
 raw_plugin_patterns = []
 for app in apps.get_app_configs():
-    if hasattr(app, 'PretixPluginMeta'):
+    if hasattr(app, 'EventyayPluginMeta'):
         if importlib.util.find_spec(app.name + '.urls'):
             urlmod = importlib.import_module(app.name + '.urls')
             single_plugin_patterns = []
@@ -56,7 +56,7 @@ for app in apps.get_app_configs():
 plugin_patterns = [url(r'', include((raw_plugin_patterns, 'plugins')))]
 
 # The presale namespace comes last, because it contains a wildcard catch
-urlpatterns = common_patterns + plugin_patterns + presale_patterns_main
+urlpatterns = common_patterns + presale_patterns_main + plugin_patterns
 
-handler404 = 'pretix.base.views.errors.page_not_found'
-handler500 = 'pretix.base.views.errors.server_error'
+handler404 = 'eventyay.base.views.errors.page_not_found'
+handler500 = 'eventyay.base.views.errors.server_error'

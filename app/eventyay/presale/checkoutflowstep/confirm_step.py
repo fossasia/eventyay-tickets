@@ -7,19 +7,19 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
-from pretix.base.models.orders import Order, OrderPayment
-from pretix.base.services.orders import perform_order
-from pretix.base.templatetags.rich_text import rich_text_snippet
-from pretix.base.views.tasks import AsyncAction
-from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.signals import (
+from eventyay.base.models.orders import Order, OrderPayment
+from eventyay.base.services.orders import perform_order
+from eventyay.base.templatetags.rich_text import rich_text_snippet
+from eventyay.base.views.tasks import AsyncAction
+from eventyay.multidomain.urlreverse import eventreverse
+from eventyay.presale.signals import (
     checkout_all_optional,
     checkout_confirm_messages,
     contact_form_fields,
     order_meta_from_request,
 )
-from pretix.presale.views import CartMixin, get_cart_is_free
-from pretix.presale.views.cart import create_empty_cart_id
+from eventyay.presale.views import CartMixin, get_cart_is_free
+from eventyay.presale.views.cart import create_empty_cart_id
 
 from .template_flow_step import TemplateFlowStep
 
@@ -27,7 +27,7 @@ from .template_flow_step import TemplateFlowStep
 class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     priority = 1001
     identifier = 'confirm'
-    template_name = 'pretixpresale/event/checkout_confirm.html'
+    template_name = 'eventyaypresale/event/checkout_confirm.html'
     task = perform_order
     known_errortypes = ['OrderError']
     label = pgettext_lazy('checkoutflow', 'Review order')

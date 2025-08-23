@@ -8,12 +8,12 @@ from django.db import IntegrityError
 from django.db.models import Prefetch, QuerySet
 from django.utils.functional import cached_property
 
-from pretix.base.forms.questions import (
+from eventyay.base.forms.questions import (
     BaseInvoiceAddressForm,
     BaseInvoiceNameForm,
     BaseQuestionsForm,
 )
-from pretix.base.models import (
+from eventyay.base.models import (
     CartPosition,
     InvoiceAddress,
     OrderPosition,
@@ -21,7 +21,7 @@ from pretix.base.models import (
     QuestionAnswer,
     QuestionOption,
 )
-from pretix.presale.signals import contact_form_fields_overrides
+from eventyay.presale.signals import contact_form_fields_overrides
 
 
 class BaseQuestionsViewMixin:

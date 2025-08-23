@@ -17,9 +17,9 @@ from django.dispatch import receiver
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.models import Item, ItemVariation, SubEvent
-from pretix.base.secretgenerators import pretix_sig1_pb2
-from pretix.base.signals import register_ticket_secret_generators
+from eventyay.base.models import Item, ItemVariation, SubEvent
+from eventyay.base.secretgenerators import pretix_sig1_pb2
+from eventyay.base.signals import register_ticket_secret_generators
 
 
 class BaseTicketSecretGenerator:

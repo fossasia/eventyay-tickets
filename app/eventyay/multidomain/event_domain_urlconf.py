@@ -6,7 +6,7 @@ from django.urls import re_path as url
 
 from eventyay.multidomain.plugin_handler import plugin_event_urls
 from eventyay.presale.urls import event_patterns, locale_patterns
-from eventyay.urls import common_patterns
+from eventyay.config.urls import common_patterns
 
 presale_patterns = [
     url(

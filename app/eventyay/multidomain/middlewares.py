@@ -46,7 +46,7 @@ class MultiDomainMiddleware(MiddlewareMixin):
         request.port = int(port) if port else None
         request.host = domain
         if domain == default_domain:
-            request.urlconf = 'config.urls'
+            request.urlconf = 'eventyay.multidomain.maindomain_urlconf'
         elif domain:
             cached = cache.get('eventyay_multidomain_instance_{}'.format(domain))
 
@@ -75,13 +75,13 @@ class MultiDomainMiddleware(MiddlewareMixin):
                     with scopes_disabled():
                         request.event = Event.objects.select_related('organizer').get(pk=event)
                         request.organizer = request.event.organizer
-                request.urlconf = 'config.urls'
+                request.urlconf = 'eventyay.multidomain.maindomain_urlconf'
             elif orga:
                 request.organizer_domain = True
                 request.organizer = orga if isinstance(orga, Organizer) else Organizer.objects.get(pk=orga)
-                request.urlconf = 'config.urls'
+                request.urlconf = 'eventyay.multidomain.maindomain_urlconf'
             elif settings.DEBUG or domain in LOCAL_HOST_NAMES:
-                request.urlconf = 'config.urls'
+                request.urlconf = 'eventyay.multidomain.maindomain_urlconf'
             else:
                 raise DisallowedHost('Unknown host: %r' % host)
         else:

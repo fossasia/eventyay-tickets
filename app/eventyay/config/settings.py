@@ -59,7 +59,7 @@ ALLOWED_HOSTS = [ "*", "127.0.0.1" ]
 X_FRAME_OPTIONS = 'DENY'
 
 # URL settings
-# ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
+ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 HAS_CELERY = config.has_option('celery', 'broker')
 if HAS_CELERY:
@@ -113,8 +113,6 @@ MIDDLEWARE = [
     'eventyay.control.middleware.AuditLogMiddleware',
 ]
 
-ROOT_URLCONF = 'eventyay.config.urls'
-# ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 TEMPLATES = [
     {
@@ -390,20 +388,23 @@ LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'default': {'format': '%(levelname)s %(asctime)s %(module)s %(message)s'},
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }

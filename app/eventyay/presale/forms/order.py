@@ -3,11 +3,11 @@ from decimal import Decimal
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.models import Quota
-from pretix.base.models.tax import TaxedPrice
-from pretix.base.services.pricing import get_price
-from pretix.base.services.quotas import QuotaAvailability
-from pretix.base.templatetags.money import money_filter
+from eventyay.base.models import Quota
+from eventyay.base.models.tax import TaxedPrice
+from eventyay.base.services.pricing import get_price
+from eventyay.base.services.quotas import QuotaAvailability
+from eventyay.base.templatetags.money import money_filter
 
 
 class OrderPositionChangeForm(forms.Form):
