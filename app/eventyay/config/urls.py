@@ -45,7 +45,7 @@ admin_patterns = [
 debug_patterns = []
 
 if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
-    debug_patterns.append(path('__debug__/', include('debug_toolbar')))
+    debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
 common_patterns = (
     base_patterns
