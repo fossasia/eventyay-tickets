@@ -1,38 +1,60 @@
 /* globals ENV_DEVELOPMENT */
-import { helpers, required as _required, url as _url, integer as _integer } from '@vuelidate/validators'
+import {
+	helpers,
+	required as _required,
+	maxLength as _maxLength,
+	minLength as _minLength,
+	email as _email,
+	integer as _integer,
+	maxValue as _maxValue,
+	minValue as _minValue,
+	url as _url
+} from '@vuelidate/validators/dist/raw.mjs'
 
-const required = message => helpers.withMessage(message, _required)
-const integer = message => helpers.withMessage(message, _integer)
-
-const color = message => helpers.withMessage(message, helpers.regex('color', /^#([a-zA-Z0-9]{3}|[a-zA-Z0-9]{6})$/))
-
-// The strictest regex for YouTube video IDs is probably [0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]
-// as per https://webapps.stackexchange.com/questions/54443/format-for-id-of-youtube-video
-// but let's not count on YouTube not changing their format. Our main goal here is to prevent
-// users from entering full URLs.
-const youtubeid = message => helpers.withMessage(message, helpers.regex('youtubeid', /^[0-9A-Za-z_-]{5,}$/))
-
-const relative = helpers.regex('relative', /^\/.*$/)
-const devurl = helpers.regex('devurl', /^http:\/\/localhost.*$/) // vuelidate does not allow localhost
-const url = message => helpers.withMessage(message, (value) => (!_required(value) || _url(value) || relative(value) || (ENV_DEVELOPMENT && devurl(value))))
-
-const isJson = () => helpers.withMessage((ctx) => ctx?.$params?.message || 'Invalid JSON', (value) => {
-	if (!value || value.length === 0) return true
-	try {
-		JSON.parse(value)
-		return true
-	} catch (exception) {
-		// helpers.withMessage expects validator boolean; we can’t set dynamic message here easily,
-		// so fall back to a generic message above.
-		return false
-	}
-})
-
-export {
-	required,
-	integer,
-	color,
-	url,
-	youtubeid,
-	isJson
+// Keep function names and export style as in main branch
+export function required(message) {
+	return helpers.withMessage(message, _required)
+}
+export function email(message) {
+	return helpers.withMessage(message, _email)
+}
+export function maxLength(length, message) {
+	return helpers.withMessage(message, _maxLength(length))
+}
+export function minLength(length, message) {
+	return helpers.withMessage(message, _minLength(length))
+}
+export function integer(message) {
+	return helpers.withMessage(message, _integer)
+}
+export function maxValue(maxVal, message) {
+	return helpers.withMessage(message, _maxValue(maxVal))
+}
+export function minValue(minVal, message) {
+	return helpers.withMessage(message, _minValue(minVal))
+}
+export function color(message) {
+	return helpers.withMessage(message, helpers.regex(/^#([a-zA-Z0-9]{3}|[a-zA-Z0-9]{6})$/))
+}
+export function youtubeid(message) {
+	return helpers.withMessage(message, helpers.regex(/^[0-9A-Za-z_-]{5,}$/))
+}
+const relative = helpers.regex(/^\/.*$/)
+const devurl = helpers.regex(/^http:\/\/localhost.*$/) // vuelidate does not allow localhost
+export function url(message) {
+	return helpers.withMessage(message, (value) => (!helpers.req(value) || _url(value) || relative(value) || (ENV_DEVELOPMENT && devurl(value))))
+}
+export function isJson() {
+	return helpers.withMessage(({ $response }) => $response?.message, value => {
+		if (!value || value.length === 0) return { $valid: true }
+		try {
+			JSON.parse(value)
+			return { $valid: true }
+		} catch (exception) {
+			return {
+				$valid: false,
+				message: exception.message
+			}
+		}
+	})
 }

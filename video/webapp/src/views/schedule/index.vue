@@ -60,9 +60,9 @@
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
+import _ from 'lodash'
 import { mapState, mapGetters } from 'vuex'
-import LinearSchedule from 'views/schedule/schedule-components/LinearSchedule'
-import GridSchedule from 'views/schedule/schedule-components/GridSchedule'
+import { LinearSchedule, GridSchedule } from '@pretalx/schedule'
 import moment from 'lib/timetravelMoment'
 import TimezoneChanger from 'components/TimezoneChanger'
 import scheduleProvidesMixin from 'components/mixins/schedule-provides'
@@ -192,8 +192,8 @@ export default {
 			return sessions
 		},
 		rooms() {
-		  const occupiedRoomIds = this.sessions.map(s => s.room.id)
-			return this.schedule.rooms.filter(r => occupiedRoomIds.includes(r.id))
+		  // Use computed rooms logic compatible with Vue 3 and current codebase
+		  return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
 		},
 		filter() {
 			const filter = this.defaultFilter

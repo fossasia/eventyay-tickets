@@ -1,24 +1,25 @@
 /* global RELEASE */
 import { createApp } from 'vue'
+import { RouterView } from 'vue-router'
 import jwtDecode from 'jwt-decode'
 import Buntpapier from 'buntpapier'
-import { RecycleScroller } from 'vue-virtual-scroller'
+import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { v4 as uuid } from 'uuid'
 import moment from 'lib/timetravelMoment'
 import router from 'router'
 import store from 'store'
-import App from 'App'
 import Scrollbars from 'components/Scrollbars'
 import LinkIconButton from 'components/link-icon-button'
 import MediaQueries from 'components/mixins/media-queries'
 import dynamicLineClamp from './components/directives/dynamic-line-clamp'
+import scrollbarDirective from 'components/directives/scrollbar'
 import 'styles/global.styl'
 import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'quill/dist/quill.core.css'
-import '@pretalx/schedule/style'
+import '@pretalx/schedule/dist/schedule.css'
 import 'styles/quill.styl'
 import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
@@ -27,50 +28,38 @@ import config from 'config'
 import theme, { computeForegroundSidebarColor, getThemeConfig } from 'theme'
 
 async function init({ token, inviteToken }) {
-  const app = createApp(App)
-  
-  // Register plugins and components
+  await setThemeConfig()
+  const app = createApp(RouterView)
   app.use(store)
   app.use(router)
   app.use(Buntpapier)
-  app.component('RecycleScroller', RecycleScroller)
-  app.component('scrollbars', Scrollbars)
+  app.use(VueVirtualScroller)
+  app.component('Scrollbars', Scrollbars)
   app.component('link-icon-button', LinkIconButton)
   app.use(MediaQueries)
   app.use(emojiPlugin)
   app.use(dynamicLineClamp)
-  
+  app.directive('scrollbar', scrollbarDirective)
   // Initialize i18n and theme
   await i18nInit(app)
   app.config.globalProperties.$features = features
-  
-  try {
-    await setThemeConfig()
-  } catch (error) {
-    console.error('Error loading theme config: ', error)
-  }
 
-  // Set error handler before mounting
+  window.vapp = app.mount('#app')
+
   app.config.errorHandler = (error, vm, info) => {
     console.error('[VUE] ', info, vm, error)
   }
-  
-  const appElement = document.getElementById('app')
-  
-  // Mount app
-  window.vapp = app.mount('#app')
 
-  // Set locale and timezone
   store.commit('setUserLocale', i18n.resolvedLanguage)
   store.dispatch('updateUserTimezone', localStorage.userTimezone || moment.tz.guess())
 
   // Handle base path for routing
   const basePath = config.basePath || ''
-  let relativePath = location.pathname.replace(basePath, '') || '/'
-
-  // Handle authentication
-  // Vue Router 4: resolve returns the route directly
-  const route = router.resolve(relativePath)
+  let relativePath = location.pathname.replace(basePath, '')
+  if (!relativePath) {
+    relativePath = '/'
+  }
+  const route = router.resolve(relativePath).route
   const anonymousRoomId = route.name === 'standalone:anonymous' ? route.params.roomId : null
 
   if (token) {
@@ -88,9 +77,12 @@ async function init({ token, inviteToken }) {
     const clientId = localStorage[`clientId:room:${anonymousRoomId}`]
     store.dispatch('login', { clientId })
   } else {
-    console.warn('No token found, logging in anonymously')
-    let clientId = localStorage.clientId || uuid()
-    localStorage.clientId = clientId
+    console.warn('no token found, login in anonymously')
+    let clientId = localStorage.clientId
+    if (!clientId) {
+      clientId = uuid()
+      localStorage.clientId = clientId
+    }
     store.dispatch('login', { clientId })
   }
 
@@ -115,8 +107,7 @@ async function init({ token, inviteToken }) {
   setInterval(() => store.dispatch('notifications/pollExternals'), 1000)
   window.__venueless__release = RELEASE
 
-  // Handle PWA installation
-  window.addEventListener('beforeinstallprompt', (event) => {
+  window.addEventListener('beforeinstallprompt', function (event) {
     console.log('Install prompt', event)
   })
 }

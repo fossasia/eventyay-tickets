@@ -5,8 +5,7 @@
 			scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled", v-resize-observer="onResize", @resize="onResize")
 				infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
 					div
-				template(v-for="(message, index) of filteredTimeline", :key="message.event_id")
-					chat-message(:message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", @showUserCard="showUserCard")
+				chat-message(v-for="(message, index) of filteredTimeline", :key="message.event_id", :message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", @showUserCard="showUserCard")
 			.warning(v-if="mergedWarning")
 				.content
 					ChatContent(:content="$t('Chat:warning:missed-users', {count: mergedWarning.missed_users.length, missedUsers: mergedWarning.missed_users})", @clickMention="showUserCard")
@@ -27,7 +26,7 @@
 					span.display-name
 						| {{ user.profile.display_name }}
 						span.ui-badge(v-for="badge in user.badges") {{ badge }}
-		chat-user-card(v-if="userCardUser", ref="avatarCard", :sender="userCardUser", @close="userCardUser = false")
+		chat-user-card(v-if="userCardUser", ref="avatarCard", :user="userCardUser", @close="userCardUser = false")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>

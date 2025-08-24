@@ -49,7 +49,6 @@ import AudioTranslationDropdown from 'components/AudioTranslationDropdown'
 
 export default {
     name: 'Room',
-    emits: ['languageChanged'],
     components: {
         Chat,
         Exhibition,
@@ -94,7 +93,7 @@ export default {
         },
         room: 'initializeLanguages'
     },
-    mounted() {
+    created() {
         if (this.modules['chat.native']) {
             this.activeSidebarTab = 'chat'
         } else if (this.modules.question) {
@@ -110,7 +109,7 @@ export default {
             this.unreadTabs[tab] = true
         },
         handleLanguageChange(languageUrl) {
-            this.$emit('languageChanged', languageUrl)
+            this.$root.$emit('languageChanged', languageUrl)
         },
         initializeLanguages() {
             this.languages = []
