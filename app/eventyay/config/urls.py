@@ -29,8 +29,8 @@ control_patterns = [
     url(r'^control/', include((eventyay.control.urls, 'control'))),
 ]
 
-common_patterns = [
-    url(r'^common/', include((eventyay.eventyay_common.urls, 'common'))),
+eventyay_common_patterns = [
+    path('', include((eventyay.eventyay_common.urls, 'common'))),
 ]
 
 
@@ -51,8 +51,7 @@ common_patterns = (
     base_patterns
     + control_patterns
     + debug_patterns
-    + common_patterns
+    + eventyay_common_patterns
     + page_patterns
     + admin_patterns
 )
-

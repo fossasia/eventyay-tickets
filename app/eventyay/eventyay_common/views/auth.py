@@ -322,23 +322,25 @@ class Forgot(TemplateView):
                     from django_redis import get_redis_connection
 
                     rc = get_redis_connection('redis')
-                    if rc.exists('eventyay_pwreset_%s' % (user.id)):
+                    if rc.exists(f'eventyay_pwreset_{user.id}'):
                         user.log_action('eventyay.eventyay_common.auth.user.forgot_password.denied.repeated')
                         raise RepeatedResetDenied()
                     else:
-                        rc.setex('eventyay_pwreset_%s' % (user.id), 3600 * 24, '1')
+                        rc.setex(f'eventyay_pwreset_{user.id}', 3600 * 24, '1')
 
             except User.DoesNotExist:
-                logger.warning('Password reset for unregistered e-mail "' + email + '"requested.')
+                logger.warning('Password reset for unregistered e-mail "%s" requested.', email)
 
             except SendMailException:
-                logger.exception('Sending password reset e-mail to "' + email + '" failed.')
+                logger.exception('Sending password reset e-mail to "%s" failed.', email)
 
             except RepeatedResetDenied:
+                logger.info('Password reset for "%s" denied due to repeated requests.', email)
                 pass
 
             else:
                 user.send_password_reset()
+                logger.info('Sent email for password reset to "%s"', email)
                 user.log_action('eventyay.eventyay_common.auth.user.forgot_password.mail_sent')
 
             finally:
@@ -358,7 +360,7 @@ class Forgot(TemplateView):
                         ),
                     )
 
-                return redirect('auth.forgot')
+                return redirect('eventyay_common:auth.forgot')
         else:
             return self.get(request, *args, **kwargs)
 
