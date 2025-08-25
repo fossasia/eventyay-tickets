@@ -131,7 +131,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { useVuelidate } from '@vuelidate/core'
-import { helpers, required as vRequired, maxLength as vMaxLength } from '@vuelidate/validators'
+import { required, maxLength } from 'lib/validators'
+import { helpers } from '@vuelidate/validators'
 import api from 'lib/api'
 import router from 'router'
 import Avatar from 'components/Avatar'
@@ -142,9 +143,8 @@ import RichTextEditor from 'components/RichTextEditor'
 import ExhibitorPreview from 'views/exhibitors/item'
 
 // Wrap Vuelidate validators to support custom i18n messages like the previous buntpapier helpers
-const required = (message) => helpers.withMessage(message, vRequired)
-const maxLength = (len, message) => helpers.withMessage(message, vMaxLength(len))
-const absrelurl = (message) => helpers.withMessage(message, helpers.regex(/^(https?:\/\/|mailto:|\/)[^ ]+$/))
+// TODO doesn't actually find invalid URLs, perhaps use `url` from validators instead
+const absrelurl = (message) => helpers.withMessage(message, value => helpers.regex(/^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
 
 export default {
 	components: { Avatar, ExhibitorPreview, Prompt, UploadUrlInput, UserSelect, RichTextEditor },
@@ -193,7 +193,8 @@ export default {
 		}
 	},
 	validations() {
-		return {
+		if (!this.exhibitor) return {}
+		const rules = {
 			exhibitor: {
 				name: {
 					required: required(this.$t('Exhibitors:validation-name:required')),
@@ -227,8 +228,14 @@ export default {
 				sorting_priority: {
 					required: required(this.$t('Exhibitors:validation-sorting:required'))
 				},
-				social_media_links: {
-					$each: {
+				social_media_links: {},
+				profileLinks: {},
+				downloadLinks: {},
+			}
+		}
+
+				for (const [index] of this.exhibitor.social_media_links.entries()) {
+					rules.exhibitor.social_media_links[index] = {
 						display_text: {
 							required: required(this.$t('Exhibitors:validation-social-links-display-text:required'))
 						},
@@ -238,22 +245,10 @@ export default {
 							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
 						}
 					}
-				},
-				profileLinks: {
-					$each: {
-						display_text: {
-							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
-							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
-						},
-						url: {
-							required: required(this.$t('Exhibitors:validation-links-url:required')),
-							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
-							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
-						}
-					}
-				},
-				downloadLinks: {
-					$each: {
+				}
+
+				for (const [index] of this.exhibitor.profileLinks.entries()) {
+					rules.exhibitor.profileLinks[index] = {
 						display_text: {
 							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
 							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
@@ -265,8 +260,21 @@ export default {
 						}
 					}
 				}
-			}
-		}
+
+				for (const [index] of this.exhibitor.downloadLinks.entries()) {
+					rules.exhibitor.downloadLinks[index] = {
+						display_text: {
+							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
+							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
+						},
+						url: {
+							required: required(this.$t('Exhibitors:validation-links-url:required')),
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
+						}
+					}
+				}
+				return rules
 	},
 	async created() {
 		try {

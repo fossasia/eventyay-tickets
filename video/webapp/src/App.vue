@@ -1,5 +1,5 @@
 <template lang="pug">
-#app(:class="{'has-background-room': backgroundRoom, 'override-sidebar-collapse': overrideSidebarCollapse}", :style="[themeVariables, browserhackStyle, mediaConstraintsStyle]", :key="`${userLocale}-${userTimezone}`")
+.v-app(:key="`${userLocale}-${userTimezone}`", :class="{'has-background-room': backgroundRoom, 'override-sidebar-collapse': overrideSidebarCollapse}", :style="[browserhackStyle, mediaConstraintsStyle]")
 	.fatal-connection-error(v-if="fatalConnectionError")
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle
@@ -28,7 +28,7 @@
 		media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
 		media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
 		#media-source-iframes
-		notifications(:has-background-media="!!backgroundRoom")
+		notifications(:hasBackgroundMedia="!!backgroundRoom")
 		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
 		transition(name="prompt")
 			greeting-prompt(v-if="!user.profile.greeted")
@@ -41,7 +41,6 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import { themeVariables } from 'theme'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
 import MediaSource from 'components/MediaSource'
@@ -54,10 +53,8 @@ const chatbarModules = ['chat.native', 'question', 'poll']
 
 export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
-	emits: ['toggle-sidebar'],
 	data() {
 		return {
-			themeVariables,
 			backgroundRoom: null,
 			showSidebar: false,
 			windowHeight: null
@@ -85,7 +82,7 @@ export default {
 		},
 		stageStreamCollapsed() {
 			if (this.$mq.above.m) return false
-			return this.$refs.primaryMediaSource?.$refs.livestream ? !this.$refs.primaryMediaSource.$refs.livestream.playing : false
+			return this.mediaSourceRefs.primary?.$refs.livestream ? !this.mediaSourceRefs.primary.$refs.livestream.playing : false
 		},
 		// force open sidebar on medium screens on home page (with no media) so certain people can find the menu
 		overrideSidebarCollapse() {
@@ -141,7 +138,7 @@ export default {
 		window.addEventListener('resize', this.onResize)
 		window.addEventListener('focus', this.onFocus, true)
 	},
-	unmounted() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.onResize)
 		window.removeEventListener('focus', this.onFocus)
 	},
@@ -190,7 +187,7 @@ export default {
 				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
-				this.$refs.primaryMediaSource.isPlaying() &&
+				this.mediaSourceRefs.primary?.isPlaying() &&
 				// don't background bbb room when switching to new bbb room
 				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive)) &&
 				!newRoomHasMedia 
@@ -220,7 +217,9 @@ export default {
 }
 </script>
 <style lang="stylus">
-#app
+.v-app
+	flex: auto
+	min-height: 0
 	display: grid
 	grid-template-columns: var(--sidebar-width) auto
 	grid-template-rows: auto
