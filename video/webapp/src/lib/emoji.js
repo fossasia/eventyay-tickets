@@ -3,9 +3,6 @@ import EmojiRegex from 'emoji-regex'
 import { getEmojiDataFromNative as _getEmojiDataFromNative } from 'emoji-mart'
 import { uncompress } from 'emoji-mart/dist-es/utils/data.js'
 import MarkdownIt from 'markdown-it'
-import emojiList from 'has-emoji'
-
-const hasEmoji = Object.fromEntries(emojiList.map(e => [e, true]))
 
 // force uncompress data, because we don't use emoji-mart methods
 if (data.compressed) {
@@ -46,11 +43,10 @@ export function nativeToStyle(unicodeEmoji) {
 	// drop modifiers if we don't have the full emoji
 	// for example red heart => heart
 	while (codepoints.length) {
-		const points = codepoints.join('-')
-		if (hasEmoji[points]) {
-			src = `/emoji/${points}.svg`
+		try {
+			src = require(`twemoji-emojis/vendor/svg/${codepoints.join('-')}.svg`)
 			break
-		}
+		} catch (e) {}
 		codepoints.pop()
 	}
 

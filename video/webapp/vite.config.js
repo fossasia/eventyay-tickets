@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import visualizer from 'rollup-plugin-visualizer'
 import path from 'path'
@@ -43,7 +44,8 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       vue(),
-      // Enable PWA in production builds by default (parity with vue-cli PWA)
+      ReactivityTransform(),
+      // Enable PWA in production builds
       mode === 'production' && VitePWA({
         registerType: 'autoUpdate',
         manifest: {
@@ -103,7 +105,7 @@ export default defineConfig(({ mode }) => {
       extensions: ['.js', '.json', '.vue'],
       preserveSymlinks: true,
       alias: {
-        'App': path.resolve(__dirname, 'src/App.vue'),
+        lodash: 'lodash-es',
         '~': path.resolve(__dirname, 'src'),
         config: path.resolve(__dirname, 'config.js'),
         react: 'preact/compat',
@@ -142,7 +144,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: 'esnext',
-  chunkSizeWarningLimit: 2500,
+      chunkSizeWarningLimit: 2500,
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
@@ -170,6 +172,7 @@ export default defineConfig(({ mode }) => {
       ENV_DEVELOPMENT: mode === 'development',
       RELEASE: `'${process.env.VENUELESS_COMMIT_SHA}'`,
       BASE_URL: `'${process.env.BASE_URL || '/'}'`,
+      global: 'globalThis',
       'process.env.NODE_PATH': `'${process.env.NODE_PATH}'`,
       __CURRENT_YEAR__: currentYear
     }
