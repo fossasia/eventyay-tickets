@@ -151,7 +151,7 @@ class Room(VersionedModel, OrderedModel, PretalxModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     deleted = models.BooleanField(default=False)
     event = models.ForeignKey(
-        to="eventyaybase.Event", on_delete=models.PROTECT, related_name="rooms"
+        to="base.Event", on_delete=models.PROTECT, related_name="rooms"
     )
     name = I18nCharField(max_length=300, verbose_name=_("Name"))  # Increased to match room.py
     description = models.TextField(null=True, blank=True, verbose_name=_("Description"))  # Keep TextField for unlimited length
@@ -289,7 +289,7 @@ class AnonymousInvite(models.Model):
         max_length=150,
     )
     event = models.ForeignKey(
-        "eventyaybase.Event", related_name="anonymous_invites", on_delete=models.CASCADE
+        "base.Event", related_name="anonymous_invites", on_delete=models.CASCADE
     )
     room = models.ForeignKey(
         "Room", related_name="anonymous_invites", on_delete=models.CASCADE

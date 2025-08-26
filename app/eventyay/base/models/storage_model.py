@@ -23,7 +23,7 @@ class StoredFile(models.Model):
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    event = models.ForeignKey("eventyaybase.Event", on_delete=models.PROTECT)
+    event = models.ForeignKey("base.Event", on_delete=models.PROTECT)
     expires = models.DateTimeField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
     filename = models.CharField(max_length=255)
@@ -32,7 +32,7 @@ class StoredFile(models.Model):
         null=True, blank=True, upload_to=storedfile_name, max_length=999
     )
     public = models.BooleanField(default=False)
-    user = models.ForeignKey("eventyaybase.User", null=True, blank=True, on_delete=models.PROTECT)
+    user = models.ForeignKey("base.User", null=True, blank=True, on_delete=models.PROTECT)
     source_url = models.CharField(max_length=255, null=True, blank=True)
 
     def full_delete(self):
