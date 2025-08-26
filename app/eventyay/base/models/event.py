@@ -1,12 +1,12 @@
 import string
 import uuid
-import zoneinfo
 from collections import OrderedDict
 from datetime import datetime, time, timedelta
 from operator import attrgetter
 from urllib.parse import urljoin, urlparse
 
 import pytz
+from django.conf import global_settings as default_django_settings
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
@@ -19,7 +19,7 @@ from django.core.validators import (
 )
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q, Subquery, Value
-from django.template.defaultfilters import date as _date, default
+from django.template.defaultfilters import date as _date
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.formats import date_format
@@ -36,14 +36,14 @@ from eventyay.base.models.fields import MultiStringField
 from eventyay.base.reldate import RelativeDateWrapper
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.base.validators import EventSlugBanlistValidator
-from eventyay.helpers.database import GroupConcat
-from eventyay.helpers.daterange import daterange
-from eventyay.helpers.json import safe_string
-from eventyay.helpers.thumb import get_thumbnail
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.consts import TIMEZONE_CHOICES
+from eventyay.helpers.database import GroupConcat
+from eventyay.helpers.daterange import daterange
+from eventyay.helpers.json import safe_string
+from eventyay.helpers.thumb import get_thumbnail
 
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
@@ -582,8 +582,8 @@ class Event(EventMixin, LoggedModel):
         verbose_name=_('Header image'),
         help_text=_(
             'If you provide a header image, it will be displayed instead of your event’s color and/or header pattern '
-            'at the top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will '
-            'continue to be displayed, and not stretched.'
+            'at the top of all event pages. It will be center-aligned, so when the window shrinks, '
+            'the center parts will continue to be displayed, and not stretched.'
         ),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
@@ -838,6 +838,7 @@ class Event(EventMixin, LoggedModel):
         this event, so you don't have to prefix your cache keys. In addition, the cache
         is being cleared every time the event or one of its related objects change.
         """
+        # FIXME: This "cache" module is missing.
         from eventyay.base.cache import ObjectRelatedCache
 
         return ObjectRelatedCache(self)
@@ -1521,7 +1522,7 @@ class Event(EventMixin, LoggedModel):
         # Content locales can be anything pretalx knows as a language, merged with
         # this event's plugin locales.
 
-        locale_names = copy.copy(LANGUAGE_NAMES)
+        locale_names = dict(default_django_settings.LANGUAGES)
         locale_names.update(self.named_plugin_locales)
         return sorted([(key, value) for key, value in locale_names.items()])
 

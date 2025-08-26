@@ -11,12 +11,13 @@ from django.utils.translation import override, pgettext_lazy
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from eventyay.common.exceptions import SendMailException
-from .mixins import PretalxModel
 from eventyay.common.urls import EventUrls
 from eventyay.mail.context import get_available_placeholders, get_mail_context
 from eventyay.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from eventyay.mail.signals import queuedmail_post_send, queuedmail_pre_send
 from eventyay.talk_rules.submission import orga_can_change_submissions
+
+from .mixins import PretalxModel
 
 
 def get_prefixed_subject(event, subject):
@@ -95,7 +96,8 @@ class MailTemplate(PretalxModel):
         null=True,
         verbose_name=_('BCC'),
         help_text=_(
-            'Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!'
+            'Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. '
+            'This may be a LOT!'
         ),
     )
     # Auto-created templates are created when mass emails are sent out. They are only used to re-create similar

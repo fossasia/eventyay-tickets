@@ -5,8 +5,6 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
 
-from eventyay.base.signals import activitylog_display, activitylog_object_link
-from eventyay.common.text.phrases import phrases
 from eventyay.base.models import (
     ActivityLog,
     Answer,
@@ -14,14 +12,16 @@ from eventyay.base.models import (
     CfP,
     Event,
     MailTemplate,
-    TalkQuestion,
     QueuedMail,
     Review,
     SpeakerProfile,
     Submission,
     SubmissionComment,
     SubmissionStates,
+    TalkQuestion,
 )
+from eventyay.base.signals import activitylog_display, activitylog_object_link
+from eventyay.common.text.phrases import phrases
 
 # Usually, we don't have to include the object name in activity log
 # strings, because we use ActivityLog.content_object to get the object

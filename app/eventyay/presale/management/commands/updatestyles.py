@@ -7,7 +7,6 @@ from django.core.files.storage import default_storage
 from django.core.management.base import BaseCommand
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
-
 from pretix.base.models import Event_SettingsStore, Organizer_SettingsStore
 from pretix.base.settings import GlobalSettingsObject
 from pretix.presale.views.widget import generate_widget_js

@@ -1,24 +1,14 @@
 import importlib.util
 
-from django.contrib import admin
 from django.conf import settings
-from django.conf.urls.static import static
-
 from django.urls import include, path
-from django.urls import reverse, re_path as url
-from django.utils.html import escape
-from django.utils.translation import gettext as _
-
-from django.http import HttpResponse
-
+from django.urls import re_path as url
 
 import eventyay.control.urls
 import eventyay.eventyay_common.urls
 import eventyay.presale.urls
-from eventyay.base.views import js_helpers
-from eventyay.control.views import pages
-
 from eventyay.base.views import health
+from eventyay.control.views import pages
 
 base_patterns = [
     url(r'^healthcheck/$', health.healthcheck, name='healthcheck'),

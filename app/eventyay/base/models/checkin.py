@@ -110,8 +110,8 @@ class CheckinList(LoggedModel):
 
     @property
     @scopes_disabled()
-    # Disable scopes, because this query is safe and the additional organizer filter in the EXISTS() subquery tricks PostgreSQL into a bad
-    # subplan that sequentially scans all events
+    # Disable scopes, because this query is safe and the additional organizer filter in the EXISTS() subquery
+    # tricks PostgreSQL into a bad subplan that sequentially scans all events.
     def checkin_count(self):
         return self.event.cache.get_or_set(
             'checkin_list_{}_checkin_count'.format(self.pk),

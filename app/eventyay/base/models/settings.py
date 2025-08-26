@@ -54,7 +54,8 @@ hierarkey.add_default(
     'review_help_text',
     LazyI18nString.from_gettext(
         gettext_noop(
-            'Please give a fair review on why you’d like to see this proposal at the conference, or why you think it would not be a good fit.'
+            'Please give a fair review on why you’d like to see this proposal at the conference, '
+            'or why you think it would not be a good fit.'
         )
     ),
     LazyI18nString,

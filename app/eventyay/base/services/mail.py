@@ -389,13 +389,13 @@ def mail_send_task(
                                     except:
                                         pass
                             else:
+                                message = (f'Attachment have not been send because {attach_size} bytes are '
+                                           'likely too large to arrive.')
                                 order.log_action(
                                     'pretix.event.order.email.attachments.skipped',
                                     data={
                                         'subject': 'Attachments skipped',
-                                        'message': 'Attachment have not been send because {} bytes are likely too large to arrive.'.format(
-                                            attach_size
-                                        ),
+                                        'message': message,
                                         'recipient': '',
                                         'invoices': [],
                                     },

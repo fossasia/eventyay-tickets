@@ -2,8 +2,8 @@ import logging
 
 from django_scopes import scope, scopes_disabled
 
-from eventyay.celery_app import app
 from eventyay.base.models import Event
+from eventyay.celery_app import app
 
 LOGGER = logging.getLogger(__name__)
 

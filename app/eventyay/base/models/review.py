@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from .mixins import OrderedModel, PretalxModel
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.person import is_administrator, is_reviewer
 from eventyay.talk_rules.submission import (
@@ -17,6 +16,8 @@ from eventyay.talk_rules.submission import (
     orga_can_change_submissions,
     reviews_are_open,
 )
+
+from .mixins import OrderedModel, PretalxModel
 
 
 class ReviewScoreCategory(PretalxModel):
@@ -35,7 +36,8 @@ class ReviewScoreCategory(PretalxModel):
         default=False,
         verbose_name=_('Independent score'),
         help_text=_(
-            'Independent scores are not part of the total score. Instead they are shown in a separate column in the review dashboard.'
+            'Independent scores are not part of the total score. '
+            'Instead they are shown in a separate column in the review dashboard.'
         ),
     )
 
@@ -145,7 +147,8 @@ class Review(PretalxModel):
         }
 
     def __str__(self):
-        return f'Review(event={self.submission.event.slug}, submission={self.submission.title}, user={self.user.get_display_name}, score={self.score})'
+        return (f'Review(event={self.submission.event.slug}, submission={self.submission.title}, '
+                f'user={self.user.get_display_name}, score={self.score})')
 
     @property
     def log_parent(self):
@@ -215,7 +218,8 @@ class ReviewPhase(OrderedModel, PretalxModel):
         max_length=8,
         default='all',
         help_text=_(
-            'If you select “all”, reviewers can review all proposals that their teams have access to (so either all, or specific tracks). '
+            'If you select “all”, reviewers can review all proposals that their teams have access to '
+            '(so either all, or specific tracks). '
             'In this mode, assigned proposals will be highlighted and will be shown first in the review workflow. '
         ),
     )
@@ -254,7 +258,8 @@ class ReviewPhase(OrderedModel, PretalxModel):
     speakers_can_change_submissions = models.BooleanField(
         verbose_name=_('Speakers can modify their proposals before acceptance'),
         help_text=_(
-            'By default, modification of proposals is locked after the CfP ends, and is re-enabled once the proposal was accepted.'
+            'By default, modification of proposals is locked after the CfP ends, '
+            'and is re-enabled once the proposal was accepted.'
         ),
         default=False,
     )

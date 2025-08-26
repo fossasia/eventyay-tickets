@@ -43,7 +43,8 @@ def validate_image(f):
         except DecompressionBombError:
             raise ValidationError(
                 _(
-                    'The file you uploaded has a very large number of pixels, please upload a picture with smaller dimensions.'
+                    'The file you uploaded has a very large number of pixels, please upload a picture with '
+                    'smaller dimensions.'
                 )
             )
 
@@ -51,7 +52,8 @@ def validate_image(f):
         if image.width * image.height > MAX_IMAGE_PIXELS:
             raise ValidationError(
                 _(
-                    'The file you uploaded has a very large number of pixels, please upload a picture with smaller dimensions.'
+                    'The file you uploaded has a very large number of pixels, please upload a picture with '
+                    'smaller dimensions.'
                 )
             )
     except Exception as exc:

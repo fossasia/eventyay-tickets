@@ -1,7 +1,5 @@
-from django.http import HttpResponse
+from django.urls import path
 from django.views.generic import TemplateView
-from django.urls import path, reverse
-from django.utils.html import escape
 
 from eventyay.eventyay_common.views import auth
 

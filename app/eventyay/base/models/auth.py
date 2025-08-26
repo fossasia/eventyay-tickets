@@ -110,6 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     session_token = models.CharField(max_length=32, default=generate_session_token)
     if TYPE_CHECKING:
         from django.db.models import QuerySet
+
         from eventyay.base.models import NotificationSetting
 
         notification_settings: QuerySet[NotificationSetting]

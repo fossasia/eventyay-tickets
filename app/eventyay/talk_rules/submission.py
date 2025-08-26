@@ -175,8 +175,8 @@ def questions_for_user(event, user):
     """Used to retrieve synced querysets in the orga list and the API list."""
     from django.db.models import Q
 
-    from eventyay.talk_rules.orga import can_view_speaker_names
     from eventyay.base.models import TalkQuestionTarget
+    from eventyay.talk_rules.orga import can_view_speaker_names
 
     if user.has_perm('submission.update_question', event):
         # Organisers with edit permissions can see everything

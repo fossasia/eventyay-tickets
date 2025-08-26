@@ -80,8 +80,7 @@ class Schedule(PretalxModel):
         :param comment: Public comment for the release
         :rtype: Schedule
         """
-        from eventyay.base.models import TalkSlot
-        from eventyay.base.models import SubmissionStates
+        from eventyay.base.models import SubmissionStates, TalkSlot
 
         if name in ('wip', 'latest'):
             raise Exception(f'Cannot use reserved name "{name}" for schedule version.')

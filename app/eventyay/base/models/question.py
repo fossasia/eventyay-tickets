@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from .mixins import OrderedModel, PretalxModel
 from eventyay.base.models import Choices
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
@@ -14,6 +13,8 @@ from eventyay.talk_rules.agenda import is_agenda_visible
 from eventyay.talk_rules.event import can_change_event_settings
 from eventyay.talk_rules.person import is_reviewer
 from eventyay.talk_rules.submission import is_cfp_open, orga_can_change_submissions
+
+from .mixins import OrderedModel, PretalxModel
 
 
 def answer_file_path(instance, filename):
@@ -230,14 +231,17 @@ class TalkQuestion(OrderedModel, PretalxModel):
         default=False,
         verbose_name=_('Publish answers'),
         help_text=_(
-            'Responses will be shown on session or speaker pages as appropriate. Please note that you cannot make a field public after the first answers have been given, to allow speakers explicit consent before publishing information.'
+            'Responses will be shown on session or speaker pages as appropriate. '
+            'Please note that you cannot make a field public after the first answers have been given, '
+            'to allow speakers explicit consent before publishing information.'
         ),
     )
     is_visible_to_reviewers = models.BooleanField(
         default=True,
         verbose_name=_('Show answers to reviewers'),
         help_text=_(
-            'Should responses to this field be shown to reviewers? This is helpful if you want to collect personal information, but use anonymous reviews.'
+            'Should responses to this field be shown to reviewers? This is helpful if you want to collect '
+            'personal information, but use anonymous reviews.'
         ),
     )
     objects = ScopedManager(event='event', _manager_class=TalkQuestionManager)
@@ -291,7 +295,7 @@ class TalkQuestion(OrderedModel, PretalxModel):
         :param filter_speakers: Apply only to these speakers.
         :param filter_talks: Apply only to these talks.
         """
-        from eventyay.base.models import User, Submission
+        from eventyay.base.models import Submission, User
 
         answers = self.answers.all()
         filter_talks = filter_talks or Submission.objects.none()

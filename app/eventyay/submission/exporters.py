@@ -1,9 +1,9 @@
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
+from eventyay.base.models import Answer
 from eventyay.common.exporter import BaseExporter, CSVExporterMixin
 from eventyay.common.signals import register_data_exporters
-from eventyay.base.models import Answer
 
 
 class SpeakerQuestionData(CSVExporterMixin, BaseExporter):

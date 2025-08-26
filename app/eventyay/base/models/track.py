@@ -4,7 +4,6 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from .mixins import OrderedModel, PretalxModel
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.agenda import is_agenda_visible
 from eventyay.talk_rules.event import can_change_event_settings
@@ -13,6 +12,8 @@ from eventyay.talk_rules.submission import (
     orga_can_change_submissions,
     use_tracks,
 )
+
+from .mixins import OrderedModel, PretalxModel
 
 
 class Track(OrderedModel, PretalxModel):

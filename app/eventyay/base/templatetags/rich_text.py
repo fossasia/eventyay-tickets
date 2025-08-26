@@ -1,5 +1,4 @@
 import html
-import re
 import urllib.parse
 from copy import copy
 from functools import partial
@@ -10,8 +9,6 @@ from bleach import DEFAULT_CALLBACKS
 from bleach.linkifier import build_email_re, build_url_re
 from django import template
 from django.conf import settings
-from django.core import signing
-from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.safestring import mark_safe
 
@@ -25,6 +22,7 @@ except ImportError:
     TLD_SET = sorted(tld_set, key=len, reverse=True)
 
 from i18nfield.strings import LazyI18nString
+
 from eventyay.common.views.redirect import safelink as sl
 
 register = template.Library()
@@ -144,7 +142,7 @@ def markdown_compile_email(source):
     linker = bleach.Linker(
         url_re=URL_RE,
         email_re=EMAIL_RE,
-        callbacks=DEFAULT_CALLBACKS + [truelink_callback, abslink_callback],
+        callbacks=DEFAULT_CALLBACKS + [abslink_callback],
         parse_email=True,
     )
     return linker.linkify(

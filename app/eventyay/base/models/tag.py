@@ -3,7 +3,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nTextField
 
-from .mixins import PretalxModel
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.person import is_reviewer
 from eventyay.talk_rules.submission import (
@@ -12,6 +11,8 @@ from eventyay.talk_rules.submission import (
     reviewer_can_change_tags,
     reviewer_can_create_tags,
 )
+
+from .mixins import PretalxModel
 
 
 class Tag(PretalxModel):
@@ -33,7 +34,8 @@ class Tag(PretalxModel):
         default=False,
         verbose_name=_('Show tag publicly'),
         help_text=_(
-            'Tags are currently only in use for organisers and reviewers. They will be visible publicly in a future release of pretalx.'
+            'Tags are currently only in use for organisers and reviewers. '
+            'They will be visible publicly in a future release of pretalx.'
         ),
     )
 

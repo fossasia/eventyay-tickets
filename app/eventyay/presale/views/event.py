@@ -50,6 +50,7 @@ from eventyay.base.models.items import (
 )
 from eventyay.base.services.quotas import QuotaAvailability
 from eventyay.helpers.compat import date_fromisocalendar
+from eventyay.helpers.formats.en.formats import WEEK_FORMAT
 from eventyay.multidomain.urlreverse import eventreverse
 from eventyay.presale.ical import get_ical
 from eventyay.presale.signals import item_description
@@ -62,7 +63,6 @@ from eventyay.presale.views.organizer import (
 )
 
 from ...eventyay_common.utils import encode_email
-from eventyay.helpers.formats.en.formats import WEEK_FORMAT
 from . import (
     CartMixin,
     EventViewMixin,

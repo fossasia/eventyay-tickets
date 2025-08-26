@@ -3,8 +3,9 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
 from django_scopes import ScopedManager
 
-from .mixins import PretalxModel
 from eventyay.common.text.phrases import phrases
+
+from .mixins import PretalxModel
 
 
 class Feedback(PretalxModel):

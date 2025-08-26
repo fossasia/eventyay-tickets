@@ -19,9 +19,7 @@ from django.utils.translation import override, pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
 from rest_framework import serializers
 
-from .mixins import GenerateCode, PretalxModel
-from eventyay.base.models import User
-from eventyay.base.models import Choices
+from eventyay.base.models import Choices, User
 from eventyay.common.exceptions import SubmissionError
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
@@ -52,6 +50,8 @@ from eventyay.talk_rules.submission import (
     orga_can_change_submissions,
     orga_or_reviewer_can_change_submission,
 )
+
+from .mixins import GenerateCode, PretalxModel
 
 
 def generate_invite_code(length=32):

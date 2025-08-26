@@ -7,9 +7,10 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from .mixins import PretalxModel
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
+
+from .mixins import PretalxModel
 
 
 def default_settings():
@@ -74,7 +75,8 @@ class CfP(PretalxModel):
     """Every :class:`~pretalx.event.models.event.Event` has one Call for
     Papers/Participation/Proposals.
 
-    :param deadline: The regular deadline. Please note that submissions can be available for longer than this if different deadlines are configured on single submission types.
+    :param deadline: The regular deadline. Please note that submissions can be available for longer than this
+                     if different deadlines are configured on single submission types.
     """
 
     event = models.OneToOneField(to='Event', on_delete=models.PROTECT)

@@ -2,7 +2,6 @@ import json
 import logging
 from contextlib import suppress
 
-from django_scopes import ScopedManager
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -11,6 +10,7 @@ from django.utils.functional import cached_property
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
+from django_scopes import ScopedManager
 
 from eventyay.base.signals import logentry_object_link
 
@@ -312,7 +312,8 @@ class ActivityLog(models.Model):
         """Custom __str__ to help with debugging."""
         event = getattr(self.event, 'slug', 'None')
         person = getattr(self.person, 'name', 'None')
-        return f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, action_type={self.action_type})'
+        return (f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, '
+                f'action_type={self.action_type})')
 
     @cached_property
     def json_data(self):

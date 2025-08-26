@@ -4,10 +4,9 @@ from pathlib import Path
 from django.core.files.storage import default_storage
 from django_scopes import scopes_disabled
 
+from eventyay.base.models import Event, Submission, User
 from eventyay.celery_app import app
 from eventyay.common.image import process_image
-from eventyay.base.models import Event, User, Submission
-
 
 logger = logging.getLogger(__name__)
 

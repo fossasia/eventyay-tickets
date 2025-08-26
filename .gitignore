@@ -33,6 +33,7 @@ local/
 .vscode/tasks.json
 .vscode/extensions.json
 .zed
+app/.vscode
 
 .gnupg
 .ssh

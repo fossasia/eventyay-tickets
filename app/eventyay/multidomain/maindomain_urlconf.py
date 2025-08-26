@@ -5,13 +5,13 @@ from django.urls import include
 from django.urls import re_path as url
 from django.views.generic import TemplateView
 
+from eventyay.config.urls import common_patterns
 from eventyay.multidomain.plugin_handler import plugin_event_urls
 from eventyay.presale.urls import (
     event_patterns,
     locale_patterns,
     organizer_patterns,
 )
-from eventyay.config.urls import common_patterns
 
 presale_patterns_main = [
     url(

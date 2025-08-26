@@ -271,3 +271,8 @@ quote-style = "single"
 select = ["E", "F", "W", "I"]
 ignore = ["E722", "E741"]
 
+[tool.ruff.lint.per-file-ignores]
+# These files re-export models.
+"**/__init__.py" = ["F401"]
+# These files have long lines.
+"**/migrations/*.py" = ["E501"]

@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from .mixins import PretalxModel
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.agenda import can_view_schedule, is_speaker_viewable
@@ -13,6 +12,8 @@ from eventyay.talk_rules.person import (
     is_reviewer,
 )
 from eventyay.talk_rules.submission import orga_can_change_submissions
+
+from .mixins import PretalxModel
 
 
 class SpeakerProfile(PretalxModel):

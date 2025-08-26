@@ -348,15 +348,16 @@ class Forgot(TemplateView):
                     messages.info(
                         request,
                         _(
-                            'If the address is registered to valid account, then we have sent you an e-mail containing further instructions. '
-                            'Please note that we will send at most one email every 24 hours.'
+                            'If the address is registered to valid account, then we have sent you an e-mail containing '
+                            'further instructions. Please note that we will send at most one email every 24 hours.'
                         ),
                     )
                 else:
                     messages.info(
                         request,
                         _(
-                            'If the address is registered to valid account, then we have sent you an e-mail containing further instructions.'
+                            'If the address is registered to valid account, then we have sent you an e-mail containing '
+                            'further instructions.'
                         ),
                     )
 

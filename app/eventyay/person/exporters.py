@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 
-from eventyay.common.exporter import BaseExporter, CSVExporterMixin
 from eventyay.base.models import SubmissionStates
+from eventyay.common.exporter import BaseExporter, CSVExporterMixin
 
 
 class CSVSpeakerExporter(CSVExporterMixin, BaseExporter):

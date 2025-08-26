@@ -3,7 +3,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
-from .mixins import PretalxModel
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.submission import (
@@ -12,6 +11,8 @@ from eventyay.talk_rules.submission import (
     orga_can_change_submissions,
     submission_comments_active,
 )
+
+from .mixins import PretalxModel
 
 
 class SubmissionComment(PretalxModel):

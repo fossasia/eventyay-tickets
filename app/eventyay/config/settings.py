@@ -10,17 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import sys
 import configparser
 import os
+import sys
+from pathlib import Path
 
 from django.utils.translation import gettext_lazy as _
-from pathlib import Path
 from kombu import Queue
+from pycountry import currencies
 
 from eventyay.helpers.config import EnvOrParserConfig
-from .settings_helpers import build_db_tls_config, build_redis_tls_config
-from pycountry import currencies
+
+from .settings_helpers import build_redis_tls_config
 
 _config = configparser.RawConfigParser()
 if 'EVENTYAY_CONFIG_FILE' in os.environ:

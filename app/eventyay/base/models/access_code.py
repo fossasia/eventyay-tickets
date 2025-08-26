@@ -6,9 +6,10 @@ from django.utils.timezone import now
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 
-from .mixins import GenerateCode, PretalxModel
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.event import can_change_event_settings
+
+from .mixins import GenerateCode, PretalxModel
 
 
 class SubmitterAccessCode(GenerateCode, PretalxModel):

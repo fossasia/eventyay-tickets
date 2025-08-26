@@ -876,7 +876,8 @@ class BaseInvoiceAddressForm(forms.ModelForm):
         )
         self.fields['state'].widget.is_required = True
 
-        # Without JavaScript the VAT ID field is not hidden, so we empty the field if a country outside the EU is selected.
+        # Without JavaScript the VAT ID field is not hidden,
+        # so we empty the field if a country outside the EU is selected.
         if cc and not is_eu_country(cc) and fprefix + 'vat_id' in self.data:
             self.data = self.data.copy()
             del self.data[fprefix + 'vat_id']
