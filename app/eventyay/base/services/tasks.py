@@ -17,10 +17,6 @@ from django.conf import settings
 from django.db import transaction
 from django_scopes import scope, scopes_disabled
 
-from eventyay.base.metrics import (
-    eventyay_task_duration_seconds,
-    eventyay_task_runs_total,
-)
 from eventyay.base.models import Event, Organizer, User
 from eventyay.celery_app import app
 
@@ -44,27 +40,7 @@ class ProfiledTask(app.Task):
             t0 = time.perf_counter()
             ret = super().__call__(*args, **kwargs)
             tottime = time.perf_counter() - t0
-
-        if settings.METRICS_ENABLED:
-            pretix_task_duration_seconds.observe(tottime, task_name=self.name)
         return ret
-
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
-        if settings.METRICS_ENABLED:
-            expected = False
-            for t in self.throws:
-                if isinstance(exc, t):
-                    expected = True
-                    break
-            pretix_task_runs_total.inc(1, task_name=self.name, status='expected-error' if expected else 'error')
-
-        return super().on_failure(exc, task_id, args, kwargs, einfo)
-
-    def on_success(self, retval, task_id, args, kwargs):
-        if settings.METRICS_ENABLED:
-            pretix_task_runs_total.inc(1, task_name=self.name, status='success')
-
-        return super().on_success(retval, task_id, args, kwargs)
 
 
 class EventTask(app.Task):

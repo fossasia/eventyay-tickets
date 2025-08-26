@@ -19,19 +19,17 @@ class Availability(PretalxModel):
     usually only span a single day at most.
     """
 
-    event = models.ForeignKey(
-        to="Event", related_name="availabilities", on_delete=models.CASCADE
-    )
+    event = models.ForeignKey(to='Event', related_name='availabilities', on_delete=models.CASCADE)
     person = models.ForeignKey(
-        to="SpeakerProfile",
-        related_name="availabilities",
+        to='SpeakerProfile',
+        related_name='availabilities',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
     room = models.ForeignKey(
-        to="Room",
-        related_name="availabilities",
+        to='Room',
+        related_name='availabilities',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -41,14 +39,14 @@ class Availability(PretalxModel):
 
     def __str__(self) -> str:
         person = self.person.user.get_display_name() if self.person else None
-        room = getattr(self.room, "name", None)
-        event = getattr(getattr(self, "event", None), "slug", None)
-        return f"Availability(event={event}, person={person}, room={room})"
+        room = getattr(self.room, 'name', None)
+        event = getattr(getattr(self, 'event', None), 'slug', None)
+        return f'Availability(event={event}, person={person}, room={room})'
 
     def __hash__(self):
         return hash((self.person, self.room, self.start, self.end))
 
-    def __eq__(self, other: "Availability") -> bool:
+    def __eq__(self, other: 'Availability') -> bool:
         """Comparisons like ``availability1 == availability2``.
 
         Checks if ``event``, ``person``, ``room``, ``start`` and ``end``
@@ -56,7 +54,7 @@ class Availability(PretalxModel):
         """
         return all(
             getattr(self, attribute, None) == getattr(other, attribute, None)
-            for attribute in ("person", "room", "start", "end")
+            for attribute in ('person', 'room', 'start', 'end')
         )
 
     @cached_property
@@ -66,20 +64,20 @@ class Availability(PretalxModel):
         return self.start.time() == zerotime and self.end.time() == zerotime
 
     def serialize(self, full=True) -> dict:
-        result = {"start": self.start.isoformat(), "end": self.end.isoformat()}
+        result = {'start': self.start.isoformat(), 'end': self.end.isoformat()}
         if full:
-            result["id"] = self.id
-            result["allDay"] = self.all_day
+            result['id'] = self.id
+            result['allDay'] = self.all_day
         return result
 
-    def overlaps(self, other: "Availability", strict: bool) -> bool:
+    def overlaps(self, other: 'Availability', strict: bool) -> bool:
         """Test if two Availabilities overlap.
 
         :param strict: Only count a real overlap as overlap, not direct adjacency.
         """
 
         if not isinstance(other, Availability):
-            raise Exception("Please provide an Availability object")
+            raise Exception('Please provide an Availability object')
 
         if strict:
             return (
@@ -95,56 +93,56 @@ class Availability(PretalxModel):
             or (other.start <= self.end <= other.end)
         )
 
-    def contains(self, other: "Availability") -> bool:
+    def contains(self, other: 'Availability') -> bool:
         """Tests if this availability starts before and ends after the
         other."""
         return self.start <= other.start and self.end >= other.end
 
-    def merge_with(self, other: "Availability") -> "Availability":
+    def merge_with(self, other: 'Availability') -> 'Availability':
         """Return a new Availability which spans the range of this one and the
         given one."""
 
         if not isinstance(other, Availability):
-            raise Exception("Please provide an Availability object.")
+            raise Exception('Please provide an Availability object.')
         if not other.overlaps(self, strict=False):
-            raise Exception("Only overlapping Availabilities can be merged.")
+            raise Exception('Only overlapping Availabilities can be merged.')
 
         return Availability(
             start=min(self.start, other.start),
             end=max(self.end, other.end),
-            event=getattr(self, "event", None),
-            person=getattr(self, "person", None),
-            room=getattr(self, "room", None),
+            event=getattr(self, 'event', None),
+            person=getattr(self, 'person', None),
+            room=getattr(self, 'room', None),
         )
 
-    def __or__(self, other: "Availability") -> "Availability":
+    def __or__(self, other: 'Availability') -> 'Availability':
         """Performs the merge operation: ``availability1 | availability2``"""
         return self.merge_with(other)
 
-    def intersect_with(self, other: "Availability") -> "Availability":
+    def intersect_with(self, other: 'Availability') -> 'Availability':
         """Return a new Availability which spans the range covered both by this
         one and the given one."""
 
         if not isinstance(other, Availability):
-            raise Exception("Please provide an Availability object.")
+            raise Exception('Please provide an Availability object.')
         if not other.overlaps(self, False):
-            raise Exception("Only overlapping Availabilities can be intersected.")
+            raise Exception('Only overlapping Availabilities can be intersected.')
 
         return Availability(
             start=max(self.start, other.start),
             end=min(self.end, other.end),
-            event=getattr(self, "event", None),
-            person=getattr(self, "person", None),
-            room=getattr(self, "room", None),
+            event=getattr(self, 'event', None),
+            person=getattr(self, 'person', None),
+            room=getattr(self, 'room', None),
         )
 
-    def __and__(self, other: "Availability") -> "Availability":
+    def __and__(self, other: 'Availability') -> 'Availability':
         """Performs the intersect operation: ``availability1 &
         availability2``"""
         return self.intersect_with(other)
 
     @classmethod
-    def union(cls, availabilities: list["Availability"]) -> list["Availability"]:
+    def union(cls, availabilities: list['Availability']) -> list['Availability']:
         """Return the minimal list of Availability objects which are covered by
         at least one given Availability."""
         availabilities = list(availabilities)
@@ -166,9 +164,9 @@ class Availability(PretalxModel):
     @classmethod
     def _pair_intersection(
         cls,
-        availabilities_a: list["Availability"],
-        availabilities_b: list["Availability"],
-    ) -> list["Availability"]:
+        availabilities_a: list['Availability'],
+        availabilities_b: list['Availability'],
+    ) -> list['Availability']:
         """return the list of Availabilities, which are covered by each of the
         given sets."""
         result = []
@@ -183,9 +181,7 @@ class Availability(PretalxModel):
         return result
 
     @classmethod
-    def intersection(
-        cls, *availabilitysets: list["Availability"]
-    ) -> list["Availability"]:
+    def intersection(cls, *availabilitysets: list['Availability']) -> list['Availability']:
         """Return the list of Availabilities which are covered by all of the
         given sets."""
 

@@ -267,8 +267,8 @@ def invite(request, token):
                 user.log_action('eventyay.eventyay_common.auth.user.created', user=user)
                 auth_login(request, user)
                 request.session['eventyay_auth_login_time'] = int(time.time())
-                request.session['eventyay_auth_long_session'] = settings.EVENTYAY_LONG_SESSIONS and form.cleaned_data.get(
-                    'keep_logged_in', False
+                request.session['eventyay_auth_long_session'] = (
+                    settings.EVENTYAY_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
                 )
 
                 inv.team.members.add(request.user)
@@ -348,15 +348,16 @@ class Forgot(TemplateView):
                     messages.info(
                         request,
                         _(
-                            'If the address is registered to valid account, then we have sent you an e-mail containing further instructions. '
-                            'Please note that we will send at most one email every 24 hours.'
+                            'If the address is registered to valid account, then we have sent you an e-mail containing '
+                            'further instructions. Please note that we will send at most one email every 24 hours.'
                         ),
                     )
                 else:
                     messages.info(
                         request,
                         _(
-                            'If the address is registered to valid account, then we have sent you an e-mail containing further instructions.'
+                            'If the address is registered to valid account, then we have sent you an e-mail containing '
+                            'further instructions.'
                         ),
                     )
 

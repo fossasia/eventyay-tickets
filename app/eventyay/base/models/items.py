@@ -241,17 +241,20 @@ class Item(LoggedModel):
     :type allow_cancel: bool
     :param max_per_order: Maximum number of times this item can be in an order. None for unlimited.
     :type max_per_order: int
-    :param min_per_order: Minimum number of times this item needs to be in an order if bought at all. None for unlimited.
+    :param min_per_order: Minimum number of times this item needs to be in an order if bought at all.
+                          None for unlimited.
     :type min_per_order: int
     :param checkin_attention: Requires special attention at check-in
     :type checkin_attention: bool
     :param original_price: The item's "original" price. Will not be used for any calculations, will just be shown.
     :type original_price: decimal.Decimal
-    :param require_approval: If set to ``True``, orders containing this product can only be processed and paid after approved by an administrator
+    :param require_approval: If set to ``True``, orders containing this product can only be processed and paid after
+                             approval by an administrator
     :type require_approval: bool
     :param sales_channels: Sales channels this item is available on.
     :type sales_channels: bool
-    :param issue_giftcard: If ``True``, buying this product will give you a gift card with the value of the product's price
+    :param issue_giftcard: If ``True``, buying this product will give you a gift card
+                           with the value of the product's price
     :type issue_giftcard: bool
     """
 
@@ -414,8 +417,8 @@ class Item(LoggedModel):
         verbose_name=_('Allow product to be canceled or changed'),
         default=True,
         help_text=_(
-            'If this is checked, the usual cancellation and order change settings of this event apply. If this is unchecked, '
-            'orders containing this product can not be canceled by users but only by you.'
+            'If this is checked, the usual cancellation and order change settings of this event apply. '
+            'If this is unchecked, orders containing this product can not be canceled by users but only by you.'
         ),
     )
     min_per_order = models.IntegerField(
@@ -1108,7 +1111,8 @@ class Question(LoggedModel):
     :type identifier: str
     :param dependency_question: This question will only show up if the referenced question is set to `dependency_value`.
     :type dependency_question: Question
-    :param dependency_values: The values that `dependency_question` needs to be set to for this question to be applicable.
+    :param dependency_values: The values that `dependency_question` needs to be set to
+                              for this question to be applicable.
     :type dependency_values: list[str]
     """
 

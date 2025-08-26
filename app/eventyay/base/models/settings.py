@@ -6,7 +6,7 @@ from django.utils.translation import gettext_noop
 from hierarkey.models import GlobalSettingsBase, Hierarkey
 from i18nfield.strings import LazyI18nString
 
-hierarkey = Hierarkey(attribute_name="settings")
+hierarkey = Hierarkey(attribute_name='settings')
 
 
 INSTANCE_IDENTIFIER = None
@@ -21,10 +21,10 @@ class GlobalSettings(GlobalSettingsBase):
             return INSTANCE_IDENTIFIER
 
         try:
-            INSTANCE_IDENTIFIER = uuid.UUID(self.settings.get("instance_identifier"))
+            INSTANCE_IDENTIFIER = uuid.UUID(self.settings.get('instance_identifier'))
         except (TypeError, ValueError):
             INSTANCE_IDENTIFIER = uuid.uuid4()
-            self.settings.set("instance_identifier", str(INSTANCE_IDENTIFIER))
+            self.settings.set('instance_identifier', str(INSTANCE_IDENTIFIER))
         return INSTANCE_IDENTIFIER
 
 
@@ -35,38 +35,37 @@ def i18n_unserialise(value):
         return LazyI18nString(str(value))
 
 
-hierarkey.add_type(
-    LazyI18nString, serialize=lambda s: json.dumps(s.data), unserialize=i18n_unserialise
-)
+hierarkey.add_type(LazyI18nString, serialize=lambda s: json.dumps(s.data), unserialize=i18n_unserialise)
 
 
-hierarkey.add_default("update_check_ack", "False", bool)
-hierarkey.add_default("update_check_email", "", str)
-hierarkey.add_default("update_check_enabled", "True", bool)
-hierarkey.add_default("update_check_result", None, dict)
-hierarkey.add_default("update_check_result_warning", "False", bool)
-hierarkey.add_default("update_check_last", None, dt.datetime)
-hierarkey.add_default("update_check_id", None, str)
+hierarkey.add_default('update_check_ack', 'False', bool)
+hierarkey.add_default('update_check_email', '', str)
+hierarkey.add_default('update_check_enabled', 'True', bool)
+hierarkey.add_default('update_check_result', None, dict)
+hierarkey.add_default('update_check_result_warning', 'False', bool)
+hierarkey.add_default('update_check_last', None, dt.datetime)
+hierarkey.add_default('update_check_id', None, str)
 
-hierarkey.add_default("sent_mail_event_created", "False", bool)
-hierarkey.add_default("sent_mail_cfp_closed", "False", bool)
-hierarkey.add_default("sent_mail_event_over", "False", bool)
+hierarkey.add_default('sent_mail_event_created', 'False', bool)
+hierarkey.add_default('sent_mail_cfp_closed', 'False', bool)
+hierarkey.add_default('sent_mail_event_over', 'False', bool)
 
 hierarkey.add_default(
-    "review_help_text",
+    'review_help_text',
     LazyI18nString.from_gettext(
         gettext_noop(
-            "Please give a fair review on why you’d like to see this proposal at the conference, or why you think it would not be a good fit."
+            'Please give a fair review on why you’d like to see this proposal at the conference, '
+            'or why you think it would not be a good fit.'
         )
     ),
     LazyI18nString,
 )
 hierarkey.add_default(
-    "mail_text_new_submission",
+    'mail_text_new_submission',
     LazyI18nString,
 )
 hierarkey.add_default(
-    "mail_text_event_created",
+    'mail_text_event_created',
     LazyI18nString.from_gettext(
         gettext_noop(
             """Hi,
@@ -87,7 +86,7 @@ email to support@eventyay.com!
     LazyI18nString,
 )
 hierarkey.add_default(
-    "mail_text_cfp_closed",
+    'mail_text_cfp_closed',
     LazyI18nString.from_gettext(
         gettext_noop(
             """Hi,
@@ -109,7 +108,7 @@ closed. Here is a list of links that should be useful in the next days:
     LazyI18nString,
 )
 hierarkey.add_default(
-    "mail_text_event_over",
+    'mail_text_event_over',
     LazyI18nString.from_gettext(
         gettext_noop(
             """Hi,

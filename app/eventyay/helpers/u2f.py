@@ -12,7 +12,8 @@ def pub_key_from_der(der: bytes):
     """
     Load a DER-encoded public key.
 
-    This function appends the given DER-encoded public key data to a predefined prefix and loads it using the cryptography library.
+    This function appends the given DER-encoded public key data to a predefined prefix and loads it
+    using the cryptography library.
 
     Args:
         der (bytes): The DER-encoded public key data to append to the predefined prefix.
@@ -27,7 +28,8 @@ def websafe_decode(data):
     """
     Decode a web-safe base64-encoded string.
 
-    This function decodes a base64-encoded string that has been modified to be URL-safe. It ensures that the padding is correct before decoding.
+    This function decodes a base64-encoded string that has been modified to be URL-safe. It ensures that the padding is
+    correct before decoding.
 
     Args:
         data (Union[str, bytes]): The web-safe base64-encoded data to decode. Can be a string or bytes.
@@ -45,7 +47,8 @@ def websafe_encode(data):
     """
     Encode data as a web-safe base64 string.
 
-    This function encodes data using base64 encoding and modifies the result to be URL-safe by removing any padding characters.
+    This function encodes data using base64 encoding and modifies the result to be URL-safe by removing any
+    padding characters.
 
     Args:
         data (Union[str, bytes]): The data to encode. Can be a string or bytes.

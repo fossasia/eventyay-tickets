@@ -376,8 +376,8 @@ class BasePaymentProvider:
                         label=_('Hide payment method'),
                         required=False,
                         help_text=_(
-                            'The payment method will not be shown by default but only to people who enter the shop through '
-                            'a special link.'
+                            'The payment method will not be shown by default but only to people who enter the shop '
+                            'through a special link.'
                         ),
                     ),
                 ),
@@ -1310,8 +1310,8 @@ class GiftCardPayment(BasePaymentProvider):
                 messages.warning(
                     request,
                     _(
-                        'You entered a voucher instead of a gift card. Vouchers can only be entered on the first page of the shop below '
-                        'the product selection.'
+                        'You entered a voucher instead of a gift card. Vouchers can only be entered on the first page '
+                        'of the shop below the product selection.'
                     ),
                 )
             else:
@@ -1320,7 +1320,8 @@ class GiftCardPayment(BasePaymentProvider):
             messages.error(
                 request,
                 _(
-                    'This gift card can not be redeemed since its code is not unique. Please contact the organizer of this event.'
+                    'This gift card can not be redeemed since its code is not unique. '
+                    'Please contact the organizer of this event.'
                 ),
             )
 
@@ -1360,8 +1361,8 @@ class GiftCardPayment(BasePaymentProvider):
                 messages.warning(
                     request,
                     _(
-                        'You entered a voucher instead of a gift card. Vouchers can only be entered on the first page of the shop below '
-                        'the product selection.'
+                        'You entered a voucher instead of a gift card. Vouchers can only be entered on the first page '
+                        'of the shop below the product selection.'
                     ),
                 )
             else:
@@ -1370,7 +1371,8 @@ class GiftCardPayment(BasePaymentProvider):
             messages.error(
                 request,
                 _(
-                    'This gift card can not be redeemed since its code is not unique. Please contact the organizer of this event.'
+                    'This gift card can not be redeemed since its code is not unique. '
+                    'Please contact the organizer of this event.'
                 ),
             )
 

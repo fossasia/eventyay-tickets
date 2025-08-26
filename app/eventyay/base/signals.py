@@ -495,7 +495,8 @@ As with all event-plugin signals, the ``sender`` keyword argument will contain t
 
 event_copy_data = EventPluginSignal()
 """
-Arguments: "other", ``tax_map``, ``category_map``, ``item_map``, ``question_map``, ``variation_map``, ``checkin_list_map``
+Arguments: "other", ``tax_map``, ``category_map``, ``item_map``, ``question_map``, ``variation_map``,
+``checkin_list_map``
 
 This signal is sent out when a new event is created as a clone of an existing event, i.e.
 the settings from the older event are copied to the newer one. You can listen to this

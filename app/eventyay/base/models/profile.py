@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from .mixins import PretalxModel
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.agenda import can_view_schedule, is_speaker_viewable
@@ -13,6 +12,8 @@ from eventyay.talk_rules.person import (
     is_reviewer,
 )
 from eventyay.talk_rules.submission import orga_can_change_submissions
+
+from .mixins import PretalxModel
 
 
 class SpeakerProfile(PretalxModel):
@@ -26,61 +27,51 @@ class SpeakerProfile(PretalxModel):
     """
 
     user = models.ForeignKey(
-        to="User",
-        related_name="profiles",
+        to='User',
+        related_name='profiles',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
-    event = models.ForeignKey(
-        to="Event", related_name="+", on_delete=models.CASCADE
-    )
+    event = models.ForeignKey(to='Event', related_name='+', on_delete=models.CASCADE)
     biography = models.TextField(
-        verbose_name=_("Biography"),
+        verbose_name=_('Biography'),
         help_text=phrases.base.use_markdown,
         null=True,
         blank=True,
     )
-    has_arrived = models.BooleanField(
-        default=False, verbose_name=_("The speaker has arrived")
-    )
+    has_arrived = models.BooleanField(default=False, verbose_name=_('The speaker has arrived'))
 
-    log_prefix = "eventyay.user.profile"
+    log_prefix = 'eventyay.user.profile'
 
     class Meta:
         # These permissions largely apply to event-scoped user actions
         rules_permissions = {
-            "list": can_view_schedule | (is_reviewer & can_view_speaker_names),
-            "reviewer_list": is_reviewer & can_view_speaker_names,
-            "orga_list": orga_can_change_submissions
-            | (is_reviewer & can_view_speaker_names),
-            "view": is_speaker_viewable
-            | orga_can_change_submissions
-            | (is_reviewer & can_view_speaker_names),
-            "orga_view": orga_can_change_submissions
-            | (is_reviewer & can_view_speaker_names),
-            "create": is_administrator,
-            "update": orga_can_change_submissions,
-            "mark_arrived": orga_can_change_submissions & can_mark_speakers_arrived,
-            "delete": is_administrator,
+            'list': can_view_schedule | (is_reviewer & can_view_speaker_names),
+            'reviewer_list': is_reviewer & can_view_speaker_names,
+            'orga_list': orga_can_change_submissions | (is_reviewer & can_view_speaker_names),
+            'view': is_speaker_viewable | orga_can_change_submissions | (is_reviewer & can_view_speaker_names),
+            'orga_view': orga_can_change_submissions | (is_reviewer & can_view_speaker_names),
+            'create': is_administrator,
+            'update': orga_can_change_submissions,
+            'mark_arrived': orga_can_change_submissions & can_mark_speakers_arrived,
+            'delete': is_administrator,
         }
 
     class urls(EventUrls):
-        public = "{self.event.urls.base}speaker/{self.user.code}/"
-        social_image = "{public}og-image"
-        talks_ical = "{self.urls.public}talks.ics"
+        public = '{self.event.urls.base}speaker/{self.user.code}/'
+        social_image = '{public}og-image'
+        talks_ical = '{self.urls.public}talks.ics'
 
     class orga_urls(EventUrls):
-        base = "{self.event.orga_urls.speakers}{self.user.code}/"
-        password_reset = "{self.event.orga_urls.speakers}{self.user.code}/reset"
-        toggle_arrived = (
-            "{self.event.orga_urls.speakers}{self.user.code}/toggle-arrived"
-        )
+        base = '{self.event.orga_urls.speakers}{self.user.code}/'
+        password_reset = '{self.event.orga_urls.speakers}{self.user.code}/reset'
+        toggle_arrived = '{self.event.orga_urls.speakers}{self.user.code}/toggle-arrived'
 
     def __str__(self):
         """Help when debugging."""
         user = self.user.get_display_name() if self.user else None
-        return f"SpeakerProfile(event={self.event.slug}, user={user})"
+        return f'SpeakerProfile(event={self.event.slug}, user={user})'
 
     @cached_property
     def code(self):
@@ -115,18 +106,14 @@ class SpeakerProfile(PretalxModel):
         """
         from eventyay.base.models import Answer, Submission
 
-        submissions = Submission.objects.filter(
-            event=self.event, speakers__in=[self.user]
+        submissions = Submission.objects.filter(event=self.event, speakers__in=[self.user])
+        return Answer.objects.filter(models.Q(submission__in=submissions) | models.Q(person=self.user)).order_by(
+            'question__position'
         )
-        return Answer.objects.filter(
-            models.Q(submission__in=submissions) | models.Q(person=self.user)
-        ).order_by("question__position")
 
     @property
     def reviewer_answers(self):
-        return self.answers.filter(question__is_visible_to_reviewers=True).order_by(
-            "question__position"
-        )
+        return self.answers.filter(question__is_visible_to_reviewers=True).order_by('question__position')
 
     @cached_property
     def avatar(self):

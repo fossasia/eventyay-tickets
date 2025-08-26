@@ -1444,7 +1444,8 @@ class OrderChangeManager:
         'subevent_required': _('You need to choose a subevent for the new position.'),
         'seat_unavailable': _('The selected seat "{seat}" is not available.'),
         'seat_subevent_mismatch': _(
-            'You selected seat "{seat}" for a date that does not match the selected ticket date. Please choose a seat again.'
+            'You selected seat "{seat}" for a date that does not match the selected ticket date. '
+            'Please choose a seat again.'
         ),
         'seat_required': _('The selected product requires you to select a seat.'),
         'seat_forbidden': _('The selected product does not allow to select a seat.'),

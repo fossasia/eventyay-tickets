@@ -110,6 +110,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     session_token = models.CharField(max_length=32, default=generate_session_token)
     if TYPE_CHECKING:
         from django.db.models import QuerySet
+
         from eventyay.base.models import NotificationSetting
 
         notification_settings: QuerySet[NotificationSetting]
@@ -140,8 +141,8 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     def __str__(self):
         return self.email
 
-    #@property
-    #def is_superuser(self):
+    # @property
+    # def is_superuser(self):
     #    return False
 
     def get_short_name(self) -> str:
@@ -389,7 +390,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         """
         Return an HMAC that needs to
         """
-        key_salt = "eventyay.base.models.User.get_session_auth_hash"
+        key_salt = 'eventyay.base.models.User.get_session_auth_hash'
         payload = self.password
         payload += self.email
         payload += self.session_token

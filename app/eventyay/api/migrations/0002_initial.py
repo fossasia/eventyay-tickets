@@ -6,46 +6,45 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ("api", "0001_initial"),
-        ("base", "0001_initial"),
+        ('api', '0001_initial'),
+        ('base', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="oauthaccesstoken",
-            name="organizers",
-            field=models.ManyToManyField(to="base.organizer"),
+            model_name='oauthaccesstoken',
+            name='organizers',
+            field=models.ManyToManyField(to='base.organizer'),
         ),
         migrations.AddField(
-            model_name="oauthaccesstoken",
-            name="user",
+            model_name='oauthaccesstoken',
+            name='user',
             field=models.ForeignKey(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="%(app_label)s_%(class)s",
+                related_name='%(app_label)s_%(class)s',
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthapplication",
-            name="user",
+            model_name='oauthapplication',
+            name='user',
             field=models.ForeignKey(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="%(app_label)s_%(class)s",
+                related_name='%(app_label)s_%(class)s',
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthaccesstoken",
-            name="application",
+            model_name='oauthaccesstoken',
+            name='application',
             field=models.ForeignKey(
                 blank=True,
                 null=True,
@@ -54,137 +53,135 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="oauthgrant",
-            name="application",
+            model_name='oauthgrant',
+            name='application',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.OAUTH2_PROVIDER_APPLICATION_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthgrant",
-            name="organizers",
-            field=models.ManyToManyField(to="base.organizer"),
+            model_name='oauthgrant',
+            name='organizers',
+            field=models.ManyToManyField(to='base.organizer'),
         ),
         migrations.AddField(
-            model_name="oauthgrant",
-            name="user",
+            model_name='oauthgrant',
+            name='user',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="%(app_label)s_%(class)s",
+                related_name='%(app_label)s_%(class)s',
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthidtoken",
-            name="application",
+            model_name='oauthidtoken',
+            name='application',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.OAUTH2_PROVIDER_APPLICATION_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthidtoken",
-            name="organizers",
-            field=models.ManyToManyField(to="base.organizer"),
+            model_name='oauthidtoken',
+            name='organizers',
+            field=models.ManyToManyField(to='base.organizer'),
         ),
         migrations.AddField(
-            model_name="oauthidtoken",
-            name="user",
+            model_name='oauthidtoken',
+            name='user',
             field=models.ForeignKey(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="%(app_label)s_%(class)s",
+                related_name='%(app_label)s_%(class)s',
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthaccesstoken",
-            name="id_token",
+            model_name='oauthaccesstoken',
+            name='id_token',
             field=models.OneToOneField(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="access_token",
+                related_name='access_token',
                 to=settings.OAUTH2_PROVIDER_ID_TOKEN_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthrefreshtoken",
-            name="access_token",
+            model_name='oauthrefreshtoken',
+            name='access_token',
             field=models.OneToOneField(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="refresh_token",
+                related_name='refresh_token',
                 to=settings.OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthrefreshtoken",
-            name="application",
+            model_name='oauthrefreshtoken',
+            name='application',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.OAUTH2_PROVIDER_APPLICATION_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthrefreshtoken",
-            name="user",
+            model_name='oauthrefreshtoken',
+            name='user',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="%(app_label)s_%(class)s",
+                related_name='%(app_label)s_%(class)s',
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="oauthaccesstoken",
-            name="source_refresh_token",
+            model_name='oauthaccesstoken',
+            name='source_refresh_token',
             field=models.OneToOneField(
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="refreshed_access_token",
+                related_name='refreshed_access_token',
                 to=settings.OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="webhook",
-            name="limit_events",
-            field=models.ManyToManyField(
-                blank=True, to="base.event", verbose_name="Limit to events"
+            model_name='webhook',
+            name='limit_events',
+            field=models.ManyToManyField(blank=True, to='base.event', verbose_name='Limit to events'),
+        ),
+        migrations.AddField(
+            model_name='webhook',
+            name='organizer',
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='webhooks',
+                to='base.organizer',
             ),
         ),
         migrations.AddField(
-            model_name="webhook",
-            name="organizer",
+            model_name='webhookcall',
+            name='webhook',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="webhooks",
-                to="base.organizer",
+                related_name='calls',
+                to='api.webhook',
             ),
         ),
         migrations.AddField(
-            model_name="webhookcall",
-            name="webhook",
+            model_name='webhookeventlistener',
+            name='webhook',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="calls",
-                to="api.webhook",
-            ),
-        ),
-        migrations.AddField(
-            model_name="webhookeventlistener",
-            name="webhook",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="listeners",
-                to="api.webhook",
+                related_name='listeners',
+                to='api.webhook',
             ),
         ),
         migrations.AlterUniqueTogether(
-            name="oauthrefreshtoken",
-            unique_together={("token", "revoked")},
+            name='oauthrefreshtoken',
+            unique_together={('token', 'revoked')},
         ),
     ]

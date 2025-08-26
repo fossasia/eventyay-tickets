@@ -797,8 +797,8 @@ class ClassicInvoiceRenderer(BaseReportlabInvoiceRenderer):
                             Paragraph(
                                 pgettext(
                                     'invoice',
-                                    'Using the conversion rate of 1:{rate} as published by the European Central Bank on '
-                                    '{date}, this corresponds to:',
+                                    'Using the conversion rate of 1:{rate} as published by the European Central Bank '
+                                    'on {date}, this corresponds to:',
                                 ).format(
                                     rate=localize(self.invoice.foreign_currency_rate),
                                     date=date_format(

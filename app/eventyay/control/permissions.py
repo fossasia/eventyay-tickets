@@ -1,9 +1,11 @@
 from functools import wraps
 
+
 def allow_all(function):
     @wraps(function)
     def wrapper(request, *args, **kwargs):
         return function(request, *args, **kwargs)
+
     return wrapper
 
 

@@ -4,7 +4,7 @@ from django.apps import AppConfig
 
 
 class CommonConfig(AppConfig):
-    name = "eventyay.common"
+    name = 'eventyay.common'
 
     def ready(self):
         from . import checks  # noqa

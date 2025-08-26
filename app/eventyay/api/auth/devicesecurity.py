@@ -80,63 +80,11 @@ class EventyayCheckinNoSyncSecurityProfile(AllowListSecurityProfile):
     )
 
 
-class EventyayCheckinSecurityProfile(AllowListSecurityProfile):
-    identifier = 'eventyay_checkin_offline_kiosk'
-    verbose_name = _('eventyay_checkin (kiosk mode, offline)')
-    allowlist = (
-        ('GET', 'api-v1:version'),
-        ('GET', 'api-v1:device.eventselection'),
-        ('POST', 'api-v1:device.update'),
-        ('POST', 'api-v1:device.revoke'),
-        ('POST', 'api-v1:device.roll'),
-        ('GET', 'api-v1:event-list'),
-        ('GET', 'api-v1:event-detail'),
-        ('GET', 'api-v1:subevent-list'),
-        ('GET', 'api-v1:subevent-detail'),
-        ('GET', 'api-v1:itemcategory-list'),
-        ('GET', 'api-v1:item-list'),
-        ('GET', 'api-v1:question-list'),
-        ('GET', 'api-v1:quota-list'),
-        ('GET', 'api-v1:taxrule-list'),
-        ('GET', 'api-v1:ticketlayout-list'),
-        ('GET', 'api-v1:ticketlayoutitem-list'),
-        ('GET', 'api-v1:badgelayout-list'),
-        ('GET', 'api-v1:badgeitem-list'),
-        ('GET', 'api-v1:order-list'),
-        ('POST', 'api-v1:order-list'),
-        ('GET', 'api-v1:order-detail'),
-        ('DELETE', 'api-v1:orderposition-detail'),
-        ('GET', 'api-v1:orderposition-pdf_image'),
-        ('POST', 'api-v1:order-mark_canceled'),
-        ('POST', 'api-v1:orderpayment-list'),
-        ('POST', 'api-v1:orderrefund-list'),
-        ('POST', 'api-v1:orderrefund-done'),
-        ('POST', 'api-v1:cartposition-list'),
-        ('DELETE', 'api-v1:cartposition-detail'),
-        ('GET', 'api-v1:giftcard-list'),
-        ('POST', 'api-v1:giftcard-transact'),
-        ('GET', 'plugins:pretix_posbackend:posclosing-list'),
-        ('POST', 'plugins:pretix_posbackend:posreceipt-list'),
-        ('POST', 'plugins:pretix_posbackend:posclosing-list'),
-        ('POST', 'plugins:pretix_posbackend:posdebugdump-list'),
-        ('GET', 'plugins:pretix_posbackend:poscashier-list'),
-        ('POST', 'plugins:pretix_posbackend:stripeterminal.token'),
-        ('GET', 'api-v1:revokedsecrets-list'),
-        ('GET', 'api-v1:event.settings'),
-        ('GET', 'plugins:pretix_seating:event.event'),
-        ('GET', 'plugins:pretix_seating:event.event.subevent'),
-        ('GET', 'plugins:pretix_seating:event.plan'),
-        ('GET', 'plugins:pretix_seating:selection.simple'),
-        ('POST', 'api-v1:upload'),
-    )
-
-
 DEVICE_SECURITY_PROFILES = {
     k.identifier: k()
     for k in (
         FullAccessSecurityProfile,
         EventyayCheckinSecurityProfile,
         EventyayCheckinNoSyncSecurityProfile,
-        EventyayCheckinSecurityProfile,
     )
 }

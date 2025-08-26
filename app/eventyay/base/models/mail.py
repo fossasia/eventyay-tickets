@@ -11,50 +11,45 @@ from django.utils.translation import override, pgettext_lazy
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from eventyay.common.exceptions import SendMailException
-from .mixins import PretalxModel
 from eventyay.common.urls import EventUrls
 from eventyay.mail.context import get_available_placeholders, get_mail_context
 from eventyay.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from eventyay.mail.signals import queuedmail_post_send, queuedmail_pre_send
 from eventyay.talk_rules.submission import orga_can_change_submissions
 
+from .mixins import PretalxModel
+
 
 def get_prefixed_subject(event, subject):
-    if not (prefix := event.mail_settings["subject_prefix"]):
+    if not (prefix := event.mail_settings['subject_prefix']):
         return subject
-    if not (prefix.startswith("[") and prefix.endswith("]")):
-        prefix = f"[{prefix}]"
+    if not (prefix.startswith('[') and prefix.endswith(']')):
+        prefix = f'[{prefix}]'
     if subject.startswith(prefix):
         return subject
-    return f"{prefix} {subject}"
+    return f'{prefix} {subject}'
 
 
 class MailTemplateRoles(models.TextChoices):
-    NEW_SUBMISSION = "submission.new", _("Acknowledge proposal submission")
-    NEW_SUBMISSION_INTERNAL = "submission.new.internal", _(
-        "New proposal (organiser notification)"
-    )
-    SUBMISSION_ACCEPT = "submission.state.accepted", _("Proposal accepted")
-    SUBMISSION_REJECT = "submission.state.rejected", _("Proposal rejected")
-    NEW_SPEAKER_INVITE = "speaker.invite", _(
-        "Add a speaker to a proposal (new account)"
-    )
-    EXISTING_SPEAKER_INVITE = "speaker.invite.existing", _(
-        "Add a speaker to a proposal (existing account)"
-    )
-    QUESTION_REMINDER = "question.reminder", _("Custom fields reminder")
-    NEW_SCHEDULE = "schedule.new", _("New schedule published")
+    NEW_SUBMISSION = 'submission.new', _('Acknowledge proposal submission')
+    NEW_SUBMISSION_INTERNAL = 'submission.new.internal', _('New proposal (organiser notification)')
+    SUBMISSION_ACCEPT = 'submission.state.accepted', _('Proposal accepted')
+    SUBMISSION_REJECT = 'submission.state.rejected', _('Proposal rejected')
+    NEW_SPEAKER_INVITE = 'speaker.invite', _('Add a speaker to a proposal (new account)')
+    EXISTING_SPEAKER_INVITE = 'speaker.invite.existing', _('Add a speaker to a proposal (existing account)')
+    QUESTION_REMINDER = 'question.reminder', _('Custom fields reminder')
+    NEW_SCHEDULE = 'schedule.new', _('New schedule published')
 
 
 PLACEHOLDER_KWARGS = {
-    MailTemplateRoles.NEW_SUBMISSION: ["submission", "event", "user", "slot"],
-    MailTemplateRoles.NEW_SUBMISSION_INTERNAL: ["submission", "event"],
-    MailTemplateRoles.SUBMISSION_ACCEPT: ["submission", "event", "user"],
-    MailTemplateRoles.SUBMISSION_REJECT: ["submission", "event", "user"],
-    MailTemplateRoles.NEW_SPEAKER_INVITE: ["submission", "event", "user"],
-    MailTemplateRoles.EXISTING_SPEAKER_INVITE: ["submission", "event", "user"],
-    MailTemplateRoles.QUESTION_REMINDER: ["event", "user"],
-    MailTemplateRoles.NEW_SCHEDULE: ["event", "user"],
+    MailTemplateRoles.NEW_SUBMISSION: ['submission', 'event', 'user', 'slot'],
+    MailTemplateRoles.NEW_SUBMISSION_INTERNAL: ['submission', 'event'],
+    MailTemplateRoles.SUBMISSION_ACCEPT: ['submission', 'event', 'user'],
+    MailTemplateRoles.SUBMISSION_REJECT: ['submission', 'event', 'user'],
+    MailTemplateRoles.NEW_SPEAKER_INVITE: ['submission', 'event', 'user'],
+    MailTemplateRoles.EXISTING_SPEAKER_INVITE: ['submission', 'event', 'user'],
+    MailTemplateRoles.QUESTION_REMINDER: ['event', 'user'],
+    MailTemplateRoles.NEW_SCHEDULE: ['event', 'user'],
 }
 
 
@@ -67,12 +62,12 @@ class MailTemplate(PretalxModel):
     special cases, for now.
     """
 
-    log_prefix = "pretalx.mail_template"
+    log_prefix = 'pretalx.mail_template'
 
     event = models.ForeignKey(
-        to="Event",
+        to='Event',
         on_delete=models.PROTECT,
-        related_name="mail_templates",
+        related_name='mail_templates',
     )
     role = models.CharField(
         choices=MailTemplateRoles.choices,
@@ -83,27 +78,26 @@ class MailTemplate(PretalxModel):
     )
     subject = I18nCharField(
         max_length=200,
-        verbose_name=pgettext_lazy("email subject", "Subject"),
+        verbose_name=pgettext_lazy('email subject', 'Subject'),
     )
     text = I18nTextField(
-        verbose_name=_("Text"),
+        verbose_name=_('Text'),
     )
     reply_to = models.CharField(
         max_length=200,
         blank=True,
         null=True,
-        verbose_name=_("Reply-To"),
-        help_text=_(
-            "Change the Reply-To address if you do not want to use the default organiser address"
-        ),
+        verbose_name=_('Reply-To'),
+        help_text=_('Change the Reply-To address if you do not want to use the default organiser address'),
     )
     bcc = models.CharField(
         max_length=1000,
         blank=True,
         null=True,
-        verbose_name=_("BCC"),
+        verbose_name=_('BCC'),
         help_text=_(
-            "Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. This may be a LOT!"
+            'Enter comma separated addresses. Will receive a blind copy of every mail sent from this template. '
+            'This may be a LOT!'
         ),
     )
     # Auto-created templates are created when mass emails are sent out. They are only used to re-create similar
@@ -111,22 +105,22 @@ class MailTemplate(PretalxModel):
     is_auto_created = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = (("event", "role"),)
+        unique_together = (('event', 'role'),)
         rules_permissions = {
-            "list": orga_can_change_submissions,
-            "view": orga_can_change_submissions,
-            "create": orga_can_change_submissions,
-            "update": orga_can_change_submissions,
-            "delete": orga_can_change_submissions,
+            'list': orga_can_change_submissions,
+            'view': orga_can_change_submissions,
+            'create': orga_can_change_submissions,
+            'update': orga_can_change_submissions,
+            'delete': orga_can_change_submissions,
         }
 
     class urls(EventUrls):
-        base = edit = "{self.event.orga_urls.mail_templates}{self.pk}/"
-        delete = "{base}delete/"
+        base = edit = '{self.event.orga_urls.mail_templates}{self.pk}/'
+        delete = '{base}delete/'
 
     def __str__(self):
         """Help with debugging."""
-        return f"MailTemplate(event={self.event.slug}, subject={self.subject})"
+        return f'MailTemplate(event={self.event.slug}, subject={self.subject})'
 
     @property
     def log_parent(self):
@@ -177,18 +171,15 @@ class MailTemplate(PretalxModel):
             address = None
             users = None
         else:
-            raise TypeError(
-                "First argument to to_mail must be a string or a User, not "
-                + str(type(user))
-            )
+            raise TypeError('First argument to to_mail must be a string or a User, not ' + str(type(user)))
         if users and not commit:
-            address = ",".join(user.email for user in users)
+            address = ','.join(user.email for user in users)
             users = None
         event = event or self.event
 
         with override(locale):
             context_kwargs = context_kwargs or {}
-            context_kwargs["event"] = event
+            context_kwargs['event'] = event
             default_context = get_mail_context(**context_kwargs)
             default_context.update(context or {})
             context = default_context
@@ -196,12 +187,10 @@ class MailTemplate(PretalxModel):
                 subject = str(self.subject).format(**context)
                 text = str(self.text).format(**context)
             except KeyError as e:
-                raise SendMailException(
-                    f"Experienced KeyError when rendering email text: {str(e)}"
-                )
+                raise SendMailException(f'Experienced KeyError when rendering email text: {str(e)}')
 
             if len(subject) > 200:
-                subject = subject[:198] + "…"
+                subject = subject[:198] + '…'
 
             mail = QueuedMail(
                 event=event,
@@ -217,7 +206,7 @@ class MailTemplate(PretalxModel):
             if commit:
                 mail.save()
                 submissions = set(submissions or [])
-                if submission := context_kwargs.get("submission"):
+                if submission := context_kwargs.get('submission'):
                     submissions.add(submission)
                 if submissions:
                     mail.submissions.set(submissions)
@@ -233,50 +222,46 @@ class MailTemplate(PretalxModel):
     def valid_placeholders(self):
         valid_placeholders = {}
         if self.role == MailTemplateRoles.QUESTION_REMINDER:
-            valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
-                "questions",
-                ["user"],
+            valid_placeholders['questions'] = SimpleFunctionalMailTextPlaceholder(
+                'questions',
+                ['user'],
                 None,
-                _("- First missing field\n- Second missing field"),
-                _(
-                    "The list of custom fields that the user has not responded to, as bullet points"
-                ),
+                _('- First missing field\n- Second missing field'),
+                _('The list of custom fields that the user has not responded to, as bullet points'),
             )
-            valid_placeholders["url"] = SimpleFunctionalMailTextPlaceholder(
-                "url",
-                ["event", "user"],
+            valid_placeholders['url'] = SimpleFunctionalMailTextPlaceholder(
+                'url',
+                ['event', 'user'],
                 None,
-                "https://pretalx.example.com/democon/me/submissions/",
+                'https://pretalx.example.com/democon/me/submissions/',
                 is_visible=False,
             )
-            kwargs = ["event", "user"]
+            kwargs = ['event', 'user']
         elif self.role == MailTemplateRoles.NEW_SPEAKER_INVITE:
-            valid_placeholders["invitation_link"] = SimpleFunctionalMailTextPlaceholder(
-                "invitation_link",
-                ["event", "user"],
+            valid_placeholders['invitation_link'] = SimpleFunctionalMailTextPlaceholder(
+                'invitation_link',
+                ['event', 'user'],
                 None,
-                "https://pretalx.example.com/democon/invitation/123abc/",
+                'https://pretalx.example.com/democon/invitation/123abc/',
             )
         elif self.role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
-            valid_placeholders["orga_url"] = SimpleFunctionalMailTextPlaceholder(
-                "orga_url",
-                ["event", "submission"],
+            valid_placeholders['orga_url'] = SimpleFunctionalMailTextPlaceholder(
+                'orga_url',
+                ['event', 'submission'],
                 None,
-                "https://pretalx.example.com/orga/events/democon/submissions/124ABCD/",
+                'https://pretalx.example.com/orga/events/democon/submissions/124ABCD/',
             )
 
-        kwargs = ["event", "user", "submission", "slot"]
+        kwargs = ['event', 'user', 'submission', 'slot']
         if self.role:
             kwargs = PLACEHOLDER_KWARGS[self.role]
-        valid_placeholders.update(
-            get_available_placeholders(event=self.event, kwargs=kwargs)
-        )
+        valid_placeholders.update(get_available_placeholders(event=self.event, kwargs=kwargs))
         return valid_placeholders
 
 
 @rules.predicate
 def can_edit_mail(user, obj):
-    return getattr(obj, "sent", False) is None
+    return getattr(obj, 'sent', False) is None
 
 
 class QueuedMail(PretalxModel):
@@ -293,118 +278,115 @@ class QueuedMail(PretalxModel):
     """
 
     event = models.ForeignKey(
-        to="Event",
+        to='Event',
         on_delete=models.PROTECT,
-        related_name="queued_mails",
+        related_name='queued_mails',
         null=True,
         blank=True,
     )
     template = models.ForeignKey(
         to=MailTemplate,
-        related_name="mails",
+        related_name='mails',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     to = models.CharField(
         max_length=1000,
-        verbose_name=_("To"),
-        help_text=_("One email address or several addresses separated by commas."),
+        verbose_name=_('To'),
+        help_text=_('One email address or several addresses separated by commas.'),
         null=True,
         blank=True,
     )
     to_users = models.ManyToManyField(
-        to="User",
-        related_name="mails",
+        to='User',
+        related_name='mails',
     )
     reply_to = models.CharField(
         max_length=1000,
         null=True,
         blank=True,
-        verbose_name=_("Reply-To"),
-        help_text=_("By default, the organiser address is used as Reply-To."),
+        verbose_name=_('Reply-To'),
+        help_text=_('By default, the organiser address is used as Reply-To.'),
     )
     cc = models.CharField(
         max_length=1000,
         null=True,
         blank=True,
-        verbose_name=_("CC"),
-        help_text=_("One email address or several addresses separated by commas."),
+        verbose_name=_('CC'),
+        help_text=_('One email address or several addresses separated by commas.'),
     )
     bcc = models.CharField(
         max_length=1000,
         null=True,
         blank=True,
-        verbose_name=_("BCC"),
-        help_text=_("One email address or several addresses separated by commas."),
+        verbose_name=_('BCC'),
+        help_text=_('One email address or several addresses separated by commas.'),
     )
-    subject = models.CharField(
-        max_length=200, verbose_name=pgettext_lazy("email subject", "Subject")
-    )
-    text = models.TextField(verbose_name=_("Text"))
-    sent = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent at"))
+    subject = models.CharField(max_length=200, verbose_name=pgettext_lazy('email subject', 'Subject'))
+    text = models.TextField(verbose_name=_('Text'))
+    sent = models.DateTimeField(null=True, blank=True, verbose_name=_('Sent at'))
     locale = models.CharField(max_length=32, null=True, blank=True)
     attachments = models.JSONField(default=None, null=True, blank=True)
     submissions = models.ManyToManyField(
-        to="Submission",
-        related_name="mails",
+        to='Submission',
+        related_name='mails',
     )
 
     class Meta:
         rules_permissions = {
-            "list": orga_can_change_submissions,
-            "view": orga_can_change_submissions,
-            "create": orga_can_change_submissions,
-            "update": can_edit_mail & orga_can_change_submissions,
-            "delete": orga_can_change_submissions,
-            "send": orga_can_change_submissions,
+            'list': orga_can_change_submissions,
+            'view': orga_can_change_submissions,
+            'create': orga_can_change_submissions,
+            'update': can_edit_mail & orga_can_change_submissions,
+            'delete': orga_can_change_submissions,
+            'send': orga_can_change_submissions,
         }
 
     class urls(EventUrls):
-        base = edit = "{self.event.orga_urls.mail}{self.pk}/"
-        delete = "{base}delete"
-        send = "{base}send"
-        copy = "{base}copy"
+        base = edit = '{self.event.orga_urls.mail}{self.pk}/'
+        delete = '{base}delete'
+        send = '{base}send'
+        copy = '{base}copy'
 
     def __str__(self):
         """Help with debugging."""
         sent = self.sent.isoformat() if self.sent else None
-        return f"OutboxMail(to={self.to}, subject={self.subject}, sent={sent})"
+        return f'OutboxMail(to={self.to}, subject={self.subject}, sent={sent})'
 
     def make_html(self):
         from eventyay.base.templatetags.rich_text import render_markdown_abslinks
 
-        event = getattr(self, "event", None)
+        event = getattr(self, 'event', None)
         sig = None
         if event:
-            sig = event.mail_settings["signature"]
-            if sig.strip().startswith("-- "):
+            sig = event.mail_settings['signature']
+            if sig.strip().startswith('-- '):
                 sig = sig.strip()[3:].strip()
         body_md = render_markdown_abslinks(self.text)
         html_context = {
-            "body": body_md,
-            "event": event,
-            "color": (event.primary_color if event else "")
-            or settings.DEFAULT_EVENT_PRIMARY_COLOR,
-            "locale": self.locale,
-            "rtl": self.locale in settings.LANGUAGES_BIDI,
-            "subject": self.subject,
-            "signature": sig,
+            'body': body_md,
+            'event': event,
+            'color': (event.primary_color if event else '') or settings.DEFAULT_EVENT_PRIMARY_COLOR,
+            'locale': self.locale,
+            'rtl': self.locale in settings.LANGUAGES_BIDI,
+            'subject': self.subject,
+            'signature': sig,
         }
-        return get_template("mail/mailwrapper.html").render(html_context)
+        return get_template('mail/mailwrapper.html').render(html_context)
 
     def make_text(self):
-        event = getattr(self, "event", None)
-        if not event or not event.mail_settings["signature"]:
+        event = getattr(self, 'event', None)
+        if not event or not event.mail_settings['signature']:
             return self.text
-        sig = event.mail_settings["signature"]
-        if not sig.strip().startswith("-- "):
-            sig = f"-- \n{sig}"
-        return f"{self.text}\n{sig}"
+        sig = event.mail_settings['signature']
+        if not sig.strip().startswith('-- '):
+            sig = f'-- \n{sig}'
+        return f'{self.text}\n{sig}'
 
     @cached_property
     def prefixed_subject(self):
-        event = getattr(self, "event", None)
+        event = getattr(self, 'event', None)
         if not event:
             return self.subject
         return get_prefixed_subject(event, self.subject)
@@ -418,13 +400,11 @@ class QueuedMail(PretalxModel):
         :param orga: Was this email sent as by a privileged user?
         """
         if self.sent:
-            raise Exception(
-                _("This mail has been sent already. It cannot be sent again.")
-            )
+            raise Exception(_('This mail has been sent already. It cannot be sent again.'))
 
-        has_event = getattr(self, "event", None)
+        has_event = getattr(self, 'event', None)
 
-        to = self.to.split(",") if self.to else []
+        to = self.to.split(',') if self.to else []
         if self.id:
             to += [user.email for user in self.to_users.all()]
             if has_event:
@@ -444,15 +424,15 @@ class QueuedMail(PretalxModel):
         body_html = self.make_html()
         mail_send_task.apply_async(
             kwargs={
-                "to": to,
-                "subject": self.prefixed_subject,
-                "body": text,
-                "html": body_html,
-                "reply_to": (self.reply_to or "").split(","),
-                "event": self.event.pk if has_event else None,
-                "cc": (self.cc or "").split(","),
-                "bcc": (self.bcc or "").split(","),
-                "attachments": self.attachments,
+                'to': to,
+                'subject': self.prefixed_subject,
+                'body': text,
+                'html': body_html,
+                'reply_to': (self.reply_to or '').split(','),
+                'event': self.event.pk if has_event else None,
+                'cc': (self.cc or '').split(','),
+                'bcc': (self.bcc or '').split(','),
+                'attachments': self.attachments,
             },
             ignore_result=True,
         )
@@ -460,12 +440,10 @@ class QueuedMail(PretalxModel):
 
         if self.pk:
             self.log_action(
-                "pretalx.mail.sent",
+                'pretalx.mail.sent',
                 person=requestor,
                 orga=orga,
-                data={
-                    "to_users": [(user.pk, user.email) for user in self.to_users.all()]
-                },
+                data={'to_users': [(user.pk, user.email) for user in self.to_users.all()]},
             )
             self.save()
             queuedmail_post_send.send(

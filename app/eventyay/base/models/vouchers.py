@@ -162,8 +162,9 @@ class Voucher(LoggedModel):
         related_name='vouchers',
         null=True,
         blank=True,
-        on_delete=models.PROTECT,  # We use a fake version of SET_NULL in ItemVariation.delete() to avoid the semantic change
+        # We use a fake version of SET_NULL in ItemVariation.delete() to avoid the semantic change
         # that would happen if we just set variation to None
+        on_delete=models.PROTECT,
         verbose_name=_('Product variation'),
         help_text=_('This variation of the product select above is being used.'),
     )
@@ -270,8 +271,8 @@ class Voucher(LoggedModel):
         if data.get('max_usages', 1) < redeemed:
             raise ValidationError(
                 _(
-                    'This voucher has already been redeemed %(redeemed)s times. You cannot reduce the maximum number of '
-                    'usages below this number.'
+                    'This voucher has already been redeemed %(redeemed)s times. '
+                    'You cannot reduce the maximum number of usages below this number.'
                 ),
                 params={'redeemed': redeemed},
             )

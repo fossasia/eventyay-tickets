@@ -6,12 +6,12 @@ from django.utils.timezone import now
 
 @rules.predicate
 def is_administrator(user, obj):
-    return getattr(user, "is_administrator", False)
+    return getattr(user, 'is_administrator', False)
 
 
 @rules.predicate
 def is_reviewer(user, obj):
-    event = getattr(obj, "event", None)
+    event = getattr(obj, 'event', None)
     if not user or user.is_anonymous or not obj or not event:
         return False
     # We’re not using get_permissions_for_event here, as this will always return
@@ -22,7 +22,7 @@ def is_reviewer(user, obj):
 
 @rules.predicate
 def is_only_reviewer(user, obj):
-    return user.get_permissions_for_event(obj.event) == {"is_reviewer"}
+    return user.get_permissions_for_event(obj.event) == {'is_reviewer'}
 
 
 @rules.predicate
@@ -41,8 +41,8 @@ def can_view_information(user, obj):
         qs = qs.filter(track__in=tracks)
     if types := obj.limit_types.all():
         qs = qs.filter(submission_type__in=types)
-    if obj.target_group == "submitters":
+    if obj.target_group == 'submitters':
         return qs.exists()
-    if obj.target_group == "confirmed":
+    if obj.target_group == 'confirmed':
         return qs.filter(state=SubmissionStates.CONFIRMED).exists()
     return qs.filter(state__in=SubmissionStates.accepted_states).exists()

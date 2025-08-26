@@ -169,12 +169,14 @@ class BaseQuestionsViewMixin:
                                 self._save_to_answer(field, answer, v)
                                 answer.save()
                             except IntegrityError:
-                                # Since we prefill ``field.answer`` at form creation time, there's a possible race condition
-                                # here if the users submits their save request a second time while the first one is still running,
-                                # thus leading to duplicate QuestionAnswer objects. Since Django doesn't support UPSERT, the "proper"
-                                # fix would be a transaction with select_for_update(), or at least fetching using get_or_create here
-                                # again. However, both of these approaches have a significant performance overhead for *all* requests,
-                                # while the issue happens very very rarely. So we opt for just catching the error and retrying properly.
+                                # Since we prefill ``field.answer`` at form creation time, there's a possible
+                                #  race condition here if the users submits their save request a second time
+                                # while the first one is still running, thus leading to duplicate QuestionAnswer
+                                # objects. Since Django doesn't support UPSERT, the "proper" fix would be a transaction
+                                # with select_for_update(), or at least fetching using get_or_create here again.
+                                # However, both of these approaches have a significant performance overhead for
+                                # *all* requests, while the issue happens very very rarely.
+                                # So we opt for just catching the error and retrying properly.
                                 answer = QuestionAnswer.objects.get(
                                     cartposition=(form.pos if isinstance(form.pos, CartPosition) else None),
                                     orderposition=(form.pos if isinstance(form.pos, OrderPosition) else None),
@@ -248,9 +250,9 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
                             'options',
                             QuestionOption.objects.prefetch_related(
                                 Prefetch(
-                                    # This prefetch statement is utter bullshit, but it actually prevents Django from doing
-                                    # a lot of queries since ModelChoiceIterator stops trying to be clever once we have
-                                    # a prefetch lookup on this query...
+                                    # This prefetch statement is utter bullshit, but it actually prevents Django
+                                    # from doing a lot of queries since ModelChoiceIterator stops trying to be
+                                    # clever once we have a prefetch lookup on this query...
                                     'question',
                                     Question.objects.none(),
                                     to_attr='dummy',

@@ -110,17 +110,17 @@ class BankTransfer(BasePaymentProvider):
                         label=_('Bank account details'),
                         widget=I18nTextarea,
                         help_text=_(
-                            'Include everything else that your customers might need to send you a bank transfer payment. '
-                            'If you have lots of international customers, they might need your full address and your '
-                            "bank's full address."
+                            'Include everything else that your customers might need to send you a bank transfer '
+                            'payment. If you have lots of international customers, they might need your full address '
+                            "and your bank's full address."
                         ),
                         widget_kwargs={
                             'attrs': {
                                 'rows': '4',
                                 'placeholder': _(
-                                    'For SEPA accounts, you can leave this empty. Otherwise, please add everything that '
-                                    'your customers need to transfer the money, e.g. account numbers, routing numbers, '
-                                    'addresses, etc.'
+                                    'For SEPA accounts, you can leave this empty. Otherwise, please add everything '
+                                    'that your customers need to transfer the money, e.g. account numbers, routing '
+                                    'numbers, addresses, etc.'
                                 ),
                             }
                         },
@@ -187,9 +187,9 @@ class BankTransfer(BasePaymentProvider):
                         widget=forms.Textarea,
                         help_text=_(
                             'Put one IBAN or IBAN prefix per line. The system will not attempt to send refunds to any '
-                            'of these IBANs. Useful e.g. if you receive a lot of "forwarded payments" by a third-party payment '
-                            'provider. You can also list country codes such as "GB" if you never want to send refunds to '
-                            'IBANs from a specific country.'
+                            'of these IBANs. Useful e.g. if you receive a lot of "forwarded payments" by a third-party '
+                            'payment provider. You can also list country codes such as "GB" if you never want to send '
+                            'refunds to IBANs from a specific country.'
                         ),
                     ),
                 ),

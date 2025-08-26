@@ -33,47 +33,42 @@ class Schedule(PretalxModel):
     :param published: ``None`` if the schedule has not been published yet.
     """
 
-    event = models.ForeignKey(
-        to="Event", on_delete=models.PROTECT, related_name="schedules"
-    )
+    event = models.ForeignKey(to='Event', on_delete=models.PROTECT, related_name='schedules')
     version = models.CharField(
         max_length=190,
         null=True,
         blank=True,
-        verbose_name=pgettext_lazy("Version of the conference schedule", "Version"),
+        verbose_name=pgettext_lazy('Version of the conference schedule', 'Version'),
     )
     published = models.DateTimeField(null=True, blank=True)
     comment = I18nTextField(
         null=True,
         blank=True,
-        help_text=_("This text will be shown in the public changelog and the RSS feed.")
-        + " "
+        help_text=_('This text will be shown in the public changelog and the RSS feed.')
+        + ' '
         + phrases.base.use_markdown,
     )
 
     class Meta:
-        ordering = ("-published",)
-        unique_together = (("event", "version"),)
+        ordering = ('-published',)
+        unique_together = (('event', 'version'),)
         rules_permissions = {
-            "list": can_view_schedule,
-            "view_widget": is_widget_visible | orga_can_change_submissions,
-            "view": (~is_wip & is_agenda_visible)
+            'list': can_view_schedule,
+            'view_widget': is_widget_visible | orga_can_change_submissions,
+            'view': (~is_wip & is_agenda_visible)
             | orga_can_change_submissions
             | (is_reviewer & can_view_speaker_names),
-            "orga_view": orga_can_change_submissions
-            | (is_reviewer & can_view_speaker_names),
-            "release": orga_can_change_submissions,
+            'orga_view': orga_can_change_submissions | (is_reviewer & can_view_speaker_names),
+            'release': orga_can_change_submissions,
         }
 
     class urls(EventUrls):
-        public = "{self.event.urls.schedule}v/{self.url_version}/"
-        widget_data = "{public}widgets/schedule.json"
-        nojs = "{public}nojs"
+        public = '{self.event.urls.schedule}v/{self.url_version}/'
+        widget_data = '{public}widgets/schedule.json'
+        nojs = '{public}nojs'
 
     @transaction.atomic
-    def freeze(
-        self, name: str, user=None, notify_speakers: bool = True, comment: str = None
-    ):
+    def freeze(self, name: str, user=None, notify_speakers: bool = True, comment: str = None):
         """Releases the current WIP schedule as a fixed schedule version.
 
         :param name: The new schedule name. May not be in use in this event,
@@ -85,17 +80,14 @@ class Schedule(PretalxModel):
         :param comment: Public comment for the release
         :rtype: Schedule
         """
-        from eventyay.base.models import TalkSlot
-        from eventyay.base.models import SubmissionStates
+        from eventyay.base.models import SubmissionStates, TalkSlot
 
-        if name in ("wip", "latest"):
+        if name in ('wip', 'latest'):
             raise Exception(f'Cannot use reserved name "{name}" for schedule version.')
         if self.version:
-            raise Exception(
-                f'Cannot freeze schedule version: already versioned as "{self.version}".'
-            )
+            raise Exception(f'Cannot freeze schedule version: already versioned as "{self.version}".')
         if not name:
-            raise Exception("Cannot create schedule version without a version name.")
+            raise Exception('Cannot create schedule version without a version name.')
 
         self.version = name
         self.comment = comment
@@ -104,19 +96,18 @@ class Schedule(PretalxModel):
         # Create WIP schedule first, to avoid race conditions
         wip_schedule = Schedule.objects.create(event=self.event)
 
-        self.save(update_fields=["published", "version", "comment"])
-        self.log_action("pretalx.schedule.release", person=user, orga=True)
+        self.save(update_fields=['published', 'version', 'comment'])
+        self.log_action('pretalx.schedule.release', person=user, orga=True)
 
         # Set visibility
         self.talks.all().update(is_visible=False)
         self.talks.filter(
-            models.Q(submission__state=SubmissionStates.CONFIRMED)
-            | models.Q(submission__isnull=True),
+            models.Q(submission__state=SubmissionStates.CONFIRMED) | models.Q(submission__isnull=True),
             start__isnull=False,
         ).update(is_visible=True)
 
         talks = []
-        for talk in self.talks.select_related("submission", "room").all():
+        for talk in self.talks.select_related('submission', 'room').all():
             talks.append(talk.copy_to_schedule(wip_schedule, save=False))
         TalkSlot.objects.bulk_create(talks)
 
@@ -130,13 +121,11 @@ class Schedule(PretalxModel):
 
         schedule_release.send_robust(self.event, schedule=self, user=user)
 
-        if self.event.get_feature_flag("export_html_on_release"):
+        if self.event.get_feature_flag('export_html_on_release'):
             if not settings.CELERY_TASK_ALWAYS_EAGER:
-                export_schedule_html.apply_async(
-                    kwargs={"event_id": self.event.id}, ignore_result=True
-                )
+                export_schedule_html.apply_async(kwargs={'event_id': self.event.id}, ignore_result=True)
             else:
-                self.event.cache.set("rebuild_schedule_export", True, None)
+                self.event.cache.set('rebuild_schedule_export', True, None)
         return self, wip_schedule
 
     freeze.alters_data = True
@@ -147,15 +136,13 @@ class Schedule(PretalxModel):
         from eventyay.base.models import TalkSlot
 
         if not self.version:
-            raise Exception("Cannot unfreeze schedule version: not released yet.")
+            raise Exception('Cannot unfreeze schedule version: not released yet.')
 
         # collect all talks, which have been added since this schedule (#72)
-        submission_ids = self.talks.all().values_list("submission_id", flat=True)
+        submission_ids = self.talks.all().values_list('submission_id', flat=True)
         talks = self.event.wip_schedule.talks.exclude(submission_id__in=submission_ids)
         try:
-            talks = list(
-                talks.union(self.talks.all())
-            )  # We force evaluation to catch the DatabaseError early
+            talks = list(talks.union(self.talks.all()))  # We force evaluation to catch the DatabaseError early
         except DatabaseError:  # SQLite cannot deal with ordered querysets in union()
             talks = set(talks) | set(self.talks.all())
 
@@ -184,11 +171,11 @@ class Schedule(PretalxModel):
 
         return (
             self.talks.select_related(
-                "submission",
-                "submission__event",
-                "room",
+                'submission',
+                'submission__event',
+                'room',
             )
-            .prefetch_related("submission__speakers")
+            .prefetch_related('submission__speakers')
             .filter(
                 room__isnull=False,
                 start__isnull=False,
@@ -200,7 +187,7 @@ class Schedule(PretalxModel):
 
     @cached_property
     def breaks(self):
-        return self.talks.select_related("room").filter(submission__isnull=True)
+        return self.talks.select_related('room').filter(submission__isnull=True)
 
     @cached_property
     def slots(self):
@@ -212,9 +199,7 @@ class Schedule(PretalxModel):
         """
         from eventyay.base.models import Submission
 
-        return Submission.objects.filter(
-            id__in=self.scheduled_talks.values_list("submission", flat=True)
-        )
+        return Submission.objects.filter(id__in=self.scheduled_talks.values_list('submission', flat=True))
 
     @cached_property
     def previous_schedule(self):
@@ -222,27 +207,19 @@ class Schedule(PretalxModel):
         queryset = self.event.schedules.exclude(pk=self.pk)
         if self.published:
             queryset = queryset.filter(published__lt=self.published)
-        return queryset.order_by("-published").first()
+        return queryset.order_by('-published').first()
 
     def _handle_submission_move(self, submission, old_slots, new_slots):
         new = []
         canceled = []
         moved = []
-        all_old_slots = [
-            slot for slot in old_slots.values() if slot.submission_id == submission.pk
-        ]
-        all_new_slots = [
-            slot for slot in new_slots.values() if slot.submission_id == submission.pk
-        ]
+        all_old_slots = [slot for slot in old_slots.values() if slot.submission_id == submission.pk]
+        all_new_slots = [slot for slot in new_slots.values() if slot.submission_id == submission.pk]
         old_slots = [
-            slot
-            for slot in all_old_slots
-            if not any(slot.is_same_slot(other_slot) for other_slot in all_new_slots)
+            slot for slot in all_old_slots if not any(slot.is_same_slot(other_slot) for other_slot in all_new_slots)
         ]
         new_slots = [
-            slot
-            for slot in all_new_slots
-            if not any(slot.is_same_slot(other_slot) for other_slot in all_old_slots)
+            slot for slot in all_new_slots if not any(slot.is_same_slot(other_slot) for other_slot in all_old_slots)
         ]
         diff = len(old_slots) - len(new_slots)
         if diff > 0:
@@ -257,13 +234,13 @@ class Schedule(PretalxModel):
             new_slot = move[1]
             moved.append(
                 {
-                    "submission": new_slot.submission,
-                    "old_start": old_slot.local_start,
-                    "new_start": new_slot.local_start,
-                    "old_room": old_slot.room.name,
-                    "new_room": new_slot.room.name,
-                    "new_info": new_slot.room.speaker_info,
-                    "new_slot": new_slot,
+                    'submission': new_slot.submission,
+                    'old_start': old_slot.local_start,
+                    'new_start': new_slot.local_start,
+                    'old_room': old_slot.room.name,
+                    'new_room': new_slot.room.name,
+                    'new_info': new_slot.room.speaker_info,
+                    'new_slot': new_slot,
                 }
             )
         return new, canceled, moved
@@ -278,25 +255,21 @@ class Schedule(PretalxModel):
         ``canceled_talks`` and ``moved_talks`` lists are also present.
         """
         result = {
-            "count": 0,
-            "action": "update",
-            "new_talks": [],
-            "canceled_talks": [],
-            "moved_talks": [],
+            'count': 0,
+            'action': 'update',
+            'new_talks': [],
+            'canceled_talks': [],
+            'moved_talks': [],
         }
         if not self.previous_schedule:
-            result["action"] = "create"
+            result['action'] = 'create'
             return result
 
-        Slot = namedtuple("Slot", ["submission", "room", "local_start"])
+        Slot = namedtuple('Slot', ['submission', 'room', 'local_start'])
         old_slots = {
-            Slot(slot.submission, slot.room, slot.local_start): slot
-            for slot in self.previous_schedule.scheduled_talks
+            Slot(slot.submission, slot.room, slot.local_start): slot for slot in self.previous_schedule.scheduled_talks
         }
-        new_slots = {
-            Slot(slot.submission, slot.room, slot.local_start): slot
-            for slot in self.scheduled_talks
-        }
+        new_slots = {Slot(slot.submission, slot.room, slot.local_start): slot for slot in self.scheduled_talks}
 
         old_slot_set = set(old_slots.keys())
         new_slot_set = set(new_slots.keys())
@@ -317,34 +290,26 @@ class Schedule(PretalxModel):
             if entry.submission in handled_submissions or not entry.submission:
                 continue
             if entry.submission not in new_submissions:
-                result["canceled_talks"] += old_by_submission[entry.submission]
+                result['canceled_talks'] += old_by_submission[entry.submission]
             else:
-                new, canceled, moved = self._handle_submission_move(
-                    entry.submission, old_slots, new_slots
-                )
-                result["new_talks"] += new
-                result["canceled_talks"] += canceled
-                result["moved_talks"] += moved
+                new, canceled, moved = self._handle_submission_move(entry.submission, old_slots, new_slots)
+                result['new_talks'] += new
+                result['canceled_talks'] += canceled
+                result['moved_talks'] += moved
             handled_submissions.add(entry.submission)
         for entry in moved_or_new:
             if entry.submission in handled_submissions:
                 continue
             if entry.submission not in old_submissions:
-                result["new_talks"] += new_by_submission[entry.submission]
+                result['new_talks'] += new_by_submission[entry.submission]
             else:
-                new, canceled, moved = self._handle_submission_move(
-                    entry.submission, old_slots, new_slots
-                )
-                result["new_talks"] += new
-                result["canceled_talks"] += canceled
-                result["moved_talks"] += moved
+                new, canceled, moved = self._handle_submission_move(entry.submission, old_slots, new_slots)
+                result['new_talks'] += new
+                result['canceled_talks'] += canceled
+                result['moved_talks'] += moved
             handled_submissions.add(entry.submission)
 
-        result["count"] = (
-            len(result["new_talks"])
-            + len(result["canceled_talks"])
-            + len(result["moved_talks"])
-        )
+        result['count'] = len(result['new_talks']) + len(result['canceled_talks']) + len(result['moved_talks'])
         return result
 
     @cached_property
@@ -378,20 +343,15 @@ class Schedule(PretalxModel):
             if room_avails is None:
                 room_avails = talk.room.availabilities.all()
             if room_avails and not any(
-                room_availability.contains(availability)
-                for room_availability in Availability.union(room_avails)
+                room_availability.contains(availability) for room_availability in Availability.union(room_avails)
             ):
                 warnings.append(
                     {
-                        "type": "room",
-                        "message": str(
-                            _(
-                                "Room {room_name} is not available at the scheduled time."
-                            )
-                        ).format(
-                            room_name=f"{phrases.base.quotation_open}{talk.room.name}{phrases.base.quotation_close}"
+                        'type': 'room',
+                        'message': str(_('Room {room_name} is not available at the scheduled time.')).format(
+                            room_name=f'{phrases.base.quotation_open}{talk.room.name}{phrases.base.quotation_close}'
                         ),
-                        "url": url,
+                        'url': url,
                     }
                 )
         overlaps = (
@@ -408,11 +368,9 @@ class Schedule(PretalxModel):
         if overlaps:
             warnings.append(
                 {
-                    "type": "room_overlap",
-                    "message": _(
-                        "Another session in the same room overlaps with this one."
-                    ),
-                    "url": url,
+                    'type': 'room_overlap',
+                    'message': _('Another session in the same room overlaps with this one.'),
+                    'url': url,
                 }
             )
 
@@ -425,32 +383,26 @@ class Schedule(PretalxModel):
                 if profile and speaker_avails is not None:
                     profile_availabilities = speaker_avails.get(profile.pk)
                 else:
-                    profile_availabilities = (
-                        list(profile.availabilities.all()) if profile else []
-                    )
+                    profile_availabilities = list(profile.availabilities.all()) if profile else []
                 if profile_availabilities and not any(
                     speaker_availability.contains(availability)
-                    for speaker_availability in Availability.union(
-                        profile_availabilities
-                    )
+                    for speaker_availability in Availability.union(profile_availabilities)
                 ):
                     warnings.append(
                         {
-                            "type": "speaker",
-                            "speaker": {
-                                "name": speaker.get_display_name(),
-                                "code": speaker.code,
+                            'type': 'speaker',
+                            'speaker': {
+                                'name': speaker.get_display_name(),
+                                'code': speaker.code,
                             },
-                            "message": str(
-                                _("{speaker} is not available at the scheduled time.")
-                            ).format(speaker=speaker.get_display_name()),
-                            "url": url,
+                            'message': str(_('{speaker} is not available at the scheduled time.')).format(
+                                speaker=speaker.get_display_name()
+                            ),
+                            'url': url,
                         }
                     )
             overlaps = (
-                TalkSlot.objects.filter(
-                    schedule=self, submission__speakers__in=[speaker]
-                )
+                TalkSlot.objects.filter(schedule=self, submission__speakers__in=[speaker])
                 .exclude(pk=talk.pk)
                 .filter(
                     models.Q(start__lt=talk.start, end__gt=talk.start)
@@ -463,17 +415,15 @@ class Schedule(PretalxModel):
             if overlaps:
                 warnings.append(
                     {
-                        "type": "speaker",
-                        "speaker": {
-                            "name": speaker.get_display_name(),
-                            "code": speaker.code,
+                        'type': 'speaker',
+                        'speaker': {
+                            'name': speaker.get_display_name(),
+                            'code': speaker.code,
                         },
-                        "message": str(
-                            _(
-                                "{speaker} is scheduled for another session at the same time."
-                            )
-                        ).format(speaker=speaker.get_display_name()),
-                        "url": url,
+                        'message': str(_('{speaker} is scheduled for another session at the same time.')).format(
+                            speaker=speaker.get_display_name()
+                        ),
+                        'url': url,
                     }
                 )
 
@@ -481,26 +431,21 @@ class Schedule(PretalxModel):
 
     def get_all_talk_warnings(self, ids=None, filter_updated=None):
         talks = (
-            self.talks.filter(
-                submission__isnull=False, start__isnull=False, room__isnull=False
-            )
+            self.talks.filter(submission__isnull=False, start__isnull=False, room__isnull=False)
             .select_related(
-                "submission",
-                "room",
-                "submission__event",
-                "schedule__event",
+                'submission',
+                'room',
+                'submission__event',
+                'schedule__event',
             )
-            .prefetch_related("submission__speakers")
+            .prefetch_related('submission__speakers')
         )
         if filter_updated:
             talks = talks.filter(updated__gte=filter_updated)
         with_speakers = self.event.cfp.request_availabilities
         room_avails = defaultdict(
             list,
-            {
-                room.pk: room.availabilities.all()
-                for room in self.event.rooms.all().prefetch_related("availabilities")
-            },
+            {room.pk: room.availabilities.all() for room in self.event.rooms.all().prefetch_related('availabilities')},
         )
         speaker_avails = None
         speaker_profiles = None
@@ -509,17 +454,13 @@ class Schedule(PretalxModel):
 
             speaker_profiles = {
                 profile.user: profile
-                for profile in SpeakerProfile.objects.filter(
-                    event=self.event
-                ).select_related("user")
+                for profile in SpeakerProfile.objects.filter(event=self.event).select_related('user')
             }
             speaker_avails = defaultdict(
                 list,
                 {
                     profile.pk: profile.availabilities.all()
-                    for profile in SpeakerProfile.objects.filter(
-                        event=self.event
-                    ).prefetch_related("availabilities")
+                    for profile in SpeakerProfile.objects.filter(event=self.event).prefetch_related('availabilities')
                 },
             )
         result = {}
@@ -549,18 +490,13 @@ class Schedule(PretalxModel):
 
         talks = self.talks.filter(submission__isnull=False)
         warnings = {
-            "talk_warnings": [
-                {"talk": key, "warnings": value}
-                for key, value in self.get_all_talk_warnings().items()
-            ],
-            "unscheduled": talks.filter(start__isnull=True).count(),
-            "unconfirmed": talks.exclude(
-                submission__state=SubmissionStates.CONFIRMED
-            ).count(),
-            "no_track": [],
+            'talk_warnings': [{'talk': key, 'warnings': value} for key, value in self.get_all_talk_warnings().items()],
+            'unscheduled': talks.filter(start__isnull=True).count(),
+            'unconfirmed': talks.exclude(submission__state=SubmissionStates.CONFIRMED).count(),
+            'no_track': [],
         }
-        if self.event.get_feature_flag("use_tracks"):
-            warnings["no_track"] = talks.filter(submission__track_id__isnull=True)
+        if self.event.get_feature_flag('use_tracks'):
+            warnings['no_track'] = talks.filter(submission__track_id__isnull=True)
         return warnings
 
     @cached_property
@@ -572,7 +508,7 @@ class Schedule(PretalxModel):
         ``update`` fields, each containing a list of submissions.
         """
         result = {}
-        if self.changes["action"] == "create":
+        if self.changes['action'] == 'create':
             from eventyay.base.models import User
 
             for speaker in User.objects.filter(submissions__slots__schedule=self):
@@ -582,19 +518,19 @@ class Schedule(PretalxModel):
                     start__isnull=False,
                 )
                 if talks:
-                    result[speaker] = {"create": talks, "update": []}
+                    result[speaker] = {'create': talks, 'update': []}
             return result
 
-        if self.changes["count"] == len(self.changes["canceled_talks"]):
+        if self.changes['count'] == len(self.changes['canceled_talks']):
             return result
 
-        speakers = defaultdict(lambda: {"create": [], "update": []})
-        for new_talk in self.changes["new_talks"]:
+        speakers = defaultdict(lambda: {'create': [], 'update': []})
+        for new_talk in self.changes['new_talks']:
             for speaker in new_talk.submission.speakers.all():
-                speakers[speaker]["create"].append(new_talk)
-        for moved_talk in self.changes["moved_talks"]:
-            for speaker in moved_talk["submission"].speakers.all():
-                speakers[speaker]["update"].append(moved_talk)
+                speakers[speaker]['create'].append(new_talk)
+        for moved_talk in self.changes['moved_talks']:
+            for speaker in moved_talk['submission'].speakers.all():
+                speakers[speaker]['update'].append(moved_talk)
         return speakers
 
     def generate_notifications(self, save=False):
@@ -605,27 +541,23 @@ class Schedule(PretalxModel):
         mails = []
         for speaker, data in self.speakers_concerned.items():
             locale = speaker.get_locale_for_event(self.event)
-            notifications = render_notifications(
-                data, event=self.event, speaker=speaker, locale=locale
-            )
-            slots = list(data.get("create") or []) + [
-                talk["new_slot"] for talk in (data.get("update") or [])
-            ]
+            notifications = render_notifications(data, event=self.event, speaker=speaker, locale=locale)
+            slots = list(data.get('create') or []) + [talk['new_slot'] for talk in (data.get('update') or [])]
             submissions = [slot.submission for slot in slots]
             mails.append(
                 self.event.get_mail_template(MailTemplateRoles.NEW_SCHEDULE).to_mail(
                     user=speaker,
                     event=self.event,
-                    context_kwargs={"user": speaker},
-                    context={"notifications": notifications},
+                    context_kwargs={'user': speaker},
+                    context={'notifications': notifications},
                     commit=save,
                     locale=locale,
                     submissions=submissions,
                     attachments=[
                         {
-                            "name": f"{slot.frab_slug}.ics",
-                            "content": slot.full_ical().serialize(),
-                            "content_type": "text/calendar",
+                            'name': f'{slot.frab_slug}.ics',
+                            'content': slot.full_ical().serialize(),
+                            'content_type': 'text/calendar',
                         }
                         for slot in slots
                     ],
@@ -637,7 +569,7 @@ class Schedule(PretalxModel):
 
     @cached_property
     def version_with_fallback(self):
-        return self.version or "wip"
+        return self.version or 'wip'
 
     @cached_property
     def url_version(self):
@@ -657,22 +589,22 @@ class Schedule(PretalxModel):
         if filter_updated:
             talks = talks.filter(updated__gte=filter_updated)
         talks = talks.select_related(
-            "submission",
-            "room",
-            "submission__track",
-            "submission__event",
-            "submission__submission_type",
-        ).prefetch_related("submission__speakers")
-        talks = talks.order_by("start")
+            'submission',
+            'room',
+            'submission__track',
+            'submission__event',
+            'submission__submission_type',
+        ).prefetch_related('submission__speakers')
+        talks = talks.order_by('start')
         rooms = set() if not all_rooms else set(self.event.rooms.all())
         tracks = set()
         speakers = set()
         result = {
-            "talks": [],
-            "version": self.version,
-            "timezone": self.event.timezone,
-            "event_start": self.event.date_from.isoformat(),
-            "event_end": self.event.date_to.isoformat(),
+            'talks': [],
+            'version': self.version,
+            'timezone': self.event.timezone,
+            'event_start': self.event.date_from.isoformat(),
+            'event_end': self.event.date_to.isoformat(),
         }
         show_do_not_record = self.event.cfp.request_do_not_record
         for talk in talks:
@@ -680,91 +612,69 @@ class Schedule(PretalxModel):
             if talk.submission:
                 tracks.add(talk.submission.track)
                 speakers |= set(talk.submission.speakers.all())
-                result["talks"].append(
+                result['talks'].append(
                     {
-                        "code": talk.submission.code if talk.submission else None,
-                        "id": talk.id,
-                        "title": (
-                            talk.submission.title
-                            if talk.submission
-                            else talk.description
+                        'code': talk.submission.code if talk.submission else None,
+                        'id': talk.id,
+                        'title': (talk.submission.title if talk.submission else talk.description),
+                        'abstract': (talk.submission.abstract if talk.submission else None),
+                        'speakers': (
+                            [speaker.code for speaker in talk.submission.speakers.all()] if talk.submission else None
                         ),
-                        "abstract": (
-                            talk.submission.abstract if talk.submission else None
-                        ),
-                        "speakers": (
-                            [speaker.code for speaker in talk.submission.speakers.all()]
-                            if talk.submission
-                            else None
-                        ),
-                        "track": talk.submission.track_id if talk.submission else None,
-                        "start": talk.local_start,
-                        "end": talk.local_end,
-                        "room": talk.room_id,
-                        "duration": talk.submission.get_duration(),
-                        "updated": talk.updated.isoformat(),
-                        "state": talk.submission.state if all_talks else None,
-                        "fav_count": (
-                            count_fav_talk(talk.submission.code)
-                            if talk.submission
-                            else 0
-                        ),
-                        "do_not_record": (
-                            talk.submission.do_not_record
-                            if show_do_not_record
-                            else None
-                        ),
-                        "tags": talk.submission.get_tag(),
-                        "session_type": talk.submission.submission_type.name,
+                        'track': talk.submission.track_id if talk.submission else None,
+                        'start': talk.local_start,
+                        'end': talk.local_end,
+                        'room': talk.room_id,
+                        'duration': talk.submission.get_duration(),
+                        'updated': talk.updated.isoformat(),
+                        'state': talk.submission.state if all_talks else None,
+                        'fav_count': (count_fav_talk(talk.submission.code) if talk.submission else 0),
+                        'do_not_record': (talk.submission.do_not_record if show_do_not_record else None),
+                        'tags': talk.submission.get_tag(),
+                        'session_type': talk.submission.submission_type.name,
                     }
                 )
             else:
-                result["talks"].append(
+                result['talks'].append(
                     {
-                        "id": talk.id,
-                        "title": talk.description,
-                        "start": talk.start,
-                        "end": talk.local_end,
-                        "room": talk.room_id,
+                        'id': talk.id,
+                        'title': talk.description,
+                        'start': talk.start,
+                        'end': talk.local_end,
+                        'room': talk.room_id,
                     }
                 )
         tracks.discard(None)
         tracks = sorted(tracks, key=lambda track: track.position or 0)
-        result["tracks"] = [
+        result['tracks'] = [
             {
-                "id": track.id,
-                "name": track.name,
-                "description": track.description,
-                "color": track.color,
+                'id': track.id,
+                'name': track.name,
+                'description': track.description,
+                'color': track.color,
             }
             for track in tracks
         ]
-        result["rooms"] = [
+        result['rooms'] = [
             {
-                "id": room.id,
-                "name": room.name,
-                "description": room.description,
+                'id': room.id,
+                'name': room.name,
+                'description': room.description,
             }
             for room in self.event.rooms.all()
             if room in rooms
         ]
         include_avatar = self.event.cfp.request_avatar
-        result["speakers"] = [
+        result['speakers'] = [
             {
-                "code": user.code,
-                "name": user.name,
-                "avatar": (
-                    user.get_avatar_url(event=self.event) if include_avatar else None
+                'code': user.code,
+                'name': user.name,
+                'avatar': (user.get_avatar_url(event=self.event) if include_avatar else None),
+                'avatar_thumbnail_default': (
+                    user.get_avatar_url(event=self.event, thumbnail='default') if include_avatar else None
                 ),
-                "avatar_thumbnail_default": (
-                    user.get_avatar_url(event=self.event, thumbnail="default")
-                    if include_avatar
-                    else None
-                ),
-                "avatar_thumbnail_tiny": (
-                    user.get_avatar_url(event=self.event, thumbnail="tiny")
-                    if include_avatar
-                    else None
+                'avatar_thumbnail_tiny': (
+                    user.get_avatar_url(event=self.event, thumbnail='tiny') if include_avatar else None
                 ),
             }
             for user in speakers
@@ -773,11 +683,9 @@ class Schedule(PretalxModel):
 
     def __str__(self) -> str:
         """Help when debugging."""
-        return f"Schedule(event={self.event.slug}, version={self.version})"
+        return f'Schedule(event={self.event.slug}, version={self.version})'
 
 
 def count_fav_talk(submission_code):
-    count = SubmissionFavourite.objects.filter(
-        submission__code=submission_code
-    ).aggregate(count=Count("id"))["count"]
+    count = SubmissionFavourite.objects.filter(submission__code=submission_code).aggregate(count=Count('id'))['count']
     return count

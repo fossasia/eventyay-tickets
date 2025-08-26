@@ -1,25 +1,14 @@
 import importlib.util
 
-from django.contrib import admin
 from django.conf import settings
-from django.conf.urls.static import static
-
 from django.urls import include, path
-from django.urls import reverse, re_path as url
-from django.utils.html import escape
-from django.utils.translation import gettext as _
-
-from django.http import HttpResponse
-
-
+from django.urls import re_path as url
 
 import eventyay.control.urls
 import eventyay.eventyay_common.urls
 import eventyay.presale.urls
-from eventyay.base.views import js_helpers
-from eventyay.control.views import pages
-
 from eventyay.base.views import health
+from eventyay.control.views import pages
 
 base_patterns = [
     url(r'^healthcheck/$', health.healthcheck, name='healthcheck'),
@@ -48,10 +37,5 @@ if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
     debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
 common_patterns = (
-    base_patterns
-    + control_patterns
-    + debug_patterns
-    + eventyay_common_patterns
-    + page_patterns
-    + admin_patterns
+    base_patterns + control_patterns + debug_patterns + eventyay_common_patterns + page_patterns + admin_patterns
 )
