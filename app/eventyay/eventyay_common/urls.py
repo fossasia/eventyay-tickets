@@ -19,6 +19,5 @@ urlpatterns = [
     path('register/', auth.register, name='auth.register'),
     path('forgot/', auth.Forgot.as_view(), name='auth.forgot'),
     path('forgot/recover/', auth.Recover.as_view(), name='auth.forgot.recover'),
-
     path('', DashboardView.as_view(), name='dashboard'),
 ]

@@ -260,3 +260,14 @@ test = [
     "pytest-xdist>=3.6.1",
 ]
 
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "single"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E722", "E741"]
+

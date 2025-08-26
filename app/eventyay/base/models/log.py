@@ -40,15 +40,13 @@ class LogEntry(models.Model):
     :type data: str
     """
 
-    content_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE,
-        related_name='eventyay_log_entries'
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='eventyay_log_entries')
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
-    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT, related_name='eventyay_log_entries')
+    user = models.ForeignKey(
+        'User', null=True, blank=True, on_delete=models.PROTECT, related_name='eventyay_log_entries'
+    )
     api_token = models.ForeignKey('TeamAPIToken', null=True, blank=True, on_delete=models.PROTECT)
     device = models.ForeignKey('Device', null=True, blank=True, on_delete=models.PROTECT)
     oauth_application = models.ForeignKey('api.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)
@@ -270,7 +268,9 @@ class LogEntry(models.Model):
         if to_wh:
             notify_webhooks.apply_async(args=(to_wh,))
 
+
 # From eventyay-talk
+
 
 class ActivityLog(models.Model):
     """This model logs actions within an event.
@@ -282,37 +282,37 @@ class ActivityLog(models.Model):
     """
 
     event = models.ForeignKey(
-        to="Event",
+        to='Event',
         on_delete=models.PROTECT,
-        related_name="log_entries",
+        related_name='log_entries',
         null=True,
         blank=True,
     )
     person = models.ForeignKey(
-        to="User",
+        to='User',
         on_delete=models.PROTECT,
-        related_name="log_entries",
+        related_name='log_entries',
         null=True,
         blank=True,
     )
     content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
-    content_object = GenericForeignKey("content_type", "object_id")
+    content_object = GenericForeignKey('content_type', 'object_id')
     timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
     action_type = models.CharField(max_length=200)
     data = models.TextField(null=True, blank=True)
     is_orga_action = models.BooleanField(default=False)
 
-    objects = ScopedManager(event="event")
+    objects = ScopedManager(event='event')
 
     class Meta:
-        ordering = ("-timestamp",)
+        ordering = ('-timestamp',)
 
     def __str__(self):
         """Custom __str__ to help with debugging."""
-        event = getattr(self.event, "slug", "None")
-        person = getattr(self.person, "name", "None")
-        return f"ActivityLog(event={event}, person={person}, content_object={self.content_object}, action_type={self.action_type})"
+        event = getattr(self.event, 'slug', 'None')
+        person = getattr(self.person, 'name', 'None')
+        return f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, action_type={self.action_type})'
 
     @cached_property
     def json_data(self):
@@ -325,9 +325,7 @@ class ActivityLog(models.Model):
     def display(self):
         from eventyay.common.signals import activitylog_display
 
-        for _receiver, response in activitylog_display.send(
-            self.event, activitylog=self
-        ):
+        for _receiver, response in activitylog_display.send(self.event, activitylog=self):
             if response:
                 return response
 
@@ -341,12 +339,11 @@ class ActivityLog(models.Model):
         from eventyay.common.signals import activitylog_object_link
 
         if not self.content_object:
-            return ""
+            return ''
 
         responses = activitylog_object_link.send(sender=self.event, activitylog=self)
         if responses:
             for _receiver, response in responses:
                 if response:
                     return response
-        return ""
-
+        return ''

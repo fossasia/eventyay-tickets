@@ -18,6 +18,7 @@ class BankTransferApp(AppConfig):
 
     def ready(self):
         from . import signals  # NOQA
+
         # from . import tasks  # NOQA
         from .templatetags import commadecimal, dotdecimal  # NOQA
 

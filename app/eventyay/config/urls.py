@@ -12,7 +12,6 @@ from django.utils.translation import gettext as _
 from django.http import HttpResponse
 
 
-
 import eventyay.control.urls
 import eventyay.eventyay_common.urls
 import eventyay.presale.urls
@@ -48,10 +47,5 @@ if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
     debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
 common_patterns = (
-    base_patterns
-    + control_patterns
-    + debug_patterns
-    + eventyay_common_patterns
-    + page_patterns
-    + admin_patterns
+    base_patterns + control_patterns + debug_patterns + eventyay_common_patterns + page_patterns + admin_patterns
 )

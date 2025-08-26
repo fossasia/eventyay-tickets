@@ -91,7 +91,7 @@ class BaseExporter:
         Invalid values default to 'submission', which is also where all
         schedule exports live.
         """
-        return "submission"
+        return 'submission'
 
     def render(self, request, **kwargs) -> tuple[str, str, str]:
         """Render the exported file and return a tuple consisting of a file
@@ -104,12 +104,10 @@ class BaseExporter:
         export.ext Use ``exporter.urls.base.full()`` for the complete URL,
         taking into account the configured event URL, or HTML export URL."""
 
-        base = "{self.event.urls.export}{self.quoted_identifier}"
+        base = '{self.event.urls.export}{self.quoted_identifier}'
 
     def get_qrcode(self):
-        image = qrcode.make(
-            self.urls.base.full(), image_factory=qrcode.image.svg.SvgPathFillImage
-        )
+        image = qrcode.make(self.urls.base.full(), image_factory=qrcode.image.svg.SvgPathFillImage)
         return mark_safe(ElementTree.tostring(image.get_image()).decode())
 
 
@@ -121,4 +119,4 @@ class CSVExporterMixin:
         writer.writeheader()
         writer.writerows(data)
         content = output.getvalue()
-        return self.filename, "text/plain", content
+        return self.filename, 'text/plain', content

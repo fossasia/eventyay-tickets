@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class OrgaConfig(AppConfig):
-    name = "eventyay.orga"
+    name = 'eventyay.orga'
 
     def ready(self):
         from . import permissions  # noqa

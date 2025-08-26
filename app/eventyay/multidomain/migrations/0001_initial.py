@@ -5,45 +5,44 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ("base", "0001_initial"),
+        ('base', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="KnownDomain",
+            name='KnownDomain',
             fields=[
                 (
-                    "domainname",
+                    'domainname',
                     models.CharField(max_length=255, primary_key=True, serialize=False),
                 ),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="domains",
-                        to="base.event",
+                        related_name='domains',
+                        to='base.event',
                     ),
                 ),
                 (
-                    "organizer",
+                    'organizer',
                     models.ForeignKey(
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="domains",
-                        to="base.organizer",
+                        related_name='domains',
+                        to='base.organizer',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Known domain",
-                "verbose_name_plural": "Known domains",
+                'verbose_name': 'Known domain',
+                'verbose_name_plural': 'Known domains',
             },
         ),
     ]

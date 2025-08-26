@@ -12,39 +12,35 @@ from eventyay.common.urls import get_base_url
 
 
 def resource_path(instance, filename):
-    base_path = f"{instance.submission.event.slug}/submissions/{instance.submission.code}/resources/"
+    base_path = f'{instance.submission.event.slug}/submissions/{instance.submission.code}/resources/'
     return path_with_hash(filename, base_path=base_path)
 
 
 class Resource(PretalxModel):
     """Resources are file uploads belonging to a :class:`~pretalx.submission.models.submission.Submission`."""
 
-    submission = models.ForeignKey(
-        to="Submission", related_name="resources", on_delete=models.PROTECT
-    )
+    submission = models.ForeignKey(to='Submission', related_name='resources', on_delete=models.PROTECT)
     resource = models.FileField(
-        verbose_name=_("File"),
+        verbose_name=_('File'),
         upload_to=resource_path,
         null=True,
         blank=True,
     )
-    link = models.URLField(max_length=400, verbose_name=_("URL"), null=True, blank=True)
-    description = models.CharField(
-        null=True, blank=True, max_length=1000, verbose_name=_("Description")
-    )
+    link = models.URLField(max_length=400, verbose_name=_('URL'), null=True, blank=True)
+    description = models.CharField(null=True, blank=True, max_length=1000, verbose_name=_('Description'))
 
-    objects = ScopedManager(event="submission__event")
+    objects = ScopedManager(event='submission__event')
 
     def __str__(self):
         """Help when debugging."""
-        return f"Resource(event={self.submission.event.slug}, submission={self.submission.title})"
+        return f'Resource(event={self.submission.event.slug}, submission={self.submission.title})'
 
     @cached_property
     def url(self):
         if self.link:
             return self.link
         with suppress(ValueError):
-            url = getattr(self.resource, "url", None)
+            url = getattr(self.resource, 'url', None)
             if url:
                 base_url = get_base_url(self.submission.event)
                 return base_url + url

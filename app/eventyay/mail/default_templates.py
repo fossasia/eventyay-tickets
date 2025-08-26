@@ -1,7 +1,7 @@
 from django.utils.translation import gettext_noop as _
 from i18nfield.strings import LazyI18nString
 
-GENERIC_SUBJECT = LazyI18nString.from_gettext(_("Your proposal: {submission_title}"))
+GENERIC_SUBJECT = LazyI18nString.from_gettext(_('Your proposal: {submission_title}'))
 
 ACK_TEXT = LazyI18nString.from_gettext(
     _(
@@ -50,7 +50,7 @@ The {event_name} organisers"""
     )
 )
 
-UPDATE_SUBJECT = LazyI18nString.from_gettext(_("New schedule!"))
+UPDATE_SUBJECT = LazyI18nString.from_gettext(_('New schedule!'))
 UPDATE_TEXT = LazyI18nString.from_gettext(
     _(
         """Hi!
@@ -65,9 +65,7 @@ The {event_name} organisers"""
     )
 )
 
-QUESTION_SUBJECT = LazyI18nString.from_gettext(
-    _("We have some questions about your proposal")
-)
+QUESTION_SUBJECT = LazyI18nString.from_gettext(_('We have some questions about your proposal'))
 QUESTION_TEXT = LazyI18nString.from_gettext(
     _(
         """Hi!
@@ -85,9 +83,7 @@ The {event_name} organisers"""
     )
 )
 
-NEW_SUBMISSION_SUBJECT = LazyI18nString.from_gettext(
-    _("New proposal: {proposal_title}")
-)
+NEW_SUBMISSION_SUBJECT = LazyI18nString.from_gettext(_('New proposal: {proposal_title}'))
 NEW_SUBMISSION_TEXT = LazyI18nString.from_gettext(
     _(
         """Hi,
@@ -104,9 +100,7 @@ your {event_name} CfP system.
     )
 )
 
-SPEAKER_INVITE_SUBJECT = LazyI18nString.from_gettext(
-    _("You have been added to a proposal for {event_name}")
-)
+SPEAKER_INVITE_SUBJECT = LazyI18nString.from_gettext(_('You have been added to a proposal for {event_name}'))
 
 NEW_SPEAKER_INVITE_TEXT = LazyI18nString.from_gettext(
     _(

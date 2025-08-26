@@ -9,7 +9,7 @@ from eventyay.control.views import (
 
 
 urlpatterns = [
-    path('', lambda request: HttpResponse("<div>This is a control index page</div>"), name='index'),
+    path('', lambda request: HttpResponse('<div>This is a control index page</div>'), name='index'),
     url(
         r'^admin/',
         include(

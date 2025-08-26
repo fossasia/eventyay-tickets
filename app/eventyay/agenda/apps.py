@@ -4,7 +4,7 @@ from django.apps import AppConfig
 
 
 class AgendaConfig(AppConfig):
-    name = "eventyay.agenda"
+    name = 'eventyay.agenda'
 
     def ready(self):
         from .phrases import AgendaPhrases  # noqa

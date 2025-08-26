@@ -35,14 +35,7 @@ from .items import (
     itempicture_upload_to,
 )
 from .log import LogEntry, ActivityLog
-from .mixins import (
-    TimestampedModel,
-    LogMixin,
-    FileCleanupMixin,
-    PretalxModel,
-    GenerateCode,
-    OrderedModel
-)
+from .mixins import TimestampedModel, LogMixin, FileCleanupMixin, PretalxModel, GenerateCode, OrderedModel
 from .notifications import NotificationSetting
 from .orders import (
     AbstractPosition,
@@ -75,11 +68,7 @@ from .settings import GlobalSettings
 from .tax import TaxRule
 from .vouchers import InvoiceVoucher, Voucher
 from .waitinglist import WaitingListEntry
-from .mail import (
-    MailTemplate,
-    MailTemplateRoles,
-    QueuedMail
-)
+from .mail import MailTemplate, MailTemplateRoles, QueuedMail
 
 from .access_code import SubmitterAccessCode
 from .cfp import CfP

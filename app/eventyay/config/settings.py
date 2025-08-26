@@ -32,28 +32,28 @@ else:
     )
 config = EnvOrParserConfig(_config)
 
+
 def instance_name(request):
     from django.conf import settings
-    return {
-        'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')
-    }
+
+    return {'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')}
 
 
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-BASE_PATH = ""
+BASE_PATH = ''
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "WhatAWonderfulWorldWeLiveIn196274623")
+SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get("DEBUG", default=1)))
+DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
 
-ALLOWED_HOSTS = [ "*", "127.0.0.1" ]
+ALLOWED_HOSTS = ['*', '127.0.0.1']
 
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
@@ -210,7 +210,7 @@ SESSION_COOKIE_NAME = 'eventyay_session'
 LANGUAGE_COOKIE_NAME = 'eventyay_language'
 CSRF_COOKIE_NAME = 'eventyay_csrftoken'
 # TODO that probably needs adjustment for the actual deployment
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337", "http://next.eventyay.com:1337", "https://next.eventyay.com"]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:1337', 'http://next.eventyay.com:1337', 'https://next.eventyay.com']
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
@@ -342,7 +342,9 @@ INSTANCE_NAME = config.get('eventyay', 'instance_name', fallback='eventyay')
 EVENTYAY_REGISTRATION = config.getboolean('eventyay', 'registration', fallback=True)
 EVENTYAY_PASSWORD_RESET = config.getboolean('eventyay', 'password_reset', fallback=True)
 EVENTYAY_LONG_SESSIONS = config.getboolean('eventyay', 'long_sessions', fallback=True)
-EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(',')
+EVENTYAY_AUTH_BACKENDS = config.get('eventyay', 'auth_backends', fallback='eventyay.base.auth.NativeAuthBackend').split(
+    ','
+)
 EVENTYAY_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
 EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallback=False)
 EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
