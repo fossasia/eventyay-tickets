@@ -9,7 +9,7 @@ class BaseMailTextPlaceholder:
 
         By default, it returns a list containing the string "event".
         """
-        return ["event"]
+        return ['event']
 
     @property
     def identifier(self):
@@ -43,13 +43,11 @@ class BaseMailTextPlaceholder:
 
     @property
     def explanation(self):
-        return ""
+        return ''
 
 
 class SimpleFunctionalMailTextPlaceholder(BaseMailTextPlaceholder):
-    def __init__(
-        self, identifier, args, func, sample, explanation=None, is_visible=True
-    ):
+    def __init__(self, identifier, args, func, sample, explanation=None, is_visible=True):
         self._identifier = identifier
         self._args = args
         self._func = func
@@ -58,7 +56,7 @@ class SimpleFunctionalMailTextPlaceholder(BaseMailTextPlaceholder):
         self._is_visible = is_visible
 
     def __repr__(self):
-        return f"SimpleFunctionalMailTextPlaceholder({self._identifier})"
+        return f'SimpleFunctionalMailTextPlaceholder({self._identifier})'
 
     @property
     def identifier(self):
@@ -70,7 +68,7 @@ class SimpleFunctionalMailTextPlaceholder(BaseMailTextPlaceholder):
 
     @property
     def explanation(self):
-        return self._explanation or ""
+        return self._explanation or ''
 
     @property
     def is_visible(self):

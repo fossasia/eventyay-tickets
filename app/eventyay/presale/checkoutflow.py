@@ -1,10 +1,10 @@
-from pretix.presale.checkoutflowstep import (
+from eventyay.presale.checkoutflowstep import (
     AddOnsStep,
     ConfirmStep,
     PaymentStep,
     QuestionsStep,
 )
-from pretix.presale.signals import checkout_flow_steps
+from eventyay.presale.signals import checkout_flow_steps
 
 
 def get_checkout_flow(event):

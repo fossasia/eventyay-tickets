@@ -3,7 +3,7 @@ from django.dispatch import Signal, receiver
 from eventyay.common.signals import register_data_exporters
 
 
-@receiver(register_data_exporters, dispatch_uid="exporter_builtin_csv_speaker")
+@receiver(register_data_exporters, dispatch_uid='exporter_builtin_csv_speaker')
 def register_speaker_csv_exporter(sender, **kwargs):
     from eventyay.person.exporters import CSVSpeakerExporter
 

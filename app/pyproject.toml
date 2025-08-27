@@ -260,3 +260,19 @@ test = [
     "pytest-xdist>=3.6.1",
 ]
 
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "single"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E722", "E741"]
+
+[tool.ruff.lint.per-file-ignores]
+# These files re-export models.
+"**/__init__.py" = ["F401"]
+# These files have long lines.
+"**/migrations/*.py" = ["E501"]

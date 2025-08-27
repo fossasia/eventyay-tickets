@@ -12,13 +12,13 @@ from django.utils.translation import gettext_lazy as _
 from django.views.defaults import permission_denied
 from django_scopes import scope
 
-from pretix.base.middleware import LocaleMiddleware
-from pretix.base.models import Event, Organizer
-from pretix.multidomain.urlreverse import (
+from eventyay.base.middleware import LocaleMiddleware
+from eventyay.base.models import Event, Organizer
+from eventyay.multidomain.urlreverse import (
     get_event_domain,
     get_organizer_domain,
 )
-from pretix.presale.signals import process_request, process_response
+from eventyay.presale.signals import process_request, process_response
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -103,8 +103,8 @@ def _detect_event(request, require_live=True, require_plugin=None):
                     request.user.is_authenticated
                     and request.user.has_event_permission(request.organizer, request.event, request=request)
                 )
-                if not can_access and 'pretix_event_access_{}'.format(request.event.pk) in request.session:
-                    sparent = SessionStore(request.session.get('pretix_event_access_{}'.format(request.event.pk)))
+                if not can_access and 'eventyay_event_access_{}'.format(request.event.pk) in request.session:
+                    sparent = SessionStore(request.session.get('eventyay_event_access_{}'.format(request.event.pk)))
                     try:
                         parentdata = sparent.load()
                     except:

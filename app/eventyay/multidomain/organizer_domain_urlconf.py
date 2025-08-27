@@ -4,13 +4,13 @@ from django.apps import apps
 from django.urls import include
 from django.urls import re_path as url
 
+from eventyay.config.urls import common_patterns
 from eventyay.multidomain.plugin_handler import plugin_event_urls
 from eventyay.presale.urls import (
     event_patterns,
     locale_patterns,
     organizer_patterns,
 )
-from eventyay.urls import common_patterns
 
 presale_patterns = [
     url(

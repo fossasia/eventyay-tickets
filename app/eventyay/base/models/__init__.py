@@ -26,7 +26,6 @@ from .event import (
     SubEventMetaValue,
     generate_invite_token,
 )
-
 from .exhibitor import (
     ContactRequest,
     Exhibitor,
@@ -56,14 +55,7 @@ from .items import (
 from .janus import JanusServer
 from .log import ActivityLog, LogEntry
 from .mail import MailTemplate, MailTemplateRoles, QueuedMail
-from .mixins import (
-    FileCleanupMixin,
-    GenerateCode,
-    LogMixin,
-    OrderedModel,
-    PretalxModel,
-    TimestampedModel,
-)
+from .mixins import FileCleanupMixin, GenerateCode, LogMixin, OrderedModel, PretalxModel, TimestampedModel
 from .notifications import NotificationSetting
 from .orders import (
     AbstractPosition,

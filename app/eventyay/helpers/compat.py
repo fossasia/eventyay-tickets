@@ -18,7 +18,8 @@ def date_fromisocalendar(isoyear, isoweek, isoday):
 
 class CompatDeleteView(SingleObjectTemplateResponseMixin, DeletionMixin, FormMixin, BaseDetailView):
     """
-    This view integrates the ability to show a confirmation template, manage form validation, and delete the object when the form is submitted.
+    This view integrates the ability to show a confirmation template, manage form validation, and delete the object
+    when the form is submitted.
     """
 
     form_class = Form

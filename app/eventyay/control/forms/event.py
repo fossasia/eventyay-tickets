@@ -600,7 +600,8 @@ class EventSettingsForm(SettingsForm):
                 required=True,
                 widget=forms.RadioSelect,
                 choices=[
-                    # default key needs a value other than '' because with '' it would also overwrite even if combi-field is not transmitted
+                    # default key needs a value other than '' because with '' it would also overwrite
+                    # even if combi-field is not transmitted
                     ('do_not_ask', _('Do not ask')),
                     ('optional', _('Ask, but do not require input')),
                     ('required', _('Ask and require input')),

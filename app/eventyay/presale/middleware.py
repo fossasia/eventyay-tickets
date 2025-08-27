@@ -2,8 +2,8 @@ from django.template.response import TemplateResponse
 from django.urls import resolve
 from django_scopes import scope
 
-from pretix.base.channels import WebshopSalesChannel
-from pretix.presale.signals import process_response
+from eventyay.base.channels import WebshopSalesChannel
+from eventyay.presale.signals import process_response
 
 from .utils import _detect_event
 

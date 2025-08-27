@@ -8,29 +8,29 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
-from pretix.base.models import TaxRule
-from pretix.base.services.cart import update_tax_rates
-from pretix.presale.checkoutflowstep.template_flow_step import TemplateFlowStep
-from pretix.presale.forms.checkout import (
+from eventyay.base.models import TaxRule
+from eventyay.base.services.cart import update_tax_rates
+from eventyay.presale.checkoutflowstep.template_flow_step import TemplateFlowStep
+from eventyay.presale.forms.checkout import (
     ContactForm,
     InvoiceAddressForm,
     InvoiceNameForm,
 )
-from pretix.presale.signals import (
+from eventyay.presale.signals import (
     checkout_all_optional,
     contact_form_fields_overrides,
     question_form_fields,
     question_form_fields_overrides,
 )
-from pretix.presale.views import CartMixin, get_cart_is_free
-from pretix.presale.views.cart import get_or_create_cart_id
-from pretix.presale.views.questions import QuestionsViewMixin
+from eventyay.presale.views import CartMixin, get_cart_is_free
+from eventyay.presale.views.cart import get_or_create_cart_id
+from eventyay.presale.views.questions import QuestionsViewMixin
 
 
 class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
     priority = 50
     identifier = 'questions'
-    template_name = 'pretixpresale/event/checkout_questions.html'
+    template_name = 'eventyaypresale/event/checkout_questions.html'
     label = pgettext_lazy('checkoutflow', 'Your information')
 
     def is_applicable(self, request):

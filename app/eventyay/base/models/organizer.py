@@ -88,6 +88,7 @@ class Organizer(LoggedModel):
         this organizer, so you don't have to prefix your cache keys. In addition, the cache
         is being cleared every time the organizer changes.
         """
+        # FIXME: This "cache" module is missing.
         from eventyay.base.cache import ObjectRelatedCache
 
         return ObjectRelatedCache(self)
@@ -188,7 +189,8 @@ class Team(LoggedModel):
     :type can_change_organizer_settings: bool
     :param can_change_event_settings: If ``True``, the members can change the settings of the associated events.
     :type can_change_event_settings: bool
-    :param can_change_items: If ``True``, the members can change and add items and related objects for the associated events.
+    :param can_change_items: If ``True``, the members can change and add items and related objects
+                             for the associated events.
     :type can_change_items: bool
     :param can_view_orders: If ``True``, the members can inspect details of all orders of the associated events.
     :type can_view_orders: bool

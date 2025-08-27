@@ -1,30 +1,14 @@
-from django.contrib import admin
+import importlib.util
+
 from django.conf import settings
-from django.conf.urls.static import static
-
 from django.urls import include, path
-from django.urls import reverse, re_path as url
-from django.utils.html import escape
-from django.utils.translation import gettext as _
-
-from django.http import HttpResponse
-
-
+from django.urls import re_path as url
 
 import eventyay.control.urls
 import eventyay.eventyay_common.urls
-
+import eventyay.presale.urls
 from eventyay.base.views import health
-
-
-def blank_view(request):
-    index_url = reverse('eventyay_common:dashboard')
-    content = _(
-        '<a href="%(url)s">Click to login here</a>.'
-    ) % {'url': escape(index_url)}
-
-    return HttpResponse(f"<p>{content}</p>")
-
+from eventyay.control.views import pages
 
 base_patterns = [
     url(r'^healthcheck/$', health.healthcheck, name='healthcheck'),
@@ -34,21 +18,24 @@ control_patterns = [
     url(r'^control/', include((eventyay.control.urls, 'control'))),
 ]
 
-common_patterns = [
-    url(r'^common/', include((eventyay.eventyay_common.urls, 'common'))),
+eventyay_common_patterns = [
+    path('', include((eventyay.eventyay_common.urls, 'common'))),
+]
+
+
+page_patterns = [
+    path('page/<slug:slug>/', pages.ShowPageView.as_view(), name='page'),
 ]
 
 admin_patterns = [
     path('admin/', include('eventyay.config.urls_admin')),
 ]
 
-urlpatterns = [
-    *admin_patterns,
-    *base_patterns,
-    *control_patterns,
-    *common_patterns,
+debug_patterns = []
 
-    path('', blank_view, name='blank'),
-]
+if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
+    debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+common_patterns = (
+    base_patterns + control_patterns + debug_patterns + eventyay_common_patterns + page_patterns + admin_patterns
+)

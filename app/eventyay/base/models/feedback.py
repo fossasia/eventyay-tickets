@@ -3,8 +3,9 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
 from django_scopes import ScopedManager
 
-from .mixins import PretalxModel
 from eventyay.common.text.phrases import phrases
+
+from .mixins import PretalxModel
 
 
 class Feedback(PretalxModel):
@@ -18,26 +19,24 @@ class Feedback(PretalxModel):
     """
 
     talk = models.ForeignKey(
-        to="Submission",
-        related_name="feedback",
+        to='Submission',
+        related_name='feedback',
         on_delete=models.PROTECT,
-        verbose_name=_n("Session", "Sessions", 1),
+        verbose_name=_n('Session', 'Sessions', 1),
     )
     speaker = models.ForeignKey(
-        to="User",
-        related_name="feedback",
+        to='User',
+        related_name='feedback',
         null=True,
         blank=True,
         on_delete=models.PROTECT,
-        verbose_name=_n("Speaker", "Speakers", 1),
+        verbose_name=_n('Speaker', 'Speakers', 1),
     )
-    rating = models.IntegerField(null=True, blank=True, verbose_name=_("Rating"))
-    review = models.TextField(
-        verbose_name=_("Feedback"), help_text=phrases.base.use_markdown
-    )
+    rating = models.IntegerField(null=True, blank=True, verbose_name=_('Rating'))
+    review = models.TextField(verbose_name=_('Feedback'), help_text=phrases.base.use_markdown)
 
-    objects = ScopedManager(event="talk__event")
+    objects = ScopedManager(event='talk__event')
 
     def __str__(self):
         """Help when debugging."""
-        return f"Feedback(event={self.talk.event.slug}, talk={self.talk.title}, rating={self.rating})"
+        return f'Feedback(event={self.talk.event.slug}, talk={self.talk.title}, rating={self.rating})'

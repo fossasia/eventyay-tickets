@@ -3,7 +3,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
-from .mixins import PretalxModel
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.submission import (
@@ -13,6 +12,8 @@ from eventyay.talk_rules.submission import (
     submission_comments_active,
 )
 
+from .mixins import PretalxModel
+
 
 class SubmissionComment(PretalxModel):
     """Comments allow reviewers and organizers to discuss submissions.
@@ -20,34 +21,28 @@ class SubmissionComment(PretalxModel):
     They are separate from reviews and provide a forum-style discussion space.
     """
 
-    submission = models.ForeignKey(
-        to="Submission", related_name="comments", on_delete=models.CASCADE
-    )
-    user = models.ForeignKey(
-        to="User", related_name="submission_comments", on_delete=models.CASCADE
-    )
+    submission = models.ForeignKey(to='Submission', related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey(to='User', related_name='submission_comments', on_delete=models.CASCADE)
     text = models.TextField(
-        verbose_name=_("Comment"),
+        verbose_name=_('Comment'),
         help_text=phrases.base.use_markdown,
     )
     reply_to = models.ForeignKey(
-        to="SubmissionComment",
-        related_name="replies",
+        to='SubmissionComment',
+        related_name='replies',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
     )
 
-    objects = ScopedManager(event="submission__event")
+    objects = ScopedManager(event='submission__event')
 
     class Meta:
-        ordering = ("created",)
+        ordering = ('created',)
         rules_permissions = {
-            "view": submission_comments_active
-            & (has_reviewer_access | orga_can_change_submissions),
-            "create": submission_comments_active
-            & (has_reviewer_access | orga_can_change_submissions),
-            "delete": submission_comments_active
+            'view': submission_comments_active & (has_reviewer_access | orga_can_change_submissions),
+            'create': submission_comments_active & (has_reviewer_access | orga_can_change_submissions),
+            'delete': submission_comments_active
             & (has_reviewer_access | orga_can_change_submissions)
             & is_comment_author,
         }
@@ -60,5 +55,5 @@ class SubmissionComment(PretalxModel):
         return self.submission.event
 
     class urls(EventUrls):
-        _base = "{self.submission.orga_urls.comments}{self.pk}/"
-        delete = "{_base}delete"
+        _base = '{self.submission.orga_urls.comments}{self.pk}/'
+        delete = '{_base}delete'

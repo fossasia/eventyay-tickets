@@ -152,7 +152,8 @@ class CartMixin:
                 or (answers and (has_attendee_data or bool(pos.item.questions.all())))
             ):  # do not use .exists() to re-use prefetch cache
                 return (
-                    # standalone positions are grouped by main product position id, addons below them also sorted by position id
+                    # standalone positions are grouped by main product position id,
+                    # addons below them also sorted by position id
                     i,
                     addon_penalty,
                     pos.pk,
@@ -306,9 +307,9 @@ def get_cart(request):
                                 'options',
                                 QuestionOption.objects.prefetch_related(
                                     Prefetch(
-                                        # This prefetch statement is utter bullshit, but it actually prevents Django from doing
-                                        # a lot of queries since ModelChoiceIterator stops trying to be clever once we have
-                                        # a prefetch lookup on this query...
+                                        # This prefetch statement is utter bullshit, but it actually prevents Django
+                                        # from doing a lot of queries since ModelChoiceIterator stops trying to be
+                                        # clever once we have a prefetch lookup on this query...
                                         'question',
                                         Question.objects.none(),
                                         to_attr='dummy',

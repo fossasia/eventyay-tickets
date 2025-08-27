@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class SubmissionConfig(AppConfig):
-    name = "eventyay.submission"
+    name = 'eventyay.submission'
 
     def ready(self):
         from . import exporters  # noqa

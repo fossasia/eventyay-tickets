@@ -14,9 +14,9 @@ def get_events_for_user(user, queryset=None):
     if user.is_anonymous:
         queryset = queryset.filter(is_public=True)
     else:
-        events = user.get_events_with_any_permission().values_list("pk", flat=True)
+        events = user.get_events_with_any_permission().values_list('pk', flat=True)
         queryset = queryset.filter(Q(is_public=True) | Q(pk__in=events))
-    return queryset.order_by("-date_from")
+    return queryset.order_by('-date_from')
 
 
 def check_team_permission(user, event, permission):
@@ -29,10 +29,10 @@ def check_team_permission(user, event, permission):
 
 @rules.predicate
 def can_change_event_settings(user, obj):
-    event = getattr(obj, "event", None)
+    event = getattr(obj, 'event', None)
     if not event or not obj or not user or user.is_anonymous:
         return False
-    return check_team_permission(user, event, "can_change_event_settings")
+    return check_team_permission(user, event, 'can_change_event_settings')
 
 
 @rules.predicate
@@ -41,20 +41,17 @@ def can_change_teams(user, obj):
         return False
     if user.is_administrator:
         return True
-    if event := getattr(obj, "event", None):
-        return check_team_permission(user, event, "can_change_teams")
+    if event := getattr(obj, 'event', None):
+        return check_team_permission(user, event, 'can_change_teams')
     return user.teams.filter(organiser=obj.organiser, can_change_teams=True).exists()
 
 
 @rules.predicate
 def can_change_organiser_settings(user, obj):
-    event = getattr(obj, "event", None)
+    event = getattr(obj, 'event', None)
     if event:
         obj = event.organiser
-    return (
-        user.is_administrator
-        or user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
-    )
+    return user.is_administrator or user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
 
 
 @rules.predicate
@@ -64,16 +61,13 @@ def has_any_permission(user, obj):
 
 @rules.predicate
 def has_any_organiser_permissions(user, obj):
-    organiser = getattr(obj, "organiser", None) or obj
+    organiser = getattr(obj, 'organiser', None) or obj
     return user.is_administrator or user.teams.filter(organiser=organiser).exists()
 
 
 @rules.predicate
 def can_change_any_organiser_settings(user, obj):
-    return (
-        user.is_administrator
-        or user.teams.filter(can_change_organiser_settings=True).exists()
-    )
+    return user.is_administrator or user.teams.filter(can_change_organiser_settings=True).exists()
 
 
 @rules.predicate

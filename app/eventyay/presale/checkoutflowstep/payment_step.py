@@ -7,8 +7,8 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
-from pretix.base.services.cart import get_fees
-from pretix.presale.views import CartMixin, get_cart, get_cart_total
+from eventyay.base.services.cart import get_fees
+from eventyay.presale.views import CartMixin, get_cart, get_cart_total
 
 from .template_flow_step import TemplateFlowStep
 
@@ -16,7 +16,7 @@ from .template_flow_step import TemplateFlowStep
 class PaymentStep(CartMixin, TemplateFlowStep):
     priority = 200
     identifier = 'payment'
-    template_name = 'pretixpresale/event/checkout_payment.html'
+    template_name = 'eventyaypresale/event/checkout_payment.html'
     label = pgettext_lazy('checkoutflow', 'Payment')
     icon = 'credit-card'
 

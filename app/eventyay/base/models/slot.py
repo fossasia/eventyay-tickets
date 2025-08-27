@@ -34,44 +34,42 @@ class TalkSlot(PretalxModel):
     """
 
     submission = models.ForeignKey(
-        to="Submission",
+        to='Submission',
         on_delete=models.PROTECT,
-        related_name="slots",
+        related_name='slots',
         null=True,
         blank=True,  # If the submission is empty, this is a break or similar event
     )
     room = models.ForeignKey(
-        to="Room",
+        to='Room',
         on_delete=models.PROTECT,
-        related_name="talks",
-        verbose_name=_("Room"),
-        help_text=_("The room this talk is scheduled in, if any"),
+        related_name='talks',
+        verbose_name=_('Room'),
+        help_text=_('The room this talk is scheduled in, if any'),
         null=True,
         blank=True,
     )
-    schedule = models.ForeignKey(
-        to="Schedule", on_delete=models.PROTECT, related_name="talks"
-    )
+    schedule = models.ForeignKey(to='Schedule', on_delete=models.PROTECT, related_name='talks')
     is_visible = models.BooleanField(default=False)
     start = models.DateTimeField(
         null=True,
-        verbose_name=_("Start"),
-        help_text=_("When the talk starts, if it is currently scheduled"),
+        verbose_name=_('Start'),
+        help_text=_('When the talk starts, if it is currently scheduled'),
     )
     end = models.DateTimeField(
         null=True,
-        verbose_name=_("End"),
-        help_text=_("When the talk ends, if it is currently scheduled"),
+        verbose_name=_('End'),
+        help_text=_('When the talk ends, if it is currently scheduled'),
     )
     description = I18nCharField(null=True)
 
-    objects = ScopedManager(event="schedule__event")
+    objects = ScopedManager(event='schedule__event')
 
     class Meta:
-        ordering = ("start",)
+        ordering = ('start',)
         rules_permissions = {
-            "list": is_agenda_visible | orga_can_change_submissions,
-            "view": (
+            'list': is_agenda_visible | orga_can_change_submissions,
+            'view': (
                 # public view is only possible for non-wip slots
                 ~is_wip
                 # visibility then is down to the submission being visible in the
@@ -80,12 +78,13 @@ class TalkSlot(PretalxModel):
                 & ((is_break & is_agenda_visible) | is_agenda_submission_visible)
             )
             | orga_can_change_submissions,
-            "update": is_wip & orga_can_change_submissions,
+            'update': is_wip & orga_can_change_submissions,
         }
 
     def __str__(self):
         """Help when debugging."""
-        return f'TalkSlot(event={self.schedule.event.slug}, submission={getattr(self.submission, "title", None)}, schedule={self.schedule.version})'
+        return (f'TalkSlot(event={self.schedule.event.slug}, submission={getattr(self.submission, "title", None)}, '
+                f'schedule={self.schedule.version})')
 
     @cached_property
     def event(self):
@@ -111,7 +110,7 @@ class TalkSlot(PretalxModel):
         days = duration.days
         hours = duration.total_seconds() // 3600 - days * 24
         minutes = duration.seconds // 60 % 60
-        return f"{hours:02}{minutes:02}00"
+        return f'{hours:02}{minutes:02}00'
 
     @cached_property
     def local_start(self):
@@ -122,9 +121,7 @@ class TalkSlot(PretalxModel):
     def real_end(self):
         """Guaranteed to provide a useful end datetime if ``start`` is set,
         even if ``end`` is empty."""
-        return self.end or (
-            self.start + dt.timedelta(minutes=self.duration) if self.start else None
-        )
+        return self.end or (self.start + dt.timedelta(minutes=self.duration) if self.start else None)
 
     @cached_property
     def local_end(self):
@@ -153,9 +150,7 @@ class TalkSlot(PretalxModel):
         """
         new_slot = TalkSlot(schedule=new_schedule)
 
-        for field in (
-            fn for fn in self._meta.fields if fn.name not in ("id", "schedule")
-        ):
+        for field in (fn for fn in self._meta.fields if fn.name not in ('id', 'schedule')):
             setattr(new_slot, field.name, getattr(self, field.name))
 
         if save:
@@ -170,29 +165,27 @@ class TalkSlot(PretalxModel):
 
     @cached_property
     def id_suffix(self):
-        if not self.event.get_feature_flag("present_multiple_times"):
-            return ""
+        if not self.event.get_feature_flag('present_multiple_times'):
+            return ''
         all_slots = list(
-            TalkSlot.objects.filter(
-                submission_id=self.submission_id, schedule_id=self.schedule_id
-            ).order_by("start")
+            TalkSlot.objects.filter(submission_id=self.submission_id, schedule_id=self.schedule_id).order_by('start')
         )
         if len(all_slots) == 1:
-            return ""
-        return "-" + str(all_slots.index(self))
+            return ''
+        return '-' + str(all_slots.index(self))
 
     @cached_property
     def frab_slug(self):
-        title = re.sub(r"\W+", "-", self.submission.title)
+        title = re.sub(r'\W+', '-', self.submission.title)
         title = title.lower()
-        title = unicodedata.normalize("NFD", title).encode("ASCII", "ignore").decode()
-        legal_chars = string.ascii_letters + string.digits + "-"
-        pattern = f"[^{legal_chars}]+"
-        title = re.sub(pattern, "", title)
-        title = title.strip("-")
+        title = unicodedata.normalize('NFD', title).encode('ASCII', 'ignore').decode()
+        legal_chars = string.ascii_letters + string.digits + '-'
+        pattern = f'[^{legal_chars}]+'
+        title = re.sub(pattern, '', title)
+        title = title.strip('-')
         if title:
-            return f"{self.event.slug}-{self.submission.pk}{self.id_suffix}-{title}"
-        return f"{self.event.slug}-{self.submission.pk}{self.id_suffix}"
+            return f'{self.event.slug}-{self.submission.pk}{self.id_suffix}-{title}'
+        return f'{self.event.slug}-{self.submission.pk}{self.id_suffix}'
 
     @cached_property
     def uuid(self):
@@ -208,28 +201,26 @@ class TalkSlot(PretalxModel):
     def build_ical(self, calendar, creation_time=None, netloc=None):
         if not self.start or not self.local_end or not self.room or not self.submission:
             return
-        creation_time = creation_time or dt.datetime.now(ZoneInfo("UTC"))
+        creation_time = creation_time or dt.datetime.now(ZoneInfo('UTC'))
         netloc = netloc or urlparse(get_base_url(self.event)).netloc
 
-        vevent = calendar.add("vevent")
-        vevent.add("summary").value = (
-            f"{self.submission.title} - {self.submission.display_speaker_names}"
-        )
-        vevent.add("dtstamp").value = creation_time
-        vevent.add("location").value = str(self.room.name)
-        vevent.add("uid").value = "pretalx-{}-{}{}@{}".format(
+        vevent = calendar.add('vevent')
+        vevent.add('summary').value = f'{self.submission.title} - {self.submission.display_speaker_names}'
+        vevent.add('dtstamp').value = creation_time
+        vevent.add('location').value = str(self.room.name)
+        vevent.add('uid').value = 'pretalx-{}-{}{}@{}'.format(
             self.submission.event.slug, self.submission.code, self.id_suffix, netloc
         )
 
-        vevent.add("dtstart").value = self.local_start
-        vevent.add("dtend").value = self.local_end
-        vevent.add("description").value = self.submission.abstract or ""
-        vevent.add("url").value = self.submission.urls.public.full()
+        vevent.add('dtstart').value = self.local_start
+        vevent.add('dtend').value = self.local_end
+        vevent.add('description').value = self.submission.abstract or ''
+        vevent.add('url').value = self.submission.urls.public.full()
 
     def full_ical(self):
         netloc = urlparse(settings.SITE_URL).netloc
         cal = vobject.iCalendar()
-        cal.add("prodid").value = "-//pretalx//{}//{}".format(
+        cal.add('prodid').value = '-//pretalx//{}//{}'.format(
             netloc, self.submission.code if self.submission else self.pk
         )
         self.build_ical(cal)

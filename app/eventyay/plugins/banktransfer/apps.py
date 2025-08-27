@@ -6,10 +6,10 @@ from eventyay import __version__ as version
 
 
 class BankTransferApp(AppConfig):
-    name = 'pretix.plugins.banktransfer'
+    name = 'eventyay.plugins.banktransfer'
     verbose_name = _('Bank transfer')
 
-    class PretixPluginMeta:
+    class EventyayPluginMeta:
         name = _('Bank transfer')
         category = 'PAYMENT'
         featured = True
@@ -18,6 +18,7 @@ class BankTransferApp(AppConfig):
 
     def ready(self):
         from . import signals  # NOQA
+
         # from . import tasks  # NOQA
         from .templatetags import commadecimal, dotdecimal  # NOQA
 
@@ -31,4 +32,4 @@ class BankTransferApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.banktransfer.BankTransferApp'
+default_app_config = 'eventyay.plugins.banktransfer.BankTransferApp'

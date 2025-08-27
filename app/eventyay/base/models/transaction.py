@@ -26,4 +26,4 @@ def rolledback_transaction():
     except DummyRollbackError:
         pass
     else:  # pragma: no cover
-        raise Exception("Invalid state, should have rolled back.")
+        raise Exception('Invalid state, should have rolled back.')

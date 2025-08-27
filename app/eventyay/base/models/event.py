@@ -10,6 +10,7 @@ from operator import attrgetter
 from urllib.parse import urljoin, urlparse
 
 import pytz
+from django.conf import global_settings as default_django_settings
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
@@ -22,7 +23,7 @@ from django.core.validators import (
 )
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q, Subquery, Value
-from django.template.defaultfilters import date as _date, default
+from django.template.defaultfilters import date as _date
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.formats import date_format
@@ -39,16 +40,16 @@ from eventyay.base.models.fields import MultiStringField
 from eventyay.base.reldate import RelativeDateWrapper
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.base.validators import EventSlugBanlistValidator
-from eventyay.helpers.database import GroupConcat
-from eventyay.helpers.daterange import daterange
-from eventyay.helpers.json import safe_string
-from eventyay.helpers.thumb import get_thumbnail
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.core.permissions import Permission, SYSTEM_ROLES
 from eventyay.core.utils.json import CustomJSONEncoder
 from eventyay.consts import TIMEZONE_CHOICES
+from eventyay.helpers.database import GroupConcat
+from eventyay.helpers.daterange import daterange
+from eventyay.helpers.json import safe_string
+from eventyay.helpers.thumb import get_thumbnail
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
 
@@ -476,61 +477,61 @@ class EventMixin:
 
 
 def event_css_path(instance, filename):
-    return path_with_hash(filename, base_path=f"{instance.slug}/css/")
+    return path_with_hash(filename, base_path=f'{instance.slug}/css/')
 
 
 def event_logo_path(instance, filename):
-    return path_with_hash(filename, base_path=f"{instance.slug}/img/")
+    return path_with_hash(filename, base_path=f'{instance.slug}/img/')
 
 
 def default_feature_flags():
     return {
-        "show_schedule": True,
-        "show_featured": "pre_schedule",  # or always, or never
-        "show_widget_if_not_public": False,
-        "export_html_on_release": False,
-        "use_tracks": True,
-        "use_feedback": True,
-        "use_submission_comments": True,
-        "present_multiple_times": False,
-        "submission_public_review": True,
+        'show_schedule': True,
+        'show_featured': 'pre_schedule',  # or always, or never
+        'show_widget_if_not_public': False,
+        'export_html_on_release': False,
+        'use_tracks': True,
+        'use_feedback': True,
+        'use_submission_comments': True,
+        'present_multiple_times': False,
+        'submission_public_review': True,
     }
 
 
 def default_display_settings():
     return {
-        "schedule": "grid",  # or list
-        "imprint_url": None,
-        "header_pattern": "",
-        "html_export_url": "",
-        "meta_noindex": False,
-        "texts": {"agenda_session_above": "", "agenda_session_below": ""},
+        'schedule': 'grid',  # or list
+        'imprint_url': None,
+        'header_pattern': '',
+        'html_export_url': '',
+        'meta_noindex': False,
+        'texts': {'agenda_session_above': '', 'agenda_session_below': ''},
     }
 
 
 def default_review_settings():
     return {
-        "score_mandatory": False,
-        "text_mandatory": False,
-        "aggregate_method": "median",  # or mean
-        "score_format": "words_numbers",
+        'score_mandatory': False,
+        'text_mandatory': False,
+        'aggregate_method': 'median',  # or mean
+        'score_format': 'words_numbers',
     }
 
 
 def default_mail_settings():
     return {
-        "mail_from": "",
-        "reply_to": "",
-        "signature": "",
-        "subject_prefix": "",
-        "smtp_use_custom": "",
-        "smtp_host": "",
-        "smtp_port": 587,
-        "smtp_username": "",
-        "smtp_password": "",
-        "smtp_use_tls": "",
-        "smtp_use_ssl": "",
-        "mail_on_new_submission": False,
+        'mail_from': '',
+        'reply_to': '',
+        'signature': '',
+        'subject_prefix': '',
+        'smtp_use_custom': '',
+        'smtp_host': '',
+        'smtp_port': 587,
+        'smtp_username': '',
+        'smtp_password': '',
+        'smtp_use_tls': '',
+        'smtp_use_ssl': '',
+        'mail_on_new_submission': False,
     }
 
 
@@ -686,19 +687,17 @@ class Event(EventMixin, LoggedModel):
     timezone = models.CharField(
         choices=[(tz, tz) for tz in TIMEZONE_CHOICES],
         max_length=32,
-        default="UTC",
-        help_text=_(
-            "All event dates will be localised and interpreted to be in this timezone."
-        ),
+        default='UTC',
+        help_text=_('All event dates will be localised and interpreted to be in this timezone.'),
     )
     email = models.EmailField(
-        verbose_name=_("Organiser email address"),
-        help_text=_("Will be used as Reply-To in emails."),
-        default="org@mail.com"
+        verbose_name=_('Organiser email address'),
+        help_text=_('Will be used as Reply-To in emails.'),
+        default='org@mail.com',
     )
     custom_domain = models.URLField(
-        verbose_name=_("Custom domain"),
-        help_text=_("Enter a custom domain, such as https://my.event.example.org"),
+        verbose_name=_('Custom domain'),
+        help_text=_('Enter a custom domain, such as https://my.event.example.org'),
         null=True,
         blank=True,
     )
@@ -710,41 +709,37 @@ class Event(EventMixin, LoggedModel):
         null=True,
         blank=True,
         validators=[
-            RegexValidator("#([0-9A-Fa-f]{3}){1,2}"),
+            RegexValidator('#([0-9A-Fa-f]{3}){1,2}'),
         ],
-        verbose_name=_("Main event colour"),
-        help_text=_(
-            "Provide a hex value like #00ff00 if you want to style eventyay in your event’s colour scheme."
-        ),
+        verbose_name=_('Main event colour'),
+        help_text=_('Provide a hex value like #00ff00 if you want to style eventyay in your event’s colour scheme.'),
     )
     custom_css = models.FileField(
         upload_to=event_css_path,
         null=True,
         blank=True,
-        verbose_name=_("Custom Event CSS"),
-        help_text=_(
-            "Upload a custom CSS file if changing the primary colour is not sufficient for you."
-        ),
+        verbose_name=_('Custom Event CSS'),
+        help_text=_('Upload a custom CSS file if changing the primary colour is not sufficient for you.'),
     )
     logo = models.ImageField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
-        verbose_name=_("Logo"),
+        verbose_name=_('Logo'),
         help_text=_(
-            "If you provide a logo image, your event’s name will not be shown in the event header. "
-            "The logo will be scaled down to a height of 140px."
+            'If you provide a logo image, your event’s name will not be shown in the event header. '
+            'The logo will be scaled down to a height of 140px.'
         ),
     )
     header_image = models.ImageField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
-        verbose_name=_("Header image"),
+        verbose_name=_('Header image'),
         help_text=_(
-            "If you provide a header image, it will be displayed instead of your event’s color and/or header pattern "
-            "at the top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will "
-            "continue to be displayed, and not stretched."
+            'If you provide a header image, it will be displayed instead of your event’s color and/or header pattern '
+            'at the top of all event pages. It will be center-aligned, so when the window shrinks, '
+            'the center parts will continue to be displayed, and not stretched.'
         ),
     )
     locale_array = models.TextField(default=settings.LANGUAGE_CODE)
@@ -753,24 +748,22 @@ class Event(EventMixin, LoggedModel):
         max_length=32,
         default=settings.LANGUAGE_CODE,
         choices=settings.LANGUAGES,
-        verbose_name=_("Default language"),
+        verbose_name=_('Default language'),
     )
     landing_page_text = I18nTextField(
-        verbose_name=_("Landing page text"),
+        verbose_name=_('Landing page text'),
         help_text=_(
-            "This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate."
+            'This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate.'
         )
-        + " "
+        + ' '
         + phrases.base.use_markdown,
         null=True,
         blank=True,
     )
     featured_sessions_text = I18nTextField(
-        verbose_name=_("Featured sessions text"),
-        help_text=_(
-            "This text will be shown at the top of the featured sessions page instead of the default text."
-        )
-        + " "
+        verbose_name=_('Featured sessions text'),
+        help_text=_('This text will be shown at the top of the featured sessions page instead of the default text.')
+        + ' '
         + phrases.base.use_markdown,
         null=True,
         blank=True,
@@ -784,126 +777,126 @@ class Event(EventMixin, LoggedModel):
     external_auth_url = models.URLField(null=True, blank=True)
 
     HEADER_PATTERN_CHOICES = (
-        ("", _("Plain")),
-        ("pcb", _("Circuits")),
-        ("bubbles", _("Circles")),
-        ("signal", _("Signal")),
-        ("topo", _("Topography")),
-        ("graph", _("Graph Paper")),
+        ('', _('Plain')),
+        ('pcb', _('Circuits')),
+        ('bubbles', _('Circles')),
+        ('signal', _('Signal')),
+        ('topo', _('Topography')),
+        ('graph', _('Graph Paper')),
     )
 
     objects = models.Manager()
 
     class urls(EventUrls):
         base_path = settings.BASE_PATH
-        base = "{base_path}/{self.slug}/"
-        login = "{base}login/"
-        logout = "{base}logout"
-        auth = "{base}auth/"
-        logo = "{self.logo.url}"
-        social_image = "{base}og-image"
-        reset = "{base}reset"
-        submit = "{base}submit/"
-        user = "{base}me/"
-        user_delete = "{base}me/delete"
-        user_submissions = "{user}submissions/"
-        user_mails = "{user}mails/"
-        schedule = "{base}schedule/"
-        schedule_nojs = "{schedule}nojs"
-        featured = "{base}featured/"
-        talks = "{base}talk/"
-        speakers = "{base}speaker/"
-        changelog = "{schedule}changelog/"
-        feed = "{schedule}feed.xml"
-        export = "{schedule}export/"
-        frab_xml = "{export}schedule.xml"
-        frab_json = "{export}schedule.json"
-        frab_xcal = "{export}schedule.xcal"
-        ical = "{export}schedule.ics"
-        schedule_widget_data = "{schedule}widgets/schedule.json"
-        schedule_widget_script = "{base}widgets/schedule.js"
-        settings_css = "{base}static/event.css"
+        base = '{base_path}/{self.slug}/'
+        login = '{base}login/'
+        logout = '{base}logout'
+        auth = '{base}auth/'
+        logo = '{self.logo.url}'
+        social_image = '{base}og-image'
+        reset = '{base}reset'
+        submit = '{base}submit/'
+        user = '{base}me/'
+        user_delete = '{base}me/delete'
+        user_submissions = '{user}submissions/'
+        user_mails = '{user}mails/'
+        schedule = '{base}schedule/'
+        schedule_nojs = '{schedule}nojs'
+        featured = '{base}featured/'
+        talks = '{base}talk/'
+        speakers = '{base}speaker/'
+        changelog = '{schedule}changelog/'
+        feed = '{schedule}feed.xml'
+        export = '{schedule}export/'
+        frab_xml = '{export}schedule.xml'
+        frab_json = '{export}schedule.json'
+        frab_xcal = '{export}schedule.xcal'
+        ical = '{export}schedule.ics'
+        schedule_widget_data = '{schedule}widgets/schedule.json'
+        schedule_widget_script = '{base}widgets/schedule.js'
+        settings_css = '{base}static/event.css'
 
     class orga_urls(EventUrls):
         base_path = settings.BASE_PATH
-        base = "{base_path}/orga/event/{self.slug}/"
-        login = "{base}login/"
-        live = "{base}live"
-        delete = "{base}delete"
-        cfp = "{base}cfp/"
-        history = "{base}history/"
-        users = "{base}api/users"
-        mail = "{base}mails/"
-        compose_mails = "{mail}compose"
-        compose_mails_sessions = "{compose_mails}/sessions/"
-        compose_mails_teams = "{compose_mails}/teams/"
-        send_drafts_reminder = "{compose_mails}/reminders"
-        mail_templates = "{mail}templates/"
-        new_template = "{mail_templates}new/"
-        outbox = "{mail}outbox/"
-        sent_mails = "{mail}sent"
-        send_outbox = "{outbox}send"
-        purge_outbox = "{outbox}purge"
-        submissions = "{base}submissions/"
-        tags = "{submissions}tags/"
-        new_tag = "{tags}new/"
-        submission_cards = "{base}submissions/cards/"
-        stats = "{base}submissions/statistics/"
-        submission_feed = "{base}submissions/feed/"
-        new_submission = "{submissions}new"
-        feedback = "{submissions}feedback/"
-        apply_pending = "{submissions}apply-pending/"
-        speakers = "{base}speakers/"
-        settings = edit_settings = "{base}settings/"
-        review_settings = "{settings}review/"
-        mail_settings = edit_mail_settings = "{settings}mail"
-        widget_settings = "{settings}widget"
-        team_settings = "{settings}team/"
-        new_team = "{settings}team/new"
-        room_settings = "{schedule}rooms/"
-        new_room = "{room_settings}new/"
-        schedule = "{base}schedule/"
-        schedule_export = "{schedule}export/"
-        schedule_export_trigger = "{schedule_export}trigger"
-        schedule_export_download = "{schedule_export}download"
-        release_schedule = "{schedule}release"
-        reset_schedule = "{schedule}reset"
-        toggle_schedule = "{schedule}toggle"
-        reviews = "{base}reviews/"
-        review_assignments = "{reviews}assign/"
-        schedule_api = "{base}schedule/api/"
-        talks_api = "{schedule_api}talks/"
-        plugins = "{settings}plugins"
-        information = "{base}info/"
-        new_information = "{base}info/new/"
+        base = '{base_path}/orga/event/{self.slug}/'
+        login = '{base}login/'
+        live = '{base}live'
+        delete = '{base}delete'
+        cfp = '{base}cfp/'
+        history = '{base}history/'
+        users = '{base}api/users'
+        mail = '{base}mails/'
+        compose_mails = '{mail}compose'
+        compose_mails_sessions = '{compose_mails}/sessions/'
+        compose_mails_teams = '{compose_mails}/teams/'
+        send_drafts_reminder = '{compose_mails}/reminders'
+        mail_templates = '{mail}templates/'
+        new_template = '{mail_templates}new/'
+        outbox = '{mail}outbox/'
+        sent_mails = '{mail}sent'
+        send_outbox = '{outbox}send'
+        purge_outbox = '{outbox}purge'
+        submissions = '{base}submissions/'
+        tags = '{submissions}tags/'
+        new_tag = '{tags}new/'
+        submission_cards = '{base}submissions/cards/'
+        stats = '{base}submissions/statistics/'
+        submission_feed = '{base}submissions/feed/'
+        new_submission = '{submissions}new'
+        feedback = '{submissions}feedback/'
+        apply_pending = '{submissions}apply-pending/'
+        speakers = '{base}speakers/'
+        settings = edit_settings = '{base}settings/'
+        review_settings = '{settings}review/'
+        mail_settings = edit_mail_settings = '{settings}mail'
+        widget_settings = '{settings}widget'
+        team_settings = '{settings}team/'
+        new_team = '{settings}team/new'
+        room_settings = '{schedule}rooms/'
+        new_room = '{room_settings}new/'
+        schedule = '{base}schedule/'
+        schedule_export = '{schedule}export/'
+        schedule_export_trigger = '{schedule_export}trigger'
+        schedule_export_download = '{schedule_export}download'
+        release_schedule = '{schedule}release'
+        reset_schedule = '{schedule}reset'
+        toggle_schedule = '{schedule}toggle'
+        reviews = '{base}reviews/'
+        review_assignments = '{reviews}assign/'
+        schedule_api = '{base}schedule/api/'
+        talks_api = '{schedule_api}talks/'
+        plugins = '{settings}plugins'
+        information = '{base}info/'
+        new_information = '{base}info/new/'
 
     class api_urls(EventUrls):
         base_path = settings.TALK_BASE_PATH
-        base = "{base_path}/api/events/{self.slug}/"
-        submissions = "{base}submissions/"
-        slots = "{base}slots/"
-        talks = "{base}talks/"
-        schedules = "{base}schedules/"
-        speakers = "{base}speakers/"
-        reviews = "{base}reviews/"
-        rooms = "{base}rooms/"
-        questions = "{base}questions/"
-        question_options = "{base}question-options/"
-        answers = "{base}answers/"
-        tags = "{base}tags/"
-        tracks = "{base}tracks/"
-        submission_types = "{base}submission-types/"
-        mail_templates = "{base}mail-templates/"
-        access_codes = "{base}access-codes/"
-        speaker_information = "{base}speaker-information/"
-    
+        base = '{base_path}/api/events/{self.slug}/'
+        submissions = '{base}submissions/'
+        slots = '{base}slots/'
+        talks = '{base}talks/'
+        schedules = '{base}schedules/'
+        speakers = '{base}speakers/'
+        reviews = '{base}reviews/'
+        rooms = '{base}rooms/'
+        questions = '{base}questions/'
+        question_options = '{base}question-options/'
+        answers = '{base}answers/'
+        tags = '{base}tags/'
+        tracks = '{base}tracks/'
+        submission_types = '{base}submission-types/'
+        mail_templates = '{base}mail-templates/'
+        access_codes = '{base}access-codes/'
+        speaker_information = '{base}speaker-information/'
+
     class tickets_urls(EventUrls):
         _full_base_path = settings.BASE_PATH
         base_path = urlparse(_full_base_path).path.rstrip('/')
-        base = "{base_path}/control/"
-        common = "{base_path}/common/"
-        tickets_home_common = "{common}event/{self.organiser.slug}/{self.slug}/"
-        tickets_dashboard_url = "{base}event/{self.organiser.slug}/{self.slug}/"
+        base = '{base_path}/control/'
+        common = '{base_path}/common/'
+        tickets_home_common = '{common}event/{self.organiser.slug}/{self.slug}/'
+        tickets_dashboard_url = '{base}event/{self.organiser.slug}/{self.slug}/'
 
     class Meta:
         verbose_name = _('Event')
@@ -1008,6 +1001,7 @@ class Event(EventMixin, LoggedModel):
         this event, so you don't have to prefix your cache keys. In addition, the cache
         is being cleared every time the event or one of its related objects change.
         """
+        # FIXME: This "cache" module is missing.
         from eventyay.base.cache import ObjectRelatedCache
 
         return ObjectRelatedCache(self)
@@ -1986,17 +1980,17 @@ class Event(EventMixin, LoggedModel):
             if presale_start > presale_end:
                 raise ValidationError(_("The event's presale cannot end before it starts."))
 
-    #From eventyay-talk
+    # From eventyay-talk
 
     @cached_property
     def locales(self) -> list[str]:
         """Is a list of active event locales."""
-        return self.locale_array.split(",")
+        return self.locale_array.split(',')
 
     @cached_property
     def content_locales(self) -> list[str]:
         """Is a list of active content locales."""
-        return self.content_locale_array.split(",")
+        return self.content_locale_array.split(',')
 
     @cached_property
     def is_multilingual(self) -> bool:
@@ -2008,9 +2002,9 @@ class Event(EventMixin, LoggedModel):
         """Is a list of tuples of locale codes and natural names for this
         event."""
         return [
-            (language["code"], language["natural_name"])
+            (language['code'], language['natural_name'])
             for language in settings.LANGUAGES_INFORMATION.values()
-            if language["code"] in self.locales
+            if language['code'] in self.locales
         ]
 
     @cached_property
@@ -2018,7 +2012,7 @@ class Event(EventMixin, LoggedModel):
         # Content locales can be anything pretalx knows as a language, merged with
         # this event's plugin locales.
 
-        locale_names = copy.copy(LANGUAGE_NAMES)
+        locale_names = dict(default_django_settings.LANGUAGES)
         locale_names.update(self.named_plugin_locales)
         return sorted([(key, value) for key, value in locale_names.items()])
 
@@ -2026,6 +2020,7 @@ class Event(EventMixin, LoggedModel):
     def named_content_locales(self) -> list:
         locale_names = dict(self.available_content_locales)
         return [(code, locale_names[code]) for code in self.content_locales]
+
 
 class SubEvent(EventMixin, LoggedModel):
     """

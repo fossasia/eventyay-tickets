@@ -198,9 +198,10 @@ class QuotaAvailability:
                 f'quotas:{eventid}:availabilitycache',
                 {str(q.id): ','.join([str(i) for i in self.results[q]] + [str(int(time.time()))]) for q in quotas},
             )
-            # To make sure old events do not fill up our redis instance, we set an expiry on the cache. However, we set it
-            # on 7 days even though we mostly ignore values older than 2 monites. The reasoning is that we have some places
-            # where we set allow_cache_stale and use the old entries anyways to save on performance.
+            # To make sure old events do not fill up our redis instance, we set an expiry on the cache.
+            # However, we set it on 7 days even though we mostly ignore values older than 2 minutes.
+            # The reasoning is that we have some places where we set allow_cache_stale and
+            # use the old entries anyways to save on performance.
             rc.expire(f'quotas:{eventid}:availabilitycache', 3600 * 24 * 7)
 
         # We used to also delete item_quota_cache:* from the event cache here, but as the cache
