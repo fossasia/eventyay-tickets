@@ -220,16 +220,16 @@ class MailTemplate(PretalxModel):
 
     @cached_property
     def valid_placeholders(self):
-        valid_placeholders = {}
+        placeholders = {}
         if self.role == MailTemplateRoles.QUESTION_REMINDER:
-            valid_placeholders['questions'] = SimpleFunctionalMailTextPlaceholder(
+            placeholders['questions'] = SimpleFunctionalMailTextPlaceholder(
                 'questions',
                 ['user'],
                 None,
                 _('- First missing field\n- Second missing field'),
                 _('The list of custom fields that the user has not responded to, as bullet points'),
             )
-            valid_placeholders['url'] = SimpleFunctionalMailTextPlaceholder(
+            placeholders['url'] = SimpleFunctionalMailTextPlaceholder(
                 'url',
                 ['event', 'user'],
                 None,
@@ -238,14 +238,14 @@ class MailTemplate(PretalxModel):
             )
             kwargs = ['event', 'user']
         elif self.role == MailTemplateRoles.NEW_SPEAKER_INVITE:
-            valid_placeholders['invitation_link'] = SimpleFunctionalMailTextPlaceholder(
+            placeholders['invitation_link'] = SimpleFunctionalMailTextPlaceholder(
                 'invitation_link',
                 ['event', 'user'],
                 None,
                 'https://pretalx.example.com/democon/invitation/123abc/',
             )
         elif self.role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
-            valid_placeholders['orga_url'] = SimpleFunctionalMailTextPlaceholder(
+            placeholders['orga_url'] = SimpleFunctionalMailTextPlaceholder(
                 'orga_url',
                 ['event', 'submission'],
                 None,
@@ -255,8 +255,8 @@ class MailTemplate(PretalxModel):
         kwargs = ['event', 'user', 'submission', 'slot']
         if self.role:
             kwargs = PLACEHOLDER_KWARGS[self.role]
-        valid_placeholders.update(get_available_placeholders(event=self.event, kwargs=kwargs))
-        return valid_placeholders
+        placeholders.update(get_available_placeholders(event=self.event, kwargs=kwargs))
+        return placeholders
 
 
 @rules.predicate

@@ -7,7 +7,7 @@ from itertools import repeat
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import JSONField, Q
+from django.db.models import JSONField
 from django.db.models.fields.files import FieldFile
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -394,21 +394,22 @@ class Submission(GenerateCode, PretalxModel):
 
     @property
     def public_answers(self):
-        from eventyay.submission.models.question import QuestionTarget
+        # TODO: QuestionTarget model is missing
+        # from eventyay.submission.models.question import QuestionTarget
 
-        qs = (
-            self.answers.filter(
-                Q(question__submission_types__in=[self.submission_type]) | Q(question__submission_types__isnull=True),
-                question__is_public=True,
-                question__event=self.event,
-                question__target=QuestionTarget.SUBMISSION,
-            )
-            .select_related('question')
-            .order_by('question__position')
-        )
-        if self.track:
-            qs = qs.filter(Q(question__tracks__in=[self.track]) | Q(question__tracks__isnull=True))
-        return qs
+        # qs = (
+        #     self.answers.filter(
+        #         Q(question__submission_types__in=[self.submission_type]) | Q(question__submission_types__isnull=True),
+        #         question__is_public=True,
+        #         question__event=self.event,
+        #         question__target=QuestionTarget.SUBMISSION,
+        #     )
+        #     .select_related('question')
+        #     .order_by('question__position')
+        # )
+        # if self.track:
+        #     qs = qs.filter(Q(question__tracks__in=[self.track]) | Q(question__tracks__isnull=True))
+        return []
 
     def get_duration(self) -> int:
         """Returns this submission's duration in minutes.
@@ -558,7 +559,7 @@ class Submission(GenerateCode, PretalxModel):
     update_talk_slots.alters_data = True
 
     def send_initial_mails(self, person):
-        from eventyay.mail.models import MailTemplateRoles
+        from .mail import MailTemplateRoles
 
         template = self.event.get_mail_template(MailTemplateRoles.NEW_SUBMISSION)
         template_text = copy.deepcopy(template.text)
@@ -718,7 +719,7 @@ class Submission(GenerateCode, PretalxModel):
         return str(dict(self.event.named_content_locales)[self.content_locale])
 
     def send_state_mail(self):
-        from eventyay.mail.models import MailTemplateRoles
+        from .mail import MailTemplateRoles
 
         if self.state == SubmissionStates.ACCEPTED:
             template = self.event.get_mail_template(MailTemplateRoles.SUBMISSION_ACCEPT)
@@ -931,7 +932,7 @@ class Submission(GenerateCode, PretalxModel):
 
     @cached_property
     def speaker_profiles(self):
-        from eventyay.person.models.profile import SpeakerProfile
+        from .profile import SpeakerProfile
 
         return SpeakerProfile.objects.filter(event=self.event, user__in=self.speakers.all())
 
@@ -942,7 +943,7 @@ class Submission(GenerateCode, PretalxModel):
         :class:`~pretalx.schedule.models.availability.Availability` objects of
         all speakers of this submission.
         """
-        from eventyay.schedule.models.availability import Availability
+        from .availability import Availability
 
         all_availabilities = self.event.availabilities.filter(person__in=self.speaker_profiles)
         return Availability.intersection(all_availabilities)
@@ -985,9 +986,10 @@ class Submission(GenerateCode, PretalxModel):
 
     def add_speaker(self, email, name=None, locale=None, user=None):
         from eventyay.common.urls import build_absolute_uri
-        from eventyay.mail.models import MailTemplateRoles
-        from eventyay.person.models import SpeakerProfile, User
-        from eventyay.person.services import create_user
+
+        from .auth import User
+        from .mail import MailTemplateRoles
+        from .profile import SpeakerProfile
 
         user_created = False
         context = {}
@@ -996,7 +998,7 @@ class Submission(GenerateCode, PretalxModel):
             if not speaker.profiles.filter(event=self.event).exists():
                 SpeakerProfile.objects.create(user=speaker, event=self.event)
         except User.DoesNotExist:
-            speaker = create_user(email=email, name=name, event=self.event)
+            speaker = User.objects.create_user(email=email, name=name, event=self.event)
             user_created = True
             context['invitation_link'] = build_absolute_uri(
                 'cfp:event.new_recover',
@@ -1033,7 +1035,7 @@ class Submission(GenerateCode, PretalxModel):
             )
 
     def send_invite(self, to, _from=None, subject=None, text=None):
-        from eventyay.mail.models import QueuedMail
+        from .mail import QueuedMail
 
         if not _from and (not subject or not text):
             raise ValueError('Please enter a sender for this invitation.')
