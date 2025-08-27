@@ -11,8 +11,7 @@
 <table>
     <thead>
     <tr>
-        <th>{% trans "User name" %}</th>
-        <th>{% trans "Name" %}</th>
+        <th>{% trans "Email" %}</th>
         <th></th>
     </tr>
     </thead>
@@ -20,12 +19,9 @@
     {% for user in users %}
     <tr>
         <td>
-            <b>{{ user.username }}</b>
+            <b>{{ user.email }}</b>
         </td>
-        <td>
-            {{ user.first_name }}
-            {{ user.last_name }}
-        </td>
+
         <td class="text-right">
             <a href="{% url 'control:user.update' pk=user.pk %}">
                 {% trans "Edit" %}
