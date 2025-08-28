@@ -255,7 +255,7 @@ class MailTemplate(PretalxModel):
         kwargs = ['event', 'user', 'submission', 'slot']
         if self.role:
             kwargs = PLACEHOLDER_KWARGS[self.role]
-        placeholders.update(get_available_placeholders(event=self.event, kwargs=kwargs))
+        placeholders |= get_available_placeholders(event=self.event, kwargs=kwargs)
         return placeholders
 
 

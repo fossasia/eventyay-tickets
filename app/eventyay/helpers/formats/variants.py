@@ -7,4 +7,6 @@ def get_day_month_date_format() -> str:
 
 def get_notification_date_format() -> str:
     """Call from correct locale context!"""
-    return get_day_month_date_format() + ', ' + get_format('TIME_FORMAT')
+    day_format = get_day_month_date_format()
+    time_format = get_format('TIME_FORMAT', use_l10n=True)
+    return f'{day_format}, {time_format}'
