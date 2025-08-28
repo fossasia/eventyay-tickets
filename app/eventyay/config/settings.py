@@ -536,20 +536,12 @@ TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-try:
-    import django_extensions  # noqa
-    INSTALLED_APPS.append("django_extensions")
-except ImportError:
-    pass
-
-
-
 
 # CORS configuration
 CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https?://([\w\-]+\.)?eventyay\.com$",
-    r"^https?://app-test\.eventyay\.com(:\d+)?$",
-    r"^https?://app\.eventyay\.com(:\d+)?$",
+    r"^https?://([\w\-]+\.)?eventyay\.com$",# Allow any subdomain of eventyay.com
+    r"^https?://app-test\.eventyay\.com(:\d+)?$",  # Allow video-dev.eventyay.com with any port
+    r"^https?://app\.eventyay\.com(:\d+)?$", # Allow wikimania-live.eventyay.com with any port
 ]
 if DEBUG:
     CORS_ORIGIN_REGEX_WHITELIST = [
@@ -557,8 +549,7 @@ if DEBUG:
         r"^http://localhost:\d+$",
     ]
 
-# Security settings
-X_FRAME_OPTIONS = "DENY"
+#Video-Security settings
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
@@ -574,80 +565,12 @@ template_loaders = (
 if not DEBUG:
     template_loaders = (("django.template.loaders.cached.Loader", template_loaders),)
 
-
-
-
-
-
-LANGUAGES = [
-    ("en", "English"),
-    ("de", "Deutsch"),
-]
-
-LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), "locale"),)
-
-
-
-
-
 # Debug toolbar configuration
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 DEBUG_TOOLBAR_CONFIG = {
     "JQUERY_URL": "",
 }
 INTERNAL_IPS = ("127.0.0.1", "::1")
-
-# Logging configuration
-loglevel = "DEBUG" if DEBUG else "INFO"
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "default": {
-            "format": "%(asctime)s %(levelname)s %(thread)d %(name)s %(module)s %(message)s"
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": loglevel,
-            "class": "logging.StreamHandler",
-            "formatter": "default",
-        },
-        "file": {
-            "level": loglevel,
-            "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_DIR, "eventyay.log"),
-            "formatter": "default",
-        },
-    },
-    "loggers": {
-        "": {
-            "handlers": ["file", "console"],
-            "level": loglevel,
-            "propagate": True,
-        },
-        "django.request": {
-            "handlers": ["file", "console"],
-            "level": loglevel,
-            "propagate": False,
-        },
-        "django.security": {
-            "handlers": ["file", "console"],
-            "level": loglevel,
-            "propagate": False,
-        },
-        "django.db.backends": {
-            "handlers": ["file", "console"],
-            "level": loglevel,
-            "propagate": False,
-        },
-    },
-}
-
-if DEBUG:
-    import logging
-    logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 # REST Framework configuration
 REST_FRAMEWORK = {
@@ -667,7 +590,7 @@ REST_FRAMEWORK = {
 
 # Login/Logout URLs
 
-LOGIN_REDIRECT_URL = "/control/"
+LOGIN_REDIRECT_URL = "/control/video"
 
 # Version and environment
 EVENTYAY_COMMIT = os.environ.get("EVENTYAY_COMMIT_SHA", "unknown")
@@ -690,9 +613,6 @@ if SENTRY_DSN:
         release=EVENTYAY_COMMIT,
         environment=EVENTYAY_ENVIRONMENT,
     )
-
-
-
 
 # Multifactor authentication configuration
 MULTIFACTOR = {
