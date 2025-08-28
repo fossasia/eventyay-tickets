@@ -2,8 +2,8 @@ import datetime as dt
 
 from django.db import models
 from django.utils.functional import cached_property
-
 from eventyay.base.models.mixins import PretalxModel
+
 
 zerotime = dt.time(0, 0)
 

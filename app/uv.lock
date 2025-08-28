@@ -1037,6 +1037,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-extensions"
+version = "4.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6d/b3/ed0f54ed706ec0b54fd251cc0364a249c6cd6c6ec97f04dc34be5e929eac/django_extensions-4.1.tar.gz", hash = "sha256:7b70a4d28e9b840f44694e3f7feb54f55d495f8b3fa6c5c0e5e12bcb2aa3cdeb", size = 283078, upload-time = "2025-04-11T01:15:39.617Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/96/d967ca440d6a8e3861120f51985d8e5aec79b9a8bdda16041206adfe7adc/django_extensions-4.1-py3-none-any.whl", hash = "sha256:0699a7af28f2523bf8db309a80278519362cd4b6e1fd0a8cd4bf063e1e023336", size = 232980, upload-time = "2025-04-11T01:15:37.701Z" },
+]
+
+[[package]]
 name = "django-filter"
 version = "25.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1075,14 +1087,14 @@ wheels = [
 
 [[package]]
 name = "django-hierarkey"
-version = "2.0.0"
+version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b1/be/1abae6efb6b47fc17691a7596b9f467ec930cc929acec153391a42b5600d/django_hierarkey-2.0.0.tar.gz", hash = "sha256:af1478fc49fa78007aade04a1eddcf6d7ea08497800b8708f6f63086de44482e", size = 15383, upload-time = "2025-08-14T09:33:16.518Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/1b/8408798a8123533327ddb38a698d0135bd64424f019eaf61b42742b858c6/django_hierarkey-2.0.1.tar.gz", hash = "sha256:1d75efd2697ecc94f3856d84fd1e66fb23b3a656827e587a6d13b7ceb7b725ff", size = 15432, upload-time = "2025-08-23T06:55:47.051Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/75/6981f92c68952418415e73e807f219738cc2b86879dc15c9d12361d6b910/django_hierarkey-2.0.0-py3-none-any.whl", hash = "sha256:b30a3691411a384662c26da7762233083d9f7702c9f39e748baad9dfed4ae97f", size = 14322, upload-time = "2025-08-14T09:33:15.194Z" },
+    { url = "https://files.pythonhosted.org/packages/3f/7d/d930ca5d2ae0724ac71b10337d824bd76dea03e0d3fff7b773f74c0dc475/django_hierarkey-2.0.1-py3-none-any.whl", hash = "sha256:2bb5936c10e12fce9f6baa85b625f3f8ea33525f174659659e9059c74d348c45", size = 14353, upload-time = "2025-08-23T06:55:45.73Z" },
 ]
 
 [[package]]
@@ -1531,6 +1543,7 @@ dependencies = [
     { name = "requests" },
     { name = "requests-oauthlib" },
     { name = "responses" },
+    { name = "rich" },
     { name = "rjsmin" },
     { name = "rpds-py" },
     { name = "rules" },
@@ -1575,6 +1588,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "django-debug-toolbar" },
+    { name = "django-extensions" },
 ]
 docs = [
     { name = "sphinx" },
@@ -1651,7 +1665,7 @@ requires-dist = [
     { name = "django-filter", specifier = ">=24.3" },
     { name = "django-formset-js-improved", specifier = ">=0.5.0.3" },
     { name = "django-formtools", specifier = ">=2.5.1" },
-    { name = "django-hierarkey", specifier = ">=1.2.0" },
+    { name = "django-hierarkey", specifier = ">=2.0.1" },
     { name = "django-hijack", specifier = ">=3.7.1" },
     { name = "django-i18nfield", specifier = ">=1.10.2" },
     { name = "django-jquery-js", specifier = ">=3.1.1" },
@@ -1769,6 +1783,7 @@ requires-dist = [
     { name = "requests", specifier = ">=2.32.3" },
     { name = "requests-oauthlib", specifier = ">=2.0.0" },
     { name = "responses", specifier = ">=0.25.5" },
+    { name = "rich", specifier = ">=14.1.0" },
     { name = "rjsmin", specifier = ">=1.2.2" },
     { name = "rpds-py", specifier = ">=0.22.3" },
     { name = "rules", specifier = ">=3.5" },
@@ -1811,7 +1826,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "django-debug-toolbar", specifier = ">=4.4.6" }]
+dev = [
+    { name = "django-debug-toolbar", specifier = ">=6.0.0" },
+    { name = "django-extensions", specifier = ">=4.1" },
+]
 docs = [{ name = "sphinx", specifier = ">=8.2.3" }]
 lint = [{ name = "ruff", specifier = ">=0.12.9" }]
 test = [
@@ -2377,6 +2395,18 @@ wheels = [
 ]
 
 [[package]]
+name = "markdown-it-py"
+version = "4.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mdurl" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5b/f5/4ec618ed16cc4f8fb3b701563655a69816155e79e24a17b651541804721d/markdown_it_py-4.0.0.tar.gz", hash = "sha256:cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3", size = 73070, upload-time = "2025-08-11T12:57:52.854Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/94/54/e7d793b573f298e1c9013b8c4dade17d481164aa517d1d7148619c2cedbf/markdown_it_py-4.0.0-py3-none-any.whl", hash = "sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147", size = 87321, upload-time = "2025-08-11T12:57:51.923Z" },
+]
+
+[[package]]
 name = "markupsafe"
 version = "3.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -2564,6 +2594,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e7/ff/0ffefdcac38932a54d2b5eed4e0ba8a408f215002cd178ad1df0f2806ff8/mccabe-0.7.0.tar.gz", hash = "sha256:348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325", size = 9658, upload-time = "2022-01-24T01:14:51.113Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/27/1a/1f68f9ba0c207934b35b86a8ca3aad8395a3d6dd7921c0686e23853ff5a9/mccabe-0.7.0-py2.py3-none-any.whl", hash = "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e", size = 7350, upload-time = "2022-01-24T01:14:49.62Z" },
+]
+
+[[package]]
+name = "mdurl"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
 ]
 
 [[package]]
@@ -3967,6 +4006,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0e/95/89c054ad70bfef6da605338b009b2e283485835351a9935c7bfbfaca7ffc/responses-0.25.8.tar.gz", hash = "sha256:9374d047a575c8f781b94454db5cab590b6029505f488d12899ddb10a4af1cf4", size = 79320, upload-time = "2025-08-08T19:01:46.709Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1c/4c/cc276ce57e572c102d9542d383b2cfd551276581dc60004cb94fe8774c11/responses-0.25.8-py3-none-any.whl", hash = "sha256:0c710af92def29c8352ceadff0c3fe340ace27cf5af1bbe46fb71275bcd2831c", size = 34769, upload-time = "2025-08-08T19:01:45.018Z" },
+]
+
+[[package]]
+name = "rich"
+version = "14.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markdown-it-py" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fe/75/af448d8e52bf1d8fa6a9d089ca6c07ff4453d86c65c145d0a300bb073b9b/rich-14.1.0.tar.gz", hash = "sha256:e497a48b844b0320d45007cdebfeaeed8db2a4f4bcf49f15e455cfc4af11eaa8", size = 224441, upload-time = "2025-07-25T07:32:58.125Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e3/30/3c4d035596d3cf444529e0b2953ad0466f6049528a879d27534700580395/rich-14.1.0-py3-none-any.whl", hash = "sha256:536f5f1785986d6dbdea3c75205c473f970777b4a0d6c6dd1b696aa05a3fa04f", size = 243368, upload-time = "2025-07-25T07:32:56.73Z" },
 ]
 
 [[package]]

@@ -172,7 +172,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
 
         notification_settings: QuerySet[NotificationSetting]
 
-    objects = UserManager()
+    objects: UserManager = UserManager()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

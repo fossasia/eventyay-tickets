@@ -4,20 +4,21 @@ import warnings
 from pathlib import Path
 
 from django.conf import settings
-from django.http import Http404
+from django.http import Http404, HttpRequest
 from django.urls import resolve
 from django.utils import translation
-from django.utils.formats import get_format
 from django_scopes import get_scope
 from eventyay.base.models.settings import GlobalSettings
 from eventyay.cfp.signals import footer_link, html_head
-from eventyay.common.text.phrases import phrases
+from eventyay.helpers.formats.variants import get_day_month_date_format
 from eventyay.helpers.i18n import get_javascript_format, get_moment_locale
+
+from .text.phrases import phrases
 
 logger = logging.getLogger(__name__)
 
 
-def add_events(request):
+def add_events(request: HttpRequest):
     if (
         request.resolver_match
         and set(request.resolver_match.namespaces) & {'orga', 'plugins'}
@@ -32,10 +33,6 @@ def add_events(request):
             url_namespace = ''
         return {'url_name': url_name, 'url_namespace': url_namespace}
     return {}
-
-
-def get_day_month_date_format():
-    return get_format('SHORT_DATE_FORMAT', use_l10n=True).strip('Y').strip('.-/,')
 
 
 def locale_context(request):

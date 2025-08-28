@@ -20,6 +20,9 @@ from eventyay.talk_rules.agenda import is_agenda_visible
 from eventyay.talk_rules.event import can_change_event_settings
 from eventyay.talk_rules.submission import orga_can_change_submissions
 
+from .mixins import OrderedModel, PretalxModel
+from .settings import GlobalSettings
+
 
 def empty_module_config():
     return []

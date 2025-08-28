@@ -24,6 +24,9 @@ from eventyay.talk_rules.orga import can_view_speaker_names
 from eventyay.talk_rules.person import is_reviewer
 from eventyay.talk_rules.submission import is_wip, orga_can_change_submissions
 
+from .mixins import PretalxModel
+from .submission import SubmissionFavourite
+
 
 class Schedule(PretalxModel):
     """The Schedule model contains all scheduled.
