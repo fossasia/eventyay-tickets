@@ -26,7 +26,7 @@ from .settings_helpers import build_db_tls_config, build_redis_tls_config
 from pycountry import currencies
 
 
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = os.environ.get("EVENTYAY_DATA_DIR", os.path.join(BASE_DIR, "data"))
 LOG_DIR = os.path.join(DATA_DIR, "logs")
 MEDIA_ROOT = os.path.join(DATA_DIR, "media")
@@ -61,7 +61,7 @@ def instance_name(request):
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # Secret key configuration (Eventyay style)
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_PATH = ''
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 
@@ -127,7 +127,6 @@ _OURS_APPS = (
     'eventyay.storage.StorageConfig',
     'eventyay.features.social.SocialConfig',
     'eventyay.features.integrations.zoom.ZoomConfig',
-    'eventyay.control.ControlConfig',
     'eventyay.helpers',
     'eventyay.multidomain',
     'eventyay.presale',

@@ -173,6 +173,7 @@ class Room(VersionedModel, OrderedModel, PretalxModel):
         blank=True,
         verbose_name=_('GUID'),
         help_text=_('Unique identifier (UUID) to help external tools identify the room.'),
+    )
     speaker_info = I18nCharField(
         max_length=1000,
         null=True,
