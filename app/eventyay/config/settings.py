@@ -65,8 +65,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 
-# Path configurations
-BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
+
 
 # Site URL configuration
 SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
@@ -366,7 +365,6 @@ if os.getenv("EVENTYAY_COOKIE_DOMAIN", ""):
 MEDIA_URL = os.getenv(
     "EVENTYAY_MEDIA_URL", _config.get("urls", "media", fallback="/media/")
 )
-TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 
 WEBSOCKET_PROTOCOL = os.getenv(
     "EVENTYAY_WEBSOCKET_PROTOCOL",
@@ -511,8 +509,8 @@ STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
 STATICFILES_DIRS = []
@@ -531,6 +529,13 @@ COMPRESS_CSS_FILTERS = (
     # 'compressor.filters.css_default.CssAbsoluteFilter',
     'compressor.filters.cssmin.CSSCompressorFilter',
 )
+BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
+TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 try:
     import django_extensions  # noqa
     INSTALLED_APPS.append("django_extensions")
@@ -668,29 +673,6 @@ LOGIN_REDIRECT_URL = "/control/"
 EVENTYAY_COMMIT = os.environ.get("EVENTYAY_COMMIT_SHA", "unknown")
 EVENTYAY_ENVIRONMENT = os.environ.get("EVENTYAY_ENVIRONMENT", "unknown")
 
-# Celery configuration
-CELERY_BROKER_URL = REDIS_HOSTS[0]["address"]
-CELERY_RESULT_BACKEND = REDIS_HOSTS[0]["address"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_TASK_DEFAULT_QUEUE = "default"
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_TASK_QUEUES = (
-    Queue('default', routing_key='default.#'),
-    Queue('longrunning', routing_key='longrunning.#'),
-    Queue('background', routing_key='background.#'),
-    Queue('notifications', routing_key='notifications.#'),
-)
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-CELERY_TASK_ALWAYS_EAGER = os.environ.get("EVENTYAY_CELERY_EAGER", "") == "true"
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_ROUTES = (
-    [
-        ('eventyay.base.services.notifications.*', {'queue': 'notifications'}),
-        ('eventyay.api.webhooks.*', {'queue': 'notifications'}),
-    ],
-)
-
 # Sentry configuration
 SENTRY_DSN = os.environ.get(
     "EVENTYAY_SENTRY_DSN", _config.get("sentry", "dsn", fallback="")
@@ -710,37 +692,7 @@ if SENTRY_DSN:
     )
 
 
-# Eventyay specific configurations
-ENTROPY = {
-    'order_code': config.getint('entropy', 'order_code', fallback=5),
-    'ticket_secret': config.getint('entropy', 'ticket_secret', fallback=32),
-    'voucher_code': config.getint('entropy', 'voucher_code', fallback=16),
-    'giftcard_secret': config.getint('entropy', 'giftcard_secret', fallback=12),
-}
 
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
-
-
-# Password validation
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 # Multifactor authentication configuration
 MULTIFACTOR = {
