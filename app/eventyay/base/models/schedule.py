@@ -13,7 +13,6 @@ from django.utils.translation import pgettext_lazy
 from i18nfield.fields import I18nTextField
 
 from eventyay.agenda.tasks import export_schedule_html
-from eventyay.base.models import PretalxModel, SubmissionFavourite
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.schedule.notifications import render_notifications
@@ -22,6 +21,9 @@ from eventyay.talk_rules.agenda import can_view_schedule, is_agenda_visible, is_
 from eventyay.talk_rules.orga import can_view_speaker_names
 from eventyay.talk_rules.person import is_reviewer
 from eventyay.talk_rules.submission import is_wip, orga_can_change_submissions
+
+from .mixins import PretalxModel
+from .submission import SubmissionFavourite
 
 
 class Schedule(PretalxModel):

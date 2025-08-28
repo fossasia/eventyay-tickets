@@ -6,14 +6,15 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 
-from eventyay.mail.placeholders import SimpleFunctionalMailTextPlaceholder
-from eventyay.mail.signals import register_mail_placeholders
+from eventyay.helpers.formats.variants import get_notification_date_format
 from eventyay.schedule.notifications import (
     get_current_notifications,
     get_full_notifications,
-    get_notification_date_format,
     render_notifications,
 )
+
+from .placeholders import SimpleFunctionalMailTextPlaceholder
+from .signals import register_mail_placeholders
 
 
 def get_mail_context(**kwargs):

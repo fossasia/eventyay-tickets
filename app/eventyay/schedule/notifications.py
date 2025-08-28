@@ -1,14 +1,8 @@
 from django.template.loader import get_template
-from django.utils.formats import get_format
 from django.utils.timezone import override as tzoverride
 from django.utils.translation import override
 
-from eventyay.common.context_processors import get_day_month_date_format
-
-
-def get_notification_date_format():
-    """Call from correct locale context!"""
-    return get_day_month_date_format() + ', ' + get_format('TIME_FORMAT')
+from eventyay.helpers.formats.variants import get_notification_date_format
 
 
 def render_notifications(data, event, speaker=None, locale=None):

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import configparser
+import importlib.util
 import os
 import sys
 from pathlib import Path
@@ -72,7 +73,8 @@ else:
 # Application definition
 
 AUTH_USER_MODEL = 'base.User'
-INSTALLED_APPS = [
+
+_LIBRARY_APPS = (
     'bootstrap3',
     'compressor',
     'django.contrib.admin',
@@ -84,6 +86,16 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'djangoformsetjs',
     'oauth2_provider',
+    'statici18n',
+)
+
+if DEBUG and importlib.util.find_spec('django_extensions'):
+    _LIBRARY_APPS += ('django_extensions',)
+
+if DEBUG and importlib.util.find_spec('debug_toolbar'):
+    _LIBRARY_APPS += ('debug_toolbar',)
+
+_OURS_APPS = (
     'eventyay.api',
     'eventyay.base',
     'eventyay.common',
@@ -92,11 +104,11 @@ INSTALLED_APPS = [
     'eventyay.helpers',
     'eventyay.multidomain',
     'eventyay.presale',
-    'statici18n',
-]
+)
 
+INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
-MIDDLEWARE = [
+_LIBRARY_MIDDLEWARES = (
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -104,6 +116,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+if DEBUG and importlib.util.find_spec('debug_toolbar'):
+    _LIBRARY_MIDDLEWARES += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )
+
+_OURS_MIDDLEWARES = (
     'eventyay.base.middleware.CustomCommonMiddleware',
     'eventyay.base.middleware.LocaleMiddleware',
     'eventyay.base.middleware.SecurityMiddleware',
@@ -112,7 +132,10 @@ MIDDLEWARE = [
     'eventyay.multidomain.middlewares.CsrfViewMiddleware',
     'eventyay.control.middleware.PermissionMiddleware',
     'eventyay.control.middleware.AuditLogMiddleware',
-]
+)
+
+
+MIDDLEWARE = _LIBRARY_MIDDLEWARES + _OURS_MIDDLEWARES
 
 
 TEMPLATES = [
@@ -391,23 +414,46 @@ LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'default': {'format': '%(levelname)s %(asctime)s %(module)s %(message)s'},
-#     },
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
+_LOGGING_HANDLERS = {
+    'console': {
+        'level': 'DEBUG',
+        'class': 'logging.StreamHandler',
+        'formatter': 'verbose',
+    },
+    'rich': {
+        'level': 'DEBUG',
+        'class': 'rich.logging.RichHandler' if os.getenv('TERM') else 'logging.StreamHandler',
+        'formatter': 'tiny' if os.getenv('TERM') else 'verbose',
+    },
+}
+_LOGGING_FORMATTERS = {
+    'verbose': {'format': '%(levelname)s %(asctime)s %(module)s: %(message)s'},
+    'tiny': {
+        'format': '%(message)s',
+        'datefmt': '[%X]',
+    },
+}
+CONSOLE_HANDLER = 'rich' if DEBUG else 'console'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'root': {
+        'level': 'WARNING',
+        'handlers': [CONSOLE_HANDLER],
+    },
+    'formatters': _LOGGING_FORMATTERS,
+    'handlers': _LOGGING_HANDLERS,
+    'loggers': {
+        'django.db.backends': {
+            'handlers': [CONSOLE_HANDLER],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'eventyay': {
+            'handlers': [CONSOLE_HANDLER],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        }
+    },
+}
