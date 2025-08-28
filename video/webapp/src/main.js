@@ -25,7 +25,26 @@ import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
 import config from 'config'
-import theme, { computeForegroundSidebarColor, getThemeConfig } from 'theme'
+import theme, { computeForegroundSidebarColor, getThemeConfig, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS } from 'theme'
+
+async function setThemeConfig() {
+  try {
+    const themeData = await getThemeConfig()
+    theme.logo = themeData.logo
+    theme.identicons = themeData.identicons
+    theme.colors = themeData.colors
+    theme.streamOfflineImage = themeData.streamOfflineImage
+    computeForegroundSidebarColor(themeData.colors)
+  } catch (error) {
+    console.error('Failed to set theme config:', error)
+    // Use default theme values
+    theme.logo = Object.assign({}, DEFAULT_LOGO, config.theme?.logo)
+    theme.identicons = Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons)
+    theme.colors = config.theme?.colors || DEFAULT_COLORS
+    theme.streamOfflineImage = config.theme?.streamOfflineImage
+    computeForegroundSidebarColor(theme.colors)
+  }
+}
 
 async function init({ token, inviteToken }) {
   await setThemeConfig()
@@ -44,6 +63,21 @@ async function init({ token, inviteToken }) {
   await i18nInit(app)
   app.config.globalProperties.$features = features
 
+  // Handle base path for routing early so RouterLink can resolve named routes
+  const basePath = config.basePath || ''
+  let relativePath = location.pathname.replace(basePath, '')
+  if (!relativePath) {
+    relativePath = '/'
+  }
+
+  // Ensure router's current route is set before mounting the app so that
+  // named routes which depend on parent params (like `worldName`) can be
+  // resolved when components (RouterLink) are rendered.
+  await router.replace(relativePath).catch(() => {})
+
+  const route = router.resolve(relativePath).route
+  const anonymousRoomId = route?.name === 'standalone:anonymous' ? route?.params?.roomId : null
+
   window.vapp = app.mount('#app')
 
   app.config.errorHandler = (error, vm, info) => {
@@ -52,15 +86,6 @@ async function init({ token, inviteToken }) {
 
   store.commit('setUserLocale', i18n.resolvedLanguage)
   store.dispatch('updateUserTimezone', localStorage.userTimezone || moment.tz.guess())
-
-  // Handle base path for routing
-  const basePath = config.basePath || ''
-  let relativePath = location.pathname.replace(basePath, '')
-  if (!relativePath) {
-    relativePath = '/'
-  }
-  const route = router.resolve(relativePath).route
-  const anonymousRoomId = route.name === 'standalone:anonymous' ? route.params.roomId : null
 
   if (token) {
     localStorage.token = token
@@ -110,16 +135,6 @@ async function init({ token, inviteToken }) {
   window.addEventListener('beforeinstallprompt', function (event) {
     console.log('Install prompt', event)
   })
-}
-
-// Theme configuration
-async function setThemeConfig() {
-  const themeData = await getThemeConfig()
-  theme.logo = themeData.logo
-  theme.identicons = themeData.identicons
-  theme.colors = themeData.colors
-  theme.streamOfflineImage = themeData.streamOfflineImage
-  computeForegroundSidebarColor(themeData.colors)
 }
 
 // Extract token from URL

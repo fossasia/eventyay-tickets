@@ -65,9 +65,10 @@ export default {
 		...mapState('notifications', ['askingPermission']),
 		...mapState('chat', ['call']),
 		room() {
-			if (!this.$route?.name) return
-			if (this.$route.name.startsWith('admin')) return
-			if (this.$route.name === 'home') return this.rooms?.[0]
+			const routeName = this.$route?.name
+			if (!routeName) return
+			if (routeName.startsWith && routeName.startsWith('admin')) return
+			if (routeName === 'home') return this.rooms?.[0]
 			return this.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
 		// TODO since this is used EVERYWHERE, use provide/inject?
@@ -174,7 +175,7 @@ export default {
 			if (newRoom === oldRoom) return
 			// TODO non-room urls
 			let title = this.world.title
-			if (this.room) {
+			if (this.room.name) {
 				title += ` | ${this.room.name}`
 			}
 			document.title = title
