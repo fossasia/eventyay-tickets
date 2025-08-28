@@ -304,15 +304,13 @@ CACHES = {
         "LOCATION": "unique-snowflake",
     },
 }
-
-# Eventyay cache configurations
 REAL_CACHE_USED = False
 SESSION_ENGINE = None
 
 HAS_MEMCACHED = config.has_option('memcached', 'location')
 if HAS_MEMCACHED:
     REAL_CACHE_USED = True
-    CACHES['memcached'] = {
+    CACHES['default'] = {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
         'LOCATION': config.get('memcached', 'location'),
     }
@@ -496,12 +494,7 @@ LANGUAGES = [
 LOCALE_PATHS = (os.path.join(os.path.dirname(__file__), "locale"),)
 
 
-# Internal settings
-SESSION_COOKIE_NAME = 'eventyay_session'
-LANGUAGE_COOKIE_NAME = 'eventyay_language'
-CSRF_COOKIE_NAME = 'eventyay_csrftoken'
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
+
 
 
 # Debug toolbar configuration
@@ -651,13 +644,35 @@ EVENTYAY_PRIMARY_COLOR = '#2185d0'
 
 DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
 CURRENCY_PLACES = {
-    'BIF': 0, 'CLP': 0, 'DJF': 0, 'GNF': 0, 'JPY': 0, 'KMF': 0, 'KRW': 0,
-    'MGA': 0, 'PYG': 0, 'RWF': 0, 'VND': 0, 'VUV': 0, 'XAF': 0, 'XOF': 0, 'XPF': 0,
+    # default is 2
+    'BIF': 0,
+    'CLP': 0,
+    'DJF': 0,
+    'GNF': 0,
+    'JPY': 0,
+    'KMF': 0,
+    'KRW': 0,
+    'MGA': 0,
+    'PYG': 0,
+    'RWF': 0,
+    'VND': 0,
+    'VUV': 0,
+    'XAF': 0,
+    'XOF': 0,
+    'XPF': 0,
 }
-
 CURRENCIES = list(currencies)
 EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
 TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+
+# Internal settings
+SESSION_COOKIE_NAME = 'eventyay_session'
+LANGUAGE_COOKIE_NAME = 'eventyay_language'
+CSRF_COOKIE_NAME = 'eventyay_csrftoken'
+# TODO that probably needs adjustment for the actual deployment
+CSRF_TRUSTED_ORIGINS = ['http://localhost:1337', 'http://next.eventyay.com:1337', 'https://next.eventyay.com']
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
 # Metrics configuration
 METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
