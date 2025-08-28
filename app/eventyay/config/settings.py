@@ -238,6 +238,61 @@ ENTROPY = {
     'giftcard_secret': config.getint('entropy', 'giftcard_secret', fallback=12),
 }
 EVENTYAY_PRIMARY_COLOR = '#2185d0'
+
+
+
+DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
+CURRENCY_PLACES = {
+    # default is 2
+    'BIF': 0,
+    'CLP': 0,
+    'DJF': 0,
+    'GNF': 0,
+    'JPY': 0,
+    'KMF': 0,
+    'KRW': 0,
+    'MGA': 0,
+    'PYG': 0,
+    'RWF': 0,
+    'VND': 0,
+    'VUV': 0,
+    'XAF': 0,
+    'XOF': 0,
+    'XPF': 0,
+}
+
+CURRENCIES = list(currencies)
+
+EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
+MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
+# Internal settings
+SESSION_COOKIE_NAME = 'eventyay_session'
+LANGUAGE_COOKIE_NAME = 'eventyay_language'
+CSRF_COOKIE_NAME = 'eventyay_csrftoken'
+# TODO that probably needs adjustment for the actual deployment
+CSRF_TRUSTED_ORIGINS = ['http://localhost:1337', 'http://next.eventyay.com:1337', 'https://next.eventyay.com']
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
+
+TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+# Internationalization
+# https://docs.djangoproject.com/en/5.1/topics/i18n/
+
+TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+# Internationalization
+# https://docs.djangoproject.com/en/5.1/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+
+# Metrics configuration
+METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
+METRICS_USER = config.get('metrics', 'user', fallback='metrics')
+METRICS_PASSPHRASE = config.get('metrics', 'passphrase', fallback='')
+
 # Redis configuration
 redis_connection_kwargs = {
     "retry": Retry(ExponentialBackoff(), 3),
@@ -470,11 +525,7 @@ if not DEBUG:
 
 
 
-# Internationalization
-LANGUAGE_CODE = "en"
-TIME_ZONE = "Europe/Berlin"
-USE_I18N = True
-USE_TZ = True
+
 
 LANGUAGES = [
     ("en", "English"),
@@ -632,43 +683,9 @@ ENTROPY = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
-CURRENCY_PLACES = {
-    # default is 2
-    'BIF': 0,
-    'CLP': 0,
-    'DJF': 0,
-    'GNF': 0,
-    'JPY': 0,
-    'KMF': 0,
-    'KRW': 0,
-    'MGA': 0,
-    'PYG': 0,
-    'RWF': 0,
-    'VND': 0,
-    'VUV': 0,
-    'XAF': 0,
-    'XOF': 0,
-    'XPF': 0,
-}
-CURRENCIES = list(currencies)
-EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
-MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
-TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
 
-# Internal settings
-SESSION_COOKIE_NAME = 'eventyay_session'
-LANGUAGE_COOKIE_NAME = 'eventyay_language'
-CSRF_COOKIE_NAME = 'eventyay_csrftoken'
-# TODO that probably needs adjustment for the actual deployment
-CSRF_TRUSTED_ORIGINS = ['http://localhost:1337', 'http://next.eventyay.com:1337', 'https://next.eventyay.com']
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
-# Metrics configuration
-METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
-METRICS_USER = config.get('metrics', 'user', fallback='metrics')
-METRICS_PASSPHRASE = config.get('metrics', 'passphrase', fallback='')
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
