@@ -162,14 +162,22 @@ class Room(VersionedModel, OrderedModel, PretalxModel):
         help_text=_("Unique identifier (UUID) to help external tools identify the room.")
     )
     speaker_info = I18nCharField(
-        max_length=1000, null=True, blank=True, verbose_name=_("Speaker Information"),
-        help_text=_("Information relevant for speakers scheduled in this room, for example room size, special directions, available adaptors for video input …")
+        max_length=1000,
+        null=True,
+        blank=True,
+        verbose_name=_('Speaker Information'),
+        help_text=_(
+            'Information relevant for speakers scheduled in this room, for example room size, special directions, '
+            'available adaptors for video input …'
+        ),
     )
     capacity = models.PositiveIntegerField(
-        null=True, blank=True, verbose_name=_("Capacity"),
-        help_text=_("How many people can fit in the room?")
+        null=True,
+        blank=True,
+        verbose_name=_('Capacity'),
+        help_text=_('How many people can fit in the room?'),
     )
-    position = models.PositiveIntegerField(null=True, blank=True)  # From OrderedModel
+    position = models.PositiveIntegerField(null=True, blank=True)
 
     # Video/interactive platform fields
     trait_grants = JSONField(null=True, blank=True, default=default_grants)
@@ -184,26 +192,23 @@ class Room(VersionedModel, OrderedModel, PretalxModel):
     objects = RoomQuerySet.as_manager()
 
     class Meta:
-        # WARNING: Conflicting ordering fields - both position and sorting_priority exist
-        # Consider using only one for consistency
-        ordering = ("position", "sorting_priority", "name")
-        unique_together = ("event", "guid")
-        # Note: VersionedModel, OrderedModel, PretalxModel may have conflicting Meta options
+        ordering = ('position',)
+        unique_together = ('event', 'guid')
         rules_permissions = {
-            "list": is_agenda_visible | orga_can_change_submissions,
-            "view": is_agenda_visible | orga_can_change_submissions,
-            "orga_list": orga_can_change_submissions,
-            "orga_view": orga_can_change_submissions,
-            "create": can_change_event_settings,
-            "update": can_change_event_settings,
-            "delete": can_change_event_settings,
+            'list': is_agenda_visible | orga_can_change_submissions,
+            'view': is_agenda_visible | orga_can_change_submissions,
+            'orga_list': orga_can_change_submissions,
+            'orga_view': orga_can_change_submissions,
+            'create': can_change_event_settings,
+            'update': can_change_event_settings,
+            'delete': can_change_event_settings,
         }
 
     class urls(EventUrls):
-        settings_base = edit = "{self.event.orga_urls.room_settings}{self.pk}/"
-        delete = "{settings_base}delete/"
+        settings_base = edit = '{self.event.orga_urls.room_settings}{self.pk}/'
+        delete = '{settings_base}delete/'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
     @property
@@ -216,15 +221,22 @@ class Room(VersionedModel, OrderedModel, PretalxModel):
 
     @cached_property
     def uuid(self):
+        """Either a UUID5 calculated from the submission code and the instance identifier;
+        or GUID value of the room, if it was imported or set manually."""
         if self.guid:
             return self.guid
         if not self.pk:
-            return ""
-        return uuid.uuid5(GlobalSettings().get_instance_identifier(), f"room:{self.pk}")
+            return ''
+
+        return uuid.uuid5(GlobalSettings().get_instance_identifier(), f'room:{self.pk}')
 
     @property
-    def slug(self):
-        return f"{self.id}-{slugify(self.name)}"
+    def slug(self) -> str:
+        """The slug makes tracks more readable in URLs.
+        It consists of the ID, followed by a slugified (and, in lookups,
+        optional) form of the track name.
+        """
+        return f'{self.id}-{slugify(self.name)}'
 
 
 class Reaction(models.Model):
