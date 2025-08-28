@@ -146,21 +146,30 @@ class RoomQuerySet(models.QuerySet):
 
 
 class Room(VersionedModel, OrderedModel, PretalxModel):
+    """A Room is an actual place where talks will be scheduled.
+
+    The Room object stores some meta information. Most, like capacity,
+    are not in use right now.
+    """
+    
     log_prefix = "pretalx.room"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     deleted = models.BooleanField(default=False)
-    event = models.ForeignKey(
-        to="base.Event", on_delete=models.PROTECT, related_name="rooms"
+    description = I18nCharField(
+        max_length=1000,
+        null=True,
+        blank=True,
+        verbose_name=_('Description'),
+        help_text=_('A description for attendees, for example directions.'),
     )
-    name = I18nCharField(max_length=300, verbose_name=_("Name"))  # Increased to match room.py
-    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))  # Keep TextField for unlimited length
-
-    # Pretalx-specific fields
+    event = models.ForeignKey(to='Event', on_delete=models.PROTECT, related_name='rooms')
+    name = I18nCharField(max_length=100, verbose_name=_('Name'))
     guid = models.UUIDField(
-        null=True, blank=True, verbose_name=_("GUID"),
-        help_text=_("Unique identifier (UUID) to help external tools identify the room.")
-    )
+        null=True,
+        blank=True,
+        verbose_name=_('GUID'),
+        help_text=_('Unique identifier (UUID) to help external tools identify the room.'),
     speaker_info = I18nCharField(
         max_length=1000,
         null=True,

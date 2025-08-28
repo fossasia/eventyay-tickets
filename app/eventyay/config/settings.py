@@ -763,3 +763,23 @@ COMPRESS_PRECOMPILERS = (
 COMPRESS_CSS_FILTERS = (
     'compressor.filters.cssmin.CSSCompressorFilter',
 )
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'default': {'format': '%(levelname)s %(asctime)s %(module)s %(message)s'},
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
