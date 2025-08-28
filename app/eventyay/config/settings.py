@@ -30,7 +30,6 @@ from pycountry import currencies
 DATA_DIR = os.environ.get("EVENTYAY_DATA_DIR", os.path.join(BASE_DIR, "data"))
 LOG_DIR = os.path.join(DATA_DIR, "logs")
 MEDIA_ROOT = os.path.join(DATA_DIR, "media")
-STATIC_ROOT = BASE_DIR / 'static'
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o775
 FILE_UPLOAD_PERMISSIONS = 0o644
 
@@ -363,7 +362,7 @@ SHORT_URL = os.getenv(
 if os.getenv("EVENTYAY_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("EVENTYAY_COOKIE_DOMAIN", "")
 
-STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
+
 MEDIA_URL = os.getenv(
     "EVENTYAY_MEDIA_URL", _config.get("urls", "media", fallback="/media/")
 )
@@ -483,7 +482,55 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
+CELERY_BROKER_URL = REDIS_HOSTS[0]["address"]
+CELERY_RESULT_BACKEND = REDIS_HOSTS[0]["address"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_DEFAULT_QUEUE = "default"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_QUEUES = (
+    Queue('default', routing_key='default.#'),
+    Queue('longrunning', routing_key='longrunning.#'),
+    Queue('background', routing_key='background.#'),
+    Queue('notifications', routing_key='notifications.#'),
+)
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TASK_ALWAYS_EAGER = os.environ.get("EVENTYAY_CELERY_EAGER", "") == "true"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_ROUTES = (
+    [
+        ('eventyay.base.services.notifications.*', {'queue': 'notifications'}),
+        ('eventyay.api.webhooks.*', {'queue': 'notifications'}),
+    ],
+)
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+
+STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
+STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_FINDERS = (
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    'compressor.finders.CompressorFinder',
+)
+STATICFILES_DIRS = []
+STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+    ('text/vue', 'eventyay.helpers.compressor.VueCompiler'),
+)
+
+COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
+COMPRESS_CSS_FILTERS = (
+    # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
+    # However, we don't need it if we consequently use the static() function in Sass
+    # 'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSCompressorFilter',
+)
 try:
     import django_extensions  # noqa
     INSTALLED_APPS.append("django_extensions")
@@ -611,15 +658,7 @@ REST_FRAMEWORK = {
     "UNICODE_JSON": False,
 }
 
-# Static files configuration
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-STATICFILES_FINDERS = (
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    'compressor.finders.CompressorFinder',
-)
-STATICFILES_DIRS = []
-STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 # Login/Logout URLs
 
@@ -771,19 +810,6 @@ LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
 
-
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-    ('text/vue', 'eventyay.helpers.compressor.VueCompiler'),
-)
-
-COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
-COMPRESS_CSS_FILTERS = (
-    # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
-    # However, we don't need it if we consequently use the static() function in Sass
-    # 'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.cssmin.CSSCompressorFilter',
-)
 
 _LOGGING_HANDLERS = {
     'console': {
