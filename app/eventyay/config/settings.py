@@ -56,36 +56,14 @@ config = EnvOrParserConfig(_config)
 
 def instance_name(request):
     from django.conf import settings
-    return {
-        'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')
-    }
+    return {'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')}
 
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # Secret key configuration (Eventyay style)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get(
-    "EVENTYAY_DJANGO_SECRET", _config.get("django", "secret", fallback="")
-)
-if not SECRET_KEY:
-    # Fallback to Eventyay secret key
-    SECRET_KEY = 'django-insecure-_sesosamnd81fm%go!+5inrmln^p1c%b&$abp6j(lw8$xx(ria'
-    
-    SECRET_FILE = os.path.join(DATA_DIR, ".secret")
-    if os.path.exists(SECRET_FILE):
-        with open(SECRET_FILE) as f:
-            SECRET_KEY = f.read().strip()
-    else:
-        chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"
-        SECRET_KEY = get_random_string(50, chars)
-        with open(SECRET_FILE, "w") as f:
-            os.chmod(SECRET_FILE, 0o600)
-            try:
-                os.chown(SECRET_FILE, os.getuid(), os.getgid())
-            except AttributeError:
-                pass  # os.chown is not available on Windows
-            f.write(SECRET_KEY)
+SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 
 # Path configurations
 BASE_PATH = config.get('eventyay', 'base_path', fallback='/tickets')
@@ -96,8 +74,8 @@ SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
 # Debug configuration
 DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
 
-
 ALLOWED_HOSTS = [ "*", "127.0.0.1" ]
+# Security settings
 X_FRAME_OPTIONS = 'DENY'
 
 # URL settings
@@ -113,6 +91,76 @@ else:
 
 
 AUTH_USER_MODEL = 'base.User'
+_LIBRARY_APPS = (
+    'bootstrap3',
+    'corsheaders',
+    'channels',
+    'compressor',
+    'daphne',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django_celery_beat',
+    'djangoformsetjs',
+    'oauth2_provider',
+    'rest_framework',
+    'statici18n',
+)
+_OURS_APPS = (
+    'eventyay.api',
+    'eventyay.base',
+    'eventyay.common',
+    'eventyay.control.ControlConfig',
+    'eventyay.eventyay_common',
+    'eventyay.features.live.LiveConfig',
+    'eventyay.features.analytics.graphs.GraphsConfig',
+    'eventyay.features.importers.ImportersConfig',
+    'eventyay.storage.StorageConfig',
+    'eventyay.features.social.SocialConfig',
+    'eventyay.features.integrations.zoom.ZoomConfig',
+    'eventyay.control.ControlConfig',
+    'eventyay.helpers',
+    'eventyay.multidomain',
+    'eventyay.presale',
+)
+INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
+
+_LIBRARY_MIDDLEWARES = (
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+if DEBUG and importlib.util.find_spec('debug_toolbar'):
+    _LIBRARY_MIDDLEWARES += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )
+
+_OURS_MIDDLEWARES = (
+    'eventyay.base.middleware.CustomCommonMiddleware',
+    'eventyay.base.middleware.LocaleMiddleware',
+    'eventyay.base.middleware.SecurityMiddleware',
+    'eventyay.multidomain.middlewares.MultiDomainMiddleware',
+    'eventyay.multidomain.middlewares.SessionMiddleware',
+    'eventyay.multidomain.middlewares.CsrfViewMiddleware',
+    'eventyay.control.middleware.PermissionMiddleware',
+    'eventyay.control.middleware.AuditLogMiddleware',
+    'eventyay.control.video.middleware.SessionMiddleware',
+    'eventyay.control.video.middleware.AuthenticationMiddleware',
+    'eventyay.control.video.middleware.MessageMiddleware',
+)
+
+
+MIDDLEWARE = _LIBRARY_MIDDLEWARES + _OURS_MIDDLEWARES
 
 # Email configuration
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = os.environ.get(
@@ -353,71 +401,12 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
-# Installed apps (merged from both projects)
-INSTALLED_APPS = [
-    "daphne",
-    "bootstrap3",
-    "compressor",
-    "django.contrib.admin",
-    "django.contrib.contenttypes",
-    "django.contrib.auth",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "django_celery_beat",
-    "channels",
-    "corsheaders",
-    "rest_framework",
-    "djangoformsetjs",
-    "oauth2_provider",
-    "eventyay.core.CoreConfig",
-    "eventyay.api",
-    "eventyay.features.live.LiveConfig",
-    "eventyay.features.analytics.graphs.GraphsConfig",
-    "eventyay.features.importers.ImportersConfig",
-    "eventyay.storage.StorageConfig",
-    "eventyay.features.social.SocialConfig",
-    "eventyay.features.integrations.zoom.ZoomConfig",
-    "eventyay.control.ControlConfig",
-    "eventyay.base",
-    "eventyay.common",
-    "eventyay.eventyay_common",
-    "eventyay.helpers",
-    "eventyay.multidomain",
-    "eventyay.presale",
-    "multifactor",
-    "statici18n",
-]
 
 try:
     import django_extensions  # noqa
     INSTALLED_APPS.append("django_extensions")
 except ImportError:
     pass
-
-# Middleware (merged from both projects)
-MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'eventyay.base.middleware.CustomCommonMiddleware',
-    'eventyay.base.middleware.LocaleMiddleware',
-    'eventyay.base.middleware.SecurityMiddleware',
-    'eventyay.multidomain.middlewares.MultiDomainMiddleware',
-    'eventyay.multidomain.middlewares.SessionMiddleware',
-    'eventyay.multidomain.middlewares.CsrfViewMiddleware',
-    'eventyay.control.middleware.PermissionMiddleware',
-    'eventyay.control.middleware.AuditLogMiddleware',
-    "eventyay.control.video.middleware.SessionMiddleware",
-    "eventyay.control.video.middleware.AuthenticationMiddleware",
-    "eventyay.control.video.middleware.MessageMiddleware",
-]
 
 
 
@@ -629,8 +618,6 @@ if SENTRY_DSN:
         environment=EVENTYAY_ENVIRONMENT,
     )
 
-# Default auto field
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Eventyay specific configurations
 ENTROPY = {
@@ -641,7 +628,9 @@ ENTROPY = {
 }
 
 EVENTYAY_PRIMARY_COLOR = '#2185d0'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
 CURRENCY_PLACES = {
     # default is 2
