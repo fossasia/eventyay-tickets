@@ -28,22 +28,19 @@ import config from 'config'
 import theme, { computeForegroundSidebarColor, getThemeConfig, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS } from 'theme'
 
 async function setThemeConfig() {
-  try {
     const themeData = await getThemeConfig()
     theme.logo = themeData.logo
     theme.identicons = themeData.identicons
     theme.colors = themeData.colors
     theme.streamOfflineImage = themeData.streamOfflineImage
     computeForegroundSidebarColor(themeData.colors)
-  } catch (error) {
-    console.error('Failed to set theme config:', error)
-    // Use default theme values
-    theme.logo = Object.assign({}, DEFAULT_LOGO, config.theme?.logo)
-    theme.identicons = Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons)
-    theme.colors = config.theme?.colors || DEFAULT_COLORS
-    theme.streamOfflineImage = config.theme?.streamOfflineImage
-    computeForegroundSidebarColor(theme.colors)
-  }
+    // Inject theme variables into DOM
+    if (typeof window !== 'undefined' && document && document.documentElement) {
+      const { themeVariables } = await import('./theme.js')
+      for (const [key, value] of Object.entries(themeVariables)) {
+        document.documentElement.style.setProperty(key, value)
+      }
+    }
 }
 
 async function init({ token, inviteToken }) {
