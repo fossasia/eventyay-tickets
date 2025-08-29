@@ -108,7 +108,6 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     REQUIRED_FIELDS = []
 
     # Original ticketing fields
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     email = models.EmailField(
         unique=True, db_index=True, null=True, blank=True, verbose_name=_('E-mail'), max_length=190
     )

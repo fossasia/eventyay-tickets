@@ -10,7 +10,7 @@
   <body>
     <header>
         <a href="{% url 'control:index' %}">
-            <img src="{% static 'images/eventyay-video-logo-enlarge.png' %}" alt="eventyay-video-logo" height="35">
+            <img src="{% static 'images/eventyay-video-logo.png' %}" alt="eventyay-video-logo" height="35">
         </a>
         <div class="user-links">
             {% if request.user.is_authenticated %}
@@ -18,9 +18,9 @@
                     {{ request.user.email }}
                 </span>
                 <a href="{% url 'control:auth.profile' %}">{% trans "Profile" %}</a>
-                <a href="{% url 'control:logout' %}" class="logout">{% trans "Logout" %}</a>
+                <a href="/logout">{% trans "Logout" %}</a>
             {% else %}
-                <a href="{% url 'control:login' %}">{% trans "Login" %}</a>
+                <a href="/login">{% trans "Login" %}</a>
             {% endif %}
         </div>
     </header>

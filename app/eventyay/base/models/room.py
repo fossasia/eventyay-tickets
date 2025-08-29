@@ -157,7 +157,6 @@ class Room(VersionedModel, OrderedModel, PretalxModel):
     
     log_prefix = "pretalx.room"
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     deleted = models.BooleanField(default=False)
     description = I18nCharField(
         max_length=1000,
