@@ -117,6 +117,15 @@ export default {
 				'--vh100': this.windowHeight + 'px',
 				'--vh': this.windowHeight && (this.windowHeight / 100) + 'px'
 			}
+		},
+		// Map the named refs used for media sources into a single object so
+		// other computed properties can safely reference them.
+		mediaSourceRefs() {
+			return {
+				primary: this.$refs.primaryMediaSource,
+				background: this.$refs.backgroundMediaSource,
+				channel: this.$refs.channelCallSource
+			}
 		}
 	},
 	watch: {
@@ -175,8 +184,8 @@ export default {
 			if (newRoom === oldRoom) return
 			// TODO non-room urls
 			let title = this.world.title
-			if (this.room.name) {
-				title += ` | ${this.room.name}`
+			if (newRoom?.name) {
+				title += ` | ${newRoom.name}`
 			}
 			document.title = title
 			this.$store.dispatch('changeRoom', newRoom)

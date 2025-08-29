@@ -58,7 +58,8 @@ const routes = [
 			{
 				// we can't alias this because vue-router links seem to explode
 				// manage view gets linked to room url
-				path: '/',
+				// use a relative empty path instead of absolute '/' so parent params (like worldName) are preserved
+				path: '',
 				component: RoomHeader,
 				children: [{
 					path: '',

@@ -50,12 +50,20 @@ async function init({ token, inviteToken }) {
   app.use(router)
   app.use(Buntpapier)
   app.use(VueVirtualScroller)
-  app.component('Scrollbars', Scrollbars)
-  app.component('link-icon-button', LinkIconButton)
+  // Avoid duplicate global registrations if init is called multiple times
+  if (!app._context.components?.Scrollbars) app.component('Scrollbars', Scrollbars)
+  if (!app._context.components?.['link-icon-button']) app.component('link-icon-button', LinkIconButton)
   app.use(MediaQueries)
   app.use(emojiPlugin)
   app.use(dynamicLineClamp)
-  app.directive('scrollbar', scrollbarDirective)
+  // Guard against multiple registrations of the same directive
+  try {
+    const existing = app._context.directives && app._context.directives.scrollbar
+    if (!existing) app.directive('scrollbar', scrollbarDirective)
+  } catch (e) {
+    // some environments may not have _context; fall back to register
+    app.directive('scrollbar', scrollbarDirective)
+  }
   // Initialize i18n and theme
   await i18nInit(app)
   app.config.globalProperties.$features = features

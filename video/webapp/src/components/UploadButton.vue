@@ -22,6 +22,10 @@ export default {
 		multiple: Boolean,
 		tooltip: String,
 		icon: String,
+		errorMessage: {
+			type: String,
+			default: null
+		},
 		tooltipPlacement: {
 			type: String,
 			default: 'bottom'

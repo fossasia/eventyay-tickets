@@ -10,7 +10,8 @@ transition(name="sidebar")
 				router-link.room(:to="{name: 'schedule'}", v-if="!!world.pretalx && (world.pretalx.url || world.pretalx.domain)") {{ $t('RoomsSidebar:schedule:label') }}
 				router-link.room(:to="{name: 'schedule:sessions'}", v-if="!!world.pretalx && (world.pretalx.url || world.pretalx.domain)") {{ $t('RoomsSidebar:session:label') }}
 				router-link.room(:to="{name: 'schedule:speakers'}", v-if="!!world.pretalx && (world.pretalx.url || world.pretalx.domain)") {{ $t('RoomsSidebar:speaker:label') }}
-				router-link.room(v-for="page of roomsByType.page", v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}", v-html="$emojify(page.name)")
+				template(v-for="page of roomsByType.page", :key="page.id")
+					router-link.room(v-if="page !== rooms[0]", :to="{name: 'room', params: {roomId: page.id}}", v-html="$emojify(page.name)")
 			.group-title#stages-title(v-if="roomsByType.stage.length || hasPermission('world:rooms.create.stage')")
 				span {{ $t('RoomsSidebar:stages-headline:text') }}
 				bunt-icon-button(v-if="hasPermission('world:rooms.create.stage')", @click="showStageCreationPrompt = true") plus

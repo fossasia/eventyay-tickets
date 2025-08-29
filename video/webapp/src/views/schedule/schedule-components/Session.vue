@@ -37,6 +37,7 @@ a.c-linear-schedule-session(:class="{faved}", :style="style", :href="link", @cli
 import moment from 'moment-timezone'
 import MarkdownIt from 'markdown-it'
 import { getLocalizedString, getPrettyDuration } from 'views/schedule/utils'
+import { mapState } from 'vuex'
 
 const markdownIt = MarkdownIt({
 	linkify: true,
@@ -85,6 +86,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['now']),
 		link() {
 			return this.generateSessionLinkUrl({eventUrl: this.eventUrl, session: this.session})
 		},
