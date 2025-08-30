@@ -78,7 +78,7 @@ class UserUpdate(SuperuserBase, UpdateView):
     queryset = User.objects.all()
     context_object_name = "users"
     form_class = UserForm
-    success_url = "/control/users/"
+    success_url = "/control/video/users/"
 
     def form_valid(self, form):
         LogEntry.objects.create(
@@ -116,13 +116,13 @@ class SignupView(AdminBase, FormView):
             self.request,
             _("The user has been created successfully, they can now log in."),
         )
-        return redirect("/control/")
+        return redirect("/control/video/")
 
 
 class ProfileView(AdminBase, FormView):
     template_name = "control/profile.html"
     form_class = ProfileForm
-    success_url = "/control/auth/profile/"
+    success_url = "/control/video/auth/profile/"
 
     def form_valid(self, form):
         LogEntry.objects.create(
@@ -179,7 +179,7 @@ class EventList(AdminBase, ListView):
 class EventAdminToken(AdminBase, DetailView):
     template_name = "control/event_clear.html"
     queryset = Event.objects.all()
-    success_url = "/control/events/"
+    success_url = "/control/video/events/"
 
     def get(self, request, *args, **kwargs):
         event = self.get_object()
@@ -351,7 +351,7 @@ class BBBServerList(AdminBase, ListView):
 class BBBServerCreate(AdminBase, CreateView):
     template_name = "control/bbb_form.html"
     form_class = BBBServerForm
-    success_url = "/control/bbbs/"
+    success_url = "/control/video/bbbs/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -371,7 +371,7 @@ class BBBServerUpdate(AdminBase, UpdateView):
     template_name = "control/bbb_form.html"
     form_class = BBBServerForm
     queryset = BBBServer.objects.all()
-    success_url = "/control/bbbs/"
+    success_url = "/control/video/bbbs/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -389,7 +389,7 @@ class BBBServerUpdate(AdminBase, UpdateView):
 class BBBServerDelete(AdminBase, DeleteView):
     template_name = "control/bbb_delete.html"
     queryset = BBBServer.objects.all()
-    success_url = "/control/bbbs/"
+    success_url = "/control/video/bbbs/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
@@ -613,7 +613,7 @@ class StreamingServerUpdate(AdminBase, UpdateView):
 class StreamingServerDelete(AdminBase, DeleteView):
     template_name = "control/streaming_delete.html"
     queryset = StreamingServer.objects.all()
-    success_url = "/control/streamingservers/"
+    success_url = "/control/video/streamingservers/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
