@@ -170,6 +170,7 @@ export default {
 		flex: auto
 		display: flex
 		flex-direction: column
+		height: 83vh
 
 	.ui-form-body
 		.bunt-checkbox

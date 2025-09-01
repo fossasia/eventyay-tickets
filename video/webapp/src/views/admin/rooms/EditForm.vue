@@ -141,4 +141,5 @@ export default {
 		flex: auto
 		display: flex
 		flex-direction: column
+		height: 83vh
 </style>
