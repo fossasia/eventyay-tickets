@@ -30,7 +30,7 @@ a.btn, button.btn {
 }
 
 .form-control.is-focused {
-  @extend .form-control:focus;
+  @extend .form-control, :focus;
 }
 
 .form-control.has-error {

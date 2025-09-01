@@ -2,7 +2,7 @@ from django import template
 from django.template import Node
 from django.utils.translation import gettext as _
 
-from pretix.base.models import Event
+from eventyay.base.models import Event
 
 register = template.Library()
 
