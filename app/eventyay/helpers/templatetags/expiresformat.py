@@ -1,6 +1,6 @@
 from django import template
 
-from pretix.base.i18n import LazyExpiresDate
+from eventyay.base.i18n import LazyExpiresDate
 
 register = template.Library()
 
