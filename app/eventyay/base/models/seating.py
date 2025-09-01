@@ -12,7 +12,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from eventyay.base.models import Event, Item, LoggedModel, Organizer, SubEvent
+from eventyay.base.models import Event, Product, LoggedModel, Organizer, SubEvent
 
 
 @deconstructible
@@ -118,7 +118,7 @@ class SeatCategoryMapping(models.Model):
         on_delete=models.CASCADE,
     )
     layout_category = models.CharField(max_length=190)
-    product = models.ForeignKey(Item, related_name='seat_category_mappings', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='seat_category_mappings', on_delete=models.CASCADE)
 
 
 class Seat(models.Model):
@@ -135,7 +135,7 @@ class Seat(models.Model):
     seat_number = models.CharField(max_length=190, blank=True, default='')
     seat_label = models.CharField(max_length=190, null=True)
     seat_guid = models.CharField(max_length=190, db_index=True)
-    product = models.ForeignKey('Item', null=True, blank=True, related_name='seats', on_delete=models.SET_NULL)
+    product = models.ForeignKey('Product', null=True, blank=True, related_name='seats', on_delete=models.SET_NULL)
     blocked = models.BooleanField(default=False)
     sorting_rank = models.BigIntegerField(default=0)
     x = models.FloatField(null=True)

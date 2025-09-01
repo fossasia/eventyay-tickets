@@ -30,7 +30,7 @@ from eventyay.base.models import (
 )
 from eventyay.base.services.cart import (
     CartError,
-    add_items_to_cart,
+    add_products_to_cart,
     apply_voucher,
     clear_cart,
     error_messages,
@@ -45,8 +45,8 @@ from eventyay.presale.views import (
     iframe_entry_view_wrapper,
 )
 from eventyay.presale.views.event import (
-    get_grouped_items,
-    item_group_by_category,
+    get_grouped_products,
+    product_group_by_category,
 )
 from eventyay.presale.views.robots import NoSearchIndexViewMixin
 
@@ -112,11 +112,11 @@ class CartActionMixin:
         except InvoiceAddress.DoesNotExist:
             return InvoiceAddress()
 
-    def _item_from_post_value(self, key, value, voucher=None):
+    def _product_from_post_value(self, key, value, voucher=None):
         if value.strip() == '' or '_' not in key:
             return
 
-        if not key.startswith('item_') and not key.startswith('variation_') and not key.startswith('seat_'):
+        if not key.startswith('product_') and not key.startswith('variation_') and not key.startswith('seat_'):
             return
 
         parts = key.split('_')
@@ -131,7 +131,7 @@ class CartActionMixin:
         if key.startswith('seat_'):
             try:
                 return {
-                    'item': int(parts[1]),
+                    'product': int(parts[1]),
                     'variation': int(parts[2]) if len(parts) > 2 else None,
                     'count': 1,
                     'seat': value,
@@ -151,10 +151,10 @@ class CartActionMixin:
         elif amount == 0:
             return
 
-        if key.startswith('item_'):
+        if key.startswith('product_'):
             try:
                 return {
-                    'item': int(parts[1]),
+                    'product': int(parts[1]),
                     'variation': None,
                     'count': amount,
                     'price': price,
@@ -166,7 +166,7 @@ class CartActionMixin:
         elif key.startswith('variation_'):
             try:
                 return {
-                    'item': int(parts[1]),
+                    'product': int(parts[1]),
                     'variation': int(parts[2]),
                     'count': amount,
                     'price': price,
@@ -176,34 +176,34 @@ class CartActionMixin:
             except ValueError:
                 raise CartError(_('Please enter numbers only.'))
 
-    def _items_from_post_data(self):
+    def _products_from_post_data(self):
         """
         Parses the POST data and returns a list of dictionaries
         """
 
         # Compatibility patch that makes the frontend code a lot easier
-        req_items = list(self.request.POST.lists())
-        if '_voucher_item' in self.request.POST and '_voucher_code' in self.request.POST:
-            req_items.append(('%s' % self.request.POST['_voucher_item'], ('1',)))
+        req_products = list(self.request.POST.lists())
+        if '_voucher_product' in self.request.POST and '_voucher_code' in self.request.POST:
+            req_products.append(('%s' % self.request.POST['_voucher_product'], ('1',)))
             pass
 
-        items = []
+        products = []
         if 'raw' in self.request.POST:
-            items += json.loads(self.request.POST.get('raw'))
-        for key, values in req_items:
+            products += json.loads(self.request.POST.get('raw'))
+        for key, values in req_products:
             for value in values:
                 try:
-                    item = self._item_from_post_value(key, value, self.request.POST.get('_voucher_code'))
+                    product = self._product_from_post_value(key, value, self.request.POST.get('_voucher_code'))
                 except CartError as e:
                     messages.error(self.request, str(e))
                     return
-                if item:
-                    items.append(item)
+                if product:
+                    products.append(product)
 
-        if len(items) == 0:
+        if len(products) == 0:
             messages.warning(self.request, _('You did not select any products.'))
             return []
-        return items
+        return products
 
 
 @scopes_disabled()
@@ -436,7 +436,7 @@ class CartClear(EventViewMixin, CartActionMixin, AsyncAction, View):
 @method_decorator(allow_frame_if_namespaced, 'dispatch')
 @method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class CartAdd(EventViewMixin, CartActionMixin, AsyncAction, View):
-    task = add_items_to_cart
+    task = add_products_to_cart
     known_errortypes = ['CartError']
 
     def get_success_message(self, value):
@@ -480,11 +480,11 @@ class CartAdd(EventViewMixin, CartActionMixin, AsyncAction, View):
             cs = cart_session(request)
             widget_data = cs.get('widget_data', {})
 
-        items = self._items_from_post_data()
-        if items:
+        products = self._products_from_post_data()
+        if products:
             return self.do(
                 self.request.event.id,
-                items,
+                products,
                 cart_id,
                 translation.get_language(),
                 self.invoice_address.pk,
@@ -515,8 +515,8 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
         context['voucher'] = self.voucher
         context['max_times'] = self.voucher.max_usages - self.voucher.redeemed
 
-        # Fetch all items
-        items, display_add_to_cart = get_grouped_items(
+        # Fetch all products
+        products, display_add_to_cart = get_grouped_products(
             self.request.event,
             self.subevent,
             voucher=self.voucher,
@@ -525,18 +525,18 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
 
         # Calculate how many options the user still has. If there is only one option, we can
         # check the box right away ;)
-        context['options'] = sum([(len(item.available_variations) if item.has_variations else 1) for item in items])
+        context['options'] = sum([(len(product.available_variations) if product.has_variations else 1) for product in products])
 
         context['allfree'] = all(
-            item.display_price.gross == Decimal('0.00') for item in items if not item.has_variations
+            product.display_price.gross == Decimal('0.00') for product in products if not product.has_variations
         ) and all(
-            all(var.display_price.gross == Decimal('0.00') for var in item.available_variations)
-            for item in items
-            if item.has_variations
+            all(var.display_price.gross == Decimal('0.00') for var in product.available_variations)
+            for product in products
+            if product.has_variations
         )
 
         # Regroup those by category
-        context['items_by_category'] = item_group_by_category(items)
+        context['products_by_category'] = product_group_by_category(products)
 
         context['subevent'] = self.subevent
         context['seating_available'] = self.request.event.settings.seating_choice and self.voucher.seating_available(
@@ -578,8 +578,8 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
                     err = error_messages['voucher_redeemed']
                 if self.voucher.valid_until is not None and self.voucher.valid_until < now():
                     err = error_messages['voucher_expired']
-                if self.voucher.item is not None and self.voucher.item.is_available() is False:
-                    err = error_messages['voucher_item_not_available']
+                if self.voucher.product is not None and self.voucher.product.is_available() is False:
+                    err = error_messages['voucher_product_not_available']
 
                 redeemed_in_carts = CartPosition.objects.filter(
                     Q(voucher=self.voucher)

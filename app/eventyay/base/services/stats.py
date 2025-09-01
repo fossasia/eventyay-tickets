@@ -17,7 +17,7 @@ from django.db.models import (
 from django.utils.timezone import make_aware
 from django.utils.translation import gettext_lazy as _
 
-from eventyay.base.models import Event, Item, ItemCategory, Order, OrderPosition
+from eventyay.base.models import Event, Product, ProductCategory, Order, OrderPosition
 from eventyay.base.models.event import SubEvent
 from eventyay.base.models.orders import OrderFee, OrderPayment
 from eventyay.base.signals import order_fee_type_name
@@ -93,9 +93,9 @@ def order_overview(
     date_until=None,
     fees=False,
     admission_only=False,
-) -> Tuple[List[Tuple[ItemCategory, List[Item]]], Dict[str, Tuple[Decimal, Decimal]]]:
-    items = (
-        event.items.all()
+) -> Tuple[List[Tuple[ProductCategory, List[Product]]], Dict[str, Tuple[Decimal, Decimal]]]:
+    products = (
+        event.products.all()
         .select_related(
             'category',  # for re-grouping
         )
@@ -107,8 +107,8 @@ def order_overview(
     if subevent:
         qs = qs.filter(subevent=subevent)
     if admission_only:
-        qs = qs.filter(item__admission=True)
-        items = items.filter(admission=True)
+        qs = qs.filter(product__admission=True)
+        products = products.filter(admission=True)
 
     if date_from and isinstance(date_from, date):
         date_from = make_aware(
@@ -164,7 +164,7 @@ def order_overview(
                 default=F('order__status'),
             )
         )
-        .values('item', 'variation', 'status')
+        .values('product', 'variation', 'status')
         .annotate(cnt=Count('id'), price=Sum('price'), tax_value=Sum('tax_value'))
         .order_by()
     )
@@ -179,7 +179,7 @@ def order_overview(
     num = {}
     for l, s in states.items():
         num[l] = {
-            (p['item'], p['variation']): (
+            (p['product'], p['variation']): (
                 p['cnt'],
                 p['price'],
                 p['price'] - p['tax_value'],
@@ -190,35 +190,35 @@ def order_overview(
 
     num['total'] = dictsum(num['pending'], num['paid'])
 
-    for item in items:
-        item.all_variations = list(item.variations.all())
-        item.has_variations = len(item.all_variations) > 0
-        item.num = {}
-        if item.has_variations:
-            for var in item.all_variations:
+    for product in products:
+        product.all_variations = list(product.variations.all())
+        product.has_variations = len(product.all_variations) > 0
+        product.num = {}
+        if product.has_variations:
+            for var in product.all_variations:
                 variid = var.id
                 var.num = {}
                 for l in states.keys():
-                    var.num[l] = num[l].get((item.id, variid), (0, 0, 0))
-                var.num['total'] = num['total'].get((item.id, variid), (0, 0, 0))
+                    var.num[l] = num[l].get((product.id, variid), (0, 0, 0))
+                var.num['total'] = num['total'].get((product.id, variid), (0, 0, 0))
             for l in states.keys():
-                item.num[l] = tuplesum(var.num[l] for var in item.all_variations)
-            item.num['total'] = tuplesum(var.num['total'] for var in item.all_variations)
+                product.num[l] = tuplesum(var.num[l] for var in product.all_variations)
+            product.num['total'] = tuplesum(var.num['total'] for var in product.all_variations)
         else:
             for l in states.keys():
-                item.num[l] = num[l].get((item.id, None), (0, 0, 0))
-            item.num['total'] = num['total'].get((item.id, None), (0, 0, 0))
+                product.num[l] = num[l].get((product.id, None), (0, 0, 0))
+            product.num['total'] = num['total'].get((product.id, None), (0, 0, 0))
 
-    nonecat = ItemCategory(name=_('Uncategorized'))
+    nonecat = ProductCategory(name=_('Uncategorized'))
     # Regroup those by category
-    items_by_category = sorted(
+    products_by_category = sorted(
         [
-            # a group is a tuple of a category and a list of items
+            # a group is a tuple of a category and a list of products
             (
                 cat if cat is not None else nonecat,
-                [i for i in items if i.category == cat],
+                [i for i in products if i.category == cat],
             )
-            for cat in set([i.category for i in items])
+            for cat in set([i.category for i in products])
             # insert categories into a set for uniqueness
             # a set is unsorted, so sort again by category
         ],
@@ -227,16 +227,16 @@ def order_overview(
         else (0, 0),
     )
 
-    for c in items_by_category:
+    for c in products_by_category:
         c[0].num = {}
         for l in states.keys():
-            c[0].num[l] = tuplesum(item.num[l] for item in c[1])
-        c[0].num['total'] = tuplesum(item.num['total'] for item in c[1])
+            c[0].num[l] = tuplesum(product.num[l] for product in c[1])
+        c[0].num['total'] = tuplesum(product.num['total'] for product in c[1])
 
     # Payment fees
     payment_cat_obj = DummyObject()
     payment_cat_obj.name = _('Fees')
-    payment_items = []
+    payment_products = []
 
     if not subevent and fees:
         qs = OrderFee.all.filter(order__event=event).annotate(
@@ -267,7 +267,7 @@ def order_overview(
             .order_by()
         )
 
-        for l, s in states.items():
+        for l, s in states.products():
             num[l] = {
                 (o['fee_type'], o['internal_type']): (
                     o['cnt'],
@@ -300,27 +300,27 @@ def order_overview(
             for l in states.keys():
                 ppobj.num[l] = num[l].get(pprov, (0, 0, 0))
             ppobj.num['total'] = total
-            payment_items.append(ppobj)
+            payment_products.append(ppobj)
 
         payment_cat_obj.num = {}
         for l in states.keys():
             payment_cat_obj.num[l] = (
                 Dontsum(''),
-                sum(i.num[l][1] for i in payment_items),
-                sum(i.num[l][2] for i in payment_items),
+                sum(i.num[l][1] for i in payment_products),
+                sum(i.num[l][2] for i in payment_products),
             )
         payment_cat_obj.num['total'] = (
             Dontsum(''),
-            sum(i.num['total'][1] for i in payment_items),
-            sum(i.num['total'][2] for i in payment_items),
+            sum(i.num['total'][1] for i in payment_products),
+            sum(i.num['total'][2] for i in payment_products),
         )
-        payment_cat = (payment_cat_obj, payment_items)
+        payment_cat = (payment_cat_obj, payment_products)
         any_payment = any(payment_cat_obj.num[s][1] for s in states.keys())
         if any_payment:
-            items_by_category.append(payment_cat)
+            products_by_category.append(payment_cat)
 
-    total = {'num': {'total': tuplesum(c.num['total'] for c, i in items_by_category)}}
+    total = {'num': {'total': tuplesum(c.num['total'] for c, i in products_by_category)}}
     for l in states.keys():
-        total['num'][l] = tuplesum(c.num[l] for c, i in items_by_category)
+        total['num'][l] = tuplesum(c.num[l] for c, i in products_by_category)
 
-    return items_by_category, total
+    return products_by_category, total

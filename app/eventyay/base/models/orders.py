@@ -59,7 +59,7 @@ from eventyay.base.signals import order_gracefully_delete
 from ...helpers.countries import CachedCountries, FastCountryField
 from .base import LockModel, LoggedModel
 from .event import Event, SubEvent
-from .items import Item, ItemVariation, Question, QuestionOption, Quota
+from .product import Product, ProductVariation, Question, QuestionOption, Quota
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +109,7 @@ class Order(LockModel, LoggedModel):
     """
     An order is created when a user clicks 'buy' on his cart. It holds
     several OrderPositions and is connected to a user. It has an
-    expiration date: If items run out of capacity, orders which are over
+    expiration date: If products run out of capacity, orders which are over
     their expiration date might be canceled.
 
     An order -- like all objects -- has an ID, which is globally unique,
@@ -573,13 +573,13 @@ class Order(LockModel, LoggedModel):
         positions = list(
             self.positions.all()
             .annotate(
-                has_variations=Exists(ItemVariation.objects.filter(item_id=OuterRef('item_id'))),
+                has_variations=Exists(ProductVariation.objects.filter(product_id=OuterRef('product_id'))),
                 has_checkin=Exists(Checkin.objects.filter(position_id=OuterRef('pk'))),
             )
-            .select_related('item')
+            .select_related('product')
             .prefetch_related('issued_gift_cards')
         )
-        cancelable = all([op.item.allow_cancel and not op.has_checkin for op in positions])
+        cancelable = all([op.product.allow_cancel and not op.has_checkin for op in positions])
         if not cancelable or not positions:
             return False
         for op in positions:
@@ -603,10 +603,10 @@ class Order(LockModel, LoggedModel):
         positions = list(
             self.positions.all()
             .annotate(has_checkin=Exists(Checkin.objects.filter(position_id=OuterRef('pk'))))
-            .select_related('item')
+            .select_related('product')
             .prefetch_related('issued_gift_cards')
         )
-        cancelable = all([op.item.allow_cancel and not op.has_checkin for op in positions])
+        cancelable = all([op.product.allow_cancel and not op.has_checkin for op in positions])
         if not cancelable or not positions:
             return False
         for op in positions:
@@ -757,7 +757,7 @@ class Order(LockModel, LoggedModel):
         positions = list(
             self.positions.all()
             .annotate(has_checkin=Exists(Checkin.objects.filter(position_id=OuterRef('pk'))))
-            .select_related('item')
+            .select_related('product')
             .prefetch_related('item__questions')
         )
         if not self.event.settings.allow_modifications_after_checkin:
@@ -769,7 +769,7 @@ class Order(LockModel, LoggedModel):
             return True
         ask_names = self.event.settings.get('attendee_names_asked', as_type=bool)
         for cp in positions:
-            if (cp.item.admission and ask_names) or cp.item.questions.all():
+            if (cp.product.admission and ask_names) or cp.product.questions.all():
                 return True
 
         return False  # nothing there to modify
@@ -869,13 +869,13 @@ class Order(LockModel, LoggedModel):
         check_voucher_usage=False,
     ) -> Union[bool, str]:
         error_messages = {
-            'unavailable': _('The ordered product "{item}" is no longer available.'),
+            'unavailable': _('The ordered product "{product}" is no longer available.'),
             'seat_unavailable': _('The seat "{seat}" is no longer available.'),
             'voucher_budget': _('The voucher "{voucher}" no longer has sufficient budget.'),
             'voucher_usages': _('The voucher "{voucher}" has been used in the meantime.'),
         }
         now_dt = now_dt or now()
-        positions = list(self.positions.all().select_related('item', 'variation', 'seat', 'voucher'))
+        positions = list(self.positions.all().select_related('product', 'variation', 'seat', 'voucher'))
         quota_cache = {}
         v_budget = {}
         v_usage = Counter()
@@ -908,7 +908,7 @@ class Order(LockModel, LoggedModel):
                 if len(quotas) == 0:
                     raise Quota.QuotaExceededException(
                         error_messages['unavailable'].format(
-                            item=str(op.item) + (' - ' + str(op.variation) if op.variation else '')
+                            product=str(op.product) + (' - ' + str(op.variation) if op.variation else '')
                         )
                     )
 
@@ -925,7 +925,7 @@ class Order(LockModel, LoggedModel):
                             # This quota is sold out/currently unavailable, so do not sell this at all
                             raise Quota.QuotaExceededException(
                                 error_messages['unavailable'].format(
-                                    item=str(op.item) + (' - ' + str(op.variation) if op.variation else '')
+                                    product=str(op.product) + (' - ' + str(op.variation) if op.variation else '')
                                 )
                             )
         except Quota.QuotaExceededException as e:
@@ -1041,7 +1041,7 @@ class Order(LockModel, LoggedModel):
 
     @property
     def positions_with_tickets(self):
-        for op in self.positions.select_related('item'):
+        for op in self.positions.select_related('product'):
             if not op.generate_ticket:
                 continue
             yield op
@@ -1204,19 +1204,19 @@ class QuestionAnswer(models.Model):
 
 class AbstractPosition(models.Model):
     """
-    A position can either be one line of an order or an item placed in a cart.
+    A position can either be one line of an order or an product placed in a cart.
 
     :param subevent: The date in the event series, if event series are enabled
     :type subevent: SubEvent
-    :param item: The selected item
-    :type item: Item
-    :param variation: The selected ItemVariation or null, if the item has no variations
-    :type variation: ItemVariation
-    :param datetime: The datetime this item was put into the cart
+    :param product: The selected product
+    :type product: Product
+    :param variation: The selected ProductVariation or null, if the product has no variations
+    :type variation: ProductVariation
+    :param datetime: The datetime this product was put into the cart
     :type datetime: datetime
-    :param expires: The date until this item is guaranteed to be reserved
+    :param expires: The date until this product is guaranteed to be reserved
     :type expires: datetime
-    :param price: The price of this item
+    :param price: The price of this product
     :type price: decimal.Decimal
     :param attendee_name_parts: The parts of the attendee's name, if entered.
     :type attendee_name_parts: str
@@ -1239,9 +1239,9 @@ class AbstractPosition(models.Model):
         on_delete=models.PROTECT,
         verbose_name=pgettext_lazy('subevent', 'Date'),
     )
-    item = models.ForeignKey(Item, verbose_name=_('Item'), on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, verbose_name=_('Product'), on_delete=models.PROTECT)
     variation = models.ForeignKey(
-        ItemVariation,
+        ProductVariation,
         null=True,
         blank=True,
         verbose_name=_('Variation'),
@@ -1315,17 +1315,17 @@ class AbstractPosition(models.Model):
             self.answ[a.question_id] = a
 
         # We need to clone our question objects, otherwise we will override the cached
-        # answers of other items in the same cart if the question objects have been
+        # answers of other products in the same cart if the question objects have been
         # selected via prefetch_related
         if not all:
-            if getattr(self.item, 'questions_to_ask', None) is not None:
-                questions = list(copy.copy(q) for q in self.item.questions_to_ask)
+            if getattr(self.product, 'questions_to_ask', None) is not None:
+                questions = list(copy.copy(q) for q in self.product.questions_to_ask)
             else:
                 questions = list(
-                    copy.copy(q) for q in self.item.questions.filter(ask_during_checkin=False, hidden=False)
+                    copy.copy(q) for q in self.product.questions.filter(ask_during_checkin=False, hidden=False)
                 )
         else:
-            questions = list(copy.copy(q) for q in self.item.questions.all())
+            questions = list(copy.copy(q) for q in self.product.questions.all())
 
         question_cache = {q.pk: q for q in questions}
 
@@ -1362,7 +1362,7 @@ class AbstractPosition(models.Model):
     @property
     def quotas(self):
         return (
-            self.item.quotas.filter(subevent=self.subevent)
+            self.product.quotas.filter(subevent=self.subevent)
             if self.variation is None
             else self.variation.quotas.filter(subevent=self.subevent)
         )
@@ -2087,7 +2087,7 @@ class OrderFee(models.Model):
 
 class OrderPosition(AbstractPosition):
     """
-    An OrderPosition is one line of an order, representing one ordered item
+    An OrderPosition is one line of an order, representing one ordered product
     of a specified type (or variation). This has all properties of
     AbstractPosition.
 
@@ -2146,16 +2146,16 @@ class OrderPosition(AbstractPosition):
     def require_checkin_attention(self):
         return (
             self.order.checkin_attention
-            or self.item.checkin_attention
+            or self.product.checkin_attention
             or (self.variation_id and self.variation.checkin_attention)
         )
 
     @property
     def generate_ticket(self):
-        if self.item.generate_tickets is not None:
-            return self.item.generate_tickets
+        if self.product.generate_tickets is not None:
+            return self.product.generate_tickets
         return (self.order.event.settings.ticket_download_addons or not self.addon_to_id) and (
-            self.event.settings.ticket_download_nonadm or self.item.admission
+            self.event.settings.ticket_download_nonadm or self.product.admission
         )
 
     @classmethod
@@ -2194,18 +2194,18 @@ class OrderPosition(AbstractPosition):
 
     def __str__(self):
         if self.variation:
-            return '#{} – {} – {}'.format(self.positionid, str(self.item), str(self.variation))
-        return '#{} – {}'.format(self.positionid, str(self.item))
+            return '#{} – {} – {}'.format(self.positionid, str(self.product), str(self.variation))
+        return '#{} – {}'.format(self.positionid, str(self.product))
 
     def __repr__(self):
-        return '<OrderPosition: item %d, variation %d for order %s>' % (
-            self.item.id,
+        return '<OrderPosition: product %d, variation %d for order %s>' % (
+            self.product.id,
             self.variation.id if self.variation else 0,
             self.order_id,
         )
 
     def _calculate_tax(self, tax_rule=None):
-        self.tax_rule = tax_rule or self.item.tax_rule
+        self.tax_rule = tax_rule or self.product.tax_rule
         try:
             ia = self.order.invoice_address
         except InvoiceAddress.DoesNotExist:
@@ -2367,7 +2367,7 @@ class CartPosition(AbstractPosition):
     A cart position is similar to an order line, except that it is not
     yet part of a binding order but just placed by some user in his or
     her cart. It therefore normally has a much shorter expiration time
-    than an ordered position, but still blocks an item in the quota pool
+    than an ordered position, but still blocks an product in the quota pool
     as we do not want to throw out users while they're clicking through
     the checkout process. This has all properties of AbstractPosition.
 
@@ -2398,8 +2398,8 @@ class CartPosition(AbstractPosition):
         verbose_name_plural = _('Cart positions')
 
     def __repr__(self):
-        return '<CartPosition: item %d, variation %d for cart %s>' % (
-            self.item.id,
+        return '<CartPosition: product %d, variation %d for cart %s>' % (
+            self.product.id,
             self.variation.id if self.variation else 0,
             self.cart_id,
         )
@@ -2409,14 +2409,14 @@ class CartPosition(AbstractPosition):
         if self.includes_tax:
             if self.override_tax_rate is not None:
                 return self.override_tax_rate
-            return self.item.tax(self.price, base_price_is='gross').rate
+            return self.product.tax(self.price, base_price_is='gross').rate
         else:
             return Decimal('0.00')
 
     @property
     def tax_value(self):
         if self.includes_tax:
-            return self.item.tax(
+            return self.product.tax(
                 self.price,
                 override_tax_rate=self.override_tax_rate,
                 base_price_is='gross',

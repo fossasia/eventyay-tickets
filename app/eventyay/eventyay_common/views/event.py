@@ -33,7 +33,7 @@ from eventyay.control.forms.filter import EventFilterForm
 from eventyay.control.permissions import EventPermissionRequiredMixin
 from eventyay.control.views import PaginationMixin, UpdateView
 from eventyay.control.views.event import DecoupleMixin, EventSettingsViewMixin
-from eventyay.control.views.item import MetaDataEditorMixin
+from eventyay.control.views.product import MetaDataEditorMixin
 from eventyay.eventyay_common.forms.event import EventCommonSettingsForm
 from eventyay.eventyay_common.tasks import create_world, send_event_webhook
 from eventyay.eventyay_common.utils import (

@@ -22,7 +22,7 @@ from eventyay.base.signals import validate_cart_addons
 from eventyay.base.views.tasks import AsyncAction
 from eventyay.presale.views import CartMixin, get_cart
 from eventyay.presale.views.cart import get_or_create_cart_id
-from eventyay.presale.views.event import get_grouped_items
+from eventyay.presale.views.event import get_grouped_products
 
 from .template_flow_step import TemplateFlowStep
 
@@ -39,7 +39,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     def is_applicable(self, request):
         if not hasattr(request, '_checkoutflow_addons_applicable'):
-            request._checkoutflow_addons_applicable = get_cart(request).filter(item__addons__isnull=False).exists()
+            request._checkoutflow_addons_applicable = get_cart(request).filter(product__addons__isnull=False).exists()
         return request._checkoutflow_addons_applicable
 
     def is_completed(self, request, warn=False):
@@ -48,13 +48,13 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
         cart_positions = (
             get_cart(request)
             .filter(addon_to__isnull=True)
-            .prefetch_related('item__addons', 'item__addons__addon_category', 'addons', 'addons__item')
+            .prefetch_related('product__addons', 'product__addons__addon_category', 'addons', 'addons__product')
         )
 
         for cartpos in cart_positions:
             a = cartpos.addons.all()
-            for addon in cartpos.item.addons.all():
-                count = sum(1 for item in a if item.item.category_id == addon.addon_category_id and not item.is_bundled)
+            for addon in cartpos.product.addons.all():
+                count = sum(1 for product in a if product.product.category_id == addon.addon_category_id and not product.is_bundled)
                 if not addon.min_count <= count <= addon.max_count:
                     self._completed = False
                     return False
@@ -69,13 +69,13 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
         """
         formset = []
         quota_cache = {}
-        item_cache = {}
+        product_cache = {}
         cart_positions = (
             get_cart(self.request)
             .filter(addon_to__isnull=True)
             .prefetch_related(
-                'item__addons',
-                'item__addons__addon_category',
+                'product__addons',
+                'product__addons__addon_category',
                 'addons',
                 'addons__variation',
             )
@@ -84,7 +84,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
         for cartpos in cart_positions:
             formsetentry = {
                 'cartpos': cartpos,
-                'item': cartpos.item,
+                'product': cartpos.product,
                 'variation': cartpos.variation,
                 'categories': [],
             }
@@ -93,30 +93,30 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
             current_addon_products = defaultdict(list)
             for a in cartpos.addons.all():
                 if not a.is_bundled:
-                    current_addon_products[a.item_id, a.variation_id].append(a)
+                    current_addon_products[a.product_id, a.variation_id].append(a)
 
-            for iao in cartpos.item.addons.all():
+            for iao in cartpos.product.addons.all():
                 ckey = '{}-{}'.format(
                     cartpos.subevent.pk if cartpos.subevent else 0,
                     iao.addon_category.pk,
                 )
 
-                if ckey not in item_cache:
-                    # Get all items to possibly show
-                    items, _btn = get_grouped_items(
+                if ckey not in product_cache:
+                    # Get all products to possibly show
+                    products, _btn = get_grouped_products(
                         self.request.event,
                         subevent=cartpos.subevent,
                         voucher=None,
                         channel=self.request.sales_channel.identifier,
-                        base_qs=iao.addon_category.items,
+                        base_qs=iao.addon_category.products,
                         allow_addons=True,
                         quota_cache=quota_cache,
                     )
-                    item_cache[ckey] = items
+                    product_cache[ckey] = products
                 else:
-                    items = item_cache[ckey]
+                    products = product_cache[ckey]
 
-                for i in items:
+                for i in products:
                     i.allow_waitinglist = False
 
                     if i.has_variations:
@@ -130,7 +130,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                                     net=first_addon.price - first_addon.tax_value,
                                     gross=first_addon.price,
                                     tax=first_addon.tax_value,
-                                    name=first_addon.item.tax_rule.name if first_addon.item.tax_rule else '',
+                                    name=first_addon.product.tax_rule.name if first_addon.product.tax_rule else '',
                                     rate=first_addon.tax_rate,
                                 )
                             else:
@@ -145,13 +145,13 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                                 net=a.price - a.tax_value,
                                 gross=a.price,
                                 tax=a.tax_value,
-                                name=a.item.tax_rule.name if a.item.tax_rule else '',
+                                name=a.product.tax_rule.name if a.product.tax_rule else '',
                                 rate=a.tax_rate,
                             )
                         else:
                             i.initial_price = i.display_price
 
-                if items:
+                if products:
                     formsetentry['categories'].append(
                         {
                             'category': iao.addon_category,
@@ -160,7 +160,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                             'min_count': iao.min_count,
                             'max_count': iao.max_count,
                             'iao': iao,
-                            'items': items,
+                            'products': products,
                         }
                     )
         return formset
@@ -188,25 +188,25 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     def _clean_category(self, form, category):
         selected = {}
-        for i in category['items']:
-            item_key_base = f'cp_{form["cartpos"].pk}'
+        for i in category['products']:
+            product_key_base = f'cp_{form["cartpos"].pk}'
             if i.has_variations:
                 for v in i.available_variations:
-                    variation_key = f'{item_key_base}_variation_{i.pk}_{v.pk}'
+                    variation_key = f'{product_key_base}_variation_{i.pk}_{v.pk}'
                     val = int(self.request.POST.get(variation_key) or '0')
                     price = self.request.POST.get(f'{variation_key}_price') or '0'
                     if val:
                         selected[i, v] = val, price
             else:
-                item_key = f'{item_key_base}_item_{i.pk}'
-                val = int(self.request.POST.get(item_key) or '0')
-                price = self.request.POST.get(f'{item_key}_price') or '0'
+                product_key = f'{product_key_base}_product_{i.pk}'
+                val = int(self.request.POST.get(product_key) or '0')
+                price = self.request.POST.get(f'{product_key}_price') or '0'
                 if val:
                     selected[i, None] = val, price
 
         total_selected_quantity = sum(a[0] for a in selected.values())
         exceeds_single_allowed = (
-            any(sum(v[0] for k, v in selected.items() if k[0] == i) > 1 for i in category['items'])
+            any(sum(v[0] for k, v in selected.products() if k[0] == i) > 1 for i in category['products'])
             and not category['multi_allowed']
         )
 
@@ -215,7 +215,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                 _(error_messages['addon_max_count']),
                 'addon_max_count',
                 {
-                    'base': str(form['item'].name),
+                    'base': str(form['product'].name),
                     'max': category['max_count'],
                     'cat': str(category['category'].name),
                 },
@@ -225,7 +225,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                 _(error_messages['addon_min_count']),
                 'addon_min_count',
                 {
-                    'base': str(form['item'].name),
+                    'base': str(form['product'].name),
                     'min': category['min_count'],
                     'cat': str(category['category'].name),
                 },
@@ -235,7 +235,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                 _(error_messages['addon_no_multi']),
                 'addon_no_multi',
                 {
-                    'base': str(form['item'].name),
+                    'base': str(form['product'].name),
                     'cat': str(category['category'].name),
                 },
             )
@@ -266,7 +266,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                     data.append(
                         {
                             'addon_to': f['cartpos'].pk,
-                            'item': i.pk,
+                            'product': i.pk,
                             'variation': v.pk if v else None,
                             'count': c,
                             'price': price,

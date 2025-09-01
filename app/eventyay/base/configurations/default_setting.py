@@ -67,7 +67,7 @@ def primary_font_kwargs():
 
 
 DEFAULT_SETTINGS = {
-    'max_items_per_order': {
+    'max_products_per_order': {
         'default': '10',
         'type': int,
         'form_class': forms.IntegerField,
@@ -825,14 +825,14 @@ DEFAULT_SETTINGS = {
             ),
         ),
     },
-    'show_items_outside_presale_period': {
+    'show_products_outside_presale_period': {
         'default': 'True',
         'type': bool,
         'form_class': forms.BooleanField,
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
-            label=_('Show items outside presale period'),
-            help_text=_('Show item details before presale has started and after presale has ended'),
+            label=_('Show products outside presale period'),
+            help_text=_('Show product details before presale has started and after presale has ended'),
         ),
     },
     'timezone': {'default': settings.TIME_ZONE, 'type': str},

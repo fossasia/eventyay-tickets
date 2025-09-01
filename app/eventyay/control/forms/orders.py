@@ -27,7 +27,7 @@ from eventyay.base.forms.widgets import (
 )
 from eventyay.base.models import (
     InvoiceAddress,
-    ItemAddOn,
+    ProductAddOn,
     Order,
     OrderFee,
     OrderPosition,
@@ -245,7 +245,7 @@ class OtherOperationsForm(forms.Form):
 
 
 class OrderPositionAddForm(forms.Form):
-    itemvar = forms.ChoiceField(label=_('Product'))
+    productvar = forms.ChoiceField(label=_('Product'))
     addon_to = forms.ModelChoiceField(
         OrderPosition.all.none(),
         required=False,
@@ -277,7 +277,7 @@ class OrderPositionAddForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        self.items = kwargs.pop('items')
+        self.products = kwargs.pop('products')
         order = kwargs.pop('order')
         super().__init__(*args, **kwargs)
 
@@ -287,7 +287,7 @@ class OrderPositionAddForm(forms.Form):
             ia = None
 
         choices = []
-        for i in self.items:
+        for i in self.products:
             pname = str(i)
             if not i.is_available():
                 pname += ' ({})'.format(_('inactive'))
@@ -306,14 +306,14 @@ class OrderPositionAddForm(forms.Form):
             else:
                 p = get_price(i, invoice_address=ia)
                 choices.append((str(i.pk), '%s (%s)' % (pname, p.print(order.event.currency))))
-        self.fields['itemvar'].choices = choices
+        self.fields['productvar'].choices = choices
         if order.event.cache.get_or_set(
             'has_addon_products',
-            default=lambda: ItemAddOn.objects.filter(base_item__event=order.event).exists(),
+            default=lambda: ProductAddOn.objects.filter(base_product__event=order.event).exists(),
             timeout=300,
         ):
             self.fields['addon_to'].queryset = order.positions.filter(addon_to__isnull=True).select_related(
-                'item', 'variation'
+                'product', 'variation'
             )
         else:
             del self.fields['addon_to']
@@ -343,12 +343,12 @@ class OrderPositionAddForm(forms.Form):
 class OrderPositionAddFormset(forms.BaseFormSet):
     def __init__(self, *args, **kwargs):
         self.order = kwargs.pop('order', None)
-        self.items = kwargs.pop('items')
+        self.products = kwargs.pop('products')
         super().__init__(*args, **kwargs)
 
     def _construct_form(self, i, **kwargs):
         kwargs['order'] = self.order
-        kwargs['items'] = self.items
+        kwargs['products'] = self.products
         return super()._construct_form(i, **kwargs)
 
     @property
@@ -359,14 +359,14 @@ class OrderPositionAddFormset(forms.BaseFormSet):
             empty_permitted=True,
             use_required_attribute=False,
             order=self.order,
-            items=self.items,
+            products=self.products,
         )
         self.add_fields(form, None)
         return form
 
 
 class OrderPositionChangeForm(forms.Form):
-    itemvar = forms.ChoiceField(
+    productvar = forms.ChoiceField(
         required=False,
     )
     subevent = forms.ModelChoiceField(SubEvent.objects.none(), required=False, empty_label=_('(Unchanged)'))
@@ -392,7 +392,7 @@ class OrderPositionChangeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.pop('instance')
-        items = kwargs.pop('items')
+        products = kwargs.pop('products')
         initial = kwargs.get('initial', {})
 
         initial['price'] = instance.price
@@ -421,11 +421,11 @@ class OrderPositionChangeForm(forms.Form):
         self.fields['tax_rule'].queryset = instance.event.tax_rules.all()
         self.fields['tax_rule'].label_from_instance = self.taxrule_label_from_instance
 
-        if not instance.seat and not (instance.item.seat_category_mappings.filter(subevent=instance.subevent).exists()):
+        if not instance.seat and not (instance.product.seat_category_mappings.filter(subevent=instance.subevent).exists()):
             del self.fields['seat']
 
         choices = [('', _('(Unchanged)'))]
-        for i in items:
+        for i in products:
             pname = str(i)
             if not i.is_available():
                 pname += ' ({})'.format(_('inactive'))
@@ -436,7 +436,7 @@ class OrderPositionChangeForm(forms.Form):
                     choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (pname, v.value)))
             else:
                 choices.append((str(i.pk), pname))
-        self.fields['itemvar'].choices = choices
+        self.fields['productvar'].choices = choices
         change_decimal_field(self.fields['price'], instance.order.event.currency)
 
 

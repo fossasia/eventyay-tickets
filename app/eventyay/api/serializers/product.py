@@ -10,23 +10,23 @@ from eventyay.api.serializers.event import MetaDataField
 from eventyay.api.serializers.fields import UploadedFileField
 from eventyay.api.serializers.i18n import I18nAwareModelSerializer
 from eventyay.base.models import (
-    Item,
-    ItemAddOn,
-    ItemBundle,
-    ItemCategory,
-    ItemMetaValue,
-    ItemVariation,
+    Product,
+    ProductAddOn,
+    ProductBundle,
+    ProductCategory,
+    ProductMetaValue,
+    ProductVariation,
     Question,
     QuestionOption,
     Quota,
 )
 
 
-class InlineItemVariationSerializer(I18nAwareModelSerializer):
+class InlineProductVariationSerializer(I18nAwareModelSerializer):
     price = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10, coerce_to_string=True)
 
     class Meta:
-        model = ItemVariation
+        model = ProductVariation
         fields = (
             'id',
             'value',
@@ -39,11 +39,11 @@ class InlineItemVariationSerializer(I18nAwareModelSerializer):
         )
 
 
-class ItemVariationSerializer(I18nAwareModelSerializer):
+class ProductVariationSerializer(I18nAwareModelSerializer):
     price = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=10, coerce_to_string=True)
 
     class Meta:
-        model = ItemVariation
+        model = ProductVariation
         fields = (
             'id',
             'value',
@@ -56,15 +56,15 @@ class ItemVariationSerializer(I18nAwareModelSerializer):
         )
 
 
-class InlineItemBundleSerializer(serializers.ModelSerializer):
+class InlineProductBundleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemBundle
-        fields = ('bundled_item', 'bundled_variation', 'count', 'designated_price')
+        model = ProductBundle
+        fields = ('bundled_product', 'bundled_variation', 'count', 'designated_price')
 
 
-class InlineItemAddOnSerializer(serializers.ModelSerializer):
+class InlineProductAddOnSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemAddOn
+        model = ProductAddOn
         fields = (
             'addon_category',
             'min_count',
@@ -75,12 +75,12 @@ class InlineItemAddOnSerializer(serializers.ModelSerializer):
         )
 
 
-class ItemBundleSerializer(serializers.ModelSerializer):
+class ProductBundleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemBundle
+        model = ProductBundle
         fields = (
             'id',
-            'bundled_item',
+            'bundled_product',
             'bundled_variation',
             'count',
             'designated_price',
@@ -93,21 +93,21 @@ class ItemBundleSerializer(serializers.ModelSerializer):
         full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
-        ItemBundle.clean_itemvar(event, full_data.get('bundled_item'), full_data.get('bundled_variation'))
+        ProductBundle.clean_productvar(event, full_data.get('bundled_product'), full_data.get('bundled_variation'))
 
-        item = self.context['item']
-        if item == full_data.get('bundled_item'):
-            raise ValidationError(_('The bundled item must not be the same item as the bundling one.'))
-        if full_data.get('bundled_item'):
-            if full_data['bundled_item'].bundles.exists():
-                raise ValidationError(_('The bundled item must not have bundles on its own.'))
+        product = self.context['product']
+        if product == full_data.get('bundled_product'):
+            raise ValidationError(_('The bundled product must not be the same product as the bundling one.'))
+        if full_data.get('bundled_product'):
+            if full_data['bundled_product'].bundles.exists():
+                raise ValidationError(_('The bundled product must not have bundles on its own.'))
 
         return data
 
 
-class ItemAddOnSerializer(serializers.ModelSerializer):
+class ProductAddOnSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemAddOn
+        model = ProductAddOn
         fields = (
             'id',
             'addon_category',
@@ -121,24 +121,24 @@ class ItemAddOnSerializer(serializers.ModelSerializer):
     def validate(self, data):
         data = super().validate(data)
 
-        ItemAddOn.clean_max_min_count(data.get('max_count'), data.get('min_count'))
+        ProductAddOn.clean_max_min_count(data.get('max_count'), data.get('min_count'))
 
         return data
 
     def validate_min_count(self, value):
-        ItemAddOn.clean_min_count(value)
+        ProductAddOn.clean_min_count(value)
         return value
 
     def validate_max_count(self, value):
-        ItemAddOn.clean_max_count(value)
+        ProductAddOn.clean_max_count(value)
         return value
 
     def validate_addon_category(self, value):
-        ItemAddOn.clean_categories(self.context['event'], self.context['item'], self.instance, value)
+        ProductAddOn.clean_categories(self.context['event'], self.context['product'], self.instance, value)
         return value
 
 
-class ItemTaxRateField(serializers.Field):
+class ProductTaxRateField(serializers.Field):
     def to_representation(self, i):
         if i.tax_rule:
             return str(Decimal(i.tax_rule.rate))
@@ -146,11 +146,11 @@ class ItemTaxRateField(serializers.Field):
             return str(Decimal('0.00'))
 
 
-class ItemSerializer(I18nAwareModelSerializer):
-    addons = InlineItemAddOnSerializer(many=True, required=False)
-    bundles = InlineItemBundleSerializer(many=True, required=False)
-    variations = InlineItemVariationSerializer(many=True, required=False)
-    tax_rate = ItemTaxRateField(source='*', read_only=True)
+class ProductSerializer(I18nAwareModelSerializer):
+    addons = InlineProductAddOnSerializer(many=True, required=False)
+    bundles = InlineProductBundleSerializer(many=True, required=False)
+    variations = InlineProductVariationSerializer(many=True, required=False)
+    tax_rate = ProductTaxRateField(source='*', read_only=True)
     meta_data = MetaDataField(required=False, source='*')
     picture = UploadedFileField(
         required=False,
@@ -160,7 +160,7 @@ class ItemSerializer(I18nAwareModelSerializer):
     )
 
     class Meta:
-        model = Item
+        model = Product
         fields = (
             'id',
             'category',
@@ -210,8 +210,8 @@ class ItemSerializer(I18nAwareModelSerializer):
                 )
             )
 
-        Item.clean_per_order(data.get('min_per_order'), data.get('max_per_order'))
-        Item.clean_available(data.get('available_from'), data.get('available_until'))
+        Product.clean_per_order(data.get('min_per_order'), data.get('max_per_order'))
+        Product.clean_available(data.get('available_from'), data.get('available_until'))
 
         if data.get('issue_giftcard'):
             if data.get('tax_rule') and data.get('tax_rule').rate > 0:
@@ -227,19 +227,19 @@ class ItemSerializer(I18nAwareModelSerializer):
         return data
 
     def validate_category(self, value):
-        Item.clean_category(value, self.context['event'])
+        Product.clean_category(value, self.context['event'])
         return value
 
     def validate_tax_rule(self, value):
-        Item.clean_tax_rule(value, self.context['event'])
+        Product.clean_tax_rule(value, self.context['event'])
         return value
 
     def validate_bundles(self, value):
         if not self.instance:
             for b_data in value:
-                ItemBundle.clean_itemvar(
+                ProductBundle.clean_productvar(
                     self.context['event'],
-                    b_data['bundled_item'],
+                    b_data['bundled_product'],
                     b_data['bundled_variation'],
                 )
         return value
@@ -247,25 +247,25 @@ class ItemSerializer(I18nAwareModelSerializer):
     def validate_addons(self, value):
         if not self.instance:
             for addon_data in value:
-                ItemAddOn.clean_categories(
+                ProductAddOn.clean_categories(
                     self.context['event'],
                     None,
                     self.instance,
                     addon_data['addon_category'],
                 )
-                ItemAddOn.clean_min_count(addon_data['min_count'])
-                ItemAddOn.clean_max_count(addon_data['max_count'])
-                ItemAddOn.clean_max_min_count(addon_data['max_count'], addon_data['min_count'])
+                ProductAddOn.clean_min_count(addon_data['min_count'])
+                ProductAddOn.clean_max_count(addon_data['max_count'])
+                ProductAddOn.clean_max_min_count(addon_data['max_count'], addon_data['min_count'])
         return value
 
     @cached_property
-    def item_meta_properties(self):
-        return {p.name: p for p in self.context['request'].event.item_meta_properties.all()}
+    def product_meta_properties(self):
+        return {p.name: p for p in self.context['request'].event.product_meta_properties.all()}
 
     def validate_meta_data(self, value):
         for key in value['meta_data'].keys():
-            if key not in self.item_meta_properties:
-                raise ValidationError(_("Item meta data property '{name}' does not exist.").format(name=key))
+            if key not in self.product_meta_properties:
+                raise ValidationError(_("Product meta data property '{name}' does not exist.").format(name=key))
         return value
 
     @transaction.atomic
@@ -274,46 +274,46 @@ class ItemSerializer(I18nAwareModelSerializer):
         addons_data = validated_data.pop('addons') if 'addons' in validated_data else {}
         bundles_data = validated_data.pop('bundles') if 'bundles' in validated_data else {}
         meta_data = validated_data.pop('meta_data', None)
-        item = Item.objects.create(**validated_data)
+        product = Product.objects.create(**validated_data)
 
         for variation_data in variations_data:
-            ItemVariation.objects.create(item=item, **variation_data)
+            ProductVariation.objects.create(product=product, **variation_data)
         for addon_data in addons_data:
-            ItemAddOn.objects.create(base_item=item, **addon_data)
+            ProductAddOn.objects.create(base_product=product, **addon_data)
         for bundle_data in bundles_data:
-            ItemBundle.objects.create(base_item=item, **bundle_data)
+            ProductBundle.objects.create(base_product=product, **bundle_data)
 
         # Meta data
         if meta_data is not None:
             for key, value in meta_data.items():
-                ItemMetaValue.objects.create(property=self.item_meta_properties.get(key), value=value, item=item)
-        return item
+                ProductMetaValue.objects.create(property=self.product_meta_properties.get(key), value=value, product=product)
+        return product
 
     def update(self, instance, validated_data):
         meta_data = validated_data.pop('meta_data', None)
-        item = super().update(instance, validated_data)
+        product = super().update(instance, validated_data)
 
         # Meta data
         if meta_data is not None:
-            current = {mv.property: mv for mv in item.meta_values.select_related('property')}
+            current = {mv.property: mv for mv in product.meta_values.select_related('property')}
             for key, value in meta_data.items():
-                prop = self.item_meta_properties.get(key)
+                prop = self.product_meta_properties.get(key)
                 if prop in current:
                     current[prop].value = value
                     current[prop].save()
                 else:
-                    item.meta_values.create(property=self.item_meta_properties.get(key), value=value)
+                    product.meta_values.create(property=self.product_meta_properties.get(key), value=value)
 
             for prop, current_object in current.items():
                 if prop.name not in meta_data:
                     current_object.delete()
 
-        return item
+        return product
 
 
-class ItemCategorySerializer(I18nAwareModelSerializer):
+class ProductCategorySerializer(I18nAwareModelSerializer):
     class Meta:
-        model = ItemCategory
+        model = ProductCategory
         fields = ('id', 'name', 'internal_name', 'description', 'position', 'is_addon')
 
 
@@ -357,7 +357,7 @@ class QuestionSerializer(I18nAwareModelSerializer):
             'question',
             'type',
             'required',
-            'items',
+            'products',
             'options',
             'position',
             'ask_during_checkin',
@@ -422,7 +422,7 @@ class QuestionSerializer(I18nAwareModelSerializer):
         if full_data.get('ask_during_checkin') and full_data.get('type') in Question.ASK_DURING_CHECKIN_UNSUPPORTED:
             raise ValidationError(_('This type of question cannot be asked during check-in.'))
 
-        Question.clean_items(event, full_data.get('items'))
+        Question.clean_products(event, full_data.get('products'))
         return data
 
     def validate_options(self, value):
@@ -442,10 +442,10 @@ class QuestionSerializer(I18nAwareModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         options_data = validated_data.pop('options') if 'options' in validated_data else []
-        items = validated_data.pop('items')
+        products = validated_data.pop('products')
 
         question = Question.objects.create(**validated_data)
-        question.items.set(items)
+        question.products.set(products)
         for opt_data in options_data:
             QuestionOption.objects.create(question=question, **opt_data)
         return question
@@ -458,7 +458,7 @@ class QuotaSerializer(I18nAwareModelSerializer):
             'id',
             'name',
             'size',
-            'items',
+            'products',
             'variations',
             'subevent',
             'closed',
@@ -473,8 +473,8 @@ class QuotaSerializer(I18nAwareModelSerializer):
         full_data = self.to_internal_value(self.to_representation(self.instance)) if self.instance else {}
         full_data.update(data)
 
-        Quota.clean_variations(full_data.get('items'), full_data.get('variations'))
-        Quota.clean_items(event, full_data.get('items'), full_data.get('variations'))
+        Quota.clean_variations(full_data.get('products'), full_data.get('variations'))
+        Quota.clean_products(event, full_data.get('products'), full_data.get('variations'))
         Quota.clean_subevent(event, full_data.get('subevent'))
 
         return data

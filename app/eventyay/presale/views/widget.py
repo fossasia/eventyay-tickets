@@ -39,8 +39,8 @@ from eventyay.helpers.thumb import get_thumbnail
 from eventyay.multidomain.urlreverse import build_absolute_uri
 from eventyay.presale.views.cart import get_or_create_cart_id
 from eventyay.presale.views.event import (
-    get_grouped_items,
-    item_group_by_category,
+    get_grouped_products,
+    product_group_by_category,
 )
 from eventyay.presale.views.organizer import (
     EventListMixin,
@@ -188,14 +188,14 @@ def widget_js(request, lang, **kwargs):
     return resp
 
 
-def price_dict(item, price):
+def price_dict(product, price):
     return {
         'gross': price.gross,
         'net': price.net,
         'tax': price.tax,
         'rate': price.rate,
         'name': str(price.name),
-        'includes_mixed_tax_rate': item.includes_mixed_tax_rate,
+        'includes_mixed_tax_rate': product.includes_mixed_tax_rate,
     }
 
 
@@ -207,14 +207,14 @@ def get_picture(event, picture):
 
 
 class WidgetAPIProductList(EventListMixin, View):
-    def _get_items(self):
-        qs = self.request.event.items
-        if 'items' in self.request.GET:
-            qs = qs.filter(pk__in=self.request.GET.get('items').split(','))
+    def _get_products(self):
+        qs = self.request.event.products
+        if 'products' in self.request.GET:
+            qs = qs.filter(pk__in=self.request.GET.get('products').split(','))
         if 'categories' in self.request.GET:
             qs = qs.filter(category__pk__in=self.request.GET.get('categories').split(','))
 
-        items, display_add_to_cart = get_grouped_items(
+        products, display_add_to_cart = get_grouped_products(
             self.request.event,
             subevent=self.subevent,
             voucher=self.voucher,
@@ -223,7 +223,7 @@ class WidgetAPIProductList(EventListMixin, View):
         )
 
         grps = []
-        for cat, g in item_group_by_category(items):
+        for cat, g in product_group_by_category(products):
             grps.append(
                 {
                     'id': cat.pk if cat else None,
@@ -231,36 +231,36 @@ class WidgetAPIProductList(EventListMixin, View):
                     'description': str(rich_text(cat.description, safelinks=False))
                     if cat and cat.description
                     else None,
-                    'items': [
+                    'products': [
                         {
-                            'id': item.pk,
-                            'name': str(item.name),
-                            'picture': get_picture(self.request.event, item.picture) if item.picture else None,
-                            'description': str(rich_text(item.description, safelinks=False))
-                            if item.description
+                            'id': product.pk,
+                            'name': str(product.name),
+                            'picture': get_picture(self.request.event, product.picture) if product.picture else None,
+                            'description': str(rich_text(product.description, safelinks=False))
+                            if product.description
                             else None,
-                            'has_variations': item.has_variations,
-                            'require_voucher': item.require_voucher,
-                            'order_min': item.min_per_order,
-                            'order_max': item.order_max if not item.has_variations else None,
-                            'price': price_dict(item, item.display_price) if not item.has_variations else None,
-                            'min_price': item.min_price if item.has_variations else None,
-                            'max_price': item.max_price if item.has_variations else None,
-                            'allow_waitinglist': item.allow_waitinglist,
-                            'free_price': item.free_price,
+                            'has_variations': product.has_variations,
+                            'require_voucher': product.require_voucher,
+                            'order_min': product.min_per_order,
+                            'order_max': product.order_max if not product.has_variations else None,
+                            'price': price_dict(product, product.display_price) if not product.has_variations else None,
+                            'min_price': product.min_price if product.has_variations else None,
+                            'max_price': product.max_price if product.has_variations else None,
+                            'allow_waitinglist': product.allow_waitinglist,
+                            'free_price': product.free_price,
                             'avail': [
-                                item.cached_availability[0],
-                                item.cached_availability[1] if item.do_show_quota_left else None,
+                                product.cached_availability[0],
+                                product.cached_availability[1] if product.do_show_quota_left else None,
                             ]
-                            if not item.has_variations
+                            if not product.has_variations
                             else None,
                             'original_price': (
                                 (
-                                    item.original_price.net
+                                    product.original_price.net
                                     if self.request.event.settings.display_net_prices
-                                    else item.original_price.gross
+                                    else product.original_price.gross
                                 )
-                                if item.original_price
+                                if product.original_price
                                 else None
                             ),
                             'variations': [
@@ -271,7 +271,7 @@ class WidgetAPIProductList(EventListMixin, View):
                                     'description': str(rich_text(var.description, safelinks=False))
                                     if var.description
                                     else None,
-                                    'price': price_dict(item, var.display_price),
+                                    'price': price_dict(product, var.display_price),
                                     'original_price': (
                                         (
                                             var.original_price.net
@@ -283,26 +283,26 @@ class WidgetAPIProductList(EventListMixin, View):
                                     )
                                     or (
                                         (
-                                            item.original_price.net
+                                            product.original_price.net
                                             if self.request.event.settings.display_net_prices
-                                            else item.original_price.gross
+                                            else product.original_price.gross
                                         )
-                                        if item.original_price
+                                        if product.original_price
                                         else None
                                     ),
                                     'avail': [
                                         var.cached_availability[0],
-                                        var.cached_availability[1] if item.do_show_quota_left else None,
+                                        var.cached_availability[1] if product.do_show_quota_left else None,
                                     ],
                                 }
-                                for var in item.available_variations
+                                for var in product.available_variations
                             ],
                         }
-                        for item in g
+                        for product in g
                     ],
                 }
             )
-        return grps, display_add_to_cart, len(items)
+        return grps, display_add_to_cart, len(products)
 
     def post_process(self, data):
         data['poweredby'] = '<a href="https://eventyay.com" target="_blank" rel="noopener">{}</a>'.format(
@@ -367,7 +367,7 @@ class WidgetAPIProductList(EventListMixin, View):
                 availability['reason'] = 'reserved'
             elif ev.best_availability_state is not None and ev.best_availability_state < Quota.AVAILABILITY_RESERVED:
                 availability['color'] = 'red'
-                if ev.has_paid_item:
+                if ev.has_paid_product:
                     availability['text'] = gettext('Sold out')
                 else:
                     availability['text'] = gettext('Fully booked')
@@ -778,13 +778,13 @@ class WidgetAPIProductList(EventListMixin, View):
                 data['error'] = error_messages['voucher_invalid']
                 fail = True
 
-        if not fail and (ev.presale_is_running or request.event.settings.show_items_outside_presale_period):
-            data['items_by_category'], data['display_add_to_cart'], data['itemnum'] = self._get_items()
+        if not fail and (ev.presale_is_running or request.event.settings.show_products_outside_presale_period):
+            data['products_by_category'], data['display_add_to_cart'], data['productnum'] = self._get_products()
             data['display_add_to_cart'] = data['display_add_to_cart'] and ev.presale_is_running
         else:
-            data['items_by_category'] = []
+            data['products_by_category'] = []
             data['display_add_to_cart'] = False
-            data['itemnum'] = 0
+            data['productnum'] = 0
 
         data['has_seating_plan'] = ev.seating_plan is not None
 

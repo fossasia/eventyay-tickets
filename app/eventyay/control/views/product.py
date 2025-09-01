@@ -25,17 +25,17 @@ from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import DeleteView
 from django_countries.fields import Country
 
-from eventyay.api.serializers.item import (
-    ItemAddOnSerializer,
-    ItemBundleSerializer,
-    ItemVariationSerializer,
+from eventyay.api.serializers.product import (
+    ProductAddOnSerializer,
+    ProductBundleSerializer,
+    ProductVariationSerializer,
 )
 from eventyay.base.forms import I18nFormSet
 from eventyay.base.models import (
     CartPosition,
-    Item,
-    ItemCategory,
-    ItemVariation,
+    Product,
+    ProductCategory,
+    ProductVariation,
     Order,
     Question,
     QuestionAnswer,
@@ -44,22 +44,22 @@ from eventyay.base.models import (
     Voucher,
 )
 from eventyay.base.models.event import SubEvent
-from eventyay.base.models.items import ItemAddOn, ItemBundle, ItemMetaValue
+from eventyay.base.models.product import ProductAddOn, ProductBundle, ProductMetaValue
 from eventyay.base.services.quotas import QuotaAvailability
 from eventyay.base.services.tickets import invalidate_cache
 from eventyay.base.signals import quota_availability
-from eventyay.control.forms.item import (
+from eventyay.control.forms.product import (
     CategoryForm,
     DescriptionForm,
-    ItemAddOnForm,
-    ItemAddOnsFormSet,
-    ItemBundleForm,
-    ItemBundleFormSet,
-    ItemCreateForm,
-    ItemMetaValueForm,
-    ItemUpdateForm,
-    ItemVariationForm,
-    ItemVariationsFormSet,
+    ProductAddOnForm,
+    ProductAddOnsFormSet,
+    ProductBundleForm,
+    ProductBundleFormSet,
+    ProductCreateForm,
+    ProductMetaValueForm,
+    ProductUpdateForm,
+    ProductVariationForm,
+    ProductVariationsFormSet,
     QuestionForm,
     QuestionOptionForm,
     QuotaForm,
@@ -68,16 +68,16 @@ from eventyay.control.permissions import (
     EventPermissionRequiredMixin,
     event_permission_required,
 )
-from eventyay.control.signals import item_forms, item_formsets
+from eventyay.control.signals import product_forms, product_formsets
 from eventyay.helpers.models import modelcopy
 
 from ...base.channels import get_all_sales_channels
 from . import ChartContainingView, CreateView, PaginationMixin, UpdateView
 
 
-class ItemList(ListView):
-    model = Item
-    context_object_name = 'items'
+class ProductList(ListView):
+    model = Product
+    context_object_name = 'products'
     # paginate_by = 30
     # Pagination is disabled as it is very unlikely to be necessary
     # here and could cause problems with the "reorder-within-category" feature
@@ -85,7 +85,7 @@ class ItemList(ListView):
 
     def get_queryset(self):
         return (
-            Item.objects.filter(event=self.request.event)
+            Product.objects.filter(event=self.request.event)
             .annotate(var_count=Count('variations'))
             .prefetch_related('category')
             .order_by('category__position', 'category', 'position')
@@ -97,69 +97,69 @@ class ItemList(ListView):
         return ctx
 
 
-def item_move(request, item, up=True):
+def product_move(request, product, up=True):
     """
-    This is a helper function to avoid duplicating code in item_move_up and
-    item_move_down. It takes an item and a direction and then tries to bring
-    all items for this category in a new order.
+    This is a helper function to avoid duplicating code in product_move_up and
+    product_move_down. It takes an product and a direction and then tries to bring
+    all products for this category in a new order.
     """
     try:
-        item = request.event.items.get(id=item)
-    except Item.DoesNotExist:
+        product = request.event.products.get(id=product)
+    except Product.DoesNotExist:
         raise Http404(_('The requested product does not exist.'))
-    items = list(request.event.items.filter(category=item.category).order_by('position'))
+    products = list(request.event.products.filter(category=product.category).order_by('position'))
 
-    index = items.index(item)
+    index = products.index(product)
     if index != 0 and up:
-        items[index - 1], items[index] = items[index], items[index - 1]
-    elif index != len(items) - 1 and not up:
-        items[index + 1], items[index] = items[index], items[index + 1]
+        products[index - 1], products[index] = products[index], products[index - 1]
+    elif index != len(products) - 1 and not up:
+        products[index + 1], products[index] = products[index], products[index + 1]
 
-    for i, item in enumerate(items):
-        if item.position != i:
-            item.position = i
-            item.save()
-    messages.success(request, _('The order of items has been updated.'))
+    for i, product in enumerate(products):
+        if product.position != i:
+            product.position = i
+            product.save()
+    messages.success(request, _('The order of products has been updated.'))
 
 
 @event_permission_required('can_change_items')
-def item_move_up(request, organizer, event, item):
-    item_move(request, item, up=True)
+def product_move_up(request, organizer, event, product):
+    product_move(request, product, up=True)
     return redirect(
-        'control:event.items',
+        'control:event.products',
         organizer=request.event.organizer.slug,
         event=request.event.slug,
     )
 
 
 @event_permission_required('can_change_items')
-def item_move_down(request, organizer, event, item):
-    item_move(request, item, up=False)
+def product_move_down(request, organizer, event, product):
+    product_move(request, product, up=False)
     return redirect(
-        'control:event.items',
+        'control:event.products',
         organizer=request.event.organizer.slug,
         event=request.event.slug,
     )
 
 
 class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
-    model = ItemCategory
+    model = ProductCategory
     template_name = 'pretixcontrol/items/category_delete.html'
     permission = 'can_change_items'
     context_object_name = 'category'
 
-    def get_object(self, queryset=None) -> ItemCategory:
+    def get_object(self, queryset=None) -> ProductCategory:
         try:
             return self.request.event.categories.get(id=self.kwargs['category'])
-        except ItemCategory.DoesNotExist:
+        except ProductCategory.DoesNotExist:
             raise Http404(_('The requested product category does not exist.'))
 
     @transaction.atomic
     def form_valid(self, form):
         self.object = self.get_object()
-        for item in self.object.items.all():
-            item.category = None
-            item.save()
+        for product in self.object.products.all():
+            product.category = None
+            product.save()
         success_url = self.get_success_url()
         self.object.log_action('pretix.event.category.deleted', user=self.request.user)
         self.object.delete()
@@ -168,7 +168,7 @@ class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.categories',
+            'control:event.products.categories',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -177,17 +177,17 @@ class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
 
 
 class CategoryUpdate(EventPermissionRequiredMixin, UpdateView):
-    model = ItemCategory
+    model = ProductCategory
     form_class = CategoryForm
     template_name = 'pretixcontrol/items/category.html'
     permission = 'can_change_items'
     context_object_name = 'category'
 
-    def get_object(self, queryset=None) -> ItemCategory:
+    def get_object(self, queryset=None) -> ProductCategory:
         url = resolve(self.request.path_info)
         try:
             return self.request.event.categories.get(id=url.kwargs['category'])
-        except ItemCategory.DoesNotExist:
+        except ProductCategory.DoesNotExist:
             raise Http404(_('The requested product category does not exist.'))
 
     @transaction.atomic
@@ -203,7 +203,7 @@ class CategoryUpdate(EventPermissionRequiredMixin, UpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.categories',
+            'control:event.products.categories',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -216,7 +216,7 @@ class CategoryUpdate(EventPermissionRequiredMixin, UpdateView):
 
 
 class CategoryCreate(EventPermissionRequiredMixin, CreateView):
-    model = ItemCategory
+    model = ProductCategory
     form_class = CategoryForm
     template_name = 'pretixcontrol/items/category.html'
     permission = 'can_change_items'
@@ -224,7 +224,7 @@ class CategoryCreate(EventPermissionRequiredMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.categories',
+            'control:event.products.categories',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -236,7 +236,7 @@ class CategoryCreate(EventPermissionRequiredMixin, CreateView):
         if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
                 return self.request.event.categories.get(pk=self.request.GET.get('copy_from'))
-            except ItemCategory.DoesNotExist:
+            except ProductCategory.DoesNotExist:
                 pass
 
     def get_form_kwargs(self):
@@ -247,7 +247,7 @@ class CategoryCreate(EventPermissionRequiredMixin, CreateView):
             i.pk = None
             kwargs['instance'] = i
         else:
-            kwargs['instance'] = ItemCategory(event=self.request.event)
+            kwargs['instance'] = ProductCategory(event=self.request.event)
         return kwargs
 
     @transaction.atomic
@@ -268,7 +268,7 @@ class CategoryCreate(EventPermissionRequiredMixin, CreateView):
 
 
 class CategoryList(PaginationMixin, ListView):
-    model = ItemCategory
+    model = ProductCategory
     context_object_name = 'categories'
     template_name = 'pretixcontrol/items/categories.html'
 
@@ -284,7 +284,7 @@ def category_move(request, category, up=True):
     """
     try:
         category = request.event.categories.get(id=category)
-    except ItemCategory.DoesNotExist:
+    except ProductCategory.DoesNotExist:
         raise Http404(_('The requested product category does not exist.'))
     categories = list(request.event.categories.order_by('position'))
 
@@ -311,7 +311,7 @@ def category_move(request, category, up=True):
 def category_move_up(request, organizer, event, category):
     category_move(request, category, up=True)
     return redirect(
-        'control:event.items.categories',
+        'control:event.products.categories',
         organizer=request.event.organizer.slug,
         event=request.event.slug,
     )
@@ -321,7 +321,7 @@ def category_move_up(request, organizer, event, category):
 def category_move_down(request, organizer, event, category):
     category_move(request, category, up=False)
     return redirect(
-        'control:event.items.categories',
+        'control:event.products.categories',
         organizer=request.event.organizer.slug,
         event=request.event.slug,
     )
@@ -336,7 +336,7 @@ class QuestionList(ListView):
     template_name = 'pretixcontrol/items/questions.html'
 
     def get_queryset(self):
-        return self.request.event.questions.prefetch_related('items')
+        return self.request.event.questions.prefetch_related('products')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -465,7 +465,7 @@ class QuestionDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
-        context['dependent'] = list(self.get_object().items.all())
+        context['dependent'] = list(self.get_object().products.all())
         return context
 
     @transaction.atomic
@@ -479,7 +479,7 @@ class QuestionDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.questions',
+            'control:event.products.questions',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -591,9 +591,9 @@ class QuestionView(EventPermissionRequiredMixin, QuestionMixin, ChartContainingV
 
         if s not in (Order.STATUS_CANCELED, ''):
             qs = qs.filter(orderposition__canceled=False)
-        if self.request.GET.get('item', '') != '':
-            i = self.request.GET.get('item', '')
-            qs = qs.filter(orderposition__item_id__in=(i,))
+        if self.request.GET.get('product', '') != '':
+            i = self.request.GET.get('product', '')
+            qs = qs.filter(orderposition__product_id__in=(i,))
 
         if self.object.type == Question.TYPE_FILE:
             qs = [
@@ -645,7 +645,7 @@ class QuestionView(EventPermissionRequiredMixin, QuestionMixin, ChartContainingV
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        ctx['items'] = self.object.items.all()
+        ctx['products'] = self.object.products.all()
         stats = self.get_answer_statistics()
         ctx['stats'] = stats
         ctx['stats_json'] = json.dumps(stats)
@@ -659,7 +659,7 @@ class QuestionView(EventPermissionRequiredMixin, QuestionMixin, ChartContainingV
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.questions',
+            'control:event.products.questions',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -697,7 +697,7 @@ class QuestionUpdate(EventPermissionRequiredMixin, QuestionMixin, UpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.questions',
+            'control:event.products.questions',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -728,7 +728,7 @@ class QuestionCreate(EventPermissionRequiredMixin, QuestionMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.questions',
+            'control:event.products.questions',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -775,14 +775,14 @@ class QuotaList(PaginationMixin, ListView):
     def get_queryset(self):
         qs = self.request.event.quotas.prefetch_related(
             Prefetch(
-                'items',
-                queryset=Item.objects.annotate(
-                    has_variations=Exists(ItemVariation.objects.filter(item=OuterRef('pk')))
+                'products',
+                queryset=Product.objects.annotate(
+                    has_variations=Exists(ProductVariation.objects.filter(product=OuterRef('pk')))
                 ),
-                to_attr='cached_items',
+                to_attr='cached_products',
             ),
             'variations',
-            'variations__item',
+            'variations__product',
             Prefetch('subevent', queryset=self.request.event.subevents.all()),
         )
         if self.request.GET.get('subevent', '') != '':
@@ -824,7 +824,7 @@ class QuotaCreate(EventPermissionRequiredMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.quotas',
+            'control:event.products.quotas',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -859,8 +859,8 @@ class QuotaCreate(EventPermissionRequiredMixin, CreateView):
             i.pk = None
             kwargs['instance'] = i
             kwargs.setdefault('initial', {})
-            kwargs['initial']['itemvars'] = [str(i.pk) for i in self.copy_from.items.all()] + [
-                '{}-{}'.format(v.item_id, v.pk) for v in self.copy_from.variations.all()
+            kwargs['initial']['productvars'] = [str(i.pk) for i in self.copy_from.products.all()] + [
+                '{}-{}'.format(v.product_id, v.pk) for v in self.copy_from.variations.all()
             ]
         else:
             kwargs['instance'] = Quota(event=self.request.event)
@@ -975,18 +975,18 @@ class QuotaView(ChartContainingView, DetailView):
             & Q(Q(valid_until__isnull=True) | Q(valid_until__gte=now()))
             & Q(
                 (
-                    (  # Orders for items which do not have any variations
+                    (  # Orders for products which do not have any variations
                         Q(variation__isnull=True)
                         & Q(
-                            item_id__in=Quota.items.through.objects.filter(quota_id=self.object.pk).values_list(
-                                'item_id', flat=True
+                            product_id__in=Quota.products.through.objects.filter(quota_id=self.object.pk).values_list(
+                                'product_id', flat=True
                             )
                         )
                     )
-                    | (  # Orders for items which do have any variations
+                    | (  # Orders for products which do have any variations
                         Q(
                             variation__in=Quota.variations.through.objects.filter(quota_id=self.object.pk).values_list(
-                                'itemvariation_id', flat=True
+                                'productvariation_id', flat=True
                             )
                         )
                     )
@@ -1031,7 +1031,7 @@ class QuotaView(ChartContainingView, DetailView):
             messages.success(request, _('The quota has been re-opened and will not close again.'))
         return redirect(
             reverse(
-                'control:event.items.quotas.show',
+                'control:event.products.quotas.show',
                 kwargs={
                     'organizer': self.request.event.organizer.slug,
                     'event': self.request.event.slug,
@@ -1088,7 +1088,7 @@ class QuotaUpdate(EventPermissionRequiredMixin, UpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.quotas.show',
+            'control:event.products.quotas.show',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -1115,7 +1115,7 @@ class QuotaDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
-        context['dependent'] = list(self.object.items.all())
+        context['dependent'] = list(self.object.products.all())
         context['vouchers'] = self.object.vouchers.count()
         return context
 
@@ -1130,7 +1130,7 @@ class QuotaDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items.quotas',
+            'control:event.products.quotas',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
@@ -1138,23 +1138,23 @@ class QuotaDelete(EventPermissionRequiredMixin, DeleteView):
         )
 
 
-class ItemDetailMixin(SingleObjectMixin):
-    model = Item
-    context_object_name = 'item'
+class ProductDetailMixin(SingleObjectMixin):
+    model = Product
+    context_object_name = 'product'
 
-    def get_object(self, queryset=None) -> Item:
+    def get_object(self, queryset=None) -> Product:
         try:
             if not hasattr(self, 'object') or not self.object:
-                self.item = self.request.event.items.get(id=self.kwargs['item'])
-                self.object = self.item
+                self.product = self.request.event.products.get(id=self.kwargs['product'])
+                self.object = self.product
             return self.object
-        except Item.DoesNotExist:
-            raise Http404(_('The requested item does not exist.'))
+        except Product.DoesNotExist:
+            raise Http404(_('The requested product does not exist.'))
 
 
 class MetaDataEditorMixin:
-    meta_form = ItemMetaValueForm
-    meta_model = ItemMetaValue
+    meta_form = ProductMetaValueForm
+    meta_model = ProductMetaValue
 
     @cached_property
     def meta_forms(self):
@@ -1165,7 +1165,7 @@ class MetaDataEditorMixin:
 
         formlist = []
 
-        for p in self.request.event.item_meta_properties.all():
+        for p in self.request.event.product_meta_properties.all():
             formlist.append(self._make_meta_form(p, val_instances))
         return formlist
 
@@ -1173,7 +1173,7 @@ class MetaDataEditorMixin:
         return self.meta_form(
             prefix='prop-{}'.format(p.pk),
             property=p,
-            instance=val_instances.get(p.pk, self.meta_model(property=p, item=self.object)),
+            instance=val_instances.get(p.pk, self.meta_model(property=p, product=self.object)),
             data=(self.request.POST if self.request.method == 'POST' else None),
         )
 
@@ -1185,18 +1185,18 @@ class MetaDataEditorMixin:
                 f.instance.delete()
 
 
-class ItemCreate(EventPermissionRequiredMixin, CreateView):
-    form_class = ItemCreateForm
+class ProductCreate(EventPermissionRequiredMixin, CreateView):
+    form_class = ProductCreateForm
     template_name = 'pretixcontrol/item/create.html'
     permission = 'can_change_items'
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.item',
+            'control:event.product',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
-                'item': self.object.id,
+                'product': self.object.id,
             },
         )
 
@@ -1204,8 +1204,8 @@ class ItemCreate(EventPermissionRequiredMixin, CreateView):
     def copy_from(self):
         if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
-                return self.request.event.items.get(pk=self.request.GET.get('copy_from'))
-            except Item.DoesNotExist:
+                return self.request.event.products.get(pk=self.request.GET.get('copy_from'))
+            except Product.DoesNotExist:
                 pass
 
     def get_initial(self):
@@ -1236,7 +1236,7 @@ class ItemCreate(EventPermissionRequiredMixin, CreateView):
 
         ret = super().form_valid(form)
         form.instance.log_action(
-            'pretix.event.item.added',
+            'eventyay.event.product.added',
             user=self.request.user,
             data={
                 k: (
@@ -1253,7 +1253,7 @@ class ItemCreate(EventPermissionRequiredMixin, CreateView):
         """
         Returns the keyword arguments for instantiating the form.
         """
-        newinst = Item(event=self.request.event)
+        newinst = Product(event=self.request.event)
         kwargs = super().get_form_kwargs()
         kwargs.update({'instance': newinst, 'user': self.request.user})
         return kwargs
@@ -1263,15 +1263,15 @@ class ItemCreate(EventPermissionRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataEditorMixin, UpdateView):
-    form_class = ItemUpdateForm
+class ProductUpdateGeneral(ProductDetailMixin, EventPermissionRequiredMixin, MetaDataEditorMixin, UpdateView):
+    form_class = ProductUpdateForm
     template_name = 'pretixcontrol/item/index.html'
     permission = 'can_change_items'
 
     @cached_property
     def plugin_forms(self):
         forms = []
-        for rec, resp in item_forms.send(sender=self.request.event, item=self.item, request=self.request):
+        for rec, resp in product_forms.send(sender=self.request.event, product=self.product, request=self.request):
             if isinstance(resp, (list, tuple)):
                 forms.extend(resp)
             else:
@@ -1280,11 +1280,11 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.item',
+            'control:event.product',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,
-                'item': self.get_object().id,
+                'product': self.get_object().id,
             },
         )
 
@@ -1324,7 +1324,7 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
         else:
             return self.form_invalid(form)
 
-    def save_formset(self, key, log_base, attr='item', order=True, serializer=None, rm_verb='removed'):
+    def save_formset(self, key, log_base, attr='product', order=True, serializer=None, rm_verb='removed'):
         for form in self.formsets[key].deleted_forms:
             if not form.instance.pk:
                 continue
@@ -1332,7 +1332,7 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
             if serializer:
                 d.update(serializer(form.instance).data)
             self.get_object().log_action(
-                'pretix.event.item.{}.{}'.format(log_base, rm_verb),
+                'eventyay.event.product.{}.{}'.format(log_base, rm_verb),
                 user=self.request.user,
                 data=d,
             )
@@ -1359,9 +1359,9 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
                     change_data['value'] = form.instance.value
                 change_data['id'] = form.instance.pk
                 self.get_object().log_action(
-                    'pretix.event.item.{}.changed'.format(log_base)
+                    'eventyay.event.product.{}.changed'.format(log_base)
                     if not created
-                    else 'pretix.event.item.{}.added'.format(log_base),
+                    else 'eventyay.event.product.{}.added'.format(log_base),
                     user=self.request.user,
                     data=change_data,
                 )
@@ -1383,8 +1383,8 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
                         for k in f.changed_data
                     }
                 )
-            self.object.log_action('pretix.event.item.changed', user=self.request.user, data=data)
-            invalidate_cache.apply_async(kwargs={'event': self.request.event.pk, 'item': self.object.pk})
+            self.object.log_action('eventyay.event.product.changed', user=self.request.user, data=data)
+            invalidate_cache.apply_async(kwargs={'event': self.request.event.pk, 'product': self.object.pk})
         for f in self.plugin_forms:
             f.save()
 
@@ -1393,18 +1393,18 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
                 self.save_formset(
                     'variations',
                     'variation',
-                    serializer=ItemVariationSerializer,
+                    serializer=ProductVariationSerializer,
                     rm_verb='deleted',
                 )
             elif k == 'addons':
-                self.save_formset('addons', 'addons', 'base_item', serializer=ItemAddOnSerializer)
+                self.save_formset('addons', 'addons', 'base_product', serializer=ProductAddOnSerializer)
             elif k == 'bundles':
                 self.save_formset(
                     'bundles',
                     'bundles',
-                    'base_item',
+                    'base_product',
                     order=False,
-                    serializer=ItemBundleSerializer,
+                    serializer=ProductBundleSerializer,
                 )
             else:
                 v.save()
@@ -1421,13 +1421,13 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
         ctx['meta_forms'] = self.meta_forms
         ctx['formsets'] = self.formsets
 
-        if not ctx['item'].active and ctx['item'].bundled_with.count() > 0:
+        if not ctx['product'].active and ctx['product'].bundled_with.count() > 0:
             messages.info(
                 self.request,
                 _(
-                    'You disabled this item, but it is still part of a product bundle. '
+                    'You disabled this product, but it is still part of a product bundle. '
                     "Your participants won't be able to buy the bundle unless you remove this "
-                    'item from it.'
+                    'product from it.'
                 ),
             )
 
@@ -1440,16 +1440,16 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
                 (
                     'variations',
                     inlineformset_factory(
-                        Item,
-                        ItemVariation,
-                        form=ItemVariationForm,
-                        formset=ItemVariationsFormSet,
+                        Product,
+                        ProductVariation,
+                        form=ProductVariationForm,
+                        formset=ProductVariationsFormSet,
                         can_order=True,
                         can_delete=True,
                         extra=0,
                     )(
                         self.request.POST if self.request.method == 'POST' else None,
-                        queryset=ItemVariation.objects.filter(item=self.get_object()),
+                        queryset=ProductVariation.objects.filter(product=self.get_object()),
                         event=self.request.event,
                         prefix='variations',
                     ),
@@ -1457,16 +1457,16 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
                 (
                     'addons',
                     inlineformset_factory(
-                        Item,
-                        ItemAddOn,
-                        form=ItemAddOnForm,
-                        formset=ItemAddOnsFormSet,
+                        Product,
+                        ProductAddOn,
+                        form=ProductAddOnForm,
+                        formset=ProductAddOnsFormSet,
                         can_order=True,
                         can_delete=True,
                         extra=0,
                     )(
                         self.request.POST if self.request.method == 'POST' else None,
-                        queryset=ItemAddOn.objects.filter(base_item=self.get_object()),
+                        queryset=ProductAddOn.objects.filter(base_product=self.get_object()),
                         event=self.request.event,
                         prefix='addons',
                     ),
@@ -1474,19 +1474,19 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
                 (
                     'bundles',
                     inlineformset_factory(
-                        Item,
-                        ItemBundle,
-                        form=ItemBundleForm,
-                        formset=ItemBundleFormSet,
-                        fk_name='base_item',
+                        Product,
+                        ProductBundle,
+                        form=ProductBundleForm,
+                        formset=ProductBundleFormSet,
+                        fk_name='base_product',
                         can_order=False,
                         can_delete=True,
                         extra=0,
                     )(
                         self.request.POST if self.request.method == 'POST' else None,
-                        queryset=ItemBundle.objects.filter(base_item=self.get_object()),
+                        queryset=ProductBundle.objects.filter(base_product=self.get_object()),
                         event=self.request.event,
-                        item=self.item,
+                        product=self.product,
                         prefix='bundles',
                     ),
                 ),
@@ -1496,7 +1496,7 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
             del f['variations']
 
         i = 0
-        for rec, resp in item_formsets.send(sender=self.request.event, item=self.item, request=self.request):
+        for rec, resp in product_formsets.send(sender=self.request.event, product=self.product, request=self.request):
             if isinstance(resp, (list, tuple)):
                 for k in resp:
                     f['p-{}'.format(i)] = k
@@ -1507,11 +1507,11 @@ class ItemUpdateGeneral(ItemDetailMixin, EventPermissionRequiredMixin, MetaDataE
         return f
 
 
-class ItemDelete(EventPermissionRequiredMixin, DeleteView):
-    model = Item
+class ProductDelete(EventPermissionRequiredMixin, DeleteView):
+    model = Product
     template_name = 'pretixcontrol/item/delete.html'
     permission = 'can_change_items'
-    context_object_name = 'item'
+    context_object_name = 'product'
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
@@ -1522,11 +1522,11 @@ class ItemDelete(EventPermissionRequiredMixin, DeleteView):
     def is_allowed(self) -> bool:
         return not self.get_object().orderposition_set.exists()
 
-    def get_object(self, queryset=None) -> Item:
+    def get_object(self, queryset=None) -> Product:
         if not hasattr(self, 'object') or not self.object:
             try:
-                self.object = self.request.event.items.get(id=self.kwargs['item'])
-            except Item.DoesNotExist:
+                self.object = self.request.event.products.get(id=self.kwargs['product'])
+            except Product.DoesNotExist:
                 raise Http404(_('The requested product does not exist.'))
         return self.object
 
@@ -1535,9 +1535,9 @@ class ItemDelete(EventPermissionRequiredMixin, DeleteView):
         success_url = self.get_success_url()
         o = self.get_object()
         if o.allow_delete():
-            CartPosition.objects.filter(addon_to__item=self.get_object()).delete()
+            CartPosition.objects.filter(addon_to__product=self.get_object()).delete()
             self.get_object().cartposition_set.all().delete()
-            self.get_object().log_action('pretix.event.item.deleted', user=self.request.user)
+            self.get_object().log_action('eventyay.event.product.deleted', user=self.request.user)
             self.get_object().delete()
             messages.success(self.request, _('The selected product has been deleted.'))
             return HttpResponseRedirect(success_url)
@@ -1546,7 +1546,7 @@ class ItemDelete(EventPermissionRequiredMixin, DeleteView):
             o.active = False
             o.save()
             o.log_action(
-                'pretix.event.item.changed',
+                'eventyay.event.product.changed',
                 user=self.request.user,
                 data={'active': False},
             )
@@ -1555,7 +1555,7 @@ class ItemDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:event.items',
+            'control:event.products',
             kwargs={
                 'organizer': self.request.event.organizer.slug,
                 'event': self.request.event.slug,

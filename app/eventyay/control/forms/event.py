@@ -485,7 +485,7 @@ class EventSettingsForm(SettingsForm):
         'waiting_list_phones_asked',
         'waiting_list_phones_required',
         'waiting_list_phones_explanation_text',
-        'max_items_per_order',
+        'max_products_per_order',
         'reservation_time',
         'contact_mail',
         'show_variations_expanded',
@@ -1467,7 +1467,7 @@ QuickSetupProductFormSet = formset_factory(
 )
 
 
-class ItemMetaPropertyForm(forms.ModelForm):
+class ProductMetaPropertyForm(forms.ModelForm):
     class Meta:
         fields = ['name', 'default']
         widgets = {'default': forms.TextInput()}
