@@ -36,17 +36,17 @@ from django.views.generic import TemplateView
 
 from eventyay.base.channels import get_all_sales_channels
 from eventyay.base.models import (
-    ItemVariation,
+    ProductVariation,
     Order,
     Quota,
     SeatCategoryMapping,
     Voucher,
 )
 from eventyay.base.models.event import SubEvent
-from eventyay.base.models.items import (
-    ItemBundle,
-    SubEventItem,
-    SubEventItemVariation,
+from eventyay.base.models.product import (
+    ProductBundle,
+    SubEventProduct,
+    SubEventProductVariation,
 )
 from eventyay.base.services.quotas import QuotaAvailability
 from eventyay.helpers.compat import date_fromisocalendar
@@ -83,12 +83,12 @@ SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 logger = logging.getLogger(__name__)
 
 
-def item_group_by_category(items):
+def product_group_by_category(products):
     return sorted(
         [
-            # a group is a tuple of a category and a list of items
-            (cat, [i for i in items if i.category == cat])
-            for cat in set([i.category for i in items])
+            # a group is a tuple of a category and a list of products
+            (cat, [i for i in products if i.category == cat])
+            for cat in set([i.category for i in products])
             # insert categories into a set for uniqueness
             # a set is unsorted, so sort again by category
         ],
@@ -98,7 +98,7 @@ def item_group_by_category(items):
     )
 
 
-def get_grouped_items(
+def get_grouped_products(
     event,
     subevent=None,
     voucher=None,
@@ -107,17 +107,17 @@ def get_grouped_items(
     base_qs=None,
     allow_addons=False,
     quota_cache=None,
-    filter_items=None,
+    filter_products=None,
     filter_categories=None,
 ):
     base_qs_set = base_qs is not None
-    base_qs = base_qs if base_qs is not None else event.items
+    base_qs = base_qs if base_qs is not None else event.products
 
     requires_seat = Exists(SeatCategoryMapping.objects.filter(product_id=OuterRef('pk'), subevent=subevent))
     if not event.settings.seating_choice:
         requires_seat = Value(0, output_field=IntegerField())
 
-    items = (
+    products = (
         base_qs.using(settings.DATABASE_REPLICA)
         .filter_available(channel=channel, voucher=voucher, allow_addons=allow_addons)
         .select_related(
@@ -133,10 +133,10 @@ def get_grouped_items(
             ),
             Prefetch(
                 'bundles',
-                queryset=ItemBundle.objects.using(settings.DATABASE_REPLICA).prefetch_related(
+                queryset=ProductBundle.objects.using(settings.DATABASE_REPLICA).prefetch_related(
                     Prefetch(
-                        'bundled_item',
-                        queryset=event.items.using(settings.DATABASE_REPLICA)
+                        'bundled_product',
+                        queryset=event.products.using(settings.DATABASE_REPLICA)
                         .select_related('tax_rule')
                         .prefetch_related(
                             Prefetch(
@@ -148,9 +148,9 @@ def get_grouped_items(
                     ),
                     Prefetch(
                         'bundled_variation',
-                        queryset=ItemVariation.objects.using(settings.DATABASE_REPLICA)
-                        .select_related('item', 'item__tax_rule')
-                        .filter(item__event=event)
+                        queryset=ProductVariation.objects.using(settings.DATABASE_REPLICA)
+                        .select_related('product', 'product__tax_rule')
+                        .filter(product__event=event)
                         .prefetch_related(
                             Prefetch(
                                 'quotas',
@@ -164,10 +164,10 @@ def get_grouped_items(
             Prefetch(
                 'variations',
                 to_attr='available_variations',
-                queryset=ItemVariation.objects.using(settings.DATABASE_REPLICA)
+                queryset=ProductVariation.objects.using(settings.DATABASE_REPLICA)
                 .annotate(
                     subevent_disabled=Exists(
-                        SubEventItemVariation.objects.filter(
+                        SubEventProductVariation.objects.filter(
                             variation_id=OuterRef('pk'),
                             subevent=subevent,
                             disabled=True,
@@ -189,7 +189,7 @@ def get_grouped_items(
             quotac=Count('quotas'),
             has_variations=Count('variations'),
             subevent_disabled=Exists(
-                SubEventItem.objects.filter(
+                SubEventProduct.objects.filter(
                     item_id=OuterRef('pk'),
                     subevent=subevent,
                     disabled=True,
@@ -204,25 +204,25 @@ def get_grouped_items(
         .order_by('category__position', 'category_id', 'position', 'name')
     )
     if require_seat:
-        items = items.filter(requires_seat__gt=0)
+        products = products.filter(requires_seat__gt=0)
     else:
-        items = items.filter(requires_seat=0)
+        products = products.filter(requires_seat=0)
 
-    if filter_items:
-        items = items.filter(pk__in=[a for a in filter_items if a.isdigit()])
+    if filter_products:
+        products = products.filter(pk__in=[a for a in filter_products if a.isdigit()])
     if filter_categories:
-        items = items.filter(category_id__in=[a for a in filter_categories if a.isdigit()])
+        products = products.filter(category_id__in=[a for a in filter_categories if a.isdigit()])
 
     display_add_to_cart = False
-    quota_cache_key = f'item_quota_cache:{subevent.id if subevent else 0}:{channel}:{bool(require_seat)}'
+    quota_cache_key = f'product_quota_cache:{subevent.id if subevent else 0}:{channel}:{bool(require_seat)}'
     quota_cache = quota_cache or event.cache.get(quota_cache_key) or {}
     quota_cache_existed = bool(quota_cache)
 
     if subevent:
-        item_price_override = subevent.item_price_overrides
+        product_price_override = subevent.product_price_overrides
         var_price_override = subevent.var_price_overrides
     else:
-        item_price_override = {}
+        product_price_override = {}
         var_price_override = {}
 
     restrict_vars = set()
@@ -231,14 +231,14 @@ def get_grouped_items(
         restrict_vars = set(voucher.quota.variations.all())
 
     quotas_to_compute = []
-    for item in items:
-        if item.has_variations:
-            for v in item.available_variations:
+    for product in products:
+        if product.has_variations:
+            for v in product.available_variations:
                 for q in v._subevent_quotas:
                     if q.pk not in quota_cache:
                         quotas_to_compute.append(q)
         else:
-            for q in item._subevent_quotas:
+            for q in product._subevent_quotas:
                 if q.pk not in quota_cache:
                     quotas_to_compute.append(q)
 
@@ -248,79 +248,79 @@ def get_grouped_items(
         qa.compute()
         quota_cache.update({q.pk: r for q, r in qa.results.items()})
 
-    for item in items:
-        if voucher and voucher.item_id and voucher.variation_id:
+    for product in products:
+        if voucher and voucher.product_id and voucher.variation_id:
             # Restrict variations if the voucher only allows one
-            item.available_variations = [v for v in item.available_variations if v.pk == voucher.variation_id]
+            product.available_variations = [v for v in product.available_variations if v.pk == voucher.variation_id]
 
-        if get_all_sales_channels()[channel].unlimited_items_per_order:
+        if get_all_sales_channels()[channel].unlimited_products_per_order:
             max_per_order = sys.maxsize
         else:
-            max_per_order = item.max_per_order or int(event.settings.max_items_per_order)
+            max_per_order = product.max_per_order or int(event.settings.max_products_per_order)
 
-        if item.hidden_if_available:
-            q = item.hidden_if_available.availability(_cache=quota_cache)
+        if product.hidden_if_available:
+            q = product.hidden_if_available.availability(_cache=quota_cache)
             if q[0] == Quota.AVAILABILITY_OK:
-                item._remove = True
+                product._remove = True
                 continue
 
-        item.description = str(item.description)
-        for recv, resp in item_description.send(sender=event, item=item, variation=None):
+        product.description = str(product.description)
+        for recv, resp in product_description.send(sender=event, product=product, variation=None):
             if resp:
-                item.description += ('<br/>' if item.description else '') + resp
+                product.description += ('<br/>' if product.description else '') + resp
 
-        if not item.has_variations:
-            item._remove = False
-            if not bool(item._subevent_quotas):
-                item._remove = True
+        if not product.has_variations:
+            product._remove = False
+            if not bool(product._subevent_quotas):
+                product._remove = True
                 continue
 
             if voucher and (voucher.allow_ignore_quota or voucher.block_quota):
-                item.cached_availability = (
+                product.cached_availability = (
                     Quota.AVAILABILITY_OK,
                     voucher.max_usages - voucher.redeemed,
                 )
             else:
-                item.cached_availability = list(
-                    item.check_quotas(subevent=subevent, _cache=quota_cache, include_bundled=True)
+                product.cached_availability = list(
+                    product.check_quotas(subevent=subevent, _cache=quota_cache, include_bundled=True)
                 )
 
-            if event.settings.hide_sold_out and item.cached_availability[0] < Quota.AVAILABILITY_RESERVED:
-                item._remove = True
+            if event.settings.hide_sold_out and product.cached_availability[0] < Quota.AVAILABILITY_RESERVED:
+                product._remove = True
                 continue
 
-            item.order_max = min(
-                item.cached_availability[1] if item.cached_availability[1] is not None else sys.maxsize,
+            product.order_max = min(
+                product.cached_availability[1] if product.cached_availability[1] is not None else sys.maxsize,
                 max_per_order,
             )
 
-            original_price = item_price_override.get(item.pk, item.default_price)
+            original_price = product_price_override.get(product.pk, product.default_price)
             if voucher:
                 price = voucher.calculate_price(original_price)
             else:
                 price = original_price
 
-            item.display_price = item.tax(price, currency=event.currency, include_bundled=True)
+            product.display_price = product.tax(price, currency=event.currency, include_bundled=True)
 
             if price != original_price:
-                item.original_price = item.tax(original_price, currency=event.currency, include_bundled=True)
+                product.original_price = product.tax(original_price, currency=event.currency, include_bundled=True)
             else:
-                item.original_price = (
-                    item.tax(
-                        item.original_price,
+                product.original_price = (
+                    product.tax(
+                        product.original_price,
                         currency=event.currency,
                         include_bundled=True,
                         base_price_is='net' if event.settings.display_net_prices else 'gross',
                     )  # backwards-compat
-                    if item.original_price
+                    if product.original_price
                     else None
                 )
 
-            display_add_to_cart = display_add_to_cart or item.order_max > 0
+            display_add_to_cart = display_add_to_cart or product.order_max > 0
         else:
-            for var in item.available_variations:
+            for var in product.available_variations:
                 var.description = str(var.description)
-                for recv, resp in item_description.send(sender=event, item=item, variation=var):
+                for recv, resp in product_description.send(sender=event, product=product, variation=var):
                     if resp:
                         var.description += ('<br/>' if var.description else '') + resp
 
@@ -353,72 +353,72 @@ def get_grouped_items(
                     var.original_price = (
                         (
                             var.tax(
-                                var.original_price or item.original_price,
+                                var.original_price or product.original_price,
                                 currency=event.currency,
                                 include_bundled=True,
                                 base_price_is='net' if event.settings.display_net_prices else 'gross',
                             )  # backwards-compat
                         )
-                        if var.original_price or item.original_price
+                        if var.original_price or product.original_price
                         else None
                     )
 
                 display_add_to_cart = display_add_to_cart or var.order_max > 0
 
-            item.original_price = (
-                item.tax(
-                    item.original_price,
+            product.original_price = (
+                product.tax(
+                    product.original_price,
                     currency=event.currency,
                     include_bundled=True,
                     base_price_is='net' if event.settings.display_net_prices else 'gross',
                 )  # backwards-compat
-                if item.original_price
+                if product.original_price
                 else None
             )
 
-            item.available_variations = [
+            product.available_variations = [
                 v
-                for v in item.available_variations
+                for v in product.available_variations
                 if v._subevent_quotas and (not voucher or not voucher.quota_id or v in restrict_vars)
             ]
 
             if event.settings.hide_sold_out:
-                item.available_variations = [
-                    v for v in item.available_variations if v.cached_availability[0] >= Quota.AVAILABILITY_RESERVED
+                product.available_variations = [
+                    v for v in product.available_variations if v.cached_availability[0] >= Quota.AVAILABILITY_RESERVED
                 ]
 
             if voucher and voucher.variation_id:
-                item.available_variations = [v for v in item.available_variations if v.pk == voucher.variation_id]
+                product.available_variations = [v for v in product.available_variations if v.pk == voucher.variation_id]
 
-            if len(item.available_variations) > 0:
-                item.min_price = min(
+            if len(product.available_variations) > 0:
+                product.min_price = min(
                     [
                         v.display_price.net if event.settings.display_net_prices else v.display_price.gross
-                        for v in item.available_variations
+                        for v in product.available_variations
                     ]
                 )
-                item.max_price = max(
+                product.max_price = max(
                     [
                         v.display_price.net if event.settings.display_net_prices else v.display_price.gross
-                        for v in item.available_variations
+                        for v in product.available_variations
                     ]
                 )
 
-            item._remove = not bool(item.available_variations)
+            product._remove = not bool(product.available_variations)
 
     if (
         not quota_cache_existed
         and not voucher
         and not allow_addons
         and not base_qs_set
-        and not filter_items
+        and not filter_products
         and not filter_categories
     ):
         event.cache.set(quota_cache_key, quota_cache, 5)
-    items = [
-        item for item in items if (len(item.available_variations) > 0 or not item.has_variations) and not item._remove
+    products = [
+        product for product in products if (len(product.available_variations) > 0 or not product.has_variations) and not product._remove
     ]
-    return items, display_add_to_cart
+    return products, display_add_to_cart
 
 
 @method_decorator(allow_frame_if_namespaced, 'dispatch')
@@ -497,21 +497,21 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
         context['show_vouchers'] = context['vouchers_exist'] = vouchers_exist
 
         if not self.request.event.has_subevents or self.subevent:
-            # Fetch all items
-            items, display_add_to_cart = get_grouped_items(
+            # Fetch all products
+            products, display_add_to_cart = get_grouped_products(
                 self.request.event,
                 self.subevent,
-                filter_items=self.request.GET.getlist('item'),
+                filter_products=self.request.GET.getlist('product'),
                 filter_categories=self.request.GET.getlist('category'),
                 channel=self.request.sales_channel.identifier,
             )
-            context['itemnum'] = len(items)
+            context['productnum'] = len(products)
             context['allfree'] = all(
-                item.display_price.gross == Decimal('0.00') for item in items if not item.has_variations
+                product.display_price.gross == Decimal('0.00') for product in products if not product.has_variations
             ) and all(
-                all(var.display_price.gross == Decimal('0.00') for var in item.available_variations)
-                for item in items
-                if item.has_variations
+                all(var.display_price.gross == Decimal('0.00') for var in product.available_variations)
+                for product in products
+                if product.has_variations
             )
 
             # Regroup those by category
@@ -883,7 +883,7 @@ class JoinOnlineVideoView(EventViewMixin, View):
                 for order in order_list:
                     order_positions = list(order.positions.all())
                     for order_position in order_positions:
-                        if order_position.item_id in list_allow_ticket_type:
+                        if order_position.product_id in list_allow_ticket_type:
                             return True, order_position, order
                 return False, None, None
 

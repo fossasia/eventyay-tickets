@@ -4,9 +4,9 @@ from eventyay.base.decimal import round_decimal
 from eventyay.base.models import (
     AbstractPosition,
     InvoiceAddress,
-    Item,
-    ItemAddOn,
-    ItemVariation,
+    Product,
+    ProductAddOn,
+    ProductVariation,
     Voucher,
 )
 from eventyay.base.models.event import SubEvent
@@ -14,8 +14,8 @@ from eventyay.base.models.tax import TAXED_ZERO, TaxedPrice, TaxRule
 
 
 def get_price(
-    item: Item,
-    variation: ItemVariation = None,
+    product: Product,
+    variation: ProductVariation = None,
     voucher: Voucher = None,
     custom_price: Decimal = None,
     subevent: SubEvent = None,
@@ -30,15 +30,15 @@ def get_price(
 ) -> TaxedPrice:
     if addon_to:
         try:
-            iao = addon_to.item.addons.get(addon_category_id=item.category_id)
+            iao = addon_to.product.addons.get(addon_category_id=product.category_id)
             if iao.price_included:
                 return TAXED_ZERO
-        except ItemAddOn.DoesNotExist:
+        except ProductAddOn.DoesNotExist:
             pass
 
-    price = item.default_price
-    if subevent and item.pk in subevent.item_price_overrides:
-        price = subevent.item_price_overrides[item.pk]
+    price = product.default_price
+    if subevent and product.pk in subevent.product_price_overrides:
+        price = subevent.product_price_overrides[product.pk]
 
     if variation is not None:
         if variation.default_price is not None:
@@ -51,8 +51,8 @@ def get_price(
 
     if tax_rule is not None:
         tax_rule = tax_rule
-    elif item.tax_rule:
-        tax_rule = item.tax_rule
+    elif product.tax_rule:
+        tax_rule = product.tax_rule
     else:
         tax_rule = TaxRule(
             name='',
@@ -76,7 +76,7 @@ def get_price(
                 invoice_address=invoice_address,
                 subtract_from_gross=bundled_sum,
             )
-    elif item.free_price and custom_price is not None and custom_price != '':
+    elif product.free_price and custom_price is not None and custom_price != '':
         if not isinstance(custom_price, Decimal):
             custom_price = Decimal(str(custom_price).replace(',', '.'))
         if custom_price > 100000000:
@@ -102,8 +102,8 @@ def get_price(
     else:
         price = tax_rule.tax(price, invoice_address=invoice_address, subtract_from_gross=bundled_sum)
 
-    price.gross = round_decimal(price.gross, item.event.currency)
-    price.net = round_decimal(price.net, item.event.currency)
+    price.gross = round_decimal(price.gross, product.event.currency)
+    price.net = round_decimal(price.net, product.event.currency)
     price.tax = price.gross - price.net
 
     return price

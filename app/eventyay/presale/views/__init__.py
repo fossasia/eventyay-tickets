@@ -14,7 +14,7 @@ from eventyay.base.i18n import language
 from eventyay.base.models import (
     CartPosition,
     InvoiceAddress,
-    ItemAddOn,
+    ProductAddOn,
     OrderPosition,
     Question,
     QuestionAnswer,
@@ -69,7 +69,7 @@ class CartMixin:
         if queryset is not None:
             prefetch = []
             if answers:
-                prefetch.append('item__questions')
+                prefetch.append('product__questions')
                 prefetch.append(
                     Prefetch(
                         'answers',
@@ -79,14 +79,14 @@ class CartMixin:
 
             cartpos = (
                 queryset.order_by(
-                    'item__category__position',
-                    'item__category_id',
-                    'item__position',
-                    'item__name',
+                    'product__category__position',
+                    'product__category_id',
+                    'product__position',
+                    'product__name',
                     'variation__value',
                 )
                 .select_related(
-                    'item',
+                    'product',
                     'variation',
                     'addon_to',
                     'subevent',
@@ -108,7 +108,7 @@ class CartMixin:
 
         pos_additional_fields = defaultdict(list)
         for cp in lcp:
-            cp.item.event = self.request.event  # will save some SQL queries
+            cp.product.event = self.request.event  # will save some SQL queries
             responses = question_form_fields.send(sender=self.request.event, position=cp)
             data = cp.meta_info_data
             for r, response in sorted(responses, key=lambda r: str(r[0])):
@@ -121,7 +121,7 @@ class CartMixin:
                             }
                         )
 
-        # Group items of the same variation
+        # Group products of the same variation
         # We do this by list manipulations instead of a GROUP BY query, as
         # Django is unable to join related models in a .values() query
         def keyfunc(pos):
@@ -136,7 +136,7 @@ class CartMixin:
                 else:
                     i = pos.pk
 
-            has_attendee_data = pos.item.admission and (
+            has_attendee_data = pos.product.admission and (
                 self.request.event.settings.attendee_names_asked
                 or self.request.event.settings.attendee_emails_asked
                 or pos_additional_fields.get(pos.pk)
@@ -148,8 +148,8 @@ class CartMixin:
                 downloads
                 or pos.pk in has_addons
                 or pos.addon_to_id
-                or pos.item.issue_giftcard
-                or (answers and (has_attendee_data or bool(pos.item.questions.all())))
+                or pos.product.issue_giftcard
+                or (answers and (has_attendee_data or bool(pos.product.questions.all())))
             ):  # do not use .exists() to re-use prefetch cache
                 return (
                     # standalone positions are grouped by main product position id,
@@ -162,9 +162,9 @@ class CartMixin:
 
             # positions are sorted and grouped by various attributes
             category_key = (
-                (pos.item.category.position, pos.item.category.id) if pos.item.category is not None else (0, 0)
+                (pos.product.category.position, pos.product.category.id) if pos.product.category is not None else (0, 0)
             )
-            item_key = pos.item.position, pos.item_id
+            product_key = pos.product.position, pos.product_id
             variation_key = (pos.variation.position, pos.variation.id) if pos.variation is not None else (0, 0)
             return (
                 (
@@ -174,7 +174,7 @@ class CartMixin:
                     0,
                 )
                 + category_key
-                + item_key
+                + product_key
                 + variation_key
                 + (
                     pos.price,
@@ -193,7 +193,7 @@ class CartMixin:
             group.net_total = group.count * group.net_price
             group.has_questions = answers and k[0] != ''
             if not hasattr(group, 'tax_rule'):
-                group.tax_rule = group.item.tax_rule
+                group.tax_rule = group.product.tax_rule
 
             group.bundle_sum = group.price + sum(a.price for a in has_addons[group.pk])
             group.bundle_sum_net = group.net_price + sum(a.net_price for a in has_addons[group.pk])
@@ -248,7 +248,7 @@ class CartMixin:
             'minutes_left': minutes_left,
             'seconds_left': seconds_left,
             'first_expiry': first_expiry,
-            'itemcount': sum(c.count for c in positions if not c.addon_to),
+            'productcount': sum(c.count for c in positions if not c.addon_to),
         }
 
 
@@ -273,27 +273,27 @@ def get_cart(request):
         else:
             request._cart_cache = (
                 CartPosition.objects.filter(cart_id=cart_id, event=request.event)
-                .annotate(has_addon_choices=Exists(ItemAddOn.objects.filter(base_item_id=OuterRef('item_id'))))
+                .annotate(has_addon_choices=Exists(ProductAddOn.objects.filter(base_product_id=OuterRef('product_id'))))
                 .order_by(
-                    'item__category__position',
-                    'item__category_id',
-                    'item__position',
-                    'item__name',
+                    'product__category__position',
+                    'product__category_id',
+                    'product__position',
+                    'product__name',
                     'variation__value',
                 )
                 .select_related(
-                    'item',
+                    'product',
                     'variation',
                     'subevent',
                     'subevent__event',
                     'subevent__event__organizer',
-                    'item__tax_rule',
+                    'product__tax_rule',
                     'addon_to',
                 )
                 .select_related('addon_to')
                 .prefetch_related(
                     'addons',
-                    'addons__item',
+                    'addons__product',
                     'addons__variation',
                     Prefetch(
                         'answers',
@@ -301,7 +301,7 @@ def get_cart(request):
                         to_attr='answerlist',
                     ),
                     Prefetch(
-                        'item__questions',
+                        'product__questions',
                         qqs.prefetch_related(
                             Prefetch(
                                 'options',

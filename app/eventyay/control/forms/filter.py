@@ -35,7 +35,7 @@ from eventyay.base.models import (
     EventMetaValue,
     Invoice,
     InvoiceAddress,
-    Item,
+    Product,
     Order,
     OrderPayment,
     OrderPosition,
@@ -337,7 +337,7 @@ class EventOrderFilterForm(OrderFilterForm):
         'status': 'status',
     }
 
-    item = forms.ChoiceField(
+    product = forms.ChoiceField(
         label=_('Products'),
         required=False,
     )
@@ -356,7 +356,7 @@ class EventOrderFilterForm(OrderFilterForm):
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
         super().__init__(*args, **kwargs)
-        self.fields['item'].queryset = self.event.items.all()
+        self.fields['product'].queryset = self.event.products.all()
         self.fields['question'].queryset = self.event.questions.all()
         self.fields['provider'].choices += [(k, v.verbose_name) for k, v in self.event.get_payment_providers().items()]
 
@@ -380,7 +380,7 @@ class EventOrderFilterForm(OrderFilterForm):
             del self.fields['subevent']
 
         choices = [('', _('All products'))]
-        for i in self.event.items.prefetch_related('variations').all():
+        for i in self.event.products.prefetch_related('variations').all():
             variations = list(i.variations.all())
             if variations:
                 choices.append((str(i.pk), _('{product} – Any variation').format(product=str(i))))
@@ -388,20 +388,20 @@ class EventOrderFilterForm(OrderFilterForm):
                     choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (str(i), v.value)))
             else:
                 choices.append((str(i.pk), str(i)))
-        self.fields['item'].choices = choices
+        self.fields['product'].choices = choices
 
     def filter_qs(self, qs):
         fdata = self.cleaned_data
         qs = super().filter_qs(qs)
 
-        item = fdata.get('item')
-        if item:
-            if '-' in item:
-                var = item.split('-')[1]
+        product = fdata.get('product')
+        if product:
+            if '-' in product:
+                var = product.split('-')[1]
                 qs = qs.filter(all_positions__variation_id=var, all_positions__canceled=False).distinct()
             else:
                 qs = qs.filter(
-                    all_positions__item_id=fdata.get('item'),
+                    all_positions__product_id=fdata.get('product'),
                     all_positions__canceled=False,
                 ).distinct()
 
@@ -515,7 +515,7 @@ class EventOrderExpertFilterForm(EventOrderFilterForm):
         locale_names = dict(settings.LANGUAGES)
         self.fields['locale'].choices = [('', '')] + [(a, locale_names[a]) for a in self.event.settings.locales]
 
-        move_to_end(self.fields, 'item')
+        move_to_end(self.fields, 'product')
         move_to_end(self.fields, 'provider')
 
         self.fields['invoice_address_company'] = forms.CharField(
@@ -1125,10 +1125,10 @@ class EventFilterForm(FilterForm):
 
 class CheckInFilterForm(FilterForm):
     orders = {
-        'code': ('order__code', 'item__name'),
-        '-code': ('-order__code', '-item__name'),
-        'email': ('order__email', 'item__name'),
-        '-email': ('-order__email', '-item__name'),
+        'code': ('order__code', 'product__name'),
+        '-code': ('-order__code', '-product__name'),
+        'email': ('order__email', 'product__name'),
+        '-email': ('-order__email', '-product__name'),
         'status': (
             FixedOrderBy(F('last_entry'), nulls_first=True, descending=True),
             'order__code',
@@ -1139,8 +1139,8 @@ class CheckInFilterForm(FilterForm):
             FixedOrderBy(F('last_entry'), nulls_last=True, descending=True),
             '-order__code',
         ),
-        'item': ('item__name', 'variation__value', 'order__code'),
-        '-item': ('-item__name', '-variation__value', '-order__code'),
+        'product': ('product__name', 'variation__value', 'order__code'),
+        '-product': ('-product__name', '-variation__value', '-order__code'),
         'seat': ('seat__sorting_rank', 'seat__guid'),
         '-seat': ('-seat__sorting_rank', '-seat__guid'),
         'date': ('subevent__date_from', 'subevent__id', 'order__code'),
@@ -1171,9 +1171,9 @@ class CheckInFilterForm(FilterForm):
         ),
         required=False,
     )
-    item = forms.ModelChoiceField(
+    product = forms.ModelChoiceField(
         label=_('Products'),
-        queryset=Item.objects.none(),
+        queryset=Product.objects.none(),
         required=False,
         empty_label=_('All products'),
     )
@@ -1183,9 +1183,9 @@ class CheckInFilterForm(FilterForm):
         self.list = kwargs.pop('list')
         super().__init__(*args, **kwargs)
         if self.list.all_products:
-            self.fields['item'].queryset = self.event.items.all()
+            self.fields['product'].queryset = self.event.products.all()
         else:
-            self.fields['item'].queryset = self.list.limit_products.all()
+            self.fields['product'].queryset = self.list.limit_products.all()
 
     def filter_qs(self, qs):
         fdata = self.cleaned_data
@@ -1230,8 +1230,8 @@ class CheckInFilterForm(FilterForm):
             else:
                 qs = qs.order_by(ob)
 
-        if fdata.get('item'):
-            qs = qs.filter(item=fdata.get('item'))
+        if fdata.get('product'):
+            qs = qs.filter(product=fdata.get('product'))
 
         return qs
 
@@ -1297,22 +1297,22 @@ class VoucherFilterForm(FilterForm):
         '-valid_until': '-valid_until',
         'tag': 'tag',
         '-tag': '-tag',
-        'item': (
+        'product': (
             'seat__sorting_rank',
-            'item__category__position',
-            'item__category',
-            'item__position',
-            'item__variation__position',
+            'product__category__position',
+            'product__category',
+            'product__position',
+            'product__variation__position',
             'quota__name',
         ),
         'subevent': 'subevent__date_from',
         '-subevent': '-subevent__date_from',
-        '-item': (
+        '-product': (
             '-seat__sorting_rank',
-            '-item__category__position',
-            '-item__category',
-            '-item__position',
-            '-item__variation__position',
+            '-product__category__position',
+            '-product__category',
+            '-product__position',
+            '-product__variation__position',
             '-quota__name',
         ),
     }
@@ -1358,7 +1358,7 @@ class VoucherFilterForm(FilterForm):
         required=False,
         empty_label=pgettext_lazy('subevent', 'All dates'),
     )
-    itemvar = forms.ChoiceField(label=_('Product'), required=False)
+    productvar = forms.ChoiceField(label=_('Product'), required=False)
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
@@ -1384,7 +1384,7 @@ class VoucherFilterForm(FilterForm):
             del self.fields['subevent']
 
         choices = [('', _('All products'))]
-        for i in self.event.items.prefetch_related('variations').all():
+        for i in self.event.products.prefetch_related('variations').all():
             variations = list(i.variations.all())
             if variations:
                 choices.append((str(i.pk), _('{product} – Any variation').format(product=i.name)))
@@ -1394,7 +1394,7 @@ class VoucherFilterForm(FilterForm):
                 choices.append((str(i.pk), i.name))
         for q in self.event.quotas.all():
             choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q)))
-        self.fields['itemvar'].choices = choices
+        self.fields['productvar'].choices = choices
 
     def filter_qs(self, qs):
         fdata = self.cleaned_data
@@ -1437,16 +1437,16 @@ class VoucherFilterForm(FilterForm):
                 checkins = Checkin.objects.filter(position__voucher=OuterRef('pk'))
                 qs = qs.annotate(has_checkin=Exists(checkins)).filter(redeemed__gt=0, has_checkin=True)
 
-        if fdata.get('itemvar'):
-            if fdata.get('itemvar').startswith('q-'):
-                qs = qs.filter(quota_id=fdata.get('itemvar').split('-')[1])
-            elif '-' in fdata.get('itemvar'):
+        if fdata.get('productvar'):
+            if fdata.get('productvar').startswith('q-'):
+                qs = qs.filter(quota_id=fdata.get('productvar').split('-')[1])
+            elif '-' in fdata.get('productvar'):
                 qs = qs.filter(
-                    item_id=fdata.get('itemvar').split('-')[0],
-                    variation_id=fdata.get('itemvar').split('-')[1],
+                    product_id=fdata.get('productvar').split('-')[0],
+                    variation_id=fdata.get('productvar').split('-')[1],
                 )
             else:
-                qs = qs.filter(item_id=fdata.get('itemvar'))
+                qs = qs.filter(product_id=fdata.get('productvar'))
 
         if fdata.get('subevent'):
             qs = qs.filter(subevent_id=fdata.get('subevent').pk)

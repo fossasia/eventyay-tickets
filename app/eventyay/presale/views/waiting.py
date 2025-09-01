@@ -7,13 +7,17 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 from django.views.generic import FormView
 
-from eventyay.base.models.event import SubEvent
+from eventyay.base.models import (
+    Product,
+    ProductVariation,
+    SubEvent,
+    WaitingListEntry
+)
 from eventyay.base.templatetags.urlreplace import url_replace
 from eventyay.multidomain.urlreverse import eventreverse
 from eventyay.presale.views import EventViewMixin
 
 from ...base.i18n import get_language_without_region
-from ...base.models import Item, ItemVariation, WaitingListEntry
 from ..forms.waitinglist import WaitingListForm
 from . import allow_frame_if_namespaced
 
@@ -27,8 +31,8 @@ class WaitingView(EventViewMixin, FormView):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = self.request.event
         kwargs['instance'] = WaitingListEntry(
-            item=self.item_and_variation[0],
-            variation=self.item_and_variation[1],
+            product=self.product_and_variation[0],
+            variation=self.product_and_variation[1],
             event=self.request.event,
             locale=get_language_without_region(),
             subevent=self.subevent,
@@ -39,7 +43,7 @@ class WaitingView(EventViewMixin, FormView):
         ctx = super().get_context_data(**kwargs)
         ctx['event'] = self.request.event
         ctx['subevent'] = self.subevent
-        ctx['item'], ctx['variation'] = self.item_and_variation
+        ctx['product'], ctx['variation'] = self.product_and_variation
         return ctx
 
     def get(self, request, *args, **kwargs):
@@ -68,17 +72,17 @@ class WaitingView(EventViewMixin, FormView):
         return super().get(request, *args, **kwargs)
 
     @cached_property
-    def item_and_variation(self):
+    def product_and_variation(self):
         try:
-            item = self.request.event.items.get(pk=self.request.GET.get('item'))
+            product = self.request.event.products.get(pk=self.request.GET.get('product'))
             if 'var' in self.request.GET:
-                var = item.variations.get(pk=self.request.GET['var'])
-            elif item.has_variations:
+                var = product.variations.get(pk=self.request.GET['var'])
+            elif product.has_variations:
                 return None
             else:
                 var = None
-            return item, var
-        except (Item.DoesNotExist, ItemVariation.DoesNotExist, ValueError):
+            return product, var
+        except (Product.DoesNotExist, ProductVariation.DoesNotExist, ValueError):
             return None
 
     def dispatch(self, request, *args, **kwargs):
@@ -88,11 +92,11 @@ class WaitingView(EventViewMixin, FormView):
             messages.error(request, _('Waiting lists are disabled for this event.'))
             return redirect(self.get_index_url())
 
-        if not self.item_and_variation:
+        if not self.product_and_variation:
             messages.error(request, _('We could not identify the product you selected.'))
             return redirect(self.get_index_url())
 
-        if not self.item_and_variation[0].allow_waitinglist:
+        if not self.product_and_variation[0].allow_waitinglist:
             messages.error(request, _('The waiting list is disabled for this product.'))
             return redirect(self.get_index_url())
 
@@ -113,9 +117,9 @@ class WaitingView(EventViewMixin, FormView):
 
     def form_valid(self, form):
         availability = (
-            self.item_and_variation[1].check_quotas(count_waitinglist=True, subevent=self.subevent)
-            if self.item_and_variation[1]
-            else self.item_and_variation[0].check_quotas(count_waitinglist=True, subevent=self.subevent)
+            self.product_and_variation[1].check_quotas(count_waitinglist=True, subevent=self.subevent)
+            if self.product_and_variation[1]
+            else self.product_and_variation[0].check_quotas(count_waitinglist=True, subevent=self.subevent)
         )
         if availability[0] == 100:
             messages.error(

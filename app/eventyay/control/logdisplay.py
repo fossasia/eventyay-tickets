@@ -18,7 +18,7 @@ from eventyay.base.models import (
     Checkin,
     CheckinList,
     Event,
-    ItemVariation,
+    ProductVariation,
     LogEntry,
     OrderPosition,
     TaxRule,
@@ -26,32 +26,32 @@ from eventyay.base.models import (
 from eventyay.base.signals import logentry_display
 from eventyay.base.templatetags.money import money_filter
 
-OVERVIEW_BANLIST = ['pretix.plugins.sendmail.order.email.sent']
+OVERVIEW_BANLIST = ['eventyay.plugins.sendmail.order.email.sent']
 
 
 def _display_order_changed(event: Event, logentry: LogEntry):
     data = json.loads(logentry.data)
 
     text = _('The order has been changed:')
-    if logentry.action_type == 'pretix.event.order.changed.item':
-        old_item = str(event.items.get(pk=data['old_item']))
+    if logentry.action_type == 'eventyay.event.order.changed.product':
+        old_product = str(event.products.get(pk=data['old_product']))
         if data['old_variation']:
-            old_item += ' - ' + str(ItemVariation.objects.get(item__event=event, pk=data['old_variation']))
-        new_item = str(event.items.get(pk=data['new_item']))
+            old_product += ' - ' + str(ProductVariation.objects.get(product__event=event, pk=data['old_variation']))
+        new_product = str(event.products.get(pk=data['new_product']))
         if data['new_variation']:
-            new_item += ' - ' + str(ItemVariation.objects.get(item__event=event, pk=data['new_variation']))
+            new_product += ' - ' + str(ProductVariation.objects.get(product__event=event, pk=data['new_variation']))
         return (
             text
             + ' '
-            + _('Position #{posid}: {old_item} ({old_price}) changed to {new_item} ({new_price}).').format(
+            + _('Position #{posid}: {old_product} ({old_price}) changed to {new_product} ({new_price}).').format(
                 posid=data.get('positionid', '?'),
-                old_item=old_item,
-                new_item=new_item,
+                old_product=old_product,
+                new_product=new_product,
                 old_price=money_filter(Decimal(data['old_price']), event.currency),
                 new_price=money_filter(Decimal(data['new_price']), event.currency),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.seat':
+    elif logentry.action_type == 'eventyay.event.order.changed.seat':
         return (
             text
             + ' '
@@ -61,7 +61,7 @@ def _display_order_changed(event: Event, logentry: LogEntry):
                 new_seat=data.get('new_seat'),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.subevent':
+    elif logentry.action_type == 'eventyay.event.order.changed.subevent':
         old_se = str(event.subevents.get(pk=data['old_subevent']))
         new_se = str(event.subevents.get(pk=data['new_subevent']))
         return (
@@ -77,7 +77,7 @@ def _display_order_changed(event: Event, logentry: LogEntry):
                 new_price=money_filter(Decimal(data['new_price']), event.currency),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.price':
+    elif logentry.action_type == 'eventyay.event.order.changed.price':
         return (
             text
             + ' '
@@ -87,7 +87,7 @@ def _display_order_changed(event: Event, logentry: LogEntry):
                 new_price=money_filter(Decimal(data['new_price']), event.currency),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.tax_rule':
+    elif logentry.action_type == 'eventyay.event.order.changed.tax_rule':
         if 'positionid' in data:
             return (
                 text
@@ -108,9 +108,9 @@ def _display_order_changed(event: Event, logentry: LogEntry):
                     new_rule=TaxRule.objects.get(pk=data['new_taxrule']),
                 )
             )
-    elif logentry.action_type == 'pretix.event.order.changed.addfee':
+    elif logentry.action_type == 'eventyay.event.order.changed.addfee':
         return text + ' ' + str(_('A fee has been added'))
-    elif logentry.action_type == 'pretix.event.order.changed.feevalue':
+    elif logentry.action_type == 'eventyay.event.order.changed.feevalue':
         return (
             text
             + ' '
@@ -119,7 +119,7 @@ def _display_order_changed(event: Event, logentry: LogEntry):
                 new_price=money_filter(Decimal(data['new_price']), event.currency),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.cancelfee':
+    elif logentry.action_type == 'eventyay.event.order.changed.cancelfee':
         return (
             text
             + ' '
@@ -127,31 +127,31 @@ def _display_order_changed(event: Event, logentry: LogEntry):
                 old_price=money_filter(Decimal(data['old_price']), event.currency),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.cancel':
-        old_item = str(event.items.get(pk=data['old_item']))
+    elif logentry.action_type == 'eventyay.event.order.changed.cancel':
+        old_product = str(event.products.get(pk=data['old_product']))
         if data['old_variation']:
-            old_item += ' - ' + str(ItemVariation.objects.get(pk=data['old_variation']))
+            old_product += ' - ' + str(ProductVariation.objects.get(pk=data['old_variation']))
         return (
             text
             + ' '
-            + _('Position #{posid} ({old_item}, {old_price}) canceled.').format(
+            + _('Position #{posid} ({old_product}, {old_price}) canceled.').format(
                 posid=data.get('positionid', '?'),
-                old_item=old_item,
+                old_product=old_product,
                 old_price=money_filter(Decimal(data['old_price']), event.currency),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.add':
-        item = str(event.items.get(pk=data['item']))
+    elif logentry.action_type == 'eventyay.event.order.changed.add':
+        product = str(event.products.get(pk=data['product']))
         if data['variation']:
-            item += ' - ' + str(ItemVariation.objects.get(item__event=event, pk=data['variation']))
+            product += ' - ' + str(ProductVariation.objects.get(product__event=event, pk=data['variation']))
         if data['addon_to']:
             addon_to = OrderPosition.objects.get(order__event=event, pk=data['addon_to'])
             return (
                 text
                 + ' '
-                + _('Position #{posid} created: {item} ({price}) as an add-on to position #{addon_to}.').format(
+                + _('Position #{posid} created: {product} ({price}) as an add-on to position #{addon_to}.').format(
                     posid=data.get('positionid', '?'),
-                    item=item,
+                    product=product,
                     addon_to=addon_to.positionid,
                     price=money_filter(Decimal(data['price']), event.currency),
                 )
@@ -160,13 +160,13 @@ def _display_order_changed(event: Event, logentry: LogEntry):
             return (
                 text
                 + ' '
-                + _('Position #{posid} created: {item} ({price}).').format(
+                + _('Position #{posid} created: {product} ({price}).').format(
                     posid=data.get('positionid', '?'),
-                    item=item,
+                    product=product,
                     price=money_filter(Decimal(data['price']), event.currency),
                 )
             )
-    elif logentry.action_type == 'pretix.event.order.changed.secret':
+    elif logentry.action_type == 'eventyay.event.order.changed.secret':
         return (
             text
             + ' '
@@ -174,10 +174,10 @@ def _display_order_changed(event: Event, logentry: LogEntry):
                 posid=data.get('positionid', '?'),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.split':
-        old_item = str(event.items.get(pk=data['old_item']))
+    elif logentry.action_type == 'eventyay.event.order.changed.split':
+        old_product = str(event.products.get(pk=data['old_product']))
         if data['old_variation']:
-            old_item += ' - ' + str(ItemVariation.objects.get(pk=data['old_variation']))
+            old_product += ' - ' + str(ProductVariation.objects.get(pk=data['old_variation']))
         url = reverse(
             'control:event.order',
             kwargs={
@@ -189,14 +189,14 @@ def _display_order_changed(event: Event, logentry: LogEntry):
         return mark_safe(
             escape(text)
             + ' '
-            + _('Position #{posid} ({old_item}, {old_price}) split into new order: {order}').format(
-                old_item=escape(old_item),
+            + _('Position #{posid} ({old_product}, {old_price}) split into new order: {order}').format(
+                old_product=escape(old_product),
                 posid=data.get('positionid', '?'),
                 order='<a href="{}">{}</a>'.format(url, data['new_order']),
                 old_price=money_filter(Decimal(data['old_price']), event.currency),
             )
         )
-    elif logentry.action_type == 'pretix.event.order.changed.split_from':
+    elif logentry.action_type == 'eventyay.event.order.changed.split_from':
         return _('This order has been created by splitting the order {order}').format(
             order=data['original_order'],
         )
@@ -220,7 +220,7 @@ def _display_checkin(event, logentry):
     else:
         checkin_list = _('(unknown)')
 
-    if logentry.action_type == 'pretix.event.checkin.unknown':
+    if logentry.action_type == 'eventyay.event.checkin.unknown':
         if show_dt:
             return _('Unknown scan of code "{barcode}…" at {datetime} for list "{list}", type "{type}".').format(
                 posid=data.get('positionid'),
@@ -237,7 +237,7 @@ def _display_checkin(event, logentry):
                 list=checkin_list,
             )
 
-    if logentry.action_type == 'pretix.event.checkin.revoked':
+    if logentry.action_type == 'eventyay.event.checkin.revoked':
         if show_dt:
             return _(
                 'Scan scan of revoked code "{barcode}…" at {datetime} for list "{list}", type "{type}", was uploaded.'
@@ -256,7 +256,7 @@ def _display_checkin(event, logentry):
                 list=checkin_list,
             )
 
-    if logentry.action_type == 'pretix.event.checkin.denied':
+    if logentry.action_type == 'eventyay.event.checkin.denied':
         if show_dt:
             return _(
                 'Denied scan of position #{posid} at {datetime} for list "{list}", type "{type}", '
@@ -312,220 +312,220 @@ def _display_checkin(event, logentry):
         )
 
 
-@receiver(signal=logentry_display, dispatch_uid='pretixcontrol_logentry_display')
-def pretixcontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs):
+@receiver(signal=logentry_display, dispatch_uid='eventyaycontrol_logentry_display')
+def eventyaycontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs):
     plains = {
-        'pretix.object.cloned': _('This object has been created by cloning.'),
-        'pretix.organizer.changed': _('The organizer has been changed.'),
-        'pretix.organizer.settings': _('The organizer settings have been changed.'),
-        'pretix.giftcards.acceptance.added': _('Gift card acceptance for another organizer has been added.'),
-        'pretix.giftcards.acceptance.removed': _('Gift card acceptance for another organizer has been removed.'),
-        'pretix.webhook.created': _('The webhook has been created.'),
-        'pretix.webhook.changed': _('The webhook has been changed.'),
-        'pretix.event.comment': _("The event's internal comment has been updated."),
-        'pretix.event.canceled': _('The event has been canceled.'),
-        'pretix.event.deleted': _('An event has been deleted.'),
-        'pretix.event.order.modified': _('The order details have been changed.'),
-        'pretix.event.order.unpaid': _('The order has been marked as unpaid.'),
-        'pretix.event.order.secret.changed': _("The order's secret has been changed."),
-        'pretix.event.order.expirychanged': _("The order's expiry date has been changed."),
-        'pretix.event.order.expired': _('The order has been marked as expired.'),
-        'pretix.event.order.paid': _('The order has been marked as paid.'),
-        'pretix.event.order.cancellationrequest.deleted': _('The cancellation request has been deleted.'),
-        'pretix.event.order.refunded': _('The order has been refunded.'),
-        'pretix.event.order.canceled': _('The order has been canceled.'),
-        'pretix.event.order.reactivated': _('The order has been reactivated.'),
-        'pretix.event.order.deleted': _('The test mode order {code} has been deleted.'),
-        'pretix.event.order.placed': _('The order has been created.'),
-        'pretix.event.order.placed.require_approval': _(
+        'eventyay.object.cloned': _('This object has been created by cloning.'),
+        'eventyay.organizer.changed': _('The organizer has been changed.'),
+        'eventyay.organizer.settings': _('The organizer settings have been changed.'),
+        'eventyay.giftcards.acceptance.added': _('Gift card acceptance for another organizer has been added.'),
+        'eventyay.giftcards.acceptance.removed': _('Gift card acceptance for another organizer has been removed.'),
+        'eventyay.webhook.created': _('The webhook has been created.'),
+        'eventyay.webhook.changed': _('The webhook has been changed.'),
+        'eventyay.event.comment': _("The event's internal comment has been updated."),
+        'eventyay.event.canceled': _('The event has been canceled.'),
+        'eventyay.event.deleted': _('An event has been deleted.'),
+        'eventyay.event.order.modified': _('The order details have been changed.'),
+        'eventyay.event.order.unpaid': _('The order has been marked as unpaid.'),
+        'eventyay.event.order.secret.changed': _("The order's secret has been changed."),
+        'eventyay.event.order.expirychanged': _("The order's expiry date has been changed."),
+        'eventyay.event.order.expired': _('The order has been marked as expired.'),
+        'eventyay.event.order.paid': _('The order has been marked as paid.'),
+        'eventyay.event.order.cancellationrequest.deleted': _('The cancellation request has been deleted.'),
+        'eventyay.event.order.refunded': _('The order has been refunded.'),
+        'eventyay.event.order.canceled': _('The order has been canceled.'),
+        'eventyay.event.order.reactivated': _('The order has been reactivated.'),
+        'eventyay.event.order.deleted': _('The test mode order {code} has been deleted.'),
+        'eventyay.event.order.placed': _('The order has been created.'),
+        'eventyay.event.order.placed.require_approval': _(
             'The order requires approval before it can continue to be processed.'
         ),
-        'pretix.event.order.approved': _('The order has been approved.'),
-        'pretix.event.order.denied': _('The order has been denied.'),
-        'pretix.event.order.contact.changed': _(
+        'eventyay.event.order.approved': _('The order has been approved.'),
+        'eventyay.event.order.denied': _('The order has been denied.'),
+        'eventyay.event.order.contact.changed': _(
             'The email address has been changed from "{old_email}" to "{new_email}".'
         ),
-        'pretix.event.order.contact.confirmed': _(
+        'eventyay.event.order.contact.confirmed': _(
             'The email address has been confirmed to be working (the user clicked on a link '
             'in the email for the first time).'
         ),
-        'pretix.event.order.phone.changed': _('The phone number has been changed from "{old_phone}" to "{new_phone}".'),
-        'pretix.event.order.locale.changed': _('The order locale has been changed.'),
-        'pretix.event.order.invoice.generated': _('The invoice has been generated.'),
-        'pretix.event.order.invoice.regenerated': _('The invoice has been regenerated.'),
-        'pretix.event.order.invoice.reissued': _('The invoice has been reissued.'),
-        'pretix.event.order.comment': _("The order's internal comment has been updated."),
-        'pretix.event.order.checkin_attention': _(
+        'eventyay.event.order.phone.changed': _('The phone number has been changed from "{old_phone}" to "{new_phone}".'),
+        'eventyay.event.order.locale.changed': _('The order locale has been changed.'),
+        'eventyay.event.order.invoice.generated': _('The invoice has been generated.'),
+        'eventyay.event.order.invoice.regenerated': _('The invoice has been regenerated.'),
+        'eventyay.event.order.invoice.reissued': _('The invoice has been reissued.'),
+        'eventyay.event.order.comment': _("The order's internal comment has been updated."),
+        'eventyay.event.order.checkin_attention': _(
             "The order's flag to require attention at check-in has been toggled."
         ),
-        'pretix.event.order.payment.changed': _(
+        'eventyay.event.order.payment.changed': _(
             'A new payment {local_id} has been started instead of the previous one.'
         ),
-        'pretix.event.order.email.sent': _('An unidentified type email has been sent.'),
-        'pretix.event.order.email.error': _('Sending of an email has failed.'),
-        'pretix.event.order.email.attachments.skipped': _(
+        'eventyay.event.order.email.sent': _('An unidentified type email has been sent.'),
+        'eventyay.event.order.email.error': _('Sending of an email has failed.'),
+        'eventyay.event.order.email.attachments.skipped': _(
             'The email has been sent without attachments since they would have been too large to be likely to arrive.'
         ),
-        'pretix.event.order.email.custom_sent': _('A custom email has been sent.'),
-        'pretix.event.order.position.email.custom_sent': _('A custom email has been sent to an attendee.'),
-        'pretix.event.order.email.download_reminder_sent': _(
+        'eventyay.event.order.email.custom_sent': _('A custom email has been sent.'),
+        'eventyay.event.order.position.email.custom_sent': _('A custom email has been sent to an attendee.'),
+        'eventyay.event.order.email.download_reminder_sent': _(
             'An email has been sent with a reminder that the ticket is available for download.'
         ),
-        'pretix.event.order.email.expire_warning_sent': _(
+        'eventyay.event.order.email.expire_warning_sent': _(
             'An email has been sent with a warning that the order is about to expire.'
         ),
-        'pretix.event.order.email.order_canceled': _(
+        'eventyay.event.order.email.order_canceled': _(
             'An email has been sent to notify the user that the order has been canceled.'
         ),
-        'pretix.event.order.email.event_canceled': _(
+        'eventyay.event.order.email.event_canceled': _(
             'An email has been sent to notify the user that the event has been canceled.'
         ),
-        'pretix.event.order.email.order_changed': _(
+        'eventyay.event.order.email.order_changed': _(
             'An email has been sent to notify the user that the order has been changed.'
         ),
-        'pretix.event.order.email.order_free': _(
+        'eventyay.event.order.email.order_free': _(
             'An email has been sent to notify the user that the order has been received.'
         ),
-        'pretix.event.order.email.order_paid': _(
+        'eventyay.event.order.email.order_paid': _(
             'An email has been sent to notify the user that payment has been received.'
         ),
-        'pretix.event.order.email.order_denied': _(
+        'eventyay.event.order.email.order_denied': _(
             'An email has been sent to notify the user that the order has been denied.'
         ),
-        'pretix.event.order.email.order_approved': _(
+        'eventyay.event.order.email.order_approved': _(
             'An email has been sent to notify the user that the order has been approved.'
         ),
-        'pretix.event.order.email.order_placed': _(
+        'eventyay.event.order.email.order_placed': _(
             'An email has been sent to notify the user that the order has been received and requires payment.'
         ),
-        'pretix.event.order.email.order_placed_require_approval': _(
+        'eventyay.event.order.email.order_placed_require_approval': _(
             'An email has been sent to notify the user that the order has been received and requires approval.'
         ),
-        'pretix.event.order.email.resend': _(
+        'eventyay.event.order.email.resend': _(
             'An email with a link to the order detail page has been resent to the user.'
         ),
-        'pretix.event.order.payment.confirmed': _('Payment {local_id} has been confirmed.'),
-        'pretix.event.order.payment.canceled': _('Payment {local_id} has been canceled.'),
-        'pretix.event.order.payment.canceled.failed': _('Canceling payment {local_id} has failed.'),
-        'pretix.event.order.payment.started': _('Payment {local_id} has been started.'),
-        'pretix.event.order.payment.failed': _('Payment {local_id} has failed.'),
-        'pretix.event.order.quotaexceeded': _('The order could not be marked as paid: {message}'),
-        'pretix.event.order.overpaid': _('The order has been overpaid.'),
-        'pretix.event.order.refund.created': _('Refund {local_id} has been created.'),
-        'pretix.event.order.refund.created.externally': _('Refund {local_id} has been created by an external entity.'),
-        'pretix.event.order.refund.requested': _('The customer requested you to issue a refund.'),
-        'pretix.event.order.refund.done': _('Refund {local_id} has been completed.'),
-        'pretix.event.order.refund.canceled': _('Refund {local_id} has been canceled.'),
-        'pretix.event.order.refund.failed': _('Refund {local_id} has failed.'),
-        'pretix.control.auth.user.created': _('The user has been created.'),
-        'pretix.user.settings.2fa.enabled': _('Two-factor authentication has been enabled.'),
-        'pretix.user.settings.2fa.disabled': _('Two-factor authentication has been disabled.'),
-        'pretix.user.settings.2fa.regenemergency': _('Your two-factor emergency codes have been regenerated.'),
-        'pretix.user.settings.2fa.device.added': _(
+        'eventyay.event.order.payment.confirmed': _('Payment {local_id} has been confirmed.'),
+        'eventyay.event.order.payment.canceled': _('Payment {local_id} has been canceled.'),
+        'eventyay.event.order.payment.canceled.failed': _('Canceling payment {local_id} has failed.'),
+        'eventyay.event.order.payment.started': _('Payment {local_id} has been started.'),
+        'eventyay.event.order.payment.failed': _('Payment {local_id} has failed.'),
+        'eventyay.event.order.quotaexceeded': _('The order could not be marked as paid: {message}'),
+        'eventyay.event.order.overpaid': _('The order has been overpaid.'),
+        'eventyay.event.order.refund.created': _('Refund {local_id} has been created.'),
+        'eventyay.event.order.refund.created.externally': _('Refund {local_id} has been created by an external entity.'),
+        'eventyay.event.order.refund.requested': _('The customer requested you to issue a refund.'),
+        'eventyay.event.order.refund.done': _('Refund {local_id} has been completed.'),
+        'eventyay.event.order.refund.canceled': _('Refund {local_id} has been canceled.'),
+        'eventyay.event.order.refund.failed': _('Refund {local_id} has failed.'),
+        'eventyay.control.auth.user.created': _('The user has been created.'),
+        'eventyay.user.settings.2fa.enabled': _('Two-factor authentication has been enabled.'),
+        'eventyay.user.settings.2fa.disabled': _('Two-factor authentication has been disabled.'),
+        'eventyay.user.settings.2fa.regenemergency': _('Your two-factor emergency codes have been regenerated.'),
+        'eventyay.user.settings.2fa.device.added': _(
             'A new two-factor authentication device "{name}" has been added to your account.'
         ),
-        'pretix.user.settings.2fa.device.deleted': _(
+        'eventyay.user.settings.2fa.device.deleted': _(
             'The two-factor authentication device "{name}" has been removed from your account.'
         ),
-        'pretix.user.settings.notifications.enabled': _('Notifications have been enabled.'),
-        'pretix.user.settings.notifications.disabled': _('Notifications have been disabled.'),
-        'pretix.user.settings.notifications.changed': _('Your notification settings have been changed.'),
-        'pretix.user.anonymized': _('This user has been anonymized.'),
-        'pretix.user.oauth.authorized': _(
+        'eventyay.user.settings.notifications.enabled': _('Notifications have been enabled.'),
+        'eventyay.user.settings.notifications.disabled': _('Notifications have been disabled.'),
+        'eventyay.user.settings.notifications.changed': _('Your notification settings have been changed.'),
+        'eventyay.user.anonymized': _('This user has been anonymized.'),
+        'eventyay.user.oauth.authorized': _(
             'The application "{application_name}" has been authorized to access your account.'
         ),
-        'pretix.control.auth.user.forgot_password.mail_sent': _('Password reset mail sent.'),
-        'pretix.control.auth.user.forgot_password.recovered': _('The password has been reset.'),
-        'pretix.control.auth.user.forgot_password.denied.repeated': _(
+        'eventyay.control.auth.user.forgot_password.mail_sent': _('Password reset mail sent.'),
+        'eventyay.control.auth.user.forgot_password.recovered': _('The password has been reset.'),
+        'eventyay.control.auth.user.forgot_password.denied.repeated': _(
             'A repeated password reset has been denied, as the last request was less than 24 hours ago.'
         ),
-        'pretix.organizer.deleted': _('The organizer "{name}" has been deleted.'),
-        'pretix.voucher.added': _('The voucher has been created.'),
-        'pretix.voucher.sent': _('The voucher has been sent to {recipient}.'),
-        'pretix.voucher.added.waitinglist': _('The voucher has been created and sent to a person on the waiting list.'),
-        'pretix.voucher.changed': _('The voucher has been changed.'),
-        'pretix.voucher.deleted': _('The voucher has been deleted.'),
-        'pretix.voucher.redeemed': _('The voucher has been redeemed in order {order_code}.'),
-        'pretix.event.item.added': _('The product has been created.'),
-        'pretix.event.item.changed': _('The product has been changed.'),
-        'pretix.event.item.deleted': _('The product has been deleted.'),
-        'pretix.event.item.variation.added': _('The variation "{value}" has been created.'),
-        'pretix.event.item.variation.deleted': _('The variation "{value}" has been deleted.'),
-        'pretix.event.item.variation.changed': _('The variation "{value}" has been changed.'),
-        'pretix.event.item.addons.added': _('An add-on has been added to this product.'),
-        'pretix.event.item.addons.removed': _('An add-on has been removed from this product.'),
-        'pretix.event.item.addons.changed': _('An add-on has been changed on this product.'),
-        'pretix.event.item.bundles.added': _('A bundled item has been added to this product.'),
-        'pretix.event.item.bundles.removed': _('A bundled item has been removed from this product.'),
-        'pretix.event.item.bundles.changed': _('A bundled item has been changed on this product.'),
-        'pretix.event.quota.added': _('The quota has been added.'),
-        'pretix.event.quota.deleted': _('The quota has been deleted.'),
-        'pretix.event.quota.changed': _('The quota has been changed.'),
-        'pretix.event.quota.closed': _('The quota has closed.'),
-        'pretix.event.quota.opened': _('The quota has been re-opened.'),
-        'pretix.event.category.added': _('The category has been added.'),
-        'pretix.event.category.deleted': _('The category has been deleted.'),
-        'pretix.event.category.changed': _('The category has been changed.'),
-        'pretix.event.question.added': _('The question has been added.'),
-        'pretix.event.question.deleted': _('The question has been deleted.'),
-        'pretix.event.question.changed': _('The question has been changed.'),
-        'pretix.event.taxrule.added': _('The tax rule has been added.'),
-        'pretix.event.taxrule.deleted': _('The tax rule has been deleted.'),
-        'pretix.event.taxrule.changed': _('The tax rule has been changed.'),
-        'pretix.event.checkinlist.added': _('The check-in list has been added.'),
-        'pretix.event.checkinlist.deleted': _('The check-in list has been deleted.'),
-        'pretix.event.checkinlist.changed': _('The check-in list has been changed.'),
-        'pretix.event.settings': _('The event settings have been changed.'),
-        'pretix.event.tickets.settings': _('The ticket download settings have been changed.'),
-        'pretix.event.plugins.enabled': _('A plugin has been enabled.'),
-        'pretix.event.plugins.disabled': _('A plugin has been disabled.'),
-        'pretix.event.live.activated': _('The shop has been taken live.'),
-        'pretix.event.live.deactivated': _('The shop has been taken offline.'),
-        'pretix.event.testmode.activated': _('The shop has been taken into test mode.'),
-        'pretix.event.testmode.deactivated': _('The test mode has been disabled.'),
-        'pretix.event.added': _('The event has been created.'),
-        'pretix.event.changed': _('The event details have been changed.'),
-        'pretix.event.question.option.added': _('An answer option has been added to the question.'),
-        'pretix.event.question.option.deleted': _('An answer option has been removed from the question.'),
-        'pretix.event.question.option.changed': _('An answer option has been changed.'),
-        'pretix.event.permissions.added': _('A user has been added to the event team.'),
-        'pretix.event.permissions.invited': _('A user has been invited to the event team.'),
-        'pretix.event.permissions.changed': _("A user's permissions have been changed."),
-        'pretix.event.permissions.deleted': _('A user has been removed from the event team.'),
-        'pretix.waitinglist.voucher': _('A voucher has been sent to a person on the waiting list.'),
-        'pretix.event.orders.waitinglist.deleted': _('An entry has been removed from the waiting list.'),
-        'pretix.event.orders.waitinglist.changed': _('An entry has been changed on the waiting list.'),
-        'pretix.event.orders.waitinglist.added': _('An entry has been added to the waiting list.'),
-        'pretix.team.created': _('The team has been created.'),
-        'pretix.team.changed': _('The team settings have been changed.'),
-        'pretix.team.deleted': _('The team has been deleted.'),
-        'pretix.gate.created': _('The gate has been created.'),
-        'pretix.gate.changed': _('The gate has been changed.'),
-        'pretix.gate.deleted': _('The gate has been deleted.'),
-        'pretix.subevent.deleted': pgettext_lazy('subevent', 'The event date has been deleted.'),
-        'pretix.subevent.canceled': pgettext_lazy('subevent', 'The event date has been canceled.'),
-        'pretix.subevent.changed': pgettext_lazy('subevent', 'The event date has been changed.'),
-        'pretix.subevent.added': pgettext_lazy('subevent', 'The event date has been created.'),
-        'pretix.subevent.quota.added': pgettext_lazy('subevent', 'A quota has been added to the event date.'),
-        'pretix.subevent.quota.changed': pgettext_lazy('subevent', 'A quota has been changed on the event date.'),
-        'pretix.subevent.quota.deleted': pgettext_lazy('subevent', 'A quota has been removed from the event date.'),
-        'pretix.device.created': _('The device has been created.'),
-        'pretix.device.changed': _('The device has been changed.'),
-        'pretix.device.revoked': _('Access of the device has been revoked.'),
-        'pretix.device.initialized': _('The device has been initialized.'),
-        'pretix.device.keyroll': _('The access token of the device has been regenerated.'),
-        'pretix.device.updated': _('The device has notified the server of an hardware or software update.'),
-        'pretix.giftcards.created': _('The gift card has been created.'),
-        'pretix.giftcards.modified': _('The gift card has been changed.'),
-        'pretix.giftcards.transaction.manual': _('A manual transaction has been performed.'),
+        'eventyay.organizer.deleted': _('The organizer "{name}" has been deleted.'),
+        'eventyay.voucher.added': _('The voucher has been created.'),
+        'eventyay.voucher.sent': _('The voucher has been sent to {recipient}.'),
+        'eventyay.voucher.added.waitinglist': _('The voucher has been created and sent to a person on the waiting list.'),
+        'eventyay.voucher.changed': _('The voucher has been changed.'),
+        'eventyay.voucher.deleted': _('The voucher has been deleted.'),
+        'eventyay.voucher.redeemed': _('The voucher has been redeemed in order {order_code}.'),
+        'eventyay.event.product.added': _('The product has been created.'),
+        'eventyay.event.product.changed': _('The product has been changed.'),
+        'eventyay.event.product.deleted': _('The product has been deleted.'),
+        'eventyay.event.product.variation.added': _('The variation "{value}" has been created.'),
+        'eventyay.event.product.variation.deleted': _('The variation "{value}" has been deleted.'),
+        'eventyay.event.product.variation.changed': _('The variation "{value}" has been changed.'),
+        'eventyay.event.product.addons.added': _('An add-on has been added to this product.'),
+        'eventyay.event.product.addons.removed': _('An add-on has been removed from this product.'),
+        'eventyay.event.product.addons.changed': _('An add-on has been changed on this product.'),
+        'eventyay.event.product.bundles.added': _('A bundled product has been added to this product.'),
+        'eventyay.event.product.bundles.removed': _('A bundled product has been removed from this product.'),
+        'eventyay.event.product.bundles.changed': _('A bundled product has been changed on this product.'),
+        'eventyay.event.quota.added': _('The quota has been added.'),
+        'eventyay.event.quota.deleted': _('The quota has been deleted.'),
+        'eventyay.event.quota.changed': _('The quota has been changed.'),
+        'eventyay.event.quota.closed': _('The quota has closed.'),
+        'eventyay.event.quota.opened': _('The quota has been re-opened.'),
+        'eventyay.event.category.added': _('The category has been added.'),
+        'eventyay.event.category.deleted': _('The category has been deleted.'),
+        'eventyay.event.category.changed': _('The category has been changed.'),
+        'eventyay.event.question.added': _('The question has been added.'),
+        'eventyay.event.question.deleted': _('The question has been deleted.'),
+        'eventyay.event.question.changed': _('The question has been changed.'),
+        'eventyay.event.taxrule.added': _('The tax rule has been added.'),
+        'eventyay.event.taxrule.deleted': _('The tax rule has been deleted.'),
+        'eventyay.event.taxrule.changed': _('The tax rule has been changed.'),
+        'eventyay.event.checkinlist.added': _('The check-in list has been added.'),
+        'eventyay.event.checkinlist.deleted': _('The check-in list has been deleted.'),
+        'eventyay.event.checkinlist.changed': _('The check-in list has been changed.'),
+        'eventyay.event.settings': _('The event settings have been changed.'),
+        'eventyay.event.tickets.settings': _('The ticket download settings have been changed.'),
+        'eventyay.event.plugins.enabled': _('A plugin has been enabled.'),
+        'eventyay.event.plugins.disabled': _('A plugin has been disabled.'),
+        'eventyay.event.live.activated': _('The shop has been taken live.'),
+        'eventyay.event.live.deactivated': _('The shop has been taken offline.'),
+        'eventyay.event.testmode.activated': _('The shop has been taken into test mode.'),
+        'eventyay.event.testmode.deactivated': _('The test mode has been disabled.'),
+        'eventyay.event.added': _('The event has been created.'),
+        'eventyay.event.changed': _('The event details have been changed.'),
+        'eventyay.event.question.option.added': _('An answer option has been added to the question.'),
+        'eventyay.event.question.option.deleted': _('An answer option has been removed from the question.'),
+        'eventyay.event.question.option.changed': _('An answer option has been changed.'),
+        'eventyay.event.permissions.added': _('A user has been added to the event team.'),
+        'eventyay.event.permissions.invited': _('A user has been invited to the event team.'),
+        'eventyay.event.permissions.changed': _("A user's permissions have been changed."),
+        'eventyay.event.permissions.deleted': _('A user has been removed from the event team.'),
+        'eventyay.waitinglist.voucher': _('A voucher has been sent to a person on the waiting list.'),
+        'eventyay.event.orders.waitinglist.deleted': _('An entry has been removed from the waiting list.'),
+        'eventyay.event.orders.waitinglist.changed': _('An entry has been changed on the waiting list.'),
+        'eventyay.event.orders.waitinglist.added': _('An entry has been added to the waiting list.'),
+        'eventyay.team.created': _('The team has been created.'),
+        'eventyay.team.changed': _('The team settings have been changed.'),
+        'eventyay.team.deleted': _('The team has been deleted.'),
+        'eventyay.gate.created': _('The gate has been created.'),
+        'eventyay.gate.changed': _('The gate has been changed.'),
+        'eventyay.gate.deleted': _('The gate has been deleted.'),
+        'eventyay.subevent.deleted': pgettext_lazy('subevent', 'The event date has been deleted.'),
+        'eventyay.subevent.canceled': pgettext_lazy('subevent', 'The event date has been canceled.'),
+        'eventyay.subevent.changed': pgettext_lazy('subevent', 'The event date has been changed.'),
+        'eventyay.subevent.added': pgettext_lazy('subevent', 'The event date has been created.'),
+        'eventyay.subevent.quota.added': pgettext_lazy('subevent', 'A quota has been added to the event date.'),
+        'eventyay.subevent.quota.changed': pgettext_lazy('subevent', 'A quota has been changed on the event date.'),
+        'eventyay.subevent.quota.deleted': pgettext_lazy('subevent', 'A quota has been removed from the event date.'),
+        'eventyay.device.created': _('The device has been created.'),
+        'eventyay.device.changed': _('The device has been changed.'),
+        'eventyay.device.revoked': _('Access of the device has been revoked.'),
+        'eventyay.device.initialized': _('The device has been initialized.'),
+        'eventyay.device.keyroll': _('The access token of the device has been regenerated.'),
+        'eventyay.device.updated': _('The device has notified the server of an hardware or software update.'),
+        'eventyay.giftcards.created': _('The gift card has been created.'),
+        'eventyay.giftcards.modified': _('The gift card has been changed.'),
+        'eventyay.giftcards.transaction.manual': _('A manual transaction has been performed.'),
     }
 
     data = json.loads(logentry.data)
 
-    if logentry.action_type.startswith('pretix.event.item.variation'):
+    if logentry.action_type.startswith('eventyay.event.product.variation'):
         if 'value' not in data:
             # Backwards compatibility
-            var = ItemVariation.objects.filter(id=data['id']).first()
+            var = ProductVariation.objects.filter(id=data['id']).first()
             if var:
                 data['value'] = str(var.value)
             else:
@@ -537,24 +537,24 @@ def pretixcontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs):
         data = defaultdict(lambda: '?', data)
         return plains[logentry.action_type].format_map(data)
 
-    if logentry.action_type.startswith('pretix.event.order.changed'):
+    if logentry.action_type.startswith('eventyay.event.order.changed'):
         return _display_order_changed(sender, logentry)
 
-    if logentry.action_type.startswith('pretix.event.payment.provider.'):
+    if logentry.action_type.startswith('eventyay.event.payment.provider.'):
         return _('The settings of a payment provider have been changed.')
 
-    if logentry.action_type.startswith('pretix.event.tickets.provider.'):
+    if logentry.action_type.startswith('eventyay.event.tickets.provider.'):
         return _('The settings of a ticket output provider have been changed.')
 
-    if logentry.action_type == 'pretix.event.order.consent':
+    if logentry.action_type == 'eventyay.event.order.consent':
         return _('The user confirmed the following message: "{}"').format(
             bleach.clean(logentry.parsed_data.get('msg'), tags=[], strip=True)
         )
 
-    if sender and logentry.action_type.startswith('pretix.event.checkin'):
+    if sender and logentry.action_type.startswith('eventyay.event.checkin'):
         return _display_checkin(sender, logentry)
 
-    if logentry.action_type == 'pretix.control.views.checkin':
+    if logentry.action_type == 'eventyay.control.views.checkin':
         # deprecated
         dt = dateutil.parser.parse(data.get('datetime'))
         tz = pytz.timezone(sender.settings.timezone)
@@ -578,8 +578,8 @@ def pretixcontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs):
         )
 
     if logentry.action_type in (
-        'pretix.control.views.checkin.reverted',
-        'pretix.event.checkin.reverted',
+        'eventyay.control.views.checkin.reverted',
+        'eventyay.event.checkin.reverted',
     ):
         if 'list' in data:
             try:
@@ -594,33 +594,33 @@ def pretixcontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs):
             list=checkin_list,
         )
 
-    if logentry.action_type == 'pretix.team.member.added':
+    if logentry.action_type == 'eventyay.team.member.added':
         return _('{user} has been added to the team.').format(user=data.get('email'))
 
-    if logentry.action_type == 'pretix.team.member.removed':
+    if logentry.action_type == 'eventyay.team.member.removed':
         return _('{user} has been removed from the team.').format(user=data.get('email'))
 
-    if logentry.action_type == 'pretix.team.member.joined':
+    if logentry.action_type == 'eventyay.team.member.joined':
         return _('{user} has joined the team using the invite sent to {email}.').format(
             user=data.get('email'), email=data.get('invite_email')
         )
 
-    if logentry.action_type == 'pretix.team.invite.created':
+    if logentry.action_type == 'eventyay.team.invite.created':
         return _('{user} has been invited to the team.').format(user=data.get('email'))
 
-    if logentry.action_type == 'pretix.team.invite.resent':
+    if logentry.action_type == 'eventyay.team.invite.resent':
         return _('Invite for {user} has been resent.').format(user=data.get('email'))
 
-    if logentry.action_type == 'pretix.team.invite.deleted':
+    if logentry.action_type == 'eventyay.team.invite.deleted':
         return _('The invite for {user} has been revoked.').format(user=data.get('email'))
 
-    if logentry.action_type == 'pretix.team.token.created':
+    if logentry.action_type == 'eventyay.team.token.created':
         return _('The token "{name}" has been created.').format(name=data.get('name'))
 
-    if logentry.action_type == 'pretix.team.token.deleted':
+    if logentry.action_type == 'eventyay.team.token.deleted':
         return _('The token "{name}" has been revoked.').format(name=data.get('name'))
 
-    if logentry.action_type == 'pretix.user.settings.changed':
+    if logentry.action_type == 'eventyay.user.settings.changed':
         text = str(_('Your account settings have been changed.'))
         if 'email' in data:
             text = text + ' ' + str(_('Your email address has been changed to {email}.').format(email=data['email']))
@@ -632,8 +632,8 @@ def pretixcontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs):
             text = text + ' ' + str(_('Your account has been disabled.'))
         return text
 
-    if logentry.action_type == 'pretix.control.auth.user.impersonated':
+    if logentry.action_type == 'eventyay.control.auth.user.impersonated':
         return str(_('You impersonated {}.')).format(data['other_email'])
 
-    if logentry.action_type == 'pretix.control.auth.user.impersonate_stopped':
+    if logentry.action_type == 'eventyay.control.auth.user.impersonate_stopped':
         return str(_('You stopped impersonating {}.')).format(data['other_email'])

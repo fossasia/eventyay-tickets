@@ -311,8 +311,8 @@ Arguments: ``addons``, ``base_position``, ``iao``
 
 This signal is sent when a user tries to select a combination of addons. In contrast to
  ``validate_cart``, this is executed before the cart is actually modified. You are passed
-an argument ``addons`` containing a dict of ``(item, variation or None) → count`` tuples as well
-as the ``ItemAddOn`` object as the argument ``iao`` and the base cart position as
+an argument ``addons`` containing a dict of ``(product, variation or None) → count`` tuples as well
+as the ``ProductAddOn`` object as the argument ``iao`` and the base cart position as
 ``base_position``.
 The response of receivers will be ignored, but you can raise a CartError with an
 appropriate exception message.
@@ -495,7 +495,7 @@ As with all event-plugin signals, the ``sender`` keyword argument will contain t
 
 event_copy_data = EventPluginSignal()
 """
-Arguments: "other", ``tax_map``, ``category_map``, ``item_map``, ``question_map``, ``variation_map``,
+Arguments: "other", ``tax_map``, ``category_map``, ``product_map``, ``question_map``, ``variation_map``,
 ``checkin_list_map``
 
 This signal is sent out when a new event is created as a clone of an existing event, i.e.
@@ -507,12 +507,12 @@ but you might need to modify that data.
 
 The ``sender`` keyword argument will contain the event of the **new** event. The ``other``
 keyword argument will contain the event to **copy from**. The keyword arguments
-``tax_map``, ``category_map``, ``item_map``, ``question_map``, ``variation_map`` and
+``tax_map``, ``category_map``, ``product_map``, ``question_map``, ``variation_map`` and
 ``checkin_list_map`` contain mappings from object IDs in the original event to objects
 in the new event of the respective types.
 """
 
-item_copy_data = EventPluginSignal()
+product_copy_data = EventPluginSignal()
 """
 Arguments: ``source``, ``target``
 
@@ -520,7 +520,7 @@ This signal is sent out when a new product is created as a clone of an existing 
 the settings from the older product are copied to the newer one. You can listen to this
 signal to copy data or configuration stored within your plugin's models as well.
 
-The ``sender`` keyword argument will contain the event. The ``target`` will contain the item to
+The ``sender`` keyword argument will contain the event. The ``target`` will contain the product to
 copy to, the ``source`` keyword argument will contain the product to **copy from**.
 """
 
@@ -617,7 +617,7 @@ dictionaries as values that contain keys like in the following example::
         "product": {
             "label": _("Product name"),
             "editor_sample": _("Sample product"),
-            "evaluate": lambda orderposition, order, event: str(orderposition.item)
+            "evaluate": lambda orderposition, order, event: str(orderposition.product)
         }
     }
 
