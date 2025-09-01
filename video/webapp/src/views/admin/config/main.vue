@@ -105,7 +105,7 @@ export default {
 			this.config = await api.call('world.config.get')
 			this.hlsConfig = JSON.stringify(this.config.video_player?.['hls.js'] || undefined, null, 2)
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 	},
@@ -113,33 +113,39 @@ export default {
 		async save() {
 			this.v$.$touch()
 			if (this.v$.$invalid) return
+			if (!this.config) return
 			// TODO validate connection limit is a number
 			this.saving = true
-			const patch = {
-				title: this.config.title,
-				locale: this.config.locale,
-				date_locale: this.config.date_locale,
-				timezone: this.config.timezone,
-				connection_limit: this.config.connection_limit,
-				bbb_defaults: this.config.bbb_defaults,
-				track_exhibitor_views: this.config.track_exhibitor_views,
-				track_room_views: this.config.track_room_views,
-				track_world_views: this.config.track_world_views
-			}
-			if (this.$features.enabled('conftool')) {
-				patch.conftool_url = this.config.conftool_url
-				patch.conftool_password = this.config.conftool_password
-			}
-			if (this.hlsConfig) {
-				patch.video_player = {
-					'hls.js': JSON.parse(this.hlsConfig)
+			try {
+				const patch = {
+					title: this.config.title,
+					locale: this.config.locale,
+					date_locale: this.config.date_locale,
+					timezone: this.config.timezone,
+					connection_limit: this.config.connection_limit,
+					bbb_defaults: this.config.bbb_defaults,
+					track_exhibitor_views: this.config.track_exhibitor_views,
+					track_room_views: this.config.track_room_views,
+					track_world_views: this.config.track_world_views
 				}
-			} else {
-				patch.video_player = null
+				if (this.$features.enabled('conftool')) {
+					patch.conftool_url = this.config.conftool_url
+					patch.conftool_password = this.config.conftool_password
+				}
+				if (this.hlsConfig) {
+					patch.video_player = {
+						'hls.js': JSON.parse(this.hlsConfig)
+					}
+				} else {
+					patch.video_player = null
+				}
+				await api.call('world.config.patch', patch)
+			} catch (error) {
+				console.error(error.apiError || error)
+				this.error = error.apiError?.code || error.message || error.toString()
+			} finally {
+				this.saving = false
 			}
-			await api.call('world.config.patch', patch)
-			this.saving = false
-			// TODO error handling
 		},
 	}
 }

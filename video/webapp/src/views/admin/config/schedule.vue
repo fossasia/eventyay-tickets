@@ -173,7 +173,7 @@ export default {
 		try {
 			this.config = await api.call('world.config.get')
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 		this.$watch(() => this.config?.pretalx?.domain ? `${this.pretalxDomain}${this.config.pretalx.event}/p/eventyay-video/check` : null, async(url) => {
@@ -211,10 +211,16 @@ export default {
 		async save() {
 			this.v$.$touch()
 			if (this.v$.$invalid) return false
+			if (!this.config) return false
 			this.saving = true
-			await api.call('world.config.patch', {pretalx: this.config.pretalx})
-			// TODO error handling
-			this.saving = false
+			try {
+				await api.call('world.config.patch', {pretalx: this.config.pretalx})
+			} catch (error) {
+				console.error(error.apiError || error)
+				this.error = error.apiError?.code || error.message || error.toString()
+			} finally {
+				this.saving = false
+			}
 			return true
 		}
 	}

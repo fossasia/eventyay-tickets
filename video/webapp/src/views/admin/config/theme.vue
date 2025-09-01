@@ -18,7 +18,7 @@
 				.header
 					div Original
 					div Custom translation
-				tr.overwrite(v-for="(val, key) in strings")
+				.overwrite(v-for="(val, key) in strings")
 					.source
 						.key {{ key }}
 						.value {{ val }}
@@ -103,7 +103,7 @@ export default {
 			this.config.theme.logo = {...DEFAULT_LOGO, ...this.config.theme.logo}
 			this.config.theme.identicons = {...DEFAULT_IDENTICONS, ...this.config.theme.identicons}
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 	},
@@ -111,6 +111,7 @@ export default {
 		async save() {
 			this.v$.$touch()
 			if (this.v$.$invalid) return
+			if (!this.config) return
 
 			// Cleanup empty strings in text overwrites
 			for (const key of Object.keys(this.config.theme.textOverwrites)) {
@@ -120,11 +121,14 @@ export default {
 			}
 
 			this.saving = true
-			await api.call('world.config.patch', {theme: this.config.theme})
-			this.saving = false
-			// TODO error handling
-
-			location.reload() // Theme config is only activated after reload
+			try {
+				await api.call('world.config.patch', {theme: this.config.theme})
+				location.reload() // Theme config is only activated after reload
+			} catch (error) {
+				console.error(error.apiError || error)
+				this.error = error.apiError?.code || error.message || error.toString()
+				this.saving = false
+			}
 		},
 	}
 }

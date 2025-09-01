@@ -107,7 +107,7 @@ export default {
 		try {
 			this.config = await api.call('world.config.get')
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 	},
@@ -119,6 +119,7 @@ export default {
 			this.config.profile_fields.splice(index, 1)
 		},
 		async save() {
+			if (!this.config) return
 			this.saving = true
 			try {
 				await api.call('world.config.patch', {
@@ -127,7 +128,7 @@ export default {
 				})
 			} catch (error) {
 				console.error(error.apiError || error)
-				this.error = error.apiError?.details?.social_logins?.join(', ') || error.apiError?.code || error
+				this.error = error.apiError?.details?.social_logins?.join(', ') || error.apiError?.code || error.message || error.toString()
 			} finally {
 				this.saving = false
 			}

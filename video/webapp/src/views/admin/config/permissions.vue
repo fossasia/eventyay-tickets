@@ -84,7 +84,7 @@ export default {
 			this.rooms = await api.call('room.config.list')
 			this.onsiteTraits = stringifyTraitGrants(this.config.onsite_traits)
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 	},
@@ -120,20 +120,26 @@ export default {
 		},
 
 		async save() {
+			if (!this.config) return
 			this.saving = true
-			await api.call('world.config.patch', {
-				roles: this.config.roles,
-				trait_grants: this.config.trait_grants,
-				onsite_traits: parseTraitGrants(this.onsiteTraits)
-			})
-			for (const room of this.rooms.filter((r) => this.changedRoomIds.includes(r.id))) {
-				await api.call('room.config.patch', {
-					room: room.id,
-					trait_grants: room.trait_grants
+			try {
+				await api.call('world.config.patch', {
+					roles: this.config.roles,
+					trait_grants: this.config.trait_grants,
+					onsite_traits: parseTraitGrants(this.onsiteTraits)
 				})
+				for (const room of this.rooms.filter((r) => this.changedRoomIds.includes(r.id))) {
+					await api.call('room.config.patch', {
+						room: room.id,
+						trait_grants: room.trait_grants
+					})
+				}
+			} catch (error) {
+				console.error(error.apiError || error)
+				this.error = error.apiError?.code || error.message || error.toString()
+			} finally {
+				this.saving = false
 			}
-			this.saving = false
-			// TODO error handling
 		},
 	}
 }
