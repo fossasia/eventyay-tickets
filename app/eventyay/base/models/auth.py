@@ -1,7 +1,9 @@
 import binascii
 import json
+import logging
 from datetime import timedelta
 from typing import TYPE_CHECKING
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import (
@@ -13,6 +15,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
+from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.crypto import get_random_string, salted_hmac
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -26,6 +30,7 @@ from eventyay.helpers.urls import build_absolute_uri
 from ...helpers.u2f import pub_key_from_der, websafe_decode
 from .base import LoggingMixin
 
+logger = logging.getLogger(__name__)
 
 class UserManager(BaseUserManager):
     """
@@ -193,20 +198,27 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         except SendMailException:
             pass  # Already logged
 
-    def send_password_reset(self):
+    def send_password_reset(self, request: HttpRequest):
         from eventyay.base.services.mail import mail
 
+        subject = _('Password recovery')
+        security_token = default_token_generator.make_token(self)
+        base_action_url = reverse('eventyay_common:auth.forgot.recover')
+        params = {
+            'id': self.id,
+            'token': security_token,
+        }
+        action_url = request.build_absolute_uri(f'{base_action_url}?{urlencode(params)}')
+        logger.info('Action URL for %s to reset password: %s', self.email, action_url)
+        context = {
+            'user': self,
+            'url': action_url
+        }
         mail(
             self.email,
-            _('Password recovery'),
-            'eventyaycontrol/email/forgot.txt',
-            {
-                'user': self,
-                'url': (
-                    build_absolute_uri('control:auth.forgot.recover')
-                    + '?id=%d&token=%s' % (self.id, default_token_generator.make_token(self))
-                ),
-            },
+            subject,
+            'email/forgot.txt',
+            context,
             None,
             locale=self.locale,
             user=self,

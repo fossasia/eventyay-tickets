@@ -51,7 +51,7 @@ from eventyay.celery_app import app
 from eventyay.multidomain.urlreverse import build_absolute_uri
 from eventyay.presale.ical import get_ical
 
-logger = logging.getLogger('eventyay.base.mail')
+logger = logging.getLogger(__name__)
 INVALID_ADDRESS = 'invalid-eventyay-mail-address'
 
 
