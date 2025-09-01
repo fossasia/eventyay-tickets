@@ -1,7 +1,10 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from eventyay.eventyay_common.views import auth
+from eventyay.eventyay_common.views import (
+    auth,
+    event,
+)
 
 app_name = 'eventyay_common'
 
@@ -18,4 +21,5 @@ urlpatterns = [
     path('forgot/', auth.Forgot.as_view(), name='auth.forgot'),
     path('forgot/recover/', auth.Recover.as_view(), name='auth.forgot.recover'),
     path('', DashboardView.as_view(), name='dashboard'),
+    path('events/add', event.EventCreateView.as_view(), name='events.add'),
 ]
