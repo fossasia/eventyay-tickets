@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.vue",
     "lint:fix": "eslint . --ext .js,.vue --fix",
-    "i18n:extract": "npx i18next-parser 'src/**/*.vue' -c i18next-parser.config.js",
+    "i18n:extract": "npx i18next-parser 'src/**/*.vue' -c i18next-parser.config.cjs",
     "analyze": "ANALYZE=true vite build"
   },
   "dependencies": {
@@ -72,9 +72,9 @@
     "eslint-plugin-vue": "^9.26.0",
     "eslint-plugin-vue-pug": "^0.6.2",
     "globals": "^15.8.0",
-    "i18next-parser": "^4.7.0",
-    "rollup-plugin-visualizer": "^5.10.0",
+    "i18next-parser": "^9.3.0",
     "pug": "^3.0.3",
+    "rollup-plugin-visualizer": "^5.10.0",
     "sass": "^1.89.2",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-plugin-stylus": "^1.0.0",
