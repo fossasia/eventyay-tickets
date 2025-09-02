@@ -38,22 +38,15 @@ export function getEmojiDataFromNative(native) {
 
 export function nativeToStyle(unicodeEmoji) {
 	// maps multi-codepoint emoji like 🇻🇦 / \uD83C\uDDFB\uD83C\uDDE6 => 1f1fb-1f1e6.svg
-	const codepoints = Array.from(unicodeEmoji).map(c => c.codePointAt(0).toString(16))
-
-	// Avoid using CommonJS `require()` in browser builds (Vite/Esm). Instead
-	// use the Twemoji CDN which exposes emoji svgs by their hex codepoint names.
-	// Example: https://twemoji.maxcdn.com/v/latest/svg/1f600.svg
-	// We progressively drop modifiers (skin tones, zwj parts) if the full
-	// sequence isn't available on the CDN.
+	let codepoints = Array.from(unicodeEmoji).map(c => c.codePointAt(0).toString(16))
+	// Remove trailing FE0F (variation selector) if present, for Twemoji compatibility
+	if (codepoints.length > 1 && codepoints[codepoints.length - 1] === 'fe0f') {
+		codepoints = codepoints.slice(0, -1)
+	}
 	function buildCdnUrl(cps) {
 		return `https://twemoji.maxcdn.com/v/latest/svg/${cps.join('-')}.svg`
 	}
-
-	// Build a CDN URL from the full codepoint sequence. We avoid runtime
-	// network checks here; if the exact SVG is missing the browser will
-	// naturally fall back to the emoji glyph.
 	const src = buildCdnUrl(codepoints)
-
 	return {'background-image': `url(${src})`}
 }
 
