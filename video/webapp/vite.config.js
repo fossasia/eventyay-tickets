@@ -144,7 +144,7 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: 'esnext',
-      chunkSizeWarningLimit: 2500,
+      chunkSizeWarningLimit: 1250,
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
@@ -155,6 +155,38 @@ export default defineConfig(({ mode }) => {
             return chunkInfo.name === 'preloader' 
               ? '[name].js' 
               : 'assets/[name]-[hash].js'
+          },
+          // Manual chunking to keep the main app bundle small and
+          // isolate large vendor assets.
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('materialdesignicons-webfont') || id.match(/materialdesignicons/)) return 'vendor-mdi'
+              if (id.includes('pdfjs-dist')) return 'vendor-pdfjs'
+              if (id.includes('moment') || id.includes('moment-timezone')) return 'vendor-moment'
+              if (id.includes('lodash') || id.includes('lodash-es')) return 'vendor-lodash'
+              if (id.includes('quill')) return 'vendor-quill'
+              if (id.includes('markdown-it')) return 'vendor-markdown'
+              if (id.includes('i18next')) return 'vendor-i18n'
+              if (id.includes('buntpapier')) return 'vendor-buntpapier'
+              if (id.includes('preact')) return 'vendor-preact'
+              if (id.includes('vue') || id.includes('vue-router') || id.includes('vuex') || id.includes('vue-virtual-scroller')) return 'vendor-vue'
+              if (id.includes('@pretalx/schedule')) return 'vendor-pretalx'
+              if (id.includes('emoji-mart') || id.includes('emoji-datasource-twitter') || id.includes('emoji-regex') || id.includes('twemoji-emojis')) return 'vendor-emoji'
+              if (id.includes('hls.js')) return 'vendor-hls'
+              if (id.includes('pdfjs-dist')) return 'vendor-pdfjs'
+              if (id.includes('core-js')) return 'vendor-corejs'
+              if (id.includes('dompurify')) return 'vendor-dompurify'
+              if (id.includes('sanitize-html')) return 'vendor-sanitizehtml'
+              if (id.includes('js-md5')) return 'vendor-md5'
+              if (id.includes('uuid')) return 'vendor-uuid'
+              if (id.includes('register-service-worker')) return 'vendor-sw'
+              if (id.includes('mux-embed') || id.includes('mux.js')) return 'vendor-mux'
+              if (id.includes('qrcode')) return 'vendor-qrcode'
+              if (id.includes('random-js')) return 'vendor-randomjs'
+              if (id.includes('web-animations-js')) return 'vendor-webanimations'
+              if (id.includes('webrtc-adapter')) return 'vendor-webrtc'
+              return 'vendor'
+            }
           }
         },
         plugins: [

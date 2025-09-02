@@ -1,4 +1,3 @@
-/* eslint no-eval: 0 */
 import 'styles/preloader.styl'
 
 const showBrowserBlock = function() {
@@ -9,20 +8,14 @@ const showBrowserBlock = function() {
 // test syntax & API features
 ;(function() {
 	try {
-		eval('const f=(a)=>a')
-		eval('function a(b) {for (let b;;);}')
-		eval('class __testfail {}')
-
 		// modernizr haz no object.values flag
 		if (typeof Object.values !== 'function') {
-			throw new Error()
+			throw new Error('Object.values not supported')
 		}
 		if (typeof Array.prototype.at !== 'function') {
-			throw new Error()
+			throw new Error('Array.prototype.at not supported')
 		}
-
 		// load app
-		// eslint-disable-next-line
 		import(/* webpackChunkName: "app" */ './main')
 	} catch (e) {
 		console.error(e)

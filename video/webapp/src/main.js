@@ -25,7 +25,7 @@ import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
 import config from 'config'
-import theme, { computeForegroundSidebarColor, getThemeConfig, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS } from 'theme'
+import theme, { computeForegroundSidebarColor, getThemeConfig, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS, themeVariables } from 'theme'
 
 async function setThemeConfig() {
     const themeData = await getThemeConfig()
@@ -36,7 +36,6 @@ async function setThemeConfig() {
     computeForegroundSidebarColor(themeData.colors)
     // Inject theme variables into DOM
     if (typeof window !== 'undefined' && document && document.documentElement) {
-      const { themeVariables } = await import('./theme.js')
       for (const [key, value] of Object.entries(themeVariables)) {
         document.documentElement.style.setProperty(key, value)
       }
