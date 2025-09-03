@@ -1,0 +1,56 @@
+{% extends "eventyay_common/auth/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load compress %}
+{% load static %}
+{% block content %}
+    <form class="form-signin" id="webauthn-form" action="" method="post">
+        {% csrf_token %}
+        <h3>{% trans "Welcome back!" %}</h3>
+        <p>
+            {% if form.backend.url %}
+                {% blocktrans trimmed with login_provider=form.backend.verbose_name %}We just want to make sure it's really you. Please re-authenticate with '{{ login_provider }}'.{% endblocktrans %}
+            {% else %}
+                {% trans "We just want to make sure it's really you. Please re-enter your password to continue." %}
+            {% endif %}
+        </p>
+        {% bootstrap_form form %}
+        <input class="form-control" id="webauthn-response" name="webauthn"
+                type="hidden">
+        {% if jsondata %}
+            <div class="sr-only alert alert-danger" id="webauthn-error">
+                {% trans "WebAuthn failed. Check that the correct authentication device is correctly plugged in." %}
+            </div>
+            <p><small>
+                <span class="fa fa-usb"></span>
+                {% trans "Alternatively, you can use your WebAuthn device." %}
+            </small></p>
+        {% endif %}
+        <div class="form-group text-right flip">
+            {% if form.backend.url %}
+                <a href="{{ form.backend.url }}" class="btn btn-primary btn-block">
+                    {% trans "Continue" %}
+                </a>
+            {% else %}
+                <button type="submit" class="btn btn-primary btn-block">
+                    {% trans "Continue" %}
+                </button>
+            {% endif %}
+            <a href="{% url "common:auth.logout" %}" class="btn btn-link btn-block">
+                {% trans "Log in as someone else" %}
+            </a>
+        </div>
+
+        {% if jsondata %}
+            <script type="text/json" id="webauthn-login">
+            {{ jsondata|safe }}
+            </script>
+        {% endif %}
+        {% compress js %}
+            <script type="text/javascript" src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/base64js.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/webauthn.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/focus.js" %}"></script>
+        {% endcompress %}
+    </form>
+{% endblock %}

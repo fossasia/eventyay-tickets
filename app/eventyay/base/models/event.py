@@ -64,7 +64,7 @@ class EventMixin:
         Returns a shorter formatted string containing the start date of the event with respect
         to the current locale and to the ``show_times`` setting.
         """
-        tz = tz or self.timezone
+        tz = tz or pytz.timezone(self.settings.timezone)
         return _date(
             self.date_from.astimezone(tz),
             ('SHORT_DATETIME_FORMAT' if self.settings.show_times and show_times else 'DATE_FORMAT'),
@@ -76,7 +76,7 @@ class EventMixin:
         to the current locale and to the ``show_times`` setting. Returns an empty string
         if ``show_date_to`` is ``False``.
         """
-        tz = tz or self.timezone
+        tz = tz or pytz.timezone(self.settings.timezone)
         if not self.settings.show_date_to or not self.date_to:
             return ''
         return _date(
@@ -125,7 +125,7 @@ class EventMixin:
         of the event with respect to the current locale and to the ``show_date_to``
         setting. Times are not shown.
         """
-        tz = tz or self.timezone
+        tz = tz or pytz.timezone(self.settings.timezone)
         if (not self.settings.show_date_to and not force_show_end) or not self.date_to:
             return _date(self.date_from.astimezone(tz), 'DATE_FORMAT')
         return daterange(self.date_from.astimezone(tz), self.date_to.astimezone(tz))
@@ -260,11 +260,11 @@ class EventMixin:
 
         if not hasattr(self, 'active_quotas'):
             raise TypeError('Call this only if you fetched the subevents via Event/SubEvent.annotated()')
-        items_available = set()
+        products_available = set()
         vars_available = set()
-        items_reserved = set()
+        products_reserved = set()
         vars_reserved = set()
-        items_gone = set()
+        products_gone = set()
         vars_gone = set()
 
         r = getattr(self, '_quota_cache', {})
@@ -272,25 +272,25 @@ class EventMixin:
             res = r[q] if q in r else q.availability(allow_cache=True)
 
             if res[0] == Quota.AVAILABILITY_OK:
-                if q.active_items:
-                    items_available.update(q.active_items.split(','))
+                if q.active_products:
+                    products_available.update(q.active_products.split(','))
                 if q.active_variations:
                     vars_available.update(q.active_variations.split(','))
             elif res[0] == Quota.AVAILABILITY_RESERVED:
-                if q.active_items:
-                    items_reserved.update(q.active_items.split(','))
+                if q.active_products:
+                    products_reserved.update(q.active_products.split(','))
                 if q.active_variations:
                     vars_available.update(q.active_variations.split(','))
             elif res[0] < Quota.AVAILABILITY_RESERVED:
-                if q.active_items:
-                    items_gone.update(q.active_items.split(','))
+                if q.active_products:
+                    products_gone.update(q.active_products.split(','))
                 if q.active_variations:
                     vars_gone.update(q.active_variations.split(','))
         if not self.active_quotas:
             return None
-        if items_available - items_reserved - items_gone or vars_available - vars_reserved - vars_gone:
+        if products_available - products_reserved - products_gone or vars_available - vars_reserved - vars_gone:
             return Quota.AVAILABILITY_OK
-        if items_reserved - items_gone or vars_reserved - vars_gone:
+        if products_reserved - products_gone or vars_reserved - vars_gone:
             return Quota.AVAILABILITY_RESERVED
         return Quota.AVAILABILITY_GONE
 
@@ -732,7 +732,7 @@ class Event(EventMixin, LoggedModel):
         base_path = urlparse(_full_base_path).path.rstrip('/')
         base = '{base_path}/control/'
         common = '{base_path}/common/'
-        tickets_home_common = '{common}event/{self.organiser.slug}/{self.slug}/'
+        tickets_home_common = '{common}events/{self.organiser.slug}/{self.slug}/'
         tickets_dashboard_url = '{base}event/{self.organiser.slug}/{self.slug}/'
 
     class Meta:
@@ -940,19 +940,19 @@ class Event(EventMixin, LoggedModel):
             c.save()
             c.log_action('eventyay.object.cloned')
 
-        item_meta_properties_map = {}
-        for imp in other.item_meta_properties.all():
-            item_meta_properties_map[imp.pk] = imp
+        product_meta_properties_map = {}
+        for imp in other.product_meta_properties.all():
+            product_meta_properties_map[imp.pk] = imp
             imp.pk = None
             imp.event = self
             imp.save()
             imp.log_action('eventyay.object.cloned')
 
-        item_map = {}
+        product_map = {}
         variation_map = {}
         for i in Product.objects.filter(event=other).prefetch_related('variations'):
             vars = list(i.variations.all())
-            item_map[i.pk] = i
+            product_map[i.pk] = i
             i.pk = None
             i.event = self
             if i.picture:
@@ -966,33 +966,33 @@ class Event(EventMixin, LoggedModel):
             for v in vars:
                 variation_map[v.pk] = v
                 v.pk = None
-                v.item = i
+                v.product = i
                 v.save()
 
-        for imv in ProductMetaValue.objects.filter(item__event=other).prefetch_related('item', 'property'):
+        for imv in ProductMetaValue.objects.filter(product__event=other).prefetch_related('product', 'property'):
             imv.pk = None
-            imv.property = item_meta_properties_map[imv.property.pk]
-            imv.item = item_map[imv.item.pk]
+            imv.property = product_meta_properties_map[imv.property.pk]
+            imv.product = product_map[imv.product.pk]
             imv.save()
 
-        for ia in ProductAddOn.objects.filter(base_item__event=other).prefetch_related('base_item', 'addon_category'):
+        for ia in ProductAddOn.objects.filter(base_product__event=other).prefetch_related('base_product', 'addon_category'):
             ia.pk = None
-            ia.base_item = item_map[ia.base_item.pk]
+            ia.base_product = product_map[ia.base_product.pk]
             ia.addon_category = category_map[ia.addon_category.pk]
             ia.save()
 
-        for ia in ProductBundle.objects.filter(base_item__event=other).prefetch_related(
-            'base_item', 'bundled_item', 'bundled_variation'
+        for ia in ProductBundle.objects.filter(base_product__event=other).prefetch_related(
+            'base_product', 'bundled_product', 'bundled_variation'
         ):
             ia.pk = None
-            ia.base_item = item_map[ia.base_item.pk]
-            ia.bundled_item = item_map[ia.bundled_item.pk]
+            ia.base_product = product_map[ia.base_product.pk]
+            ia.bundled_product = product_map[ia.bundled_product.pk]
             if ia.bundled_variation:
                 ia.bundled_variation = variation_map[ia.bundled_variation.pk]
             ia.save()
 
-        for q in Quota.objects.filter(event=other, subevent__isnull=True).prefetch_related('items', 'variations'):
-            items = list(q.items.all())
+        for q in Quota.objects.filter(event=other, subevent__isnull=True).prefetch_related('products', 'variations'):
+            products = list(q.products.all())
             vars = list(q.variations.all())
             oldid = q.pk
             q.pk = None
@@ -1000,16 +1000,16 @@ class Event(EventMixin, LoggedModel):
             q.closed = False
             q.save()
             q.log_action('eventyay.object.cloned')
-            for i in items:
-                if i.pk in item_map:
-                    q.items.add(item_map[i.pk])
+            for i in products:
+                if i.pk in product_map:
+                    q.products.add(product_map[i.pk])
             for v in vars:
                 q.variations.add(variation_map[v.pk])
-            self.items.filter(hidden_if_available_id=oldid).update(hidden_if_available=q)
+            self.products.filter(hidden_if_available_id=oldid).update(hidden_if_available=q)
 
         question_map = {}
-        for q in Question.objects.filter(event=other).prefetch_related('items', 'options'):
-            items = list(q.items.all())
+        for q in Question.objects.filter(event=other).prefetch_related('products', 'options'):
+            products = list(q.products.all())
             opts = list(q.options.all())
             question_map[q.pk] = q
             q.pk = None
@@ -1017,8 +1017,8 @@ class Event(EventMixin, LoggedModel):
             q.save()
             q.log_action('eventyay.object.cloned')
 
-            for i in items:
-                q.items.add(item_map[i.pk])
+            for i in products:
+                q.products.add(product_map[i.pk])
             for o in opts:
                 o.pk = None
                 o.question = q
@@ -1033,7 +1033,7 @@ class Event(EventMixin, LoggedModel):
                 for k, v in rules.items():
                     if k == 'lookup':
                         if v[0] == 'product':
-                            v[1] = str(item_map.get(int(v[1]), 0).pk) if int(v[1]) in item_map else '0'
+                            v[1] = str(product_map.get(int(v[1]), 0).pk) if int(v[1]) in product_map else '0'
                         elif v[0] == 'variation':
                             v[1] = str(variation_map.get(int(v[1]), 0).pk) if int(v[1]) in variation_map else '0'
                     else:
@@ -1044,7 +1044,7 @@ class Event(EventMixin, LoggedModel):
 
         checkin_list_map = {}
         for cl in other.checkin_lists.filter(subevent__isnull=True).prefetch_related('limit_products'):
-            items = list(cl.limit_products.all())
+            products = list(cl.limit_products.all())
             checkin_list_map[cl.pk] = cl
             cl.pk = None
             cl.event = self
@@ -1053,8 +1053,8 @@ class Event(EventMixin, LoggedModel):
             cl.rules = rules
             cl.save()
             cl.log_action('eventyay.object.cloned')
-            for i in items:
-                cl.limit_products.add(item_map[i.pk])
+            for i in products:
+                cl.limit_products.add(product_map[i.pk])
 
         if other.seating_plan:
             if other.seating_plan.organizer_id == self.organizer_id:
@@ -1066,14 +1066,14 @@ class Event(EventMixin, LoggedModel):
         for m in other.seat_category_mappings.filter(subevent__isnull=True):
             m.pk = None
             m.event = self
-            m.product = item_map[m.product_id]
+            m.product = product_map[m.product_id]
             m.save()
 
         for s in other.seats.filter(subevent__isnull=True):
             s.pk = None
             s.event = self
             if s.product_id:
-                s.product = item_map[s.product_id]
+                s.product = product_map[s.product_id]
             s.save()
 
         skip_settings = (
@@ -1116,7 +1116,7 @@ class Event(EventMixin, LoggedModel):
             other=other,
             tax_map=tax_map,
             category_map=category_map,
-            item_map=item_map,
+            product_map=product_map,
             variation_map=variation_map,
             question_map=question_map,
             checkin_list_map=checkin_list_map,
@@ -1246,10 +1246,10 @@ class Event(EventMixin, LoggedModel):
             'name_descending': ('-name', 'date_from'),
         }[ordering]
         subevs = queryset.annotate(
-            has_paid_item=Value(
+            has_paid_product=Value(
                 self.cache.get_or_set(
-                    'has_paid_item',
-                    lambda: self.items.filter(default_price__gt=0).exists(),
+                    'has_paid_product',
+                    lambda: self.products.filter(default_price__gt=0).exists(),
                     3600,
                 ),
                 output_field=models.BooleanField(),
@@ -1295,11 +1295,11 @@ class Event(EventMixin, LoggedModel):
 
     @property
     def has_paid_things(self):
-        from .items import Product, ProductVariation
+        from .product import Product, ProductVariation
 
         return (
             Product.objects.filter(event=self, default_price__gt=0).exists()
-            or ProductVariation.objects.filter(item__event=self, default_price__gt=0).exists()
+            or ProductVariation.objects.filter(product__event=self, default_price__gt=0).exists()
         )
 
     @property
@@ -1422,7 +1422,7 @@ class Event(EventMixin, LoggedModel):
         self.cartposition_set.filter(addon_to__isnull=False).delete()
         self.cartposition_set.all().delete()
         self.vouchers.all().delete()
-        self.items.all().delete()
+        self.products.all().delete()
         self.subevents.all().delete()
 
     def set_active_plugins(self, modules, allow_restricted=False):
@@ -1660,13 +1660,13 @@ class SubEvent(EventMixin, LoggedModel):
 
     @cached_property
     def product_overrides(self):
-        from .products import SubEventProduct
+        from .product import SubEventProduct
 
         return {si.product_id: si for si in SubEventProduct.objects.filter(subevent=self)}
 
     @cached_property
     def var_overrides(self):
-        from .products import SubEventProductVariation
+        from .product import SubEventProductVariation
 
         return {si.variation_id: si for si in SubEventProductVariation.objects.filter(subevent=self)}
 

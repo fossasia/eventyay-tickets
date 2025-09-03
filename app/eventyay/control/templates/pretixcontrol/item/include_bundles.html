@@ -30,7 +30,7 @@
                 </div>
                 <div class="panel-body form-horizontal">
                     {% bootstrap_form_errors form %}
-                    {% bootstrap_field form.itemvar layout="control" %}
+                    {% bootstrap_field form.productvar layout="control" %}
                     {% bootstrap_field form.count layout="control" %}
                     {% bootstrap_field form.designated_price layout="control" %}
                 </div>
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="panel-body form-horizontal">
-                    {% bootstrap_field formset.empty_form.itemvar layout="control" %}
+                    {% bootstrap_field formset.empty_form.productvar layout="control" %}
                     {% bootstrap_field formset.empty_form.count layout="control" %}
                     {% bootstrap_field formset.empty_form.designated_price layout="control" %}
                 </div>

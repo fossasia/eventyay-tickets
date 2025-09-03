@@ -1,0 +1,100 @@
+{% extends "eventyay_common/event/base.html" %}
+{% load i18n %}
+{% load eventurl %}
+{% load bootstrap3 %}
+{% load static %}
+{% load eventsignal %}
+{% block title %}{{ request.event.name }}{% endblock %}
+{% block content %}
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>
+                    {{ request.event.name }}
+                    <small>
+                        {% if request.event.has_subevents %}
+                            {% trans "Event series" %}
+                        {% else %}
+                            {{ request.event.get_date_range_display }}
+                        {% endif %}
+                    </small>
+                </h1>
+            </div>
+            {% include "eventyay_common/event/component_link.html" %}
+        </div>
+    </nav>
+
+    {% eventsignal request.event "eventyay.control.signals.event_dashboard_top" request=request %}
+    {% if actions|length > 0 %}
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% trans "Your attention is required to resolve the following issues" %}
+                </h3>
+            </div>
+            <ul class="list-group">
+                {% for action in actions %}
+                    <li class="list-group-item logentry">
+                        <p>
+                            {% url "control:event.requiredaction.discard" event=request.event.slug organizer=request.event.organizer.slug id=action.id as discard_url %}
+                            <a href="{{ discard_url }}" class="btn btn-default btn-xs pull-right flip">
+                                {% trans "Hide message" %}
+                            </a>
+                            <small><span
+                                    class="fa fa-clock-o"></span> {{ action.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                            </small>
+                        </p>
+                        {{ action.display|safe }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="panel-footer">
+                <a href='{% url "control:event.requiredactions" event=request.event.slug organizer=request.event.organizer.slug %}'>
+                    {% trans "Show more" %}
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if request.event.has_subevents %}
+        <form class="form-inline helper-display-inline" action="" method="get">
+            {% include "pretixcontrol/event/fragment_subevent_choice_simple.html" %}
+        </form>
+    {% endif %}
+    <br>
+    {% include "eventyay_common/event/fragment_dashboard.html" %}
+    {% if not request.event.has_subevents or subevent %}
+        {% include "pretixcontrol/event/fragment_timeline.html" %}
+    {% endif %}
+    <div class="dashboard">
+        {% for w in widgets %}
+            <div class="widget-container widget-{{ w.display_size|default:"small" }} {% if w.lazy %}widget-lazy-loading{% endif %}" data-lazy-id="{{ w.lazy }}">
+                {% if w.url %}{# backwards compatibility #}
+                    <a href="{{ w.url }}" class="widget">
+                        {% if w.lazy %}
+                            <span class="fa fa-cog fa-4x"></span>
+                        {% else %}
+                            {{ w.content|safe }}
+                        {% endif %}
+                    </a>
+                {% elif w.link %}
+                    <a href="{{ w.link }}" class="widget">
+                        {% if w.lazy %}
+                            <span class="fa fa-cog fa-4x´"></span>
+                        {% else %}
+                            {{ w.content|safe }}
+                        {% endif %}
+                    </a>
+                {% else %}
+                    <div class="widget">
+                        {% if w.lazy %}
+                            <span class="fa fa-cog fa-4x"></span>
+                        {% else %}
+                            {{ w.content|safe }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

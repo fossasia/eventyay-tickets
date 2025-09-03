@@ -23,12 +23,12 @@
                 {% endblocktrans %}
             </p>
 
-            <a href="{% url "control:event.items.categories.add" organizer=request.event.organizer.slug event=request.event.slug %}"
+            <a href="{% url "control:event.products.categories.add" organizer=request.event.organizer.slug event=request.event.slug %}"
                     class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new category" %}</a>
         </div>
     {% else %}
         <p>
-            <a href="{% url "control:event.items.categories.add" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new category" %}
+            <a href="{% url "control:event.products.categories.add" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new category" %}
             </a>
         </p>
         <div class="table-responsive">
@@ -44,19 +44,19 @@
                 {% for c in categories %}
                     <tr>
                         <td>
-                            <strong><a href="{% url "control:event.items.categories.edit" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}">{{ c.internal_name|default:c.name }}</a></strong>
+                            <strong><a href="{% url "control:event.products.categories.edit" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}">{{ c.internal_name|default:c.name }}</a></strong>
                         </td>
                         <td>
-                            <a href="{% url "control:event.items.categories.up" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-default btn-sm {% if forloop.counter0 == 0 and is_paginated and not page_obj.has_previous %}disabled{% endif %}"><i class="fa fa-arrow-up"></i></a>
-                            <a href="{% url "control:event.items.categories.down" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-default btn-sm {% if forloop.revcounter0 == 0 and is_paginated and not page_obj.has_next %}disabled{% endif %}"><i class="fa fa-arrow-down"></i></a>
+                            <a href="{% url "control:event.products.categories.up" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-default btn-sm {% if forloop.counter0 == 0 and is_paginated and not page_obj.has_previous %}disabled{% endif %}"><i class="fa fa-arrow-up"></i></a>
+                            <a href="{% url "control:event.products.categories.down" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-default btn-sm {% if forloop.revcounter0 == 0 and is_paginated and not page_obj.has_next %}disabled{% endif %}"><i class="fa fa-arrow-down"></i></a>
                         </td>
                         <td class="text-right flip">
-                            <a href="{% url "control:event.items.categories.edit" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
-                            <a href="{% url "control:event.items.categories.add" organizer=request.event.organizer.slug event=request.event.slug %}?copy_from={{ c.id }}"
+                            <a href="{% url "control:event.products.categories.edit" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                            <a href="{% url "control:event.products.categories.add" organizer=request.event.organizer.slug event=request.event.slug %}?copy_from={{ c.id }}"
                                class="btn btn-sm btn-default" title="{% trans "Clone" %}" data-toggle="tooltip">
                                 <span class="fa fa-copy"></span>
                             </a>
-                            <a href="{% url "control:event.items.categories.delete" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            <a href="{% url "control:event.products.categories.delete" organizer=request.event.organizer.slug event=request.event.slug category=c.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -1,5 +1,6 @@
 from datetime import timedelta
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 import pytz
 from django.conf import settings
@@ -473,14 +474,14 @@ def event_index(request, organizer, event):
 
     ctx['timeline'] = [
         {
-            'date': t.datetime.astimezone(request.event.timezone).date(),
+            'date': t.datetime.astimezone(ZoneInfo(request.event.timezone)).date(),
             'entry': t,
-            'time': t.datetime.astimezone(request.event.timezone),
+            'time': t.datetime.astimezone(ZoneInfo(request.event.timezone)),
         }
         for t in timeline_for_event(request.event, subevent)
     ]
-    ctx['today'] = now().astimezone(request.event.timezone).date()
-    ctx['nearly_now'] = now().astimezone(request.event.timezone) - timedelta(seconds=20)
+    ctx['today'] = now().astimezone(ZoneInfo(request.event.timezone)).date()
+    ctx['nearly_now'] = now().astimezone(ZoneInfo(request.event.timezone)) - timedelta(seconds=20)
     ctx['organizer_teams'] = request.organizer.teams.values_list('id', 'name')
     resp = render(request, 'pretixcontrol/event/index.html', ctx)
     # resp['Content-Security-Policy'] = "style-src 'unsafe-inline'"

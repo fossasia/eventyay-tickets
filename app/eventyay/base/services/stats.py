@@ -267,7 +267,7 @@ def order_overview(
             .order_by()
         )
 
-        for l, s in states.products():
+        for l, s in states.items():
             num[l] = {
                 (o['fee_type'], o['internal_type']): (
                     o['cnt'],
