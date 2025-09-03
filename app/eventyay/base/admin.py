@@ -3,8 +3,7 @@ from .models import (
     Announcement, AuditLog, auth, base, BBBCall, BBBServer, BillingInvoice, 
     billing, Channel, ChatEvent, checkin, choices, Device, devices, event, 
     Exhibitor, SystemLog, fields, Gate, GiftCard, GiftCardAcceptance, 
-    GiftCardTransaction, giftcards, Invoice, invoices, Item, ItemCategory, 
-    items, JanusServer, log, notifications, Order, OrderPayment, OrderRefund, 
+    GiftCardTransaction, giftcards, Invoice, invoices, JanusServer, log, notifications, Order, OrderPayment, OrderRefund, 
     orders, organizer, page, Poll, Poster, roomquestion, Quota, Room, roulette, 
     seating, StreamingServer, tax, Team, TeamInvite, TurnServer, vouchers, 
     WaitingListEntry, waitinglist, room, exhibitor, poll, poster, chat
@@ -45,19 +44,7 @@ admin.site.register(orders.CancellationRequest)
 admin.site.register(orders.RevokedTicketSecret)
 
 # Items and Categories
-admin.site.register(Item)
-admin.site.register(ItemCategory)
-admin.site.register(items.ItemVariation)
-admin.site.register(items.ItemAddOn)
-admin.site.register(items.ItemBundle)
-admin.site.register(items.ItemMetaProperty)
-admin.site.register(items.ItemMetaValue)
-admin.site.register(items.SubEventItem)
-admin.site.register(items.SubEventItemVariation)
-admin.site.register(items.Question)
-admin.site.register(items.QuestionOption)
-admin.site.register(Quota)
-
+#products to be plaecd here 
 # Check-in Management
 admin.site.register(checkin.Checkin)
 admin.site.register(checkin.CheckinList)
