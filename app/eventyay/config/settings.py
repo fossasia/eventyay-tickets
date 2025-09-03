@@ -138,10 +138,12 @@ _OURS_MIDDLEWARES = (
 MIDDLEWARE = _LIBRARY_MIDDLEWARES + _OURS_MIDDLEWARES
 
 
-TEMPLATES = [
+TEMPLATES = (
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,7 +155,22 @@ TEMPLATES = [
             ],
         },
     },
-]
+    {
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': [
+            BASE_DIR / 'jinja-templates',
+        ],
+        'OPTIONS': {
+            'environment': 'eventyay.jinja.environment',
+            'extensions': (
+                'jinja2.ext.i18n',
+                'jinja2.ext.do',
+                'jinja2.ext.debug',
+                'jinja2.ext.loopcontrols',
+            ),
+        },
+    },
+)
 
 WSGI_APPLICATION = 'eventyay.config.wsgi.application'
 
@@ -226,6 +243,12 @@ CURRENCY_PLACES = {
 
 CURRENCIES = list(currencies)
 
+# For development, we just store emails as files.
+# TODO: Define production, development, testing environments then
+# make email backend vary accordingly.
+EMAIL_BACKEND = 'eventyay.base.email.FileSavedEmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'dev-sent-emails'
+
 EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
 
@@ -250,6 +273,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+LANGUAGES_RTL = {'ar', 'hw'}
 
 
 METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
@@ -413,6 +439,8 @@ OAUTH2_PROVIDER = {
 LOGIN_URL = 'eventyay_common:auth.login'
 LOGIN_URL_CONTROL = 'eventyay_common:auth.login'
 # CSRF_FAILURE_VIEW = 'eventyay.base.views.errors.csrf_failure'
+
+PROFILING_RATE = config.getfloat('django', 'profile', fallback=0)  # Percentage of requests to profile
 
 _LOGGING_HANDLERS = {
     'console': {

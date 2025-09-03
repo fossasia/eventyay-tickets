@@ -1,0 +1,2 @@
+{% set a_attr = 'target="blank" href="https://eventyay.com"' | safe %}
+{{ _('powered by <a %(a_attr)s>eventyay</a>', a_attr=a_attr) | safe }}

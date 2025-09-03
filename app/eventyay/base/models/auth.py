@@ -217,7 +217,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         mail(
             self.email,
             subject,
-            'email/forgot.txt',
+            'eventyay/email/forgot.txt.jinja',
             context,
             None,
             locale=self.locale,
