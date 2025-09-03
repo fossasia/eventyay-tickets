@@ -574,9 +574,9 @@ INTERNAL_IPS = ("127.0.0.1", "::1")
 # REST Framework configuration
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        "eventyay.base.api.auth.NoPermission",
+        "eventyay.api.auth.api_auth.NoPermission",
     ],
-    "UNAUTHENTICATED_USER": "eventyay.base.api.auth.AnonymousUser",
+    "UNAUTHENTICATED_USER": "eventyay.api.auth.api_auth.AnonymousUser",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "PAGE_SIZE": 50,
