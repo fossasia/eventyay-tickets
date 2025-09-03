@@ -57,7 +57,7 @@ from eventyay.control.forms.event import (
     EventSettingsForm,
     EventUpdateForm,
     InvoiceSettingsForm,
-    ItemMetaPropertyForm,
+    ProductMetaPropertyForm,
     MailSettingsForm,
     PaymentSettingsForm,
     ProviderForm,
@@ -78,10 +78,10 @@ from ...base.configurations.lazy_i18n_string_list_base import (
     LazyI18nStringList,
 )
 from ...base.i18n import language
-from ...base.models.items import (
-    Item,
-    ItemCategory,
-    ItemMetaProperty,
+from ...base.models.product import (
+    Product,
+    ProductCategory,
+    ProductMetaProperty,
     Question,
     Quota,
 )
@@ -160,7 +160,7 @@ class EventUpdate(
 ):
     model = Event
     form_class = EventUpdateForm
-    template_name = 'pretixcontrol/event/settings.html'
+    template_name = 'eventyaycontrol/event/settings.html'
     permission = 'can_change_event_settings'
 
     @cached_property
@@ -183,7 +183,7 @@ class EventUpdate(
         context = super().get_context_data(*args, **kwargs)
         context['sform'] = self.sform
         context['meta_forms'] = self.meta_forms
-        context['item_meta_property_formset'] = self.item_meta_property_formset
+        context['product_meta_property_formset'] = self.product_meta_property_formset
         context['confirm_texts_formset'] = self.confirm_texts_formset
         return context
 
@@ -192,7 +192,7 @@ class EventUpdate(
         self._save_decoupled(self.sform)
         self.sform.save()
         self.save_meta()
-        self.save_item_meta_property_formset(self.object)
+        self.save_product_meta_property_formset(self.object)
         self.save_confirm_texts_formset(self.object)
         change_css = False
 
@@ -200,12 +200,12 @@ class EventUpdate(
             data = {k: self.request.event.settings.get(k) for k in self.sform.changed_data}
             if self.confirm_texts_formset.has_changed():
                 data.update(confirm_texts=self.confirm_texts_formset.cleaned_data)
-            self.request.event.log_action('pretix.event.settings', user=self.request.user, data=data)
+            self.request.event.log_action('eventyay.event.settings', user=self.request.user, data=data)
             if any(p in self.sform.changed_data for p in SETTINGS_AFFECTING_CSS):
                 change_css = True
         if form.has_changed():
             self.request.event.log_action(
-                'pretix.event.changed',
+                'eventyay.event.changed',
                 user=self.request.user,
                 data={
                     k: (
@@ -254,7 +254,7 @@ class EventUpdate(
             form.is_valid()
             and self.sform.is_valid()
             and all([f.is_valid() for f in self.meta_forms])
-            and self.item_meta_property_formset.is_valid()
+            and self.product_meta_property_formset.is_valid()
             and self.confirm_texts_formset.is_valid()
         ):
             # reset timezone
@@ -277,25 +277,25 @@ class EventUpdate(
         return tz.localize(dt.replace(tzinfo=None)) if dt is not None else None
 
     @cached_property
-    def item_meta_property_formset(self):
+    def product_meta_property_formset(self):
         formsetclass = inlineformset_factory(
             Event,
-            ItemMetaProperty,
-            form=ItemMetaPropertyForm,
+            ProductMetaProperty,
+            form=ProductMetaPropertyForm,
             can_order=False,
             can_delete=True,
             extra=0,
         )
         return formsetclass(
             self.request.POST if self.request.method == 'POST' else None,
-            prefix='item-meta-property',
+            prefix='product-meta-property',
             instance=self.object,
-            queryset=self.object.item_meta_properties.all(),
+            queryset=self.object.product_meta_properties.all(),
         )
 
-    def save_item_meta_property_formset(self, obj):
-        for form in self.item_meta_property_formset.initial_forms:
-            if form in self.item_meta_property_formset.deleted_forms:
+    def save_product_meta_property_formset(self, obj):
+        for form in self.product_meta_property_formset.initial_forms:
+            if form in self.product_meta_property_formset.deleted_forms:
                 if not form.instance.pk:
                     continue
                 form.instance.delete()
@@ -303,10 +303,10 @@ class EventUpdate(
             elif form.has_changed():
                 form.save()
 
-        for form in self.item_meta_property_formset.extra_forms:
+        for form in self.product_meta_property_formset.extra_forms:
             if not form.has_changed():
                 continue
-            if self.item_meta_property_formset._should_delete_form(form):
+            if self.product_meta_property_formset._should_delete_form(form):
                 continue
             form.instance.event = obj
             form.save()
@@ -344,13 +344,13 @@ class EventPlugins(
     model = Event
     context_object_name = 'event'
     permission = 'can_change_event_settings'
-    template_name = 'pretixcontrol/event/plugins.html'
+    template_name = 'eventyaycontrol/event/plugins.html'
 
     def get_object(self, queryset=None) -> Event:
         return self.request.event
 
     def get_context_data(self, *args, **kwargs) -> dict:
-        from pretix.base.plugins import get_all_plugins
+        from eventyay.base.plugins import get_all_plugins
 
         context = super().get_context_data(*args, **kwargs)
         plugins = [
@@ -391,7 +391,7 @@ class EventPlugins(
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        from pretix.base.plugins import get_all_plugins
+        from eventyay.base.plugins import get_all_plugins
 
         self.object = self.get_object()
 
@@ -413,14 +413,14 @@ class EventPlugins(
                                 continue
 
                         self.request.event.log_action(
-                            'pretix.event.plugins.enabled',
+                            'eventyay.event.plugins.enabled',
                             user=self.request.user,
                             data={'plugin': module},
                         )
                         self.object.enable_plugin(module, allow_restricted=allow_restricted)
                     else:
                         self.request.event.log_action(
-                            'pretix.event.plugins.disabled',
+                            'eventyay.event.plugins.disabled',
                             user=self.request.user,
                             data={'plugin': module},
                         )
@@ -448,7 +448,7 @@ class PaymentProviderSettings(
     model = Event
     context_object_name = 'event'
     permission = 'can_change_event_settings'
-    template_name = 'pretixcontrol/event/payment_provider.html'
+    template_name = 'eventyaycontrol/event/payment_provider.html'
 
     def get_success_url(self) -> str:
         return reverse(
@@ -514,7 +514,7 @@ class PaymentProviderSettings(
         if self.form.is_valid():
             if self.form.has_changed():
                 self.request.event.log_action(
-                    'pretix.event.payment.provider.' + self.provider.identifier,
+                    'eventyay.event.payment.provider.' + self.provider.identifier,
                     user=self.request.user,
                     data={k: self.form.cleaned_data.get(k) for k in self.form.changed_data},
                 )
@@ -553,7 +553,7 @@ class EventSettingsFormView(EventPermissionRequiredMixin, DecoupleMixin, FormVie
             self._save_decoupled(form)
             if form.has_changed():
                 self.request.event.log_action(
-                    'pretix.event.settings',
+                    'eventyay.event.settings',
                     user=self.request.user,
                     data={
                         k: (
@@ -576,7 +576,7 @@ class EventSettingsFormView(EventPermissionRequiredMixin, DecoupleMixin, FormVie
 
 
 class PaymentSettings(EventSettingsViewMixin, EventSettingsFormView):
-    template_name = 'pretixcontrol/event/payment.html'
+    template_name = 'eventyaycontrol/event/payment.html'
     form_class = PaymentSettingsForm
     permission = 'can_change_event_settings'
 
@@ -616,7 +616,7 @@ class PaymentSettings(EventSettingsViewMixin, EventSettingsFormView):
 class InvoiceSettings(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     form_class = InvoiceSettingsForm
-    template_name = 'pretixcontrol/event/invoicing.html'
+    template_name = 'eventyaycontrol/event/invoicing.html'
     permission = 'can_change_event_settings'
 
     def get_success_url(self) -> str:
@@ -640,7 +640,7 @@ class InvoiceSettings(EventSettingsViewMixin, EventSettingsFormView):
 class CancelSettings(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     form_class = CancelSettingsForm
-    template_name = 'pretixcontrol/event/cancel.html'
+    template_name = 'eventyaycontrol/event/cancel.html'
     permission = 'can_change_event_settings'
 
     def get_success_url(self) -> str:
@@ -658,19 +658,19 @@ class CancelSettings(EventSettingsViewMixin, EventSettingsFormView):
             (
                 self.request.user.notification_settings.filter(
                     event=self.request.event,
-                    action_type='pretix.event.order.refund.requested',
+                    action_type='eventyay.event.order.refund.requested',
                     enabled=True,
                 ).exists()
             )
             or (
                 self.request.user.notification_settings.filter(
                     event__isnull=True,
-                    action_type='pretix.event.order.refund.requested',
+                    action_type='eventyay.event.order.refund.requested',
                     enabled=True,
                 ).exists()
                 and not self.request.user.notification_settings.filter(
                     event=self.request.event,
-                    action_type='pretix.event.order.refund.requested',
+                    action_type='eventyay.event.order.refund.requested',
                     enabled=False,
                 ).exists()
             )
@@ -690,7 +690,7 @@ class InvoicePreview(EventPermissionRequiredMixin, View):
 
 class DangerZone(EventPermissionRequiredMixin, TemplateView):
     permission = 'can_change_event_settings'
-    template_name = 'pretixcontrol/event/dangerzone.html'
+    template_name = 'eventyaycontrol/event/dangerzone.html'
 
 
 class DisplaySettings(View):
@@ -710,7 +710,7 @@ class DisplaySettings(View):
 class MailSettings(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     form_class = MailSettingsForm
-    template_name = 'pretixcontrol/event/mail.html'
+    template_name = 'eventyaycontrol/event/mail.html'
     permission = 'can_change_event_settings'
 
     def get_success_url(self) -> str:
@@ -734,7 +734,7 @@ class MailSettings(EventSettingsViewMixin, EventSettingsFormView):
             form.save()
             if form.has_changed():
                 self.request.event.log_action(
-                    'pretix.event.settings',
+                    'eventyay.event.settings',
                     user=self.request.user,
                     data={k: form.cleaned_data.get(k) for k in form.changed_data},
                 )
@@ -795,11 +795,11 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
         return locales
 
     # get all supported placeholders with dummy values
-    def placeholders(self, item):
+    def placeholders(self, product):
         ctx = {}
         url_pattern = re.compile(r'^(https?://|www\.)[^\s]+$')
 
-        for p in get_available_placeholders(self.request.event, MailSettingsForm.base_context[item]).values():
+        for p in get_available_placeholders(self.request.event, MailSettingsForm.base_context[product]).values():
             s = str(p.render_sample(self.request.event)).strip()
 
             if s.startswith('*'):
@@ -813,11 +813,11 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
         return self.SafeDict(ctx)
 
     def post(self, request, *args, **kwargs):
-        preview_item = request.POST.get('item', '')
-        if preview_item not in MailSettingsForm.base_context:
-            return HttpResponseBadRequest(_('invalid item'))
+        preview_product = request.POST.get('product', '')
+        if preview_product not in MailSettingsForm.base_context:
+            return HttpResponseBadRequest(_('invalid product'))
 
-        regex = r'^' + re.escape(preview_item) + r'_(?P<idx>[\d+])$'
+        regex = r'^' + re.escape(preview_product) + r'_(?P<idx>[\d+])$'
         msgs = {}
         for k, v in request.POST.items():
             # only accept allowed fields
@@ -827,10 +827,10 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
                 if idx in self.supported_locale:
                     with language(self.supported_locale[idx], self.request.event.settings.region):
                         msgs[self.supported_locale[idx]] = markdown_compile_email(
-                            v.format_map(self.placeholders(preview_item))
+                            v.format_map(self.placeholders(preview_product))
                         )
 
-        return JsonResponse({'item': preview_item, 'msgs': msgs})
+        return JsonResponse({'product': preview_product, 'msgs': msgs})
 
 
 class MailSettingsRendererPreview(MailSettingsPreview):
@@ -852,15 +852,15 @@ class MailSettingsRendererPreview(MailSettingsPreview):
                     code='PREVIEW',
                     total=119,
                 )
-                item = request.event.items.create(
+                product = request.event.products.create(
                     name=gettext('Sample product'),
                     default_price=42.23,
                     description=gettext('Sample product description'),
                 )
                 order.positions.create(
-                    item=item,
+                    product=product,
                     attendee_name_parts={'_legacy': gettext('John Doe')},
-                    price=item.default_price,
+                    price=product.default_price,
                     subevent=request.event.subevents.last(),
                 )
                 v = renderers[request.GET.get('renderer')].render(
@@ -912,7 +912,7 @@ class TicketSettingsPreview(EventPermissionRequiredMixin, View):
 class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormView):
     model = Event
     form_class = TicketSettingsForm
-    template_name = 'pretixcontrol/event/tickets.html'
+    template_name = 'eventyaycontrol/event/tickets.html'
     permission = 'can_change_event_settings'
 
     def get_context_data(self, *args, **kwargs) -> dict:
@@ -960,7 +960,7 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
                 provider.form.save()
                 if provider.form.has_changed():
                     self.request.event.log_action(
-                        'pretix.event.tickets.provider.' + provider.identifier,
+                        'eventyay.event.tickets.provider.' + provider.identifier,
                         user=self.request.user,
                         data={
                             k: (
@@ -984,7 +984,7 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
             form.save()
             if form.has_changed():
                 self.request.event.log_action(
-                    'pretix.event.tickets.settings',
+                    'eventyay.event.tickets.settings',
                     user=self.request.user,
                     data={k: form.cleaned_data.get(k) for k in form.changed_data},
                 )
@@ -1028,12 +1028,12 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
 
 
 class EventPermissions(EventSettingsViewMixin, EventPermissionRequiredMixin, TemplateView):
-    template_name = 'pretixcontrol/event/permissions.html'
+    template_name = 'eventyaycontrol/event/permissions.html'
 
 
 class EventLive(EventPermissionRequiredMixin, TemplateView):
     permission = 'can_change_event_settings'
-    template_name = 'pretixcontrol/event/live.html'
+    template_name = 'eventyaycontrol/event/live.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -1046,13 +1046,13 @@ class EventLive(EventPermissionRequiredMixin, TemplateView):
             with transaction.atomic():
                 request.event.live = True
                 request.event.save()
-                self.request.event.log_action('pretix.event.live.activated', user=self.request.user, data={})
+                self.request.event.log_action('eventyay.event.live.activated', user=self.request.user, data={})
             messages.success(self.request, _('Your shop is live now!'))
         elif request.POST.get('live') == 'false':
             with transaction.atomic():
                 request.event.live = False
                 request.event.save()
-                self.request.event.log_action('pretix.event.live.deactivated', user=self.request.user, data={})
+                self.request.event.log_action('eventyay.event.live.deactivated', user=self.request.user, data={})
             messages.success(
                 self.request,
                 _("We've taken your shop down. You can re-enable it whenever you want!"),
@@ -1061,14 +1061,14 @@ class EventLive(EventPermissionRequiredMixin, TemplateView):
             with transaction.atomic():
                 request.event.testmode = True
                 request.event.save()
-                self.request.event.log_action('pretix.event.testmode.activated', user=self.request.user, data={})
+                self.request.event.log_action('eventyay.event.testmode.activated', user=self.request.user, data={})
             messages.success(self.request, _('Your shop is now in test mode!'))
         elif request.POST.get('testmode') == 'false':
             with transaction.atomic():
                 request.event.testmode = False
                 request.event.save()
                 self.request.event.log_action(
-                    'pretix.event.testmode.deactivated',
+                    'eventyay.event.testmode.deactivated',
                     user=self.request.user,
                     data={'delete': (request.POST.get('delete') == 'yes')},
                 )
@@ -1108,7 +1108,7 @@ class EventLive(EventPermissionRequiredMixin, TemplateView):
 
 class EventDelete(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixin, FormView):
     permission = 'can_change_event_settings'
-    template_name = 'pretixcontrol/event/delete.html'
+    template_name = 'eventyaycontrol/event/delete.html'
     form_class = EventDeleteForm
 
     def post(self, request, *args, **kwargs):
@@ -1126,7 +1126,7 @@ class EventDelete(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixi
         try:
             with transaction.atomic():
                 self.request.organizer.log_action(
-                    'pretix.event.deleted',
+                    'eventyay.event.deleted',
                     user=self.request.user,
                     data={
                         'event_id': self.request.event.pk,
@@ -1154,7 +1154,7 @@ class EventDelete(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixi
 
 
 class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
-    template_name = 'pretixcontrol/event/logs.html'
+    template_name = 'eventyaycontrol/event/logs.html'
     model = LogEntry
     context_object_name = 'logs'
 
@@ -1196,8 +1196,8 @@ class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
                 request=self.request,
             ):
                 allowed_types += [
-                    ContentType.objects.get_for_model(Item),
-                    ContentType.objects.get_for_model(ItemCategory),
+                    ContentType.objects.get_for_model(Product),
+                    ContentType.objects.get_for_model(ProductCategory),
                     ContentType.objects.get_for_model(Quota),
                     ContentType.objects.get_for_model(Question),
                 ]
@@ -1230,7 +1230,7 @@ class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
 
 
 class EventActions(EventPermissionRequiredMixin, ListView):
-    template_name = 'pretixcontrol/event/actions.html'
+    template_name = 'eventyaycontrol/event/actions.html'
     model = RequiredAction
     context_object_name = 'actions'
     paginate_by = 20
@@ -1277,7 +1277,7 @@ class EventComment(EventPermissionRequiredMixin, View):
             self.request.event.comment = form.cleaned_data.get('comment')
             self.request.event.save()
             self.request.event.log_action(
-                'pretix.event.comment',
+                'eventyay.event.comment',
                 user=self.request.user,
                 data={'new_comment': form.cleaned_data.get('comment')},
             )
@@ -1302,7 +1302,7 @@ class EventComment(EventPermissionRequiredMixin, View):
 class TaxList(EventSettingsViewMixin, EventPermissionRequiredMixin, PaginationMixin, ListView):
     model = TaxRule
     context_object_name = 'taxrules'
-    template_name = 'pretixcontrol/event/tax_index.html'
+    template_name = 'eventyaycontrol/event/tax_index.html'
     permission = 'can_change_event_settings'
 
     def get_queryset(self):
@@ -1312,7 +1312,7 @@ class TaxList(EventSettingsViewMixin, EventPermissionRequiredMixin, PaginationMi
 class TaxCreate(EventSettingsViewMixin, EventPermissionRequiredMixin, CreateView):
     model = TaxRule
     form_class = TaxRuleForm
-    template_name = 'pretixcontrol/event/tax_edit.html'
+    template_name = 'eventyaycontrol/event/tax_edit.html'
     permission = 'can_change_event_settings'
     context_object_name = 'taxrule'
 
@@ -1358,7 +1358,7 @@ class TaxCreate(EventSettingsViewMixin, EventPermissionRequiredMixin, CreateView
         messages.success(self.request, _('The new tax rule has been created.'))
         ret = super().form_valid(form)
         form.instance.log_action(
-            'pretix.event.taxrule.added',
+            'eventyay.event.taxrule.added',
             user=self.request.user,
             data=dict(form.cleaned_data),
         )
@@ -1372,7 +1372,7 @@ class TaxCreate(EventSettingsViewMixin, EventPermissionRequiredMixin, CreateView
 class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView):
     model = TaxRule
     form_class = TaxRuleForm
-    template_name = 'pretixcontrol/event/tax_edit.html'
+    template_name = 'eventyaycontrol/event/tax_edit.html'
     permission = 'can_change_event_settings'
     context_object_name = 'rule'
 
@@ -1412,7 +1412,7 @@ class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView
         )
         if form.has_changed():
             self.object.log_action(
-                'pretix.event.taxrule.changed',
+                'eventyay.event.taxrule.changed',
                 user=self.request.user,
                 data={k: form.cleaned_data.get(k) for k in form.changed_data},
             )
@@ -1434,7 +1434,7 @@ class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView
 
 class TaxDelete(EventSettingsViewMixin, EventPermissionRequiredMixin, DeleteView):
     model = TaxRule
-    template_name = 'pretixcontrol/event/tax_delete.html'
+    template_name = 'eventyaycontrol/event/tax_delete.html'
     permission = 'can_change_event_settings'
     context_object_name = 'taxrule'
 
@@ -1449,7 +1449,7 @@ class TaxDelete(EventSettingsViewMixin, EventPermissionRequiredMixin, DeleteView
         self.object = self.get_object()
         success_url = self.get_success_url()
         if self.object.allow_delete():
-            self.object.log_action(action='pretix.event.taxrule.deleted', user=self.request.user)
+            self.object.log_action(action='eventyay.event.taxrule.deleted', user=self.request.user)
             self.object.delete()
             messages.success(self.request, _('The selected tax rule has been deleted.'))
         else:
@@ -1472,7 +1472,7 @@ class TaxDelete(EventSettingsViewMixin, EventPermissionRequiredMixin, DeleteView
 
 
 class WidgetSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormView):
-    template_name = 'pretixcontrol/event/widget.html'
+    template_name = 'eventyaycontrol/event/widget.html'
     permission = 'can_change_event_settings'
     form_class = WidgetCodeForm
 
@@ -1500,12 +1500,12 @@ class WidgetSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
 
 
 class QuickSetupView(FormView):
-    template_name = 'pretixcontrol/event/quick_setup.html'
+    template_name = 'eventyaycontrol/event/quick_setup.html'
     permission = 'can_change_event_settings'
     form_class = QuickSetupForm
 
     def dispatch(self, request, *args, **kwargs):
-        if request.event.items.exists() or request.event.quotas.exists():
+        if request.event.products.exists() or request.event.quotas.exists():
             messages.info(request, _('Your event is not empty, you need to set it up manually.'))
             return redirect(
                 reverse(
@@ -1544,10 +1544,10 @@ class QuickSetupView(FormView):
         else:
             plugins_active = self.request.event.get_plugins()
             payment_plugins = {
-                'pretix.plugins.banktransfer',
-                'pretix.plugins.stripe',
-                'pretix.plugins.paypal',
-                'pretix.plugins.manualpayment',
+                'eventyay.plugins.banktransfer',
+                'eventyay.plugins.stripe',
+                'eventyay.plugins.paypal',
+                'eventyay.plugins.manualpayment',
             }
             if not payment_plugins.intersection(plugins_active):
                 messages.error(
@@ -1567,13 +1567,13 @@ class QuickSetupView(FormView):
     def form_valid(self, form):
         plugins_active = self.request.event.get_plugins()
         if form.cleaned_data['ticket_download']:
-            if 'pretix.plugins.ticketoutputpdf' not in plugins_active:
+            if 'eventyay.plugins.ticketoutputpdf' not in plugins_active:
                 self.request.event.log_action(
-                    'pretix.event.plugins.enabled',
+                    'eventyay.event.plugins.enabled',
                     user=self.request.user,
-                    data={'plugin': 'pretix.plugins.ticketoutputpdf'},
+                    data={'plugin': 'eventyay.plugins.ticketoutputpdf'},
                 )
-                plugins_active.append('pretix.plugins.ticketoutputpdf')
+                plugins_active.append('eventyay.plugins.ticketoutputpdf')
 
             self.request.event.settings.ticket_download = True
             self.request.event.settings.ticketoutput_pdf__enabled = True
@@ -1583,23 +1583,23 @@ class QuickSetupView(FormView):
             except ImportError:
                 pass
             else:
-                if 'pretix_passbook' not in plugins_active:
+                if 'eventyay_passbook' not in plugins_active:
                     self.request.event.log_action(
-                        'pretix.event.plugins.enabled',
+                        'eventyay.event.plugins.enabled',
                         user=self.request.user,
-                        data={'plugin': 'pretix_passbook'},
+                        data={'plugin': 'eventyay_passbook'},
                     )
-                    plugins_active.append('pretix_passbook')
+                    plugins_active.append('eventyay_passbook')
                 self.request.event.settings.ticketoutput_passbook__enabled = True
 
         if form.cleaned_data['payment_banktransfer__enabled']:
-            if 'pretix.plugins.banktransfer' not in plugins_active:
+            if 'eventyay.plugins.banktransfer' not in plugins_active:
                 self.request.event.log_action(
-                    'pretix.event.plugins.enabled',
+                    'eventyay.event.plugins.enabled',
                     user=self.request.user,
-                    data={'plugin': 'pretix.plugins.banktransfer'},
+                    data={'plugin': 'eventyay.plugins.banktransfer'},
                 )
-                plugins_active.append('pretix.plugins.banktransfer')
+                plugins_active.append('eventyay.plugins.banktransfer')
             self.request.event.settings.payment_banktransfer__enabled = True
             for f in (
                 'bank_details',
@@ -1615,13 +1615,13 @@ class QuickSetupView(FormView):
                 )
 
         if form.cleaned_data.get('payment_stripe__enabled', None):
-            if 'pretix.plugins.stripe' not in plugins_active:
+            if 'eventyay.plugins.stripe' not in plugins_active:
                 self.request.event.log_action(
-                    'pretix.event.plugins.enabled',
+                    'eventyay.event.plugins.enabled',
                     user=self.request.user,
-                    data={'plugin': 'pretix.plugins.stripe'},
+                    data={'plugin': 'eventyay.plugins.stripe'},
                 )
-                plugins_active.append('pretix.plugins.stripe')
+                plugins_active.append('eventyay.plugins.stripe')
 
         self.request.event.settings.show_quota_left = form.cleaned_data['show_quota_left']
         self.request.event.settings.waiting_list_enabled = form.cleaned_data['waiting_list_enabled']
@@ -1629,7 +1629,7 @@ class QuickSetupView(FormView):
         self.request.event.settings.contact_mail = form.cleaned_data['contact_mail']
         self.request.event.settings.imprint_url = form.cleaned_data['imprint_url']
         self.request.event.log_action(
-            'pretix.event.settings',
+            'eventyay.event.settings',
             user=self.request.user,
             data={k: self.request.event.settings.get(k) for k in form.changed_data},
         )
@@ -1637,13 +1637,13 @@ class QuickSetupView(FormView):
             'require_registered_account_for_tickets'
         ]
 
-        items = []
+        products = []
         category = None
         tax_rule = self.request.event.tax_rules.first()
         if any(f not in self.formset.deleted_forms for f in self.formset):
             category = self.request.event.categories.create(name=LazyI18nString.from_gettext(gettext('Tickets')))
             category.log_action(
-                'pretix.event.category.added',
+                'eventyay.event.category.added',
                 data={'name': gettext('Tickets')},
                 user=self.request.user,
             )
@@ -1653,7 +1653,7 @@ class QuickSetupView(FormView):
             if f in self.formset.deleted_forms or not f.has_changed():
                 continue
 
-            item = self.request.event.items.create(
+            product = self.request.event.products.create(
                 name=f.cleaned_data['name'],
                 category=category,
                 active=True,
@@ -1663,8 +1663,8 @@ class QuickSetupView(FormView):
                 position=i,
                 sales_channels=list(get_all_sales_channels().keys()),
             )
-            item.log_action(
-                'pretix.event.item.added',
+            product.log_action(
+                'eventyay.event.product.added',
                 user=self.request.user,
                 data=dict(f.cleaned_data),
             )
@@ -1675,12 +1675,12 @@ class QuickSetupView(FormView):
                     size=f.cleaned_data['quota'],
                 )
                 quota.log_action(
-                    'pretix.event.quota.added',
+                    'eventyay.event.quota.added',
                     user=self.request.user,
                     data=dict(f.cleaned_data),
                 )
-                quota.items.add(item)
-            items.append(item)
+                quota.products.add(product)
+            products.append(product)
 
         if form.cleaned_data['total_quota']:
             quota = self.request.event.quotas.create(
@@ -1689,11 +1689,11 @@ class QuickSetupView(FormView):
                 subevent=subevent,
             )
             quota.log_action(
-                'pretix.event.quota.added',
+                'eventyay.event.quota.added',
                 user=self.request.user,
                 data={'name': gettext('Tickets'), 'size': quota.size},
             )
-            quota.items.add(*items)
+            quota.products.add(*products)
 
         self.request.event.plugins = ','.join(plugins_active)
         self.request.event.save()

@@ -211,7 +211,7 @@ class PasswordForgotForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean_email(self):
-        return self.cleaned_data['email']
+        return self.cleaned_data['email'].lower()
 
 
 class ReauthForm(forms.Form):

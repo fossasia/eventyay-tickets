@@ -15,7 +15,7 @@ class CheckinList(LoggedModel):
     event = models.ForeignKey('Event', related_name='checkin_lists', on_delete=models.CASCADE)
     name = models.CharField(max_length=190)
     all_products = models.BooleanField(default=True, verbose_name=_('All products (including newly created ones)'))
-    limit_products = models.ManyToManyField('Item', verbose_name=_('Limit to products'), blank=True)
+    limit_products = models.ManyToManyField('Product', verbose_name=_('Limit to products'), blank=True)
     subevent = models.ForeignKey(
         'SubEvent',
         null=True,
@@ -49,7 +49,7 @@ class CheckinList(LoggedModel):
         blank=True,
         verbose_name=_('Sales channels to automatically check in'),
         help_text=_(
-            'All items on this check-in list will be automatically marked as checked-in when purchased through '
+            'All products on this check-in list will be automatically marked as checked-in when purchased through '
             'any of the selected sales channels. This option can be useful when tickets sold at the box office '
             'are not checked again before entry and should be considered validated directly upon purchase.'
         ),
@@ -74,7 +74,7 @@ class CheckinList(LoggedModel):
         if self.subevent_id:
             qs = qs.filter(subevent_id=self.subevent_id)
         if not self.all_products:
-            qs = qs.filter(item__in=self.limit_products.values_list('id', flat=True))
+            qs = qs.filter(product__in=self.limit_products.values_list('id', flat=True))
         return qs
 
     @property

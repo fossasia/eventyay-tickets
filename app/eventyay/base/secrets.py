@@ -17,7 +17,7 @@ from django.dispatch import receiver
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
-from eventyay.base.models import Item, ItemVariation, SubEvent
+from eventyay.base.models import Product, ProductVariation, SubEvent
 from eventyay.base.secretgenerators import pretix_sig1_pb2
 from eventyay.base.signals import register_ticket_secret_generators
 
@@ -58,8 +58,8 @@ class BaseTicketSecretGenerator:
 
     def generate_secret(
         self,
-        item: Item,
-        variation: ItemVariation = None,
+        item: Product,
+        variation: ProductVariation = None,
         subevent: SubEvent = None,
         attendee_name: str = None,
         current_secret: str = None,
@@ -98,8 +98,8 @@ class RandomTicketSecretGenerator(BaseTicketSecretGenerator):
 
     def generate_secret(
         self,
-        item: Item,
-        variation: ItemVariation = None,
+        item: Product,
+        variation: ProductVariation = None,
         subevent: SubEvent = None,
         attendee_name: str = None,
         current_secret: str = None,
@@ -181,8 +181,8 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
 
     def generate_secret(
         self,
-        item: Item,
-        variation: ItemVariation = None,
+        item: Product,
+        variation: ProductVariation = None,
         subevent: SubEvent = None,
         current_secret: str = None,
         force_invalidate=False,

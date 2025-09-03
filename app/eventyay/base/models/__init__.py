@@ -37,20 +37,20 @@ from .exhibitor import (
 from .feedback import Feedback
 from .giftcards import GiftCard, GiftCardAcceptance, GiftCardTransaction
 from .invoices import Invoice, InvoiceLine, invoice_filename
-from .items import (
-    Item,
-    ItemAddOn,
-    ItemBundle,
-    ItemCategory,
-    ItemMetaProperty,
-    ItemMetaValue,
-    ItemVariation,
+from .product import (
+    Product,
+    ProductAddOn,
+    ProductBundle,
+    ProductCategory,
+    ProductMetaProperty,
+    ProductMetaValue,
+    ProductVariation,
     Question,
     QuestionOption,
     Quota,
-    SubEventItem,
-    SubEventItemVariation,
-    itempicture_upload_to,
+    SubEventProduct,
+    SubEventProductVariation,
+    productpicture_upload_to,
 )
 from .janus import JanusServer
 from .log import ActivityLog, LogEntry

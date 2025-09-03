@@ -2,6 +2,7 @@ import base64
 import json
 import logging
 import time
+from typing import cast
 from urllib.parse import quote, urlparse
 
 import webauthn
@@ -21,6 +22,7 @@ from django.contrib.auth import (
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -309,61 +311,34 @@ class Forgot(TemplateView):
             return redirect(request.GET.get('next', 'eventyay_common:dashboard'))
         return super().get(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: HttpRequest, *args, **kwargs):
         if self.form.is_valid():
             email = self.form.cleaned_data['email']
-
             has_redis = settings.HAS_REDIS
-
             try:
-                user = User.objects.get(email__iexact=email)
-
-                if has_redis:
-                    from django_redis import get_redis_connection
-
-                    rc = get_redis_connection('redis')
-                    if rc.exists(f'eventyay_pwreset_{user.id}'):
-                        user.log_action('eventyay.eventyay_common.auth.user.forgot_password.denied.repeated')
-                        raise RepeatedResetDenied()
-                    else:
-                        rc.setex(f'eventyay_pwreset_{user.id}', 3600 * 24, '1')
-
+                send_password_reset(email, has_redis, request)
             except User.DoesNotExist:
                 logger.warning('Password reset for unregistered e-mail "%s" requested.', email)
-
             except SendMailException:
                 logger.exception('Sending password reset e-mail to "%s" failed.', email)
-
             except RepeatedResetDenied:
                 logger.info('Password reset for "%s" denied due to repeated requests.', email)
-                pass
-
-            else:
-                user.send_password_reset()
-                logger.info('Sent email for password reset to "%s"', email)
-                user.log_action('eventyay.eventyay_common.auth.user.forgot_password.mail_sent')
 
             finally:
-                if has_redis:
-                    messages.info(
-                        request,
-                        _(
-                            'If the address is registered to valid account, then we have sent you an e-mail containing '
-                            'further instructions. Please note that we will send at most one email every 24 hours.'
-                        ),
+                msg = (
+                    _(
+                        'If the address is registered to valid account, then we have sent you an e-mail containing '
+                        'further instructions. Please note that we will send at most one email every 24 hours.'
                     )
-                else:
-                    messages.info(
-                        request,
-                        _(
-                            'If the address is registered to valid account, then we have sent you an e-mail containing '
-                            'further instructions.'
-                        ),
+                    if has_redis
+                    else _(
+                        'If the address is registered to valid account, then we have sent you an e-mail containing '
+                        'further instructions.'
                     )
-
-                return redirect('eventyay_common:auth.forgot')
-        else:
-            return self.get(request, *args, **kwargs)
+                )
+                messages.info(request, msg)
+            return redirect('eventyay_common:auth.forgot')
+        return self.get(request, *args, **kwargs)
 
     @cached_property
     def form(self):
@@ -584,3 +559,25 @@ class CustomAuthorizationView(AuthorizationView):
                 httponly=settings.CSRF_COOKIE_HTTPONLY,
             )
         return response
+
+
+# Possible errors:
+# - User.DoesNotExist
+# - RepeatedResetDenied
+# - SendMailException
+def send_password_reset(email: str, has_redis: bool, request: HttpRequest):
+    user = cast(User, User.objects.get(email__iexact=email))
+
+    if has_redis:
+        from django_redis import get_redis_connection
+
+        rc = get_redis_connection('redis')
+        if rc.exists(f'eventyay_pwreset_{user.id}'):
+            user.log_action('eventyay.eventyay_common.auth.user.forgot_password.denied.repeated')
+            raise RepeatedResetDenied()
+        else:
+            rc.setex(f'eventyay_pwreset_{user.id}', 3600 * 24, '1')
+
+    user.send_password_reset(request)
+    logger.info('Sent email for password reset to "%s"', email)
+    user.log_action('eventyay.eventyay_common.auth.user.forgot_password.mail_sent')

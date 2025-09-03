@@ -7,7 +7,8 @@ from django.urls import reverse
 def build_absolute_uri(urlname, args=None, kwargs=None):
     from eventyay.multidomain import maindomain_urlconf
 
+    path = reverse(urlname, args=args, kwargs=kwargs, urlconf=maindomain_urlconf)
     return urljoin(
         settings.SITE_URL,
-        reverse(urlname, args=args, kwargs=kwargs, urlconf=maindomain_urlconf),
+        path,
     )

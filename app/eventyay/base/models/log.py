@@ -113,8 +113,8 @@ class LogEntry(models.Model):
     def display_object(self):
         from . import (
             Event,
-            Item,
-            ItemCategory,
+            Product,
+            ProductCategory,
             Order,
             Question,
             Quota,
@@ -159,15 +159,15 @@ class LogEntry(models.Model):
                 ),
                 'val': escape(co.code[:6]),
             }
-        elif isinstance(co, Item):
+        elif isinstance(co, Product):
             a_text = _('Product {val}')
             a_map = {
                 'href': reverse(
-                    'control:event.item',
+                    'control:event.product',
                     kwargs={
                         'event': self.event.slug,
                         'organizer': self.event.organizer.slug,
-                        'item': co.id,
+                        'product': co.id,
                     },
                 ),
                 'val': escape(co.name),
@@ -189,7 +189,7 @@ class LogEntry(models.Model):
             a_text = _('Quota {val}')
             a_map = {
                 'href': reverse(
-                    'control:event.items.quotas.show',
+                    'control:event.products.quotas.show',
                     kwargs={
                         'event': self.event.slug,
                         'organizer': self.event.organizer.slug,
@@ -198,11 +198,11 @@ class LogEntry(models.Model):
                 ),
                 'val': escape(co.name),
             }
-        elif isinstance(co, ItemCategory):
+        elif isinstance(co, ProductCategory):
             a_text = _('Category {val}')
             a_map = {
                 'href': reverse(
-                    'control:event.items.categories.edit',
+                    'control:event.products.categories.edit',
                     kwargs={
                         'event': self.event.slug,
                         'organizer': self.event.organizer.slug,
@@ -215,7 +215,7 @@ class LogEntry(models.Model):
             a_text = _('Question {val}')
             a_map = {
                 'href': reverse(
-                    'control:event.items.questions.show',
+                    'control:event.products.questions.show',
                     kwargs={
                         'event': self.event.slug,
                         'organizer': self.event.organizer.slug,

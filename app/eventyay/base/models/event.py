@@ -367,53 +367,53 @@ class EventMixin:
 
     @classmethod
     def annotated(cls, qs, channel='web'):
-        from eventyay.base.models import Item, ItemVariation, Quota
+        from eventyay.base.models import Product, ProductVariation, Quota
 
-        sq_active_item = (
-            Item.objects.using(settings.DATABASE_REPLICA)
+        sq_active_product = (
+            Product.objects.using(settings.DATABASE_REPLICA)
             .filter_available(channel=channel)
             .filter(Q(variations__isnull=True) & Q(quotas__pk=OuterRef('pk')))
             .order_by()
             .values_list('quotas__pk')
-            .annotate(items=GroupConcat('pk', delimiter=','))
-            .values('items')
+            .annotate(products=GroupConcat('pk', delimiter=','))
+            .values('products')
         )
         sq_active_variation = (
-            ItemVariation.objects.filter(
+            ProductVariation.objects.filter(
                 Q(active=True)
-                & Q(item__active=True)
-                & Q(Q(item__available_from__isnull=True) | Q(item__available_from__lte=now()))
-                & Q(Q(item__available_until__isnull=True) | Q(item__available_until__gte=now()))
-                & Q(Q(item__category__isnull=True) | Q(item__category__is_addon=False))
-                & Q(item__sales_channels__contains=channel)
-                & Q(item__hide_without_voucher=False)
-                & Q(item__require_bundling=False)
+                & Q(product__active=True)
+                & Q(Q(product__available_from__isnull=True) | Q(product__available_from__lte=now()))
+                & Q(Q(product__available_until__isnull=True) | Q(product__available_until__gte=now()))
+                & Q(Q(product__category__isnull=True) | Q(product__category__is_addon=False))
+                & Q(product__sales_channels__contains=channel)
+                & Q(product__hide_without_voucher=False)
+                & Q(product__require_bundling=False)
                 & Q(quotas__pk=OuterRef('pk'))
             )
             .order_by()
             .values_list('quotas__pk')
-            .annotate(items=GroupConcat('pk', delimiter=','))
-            .values('items')
+            .annotate(products=GroupConcat('pk', delimiter=','))
+            .values('products')
         )
         return qs.annotate(
-            has_paid_item=Exists(Item.objects.filter(event_id=OuterRef(cls._event_id), default_price__gt=0))
+            has_paid_product=Exists(Product.objects.filter(event_id=OuterRef(cls._event_id), default_price__gt=0))
         ).prefetch_related(
             Prefetch(
                 'quotas',
                 to_attr='active_quotas',
                 queryset=Quota.objects.using(settings.DATABASE_REPLICA)
                 .annotate(
-                    active_items=Subquery(sq_active_item, output_field=models.TextField()),
+                    active_products=Subquery(sq_active_product, output_field=models.TextField()),
                     active_variations=Subquery(sq_active_variation, output_field=models.TextField()),
                 )
-                .exclude(Q(active_items='') & Q(active_variations=''))
+                .exclude(Q(active_products='') & Q(active_variations=''))
                 .select_related('event', 'subevent'),
             )
         )
 
     @cached_property
     def best_availability_state(self):
-        from .items import Quota
+        from .product import Quota
 
         if not hasattr(self, 'active_quotas'):
             raise TypeError('Call this only if you fetched the subevents via Event/SubEvent.annotated()')
@@ -1070,11 +1070,11 @@ class Event(EventMixin, LoggedModel):
     def copy_data_from(self, other):
         from ..signals import event_copy_data
         from . import (
-            Item,
-            ItemAddOn,
-            ItemBundle,
-            ItemCategory,
-            ItemMetaValue,
+            Product,
+            ProductAddOn,
+            ProductBundle,
+            ProductCategory,
+            ProductMetaValue,
             Question,
             Quota,
         )
@@ -1096,7 +1096,7 @@ class Event(EventMixin, LoggedModel):
             t.log_action('eventyay.object.cloned')
 
         category_map = {}
-        for c in ItemCategory.objects.filter(event=other):
+        for c in ProductCategory.objects.filter(event=other):
             category_map[c.pk] = c
             c.pk = None
             c.event = self
@@ -1113,7 +1113,7 @@ class Event(EventMixin, LoggedModel):
 
         item_map = {}
         variation_map = {}
-        for i in Item.objects.filter(event=other).prefetch_related('variations'):
+        for i in Product.objects.filter(event=other).prefetch_related('variations'):
             vars = list(i.variations.all())
             item_map[i.pk] = i
             i.pk = None
@@ -1132,19 +1132,19 @@ class Event(EventMixin, LoggedModel):
                 v.item = i
                 v.save()
 
-        for imv in ItemMetaValue.objects.filter(item__event=other).prefetch_related('item', 'property'):
+        for imv in ProductMetaValue.objects.filter(item__event=other).prefetch_related('item', 'property'):
             imv.pk = None
             imv.property = item_meta_properties_map[imv.property.pk]
             imv.item = item_map[imv.item.pk]
             imv.save()
 
-        for ia in ItemAddOn.objects.filter(base_item__event=other).prefetch_related('base_item', 'addon_category'):
+        for ia in ProductAddOn.objects.filter(base_item__event=other).prefetch_related('base_item', 'addon_category'):
             ia.pk = None
             ia.base_item = item_map[ia.base_item.pk]
             ia.addon_category = category_map[ia.addon_category.pk]
             ia.save()
 
-        for ia in ItemBundle.objects.filter(base_item__event=other).prefetch_related(
+        for ia in ProductBundle.objects.filter(base_item__event=other).prefetch_related(
             'base_item', 'bundled_item', 'bundled_variation'
         ):
             ia.pk = None
@@ -1785,11 +1785,11 @@ class Event(EventMixin, LoggedModel):
 
     @property
     def has_paid_things(self):
-        from .items import Item, ItemVariation
+        from .items import Product, ProductVariation
 
         return (
-            Item.objects.filter(event=self, default_price__gt=0).exists()
-            or ItemVariation.objects.filter(item__event=self, default_price__gt=0).exists()
+            Product.objects.filter(event=self, default_price__gt=0).exists()
+            or ProductVariation.objects.filter(item__event=self, default_price__gt=0).exists()
         )
 
     @property
@@ -2114,8 +2114,8 @@ class SubEvent(EventMixin, LoggedModel):
     )
     last_modified = models.DateTimeField(auto_now=True, db_index=True)
 
-    items = models.ManyToManyField('Item', through='SubEventItem')
-    variations = models.ManyToManyField('ItemVariation', through='SubEventItemVariation')
+    products = models.ManyToManyField('Product', through='SubEventProduct')
+    variations = models.ManyToManyField('ProductVariation', through='SubEventProductVariation')
 
     objects = ScopedManager(organizer='event__organizer')
 
@@ -2149,20 +2149,20 @@ class SubEvent(EventMixin, LoggedModel):
         return self.event.settings
 
     @cached_property
-    def item_overrides(self):
-        from .items import SubEventItem
+    def product_overrides(self):
+        from .products import SubEventProduct
 
-        return {si.item_id: si for si in SubEventItem.objects.filter(subevent=self)}
+        return {si.product_id: si for si in SubEventProduct.objects.filter(subevent=self)}
 
     @cached_property
     def var_overrides(self):
-        from .items import SubEventItemVariation
+        from .products import SubEventProductVariation
 
-        return {si.variation_id: si for si in SubEventItemVariation.objects.filter(subevent=self)}
+        return {si.variation_id: si for si in SubEventProductVariation.objects.filter(subevent=self)}
 
     @property
-    def item_price_overrides(self):
-        return {si.item_id: si.price for si in self.item_overrides.values() if si.price is not None}
+    def product_price_overrides(self):
+        return {si.product_id: si.price for si in self.product_overrides.values() if si.price is not None}
 
     @property
     def var_price_overrides(self):
@@ -2210,15 +2210,15 @@ class SubEvent(EventMixin, LoggedModel):
             Order.objects.filter(all_positions__subevent=self).update(last_modified=now())
 
     @staticmethod
-    def clean_items(event, items):
-        for item in items:
-            if event != item.event:
-                raise ValidationError(_('One or more items do not belong to this event.'))
+    def clean_products(event, products):
+        for product in products:
+            if event != product.event:
+                raise ValidationError(_('One or more products do not belong to this event.'))
 
     @staticmethod
     def clean_variations(event, variations):
         for variation in variations:
-            if event != variation.item.event:
+            if event != variation.product.event:
                 raise ValidationError(_('One or more variations do not belong to this event.'))
 
 

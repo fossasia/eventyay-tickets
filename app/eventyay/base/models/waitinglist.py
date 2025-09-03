@@ -17,7 +17,7 @@ from eventyay.base.settings import PERSON_NAME_SCHEMES
 
 from .base import LoggedModel
 from .event import Event, SubEvent
-from .items import Item, ItemVariation
+from .product import Product, ProductVariation
 
 
 class WaitingListException(Exception):  # NOQA: N818
@@ -56,15 +56,15 @@ class WaitingListEntry(LoggedModel):
         related_name='waitinglistentries',
         on_delete=models.CASCADE,
     )
-    item = models.ForeignKey(
-        Item,
+    product = models.ForeignKey(
+        Product,
         related_name='waitinglistentries',
         on_delete=models.CASCADE,
         verbose_name=_('Product'),
         help_text=_('The product the user waits for.'),
     )
     variation = models.ForeignKey(
-        ItemVariation,
+        ProductVariation,
         related_name='waitinglistentries',
         null=True,
         blank=True,
@@ -83,11 +83,11 @@ class WaitingListEntry(LoggedModel):
         ordering = ('-priority', 'created')
 
     def __str__(self):
-        return '%s waits for %s' % (str(self.email), str(self.item))
+        return '%s waits for %s' % (str(self.email), str(self.product))
 
     def clean(self):
-        WaitingListEntry.clean_duplicate(self.email, self.item, self.variation, self.subevent, self.pk)
-        WaitingListEntry.clean_itemvar(self.event, self.item, self.variation)
+        WaitingListEntry.clean_duplicate(self.email, self.product, self.variation, self.subevent, self.pk)
+        WaitingListEntry.clean_productvar(self.event, self.product, self.variation)
         WaitingListEntry.clean_subevent(self.event, self.subevent)
 
     def save(self, *args, **kwargs):
@@ -115,7 +115,7 @@ class WaitingListEntry(LoggedModel):
         availability = (
             self.variation.check_quotas(count_waitinglist=False, subevent=self.subevent, _cache=quota_cache)
             if self.variation
-            else self.item.check_quotas(count_waitinglist=False, subevent=self.subevent, _cache=quota_cache)
+            else self.product.check_quotas(count_waitinglist=False, subevent=self.subevent, _cache=quota_cache)
         )
         if availability[1] is None or availability[1] < 1:
             raise WaitingListException(_('This product is currently not available.'))
@@ -129,7 +129,7 @@ class WaitingListEntry(LoggedModel):
                 event=self.event,
                 max_usages=1,
                 valid_until=now() + timedelta(hours=self.event.settings.waiting_list_hours),
-                item=self.item,
+                product=self.product,
                 variation=self.variation,
                 tag='waiting-list',
                 comment=_('Automatically created from waiting list entry for {email}').format(email=self.email),
@@ -139,7 +139,7 @@ class WaitingListEntry(LoggedModel):
             v.log_action(
                 'eventyay.voucher.added.waitinglist',
                 {
-                    'item': self.item.pk,
+                    'product': self.product.pk,
                     'variation': self.variation.pk if self.variation else None,
                     'tag': 'waiting-list',
                     'block_quota': True,
@@ -167,10 +167,10 @@ class WaitingListEntry(LoggedModel):
             )
 
     @staticmethod
-    def clean_itemvar(event, item, variation):
-        if event != item.event:
-            raise ValidationError(_('The selected item does not belong to this event.'))
-        if item.has_variations and (not variation or variation.item != item):
+    def clean_productvar(event, product, variation):
+        if event != product.event:
+            raise ValidationError(_('The selected product does not belong to this event.'))
+        if product.has_variations and (not variation or variation.product != product):
             raise ValidationError(_('Please select a specific variation of this product.'))
 
     @staticmethod
@@ -185,10 +185,10 @@ class WaitingListEntry(LoggedModel):
                 raise ValidationError(_('The subevent does not belong to this event.'))
 
     @staticmethod
-    def clean_duplicate(email, item, variation, subevent, pk):
+    def clean_duplicate(email, product, variation, subevent, pk):
         if (
             WaitingListEntry.objects.filter(
-                item=item,
+                product=product,
                 variation=variation,
                 email__iexact=email,
                 voucher__isnull=True,

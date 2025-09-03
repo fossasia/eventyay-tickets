@@ -16,9 +16,9 @@ from django.utils.translation import pgettext
 from eventyay.base.models import (
     EventMetaProperty,
     EventMetaValue,
-    ItemMetaProperty,
-    ItemMetaValue,
-    ItemVariation,
+    ProductMetaProperty,
+    ProductMetaValue,
+    ProductVariation,
     Order,
     Organizer,
     User,
@@ -346,14 +346,14 @@ def quotas_select2(request, **kwargs):
 
 
 @event_permission_required(None)
-def items_select2(request, **kwargs):
+def products_select2(request, **kwargs):
     query = request.GET.get('query', '')
     try:
         page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
-    qs = request.event.items.filter(name__icontains=i18ncomp(query)).order_by('position')
+    qs = request.event.products.filter(name__icontains=i18ncomp(query)).order_by('position')
 
     total = qs.count()
     pagesize = 20
@@ -379,14 +379,14 @@ def variations_select2(request, **kwargs):
     except ValueError:
         page = 1
 
-    q = Q(item__event=request.event)
+    q = Q(product__event=request.event)
     for word in query.split():
-        q &= Q(value__icontains=i18ncomp(word)) | Q(item__name__icontains=i18ncomp(ord))
+        q &= Q(value__icontains=i18ncomp(word)) | Q(product__name__icontains=i18ncomp(ord))
 
     qs = (
-        ItemVariation.objects.filter(q)
-        .order_by('item__position', 'item__name', 'position', 'value')
-        .select_related('item')
+        ProductVariation.objects.filter(q)
+        .order_by('product__position', 'product__name', 'position', 'value')
+        .select_related('product')
     )
 
     total = qs.count()
@@ -396,7 +396,7 @@ def variations_select2(request, **kwargs):
         'results': [
             {
                 'id': e.pk,
-                'text': str(e.item) + ' – ' + str(e),
+                'text': str(e.product) + ' – ' + str(e),
             }
             for e in qs[offset : offset + pagesize]
         ],
@@ -472,7 +472,7 @@ def checkinlist_select2(request, **kwargs):
 
 
 @event_permission_required(None)
-def itemvarquota_select2(request, **kwargs):
+def productvarquota_select2(request, **kwargs):
     query = request.GET.get('query', '')
     try:
         page = int(request.GET.get('page', '1'))
@@ -483,7 +483,7 @@ def itemvarquota_select2(request, **kwargs):
 
     if not request.event.has_subevents:
         # We are very unlikely to need pagination
-        itemqs = request.event.items.prefetch_related('variations').filter(name__icontains=i18ncomp(query))
+        productqs = request.event.products.prefetch_related('variations').filter(name__icontains=i18ncomp(query))
         quotaqs = request.event.quotas.filter(name__icontains=query)
         more = False
     else:
@@ -508,18 +508,18 @@ def itemvarquota_select2(request, **kwargs):
                     )
                     quotaf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
-            itemqs = request.event.items.prefetch_related('variations').filter(
+            productqs = request.event.products.prefetch_related('variations').filter(
                 Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query)
             )
             quotaqs = request.event.quotas.filter(quotaf).select_related('subevent')
             more = False
         else:
             if page == 1:
-                itemqs = request.event.items.prefetch_related('variations').filter(
+                productqs = request.event.products.prefetch_related('variations').filter(
                     Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query)
                 )
             else:
-                itemqs = request.event.items.none()
+                productqs = request.event.products.none()
             quotaqs = request.event.quotas.filter(name__icontains=query).select_related('subevent')
             total = quotaqs.count()
             pagesize = 20
@@ -527,7 +527,7 @@ def itemvarquota_select2(request, **kwargs):
             quotaqs = quotaqs[offset : offset + pagesize]
             more = total >= (offset + pagesize)
 
-    for i in itemqs:
+    for i in productqs:
         variations = list(i.variations.all())
         if variations:
             choices.append((str(i.pk), _('{product} – Any variation').format(product=i), ''))
@@ -664,29 +664,29 @@ def meta_values(request):
     )
 
 
-def item_meta_values(request, organizer, event):
+def product_meta_values(request, organizer, event):
     q = request.GET.get('q')
     propname = request.GET.get('property')
 
-    matches = ItemMetaValue.objects.filter(value__icontains=q, property__name=propname)
-    defaults = ItemMetaProperty.objects.filter(name=propname, default__icontains=q)
+    matches = ProductMetaValue.objects.filter(value__icontains=q, property__name=propname)
+    defaults = ProductMetaProperty.objects.filter(name=propname, default__icontains=q)
 
     organizer = get_object_or_404(Organizer, slug=organizer)
     if not request.user.has_organizer_permission(organizer, request=request):
         raise PermissionDenied()
 
     defaults = defaults.filter(event__organizer_id=organizer.pk)
-    matches = matches.filter(item__event__organizer_id=organizer.pk)
+    matches = matches.filter(product__event__organizer_id=organizer.pk)
     all_access = (
         request.user.has_active_staff_session(request.session.session_key)
-        or request.user.teams.filter(all_events=True, organizer=organizer, can_change_items=True).exists()
+        or request.user.teams.filter(all_events=True, organizer=organizer, can_change_products=True).exists()
     )
     if not all_access:
         defaults = matches.filter(
-            event__id__in=request.user.teams.filter(can_change_items=True).values_list('limit_events__id', flat=True)
+            event__id__in=request.user.teams.filter(can_change_products=True).values_list('limit_events__id', flat=True)
         )
         matches = matches.filter(
-            item__event__id__in=request.user.teams.filter(can_change_items=True).values_list(
+            product__event__id__in=request.user.teams.filter(can_change_products=True).values_list(
                 'limit_events__id', flat=True
             )
         )

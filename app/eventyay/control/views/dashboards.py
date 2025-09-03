@@ -31,9 +31,9 @@ from django.utils.translation import ngettext, pgettext
 
 from eventyay.base.decimal import round_decimal
 from eventyay.base.models import (
-    Item,
-    ItemCategory,
-    ItemVariation,
+    Product,
+    ProductCategory,
+    ProductVariation,
     Order,
     OrderPosition,
     OrderRefund,
@@ -63,7 +63,7 @@ NUM_WIDGET = '<div class="numwidget"><span class="num">{num}</span><span class="
 def base_widgets(sender, subevent=None, lazy=False, **kwargs):
     if not lazy:
         prodc = (
-            Item.objects.filter(
+            Product.objects.filter(
                 event=sender,
                 active=True,
             )
@@ -81,13 +81,13 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
 
         tickc = opqs.filter(
             order__event=sender,
-            item__admission=True,
+            product__admission=True,
             order__status__in=(Order.STATUS_PAID, Order.STATUS_PENDING),
         ).count()
 
         paidc = opqs.filter(
             order__event=sender,
-            item__admission=True,
+            product__admission=True,
             order__status=Order.STATUS_PAID,
         ).count()
 
@@ -145,7 +145,7 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
             'display_size': 'small',
             'priority': 100,
             'url': reverse(
-                'control:event.items',
+                'control:event.products',
                 kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             ),
         },
@@ -161,11 +161,11 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
         if not lazy:
             quota_cache = {}
             happy = 0
-            tuples = wles.values('item', 'variation').order_by().annotate(cnt=Count('id'))
+            tuples = wles.values('product', 'variation').order_by().annotate(cnt=Count('id'))
 
-            items = {
+            products = {
                 i.pk: i
-                for i in sender.items.filter(id__in=[t['item'] for t in tuples]).prefetch_related(
+                for i in sender.products.filter(id__in=[t['product'] for t in tuples]).prefetch_related(
                     Prefetch(
                         'quotas',
                         to_attr='_subevent_quotas',
@@ -175,8 +175,8 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
             }
             vars = {
                 i.pk: i
-                for i in ItemVariation.objects.filter(
-                    item__event=sender,
+                for i in ProductVariation.objects.filter(
+                    product__event=sender,
                     id__in=[t['variation'] for t in tuples if t['variation']],
                 ).prefetch_related(
                     Prefetch(
@@ -188,15 +188,15 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
             }
 
             for wlt in tuples:
-                item = items.get(wlt['item'])
+                product = products.get(wlt['product'])
                 variation = vars.get(wlt['variation'])
-                if not item:
+                if not product:
                     continue
-                quotas = variation._get_quotas(subevent=subevent) if variation else item._get_quotas(subevent=subevent)
+                quotas = variation._get_quotas(subevent=subevent) if variation else product._get_quotas(subevent=subevent)
                 row = (
                     variation.check_quotas(subevent=subevent, count_waitinglist=False, _cache=quota_cache)
                     if variation
-                    else item.check_quotas(subevent=subevent, count_waitinglist=False, _cache=quota_cache)
+                    else product.check_quotas(subevent=subevent, count_waitinglist=False, _cache=quota_cache)
                 )
                 if row[1] is None:
                     happy += 1
@@ -274,7 +274,7 @@ def quota_widgets(sender, subevent=None, lazy=False, **kwargs):
                 'display_size': 'small',
                 'priority': 50,
                 'url': reverse(
-                    'control:event.items.quotas.show',
+                    'control:event.products.quotas.show',
                     kwargs={
                         'event': sender.slug,
                         'organizer': sender.organizer.slug,
@@ -352,7 +352,7 @@ def welcome_wizard_widget(sender, **kwargs):
     ctx = {'title': _('Welcome')}
     kwargs = {'event': sender.slug, 'organizer': sender.organizer.slug}
 
-    if not sender.items.exists():
+    if not sender.products.exists():
         ctx.update(
             {
                 'subtitle': _('Get started with our setup tool'),
@@ -412,8 +412,8 @@ def event_index(request, organizer, event):
         ]
         if request.user.has_event_permission(request.organizer, request.event, 'can_change_items', request=request):
             allowed_types += [
-                ContentType.objects.get_for_model(Item),
-                ContentType.objects.get_for_model(ItemCategory),
+                ContentType.objects.get_for_model(Product),
+                ContentType.objects.get_for_model(ProductCategory),
                 ContentType.objects.get_for_model(Quota),
                 ContentType.objects.get_for_model(Question),
             ]
