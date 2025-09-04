@@ -20,16 +20,16 @@ from django.views.generic.edit import ModelFormMixin, ProcessFormView
 from django_context_decorator import context
 from i18nfield.forms import I18nModelForm
 
-from pretalx.cfp.forms.auth import ResetForm
-from pretalx.common.exceptions import SendMailException
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.mixins import (
+from eventyay.cfp.forms.auth import ResetForm
+from eventyay.common.exceptions import SendMailException
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.mixins import (
     Filterable,
     PaginationMixin,
     SocialMediaCardMixin,
 )
-from pretalx.person.forms import UserForm
-from pretalx.person.models import User
+from eventyay.base.forms import user
+from eventyay.base.models import User
 
 
 def get_next_url(request):
@@ -60,7 +60,7 @@ class CreateOrUpdateView(
 
 
 class GenericLoginView(FormView):
-    form_class = UserForm
+    form_class = user
 
     @context
     def password_reset_link(self):
@@ -135,7 +135,7 @@ class GenericResetView(FormView):
             return self.get(self.request, *self.args, **self.kwargs)
 
         messages.success(self.request, phrases.cfp.auth_password_reset)
-        user.log_action("pretalx.user.password.reset")
+        user.log_action("eventyay.user.password.reset")
 
         return redirect(self.get_success_url())
 
@@ -479,23 +479,23 @@ class OrgaCRUDView(CRUDView):
         return getattr(self.request, "event", None)
 
     @cached_property
-    def organiser(self):
-        return getattr(self.request, "organiser", None)
+    def organizer(self):
+        return getattr(self.request, "organizer", None)
 
     def get_reverse_kwargs(self, *args, **kwargs):
         result = super().get_reverse_kwargs(*args, **kwargs)
         if self.event:
             result["event"] = self.event.slug
-        elif self.organiser:
-            result["organiser"] = self.organiser.slug
+        elif self.organizer:
+            result["organizer"] = self.organizer.slug
         return result
 
     def get_form_kwargs(self, *args, **kwargs):
         result = super().get_form_kwargs(*args, **kwargs)
         if self.event:
             result["event"] = self.event
-        elif self.organiser:
-            result["organiser"] = self.organiser
+        elif self.organizer:
+            result["organizer"] = self.organizer
         return result
 
     def get_log_kwargs(self):
@@ -506,7 +506,7 @@ class OrgaCRUDView(CRUDView):
     def get_generic_permission_object(self):
         if self.event:
             return self.event
-        return getattr(self.request, "organiser", None)
+        return getattr(self.request, "organizer", None)
 
     @transaction.atomic
     def form_valid(self, form):

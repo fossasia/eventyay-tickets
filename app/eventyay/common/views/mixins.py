@@ -19,8 +19,8 @@ from formtools.wizard.forms import ManagementForm
 from i18nfield.forms import I18nModelForm
 from rules.contrib.views import PermissionRequiredMixin
 
-from pretalx.common.forms import SearchForm
-from pretalx.common.text.phrases import phrases
+from eventyay.common.forms import SearchForm
+from eventyay.common.text.phrases import phrases
 
 SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 
@@ -227,7 +227,7 @@ class PermissionRequired(PermissionRequiredMixin):
         if not result:
             request = getattr(self, "request", None)
             if request and hasattr(request, "event"):
-                key = f"pretalx_event_access_{request.event.pk}"
+                key = f"eventyay_event_access_{request.event.pk}"
                 if key in request.session:
                     sparent = SessionStore(request.session.get(key))
                     parentdata = []
@@ -346,7 +346,7 @@ class PaginationMixin:
         return default
 
     def get_context_data(self, **kwargs):
-        from pretalx.common.views.generic import CRUDView
+        from eventyay.common.views.generic import CRUDView
 
         ctx = super().get_context_data(**kwargs)
         if isinstance(self, CRUDView) and not self.action == "list":

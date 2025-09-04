@@ -7,7 +7,7 @@ def is_form_bound(request, form_name, form_param="form"):
 
 
 def get_static(request, path, content_type):  # pragma: no cover
-    path = settings.BASE_DIR / "pretalx/static" / path
+    path = settings.BASE_DIR / "static" / path
     if not path.exists():
         raise Http404()
     return FileResponse(
