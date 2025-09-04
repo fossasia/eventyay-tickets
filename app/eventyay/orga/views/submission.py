@@ -18,14 +18,14 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 
-from pretalx.agenda.rules import is_agenda_submission_visible
-from pretalx.common.exceptions import SubmissionError
-from pretalx.common.forms.fields import SizeFileInput
-from pretalx.common.models import ActivityLog
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView
-from pretalx.common.views.generic import OrgaCRUDView
-from pretalx.common.views.mixins import (
+from eventyay.talk_rules.agenda import is_agenda_submission_visible
+from eventyay.common.exceptions import SubmissionError
+from eventyay.common.forms.fields import SizeFileInput
+from eventyay.base.models import ActivityLog
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.generic import CreateOrUpdateView
+from eventyay.common.views.generic import OrgaCRUDView
+from eventyay.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
@@ -33,24 +33,24 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.mail.models import MailTemplateRoles
-from pretalx.orga.forms.submission import (
+from eventyay.base.models.mail import MailTemplateRoles
+from eventyay.orga.forms.submission import (
     AddSpeakerForm,
     AddSpeakerInlineForm,
     AnonymiseForm,
     SubmissionForm,
     SubmissionStateChangeForm,
 )
-from pretalx.person.models import User
-from pretalx.person.rules import is_only_reviewer
-from pretalx.submission.forms import (
-    QuestionsForm,
+from eventyay.base.models import User
+from eventyay.talk_rules.person import is_only_reviewer
+from eventyay.submission.forms import (
+    TalkQuestionsForm,
     ResourceForm,
     SubmissionCommentForm,
     SubmissionFilterForm,
     TagForm,
 )
-from pretalx.submission.models import (
+from eventyay.base.models import (
     Feedback,
     Resource,
     Submission,
@@ -58,7 +58,7 @@ from pretalx.submission.models import (
     SubmissionStates,
     Tag,
 )
-from pretalx.submission.rules import (
+from eventyay.talk_rules.submission import (
     annotate_assigned,
     get_reviewer_tracks,
     limit_for_reviewers,
@@ -373,7 +373,7 @@ class SubmissionContent(
         # When creating a new submission, filter out track/type specific questions
         if not submission:
             kwargs["skip_limited_questions"] = True
-        return QuestionsForm(**kwargs)
+        return TalkQuestionsForm(**kwargs)
 
     @context
     def questions_form(self):
@@ -388,7 +388,7 @@ class SubmissionContent(
                 if not form.instance.pk:
                     continue
                 obj.log_action(
-                    "pretalx.submission.resource.delete",
+                    "eventyay.submission.resource.delete",
                     person=self.request.user,
                     data={"id": form.instance.pk},
                 )
@@ -402,7 +402,7 @@ class SubmissionContent(
                 }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
-                    "pretalx.submission.resource.update",
+                    "eventyay.submission.resource.update",
                     person=self.request.user,
                     orga=True,
                 )
@@ -418,7 +418,7 @@ class SubmissionContent(
             form.instance.submission = obj
             form.save()
             obj.log_action(
-                "pretalx.submission.resource.create",
+                "eventyay.submission.resource.create",
                 person=self.request.user,
                 orga=True,
                 data={"id": form.instance.pk},
@@ -474,7 +474,7 @@ class SubmissionContent(
                 return self.get(self.request, *self.args, **self.kwargs)
             messages.success(self.request, _("The proposal has been updated!"))
         if form.has_changed():
-            action = "pretalx.submission." + ("create" if created else "update")
+            action = "eventyay.submission." + ("create" if created else "update")
             form.instance.log_action(action, person=self.request.user, orga=True)
             self.request.event.cache.set("rebuild_schedule_export", True, None)
         return redirect(self.get_success_url())
@@ -781,7 +781,7 @@ class SubmissionStats(EventPermissionRequired, TemplateView):
             log.timestamp.astimezone(self.request.event.tz).date()
             for log in ActivityLog.objects.filter(
                 event=self.request.event,
-                action_type="pretalx.submission.create",
+                action_type="eventyay.submission.create",
                 content_type=ContentType.objects.get_for_model(Submission),
                 object_id__in=talk_ids,
             )
@@ -876,7 +876,7 @@ class SubmissionStats(EventPermissionRequired, TemplateView):
             log.timestamp.astimezone(self.request.event.tz).date().isoformat()
             for log in ActivityLog.objects.filter(
                 event=self.request.event,
-                action_type="pretalx.submission.create",
+                action_type="eventyay.submission.create",
                 content_type=ContentType.objects.get_for_model(Submission),
                 object_id__in=talk_ids,
             )
@@ -1019,7 +1019,7 @@ class CommentDelete(SubmissionViewMixin, ActionConfirmMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         comment = self.get_object()
         comment.submission.log_action(
-            "pretalx.submission.comment.delete", person=request.user, orga=True
+            "eventyay.submission.comment.delete", person=request.user, orga=True
         )
         comment.delete()
         messages.success(request, _("The comment has been deleted."))

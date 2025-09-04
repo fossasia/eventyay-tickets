@@ -9,12 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView, View
 from django_context_decorator import context
 
-from pretalx.agenda.views.utils import get_schedule_exporters
-from pretalx.common.exceptions import SendMailException
-from pretalx.common.image import gravatar_csp
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.generic import CreateOrUpdateView, OrgaCRUDView
-from pretalx.common.views.mixins import (
+from eventyay.agenda.views.utils import get_schedule_exporters
+from eventyay.common.exceptions import SendMailException
+from eventyay.common.image import gravatar_csp
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.generic import CreateOrUpdateView, OrgaCRUDView
+from eventyay.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
@@ -23,18 +23,19 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.orga.forms.speaker import SpeakerExportForm
-from pretalx.person.forms import (
+from eventyay.orga.forms.speaker import SpeakerExportForm
+from eventyay.person.forms import (
     SpeakerFilterForm,
     SpeakerInformationForm,
     SpeakerProfileForm,
 )
-from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
-from pretalx.person.rules import is_only_reviewer
-from pretalx.submission.forms import QuestionsForm
-from pretalx.submission.models import Answer
-from pretalx.submission.models.submission import SubmissionStates
-from pretalx.submission.rules import limit_for_reviewers, speaker_profiles_for_user
+from eventyay.base.models import SpeakerProfile, User
+from eventyay.base.models.information import SpeakerInformation
+from eventyay.talk_rules.person import is_only_reviewer
+from eventyay.submission.forms import TalkQuestionsForm
+from eventyay.base.models import Answer
+from eventyay.base.models.submission import SubmissionStates
+from eventyay.talk_rules.submission import limit_for_reviewers, speaker_profiles_for_user
 
 
 class SpeakerList(
@@ -42,9 +43,9 @@ class SpeakerList(
 ):
     template_name = "orga/speaker/list.html"
     context_object_name = "speakers"
-    default_filters = ("user__email__icontains", "user__name__icontains")
-    sortable_fields = ("user__email", "user__name")
-    default_sort_field = "user__name"
+    default_filters = ("user__email__icontains", "user__fullname__icontains")
+    sortable_fields = ("user__email", "user__fullname")
+    default_sort_field = "user__fullname"
     permission_required = "person.orga_list_speakerprofile"
 
     def get_filter_form(self):
@@ -169,7 +170,7 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
     @cached_property
     def questions_form(self):
         speaker = self.get_object()
-        return QuestionsForm(
+        return TalkQuestionsForm(
             self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
             target="speaker",
@@ -193,7 +194,7 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
         self.questions_form.save()
         if form.has_changed():
             form.instance.log_action(
-                "pretalx.user.profile.update", person=self.request.user, orga=True
+                "eventyay.user.profile.update", person=self.request.user, orga=True
             )
         if form.has_changed() or self.questions_form.has_changed():
             self.request.event.cache.set("rebuild_schedule_export", True, None)
@@ -246,9 +247,9 @@ class SpeakerToggleArrived(SpeakerViewMixin, View):
         self.profile.has_arrived = not self.profile.has_arrived
         self.profile.save()
         action = (
-            "pretalx.speaker.arrived"
+            "eventyay.speaker.arrived"
             if self.profile.has_arrived
-            else "pretalx.speaker.unarrived"
+            else "eventyay.speaker.unarrived"
         )
         self.object.log_action(
             action,

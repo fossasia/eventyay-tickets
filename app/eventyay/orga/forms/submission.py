@@ -4,19 +4,19 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
-from pretalx.common.forms.fields import ImageField
-from pretalx.common.forms.mixins import ReadOnlyFlag, RequestRequire
-from pretalx.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
-from pretalx.common.forms.widgets import (
+from eventyay.common.forms.fields import ImageField
+from eventyay.common.forms.mixins import ReadOnlyFlag, RequestRequire
+from eventyay.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
+from eventyay.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     HtmlDateTimeInput,
     MarkdownWidget,
     TextInputWithAddon,
 )
-from pretalx.common.text.phrases import phrases
-from pretalx.schedule.models import TalkSlot
-from pretalx.submission.models import Submission, SubmissionStates
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import TalkSlot
+from eventyay.base.models import Submission, SubmissionStates
 
 
 class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):

@@ -10,13 +10,14 @@ from django.views.generic import TemplateView
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
-from pretalx.common.models.log import ActivityLog
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired
-from pretalx.event.models import Event, Organiser
-from pretalx.event.stages import get_stages
-from pretalx.submission.models import Submission, SubmissionStates
-from pretalx.submission.rules import get_missing_reviews
+from eventyay.base.models.log import ActivityLog
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.mixins import EventPermissionRequired, PermissionRequired
+from eventyay.base.models.event import Event
+from eventyay.base.models.organizer import Organizer
+from eventyay.event.stages import get_stages
+from eventyay.base.models import Submission, SubmissionStates
+from eventyay.talk_rules.submission import get_missing_reviews
 
 
 def start_redirect_view(request):
@@ -78,44 +79,44 @@ class DashboardEventListView(TemplateView):
         return context
 
 
-class DashboardOrganiserEventListView(PermissionRequired, DashboardEventListView):
-    permission_required = "event.view_organiser"
+class DashboardOrganizerEventListView(PermissionRequired, DashboardEventListView):
+    permission_required = "event.view_organizer"
 
     def get_permission_object(self):
-        return self.request.organiser
+        return self.request.organizer
 
     @property
     def base_queryset(self):
-        return self.request.organiser.events.all()
+        return self.request.organizer.events.all()
 
     @context
     def hide_speaker_events(self):
         return True
 
 
-class DashboardOrganiserListView(PermissionRequired, TemplateView):
-    template_name = "orga/organiser/list.html"
-    permission_required = "event.list_organiser"
+class DashboardOrganizerListView(PermissionRequired, TemplateView):
+    template_name = "orga/organizer/list.html"
+    permission_required = "event.list_organizer"
 
-    def filter_organiser(self, organiser, query):
+    def filter_organizer(self, organizer, query):
         name = (
-            {"en": organiser.name}
-            if isinstance(organiser.name, str)
-            else organiser.name.data
+            {"en": organizer.name}
+            if isinstance(organizer.name, str)
+            else organizer.name.data
         )
         name = {"en": name} if isinstance(name, str) else name
-        return query in organiser.slug or any(query in value for value in name.values())
+        return query in organizer.slug or any(query in value for value in name.values())
 
     @context
-    def organisers(self):
+    def organizers(self):
         if self.request.user.is_administrator:
-            orgs = Organiser.objects.all()
+            orgs = Organizer.objects.all()
         else:
-            orgs = Organiser.objects.filter(
+            orgs = Organizer.objects.filter(
                 pk__in={
-                    team.organiser_id
+                    team.organizer_id
                     for team in self.request.user.teams.filter(
-                        can_change_organiser_settings=True
+                        can_change_organizer_settings=True
                     )
                 }
             )
@@ -127,7 +128,7 @@ class DashboardOrganiserListView(PermissionRequired, TemplateView):
         if not query:
             return orgs
         query = query.lower().strip()
-        return [org for org in orgs if self.filter_organiser(org, query)]
+        return [org for org in orgs if self.filter_organizer(org, query)]
 
 
 class EventDashboardView(EventPermissionRequired, TemplateView):
@@ -194,7 +195,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "large": active_reviewers,
                     "small": _("Active reviewers"),
                     "url": (
-                        self.request.event.organiser.orga_urls.teams
+                        self.request.event.organizer.orga_urls.teams
                         if can_change_settings
                         else None
                     ),
@@ -254,8 +255,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         result["tiles"] = self.get_cfp_tiles(
             _now, can_change_submissions=can_change_submissions
         )
-        if today < event.date_from:
-            days = (event.date_from - today).days
+        if today < event.date_from.date():
+            days = (event.date_from.date()- today).days
             result["tiles"].append(
                 {
                     "large": days,
@@ -265,8 +266,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "priority": 10,
                 }
             )
-        elif today > event.date_to:
-            days = (today - event.date_from).days
+        elif today > event.date_to.date():
+            days = (today - event.date_from.date()).days
             result["tiles"].append(
                 {
                     "large": days,
@@ -276,8 +277,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     "priority": 80,
                 }
             )
-        elif event.date_to != event.date_from:
-            day = (today - event.date_from).days + 1
+        elif event.date_to != event.date_from.date():
+            day = (today - event.date_from.date()).days + 1
             result["tiles"].append(
                 {
                     "large": _("Day {number}").format(number=day),

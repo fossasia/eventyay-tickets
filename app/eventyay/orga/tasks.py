@@ -6,7 +6,7 @@ import jwt
 import requests
 from django.conf import settings
 
-from pretalx.celery_app import app
+from eventyay.celery_app import app
 
 logger = logging.getLogger(__name__)
 
@@ -34,12 +34,12 @@ def set_header_token(user_email):
 
 @app.task(
     bind=True,
-    name="pretalx.orga.trigger_public_schedule",
+    name="eventyay.orga.trigger_public_schedule",
     max_retries=3,
     default_retry_delay=60,
 )
 def trigger_public_schedule(
-    self, is_show_schedule, event_slug, organiser_slug, user_email
+    self, is_show_schedule, event_slug, organizer_slug, user_email
 ):
     try:
         headers = set_header_token(user_email)
@@ -47,16 +47,16 @@ def trigger_public_schedule(
         # Send the POST request with the payload and the headers
         ticket_uri = urljoin(
             settings.EVENTYAY_TICKET_BASE_PATH,
-            f"api/v1/{organiser_slug}/{event_slug}/schedule-public/",
+            f"api/v1/{organizer_slug}/{event_slug}/schedule-public/",
         )
         response = requests.post(ticket_uri, json=payload, headers=headers)
         response.raise_for_status()  # Raise exception for bad status codes
     except requests.RequestException as e:
         logger.error(
             "Error occurred when triggering hide/unhide schedule for tickets component."
-            "Event: %s, Organiser: %s. Error: %s",
+            "Event: %s, Organizer: %s. Error: %s",
             event_slug,
-            organiser_slug,
+            organizer_slug,
             e,
         )
         # Retry the task if an exception occurs (with exponential backoff by default)

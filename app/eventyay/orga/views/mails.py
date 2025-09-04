@@ -9,12 +9,12 @@ from django.utils.translation import ngettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 
-from pretalx.common.exceptions import SendMailException
-from pretalx.common.language import language
-from pretalx.common.mail import TolerantDict
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.generic import CreateOrUpdateView, OrgaCRUDView
-from pretalx.common.views.mixins import (
+from eventyay.common.exceptions import SendMailException
+from eventyay.common.language import language
+from eventyay.common.mail import TolerantDict
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.generic import CreateOrUpdateView, OrgaCRUDView
+from eventyay.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
@@ -23,9 +23,9 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.mail.models import MailTemplate, QueuedMail, get_prefixed_subject
-from pretalx.mail.signals import request_pre_send
-from pretalx.orga.forms.mails import (
+from eventyay.base.models.mail import MailTemplate, QueuedMail, get_prefixed_subject
+from eventyay.mail.signals import request_pre_send
+from eventyay.orga.forms.mails import (
     DraftRemindersForm,
     MailDetailForm,
     MailTemplateForm,
@@ -256,7 +256,7 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
             )
             return redirect(self.request.event.orga_urls.outbox)
         for mail in mails:
-            mail.log_action("pretalx.mail.delete", person=self.request.user, orga=True)
+            mail.log_action("eventyay.mail.delete", person=self.request.user, orga=True)
             mail.delete()
 
         messages.success(
@@ -321,7 +321,7 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
-            action = "pretalx.mail." + ("update" if self.object else "create")
+            action = "eventyay.mail." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
         action = form.data.get("form", "save")
         if action == "send":
@@ -422,7 +422,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     _("There are no recipients matching this selection."),
                 )
                 return self.get(self.request, *self.args, **self.kwargs)
-            from pretalx.common.templatetags.rich_text import render_markdown_abslinks
+            from eventyay.base.templatetags.rich_text import render_markdown_abslinks
 
             for locale in self.request.event.locales:
                 with language(locale):

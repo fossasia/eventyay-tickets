@@ -10,18 +10,18 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.exceptions import SendMailException
-from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
-from pretalx.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
-from pretalx.common.forms.widgets import EnhancedSelectMultiple, SelectMultipleWithCount
-from pretalx.common.language import language
-from pretalx.common.text.phrases import phrases
-from pretalx.mail.context import get_available_placeholders, get_invalid_placeholders
-from pretalx.mail.models import MailTemplate, QueuedMail
-from pretalx.person.models import User
-from pretalx.submission.forms import SubmissionFilterForm
-from pretalx.submission.models import Track
-from pretalx.submission.models.submission import Submission, SubmissionStates
+from eventyay.common.exceptions import SendMailException
+from eventyay.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from eventyay.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
+from eventyay.common.forms.widgets import EnhancedSelectMultiple, SelectMultipleWithCount
+from eventyay.common.language import language
+from eventyay.common.text.phrases import phrases
+from eventyay.mail.context import get_available_placeholders, get_invalid_placeholders
+from eventyay.base.models import MailTemplate, QueuedMail
+from eventyay.base.models import User
+from eventyay.submission.forms import SubmissionFilterForm
+from eventyay.base.models import Track
+from eventyay.base.models.submission import Submission, SubmissionStates
 
 
 class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
@@ -92,7 +92,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             warnings = ", ".join("{" + warning + "}" for warning in warnings)
             raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
 
-        from pretalx.common.templatetags.rich_text import render_markdown_abslinks
+        from eventyay.base.templatetags.rich_text import render_markdown_abslinks
 
         for locale in self.event.locales:
             with language(locale):
@@ -316,7 +316,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
             (sub.code, sub.title)
             for sub in self.event.submissions.all().order_by("title")
         ]
-        self.fields["speakers"].queryset = self.event.submitters.all().order_by("name")
+        self.fields["speakers"].queryset = self.event.submitters.all().order_by("fullname")
         if len(self.event.locales) > 1:
             self.fields["subject"].help_text = _(
                 "If you provide only one language, that language will be used for all emails. If you provide multiple languages, the best fit for each speaker will be used."

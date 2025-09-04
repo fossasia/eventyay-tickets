@@ -9,27 +9,27 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 from i18nfield.strings import LazyI18nString
 
-from pretalx.common.forms.fields import ColorField
-from pretalx.common.forms.mixins import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import (
+from eventyay.common.forms.fields import ColorField
+from eventyay.common.forms.mixins import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     HtmlDateInput,
     HtmlDateTimeInput,
     TextInputWithAddon,
 )
-from pretalx.common.text.phrases import phrases
-from pretalx.submission.models import (
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import (
     AnswerOption,
-    Question,
-    QuestionVariant,
+    TalkQuestion,
+    TalkQuestionVariant,
     SubmissionType,
     SubmitterAccessCode,
     Track,
 )
-from pretalx.submission.models.cfp import CfP, default_fields
-from pretalx.submission.models.question import QuestionRequired
+from eventyay.base.models.cfp import CfP, default_fields
+from eventyay.base.models.question import TalkQuestionRequired
 
 
 class CfPSettingsForm(
@@ -48,7 +48,7 @@ class CfPSettingsForm(
     mail_on_new_submission = forms.BooleanField(
         label=_("Send mail on new proposal"),
         help_text=_(
-            "If this setting is checked, you will receive an email to the organiser address for every received proposal."
+            "If this setting is checked, you will receive an email to the organizer address for every received proposal."
         ),
         required=False,
     )
@@ -179,7 +179,7 @@ class CfPForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         }
 
 
-class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
+class TalkQuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     options = forms.FileField(
         label=_("Upload options"),
         help_text=_(
@@ -248,7 +248,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def clean(self):
         deadline = self.cleaned_data["deadline"]
         question_required = self.cleaned_data["question_required"]
-        if (not deadline) and (question_required == QuestionRequired.AFTER_DEADLINE):
+        if (not deadline) and (question_required == TalkQuestionRequired.AFTER_DEADLINE):
             self.add_error(
                 "deadline",
                 forms.ValidationError(
@@ -257,7 +257,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                     )
                 ),
             )
-        if question_required in (QuestionRequired.OPTIONAL, QuestionRequired.REQUIRED):
+        if question_required in (TalkQuestionRequired.OPTIONAL, TalkQuestionRequired.REQUIRED):
             self.cleaned_data["deadline"] = None
         options = self.cleaned_data.get("options")
         options_replace = self.cleaned_data.get("options_replace")
@@ -311,7 +311,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         AnswerOption.objects.bulk_update(changed_options, ["position"])
 
     class Meta:
-        model = Question
+        model = TalkQuestion
         fields = [
             "target",
             "question",
@@ -583,14 +583,14 @@ class QuestionFilterForm(forms.Form):
         result["missing_answers"] = question.missing_answers(
             filter_speakers=speakers, filter_talks=talks
         )
-        if question.variant in (QuestionVariant.CHOICES, QuestionVariant.MULTIPLE):
+        if question.variant in (TalkQuestionVariant.CHOICES, TalkQuestionVariant.MULTIPLE):
             grouped_answers = (
                 answers.order_by("options")
                 .values("options", "options__answer")
                 .annotate(count=Count("id"))
                 .order_by("-count")
             )
-        elif question.variant == QuestionVariant.FILE:
+        elif question.variant == TalkQuestionVariant.FILE:
             grouped_answers = [{"answer": answer, "count": 1} for answer in answers]
         else:
             grouped_answers = (
@@ -605,7 +605,7 @@ class QuestionFilterForm(forms.Form):
 
 class ReminderFilterForm(QuestionFilterForm):
     questions = SafeModelMultipleChoiceField(
-        Question.objects.none(),
+        TalkQuestion.objects.none(),
         required=False,
         help_text=_("If you select no custom field, all will be used."),
         label=phrases.cfp.custom_fields,
@@ -614,7 +614,7 @@ class ReminderFilterForm(QuestionFilterForm):
 
     def get_question_queryset(self):
         # We want to exclude questions with "freeze after", the deadlines of which have passed
-        return Question.objects.filter(
+        return TalkQuestion.objects.filter(
             event=self.event,
             target__in=["speaker", "submission"],
         ).exclude(freeze_after__lt=timezone.now())

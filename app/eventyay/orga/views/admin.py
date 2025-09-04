@@ -10,14 +10,14 @@ from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
-from pretalx.celery_app import app
-from pretalx.common.image import gravatar_csp
-from pretalx.common.models.settings import GlobalSettings
-from pretalx.common.text.phrases import phrases
-from pretalx.common.update_check import check_result_table, update_check
-from pretalx.common.views.mixins import ActionConfirmMixin, PermissionRequired
-from pretalx.orga.forms.admin import UpdateSettingsForm
-from pretalx.person.models import User
+from eventyay.celery_app import app
+from eventyay.common.image import gravatar_csp
+from eventyay.base.models.settings import GlobalSettings
+from eventyay.common.text.phrases import phrases
+from eventyay.base.services.update_check import check_result_table, update_check
+from eventyay.common.views.mixins import ActionConfirmMixin, PermissionRequired
+from eventyay.orga.forms.admin import UpdateSettingsForm
+from eventyay.base.models import User
 
 
 class AdminDashboard(PermissionRequired, TemplateView):
@@ -46,8 +46,8 @@ class AdminDashboard(PermissionRequired, TemplateView):
         return sys.executable
 
     @context
-    def pretalx_version(self):
-        return settings.PRETALX_VERSION
+    def eventyay_version(self):
+        return settings.EVENTYAY_VERSION
 
 
 class UpdateCheckView(PermissionRequired, FormView):

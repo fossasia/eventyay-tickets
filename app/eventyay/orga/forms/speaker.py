@@ -2,10 +2,10 @@ from django import forms
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.text.phrases import phrases
-from pretalx.orga.forms.export import ExportForm
-from pretalx.person.models import User
-from pretalx.submission.models import SubmissionStates
+from eventyay.common.text.phrases import phrases
+from eventyay.orga.forms.export import ExportForm
+from eventyay.base.models import User
+from eventyay.base.models import SubmissionStates
 
 
 class SpeakerExportForm(ExportForm):
@@ -22,7 +22,7 @@ class SpeakerExportForm(ExportForm):
 
     class Meta:
         model = User
-        model_fields = ["name", "email"]
+        model_fields = ["fullname", "email"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -57,7 +57,7 @@ class SpeakerExportForm(ExportForm):
 
     @cached_property
     def questions(self):
-        return self.event.questions.filter(
+        return self.event.talkquestions.filter(
             target="speaker", active=True
         ).prefetch_related("answers", "answers__person", "options")
 

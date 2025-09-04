@@ -11,15 +11,15 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView
-from pretalx.common.views.mixins import (
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.generic import CreateOrUpdateView
+from eventyay.common.views.mixins import (
     ActionConfirmMixin,
     EventPermissionRequired,
     PermissionRequired,
 )
-from pretalx.orga.forms.review import (
+from eventyay.orga.forms.review import (
     DirectionForm,
     ProposalForReviewerForm,
     ReviewAssignImportForm,
@@ -28,11 +28,11 @@ from pretalx.orga.forms.review import (
     ReviewForm,
     TagsForm,
 )
-from pretalx.orga.forms.submission import SubmissionStateChangeForm
-from pretalx.orga.views.submission import BaseSubmissionList
-from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
-from pretalx.submission.models import Review, Submission, SubmissionStates
-from pretalx.submission.rules import (
+from eventyay.orga.forms.submission import SubmissionStateChangeForm
+from eventyay.orga.views.submission import BaseSubmissionList
+from eventyay.submission.forms import TalkQuestionsForm, SubmissionFilterForm
+from eventyay.base.models import Review, Submission, SubmissionStates
+from eventyay.talk_rules.submission import (
     get_missing_reviews,
     get_reviewable_submissions,
     reviews_are_open,
@@ -238,18 +238,18 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     @context
     @cached_property
     def short_questions(self):
-        from pretalx.submission.models import QuestionVariant
+        from eventyay.base.models import TalkQuestionVariant
 
-        queryset = self.request.event.questions.filter(
+        queryset = self.request.event.talkquestions.filter(
             target="submission",
             variant__in=[
-                QuestionVariant.BOOLEAN,
-                QuestionVariant.CHOICES,
-                QuestionVariant.MULTIPLE,
-                QuestionVariant.DATE,
-                QuestionVariant.DATETIME,
-                QuestionVariant.BOOLEAN,
-                QuestionVariant.NUMBER,
+                TalkQuestionVariant.BOOLEAN,
+                TalkQuestionVariant.CHOICES,
+                TalkQuestionVariant.MULTIPLE,
+                TalkQuestionVariant.DATE,
+                TalkQuestionVariant.DATETIME,
+                TalkQuestionVariant.BOOLEAN,
+                TalkQuestionVariant.NUMBER,
             ],
         )
         if not self.can_change_submissions:
@@ -570,7 +570,7 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
     @context
     @cached_property
     def qform(self):
-        return QuestionsForm(
+        return TalkQuestionsForm(
             target="reviewer",
             event=self.request.event,
             data=(self.request.POST if self.request.method == "POST" else None),

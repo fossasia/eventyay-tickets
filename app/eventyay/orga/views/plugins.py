@@ -5,9 +5,9 @@ from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.plugins import get_all_plugins_grouped
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.mixins import EventPermissionRequired
+from eventyay.common.plugins import get_all_plugins_grouped
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.mixins import EventPermissionRequired
 
 
 class EventPluginsView(EventPermissionRequired, TemplateView):
@@ -39,7 +39,7 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
                     ):
                         self.request.event.enable_plugin(module)
                         self.request.event.log_action(
-                            "pretalx.event.plugins.enabled",
+                            "eventyay.event.plugins.enabled",
                             person=self.request.user,
                             data={"plugin": module},
                             orga=True,
@@ -47,7 +47,7 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
                     else:
                         self.request.event.disable_plugin(module)
                         self.request.event.log_action(
-                            "pretalx.event.plugins.disabled",
+                            "eventyay.event.plugins.disabled",
                             person=self.request.user,
                             data={"plugin": module},
                             orga=True,

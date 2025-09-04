@@ -20,21 +20,21 @@ from django_context_decorator import context
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 
-from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
-from pretalx.agenda.tasks import export_schedule_html
-from pretalx.agenda.views.utils import get_schedule_exporters
-from pretalx.common.language import get_current_language_information
-from pretalx.common.text.path import safe_filename
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.generic import OrgaCRUDView
-from pretalx.common.views.mixins import (
+from eventyay.agenda.management.commands.export_schedule_html import get_export_zip_path
+from eventyay.agenda.tasks import export_schedule_html
+from eventyay.agenda.views.utils import get_schedule_exporters
+from eventyay.common.language import get_current_language_information
+from eventyay.common.text.path import safe_filename
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.generic import OrgaCRUDView
+from eventyay.common.views.mixins import (
     EventPermissionRequired,
     OrderActionMixin,
     PermissionRequired,
 )
-from pretalx.orga.forms.schedule import ScheduleExportForm, ScheduleReleaseForm
-from pretalx.schedule.forms import QuickScheduleForm, RoomForm
-from pretalx.schedule.models import Availability, Room, TalkSlot
+from eventyay.orga.forms.schedule import ScheduleExportForm, ScheduleReleaseForm
+from eventyay.schedule.forms import QuickScheduleForm, RoomForm
+from eventyay.base.models import Availability, Room, TalkSlot
 
 SCRIPT_SRC = "'self' 'unsafe-eval'"
 DEFAULT_SRC = "'self'"
@@ -227,7 +227,7 @@ class ScheduleToggleView(EventPermissionRequired, View):
         self.request.event.save()
         # Trigger tickets to hidden/unhidden schedule menu
         try:
-            from pretalx.orga.tasks import trigger_public_schedule
+            from eventyay.orga.tasks import trigger_public_schedule
 
             trigger_public_schedule.apply_async(
                 kwargs={

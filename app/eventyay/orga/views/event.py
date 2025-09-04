@@ -21,26 +21,26 @@ from django_context_decorator import context
 from django_scopes import scope, scopes_disabled
 from formtools.wizard.views import SessionWizardView
 
-from pretalx.common.forms import I18nEventFormSet, I18nFormSet
-from pretalx.common.models import ActivityLog
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.mixins import (
+from eventyay.common.forms import I18nEventFormSet, I18nFormSet
+from eventyay.base.models import ActivityLog
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     PermissionRequired,
     SensibleBackWizardMixin,
 )
-from pretalx.event.forms import (
+from eventyay.control.forms.event import (
     EventWizardBasicsForm,
     EventWizardCopyForm,
     EventWizardDisplayForm,
     EventWizardInitialForm,
     EventWizardTimelineForm,
 )
-from pretalx.event.models import Event, Team, TeamInvite
-from pretalx.orga.forms import EventForm
-from pretalx.orga.forms.event import (
+from eventyay.base.models import Event, Team, TeamInvite
+from eventyay.orga.forms import EventForm
+from eventyay.orga.forms.event import (
     EventFooterLinkFormset,
     EventHeaderLinkFormset,
     MailSettingsForm,
@@ -50,11 +50,11 @@ from pretalx.orga.forms.event import (
     WidgetGenerationForm,
     WidgetSettingsForm,
 )
-from pretalx.orga.signals import activate_event
-from pretalx.person.forms import UserForm
-from pretalx.person.models import User
-from pretalx.submission.models import ReviewPhase, ReviewScoreCategory
-from pretalx.submission.tasks import recalculate_all_review_scores
+from eventyay.orga.signals import activate_event
+from eventyay.person.forms import UserForm
+from eventyay.base.models import User
+from eventyay.base.models import ReviewPhase, ReviewScoreCategory
+from eventyay.submission.tasks import recalculate_all_review_scores
 
 
 class EventSettingsPermission(EventPermissionRequired):
@@ -129,7 +129,7 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
         self.header_links_formset.save()
 
         form.instance.log_action(
-            "pretalx.event.update", person=self.request.user, orga=True
+            "eventyay.event.update", person=self.request.user, orga=True
         )
         messages.success(self.request, phrases.base.saved)
         return result
@@ -184,7 +184,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                     "url": self.request.event.cfp.urls.types,
                 }
             )
-        if not self.request.event.questions.exists():
+        if not self.request.event.talkquestions.exists():
             suggestions.append(
                 {
                     "text": _("You have configured no custom fields yet."),
@@ -209,7 +209,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                     if isinstance(response[1], Exception)
                 ]
                 if exceptions:
-                    from pretalx.common.templatetags.rich_text import render_markdown
+                    from eventyay.base.templatetags.rich_text import render_markdown
 
                     messages.error(
                         request,
@@ -219,7 +219,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                     event.is_public = True
                     event.save()
                     event.log_action(
-                        "pretalx.event.activate",
+                        "eventyay.event.activate",
                         person=self.request.user,
                         orga=True,
                         data={},
@@ -235,7 +235,7 @@ class EventLive(EventSettingsPermission, TemplateView):
                 event.is_public = False
                 event.save()
                 event.log_action(
-                    "pretalx.event.deactivate",
+                    "eventyay.event.deactivate",
                     person=self.request.user,
                     orga=True,
                     data={},
@@ -523,7 +523,7 @@ class InvitationView(FormView):
         invite.team.members.add(user)
         invite.team.save()
         invite.team.organiser.log_action(
-            "pretalx.invite.orga.accept", person=user, orga=True
+            "eventyay.invite.orga.accept", person=user, orga=True
         )
         messages.info(self.request, _("You are now part of the team!"))
         invite.delete()
@@ -651,7 +651,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             logdata.update(form.cleaned_data)
         with scope(event=event):
             event.log_action(
-                "pretalx.event.create",
+                "eventyay.event.create",
                 person=self.request.user,
                 data=logdata,
                 orga=True,

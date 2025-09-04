@@ -3,15 +3,15 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.mixins import I18nHelpText
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import EnhancedSelectMultiple
-from pretalx.common.text.phrases import phrases
-from pretalx.mail.models import MailTemplateRoles
-from pretalx.orga.forms.export import ExportForm
-from pretalx.schedule.models import Schedule, TalkSlot
-from pretalx.schedule.utils import guess_schedule_version
-from pretalx.submission.models.submission import Submission, SubmissionStates
+from eventyay.common.forms.mixins import I18nHelpText
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import EnhancedSelectMultiple
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import MailTemplateRoles
+from eventyay.orga.forms.export import ExportForm
+from eventyay.base.models import Schedule, TalkSlot
+from eventyay.schedule.utils import guess_schedule_version
+from eventyay.base.models.submission import Submission, SubmissionStates
 
 
 class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
@@ -165,7 +165,7 @@ class ScheduleExportForm(ExportForm):
 
     @cached_property
     def questions(self):
-        return self.event.questions.filter(
+        return self.event.talkquestions.filter(
             target="submission",
         ).prefetch_related(
             "answers", "answers__submission", "options", "answers__options"
@@ -211,7 +211,7 @@ class ScheduleExportForm(ExportForm):
         return list(obj.speakers.all().values_list("code", flat=True))
 
     def _get_speaker_names_value(self, obj):
-        return list(obj.speakers.all().values_list("name", flat=True))
+        return list(obj.speakers.all().values_list("fullname", flat=True))
 
     def _get_room_value(self, obj):
         slot = obj.slot

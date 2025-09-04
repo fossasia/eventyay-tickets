@@ -9,13 +9,13 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext as _n
 from django_scopes.forms import SafeModelMultipleChoiceField
 
-from pretalx.common.forms.mixins import ReadOnlyFlag
-from pretalx.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
-from pretalx.common.forms.widgets import EnhancedSelectMultiple, MarkdownWidget
-from pretalx.common.text.phrases import phrases
-from pretalx.orga.forms.export import ExportForm
-from pretalx.person.models import User
-from pretalx.submission.models import Question, Review, Submission, SubmissionStates
+from eventyay.common.forms.mixins import ReadOnlyFlag
+from eventyay.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
+from eventyay.common.forms.widgets import EnhancedSelectMultiple, MarkdownWidget
+from eventyay.common.text.phrases import phrases
+from eventyay.orga.forms.export import ExportForm
+from eventyay.base.models import User
+from eventyay.base.models import TalkQuestion, Review, Submission, SubmissionStates
 
 
 class TagsForm(ReadOnlyFlag, forms.ModelForm):
@@ -193,7 +193,7 @@ class ReviewAssignmentForm(forms.Form):
         self.event = event
         self.reviewers = (
             User.objects.filter(teams__in=self.event.teams.filter(is_reviewer=True))
-            .order_by("name")
+            .order_by("fullname")
             .distinct()
         ).prefetch_related("assigned_reviews", "teams", "teams__limit_tracks")
         self.submissions = (
@@ -234,8 +234,8 @@ class ReviewerForProposalForm(ReviewAssignmentForm):
             return self._review_choices_by_track[track]
         reviewers = list(self.reviewers_by_track[track] | self.reviewers_by_track[None])
         result = [
-            (reviewer.id, reviewer.name)
-            for reviewer in sorted(reviewers, key=lambda x: (x.name or "").lower())
+            (reviewer.id, reviewer.fullname)
+            for reviewer in sorted(reviewers, key=lambda x: (x.fullname or "").lower())
         ]
         self._review_choices_by_track[track] = result
         return result
@@ -268,7 +268,7 @@ class ProposalForReviewerForm(ReviewAssignmentForm):
                 choices=self.get_submission_choices_by_tracks(track_limit),
                 widget=EnhancedSelectMultiple,
                 initial=list(reviewer.assigned_reviews.values_list("id", flat=True)),
-                label=reviewer.name,
+                label=reviewer.fullname,
                 required=False,
             )
 
@@ -334,7 +334,7 @@ class ReviewExportForm(ExportForm):
 
     @cached_property
     def questions(self):
-        return Question.all_objects.filter(
+        return TalkQuestion.all_objects.filter(
             target="reviewer",
             active=True,
             event=self.event,
@@ -408,7 +408,7 @@ class ReviewExportForm(ExportForm):
         return obj.submission.title
 
     def _get_user_name_value(self, obj):
-        return obj.user.name
+        return obj.user.fullname
 
     def _get_user_email_value(self, obj):
         return obj.user.email

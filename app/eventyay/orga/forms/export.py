@@ -8,7 +8,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from i18nfield.utils import I18nJSONEncoder
 
-from pretalx.common.text.phrases import phrases
+from eventyay.common.text.phrases import phrases
 
 
 class ExportForm(forms.Form):

@@ -16,27 +16,27 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nFormSetMixin, I18nModelForm
 
-from pretalx.common.forms.fields import ColorField, ImageField
-from pretalx.common.forms.mixins import (
+from eventyay.common.forms.fields import ColorField, ImageField
+from eventyay.common.forms.mixins import (
     HierarkeyMixin,
     I18nHelpText,
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
-from pretalx.common.forms.renderers import InlineFormLabelRenderer
-from pretalx.common.forms.widgets import (
+from eventyay.common.forms.renderers import InlineFormLabelRenderer
+from eventyay.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     HtmlDateInput,
     HtmlDateTimeInput,
     TextInputWithAddon,
 )
-from pretalx.common.text.css import validate_css
-from pretalx.common.text.phrases import phrases
-from pretalx.event.models.event import Event, EventExtraLink
-from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
-from pretalx.schedule.models import Availability, TalkSlot
-from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCategory
+from eventyay.common.text.css import validate_css
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import Event, EventExtraLink
+from eventyay.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
+from eventyay.base.models import Availability, TalkSlot
+from eventyay.base.models import ReviewPhase, ReviewScore, ReviewScoreCategory
 
 ENCRYPTED_PASSWORD_PLACEHOLDER = "*" * 24
 
@@ -543,7 +543,7 @@ class ReviewSettingsForm(
     use_submission_comments = forms.BooleanField(
         label=_("Enable submission comments"),
         help_text=_(
-            "Allow organisers and reviewers to comment on submissions, separate from reviews."
+            "Allow organizers and reviewers to comment on submissions, separate from reviews."
         ),
         required=False,
     )

@@ -16,20 +16,20 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView, UpdateView, View
 from django_context_decorator import context
 
-from pretalx.cfp.flow import CfPFlow
-from pretalx.common.forms import I18nFormSet
-from pretalx.common.text.phrases import phrases
-from pretalx.common.text.serialize import I18nStrJSONEncoder
-from pretalx.common.views.generic import OrgaCRUDView
-from pretalx.common.views.mixins import (
+from eventyay.cfp.flow import CfPFlow
+from eventyay.common.forms import I18nFormSet
+from eventyay.common.text.phrases import phrases
+from eventyay.common.text.serialize import I18nStrJSONEncoder
+from eventyay.common.views.generic import OrgaCRUDView
+from eventyay.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     OrderActionMixin,
     PermissionRequired,
 )
-from pretalx.mail.models import MailTemplateRoles
-from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
-from pretalx.orga.forms.cfp import (
+from eventyay.base.models import MailTemplateRoles
+from eventyay.orga.forms import CfPForm, TalkQuestionForm, SubmissionTypeForm, TrackForm
+from eventyay.orga.forms.cfp import (
     AccessCodeSendForm,
     AnswerOptionForm,
     CfPSettingsForm,
@@ -37,16 +37,16 @@ from pretalx.orga.forms.cfp import (
     ReminderFilterForm,
     SubmitterAccessCodeForm,
 )
-from pretalx.submission.models import (
+from eventyay.base.models import (
     AnswerOption,
     CfP,
-    Question,
-    QuestionTarget,
+    TalkQuestion,
+    TalkQuestionTarget,
     SubmissionType,
     SubmitterAccessCode,
     Track,
 )
-from pretalx.submission.rules import questions_for_user
+from eventyay.talk_rules.submission import questions_for_user
 
 logger = logging.getLogger(__name__)
 
@@ -104,15 +104,15 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
         result = super().form_valid(form)
         if form.has_changed():
             form.instance.log_action(
-                "pretalx.cfp.update", person=self.request.user, orga=True
+                "eventyay.cfp.update", person=self.request.user, orga=True
             )
         self.sform.save()
         return result
 
 
 class QuestionView(OrderActionMixin, OrgaCRUDView):
-    model = Question
-    form_class = QuestionForm
+    model = TalkQuestion
+    form_class = TalkQuestionForm
     template_namespace = "orga/cfp"
     context_object_name = "question"
     detail_is_update = False
@@ -142,7 +142,7 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
     @cached_property
     def formset(self):
         formset_class = inlineformset_factory(
-            Question,
+            TalkQuestion,
             AnswerOption,
             form=AnswerOptionForm,
             formset=I18nFormSet,
@@ -167,7 +167,7 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
                 if not form.instance.pk:
                     continue
                 obj.log_action(
-                    "pretalx.question.option.delete",
+                    "eventyay.question.option.delete",
                     person=self.request.user,
                     orga=True,
                     data={"id": form.instance.pk},
@@ -182,7 +182,7 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
                 }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
-                    "pretalx.question.option.update",
+                    "eventyay.question.option.update",
                     person=self.request.user,
                     orga=True,
                     data=change_data,
@@ -199,7 +199,7 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
             change_data = {key: form.cleaned_data.get(key) for key in form.changed_data}
             change_data["id"] = form.instance.pk
             obj.log_action(
-                "pretalx.question.option.create",
+                "eventyay.question.option.create",
                 person=self.request.user,
                 orga=True,
                 data=change_data,
@@ -306,8 +306,8 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
 class CfPQuestionToggle(PermissionRequired, View):
     permission_required = "submission.update_question"
 
-    def get_object(self) -> Question:
-        return Question.all_objects.filter(
+    def get_object(self) -> TalkQuestion:
+        return TalkQuestion.all_objects.filter(
             event=self.request.event, pk=self.kwargs.get("pk")
         ).first()
 
@@ -335,12 +335,12 @@ class CfPQuestionRemind(EventPermissionRequired, FormView):
         missing = []
         submissions = submissions.filter(speakers__in=[person])
         for question in questions:
-            if question.target == QuestionTarget.SUBMISSION:
+            if question.target == TalkQuestionTarget.SUBMISSION:
                 for submission in submissions:
                     answer = question.answers.filter(submission=submission).first()
                     if not answer or not answer.is_answered:
                         missing.append(question)
-            elif question.target == QuestionTarget.SPEAKER:
+            elif question.target == TalkQuestionTarget.SPEAKER:
                 answer = question.answers.filter(person=person).first()
                 if not answer or not answer.is_answered:
                     missing.append(question)
@@ -431,7 +431,7 @@ class SubmissionTypeDefault(PermissionRequired, View):
         self.request.event.cfp.default_type = submission_type
         self.request.event.cfp.save(update_fields=["default_type"])
         submission_type.log_action(
-            "pretalx.submission_type.make_default", person=self.request.user, orga=True
+            "eventyay.submission_type.make_default", person=self.request.user, orga=True
         )
         messages.success(request, _("The Session Type has been made default."))
         return redirect(self.request.event.cfp.urls.types)
@@ -541,7 +541,7 @@ class AccessCodeSend(PermissionRequired, UpdateView):
         messages.success(self.request, _("The access code has been sent."))
         code = self.get_object()
         code.log_action(
-            "pretalx.access_code.send",
+            "eventyay.access_code.send",
             person=self.request.user,
             orga=True,
             data={"email": form.cleaned_data["to"]},

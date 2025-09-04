@@ -6,8 +6,8 @@ from urllib.parse import urljoin
 from django.conf import settings
 from django.utils.module_loading import import_string
 
-from pretalx.common.text.phrases import CALL_FOR_SPEAKER_LOGIN_BTN_LABELS
-from pretalx.orga.signals import html_head, nav_event, nav_event_settings, nav_global
+from eventyay.common.text.phrases import CALL_FOR_SPEAKER_LOGIN_BTN_LABELS
+from eventyay.orga.signals import html_head, nav_event, nav_event_settings, nav_global
 
 SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 logger = logging.getLogger(__name__)
@@ -30,11 +30,11 @@ def orga_events(request):
     # Extract site specific values from settings.CONFIG.items('site') and add them to the context
     # This is a bit of a hack, but it's the only way to get the site specific values into the context
     # rather than using the settings object directly in the template
-    config = cast(RawConfigParser, settings.CONFIG)
+    config = cast(RawConfigParser, settings.TALK_CONFIG)
     site_config = dict(config.items("site"))
     context["site_config"] = site_config
     context["base_path"] = settings.BASE_PATH
-    context["tickets_common"] = urljoin(settings.EVENTYAY_TICKET_BASE_PATH, "common")
+    context["tickets_common"] = urljoin(settings.BASE_PATH, "common")
     # Login button label
     key = site_config.get("call_for_speaker_login_button_label", "default")
     button_label = CALL_FOR_SPEAKER_LOGIN_BTN_LABELS.get(key)
@@ -82,7 +82,7 @@ def orga_events(request):
         child_session = request.session.get(child_session_key)
         store = SessionStore()
         if not child_session or not store.exists(child_session):
-            store[f"pretalx_event_access_{request.event.pk}"] = (
+            store[f"eventyay_event_access_{request.event.pk}"] = (
                 request.session.session_key
             )
             store.create()

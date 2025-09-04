@@ -8,13 +8,13 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
 from django_scopes import scopes_disabled
 
-from pretalx.event.models import Organiser
-from pretalx.person.models import SpeakerProfile, User
-from pretalx.submission.models import Submission
+from eventyay.base.models import Organizer
+from eventyay.base.models import SpeakerProfile, User
+from eventyay.base.models import Submission
 
 
 def serialize_user(user):
-    base_path = settings.BASE_PATH
+    base_path = settings.TALK_BASE_PATH
     return {
         "type": "user",
         "name": str(user),
@@ -24,7 +24,7 @@ def serialize_user(user):
 
 def serialize_orga(orga):
     return {
-        "type": "organiser",
+        "type": "organizer",
         "name": str(orga.name),
         "url": orga.orga_urls.base,
     }
@@ -35,7 +35,7 @@ def serialize_event(event):
         "type": "event",
         "name": str(event.name),
         "url": event.orga_urls.base,
-        "organiser": str(event.organiser.name),
+        "organizer": str(event.organizer.name),
         "date_range": event.get_date_range_display(),
     }
 
@@ -69,7 +69,7 @@ def serialize_admin_user(user):
 
 @scopes_disabled()
 def nav_typeahead(request):
-    organiser = request.GET.get("organiser")
+    organizer = request.GET.get("organizer")
     query = json.dumps(str(request.GET.get("query", "")))[1:-1]
     page = 1
     with suppress(ValueError):
@@ -80,8 +80,8 @@ def nav_typeahead(request):
         .filter(
             Q(name__icontains=query)
             | Q(slug__icontains=query)
-            | Q(organiser__name__icontains=query)
-            | Q(organiser__slug__icontains=query)
+            | Q(organizer__name__icontains=query)
+            | Q(organizer__slug__icontains=query)
         )
         .order_by("-date_from")
     )
@@ -92,21 +92,21 @@ def nav_typeahead(request):
         or (request.user.name and query.lower() in request.user.name.lower())
     )
 
-    qs_orga = Organiser.objects.filter(
-        pk__in=request.user.teams.values_list("organiser", flat=True)
+    qs_orga = Organizer.objects.filter(
+        pk__in=request.user.teams.values_list("organizer", flat=True)
     )
     if query:
-        if organiser and show_user:
+        if organizer and show_user:
             qs_orga = qs_orga.filter(
-                Q(name__icontains=query) | Q(slug__icontains=query) | Q(pk=organiser)
+                Q(name__icontains=query) | Q(slug__icontains=query) | Q(pk=organizer)
             )
         else:
             qs_orga = qs_orga.filter(
                 Q(name__icontains=query) | Q(slug__icontains=query)
             )
 
-    if organiser:
-        organiser = qs_orga.filter(pk=organiser).first()
+    if organizer:
+        organizer = qs_orga.filter(pk=organizer).first()
 
     qs_submissions = Submission.objects.none()
     qs_speakers = SpeakerProfile.objects.none()
@@ -166,7 +166,7 @@ def nav_typeahead(request):
         ]
         + [
             serialize_event(e)
-            for e in qs_events.select_related("organiser")[
+            for e in qs_events.select_related("organizer")[
                 offset : offset + (pagesize if query else 5)
             ]
         ]
@@ -184,11 +184,11 @@ def nav_typeahead(request):
         ]
     )
 
-    if show_user and organiser:
-        current_organiser = serialize_orga(organiser)
-        if current_organiser in results:
-            results.remove(current_organiser)
-        results.insert(1, current_organiser)
+    if show_user and organizer:
+        current_organizer = serialize_orga(organizer)
+        if current_organizer in results:
+            results.remove(current_organizer)
+        results.insert(1, current_organizer)
 
     total = (
         qs_orga.count()

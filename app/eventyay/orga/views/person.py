@@ -11,10 +11,10 @@ from django.views.generic import TemplateView, View
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
-from pretalx.api.versions import CURRENT_VERSION
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views import is_form_bound
-from pretalx.person.forms import AuthTokenForm, LoginInfoForm, OrgaProfileForm
+from eventyay.api.versions import CURRENT_VERSION
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views import is_form_bound
+from eventyay.person.forms import AuthTokenForm, LoginInfoForm, OrgaProfileForm
 
 
 class UserSettings(TemplateView):
@@ -56,11 +56,11 @@ class UserSettings(TemplateView):
         if self.login_form.is_bound and self.login_form.is_valid():
             self.login_form.save()
             messages.success(request, phrases.base.saved)
-            request.user.log_action("pretalx.user.password.update")
+            request.user.log_action("eventyay.user.password.update")
         elif self.profile_form.is_bound and self.profile_form.is_valid():
             self.profile_form.save()
             messages.success(request, phrases.base.saved)
-            request.user.log_action("pretalx.user.profile.update")
+            request.user.log_action("eventyay.user.profile.update")
         elif self.token_form.is_bound and self.token_form.is_valid():
             token = self.token_form.save()
             if token:
@@ -72,14 +72,14 @@ class UserSettings(TemplateView):
                     + f" {token.token}",
                 )
                 request.user.log_action(
-                    "pretalx.user.token.create", data=token.serialize()
+                    "eventyay.user.token.create", data=token.serialize()
                 )
         elif token_id := request.POST.get("tokenupgrade"):
             token = request.user.api_tokens.filter(pk=token_id).first()
             token.version = CURRENT_VERSION
             token.save()
             request.user.log_action(
-                "pretalx.user.token.upgrade", data=token.serialize()
+                "eventyay.user.token.upgrade", data=token.serialize()
             )
             messages.success(request, _("The API token has been upgraded."))
         elif token_id := request.POST.get("revoke"):
@@ -89,7 +89,7 @@ class UserSettings(TemplateView):
                     token.expires = now()
                     token.save()
                     request.user.log_action(
-                        "pretalx.user.token.revoke", data=token.serialize()
+                        "eventyay.user.token.revoke", data=token.serialize()
                     )
                     messages.success(request, _("The API token was revoked."))
         else:
