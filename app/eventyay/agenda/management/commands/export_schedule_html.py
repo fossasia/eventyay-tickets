@@ -12,9 +12,9 @@ from django.test import Client, override_settings
 from django.utils.timezone import override as override_timezone
 from django_scopes import scope, scopes_disabled
 
-from pretalx.common.models.transaction import rolledback_transaction
-from pretalx.common.signals import register_data_exporters
-from pretalx.event.models import Event
+from eventyay.base.models.transaction import rolledback_transaction
+from eventyay.common.signals import register_data_exporters
+from eventyay.base.models import Event
 
 SERVER_NAME = settings.SITE_URL.split("://")[1]
 

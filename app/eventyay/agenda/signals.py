@@ -1,4 +1,4 @@
-from pretalx.common.signals import EventPluginSignal
+from eventyay.common.signals import EventPluginSignal
 
 register_recording_provider = EventPluginSignal()
 """

@@ -7,9 +7,9 @@ from contextlib import suppress
 from django.http import HttpResponse, HttpResponseNotModified, HttpResponseRedirect
 from django.utils.translation import activate
 
-from pretalx.common.signals import register_data_exporters, register_my_data_exporters
-from pretalx.common.text.path import safe_filename
-from pretalx.submission.models.submission import SubmissionFavouriteDeprecated
+from eventyay.common.signals import register_data_exporters, register_my_data_exporters
+from eventyay.common.text.path import safe_filename
+from eventyay.base.models.submission import SubmissionFavouriteDeprecated
 
 logger = logging.getLogger(__name__)
 
@@ -70,12 +70,12 @@ def encode_email(email):
 
 
 def get_schedule_exporter_content(request, exporter_name, schedule):
-    is_organiser = request.user.has_perm("schedule.orga_view_schedule", request.event)
-    exporter = find_schedule_exporter(request, exporter_name, public=not is_organiser)
+    is_organizer = request.user.has_perm("schedule.orga_view_schedule", request.event)
+    exporter = find_schedule_exporter(request, exporter_name, public=not is_organizer)
     if not exporter:
         return
     exporter.schedule = schedule
-    exporter.is_orga = is_organiser
+    exporter.is_orga = is_organizer
     lang_code = request.GET.get("lang")
     if lang_code and lang_code in request.event.locales:
         activate(lang_code)

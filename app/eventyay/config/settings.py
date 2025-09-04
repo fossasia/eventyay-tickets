@@ -239,7 +239,7 @@ TEMPLATES = (
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'eventyay.config.settings.instance_name',
-                # "eventyay.agenda.context_processors.is_html_export",
+                "eventyay.agenda.context_processors.is_html_export",
                 "eventyay.common.context_processors.add_events",
                 "eventyay.common.context_processors.locale_context",
                 "eventyay.common.context_processors.messages",
