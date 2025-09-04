@@ -2,8 +2,8 @@ import i18nfield.forms
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import SearchInput
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import SearchInput
 
 
 class SearchForm(forms.Form):

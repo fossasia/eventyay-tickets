@@ -12,16 +12,16 @@ from django.utils.translation import gettext_lazy as _
 from hierarkey.forms import HierarkeyForm
 from i18nfield.forms import I18nFormField
 
-from pretalx.common.forms.fields import ExtensionFileField
-from pretalx.common.forms.validators import (
+from eventyay.common.forms.fields import ExtensionFileField
+from eventyay.common.forms.validators import (
     MaxDateTimeValidator,
     MaxDateValidator,
     MinDateTimeValidator,
     MinDateValidator,
 )
-from pretalx.common.forms.widgets import HtmlDateInput, HtmlDateTimeInput
-from pretalx.common.text.phrases import phrases
-from pretalx.submission.models.cfp import default_fields
+from eventyay.common.forms.widgets import HtmlDateInput, HtmlDateTimeInput
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models.cfp import default_fields
 
 logger = logging.getLogger(__name__)
 
@@ -143,8 +143,8 @@ class RequestRequire:
 
 class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
-        from pretalx.common.templatetags.rich_text import rich_text
-        from pretalx.submission.models import QuestionVariant
+        from eventyay.base.templatetags.rich_text import rich_text
+        from eventyay.base.models import TalkQuestionVariant
 
         read_only = readonly or question.read_only
         original_help_text = question.help_text
@@ -152,7 +152,7 @@ class QuestionFieldsMixin:
         if question.is_public and self.event.get_feature_flag("show_schedule"):
             help_text += " " + str(phrases.base.public_content)
         count_chars = self.event.cfp.settings["count_length_in"] == "chars"
-        if question.variant == QuestionVariant.BOOLEAN:
+        if question.variant == TalkQuestionVariant.BOOLEAN:
             # For some reason, django-bootstrap4 does not set the required attribute
             # itself.
             widget = (
@@ -173,7 +173,7 @@ class QuestionFieldsMixin:
             )
             field.original_help_text = original_help_text
             return field
-        if question.variant == QuestionVariant.NUMBER:
+        if question.variant == TalkQuestionVariant.NUMBER:
             field = forms.DecimalField(
                 disabled=read_only,
                 help_text=help_text,
@@ -186,7 +186,7 @@ class QuestionFieldsMixin:
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
-        if question.variant == QuestionVariant.STRING:
+        if question.variant == TalkQuestionVariant.STRING:
             field = forms.CharField(
                 disabled=read_only,
                 help_text=RequestRequire.get_help_text(
@@ -212,7 +212,7 @@ class QuestionFieldsMixin:
                 )
             )
             return field
-        if question.variant == QuestionVariant.URL:
+        if question.variant == TalkQuestionVariant.URL:
             field = forms.URLField(
                 label=question.question,
                 required=question.required,
@@ -223,7 +223,7 @@ class QuestionFieldsMixin:
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
-        if question.variant == QuestionVariant.TEXT:
+        if question.variant == TalkQuestionVariant.TEXT:
             field = forms.CharField(
                 label=question.question,
                 required=question.required,
@@ -250,7 +250,7 @@ class QuestionFieldsMixin:
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
-        if question.variant == QuestionVariant.FILE:
+        if question.variant == TalkQuestionVariant.FILE:
             field = ExtensionFileField(
                 label=question.question,
                 required=question.required,
@@ -298,7 +298,7 @@ class QuestionFieldsMixin:
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
-        if question.variant == QuestionVariant.CHOICES:
+        if question.variant == TalkQuestionVariant.CHOICES:
             choices = question.options.all()
             field = forms.ModelChoiceField(
                 queryset=choices,
@@ -321,7 +321,7 @@ class QuestionFieldsMixin:
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
-        if question.variant == QuestionVariant.MULTIPLE:
+        if question.variant == TalkQuestionVariant.MULTIPLE:
             choices = question.options.all()
             field = forms.ModelMultipleChoiceField(
                 queryset=choices,
@@ -343,7 +343,7 @@ class QuestionFieldsMixin:
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
-        if question.variant == QuestionVariant.DATE:
+        if question.variant == TalkQuestionVariant.DATE:
             attrs = {}
             if question.min_date:
                 attrs["data-date-start-date"] = question.min_date.isoformat()
@@ -364,7 +364,7 @@ class QuestionFieldsMixin:
             if question.max_date:
                 field.validators.append(MaxDateValidator(question.max_date))
             return field
-        elif question.variant == QuestionVariant.DATETIME:
+        elif question.variant == TalkQuestionVariant.DATETIME:
             attrs = {}
             if question.min_datetime:
                 attrs["min"] = question.min_datetime.isoformat()
@@ -393,7 +393,7 @@ class QuestionFieldsMixin:
 
     def save_questions(self, key, value):
         """Receives a key and value from cleaned_data."""
-        from pretalx.submission.models import Answer, QuestionTarget
+        from eventyay.base.models import Answer, TalkQuestionTarget
 
         field = self.fields[key]
         if field.answer:
@@ -407,17 +407,17 @@ class QuestionFieldsMixin:
             answer = Answer(
                 review=(
                     self.review
-                    if field.question.target == QuestionTarget.REVIEWER
+                    if field.question.target == TalkQuestionTarget.REVIEWER
                     else None
                 ),
                 submission=(
                     self.submission
-                    if field.question.target == QuestionTarget.SUBMISSION
+                    if field.question.target == TalkQuestionTarget.SUBMISSION
                     else None
                 ),
                 person=(
                     self.speaker
-                    if field.question.target == QuestionTarget.SPEAKER
+                    if field.question.target == TalkQuestionTarget.SPEAKER
                     else None
                 ),
                 question=field.question,

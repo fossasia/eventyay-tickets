@@ -19,9 +19,9 @@ from django.utils.translation.trans_real import (
 )
 from django_scopes import scope, scopes_disabled
 
-from pretalx.event.models import Event, Organiser
-from pretalx.person.models import User
-from pretalx.schedule.models import Schedule
+from eventyay.base.models import Event, Organizer
+from eventyay.base.models import User
+from eventyay.base.models import Schedule
 
 
 logger = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ def get_login_redirect(request):
             else event.urls.login
         )
         return redirect(url.full() + params)
-    return redirect(reverse("orga:login") + params)
+    return redirect(reverse("eventyay_common:auth.login") + params)
 
 
 class EventPermissionMiddleware:
@@ -59,58 +59,6 @@ class EventPermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-    @staticmethod
-    def _handle_login(request):
-        # If the user is already authenticated, no need to auto-login
-
-        if request.user.is_authenticated or any(
-            path in request.path for path in ["/callback", "/signup"]
-        ):
-            return
-
-        # Check for the presence of the SSO token
-        sso_token = request.COOKIES.get("sso_token") or request.COOKIES.get(
-            "customer_sso_token"
-        )
-        if sso_token:
-            try:
-                # Decode and validate the JWT token
-                payload = jwt.decode(
-                    sso_token, settings.SECRET_KEY, algorithms=["HS256"]
-                )
-                user, created = User.objects.get_or_create(email=payload["email"])
-                if created:
-                    user.set_unusable_password()
-                logger.debug("JWT payload: %s", payload)
-                upstream_name = payload.get("name", "")
-                # Only update user's name if it's not set.
-                if not user.name and upstream_name:
-                    user.name = upstream_name
-                user.is_active = True
-                user.is_staff = payload.get("is_staff", False)
-                user.locale = payload.get("locale", user.locale)
-                user.timezone = payload.get("timezone", user.timezone)
-                user.code = payload.get("customer_identifier", user.code)
-                user.save()
-                logger.info("Saved new data for user: %s", user.email)
-                login(
-                    request, user, backend="django.contrib.auth.backends.ModelBackend"
-                )
-            except jwt.ExpiredSignatureError as e:
-                # Token expired
-                logger.warning(f"SSO token expired: {str(e)}\n{traceback.format_exc()}")
-                pass
-            except jwt.InvalidTokenError as e:
-                # Invalid token
-                logger.error(f"Invalid SSO token: {str(e)}\n{traceback.format_exc()}")
-                pass
-            except Exception as e:
-                # Invalid token
-                logger.error(
-                    f"Unexpected error happened: {str(e)}\n{traceback.format_exc()}"
-                )
-                pass
-
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
             return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
@@ -124,10 +72,10 @@ class EventPermissionMiddleware:
     def __call__(self, request):
         url = resolve(request.path_info)
 
-        organiser_slug = url.kwargs.get("organiser")
-        if organiser_slug:
-            request.organiser = get_object_or_404(
-                Organiser, slug__iexact=organiser_slug
+        organizer_slug = url.kwargs.get("organizer")
+        if organizer_slug:
+            request.organizer = get_object_or_404(
+                Organizer, slug__iexact=organizer_slug
             )
 
         event_slug = url.kwargs.get("event")
@@ -136,7 +84,7 @@ class EventPermissionMiddleware:
                 try:
                     queryset = Event.objects.prefetch_related(
                         "submissions", "extra_links", "schedules"
-                    ).select_related("organiser")
+                    ).select_related("organizer")
                     latest_schedule_subquery = (
                         Schedule.objects.filter(
                             event=OuterRef("pk"), published__isnull=False
@@ -153,7 +101,6 @@ class EventPermissionMiddleware:
                     raise Http404()
         event = getattr(request, "event", None)
 
-        self._handle_login(request)
         self._select_locale(request)
         is_exempt = (
             url.url_name == "export"

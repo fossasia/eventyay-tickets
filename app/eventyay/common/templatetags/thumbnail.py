@@ -1,6 +1,6 @@
 from django import template
 
-from pretalx.common.image import get_thumbnail
+from eventyay.common.image import get_thumbnail
 
 register = template.Library()
 

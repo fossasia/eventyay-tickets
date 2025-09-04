@@ -1,7 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 
-from pretalx.common.text.phrases import phrases
+from eventyay.common.text.phrases import phrases
 
 register = template.Library()
 

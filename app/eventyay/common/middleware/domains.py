@@ -17,7 +17,7 @@ from django.urls import resolve
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 
-from pretalx.event.models.event import Event
+from eventyay.base.models import Event
 
 LOCAL_HOST_NAMES = ("testserver", "localhost", "127.0.0.1")
 ANY_DOMAIN_ALLOWED = ("robots.txt", "redirect")
@@ -104,7 +104,7 @@ class MultiDomainMiddleware:
             if public_event:
                 return redirect(public_event.urls.base.full())
             # This domain is configured for an event, but does not have a public event
-            # yet. We will show the start page instead of a confusing (to organisers)
+            # yet. We will show the start page instead of a confusing (to organizers)
             # 404.
             return
         # This domain is not configured for any event, so we will show a 404.
@@ -228,7 +228,7 @@ def get_cookie_domain(request):
 
     default_domain, _ = split_domain_port(settings.SITE_NETLOC)
     # If we are on our main domain, set the cookie domain the user has chosen. Else
-    # we are on an organiser's custom domain, set no cookie domain, as we do not want
+    # we are on an organizer's custom domain, set no cookie domain, as we do not want
     # the cookies to be present on any other domain. Setting an explicit value can be
     # dangerous, see http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/
     return settings.SESSION_COOKIE_DOMAIN if request.host == default_domain else None

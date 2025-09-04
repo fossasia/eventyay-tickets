@@ -6,13 +6,13 @@ from django.core.files.uploadedfile import UploadedFile
 from django.forms import CharField, FileField, RegexField, ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.forms.widgets import (
+from eventyay.common.forms.widgets import (
     ClearableBasenameFileInput,
     ImageInput,
     PasswordConfirmationInput,
     PasswordStrengthInput,
 )
-from pretalx.common.templatetags.filesize import filesize
+from eventyay.common.templatetags.filesize import filesize
 
 IMAGE_EXTENSIONS = {
     ".png": ["image/png", ".png"],
