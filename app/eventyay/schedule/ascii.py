@@ -4,7 +4,7 @@ from itertools import repeat
 from dateutil import rrule
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.text.console import LR, UD, get_separator
+from eventyay.common.text.console import LR, UD, get_separator
 
 
 def draw_schedule_list(data):

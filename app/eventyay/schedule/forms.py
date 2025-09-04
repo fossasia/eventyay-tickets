@@ -8,9 +8,9 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.mixins import ReadOnlyFlag
-from pretalx.common.forms.widgets import HtmlDateInput, HtmlTimeInput
-from pretalx.schedule.models import Availability, Room, TalkSlot
+from eventyay.common.forms.mixins import ReadOnlyFlag
+from eventyay.common.forms.widgets import HtmlDateInput, HtmlTimeInput
+from eventyay.base.models import Availability, Room, TalkSlot
 
 
 class AvailabilitiesFormMixin(forms.Form):
