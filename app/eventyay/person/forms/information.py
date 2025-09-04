@@ -1,10 +1,10 @@
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.fields import SizeFileField
-from pretalx.common.forms.mixins import I18nHelpText
-from pretalx.common.forms.widgets import EnhancedSelectMultiple
-from pretalx.person.models import SpeakerInformation
+from eventyay.common.forms.fields import SizeFileField
+from eventyay.common.forms.mixins import I18nHelpText
+from eventyay.common.forms.widgets import EnhancedSelectMultiple
+from eventyay.base.models.information import SpeakerInformation
 
 
 class SpeakerInformationForm(I18nHelpText, I18nModelForm):

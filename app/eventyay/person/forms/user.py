@@ -4,11 +4,11 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone, translation
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.cfp.forms.cfp import CfPFormMixin
-from pretalx.common.forms.fields import NewPasswordConfirmationField, NewPasswordField
-from pretalx.common.forms.renderers import InlineFormLabelRenderer
-from pretalx.common.text.phrases import phrases
-from pretalx.person.models import User
+from eventyay.cfp.forms.cfp import CfPFormMixin
+from eventyay.common.forms.fields import NewPasswordConfirmationField, NewPasswordField
+from eventyay.common.forms.renderers import InlineFormLabelRenderer
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import User
 
 
 class UserForm(CfPFormMixin, forms.Form):

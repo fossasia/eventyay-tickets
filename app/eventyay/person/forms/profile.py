@@ -7,32 +7,33 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.cfp.forms.cfp import CfPFormMixin
-from pretalx.common.forms.fields import (
+from eventyay.cfp.forms.cfp import CfPFormMixin
+from eventyay.common.forms.fields import (
     ImageField,
     NewPasswordConfirmationField,
     NewPasswordField,
     SizeFileField,
 )
-from pretalx.common.forms.mixins import (
+from eventyay.common.forms.mixins import (
     I18nHelpText,
     PublicContent,
     ReadOnlyFlag,
     RequestRequire,
 )
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import (
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import (
     ClearableBasenameFileInput,
     EnhancedSelect,
     EnhancedSelectMultiple,
     MarkdownWidget,
 )
-from pretalx.common.text.phrases import phrases
-from pretalx.event.models import Event
-from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
-from pretalx.schedule.forms import AvailabilitiesFormMixin
-from pretalx.submission.models import Question
-from pretalx.submission.models.submission import SubmissionStates
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import Event
+from eventyay.base.models import SpeakerProfile, User
+from eventyay.base.models.information import SpeakerInformation
+from eventyay.schedule.forms import AvailabilitiesFormMixin
+from eventyay.base.models import TalkQuestion
+from eventyay.base.models.submission import SubmissionStates
 
 
 def get_email_address_error():
@@ -52,7 +53,7 @@ class SpeakerProfileForm(
     forms.ModelForm,
 ):
     USER_FIELDS = [
-        "name",
+        "fullname",
         "email",
         "avatar",
         "avatar_source",
@@ -171,7 +172,7 @@ class SpeakerProfileForm(
     class Meta:
         model = SpeakerProfile
         fields = ("biography",)
-        public_fields = ["name", "biography", "avatar"]
+        public_fields = ["fullname", "biography", "avatar"]
         widgets = {
             "biography": MarkdownWidget,
             "avatar": ClearableBasenameFileInput,
@@ -190,7 +191,7 @@ class SpeakerProfileForm(
 class OrgaProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ("name", "locale")
+        fields = ("fullname", "locale")
 
 
 class LoginInfoForm(forms.ModelForm):
@@ -302,13 +303,13 @@ class SpeakerFilterForm(forms.Form):
         widget=EnhancedSelect,
     )
     question = SafeModelChoiceField(
-        queryset=Question.objects.none(), required=False, widget=forms.HiddenInput()
+        queryset=TalkQuestion.objects.none(), required=False, widget=forms.HiddenInput()
     )
 
     def __init__(self, *args, event=None, filter_arrival=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.event = event
-        self.fields["question"].queryset = event.questions.all()
+        self.fields["question"].queryset = event.talkquestions.all()
         if not filter_arrival:
             self.fields.pop("arrived")
 

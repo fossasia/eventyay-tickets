@@ -1,12 +1,12 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.forms.widgets import (
+from eventyay.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     HtmlDateTimeInput,
 )
-from pretalx.person.models.auth_token import (
+from eventyay.base.models.auth_token import (
     ENDPOINTS,
     PERMISSION_CHOICES,
     READ_PERMISSIONS,

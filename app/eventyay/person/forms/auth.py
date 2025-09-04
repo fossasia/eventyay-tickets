@@ -3,9 +3,9 @@ from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.forms.fields import NewPasswordConfirmationField, NewPasswordField
-from pretalx.common.text.phrases import phrases
-from pretalx.person.models import User
+from eventyay.common.forms.fields import NewPasswordConfirmationField, NewPasswordField
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import User
 
 EMAIL_ADDRESS_ERROR = _("Please choose a different email address.")
 

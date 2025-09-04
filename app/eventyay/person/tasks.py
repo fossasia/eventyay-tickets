@@ -6,14 +6,15 @@ from django.dispatch import receiver
 from django.utils.timezone import now
 from requests import get
 
-from pretalx.celery_app import app
-from pretalx.common.signals import minimum_interval, periodic_task
-from pretalx.person.models import User, UserApiToken
+from eventyay.celery_app import app
+from eventyay.common.signals import minimum_interval, periodic_task
+from eventyay.base.models import User
+from eventyay.base.models.auth_token import UserApiToken
 
 logger = logging.getLogger(__name__)
 
 
-@app.task(name="pretalx.person.gravatar_cache")
+@app.task(name="eventyay.person.gravatar_cache")
 def gravatar_cache(person_id: int):
     user = User.objects.filter(pk=person_id, get_gravatar=True).first()
 
