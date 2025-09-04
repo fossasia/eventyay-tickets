@@ -1,4 +1,3 @@
-/* eslint-disable */
 // Example Empty Identicon Renderer
 // Each renderer module exposes two parts:
 // - a renderer definition, which specifies how it can be configured by event organizers

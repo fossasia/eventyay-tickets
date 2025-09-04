@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import i18n from 'i18n'
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import api, { initApi } from 'lib/api'
 import { doesTraitsMatchGrants } from 'lib/traitGrants'
 import announcement from './announcement'

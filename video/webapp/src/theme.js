@@ -70,7 +70,7 @@ const themeConfig = {
 	identicons: Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons),
 }
 
-const colors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = Color((configColors ?? DEFAULT_COLORS)[key]), acc), {}) // eslint-disable-line no-sequences
+const colors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = Color((configColors ?? DEFAULT_COLORS)[key]), acc), {})
 
 // modded colors
 colors.primaryDarken15 = colors.primary.darken(0.15)

@@ -13,7 +13,6 @@ if (config.timetravelTo) {
 	const timetravelTimestamp = moment(config.timetravelTo).valueOf()
 	// Override moment.now to freeze time
 	moment.now = () => timetravelTimestamp
-	// eslint-disable-next-line no-console
 	console.warn('timetraveling to', moment()._d())
 }
 

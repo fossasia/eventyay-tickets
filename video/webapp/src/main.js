@@ -1,7 +1,7 @@
 /* global RELEASE */
 import { createApp } from 'vue'
 import { RouterView } from 'vue-router'
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import Buntpapier from 'buntpapier'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
