@@ -7,9 +7,9 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.views.mixins import PermissionRequired
-from pretalx.event.models import Event
-from pretalx.event.rules import get_events_for_user
+from eventyay.common.views.mixins import PermissionRequired
+from eventyay.base.models import Event
+from eventyay.talk_rules.event import get_events_for_user
 
 
 class EventPageMixin(PermissionRequired):
@@ -64,7 +64,7 @@ class EventCfP(EventStartpage):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        site_name = dict(settings.CONFIG.items("site")).get("name")
+        site_name = dict(settings.TALK_CONFIG.items("site")).get("name")
         context["site_name"] = site_name
         return context
 

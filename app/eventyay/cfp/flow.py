@@ -22,15 +22,15 @@ from django.views.generic.base import TemplateResponseMixin
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
 
-from pretalx.cfp.signals import cfp_steps
-from pretalx.common.exceptions import SendMailException
-from pretalx.common.language import language
-from pretalx.common.text.phrases import phrases
-from pretalx.person.forms import SpeakerProfileForm, UserForm
-from pretalx.person.models import User
-from pretalx.submission.forms import InfoForm, QuestionsForm
-from pretalx.submission.models import (
-    QuestionTarget,
+from eventyay.cfp.signals import cfp_steps
+from eventyay.common.exceptions import SendMailException
+from eventyay.common.language import language
+from eventyay.common.text.phrases import phrases
+from eventyay.person.forms import SpeakerProfileForm, UserForm
+from eventyay.base.models import User
+from eventyay.submission.forms import InfoForm, TalkQuestionsForm
+from eventyay.base.models import (
+    TalkQuestionTarget,
     SubmissionStates,
     SubmissionType,
     Track,
@@ -357,7 +357,7 @@ class InfoStep(GenericFlowStep, FormFlowStep):
                 ),
             )
         else:
-            submission.log_action("pretalx.submission.create", person=request.user)
+            submission.log_action("eventyay.submission.create", person=request.user)
             messages.success(
                 self.request,
                 _(
@@ -403,7 +403,7 @@ class InfoStep(GenericFlowStep, FormFlowStep):
 class QuestionsStep(GenericFlowStep, FormFlowStep):
     identifier = "questions"
     icon = "question-circle-o"
-    form_class = QuestionsForm
+    form_class = TalkQuestionsForm
     template_name = "cfp/event/submission_questions.html"
     priority = 25
 
@@ -413,7 +413,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
         track = info_data.get("track")
         if track:
             questions = self.event.questions.exclude(
-                Q(target=QuestionTarget.SUBMISSION)
+                Q(target=TalkQuestionTarget.SUBMISSION)
                 & (
                     (~Q(tracks__in=[info_data.get("track")]) & Q(tracks__isnull=False))
                     | (
@@ -424,7 +424,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
             )
         else:
             questions = self.event.questions.exclude(
-                Q(target=QuestionTarget.SUBMISSION)
+                Q(target=TalkQuestionTarget.SUBMISSION)
                 & (
                     ~Q(submission_types__in=[info_data.get("submission_type")])
                     & Q(submission_types__isnull=False)
@@ -496,7 +496,7 @@ class UserStep(GenericFlowStep, FormFlowStep):
         if not request.user or not request.user.is_active:  # pragma: no cover
             raise ValidationError(
                 _(
-                    "There was an error when logging in. Please contact the organiser for further help."
+                    "There was an error when logging in. Please contact the organizer for further help."
                 ),
             )
         login(
@@ -535,7 +535,7 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
         if not result.get("user") and self.request.user.is_authenticated:
             result["user"] = self.request.user
         user = result.get("user")
-        result["name"] = user.name if user else user_data.get("register_name")
+        result["name"] = user.fullname if user else user_data.get("register_name")
         result["read_only"] = False
         result["essential_only"] = True
         return result

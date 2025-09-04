@@ -14,11 +14,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, View
 from django_context_decorator import context
 
-from pretalx.cfp.forms.auth import RecoverForm
-from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views import GenericLoginView, GenericResetView
-from pretalx.person.models import User
+from eventyay.cfp.forms.auth import RecoverForm
+from eventyay.cfp.views.event import EventPageMixin
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views import GenericLoginView, GenericResetView
+from eventyay.base.models import User
 
 SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 logger = logging.getLogger(__name__)
@@ -124,7 +124,7 @@ class EventAuth(View):
         except Exception:
             raise PermissionDenied(phrases.base.back_try_again)
 
-        key = f"pretalx_event_access_{request.event.pk}"
+        key = f"eventyay_event_access_{request.event.pk}"
         parent = data.get(key)
         sparent = SessionStore(parent)
 

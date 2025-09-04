@@ -1,10 +1,10 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from pretalx.common.forms.fields import NewPasswordConfirmationField, NewPasswordField
-from pretalx.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
-from pretalx.common.text.phrases import phrases
-from pretalx.person.models import User
+from eventyay.common.forms.fields import NewPasswordConfirmationField, NewPasswordField
+from eventyay.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import User
 
 
 class ResetForm(forms.Form):

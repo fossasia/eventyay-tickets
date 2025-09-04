@@ -23,19 +23,19 @@ from django.views.generic import (
 )
 from django_context_decorator import context
 
-from pretalx.cfp.forms.submissions import SubmissionInvitationForm
-from pretalx.cfp.views.event import LoggedInEventPageMixin
-from pretalx.common.exceptions import SendMailException
-from pretalx.common.forms.fields import SizeFileInput
-from pretalx.common.image import gravatar_csp
-from pretalx.common.middleware.event import get_login_redirect
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views import is_form_bound
-from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
-from pretalx.person.rules import can_view_information
-from pretalx.schedule.forms import AvailabilitiesFormMixin
-from pretalx.submission.forms import InfoForm, QuestionsForm, ResourceForm
-from pretalx.submission.models import Resource, Submission, SubmissionStates
+from eventyay.cfp.forms.submissions import SubmissionInvitationForm
+from eventyay.cfp.views.event import LoggedInEventPageMixin
+from eventyay.common.exceptions import SendMailException
+from eventyay.common.forms.fields import SizeFileInput
+from eventyay.common.image import gravatar_csp
+from eventyay.common.middleware.event import get_login_redirect
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views import is_form_bound
+from eventyay.person.forms import LoginInfoForm, SpeakerProfileForm
+from eventyay.talk_rules.person import can_view_information
+from eventyay.schedule.forms import AvailabilitiesFormMixin
+from eventyay.submission.forms import InfoForm, QuestionsForm, ResourceForm
+from eventyay.base.models import Resource, Submission, SubmissionStates
 
 logger = logging.getLogger(__name__)
 
@@ -92,13 +92,13 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
             self.login_form.save()
-            request.user.log_action("pretalx.user.password.update")
+            request.user.log_action("eventyay.user.password.update")
         elif self.profile_form.is_bound and self.profile_form.is_valid():
             self.profile_form.save()
             profile = self.request.user.profiles.get_or_create(
                 event=self.request.event
             )[0]
-            profile.log_action("pretalx.user.profile.update", person=request.user)
+            profile.log_action("eventyay.user.profile.update", person=request.user)
             if self.profile_form.has_changed():
                 self.request.event.cache.set("rebuild_schedule_export", True, None)
         elif self.questions_form.is_bound and self.questions_form.is_valid():
@@ -197,7 +197,7 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
                         You can find details at {url}.
 
                         Best regards,
-                        pretalx
+                        eventyay
                         """
                                 )
                             )
@@ -331,7 +331,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                 if not form.instance.pk:
                     continue
                 obj.log_action(
-                    "pretalx.submission.resource.delete",
+                    "eventyay.submission.resource.delete",
                     person=self.request.user,
                     data={"id": form.instance.pk},
                 )
@@ -345,7 +345,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                 }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
-                    "pretalx.submission.resource.update", person=self.request.user
+                    "eventyay.submission.resource.update", person=self.request.user
                 )
 
         extra_forms = [
@@ -359,7 +359,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             form.instance.submission = obj
             form.save()
             obj.log_action(
-                "pretalx.submission.resource.create",
+                "eventyay.submission.resource.create",
                 person=self.request.user,
                 data={"id": form.instance.pk},
             )
@@ -430,7 +430,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
                             self.request, phrases.cfp.submission_email_fail
                         )
                 form.instance.log_action(
-                    "pretalx.submission.update", person=self.request.user
+                    "eventyay.submission.update", person=self.request.user
                 )
                 self.request.event.cache.set("rebuild_schedule_export", True, None)
             if (
@@ -440,7 +440,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             ):
                 form.instance.make_submitted(person=self.request.user)
                 form.instance.log_action(
-                    "pretalx.submission.create", person=self.request.user
+                    "eventyay.submission.create", person=self.request.user
                 )
                 messages.success(self.request, _("Your proposal has been submitted."))
                 return redirect(self.request.event.urls.user_submissions)
@@ -490,7 +490,7 @@ class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView
         form.save()
         messages.success(self.request, phrases.cfp.invite_sent)
         self.submission.log_action(
-            "pretalx.submission.speakers.invite", person=self.request.user
+            "eventyay.submission.speakers.invite", person=self.request.user
         )
         return super().form_valid(form)
 
@@ -523,7 +523,7 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
         submission = self.get_object()
         submission.speakers.add(self.request.user)
         submission.log_action(
-            "pretalx.submission.speakers.add", person=self.request.user
+            "eventyay.submission.speakers.add", person=self.request.user
         )
         submission.save()
         messages.success(self.request, phrases.cfp.invite_accepted)

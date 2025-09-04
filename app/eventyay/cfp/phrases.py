@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.text.phrases import Phrases
+from eventyay.common.text.phrases import Phrases
 
 
 class CfPPhrases(Phrases, app="cfp"):

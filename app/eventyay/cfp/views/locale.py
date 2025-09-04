@@ -2,8 +2,10 @@ import datetime as dt
 from urllib.parse import parse_qs, urlencode, urlparse
 
 from django.conf import settings
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import override, gettext_lazy as _
 from django.views.generic import View
 
 

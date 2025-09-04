@@ -1,6 +1,6 @@
 from django import forms
 
-from pretalx.common.text.phrases import phrases
+from eventyay.common.text.phrases import phrases
 
 
 class SubmissionInvitationForm(forms.Form):
