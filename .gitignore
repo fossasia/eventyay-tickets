@@ -59,3 +59,8 @@ deployment/data
 
 # Emails which are not sent out to Internet are saved here.
 dev-sent-emails
+
+# Frontend
+node_modules
+dist
+dist-ssr
