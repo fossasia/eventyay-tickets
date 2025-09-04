@@ -2,9 +2,9 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.fields import ColorField
-from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
-from pretalx.submission.models import Tag
+from eventyay.common.forms.fields import ColorField
+from eventyay.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from eventyay.base.models import Tag
 
 
 class TagForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):

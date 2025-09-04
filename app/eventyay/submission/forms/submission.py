@@ -4,19 +4,19 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField
 
-from pretalx.cfp.forms.cfp import CfPFormMixin
-from pretalx.common.forms.fields import ImageField
-from pretalx.common.forms.mixins import PublicContent, RequestRequire
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import (
+from eventyay.cfp.forms.cfp import CfPFormMixin
+from eventyay.common.forms.fields import ImageField
+from eventyay.common.forms.mixins import PublicContent, RequestRequire
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import (
     EnhancedSelect,
     MarkdownWidget,
     SearchInput,
     SelectMultipleWithCount,
 )
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.mixins import Filterable
-from pretalx.submission.models import (
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.mixins import Filterable
+from eventyay.base.models import (
     Answer,
     Question,
     Submission,
@@ -170,7 +170,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             self.fields["slot_count"].disabled = True
             self.fields["slot_count"].help_text += " " + str(
                 _(
-                    "Please contact the organisers if you want to change how often you’re presenting this proposal."
+                    "Please contact the organizers if you want to change how often you’re presenting this proposal."
                 )
             )
 
@@ -389,7 +389,7 @@ class SubmissionFilterForm(forms.Form):
             )
             for choice in usable_states
         ]
-        self.fields["question"].queryset = event.questions.all()
+        self.fields["question"].queryset = event.talkquestions.all()
 
     def _filter_question(
         self, qs, question=None, answer=None, option=None, unanswered=False

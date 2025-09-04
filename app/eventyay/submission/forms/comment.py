@@ -1,8 +1,8 @@
 from django import forms
 
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.submission.models import SubmissionComment
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import MarkdownWidget
+from eventyay.base.models import SubmissionComment
 
 
 class SubmissionCommentForm(forms.ModelForm):
@@ -23,6 +23,6 @@ class SubmissionCommentForm(forms.ModelForm):
         self.instance.user = self.user
         instance = super().save(*args, **kwargs)
         instance.log_action(
-            "pretalx.submission.comment.create", person=self.user, orga=True
+            "eventyay.submission.comment.create", person=self.user, orga=True
         )
         return instance

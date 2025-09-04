@@ -6,8 +6,8 @@ import logging
 from django.core.management.base import BaseCommand
 from django_scopes import scope
 
-from pretalx.event.models import Event
-from pretalx.submission.models import Submission, Question, Track
+from eventyay.base.models import Event
+from eventyay.base.models import Submission, TalkQuestion, Track
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
         with scope(event=event):
             # Find question with "track" in the label
-            track_question = Question.all_objects.get(question__icontains="track")
+            track_question = TalkQuestion.all_objects.get(question__icontains="track")
         logger.info('Found question: %s', track_question)
         # Get available tracks
         with scope(event=event):

@@ -2,9 +2,9 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.forms.fields import SizeFileField
-from pretalx.common.forms.renderers import InlineFormLabelRenderer
-from pretalx.submission.models import Resource
+from eventyay.common.forms.fields import SizeFileField
+from eventyay.common.forms.renderers import InlineFormLabelRenderer
+from eventyay.base.models import Resource
 
 
 class ResourceForm(forms.ModelForm):

@@ -1,10 +1,10 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.forms.mixins import ReadOnlyFlag
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.submission.models import Feedback
+from eventyay.common.forms.mixins import ReadOnlyFlag
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import MarkdownWidget
+from eventyay.base.models import Feedback
 
 
 class FeedbackForm(ReadOnlyFlag, forms.ModelForm):

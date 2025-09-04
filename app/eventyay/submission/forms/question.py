@@ -2,12 +2,12 @@ from django import forms
 from django.db.models import Q
 from django.utils.functional import cached_property
 
-from pretalx.cfp.forms.cfp import CfPFormMixin
-from pretalx.common.forms.mixins import QuestionFieldsMixin
-from pretalx.submission.models import Question, QuestionTarget, QuestionVariant
+from eventyay.cfp.forms.cfp import CfPFormMixin
+from eventyay.common.forms.mixins import QuestionFieldsMixin
+from eventyay.base.models import TalkQuestion, TalkQuestionTarget, TalkQuestionVariant
 
 
-class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
+class TalkQuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
     def __init__(self, *args, skip_limited_questions=False, **kwargs):
         self.event = kwargs.pop("event", None)
         self.submission = kwargs.pop("submission", None)
@@ -19,13 +19,13 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
         self.submission_type = kwargs.pop("submission_type", None) or getattr(
             self.submission, "submission_type", None
         )
-        self.target_type = kwargs.pop("target", QuestionTarget.SUBMISSION)
+        self.target_type = kwargs.pop("target", TalkQuestionTarget.SUBMISSION)
         self.for_reviewers = kwargs.pop("for_reviewers", False)
-        if self.target_type == QuestionTarget.SUBMISSION:
+        if self.target_type == TalkQuestionTarget.SUBMISSION:
             target_object = self.submission
-        elif self.target_type == QuestionTarget.SPEAKER:
+        elif self.target_type == TalkQuestionTarget.SPEAKER:
             target_object = self.speaker
-        elif self.target_type == QuestionTarget.REVIEWER:
+        elif self.target_type == TalkQuestionTarget.REVIEWER:
             target_object = self.review
         else:
             target_object = self.speaker
@@ -33,12 +33,12 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
 
         super().__init__(*args, **kwargs)
 
-        self.queryset = Question.all_objects.filter(event=self.event, active=True)
+        self.queryset = TalkQuestion.all_objects.filter(event=self.event, active=True)
         if self.target_type:
             self.queryset = self.queryset.filter(target=self.target_type)
         else:
             self.queryset = self.queryset.exclude(
-                target=QuestionTarget.REVIEWER
+                target=TalkQuestionTarget.REVIEWER
             ).order_by("-target", "position")
         if skip_limited_questions:
             self.queryset = self.queryset.filter(
@@ -70,7 +70,7 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
                     initial_object = answers[0]
                     initial = (
                         answers[0].answer_file
-                        if question.variant == QuestionVariant.FILE
+                        if question.variant == TalkQuestionVariant.FILE
                         else answers[0].answer
                     )
 
@@ -89,7 +89,7 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
         return [
             forms.BoundField(self, field, name)
             for name, field in self.fields.items()
-            if field.question.target == QuestionTarget.SPEAKER
+            if field.question.target == TalkQuestionTarget.SPEAKER
         ]
 
     @cached_property
@@ -97,7 +97,7 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
         return [
             forms.BoundField(self, field, name)
             for name, field in self.fields.items()
-            if field.question.target == QuestionTarget.SUBMISSION
+            if field.question.target == TalkQuestionTarget.SUBMISSION
         ]
 
     def save(self):
