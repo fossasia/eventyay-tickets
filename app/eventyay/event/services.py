@@ -4,14 +4,14 @@ from django.dispatch import receiver
 from django.utils.timezone import now
 from django_scopes import scope, scopes_disabled
 
-from pretalx.agenda.tasks import export_schedule_html
-from pretalx.celery_app import app
-from pretalx.common.models.file import CachedFile
-from pretalx.common.signals import periodic_task
-from pretalx.event.models import Event
+from eventyay.agenda.tasks import export_schedule_html
+from eventyay.celery_app import app
+from eventyay.base.models import CachedFile
+from eventyay.common.signals import periodic_task
+from eventyay.base.models import Event
 
 
-@app.task(name="pretalx.event.periodic_event_services")
+@app.task(name="eventyay.event.periodic_event_services")
 def task_periodic_event_services(event_slug):
     with scopes_disabled():
         event = (
@@ -61,9 +61,9 @@ def task_periodic_event_services(event_slug):
             event.settings.sent_mail_event_over = True
 
 
-@app.task(name="pretalx.event.periodic_schedule_export")
+@app.task(name="eventyay.event.periodic_schedule_export")
 def task_periodic_schedule_export(event_slug):
-    from pretalx.agenda.management.commands.export_schedule_html import (
+    from eventyay.agenda.management.commands.export_schedule_html import (
         get_export_zip_path,
     )
 

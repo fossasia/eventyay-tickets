@@ -4,12 +4,12 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 
-from pretalx.common.text.phrases import phrases
-from pretalx.submission.models import SubmissionStates
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import SubmissionStates
 
 
 def _is_in_preparation(event):
-    return not event.is_public and now() <= event.datetime_from
+    return not event.is_public and now() <= event.date_from
 
 
 def _is_cfp_open(event):
@@ -20,7 +20,7 @@ def _is_in_review(event):
     return (
         not _is_cfp_open(event)
         and event.submissions.filter(state=SubmissionStates.SUBMITTED).exists()
-        and now() <= event.datetime_from
+        and now() <= event.date_from
     )
 
 
@@ -31,11 +31,11 @@ def _is_in_scheduling_stage(event):
 
 
 def _is_running(event):
-    return event.datetime_from <= now() <= event.datetime_to
+    return event.date_from <= now() <= event.date_to
 
 
 def _is_in_wrapup(event):
-    return event.datetime_to <= now()
+    return event.date_to <= now()
 
 
 STAGES = {
@@ -45,7 +45,7 @@ STAGES = {
         "icon": "paper-plane",
         "links": [
             {"title": _("Configure the event"), "url": ["orga_urls", "settings"]},
-            {"title": _("Gather your team"), "url": ["organiser", "orga_urls", "base"]},
+            {"title": _("Gather your team"), "url": ["organizer", "orga_urls", "base"]},
             {"title": _("Write a CfP"), "url": ["cfp", "urls", "edit_text"]},
             {
                 "title": _("Customize mail templates"),
@@ -63,7 +63,7 @@ STAGES = {
                 "title": _("Submit sessions for your speakers"),
                 "url": ["orga_urls", "new_submission"],
             },
-            {"title": _("Invite reviewers"), "url": ["organiser", "orga_urls", "base"]},
+            {"title": _("Invite reviewers"), "url": ["organizer", "orga_urls", "base"]},
         ],
     },
     "REVIEW": {
