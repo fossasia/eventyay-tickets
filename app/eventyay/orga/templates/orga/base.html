@@ -130,7 +130,7 @@
                     <div id='global-nav-menu' class='d-inline-block' />
                 </li>
                 <li class="nav-item">
-                    <form action="{% url "orga:logout" %}" method="post">
+                    <form action="{% url "eventyay_common:auth.logout" %}" method="post">
                         {% csrf_token %}
                         <button class="nav-link active font-text ml-1" type="submit">
                             <i class="fa fa-sign-out"></i>
@@ -426,10 +426,10 @@
                                 </a>
                             </div>
                         </div>
+                        {% for nav_element in nav_event %}
+                            {% include "orga/includes/sidebar_nav.html" %}
+                        {% endfor %}
                     {% endif %}
-                    {% for nav_element in nav_event %}
-                        {% include "orga/includes/sidebar_nav.html" %}
-                    {% endfor %}
                 {% elif request.organiser %}  {# if request.event #}
                     <a class="nav-link {% if "/settings/" in request.path %} active{% endif %}" href="{{ request.organiser.orga_urls.settings }}">
                         <i class="fa fa-cog"></i>

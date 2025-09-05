@@ -26,10 +26,10 @@
             {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                 List filtered by responses to custom field “{{ question }}”.
             {% endblocktranslate %}
-            <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
+            {% comment %} <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
                 <span class="fa fa-times"></span>
                 {% translate "Remove filter" %}
-            </a>
+            </a> {% endcomment %}
         </p>
     {% endif %}
 </div>
