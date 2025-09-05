@@ -95,7 +95,8 @@ export default [
       // Purely stylistic: order of options does not affect Vue runtime behavior
       'vue/order-in-components': 'off',
       'vue/component-definition-name-casing': 'off',
-
+      // Disable mutation of props rule
+      'vue/no-mutating-props': 'off',
       'camelcase': 0,
       'no-unused-expressions': 0,
 

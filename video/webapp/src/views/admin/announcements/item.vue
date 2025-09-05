@@ -100,13 +100,12 @@ export default {
 		async save() {
 			this.saving = true
 			if (this.announcement.id) {
-					const { announcement } = await api.call('announcement.update', this.announcement)
-					const existingAnnouncement = this.announcements.find(a => a.id === announcement.id)
-					Object.assign(existingAnnouncement, announcement)
+				const { announcement } = await api.call('announcement.update', this.announcement)
+				const existingAnnouncement = this.announcements.find(a => a.id === announcement.id)
+				Object.assign(existingAnnouncement, announcement)
 			} else {
 				const { announcement } = await api.call('announcement.create', this.announcement)
 				// TODO not really best practice
-				// eslint-disable-next-line vue/no-mutating-props
 				this.announcements.push(announcement)
 				this.$router.push({ name: 'admin:announcements:item', params: {announcementId: announcement.id}})
 				this.announcement = Object.assign({}, announcement)

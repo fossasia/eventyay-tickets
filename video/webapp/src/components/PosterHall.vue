@@ -125,7 +125,7 @@ export default {
 				categorizedPosters[poster.category || ''].push(poster)
 			}
 			// remove empty categories
-			return Object.fromEntries(Object.entries(categorizedPosters).filter(([, value]) => value.length > 0))
+			return Object.fromEntries(Object.entries(categorizedPosters).filter(([key, value]) => value.length > 0))
 		},
 		categories() {
 			return Object.entries(this.categorizedFilteredPosters).map(([key, value]) => {

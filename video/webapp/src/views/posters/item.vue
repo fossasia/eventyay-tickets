@@ -62,12 +62,12 @@ import { createPopper } from '@popperjs/core'
 import api from 'lib/api'
 import { getIconByFileEnding } from 'lib/filetypes'
 import Avatar from 'components/Avatar'
-// import Chat from 'components/Chat' no longer used
+import Chat from 'components/Chat'
 import ChatUserCard from 'components/ChatUserCard'
 import RichTextContent from 'components/RichTextContent'
 
 export default {
-	components: { Avatar, ChatUserCard, RichTextContent },
+	components: { Avatar, Chat, ChatUserCard, RichTextContent },
 	props: {
 		posterId: String
 	},

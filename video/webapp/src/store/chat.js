@@ -113,9 +113,7 @@ export default {
 			state.joinedChannels.push({id: channel || state.channel, unread_pointer: response.unread_pointer})
 		},
 		async fetchMessages({state, dispatch}) {
-			if (!state.beforeCursor || state.fetchingMessages) {
-				return
-			}
+			if (!state.beforeCursor || state.fetchingMessages) return
 			state.fetchingMessages = true
 			try {
 				const channel = state.channel
@@ -353,7 +351,7 @@ export default {
 		},
 		async 'api::chat.notification'({state, rootState, getters, dispatch}, data) {
 			const channelId = data.event.channel
-			const channel = state.joinedChannels.find(c => c.id === channelId) || (getters.automaticallyJoinedChannels.includes(channelId) ? {id: channelId} : null)
+			const channel = state.joinedChannels.find(c => c.id === channelId) || getters.automaticallyJoinedChannels.includes(channelId) ? {id: channelId} : null
 			if (!channel) return
 			// Increment notification count
 			state.notificationCounts[channel.id] = (state.notificationCounts[channel.id] || 0) + 1

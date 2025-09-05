@@ -33,7 +33,7 @@ export default {
 			this.$emit('update:modelValue', val)
 		},
 		upload() {
-			const file = this.$refs.fileInput.files[0]
+			var file = this.$refs.fileInput.files[0]
 
 			api.uploadFilePromise(file, file.name, this.uploadUrl).then(data => {
 				if (data.error) {

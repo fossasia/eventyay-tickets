@@ -192,7 +192,6 @@ export default {
 			return sessions
 		},
 		rooms() {
-		  // Use computed rooms logic compatible with Vue 3 and current codebase
 		  return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
 		},
 		filter() {

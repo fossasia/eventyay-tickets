@@ -219,23 +219,17 @@ export default {
 		nowSlice() {
 			let slice
 			for (const s of this.timeslices) {
-				if (this.now.isBefore(s.date)) {
-					break
-				}
+				if (this.now.isBefore(s.date)) break
 				slice = s
 			}
 			if (slice) {
 				const nextSlice = this.timeslices[this.timeslices.indexOf(slice) + 1]
-				if (!nextSlice) {
-					return null
-				}
+				if (!nextSlice) return null
 				// is on daybreak
-				if (nextSlice.date.diff(slice.date, 'minutes') > 30) {
-					return {
-						slice: nextSlice,
-						offset: 0,
-						onDaybreak: true
-					}
+				if (nextSlice.date.diff(slice.date, 'minutes') > 30) return {
+					slice: nextSlice,
+					offset: 0,
+					onDaybreak: true
 				}
 				return {
 					slice,

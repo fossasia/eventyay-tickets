@@ -35,7 +35,3 @@ export default {
     }
   }
 }
-
-// Register globally in main.js:
-// import scrollbarDirective from 'components/directives/scrollbar'
-// app.directive('scrollbar', scrollbarDirective)

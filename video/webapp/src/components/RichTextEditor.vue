@@ -162,8 +162,6 @@ export default {
 			background: #f0f0f0
 		.ql-active .bunt-icon
 			color: var(--clr-primary)
-	.ql-editor
-		min-height: 45px
 	.ql-hidden
 		display: none
 	.ql-tooltip  /* based on https://github.com/quilljs/quill/blob/develop/assets/snow/tooltip.styl */

@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-mutating-props -->
 <template lang="pug">
 .c-room-edit-form
 	.scroll-wrapper(v-scrollbar.y="")
