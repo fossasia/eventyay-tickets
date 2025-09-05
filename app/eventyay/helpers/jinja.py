@@ -16,6 +16,4 @@ def url_for(context: Context, name: str, *args, query_string=None, **kwargs):
         except AttributeError:
             current_app = None
     base_url = reverse(name, args=args, kwargs=kwargs, current_app=current_app)
-    if query_string:
-        return '{}?{}'.format(base_url, query_string)
-    return base_url
+    return '{}?{}'.format(base_url, query_string) if query_string else base_url
