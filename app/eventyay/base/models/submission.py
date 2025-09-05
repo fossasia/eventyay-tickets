@@ -7,7 +7,7 @@ from itertools import repeat
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import JSONField, Q
 from django.db.models.fields.files import FieldFile
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -390,25 +390,24 @@ class Submission(GenerateCode, PretalxModel):
 
     @property
     def reviewer_answers(self):
-        return self.answers.filter(question__is_visible_to_reviewers=True).order_by('question__position')
+        return self.answers.filter(talkquestion__is_visible_to_reviewers=True).order_by('talkquestion__position')
 
     @property
     def public_answers(self):
-        # TODO: QuestionTarget model is missing
-        # from eventyay.submission.models.question import QuestionTarget
+        from eventyay.base.models import TalkQuestionTarget
 
-        # qs = (
-        #     self.answers.filter(
-        #         Q(question__submission_types__in=[self.submission_type]) | Q(question__submission_types__isnull=True),
-        #         question__is_public=True,
-        #         question__event=self.event,
-        #         question__target=QuestionTarget.SUBMISSION,
-        #     )
-        #     .select_related('question')
-        #     .order_by('question__position')
-        # )
-        # if self.track:
-        #     qs = qs.filter(Q(question__tracks__in=[self.track]) | Q(question__tracks__isnull=True))
+        qs = (
+            self.answers.filter(
+                Q(talkquestion__submission_types__in=[self.submission_type]) | Q(talkquestion__submission_types__isnull=True),
+                talkquestion__is_public=True,
+                talkquestion__event=self.event,
+                talkquestion__target=TalkQuestionTarget.SUBMISSION,
+            )
+            .select_related('talkquestion')
+            .order_by('talkquestion__position')
+        )
+        if self.track:
+            qs = qs.filter(Q(talkquestion__tracks__in=[self.track]) | Q(talkquestion__tracks__isnull=True))
         return []
 
     def get_duration(self) -> int:
@@ -967,13 +966,13 @@ class Submission(GenerateCode, PretalxModel):
                 _field = self._meta.get_field(field)
                 field_name = _field.verbose_name or _field.name
                 data.append({'name': field_name, 'value': field_content})
-        for answer in self.answers.all().order_by('question__position'):
-            if answer.question.variant == 'boolean':
-                data.append({'name': answer.question.question, 'value': answer.boolean_answer})
+        for answer in self.answers.all().order_by('talkquestion__position'):
+            if answer.talkquestion.variant == 'boolean':
+                data.append({'name': answer.talkquestion.talkquestion, 'value': answer.boolean_answer})
             elif answer.answer_file:
-                data.append({'name': answer.question.question, 'value': answer.answer_file})
+                data.append({'name': answer.talkquestion.talkquestion, 'value': answer.answer_file})
             else:
-                data.append({'name': answer.question.question, 'value': answer.answer or '-'})
+                data.append({'name': answer.talkquestion.talkquestion, 'value': answer.answer or '-'})
         for content in data:
             field_name = content['name']
             field_content = content['value']

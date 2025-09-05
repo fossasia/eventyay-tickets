@@ -7,8 +7,8 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy as _p
 
-from pretalx.api.versions import CURRENT_VERSIONS
-from pretalx.common.models.mixins import PretalxModel
+from eventyay.api.versions import CURRENT_VERSIONS
+from .mixins import PretalxModel
 
 
 def generate_api_token():
@@ -60,12 +60,12 @@ class UserApiToken(PretalxModel):
     name = models.CharField(max_length=190, verbose_name=_("Name"))
     token = models.CharField(default=generate_api_token, max_length=64, unique=True)
     user = models.ForeignKey(
-        to="person.User",
+        to="User",
         related_name="api_tokens",
         on_delete=models.CASCADE,
     )
     events = models.ManyToManyField(
-        to="event.Event",
+        to="Event",
         related_name="+",
         verbose_name=_("Events"),
     )

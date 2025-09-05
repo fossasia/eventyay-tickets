@@ -3,13 +3,13 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.models.mixins import PretalxModel
-from pretalx.common.text.path import path_with_hash
-from pretalx.common.text.phrases import phrases
-from pretalx.common.urls import EventUrls
-from pretalx.event.rules import can_change_event_settings
-from pretalx.person.rules import can_view_information
-from pretalx.submission.rules import orga_can_change_submissions
+from .mixins import PretalxModel
+from eventyay.common.text.path import path_with_hash
+from eventyay.common.text.phrases import phrases
+from eventyay.common.urls import EventUrls
+from eventyay.talk_rules.event import can_change_event_settings
+from eventyay.talk_rules .person import can_view_information
+from eventyay.talk_rules.submission import orga_can_change_submissions
 
 
 def resource_path(instance, filename):
@@ -19,11 +19,11 @@ def resource_path(instance, filename):
 
 
 class SpeakerInformation(PretalxModel):
-    """Represents any information organisers want to show all or some
+    """Represents any information organizers want to show all or some
     submitters or speakers."""
 
     event = models.ForeignKey(
-        to="event.Event", related_name="information", on_delete=models.CASCADE
+        to="Event", related_name="information", on_delete=models.CASCADE
     )
     target_group = models.CharField(
         choices=(
@@ -35,13 +35,13 @@ class SpeakerInformation(PretalxModel):
         max_length=11,
     )
     limit_tracks = models.ManyToManyField(
-        to="submission.Track",
+        to="Track",
         verbose_name=_("Limit to tracks"),
         blank=True,
         help_text=_("Leave empty to show this information to all tracks."),
     )
     limit_types = models.ManyToManyField(
-        to="submission.SubmissionType",
+        to="SubmissionType",
         verbose_name=_("Limit to proposal types"),
         blank=True,
         help_text=_("Leave empty to show this information for all proposal types."),
@@ -58,7 +58,7 @@ class SpeakerInformation(PretalxModel):
         upload_to=resource_path,
     )
 
-    log_prefix = "pretalx.speaker_information"
+    log_prefix = "speaker_information"
 
     @property
     def log_parent(self):

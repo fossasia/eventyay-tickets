@@ -179,7 +179,7 @@ def questions_for_user(event, user):
     from eventyay.talk_rules.orga import can_view_speaker_names
 
     if user.has_perm('submission.update_question', event):
-        # Organisers with edit permissions can see everything
+        # Organizers with edit permissions can see everything
         return event.questions(manager='all_objects').all()
     if not user.is_anonymous and is_only_reviewer(user, event) and can_view_speaker_names(user, event):
         return event.questions(manager='all_objects').filter(

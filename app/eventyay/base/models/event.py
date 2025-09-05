@@ -1,14 +1,18 @@
+import copy
+import pytz
 import string
 import uuid
+import zoneinfo
+import datetime as dt
 from collections import OrderedDict
 from datetime import datetime, time, timedelta
+from dateutil.relativedelta import relativedelta
 from operator import attrgetter
 from urllib.parse import urljoin, urlparse
 
-import pytz
 from django.conf import global_settings as default_django_settings
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.files.storage import default_storage
 from django.core.mail import get_connection
 from django.core.validators import (
@@ -31,11 +35,14 @@ from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager, scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
 
+from .mixins import OrderedModel, PretalxModel
 from eventyay.base.models.base import LoggedModel
 from eventyay.base.models.fields import MultiStringField
 from eventyay.base.reldate import RelativeDateWrapper
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.base.validators import EventSlugBanlistValidator
+from eventyay.common.language import LANGUAGE_NAMES
+from eventyay.common.plugins import get_all_plugins
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
@@ -379,7 +386,7 @@ def default_mail_settings():
 
 
 @settings_hierarkey.add(parent_field='organizer', cache_namespace='event')
-class Event(EventMixin, LoggedModel):
+class Event(EventMixin, LoggedModel, PretalxModel):
     """
     This model represents an event. An event is anything you can buy
     tickets for.
@@ -534,7 +541,7 @@ class Event(EventMixin, LoggedModel):
         help_text=_('All event dates will be localised and interpreted to be in this timezone.'),
     )
     email = models.EmailField(
-        verbose_name=_('Organiser email address'),
+        verbose_name=_('Organizer email address'),
         help_text=_('Will be used as Reply-To in emails.'),
         default='org@mail.com',
     )
@@ -734,6 +741,8 @@ class Event(EventMixin, LoggedModel):
         common = '{base_path}/common/'
         tickets_home_common = '{common}events/{self.organiser.slug}/{self.slug}/'
         tickets_dashboard_url = '{base}event/{self.organiser.slug}/{self.slug}/'
+        tickets_home_common = '{common}event/{self.organizer.slug}/{self.slug}/'
+        tickets_dashboard_url = '{base}event/{self.organizer.slug}/{self.slug}/'
 
     class Meta:
         verbose_name = _('Event')
@@ -808,6 +817,10 @@ class Event(EventMixin, LoggedModel):
     def save(self, *args, **kwargs):
         obj = super().save(*args, **kwargs)
         self.cache.clear()
+        was_created = not bool(self.pk)
+
+        if was_created:
+            self.build_initial_data()
         return obj
 
     def get_plugins(self):
@@ -1296,6 +1309,7 @@ class Event(EventMixin, LoggedModel):
     @property
     def has_paid_things(self):
         from .product import Product, ProductVariation
+        from .product import Product, ProductVariation
 
         return (
             Product.objects.filter(event=self, default_price__gt=0).exists()
@@ -1519,7 +1533,7 @@ class Event(EventMixin, LoggedModel):
 
     @cached_property
     def available_content_locales(self) -> list:
-        # Content locales can be anything pretalx knows as a language, merged with
+        # Content locales can be anything eventyay knows as a language, merged with
         # this event's plugin locales.
 
         locale_names = dict(default_django_settings.LANGUAGES)
@@ -1529,7 +1543,415 @@ class Event(EventMixin, LoggedModel):
     @cached_property
     def named_content_locales(self) -> list:
         locale_names = dict(self.available_content_locales)
+        # locale_names['en-us'] = locale_names['en']
         return [(code, locale_names[code]) for code in self.content_locales]
+
+    @cached_property
+    def named_plugin_locales(self) -> list:
+        from eventyay.common.signals import register_locales
+
+        locale_names = copy.copy(LANGUAGE_NAMES)
+        locale_names.update(self.named_locales)
+        result = {}
+        for _receiver, locales in register_locales.send(sender=self):
+            for locale in locales:
+                if isinstance(locale, tuple):
+                    result[locale[0]] = locale[1]
+                else:
+                    result[locale] = locale_names.get(locale, locale)
+        return result
+
+    @cached_property
+    def plugin_locales(self) -> list:
+        return sorted(self.named_plugin_locales.keys())
+    
+    @property
+    def plugin_list(self) -> list:
+        if not self.plugins:
+            return []
+        return self.plugins.split(",")
+
+    @cached_property
+    def available_plugins(self):
+        return {
+            plugin.module: plugin
+            for plugin in get_all_plugins(self)
+            if not plugin.name.startswith(".") and getattr(plugin, "visible", True)
+        }
+    
+    def set_plugins(self, modules: list) -> None:
+        """
+        This method is not @plugin_list.setter to make the side effects more visible.
+        It will call installed() on all plugins that were not active before, and
+        uninstalled() on all plugins that are not active anymore.
+        """
+        plugins_active = set(self.plugin_list)
+
+        enable = set(modules) & (set(self.available_plugins) - plugins_active)
+        disable = plugins_active - set(modules)
+
+        for module in enable:
+            if hasattr(self.available_plugins[module].app, "installed"):
+                self.available_plugins[module].app.installed(self)
+        for module in disable:
+            if hasattr(self.available_plugins[module].app, "uninstalled"):
+                self.available_plugins[module].app.uninstalled(self)
+
+        self.plugins = ",".join(modules)
+
+    def enable_plugin(self, module: str) -> None:
+        """Enables a plugin. If the given plugin is available and was not in the list of
+        active plugins, it will be added and installed() will be called."""
+        plugins_active = self.plugin_list
+        if module not in plugins_active:
+            plugins_active.append(module)
+            self.set_plugins(plugins_active)
+
+    def disable_plugin(self, module: str) -> None:
+        """Disables a plugin. If the given plugin is in the list of active
+        plugins, it will be removed and uninstall() will be called."""
+        plugins_active = self.plugin_list
+        if module in plugins_active:
+            plugins_active.remove(module)
+            self.set_plugins(plugins_active)
+    
+    @cached_property
+    def visible_primary_color(self):
+        return self.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
+
+    def _get_default_submission_type(self):
+        from eventyay.base.models import SubmissionType
+
+        sub_type = SubmissionType.objects.filter(event=self).first()
+        if not sub_type:
+            sub_type = SubmissionType.objects.create(event=self, name="Talk")
+        return sub_type
+
+    @cached_property
+    def event(self):
+        return self
+    
+    def get_feature_flag(self, feature):
+        if feature in self.feature_flags:
+            return self.feature_flags[feature]
+        return default_feature_flags().get(feature, False)
+
+    @cached_property
+    def current_schedule(self):
+        if pk := getattr(self, "_current_schedule_pk", None):
+            # The event middleware prefetches the current schedule
+            return self.schedules.get(pk=pk)
+        return (
+            self.schedules.order_by("-published")
+            .filter(published__isnull=False)
+            .first()
+        )
+    
+    @cached_property
+    def duration(self):
+        return (self.date_to - self.date_from).days + 1
+
+    @cached_property
+    def reviews(self):
+        from eventyay.base.models import Review
+
+        return Review.objects.filter(submission__event=self)
+    
+    @cached_property
+    def datetime_from(self) -> dt.datetime:
+        """The localised datetime of the event start date.
+
+        :rtype: datetime
+        """
+        return make_aware(
+            dt.datetime.combine(self.date_from, dt.time(hour=0, minute=0, second=0)),
+            self.tz,
+        )
+
+    @cached_property
+    def datetime_to(self) -> dt.datetime:
+        """The localised datetime of the event end date.
+
+        :rtype: datetime
+        """
+        return make_aware(
+            dt.datetime.combine(self.date_to, dt.time(hour=23, minute=59, second=59)),
+            self.tz,
+        )
+
+    @cached_property
+    def tz(self):
+        return zoneinfo.ZoneInfo(self.timezone)
+    
+    @cached_property
+    def talks(self):
+        """Returns a queryset of all.
+
+        :class:`~eventyay.base.models.submission.Submission` object in the
+        current released schedule.
+        """
+        from eventyay.base.models import Submission
+
+        if self.current_schedule:
+            return (
+                self.submissions.filter(slots__in=self.current_schedule.scheduled_talks)
+                .select_related("submission_type")
+                .prefetch_related("speakers")
+            )
+        return Submission.objects.none()
+    
+    @cached_property
+    def speakers(self):
+        """Returns a queryset of all speakers (of type.
+
+        :class:`~eventyay.base.models.user.User`) visible in the current
+        released schedule.
+        """
+        from eventyay.base.models import User
+
+        return User.objects.filter(submissions__in=self.talks).order_by("id").distinct()
+    
+    @cached_property
+    def submitters(self):
+        """Returns a queryset of all :class:`~eventyay.base.models.user.User`
+        objects who have submitted to this event.
+
+        Ignores users who have deleted all of their submissions.
+        """
+        from eventyay.base.models import User
+
+        return (
+            User.objects.filter(submissions__in=self.submissions.all())
+            .prefetch_related("submissions")
+            .order_by("id")
+            .distinct()
+        )
+
+    @cached_property
+    def teams(self):
+        """Returns all :class:`~eventyay.base.models.organizer.Team` objects
+        that concern this event."""
+
+        return self.organizer.teams.all().filter(
+            models.Q(all_events=True)
+            | models.Q(models.Q(all_events=False) & models.Q(limit_events__in=[self]))
+        )
+
+    @cached_property
+    def reviewers(self):
+        from eventyay.base.models import User
+
+        return User.objects.filter(
+            teams__in=self.teams.filter(is_reviewer=True)
+        ).distinct()
+
+    @cached_property
+    def active_review_phase(self):
+        if phase := self.review_phases.filter(is_active=True).first():
+            return phase
+        if not self.review_phases.all().exists():
+            from eventyay.base.models import ReviewPhase
+
+            cfp_deadline = self.cfp.deadline
+            return ReviewPhase.objects.create(
+                event=self,
+                name=_("Review"),
+                start=cfp_deadline,
+                end=self.datetime_from - relativedelta(months=-3),
+                is_active=bool(cfp_deadline),
+                can_see_other_reviews="after_review",
+                can_see_speaker_names=True,
+            )
+
+    @cached_property
+    def cfp_flow(self):
+        from eventyay.cfp.flow import CfPFlow
+
+        return CfPFlow(self)
+
+    def reorder_review_phases(self):
+        """Reorder the review phases by start date."""
+        # first, sort phases so that the ones with no start date come first
+        phases = list(self.review_phases.all())
+        placeholder = dt.datetime(1900, 1, 1).astimezone(self.tz)
+        phases.sort(key=lambda x: (x.start or placeholder, x.end or placeholder))
+        for i, phase in enumerate(phases):
+            phase.position = i
+            phase.save(update_fields=["position"])
+
+    def update_review_phase(self):
+        """This method activates the next review phase if the current one is
+        over.
+
+        If no review phase is active and if there is a new one to
+        activate.
+        """
+        _now = now()
+        future_phases = self.review_phases.all()
+        old_phase = self.active_review_phase
+        if old_phase and old_phase.end and old_phase.end > _now:
+            return old_phase
+        self.reorder_review_phases()
+        old_position = old_phase.position if old_phase else -1
+        future_phases = future_phases.filter(position__gt=old_position)
+        next_phase = future_phases.order_by("position").first()
+        if not next_phase or not next_phase.start or next_phase.start > _now:
+            return old_phase
+        next_phase.activate()
+        return next_phase
+
+    update_review_phase.alters_data = True
+
+    def release_schedule(
+        self, name: str, user=None, notify_speakers: bool = False, comment: str = None
+    ):
+        """Releases a new :class:`~eventyay.base.models.schedule.Schedule`
+        by finalising the current WIP schedule.
+
+        :param name: The new version name
+        :param user: The :class:`~eventyay.base.models.user.User` executing the release
+        :param notify_speakers: Generate emails for all speakers with changed slots.
+        :param comment: Public comment for the release
+        :type user: :class:`~eventyay.base.models.user.User`
+        """
+        self.wip_schedule.freeze(
+            name=name, user=user, notify_speakers=notify_speakers, comment=comment
+        )
+
+    release_schedule.alters_data = True
+
+    @cached_property
+    def wip_schedule(self):
+        """Returns the latest unreleased.
+
+        :class:`~eventyay.base.models.schedule.Schedule`.
+
+        :retval: :class:`~eventyay.base.models.schedule.Schedule`
+        """
+        try:
+            schedule, _ = self.schedules.get_or_create(version__isnull=True)
+        except MultipleObjectsReturned:
+            # No idea how this happens – a race condition due to transaction weirdness?
+            from eventyay.base.models import TalkSlot
+
+            schedules = list(self.schedules.filter(version__isnull=True))
+            schedule = schedules[0]
+            # It's only ever been two so far, but while we're being resilient …
+            for dupe in schedules[1:]:
+                TalkSlot.objects.filter(schedule=dupe).delete()
+                dupe.delete()
+        return schedule
+
+    @cached_property
+    def current_schedule(self):
+        if pk := getattr(self, "_current_schedule_pk", None):
+            # The event middleware prefetches the current schedule
+            return self.schedules.get(pk=pk)
+        return (
+            self.schedules.order_by("-published")
+            .filter(published__isnull=False)
+            .first()
+        )
+    
+    def get_mail_template(self, role):
+        from eventyay.mail.default_templates import get_default_template
+        from eventyay.base.models import MailTemplate
+
+        try:
+            return self.mail_templates.get(role=role)
+        except MailTemplate.DoesNotExist:
+            subject, text = get_default_template(role)
+            template, __ = MailTemplate.objects.get_or_create(
+                event=self, role=role, defaults={"subject": subject, "text": text}
+            )
+            return template
+
+    def build_initial_data(self):
+        from eventyay.base.models import MailTemplateRoles
+        from eventyay.base.models import Schedule
+        from eventyay.base.models import CfP
+
+        if not hasattr(self, "cfp"):
+            CfP.objects.create(
+                event=self, default_type=self._get_default_submission_type()
+            )
+
+        if not self.schedules.filter(version__isnull=True).exists():
+            Schedule.objects.create(event=self)
+
+        for role, __ in MailTemplateRoles.choices:
+            self.get_mail_template(role)
+
+        if not self.review_phases.all().exists():
+            from eventyay.base.models import ReviewPhase
+
+            cfp_deadline = self.cfp.deadline
+            rp = ReviewPhase.objects.create(
+                event=self,
+                name=_("Review"),
+                start=cfp_deadline,
+                end=self.datetime_from - relativedelta(months=-3),
+                is_active=bool(not cfp_deadline or cfp_deadline < now()),
+                position=0,
+            )
+            ReviewPhase.objects.create(
+                event=self,
+                name=_("Selection"),
+                start=rp.end,
+                is_active=False,
+                position=1,
+                can_review=False,
+                can_see_other_reviews="always",
+                can_change_submission_state=True,
+            )
+        if not self.score_categories.all().exists():
+            from eventyay.base.models import ReviewScore, ReviewScoreCategory
+
+            category = ReviewScoreCategory.objects.create(
+                event=self,
+                name=str(_("Score")),
+            )
+            ReviewScore.objects.create(
+                category=category,
+                value=0,
+                label=str(_("No")),
+            )
+            ReviewScore.objects.create(
+                category=category,
+                value=1,
+                label=str(_("Maybe")),
+            )
+            ReviewScore.objects.create(
+                category=category,
+                value=2,
+                label=str(_("Yes")),
+            )
+        self.save()
+
+    build_initial_data.alters_data = True
+
+    @cached_property
+    def pending_mails(self) -> int:
+        """The amount of currently unsent.
+
+        :class:`~eventyay.base.models.mail.QueuedMail` objects.
+        """
+        return self.queued_mails.filter(sent__isnull=True).count()
+
+
+class EventExtraLink(OrderedModel, PretalxModel):
+    event = models.ForeignKey(
+        to="Event", on_delete=models.CASCADE, related_name="extra_links"
+    )
+    label = I18nCharField(max_length=200, verbose_name=_("Link text"))
+    url = models.URLField(verbose_name=_("Link URL"))
+    role = models.CharField(
+        max_length=6,
+        choices=(("footer", "Footer"), ("header", "Header")),
+        default="footer",
+    )
+
+    objects = ScopedManager(event="event")
 
 
 class SubEvent(EventMixin, LoggedModel):
@@ -1661,11 +2083,13 @@ class SubEvent(EventMixin, LoggedModel):
     @cached_property
     def product_overrides(self):
         from .product import SubEventProduct
+        from .product import SubEventProduct
 
         return {si.product_id: si for si in SubEventProduct.objects.filter(subevent=self)}
 
     @cached_property
     def var_overrides(self):
+        from .product import SubEventProductVariation
         from .product import SubEventProductVariation
 
         return {si.variation_id: si for si in SubEventProductVariation.objects.filter(subevent=self)}
