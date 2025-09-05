@@ -1,20 +1,25 @@
 import inspect
 import logging
+import os
 import secrets
-from datetime import timedelta
+from collections.abc import Sequence
+from datetime import datetime, timedelta
 from decimal import Decimal
 from email import policy
 from email.parser import BytesParser
 from itertools import groupby
+from pathlib import Path
 from smtplib import SMTPResponseException
 
 from css_inline import inline as inline_css
 from django.conf import settings
+from django.core.mail.backends.filebased import EmailBackend as _FileBasedEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
+from django.core.mail.message import EmailMessage
 from django.db.models import Count
 from django.dispatch import receiver
 from django.template.loader import get_template
-from django.utils.timezone import now
+from django.utils.timezone import now as djnow
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from sendgrid import SendGridAPIClient
@@ -34,7 +39,7 @@ from eventyay.base.signals import (
 )
 from eventyay.base.templatetags.rich_text import markdown_compile_email
 
-logger = logging.getLogger('pretix.base.email')
+logger = logging.getLogger(__name__)
 
 
 class SendGridEmail:
@@ -119,6 +124,59 @@ class CustomSMTPBackend(EmailBackend):
             self.close()
 
 
+class FileSavedEmailBackend(_FileBasedEmailBackend):
+    """
+    Custom email backend to save emails to a file, instead of sending out to Internet.
+    Used for development and testing.
+
+    It is based on Django's file-based email backend, but is customized to:
+    - Save in subdirectories by date. It is because we have a feature to send bulk emails,
+    it will be difficult to find them with original file-based backend.
+    The subdirectory name scheme is: YYYY/mm/DD/HH-MM, it is "per minute" because in development,
+    we may try many times in an hour.
+    - Save the file with .eml extension, so that it can be opened by email clients (Thunderbird).
+    """
+
+    def get_subdir_path(self) -> Path:
+        """Get the subdirectory path to save email files."""
+        # We use local time, because this backend is only for development and testing.
+        # Note that, Django rewrote the `TZ` environment variable, so the time returned by
+        # `datetime.now()` may not match your wall clock.
+        now = datetime.now()
+        return (
+            Path(self.file_path).resolve()
+            / f'{now.year}'
+            / f'{now.month:02}'
+            / f'{now.day:02}'
+            / f'{now.hour:02}-{now.minute:02}'
+        )
+
+    def send_messages(self, email_messages: Sequence[EmailMessage]) -> int:
+        """
+        Send one or more EmailMessage objects and return the number of email
+
+        Override to create subdirectories before saving the email files.
+        """
+        if not email_messages:
+            return 0
+        # Create subdirectory by date
+        subdir = self.get_subdir_path()
+        os.makedirs(subdir, exist_ok=True)
+        n = super().send_messages(email_messages)
+        logger.info('Wrote %d email(s) to %s.', n, subdir.relative_to(Path.cwd()))
+        return n
+
+    def _get_filename(self):
+        """Return a unique file name with .eml extension."""
+        if self._fname is None:
+            subdir = self.get_subdir_path()
+            # We use local time, because this backend is only for development and testing.
+            now = datetime.now()
+            file_name = f'{now:%Y%m%d-%H%M%S}-{abs(id(self))}.eml'
+            self._fname = str(subdir / file_name)
+        return self._fname
+
+
 class BaseHTMLMailRenderer:
     """
     This is the base class for all HTML e-mail renderers.
@@ -196,7 +254,7 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
             'site_url': settings.SITE_URL,
             'body': body_md,
             'subject': str(subject),
-            'color': settings.PRETIX_PRIMARY_COLOR,
+            'color': settings.EVENTYAY_PRIMARY_COLOR,
             'rtl': get_language() in settings.LANGUAGES_RTL or get_language().split('-')[0] in settings.LANGUAGES_RTL,
         }
         if self.organizer:
@@ -245,18 +303,18 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
 class ClassicMailRenderer(TemplateBasedMailRenderer):
     verbose_name = _('Default')
     identifier = 'classic'
-    thumbnail_filename = 'pretixbase/email/thumb.png'
-    template_name = 'pretixbase/email/plainwrapper.html'
+    thumbnail_filename = 'eventyay/email/thumb.png'
+    template_name = 'eventyay/email/plainwrapper.jinja'
 
 
 class UnembellishedMailRenderer(TemplateBasedMailRenderer):
     verbose_name = _('Simple with logo')
     identifier = 'simple_logo'
-    thumbnail_filename = 'pretixbase/email/thumb_simple_logo.png'
-    template_name = 'pretixbase/email/simple_logo.html'
+    thumbnail_filename = 'eventyay/email/thumb_simple_logo.png'
+    template_name = 'eventyay/email/simple_logo.jinja'
 
 
-@receiver(register_html_mail_renderers, dispatch_uid='pretixbase_email_renderers')
+@receiver(register_html_mail_renderers, dispatch_uid='eventyay_email_renderers')
 def base_renderers(sender, **kwargs):
     return [ClassicMailRenderer, UnembellishedMailRenderer]
 
@@ -454,7 +512,7 @@ def base_placeholders(sender, **kwargs):
             'expire_date',
             ['event', 'order'],
             lambda event, order: LazyExpiresDate(order.expires.astimezone(event.timezone)),
-            lambda event: LazyDate(now() + timedelta(days=15)),
+            lambda event: LazyDate(djnow() + timedelta(days=15)),
         ),
         SimpleFunctionalMailTextPlaceholder(
             'url',

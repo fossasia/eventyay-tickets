@@ -1,0 +1,139 @@
+{% if position %}
+  <div class="order-info">
+    {{ _('You are receiving this email because someone signed you up for the following event:') }}
+  </div>
+  <table class="order-details">
+    <tr>
+      <td>
+        <strong>{{ _('Event:') }}</strong>
+      </td>
+      <td>
+        {{ event.name }}
+        <br>
+        {% if event.has_subevents and ev.name|upper != event.name|upper %}{{ ev.name }}<br>{% endif %}
+        {{ ev.get_date_range_display }}
+        {% if event.settings.show_times %}
+          {{ ev.date_from|format_date('TIME_FORMAT') }}
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>{{ _('Order code:') }}</strong>
+      </td>
+      <td>
+        {{ order.code }} ({{ order.datetime|format_date('SHORT_DATE_FORMAT') }})<br>
+        {% if order.email %}
+          {{ _('created by') }} {{ order.email }}
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>{{ _('Organizer:') }}</strong>
+      </td>
+      <td>
+        {{ event.organizer }}
+        {% if event.settings.contact_mail %}
+          <br>
+          <a href="mailto:{{ event.settings.contact_mail }}">
+            {{ event.settings.contact_mail }}
+          </a>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+  <div class="order-button">
+    <a href="{{ url_for('presale:event.order.position', event=event, order=order.code, secret=position.web_secret, position=position.positionid) }}" class="button">
+      {{ _('View registration details') }}
+    </a>
+  </div>
+{% else %}
+  <div class="order-info">
+    {{ _('You are receiving this email because you placed an order for the following event:') }}
+  </div>
+  <table class="order-details">
+    <tr>
+      <td>
+        <strong>{{ _('Event:') }}</strong>
+      </td>
+      <td>
+        {{ event.name }}
+        {% if not event.has_subevents and event.settings.show_dates_on_frontpage %}
+          <br>
+          {{ event.get_date_range_display }}
+          {% if event.settings.show_times %}
+            {{ event.date_from|format_date('TIME_FORMAT') }}
+          {% endif %}
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>{{ _('Order code:') }}</strong>
+      </td>
+      <td>
+        {{ order.code }} ({{ order.datetime|format_date('SHORT_DATE_FORMAT') }})
+      </td>
+    </tr>
+    {% if cart %}
+      <tr>
+        <td>
+          <strong>{{ _('Details:') }}</strong>
+        </td>
+        <td>
+          <table class="cart-table">
+            {% for groupkey, positions in cart %}
+              <tr>
+                <td>
+                  {% if not groupkey[4] %} {# is addon #}
+                    {{ positions|length }}x
+                  {% endif %}
+                </td>
+                <td>
+                  {% if groupkey[4] %} {# is addon #}
+                    +
+                  {% endif %}
+                  {{ groupkey[0].name }}{% if groupkey[1] %} – {{ groupkey[1].value }}{% endif %}
+                  {% if groupkey[2] %} {# subevent #}
+                    <br>
+                    {% if groupkey[2].name|upper != event.name|upper %}
+                      {{ groupkey[2].name }} &middot;
+                    {% endif %}
+                    {{ groupkey[2].get_date_range_display }}
+                    {% if event.settings.show_times %}
+                      {{ groupkey[2].date_from|format_date('TIME_FORMAT') }}
+                    {% endif %}
+                  {% endif %}
+                  {% if groupkey[3] %} {# attendee name #}
+                    <br>
+                    {{ groupkey[3].name }}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </td>
+      </tr>
+    {% endif %}
+    <tr>
+      <td>
+        <strong>{{ _('Organizer:') }}</strong>
+      </td>
+      <td>
+        {{ event.organizer }}
+        {% if event.settings.contact_mail %}
+          <br>
+          <a href="mailto:{{ event.settings.contact_mail }}">
+            {{ event.settings.contact_mail }}
+          </a>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+  <div class="order-button">
+    <a href="{{ url_for('presale:event.order.open', event=event, hash=order.email_confirm_hash, order=order.code, secret=order.secret) }}" class="button">
+      {{ _('View order details') }}
+    </a>
+  </div>
+{% endif %}
