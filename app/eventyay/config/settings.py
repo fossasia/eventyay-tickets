@@ -275,7 +275,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-LANGUAGES_RTL = {'ar', 'hw'}
+LANGUAGES_RTL = {'ar', 'he'}
 
 
 METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
