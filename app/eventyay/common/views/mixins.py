@@ -309,7 +309,7 @@ class SocialMediaCardMixin:
     def get_image(self):
         raise NotImplementedError
 
-    @csp_exempt
+    @csp_exempt()
     def get(self, request, *args, **kwargs):
         try:
             image = self.get_image()

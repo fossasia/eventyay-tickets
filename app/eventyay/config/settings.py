@@ -15,6 +15,7 @@ import importlib.util
 import os
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 import django.conf.locale
 from django.utils.translation import gettext_lazy as _
@@ -73,6 +74,7 @@ DATABASE_REPLICA = 'default'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
+SITE_NETLOC = urlparse(SITE_URL).netloc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
 
@@ -289,8 +291,8 @@ DATABASES = {
         # We just need to have a PostgreSQL user with the same name as Linux user.
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': os.getenv('POSTGRES_PORT'),
+        'HOST': "",
+        'PORT': "5433",
         'CONN_MAX_AGE': 120,
     }
 }

@@ -2,13 +2,13 @@ import logging
 
 from django_scopes import scope, scopes_disabled
 
-from pretalx.celery_app import app
-from pretalx.event.models import Event
+from eventyay.celery_app import app
+from eventyay.base.models.event import Event
 
 LOGGER = logging.getLogger(__name__)
 
 
-@app.task(name="pretalx.submission.recalculate_review_scores")
+@app.task(name="eventyay.submission.recalculate_review_scores")
 def recalculate_all_review_scores(*, event_id: int):
     with scopes_disabled():
         event = (

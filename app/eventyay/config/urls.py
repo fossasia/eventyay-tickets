@@ -9,6 +9,7 @@ from django.views.generic import RedirectView
 import eventyay.control.urls
 import eventyay.eventyay_common.urls
 import eventyay.presale.urls
+from eventyay.base.views import health, redirect
 from eventyay.control.views import pages
 from eventyay.base.views import js_helpers
 from eventyay.base.views import cachedfiles, csp, health, js_catalog, metrics, redirect
@@ -52,13 +53,19 @@ admin_patterns = [
     path('admin/', include('eventyay.config.urls_admin')),
 ]
 
+talk_patterns = [
+    path('orga/', include('eventyay.orga.urls')),
+    path("", include("eventyay.cfp.urls", namespace="cfp")),
+    url(r'^redirect/$', redirect.redir_view, name='redirect'),
+]
+
 debug_patterns = []
 
 if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
     debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
 common_patterns = (
-    base_patterns + control_patterns + debug_patterns + common_patterns + page_patterns + admin_patterns
+    base_patterns + control_patterns + debug_patterns + eventyay_common_patterns + page_patterns + admin_patterns + talk_patterns
 )
 
 if settings.DEBUG:

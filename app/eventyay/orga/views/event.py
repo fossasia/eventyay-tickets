@@ -700,7 +700,10 @@ class EventDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         return redirect(reverse("orga:event.list"))
 
 
-@method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name="dispatch")
+@method_decorator(
+    csp_update({"SCRIPT_SRC": "'self' 'unsafe-eval'"}), 
+    name="dispatch"
+)
 class WidgetSettings(EventSettingsPermission, FormView):
     form_class = WidgetSettingsForm
     template_name = "orga/settings/widget.html"
