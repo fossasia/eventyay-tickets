@@ -177,7 +177,7 @@ def timeline_for_event(event, subevent=None):
                 )
             )
 
-    for p in event.items.filter(Q(available_from__isnull=False) | Q(available_until__isnull=False)):
+    for p in event.products.filter(Q(available_from__isnull=False) | Q(available_until__isnull=False)):
         if p.available_from:
             tl.append(
                 TimelineEvent(
@@ -186,11 +186,11 @@ def timeline_for_event(event, subevent=None):
                     datetime=p.available_from,
                     description=pgettext_lazy('timeline', 'Product "{name}" becomes available').format(name=str(p)),
                     edit_url=reverse(
-                        'control:event.item',
+                        'control:event.product',
                         kwargs={
                             'event': event.slug,
                             'organizer': event.organizer.slug,
-                            'item': p.pk,
+                            'product': p.pk,
                         },
                     ),
                 )
@@ -203,11 +203,11 @@ def timeline_for_event(event, subevent=None):
                     datetime=p.available_until,
                     description=pgettext_lazy('timeline', 'Product "{name}" becomes unavailable').format(name=str(p)),
                     edit_url=reverse(
-                        'control:event.item',
+                        'control:event.product',
                         kwargs={
                             'event': event.slug,
                             'organizer': event.organizer.slug,
-                            'item': p.pk,
+                            'product': p.pk,
                         },
                     ),
                 )

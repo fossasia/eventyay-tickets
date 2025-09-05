@@ -107,7 +107,7 @@
                     </label>
                     <div class="col-md-9 static-form-row">
                         <p>
-                            <a href="{% url "control:event.items.questions" event=request.event.slug organizer=request.organizer.slug %}" target="_blank">
+                            <a href="{% url "control:event.products.questions" event=request.event.slug organizer=request.organizer.slug %}" target="_blank">
                                 {% trans "Manage questions" %}
                             </a>
                         </p>
@@ -210,7 +210,7 @@
                 {% bootstrap_field form.presale_start layout="control" %}
                 {% bootstrap_field sform.presale_start_show_date layout="control" %}
                 {% bootstrap_field form.presale_end layout="control" %}
-                {% bootstrap_field sform.show_items_outside_presale_period layout="control" %}
+                {% bootstrap_field sform.show_products_outside_presale_period layout="control" %}
                 {% bootstrap_field sform.last_order_modification_date layout="control" %}
                 {% bootstrap_field sform.allow_modifications_after_checkin layout="control" %}
             </fieldset>
@@ -237,7 +237,7 @@
             <fieldset>
                 <legend>{% trans "Cart" %}</legend>
                 {% bootstrap_field sform.reservation_time layout="control" %}
-                {% bootstrap_field sform.max_items_per_order layout="control" %}
+                {% bootstrap_field sform.max_products_per_order layout="control" %}
                 {% bootstrap_field sform.redirect_to_checkout_directly layout="control" %}
             </fieldset>
             <fieldset>
@@ -254,16 +254,16 @@
                 <p>
                     {% blocktrans trimmed %}
                         You can here define a set of metadata properties (i.e. variables) that you can later set for
-                        your items and re-use in places like ticket layouts. This is an useful timesaver if you create
-                        lots and lots of items.
+                        your products and re-use in places like ticket layouts. This is an useful timesaver if you create
+                        lots and lots of products.
                     {% endblocktrans %}
                 </p>
                 <div class="formset" data-formset
-                     data-formset-prefix="{{ item_meta_property_formset.prefix }}">
-                    {{ item_meta_property_formset.management_form }}
-                    {% bootstrap_formset_errors item_meta_property_formset %}
+                     data-formset-prefix="{{ product_meta_property_formset.prefix }}">
+                    {{ product_meta_property_formset.management_form }}
+                    {% bootstrap_formset_errors product_meta_property_formset %}
                     <div data-formset-body>
-                        {% for form in item_meta_property_formset %}
+                        {% for form in product_meta_property_formset %}
                             <div class="row formset-row" data-formset-form>
                                 <div class="sr-only">
                                     {{ form.id }}
@@ -287,14 +287,14 @@
                         {% escapescript %}
                             <div class="row formset-row" data-formset-form>
                                 <div class="sr-only">
-                                    {{ item_meta_property_formset.empty_form.id }}
-                                    {% bootstrap_field item_meta_property_formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                                    {{ product_meta_property_formset.empty_form.id }}
+                                    {% bootstrap_field product_meta_property_formset.empty_form.DELETE form_group_class="" layout="inline" %}
                                 </div>
                                 <div class="col-md-5">
-                                    {% bootstrap_field item_meta_property_formset.empty_form.name layout='inline' form_group_class="" %}
+                                    {% bootstrap_field product_meta_property_formset.empty_form.name layout='inline' form_group_class="" %}
                                 </div>
                                 <div class="col-md-5 col-lg-6">
-                                    {% bootstrap_field item_meta_property_formset.empty_form.default layout='inline' form_group_class="" %}
+                                    {% bootstrap_field product_meta_property_formset.empty_form.default layout='inline' form_group_class="" %}
                                 </div>
                                 <div class="col-md-2 col-lg-1 text-right flip">
                                     <button type="button" class="btn btn-delete btn-danger" data-formset-delete-button>

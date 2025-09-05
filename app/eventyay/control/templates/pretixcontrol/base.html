@@ -15,10 +15,10 @@
             <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
 		{% endcompress %}
         {% if DEBUG %}
-            <script type="text/javascript" src="{% url 'javascript-catalog' lang='en' %}"
+            <script type="text/javascript" src="{% url 'javascript-catalog' lang=request.LANGUAGE_CODE %}"
                     defer></script>
         {% else %}
-            <script src="{% statici18n 'en' %}" async></script>
+            <script src="{% statici18n request.LANGUAGE_CODE %}" async></script>
         {% endif %}
 		{% compress js %}
             <script type="text/javascript" src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
@@ -77,11 +77,10 @@
         {% endif %}
         <link rel="apple-touch-icon" sizes="180x180" href="{% static "pretixbase/img/icons/apple-touch-icon.png" %}">
         <link rel="icon" type="image/png" sizes="192x192" href="{% static "pretixbase/img/icons/android-chrome-192x192.png" %}">
-		{# <link rel="manifest" href="{% url "presale:site.webmanifest" %}"> #}
-		<link rel="manifest" href="#" %}">
+		<link rel="manifest" href="{% url "presale:site.webmanifest" %}">
         <link rel="mask-icon" href="{% static "pretixbase/img/icons/safari-pinned-tab.svg" %}" color="#2185d0">
         <meta name="msapplication-TileColor" content="#2185d0">
-		{# <meta name="msapplication-config" content="{% url "presale:browserconfig.xml" %}"> #}
+		<meta name="msapplication-config" content="{% url "presale:browserconfig.xml" %}">
         <meta name="theme-color" content="#2185d0">
         <meta name="referrer" content="origin">
 
@@ -89,7 +88,7 @@
 	</head>
 	<body data-datetimeformat="{{ js_datetime_format }}" data-timeformat="{{ js_time_format }}"
             data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}"
-            data-pretixlocale="{{ 'en' }}"
+            data-pretixlocale="{{ request.LANGUAGE_CODE }}"
             data-payment-weekdays-disabled="{{ js_payment_weekdays_disabled }}"
             {% if request.organizer %}data-organizer="{{ request.organizer.slug }}"{% endif %}
             {% if request.event %}data-event="{{ request.event.slug }}"{% endif %}
@@ -126,8 +125,7 @@
                             <i class="fa fa-eye"></i>
                         </a>
                     {% endif %}
-					{# <a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}"> #}
-                    <a class="navbar-brand" href="#">
+					<a class="navbar-brand" href="{% url 'eventyay_common:dashboard' %}">
                         <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
                         {{ django_settings.INSTANCE_NAME }}
                     </a>
@@ -202,7 +200,7 @@
 
                     {% if request.user.is_staff and not staff_session %}
                         <li>
-                            <form action="#" method="post">
+							<form action="{% url 'control:user.sudo' %}?next={{ request.path|add:"?"|add:request.GET.urlencode|urlencode }}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-link" id="button-sudo">
                                     <i class="fa fa-id-card"></i> {% trans "Admin mode" %}

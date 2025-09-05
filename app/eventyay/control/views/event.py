@@ -160,7 +160,7 @@ class EventUpdate(
 ):
     model = Event
     form_class = EventUpdateForm
-    template_name = 'eventyaycontrol/event/settings.html'
+    template_name = 'pretixcontrol/event/settings.html'
     permission = 'can_change_event_settings'
 
     @cached_property
@@ -344,7 +344,7 @@ class EventPlugins(
     model = Event
     context_object_name = 'event'
     permission = 'can_change_event_settings'
-    template_name = 'eventyaycontrol/event/plugins.html'
+    template_name = 'pretixcontrol/event/plugins.html'
 
     def get_object(self, queryset=None) -> Event:
         return self.request.event
@@ -448,7 +448,7 @@ class PaymentProviderSettings(
     model = Event
     context_object_name = 'event'
     permission = 'can_change_event_settings'
-    template_name = 'eventyaycontrol/event/payment_provider.html'
+    template_name = 'pretixcontrol/event/payment_provider.html'
 
     def get_success_url(self) -> str:
         return reverse(
@@ -576,7 +576,7 @@ class EventSettingsFormView(EventPermissionRequiredMixin, DecoupleMixin, FormVie
 
 
 class PaymentSettings(EventSettingsViewMixin, EventSettingsFormView):
-    template_name = 'eventyaycontrol/event/payment.html'
+    template_name = 'pretixcontrol/event/payment.html'
     form_class = PaymentSettingsForm
     permission = 'can_change_event_settings'
 
@@ -616,7 +616,7 @@ class PaymentSettings(EventSettingsViewMixin, EventSettingsFormView):
 class InvoiceSettings(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     form_class = InvoiceSettingsForm
-    template_name = 'eventyaycontrol/event/invoicing.html'
+    template_name = 'pretixcontrol/event/invoicing.html'
     permission = 'can_change_event_settings'
 
     def get_success_url(self) -> str:
@@ -640,7 +640,7 @@ class InvoiceSettings(EventSettingsViewMixin, EventSettingsFormView):
 class CancelSettings(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     form_class = CancelSettingsForm
-    template_name = 'eventyaycontrol/event/cancel.html'
+    template_name = 'pretixcontrol/event/cancel.html'
     permission = 'can_change_event_settings'
 
     def get_success_url(self) -> str:
@@ -690,7 +690,7 @@ class InvoicePreview(EventPermissionRequiredMixin, View):
 
 class DangerZone(EventPermissionRequiredMixin, TemplateView):
     permission = 'can_change_event_settings'
-    template_name = 'eventyaycontrol/event/dangerzone.html'
+    template_name = 'pretixcontrol/event/dangerzone.html'
 
 
 class DisplaySettings(View):
@@ -710,7 +710,7 @@ class DisplaySettings(View):
 class MailSettings(EventSettingsViewMixin, EventSettingsFormView):
     model = Event
     form_class = MailSettingsForm
-    template_name = 'eventyaycontrol/event/mail.html'
+    template_name = 'pretixcontrol/event/mail.html'
     permission = 'can_change_event_settings'
 
     def get_success_url(self) -> str:
@@ -912,7 +912,7 @@ class TicketSettingsPreview(EventPermissionRequiredMixin, View):
 class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormView):
     model = Event
     form_class = TicketSettingsForm
-    template_name = 'eventyaycontrol/event/tickets.html'
+    template_name = 'pretixcontrol/event/tickets.html'
     permission = 'can_change_event_settings'
 
     def get_context_data(self, *args, **kwargs) -> dict:
@@ -1028,12 +1028,12 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
 
 
 class EventPermissions(EventSettingsViewMixin, EventPermissionRequiredMixin, TemplateView):
-    template_name = 'eventyaycontrol/event/permissions.html'
+    template_name = 'pretixcontrol/event/permissions.html'
 
 
 class EventLive(EventPermissionRequiredMixin, TemplateView):
     permission = 'can_change_event_settings'
-    template_name = 'eventyaycontrol/event/live.html'
+    template_name = 'pretixcontrol/event/live.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -1108,7 +1108,7 @@ class EventLive(EventPermissionRequiredMixin, TemplateView):
 
 class EventDelete(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixin, FormView):
     permission = 'can_change_event_settings'
-    template_name = 'eventyaycontrol/event/delete.html'
+    template_name = 'pretixcontrol/event/delete.html'
     form_class = EventDeleteForm
 
     def post(self, request, *args, **kwargs):
@@ -1154,7 +1154,7 @@ class EventDelete(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixi
 
 
 class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
-    template_name = 'eventyaycontrol/event/logs.html'
+    template_name = 'pretixcontrol/event/logs.html'
     model = LogEntry
     context_object_name = 'logs'
 
@@ -1230,7 +1230,7 @@ class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
 
 
 class EventActions(EventPermissionRequiredMixin, ListView):
-    template_name = 'eventyaycontrol/event/actions.html'
+    template_name = 'pretixcontrol/event/actions.html'
     model = RequiredAction
     context_object_name = 'actions'
     paginate_by = 20
@@ -1302,7 +1302,7 @@ class EventComment(EventPermissionRequiredMixin, View):
 class TaxList(EventSettingsViewMixin, EventPermissionRequiredMixin, PaginationMixin, ListView):
     model = TaxRule
     context_object_name = 'taxrules'
-    template_name = 'eventyaycontrol/event/tax_index.html'
+    template_name = 'pretixcontrol/event/tax_index.html'
     permission = 'can_change_event_settings'
 
     def get_queryset(self):
@@ -1312,7 +1312,7 @@ class TaxList(EventSettingsViewMixin, EventPermissionRequiredMixin, PaginationMi
 class TaxCreate(EventSettingsViewMixin, EventPermissionRequiredMixin, CreateView):
     model = TaxRule
     form_class = TaxRuleForm
-    template_name = 'eventyaycontrol/event/tax_edit.html'
+    template_name = 'pretixcontrol/event/tax_edit.html'
     permission = 'can_change_event_settings'
     context_object_name = 'taxrule'
 
@@ -1372,7 +1372,7 @@ class TaxCreate(EventSettingsViewMixin, EventPermissionRequiredMixin, CreateView
 class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView):
     model = TaxRule
     form_class = TaxRuleForm
-    template_name = 'eventyaycontrol/event/tax_edit.html'
+    template_name = 'pretixcontrol/event/tax_edit.html'
     permission = 'can_change_event_settings'
     context_object_name = 'rule'
 
@@ -1434,7 +1434,7 @@ class TaxUpdate(EventSettingsViewMixin, EventPermissionRequiredMixin, UpdateView
 
 class TaxDelete(EventSettingsViewMixin, EventPermissionRequiredMixin, DeleteView):
     model = TaxRule
-    template_name = 'eventyaycontrol/event/tax_delete.html'
+    template_name = 'pretixcontrol/event/tax_delete.html'
     permission = 'can_change_event_settings'
     context_object_name = 'taxrule'
 
@@ -1472,7 +1472,7 @@ class TaxDelete(EventSettingsViewMixin, EventPermissionRequiredMixin, DeleteView
 
 
 class WidgetSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormView):
-    template_name = 'eventyaycontrol/event/widget.html'
+    template_name = 'pretixcontrol/event/widget.html'
     permission = 'can_change_event_settings'
     form_class = WidgetCodeForm
 
@@ -1500,7 +1500,7 @@ class WidgetSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
 
 
 class QuickSetupView(FormView):
-    template_name = 'eventyaycontrol/event/quick_setup.html'
+    template_name = 'pretixcontrol/event/quick_setup.html'
     permission = 'can_change_event_settings'
     form_class = QuickSetupForm
 

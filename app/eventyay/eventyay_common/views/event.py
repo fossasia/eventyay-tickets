@@ -16,6 +16,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
+from django_scopes import scope
 from pytz import timezone
 from rest_framework import views
 
@@ -251,7 +252,8 @@ class EventCreateView(SafeSessionWizardView):
                 event.testmode = True
                 form_dict['basics'].save()
 
-                event.checkin_lists.create(name=_('Default'), all_products=True)
+                with scope(organizer=event.organizer):
+                    event.checkin_lists.create(name=_('Default'), all_products=True)
                 event.set_defaults()
                 event.settings.set('timezone', basics_data['timezone'])
                 event.settings.set('locale', basics_data['locale'])

@@ -3,23 +3,43 @@ import importlib.util
 from django.conf import settings
 from django.urls import include, path
 from django.urls import re_path as url
+from django.views.generic import RedirectView
 
 import eventyay.control.urls
 import eventyay.eventyay_common.urls
 import eventyay.presale.urls
-from eventyay.base.views import health
 from eventyay.control.views import pages
+from eventyay.base.views import js_helpers
+from eventyay.base.views import cachedfiles, csp, health, js_catalog, metrics, redirect
+
 
 base_patterns = [
+    url(
+        r'^download/(?P<id>[^/]+)/$',
+        cachedfiles.DownloadView.as_view(),
+        name='cachedfile.download',
+    ),
     url(r'^healthcheck/$', health.healthcheck, name='healthcheck'),
+    url(r'^redirect/$', redirect.redir_view, name='redirect'),
+    url(
+        r'^jsi18n/(?P<lang>[a-zA-Z-_]+)/$',
+        js_catalog.js_catalog,
+        name='javascript-catalog',
+    ),
+    url(r'^metrics$', metrics.serve_metrics, name='metrics'),
+    url(r'^csp_report/$', csp.csp_report, name='csp.report'),
+    url(r'^js_helpers/states/$', js_helpers.states, name='js_helpers.states'),
+    # url(r'^api/v1/', include(('eventyay.api.urls', 'eventyayapi'), namespace='api-v1')),
+    # url(r'^api/$', RedirectView.as_view(url='/api/v1/'), name='redirect-api-version'),
+    # url(r'^accounts/', include('allauth.urls')),
 ]
 
 control_patterns = [
     url(r'^control/', include((eventyay.control.urls, 'control'))),
 ]
 
-eventyay_common_patterns = [
-    path('', include((eventyay.eventyay_common.urls, 'common'))),
+common_patterns = [
+    url(r'^common/', include((eventyay.eventyay_common.urls, 'common'),namespace='common')),
 ]
 
 
@@ -37,5 +57,5 @@ if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
     debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
 common_patterns = (
-    base_patterns + control_patterns + debug_patterns + eventyay_common_patterns + page_patterns + admin_patterns
+    base_patterns + control_patterns + debug_patterns + common_patterns + page_patterns + admin_patterns
 )

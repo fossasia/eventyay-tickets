@@ -16,6 +16,7 @@ import os
 import sys
 from pathlib import Path
 
+import django.conf.locale
 from django.utils.translation import gettext_lazy as _
 from kombu import Queue
 from pycountry import currencies
@@ -44,8 +45,10 @@ def instance_name(request):
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+DATA_DIR = config.get('eventyay', 'datadir', fallback=os.environ.get('DATA_DIR', 'data'))
 BASE_PATH = ''
+
+DATABASE_REPLICA = 'default'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -83,10 +86,15 @@ _LIBRARY_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
     'django_celery_beat',
     'djangoformsetjs',
     'oauth2_provider',
     'statici18n',
+    'rest_framework',
 )
 
 if DEBUG and importlib.util.find_spec('django_extensions'):
@@ -125,34 +133,57 @@ if DEBUG and importlib.util.find_spec('debug_toolbar'):
 
 _OURS_MIDDLEWARES = (
     'eventyay.base.middleware.CustomCommonMiddleware',
-    'eventyay.base.middleware.LocaleMiddleware',
-    'eventyay.base.middleware.SecurityMiddleware',
     'eventyay.multidomain.middlewares.MultiDomainMiddleware',
     'eventyay.multidomain.middlewares.SessionMiddleware',
     'eventyay.multidomain.middlewares.CsrfViewMiddleware',
     'eventyay.control.middleware.PermissionMiddleware',
     'eventyay.control.middleware.AuditLogMiddleware',
+    'eventyay.base.middleware.LocaleMiddleware',
+    'eventyay.base.middleware.SecurityMiddleware',
+    'eventyay.presale.middleware.EventMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
+    'eventyay.api.middleware.ApiScopeMiddleware',
 )
-
 
 MIDDLEWARE = _LIBRARY_MIDDLEWARES + _OURS_MIDDLEWARES
 
+CORE_MODULES = {
+    'eventyay.base',
+    'eventyay.presale',
+    'eventyay.control',
+}
+
+template_loaders = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+if not DEBUG:
+    template_loaders = (('django.template.loaders.cached.Loader', template_loaders),)
 
 TEMPLATES = (
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'templates',
+            os.path.join(DATA_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'templates'),
         ],
-        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.request',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
-                'eventyay.config.settings.instance_name',
+                'eventyay.base.context.contextprocessor',
+                'eventyay.control.context.contextprocessor',
+                'eventyay.presale.context.contextprocessor',
+                'eventyay.eventyay_common.context.contextprocessor',
+                'django.template.context_processors.request',
             ],
+            'loaders': template_loaders,
         },
     },
     {
@@ -248,6 +279,79 @@ CURRENCIES = list(currencies)
 # make email backend vary accordingly.
 EMAIL_BACKEND = 'eventyay.base.email.FileSavedEmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'dev-sent-emails'
+ALL_LANGUAGES = [
+    ('en', _('English')),
+    ('de', _('German')),
+    ('de-formal', _('German (informal)')),
+    ('ar', _('Arabic')),
+    ('zh-hans', _('Chinese (simplified)')),
+    ('da', _('Danish')),
+    ('nl', _('Dutch')),
+    ('nl-informal', _('Dutch (informal)')),
+    ('fr', _('French')),
+    ('fi', _('Finnish')),
+    ('el', _('Greek')),
+    ('it', _('Italian')),
+    ('lv', _('Latvian')),
+    ('pl', _('Polish')),
+    ('pt-pt', _('Portuguese (Portugal)')),
+    ('pt-br', _('Portuguese (Brazil)')),
+    ('ru', _('Russian')),
+    ('es', _('Spanish')),
+    ('sw', _('Swahili')),
+    ('tr', _('Turkish')),
+    ('uk', _('Ukrainian')),
+]
+LANGUAGES_OFFICIAL = {'en', 'de', 'de-formal'}
+LANGUAGES_INCUBATING = {'pl', 'fi', 'pt-br'} - set(config.get('languages', 'allow_incubating', fallback='').split(','))
+LANGUAGES_RTL = {'ar', 'hw'}
+LANGUAGE_CODE = config.get('locale', 'default', fallback='en')
+
+
+LOCALE_PATHS = [
+    os.path.join(os.path.dirname(__file__), 'locale'),
+]
+if config.has_option('languages', 'path'):
+    LOCALE_PATHS.insert(0, config.get('languages', 'path'))
+
+if DEBUG:
+    LANGUAGES = ALL_LANGUAGES
+else:
+    LANGUAGES = [(k, v) for k, v in ALL_LANGUAGES if k not in LANGUAGES_INCUBATING]
+
+
+EXTRA_LANG_INFO = {
+    'de-formal': {
+        'bidi': False,
+        'code': 'de-formal',
+        'name': 'German (informal)',
+        'name_local': 'Deutsch',
+        'public_code': 'de',
+    },
+    'nl-informal': {
+        'bidi': False,
+        'code': 'nl-informal',
+        'name': 'Dutch (informal)',
+        'name_local': 'Nederlands',
+        'public_code': 'nl',
+    },
+    'fr': {'bidi': False, 'code': 'fr', 'name': 'French', 'name_local': 'Français'},
+    'lv': {'bidi': False, 'code': 'lv', 'name': 'Latvian', 'name_local': 'Latviešu'},
+    'pt-pt': {
+        'bidi': False,
+        'code': 'pt-pt',
+        'name': 'Portuguese',
+        'name_local': 'Português',
+    },
+    'sw': {
+        'bid': False,
+        'code': 'sw',
+        'name': _('Swahili'),
+        'name_local': 'Kiswahili',
+    },
+}
+
+django.conf.locale.LANG_INFO.update(EXTRA_LANG_INFO)
 
 EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
@@ -266,7 +370,6 @@ TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikima
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -399,6 +502,17 @@ EVENTYAY_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', 
 EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallback=False)
 EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 EVENTYAY_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
+
+
+PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
+PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
+PRETIX_PLUGINS_DEFAULT = config.get(
+    'eventyay',
+    'plugins_default',
+    fallback='eventyay.plugins.sendmail,eventyay.plugins.statistics,eventyay.plugins.checkinlists,eventyay.plugins.autocheckin',
+)
+PRETIX_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
+PRETIX_PLUGINS_EXCLUDE = config.get('eventyay', 'plugins_exclude', fallback='').split(',')
 
 LOG_CSP = config.getboolean('eventyay', 'csp_log', fallback=True)
 CSP_ADDITIONAL_HEADER = config.get('eventyay', 'csp_additional_header', fallback='')

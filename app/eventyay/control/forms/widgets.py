@@ -35,7 +35,7 @@ class Select2Multiple(Select2Mixin, forms.SelectMultiple):
     pass
 
 
-class Select2ItemVarQuotaMixin(Select2Mixin):
+class Select2ProductVarQuotaMixin(Select2Mixin):
     def options(self, name, value, attrs=None):
         if value and value[0]:
             yield self.create_option(
@@ -50,5 +50,5 @@ class Select2ItemVarQuotaMixin(Select2Mixin):
         return
 
 
-class Select2ItemVarQuota(Select2ItemVarQuotaMixin, forms.Select):
+class Select2ProductVarQuota(Select2ProductVarQuotaMixin, forms.Select):
     pass

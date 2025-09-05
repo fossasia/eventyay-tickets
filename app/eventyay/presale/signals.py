@@ -359,11 +359,11 @@ As with all plugin signals, the ``sender`` keyword argument will contain the eve
 argument will contain the request object.
 """
 
-item_description = EventPluginSignal()
+product_description = EventPluginSignal()
 """
-Arguments: ``item``, ``variation``
+Arguments: ``product``, ``variation``
 
-This signal is sent out when the description of an item or variation is rendered and allows you to append
-additional text to the description. You are passed the ``item`` and ``variation`` and expected to return
+This signal is sent out when the description of an product or variation is rendered and allows you to append
+additional text to the description. You are passed the ``product`` and ``variation`` and expected to return
 HTML.
 """

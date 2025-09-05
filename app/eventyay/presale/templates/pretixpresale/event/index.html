@@ -298,7 +298,7 @@
 
             </div>
 
-            {% eventsignal event "pretix.presale.signals.front_page_top" request=request subevent=subevent %}
+            {% eventsignal event "eventyay.presale.signals.front_page_top" request=request subevent=subevent %}
         {% endif %}
 
         {% if ev.presale_is_running or event.settings.show_items_outside_presale_period %}
@@ -311,9 +311,9 @@
                 <input type="hidden" name="subevent" value="{{ subevent.id|default_if_none:"" }}" />
                 {% if ev.seating_plan_id and event.settings.seating_choice %}
                     {% if event.has_subevents %}
-                        {% eventsignal event "pretix.presale.signals.render_seating_plan" request=request subevent=subevent %}
+                        {% eventsignal event "eventyay.presale.signals.render_seating_plan" request=request subevent=subevent %}
                     {% else %}
-                        {% eventsignal event "pretix.presale.signals.render_seating_plan" request=request %}
+                        {% eventsignal event "eventyay.presale.signals.render_seating_plan" request=request %}
                     {% endif %}
                 {% endif %}
                 {% include "pretixpresale/event/fragment_product_list.html" %}
@@ -372,7 +372,7 @@
     {% endif %}
     {% if guest_checkout_allowed %}
         {% if not cart_namespace %}
-            {% eventsignal event "pretix.presale.signals.front_page_bottom" subevent=subevent request=request %}
+            {% eventsignal event "eventyay.presale.signals.front_page_bottom" subevent=subevent request=request %}
             <aside class="front-page" aria-labelledby="if-you-already-ordered-a-ticket">
                 <h3 id="if-you-already-ordered-a-ticket">{% trans "If you already ordered a ticket" %}</h3>
                 <div>
@@ -395,7 +395,7 @@
                 </div>
             </aside>
         {% else %}
-            {% eventsignal event "pretix.presale.signals.front_page_bottom_widget" subevent=subevent request=request %}
+            {% eventsignal event "eventyay.presale.signals.front_page_bottom_widget" subevent=subevent request=request %}
         {% endif %}
     {% endif %}
 {% endblock %}

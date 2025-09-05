@@ -33,12 +33,12 @@
                 {% endif %}
             </p>
 
-            <a href="{% url "control:event.items.quotas.add" organizer=request.event.organizer.slug event=request.event.slug %}"
+            <a href="{% url "control:event.products.quotas.add" organizer=request.event.organizer.slug event=request.event.slug %}"
                     class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new quota" %}</a>
         </div>
     {% else %}
         <p>
-            <a href="{% url "control:event.items.quotas.add" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new quota" %}
+            <a href="{% url "control:event.products.quotas.add" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new quota" %}
             </a>
         </p>
         <div class="table-responsive">
@@ -68,18 +68,18 @@
                 {% for q in quotas %}
                     <tr>
                         <td>
-                            <strong><a href="{% url "control:event.items.quotas.show" organizer=request.event.organizer.slug event=request.event.slug quota=q.id %}">{{ q.name }}</a></strong>
+                            <strong><a href="{% url "control:event.products.quotas.show" organizer=request.event.organizer.slug event=request.event.slug quota=q.id %}">{{ q.name }}</a></strong>
                         </td>
                         <td>
                             <ul>
-                                {% for item in q.cached_items %}
-                                    {% if not item.has_variations %}
-                                        <li><a href="{% url "control:event.item" organizer=request.event.organizer.slug event=request.event.slug item=item.id %}">{{ item }}</a></li>
+                                {% for product in q.cached_products %}
+                                    {% if not product.has_variations %}
+                                        <li><a href="{% url "control:event.product" organizer=request.event.organizer.slug event=request.event.slug product=product.id %}">{{ product }}</a></li>
                                     {% endif %}
                                 {% endfor %}
                                 {% for v in q.variations.all %}
-                                    <li><a href="{% url "control:event.item" organizer=request.event.organizer.slug event=request.event.slug item=v.item.id %}#tab-0-3-open">
-                                        {{ v.item }} – {{ v }}</a></li>
+                                    <li><a href="{% url "control:event.product" organizer=request.event.organizer.slug event=request.event.slug product=v.product.id %}#tab-0-3-open">
+                                        {{ v.product }} – {{ v }}</a></li>
                                 {% endfor %}
                             </ul>
                         </td>
@@ -91,12 +91,12 @@
                         <td>{% if q.size == None %}Unlimited{% else %}{{ q.size }}{% endif %}</td>
                         <td>{% include "pretixcontrol/items/fragment_quota_availability.html" with availability=q.cached_avail closed=q.closed %}</td>
                         <td class="text-right flip">
-                            <a href="{% url "control:event.items.quotas.edit" organizer=request.event.organizer.slug event=request.event.slug quota=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
-                            <a href="{% url "control:event.items.quotas.add" organizer=request.event.organizer.slug event=request.event.slug %}?copy_from={{ q.id }}"
+                            <a href="{% url "control:event.products.quotas.edit" organizer=request.event.organizer.slug event=request.event.slug quota=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                            <a href="{% url "control:event.products.quotas.add" organizer=request.event.organizer.slug event=request.event.slug %}?copy_from={{ q.id }}"
                                class="btn btn-sm btn-default" title="{% trans "Clone" %}" data-toggle="tooltip">
                                 <span class="fa fa-copy"></span>
                             </a>
-                            <a href="{% url "control:event.items.quotas.delete" organizer=request.event.organizer.slug event=request.event.slug quota=q.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            <a href="{% url "control:event.products.quotas.delete" organizer=request.event.organizer.slug event=request.event.slug quota=q.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 {% endfor %}
