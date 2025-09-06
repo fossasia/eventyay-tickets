@@ -114,7 +114,6 @@ _LIBRARY_APPS = (
     'django_celery_beat',
     'djangoformsetjs',
     'oauth2_provider',
-    'rest_framework',
     'statici18n',
     'rest_framework',
 )

@@ -1,5 +1,6 @@
 from django.urls import include
 from django.urls import re_path as url
+from django.urls import path
 from django.views.generic.base import RedirectView
 
 from eventyay.control.views import (
@@ -632,5 +633,5 @@ urlpatterns = [
         RedirectView.as_view(pattern_name='control:organizer'),
         name='event.organizerredirect',
     ),
-  path('video/', include('eventyay.control.video.urls')),
+    path('video/', include('eventyay.control.video.urls')),
 ]
