@@ -284,6 +284,8 @@ EVENTYAY_VERSION = __version__
 # FILE_UPLOAD_DEFAULT_LIMIT = int(config.get("files", "upload_limit")) * 1024 * 1024
 FILE_UPLOAD_DEFAULT_LIMIT = 10 * 1024 * 1024
 
+FORM_RENDERER = "eventyay.common.forms.renderers.TabularFormRenderer"
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -295,8 +297,8 @@ DATABASES = {
         # We just need to have a PostgreSQL user with the same name as Linux user.
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': "",
-        'PORT': "5433",
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
         'CONN_MAX_AGE': 120,
     }
 }
@@ -726,7 +728,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
     ('text/vue', 'eventyay.helpers.compressor.VueCompiler'),
 )
-
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
 COMPRESS_CSS_FILTERS = (
     # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
@@ -741,6 +743,15 @@ TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 DATA_DIR= BASE_DIR / "data"
 LOG_DIR = DATA_DIR / "logs"
 MEDIA_ROOT = Path(talk_config.get("filesystem", "media", fallback=DATA_DIR / "media"))
+
+IS_HTML_EXPORT = False
+HTMLEXPORT_ROOT = Path(
+    talk_config.get(
+        "filesystem",
+        "htmlexport",
+        fallback=DATA_DIR / "htmlexport",
+    )
+)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
