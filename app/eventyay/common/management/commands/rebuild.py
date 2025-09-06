@@ -8,7 +8,7 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.test import override_settings
 
-from pretalx.common.models.settings import GlobalSettings
+from eventyay.base.models.settings import GlobalSettings
 
 
 def build_vue3_frontend_apps():
@@ -62,6 +62,9 @@ class Command(BaseCommand):
             frontend_dir = (
                 Path(__file__).parent.parent.parent.parent / "frontend/schedule-editor/"
             )
+            print("--------------------------")
+            print(frontend_dir)
+            print("--------------------------")
             env = os.environ.copy()
             env["OUT_DIR"] = str(settings.STATIC_ROOT)
             env["BASE_URL"] = settings.STATIC_URL
