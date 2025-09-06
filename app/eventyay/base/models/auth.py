@@ -632,7 +632,7 @@ class User(
         permissions = set()
         teams = event.teams.filter(members__in=[self])
         if teams:
-            permissions = set().union(*[team.permission_set for team in teams])
+            permissions = set().union(*[team.permission_set() for team in teams])
         self.event_permission_cache[event.pk] = permissions
         return permissions
 
