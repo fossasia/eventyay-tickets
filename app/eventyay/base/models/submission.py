@@ -989,6 +989,7 @@ class Submission(GenerateCode, PretalxModel):
         from .auth import User
         from .mail import MailTemplateRoles
         from .profile import SpeakerProfile
+        from eventyay.person.services import create_user
 
         user_created = False
         context = {}

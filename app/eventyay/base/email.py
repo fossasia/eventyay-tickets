@@ -37,6 +37,9 @@ from eventyay.base.signals import (
     register_html_mail_renderers,
     register_mail_placeholders,
 )
+from eventyay.mail.signals import (
+    talk_register_mail_placeholders
+)
 from eventyay.base.templatetags.rich_text import markdown_compile_email
 
 logger = logging.getLogger(__name__)

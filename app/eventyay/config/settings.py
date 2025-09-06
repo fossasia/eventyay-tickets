@@ -150,6 +150,7 @@ _OURS_APPS = (
     'eventyay.event',
     'eventyay.eventyay_common',
     'eventyay.helpers',
+    'eventyay.mail',
     'eventyay.multidomain',
     'eventyay.orga',
     'eventyay.presale',
