@@ -53,7 +53,7 @@ from eventyay.helpers.compat import date_fromisocalendar
 from eventyay.helpers.formats.en.formats import WEEK_FORMAT
 from eventyay.multidomain.urlreverse import eventreverse
 from eventyay.presale.ical import get_ical
-from eventyay.presale.signals import item_description
+from eventyay.presale.signals import product_description
 from eventyay.presale.views.organizer import (
     EventListMixin,
     add_subevents_for_days,
@@ -190,7 +190,7 @@ def get_grouped_products(
             has_variations=Count('variations'),
             subevent_disabled=Exists(
                 SubEventProduct.objects.filter(
-                    item_id=OuterRef('pk'),
+                    product_id=OuterRef('pk'),
                     subevent=subevent,
                     disabled=True,
                 )
@@ -253,7 +253,7 @@ def get_grouped_products(
             # Restrict variations if the voucher only allows one
             product.available_variations = [v for v in product.available_variations if v.pk == voucher.variation_id]
 
-        if get_all_sales_channels()[channel].unlimited_products_per_order:
+        if get_all_sales_channels()[channel].unlimited_items_per_order:
             max_per_order = sys.maxsize
         else:
             max_per_order = product.max_per_order or int(event.settings.max_products_per_order)
@@ -515,7 +515,7 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             )
 
             # Regroup those by category
-            context['items_by_category'] = item_group_by_category(items)
+            context['products_by_category'] = product_group_by_category(products)
             context['display_add_to_cart'] = display_add_to_cart
 
         context['ev'] = self.subevent or self.request.event

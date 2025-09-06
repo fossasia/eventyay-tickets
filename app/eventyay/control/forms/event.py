@@ -470,7 +470,7 @@ class EventSettingsForm(SettingsForm):
         'show_dates_on_frontpage',
         'show_date_to',
         'show_times',
-        'show_items_outside_presale_period',
+        'show_products_outside_presale_period',
         'display_net_prices',
         'presale_start_show_date',
         'locales',

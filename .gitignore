@@ -56,3 +56,6 @@ deployment/.env.dev
 deployment/.env.prod
 deployment/.env
 deployment/data
+
+# Emails which are not sent out to Internet are saved here.
+dev-sent-emails

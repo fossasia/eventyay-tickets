@@ -140,7 +140,7 @@ class TeamMemberView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
 
     @cached_property
     def add_form(self):
-        from pretix.control.views.organizer import InviteForm
+        from eventyay.control.views.organizer import InviteForm
 
         return InviteForm(
             data=(self.request.POST if self.request.method == 'POST' and 'user' in self.request.POST else None)
@@ -148,7 +148,7 @@ class TeamMemberView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
 
     @cached_property
     def add_token_form(self):
-        from pretix.control.views.organizer import TokenForm
+        from eventyay.control.views.organizer import TokenForm
 
         return TokenForm(
             data=(self.request.POST if self.request.method == 'POST' and 'name' in self.request.POST else None)

@@ -33,9 +33,9 @@ def contextprocessor(request):
     """
     Adds data to all template contexts
     """
-    if not hasattr(request, '_pretix_presale_default_context'):
-        request._pretix_presale_default_context = _default_context(request)
-    return request._pretix_presale_default_context
+    if not hasattr(request, '_eventyay_presale_default_context'):
+        request._eventyay_presale_default_context = _default_context(request)
+    return request._eventyay_presale_default_context
 
 
 def _default_context(request):
@@ -52,14 +52,14 @@ def _default_context(request):
     _footer = []
 
     if hasattr(request, 'event'):
-        pretix_settings = request.event.settings
+        eventyay_settings = request.event.settings
     elif hasattr(request, 'organizer'):
-        pretix_settings = request.organizer.settings
+        eventyay_settings = request.organizer.settings
     else:
-        pretix_settings = GlobalSettingsObject().settings
+        eventyay_settings = GlobalSettingsObject().settings
 
-    text = pretix_settings.get('footer_text', as_type=LazyI18nString)
-    link = pretix_settings.get('footer_link', as_type=LazyI18nString)
+    text = eventyay_settings.get('footer_text', as_type=LazyI18nString)
+    link = eventyay_settings.get('footer_link', as_type=LazyI18nString)
 
     if text:
         if link:
@@ -135,7 +135,7 @@ def _default_context(request):
     ctx['html_locale'] = translation.get_language_info(get_language_without_region()).get(
         'public_code', translation.get_language()
     )
-    ctx['settings'] = pretix_settings
+    ctx['settings'] = eventyay_settings
     ctx['django_settings'] = settings
 
     # Check to show organizer area

@@ -1,18 +1,64 @@
-from django.http import HttpResponse
-from django.urls import include, path
+from django.urls import include
 from django.urls import re_path as url
 from django.views.generic.base import RedirectView
+
 from eventyay.control.views import (
     admin,
+    checkin,
     dashboards,
+    event,
+    geo,
+    global_settings,
+    product,
     main,
+    orderimport,
+    orders,
     organizer,
     organizer_views,
+    pages,
+    pdf,
+    search,
+    shredder,
+    subevents,
     typeahead,
+    user,
+    users,
+    vouchers,
+    waitinglist,
+)
+
+
+oauth2_patterns = (
+    [
+        url(r'^user_info/', users.user_info, name='user_info'),
+        # other custom paths can be added here
+    ],
+    'oauth2_provider.subdomain',
 )
 
 urlpatterns = [
     url(r'^$', dashboards.user_index, name='index'),
+    url(r'^widgets.json$', dashboards.user_index_widgets_lazy, name='index.widgets'),
+    url(
+        r'^logdetail/$',
+        global_settings.LogDetailView.as_view(),
+        name='global.logdetail',
+    ),
+    url(
+        r'^logdetail/payment/$',
+        global_settings.PaymentDetailView.as_view(),
+        name='global.paymentdetail',
+    ),
+    url(
+        r'^logdetail/refund/$',
+        global_settings.RefundDetailView.as_view(),
+        name='global.refunddetail',
+    ),
+    url(r'^geocode/$', geo.GeoCodeView.as_view(), name='global.geocode'),
+    url(r'^reauth/$', user.ReauthView.as_view(), name='user.reauth'),
+    url(r'^sudo/$', user.StartStaffSession.as_view(), name='user.sudo'),
+    url(r'^sudo/stop/$', user.StopStaffSession.as_view(), name='user.sudo.stop'),
+    url(r'^pdf/editor/webfonts.css', pdf.FontsCSSView.as_view(), name='pdf.css'),
     url(r'^organizers/$', organizer_views.organizer_view.OrganizerList.as_view(), name='organizers'),
     url(r'^organizers/add$', organizer_views.organizer_view.OrganizerCreate.as_view(), name='organizers.add'),
     url(r'^organizers/select2$', typeahead.organizer_select2, name='organizers.select2'),
@@ -208,17 +254,383 @@ urlpatterns = [
     ),
     url(r'^nav/typeahead/$', typeahead.nav_context_list, name='nav.typeahead'),
     url(
+        r'^events/$',
+        RedirectView.as_view(pattern_name='eventyay_common:events', permanent=True, query_string=True),
+        name='events',
+    ),
+    url(r'^events/add$', main.EventWizard.as_view(), name='events.add'),
+    url(r'^events/typeahead/$', typeahead.event_list, name='events.typeahead'),
+    url(r'^events/typeahead/meta/$', typeahead.meta_values, name='events.meta.typeahead'),
+    url(r'^search/orders/$', search.OrderSearch.as_view(), name='search.orders'),
+    url(
+        r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/',
+        include(
+            [
+                url(r'^$', dashboards.event_index, name='event.index'),
+                url(r'^widgets.json$', dashboards.event_index_widgets_lazy, name='event.index.widgets'),
+                url(r'^live/$', event.EventLive.as_view(), name='event.live'),
+                url(r'^logs/$', event.EventLog.as_view(), name='event.log'),
+                url(r'^delete/$', event.EventDelete.as_view(), name='event.delete'),
+                url(r'^requiredactions/$', event.EventActions.as_view(), name='event.requiredactions'),
+                url(
+                    r'^requiredactions/(?P<id>\d+)/discard$',
+                    event.EventActionDiscard.as_view(),
+                    name='event.requiredaction.discard',
+                ),
+                url(r'^comment/$', event.EventComment.as_view(), name='event.comment'),
+                url(r'^quickstart/$', event.QuickSetupView.as_view(), name='event.quick'),
+                url(r'^settings/$', event.EventUpdate.as_view(), name='event.settings'),
+                url(r'^settings/plugins$', event.EventPlugins.as_view(), name='event.settings.plugins'),
+                url(
+                    r'^settings/payment/(?P<provider>[^/]+)$',
+                    event.PaymentProviderSettings.as_view(),
+                    name='event.settings.payment.provider',
+                ),
+                url(r'^settings/payment$', event.PaymentSettings.as_view(), name='event.settings.payment'),
+                url(r'^settings/tickets$', event.TicketSettings.as_view(), name='event.settings.tickets'),
+                url(
+                    r'^settings/tickets/preview/(?P<output>[^/]+)$',
+                    event.TicketSettingsPreview.as_view(),
+                    name='event.settings.tickets.preview',
+                ),
+                url(r'^settings/email$', event.MailSettings.as_view(), name='event.settings.mail'),
+                url(
+                    r'^settings/email/preview$', event.MailSettingsPreview.as_view(), name='event.settings.mail.preview'
+                ),
+                url(
+                    r'^settings/email/layoutpreview$',
+                    event.MailSettingsRendererPreview.as_view(),
+                    name='event.settings.mail.preview.layout',
+                ),
+                url(r'^settings/cancel', event.CancelSettings.as_view(), name='event.settings.cancel'),
+                url(r'^settings/invoice$', event.InvoiceSettings.as_view(), name='event.settings.invoice'),
+                url(
+                    r'^settings/invoice/preview$', event.InvoicePreview.as_view(), name='event.settings.invoice.preview'
+                ),
+                url(r'^settings/display', event.DisplaySettings.as_view(), name='event.settings.display'),
+                url(r'^settings/tax/$', event.TaxList.as_view(), name='event.settings.tax'),
+                url(r'^settings/tax/(?P<rule>\d+)/$', event.TaxUpdate.as_view(), name='event.settings.tax.edit'),
+                url(r'^settings/tax/add$', event.TaxCreate.as_view(), name='event.settings.tax.add'),
+                url(
+                    r'^settings/tax/(?P<rule>\d+)/delete$', event.TaxDelete.as_view(), name='event.settings.tax.delete'
+                ),
+                url(r'^settings/widget$', event.WidgetSettings.as_view(), name='event.settings.widget'),
+                url(r'^pdf/editor/webfonts.css', pdf.FontsCSSView.as_view(), name='pdf.css'),
+                url(r'^pdf/editor/(?P<filename>[^/]+).pdf$', pdf.PdfView.as_view(), name='pdf.background'),
+                url(r'^subevents/$', subevents.SubEventList.as_view(), name='event.subevents'),
+                url(r'^subevents/select2$', typeahead.subevent_select2, name='event.subevents.select2'),
+                url(r'^subevents/(?P<subevent>\d+)/$', subevents.SubEventUpdate.as_view(), name='event.subevent'),
+                url(
+                    r'^subevents/(?P<subevent>\d+)/delete$',
+                    subevents.SubEventDelete.as_view(),
+                    name='event.subevent.delete',
+                ),
+                url(r'^subevents/add$', subevents.SubEventCreate.as_view(), name='event.subevents.add'),
+                url(r'^subevents/bulk_add$', subevents.SubEventBulkCreate.as_view(), name='event.subevents.bulk'),
+                url(
+                    r'^subevents/bulk_action$',
+                    subevents.SubEventBulkAction.as_view(),
+                    name='event.subevents.bulkaction',
+                ),
+                url(r'^subevents/bulk_edit$', subevents.SubEventBulkEdit.as_view(), name='event.subevents.bulkedit'),
+                url(r'^products/$', product.ProductList.as_view(), name='event.products'),
+                url(r'^products/add$', product.ProductCreate.as_view(), name='event.products.add'),
+                url(r'^products/(?P<product>\d+)/$', product.ProductUpdateGeneral.as_view(), name='event.product'),
+                url(r'^products/(?P<product>\d+)/up$', product.product_move_up, name='event.products.up'),
+                url(r'^products/(?P<product>\d+)/down$', product.product_move_down, name='event.products.down'),
+                url(r'^products/(?P<product>\d+)/delete$', product.ProductDelete.as_view(), name='event.products.delete'),
+                url(r'^products/typeahead/meta/$', typeahead.product_meta_values, name='event.products.meta.typeahead'),
+                url(r'^products/select2$', typeahead.products_select2, name='event.products.select2'),
+                url(r'^products/select2/variation$', typeahead.variations_select2, name='event.products.variations.select2'),
+                url(r'^categories/$', product.CategoryList.as_view(), name='event.products.categories'),
+                url(r'^categories/select2$', typeahead.category_select2, name='event.products.categories.select2'),
+                url(
+                    r'^categories/(?P<category>\d+)/delete$',
+                    product.CategoryDelete.as_view(),
+                    name='event.products.categories.delete',
+                ),
+                url(r'^categories/(?P<category>\d+)/up$', product.category_move_up, name='event.products.categories.up'),
+                url(
+                    r'^categories/(?P<category>\d+)/down$', product.category_move_down, name='event.products.categories.down'
+                ),
+                url(
+                    r'^categories/(?P<category>\d+)/$',
+                    product.CategoryUpdate.as_view(),
+                    name='event.products.categories.edit',
+                ),
+                url(r'^categories/add$', product.CategoryCreate.as_view(), name='event.products.categories.add'),
+                url(r'^questions/$', product.QuestionList.as_view(), name='event.products.questions'),
+                url(r'^questions/reorder$', product.reorder_questions, name='event.products.questions.reorder'),
+                url(
+                    r'^questions/(?P<question>\d+)/delete$',
+                    product.QuestionDelete.as_view(),
+                    name='event.products.questions.delete',
+                ),
+                url(r'^questions/(?P<question>\d+)/$', product.QuestionView.as_view(), name='event.products.questions.show'),
+                url(
+                    r'^questions/(?P<question>\d+)/change$',
+                    product.QuestionUpdate.as_view(),
+                    name='event.products.questions.edit',
+                ),
+                url(r'^questions/add$', product.QuestionCreate.as_view(), name='event.products.questions.add'),
+                url(r'^descriptions/add$', product.DescriptionCreate.as_view(), name='event.products.descriptions.add'),
+                url(
+                    r'^descriptions/(?P<question>\d+)/change$',
+                    product.DescriptionUpdate.as_view(),
+                    name='event.products.descriptions.edit',
+                ),
+                url(
+                    r'^descriptions/(?P<question>\d+)/delete$',
+                    product.QuestionDelete.as_view(),
+                    name='event.products.descriptions.delete',
+                ),
+                url(r'^quotas/$', product.QuotaList.as_view(), name='event.products.quotas'),
+                url(r'^quotas/(?P<quota>\d+)/$', product.QuotaView.as_view(), name='event.products.quotas.show'),
+                url(r'^quotas/select$', typeahead.quotas_select2, name='event.products.quotas.select2'),
+                url(r'^quotas/(?P<quota>\d+)/change$', product.QuotaUpdate.as_view(), name='event.products.quotas.edit'),
+                url(r'^quotas/(?P<quota>\d+)/delete$', product.QuotaDelete.as_view(), name='event.products.quotas.delete'),
+                url(r'^quotas/add$', product.QuotaCreate.as_view(), name='event.products.quotas.add'),
+                url(r'^vouchers/$', vouchers.VoucherList.as_view(), name='event.vouchers'),
+                url(r'^vouchers/tags/$', vouchers.VoucherTags.as_view(), name='event.vouchers.tags'),
+                url(r'^vouchers/rng$', vouchers.VoucherRNG.as_view(), name='event.vouchers.rng'),
+                url(r'^vouchers/product_select$', typeahead.productvarquota_select2, name='event.vouchers.productselect2'),
+                url(r'^vouchers/(?P<voucher>\d+)/$', vouchers.VoucherUpdate.as_view(), name='event.voucher'),
+                url(
+                    r'^vouchers/(?P<voucher>\d+)/delete$', vouchers.VoucherDelete.as_view(), name='event.voucher.delete'
+                ),
+                url(r'^vouchers/add$', vouchers.VoucherCreate.as_view(), name='event.vouchers.add'),
+                url(r'^vouchers/go$', vouchers.VoucherGo.as_view(), name='event.vouchers.go'),
+                url(r'^vouchers/bulk_add$', vouchers.VoucherBulkCreate.as_view(), name='event.vouchers.bulk'),
+                url(r'^vouchers/bulk_action$', vouchers.VoucherBulkAction.as_view(), name='event.vouchers.bulkaction'),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/transition$',
+                    orders.OrderTransition.as_view(),
+                    name='event.order.transition',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/resend$',
+                    orders.OrderResendLink.as_view(),
+                    name='event.order.resendlink',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/(?P<position>\d+)/resend$',
+                    orders.OrderResendLink.as_view(),
+                    name='event.order.resendlink',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/invoice$',
+                    orders.OrderInvoiceCreate.as_view(),
+                    name='event.order.geninvoice',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/invoices/(?P<id>\d+)/regenerate$',
+                    orders.OrderInvoiceRegenerate.as_view(),
+                    name='event.order.regeninvoice',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/invoices/(?P<id>\d+)/reissue$',
+                    orders.OrderInvoiceReissue.as_view(),
+                    name='event.order.reissueinvoice',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/download/(?P<position>\d+)/(?P<output>[^/]+)/$',
+                    orders.OrderDownload.as_view(),
+                    name='event.order.download.ticket',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/answer/(?P<answer>[^/]+)/$',
+                    orders.AnswerDownload.as_view(),
+                    name='event.order.download.answer',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/checkvatid',
+                    orders.OrderCheckVATID.as_view(),
+                    name='event.order.checkvatid',
+                ),
+                url(r'^orders/(?P<code>[0-9A-Z]+)/extend$', orders.OrderExtend.as_view(), name='event.order.extend'),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/reactivate$',
+                    orders.OrderReactivate.as_view(),
+                    name='event.order.reactivate',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/contact$',
+                    orders.OrderContactChange.as_view(),
+                    name='event.order.contact',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/locale', orders.OrderLocaleChange.as_view(), name='event.order.locale'
+                ),
+                url(r'^orders/(?P<code>[0-9A-Z]+)/comment$', orders.OrderComment.as_view(), name='event.order.comment'),
+                url(r'^orders/(?P<code>[0-9A-Z]+)/change$', orders.OrderChange.as_view(), name='event.order.change'),
+                url(r'^orders/(?P<code>[0-9A-Z]+)/approve', orders.OrderApprove.as_view(), name='event.order.approve'),
+                url(r'^orders/(?P<code>[0-9A-Z]+)/deny$', orders.OrderDeny.as_view(), name='event.order.deny'),
+                url(r'^orders/(?P<code>[0-9A-Z]+)/delete$', orders.OrderDelete.as_view(), name='event.order.delete'),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/info',
+                    orders.OrderModifyInformation.as_view(),
+                    name='event.order.info',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/sendmail$',
+                    orders.OrderSendMail.as_view(),
+                    name='event.order.sendmail',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/(?P<position>[0-9A-Z]+)/sendmail$',
+                    orders.OrderPositionSendMail.as_view(),
+                    name='event.order.position.sendmail',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/mail_history$',
+                    orders.OrderEmailHistory.as_view(),
+                    name='event.order.mail_history',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/payments/(?P<payment>\d+)/cancel$',
+                    orders.OrderPaymentCancel.as_view(),
+                    name='event.order.payments.cancel',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/payments/(?P<payment>\d+)/confirm$',
+                    orders.OrderPaymentConfirm.as_view(),
+                    name='event.order.payments.confirm',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/refund$',
+                    orders.OrderRefundView.as_view(),
+                    name='event.order.refunds.start',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/refunds/(?P<refund>\d+)/cancel$',
+                    orders.OrderRefundCancel.as_view(),
+                    name='event.order.refunds.cancel',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/refunds/(?P<refund>\d+)/process$',
+                    orders.OrderRefundProcess.as_view(),
+                    name='event.order.refunds.process',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/refunds/(?P<refund>\d+)/done$',
+                    orders.OrderRefundDone.as_view(),
+                    name='event.order.refunds.done',
+                ),
+                url(
+                    r'^orders/(?P<code>[0-9A-Z]+)/cancellationrequests/(?P<req>\d+)/delete$',
+                    orders.OrderCancellationRequestDelete.as_view(),
+                    name='event.order.cancellationrequests.delete',
+                ),
+                url(r'^orders/(?P<code>[0-9A-Z]+)/$', orders.OrderDetail.as_view(), name='event.order'),
+                url(r'^invoice/(?P<invoice>[^/]+)$', orders.InvoiceDownload.as_view(), name='event.invoice.download'),
+                url(r'^orders/overview/$', orders.OverView.as_view(), name='event.orders.overview'),
+                url(r'^orders/import/$', orderimport.ImportView.as_view(), name='event.orders.import'),
+                url(
+                    r'^orders/import/(?P<file>[^/]+)/$',
+                    orderimport.ProcessView.as_view(),
+                    name='event.orders.import.process',
+                ),
+                url(r'^orders/export/$', orders.ExportView.as_view(), name='event.orders.export'),
+                url(r'^orders/export/do$', orders.ExportDoView.as_view(), name='event.orders.export.do'),
+                url(r'^orders/refunds/$', orders.RefundList.as_view(), name='event.orders.refunds'),
+                url(r'^orders/go$', orders.OrderGo.as_view(), name='event.orders.go'),
+                url(r'^orders/$', orders.OrderList.as_view(), name='event.orders'),
+                url(r'^orders/search$', orders.OrderSearch.as_view(), name='event.orders.search'),
+                url(r'^dangerzone/$', event.DangerZone.as_view(), name='event.dangerzone'),
+                url(r'^cancel/$', orders.EventCancel.as_view(), name='event.cancel'),
+                url(r'^shredder/$', shredder.StartShredView.as_view(), name='event.shredder.start'),
+                url(r'^shredder/export$', shredder.ShredExportView.as_view(), name='event.shredder.export'),
+                url(
+                    r'^shredder/download/(?P<file>[^/]+)/$',
+                    shredder.ShredDownloadView.as_view(),
+                    name='event.shredder.download',
+                ),
+                url(r'^shredder/shred', shredder.ShredDoView.as_view(), name='event.shredder.shred'),
+                url(r'^waitinglist/$', waitinglist.WaitingListView.as_view(), name='event.orders.waitinglist'),
+                url(
+                    r'^waitinglist/auto_assign$', waitinglist.AutoAssign.as_view(), name='event.orders.waitinglist.auto'
+                ),
+                url(
+                    r'^waitinglist/(?P<entry>\d+)/delete$',
+                    waitinglist.EntryDelete.as_view(),
+                    name='event.orders.waitinglist.delete',
+                ),
+                url(r'^checkinlists/$', checkin.CheckinListList.as_view(), name='event.orders.checkinlists'),
+                url(r'^checkinlists/add$', checkin.CheckinListCreate.as_view(), name='event.orders.checkinlists.add'),
+                url(r'^checkinlists/select2$', typeahead.checkinlist_select2, name='event.orders.checkinlists.select2'),
+                url(
+                    r'^checkinlists/(?P<list>\d+)/$',
+                    checkin.CheckInListShow.as_view(),
+                    name='event.orders.checkinlists.show',
+                ),
+                url(
+                    r'^checkinlists/(?P<list>\d+)/change$',
+                    checkin.CheckinListUpdate.as_view(),
+                    name='event.orders.checkinlists.edit',
+                ),
+                url(
+                    r'^checkinlists/(?P<list>\d+)/delete$',
+                    checkin.CheckinListDelete.as_view(),
+                    name='event.orders.checkinlists.delete',
+                ),
+            ]
+        ),
+    ),
+    url(
         r'^admin/',
         include(
             [
                 url(r'^$', admin.AdminDashboard.as_view(), name='admin.dashboard'),
                 url(r'^organizers/$', admin.OrganizerList.as_view(), name='admin.organizers'),
                 url(r'^events/$', admin.AdminEventList.as_view(), name='admin.events'),
-                url(r'^task_management/$', admin.TaskList.as_view(), name='admin.task_management'),
-                
+                url(r'^task_management', admin.TaskList.as_view(), name='admin.task_management'),
+                url(r'^sudo/(?P<id>\d+)/$', user.EditStaffSession.as_view(), name='admin.user.sudo.edit'),
+                url(r'^sudo/sessions/$', user.StaffSessionList.as_view(), name='admin.user.sudo.list'),
+                url(r'^users/$', users.UserListView.as_view(), name='admin.users'),
+                url(r'^users/select2$', typeahead.users_select2, name='admin.users.select2'),
+                url(r'^users/add$', users.UserCreateView.as_view(), name='admin.users.add'),
+                url(
+                    r'^users/impersonate/stop',
+                    users.UserImpersonateStopView.as_view(),
+                    name='admin.users.impersonate.stop',
+                ),
+                url(r'^users/(?P<id>\d+)/$', users.UserEditView.as_view(), name='admin.users.edit'),
+                url(r'^users/(?P<id>\d+)/reset$', users.UserResetView.as_view(), name='admin.users.reset'),
+                url(
+                    r'^users/(?P<id>\d+)/impersonate',
+                    users.UserImpersonateView.as_view(),
+                    name='admin.users.impersonate',
+                ),
+                url(r'^users/(?P<id>\d+)/anonymize', users.UserAnonymizeView.as_view(), name='admin.users.anonymize'),
+                url(r'^global/settings/$', global_settings.GlobalSettingsView.as_view(), name='admin.global.settings'),
+                url(r'^global/update/$', global_settings.UpdateCheckView.as_view(), name='admin.global.update'),
+                url(r'^global/message/$', global_settings.MessageView.as_view(), name='admin.global.message'),
+                url(
+                    r'^global/billing_validation/$',
+                    global_settings.ToggleBillingValidationView.as_view(),
+                    name='admin.toggle.billing.validation',
+                ),
+                url(r'^vouchers/$', admin.VoucherList.as_view(), name='admin.vouchers'),
+                url(r'^vouchers/add$', admin.VoucherCreate.as_view(), name='admin.vouchers.add'),
+                url(r'^vouchers/(?P<voucher>\d+)/$', admin.VoucherUpdate.as_view(), name='admin.voucher'),
+                url(r'^vouchers/(?P<voucher>\d+)/delete$', admin.VoucherDelete.as_view(), name='admin.voucher.delete'),
+                url(r'^global/sso/$', global_settings.SSOView.as_view(), name='admin.global.sso'),
+                url(
+                    r'^global/sso/(?P<pk>\d+)/delete/$',
+                    global_settings.DeleteOAuthApplicationView.as_view(),
+                    name='admin.global.sso.delete',
+                ),
+                url(r'^pages/$', pages.PageList.as_view(), name='admin.pages'),
+                url(r'^pages/add$', pages.PageCreate.as_view(), name='admin.pages.add'),
+                url(r'^pages/(?P<id>\d+)/edit$', pages.PageUpdate.as_view(), name='admin.pages.edit'),
+                url(r'^pages/(?P<id>\d+)/delete$', pages.PageDelete.as_view(), name='admin.pages.delete'),
             ]
         ),
     ),
-    
-    path('video/', include('eventyay.control.video.urls')),
+    url(
+        r'^event/(?P<organizer>[^/]+)/$',
+        RedirectView.as_view(pattern_name='control:organizer'),
+        name='event.organizerredirect',
+    ),
+  path('video/', include('eventyay.control.video.urls')),
 ]
