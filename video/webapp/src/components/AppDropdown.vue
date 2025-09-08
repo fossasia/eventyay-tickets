@@ -35,58 +35,45 @@
     <slot />
   </div>
 </template>
+<script setup>
+import { reactive, computed, provide } from 'vue'
 
-<script>
-const clickAway = {
+// Local directive usable as v-click-away in the template
+const vClickAway = {
   beforeMount(el, binding) {
-    el.clickOutsideEvent = function(event) {
+    el.__clickOutside__ = function(event) {
       if (!(el === event.target || el.contains(event.target))) {
-        binding.value(event);
+        binding.value(event)
       }
-    };
-    document.addEventListener('click', el.clickOutsideEvent);
+    }
+    document.addEventListener('click', el.__clickOutside__)
   },
   beforeUnmount(el) {
-    document.removeEventListener('click', el.clickOutsideEvent);
+    document.removeEventListener('click', el.__clickOutside__)
   }
-};
+}
 
-export default {
-	name: 'AppDropdown',
-	directives: {
-		'click-away': clickAway
-	},
-	props: {
-		className: {
-			type: String,
-			default: '',
-		},
-	},
-	provide() {
-		return {
-			sharedState: this.sharedState
-		}
-	},
-	data() {
-		return {
-			sharedState: {
-				active: false,
-			},
-		}
-	},
-	computed: {
-		elClass() {
-			return this.className ? this.className + ' app-drop-down' : 'app-drop-down'
-		},
-	},
-	methods: {
-		toggle() {
-			this.sharedState.active = !this.sharedState.active
-		},
-		away() {
-			this.sharedState.active = false
-		}
-	}
+// Props
+const props = defineProps({
+  className: {
+    type: String,
+    default: ''
+  }
+})
+
+// Shared state provided to descendants
+const sharedState = reactive({ active: false })
+provide('sharedState', sharedState)
+
+// Computed class
+const elClass = computed(() => (props.className ? props.className + ' app-drop-down' : 'app-drop-down'))
+
+// Methods
+function toggle() {
+  sharedState.active = !sharedState.active
+}
+function away() {
+  sharedState.active = false
 }
 </script>
 
