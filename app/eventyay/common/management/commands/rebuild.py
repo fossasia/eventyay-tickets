@@ -62,9 +62,6 @@ class Command(BaseCommand):
             frontend_dir = (
                 Path(__file__).parent.parent.parent.parent / "frontend/schedule-editor/"
             )
-            print("--------------------------")
-            print(frontend_dir)
-            print("--------------------------")
             env = os.environ.copy()
             env["OUT_DIR"] = str(settings.STATIC_ROOT)
             env["BASE_URL"] = settings.STATIC_URL
