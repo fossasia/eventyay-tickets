@@ -153,6 +153,7 @@ _OURS_APPS = (
     'eventyay.mail',
     'eventyay.multidomain',
     'eventyay.orga',
+    "eventyay.person",
     'eventyay.presale',
     'eventyay.plugins.socialauth',
     'eventyay.plugins.banktransfer',
@@ -167,6 +168,7 @@ _OURS_APPS = (
     'eventyay.plugins.ticketoutputpdf',
     'eventyay.plugins.webcheckin',
     'eventyay.schedule',
+    "eventyay.submission",
 )
 
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
@@ -245,6 +247,10 @@ TEMPLATES = (
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
                 'eventyay.config.settings.instance_name',
                 "eventyay.agenda.context_processors.is_html_export",
                 "eventyay.common.context_processors.add_events",
