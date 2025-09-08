@@ -131,7 +131,7 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
+        if self.instance and self.instance.pk and "id" in self.fields:
             self.fields["id"].disabled = True
 
     def clean_id(self):

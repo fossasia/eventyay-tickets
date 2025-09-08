@@ -1550,7 +1550,7 @@ class Event(EventMixin, LoggedModel):
             else:
                 return struct
 
-        self.config = old.config
+        self.config = old.config or {}
         if new_secrets:
             secret = get_random_string(length=64)
             self.config["JWT_secrets"] = [

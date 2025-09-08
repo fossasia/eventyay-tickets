@@ -23,7 +23,7 @@
             <b>{{ event.pk }}</b>
         </td>
         <td>
-            {{ event.title }}
+            {{ event.name }}
             {% for u in event.planned_usages.all %}
                 <br>
                 <small class="text-muted">{{ u.start|date:"SHORT_DATE_FORMAT" }} – {{ u.end|date:"SHORT_DATE_FORMAT" }} ({{ u.attendees }}ppl)</small>

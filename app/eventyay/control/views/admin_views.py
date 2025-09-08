@@ -240,6 +240,14 @@ class EventCreate(FormsetMixin, AdminBase, CreateView):
             inst = copy.copy(self.copy_from)
             inst.pk = None
             inst.domain = None
+            # Generate a new unique slug to avoid IntegrityError
+            base_slug = self.copy_from.slug
+            counter = 1
+            new_slug = f"{base_slug}-copy"
+            while Event.objects.filter(organizer=self.copy_from.organizer, slug=new_slug).exists():
+                new_slug = f"{base_slug}-copy-{counter}"
+                counter += 1
+            inst.slug = new_slug
             kwargs["instance"] = inst
         return kwargs
 
@@ -302,7 +310,8 @@ class EventUpdate(FormsetMixin, AdminBase, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["jwtconf"] = json.dumps(self.object.config.get("JWT_secrets", []), indent=4)
+        config = self.object.config or {}
+        ctx["jwtconf"] = json.dumps(config.get("JWT_secrets", []), indent=4)
         return ctx
 
     def form_valid(self, form):
