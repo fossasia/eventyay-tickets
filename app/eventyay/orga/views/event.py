@@ -508,7 +508,7 @@ class InvitationView(FormView):
             messages.error(
                 self.request,
                 _(
-                    "There was a problem with your authentication. Please contact the organiser for further help."
+                    "There was a problem with your authentication. Please contact the organizer for further help."
                 ),
             )
             return redirect(self.request.event.urls.base)
@@ -522,7 +522,7 @@ class InvitationView(FormView):
         invite = self.invitation
         invite.team.members.add(user)
         invite.team.save()
-        invite.team.organiser.log_action(
+        invite.team.organizer.log_action(
             "eventyay.invite.orga.accept", person=user, orga=True
         )
         messages.info(self.request, _("You are now part of the team!"))
@@ -549,9 +549,9 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         return [f"orga/event/wizard/{self.steps.current}.html"]
 
     @context
-    def organiser(self):
+    def organizer(self):
         return (
-            self.get_cleaned_data_for_step("initial").get("organiser")
+            self.get_cleaned_data_for_step("initial").get("organizer")
             if self.steps.current != "initial"
             else None
         )
@@ -605,7 +605,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
 
         with scopes_disabled():
             event = Event.objects.create(
-                organiser=steps["initial"]["organiser"],
+                organizer=steps["initial"]["organizer"],
                 locale_array=",".join(steps["initial"]["locales"]),
                 content_locale_array=",".join(steps["initial"]["locales"]),
                 name=steps["basics"]["name"],
@@ -631,14 +631,14 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                 event.process_image("logo")
 
         has_control_rights = self.request.user.teams.filter(
-            organiser=event.organiser,
+            organizer=event.organizer,
             all_events=True,
             can_change_event_settings=True,
             can_change_submissions=True,
         ).exists()
         if not has_control_rights:
             team = Team.objects.create(
-                organiser=event.organiser,
+                organizer=event.organizer,
                 name=_(f"Team {event.name}"),
                 can_change_event_settings=True,
                 can_change_submissions=True,

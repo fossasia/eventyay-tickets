@@ -4,7 +4,7 @@ from django.views.generic.base import RedirectView
 from eventyay.orga.views import (
     admin,
     # auth,
-    # cards,
+    cards,
     cfp,
     dashboard,
     event,
@@ -17,6 +17,10 @@ from eventyay.orga.views import (
     speaker,
     submission,
     typeahead,
+)
+
+from eventyay.eventyay_common.views import (
+    auth,
 )
 
 app_name = "orga"
@@ -36,15 +40,22 @@ urlpatterns = [
     path("admin/users/", admin.AdminUserList.as_view(), name="admin.user.list"),
     path("me", person.UserSettings.as_view(), name="user.view"),  # Change this to common/account/general.
     path("me/subuser", person.SubuserView.as_view(), name="user.subuser"),
+    path(
+        "invitation/<code>",
+        event.InvitationView.as_view(),
+        name="invitation.view",
+    ),
     path("nav/typeahead/", typeahead.nav_typeahead, name="nav.typeahead"),
     path(
         "event/<slug:event>/",
         include(
             [
+                path("login/", auth.login, name="event.login"),
                 path("live", event.EventLive.as_view(), name="event.live"),
                 path(
                     '', dashboard.EventDashboardView.as_view(), name='event.dashboard'
                 ),
+                path("history/", event.EventHistory.as_view(), name="event.history"),
                 path(
                     "settings/",
                     event.EventDetail.as_view(),
@@ -54,6 +65,18 @@ urlpatterns = [
                     "settings/review/",
                     event.EventReviewSettings.as_view(),
                     name="settings.review",
+                ),
+                path(
+                    "settings/review/phase/<int:pk>/",
+                    include(
+                        [
+                            path(
+                                "activate",
+                                event.PhaseActivate.as_view(),
+                                name="settings.review.phase.activate",
+                            ),
+                        ]
+                    ),
                 ),
                 path(
                     "settings/mail",
@@ -81,6 +104,16 @@ urlpatterns = [
                     url_base="cfp/questions",
                     url_name="cfp.questions",
                     namespace="orga",
+                ),
+                path(
+                    "cfp/questions/remind/",
+                    cfp.CfPQuestionRemind.as_view(),
+                    name="cfp.questions.remind",
+                ),
+                path(
+                    "cfp/questions/<int:pk>/toggle/",
+                    cfp.CfPQuestionToggle.as_view(),
+                    name="cfp.question.toggle",
                 ),
                 *cfp.TrackView.get_urls(
                     url_base="cfp/tracks",
@@ -117,10 +150,20 @@ urlpatterns = [
                     submission.SubmissionContent.as_view(),
                     name="submissions.create",
                 ),
-                *submission.TagView.get_urls(
-                    url_base="submissions/tags",
-                    url_name="submissions.tags",
-                    namespace="orga",
+                path(
+                    "submissions/cards/",
+                    cards.SubmissionCards.as_view(),
+                    name="submissions.cards",
+                ),
+                path(
+                    "submissions/feed/",
+                    submission.SubmissionFeed(),
+                    name="submissions.feed",
+                ),
+                path(
+                    "submissions/apply-pending/",
+                    submission.ApplyPendingBulk.as_view(),
+                    name="submissions.apply_pending.bulk",
                 ),
                 path(
                     "submissions/statistics/",
@@ -131,6 +174,11 @@ urlpatterns = [
                     "submissions/feedback/",
                     submission.AllFeedbacksList.as_view(),
                     name="submissions.feedback",
+                ),
+                *submission.TagView.get_urls(
+                    url_base="submissions/tags",
+                    url_name="submissions.tags",
+                    namespace="orga",
                 ),
                 path(
                     "submissions/<code>/",
