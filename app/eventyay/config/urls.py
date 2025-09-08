@@ -40,7 +40,7 @@ control_patterns = [
     url(r'^control/', include((eventyay.control.urls, 'control'))),
 ]
 
-common_patterns = [
+eventyay_common_patterns = [
     url(r'^common/', include((eventyay.eventyay_common.urls, 'common'),namespace='common')),
 ]
 
