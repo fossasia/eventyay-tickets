@@ -447,8 +447,6 @@ TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikima
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en'
-
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
