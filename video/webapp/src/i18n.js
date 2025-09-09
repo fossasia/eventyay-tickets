@@ -40,7 +40,7 @@ export async function init(app) {
 			init(services, backendOptions, i18nextOptions) {},
 			async read(language, namespace, callback) {
 				try {
-					const locale = await import(/* webpackChunkName: "locale-[request]" */ `./locales/${language}.json`)
+					const locale = await import(`./locales/${language}.json`)
 					callback(null, locale.default)
 				} catch (error) {
 					callback(error)

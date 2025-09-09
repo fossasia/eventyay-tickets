@@ -57,7 +57,10 @@
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :user="selectedUser", @close="selectedUser = null")
 </template>
 <script>
-import * as pdfjs from 'pdfjs-dist/webpack.mjs'
+import * as pdfjs from 'pdfjs-dist'
+import PdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker'
+// Configure PDF.js to use a dedicated worker in Vite
+pdfjs.GlobalWorkerOptions.workerPort = new PdfWorker()
 import { createPopper } from '@popperjs/core'
 import api from 'lib/api'
 import { getIconByFileEnding } from 'lib/filetypes'

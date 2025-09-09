@@ -86,7 +86,10 @@
 // TODO
 // - better tag input
 
-import * as pdfjs from 'pdfjs-dist/webpack.mjs'
+import * as pdfjs from 'pdfjs-dist'
+import PdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker'
+// Configure PDF.js to use a dedicated worker in Vite
+pdfjs.GlobalWorkerOptions.workerPort = new PdfWorker()
 import Quill from 'quill'
 import { mapGetters } from 'vuex'
 import { useVuelidate } from '@vuelidate/core'

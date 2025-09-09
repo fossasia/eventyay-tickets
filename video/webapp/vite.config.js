@@ -6,15 +6,14 @@ import visualizer from 'rollup-plugin-visualizer'
 import path from 'path'
 import inject from '@rollup/plugin-inject'
 import commonjs from '@rollup/plugin-commonjs'
-import BuntpapierStylus from 'buntpapier/stylus.js'
 import eslint from 'vite-plugin-eslint'
 
 const stylusOptions = {
   paths: [
     path.resolve(__dirname, './src/styles'),
-    'node_modules'
+    path.resolve(__dirname, 'node_modules'),
+    path.resolve(__dirname, 'node_modules/buntpapier')
   ],
-  use: [BuntpapierStylus({ implicit: false })],
   imports: [
     'buntpapier/buntpapier/index.styl',
     path.resolve(__dirname, 'src/styles/variables.styl'),
@@ -126,7 +125,9 @@ export default defineConfig(({ mode }) => {
         theme: path.resolve(__dirname, 'src/theme'),
         'has-emoji': path.resolve(__dirname, 'build/has-emoji/emoji.json'),
         // Reduce moment-timezone data size similar to previous webpack plugin
-        'moment-timezone': 'moment-timezone/builds/moment-timezone-with-data-10-year-range'
+  'moment-timezone': 'moment-timezone/builds/moment-timezone-with-data-10-year-range',
+  // Provide default export for 'sdp' to satisfy janus/webrtc-adapter import style
+  sdp: path.resolve(__dirname, 'src/shims/sdp-default.js')
       }
     },
     optimizeDeps: {

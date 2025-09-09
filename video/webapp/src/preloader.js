@@ -16,7 +16,7 @@ const showBrowserBlock = function() {
 			throw new Error('Array.prototype.at not supported')
 		}
 		// load app
-		import(/* webpackChunkName: "app" */ './main')
+		import('./main')
 	} catch (e) {
 		console.error(e)
 		showBrowserBlock()
