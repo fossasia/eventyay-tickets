@@ -18,7 +18,7 @@
     <form action="" method="post" class="form-horizontal" id="subevent-bulk-create-form">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% for f in itemvar_forms %}
+        {% for f in productvar_forms %}
             {% bootstrap_form_errors f %}
         {% endfor %}
         <div class="hidden">
@@ -149,11 +149,11 @@
             </div>
         </fieldset>
         <fieldset>
-            <legend>{% trans "Item prices" %}</legend>
-            {% for f in itemvar_forms %}
+            <legend>{% trans "product prices" %}</legend>
+            {% for f in productvar_forms %}
                 <div class="form-group">
                     <label class="col-md-3 control-label" for="id_{{ f.prefix }}-price">
-                        {% if f.variation %}{{ f.item }} – {{ f.variation }}{% else %}{{ f.item }}{% endif %}
+                        {% if f.variation %}{{ f.product }} – {{ f.variation }}{% else %}{{ f.product }}{% endif %}
                     </label>
                     <div class="col-md-6">
                         {% bootstrap_field f.price addon_after=request.event.currency form_group_class="" layout="bulkedit_inline" %}
@@ -207,7 +207,7 @@
                                     <div class="panel-body form-horizontal">
                                         {% bootstrap_form_errors form %}
                                         {% bootstrap_field form.size layout="control" %}
-                                        {% bootstrap_field form.itemvars layout="control" %}
+                                        {% bootstrap_field form.productvars layout="control" %}
                                         {% bootstrap_field form.release_after_exit layout="control" %}
                                     </div>
                                 </div>
@@ -235,7 +235,7 @@
                                     </div>
                                     <div class="panel-body form-horizontal">
                                         {% bootstrap_field formset.empty_form.size layout="control" %}
-                                        {% bootstrap_field formset.empty_form.itemvars layout="control" %}
+                                        {% bootstrap_field formset.empty_form.productvars layout="control" %}
                                         {% bootstrap_field formset.empty_form.release_after_exit layout="control" %}
                                     </div>
                                 </div>

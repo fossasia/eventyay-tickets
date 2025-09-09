@@ -615,7 +615,7 @@ class OrderListExporter(MultiSheetListExporter):
             .select_related(
                 'order',
                 'order__invoice_address',
-                'item',
+                'product',
                 'variation',
                 'voucher',
                 'tax_rule',
@@ -751,7 +751,7 @@ class OrderListExporter(MultiSheetListExporter):
                         row.append('')
                         row.append('')
                 row += [
-                    str(op.item),
+                    str(op.product),
                     str(op.variation) if op.variation else '',
                     op.price,
                     op.tax_rate,

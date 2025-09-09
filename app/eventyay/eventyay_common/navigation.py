@@ -13,15 +13,15 @@ from eventyay.control.signals import nav_event, nav_global
 logger = logging.getLogger(__name__)
 
 
-class MenuItem(TypedDict):
+class MenuProduct(TypedDict):
     label: str
     url: str
     active: bool
     icon: str
 
 
-def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
-    """Generate navigation items for global."""
+def get_global_navigation(request: HttpRequest) -> List[MenuProduct]:
+    """Generate navigation products for global."""
     url = request.resolver_match
     if not url:
         return []
@@ -46,24 +46,24 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
         },
     ]
 
-    # Merge plugin-provided navigation items
+    # Merge plugin-provided navigation products
     plugin_responses = nav_global.send(request, request=request)
-    plugin_nav_items = []
+    plugin_nav_products = []
     for receiver, response in plugin_responses:
         if response:
-            plugin_nav_items.extend(response)
+            plugin_nav_products.extend(response)
 
-    # Sort navigation items, prioritizing non-parent items and alphabetically
-    sorted_plugin_items = sorted(plugin_nav_items, key=lambda r: (1 if r.get('parent') else 0, r['label']))
+    # Sort navigation products, prioritizing non-parent products and alphabetically
+    sorted_plugin_products = sorted(plugin_nav_products, key=lambda r: (1 if r.get('parent') else 0, r['label']))
 
-    # Merge plugin items into default navigation
-    merge_in(nav, sorted_plugin_items)
+    # Merge plugin products into default navigation
+    merge_in(nav, sorted_plugin_products)
 
     return nav
 
 
-def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
-    """Generate navigation items for an event."""
+def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuProduct]:
+    """Generate navigation products for an event."""
     url = request.resolver_match
     if not url:
         return []
@@ -85,8 +85,8 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     return nav
 
 
-def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
-    """Generate navigation items for account."""
+def get_account_navigation(request: HttpRequest) -> List[MenuProduct]:
+    """Generate navigation products for account."""
     resolver_match = request.resolver_match
     if not resolver_match:
         return []

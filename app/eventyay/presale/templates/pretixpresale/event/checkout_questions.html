@@ -57,7 +57,7 @@
                 <details class="panel panel-default" open>
                     <summary class="panel-heading">
                         <h4 class="panel-title">
-                            <strong>{{ pos.item.name }}</strong>
+                            <strong>{{ pos.product.name }}</strong>
                             {% if pos.variation %}
                                 – {{ pos.variation }}
                             {% endif %}
@@ -76,7 +76,7 @@
                     </summary>
                     <div>
                         <div class="panel-body questions-form">
-                            {% if event.settings.attendee_data_explanation_text and pos.item.admission %}
+                            {% if event.settings.attendee_data_explanation_text and pos.product.admission %}
                                 {{ event.settings.attendee_data_explanation_text|rich_text }}
                             {% endif %}
                             {% if pos.seat %}
@@ -101,7 +101,7 @@
                                     <div class="col-md-9 form-control-text">
                                         <ul class="addon-list">
                                             {% for a in pos.addons.all %}
-                                                <li>{{ a.item.name }}{% if a.variation %} – {{ a.variation.value }}{% endif %}</li>
+                                                <li>{{ a.product.name }}{% if a.variation %} – {{ a.variation.value }}{% endif %}</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -126,7 +126,7 @@
                                 </div>
                             {% endif %}
                             {% for form in forms %}
-                                {% if form.pos.item != pos.item %}
+                                {% if form.pos.product != pos.product %}
                                     {# Add-Ons #}
                                     <legend>
                                         {% if form.show_copy_answers_to_addon_button and event.settings.checkout_show_copy_answers_button %}
@@ -134,7 +134,7 @@
                                                 <button type="button" data-id="{{ forloop.parentloop.counter0 }}" data-addonid="{{ forloop.counter0 }}" name="copy" class="js-copy-answers-addon btn btn-default btn-xs">{% trans "Copy answers" %}</button>
                                             </span>
                                         {% endif %}
-                                        + {{ form.pos.item.name }}{% if form.pos.variation %} – {{ form.pos.variation.value }}{% endif %}
+                                        + {{ form.pos.product.name }}{% if form.pos.variation %} – {{ form.pos.variation.value }}{% endif %}
                                     </legend>
                                 {% endif %}
                                 <div data-idx="{{ forloop.parentloop.counter0 }}" data-addonidx="{{ forloop.counter0 }}">

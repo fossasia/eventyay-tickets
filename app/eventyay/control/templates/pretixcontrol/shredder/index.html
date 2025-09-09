@@ -46,7 +46,7 @@
             <legend>{% trans "Data selection" %}</legend>
             {% csrf_token %}
             <div class="panel-group" id="payment_accordion">
-                {% for ident, shredder in shredders.items %}
+                {% for ident, shredder in shredders.products %}
                     <div class="panel panel-default">
                         <label class="accordion-radio">
                             <div class="panel-heading">

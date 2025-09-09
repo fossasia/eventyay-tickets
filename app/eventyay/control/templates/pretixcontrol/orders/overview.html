@@ -82,7 +82,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for tup in items_by_category %}
+                {% for tup in products_by_category %}
                     {% if tup.0 %}
                         <tr class="category">
                             <th>{{ tup.0 }}</th>
@@ -94,64 +94,64 @@
                             <th>{{ tup.0.num.total|togglesum:request.event.currency }}</th>
                         </tr>
                     {% endif %}
-                    {% for item in tup.1 %}
-                        <tr class="item {% if tup.0 %}categorized{% endif %}">
-                            <td>{{ item }}</td>
+                    {% for product in tup.1 %}
+                        <tr class="product {% if tup.0 %}categorized{% endif %}">
+                            <td>{{ product }}</td>
                             <td>
-                                <a href="{{ listurl }}?item={{ item.id }}&amp;status=c&amp;provider={{ item.provider }}">
-                                    {{ item.num.canceled|togglesum:request.event.currency }}
+                                <a href="{{ listurl }}?product={{ product.id }}&amp;status=c&amp;provider={{ product.provider }}">
+                                    {{ product.num.canceled|togglesum:request.event.currency }}
                                 </a>
                             </td>
                             <td>
-                                <a href="{{ listurl }}?item={{ item.id }}&amp;status=e&amp;provider={{ item.provider }}">
-                                    {{ item.num.expired|togglesum:request.event.currency }}
+                                <a href="{{ listurl }}?product={{ product.id }}&amp;status=e&amp;provider={{ product.provider }}">
+                                    {{ product.num.expired|togglesum:request.event.currency }}
                                 </a>
                             </td>
                             <td>
-                                <a href="{{ listurl }}?item={{ item.id }}&amp;status=pa&amp;provider={{ item.provider }}">
-                                    {{ item.num.unapproved|togglesum:request.event.currency }}
+                                <a href="{{ listurl }}?product={{ product.id }}&amp;status=pa&amp;provider={{ product.provider }}">
+                                    {{ product.num.unapproved|togglesum:request.event.currency }}
                                 </a>
                             </td>
                             <td>
-                                <a href="{{ listurl }}?item={{ item.id }}&amp;status=na&amp;provider={{ item.provider }}">
-                                    {{ item.num.pending|togglesum:request.event.currency }}
+                                <a href="{{ listurl }}?product={{ product.id }}&amp;status=na&amp;provider={{ product.provider }}">
+                                    {{ product.num.pending|togglesum:request.event.currency }}
                                 </a>
                             </td>
                             <td>
-                                <a href="{{ listurl }}?item={{ item.id }}&amp;status=p&amp;provider={{ item.provider }}">
-                                    {{ item.num.paid|togglesum:request.event.currency }}
+                                <a href="{{ listurl }}?product={{ product.id }}&amp;status=p&amp;provider={{ product.provider }}">
+                                    {{ product.num.paid|togglesum:request.event.currency }}
                                 </a>
                             </td>
                             <td>
-                                {{ item.num.total|togglesum:request.event.currency }}
+                                {{ product.num.total|togglesum:request.event.currency }}
                             </td>
                         </tr>
-                        {% if item.has_variations %}
-                            {% for var in item.all_variations %}
+                        {% if product.has_variations %}
+                            {% for var in product.all_variations %}
                                 <tr class="variation {% if tup.0 %}categorized{% endif %}">
                                     <td>{{ var }}</td>
                                     <td>
-                                        <a href="{{ listurl }}?item={{ item.id }}-{{ var.id }}&amp;status=c&amp;provider={{ item.provider }}">
+                                        <a href="{{ listurl }}?product={{ product.id }}-{{ var.id }}&amp;status=c&amp;provider={{ product.provider }}">
                                             {{ var.num.canceled|togglesum:request.event.currency }}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{ listurl }}?item={{ item.id }}-{{ var.id }}&amp;status=e&amp;provider={{ item.provider }}">
+                                        <a href="{{ listurl }}?product={{ product.id }}-{{ var.id }}&amp;status=e&amp;provider={{ product.provider }}">
                                             {{ var.num.expired|togglesum:request.event.currency }}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{ listurl }}?item={{ item.id }}-{{ var.id }}&amp;status=pa&amp;provider={{ item.provider }}">
+                                        <a href="{{ listurl }}?product={{ product.id }}-{{ var.id }}&amp;status=pa&amp;provider={{ product.provider }}">
                                             {{ var.num.unapproved|togglesum:request.event.currency }}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{ listurl }}?item={{ item.id }}-{{ var.id }}&amp;status=na&amp;provider={{ item.provider }}">
+                                        <a href="{{ listurl }}?product={{ product.id }}-{{ var.id }}&amp;status=na&amp;provider={{ product.provider }}">
                                             {{ var.num.pending|togglesum:request.event.currency }}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{ listurl }}?item={{ item.id }}-{{ var.id }}&amp;status=p&amp;provider={{ item.provider }}">
+                                        <a href="{{ listurl }}?product={{ product.id }}-{{ var.id }}&amp;status=p&amp;provider={{ product.provider }}">
                                             {{ var.num.paid|togglesum:request.event.currency }}
                                         </a>
                                     </td>

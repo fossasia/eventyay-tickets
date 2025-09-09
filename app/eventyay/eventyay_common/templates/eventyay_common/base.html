@@ -219,11 +219,11 @@
                         </div>
                         <ul class="nav" id="side-menu">
                             {% block nav %}
-                                {% for nav in nav_items %}
+                                {% for nav in nav_products %}
                                     <li>
                                         <a href="{{ nav.url }}" {% if nav.active %}class="active"{% endif %}
                                                 {% if nav.external %}target="_blank"{% endif %}
-                                                {% if nav.children %}class="has-children"{% endif %} class="nav-item-label">
+                                                {% if nav.children %}class="has-children"{% endif %} class="nav-product-label">
                                             {% if nav.icon %}
                                                 {% if "<svg" in nav.icon %}
                                                     {{ nav.icon|safe }}
@@ -238,12 +238,12 @@
                                                 <span class="fa arrow"></span>
                                             </a>
                                             <ul class="nav nav-second-level">
-                                                {% for item in nav.children %}
+                                                {% for product in nav.children %}
                                                     <li>
-                                                        <a href="{{ item.url }}"
-                                                                {% if item.external %}target="_blank"{% endif %}
-                                                                {% if item.active %}class="active"{% endif %}>
-                                                            {{ item.label }}
+                                                        <a href="{{ product.url }}"
+                                                                {% if product.external %}target="_blank"{% endif %}
+                                                                {% if product.active %}class="active"{% endif %}>
+                                                            {{ product.label }}
                                                         </a>
                                                     </li>
                                                 {% endfor %}

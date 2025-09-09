@@ -172,15 +172,15 @@
                             </a>
                             {% if nav.children %}
                                 <ul class="dropdown-menu" role="menu">
-                                    {% for item in nav.children %}
+                                    {% for product in nav.children %}
                                         <li>
-                                            <a {% if item.url %}href="{{ item.url }}"{% endif %}
-                                                    {% if item.external %}target="_blank"{% endif %}
-                                                    {% if item.active %}class="active"{% endif %}>
-                                                {% if item.icon %}
-                                                    <span class="fa fa-fw fa-{{ item.icon }}"></span>
+                                            <a {% if product.url %}href="{{ product.url }}"{% endif %}
+                                                    {% if product.external %}target="_blank"{% endif %}
+                                                    {% if product.active %}class="active"{% endif %}>
+                                                {% if product.icon %}
+                                                    <span class="fa fa-fw fa-{{ product.icon }}"></span>
                                                 {% endif %}
-                                                {{ item.label|safe }}</a>
+                                                {{ product.label|safe }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -281,7 +281,7 @@
                                 </li>
                             {% endif %}
                             {% block nav %}
-                                {% for nav in nav_items %}
+                                {% for nav in nav_products %}
                                     <li>
                                         <a href="{{ nav.url }}" {% if nav.active %}class="active"{% endif %}
                                                 {% if nav.external %}target="_blank"{% endif %}
@@ -300,12 +300,12 @@
                                                 <span class="fa arrow"></span>
                                             </a>
                                             <ul class="nav nav-second-level">
-                                                {% for item in nav.children %}
+                                                {% for product in nav.children %}
                                                     <li>
-                                                        <a href="{{ item.url }}"
-                                                                {% if item.external %}target="_blank"{% endif %}
-                                                                {% if item.active %}class="active"{% endif %}>
-                                                            {{ item.label }}
+                                                        <a href="{{ product.url }}"
+                                                                {% if product.external %}target="_blank"{% endif %}
+                                                                {% if product.active %}class="active"{% endif %}>
+                                                            {{ product.label }}
                                                         </a>
                                                     </li>
                                                 {% endfor %}

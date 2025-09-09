@@ -10,7 +10,7 @@
             {% if line.addon_to %}
                 <span class="addon-signifier">+</span>
             {% endif %}
-            <strong>{{ line.item.name }}</strong>
+            <strong>{{ line.product.name }}</strong>
             {% if line.variation %}
                 – {{ line.variation }}
             {% endif %}
@@ -45,7 +45,7 @@
             {% endif %}
             {% if line.has_questions %}
                 <dl>
-                    {% if line.item.admission and event.settings.attendee_names_asked %}
+                    {% if line.product.admission and event.settings.attendee_names_asked %}
                         <dt class="sr-only">
                             {% trans "Attendee name" %}
                         </dt>
@@ -55,7 +55,7 @@
                             </span>
                         </dd>
                     {% endif %}
-                    {% if line.item.admission and event.settings.attendee_emails_asked and line.attendee_email %}
+                    {% if line.product.admission and event.settings.attendee_emails_asked and line.attendee_email %}
                         <dt class="sr-only">
                             {% trans "Attendee email" %}
                         </dt>
@@ -65,10 +65,10 @@
                             </span>
                         </dd>
                     {% endif %}
-                    {% if line.item.admission and event.settings.attendee_addresses_asked %}
+                    {% if line.product.admission and event.settings.attendee_addresses_asked %}
                         <br>
                     {% endif %}
-                    {% if line.item.admission and event.settings.attendee_company_asked and line.company %}
+                    {% if line.product.admission and event.settings.attendee_company_asked and line.company %}
                         <dt class="sr-only">
                             {% trans "Attendee company" %}
                         </dt>
@@ -78,7 +78,7 @@
                             </span>
                         </dd>
                     {% endif %}
-                    {% if line.item.admission and event.settings.attendee_addresses_asked %}
+                    {% if line.product.admission and event.settings.attendee_addresses_asked %}
                         {% if line.street or line.zipcode or line.city %}
                             <dt class="sr-only">
                                 {% trans "Attendee address" %}
@@ -140,7 +140,7 @@
         {% elif line.addon_to %}
             <div class="count">&nbsp;</div>
             <div class="singleprice price">
-                <span class="sr-only">{% trans "price per item" %}</span>
+                <span class="sr-only">{% trans "price per product" %}</span>
                 {% if event.settings.display_net_prices %}
                     {{ line.net_price|money:event.currency }}
                 {% else %}
@@ -169,19 +169,19 @@
                 {% if editable %}
                 <form action="{% eventurl event "presale:event.cart.add" cart_namespace=cart_namespace|default_if_none:"" %}"
                         data-asynctask-headline="{% trans "We're trying to reserve another one for you!" %}"
-                        data-asynctask-text="{% blocktrans with time=event.settings.reservation_time %}Once the items are in your cart, you will have {{ time }} minutes to complete your purchase.{% endblocktrans %}"
+                        data-asynctask-text="{% blocktrans with time=event.settings.reservation_time %}Once the products are in your cart, you will have {{ time }} minutes to complete your purchase.{% endblocktrans %}"
                     method="post" data-asynctask>
                     <input type="hidden" name="subevent" value="{{ line.subevent_id|default_if_none:"" }}" />
                     {% csrf_token %}
                     {% if line.variation %}
-                        <input type="hidden" name="variation_{{ line.item.id }}_{{ line.variation.id }}"
+                        <input type="hidden" name="variation_{{ line.product.id }}_{{ line.variation.id }}"
                             value="1" />
-                        <input type="hidden" name="price_{{ line.item.id }}_{{ line.variation.id }}"
+                        <input type="hidden" name="price_{{ line.product.id }}_{{ line.variation.id }}"
                                 value="{% if event.settings.display_net_prices %}{{ line.bundle_sum_net }}{% else %}{{ line.bundle_sum }}{% endif %}" />
                     {% else %}
-                        <input type="hidden" name="item_{{ line.item.id }}"
+                        <input type="hidden" name="product_{{ line.product.id }}"
                                 value="1" />
-                        <input type="hidden" name="price_{{ line.item.id }}"
+                        <input type="hidden" name="price_{{ line.product.id }}"
                                 value="{% if event.settings.display_net_prices %}{{ line.bundle_sum_net }}{% else %}{{ line.bundle_sum }}{% endif %}" />
                     {% endif %}
                     <button class="btn btn-mini btn-link {% if line.seat %}btn-invisible{% endif %}" title="{% trans "Add one more" %}" aria-label="{% trans "Add one more" %}" {% if line.seat %}disabled{% endif %}>
@@ -191,7 +191,7 @@
                 {% endif %}
             </div>
             <div class="singleprice price">
-                <span class="sr-only">{% trans "price per item" %}</span>
+                <span class="sr-only">{% trans "price per product" %}</span>
                 {% if event.settings.display_net_prices %}
                     {{ line.net_price|money:event.currency }}
                 {% else %}
@@ -281,7 +281,7 @@
     <div class="product">
         <strong>{% trans "Total" %}</strong><br>
         <span class="text-muted">
-            {% blocktrans trimmed count num=cart.itemcount %}
+            {% blocktrans trimmed count num=cart.productcount %}
                 One product
             {% plural %}
                 {{ num }} products

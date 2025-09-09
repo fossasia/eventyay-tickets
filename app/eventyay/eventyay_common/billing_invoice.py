@@ -230,13 +230,13 @@ class InvoicePDFGenerator:
         return ''
 
     def _create_invoice_details(self) -> List[Flowable]:
-        """Create the invoice details section with items and totals."""
+        """Create the invoice details section with products and totals."""
         elements = [
             Paragraph('INVOICE DETAILS', self.styles['subtitle']),
             Spacer(1, 10),
         ]
 
-        items_data = [
+        products_data = [
             [
                 Paragraph('Description', self.styles['header_white']),
                 Paragraph('Price', self.styles['header_style_center']),
@@ -251,8 +251,8 @@ class InvoicePDFGenerator:
             ],
         ]
 
-        items_table = Table(
-            items_data,
+        products_table = Table(
+            products_data,
             colWidths=[
                 self.doc.width * 0.4,
                 self.doc.width * 0.2,
@@ -260,7 +260,7 @@ class InvoicePDFGenerator:
                 self.doc.width * 0.2,
             ],
         )
-        items_table.setStyle(
+        products_table.setStyle(
             TableStyle(
                 [
                     ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#27aae1')),
@@ -273,7 +273,7 @@ class InvoicePDFGenerator:
             )
         )
 
-        elements.extend([items_table, Spacer(1, 10)])
+        elements.extend([products_table, Spacer(1, 10)])
 
         if self.billing_invoice.voucher_price_mode and self.billing_invoice.voucher_price_mode != PriceModeChoices.NONE:
             voucher_text = f'Applied Voucher: {self._format_voucher_info()}'

@@ -57,8 +57,8 @@ class BasePhrases(Phrases, app='base'):
     delete_button = _('Delete')
 
     delete_confirm_heading = _('Confirm deletion')
-    delete_warning = _('Please make sure that this is the item you want to delete. This action cannot be undone!')
-    deleted = _('The item has been deleted.')
+    delete_warning = _('Please make sure that this is the product you want to delete. This action cannot be undone!')
+    deleted = _('The product has been deleted.')
 
     saved = _('Your changes have been saved.')
     back_try_again = _('Please go back and try again.')

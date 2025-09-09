@@ -18,7 +18,7 @@
                 {% endblocktrans %}
             </p>
             <p>
-                <a href="{% url "control:event.items.add" organizer=request.organizer.slug event=request.event.slug %}"
+                <a href="{% url "control:event.products.add" organizer=request.organizer.slug event=request.event.slug %}"
                     class="btn btn-default">
                     {% trans "Create a first product" %}
                 </a>

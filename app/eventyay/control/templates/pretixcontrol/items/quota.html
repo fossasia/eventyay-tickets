@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/items/base.html" %}
+{% extends "pretixcontrol/products/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
 {% load escapejson %}
@@ -10,7 +10,7 @@
             <div class="navigation-title">
                 <h1>
                     {% blocktrans with name=quota.name %}Quota: {{ name }}{% endblocktrans %}
-                    {% if 'can_change_items' in request.eventpermset %}
+                    {% if 'can_change_products' in request.eventpermset %}
                         <a href="{% url "control:event.products.quotas.edit" event=request.event.slug organizer=request.event.organizer.slug quota=quota.pk %}"
                            class="btn btn-default">
                             <span class="fa fa-edit"></span>

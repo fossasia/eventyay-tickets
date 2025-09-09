@@ -253,7 +253,7 @@ def get_grouped_products(
             # Restrict variations if the voucher only allows one
             product.available_variations = [v for v in product.available_variations if v.pk == voucher.variation_id]
 
-        if get_all_sales_channels()[channel].unlimited_items_per_order:
+        if get_all_sales_channels()[channel].unlimited_products_per_order:
             max_per_order = sys.maxsize
         else:
             max_per_order = product.max_per_order or int(event.settings.max_products_per_order)
@@ -873,9 +873,9 @@ class JoinOnlineVideoView(EventViewMixin, View):
                 return False, None, None
             else:
                 # Check if Event allow all ticket type to join
-                if self.request.event.settings.venueless_all_items:
+                if self.request.event.settings.venueless_all_products:
                     return True, None, order_list[0]
-                list_allow_ticket_type = self.request.event.settings.venueless_items
+                list_allow_ticket_type = self.request.event.settings.venueless_products
                 if not list_allow_ticket_type:
                     # no ticket allow to join
                     return False, None, None
@@ -917,20 +917,20 @@ class JoinOnlineVideoView(EventViewMixin, View):
                 {
                     'eventyay-video-event-{}'.format(request.event.slug),
                     'eventyay-video-subevent-{}'.format(order_position.subevent_id),
-                    'eventyay-video-item-{}'.format(order_position.item_id),
+                    'eventyay-video-product-{}'.format(order_position.product_id),
                     'eventyay-video-variation-{}'.format(order_position.variation_id),
-                    'eventyay-video-category-{}'.format(order_position.item.category_id),
+                    'eventyay-video-category-{}'.format(order_position.product.category_id),
                 }
-                | {'eventyay-video-item-{}'.format(p.item_id) for p in order_position.addons.all()}
+                | {'eventyay-video-product-{}'.format(p.product_id) for p in order_position.addons.all()}
                 | {
                     'eventyay-video-variation-{}'.format(p.variation_id)
                     for p in order_position.addons.all()
                     if p.variation_id
                 }
                 | {
-                    'eventyay-video-category-{}'.format(p.item.category_id)
+                    'eventyay-video-category-{}'.format(p.product.category_id)
                     for p in order_position.addons.all()
-                    if p.item.category_id
+                    if p.product.category_id
                 }
             ),
         }

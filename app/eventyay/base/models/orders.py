@@ -758,7 +758,7 @@ class Order(LockModel, LoggedModel):
             self.positions.all()
             .annotate(has_checkin=Exists(Checkin.objects.filter(position_id=OuterRef('pk'))))
             .select_related('product')
-            .prefetch_related('item__questions')
+            .prefetch_related('product__questions')
         )
         if not self.event.settings.allow_modifications_after_checkin:
             for cp in positions:

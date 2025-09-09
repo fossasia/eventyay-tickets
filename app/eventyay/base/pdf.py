@@ -76,11 +76,11 @@ DEFAULT_VARIABLES = OrderedDict(
             },
         ),
         (
-            'item',
+            'product',
             {
                 'label': _('Product name'),
                 'editor_sample': _('Sample product'),
-                'evaluate': lambda orderposition, order, event: str(orderposition.item.name),
+                'evaluate': lambda orderposition, order, event: str(orderposition.product.name),
             },
         ),
         (
@@ -92,44 +92,44 @@ DEFAULT_VARIABLES = OrderedDict(
             },
         ),
         (
-            'item_description',
+            'product_description',
             {
                 'label': _('Product description'),
                 'editor_sample': _('Sample product description'),
-                'evaluate': lambda orderposition, order, event: str(orderposition.item.description),
+                'evaluate': lambda orderposition, order, event: str(orderposition.product.description),
             },
         ),
         (
-            'itemvar',
+            'productvar',
             {
                 'label': _('Product name and variation'),
                 'editor_sample': _('Sample product – sample variation'),
                 'evaluate': lambda orderposition, order, event: (
-                    '{} - {}'.format(orderposition.item.name, orderposition.variation)
+                    '{} - {}'.format(orderposition.product.name, orderposition.variation)
                     if orderposition.variation
-                    else str(orderposition.item.name)
+                    else str(orderposition.product.name)
                 ),
             },
         ),
         (
-            'itemvar_description',
+            'productvar_description',
             {
                 'label': _('Product variation description'),
                 'editor_sample': _('Sample product variation description'),
                 'evaluate': lambda orderposition, order, event: (
                     str(orderposition.variation.description)
                     if orderposition.variation
-                    else str(orderposition.item.description)
+                    else str(orderposition.product.description)
                 ),
             },
         ),
         (
-            'item_category',
+            'product_category',
             {
                 'label': _('Product category'),
                 'editor_sample': _('Ticket category'),
                 'evaluate': lambda orderposition, order, event: (
-                    str(orderposition.item.category.name) if orderposition.item.category else ''
+                    str(orderposition.product.category.name) if orderposition.product.category else ''
                 ),
             },
         ),
@@ -466,11 +466,11 @@ DEFAULT_VARIABLES = OrderedDict(
                 'editor_sample': _('Add-on 1\nAdd-on 2'),
                 'evaluate': lambda op, order, ev: '\n'.join(
                     [
-                        '{} - {}'.format(p.item, p.variation) if p.variation else str(p.item)
+                        '{} - {}'.format(p.product, p.variation) if p.variation else str(p.product)
                         for p in (
                             op.addons.all()
                             if 'addons' in getattr(op, '_prefetched_objects_cache', {})
-                            else op.addons.select_related('item', 'variation')
+                            else op.addons.select_related('product', 'variation')
                         )
                         if not p.canceled
                     ]
@@ -800,8 +800,8 @@ class Renderer:
             return '(error)'
         if o['content'] == 'other':
             return o['text']
-        elif o['content'].startswith('itemmeta:'):
-            return op.item.meta_data.get(o['content'][9:]) or ''
+        elif o['content'].startswith('productmeta:'):
+            return op.product.meta_data.get(o['content'][9:]) or ''
         elif o['content'].startswith('meta:'):
             return ev.meta_data.get(o['content'][5:]) or ''
         elif o['content'] in self.variables:

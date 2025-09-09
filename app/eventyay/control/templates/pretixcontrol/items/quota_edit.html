@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/items/base.html" %}
+{% extends "pretixcontrol/products/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
 {% block title %}
@@ -33,7 +33,7 @@
             {% endif %}
         </fieldset>
         <fieldset>
-            <legend>{% trans "Items" %}</legend>
+            <legend>{% trans "Products" %}</legend>
             <p>
                 {% blocktrans trimmed %}
                     Please select the products or product variations this quota should be applied to. If you apply two

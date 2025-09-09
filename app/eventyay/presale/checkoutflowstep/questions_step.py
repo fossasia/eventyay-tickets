@@ -100,7 +100,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
     def eu_reverse_charge_relevant(self):
         return any(
             [
-                p.item.tax_rule and (p.item.tax_rule.eu_reverse_charge or p.item.tax_rule.custom_rules)
+                p.product.tax_rule and (p.product.tax_rule.eu_reverse_charge or p.product.tax_rule.custom_rules)
                 for p in self.positions
             ]
         )
@@ -244,7 +244,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
 
         for cp in self._positions_for_questions:
             answ = {aw.question_id: aw for aw in cp.answerlist}
-            question_cache = {q.pk: q for q in cp.item.questions_to_ask}
+            question_cache = {q.pk: q for q in cp.product.questions_to_ask}
 
             def question_is_visible(parentid, qvals):
                 if parentid not in question_cache:
@@ -267,7 +267,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                     not q.dependency_question_id or question_is_visible(q.dependency_question_id, q.dependency_values)
                 )
 
-            for q in cp.item.questions_to_ask:
+            for q in cp.product.questions_to_ask:
                 if question_is_required(q) and q.id not in answ:
                     if warn:
                         messages.warning(
@@ -276,7 +276,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                         )
                     return False
             if (
-                cp.item.admission
+                cp.product.admission
                 and self.request.event.settings.get('attendee_names_required', as_type=bool)
                 and not cp.attendee_name_parts
             ):
@@ -284,7 +284,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                     messages.warning(request, _('Please fill in answers to all required questions.'))
                 return False
             if (
-                cp.item.admission
+                cp.product.admission
                 and self.request.event.settings.get('attendee_emails_required', as_type=bool)
                 and cp.attendee_email is None
             ):
@@ -292,7 +292,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                     messages.warning(request, _('Please fill in answers to all required questions.'))
                 return False
             if (
-                cp.item.admission
+                cp.product.admission
                 and self.request.event.settings.get('attendee_company_required', as_type=bool)
                 and cp.company is None
             ):
@@ -300,7 +300,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                     messages.warning(request, _('Please fill in answers to all required questions.'))
                 return False
             if (
-                cp.item.admission
+                cp.product.admission
                 and self.request.event.settings.get('attendee_attendees_required', as_type=bool)
                 and (cp.street is None or cp.city is None or cp.country is None)
             ):

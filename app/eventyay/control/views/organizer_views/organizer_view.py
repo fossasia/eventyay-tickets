@@ -74,7 +74,7 @@ class OrganizerCreate(CreateView):
             can_manage_gift_cards=True,
             can_change_organizer_settings=True,
             can_change_event_settings=True,
-            can_change_items=True,
+            can_change_products=True,
             can_view_orders=True,
             can_change_orders=True,
             can_view_vouchers=True,

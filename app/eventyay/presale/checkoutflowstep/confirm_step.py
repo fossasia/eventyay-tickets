@@ -51,7 +51,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         if self.payment_provider:
             ctx['payment'] = self.payment_provider.checkout_confirm_render(self.request)
             ctx['payment_provider'] = self.payment_provider
-        ctx['require_approval'] = any(cp.item.require_approval for cp in ctx['cart']['positions'])
+        ctx['require_approval'] = any(cp.product.require_approval for cp in ctx['cart']['positions'])
         ctx['addr'] = self.invoice_address
         ctx['confirm_messages'] = self.confirm_messages
         ctx['cart_session'] = self.cart_session

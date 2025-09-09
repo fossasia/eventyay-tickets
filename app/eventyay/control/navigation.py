@@ -156,7 +156,7 @@ def get_event_navigation(request: HttpRequest):
                 }
             )
 
-    if 'can_change_items' in request.eventpermset:
+    if 'can_change_products' in request.eventpermset:
         children = [
             {
                 'label': _('Products'),

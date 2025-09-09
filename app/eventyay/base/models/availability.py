@@ -172,7 +172,7 @@ class Availability(PretalxModel):
         result = []
 
         # yay for O(b*a) time! I am sure there is some fancy trick to make this faster,
-        # but we're dealing with less than 100 items in total, sooo.. ¯\_(ツ)_/¯
+        # but we're dealing with less than 100 products in total, sooo.. ¯\_(ツ)_/¯
         for avail_a in availabilities_a:
             for avail_b in availabilities_b:
                 if avail_a.overlaps(avail_b, True):

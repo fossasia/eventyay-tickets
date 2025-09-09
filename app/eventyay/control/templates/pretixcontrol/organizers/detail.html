@@ -66,7 +66,7 @@
                         <strong><a
                                 href="{% url "control:event.index" organizer=e.organizer.slug event=e.slug %}">{{ e.name }}</a></strong>
                         <br><small>{{ e.slug }}</small>
-                        {% for k, v in e.meta_data.items %}
+                        {% for k, v in e.meta_data.products %}
                             {% if v %}
                                 <small class="text-muted">&middot; {{ k }}: {{ v }}</small>
                             {% endif %}

@@ -28,7 +28,7 @@
                             <br/><span class="fa fa-fw fa-envelope-o"></span> {{ log.parsed_data.recipient }}
                         {% endif %}
                     </p>
-                    {% if log.parsed_data.subject.items %}
+                    {% if log.parsed_data.subject.products %}
                         <div class="alert alert-info">
                             {% blocktrans trimmed %}
                                 This email has been sent with an older version of pretix. We are therefore not able to
@@ -37,14 +37,14 @@
                         </div>
                         <p>
                             <strong>{% trans "Subject:" %}
-                                {% for k, v in log.parsed_data.subject.items %}
+                                {% for k, v in log.parsed_data.subject.products %}
                                     {% if k == order.locale %}
                                         {{ v }}
                                     {% endif %}
                                 {% endfor %}
                             </strong>
                         </p>
-                        <pre>{% for k, v in log.parsed_data.message.items %}{% if k == order.locale %}{{ v }}{% endif %}{% endfor %}</pre>
+                        <pre>{% for k, v in log.parsed_data.message.products %}{% if k == order.locale %}{{ v }}{% endif %}{% endfor %}</pre>
                     {% else %}
                         <p>
                             <strong>{% trans "Subject:" %}

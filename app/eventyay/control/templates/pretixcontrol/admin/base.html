@@ -16,7 +16,7 @@
     </a>
 {% endblock %}
 {% block nav %}
-    {% for nav in admin_nav_items %}
+    {% for nav in admin_nav_products %}
         <li>
             <a href="{{ nav.url }}" {% if nav.active %}class="active"{% endif %}
                     {% if nav.external %}target="_blank"{% endif %}
@@ -35,12 +35,12 @@
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level">
-                    {% for item in nav.children %}
+                    {% for product in nav.children %}
                         <li>
-                            <a href="{{ item.url }}"
-                                    {% if item.external %}target="_blank"{% endif %}
-                                    {% if item.active %}class="active"{% endif %}>
-                                {{ item.label }}
+                            <a href="{{ product.url }}"
+                                    {% if product.external %}target="_blank"{% endif %}
+                                    {% if product.active %}class="active"{% endif %}>
+                                {{ product.label }}
                             </a>
                         </li>
                     {% endfor %}

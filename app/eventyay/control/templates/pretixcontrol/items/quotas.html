@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/items/base.html" %}
+{% extends "pretixcontrol/products/base.html" %}
 {% load i18n %}
 {% load urlreplace %}
 {% block title %}{% trans "Quotas" %}{% endblock %}
@@ -89,7 +89,7 @@
                             </td>
                         {% endif %}
                         <td>{% if q.size == None %}Unlimited{% else %}{{ q.size }}{% endif %}</td>
-                        <td>{% include "pretixcontrol/items/fragment_quota_availability.html" with availability=q.cached_avail closed=q.closed %}</td>
+                        <td>{% include "pretixcontrol/products/fragment_quota_availability.html" with availability=q.cached_avail closed=q.closed %}</td>
                         <td class="text-right flip">
                             <a href="{% url "control:event.products.quotas.edit" organizer=request.event.organizer.slug event=request.event.slug quota=q.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
                             <a href="{% url "control:event.products.quotas.add" organizer=request.event.organizer.slug event=request.event.slug %}?copy_from={{ q.id }}"

@@ -23,7 +23,7 @@ class TeamForm(forms.ModelForm):
             'can_change_organizer_settings',
             'can_manage_gift_cards',
             'can_change_event_settings',
-            'can_change_items',
+            'can_change_products',
             'can_view_orders',
             'can_change_orders',
             'can_checkin_orders',

@@ -240,7 +240,7 @@ class WrappedPhonePrefixSelect(Select):
                 if country_name:
                     choices.append((prefix, '{} {}'.format(country_name, prefix)))
         super().__init__(
-            choices=sorted(choices, key=lambda item: item[1]),
+            choices=sorted(choices, key=lambda product: product[1]),
             attrs={'aria-label': pgettext_lazy('phonenumber', 'International area code')},
         )
 
@@ -391,8 +391,8 @@ class BaseQuestionsForm(forms.Form):
         cartpos = self.cartpos = kwargs.pop('cartpos', None)
         orderpos = self.orderpos = kwargs.pop('orderpos', None)
         pos = cartpos or orderpos
-        item = pos.item
-        questions = pos.item.questions_to_ask
+        product = pos.product
+        questions = pos.product.questions_to_ask
         event = kwargs.pop('event')
         self.all_optional = kwargs.pop('all_optional', False)
 
@@ -400,7 +400,7 @@ class BaseQuestionsForm(forms.Form):
 
         add_fields = {}
 
-        if item.admission and event.settings.attendee_names_asked:
+        if product.admission and event.settings.attendee_names_asked:
             add_fields['attendee_name_parts'] = NamePartsFormField(
                 max_length=255,
                 required=event.settings.attendee_names_required and not self.all_optional,
@@ -409,14 +409,14 @@ class BaseQuestionsForm(forms.Form):
                 label=_('Attendee name'),
                 initial=(cartpos.attendee_name_parts if cartpos else orderpos.attendee_name_parts),
             )
-        if item.admission and event.settings.attendee_emails_asked:
+        if product.admission and event.settings.attendee_emails_asked:
             add_fields['attendee_email'] = forms.EmailField(
                 required=event.settings.attendee_emails_required and not self.all_optional,
                 label=_('Attendee email'),
                 initial=(cartpos.attendee_email if cartpos else orderpos.attendee_email),
                 widget=forms.EmailInput(attrs={'autocomplete': 'email'}),
             )
-        if item.admission and event.settings.attendee_company_asked:
+        if product.admission and event.settings.attendee_company_asked:
             add_fields['company'] = forms.CharField(
                 required=event.settings.attendee_company_required and not self.all_optional,
                 label=_('Company'),
@@ -424,7 +424,7 @@ class BaseQuestionsForm(forms.Form):
                 initial=(cartpos.company if cartpos else orderpos.company),
             )
 
-        if item.admission and event.settings.attendee_addresses_asked:
+        if product.admission and event.settings.attendee_addresses_asked:
             add_fields['street'] = forms.CharField(
                 required=event.settings.attendee_addresses_required and not self.all_optional,
                 label=_('Address'),

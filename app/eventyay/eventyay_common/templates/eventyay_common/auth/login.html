@@ -53,7 +53,7 @@
                 {% translate "Login with Email" %}
             </button>
             {% if login_providers %}
-                {% for provider, settings in login_providers.items %}
+                {% for provider, settings in login_providers.products %}
                     {% if settings.state %}
                         <a href='{% url "plugins:socialauth:social.oauth.login" provider %}{% append_next request.GET.next %}' 
                            data-method="post" class="btn btn-primary btn-block">

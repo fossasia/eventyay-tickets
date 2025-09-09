@@ -78,7 +78,7 @@ class GeneralSettingsView(LoginRequiredMixin, AccountMenuMixIn, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['nav_items'] = get_account_navigation(self.request)
+        ctx['nav_products'] = get_account_navigation(self.request)
         return ctx
 
 

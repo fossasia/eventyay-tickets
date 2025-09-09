@@ -65,7 +65,7 @@ def generate_session_token():
 
 
 class SuperuserPermissionSet:
-    def __contains__(self, item):
+    def __contains__(self, product):
         return True
 
 

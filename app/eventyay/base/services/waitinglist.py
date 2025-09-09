@@ -25,8 +25,8 @@ def assign_automatically(event: Event, user_id: int = None, subevent_id: int = N
 
     qs = (
         WaitingListEntry.objects.filter(event=event, voucher__isnull=True)
-        .select_related('item', 'variation', 'subevent')
-        .prefetch_related('item__quotas', 'variation__quotas')
+        .select_related('product', 'variation', 'subevent')
+        .prefetch_related('product__quotas', 'variation__quotas')
         .order_by('-priority', 'created')
     )
 
@@ -38,7 +38,7 @@ def assign_automatically(event: Event, user_id: int = None, subevent_id: int = N
 
     with event.lock():
         for wle in qs:
-            if (wle.item, wle.variation, wle.subevent) in gone:
+            if (wle.product, wle.variation, wle.subevent) in gone:
                 continue
 
             ev = wle.subevent or event
@@ -46,19 +46,19 @@ def assign_automatically(event: Event, user_id: int = None, subevent_id: int = N
                 continue
             if wle.subevent and not wle.subevent.presale_is_running:
                 continue
-            if not wle.item.is_available():
-                gone.add((wle.item, wle.variation, wle.subevent))
+            if not wle.product.is_available():
+                gone.add((wle.product, wle.variation, wle.subevent))
                 continue
 
             quotas = (
                 wle.variation.quotas.filter(subevent=wle.subevent)
                 if wle.variation
-                else wle.item.quotas.filter(subevent=wle.subevent)
+                else wle.product.quotas.filter(subevent=wle.subevent)
             )
             availability = (
                 wle.variation.check_quotas(count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent)
                 if wle.variation
-                else wle.item.check_quotas(count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent)
+                else wle.product.check_quotas(count_waitinglist=False, _cache=quota_cache, subevent=wle.subevent)
             )
             if availability[1] is None or availability[1] > 0:
                 try:
@@ -74,7 +74,7 @@ def assign_automatically(event: Event, user_id: int = None, subevent_id: int = N
                         quota_cache[q.pk][1] - 1 if quota_cache[q.pk][1] is not None else sys.maxsize,
                     )
             else:
-                gone.add((wle.item, wle.variation, wle.subevent))
+                gone.add((wle.product, wle.variation, wle.subevent))
 
     return sent
 

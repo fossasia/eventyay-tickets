@@ -79,11 +79,11 @@ class LargeResultSetPage(collections.abc.Sequence):
     def __len__(self):
         return len(self.object_list)
 
-    def __getitem__(self, index):
+    def __getproduct__(self, index):
         if not isinstance(index, (slice, int)):
             raise TypeError
         # The object_list is converted to a list so that if it was a QuerySet
-        # it won't be a database hit per __getitem__.
+        # it won't be a database hit per __getproduct__.
         if not isinstance(self.object_list, list):
             self.object_list = list(self.object_list)
         return self.object_list[index]
@@ -111,7 +111,7 @@ class LargeResultSetPage(collections.abc.Sequence):
         Returns the 1-based index of the first object on this page,
         relative to total objects in the paginator.
         """
-        # Special case, return zero if no items.
+        # Special case, return zero if no products.
         if self.paginator.count == 0:
             return 0
         return (self.paginator.per_page * (self.number - 1)) + 1

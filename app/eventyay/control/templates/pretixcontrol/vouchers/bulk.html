@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/items/base.html" %}
+{% extends "pretixcontrol/products/base.html" %}
 {% load i18n %}
 {% load eventsignal %}
 {% load bootstrap3 %}
@@ -46,7 +46,7 @@
             <legend>{% trans "Voucher details" %}</legend>
             {% bootstrap_field form.max_usages layout="control" %}
             {% bootstrap_field form.valid_until layout="control" %}
-            {% bootstrap_field form.itemvar layout="control" %}
+            {% bootstrap_field form.productvar layout="control" %}
             <div class="form-group">
                 <label class="col-md-3 control-label" for="id_tag">{% trans "Price effect" %}</label>
                 <div class="col-md-5">
@@ -83,7 +83,7 @@
             {% bootstrap_field form.budget addon_after=request.event.currency layout="control" %}
             {% bootstrap_field form.tag layout="control" %}
             {% bootstrap_field form.comment layout="control" %}
-            {% bootstrap_field form.show_hidden_items layout="control" %}
+            {% bootstrap_field form.show_hidden_products layout="control" %}
         </fieldset>
         <fieldset>
             <legend>{% trans "Send out emails" %}</legend>

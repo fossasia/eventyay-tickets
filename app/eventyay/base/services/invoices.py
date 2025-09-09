@@ -149,7 +149,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
         invoice.lines.all().delete()
 
         positions = list(
-            invoice.order.positions.select_related('addon_to', 'item', 'tax_rule', 'subevent', 'variation')
+            invoice.order.positions.select_related('addon_to', 'product', 'tax_rule', 'subevent', 'variation')
             .annotate(addon_c=Count('addons'))
             .prefetch_related('answers', 'answers__question')
             .order_by('positionid', 'id')
@@ -164,7 +164,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
             if not invoice.event.settings.invoice_include_free and p.price == Decimal('0.00') and not p.addon_c:
                 continue
 
-            desc = str(p.item.name)
+            desc = str(p.product.name)
             if p.variation:
                 desc += ' - ' + str(p.variation.value)
             if p.addon_to_id:
@@ -193,7 +193,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
                 gross_value=p.price,
                 tax_value=p.tax_value,
                 subevent=p.subevent,
-                item=p.item,
+                product=p.product,
                 variation=p.variation,
                 attendee_name=p.attendee_name if invoice.event.settings.invoice_attendee_name else None,
                 event_date_from=p.subevent.date_from if invoice.event.has_subevents else invoice.event.date_from,

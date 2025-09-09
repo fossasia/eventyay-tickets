@@ -411,7 +411,7 @@ def event_index(request, organizer, event):
             ContentType.objects.get_for_model(Voucher),
             ContentType.objects.get_for_model(Order),
         ]
-        if request.user.has_event_permission(request.organizer, request.event, 'can_change_items', request=request):
+        if request.user.has_event_permission(request.organizer, request.event, 'can_change_products', request=request):
             allowed_types += [
                 ContentType.objects.get_for_model(Product),
                 ContentType.objects.get_for_model(ProductCategory),

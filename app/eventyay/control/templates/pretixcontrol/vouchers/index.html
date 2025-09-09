@@ -125,8 +125,8 @@
                         </th>
                         <th>
                             {% trans "Product" %}
-                            <a href="?{% url_replace request 'ordering' '-item' %}"><i class="fa fa-caret-down"></i></a>
-                            <a href="?{% url_replace request 'ordering' 'item' %}"><i class="fa fa-caret-up"></i></a>
+                            <a href="?{% url_replace request 'ordering' '-product' %}"><i class="fa fa-caret-down"></i></a>
+                            <a href="?{% url_replace request 'ordering' 'product' %}"><i class="fa fa-caret-up"></i></a>
                         </th>
                         {% if request.event.has_subevents %}
                             <th>
@@ -165,8 +165,8 @@
                                 {{ v.tag }}
                             </td>
                             <td>
-                                {% if v.item %}
-                                    {{ v.item }}
+                                {% if v.product %}
+                                    {{ v.product }}
                                     {% if v.variation %}
                                         – {{ v.variation }}
                                     {% endif %}

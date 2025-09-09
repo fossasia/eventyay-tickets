@@ -160,23 +160,23 @@ def build_absolute_uri(obj, urlname, kwargs=None):
 
 def build_join_video_url(event, order):
     # Get list order position id
-    order_item_ids = [position.item_id for position in order.positions.all()]
+    order_product_ids = [position.product_id for position in order.positions.all()]
     # Check if video allow all positions
-    if event.settings.venueless_all_items:
+    if event.settings.venueless_all_products:
         position = order.positions.first()
         return generate_token_url(event, order, position)
     else:
-        common_item_id = next(
-            (item for item in order_item_ids if item in event.settings.venueless_items),
+        common_product_id = next(
+            (product for product in order_product_ids if product in event.settings.venueless_products),
             None,
         )
         # Get position object
-        position = order.positions.filter(item_id=common_item_id).first()
-        # Check if any item in order item is allowed to join
-        if any(item in event.settings.venueless_items for item in order_item_ids):
+        position = order.positions.filter(product_id=common_product_id).first()
+        # Check if any product in order product is allowed to join
+        if any(product in event.settings.venueless_products for product in order_product_ids):
             return generate_token_url(event, order, position)
         else:
-            logger.error('order %s does not have any item that is allowed to join the event' % order.code)
+            logger.error('order %s does not have any product that is allowed to join the event' % order.code)
             return ''
 
 
@@ -212,16 +212,16 @@ def generate_token(event, customer_code, position):
             {
                 'eventyay-video-event-{}'.format(event.slug),
                 'eventyay-video-subevent-{}'.format(position.subevent_id),
-                'eventyay-video-item-{}'.format(position.item_id),
+                'eventyay-video-product-{}'.format(position.product_id),
                 'eventyay-video-variation-{}'.format(position.variation_id),
-                'eventyay-video-category-{}'.format(position.item.category_id),
+                'eventyay-video-category-{}'.format(position.product.category_id),
             }
-            | {'eventyay-video-item-{}'.format(p.item_id) for p in position.addons.all()}
+            | {'eventyay-video-product-{}'.format(p.product_id) for p in position.addons.all()}
             | {'eventyay-video-variation-{}'.format(p.variation_id) for p in position.addons.all() if p.variation_id}
             | {
-                'eventyay-video-category-{}'.format(p.item.category_id)
+                'eventyay-video-category-{}'.format(p.product.category_id)
                 for p in position.addons.all()
-                if p.item.category_id
+                if p.product.category_id
             }
         ),
     }

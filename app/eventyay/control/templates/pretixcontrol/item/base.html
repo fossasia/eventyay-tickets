@@ -21,7 +21,7 @@
         <div class="alert alert-warning">
             {% blocktrans trimmed %}
                 Please note that your product will <strong>not</strong> be available for sale until you have added your
-                item to an existing or newly created quota.
+                product to an existing or newly created quota.
             {% endblocktrans %}
         </div>
     {% elif object.pk and not object.is_available_by_time %}

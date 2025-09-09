@@ -55,11 +55,11 @@
     <form method="post" href="">
         {% csrf_token %}
         {% for position in positions %}
-            <div class="panel panel-default items">
+            <div class="panel panel-default products">
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         #{{ position.positionid }} –
-                        <strong>{{ position.item }}</strong>
+                        <strong>{{ position.product }}</strong>
                         {% if position.variation %}
                             – {{ position.variation }}
                         {% endif %}
@@ -84,7 +84,7 @@
                             <div class="alert alert-warning">
                                 {% blocktrans trimmed %}
                                     This position has been created with a voucher with a limited budget. If you
-                                    change the price or item, the discount will still be calculated from the original
+                                    change the price or product, the discount will still be calculated from the original
                                     price at the time of purchase.
                                 {% endblocktrans %}
                             </div>
@@ -130,13 +130,13 @@
                                 <strong>{% trans "Product" %}</strong>
                             </div>
                             <div class="col-sm-5">
-                                {{ position.item }}
+                                {{ position.product }}
                                 {% if position.variation %}
                                     – {{ position.variation }}
                                 {% endif %}
                             </div>
                             <div class="col-sm-4">
-                                {% bootstrap_field position.form.itemvar layout='inline' %}
+                                {% bootstrap_field position.form.productvar layout='inline' %}
                             </div>
                         </div>
 
@@ -202,7 +202,7 @@
             {% bootstrap_formset_errors add_formset %}
             <div data-formset-body>
                 {% for add_form in add_formset %}
-                    <div class="panel panel-default items" data-formset-form data-subevent="0">
+                    <div class="panel panel-default products" data-formset-form data-subevent="0">
                         <div class="panel-heading">
                             <h3 class="panel-title">
                                 <button type="button" class="btn btn-delete btn-danger btn-xs pull-right flip"
@@ -224,7 +224,7 @@
                                         {{ add_form.custom_error }}
                                     </div>
                                 {% endif %}
-                                {% bootstrap_field add_form.itemvar layout="control" %}
+                                {% bootstrap_field add_form.productvar layout="control" %}
                                 {% bootstrap_field add_form.price addon_after=request.event.currency layout="control" %}
                                 {% if add_form.addon_to %}
                                     {% bootstrap_field add_form.addon_to layout="control" %}
@@ -240,7 +240,7 @@
             </div>
             <script type="form-template" data-formset-empty-form>
                 {% escapescript %}
-                    <div class="panel panel-default items" data-formset-form data-subevent="0">
+                    <div class="panel panel-default products" data-formset-form data-subevent="0">
                         <div class="panel-heading">
                             <h3 class="panel-title">
                                 <button type="button" class="btn btn-delete btn-danger btn-xs pull-right flip"
@@ -256,7 +256,7 @@
                         </div>
                         <div class="panel-body">
                             <div class="form-horizontal">
-                                {% bootstrap_field add_formset.empty_form.itemvar layout="control" %}
+                                {% bootstrap_field add_formset.empty_form.productvar layout="control" %}
                                 {% bootstrap_field add_formset.empty_form.price addon_after=request.event.currency layout="control" %}
                                 {% if add_formset.empty_form.addon_to %}
                                     {% bootstrap_field add_formset.empty_form.addon_to layout="control" %}
@@ -277,7 +277,7 @@
         </div>
 
         {% for fee in fees %}
-            <div class="panel panel-default items">
+            <div class="panel panel-default products">
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         <strong>{{ fee.get_fee_type_display }}</strong>
@@ -333,7 +333,7 @@
                 </div>
             </div>
         {% endfor %}
-        <div class="panel panel-default items">
+        <div class="panel panel-default products">
             <div class="panel-heading">
                 <h3 class="panel-title">
                     {% trans "Other operations" %}

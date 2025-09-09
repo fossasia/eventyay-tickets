@@ -12,8 +12,8 @@
     src: url('{% static "fonts/AND-Regular.ttf" %}') format('truetype');
 }
 
-{% for family, styles in fonts.items %}
-{% for style, formats in styles.items %}
+{% for family, styles in fonts.products %}
+{% for style, formats in styles.products %}
 {% if "sample" not in style %}
 @font-face {
     font-family: '{{ family }}';

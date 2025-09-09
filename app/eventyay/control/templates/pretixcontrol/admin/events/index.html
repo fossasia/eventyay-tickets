@@ -86,7 +86,7 @@
                     <td class="event-name-col">
                         <strong><a href='{% url "control:event.index" organizer=e.organizer.slug event=e.slug %}'>{{ e.name }}</a></strong>
                         <br><small>{{ e.slug }}</small>
-                        {% for k, v in e.meta_data.items %}
+                        {% for k, v in e.meta_data.products %}
                             {% if v %}
                                 <small class="text-muted">&middot; {{ k }}: {{ v }}</small>
                             {% endif %}
@@ -119,7 +119,7 @@
                             {% include "pretixcontrol/fragment_quota_box_paid.html" with quota=q %}
                         {% endfor %}
                         {% if e.first_quotas|length > 3 %}
-                            <a href='{% url "control:event.items.quotas" organizer=e.organizer.slug event=e.slug %}'
+                            <a href='{% url "control:event.products.quotas" organizer=e.organizer.slug event=e.slug %}'
                                     class="quotabox-more" data-toggle="tooltip" title="{% trans "More quotas" %}"
                                     data-placement="top">
                                 &middot;&middot;&middot;

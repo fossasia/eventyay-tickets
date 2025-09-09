@@ -81,7 +81,7 @@ class ProductList(ListView):
     # paginate_by = 30
     # Pagination is disabled as it is very unlikely to be necessary
     # here and could cause problems with the "reorder-within-category" feature
-    template_name = 'pretixcontrol/items/index.html'
+    template_name = 'pretixcontrol/products/index.html'
 
     def get_queryset(self):
         return (
@@ -122,7 +122,7 @@ def product_move(request, product, up=True):
     messages.success(request, _('The order of products has been updated.'))
 
 
-@event_permission_required('can_change_items')
+@event_permission_required('can_change_products')
 def product_move_up(request, organizer, event, product):
     product_move(request, product, up=True)
     return redirect(
@@ -132,7 +132,7 @@ def product_move_up(request, organizer, event, product):
     )
 
 
-@event_permission_required('can_change_items')
+@event_permission_required('can_change_products')
 def product_move_down(request, organizer, event, product):
     product_move(request, product, up=False)
     return redirect(
@@ -144,8 +144,8 @@ def product_move_down(request, organizer, event, product):
 
 class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
     model = ProductCategory
-    template_name = 'pretixcontrol/items/category_delete.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/category_delete.html'
+    permission = 'can_change_products'
     context_object_name = 'category'
 
     def get_object(self, queryset=None) -> ProductCategory:
@@ -179,8 +179,8 @@ class CategoryDelete(EventPermissionRequiredMixin, DeleteView):
 class CategoryUpdate(EventPermissionRequiredMixin, UpdateView):
     model = ProductCategory
     form_class = CategoryForm
-    template_name = 'pretixcontrol/items/category.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/category.html'
+    permission = 'can_change_products'
     context_object_name = 'category'
 
     def get_object(self, queryset=None) -> ProductCategory:
@@ -218,8 +218,8 @@ class CategoryUpdate(EventPermissionRequiredMixin, UpdateView):
 class CategoryCreate(EventPermissionRequiredMixin, CreateView):
     model = ProductCategory
     form_class = CategoryForm
-    template_name = 'pretixcontrol/items/category.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/category.html'
+    permission = 'can_change_products'
     context_object_name = 'category'
 
     def get_success_url(self) -> str:
@@ -270,7 +270,7 @@ class CategoryCreate(EventPermissionRequiredMixin, CreateView):
 class CategoryList(PaginationMixin, ListView):
     model = ProductCategory
     context_object_name = 'categories'
-    template_name = 'pretixcontrol/items/categories.html'
+    template_name = 'pretixcontrol/products/categories.html'
 
     def get_queryset(self):
         return self.request.event.categories.all()
@@ -307,7 +307,7 @@ def category_move(request, category, up=True):
     messages.success(request, _('The order of categories has been updated.'))
 
 
-@event_permission_required('can_change_items')
+@event_permission_required('can_change_products')
 def category_move_up(request, organizer, event, category):
     category_move(request, category, up=True)
     return redirect(
@@ -317,7 +317,7 @@ def category_move_up(request, organizer, event, category):
     )
 
 
-@event_permission_required('can_change_items')
+@event_permission_required('can_change_products')
 def category_move_down(request, organizer, event, category):
     category_move(request, category, up=False)
     return redirect(
@@ -333,7 +333,7 @@ FakeQuestion = namedtuple('FakeQuestion', 'id question position required')
 class QuestionList(ListView):
     model = Question
     context_object_name = 'questions'
-    template_name = 'pretixcontrol/items/questions.html'
+    template_name = 'pretixcontrol/products/questions.html'
 
     def get_queryset(self):
         return self.request.event.questions.prefetch_related('products')
@@ -411,7 +411,7 @@ class QuestionList(ListView):
 
 
 @transaction.atomic
-@event_permission_required('can_change_items')
+@event_permission_required('can_change_products')
 def reorder_questions(request, organizer, event):
     try:
         ids = json.loads(request.body.decode('utf-8'))['ids']
@@ -453,8 +453,8 @@ def reorder_questions(request, organizer, event):
 
 class QuestionDelete(EventPermissionRequiredMixin, DeleteView):
     model = Question
-    template_name = 'pretixcontrol/items/question_delete.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/question_delete.html'
+    permission = 'can_change_products'
     context_object_name = 'question'
 
     def get_object(self, queryset=None) -> Question:
@@ -488,7 +488,7 @@ class QuestionDelete(EventPermissionRequiredMixin, DeleteView):
 
 
 class DescriptionDelete(QuestionDelete):
-    template_name = 'pretixcontrol/items/desciption_delete.html'
+    template_name = 'pretixcontrol/products/desciption_delete.html'
 
 
 class QuestionMixin:
@@ -555,8 +555,8 @@ class QuestionMixin:
 
 class QuestionView(EventPermissionRequiredMixin, QuestionMixin, ChartContainingView, DetailView):
     model = Question
-    template_name = 'pretixcontrol/items/question.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/question.html'
+    permission = 'can_change_products'
     template_name_field = 'question'
 
     def get_answer_statistics(self):
@@ -670,8 +670,8 @@ class QuestionView(EventPermissionRequiredMixin, QuestionMixin, ChartContainingV
 class QuestionUpdate(EventPermissionRequiredMixin, QuestionMixin, UpdateView):
     model = Question
     form_class = QuestionForm
-    template_name = 'pretixcontrol/items/question_edit.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/question_edit.html'
+    permission = 'can_change_products'
     context_object_name = 'question'
 
     def get_object(self, queryset=None) -> Question:
@@ -711,14 +711,14 @@ class QuestionUpdate(EventPermissionRequiredMixin, QuestionMixin, UpdateView):
 
 class DescriptionUpdate(QuestionUpdate):
     form_class = DescriptionForm
-    template_name = 'pretixcontrol/items/description_edit.html'
+    template_name = 'pretixcontrol/products/description_edit.html'
 
 
 class QuestionCreate(EventPermissionRequiredMixin, QuestionMixin, CreateView):
     model = Question
     form_class = QuestionForm
-    template_name = 'pretixcontrol/items/question_edit.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/question_edit.html'
+    permission = 'can_change_products'
     context_object_name = 'question'
 
     def get_form_kwargs(self):
@@ -764,13 +764,13 @@ class QuestionCreate(EventPermissionRequiredMixin, QuestionMixin, CreateView):
 
 class DescriptionCreate(QuestionCreate):
     form_class = DescriptionForm
-    template_name = 'pretixcontrol/items/description_edit.html'
+    template_name = 'pretixcontrol/products/description_edit.html'
 
 
 class QuotaList(PaginationMixin, ListView):
     model = Quota
     context_object_name = 'quotas'
-    template_name = 'pretixcontrol/items/quotas.html'
+    template_name = 'pretixcontrol/products/quotas.html'
 
     def get_queryset(self):
         qs = self.request.event.quotas.prefetch_related(
@@ -818,8 +818,8 @@ class QuotaList(PaginationMixin, ListView):
 class QuotaCreate(EventPermissionRequiredMixin, CreateView):
     model = Quota
     form_class = QuotaForm
-    template_name = 'pretixcontrol/items/quota_edit.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/quota_edit.html'
+    permission = 'can_change_products'
     context_object_name = 'quota'
 
     def get_success_url(self) -> str:
@@ -873,7 +873,7 @@ class QuotaCreate(EventPermissionRequiredMixin, CreateView):
 
 class QuotaView(ChartContainingView, DetailView):
     model = Quota
-    template_name = 'pretixcontrol/items/quota.html'
+    template_name = 'pretixcontrol/products/quota.html'
     context_object_name = 'quota'
 
     def get_context_data(self, *args, **kwargs):
@@ -1010,7 +1010,7 @@ class QuotaView(ChartContainingView, DetailView):
             raise Http404(_('The requested quota does not exist.'))
 
     def post(self, request, *args, **kwargs):
-        if not request.user.has_event_permission(request.organizer, request.event, 'can_change_items', request):
+        if not request.user.has_event_permission(request.organizer, request.event, 'can_change_products', request):
             raise PermissionDenied()
         quota = self.get_object()
         if 'reopen' in request.POST:
@@ -1044,8 +1044,8 @@ class QuotaView(ChartContainingView, DetailView):
 class QuotaUpdate(EventPermissionRequiredMixin, UpdateView):
     model = Quota
     form_class = QuotaForm
-    template_name = 'pretixcontrol/items/quota_edit.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/quota_edit.html'
+    permission = 'can_change_products'
     context_object_name = 'quota'
 
     def get_context_data(self, *args, **kwargs):
@@ -1103,8 +1103,8 @@ class QuotaUpdate(EventPermissionRequiredMixin, UpdateView):
 
 class QuotaDelete(EventPermissionRequiredMixin, DeleteView):
     model = Quota
-    template_name = 'pretixcontrol/items/quota_delete.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/products/quota_delete.html'
+    permission = 'can_change_products'
     context_object_name = 'quota'
 
     def get_object(self, queryset=None) -> Quota:
@@ -1187,8 +1187,8 @@ class MetaDataEditorMixin:
 
 class ProductCreate(EventPermissionRequiredMixin, CreateView):
     form_class = ProductCreateForm
-    template_name = 'pretixcontrol/item/create.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/product/create.html'
+    permission = 'can_change_products'
 
     def get_success_url(self) -> str:
         return reverse(
@@ -1265,8 +1265,8 @@ class ProductCreate(EventPermissionRequiredMixin, CreateView):
 
 class ProductUpdateGeneral(ProductDetailMixin, EventPermissionRequiredMixin, MetaDataEditorMixin, UpdateView):
     form_class = ProductUpdateForm
-    template_name = 'pretixcontrol/item/index.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/product/index.html'
+    permission = 'can_change_products'
 
     @cached_property
     def plugin_forms(self):
@@ -1509,8 +1509,8 @@ class ProductUpdateGeneral(ProductDetailMixin, EventPermissionRequiredMixin, Met
 
 class ProductDelete(EventPermissionRequiredMixin, DeleteView):
     model = Product
-    template_name = 'pretixcontrol/item/delete.html'
-    permission = 'can_change_items'
+    template_name = 'pretixcontrol/product/delete.html'
+    permission = 'can_change_products'
     context_object_name = 'product'
 
     def get_context_data(self, *args, **kwargs) -> dict:

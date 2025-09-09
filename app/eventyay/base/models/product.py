@@ -170,7 +170,7 @@ class SubEventProductVariation(models.Model):
 
 def filter_available(qs, channel='web', voucher=None, allow_addons=False):
     q = (
-        # IMPORTANT: If this is updated, also update the ItemVariation query
+        # IMPORTANT: If this is updated, also update the productVariation query
         # in models/event.py: EventMixin.annotated()
         Q(active=True)
         & Q(Q(available_from__isnull=True) | Q(available_from__lte=now()))
@@ -209,7 +209,7 @@ class ProductQuerySetManager(ScopedManager(organizer='event__organizer').__class
 class Product(LoggedModel):
     """
     An product is a thing which can be sold. It belongs to an event and may or may not belong to a category.
-    Product was previously named 'Item' or referenced as 'items' internally due to historic reasons.
+    Product was previously named 'product' or referenced as 'products' internally due to historic reasons.
 
     :param event: The event this product belongs to
     :type event: Event
