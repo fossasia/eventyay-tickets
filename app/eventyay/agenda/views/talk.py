@@ -14,18 +14,18 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView, View
 from django_context_decorator import context
 
-from pretalx.agenda.signals import register_recording_provider
-from pretalx.agenda.views.utils import encode_email
-from pretalx.cfp.views.event import EventPageMixin
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views.mixins import (
+from eventyay.agenda.signals import register_recording_provider
+from eventyay.agenda.views.utils import encode_email
+from eventyay.cfp.views.event import EventPageMixin
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views.mixins import (
     EventPermissionRequired,
     PermissionRequired,
     SocialMediaCardMixin,
 )
-from pretalx.schedule.models import TalkSlot
-from pretalx.submission.forms import FeedbackForm
-from pretalx.submission.models import Submission, SubmissionStates
+from eventyay.base.models import TalkSlot
+from eventyay.submission.forms import FeedbackForm
+from eventyay.base.models import Submission, SubmissionStates
 
 
 class TalkMixin(PermissionRequired):
@@ -90,6 +90,8 @@ class TalkView(TalkMixin, TemplateView):
         return response
 
     def get_context_data(self, **kwargs):
+        from django.db.models import Prefetch
+        
         ctx = super().get_context_data(**kwargs)
         schedule = (
             self.request.event.current_schedule or self.request.event.wip_schedule
@@ -193,7 +195,7 @@ class SingleICalView(EventPageMixin, TalkMixin, View):
 
         netloc = urlparse(settings.SITE_URL).netloc
         cal = vobject.iCalendar()
-        cal.add("prodid").value = f"-//pretalx//{netloc}//{code}"
+        cal.add("prodid").value = f"-//eventyay//{netloc}//{code}"
         for talk in talk_slots:
             talk.build_ical(cal)
         return HttpResponse(
@@ -280,7 +282,7 @@ class OnlineVideoJoin(EventPermissionRequired, View):
     def get(self, request, *args, **kwargs):
         # First check video is configured or not
         if (
-            "pretalx_venueless" not in request.event.plugin_list
+            "eventyay_venueless" not in request.event.plugin_list
             or not request.event.venueless_settings
             or not request.event.venueless_settings.join_url
             or not request.event.venueless_settings.secret
@@ -321,7 +323,7 @@ class OnlineVideoJoin(EventPermissionRequired, View):
             profile = {
                 "display_name": request.user.name,
                 "fields": {
-                    "pretalx_id": request.user.code,
+                    "eventyay_id": request.user.code,
                 },
             }
             if request.user.avatar_url:

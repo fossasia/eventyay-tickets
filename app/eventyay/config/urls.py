@@ -55,6 +55,7 @@ admin_patterns = [
 
 talk_patterns = [
     path('orga/', include('eventyay.orga.urls')),
+    path("", include("eventyay.agenda.urls", namespace="agenda")),
     path("", include("eventyay.cfp.urls", namespace="cfp")),
     url(r'^redirect/$', redirect.redir_view, name='redirect'),
 ]

@@ -17,15 +17,15 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.agenda.views.utils import (
+from eventyay.agenda.views.utils import (
     get_schedule_exporter_content,
     get_schedule_exporters,
 )
-from pretalx.common.signals import register_my_data_exporters
-from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired
-from pretalx.schedule.ascii import draw_ascii_schedule
-from pretalx.schedule.exporters import ScheduleData
-from pretalx.submission.models.submission import SubmissionFavouriteDeprecated
+from eventyay.common.signals import register_my_data_exporters
+from eventyay.common.views.mixins import EventPermissionRequired, PermissionRequired
+from eventyay.schedule.ascii import draw_ascii_schedule
+from eventyay.schedule.exporters import ScheduleData
+from eventyay.base.models.submission import SubmissionFavouriteDeprecated
 
 
 class ScheduleMixin:
@@ -118,7 +118,7 @@ class ScheduleView(PermissionRequired, ScheduleMixin, TemplateView):
             result = draw_ascii_schedule(data, output_format=output_format)
         except StopIteration:  # pragma: no cover
             result = draw_ascii_schedule(data, output_format="list")
-        result += "\n\n  📆 powered by pretalx"
+        result += "\n\n  📆 powered by eventyay"
         return HttpResponse(
             response_start + result, content_type="text/plain; charset=utf-8"
         )
@@ -203,7 +203,7 @@ def schedule_messages(request, **kwargs):
     }
     strings = {key: str(value) for key, value in strings.items()}
     return HttpResponse(
-        f"const PRETALX_MESSAGES = {json.dumps(strings)};",
+        f"const EVENTYAY_MESSAGES = {json.dumps(strings)};",
         content_type="application/javascript",
     )
 

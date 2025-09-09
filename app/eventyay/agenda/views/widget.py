@@ -8,8 +8,8 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
-from pretalx.agenda.rules import is_widget_visible
-from pretalx.common.views import conditional_cache_page
+from eventyay.talk_rules.agenda import is_widget_visible
+from eventyay.common.views import conditional_cache_page
 
 WIDGET_JS_CHECKSUM = None
 WIDGET_PATH = "agenda/js/pretalx-schedule.min.js"
@@ -59,7 +59,7 @@ def version_prefix(request, event, version=None):
         "Access-Control-Allow-Origin": "*",
     },
 )
-@csp_exempt
+@csp_exempt()
 def widget_data(request, event, version=None):
     # Caching this page is tricky: We need the user to occasionally
     # ask for new data, and we definitely need to give them new data on schedule
@@ -106,7 +106,7 @@ def widget_data(request, event, version=None):
 
 
 @condition(etag_func=widget_js_etag)
-@csp_exempt
+@csp_exempt()
 def widget_script(request, event):
     # This page basically just serves a static file under a known path (ideally, the
     # administrators could and should even turn on gzip compression for the
@@ -125,14 +125,14 @@ def widget_script(request, event):
 
 @condition(etag_func=color_etag)
 @cache_page(5 * 60)
-@csp_exempt
+@csp_exempt()
 def event_css(request, event):
     # If this event has custom colours, we send back a simple CSS file that sets the
     # root colours for the event.
     result = ""
     if request.event.primary_color:
         if request.GET.get("target") == "orga":
-            # The organiser area sometimes needs the event’s colour, but shouldn’t use
+            # The organizer area sometimes needs the event’s colour, but shouldn’t use
             # it as primary colour automatically.
             result = (
                 ":root {"

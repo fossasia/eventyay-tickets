@@ -1,6 +1,6 @@
 from django.urls import include, path, re_path
 
-from pretalx.common.views import EventSocialMediaCard, get_static
+from eventyay.common.views import EventSocialMediaCard, get_static
 
 from .views import featured, feed, schedule, speaker, talk, widget
 

@@ -13,15 +13,15 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.text.path import safe_filename
-from pretalx.common.views.mixins import (
+from eventyay.common.text.path import safe_filename
+from eventyay.common.views.mixins import (
     EventPermissionRequired,
     Filterable,
     PermissionRequired,
     SocialMediaCardMixin,
 )
-from pretalx.person.models import SpeakerProfile, User
-from pretalx.submission.models import QuestionTarget
+from eventyay.base.models import SpeakerProfile, User
+from eventyay.base.models import TalkQuestionTarget
 
 
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
@@ -87,8 +87,8 @@ class SpeakerView(PermissionRequired, TemplateView):
         return self.profile.user.answers.filter(
             question__is_public=True,
             question__event=self.request.event,
-            question__target=QuestionTarget.SPEAKER,
-        ).select_related("question")
+            question__target=TalkQuestionTarget.SPEAKER,
+        ).select_related("talkquestion")
 
 
 class SpeakerRedirect(DetailView):
@@ -125,7 +125,7 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
 
         cal = vobject.iCalendar()
         cal.add("prodid").value = (
-            f"-//pretalx//{netloc}//{request.event.slug}//{speaker.code}"
+            f"-//eventyay//{netloc}//{request.event.slug}//{speaker.code}"
         )
 
         for slot in slots:

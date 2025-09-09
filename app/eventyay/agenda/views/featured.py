@@ -4,8 +4,8 @@ from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.views.mixins import EventPermissionRequired
-from pretalx.submission.models.submission import SubmissionStates
+from eventyay.common.views.mixins import EventPermissionRequired
+from eventyay.base.models.submission import SubmissionStates
 
 
 def sneakpeek_redirect(request, *args, **kwargs):
