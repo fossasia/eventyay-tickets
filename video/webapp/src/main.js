@@ -13,7 +13,6 @@ import Scrollbars from 'components/Scrollbars'
 import LinkIconButton from 'components/link-icon-button'
 import MediaQueries from 'components/mixins/media-queries'
 import dynamicLineClamp from './components/directives/dynamic-line-clamp'
-import scrollbarDirective from 'components/directives/scrollbar'
 import 'styles/global.styl'
 import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
@@ -55,14 +54,6 @@ async function init({ token, inviteToken }) {
   app.use(MediaQueries)
   app.use(emojiPlugin)
   app.use(dynamicLineClamp)
-  // Guard against multiple registrations of the same directive
-  try {
-    const existing = app._context.directives && app._context.directives.scrollbar
-    if (!existing) app.directive('scrollbar', scrollbarDirective)
-  } catch (e) {
-    // some environments may not have _context; fall back to register
-    app.directive('scrollbar', scrollbarDirective)
-  }
   // Initialize i18n and theme
   await i18nInit(app)
   app.config.globalProperties.$features = features
