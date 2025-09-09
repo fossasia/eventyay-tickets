@@ -212,11 +212,11 @@ _OURS_MIDDLEWARES = (
 
 MIDDLEWARE = _LIBRARY_MIDDLEWARES + _OURS_MIDDLEWARES
 
-# CORE_MODULES = {
-#     'eventyay.base',
-#     'eventyay.presale',
-#     'eventyay.control',
-# }
+CORE_MODULES = {
+    'eventyay.base',
+    'eventyay.presale',
+    'eventyay.control',
+}
 
 template_loaders = (
     'django.template.loaders.filesystem.Loader',
