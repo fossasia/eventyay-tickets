@@ -38,15 +38,15 @@
 		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 		.errors {{ validationErrors.join(', ') }}
 </template>
-<script>
+<script setup>
+import { ref, computed, onMounted, getCurrentInstance } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import api from 'lib/api'
 import { locales } from 'locales'
 import { required, integer, isJson, url } from 'lib/validators'
-import ValidationErrorsMixin from 'components/mixins/validation-errors'
 
+// Static list: don't use moment.locales() as locales are lazy-loaded
 const momentLocaleSet = [
-	// do not use moment.locales() since moment lazy-loads locales and will only return "en" and the active locale
 	'af', 'ar', 'ar-dz', 'ar-kw', 'ar-ly', 'ar-ma', 'ar-sa', 'ar-tn', 'az', 'be', 'bg', 'bm', 'bn', 'bo', 'br', 'bs',
 	'ca', 'cs', 'cv', 'cy', 'da', 'de', 'de-at', 'de-ch', 'dv', 'el', 'en-au', 'en-ca', 'en-gb', 'en-ie', 'en-il',
 	'en-in', 'en-nz', 'en-sg', 'eo', 'es', 'es-do', 'es-us', 'et', 'eu', 'fa', 'fi', 'fil', 'fo', 'fr', 'fr-ca', 'fr-ch',
@@ -58,95 +58,75 @@ const momentLocaleSet = [
 	'x-pseudo', 'yo', 'zh-cn', 'zh-hk', 'zh-mo', 'zh-tw',
 ]
 
-export default {
-	mixins: [ValidationErrorsMixin],
-	setup:() => ({v$:useVuelidate()}),
-	data() {
-		return {
-			config: null,
-			hlsConfig: '',
-			saving: false,
-			errors: [],
-			error: null
-		}
-	},
-	computed: {
-		locales() {
-			return locales
+const config = ref(null)
+const hlsConfig = ref('')
+const saving = ref(false)
+const error = ref(null)
+
+// Computed replacements for former mixin + option API computeds
+const momentLocales = computed(() => momentLocaleSet)
+// locales already imported; expose as is
+const validationErrors = computed(() => v$.value.$errors?.map(e => e.$message) || [])
+
+// Validation rules
+const rules = {
+	config: {
+		title: {required: required('title is required')},
+		timezone: {required: required('timezone is required')},
+		connection_limit: {
+			required: required('Connection Limit is required'),
+			integer: integer('Connection limit must be a number')
 		},
-		momentLocales() {
-			return momentLocaleSet
-		}
+		conftool_url: {url: url('Conftool URL must be a URL')}
 	},
-	validations: {
-		config: {
-			title: {
-				required: required('title is required')
-			},
-			timezone: {
-				required: required('timezone is required')
-			},
-			connection_limit: {
-				required: required('Connection Limit is required'),
-				integer: integer('Connection limit must be a number')
-			},
-			conftool_url: {
-				url: url('Conftool URL must be a URL'),
-			},
-		},
-		hlsConfig: {
-			isJson: isJson()
+	hlsConfig: { isJson: isJson() }
+}
+
+const v$ = useVuelidate(rules, { config, hlsConfig })
+
+onMounted(async () => {
+	try {
+		config.value = await api.call('world.config.get')
+		hlsConfig.value = JSON.stringify(config.value.video_player?.['hls.js'] || undefined, null, 2)
+	} catch (e) {
+		error.value = e.message || e.toString()
+		console.log(e)
+	}
+})
+
+async function save() {
+	v$.value.$touch()
+	if (v$.value.$invalid) return
+	if (!config.value) return
+	saving.value = true
+	try {
+		const patch = {
+			title: config.value.title,
+			locale: config.value.locale,
+			date_locale: config.value.date_locale,
+			timezone: config.value.timezone,
+			connection_limit: config.value.connection_limit,
+			bbb_defaults: config.value.bbb_defaults,
+			track_exhibitor_views: config.value.track_exhibitor_views,
+			track_room_views: config.value.track_room_views,
+			track_world_views: config.value.track_world_views
 		}
-	},
-	async created() {
-		// We don't use the global world object since it e.g. currently does not contain locale and timezone
-		// TODO: Force reloading if world.updated is received from the server
-		try {
-			this.config = await api.call('world.config.get')
-			this.hlsConfig = JSON.stringify(this.config.video_player?.['hls.js'] || undefined, null, 2)
-		} catch (error) {
-			this.error = error.message || error.toString()
-			console.log(error)
+		const { proxy } = getCurrentInstance() // access global features plugin
+		if (proxy?.$features?.enabled('conftool')) {
+			patch.conftool_url = config.value.conftool_url
+			patch.conftool_password = config.value.conftool_password
 		}
-	},
-	methods: {
-		async save() {
-			this.v$.$touch()
-			if (this.v$.$invalid) return
-			if (!this.config) return
-			// TODO validate connection limit is a number
-			this.saving = true
-			try {
-				const patch = {
-					title: this.config.title,
-					locale: this.config.locale,
-					date_locale: this.config.date_locale,
-					timezone: this.config.timezone,
-					connection_limit: this.config.connection_limit,
-					bbb_defaults: this.config.bbb_defaults,
-					track_exhibitor_views: this.config.track_exhibitor_views,
-					track_room_views: this.config.track_room_views,
-					track_world_views: this.config.track_world_views
-				}
-				if (this.$features.enabled('conftool')) {
-					patch.conftool_url = this.config.conftool_url
-					patch.conftool_password = this.config.conftool_password
-				}
-				if (this.hlsConfig) {
-					patch.video_player = {
-						'hls.js': JSON.parse(this.hlsConfig)
-					}
-				} else {
-					patch.video_player = null
-				}
-				await api.call('world.config.patch', patch)
-			} catch (error) {
-				console.error(error.apiError || error)
-				this.error = error.apiError?.code || error.message || error.toString()
-			} finally {
-				this.saving = false
-			}
-		},
+		if (hlsConfig.value) {
+			patch.video_player = { 'hls.js': JSON.parse(hlsConfig.value) }
+		} else {
+			patch.video_player = null
+		}
+		await api.call('world.config.patch', patch)
+	} catch (e) {
+		console.error(e.apiError || e)
+		error.value = e.apiError?.code || e.message || e.toString()
+	} finally {
+		saving.value = false
 	}
 }
 </script>

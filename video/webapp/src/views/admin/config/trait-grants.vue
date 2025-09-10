@@ -14,65 +14,65 @@
 		bunt-select(name="remainingRoles", label="New role", :options="remainingRoles", v-model="newRole")
 		bunt-button.btn-add-role(@click="addTraitGrant") Add role
 </template>
-<script>
+<script setup>
+import { ref, reactive, watch, computed, toRefs } from 'vue'
 import { parseTraitGrants, stringifyTraitGrants } from 'lib/traitGrants'
 
-export default {
-	props: {
-		traitGrants: Object,
-		config: Object
+const props = defineProps({
+	traitGrants: { type: Object, default: () => ({}) },
+	config: { type: Object, default: () => ({ roles: {} }) }
+})
+const emit = defineEmits(['changed', 'update:traitGrants'])
+
+const newRole = ref(null)
+const localTraitGrants = reactive({})
+
+const { traitGrants, config } = toRefs(props)
+
+watch(
+	() => props.traitGrants,
+	(val) => {
+		// Reset reactive object to preserve reactivity references
+		Object.keys(localTraitGrants).forEach(k => delete localTraitGrants[k])
+		Object.assign(localTraitGrants, JSON.parse(JSON.stringify(val || {})))
 	},
-	emits: ['changed', 'update:traitGrants'],
-	data() {
-		return {
-			newRole: null,
-			localTraitGrants: {}
-		}
-	},
-	computed: {
-		remainingRoles() {
-			const existingRoles = Object.keys(this.localTraitGrants)
-			return Object.keys(this.config.roles).filter(role => !existingRoles.includes(role))
-		}
-	},
-	watch: {
-		traitGrants: {
-			immediate: true,
-			handler(val) {
-				this.localTraitGrants = JSON.parse(JSON.stringify(val || {}))
-			}
-		}
-	},
-	mounted() {
-		this.$nextTick(() => {
-		})
-	},
-	methods: {
-		getTraitGrants(traits) {
-			return stringifyTraitGrants(traits)
-		},
-		setTraitGrants(role, traits) {
-			if (typeof this.localTraitGrants[role] !== 'undefined') {
-				this.localTraitGrants[role] = parseTraitGrants(traits)
-			}
-			this.$emit('update:traitGrants', JSON.parse(JSON.stringify(this.localTraitGrants)))
-			this.$emit('changed')
-		},
-		removeTraitGrant(role) {
-			const copy = {...this.localTraitGrants}
-			delete copy[role]
-			this.localTraitGrants = copy
-			this.$emit('update:traitGrants', JSON.parse(JSON.stringify(this.localTraitGrants)))
-			this.$emit('changed')
-		},
-		addTraitGrant() {
-			if (!this.newRole) return
-			this.localTraitGrants = { ...this.localTraitGrants, [this.newRole]: [] }
-			this.newRole = null
-			this.$emit('update:traitGrants', JSON.parse(JSON.stringify(this.localTraitGrants)))
-			this.$emit('changed')
-		}
+	{ immediate: true, deep: true }
+)
+
+const remainingRoles = computed(() => {
+	const existingRoles = Object.keys(localTraitGrants)
+	return Object.keys(config.value.roles || {}).filter(role => !existingRoles.includes(role))
+})
+
+function getTraitGrants(traits) {
+	return stringifyTraitGrants(traits)
+}
+
+function emitUpdate() {
+	// Deep clone to avoid exposing internal reactive object
+	emit('update:traitGrants', JSON.parse(JSON.stringify(localTraitGrants)))
+	emit('changed')
+}
+
+function setTraitGrants(role, traits) {
+	if (typeof localTraitGrants[role] !== 'undefined') {
+		localTraitGrants[role] = parseTraitGrants(traits)
 	}
+	emitUpdate()
+}
+
+function removeTraitGrant(role) {
+	if (Object.prototype.hasOwnProperty.call(localTraitGrants, role)) {
+		delete localTraitGrants[role]
+		emitUpdate()
+	}
+}
+
+function addTraitGrant() {
+	if (!newRole.value) return
+	localTraitGrants[newRole.value] = []
+	newRole.value = null
+	emitUpdate()
 }
 </script>
 <style lang="stylus">
