@@ -5,16 +5,16 @@ msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-06 10:28+0000\n"
-"PO-Revision-Date: 2021-03-30 19:44+0000\n"
-"Last-Translator: Richard Schreiber <schreiber@rami.io>\n"
-"Language-Team: German <https://translate.eventyay.com/projects/pretix/pretix/"
-"de/>\n"
+"PO-Revision-Date: 2025-09-11 10:39+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/open-event/"
+"eventyay-tickets/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 5.14-dev\n"
 "X-Poedit-Bookmarks: -1,-1,904,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: pretix/api/auth/devicesecurity.py:6
@@ -50,10 +50,8 @@ msgid "Allowed URIs list, space separated"
 msgstr "Liste erlaubter URLs, mit Leerzeichen getrennt"
 
 #: pretix/api/models.py:26
-#, fuzzy
-#| msgid "Allowed URIs list, space separated"
 msgid "Allowed list with space separated"
-msgstr "Liste erlaubter URLs, mit Leerzeichen getrennt"
+msgstr "Erlaubte Liste, mit Leerzeichen getrennt"
 
 #: pretix/api/models.py:30
 #: pretix/plugins/socialauth/templates/socialauth/social_auth_settings.html:56
@@ -208,10 +206,8 @@ msgstr ""
 
 #: pretix/api/serializers/organizer.py:142
 #: pretix/control/views/organizer_views/team_view.py:143
-#, fuzzy
-#| msgid "pretix account invitation"
 msgid "eventyay account invitation"
-msgstr "development team-Einladung"
+msgstr "Eventyay Konto-Einladung"
 
 #: pretix/api/serializers/organizer.py:164
 #: pretix/control/views/organizer_views/team_view.py:242
@@ -414,26 +410,14 @@ msgid ""
 msgstr "Frage für alle Eintritts-Tickets nach dem Namen des Teilnehmers."
 
 #: pretix/base/configurations/default_setting.py:106
-#, fuzzy
-#| msgid "Require all attendees to fill in their names"
 msgid "Require attendees to fill in their names for all admission tickets."
-msgstr "Erfordere, dass alle Teilnehmer ihre Namen ausfüllen"
+msgstr "Erfordere, dass Teilnehmer ihre Namen ausfüllen."
 
 #: pretix/base/configurations/default_setting.py:119
 msgid "Ask for email addresses per ticket"
 msgstr "E-Mail-Adressen pro Ticket erfassen"
 
 #: pretix/base/configurations/default_setting.py:121
-#, fuzzy
-#| msgid ""
-#| "Normally, pretix asks for one email address per order and the order "
-#| "confirmation will be sent only to that email address. If you enable this "
-#| "option, the system will additionally ask for individual email addresses "
-#| "for every admission ticket. This might be useful if you want to obtain "
-#| "individual addresses for every attendee even in case of group orders. "
-#| "However, pretix will send the order confirmation by default only to the "
-#| "one primary email address, not to the per-attendee addresses. You can "
-#| "however enable this in the E-mail settings."
 msgid ""
 "Normally, eventyay asks for one email address per order and the order "
 "confirmation will be sent only to that email address. If you enable this "
@@ -444,12 +428,12 @@ msgid ""
 "primary email address, not to the per-attendee addresses. You can however "
 "enable this in the E-mail settings."
 msgstr ""
-"Üblicherweise fragt pretix nach einer E-Mail-Adresse pro Bestellung und "
+"Üblicherweise fragt eventyay nach einer E-Mail-Adresse pro Bestellung und "
 "sendet die Bestellbestätigung an diese Adresse. Wenn Sie diese Option "
 "aktivieren, fragt das System zusätzlich nach einzelnen E-Mail-Adressen für "
 "jedes Zutritts-Ticket in der Bestellung. Dies könnte z.B. nützlich sein, "
 "wenn Sie auch im Falle von Gruppenbestellungen individuelle Adressen von "
-"jedem Teilnehmer benötigen. pretix sendet die Bestellbestätigung "
+"jedem Teilnehmer benötigen. eventyay sendet die Bestellbestätigung "
 "standardmäßig nach wie vor nur an die primäre Adresse, dies kann jedoch in "
 "den E-Mail-Einstellungen angepasst werden."
 
