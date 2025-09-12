@@ -20,7 +20,6 @@
 				bunt-select.timezone-item(name="timezone", :options="[{id: schedule.timezone, label: schedule.timezone}, {id: userTimezone, label: userTimezone}]", v-model="currentTimezone", @blur="saveTimezone")
 			template(v-else)
 				div.timezone-label.timezone-item.bunt-tab-header-item {{ schedule.timezone }}
-
 			.export.dropdown
 				bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
 				custom-dropdown(name="calendar-add1"
@@ -28,7 +27,6 @@
 					@update:modelValue="selectedExporter = $event; makeExport()"
 					:options="exportType"
 					label="Add to Calendar")
-
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :key="day.toISOString()", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		.scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
