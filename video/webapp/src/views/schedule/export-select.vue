@@ -52,15 +52,24 @@ export default {
 		options: {
 			type: Array,
 			required: true
+    },
+    modelValue: {
+      type: Object,
+      default: null
 		}
 	},
   emits: ['input', 'update:modelValue'],
 	data() {
 		return {
 			isOpen: false,
-			selectedOption: null,
+      selectedOption: this.modelValue ? this.modelValue.label : null,
 			hoveredOption: null,
 			qrCodes: {}
+		}
+	},
+  watch: {
+    modelValue(newVal) {
+      this.selectedOption = newVal ? newVal.label : null;
 		}
 	},
 	mounted() {
@@ -78,6 +87,7 @@ export default {
 		selectOption(option) {
 			this.selectedOption = option.label
 			this.isOpen = false
+      this.$emit('update:modelValue', option)
 			this.$emit('input', option)
 		},
 		outsideClick(event) {

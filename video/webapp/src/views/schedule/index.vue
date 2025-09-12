@@ -24,10 +24,10 @@
 			.export.dropdown
 				bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
 				custom-dropdown(name="calendar-add1"
-					v-model="selectedExporter"
+					:modelValue="selectedExporter"
+					@update:modelValue="selectedExporter = $event; makeExport()"
 					:options="exportType"
-					label="Add to Calendar"
-					@input="makeExport")
+					label="Add to Calendar")
 
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :key="day.toISOString()", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
@@ -280,6 +280,7 @@ export default {
 				window.URL.revokeObjectURL(downloadUrl)
 				a.remove()
 				this.isExporting = false
+				this.selectedExporter = null
 			} catch (error) {
 				this.isExporting = false
 				this.error = error
