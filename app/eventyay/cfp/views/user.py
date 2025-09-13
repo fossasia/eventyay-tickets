@@ -34,7 +34,7 @@ from eventyay.common.views import is_form_bound
 from eventyay.person.forms import LoginInfoForm, SpeakerProfileForm
 from eventyay.talk_rules.person import can_view_information
 from eventyay.schedule.forms import AvailabilitiesFormMixin
-from eventyay.submission.forms import InfoForm, QuestionsForm, ResourceForm
+from eventyay.submission.forms import InfoForm, TalkQuestionsForm, ResourceForm
 from eventyay.base.models import Resource, Submission, SubmissionStates
 
 logger = logging.getLogger(__name__)
@@ -77,7 +77,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
     @cached_property
     def questions_form(self):
         bind = is_form_bound(self.request, "questions")
-        return QuestionsForm(
+        return TalkQuestionsForm(
             data=self.request.POST if bind else None,
             files=self.request.FILES if bind else None,
             speaker=self.request.user,
@@ -369,7 +369,7 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     @context
     @cached_property
     def qform(self):
-        return QuestionsForm(
+        return TalkQuestionsForm(
             data=self.request.POST if self.request.method == "POST" else None,
             files=self.request.FILES if self.request.method == "POST" else None,
             submission=self.object,

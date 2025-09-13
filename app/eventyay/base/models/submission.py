@@ -998,7 +998,7 @@ class Submission(GenerateCode, PretalxModel):
             if not speaker.profiles.filter(event=self.event).exists():
                 SpeakerProfile.objects.create(user=speaker, event=self.event)
         except User.DoesNotExist:
-            speaker = User.objects.create_user(email=email, name=name, event=self.event)
+            speaker = create_user(email=email, name=name, event=self.event)
             user_created = True
             context['invitation_link'] = build_absolute_uri(
                 'cfp:event.new_recover',

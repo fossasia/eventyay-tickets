@@ -174,6 +174,10 @@ INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
 CORE_MODULES = INSTALLED_APPS + tuple(
     module for module in talk_config.get("site", "core_modules").split(",") if module
+) + (
+    'eventyay.base',
+    'eventyay.presale',
+    'eventyay.control',
 )
 
 _LIBRARY_MIDDLEWARES = (
@@ -211,12 +215,6 @@ _OURS_MIDDLEWARES = (
 )
 
 MIDDLEWARE = _LIBRARY_MIDDLEWARES + _OURS_MIDDLEWARES
-
-CORE_MODULES = {
-    'eventyay.base',
-    'eventyay.presale',
-    'eventyay.control',
-}
 
 template_loaders = (
     'django.template.loaders.filesystem.Loader',
