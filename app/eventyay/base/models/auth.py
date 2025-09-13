@@ -106,12 +106,12 @@ class SuperuserPermissionSet:
 
 
 class User(
-    AbstractBaseUser,
     PermissionsMixin,
     LoggingMixin,
     RulesModelMixin,
     GenerateCode,
     FileCleanupMixin,
+    AbstractBaseUser,
     metaclass=RulesModelBase):
     """
     This is the user model used by eventyay for authentication.
@@ -157,6 +157,58 @@ class User(
     notifications_token = models.CharField(max_length=255, default=generate_notifications_token)
     auth_backend = models.CharField(max_length=255, default='native')
     session_token = models.CharField(max_length=32, default=generate_session_token)
+
+    # From Talk
+    code = models.CharField(max_length=16, unique=True, null=True)
+    nick = models.CharField(max_length=60, null=True, blank=True)
+    is_administrator = models.BooleanField(
+        default=False,
+        help_text="Should only be ``True`` for people with administrative access to the server eventyay runs on.",
+    )
+    avatar = models.ImageField(
+        null=True,
+        blank=True,
+        verbose_name=_("Profile picture"),
+        help_text=_(
+            "We recommend uploading an image at least 400px wide. "
+            "A square image works best, as we display it in a circle in several places."
+        ),
+        upload_to=avatar_path,
+    )
+    avatar_thumbnail = models.ImageField(null=True, blank=True, upload_to="avatars/")
+    avatar_thumbnail_tiny = models.ImageField(
+        null=True, blank=True, upload_to="avatars/"
+    )
+    get_gravatar = models.BooleanField(
+        default=False,
+        verbose_name=_("Retrieve profile picture via gravatar"),
+        help_text=_(
+            "If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there."
+        ),
+    )
+    avatar_source = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_("Profile Picture Source"),
+        help_text=_(
+            "Please enter the name of the author or source of image and a link if applicable."
+        ),
+    )
+    avatar_license = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_("Profile Picture License"),
+        help_text=_(
+            "Please enter the name of the license of the photo and link to it if applicable."
+        ),
+    )
+    pw_reset_token = models.CharField(
+        null=True, max_length=160, verbose_name="Password reset token"
+    )
+    pw_reset_time = models.DateTimeField(null=True, verbose_name="Password reset time")
+    
+    # ====
+
     if TYPE_CHECKING:
         from django.db.models import QuerySet
 
@@ -470,55 +522,7 @@ class User(
         self.session_token = generate_session_token()
         self.save(update_fields=['session_token'])
 
-    # From Talk
-    code = models.CharField(max_length=16, unique=True, null=True)
-    nick = models.CharField(max_length=60, null=True, blank=True)
-    is_administrator = models.BooleanField(
-        default=False,
-        help_text="Should only be ``True`` for people with administrative access to the server eventyay runs on.",
-    )
-    avatar = models.ImageField(
-        null=True,
-        blank=True,
-        verbose_name=_("Profile picture"),
-        help_text=_(
-            "We recommend uploading an image at least 400px wide. "
-            "A square image works best, as we display it in a circle in several places."
-        ),
-        upload_to=avatar_path,
-    )
-    avatar_thumbnail = models.ImageField(null=True, blank=True, upload_to="avatars/")
-    avatar_thumbnail_tiny = models.ImageField(
-        null=True, blank=True, upload_to="avatars/"
-    )
-    get_gravatar = models.BooleanField(
-        default=False,
-        verbose_name=_("Retrieve profile picture via gravatar"),
-        help_text=_(
-            "If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there."
-        ),
-    )
-    avatar_source = models.TextField(
-        null=True,
-        blank=True,
-        verbose_name=_("Profile Picture Source"),
-        help_text=_(
-            "Please enter the name of the author or source of image and a link if applicable."
-        ),
-    )
-    avatar_license = models.TextField(
-        null=True,
-        blank=True,
-        verbose_name=_("Profile Picture License"),
-        help_text=_(
-            "Please enter the name of the license of the photo and link to it if applicable."
-        ),
-    )
-    pw_reset_token = models.CharField(
-        null=True, max_length=160, verbose_name="Password reset token"
-    )
-    pw_reset_time = models.DateTimeField(null=True, verbose_name="Password reset time")
-
+    # From talk
     def get_display_name(self) -> str:
         """Returns a user's name or 'Unnamed user'."""
         return str(self.fullname) if self.fullname else str(self)

@@ -1006,7 +1006,7 @@ class Submission(GenerateCode, PretalxModel):
             )
 
         self.speakers.add(speaker)
-        self.log_action('pretalx.submission.speakers.add', person=user, orga=True)
+        self.log_action('eventyay.submission.speakers.add', person=user, orga=True)
         context['user'] = speaker
         template = self.event.get_mail_template(
             MailTemplateRoles.EXISTING_SPEAKER_INVITE if not user_created else MailTemplateRoles.NEW_SPEAKER_INVITE
@@ -1024,7 +1024,7 @@ class Submission(GenerateCode, PretalxModel):
         if self.speakers.filter(code=speaker.code).exists():
             self.speakers.remove(speaker)
             self.log_action(
-                'pretalx.submission.speakers.remove',
+                'eventyay.submission.speakers.remove',
                 person=user or speaker,
                 orga=orga,
                 data={
