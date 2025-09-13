@@ -532,7 +532,7 @@ class BaseSubmissionList(Sortable, ReviewerSubmissionFilter, PaginationMixin, Li
         if self.request.user.has_perm(
             "person.orga_list_speakerprofile", self.request.event
         ):
-            default_filters.add("speakers__name__icontains")
+            default_filters.add("speakers__fullname__icontains")
         return default_filters
 
     def _get_base_queryset(self, for_review=False):

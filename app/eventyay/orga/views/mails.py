@@ -59,7 +59,7 @@ class OutboxList(
     default_filters = (
         "to__icontains",
         "subject__icontains",
-        "to_users__name__icontains",
+        "to_users__fullname__icontains",
         "to_users__email__icontains",
     )
     sortable_fields = ("to", "subject", "pk")
@@ -105,7 +105,7 @@ class SentMail(
     default_filters = (
         "to__icontains",
         "subject__icontains",
-        "to_users__name__icontains",
+        "to_users__fullname__icontains",
         "to_users__email__icontains",
     )
     default_sort_field = "-sent"
