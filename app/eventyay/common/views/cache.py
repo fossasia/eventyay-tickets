@@ -13,7 +13,7 @@ from django.views.decorators.cache import cache_page
 
 def get_requested_etag(request):
     """Return the ETag requested by the client, or None if not found."""
-    if if_none_match := request.headers.get("If-None-Match"):
+    if if_none_match := request.headers.get('If-None-Match'):
         return if_none_match.strip('"')
 
 
@@ -46,7 +46,7 @@ def conditional_cache_page(
 
     def decorator(func):
         def wrapper(request, *args, **kwargs):
-            if request.method != "GET":
+            if request.method != 'GET':
                 return func(request, *args, **kwargs)
             if condition and not condition(request, *args, **kwargs):
                 return func(request, *args, **kwargs)
@@ -71,10 +71,10 @@ def conditional_cache_page(
 def should_cache(request, response):
     if response.streaming or response.status_code not in (200, 304):
         return False
-    if not request.COOKIES and response.cookies and has_vary_header(response, "Cookie"):
+    if not request.COOKIES and response.cookies and has_vary_header(response, 'Cookie'):
         return False
     # Don't cache a response with 'Cache-Control: private'
-    if "private" in response.get("Cache-Control", ()):
+    if 'private' in response.get('Cache-Control', ()):
         return False
     return True
 
@@ -104,10 +104,10 @@ def etag_cache_page(
     if callable(key_prefix):
         key_prefix = key_prefix(request, *request_args, **request_kwargs)
 
-    cache = caches[cache_alias or "default"]
-    cache_key = get_cache_key(request, key_prefix, "GET", cache=cache_alias)
-    etag_suffix = "_etag"
-    current_etag = cache.get(f"{cache_key}{etag_suffix}") if cache_key else None
+    cache = caches[cache_alias or 'default']
+    cache_key = get_cache_key(request, key_prefix, 'GET', cache=cache_alias)
+    etag_suffix = '_etag'
+    current_etag = cache.get(f'{cache_key}{etag_suffix}') if cache_key else None
 
     if current_etag and requested_etag and current_etag != requested_etag:
         current_etag = None
@@ -117,24 +117,22 @@ def etag_cache_page(
     if cache_key and (cached_response := cache.get(cache_key)):
         return patched_response(HttpResponse(cached_response), timeout, headers=headers)
     else:
-        response = cache_page(
-            timeout=server_timeout, cache=cache_alias, key_prefix=key_prefix
-        )(handler)(request, *request_args, **request_kwargs)
+        response = cache_page(timeout=server_timeout, cache=cache_alias, key_prefix=key_prefix)(handler)(
+            request, *request_args, **request_kwargs
+        )
         if not should_cache(request, response):
             return patched_response(response, timeout, headers=headers)
 
-    cache_key = cache_key or learn_cache_key(
-        request, response, timeout, key_prefix, cache=cache_alias
-    )
+    cache_key = cache_key or learn_cache_key(request, response, timeout, key_prefix, cache=cache_alias)
 
     if not current_etag:
         current_etag = get_etag(response)
-        cache.set(f"{cache_key}{etag_suffix}", current_etag, timeout=server_timeout)
+        cache.set(f'{cache_key}{etag_suffix}', current_etag, timeout=server_timeout)
 
     # If an ETag was requested and we forgot about it, but now our response matches the
     # requested ETag, return 304
     if requested_etag and current_etag == requested_etag:
         return patched_response(HttpResponseNotModified(), timeout, headers=headers)
 
-    response["ETag"] = f'"{current_etag}"'
+    response['ETag'] = f'"{current_etag}"'
     return patched_response(response, timeout, headers=headers)

@@ -4,12 +4,12 @@ from .review import ReviewForm
 from .submission import AnonymiseForm, SubmissionForm
 
 __all__ = [
-    "AnonymiseForm",
-    "CfPForm",
-    "EventForm",
-    "TalkQuestionForm",
-    "ReviewForm",
-    "SubmissionForm",
-    "SubmissionTypeForm",
-    "TrackForm",
+    'AnonymiseForm',
+    'CfPForm',
+    'EventForm',
+    'TalkQuestionForm',
+    'ReviewForm',
+    'SubmissionForm',
+    'SubmissionTypeForm',
+    'TrackForm',
 ]

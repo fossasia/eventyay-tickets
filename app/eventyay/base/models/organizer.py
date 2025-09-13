@@ -31,6 +31,7 @@ from eventyay.talk_rules.event import (
     is_any_organizer,
 )
 
+
 def check_access_permissions(organizer):
     """We run this method when team permissions are changed, inside a transaction.
 
@@ -38,54 +39,44 @@ def check_access_permissions(organizer):
     administrator access to every event and the organizer itself.
     """
     warnings = []
-    teams = (
-        organizer.teams.all()
-        .annotate(member_count=models.Count("members"))
-        .filter(member_count__gt=0)
-    )
+    teams = organizer.teams.all().annotate(member_count=models.Count('members')).filter(member_count__gt=0)
     if not [t for t in teams if t.can_change_teams]:
         raise Exception(
             _(
-                "There must be at least one team with the permission to change teams, as otherwise nobody can create new teams or grant permissions to existing teams."
+                'There must be at least one team with the permission to change teams, as otherwise nobody can create new teams or grant permissions to existing teams.'
             )
         )
     if not [t for t in teams if t.can_create_events]:
         warnings.append(
             (
-                "no_can_create_events",
-                _("Nobody on your teams has the permission to create new events."),
+                'no_can_create_events',
+                _('Nobody on your teams has the permission to create new events.'),
             )
         )
     if not [t for t in teams if t.can_change_organizer_settings]:
         warnings.append(
             (
-                "no_can_change_organizer_settings",
-                _(
-                    "Nobody on your teams has the permission to change organizer-level settings."
-                ),
+                'no_can_change_organizer_settings',
+                _('Nobody on your teams has the permission to change organizer-level settings.'),
             )
         )
 
     for event in organizer.events.all():
-        event_teams = teams.filter(
-            models.Q(limit_events=event) | models.Q(all_events=True)
-        ).distinct()
+        event_teams = teams.filter(models.Q(limit_events=event) | models.Q(all_events=True)).distinct()
         if not event_teams:
             raise Exception(
                 str(
                     _(
-                        "There must be at least one team with access to every event. Currently, nobody has access to {event_name}."
+                        'There must be at least one team with access to every event. Currently, nobody has access to {event_name}.'
                     )
                 ).format(event_name=event.name)
             )
         if not [t for t in event_teams if t.can_change_event_settings]:
             warnings.append(
                 (
-                    "no_can_change_event_settings",
+                    'no_can_change_event_settings',
                     str(
-                        _(
-                            "Nobody on your teams has the permissions to change settings for the event {event_name}"
-                        )
+                        _('Nobody on your teams has the permissions to change settings for the event {event_name}')
                     ).format(event_name=event.name),
                 )
             )
@@ -135,10 +126,10 @@ class Organizer(LoggedModel, PretalxModel):
         verbose_name_plural = _('Organizers')
         ordering = ('name',)
         rules_permissions = {
-            "view": has_any_organizer_permissions,
-            "update": can_change_organizer_settings,
-            "list": can_change_any_organizer_settings,
-            "view_any": is_any_organizer,
+            'view': has_any_organizer_permissions,
+            'update': can_change_organizer_settings,
+            'list': can_change_any_organizer_settings,
+            'view_any': is_any_organizer,
         }
 
     def __str__(self) -> str:
@@ -146,13 +137,13 @@ class Organizer(LoggedModel, PretalxModel):
 
     class orga_urls(EventUrls):
         base_path = settings.BASE_PATH
-        base = "{base_path}/orga/organizer/{self.slug}/"
-        settings = "{base_path}/orga/organizer/{self.slug}/settings/"
-        delete = "{settings}delete"
-        teams = "{base}teams/"
-        new_team = "{teams}new"
-        user_search = "{base}api/users"
-    
+        base = '{base_path}/orga/organizer/{self.slug}/'
+        settings = '{base_path}/orga/organizer/{self.slug}/settings/'
+        delete = '{settings}delete'
+        teams = '{base}teams/'
+        new_team = '{teams}new'
+        user_search = '{base}api/users'
+
     @transaction.atomic
     def shred(self, person=None):
         """Irrevocably deletes the organizer and all related events and their
@@ -161,13 +152,13 @@ class Organizer(LoggedModel, PretalxModel):
 
         ActivityLog.objects.create(
             person=person,
-            action_type="eventyay.organizer.delete",
+            action_type='eventyay.organizer.delete',
             content_object=self,
             is_orga_action=True,
             data=json.dumps(
                 {
-                    "slug": self.slug,
-                    "name": str(self.name),
+                    'slug': self.slug,
+                    'name': str(self.name),
                 }
             ),
         )
@@ -284,15 +275,16 @@ def generate_invite_token():
 def generate_api_token():
     return get_random_string(length=64, allowed_chars=string.ascii_lowercase + string.digits)
 
+
 TEAM_PERMISSIONS = {
-    "list": can_change_teams,
-    "view": can_change_teams,
-    "create": can_change_teams,
-    "update": can_change_teams,
-    "delete": can_change_teams,
-    "invite": can_change_teams,
-    "delete_invite": can_change_teams,
-    "remove_member": can_change_teams,
+    'list': can_change_teams,
+    'view': can_change_teams,
+    'create': can_change_teams,
+    'update': can_change_teams,
+    'delete': can_change_teams,
+    'invite': can_change_teams,
+    'delete_invite': can_change_teams,
+    'remove_member': can_change_teams,
 }
 
 
@@ -408,18 +400,14 @@ class Team(LoggedModel, PretalxModel):
         rules_permissions = TEAM_PERMISSIONS
 
     # From Talk
-    limit_tracks = models.ManyToManyField(
-        to="Track", verbose_name=_("Limit to tracks"), blank=True
-    )
-    can_change_submissions = models.BooleanField(
-        default=False, verbose_name=_("Can work with and change proposals")
-    )
-    is_reviewer = models.BooleanField(default=False, verbose_name=_("Is a reviewer"))
+    limit_tracks = models.ManyToManyField(to='Track', verbose_name=_('Limit to tracks'), blank=True)
+    can_change_submissions = models.BooleanField(default=False, verbose_name=_('Can work with and change proposals'))
+    is_reviewer = models.BooleanField(default=False, verbose_name=_('Is a reviewer'))
     force_hide_speaker_names = models.BooleanField(
-        verbose_name=_("Always hide speaker names"),
+        verbose_name=_('Always hide speaker names'),
         help_text=_(
-            "Normally, anonymisation is configured in the event review settings. "
-            "This setting will <strong>override the event settings</strong> and always hide speaker names for this team."
+            'Normally, anonymisation is configured in the event review settings. '
+            'This setting will <strong>override the event settings</strong> and always hide speaker names for this team.'
         ),
         default=False,
     )
@@ -427,10 +415,8 @@ class Team(LoggedModel, PretalxModel):
     @cached_property
     def permission_set_display(self) -> set:
         """The same as :meth:`permission_set`, but with human-readable names."""
-        return {
-            getattr(self._meta.get_field(attr), "verbose_name", None) or attr
-            for attr in self.permission_set
-        }
+        return {getattr(self._meta.get_field(attr), 'verbose_name', None) or attr for attr in self.permission_set}
+
     @cached_property
     def events(self):
         if self.all_events:

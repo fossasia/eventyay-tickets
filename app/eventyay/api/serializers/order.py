@@ -1287,7 +1287,9 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                         else:
                             v_budget[v] -= disc
 
-                seated = pos_data.get('product').seat_category_mappings.filter(subevent=pos_data.get('subevent')).exists()
+                seated = (
+                    pos_data.get('product').seat_category_mappings.filter(subevent=pos_data.get('subevent')).exists()
+                )
                 if pos_data.get('seat'):
                     if not seated:
                         errs[i]['seat'] = ['The specified product does not allow to choose a seat.']

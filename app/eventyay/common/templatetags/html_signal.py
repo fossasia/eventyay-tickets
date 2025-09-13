@@ -19,4 +19,4 @@ def html_signal(signal_name: str, **kwargs):
     for _receiver, response in signal.send(**kwargs):
         if response:
             _html.append(response)
-    return mark_safe("".join(_html))
+    return mark_safe(''.join(_html))

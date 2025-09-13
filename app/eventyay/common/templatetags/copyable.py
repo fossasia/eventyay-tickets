@@ -10,7 +10,7 @@ def copyable(value):
     value = str(value)
     if '"' in value:
         return value
-    title = str(_("Copy"))
+    title = str(_('Copy'))
     return django.utils.safestring.mark_safe(
         f"""
     <span data-destination="{value}"

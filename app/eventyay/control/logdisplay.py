@@ -349,7 +349,9 @@ def eventyaycontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs
             'The email address has been confirmed to be working (the user clicked on a link '
             'in the email for the first time).'
         ),
-        'eventyay.event.order.phone.changed': _('The phone number has been changed from "{old_phone}" to "{new_phone}".'),
+        'eventyay.event.order.phone.changed': _(
+            'The phone number has been changed from "{old_phone}" to "{new_phone}".'
+        ),
         'eventyay.event.order.locale.changed': _('The order locale has been changed.'),
         'eventyay.event.order.invoice.generated': _('The invoice has been generated.'),
         'eventyay.event.order.invoice.regenerated': _('The invoice has been regenerated.'),
@@ -412,7 +414,9 @@ def eventyaycontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs
         'eventyay.event.order.quotaexceeded': _('The order could not be marked as paid: {message}'),
         'eventyay.event.order.overpaid': _('The order has been overpaid.'),
         'eventyay.event.order.refund.created': _('Refund {local_id} has been created.'),
-        'eventyay.event.order.refund.created.externally': _('Refund {local_id} has been created by an external entity.'),
+        'eventyay.event.order.refund.created.externally': _(
+            'Refund {local_id} has been created by an external entity.'
+        ),
         'eventyay.event.order.refund.requested': _('The customer requested you to issue a refund.'),
         'eventyay.event.order.refund.done': _('Refund {local_id} has been completed.'),
         'eventyay.event.order.refund.canceled': _('Refund {local_id} has been canceled.'),
@@ -442,7 +446,9 @@ def eventyaycontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs
         'eventyay.organizer.deleted': _('The organizer "{name}" has been deleted.'),
         'eventyay.voucher.added': _('The voucher has been created.'),
         'eventyay.voucher.sent': _('The voucher has been sent to {recipient}.'),
-        'eventyay.voucher.added.waitinglist': _('The voucher has been created and sent to a person on the waiting list.'),
+        'eventyay.voucher.added.waitinglist': _(
+            'The voucher has been created and sent to a person on the waiting list.'
+        ),
         'eventyay.voucher.changed': _('The voucher has been changed.'),
         'eventyay.voucher.deleted': _('The voucher has been deleted.'),
         'eventyay.voucher.redeemed': _('The voucher has been redeemed in order {order_code}.'),

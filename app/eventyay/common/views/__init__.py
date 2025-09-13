@@ -10,14 +10,14 @@ from .helpers import get_static, is_form_bound
 from .redirect import redirect_view
 
 __all__ = [
-    "CreateOrUpdateView",
-    "EventSocialMediaCard",
-    "GenericLoginView",
-    "GenericResetView",
-    "conditional_cache_page",
-    "error_view",
-    "get_static",
-    "handle_500",
-    "is_form_bound",
-    "redirect_view",
+    'CreateOrUpdateView',
+    'EventSocialMediaCard',
+    'GenericLoginView',
+    'GenericResetView',
+    'conditional_cache_page',
+    'error_view',
+    'get_static',
+    'handle_500',
+    'is_form_bound',
+    'redirect_view',
 ]

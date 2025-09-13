@@ -3,6 +3,7 @@ from django.urls import reverse
 
 register = template.Library()
 
+
 @register.simple_tag(takes_context=True)
 def get_dashboard_url(context):
     request = context['request']

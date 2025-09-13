@@ -525,7 +525,9 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
 
         # Calculate how many options the user still has. If there is only one option, we can
         # check the box right away ;)
-        context['options'] = sum([(len(product.available_variations) if product.has_variations else 1) for product in products])
+        context['options'] = sum(
+            [(len(product.available_variations) if product.has_variations else 1) for product in products]
+        )
 
         context['allfree'] = all(
             product.display_price.gross == Decimal('0.00') for product in products if not product.has_variations

@@ -5,7 +5,7 @@ register = template.Library()
 
 def _review_score_number(context, score):
     if score is None:
-        return "×"
+        return '×'
 
     score = round(score, 1)
     if not context:
@@ -19,5 +19,5 @@ def _review_score_number(context, score):
 def review_score(context, submission, user_score=False):
     score = submission.current_score if not user_score else submission.user_score
     if score is None:
-        return "-"
+        return '-'
     return _review_score_number(context, score)

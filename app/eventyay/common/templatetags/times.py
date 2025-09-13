@@ -8,10 +8,10 @@ register = template.Library()
 def times(text: str):
     """Add a tag that really really really could be a standard tag."""
     if text is None:
-        return ""
+        return ''
     str_text = str(text)
-    if str_text == "1":
-        return _("once")
-    if str_text == "2":
-        return _("twice")
-    return _("{number} times").format(number=str_text)
+    if str_text == '1':
+        return _('once')
+    if str_text == '2':
+        return _('twice')
+    return _('{number} times').format(number=str_text)

@@ -41,93 +41,80 @@ DEFAULT_SRC = "'self'"
 
 
 if settings.VITE_DEV_MODE:
-    SCRIPT_SRC = (f"{SCRIPT_SRC} {settings.VITE_DEV_SERVER}",)
-    DEFAULT_SRC = (
-        f"{DEFAULT_SRC} {settings.VITE_DEV_SERVER} {settings.VITE_DEV_SERVER.replace('http', 'ws')}",
-    )
+    SCRIPT_SRC = (f'{SCRIPT_SRC} {settings.VITE_DEV_SERVER}',)
+    DEFAULT_SRC = (f'{DEFAULT_SRC} {settings.VITE_DEV_SERVER} {settings.VITE_DEV_SERVER.replace("http", "ws")}',)
 
 
 logger = logging.getLogger(__name__)
 
 
-@method_decorator(
-    csp_update({"SCRIPT_SRC": SCRIPT_SRC, "DEFAULT_SRC": DEFAULT_SRC}),
-    name="dispatch"
-)
+@method_decorator(csp_update({'SCRIPT_SRC': SCRIPT_SRC, 'DEFAULT_SRC': DEFAULT_SRC}), name='dispatch')
 class ScheduleView(EventPermissionRequired, TemplateView):
-    template_name = "orga/schedule/index.html"
-    permission_required = "schedule.orga_view_schedule"
+    template_name = 'orga/schedule/index.html'
+    permission_required = 'schedule.orga_view_schedule'
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        version = self.request.GET.get("version")
+        version = self.request.GET.get('version')
 
         # get current translations language from django
         language_information = get_current_language_information()
-        path = language_information.get("path", language_information.get("code"))
-        result["gettext_language"] = path.replace("-", "_")
+        path = language_information.get('path', language_information.get('code'))
+        result['gettext_language'] = path.replace('-', '_')
 
-        result["schedule_version"] = version
-        result["active_schedule"] = (
-            self.request.event.schedules.filter(version=version).first()
-            if version
-            else self.request.event.wip_schedule
+        result['schedule_version'] = version
+        result['active_schedule'] = (
+            self.request.event.schedules.filter(version=version).first() if version else self.request.event.wip_schedule
         )
         return result
 
 
 class ScheduleExportView(EventPermissionRequired, FormView):
-    template_name = "orga/schedule/export.html"
-    permission_required = "event.update_event"
+    template_name = 'orga/schedule/export.html'
+    permission_required = 'event.update_event'
     form_class = ScheduleExportForm
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
-        result["event"] = self.request.event
+        result['event'] = self.request.event
         return result
 
     @context
     def exporters(self):
-        return [
-            exporter
-            for exporter in get_schedule_exporters(self.request)
-            if exporter.group != "speaker"
-        ]
+        return [exporter for exporter in get_schedule_exporters(self.request) if exporter.group != 'speaker']
 
     @context
     def tablist(self):
         return {
-            "custom": _("CSV/JSON exports"),
-            "general": _("More exports"),
-            "api": _("API"),
+            'custom': _('CSV/JSON exports'),
+            'general': _('More exports'),
+            'api': _('API'),
         }
 
     def form_valid(self, form):
         result = form.export_data()
         if not result:
-            messages.success(self.request, _("No data to be exported"))
+            messages.success(self.request, _('No data to be exported'))
             return redirect(self.request.path)
         return result
 
 
 class ScheduleExportTriggerView(EventPermissionRequired, View):
-    permission_required = "event.update_event"
+    permission_required = 'event.update_event'
 
     def post(self, request, event):
         if not settings.CELERY_TASK_ALWAYS_EAGER:
-            export_schedule_html.apply_async(
-                kwargs={"event_id": self.request.event.id}, ignore_result=True
-            )
+            export_schedule_html.apply_async(kwargs={'event_id': self.request.event.id}, ignore_result=True)
             messages.success(
                 self.request,
-                _("A new export is being generated and will be available soon."),
+                _('A new export is being generated and will be available soon.'),
             )
         else:
-            self.request.event.cache.set("rebuild_schedule_export", True, None)
+            self.request.event.cache.set('rebuild_schedule_export', True, None)
             messages.success(
                 self.request,
                 _(
-                    "A new export will be generated on the next scheduled opportunity – please contact your administrator for details."
+                    'A new export will be generated on the next scheduled opportunity – please contact your administrator for details.'
                 ),
             )
 
@@ -135,35 +122,31 @@ class ScheduleExportTriggerView(EventPermissionRequired, View):
 
 
 class ScheduleExportDownloadView(EventPermissionRequired, View):
-    permission_required = "event.update_event"
+    permission_required = 'event.update_event'
 
     def get(self, request, event):
         try:
             zip_path = get_export_zip_path(self.request.event)
-            response = FileResponse(open(zip_path, "rb"), as_attachment=True)
+            response = FileResponse(open(zip_path, 'rb'), as_attachment=True)
         except Exception as e:
             messages.error(
                 request,
-                _(
-                    "Could not find the current export, please try to regenerate it. ({error})"
-                ).format(error=str(e)),
+                _('Could not find the current export, please try to regenerate it. ({error})').format(error=str(e)),
             )
             return redirect(self.request.event.orga_urls.schedule_export)
-        response["Content-Disposition"] = "attachment; filename=" + safe_filename(
-            zip_path.name
-        )
+        response['Content-Disposition'] = 'attachment; filename=' + safe_filename(zip_path.name)
         return response
 
 
 class ScheduleReleaseView(EventPermissionRequired, FormView):
     form_class = ScheduleReleaseForm
-    permission_required = "schedule.release_schedule"
-    template_name = "orga/schedule/release.html"
+    permission_required = 'schedule.release_schedule'
+    template_name = 'orga/schedule/release.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
-        kwargs["locales"] = self.request.event.locales
+        kwargs['event'] = self.request.event
+        kwargs['locales'] = self.request.event.locales
         return kwargs
 
     @context
@@ -179,52 +162,44 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
         return len(self.request.event.wip_schedule.generate_notifications(save=False))
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _("You have to provide a new, unique schedule version!")
-        )
+        messages.error(self.request, _('You have to provide a new, unique schedule version!'))
         return super().form_invalid(form)
 
     def form_valid(self, form):
         self.request.event.release_schedule(
-            form.cleaned_data["version"],
+            form.cleaned_data['version'],
             user=self.request.user,
-            notify_speakers=form.cleaned_data["notify_speakers"],
-            comment=form.cleaned_data["comment"],
+            notify_speakers=form.cleaned_data['notify_speakers'],
+            comment=form.cleaned_data['comment'],
         )
-        messages.success(self.request, _("Nice, your schedule has been released!"))
+        messages.success(self.request, _('Nice, your schedule has been released!'))
         return redirect(self.request.event.orga_urls.schedule)
 
 
 class ScheduleResetView(EventPermissionRequired, View):
-    permission_required = "schedule.release_schedule"
+    permission_required = 'schedule.release_schedule'
 
     def dispatch(self, request, event):
         super().dispatch(request, event)
-        schedule_version = self.request.GET.get("version")
+        schedule_version = self.request.GET.get('version')
         schedule = self.request.event.schedules.filter(version=schedule_version).first()
         if schedule:
             schedule.unfreeze(user=request.user)
             messages.success(
                 self.request,
-                _(
-                    "Reset successful – start editing the schedule from your selected version!"
-                ),
+                _('Reset successful – start editing the schedule from your selected version!'),
             )
         else:
-            messages.error(
-                self.request, _("Error retrieving the schedule version to reset to.")
-            )
+            messages.error(self.request, _('Error retrieving the schedule version to reset to.'))
         return redirect(self.request.event.orga_urls.schedule)
 
 
 class ScheduleToggleView(EventPermissionRequired, View):
-    permission_required = "event.update_event"
+    permission_required = 'event.update_event'
 
     def dispatch(self, request, event):
         super().dispatch(request, event)
-        self.request.event.feature_flags["show_schedule"] = (
-            not self.request.event.get_feature_flag("show_schedule")
-        )
+        self.request.event.feature_flags['show_schedule'] = not self.request.event.get_feature_flag('show_schedule')
         self.request.event.save()
         # Trigger tickets to hidden/unhidden schedule menu
         try:
@@ -232,35 +207,30 @@ class ScheduleToggleView(EventPermissionRequired, View):
 
             trigger_public_schedule.apply_async(
                 kwargs={
-                    "is_show_schedule": self.request.event.feature_flags[
-                        "show_schedule"
-                    ],
-                    "event_slug": self.request.event.slug,
-                    "organiser_slug": self.request.event.organiser.slug,
-                    "user_email": self.request.user.email,
+                    'is_show_schedule': self.request.event.feature_flags['show_schedule'],
+                    'event_slug': self.request.event.slug,
+                    'organiser_slug': self.request.event.organiser.slug,
+                    'user_email': self.request.user.email,
                 },
                 ignore_result=True,
             )
         except (TaskError, ConnectionError) as e:
             logger.warning(
-                "Unexpected error when trying to trigger "
-                "schedule's state to external system: %s",
+                "Unexpected error when trying to trigger schedule's state to external system: %s",
                 e,
             )
         except Exception as e:
-            logger.error("Unexpected error in task: %s", e)
+            logger.error('Unexpected error in task: %s', e)
         return redirect(self.request.event.orga_urls.schedule)
 
 
 class ScheduleResendMailsView(EventPermissionRequired, View):
-    permission_required = "schedule.release_schedule"
+    permission_required = 'schedule.release_schedule'
 
     def dispatch(self, request, event):
         super().dispatch(request, event)
         if self.request.event.current_schedule:
-            mails = self.request.event.current_schedule.generate_notifications(
-                save=True
-            )
+            mails = self.request.event.current_schedule.generate_notifications(save=True)
             messages.success(
                 self.request,
                 phrases.orga.mails_in_outbox.format(count=len(mails)),
@@ -268,23 +238,21 @@ class ScheduleResendMailsView(EventPermissionRequired, View):
         else:
             messages.warning(
                 self.request,
-                _(
-                    "You can only regenerate mails after the first schedule was released."
-                ),
+                _('You can only regenerate mails after the first schedule was released.'),
             )
         return redirect(self.request.event.orga_urls.schedule)
 
 
 def serialize_break(slot):
     return {
-        "id": slot.pk,
-        "title": slot.description.data if slot.description else "",
-        "description": "",
-        "room": slot.room.pk if slot.room else None,
-        "start": slot.start.isoformat() if slot.start else None,
-        "end": slot.end.isoformat() if slot.end else None,
-        "duration": slot.duration,
-        "updated": slot.updated.isoformat(),
+        'id': slot.pk,
+        'title': slot.description.data if slot.description else '',
+        'description': '',
+        'room': slot.room.pk if slot.room else None,
+        'start': slot.start.isoformat() if slot.start else None,
+        'end': slot.end.isoformat() if slot.end else None,
+        'duration': slot.duration,
+        'updated': slot.updated.isoformat(),
     }
 
 
@@ -292,65 +260,60 @@ def serialize_slot(slot, warnings=None):
     base_data = serialize_break(slot)
     if slot.submission:
         submission_data = {
-            "id": slot.pk,
-            "title": str(slot.submission.title),
-            "speakers": [
-                {"name": speaker.name} for speaker in slot.submission.speakers.all()
-            ],
-            "submission_type": str(slot.submission.submission_type.name),
-            "track": (
+            'id': slot.pk,
+            'title': str(slot.submission.title),
+            'speakers': [{'name': speaker.name} for speaker in slot.submission.speakers.all()],
+            'submission_type': str(slot.submission.submission_type.name),
+            'track': (
                 {
-                    "name": str(slot.submission.track.name),
-                    "color": slot.submission.track.color,
+                    'name': str(slot.submission.track.name),
+                    'color': slot.submission.track.color,
                 }
                 if slot.submission.track
                 else None
             ),
-            "state": slot.submission.state,
-            "description": str(slot.submission.description),
-            "abstract": str(slot.submission.abstract),
-            "notes": slot.submission.notes,
-            "duration": slot.submission.duration
-            or slot.submission.submission_type.default_duration,
-            "content_locale": slot.submission.content_locale,
-            "do_not_record": slot.submission.do_not_record,
-            "room": slot.room.pk if slot.room else None,
-            "start": slot.local_start.isoformat() if slot.start else None,
-            "end": slot.local_end.isoformat() if slot.end else None,
-            "url": slot.submission.orga_urls.base,
-            "warnings": warnings or [],
+            'state': slot.submission.state,
+            'description': str(slot.submission.description),
+            'abstract': str(slot.submission.abstract),
+            'notes': slot.submission.notes,
+            'duration': slot.submission.duration or slot.submission.submission_type.default_duration,
+            'content_locale': slot.submission.content_locale,
+            'do_not_record': slot.submission.do_not_record,
+            'room': slot.room.pk if slot.room else None,
+            'start': slot.local_start.isoformat() if slot.start else None,
+            'end': slot.local_end.isoformat() if slot.end else None,
+            'url': slot.submission.orga_urls.base,
+            'warnings': warnings or [],
         }
         return {**base_data, **submission_data}
     return base_data
 
 
 class TalkList(EventPermissionRequired, View):
-    permission_required = "schedule.release_schedule"
+    permission_required = 'schedule.release_schedule'
 
     def get(self, request, event):
-        version = self.request.GET.get("version")
+        version = self.request.GET.get('version')
         schedule = None
         if version:
             schedule = request.event.schedules.filter(version=version).first()
         if not schedule:
             schedule = request.event.wip_schedule
 
-        filter_updated = request.GET.get("since")
+        filter_updated = request.GET.get('since')
         result = schedule.build_data(
             all_talks=True,
             all_rooms=not bool(filter_updated),
             filter_updated=filter_updated,
         )
 
-        if request.GET.get("warnings"):
-            result["warnings"] = {
+        if request.GET.get('warnings'):
+            result['warnings'] = {
                 talk.submission.code: warnings
-                for talk, warnings in schedule.get_all_talk_warnings(
-                    filter_updated=filter_updated
-                ).items()
+                for talk, warnings in schedule.get_all_talk_warnings(filter_updated=filter_updated).items()
             }
-        result["now"] = now().strftime("%Y-%m-%d %H:%M:%S%z")
-        result["locales"] = request.event.locales
+        result['now'] = now().strftime('%Y-%m-%d %H:%M:%S%z')
+        result['locales'] = request.event.locales
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
     @csrf_exempt
@@ -359,26 +322,18 @@ class TalkList(EventPermissionRequired, View):
 
     def post(self, request, event):
         data = json.loads(request.body.decode())
-        start = (
-            dateutil.parser.parse(data.get("start"))
-            if data.get("start")
-            else request.event.datetime_from
-        )
+        start = dateutil.parser.parse(data.get('start')) if data.get('start') else request.event.datetime_from
         end = (
-            dateutil.parser.parse(data.get("end"))
-            if data.get("end")
-            else start + dt.timedelta(minutes=int(data.get("duration", 30) or 30))
+            dateutil.parser.parse(data.get('end'))
+            if data.get('end')
+            else start + dt.timedelta(minutes=int(data.get('duration', 30) or 30))
         )
-        room = data.get("room")
-        room = room.get("id") if isinstance(room, dict) else room
+        room = data.get('room')
+        room = room.get('id') if isinstance(room, dict) else room
         slot = TalkSlot.objects.create(
             schedule=request.event.wip_schedule,
-            room=(
-                request.event.rooms.get(pk=room)
-                if room
-                else request.event.rooms.first()
-            ),
-            description=LazyI18nString(data.get("title")),
+            room=(request.event.rooms.get(pk=room) if room else request.event.rooms.first()),
+            description=LazyI18nString(data.get('title')),
             start=start,
             end=end,
         )
@@ -386,7 +341,7 @@ class TalkList(EventPermissionRequired, View):
 
 
 class ScheduleWarnings(EventPermissionRequired, View):
-    permission_required = "schedule.release_schedule"
+    permission_required = 'schedule.release_schedule'
 
     def get(self, request, event):
         return JsonResponse(
@@ -398,13 +353,13 @@ class ScheduleWarnings(EventPermissionRequired, View):
 
 
 class ScheduleAvailabilities(EventPermissionRequired, View):
-    permission_required = "schedule.release_schedule"
+    permission_required = 'schedule.release_schedule'
 
     def get(self, request, event):
         return JsonResponse(
             {
-                "talks": self._get_speaker_availabilities(),
-                "rooms": self._get_room_availabilities(),
+                'talks': self._get_speaker_availabilities(),
+                'rooms': self._get_room_availabilities(),
             }
         )
 
@@ -413,31 +368,26 @@ class ScheduleAvailabilities(EventPermissionRequired, View):
         # IDs or allDay
         return {
             room.pk: [av.serialize(full=False) for av in room.availabilities.all()]
-            for room in self.request.event.rooms.all().prefetch_related(
-                "availabilities"
-            )
+            for room in self.request.event.rooms.all().prefetch_related('availabilities')
         }
 
     def _get_speaker_availabilities(self):
         # Serializing by hand because it's faster and we don't need
         # IDs or allDay
         speaker_avails = collections.defaultdict(list)
-        for avail in self.request.event.availabilities.filter(
-            person__isnull=False
-        ).select_related("person__user"):
+        for avail in self.request.event.availabilities.filter(person__isnull=False).select_related('person__user'):
             speaker_avails[avail.person.user.pk].append(avail)
 
         result = {}
 
         for talk in (
             self.request.event.wip_schedule.talks.filter(submission__isnull=False)
-            .select_related("submission")
-            .prefetch_related("submission__speakers")
+            .select_related('submission')
+            .prefetch_related('submission__speakers')
         ):
             if talk.submission.speakers.count() == 1:
                 result[talk.id] = [
-                    av.serialize(full=False)
-                    for av in speaker_avails[talk.submission.speakers.first().pk]
+                    av.serialize(full=False) for av in speaker_avails[talk.submission.speakers.first().pk]
                 ]
             else:
                 all_speaker_avails = [
@@ -449,19 +399,16 @@ class ScheduleAvailabilities(EventPermissionRequired, View):
                     result[talk.id] = []
                 else:
                     result[talk.id] = [
-                        av.serialize(full=False)
-                        for av in Availability.intersection(*all_speaker_avails)
+                        av.serialize(full=False) for av in Availability.intersection(*all_speaker_avails)
                     ]
         return result
 
 
 class TalkUpdate(PermissionRequired, View):
-    permission_required = "schedule.update_talkslot"
+    permission_required = 'schedule.update_talkslot'
 
     def get_object(self):
-        return self.request.event.wip_schedule.talks.filter(
-            pk=self.kwargs.get("pk")
-        ).first()
+        return self.request.event.wip_schedule.talks.filter(pk=self.kwargs.get('pk')).first()
 
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
@@ -470,36 +417,30 @@ class TalkUpdate(PermissionRequired, View):
     def patch(self, request, event, pk):
         talk = self.get_object()
         if not talk:
-            return JsonResponse({"error": "Talk not found"})
+            return JsonResponse({'error': 'Talk not found'})
         data = json.loads(request.body.decode())
-        if data.get("start"):
+        if data.get('start'):
             duration = talk.duration
-            talk.start = dateutil.parser.parse(data.get("start"))
-            if data.get("end"):
-                talk.end = dateutil.parser.parse(data["end"])
-            elif data.get("duration"):
-                talk.end = talk.start + dt.timedelta(minutes=int(data["duration"]))
+            talk.start = dateutil.parser.parse(data.get('start'))
+            if data.get('end'):
+                talk.end = dateutil.parser.parse(data['end'])
+            elif data.get('duration'):
+                talk.end = talk.start + dt.timedelta(minutes=int(data['duration']))
             elif not talk.submission:
                 talk.end = talk.start + dt.timedelta(minutes=duration or 30)
             else:
-                talk.end = talk.start + dt.timedelta(
-                    minutes=talk.submission.get_duration()
-                )
-            talk.room = request.event.rooms.get(
-                pk=data["room"] or getattr(talk.room, "pk", None)
-            )
+                talk.end = talk.start + dt.timedelta(minutes=talk.submission.get_duration())
+            talk.room = request.event.rooms.get(pk=data['room'] or getattr(talk.room, 'pk', None))
             if not talk.submission:
-                new_description = LazyI18nString(data.get("title", ""))
-                talk.description = (
-                    new_description if str(new_description) else talk.description
-                )
-            talk.save(update_fields=["start", "end", "room", "description", "updated"])
+                new_description = LazyI18nString(data.get('title', ''))
+                talk.description = new_description if str(new_description) else talk.description
+            talk.save(update_fields=['start', 'end', 'room', 'description', 'updated'])
             talk.refresh_from_db()
         else:
             talk.start = None
             talk.end = None
             talk.room = None
-            talk.save(update_fields=["start", "end", "room", "updated"])
+            talk.save(update_fields=['start', 'end', 'room', 'updated'])
 
         with_speakers = self.request.event.cfp.request_availabilities
         warnings = talk.schedule.get_talk_warnings(talk, with_speakers=with_speakers)
@@ -509,31 +450,29 @@ class TalkUpdate(PermissionRequired, View):
     def delete(self, request, event, pk):
         talk = self.get_object()
         if not talk:
-            return JsonResponse({"error": "Talk not found"})
+            return JsonResponse({'error': 'Talk not found'})
         if talk.submission:
-            return JsonResponse({"error": "Cannot delete talk."})
+            return JsonResponse({'error': 'Cannot delete talk.'})
         talk.delete()
-        return JsonResponse({"success": True})
+        return JsonResponse({'success': True})
 
 
 class QuickScheduleView(PermissionRequired, UpdateView):
-    permission_required = "schedule.update_talkslot"
+    permission_required = 'schedule.update_talkslot'
     form_class = QuickScheduleForm
-    template_name = "orga/schedule/quick.html"
+    template_name = 'orga/schedule/quick.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
+        kwargs['event'] = self.request.event
         return kwargs
 
     def get_object(self):
-        return self.request.event.wip_schedule.talks.filter(
-            submission__code__iexact=self.kwargs.get("code")
-        ).first()
+        return self.request.event.wip_schedule.talks.filter(submission__code__iexact=self.kwargs.get('code')).first()
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("The session has been scheduled."))
+        messages.success(self.request, _('The session has been scheduled.'))
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -543,25 +482,22 @@ class QuickScheduleView(PermissionRequired, UpdateView):
 class RoomView(OrderActionMixin, OrgaCRUDView):
     model = Room
     form_class = RoomForm
-    template_namespace = "orga/schedule"
+    template_namespace = 'orga/schedule'
 
     def get_queryset(self):
         return self.request.event.rooms.all()
 
     def get_permission_required(self):
-        permission_map = {"list": "orga_list", "detail": "orga_detail"}
+        permission_map = {'list': 'orga_list', 'detail': 'orga_detail'}
         permission = permission_map.get(self.action, self.action)
         return self.model.get_perm(permission)
 
     def get_generic_title(self, instance=None):
         if instance:
-            return (
-                _("Room")
-                + f" {phrases.base.quotation_open}{instance.name}{phrases.base.quotation_close}"
-            )
-        if self.action == "create":
-            return _("New room")
-        return _("Rooms")
+            return _('Room') + f' {phrases.base.quotation_open}{instance.name}{phrases.base.quotation_close}'
+        if self.action == 'create':
+            return _('New room')
+        return _('Rooms')
 
     def delete_handler(self, request, *args, **kwargs):
         try:
@@ -569,8 +505,6 @@ class RoomView(OrderActionMixin, OrgaCRUDView):
         except ProtectedError:
             messages.error(
                 request,
-                _(
-                    "There is or was a session scheduled in this room. It cannot be deleted."
-                ),
+                _('There is or was a session scheduled in this room. It cannot be deleted.'),
             )
             return self.delete_view(request, *args, **kwargs)

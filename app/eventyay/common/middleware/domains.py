@@ -19,8 +19,8 @@ from django.utils.http import http_date
 
 from eventyay.base.models import Event
 
-LOCAL_HOST_NAMES = ("testserver", "localhost", "127.0.0.1")
-ANY_DOMAIN_ALLOWED = ("robots.txt", "redirect")
+LOCAL_HOST_NAMES = ('testserver', 'localhost', '127.0.0.1')
+ANY_DOMAIN_ALLOWED = ('robots.txt', 'redirect')
 
 
 class MultiDomainMiddleware:
@@ -30,16 +30,16 @@ class MultiDomainMiddleware:
     @staticmethod
     def get_host(request):
         # We try three options, in order of decreasing preference.
-        if settings.USE_X_FORWARDED_HOST and ("X-Forwarded-Host" in request.headers):
-            host = request.headers["X-Forwarded-Host"]
-        elif "Host" in request.headers:
-            host = request.headers["Host"]
+        if settings.USE_X_FORWARDED_HOST and ('X-Forwarded-Host' in request.headers):
+            host = request.headers['X-Forwarded-Host']
+        elif 'Host' in request.headers:
+            host = request.headers['Host']
         else:
             # Reconstruct the host using the algorithm from PEP 333.
-            host = request.META["SERVER_NAME"]
-            server_port = str(request.META["SERVER_PORT"])
-            if server_port != ("443" if request.is_secure() else "80"):
-                host = f"{host}:{server_port}"
+            host = request.META['SERVER_NAME']
+            server_port = str(request.META['SERVER_PORT'])
+            if server_port != ('443' if request.is_secure() else '80'):
+                host = f'{host}:{server_port}'
         return host
 
     def process_request(self, request):
@@ -52,11 +52,9 @@ class MultiDomainMiddleware:
         request.uses_custom_domain = False
 
         resolved = resolve(request.path_info)
-        if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path_info.startswith(
-            "/api/"
-        ):
+        if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path_info.startswith('/api/'):
             return None
-        event_slug = resolved.kwargs.get("event")
+        event_slug = resolved.kwargs.get('event')
         if event_slug:
             try:
                 event = Event.objects.get(slug__iexact=event_slug)
@@ -71,16 +69,14 @@ class MultiDomainMiddleware:
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
                     return None
-                elif domain == default_domain and not request.path.startswith("/orga"):
-                    return redirect(
-                        urljoin(event.urls.base.full(), request.get_full_path())
-                    )
+                elif domain == default_domain and not request.path.startswith('/orga'):
+                    return redirect(urljoin(event.urls.base.full(), request.get_full_path()))
             elif domain == default_domain:
                 return None
             # We are on an event page, but under the incorrect domain. Redirecting
             # to the proper domain would leak information, so we will show a 404
             # instead.
-            if not request.path.startswith("/orga"):
+            if not request.path.startswith('/orga'):
                 raise Http404()
 
         if domain == default_domain:
@@ -89,15 +85,14 @@ class MultiDomainMiddleware:
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return None
 
-        if request.path_info.startswith("/orga"):  # pragma: no cover
+        if request.path_info.startswith('/orga'):  # pragma: no cover
             return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
 
         # If this domain is used as custom domain, but we are trying to view a
         # non-event page, try to redirect to the most recent event instead.
         events = Event.objects.filter(
-            Q(custom_domain=f"{request.scheme}://{domain}")
-            | Q(custom_domain=f"{request.scheme}://{host}"),
-        ).order_by("-date_from")
+            Q(custom_domain=f'{request.scheme}://{domain}') | Q(custom_domain=f'{request.scheme}://{host}'),
+        ).order_by('-date_from')
         if events:
             request.uses_custom_domain = True
             public_event = events.filter(is_public=True).first()
@@ -112,14 +107,14 @@ class MultiDomainMiddleware:
         # should make sure that a domain is configured before serving it (as it needs to
         # provide an SSL certificate for it, etc.), but of course this can still happen
         # when caches (DNS or otherwise) are involved.
-        raise DisallowedHost(f"Unknown host: {host}")
+        raise DisallowedHost(f'Unknown host: {host}')
 
     def process_response(self, request, response):
-        if request.path.startswith("/orga"):
-            if (event := getattr(request, "event", None)) and event.custom_domain:
+        if request.path.startswith('/orga'):
+            if (event := getattr(request, 'event', None)) and event.custom_domain:
                 # We need to update the CSP in order to make our fancy login form work
-                response._csp_update = getattr(response, "_csp_update", None) or {}
-                response._csp_update["form-action"] = [event.urls.base.full()]
+                response._csp_update = getattr(response, '_csp_update', None) or {}
+                response._csp_update['form-action'] = [event.urls.base.full()]
         return response
 
     def __call__(self, request):
@@ -155,7 +150,7 @@ class SessionMiddleware(BaseSessionMiddleware):
                 response.delete_cookie(settings.SESSION_COOKIE_NAME)
                 return response
             if accessed:
-                patch_vary_headers(response, ("Cookie",))
+                patch_vary_headers(response, ('Cookie',))
             if modified or settings.SESSION_SAVE_EVERY_REQUEST:
                 max_age = None
                 expires = None
@@ -177,7 +172,7 @@ class SessionMiddleware(BaseSessionMiddleware):
                         expires=expires,
                         domain=get_cookie_domain(request),
                         path=settings.SESSION_COOKIE_PATH,
-                        secure=request.scheme == "https",
+                        secure=request.scheme == 'https',
                         httponly=settings.SESSION_COOKIE_HTTPONLY or None,
                         samesite=settings.SESSION_COOKIE_SAMESITE,
                     )
@@ -201,27 +196,27 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
         # never called, probably because a request middleware returned a response
         # (for example, contrib.auth redirecting to a login page).
         if settings.CSRF_USE_SESSIONS:
-            if request.session.get(CSRF_SESSION_KEY) != request.META["CSRF_COOKIE"]:
-                request.session[CSRF_SESSION_KEY] = request.META["CSRF_COOKIE"]
+            if request.session.get(CSRF_SESSION_KEY) != request.META['CSRF_COOKIE']:
+                request.session[CSRF_SESSION_KEY] = request.META['CSRF_COOKIE']
         else:
             # Set the CSRF cookie even if it's already set, so we renew
             # the expiry timer.
             response.set_cookie(
                 settings.CSRF_COOKIE_NAME,
-                request.META["CSRF_COOKIE"],
+                request.META['CSRF_COOKIE'],
                 max_age=settings.CSRF_COOKIE_AGE,
                 domain=get_cookie_domain(request),
                 path=settings.CSRF_COOKIE_PATH,
-                secure=request.scheme == "https",
+                secure=request.scheme == 'https',
                 httponly=settings.CSRF_COOKIE_HTTPONLY,
                 samesite=settings.CSRF_COOKIE_SAMESITE,
             )
             # Content varies with the CSRF cookie, so set the Vary header.
-            patch_vary_headers(response, ("Cookie",))
+            patch_vary_headers(response, ('Cookie',))
 
 
 def get_cookie_domain(request):
-    if "." not in request.host:
+    if '.' not in request.host:
         # As per spec, browsers do not accept cookie domains without dots in it,
         # e.g. "localhost", see http://curl.haxx.se/rfc/cookie_spec.html
         return None

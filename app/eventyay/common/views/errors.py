@@ -10,17 +10,15 @@ from django.urls import get_callable
 
 def handle_500(request):
     try:
-        template = loader.get_template("500.html")
+        template = loader.get_template('500.html')
     except TemplateDoesNotExist:  # pragma: no cover
         return HttpResponseServerError(
-            "Internal server error. Please contact the administrator for details.",
-            content_type="text/html",
+            'Internal server error. Please contact the administrator for details.',
+            content_type='text/html',
         )
     context = {}
-    with suppress(
-        Exception
-    ):  # This should never fail, but can't be too cautious in error views
-        context["request_path"] = urllib.parse.quote(request.path)
+    with suppress(Exception):  # This should never fail, but can't be too cautious in error views
+        context['request_path'] = urllib.parse.quote(request.path)
     return HttpResponseServerError(template.render(context))
 
 

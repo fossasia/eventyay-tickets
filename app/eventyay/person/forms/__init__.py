@@ -10,12 +10,12 @@ from .profile import (
 from .user import UserForm
 
 __all__ = [
-    "AuthTokenForm",
-    "SpeakerInformationForm",
-    "SpeakerProfileForm",
-    "OrgaProfileForm",
-    "SpeakerFilterForm",
-    "UserSpeakerFilterForm",
-    "UserForm",
-    "LoginInfoForm",
+    'AuthTokenForm',
+    'SpeakerInformationForm',
+    'SpeakerProfileForm',
+    'OrgaProfileForm',
+    'SpeakerFilterForm',
+    'UserSpeakerFilterForm',
+    'UserForm',
+    'LoginInfoForm',
 ]

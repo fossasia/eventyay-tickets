@@ -8,72 +8,66 @@ from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
 from eventyay.talk_rules.event import can_change_event_settings
-from eventyay.talk_rules .person import can_view_information
+from eventyay.talk_rules.person import can_view_information
 from eventyay.talk_rules.submission import orga_can_change_submissions
 
 
 def resource_path(instance, filename):
-    return path_with_hash(
-        filename, base_path=f"{instance.event.slug}/speaker_information/"
-    )
+    return path_with_hash(filename, base_path=f'{instance.event.slug}/speaker_information/')
 
 
 class SpeakerInformation(PretalxModel):
     """Represents any information organizers want to show all or some
     submitters or speakers."""
 
-    event = models.ForeignKey(
-        to="Event", related_name="information", on_delete=models.CASCADE
-    )
+    event = models.ForeignKey(to='Event', related_name='information', on_delete=models.CASCADE)
     target_group = models.CharField(
         choices=(
-            ("submitters", phrases.base.all_choices),
-            ("accepted", _("All accepted speakers")),
-            ("confirmed", _("Only confirmed speakers")),
+            ('submitters', phrases.base.all_choices),
+            ('accepted', _('All accepted speakers')),
+            ('confirmed', _('Only confirmed speakers')),
         ),
-        default="accepted",
+        default='accepted',
         max_length=11,
     )
     limit_tracks = models.ManyToManyField(
-        to="Track",
-        verbose_name=_("Limit to tracks"),
+        to='Track',
+        verbose_name=_('Limit to tracks'),
         blank=True,
-        help_text=_("Leave empty to show this information to all tracks."),
+        help_text=_('Leave empty to show this information to all tracks.'),
     )
     limit_types = models.ManyToManyField(
-        to="SubmissionType",
-        verbose_name=_("Limit to proposal types"),
+        to='SubmissionType',
+        verbose_name=_('Limit to proposal types'),
         blank=True,
-        help_text=_("Leave empty to show this information for all proposal types."),
+        help_text=_('Leave empty to show this information for all proposal types.'),
     )
-    title = I18nCharField(
-        verbose_name=pgettext_lazy("email subject", "Subject"), max_length=200
-    )
-    text = I18nTextField(verbose_name=_("Text"), help_text=phrases.base.use_markdown)
+    title = I18nCharField(verbose_name=pgettext_lazy('email subject', 'Subject'), max_length=200)
+    text = I18nTextField(verbose_name=_('Text'), help_text=phrases.base.use_markdown)
     resource = models.FileField(
-        verbose_name=_("File"),
+        verbose_name=_('File'),
         null=True,
         blank=True,
-        help_text=_("Please try to keep your upload small, preferably below 16 MB."),
+        help_text=_('Please try to keep your upload small, preferably below 16 MB.'),
         upload_to=resource_path,
     )
 
-    log_prefix = "speaker_information"
+    log_prefix = 'speaker_information'
 
     @property
     def log_parent(self):
         return self.event
 
     class orga_urls(EventUrls):
-        base = edit = "{self.event.orga_urls.information}{self.pk}/"
-        delete = "{base}delete/"
+        base = edit = '{self.event.orga_urls.information}{self.pk}/'
+        delete = '{base}delete/'
 
     class Meta:
         rules_permissions = {
-            "list": orga_can_change_submissions,
-            "view": can_view_information,
-            "orga_view": orga_can_change_submissions,
-            "create": can_change_event_settings,
-            "update": can_change_event_settings,
-            "delete": can_change_event_settings,
+            'list': orga_can_change_submissions,
+            'view': can_view_information,
+            'orga_view': orga_can_change_submissions,
+            'create': can_change_event_settings,
+            'update': can_change_event_settings,
+            'delete': can_change_event_settings,
         }

@@ -14,5 +14,5 @@ Disallow: /redirect/
 Disallow: /api/
 Disallow: /media/
 """,
-        content_type="text/plain",
+        content_type='text/plain',
     )

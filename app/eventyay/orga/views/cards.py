@@ -23,23 +23,23 @@ from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, P
 from eventyay.common.views.mixins import EventPermissionRequired
 from eventyay.base.models import SubmissionStates
 
-reportlab.rl_config.TTFSearchPath.append(finders.find("fonts"))
-pdfmetrics.registerFont(TTFont("Muli", "mulish-v12-latin-ext-regular.ttf"))
-pdfmetrics.registerFont(TTFont("Muli-Italic", "mulish-v12-latin-ext-italic.ttf"))
-pdfmetrics.registerFont(TTFont("Titillium-Bold", "titillium-web-v17-latin-ext-600.ttf"))
+reportlab.rl_config.TTFSearchPath.append(finders.find('fonts'))
+pdfmetrics.registerFont(TTFont('Muli', 'mulish-v12-latin-ext-regular.ttf'))
+pdfmetrics.registerFont(TTFont('Muli-Italic', 'mulish-v12-latin-ext-italic.ttf'))
+pdfmetrics.registerFont(TTFont('Titillium-Bold', 'titillium-web-v17-latin-ext-600.ttf'))
 
 
 def _text(text, max_length=None):
     if not text:
-        return ""
+        return ''
 
     # add an almost-invisible space &hairsp; after hyphens as word-wrap in ReportLab only works on space chars
-    text = conditional_escape(text).replace("-", "-&hairsp;")
+    text = conditional_escape(text).replace('-', '-&hairsp;')
     # Reportlab does not support unicode combination characters
-    text = unicodedata.normalize("NFC", text)
+    text = unicodedata.normalize('NFC', text)
 
     if max_length and len(text) > max_length:
-        return text[: max_length - 1] + "…"
+        return text[: max_length - 1] + '…'
     return text
 
 
@@ -67,10 +67,8 @@ class SubmissionCard(Flowable):
         self.canv.rect(0, 0, self.width, self.height)
 
         self.canv.rotate(90)
-        self.canv.setFont("Titillium-Bold", 16)
-        self.canv.drawString(
-            25 * mm, -12 * mm, _text(self.submission.submission_type.name)
-        )
+        self.canv.setFont('Titillium-Bold', 16)
+        self.canv.drawString(25 * mm, -12 * mm, _text(self.submission.submission_type.name))
         self.canv.rotate(-90)
 
         qr_code = qr.QrCodeWidget(self.submission.orga_urls.quick_schedule.full())
@@ -81,51 +79,39 @@ class SubmissionCard(Flowable):
         drawing.add(qr_code)
         renderPDF.draw(drawing, self.canv, 15, 10)
 
-        self.render_paragraph(
-            Paragraph(_text(self.submission.title), style=self.styles["Title"]), gap=10
-        )
+        self.render_paragraph(Paragraph(_text(self.submission.title), style=self.styles['Title']), gap=10)
         self.render_paragraph(
             Paragraph(
-                _text(
-                    ", ".join(
-                        s.get_display_name() for s in self.submission.speakers.all()
-                    )
-                ),
-                style=self.styles["Speaker"],
+                _text(', '.join(s.get_display_name() for s in self.submission.speakers.all())),
+                style=self.styles['Speaker'],
             )
         )
         self.render_paragraph(
             Paragraph(
-                _("{} minutes, #{}, {}, {}").format(
+                _('{} minutes, #{}, {}, {}').format(
                     self.submission.get_duration(),
                     self.submission.code,
                     self.submission.content_locale,
                     self.submission.state,
                 ),
-                style=self.styles["Meta"],
+                style=self.styles['Meta'],
             )
         )
 
         if self.submission.abstract:
-            self.render_paragraph(
-                Paragraph(
-                    _text(self.submission.abstract, 140), style=self.styles["Meta"]
-                )
-            )
+            self.render_paragraph(Paragraph(_text(self.submission.abstract, 140), style=self.styles['Meta']))
 
         if self.submission.notes:
-            self.render_paragraph(
-                Paragraph(_text(self.submission.notes, 140), style=self.styles["Meta"])
-            )
+            self.render_paragraph(Paragraph(_text(self.submission.notes, 140), style=self.styles['Meta']))
 
 
 class SubmissionCards(EventPermissionRequired, View):
-    permission_required = "submission.orga_update_submission"
+    permission_required = 'submission.orga_update_submission'
 
     def get_queryset(self):
         return (
-            self.request.event.submissions.select_related("submission_type")
-            .prefetch_related("speakers")
+            self.request.event.submissions.select_related('submission_type')
+            .prefetch_related('speakers')
             .filter(
                 state__in=[
                     SubmissionStates.ACCEPTED,
@@ -137,9 +123,9 @@ class SubmissionCards(EventPermissionRequired, View):
 
     def get(self, request, *args, **kwargs):
         if not self.get_queryset().exists():
-            messages.warning(request, _("You don’t seem to have any proposals yet."))
+            messages.warning(request, _('You don’t seem to have any proposals yet.'))
             return redirect(request.event.orga_urls.submissions)
-        with tempfile.NamedTemporaryFile(suffix=".pdf") as f:
+        with tempfile.NamedTemporaryFile(suffix='.pdf') as f:
             doc = BaseDocTemplate(
                 f.name,
                 pagesize=A4,
@@ -151,7 +137,7 @@ class SubmissionCards(EventPermissionRequired, View):
             doc.addPageTemplates(
                 [
                     PageTemplate(
-                        id="All",
+                        id='All',
                         frames=[
                             Frame(
                                 0,
@@ -162,7 +148,7 @@ class SubmissionCards(EventPermissionRequired, View):
                                 rightPadding=0,
                                 topPadding=0,
                                 bottomPadding=0,
-                                id="left",
+                                id='left',
                             ),
                             Frame(
                                 doc.width / 2,
@@ -173,7 +159,7 @@ class SubmissionCards(EventPermissionRequired, View):
                                 rightPadding=0,
                                 topPadding=0,
                                 bottomPadding=0,
-                                id="right",
+                                id='right',
                             ),
                         ],
                         pagesize=A4,
@@ -182,11 +168,11 @@ class SubmissionCards(EventPermissionRequired, View):
             )
             doc.build(self.get_story(doc))
             f.seek(0)
-            timestamp = now().strftime("%Y-%m-%d-%H%M")
+            timestamp = now().strftime('%Y-%m-%d-%H%M')
             r = HttpResponse(
-                content_type="application/pdf",
+                content_type='application/pdf',
                 headers={
-                    "Content-Disposition": f'attachment; filename="{request.event.slug}_submission_cards_{timestamp}.pdf"'
+                    'Content-Disposition': f'attachment; filename="{request.event.slug}_submission_cards_{timestamp}.pdf"'
                 },
             )
             r.write(f.read())
@@ -194,22 +180,10 @@ class SubmissionCards(EventPermissionRequired, View):
 
     def get_style(self):
         stylesheet = StyleSheet1()
-        stylesheet.add(
-            ParagraphStyle(name="Normal", fontName="Muli", fontSize=12, leading=14)
-        )
-        stylesheet.add(
-            ParagraphStyle(
-                name="Title", fontName="Titillium-Bold", fontSize=14, leading=16
-            )
-        )
-        stylesheet.add(
-            ParagraphStyle(
-                name="Speaker", fontName="Muli-Italic", fontSize=12, leading=14
-            )
-        )
-        stylesheet.add(
-            ParagraphStyle(name="Meta", fontName="Muli", fontSize=10, leading=12)
-        )
+        stylesheet.add(ParagraphStyle(name='Normal', fontName='Muli', fontSize=12, leading=14))
+        stylesheet.add(ParagraphStyle(name='Title', fontName='Titillium-Bold', fontSize=14, leading=16))
+        stylesheet.add(ParagraphStyle(name='Speaker', fontName='Muli-Italic', fontSize=12, leading=14))
+        stylesheet.add(ParagraphStyle(name='Meta', fontName='Muli', fontSize=10, leading=12))
         return stylesheet
 
     def get_story(self, doc):

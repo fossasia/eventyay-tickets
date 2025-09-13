@@ -10,10 +10,10 @@ class SubmissionInvitationForm(forms.Form):
 
     def __init__(self, submission, speaker, *args, **kwargs):
         self.submission = submission
-        initial = kwargs.get("initial", {})
+        initial = kwargs.get('initial', {})
         subject = phrases.cfp.invite_subject.format(speaker=speaker.get_display_name())
-        initial["subject"] = f"[{submission.event.slug}] {subject}"
-        initial["text"] = phrases.cfp.invite_text.format(
+        initial['subject'] = f'[{submission.event.slug}] {subject}'
+        initial['text'] = phrases.cfp.invite_text.format(
             event=submission.event.name,
             title=submission.title,
             url=submission.urls.accept_invitation.full(),
@@ -23,7 +23,7 @@ class SubmissionInvitationForm(forms.Form):
 
     def save(self):
         self.submission.send_invite(
-            to=self.cleaned_data["speaker"].strip(),
-            subject=self.cleaned_data["subject"],
-            text=self.cleaned_data["text"],
+            to=self.cleaned_data['speaker'].strip(),
+            subject=self.cleaned_data['subject'],
+            text=self.cleaned_data['text'],
         )

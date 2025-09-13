@@ -14,17 +14,17 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Copy track from question answer to track field"
+    help = 'Copy track from question answer to track field'
 
     def add_arguments(self, parser):
-        parser.add_argument("event", type=str, help="Event slug")
+        parser.add_argument('event', type=str, help='Event slug')
 
     def handle(self, *args, **options):
         event = Event.objects.get(slug=options['event'])
 
         with scope(event=event):
             # Find question with "track" in the label
-            track_question = TalkQuestion.all_objects.get(question__icontains="track")
+            track_question = TalkQuestion.all_objects.get(question__icontains='track')
         logger.info('Found question: %s', track_question)
         # Get available tracks
         with scope(event=event):
@@ -36,13 +36,20 @@ class Command(BaseCommand):
         with scope(event=event):
             # Filter submissions with no track and with an answer to a question containing "track"
             queryset = Submission.objects.filter(answers__question=track_question, track=None)
-            logger.info('Found %d submissions with no track and with an answer to question %s', queryset.count(), track_question)
+            logger.info(
+                'Found %d submissions with no track and with an answer to question %s', queryset.count(), track_question
+            )
             for submission in queryset:
                 track_answer = submission.answers.get(question=track_question)
                 if track_answer.answer in track_mapping:
                     track = track_mapping[track_answer.answer]
                     submission.track = track
-                    logger.info('Submission "%s" (%s) will be updated with track "%s"', submission.title, submission.code, track.name)
+                    logger.info(
+                        'Submission "%s" (%s) will be updated with track "%s"',
+                        submission.title,
+                        submission.code,
+                        track.name,
+                    )
                     updating_submissions.append(submission)
         # Update submissions
         if not updating_submissions:

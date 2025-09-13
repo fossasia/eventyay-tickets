@@ -10,4 +10,4 @@ def thumbnail(field, size):
     try:
         return get_thumbnail(field, size).url
     except Exception:
-        return field.url if hasattr(field, "url") else None
+        return field.url if hasattr(field, 'url') else None

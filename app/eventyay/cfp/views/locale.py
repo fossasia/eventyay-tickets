@@ -11,21 +11,21 @@ from django.views.generic import View
 
 class LocaleSet(View):
     def get(self, request, *args, **kwargs):
-        url = request.GET.get("next", request.headers.get("Referer", "/"))
+        url = request.GET.get('next', request.headers.get('Referer', '/'))
         if url_has_allowed_host_and_scheme(url, allowed_hosts=None):
             parsed = urlparse(url)
             url = parsed.path
             if parsed.query:
                 query = parse_qs(parsed.query)
-                query.pop("lang", None)
+                query.pop('lang', None)
                 query = urlencode(query, doseq=True)
                 if query:
-                    url = f"{url}?{query}"
+                    url = f'{url}?{query}'
         else:
-            url = "/"
+            url = '/'
 
         resp = HttpResponseRedirect(url)
-        locale = request.GET.get("locale")
+        locale = request.GET.get('locale')
         if locale in (lc for lc, __ in settings.LANGUAGES):
             if request.user.is_authenticated:
                 request.user.locale = locale
@@ -37,13 +37,13 @@ class LocaleSet(View):
                 settings.LANGUAGE_COOKIE_NAME,
                 locale,
                 max_age=max_age,
-                expires=expires.strftime("%a, %d-%b-%Y %H:%M:%S GMT"),
+                expires=expires.strftime('%a, %d-%b-%Y %H:%M:%S GMT'),
                 domain=settings.SESSION_COOKIE_DOMAIN,
             )
             with override(locale):
                 messages.success(
                     request,
-                    str(_("Your locale preferences have been saved.")),
+                    str(_('Your locale preferences have been saved.')),
                 )
 
         return resp

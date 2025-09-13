@@ -5,134 +5,134 @@ from eventyay.common.views import EventSocialMediaCard, get_static
 from .views import featured, feed, schedule, speaker, talk, widget
 
 
-def get_schedule_urls(regex_prefix, name_prefix=""):
+def get_schedule_urls(regex_prefix, name_prefix=''):
     """Given a prefix (e.g. /schedule), generate matching schedule-URLs.
 
     This is useful to generate the same export URLs for main and
     versioned schedule URLs.
     """
 
-    regex_prefix = regex_prefix.rstrip("/")
+    regex_prefix = regex_prefix.rstrip('/')
 
     return [
-        path(f"{regex_prefix}{regex}", view, name=f"{name_prefix}{name}")
+        path(f'{regex_prefix}{regex}', view, name=f'{name_prefix}{name}')
         for regex, view, name in [
-            ("/", schedule.ScheduleView.as_view(), "schedule"),
-            ("/nojs", schedule.ScheduleNoJsView.as_view(), "schedule-nojs"),
-            (".xml", schedule.ExporterView.as_view(), "export.schedule.xml"),
-            (".xcal", schedule.ExporterView.as_view(), "export.schedule.xcal"),
-            (".json", schedule.ExporterView.as_view(), "export.schedule.json"),
-            (".ics", schedule.ExporterView.as_view(), "export.schedule.ics"),
-            ("/export/<name>", schedule.ExporterView.as_view(), "export"),
-            ("/widgets/schedule.json", widget.widget_data, "widget.data"),
+            ('/', schedule.ScheduleView.as_view(), 'schedule'),
+            ('/nojs', schedule.ScheduleNoJsView.as_view(), 'schedule-nojs'),
+            ('.xml', schedule.ExporterView.as_view(), 'export.schedule.xml'),
+            ('.xcal', schedule.ExporterView.as_view(), 'export.schedule.xcal'),
+            ('.json', schedule.ExporterView.as_view(), 'export.schedule.json'),
+            ('.ics', schedule.ExporterView.as_view(), 'export.schedule.ics'),
+            ('/export/<name>', schedule.ExporterView.as_view(), 'export'),
+            ('/widgets/schedule.json', widget.widget_data, 'widget.data'),
             # Legacy widget data URL, but expected in old widget code.
             # Keep at least until end of 2024, reconsider afterwards.
-            ("/widget/v2.json", widget.widget_data, "widget.data.legacy"),
+            ('/widget/v2.json', widget.widget_data, 'widget.data.legacy'),
         ]
     ]
 
 
-app_name = "agenda"
+app_name = 'agenda'
 urlpatterns = [
     path(
-        "<slug:event>/",
+        '<slug:event>/',
         include(
             [
                 path(
-                    "widgets/schedule.js",
+                    'widgets/schedule.js',
                     widget.widget_script,
-                    name="widget.script",
+                    name='widget.script',
                 ),
-                path("static/event.css", widget.event_css, name="event.css"),
+                path('static/event.css', widget.event_css, name='event.css'),
                 path(
-                    "schedule/changelog/",
+                    'schedule/changelog/',
                     schedule.ChangelogView.as_view(),
-                    name="schedule.changelog",
+                    name='schedule.changelog',
                 ),
-                path("schedule/feed.xml", feed.ScheduleFeed(), name="feed"),
+                path('schedule/feed.xml', feed.ScheduleFeed(), name='feed'),
                 # Old widget URL. Keep at least until end of 2024. Will still be used in
                 # a lot of old websites, so possibly just keep it forever.
                 re_path(
-                    "^schedule/widget/v2.[a-z]{2}.js$",
+                    '^schedule/widget/v2.[a-z]{2}.js$',
                     widget.widget_script,
-                    name="widget.script.legacy",
+                    name='widget.script.legacy',
                 ),
                 path(
-                    "schedule/widget/messages.js",
+                    'schedule/widget/messages.js',
                     schedule.schedule_messages,
-                    name="widget.messages",
+                    name='widget.messages',
                 ),
-                *get_schedule_urls("schedule"),
-                *get_schedule_urls("schedule/v/<version>", "versioned-"),
-                path("sneak/", featured.sneakpeek_redirect, name="oldsneak"),
-                path("featured/", featured.FeaturedView.as_view(), name="featured"),
-                path("speaker/", speaker.SpeakerList.as_view(), name="speakers"),
+                *get_schedule_urls('schedule'),
+                *get_schedule_urls('schedule/v/<version>', 'versioned-'),
+                path('sneak/', featured.sneakpeek_redirect, name='oldsneak'),
+                path('featured/', featured.FeaturedView.as_view(), name='featured'),
+                path('speaker/', speaker.SpeakerList.as_view(), name='speakers'),
                 path(
-                    "speaker/avatar.svg",
+                    'speaker/avatar.svg',
                     speaker.empty_avatar_view,
-                    name="speakers.avatar",
+                    name='speakers.avatar',
                 ),
                 path(
-                    "speaker/by-id/<int:pk>/",
+                    'speaker/by-id/<int:pk>/',
                     speaker.SpeakerRedirect.as_view(),
-                    name="speaker.redirect",
+                    name='speaker.redirect',
                 ),
-                path("talk/", schedule.ScheduleView.as_view(), name="talks"),
-                path("talk/<slug>/", talk.TalkView.as_view(), name="talk"),
+                path('talk/', schedule.ScheduleView.as_view(), name='talks'),
+                path('talk/<slug>/', talk.TalkView.as_view(), name='talk'),
                 path(
-                    "talk/<slug>/og-image",
+                    'talk/<slug>/og-image',
                     talk.TalkSocialMediaCard.as_view(),
-                    name="talk-social",
+                    name='talk-social',
                 ),
                 path(
-                    "talk/<slug>/feedback/",
+                    'talk/<slug>/feedback/',
                     talk.FeedbackView.as_view(),
-                    name="feedback",
+                    name='feedback',
                 ),
                 path(
-                    "talk/<slug>.ics",
+                    'talk/<slug>.ics',
                     talk.SingleICalView.as_view(),
-                    name="ical",
+                    name='ical',
                 ),
                 path(
-                    "talk/review/<slug>",
+                    'talk/review/<slug>',
                     talk.TalkReviewView.as_view(),
-                    name="review",
+                    name='review',
                 ),
                 path(
-                    "speaker/<code>/",
+                    'speaker/<code>/',
                     speaker.SpeakerView.as_view(),
-                    name="speaker",
+                    name='speaker',
                 ),
                 path(
-                    "speaker/<code>/og-image",
+                    'speaker/<code>/og-image',
                     speaker.SpeakerSocialMediaCard.as_view(),
-                    name="speaker-social",
+                    name='speaker-social',
                 ),
                 path(
-                    "speaker/<code>/talks.ics",
+                    'speaker/<code>/talks.ics',
                     speaker.SpeakerTalksIcalView.as_view(),
-                    name="speaker.talks.ical",
+                    name='speaker.talks.ical',
                 ),
                 path(
-                    "og-image",
+                    'og-image',
                     EventSocialMediaCard.as_view(),
-                    name="event-social",
+                    name='event-social',
                 ),
                 path(
-                    "online-video/join/",
+                    'online-video/join/',
                     talk.OnlineVideoJoin.as_view(),
-                    name="event.onlinevideo.join",
+                    name='event.onlinevideo.join',
                 ),
             ]
         ),
     ),
     path(
-        "sw.js",
+        'sw.js',
         get_static,
         {
-            "path": "agenda/js/serviceworker.js",
-            "content_type": "application/javascript",
+            'path': 'agenda/js/serviceworker.js',
+            'content_type': 'application/javascript',
         },
     ),
 ]

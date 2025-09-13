@@ -12,7 +12,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('base', '0001_initial'),
     ]
@@ -51,7 +50,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='team',
             name='force_hide_speaker_names',
-            field=models.BooleanField(default=False, help_text='Normally, anonymisation is configured in the event review settings. This setting will <strong>override the event settings</strong> and always hide speaker names for this team.', verbose_name='Always hide speaker names'),
+            field=models.BooleanField(
+                default=False,
+                help_text='Normally, anonymisation is configured in the event review settings. This setting will <strong>override the event settings</strong> and always hide speaker names for this team.',
+                verbose_name='Always hide speaker names',
+            ),
         ),
         migrations.AddField(
             model_name='team',
@@ -71,17 +74,33 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='avatar',
-            field=models.ImageField(blank=True, help_text='We recommend uploading an image at least 400px wide. A square image works best, as we display it in a circle in several places.', null=True, upload_to=eventyay.base.models.auth.avatar_path, verbose_name='Profile picture'),
+            field=models.ImageField(
+                blank=True,
+                help_text='We recommend uploading an image at least 400px wide. A square image works best, as we display it in a circle in several places.',
+                null=True,
+                upload_to=eventyay.base.models.auth.avatar_path,
+                verbose_name='Profile picture',
+            ),
         ),
         migrations.AddField(
             model_name='user',
             name='avatar_license',
-            field=models.TextField(blank=True, help_text='Please enter the name of the license of the photo and link to it if applicable.', null=True, verbose_name='Profile Picture License'),
+            field=models.TextField(
+                blank=True,
+                help_text='Please enter the name of the license of the photo and link to it if applicable.',
+                null=True,
+                verbose_name='Profile Picture License',
+            ),
         ),
         migrations.AddField(
             model_name='user',
             name='avatar_source',
-            field=models.TextField(blank=True, help_text='Please enter the name of the author or source of image and a link if applicable.', null=True, verbose_name='Profile Picture Source'),
+            field=models.TextField(
+                blank=True,
+                help_text='Please enter the name of the author or source of image and a link if applicable.',
+                null=True,
+                verbose_name='Profile Picture Source',
+            ),
         ),
         migrations.AddField(
             model_name='user',
@@ -101,12 +120,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='get_gravatar',
-            field=models.BooleanField(default=False, help_text='If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.', verbose_name='Retrieve profile picture via gravatar'),
+            field=models.BooleanField(
+                default=False,
+                help_text='If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.',
+                verbose_name='Retrieve profile picture via gravatar',
+            ),
         ),
         migrations.AddField(
             model_name='user',
             name='is_administrator',
-            field=models.BooleanField(default=False, help_text='Should only be ``True`` for people with administrative access to the server eventyay runs on.'),
+            field=models.BooleanField(
+                default=False,
+                help_text='Should only be ``True`` for people with administrative access to the server eventyay runs on.',
+            ),
         ),
         migrations.AddField(
             model_name='user',
@@ -126,17 +152,72 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='email',
-            field=models.EmailField(default='org@mail.com', help_text='Will be used as Reply-To in emails.', max_length=254, verbose_name='Organizer email address'),
+            field=models.EmailField(
+                default='org@mail.com',
+                help_text='Will be used as Reply-To in emails.',
+                max_length=254,
+                verbose_name='Organizer email address',
+            ),
         ),
         migrations.AlterField(
             model_name='event',
             name='locale',
-            field=models.CharField(choices=[('en', 'English'), ('de', 'German'), ('de-formal', 'German (formal)'), ('ar', 'Arabic'), ('cs', 'Czech'), ('el', 'Greek'), ('es', 'Spanish'), ('fa-ir', 'Persian'), ('fr', 'French'), ('it', 'Italian'), ('ja-jp', 'Japanese'), ('nl', 'Dutch'), ('pt-br', 'Brasilian Portuguese'), ('pt-pt', 'Portuguese'), ('ru', 'Russian'), ('sw', 'Swahili'), ('ua', 'Ukrainian'), ('zh-hant', 'Traditional Chinese (Taiwan)'), ('zh-hans', 'Simplified Chinese')], default='en', max_length=32, verbose_name='Default language'),
+            field=models.CharField(
+                choices=[
+                    ('en', 'English'),
+                    ('de', 'German'),
+                    ('de-formal', 'German (formal)'),
+                    ('ar', 'Arabic'),
+                    ('cs', 'Czech'),
+                    ('el', 'Greek'),
+                    ('es', 'Spanish'),
+                    ('fa-ir', 'Persian'),
+                    ('fr', 'French'),
+                    ('it', 'Italian'),
+                    ('ja-jp', 'Japanese'),
+                    ('nl', 'Dutch'),
+                    ('pt-br', 'Brasilian Portuguese'),
+                    ('pt-pt', 'Portuguese'),
+                    ('ru', 'Russian'),
+                    ('sw', 'Swahili'),
+                    ('ua', 'Ukrainian'),
+                    ('zh-hant', 'Traditional Chinese (Taiwan)'),
+                    ('zh-hans', 'Simplified Chinese'),
+                ],
+                default='en',
+                max_length=32,
+                verbose_name='Default language',
+            ),
         ),
         migrations.AlterField(
             model_name='user',
             name='locale',
-            field=models.CharField(choices=[('en', 'English'), ('de', 'German'), ('de-formal', 'German (formal)'), ('ar', 'Arabic'), ('cs', 'Czech'), ('el', 'Greek'), ('es', 'Spanish'), ('fa-ir', 'Persian'), ('fr', 'French'), ('it', 'Italian'), ('ja-jp', 'Japanese'), ('nl', 'Dutch'), ('pt-br', 'Brasilian Portuguese'), ('pt-pt', 'Portuguese'), ('ru', 'Russian'), ('sw', 'Swahili'), ('ua', 'Ukrainian'), ('zh-hant', 'Traditional Chinese (Taiwan)'), ('zh-hans', 'Simplified Chinese')], default='en', max_length=50, verbose_name='Language'),
+            field=models.CharField(
+                choices=[
+                    ('en', 'English'),
+                    ('de', 'German'),
+                    ('de-formal', 'German (formal)'),
+                    ('ar', 'Arabic'),
+                    ('cs', 'Czech'),
+                    ('el', 'Greek'),
+                    ('es', 'Spanish'),
+                    ('fa-ir', 'Persian'),
+                    ('fr', 'French'),
+                    ('it', 'Italian'),
+                    ('ja-jp', 'Japanese'),
+                    ('nl', 'Dutch'),
+                    ('pt-br', 'Brasilian Portuguese'),
+                    ('pt-pt', 'Portuguese'),
+                    ('ru', 'Russian'),
+                    ('sw', 'Swahili'),
+                    ('ua', 'Ukrainian'),
+                    ('zh-hant', 'Traditional Chinese (Taiwan)'),
+                    ('zh-hans', 'Simplified Chinese'),
+                ],
+                default='en',
+                max_length=50,
+                verbose_name='Language',
+            ),
         ),
         migrations.AlterUniqueTogether(
             name='event_settingsstore',
@@ -162,13 +243,29 @@ class Migration(migrations.Migration):
                 ('updated', models.DateTimeField(auto_now=True, null=True)),
                 ('label', i18nfield.fields.I18nCharField(max_length=200, verbose_name='Link text')),
                 ('url', models.URLField(verbose_name='Link URL')),
-                ('role', models.CharField(choices=[('footer', 'Footer'), ('header', 'Header')], default='footer', max_length=6)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='extra_links', to='base.event')),
+                (
+                    'role',
+                    models.CharField(
+                        choices=[('footer', 'Footer'), ('header', 'Header')], default='footer', max_length=6
+                    ),
+                ),
+                (
+                    'event',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name='extra_links', to='base.event'
+                    ),
+                ),
             ],
             options={
                 'abstract': False,
             },
-            bases=(eventyay.base.models.mixins.OrderedModel, eventyay.base.models.mixins.LogMixin, eventyay.base.models.mixins.FileCleanupMixin, rules.contrib.models.RulesModelMixin, models.Model),
+            bases=(
+                eventyay.base.models.mixins.OrderedModel,
+                eventyay.base.models.mixins.LogMixin,
+                eventyay.base.models.mixins.FileCleanupMixin,
+                rules.contrib.models.RulesModelMixin,
+                models.Model,
+            ),
         ),
         migrations.CreateModel(
             name='SpeakerInformation',
@@ -176,15 +273,67 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(auto_now_add=True, null=True)),
                 ('updated', models.DateTimeField(auto_now=True, null=True)),
-                ('target_group', models.CharField(choices=[('submitters', 'all'), ('accepted', 'All accepted speakers'), ('confirmed', 'Only confirmed speakers')], default='accepted', max_length=11)),
+                (
+                    'target_group',
+                    models.CharField(
+                        choices=[
+                            ('submitters', 'all'),
+                            ('accepted', 'All accepted speakers'),
+                            ('confirmed', 'Only confirmed speakers'),
+                        ],
+                        default='accepted',
+                        max_length=11,
+                    ),
+                ),
                 ('title', i18nfield.fields.I18nCharField(max_length=200, verbose_name='Subject')),
-                ('text', i18nfield.fields.I18nTextField(help_text='You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.', verbose_name='Text')),
-                ('resource', models.FileField(blank=True, help_text='Please try to keep your upload small, preferably below 16 MB.', null=True, upload_to=eventyay.base.models.information.resource_path, verbose_name='File')),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='information', to='base.event')),
-                ('limit_tracks', models.ManyToManyField(blank=True, help_text='Leave empty to show this information to all tracks.', to='base.track', verbose_name='Limit to tracks')),
-                ('limit_types', models.ManyToManyField(blank=True, help_text='Leave empty to show this information for all proposal types.', to='base.submissiontype', verbose_name='Limit to proposal types')),
+                (
+                    'text',
+                    i18nfield.fields.I18nTextField(
+                        help_text='You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.',
+                        verbose_name='Text',
+                    ),
+                ),
+                (
+                    'resource',
+                    models.FileField(
+                        blank=True,
+                        help_text='Please try to keep your upload small, preferably below 16 MB.',
+                        null=True,
+                        upload_to=eventyay.base.models.information.resource_path,
+                        verbose_name='File',
+                    ),
+                ),
+                (
+                    'event',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name='information', to='base.event'
+                    ),
+                ),
+                (
+                    'limit_tracks',
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text='Leave empty to show this information to all tracks.',
+                        to='base.track',
+                        verbose_name='Limit to tracks',
+                    ),
+                ),
+                (
+                    'limit_types',
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text='Leave empty to show this information for all proposal types.',
+                        to='base.submissiontype',
+                        verbose_name='Limit to proposal types',
+                    ),
+                ),
             ],
-            bases=(eventyay.base.models.mixins.LogMixin, eventyay.base.models.mixins.FileCleanupMixin, rules.contrib.models.RulesModelMixin, models.Model),
+            bases=(
+                eventyay.base.models.mixins.LogMixin,
+                eventyay.base.models.mixins.FileCleanupMixin,
+                rules.contrib.models.RulesModelMixin,
+                models.Model,
+            ),
         ),
         migrations.CreateModel(
             name='UserApiToken',
@@ -193,17 +342,34 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True, null=True)),
                 ('updated', models.DateTimeField(auto_now=True, null=True)),
                 ('name', models.CharField(max_length=190, verbose_name='Name')),
-                ('token', models.CharField(default=eventyay.base.models.auth_token.generate_api_token, max_length=64, unique=True)),
+                (
+                    'token',
+                    models.CharField(
+                        default=eventyay.base.models.auth_token.generate_api_token, max_length=64, unique=True
+                    ),
+                ),
                 ('expires', models.DateTimeField(blank=True, null=True, verbose_name='Expiry date')),
                 ('endpoints', models.JSONField(blank=True, default=dict)),
                 ('version', models.CharField(blank=True, max_length=12, null=True, verbose_name='API version')),
                 ('last_used', models.DateTimeField(blank=True, null=True)),
                 ('events', models.ManyToManyField(related_name='+', to='base.event', verbose_name='Events')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='api_tokens', to=settings.AUTH_USER_MODEL)),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='api_tokens',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'abstract': False,
             },
-            bases=(eventyay.base.models.mixins.LogMixin, eventyay.base.models.mixins.FileCleanupMixin, rules.contrib.models.RulesModelMixin, models.Model),
+            bases=(
+                eventyay.base.models.mixins.LogMixin,
+                eventyay.base.models.mixins.FileCleanupMixin,
+                rules.contrib.models.RulesModelMixin,
+                models.Model,
+            ),
         ),
     ]

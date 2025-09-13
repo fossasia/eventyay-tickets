@@ -38,41 +38,35 @@ from eventyay.orga.forms.mails import (
 def get_send_mail_exceptions(request):
     exceptions = [
         result[1]
-        for result in request_pre_send.send_robust(
-            sender=request.event, request=request
-        )
+        for result in request_pre_send.send_robust(sender=request.event, request=request)
         if len(result) == 2 and isinstance(result[1], SendMailException)
     ]
     if exceptions:
         errors = [str(e) for e in exceptions]
-        errors = errors or [_("You cannot send emails at this time.")]
+        errors = errors or [_('You cannot send emails at this time.')]
         return errors
 
 
-class OutboxList(
-    EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
-):
+class OutboxList(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
     model = QueuedMail
-    context_object_name = "mails"
-    template_name = "orga/mails/outbox_list.html"
-    default_sort_field = "-pk"
+    context_object_name = 'mails'
+    template_name = 'orga/mails/outbox_list.html'
+    default_sort_field = '-pk'
     default_filters = (
-        "to__icontains",
-        "subject__icontains",
-        "to_users__fullname__icontains",
-        "to_users__email__icontains",
+        'to__icontains',
+        'subject__icontains',
+        'to_users__fullname__icontains',
+        'to_users__email__icontains',
     )
-    sortable_fields = ("to", "subject", "pk")
+    sortable_fields = ('to', 'subject', 'pk')
     paginate_by = 25
-    permission_required = "mail.list_queuedmail"
+    permission_required = 'mail.list_queuedmail'
 
     def get_queryset(self):
         qs = (
-            self.request.event.queued_mails.prefetch_related(
-                "to_users", "submissions", "submissions__track"
-            )
+            self.request.event.queued_mails.prefetch_related('to_users', 'submissions', 'submissions__track')
             .filter(sent__isnull=True)
-            .order_by("-id")
+            .order_by('-id')
         )
         qs = self.filter_queryset(qs)
         return self.sort_queryset(qs)
@@ -80,51 +74,40 @@ class OutboxList(
     @context
     @cached_property
     def show_tracks(self):
-        return self.request.event.get_feature_flag("use_tracks")
+        return self.request.event.get_feature_flag('use_tracks')
 
     @context
     @cached_property
     def is_filtered(self):
-        return (
-            self.get_queryset().count()
-            != self.request.event.queued_mails.filter(sent__isnull=True).count()
-        )
+        return self.get_queryset().count() != self.request.event.queued_mails.filter(sent__isnull=True).count()
 
     def get_filter_form(self):
-        return QueuedMailFilterForm(
-            self.request.GET, event=self.request.event, sent=False
-        )
+        return QueuedMailFilterForm(self.request.GET, event=self.request.event, sent=False)
 
 
-class SentMail(
-    EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
-):
+class SentMail(EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView):
     model = QueuedMail
-    context_object_name = "mails"
-    template_name = "orga/mails/sent_list.html"
+    context_object_name = 'mails'
+    template_name = 'orga/mails/sent_list.html'
     default_filters = (
-        "to__icontains",
-        "subject__icontains",
-        "to_users__fullname__icontains",
-        "to_users__email__icontains",
+        'to__icontains',
+        'subject__icontains',
+        'to_users__fullname__icontains',
+        'to_users__email__icontains',
     )
-    default_sort_field = "-sent"
-    sortable_fields = ("to", "subject", "sent")
+    default_sort_field = '-sent'
+    sortable_fields = ('to', 'subject', 'sent')
     paginate_by = 25
-    permission_required = "mail.list_queuedmail"
+    permission_required = 'mail.list_queuedmail'
 
     def get_filter_form(self):
-        return QueuedMailFilterForm(
-            self.request.GET, event=self.request.event, sent=True
-        )
+        return QueuedMailFilterForm(self.request.GET, event=self.request.event, sent=True)
 
     def get_queryset(self):
         qs = (
-            self.request.event.queued_mails.prefetch_related(
-                "to_users", "submissions", "submissions__track"
-            )
+            self.request.event.queued_mails.prefetch_related('to_users', 'submissions', 'submissions__track')
             .filter(sent__isnull=False)
-            .order_by("-sent")
+            .order_by('-sent')
         )
         qs = self.filter_queryset(qs)
         return self.sort_queryset(qs)
@@ -132,24 +115,22 @@ class SentMail(
     @context
     @cached_property
     def show_tracks(self):
-        return self.request.event.get_feature_flag("use_tracks")
+        return self.request.event.get_feature_flag('use_tracks')
 
 
 class OutboxSend(ActionConfirmMixin, OutboxList):
-    permission_required = "mail.send_queuedmail"
-    action_object_name = ""
+    permission_required = 'mail.send_queuedmail'
+    action_object_name = ''
     action_confirm_label = phrases.base.send
-    action_confirm_color = "success"
-    action_confirm_icon = "envelope"
+    action_confirm_color = 'success'
+    action_confirm_icon = 'envelope'
 
     @context
     def question(self):
-        return _("Do you really want to send {count} mails?").format(
-            count=self.queryset.count()
-        )
+        return _('Do you really want to send {count} mails?').format(count=self.queryset.count())
 
     def action_title(self):
-        return _("Send emails")
+        return _('Send emails')
 
     def action_text(self):
         return self.question()
@@ -159,19 +140,17 @@ class OutboxSend(ActionConfirmMixin, OutboxList):
         return self.request.event.orga_urls.outbox
 
     def dispatch(self, request, *args, **kwargs):
-        if "pk" in self.kwargs:
+        if 'pk' in self.kwargs:
             try:
-                mail = self.request.event.queued_mails.get(pk=self.kwargs.get("pk"))
+                mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
             except QueuedMail.DoesNotExist:
                 messages.error(
                     request,
-                    _(
-                        "This mail either does not exist or cannot be sent because it was sent already."
-                    ),
+                    _('This mail either does not exist or cannot be sent because it was sent already.'),
                 )
                 return redirect(self.request.event.orga_urls.outbox)
             if mail.sent:
-                messages.error(request, _("This mail had been sent already."))
+                messages.error(request, _('This mail had been sent already.'))
             else:
                 errors = get_send_mail_exceptions(request)
                 if errors:
@@ -179,17 +158,15 @@ class OutboxSend(ActionConfirmMixin, OutboxList):
                         messages.error(request, error)
                     return redirect(self.request.event.orga_urls.outbox)
                 mail.send(requestor=self.request.user)
-                messages.success(request, _("The mail has been sent."))
+                messages.success(request, _('The mail has been sent.'))
             return redirect(self.request.event.orga_urls.outbox)
         return super().dispatch(request, *args, **kwargs)
 
     @cached_property
     def queryset(self):
-        pks = self.request.GET.get("pks") or ""
+        pks = self.request.GET.get('pks') or ''
         if pks:
-            return self.request.event.queued_mails.filter(sent__isnull=True).filter(
-                pk__in=pks.split(",")
-            )
+            return self.request.event.queued_mails.filter(sent__isnull=True).filter(pk__in=pks.split(','))
         return self.get_queryset()
 
     def post(self, request, *args, **kwargs):
@@ -202,28 +179,22 @@ class OutboxSend(ActionConfirmMixin, OutboxList):
         count = mails.count()
         for mail in mails:
             mail.send(requestor=self.request.user)
-        messages.success(
-            request, _("{count} mails have been sent.").format(count=count)
-        )
+        messages.success(request, _('{count} mails have been sent.').format(count=count))
         return redirect(self.request.event.orga_urls.outbox)
 
 
 class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
-    permission_required = "mail.delete_queuedmail"
-    action_object_name = ""
+    permission_required = 'mail.delete_queuedmail'
+    action_object_name = ''
 
     def get_permission_object(self):
         return self.request.event
 
     @cached_property
     def queryset(self):
-        mail = self.request.event.queued_mails.filter(
-            sent__isnull=True, pk=self.kwargs.get("pk")
-        )
-        if "all" in self.request.GET and mail:
-            return self.request.event.queued_mails.filter(
-                sent__isnull=True, template=mail.first().template
-            )
+        mail = self.request.event.queued_mails.filter(sent__isnull=True, pk=self.kwargs.get('pk'))
+        if 'all' in self.request.GET and mail:
+            return self.request.event.queued_mails.filter(sent__isnull=True, template=mail.first().template)
         return mail
 
     def action_text(self):
@@ -238,8 +209,8 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         count = len(self.queryset)
         return str(
             ngettext_lazy(
-                "Do you really want to delete this mail?",
-                "Do you really want to purge {count} mails?",
+                'Do you really want to delete this mail?',
+                'Do you really want to purge {count} mails?',
                 count,
             )
         ).format(count=count)
@@ -250,21 +221,19 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         if not mails:
             messages.error(
                 request,
-                _(
-                    "This mail either does not exist or cannot be discarded because it was sent already."
-                ),
+                _('This mail either does not exist or cannot be discarded because it was sent already.'),
             )
             return redirect(self.request.event.orga_urls.outbox)
         for mail in mails:
-            mail.log_action("eventyay.mail.delete", person=self.request.user, orga=True)
+            mail.log_action('eventyay.mail.delete', person=self.request.user, orga=True)
             mail.delete()
 
         messages.success(
             request,
             str(
                 ngettext_lazy(
-                    "The mail has been discarded.",
-                    "{count} mails have been discarded.",
+                    'The mail has been discarded.',
+                    '{count} mails have been discarded.',
                     mail_count,
                 )
             ).format(count=mail_count),
@@ -274,14 +243,12 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
 
 
 class OutboxPurge(ActionConfirmMixin, OutboxList):
-    permission_required = "mail.delete_queuedmail"
-    action_object_name = ""
+    permission_required = 'mail.delete_queuedmail'
+    action_object_name = ''
 
     @context
     def question(self):
-        return _("Do you really want to purge {count} mails?").format(
-            count=self.queryset.count()
-        )
+        return _('Do you really want to purge {count} mails?').format(count=self.queryset.count())
 
     def action_text(self):
         return self.question()
@@ -298,21 +265,19 @@ class OutboxPurge(ActionConfirmMixin, OutboxList):
         qs = self.queryset
         count = qs.count()
         qs.delete()
-        messages.success(
-            request, _("{count} mails have been purged.").format(count=count)
-        )
+        messages.success(request, _('{count} mails have been purged.').format(count=count))
         return redirect(self.request.event.orga_urls.outbox)
 
 
 class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = QueuedMail
     form_class = MailDetailForm
-    template_name = "orga/mails/outbox_form.html"
-    write_permission_required = "mail.update_queuedmail"
-    permission_required = "mail.view_queuedmail"
+    template_name = 'orga/mails/outbox_form.html'
+    write_permission_required = 'mail.update_queuedmail'
+    permission_required = 'mail.view_queuedmail'
 
     def get_object(self, queryset=None) -> QueuedMail:
-        return self.request.event.queued_mails.filter(pk=self.kwargs.get("pk")).first()
+        return self.request.event.queued_mails.filter(pk=self.kwargs.get('pk')).first()
 
     def get_success_url(self):
         return self.object.event.orga_urls.outbox
@@ -321,49 +286,43 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
-            action = "eventyay.mail." + ("update" if self.object else "create")
+            action = 'eventyay.mail.' + ('update' if self.object else 'create')
             form.instance.log_action(action, person=self.request.user, orga=True)
-        action = form.data.get("form", "save")
-        if action == "send":
+        action = form.data.get('form', 'save')
+        if action == 'send':
             errors = get_send_mail_exceptions(self.request)
             if errors:
                 for error in errors:
                     messages.error(self.request, error)
                 return redirect(self.get_success_url())
             form.instance.send()
-            messages.success(self.request, _("The email has been sent."))
+            messages.success(self.request, _('The email has been sent.'))
         else:  # action == 'save'
             messages.success(
                 self.request,
-                _(
-                    "The email has been saved. When you send it, the updated text will be used."
-                ),
+                _('The email has been saved. When you send it, the updated text will be used.'),
             )
         return result
 
 
 class MailCopy(PermissionRequired, View):
-    permission_required = "mail.send_queuedmail"
+    permission_required = 'mail.send_queuedmail'
 
     def get_object(self) -> QueuedMail:
-        return get_object_or_404(
-            self.request.event.queued_mails, pk=self.kwargs.get("pk")
-        )
+        return get_object_or_404(self.request.event.queued_mails, pk=self.kwargs.get('pk'))
 
     def dispatch(self, request, *args, **kwargs):
         mail = self.get_object()
         new_mail = mail.copy_to_draft()
-        messages.success(request, _("The mail has been copied, you can edit it now."))
+        messages.success(request, _('The mail has been copied, you can edit it now.'))
         return redirect(new_mail.urls.edit)
 
 
 class MailPreview(PermissionRequired, View):
-    permission_required = "mail.send_queuedmail"
+    permission_required = 'mail.send_queuedmail'
 
     def get_object(self) -> QueuedMail:
-        return get_object_or_404(
-            self.request.event.queued_mails, pk=self.kwargs.get("pk")
-        )
+        return get_object_or_404(self.request.event.queued_mails, pk=self.kwargs.get('pk'))
 
     def get(self, request, *args, **kwargs):
         mail = self.get_object()
@@ -371,46 +330,44 @@ class MailPreview(PermissionRequired, View):
 
 
 class ComposeMailChoice(EventPermissionRequired, TemplateView):
-    template_name = "orga/mails/compose_choice.html"
-    permission_required = "mail.send_queuedmail"
+    template_name = 'orga/mails/compose_choice.html'
+    permission_required = 'mail.send_queuedmail'
 
 
 class ComposeMailBaseView(EventPermissionRequired, FormView):
-    permission_required = "mail.send_queuedmail"
+    permission_required = 'mail.send_queuedmail'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
-        initial = kwargs.get("initial", {})
-        if "template" in self.request.GET:
-            template = MailTemplate.objects.filter(
-                pk=self.request.GET.get("template")
-            ).first()
+        kwargs['event'] = self.request.event
+        initial = kwargs.get('initial', {})
+        if 'template' in self.request.GET:
+            template = MailTemplate.objects.filter(pk=self.request.GET.get('template')).first()
             if template:
-                initial["subject"] = template.subject
-                initial["text"] = template.text
-                initial["reply_to"] = template.reply_to
-                initial["bcc"] = template.bcc
+                initial['subject'] = template.subject
+                initial['text'] = template.text
+                initial['reply_to'] = template.reply_to
+                initial['bcc'] = template.bcc
         for key in self.form_class.base_fields.keys():
             if key in self.request.GET:
                 initial[key] = self.request.GET.get(key)
-        kwargs["initial"] = initial
+        kwargs['initial'] = initial
 
         errors = get_send_mail_exceptions(self.request)
-        kwargs["may_skip_queue"] = not bool(errors)
+        kwargs['may_skip_queue'] = not bool(errors)
         return kwargs
 
     def get_success_url(self):
-        return getattr(self, "success_url", self.request.event.orga_urls.outbox)
+        return getattr(self, 'success_url', self.request.event.orga_urls.outbox)
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx["output"] = getattr(self, "output", None)
-        ctx["mail_count"] = getattr(self, "mail_count", None) or 0
+        ctx['output'] = getattr(self, 'output', None)
+        ctx['mail_count'] = getattr(self, 'mail_count', None) or 0
         return ctx
 
     def form_valid(self, form):
-        preview = self.request.POST.get("action") == "preview"
+        preview = self.request.POST.get('action') == 'preview'
         if preview:
             self.output = {}
             # Only approximate, good enough. Doesn't run deduplication, so it doesn't have to
@@ -419,7 +376,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             if not result:
                 messages.error(
                     self.request,
-                    _("There are no recipients matching this selection."),
+                    _('There are no recipients matching this selection.'),
                 )
                 return self.get(self.request, *self.args, **self.kwargs)
             from eventyay.base.templatetags.rich_text import render_markdown_abslinks
@@ -428,30 +385,18 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                 with language(locale):
                     context_dict = TolerantDict()
                     for key, value in form.get_valid_placeholders().items():
-                        context_dict[key] = (
-                            '<span class="placeholder" title="{title}">{content}</span>'.format(
-                                title=_(
-                                    "This value will be replaced based on dynamic parameters."
-                                ),
-                                content=escape(value.render_sample(self.request.event)),
-                            )
+                        context_dict[key] = '<span class="placeholder" title="{title}">{content}</span>'.format(
+                            title=_('This value will be replaced based on dynamic parameters.'),
+                            content=escape(value.render_sample(self.request.event)),
                         )
 
-                    subject = bleach.clean(
-                        form.cleaned_data["subject"].localize(locale), tags={}
-                    )
-                    preview_subject = get_prefixed_subject(
-                        self.request.event, subject.format_map(context_dict)
-                    )
-                    message = form.cleaned_data["text"].localize(locale)
-                    preview_text = render_markdown_abslinks(
-                        message.format_map(context_dict)
-                    )
+                    subject = bleach.clean(form.cleaned_data['subject'].localize(locale), tags={})
+                    preview_subject = get_prefixed_subject(self.request.event, subject.format_map(context_dict))
+                    message = form.cleaned_data['text'].localize(locale)
+                    preview_text = render_markdown_abslinks(message.format_map(context_dict))
                     self.output[locale] = {
-                        "subject": _("Subject: {subject}").format(
-                            subject=preview_subject
-                        ),
-                        "html": preview_text,
+                        'subject': _('Subject: {subject}').format(subject=preview_subject),
+                        'html': preview_text,
                     }
                     # Very rough method to deduplicate recipients, but good enough for a preview
                     self.mail_count = len({str(res) for res in result})
@@ -462,7 +407,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             self.success_url = self.request.event.orga_urls.sent_mails
             messages.success(
                 self.request,
-                _("{count} emails have been sent.").format(count=len(result)),
+                _('{count} emails have been sent.').format(count=len(result)),
             )
         else:
             self.success_url = self.request.event.orga_urls.outbox
@@ -475,8 +420,8 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
 
 class ComposeTeamsMail(ComposeMailBaseView):
     form_class = WriteTeamsMailForm
-    template_name = "orga/mails/compose_reviewer_mail_form.html"
-    permission_required = "event.update_team"
+    template_name = 'orga/mails/compose_reviewer_mail_form.html'
+    permission_required = 'event.update_team'
 
     def dispatch(self, request, *args, **kwargs):
         # Gotta handle errors directly here, as these emails are always sent directly
@@ -493,33 +438,33 @@ class ComposeTeamsMail(ComposeMailBaseView):
 
 class ComposeSessionMail(ComposeMailBaseView):
     form_class = WriteSessionMailForm
-    template_name = "orga/mails/compose_session_mail_form.html"
+    template_name = 'orga/mails/compose_session_mail_form.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        initial = kwargs.get("initial", {})
-        if "submissions" in self.request.GET:
-            initial["submissions"] = list(
+        initial = kwargs.get('initial', {})
+        if 'submissions' in self.request.GET:
+            initial['submissions'] = list(
                 self.request.event.submissions.filter(
-                    code__in=self.request.GET.get("submissions").split(",")
-                ).values_list("code", flat=True)
+                    code__in=self.request.GET.get('submissions').split(',')
+                ).values_list('code', flat=True)
             )
-        if "speakers" in self.request.GET:
-            initial["speakers"] = self.request.event.submitters.filter(
-                code__in=self.request.GET.get("speakers").split(",")
+        if 'speakers' in self.request.GET:
+            initial['speakers'] = self.request.event.submitters.filter(
+                code__in=self.request.GET.get('speakers').split(',')
             )
-        kwargs["initial"] = initial
+        kwargs['initial'] = initial
         return kwargs
 
 
 class ComposeDraftReminders(EventPermissionRequired, FormView):
     form_class = DraftRemindersForm
-    template_name = "orga/mails/send_draft_reminders.html"
-    permission_required = "mail.send_queuedmail"
+    template_name = 'orga/mails/send_draft_reminders.html'
+    permission_required = 'mail.send_queuedmail'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
+        kwargs['event'] = self.request.event
         return kwargs
 
     def get_success_url(self):
@@ -529,7 +474,7 @@ class ComposeDraftReminders(EventPermissionRequired, FormView):
         result = form.save()
         messages.success(
             self.request,
-            _("{count} emails have been sent.").format(count=result),
+            _('{count} emails have been sent.').format(count=result),
         )
         return super().form_valid(form)
 
@@ -537,24 +482,24 @@ class ComposeDraftReminders(EventPermissionRequired, FormView):
 class MailTemplateView(OrgaCRUDView):
     model = MailTemplate
     form_class = MailTemplateForm
-    template_namespace = "orga/mails"
+    template_namespace = 'orga/mails'
     messages = {
-        "create": phrases.base.saved,
-        "update": _(
-            "The template has been saved - note that already pending emails that are based on this template will not be changed!"
+        'create': phrases.base.saved,
+        'update': _(
+            'The template has been saved - note that already pending emails that are based on this template will not be changed!'
         ),
-        "delete": phrases.base.deleted,
+        'delete': phrases.base.deleted,
     }
 
     def get_queryset(self):
-        return self.request.event.mail_templates.all().order_by("role")
+        return self.request.event.mail_templates.all().order_by('role')
 
     def get_generic_title(self, instance=None):
         if instance:
             if not instance.role:
-                return _("Email template") + f": {instance.subject}"
+                return _('Email template') + f': {instance.subject}'
             else:
-                return _("Email template") + f": {instance.get_role_display()}"
-        if self.action == "create":
-            return _("New email template")
-        return _("Email templates")
+                return _('Email template') + f': {instance.get_role_display()}'
+        if self.action == 'create':
+            return _('New email template')
+        return _('Email templates')

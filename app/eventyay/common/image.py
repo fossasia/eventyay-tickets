@@ -18,8 +18,8 @@ THUMBNAIL_SIZES = {
 gravatar_csp = partial(
     csp_update,
     {
-        "IMG_SRC": "https://www.gravatar.com",
-        "CONNECT_SRC": "https://www.gravatar.com",
+        'IMG_SRC': 'https://www.gravatar.com',
+        'CONNECT_SRC': 'https://www.gravatar.com',
     },
 )
 

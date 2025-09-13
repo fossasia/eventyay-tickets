@@ -20,7 +20,7 @@ from eventyay.common.text.phrases import phrases
 from eventyay.common.views import GenericLoginView, GenericResetView
 from eventyay.base.models import User
 
-SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
+SessionStore = import_string(f'{settings.SESSION_ENGINE}.SessionStore')
 logger = logging.getLogger(__name__)
 
 
@@ -29,22 +29,20 @@ class LogoutView(View):
         logout(request)
         response = self.get(request, *args, **kwargs)
         # Remove the JWT cookie
-        response.delete_cookie("sso_token")  # Same domain used when setting the cookie
-        response.delete_cookie("customer_sso_token")
+        response.delete_cookie('sso_token')  # Same domain used when setting the cookie
+        response.delete_cookie('customer_sso_token')
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
-        return redirect(
-            reverse("cfp:event.start", kwargs={"event": self.request.event.slug})
-        )
+        return redirect(reverse('cfp:event.start', kwargs={'event': self.request.event.slug}))
 
 
 class LoginView(GenericLoginView):
-    template_name = "cfp/event/login.html"
+    template_name = 'cfp/event/login.html'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.event.is_public:
-            logger.info("Event %s is not public. Blocking access.", request.event.slug)
+            logger.info('Event %s is not public. Blocking access.', request.event.slug)
             raise Http404()
         return super().dispatch(request, *args, **kwargs)
 
@@ -60,21 +58,21 @@ class LoginView(GenericLoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["register_url"] = settings.EVENTYAY_TICKET_BASE_PATH
+        context['register_url'] = settings.EVENTYAY_TICKET_BASE_PATH
         # We already have a primary login button in this page, disable the subheader login link.
-        context["subheader_login_link_disabled"] = True
+        context['subheader_login_link_disabled'] = True
         return context
 
 
 class ResetView(EventPageMixin, GenericResetView):
-    template_name = "cfp/event/reset.html"
+    template_name = 'cfp/event/reset.html'
 
     def get_success_url(self):
-        return reverse("cfp:event.login", kwargs={"event": self.request.event.slug})
+        return reverse('cfp:event.login', kwargs={'event': self.request.event.slug})
 
 
 class RecoverView(FormView):
-    template_name = "cfp/event/recover.html"
+    template_name = 'cfp/event/recover.html'
     form_class = RecoverForm
     is_invite = False
 
@@ -89,23 +87,19 @@ class RecoverView(FormView):
     def dispatch(self, request, *args, **kwargs):
         try:
             self.user = User.objects.get(
-                pw_reset_token=kwargs.get("token"),
+                pw_reset_token=kwargs.get('token'),
                 pw_reset_time__gte=now() - dt.timedelta(days=1),
             )
         except User.DoesNotExist:
             messages.error(self.request, phrases.cfp.auth_reset_fail)
-            return redirect(
-                reverse("cfp:event.reset", kwargs={"event": kwargs.get("event")})
-            )
+            return redirect(reverse('cfp:event.reset', kwargs={'event': kwargs.get('event')}))
 
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.user.change_password(form.cleaned_data["password"])
+        self.user.change_password(form.cleaned_data['password'])
         messages.success(self.request, phrases.cfp.auth_reset_success)
-        return redirect(
-            reverse("cfp:event.login", kwargs={"event": self.request.event.slug})
-        )
+        return redirect(reverse('cfp:event.login', kwargs={'event': self.request.event.slug}))
 
 
 class EventAuth(View):
@@ -117,14 +111,14 @@ class EventAuth(View):
 
     @staticmethod
     def post(request, *args, **kwargs):
-        store = SessionStore(request.POST.get("session"))
+        store = SessionStore(request.POST.get('session'))
 
         try:
             data = store.load()
         except Exception:
             raise PermissionDenied(phrases.base.back_try_again)
 
-        key = f"eventyay_event_access_{request.event.pk}"
+        key = f'eventyay_event_access_{request.event.pk}'
         parent = data.get(key)
         sparent = SessionStore(parent)
 
@@ -133,14 +127,14 @@ class EventAuth(View):
         except Exception:
             raise PermissionDenied(phrases.base.back_try_again)
         else:
-            if "event_access" not in parentdata:
+            if 'event_access' not in parentdata:
                 raise PermissionDenied(phrases.base.back_try_again)
 
         request.session[key] = parent
         url = request.event.urls.base
-        if target := request.POST.get("target"):
-            if target == "cfp":
+        if target := request.POST.get('target'):
+            if target == 'cfp':
                 url = request.event.cfp.urls.public
-            elif target == "schedule":
+            elif target == 'schedule':
                 url = request.event.urls.schedule
         return redirect(url)

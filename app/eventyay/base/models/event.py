@@ -988,7 +988,9 @@ class Event(EventMixin, LoggedModel, PretalxModel):
             imv.product = product_map[imv.product.pk]
             imv.save()
 
-        for ia in ProductAddOn.objects.filter(base_product__event=other).prefetch_related('base_product', 'addon_category'):
+        for ia in ProductAddOn.objects.filter(base_product__event=other).prefetch_related(
+            'base_product', 'addon_category'
+        ):
             ia.pk = None
             ia.base_product = product_map[ia.base_product.pk]
             ia.addon_category = category_map[ia.addon_category.pk]
@@ -1564,21 +1566,21 @@ class Event(EventMixin, LoggedModel, PretalxModel):
     @cached_property
     def plugin_locales(self) -> list:
         return sorted(self.named_plugin_locales.keys())
-    
+
     @property
     def plugin_list(self) -> list:
         if not self.plugins:
             return []
-        return self.plugins.split(",")
+        return self.plugins.split(',')
 
     @cached_property
     def available_plugins(self):
         return {
             plugin.module: plugin
             for plugin in get_all_plugins(self)
-            if not plugin.name.startswith(".") and getattr(plugin, "visible", True)
+            if not plugin.name.startswith('.') and getattr(plugin, 'visible', True)
         }
-    
+
     def set_plugins(self, modules: list) -> None:
         """
         This method is not @plugin_list.setter to make the side effects more visible.
@@ -1591,13 +1593,13 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         disable = plugins_active - set(modules)
 
         for module in enable:
-            if hasattr(self.available_plugins[module].app, "installed"):
+            if hasattr(self.available_plugins[module].app, 'installed'):
                 self.available_plugins[module].app.installed(self)
         for module in disable:
-            if hasattr(self.available_plugins[module].app, "uninstalled"):
+            if hasattr(self.available_plugins[module].app, 'uninstalled'):
                 self.available_plugins[module].app.uninstalled(self)
 
-        self.plugins = ",".join(modules)
+        self.plugins = ','.join(modules)
 
     def enable_plugin(self, module: str) -> None:
         """Enables a plugin. If the given plugin is available and was not in the list of
@@ -1614,7 +1616,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         if module in plugins_active:
             plugins_active.remove(module)
             self.set_plugins(plugins_active)
-    
+
     @cached_property
     def visible_primary_color(self):
         return self.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
@@ -1624,13 +1626,13 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
         sub_type = SubmissionType.objects.filter(event=self).first()
         if not sub_type:
-            sub_type = SubmissionType.objects.create(event=self, name="Talk")
+            sub_type = SubmissionType.objects.create(event=self, name='Talk')
         return sub_type
 
     @cached_property
     def event(self):
         return self
-    
+
     def get_feature_flag(self, feature):
         if feature in self.feature_flags:
             return self.feature_flags[feature]
@@ -1638,15 +1640,11 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
     @cached_property
     def current_schedule(self):
-        if pk := getattr(self, "_current_schedule_pk", None):
+        if pk := getattr(self, '_current_schedule_pk', None):
             # The event middleware prefetches the current schedule
             return self.schedules.get(pk=pk)
-        return (
-            self.schedules.order_by("-published")
-            .filter(published__isnull=False)
-            .first()
-        )
-    
+        return self.schedules.order_by('-published').filter(published__isnull=False).first()
+
     @cached_property
     def duration(self):
         return (self.date_to - self.date_from).days + 1
@@ -1656,7 +1654,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         from eventyay.base.models import Review
 
         return Review.objects.filter(submission__event=self)
-    
+
     @cached_property
     def datetime_from(self) -> dt.datetime:
         """The localised datetime of the event start date.
@@ -1682,7 +1680,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
     @cached_property
     def tz(self):
         return zoneinfo.ZoneInfo(self.timezone)
-    
+
     @cached_property
     def talks(self):
         """Returns a queryset of all.
@@ -1695,11 +1693,11 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         if self.current_schedule:
             return (
                 self.submissions.filter(slots__in=self.current_schedule.scheduled_talks)
-                .select_related("submission_type")
-                .prefetch_related("speakers")
+                .select_related('submission_type')
+                .prefetch_related('speakers')
             )
         return Submission.objects.none()
-    
+
     @cached_property
     def speakers(self):
         """Returns a queryset of all speakers (of type.
@@ -1709,8 +1707,8 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         """
         from eventyay.base.models import User
 
-        return User.objects.filter(submissions__in=self.talks).order_by("id").distinct()
-    
+        return User.objects.filter(submissions__in=self.talks).order_by('id').distinct()
+
     @cached_property
     def submitters(self):
         """Returns a queryset of all :class:`~eventyay.base.models.user.User`
@@ -1722,8 +1720,8 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
         return (
             User.objects.filter(submissions__in=self.submissions.all())
-            .prefetch_related("submissions")
-            .order_by("id")
+            .prefetch_related('submissions')
+            .order_by('id')
             .distinct()
         )
 
@@ -1733,17 +1731,14 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         that concern this event."""
 
         return self.organizer.teams.all().filter(
-            models.Q(all_events=True)
-            | models.Q(models.Q(all_events=False) & models.Q(limit_events__in=[self]))
+            models.Q(all_events=True) | models.Q(models.Q(all_events=False) & models.Q(limit_events__in=[self]))
         )
 
     @cached_property
     def reviewers(self):
         from eventyay.base.models import User
 
-        return User.objects.filter(
-            teams__in=self.teams.filter(is_reviewer=True)
-        ).distinct()
+        return User.objects.filter(teams__in=self.teams.filter(is_reviewer=True)).distinct()
 
     @cached_property
     def active_review_phase(self):
@@ -1755,11 +1750,11 @@ class Event(EventMixin, LoggedModel, PretalxModel):
             cfp_deadline = self.cfp.deadline
             return ReviewPhase.objects.create(
                 event=self,
-                name=_("Review"),
+                name=_('Review'),
                 start=cfp_deadline,
                 end=self.datetime_from - relativedelta(months=-3),
                 is_active=bool(cfp_deadline),
-                can_see_other_reviews="after_review",
+                can_see_other_reviews='after_review',
                 can_see_speaker_names=True,
             )
 
@@ -1777,7 +1772,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         phases.sort(key=lambda x: (x.start or placeholder, x.end or placeholder))
         for i, phase in enumerate(phases):
             phase.position = i
-            phase.save(update_fields=["position"])
+            phase.save(update_fields=['position'])
 
     def update_review_phase(self):
         """This method activates the next review phase if the current one is
@@ -1794,7 +1789,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         self.reorder_review_phases()
         old_position = old_phase.position if old_phase else -1
         future_phases = future_phases.filter(position__gt=old_position)
-        next_phase = future_phases.order_by("position").first()
+        next_phase = future_phases.order_by('position').first()
         if not next_phase or not next_phase.start or next_phase.start > _now:
             return old_phase
         next_phase.activate()
@@ -1802,9 +1797,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
     update_review_phase.alters_data = True
 
-    def release_schedule(
-        self, name: str, user=None, notify_speakers: bool = False, comment: str = None
-    ):
+    def release_schedule(self, name: str, user=None, notify_speakers: bool = False, comment: str = None):
         """Releases a new :class:`~eventyay.base.models.schedule.Schedule`
         by finalising the current WIP schedule.
 
@@ -1814,9 +1807,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         :param comment: Public comment for the release
         :type user: :class:`~eventyay.base.models.user.User`
         """
-        self.wip_schedule.freeze(
-            name=name, user=user, notify_speakers=notify_speakers, comment=comment
-        )
+        self.wip_schedule.freeze(name=name, user=user, notify_speakers=notify_speakers, comment=comment)
 
     release_schedule.alters_data = True
 
@@ -1844,15 +1835,11 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
     @cached_property
     def current_schedule(self):
-        if pk := getattr(self, "_current_schedule_pk", None):
+        if pk := getattr(self, '_current_schedule_pk', None):
             # The event middleware prefetches the current schedule
             return self.schedules.get(pk=pk)
-        return (
-            self.schedules.order_by("-published")
-            .filter(published__isnull=False)
-            .first()
-        )
-    
+        return self.schedules.order_by('-published').filter(published__isnull=False).first()
+
     def get_mail_template(self, role):
         from eventyay.mail.default_templates import get_default_template
         from eventyay.base.models import MailTemplate
@@ -1862,7 +1849,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         except MailTemplate.DoesNotExist:
             subject, text = get_default_template(role)
             template, __ = MailTemplate.objects.get_or_create(
-                event=self, role=role, defaults={"subject": subject, "text": text}
+                event=self, role=role, defaults={'subject': subject, 'text': text}
             )
             return template
 
@@ -1871,10 +1858,8 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         from eventyay.base.models import Schedule
         from eventyay.base.models import CfP
 
-        if not hasattr(self, "cfp"):
-            CfP.objects.create(
-                event=self, default_type=self._get_default_submission_type()
-            )
+        if not hasattr(self, 'cfp'):
+            CfP.objects.create(event=self, default_type=self._get_default_submission_type())
 
         if not self.schedules.filter(version__isnull=True).exists():
             Schedule.objects.create(event=self)
@@ -1888,7 +1873,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
             cfp_deadline = self.cfp.deadline
             rp = ReviewPhase.objects.create(
                 event=self,
-                name=_("Review"),
+                name=_('Review'),
                 start=cfp_deadline,
                 end=self.datetime_from - relativedelta(months=-3),
                 is_active=bool(not cfp_deadline or cfp_deadline < now()),
@@ -1896,12 +1881,12 @@ class Event(EventMixin, LoggedModel, PretalxModel):
             )
             ReviewPhase.objects.create(
                 event=self,
-                name=_("Selection"),
+                name=_('Selection'),
                 start=rp.end,
                 is_active=False,
                 position=1,
                 can_review=False,
-                can_see_other_reviews="always",
+                can_see_other_reviews='always',
                 can_change_submission_state=True,
             )
         if not self.score_categories.all().exists():
@@ -1909,22 +1894,22 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
             category = ReviewScoreCategory.objects.create(
                 event=self,
-                name=str(_("Score")),
+                name=str(_('Score')),
             )
             ReviewScore.objects.create(
                 category=category,
                 value=0,
-                label=str(_("No")),
+                label=str(_('No')),
             )
             ReviewScore.objects.create(
                 category=category,
                 value=1,
-                label=str(_("Maybe")),
+                label=str(_('Maybe')),
             )
             ReviewScore.objects.create(
                 category=category,
                 value=2,
-                label=str(_("Yes")),
+                label=str(_('Yes')),
             )
         self.save()
 
@@ -1940,18 +1925,16 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
 
 class EventExtraLink(OrderedModel, PretalxModel):
-    event = models.ForeignKey(
-        to="Event", on_delete=models.CASCADE, related_name="extra_links"
-    )
-    label = I18nCharField(max_length=200, verbose_name=_("Link text"))
-    url = models.URLField(verbose_name=_("Link URL"))
+    event = models.ForeignKey(to='Event', on_delete=models.CASCADE, related_name='extra_links')
+    label = I18nCharField(max_length=200, verbose_name=_('Link text'))
+    url = models.URLField(verbose_name=_('Link URL'))
     role = models.CharField(
         max_length=6,
-        choices=(("footer", "Footer"), ("header", "Header")),
-        default="footer",
+        choices=(('footer', 'Footer'), ('header', 'Header')),
+        default='footer',
     )
 
-    objects = ScopedManager(event="event")
+    objects = ScopedManager(event='event')
 
 
 class SubEvent(EventMixin, LoggedModel):

@@ -13,8 +13,8 @@ def sneakpeek_redirect(request, *args, **kwargs):
 
 
 class FeaturedView(EventPermissionRequired, TemplateView):
-    template_name = "agenda/featured.html"
-    permission_required = "submission.list_featured_submission"
+    template_name = 'agenda/featured.html'
+    permission_required = 'submission.list_featured_submission'
 
     @context
     def talks(self):
@@ -28,9 +28,9 @@ class FeaturedView(EventPermissionRequired, TemplateView):
                     SubmissionStates.DELETED,
                 ]
             )
-            .select_related("event", "submission_type")
-            .prefetch_related("speakers")
-            .order_by("title")
+            .select_related('event', 'submission_type')
+            .prefetch_related('speakers')
+            .order_by('title')
         )
 
     @context
@@ -40,7 +40,7 @@ class FeaturedView(EventPermissionRequired, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         can_see_featured = self.has_permission()
-        can_schedule = request.user.has_perm("schedule.list_schedule", request.event)
+        can_schedule = request.user.has_perm('schedule.list_schedule', request.event)
 
         if not can_see_featured and can_schedule:
             return HttpResponseRedirect(request.event.urls.schedule)

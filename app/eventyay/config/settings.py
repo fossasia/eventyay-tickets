@@ -152,7 +152,7 @@ _OURS_APPS = (
     'eventyay.helpers',
     'eventyay.mail',
     'eventyay.multidomain',
-    "eventyay.person",
+    'eventyay.person',
     'eventyay.presale',
     'eventyay.plugins.socialauth',
     'eventyay.plugins.banktransfer',
@@ -167,17 +167,19 @@ _OURS_APPS = (
     'eventyay.plugins.ticketoutputpdf',
     'eventyay.plugins.webcheckin',
     'eventyay.schedule',
-    "eventyay.submission",
+    'eventyay.submission',
 )
 
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
-CORE_MODULES = INSTALLED_APPS + tuple(
-    module for module in talk_config.get("site", "core_modules").split(",") if module
-) + (
-    'eventyay.base',
-    'eventyay.presale',
-    'eventyay.control',
+CORE_MODULES = (
+    INSTALLED_APPS
+    + tuple(module for module in talk_config.get('site', 'core_modules').split(',') if module)
+    + (
+        'eventyay.base',
+        'eventyay.presale',
+        'eventyay.control',
+    )
 )
 
 _LIBRARY_MIDDLEWARES = (
@@ -192,9 +194,7 @@ _LIBRARY_MIDDLEWARES = (
 )
 
 if DEBUG and importlib.util.find_spec('debug_toolbar'):
-    _LIBRARY_MIDDLEWARES += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
+    _LIBRARY_MIDDLEWARES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 _OURS_MIDDLEWARES = (
     'eventyay.base.middleware.CustomCommonMiddleware',
@@ -241,12 +241,12 @@ TEMPLATES = (
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'eventyay.config.settings.instance_name',
-                "eventyay.agenda.context_processors.is_html_export",
-                "eventyay.common.context_processors.add_events",
-                "eventyay.common.context_processors.locale_context",
-                "eventyay.common.context_processors.messages",
-                "eventyay.common.context_processors.system_information",
-                "eventyay.orga.context_processors.orga_events",
+                'eventyay.agenda.context_processors.is_html_export',
+                'eventyay.common.context_processors.add_events',
+                'eventyay.common.context_processors.locale_context',
+                'eventyay.common.context_processors.messages',
+                'eventyay.common.context_processors.system_information',
+                'eventyay.orga.context_processors.orga_events',
                 'eventyay.base.context.contextprocessor',
                 'eventyay.control.context.contextprocessor',
                 'eventyay.presale.context.contextprocessor',
@@ -279,7 +279,7 @@ EVENTYAY_VERSION = __version__
 # FILE_UPLOAD_DEFAULT_LIMIT = int(config.get("files", "upload_limit")) * 1024 * 1024
 FILE_UPLOAD_DEFAULT_LIMIT = 10 * 1024 * 1024
 
-FORM_RENDERER = "eventyay.common.forms.renderers.TabularFormRenderer"
+FORM_RENDERER = 'eventyay.common.forms.renderers.TabularFormRenderer'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -325,7 +325,7 @@ ENTROPY = {
     'giftcard_secret': config.getint('entropy', 'giftcard_secret', fallback=12),
 }
 EVENTYAY_PRIMARY_COLOR = '#2185d0'
-DEFAULT_EVENT_PRIMARY_COLOR = "#2185d0"
+DEFAULT_EVENT_PRIMARY_COLOR = '#2185d0'
 
 DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
 CURRENCY_PLACES = {
@@ -454,161 +454,158 @@ USE_TZ = True
 
 LANGUAGES_RTL = {'ar', 'he'}
 
-LANGUAGE_COOKIE_NAME = "eventyay_language"
+LANGUAGE_COOKIE_NAME = 'eventyay_language'
 LANGUAGES_INFORMATION = {
-    "en": {
-        "name": _("English"),
-        "natural_name": "English",
-        "official": True,
-        "percentage": 100,
+    'en': {
+        'name': _('English'),
+        'natural_name': 'English',
+        'official': True,
+        'percentage': 100,
     },
-    "de": {
-        "name": _("German"),
-        "natural_name": "Deutsch",
-        "official": True,
-        "percentage": 100,
-        "path": "de_DE",
+    'de': {
+        'name': _('German'),
+        'natural_name': 'Deutsch',
+        'official': True,
+        'percentage': 100,
+        'path': 'de_DE',
     },
-    "de-formal": {
-        "name": _("German (formal)"),
-        "natural_name": "Deutsch",
-        "official": True,
-        "percentage": 100,
-        "public_code": "de",
-        "path": "de_Formal",
+    'de-formal': {
+        'name': _('German (formal)'),
+        'natural_name': 'Deutsch',
+        'official': True,
+        'percentage': 100,
+        'public_code': 'de',
+        'path': 'de_Formal',
     },
-    "ar": {
-        "name": _("Arabic"),
-        "natural_name": "اَلْعَرَبِيَّةُ",
-        "official": False,
-        "percentage": 72,
+    'ar': {
+        'name': _('Arabic'),
+        'natural_name': 'اَلْعَرَبِيَّةُ',
+        'official': False,
+        'percentage': 72,
     },
-    "cs": {
-        "name": _("Czech"),
-        "natural_name": "Čeština",
-        "official": False,
-        "percentage": 97,
+    'cs': {
+        'name': _('Czech'),
+        'natural_name': 'Čeština',
+        'official': False,
+        'percentage': 97,
     },
-    "el": {
-        "name": _("Greek"),
-        "natural_name": "Ελληνικά",
-        "official": False,
-        "percentage": 90,
+    'el': {
+        'name': _('Greek'),
+        'natural_name': 'Ελληνικά',
+        'official': False,
+        'percentage': 90,
     },
-    "es": {
-        "name": _("Spanish"),
-        "natural_name": "Español",
-        "official": False,
-        "percentage": 80,
+    'es': {
+        'name': _('Spanish'),
+        'natural_name': 'Español',
+        'official': False,
+        'percentage': 80,
     },
-    "fa-ir": {
-        "name": _("Persian"),
-        "natural_name": "قارسی",
-        "official": False,
-        "percentage": 99,
-        "path": "fa_IR",
-        "public_code": "fa_IR",
+    'fa-ir': {
+        'name': _('Persian'),
+        'natural_name': 'قارسی',
+        'official': False,
+        'percentage': 99,
+        'path': 'fa_IR',
+        'public_code': 'fa_IR',
     },
-    "fr": {
-        "name": _("French"),
-        "natural_name": "Français",
-        "official": False,
-        "percentage": 98,
-        "path": "fr_FR",
+    'fr': {
+        'name': _('French'),
+        'natural_name': 'Français',
+        'official': False,
+        'percentage': 98,
+        'path': 'fr_FR',
     },
-    "it": {
-        "name": _("Italian"),
-        "natural_name": "Italiano",
-        "official": False,
-        "percentage": 95,
+    'it': {
+        'name': _('Italian'),
+        'natural_name': 'Italiano',
+        'official': False,
+        'percentage': 95,
     },
-    "ja-jp": {
-        "name": _("Japanese"),
-        "natural_name": "日本語",
-        "official": False,
-        "percentage": 69,
-        "public_code": "jp",
+    'ja-jp': {
+        'name': _('Japanese'),
+        'natural_name': '日本語',
+        'official': False,
+        'percentage': 69,
+        'public_code': 'jp',
     },
-    "nl": {
-        "name": _("Dutch"),
-        "natural_name": "Nederlands",
-        "official": False,
-        "percentage": 88,
+    'nl': {
+        'name': _('Dutch'),
+        'natural_name': 'Nederlands',
+        'official': False,
+        'percentage': 88,
     },
-    "pt-br": {
-        "name": _("Brasilian Portuguese"),
-        "natural_name": "Português brasileiro",
-        "official": False,
-        "percentage": 89,
-        "public_code": "pt",
+    'pt-br': {
+        'name': _('Brasilian Portuguese'),
+        'natural_name': 'Português brasileiro',
+        'official': False,
+        'percentage': 89,
+        'public_code': 'pt',
     },
-    "pt-pt": {
-        "name": _("Portuguese"),
-        "natural_name": "Português",
-        "official": False,
-        "percentage": 89,
-        "public_code": "pt",
+    'pt-pt': {
+        'name': _('Portuguese'),
+        'natural_name': 'Português',
+        'official': False,
+        'percentage': 89,
+        'public_code': 'pt',
     },
-    "ru": {
-        "name": _("Russian"),
-        "natural_name": "Русский",
-        "official": True,
-        "percentage": 0,
+    'ru': {
+        'name': _('Russian'),
+        'natural_name': 'Русский',
+        'official': True,
+        'percentage': 0,
     },
-    "sw": {
-        "name": _("Swahili"),
-        "natural_name": "Kiswahili",
-        "official": False,
-        "percentage": 0,
+    'sw': {
+        'name': _('Swahili'),
+        'natural_name': 'Kiswahili',
+        'official': False,
+        'percentage': 0,
     },
-    "ua": {
-        "name": _("Ukrainian"),
-        "natural_name": "Українська",
-        "official": True,
-        "percentage": 0,
+    'ua': {
+        'name': _('Ukrainian'),
+        'natural_name': 'Українська',
+        'official': True,
+        'percentage': 0,
     },
-    "zh-hant": {
-        "name": _("Traditional Chinese (Taiwan)"),
-        "natural_name": "漢語",
-        "official": False,
-        "percentage": 66,
-        "public_code": "zh",
+    'zh-hant': {
+        'name': _('Traditional Chinese (Taiwan)'),
+        'natural_name': '漢語',
+        'official': False,
+        'percentage': 66,
+        'public_code': 'zh',
     },
-    "zh-hans": {
-        "name": _("Simplified Chinese"),
-        "natural_name": "简体中文",
-        "official": False,
-        "percentage": 86,
-        "public_code": "zh",
+    'zh-hans': {
+        'name': _('Simplified Chinese'),
+        'natural_name': '简体中文',
+        'official': False,
+        'percentage': 86,
+        'public_code': 'zh',
     },
 }
 LANGUAGES_RTL = {
-    "ar",
-    "fa-ir",
+    'ar',
+    'fa-ir',
 }
 
 for section in talk_config.sections():
     # Plugins can add languages, which will not be visible
     # without the providing plugin being activated
-    if section.startswith("language:"):
-        language_code = section[len("language:") :]
+    if section.startswith('language:'):
+        language_code = section[len('language:') :]
         LANGUAGES_INFORMATION[language_code] = {
-            "name": talk_config.get(section, "name"),
-            "public_code": talk_config.get(section, "public_code", fallback=None)
-            or language_code,
-            "natural_name": talk_config.get(section, "name"),
-            "visible": False,
-            "official": False,
-            "percentage": None,
+            'name': talk_config.get(section, 'name'),
+            'public_code': talk_config.get(section, 'public_code', fallback=None) or language_code,
+            'natural_name': talk_config.get(section, 'name'),
+            'visible': False,
+            'official': False,
+            'percentage': None,
         }
 
 
 for code, language in LANGUAGES_INFORMATION.items():
-    language["code"] = code
+    language['code'] = code
 
-LANGUAGES = [
-    (language["code"], language["name"]) for language in LANGUAGES_INFORMATION.values()
-]
+LANGUAGES = [(language['code'], language['name']) for language in LANGUAGES_INFORMATION.values()]
 
 METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
 METRICS_USER = config.get('metrics', 'user', fallback='metrics')
@@ -706,14 +703,14 @@ STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
 # We have some Vue 3 frontend apps which are built with Vite, we need to
 # tell Django to collect their compiled output files.
 # Note that those apps must be built before running collectstatic.
-FRONTEND_DIR = BASE_DIR / "frontend"
+FRONTEND_DIR = BASE_DIR / 'frontend'
 # Note: We must assume that the directory exists,
 # because when `collectstatic` was invoked by `rebuild` command,
 # it only sees the settings before Vite runs.
-STATICFILES_DIRS.append(FRONTEND_DIR / "global-nav-menu" / "dist")
+STATICFILES_DIRS.append(FRONTEND_DIR / 'global-nav-menu' / 'dist')
 
 VITE_DEV_SERVER_PORT = 8080
-VITE_DEV_SERVER = f"http://localhost:{VITE_DEV_SERVER_PORT}"
+VITE_DEV_SERVER = f'http://localhost:{VITE_DEV_SERVER_PORT}'
 VITE_DEV_MODE = DEBUG
 VITE_IGNORE = False  # Used to ignore `collectstatic`/`rebuild`
 
@@ -733,16 +730,16 @@ COMPRESS_CSS_FILTERS = (
 TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-DATA_DIR= BASE_DIR / "data"
-LOG_DIR = DATA_DIR / "logs"
-MEDIA_ROOT = Path(talk_config.get("filesystem", "media", fallback=DATA_DIR / "media"))
+DATA_DIR = BASE_DIR / 'data'
+LOG_DIR = DATA_DIR / 'logs'
+MEDIA_ROOT = Path(talk_config.get('filesystem', 'media', fallback=DATA_DIR / 'media'))
 
 IS_HTML_EXPORT = False
 HTMLEXPORT_ROOT = Path(
     talk_config.get(
-        "filesystem",
-        "htmlexport",
-        fallback=DATA_DIR / "htmlexport",
+        'filesystem',
+        'htmlexport',
+        fallback=DATA_DIR / 'htmlexport',
     )
 )
 
@@ -856,6 +853,6 @@ LOGGING = {
             'handlers': [CONSOLE_HANDLER],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': False,
-        }
+        },
     },
 }

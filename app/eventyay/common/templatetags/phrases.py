@@ -10,7 +10,7 @@ register = template.Library()
 def phrase(phrase_name, **kwargs):
     """Return a phrase. Used in templates when format kwargs are needed."""
 
-    _, module, name = phrase_name.split(".")
+    _, module, name = phrase_name.split('.')
 
     text = getattr(getattr(phrases, module), name)
     if not kwargs:

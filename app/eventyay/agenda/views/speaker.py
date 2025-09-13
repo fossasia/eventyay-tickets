@@ -25,23 +25,21 @@ from eventyay.base.models import TalkQuestionTarget
 
 
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
-    context_object_name = "speakers"
-    template_name = "agenda/speakers.html"
-    permission_required = "schedule.list_schedule"
-    default_filters = ("user__name__icontains",)
+    context_object_name = 'speakers'
+    template_name = 'agenda/speakers.html'
+    permission_required = 'schedule.list_schedule'
+    default_filters = ('user__name__icontains',)
 
     def get_queryset(self):
         qs = (
-            SpeakerProfile.objects.filter(
-                user__in=self.request.event.speakers, event=self.request.event
-            )
-            .select_related("user", "event")
-            .order_by("user__name")
+            SpeakerProfile.objects.filter(user__in=self.request.event.speakers, event=self.request.event)
+            .select_related('user', 'event')
+            .order_by('user__name')
         )
         qs = self.filter_queryset(qs)
 
         speaker_mapping = defaultdict(list)
-        for talk in self.request.event.talks.all().prefetch_related("speakers"):
+        for talk in self.request.event.talks.all().prefetch_related('speakers'):
             for speaker in talk.speakers.all():
                 speaker_mapping[speaker.code].append(talk)
 
@@ -51,18 +49,16 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
 
 
 class SpeakerView(PermissionRequired, TemplateView):
-    template_name = "agenda/speaker.html"
-    permission_required = "person.view_speakerprofile"
-    slug_field = "code"
+    template_name = 'agenda/speaker.html'
+    permission_required = 'person.view_speakerprofile'
+    slug_field = 'code'
 
     @context
     @cached_property
     def profile(self):
         return (
-            SpeakerProfile.objects.filter(
-                event=self.request.event, user__code__iexact=self.kwargs["code"]
-            )
-            .select_related("user")
+            SpeakerProfile.objects.filter(event=self.request.event, user__code__iexact=self.kwargs['code'])
+            .select_related('user')
             .first()
         )
 
@@ -73,10 +69,10 @@ class SpeakerView(PermissionRequired, TemplateView):
             return []
         return (
             self.request.event.current_schedule.talks.filter(
-                submission__speakers__code=self.kwargs["code"], is_visible=True
+                submission__speakers__code=self.kwargs['code'], is_visible=True
             )
-            .select_related("submission", "room", "submission__event")
-            .prefetch_related("submission__speakers")
+            .select_related('submission', 'room', 'submission__event')
+            .prefetch_related('submission__speakers')
         )
 
     def get_permission_object(self):
@@ -88,7 +84,7 @@ class SpeakerView(PermissionRequired, TemplateView):
             question__is_public=True,
             question__event=self.request.event,
             question__target=TalkQuestionTarget.SPEAKER,
-        ).select_related("talkquestion")
+        ).select_related('talkquestion')
 
 
 class SpeakerRedirect(DetailView):
@@ -97,22 +93,18 @@ class SpeakerRedirect(DetailView):
     def dispatch(self, request, **kwargs):
         speaker = self.get_object()
         profile = speaker.profiles.filter(event=self.request.event).first()
-        if profile and self.request.user.has_perm(
-            "person.view_speakerprofile", profile
-        ):
+        if profile and self.request.user.has_perm('person.view_speakerprofile', profile):
             return redirect(profile.urls.public.full())
         raise Http404()
 
 
 class SpeakerTalksIcalView(PermissionRequired, DetailView):
-    context_object_name = "profile"
-    permission_required = "person.view_speakerprofile"
-    slug_field = "code"
+    context_object_name = 'profile'
+    permission_required = 'person.view_speakerprofile'
+    slug_field = 'code'
 
     def get_object(self, queryset=None):
-        return SpeakerProfile.objects.filter(
-            event=self.request.event, user__code__iexact=self.kwargs["code"]
-        ).first()
+        return SpeakerProfile.objects.filter(event=self.request.event, user__code__iexact=self.kwargs['code']).first()
 
     def get(self, request, event, *args, **kwargs):
         if not self.request.event.current_schedule:
@@ -121,27 +113,23 @@ class SpeakerTalksIcalView(PermissionRequired, DetailView):
         speaker = self.get_object()
         slots = self.request.event.current_schedule.talks.filter(
             submission__speakers=speaker.user, is_visible=True
-        ).select_related("room", "submission")
+        ).select_related('room', 'submission')
 
         cal = vobject.iCalendar()
-        cal.add("prodid").value = (
-            f"-//eventyay//{netloc}//{request.event.slug}//{speaker.code}"
-        )
+        cal.add('prodid').value = f'-//eventyay//{netloc}//{request.event.slug}//{speaker.code}'
 
         for slot in slots:
             slot.build_ical(cal)
 
         try:
-            speaker_name = Storage().get_valid_name(
-                name=speaker.user.name or speaker.user.code
-            )
+            speaker_name = Storage().get_valid_name(name=speaker.user.name or speaker.user.code)
         except SuspiciousFileOperation:
             speaker_name = Storage().get_valid_name(name=speaker.user.code)
         return HttpResponse(
             cal.serialize(),
-            content_type="text/calendar",
+            content_type='text/calendar',
             headers={
-                "Content-Disposition": f'attachment; filename="{request.event.slug}-{safe_filename(speaker_name)}.ics"'
+                'Content-Disposition': f'attachment; filename="{request.event.slug}-{safe_filename(speaker_name)}.ics"'
             },
         )
 
@@ -175,5 +163,5 @@ def empty_avatar_view(request, event):
     return FileResponse(
         io.BytesIO(avatar_template.encode()),
         as_attachment=True,
-        content_type="image/svg+xml",
+        content_type='image/svg+xml',
     )

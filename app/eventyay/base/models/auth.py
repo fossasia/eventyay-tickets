@@ -43,11 +43,12 @@ from .mixins import FileCleanupMixin, GenerateCode
 
 logger = logging.getLogger(__name__)
 
+
 def avatar_path(instance, filename):
     if instance.code:
         extension = Path(filename).suffix
-        filename = f"{instance.code}{extension}"
-    return path_with_hash(filename, base_path="avatars")
+        filename = f'{instance.code}{extension}'
+    return path_with_hash(filename, base_path='avatars')
 
 
 class UserQuerySet(models.QuerySet):
@@ -58,11 +59,9 @@ class UserQuerySet(models.QuerySet):
 
         return self.prefetch_related(
             Prefetch(
-                "profiles",
-                queryset=SpeakerProfile.objects.filter(event=event).select_related(
-                    "event"
-                ),
-                to_attr="_event_profiles",
+                'profiles',
+                queryset=SpeakerProfile.objects.filter(event=event).select_related('event'),
+                to_attr='_event_profiles',
             ),
         ).distinct()
 
@@ -112,7 +111,8 @@ class User(
     GenerateCode,
     FileCleanupMixin,
     AbstractBaseUser,
-    metaclass=RulesModelBase):
+    metaclass=RulesModelBase,
+):
     """
     This is the user model used by eventyay for authentication.
 
@@ -133,7 +133,7 @@ class User(
     """
 
     USERNAME_FIELD = 'email'
-    EMAIL_FIELD = "email"
+    EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     email = models.EmailField(
@@ -163,50 +163,42 @@ class User(
     nick = models.CharField(max_length=60, null=True, blank=True)
     is_administrator = models.BooleanField(
         default=False,
-        help_text="Should only be ``True`` for people with administrative access to the server eventyay runs on.",
+        help_text='Should only be ``True`` for people with administrative access to the server eventyay runs on.',
     )
     avatar = models.ImageField(
         null=True,
         blank=True,
-        verbose_name=_("Profile picture"),
+        verbose_name=_('Profile picture'),
         help_text=_(
-            "We recommend uploading an image at least 400px wide. "
-            "A square image works best, as we display it in a circle in several places."
+            'We recommend uploading an image at least 400px wide. '
+            'A square image works best, as we display it in a circle in several places.'
         ),
         upload_to=avatar_path,
     )
-    avatar_thumbnail = models.ImageField(null=True, blank=True, upload_to="avatars/")
-    avatar_thumbnail_tiny = models.ImageField(
-        null=True, blank=True, upload_to="avatars/"
-    )
+    avatar_thumbnail = models.ImageField(null=True, blank=True, upload_to='avatars/')
+    avatar_thumbnail_tiny = models.ImageField(null=True, blank=True, upload_to='avatars/')
     get_gravatar = models.BooleanField(
         default=False,
-        verbose_name=_("Retrieve profile picture via gravatar"),
+        verbose_name=_('Retrieve profile picture via gravatar'),
         help_text=_(
-            "If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there."
+            'If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.'
         ),
     )
     avatar_source = models.TextField(
         null=True,
         blank=True,
-        verbose_name=_("Profile Picture Source"),
-        help_text=_(
-            "Please enter the name of the author or source of image and a link if applicable."
-        ),
+        verbose_name=_('Profile Picture Source'),
+        help_text=_('Please enter the name of the author or source of image and a link if applicable.'),
     )
     avatar_license = models.TextField(
         null=True,
         blank=True,
-        verbose_name=_("Profile Picture License"),
-        help_text=_(
-            "Please enter the name of the license of the photo and link to it if applicable."
-        ),
+        verbose_name=_('Profile Picture License'),
+        help_text=_('Please enter the name of the license of the photo and link to it if applicable.'),
     )
-    pw_reset_token = models.CharField(
-        null=True, max_length=160, verbose_name="Password reset token"
-    )
-    pw_reset_time = models.DateTimeField(null=True, verbose_name="Password reset time")
-    
+    pw_reset_token = models.CharField(null=True, max_length=160, verbose_name='Password reset token')
+    pw_reset_time = models.DateTimeField(null=True, verbose_name='Password reset time')
+
     # ====
 
     if TYPE_CHECKING:
@@ -230,16 +222,14 @@ class User(
         verbose_name_plural = _('Users')
         ordering = ('email',)
         rules_permissions = {
-            "administrator": is_administrator,
+            'administrator': is_administrator,
         }
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         is_new = not self.pk
         # Check if we need to get the profile picture from gravatar
-        update_gravatar = (
-            not kwargs.get("update_fields") or "get_gravatar" in kwargs["update_fields"]
-        )
+        update_gravatar = not kwargs.get('update_fields') or 'get_gravatar' in kwargs['update_fields']
         super().save(*args, **kwargs)
         if self.get_gravatar and update_gravatar:
             from eventyay.person.tasks import gravatar_cache
@@ -320,10 +310,7 @@ class User(
         }
         action_url = request.build_absolute_uri(f'{base_action_url}?{urlencode(params)}')
         logger.info('Action URL for %s to reset password: %s', self.email, action_url)
-        context = {
-            'user': self,
-            'url': action_url
-        }
+        context = {'user': self, 'url': action_url}
         mail(
             self.email,
             subject,
@@ -512,7 +499,7 @@ class User(
         """
         Return an HMAC that needs to
         """
-        key_salt = "eventyay.base.models.User.get_session_auth_hash"
+        key_salt = 'eventyay.base.models.User.get_session_auth_hash'
         payload = self.password
         payload += self.email
         payload += self.session_token
@@ -526,7 +513,7 @@ class User(
     def get_display_name(self) -> str:
         """Returns a user's name or 'Unnamed user'."""
         return str(self.fullname) if self.fullname else str(self)
-    
+
     def has_perm(self, perm, obj, *args, **kwargs):
         cached_result = None
         with suppress(TypeError):
@@ -548,14 +535,14 @@ class User(
         if profile := self.event_profile_cache.get(event.pk):
             return profile
 
-        if hasattr(self, "_event_profiles") and len(self._event_profiles) == 1:
+        if hasattr(self, '_event_profiles') and len(self._event_profiles) == 1:
             profile = self._event_profiles[0]
             if profile.event_id == event.pk:
                 self.event_profile_cache[event.pk] = profile
                 return profile
 
         try:
-            profile = self.profiles.select_related("event").get(event=event)
+            profile = self.profiles.select_related('event').get(event=event)
         except Exception:
             from eventyay.base.models.profile import SpeakerProfile
 
@@ -570,18 +557,18 @@ class User(
         if self.locale in event.locales:
             return self.locale
         return event.locale
-    
+
     @cached_property
     def guid(self) -> str:
-        return str(uuid.uuid5(uuid.NAMESPACE_URL, f"acct:{self.email.strip()}"))
-    
+        return str(uuid.uuid5(uuid.NAMESPACE_URL, f'acct:{self.email.strip()}'))
+
     @cached_property
     def gravatar_parameter(self) -> str:
         return md5(self.email.strip().encode()).hexdigest()
-    
+
     @cached_property
     def has_avatar(self) -> bool:
-        return bool(self.avatar) and self.avatar != "False"
+        return bool(self.avatar) and self.avatar != 'False'
 
     @cached_property
     def avatar_url(self) -> str:
@@ -592,15 +579,11 @@ class User(
         """Returns the full avatar URL, where user.avatar_url returns the
         absolute URL."""
         if not self.avatar_url:
-            return ""
+            return ''
         if not thumbnail:
             image = self.avatar
         else:
-            image = (
-                self.avatar_thumbnail_tiny
-                if thumbnail == "tiny"
-                else self.avatar_thumbnail
-            )
+            image = self.avatar_thumbnail_tiny if thumbnail == 'tiny' else self.avatar_thumbnail
             if not image:
                 image = create_thumbnail(self.avatar, thumbnail)
         if not image:
@@ -611,7 +594,7 @@ class User(
 
     def regenerate_token(self) -> Token:
         """Generates a new API access token, deleting the old one."""
-        self.log_action(action="eventyay.user.token.reset")
+        self.log_action(action='eventyay.user.token.reset')
         Token.objects.filter(user=self).delete()
         return Token.objects.create(user=self)
 
@@ -626,12 +609,12 @@ class User(
             return permissions
         if self.is_administrator:
             return {
-                "can_create_events",
-                "can_change_teams",
-                "can_change_organiser_settings",
-                "can_change_event_settings",
-                "can_change_submissions",
-                "is_reviewer",
+                'can_create_events',
+                'can_change_teams',
+                'can_change_organiser_settings',
+                'can_change_event_settings',
+                'can_change_submissions',
+                'is_reviewer',
             }
         permissions = set()
         teams = event.teams.filter(members__in=[self])

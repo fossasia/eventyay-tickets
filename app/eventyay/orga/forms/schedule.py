@@ -17,201 +17,181 @@ from eventyay.base.models.submission import Submission, SubmissionStates
 class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
     default_renderer = InlineFormRenderer
 
-    notify_speakers = forms.BooleanField(
-        label=_("Notify speakers of changes"), required=False, initial=True
-    )
+    notify_speakers = forms.BooleanField(label=_('Notify speakers of changes'), required=False, initial=True)
 
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.event = event
-        self.fields["version"].required = True
-        self.fields["comment"].widget.attrs["rows"] = 4
+        self.fields['version'].required = True
+        self.fields['comment'].widget.attrs['rows'] = 4
         url = self.event.get_mail_template(MailTemplateRoles.NEW_SCHEDULE).urls.base
-        self.fields["notify_speakers"].help_text = (
-            f"<a href='{url}'>{_('Email template')}</a>"
-        )
+        self.fields['notify_speakers'].help_text = f"<a href='{url}'>{_('Email template')}</a>"
         if not self.event.current_schedule:
-            self.fields["comment"].initial = phrases.schedule.first_schedule
+            self.fields['comment'].initial = phrases.schedule.first_schedule
         else:
-            self.fields["comment"].initial = _("We released a new schedule version!")
-        if not self.fields["version"].initial:
-            self.fields["version"].initial = guess_schedule_version(self.event)
+            self.fields['comment'].initial = _('We released a new schedule version!')
+        if not self.fields['version'].initial:
+            self.fields['version'].initial = guess_schedule_version(self.event)
 
     def clean_version(self):
-        version = self.cleaned_data.get("version")
+        version = self.cleaned_data.get('version')
         if self.event.schedules.filter(version__iexact=version).exists():
-            raise forms.ValidationError(
-                _(
-                    "This schedule version was used already, please choose a different one."
-                )
-            )
+            raise forms.ValidationError(_('This schedule version was used already, please choose a different one.'))
         return version
 
     class Meta:
         model = Schedule
         fields = (
-            "version",
-            "comment",
+            'version',
+            'comment',
         )
 
 
 class ScheduleExportForm(ExportForm):
     target = forms.MultipleChoiceField(
         required=True,
-        label=_("Target group"),
-        choices=[("all", phrases.base.all_choices)]
+        label=_('Target group'),
+        choices=[('all', phrases.base.all_choices)]
         + [
             (state, name)
             for (state, name) in SubmissionStates.valid_choices
             if state not in (SubmissionStates.DRAFT, SubmissionStates.DELETED)
         ],
         widget=EnhancedSelectMultiple(color_field=SubmissionStates.get_color),
-        initial=["all"],
+        initial=['all'],
     )
 
     class Meta:
         model = Submission
         model_fields = [
-            "title",
-            "state",
-            "pending_state",
-            "submission_type",
-            "track",
-            "created",
-            "tags",
-            "abstract",
-            "description",
-            "notes",
-            "internal_notes",
-            "duration",
-            "slot_count",
-            "content_locale",
-            "is_featured",
-            "do_not_record",
-            "image",
+            'title',
+            'state',
+            'pending_state',
+            'submission_type',
+            'track',
+            'created',
+            'tags',
+            'abstract',
+            'description',
+            'notes',
+            'internal_notes',
+            'duration',
+            'slot_count',
+            'content_locale',
+            'is_featured',
+            'do_not_record',
+            'image',
         ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["speaker_ids"] = forms.BooleanField(
+        self.fields['speaker_ids'] = forms.BooleanField(
             required=False,
-            label=_("Speaker IDs"),
-            help_text=_(
-                "The unique ID of a speaker is used in the speaker URL and in exports"
-            ),
+            label=_('Speaker IDs'),
+            help_text=_('The unique ID of a speaker is used in the speaker URL and in exports'),
         )
-        self.fields["speaker_names"] = forms.BooleanField(
+        self.fields['speaker_names'] = forms.BooleanField(
             required=False,
-            label=_("Speaker names"),
+            label=_('Speaker names'),
         )
-        self.fields["room"] = forms.BooleanField(
+        self.fields['room'] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("room").verbose_name,
-            help_text=TalkSlot._meta.get_field("room").help_text,
+            label=TalkSlot._meta.get_field('room').verbose_name,
+            help_text=TalkSlot._meta.get_field('room').help_text,
         )
-        self.fields["start"] = forms.BooleanField(
+        self.fields['start'] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("start").verbose_name,
-            help_text=TalkSlot._meta.get_field("start").help_text,
+            label=TalkSlot._meta.get_field('start').verbose_name,
+            help_text=TalkSlot._meta.get_field('start').help_text,
         )
-        self.fields["start_date"] = forms.BooleanField(
+        self.fields['start_date'] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("start").verbose_name
-            + " ("
-            + _("date")
-            + ")",
-            help_text=TalkSlot._meta.get_field("start").help_text,
+            label=TalkSlot._meta.get_field('start').verbose_name + ' (' + _('date') + ')',
+            help_text=TalkSlot._meta.get_field('start').help_text,
         )
-        self.fields["start_time"] = forms.BooleanField(
+        self.fields['start_time'] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("start").verbose_name
-            + " ("
-            + _("time")
-            + ")",
-            help_text=TalkSlot._meta.get_field("start").help_text,
+            label=TalkSlot._meta.get_field('start').verbose_name + ' (' + _('time') + ')',
+            help_text=TalkSlot._meta.get_field('start').help_text,
         )
-        self.fields["end"] = forms.BooleanField(
+        self.fields['end'] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("end").verbose_name,
-            help_text=TalkSlot._meta.get_field("end").help_text,
+            label=TalkSlot._meta.get_field('end').verbose_name,
+            help_text=TalkSlot._meta.get_field('end').help_text,
         )
-        self.fields["end_date"] = forms.BooleanField(
+        self.fields['end_date'] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("end").verbose_name + " (" + _("date") + ")",
-            help_text=TalkSlot._meta.get_field("end").help_text,
+            label=TalkSlot._meta.get_field('end').verbose_name + ' (' + _('date') + ')',
+            help_text=TalkSlot._meta.get_field('end').help_text,
         )
-        self.fields["end_time"] = forms.BooleanField(
+        self.fields['end_time'] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("end").verbose_name + " (" + _("time") + ")",
-            help_text=TalkSlot._meta.get_field("end").help_text,
+            label=TalkSlot._meta.get_field('end').verbose_name + ' (' + _('time') + ')',
+            help_text=TalkSlot._meta.get_field('end').help_text,
         )
-        self.fields["median_score"] = forms.BooleanField(
+        self.fields['median_score'] = forms.BooleanField(
             required=False,
-            label=_("Median score"),
-            help_text=_("Median review score, if there have been reviews yet"),
+            label=_('Median score'),
+            help_text=_('Median review score, if there have been reviews yet'),
         )
-        self.fields["mean_score"] = forms.BooleanField(
+        self.fields['mean_score'] = forms.BooleanField(
             required=False,
-            label=_("Average (mean) score"),
-            help_text=_("Average review score, if there have been reviews yet"),
+            label=_('Average (mean) score'),
+            help_text=_('Average review score, if there have been reviews yet'),
         )
-        self.fields["resources"] = forms.BooleanField(
+        self.fields['resources'] = forms.BooleanField(
             required=False,
-            label=_("Resources"),
-            help_text=_(
-                "Resources provided by the speaker, either as links or as uploaded files"
-            ),
+            label=_('Resources'),
+            help_text=_('Resources provided by the speaker, either as links or as uploaded files'),
         )
 
     @cached_property
     def questions(self):
         return self.event.talkquestions.filter(
-            target="submission",
-        ).prefetch_related(
-            "answers", "answers__submission", "options", "answers__options"
-        )
+            target='submission',
+        ).prefetch_related('answers', 'answers__submission', 'options', 'answers__options')
 
     @cached_property
     def filename(self):
-        return f"{self.event.slug}_sessions"
+        return f'{self.event.slug}_sessions'
 
     @cached_property
     def export_field_names(self):
         return self.Meta.model_fields + [
-            "speaker_ids",
-            "speaker_names",
-            "room",
-            "start",
-            "start_date",
-            "start_time",
-            "end",
-            "end_date",
-            "end_time",
-            "median_score",
-            "mean_score",
-            "resources",
+            'speaker_ids',
+            'speaker_names',
+            'room',
+            'start',
+            'start_date',
+            'start_time',
+            'end',
+            'end_date',
+            'end_time',
+            'median_score',
+            'mean_score',
+            'resources',
         ]
 
     def get_queryset(self):
-        target = self.cleaned_data.get("target")
+        target = self.cleaned_data.get('target')
         queryset = self.event.submissions
-        if "all" not in target:
+        if 'all' not in target:
             queryset = queryset.filter(state__in=target)
         return (
-            queryset.prefetch_related("tags")
-            .select_related("submission_type", "track")
-            .prefetch_related("resources")
-            .order_by("code")
+            queryset.prefetch_related('tags')
+            .select_related('submission_type', 'track')
+            .prefetch_related('resources')
+            .order_by('code')
         )
 
     def get_answer(self, question, obj):
         return question.answers.filter(submission=obj).first()
 
     def _get_speaker_ids_value(self, obj):
-        return list(obj.speakers.all().values_list("code", flat=True))
+        return list(obj.speakers.all().values_list('code', flat=True))
 
     def _get_speaker_names_value(self, obj):
-        return list(obj.speakers.all().values_list("fullname", flat=True))
+        return list(obj.speakers.all().values_list('fullname', flat=True))
 
     def _get_room_value(self, obj):
         slot = obj.slot

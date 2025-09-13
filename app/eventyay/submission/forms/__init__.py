@@ -6,11 +6,11 @@ from .submission import InfoForm, SubmissionFilterForm
 from .tag import TagForm
 
 __all__ = [
-    "SubmissionCommentForm",
-    "FeedbackForm",
-    "InfoForm",
-    "TalkQuestionsForm",
-    "ResourceForm",
-    "SubmissionFilterForm",
-    "TagForm",
+    'SubmissionCommentForm',
+    'FeedbackForm',
+    'InfoForm',
+    'TalkQuestionsForm',
+    'ResourceForm',
+    'SubmissionFilterForm',
+    'TagForm',
 ]

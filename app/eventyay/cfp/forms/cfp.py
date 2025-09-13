@@ -15,9 +15,7 @@ class CfPFormMixin:
         super().__init__(*args, **kwargs)
         self.field_configuration = field_configuration
         if self.field_configuration:
-            self.field_configuration = {
-                field_data["key"]: field_data for field_data in field_configuration
-            }
+            self.field_configuration = {field_data['key']: field_data for field_data in field_configuration}
             for field_data in self.field_configuration:
                 if field_data in self.fields:
                     self._update_cfp_texts(field_data)
@@ -27,14 +25,12 @@ class CfPFormMixin:
         if not field or not self.field_configuration:
             return
         field_data = self.field_configuration.get(field_name) or {}
-        field.original_help_text = field_data.get("help_text") or ""
+        field.original_help_text = field_data.get('help_text') or ''
         if field.original_help_text:
             from eventyay.base.templatetags.rich_text import rich_text
 
             field.help_text = rich_text(
-                str(field.original_help_text)
-                + " "
-                + str(getattr(field, "added_help_text", ""))
+                str(field.original_help_text) + ' ' + str(getattr(field, 'added_help_text', ''))
             )
-        if field_data.get("label"):
-            field.label = field_data["label"]
+        if field_data.get('label'):
+            field.label = field_data['label']

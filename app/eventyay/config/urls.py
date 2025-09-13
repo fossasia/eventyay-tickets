@@ -41,7 +41,7 @@ control_patterns = [
 ]
 
 eventyay_common_patterns = [
-    url(r'^common/', include((eventyay.eventyay_common.urls, 'common'),namespace='common')),
+    url(r'^common/', include((eventyay.eventyay_common.urls, 'common'), namespace='common')),
 ]
 
 
@@ -55,8 +55,8 @@ admin_patterns = [
 
 talk_patterns = [
     path('orga/', include('eventyay.orga.urls')),
-    path("", include("eventyay.agenda.urls", namespace="agenda")),
-    path("", include("eventyay.cfp.urls", namespace="cfp")),
+    path('', include('eventyay.agenda.urls', namespace='agenda')),
+    path('', include('eventyay.cfp.urls', namespace='cfp')),
     url(r'^redirect/$', redirect.redir_view, name='redirect'),
 ]
 
@@ -66,7 +66,13 @@ if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
     debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
 common_patterns = (
-    base_patterns + control_patterns + debug_patterns + eventyay_common_patterns + page_patterns + admin_patterns + talk_patterns
+    base_patterns
+    + control_patterns
+    + debug_patterns
+    + eventyay_common_patterns
+    + page_patterns
+    + admin_patterns
+    + talk_patterns
 )
 
 if settings.DEBUG:

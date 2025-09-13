@@ -12,78 +12,71 @@ from .mixins import PretalxModel
 
 
 def generate_api_token():
-    return get_random_string(
-        length=64, allowed_chars=string.ascii_lowercase + string.digits
-    )
+    return get_random_string(length=64, allowed_chars=string.ascii_lowercase + string.digits)
 
 
-READ_PERMISSIONS = ("list", "retrieve")
-WRITE_PERMISSIONS = READ_PERMISSIONS + ("create", "update", "destroy", "actions")
+READ_PERMISSIONS = ('list', 'retrieve')
+WRITE_PERMISSIONS = READ_PERMISSIONS + ('create', 'update', 'destroy', 'actions')
 PERMISSION_CHOICES = (
-    ("list", _p("Read list", "API endpoint permissions")),
-    ("retrieve", _p("Read details", "API endpoint permissions")),
-    ("create", _p("Create", "API endpoint permissions")),
-    ("update", _p("Update", "API endpoint permissions")),
-    ("destroy", _p("Delete", "API endpoint permissions")),
-    ("actions", _p("Additional actions", "API endpoint permissions")),
+    ('list', _p('Read list', 'API endpoint permissions')),
+    ('retrieve', _p('Read details', 'API endpoint permissions')),
+    ('create', _p('Create', 'API endpoint permissions')),
+    ('update', _p('Update', 'API endpoint permissions')),
+    ('destroy', _p('Delete', 'API endpoint permissions')),
+    ('actions', _p('Additional actions', 'API endpoint permissions')),
 )
 ENDPOINTS = (
-    "teams",
-    "events",
-    "submissions",
-    "speakers",
-    "reviews",
-    "rooms",
-    "questions",
-    "question-options",
-    "answers",
-    "tags",
-    "tracks",
-    "schedules",
-    "slots",
-    "submission-types",
-    "mail-templates",
-    "access-codes",
-    "speaker-information",
+    'teams',
+    'events',
+    'submissions',
+    'speakers',
+    'reviews',
+    'rooms',
+    'questions',
+    'question-options',
+    'answers',
+    'tags',
+    'tracks',
+    'schedules',
+    'slots',
+    'submission-types',
+    'mail-templates',
+    'access-codes',
+    'speaker-information',
 )
 
 
 class UserApiTokenManager(models.Manager):
-
     def active(self):
-        return self.get_queryset().filter(
-            Q(expires__isnull=True) | Q(expires__gt=now())
-        )
+        return self.get_queryset().filter(Q(expires__isnull=True) | Q(expires__gt=now()))
 
 
 class UserApiToken(PretalxModel):
-    name = models.CharField(max_length=190, verbose_name=_("Name"))
+    name = models.CharField(max_length=190, verbose_name=_('Name'))
     token = models.CharField(default=generate_api_token, max_length=64, unique=True)
     user = models.ForeignKey(
-        to="User",
-        related_name="api_tokens",
+        to='User',
+        related_name='api_tokens',
         on_delete=models.CASCADE,
     )
     events = models.ManyToManyField(
-        to="Event",
-        related_name="+",
-        verbose_name=_("Events"),
+        to='Event',
+        related_name='+',
+        verbose_name=_('Events'),
     )
-    expires = models.DateTimeField(null=True, blank=True, verbose_name=_("Expiry date"))
+    expires = models.DateTimeField(null=True, blank=True, verbose_name=_('Expiry date'))
     endpoints = models.JSONField(default=dict, blank=True)
-    version = models.CharField(
-        max_length=12, null=True, blank=True, verbose_name=_("API version")
-    )
+    version = models.CharField(max_length=12, null=True, blank=True, verbose_name=_('API version'))
     last_used = models.DateTimeField(null=True, blank=True)
 
     objects = UserApiTokenManager()
 
     def has_endpoint_permission(self, endpoint, method):
-        if method == "partial_update":
+        if method == 'partial_update':
             # We don't track separate permissions for partial updates
-            method = "update"
+            method = 'update'
         elif method not in dict(PERMISSION_CHOICES):
-            method = "actions"
+            method = 'actions'
         return method in self.endpoints.get(endpoint, [])
 
     @property
@@ -96,12 +89,12 @@ class UserApiToken(PretalxModel):
 
     def serialize(self):
         return {
-            "name": self.name,
-            "token": self.token,
-            "events": [e.slug for e in self.events.all()],
-            "expires": self.expires.isoformat() if self.expires else None,
-            "endpoints": self.endpoints,
-            "version": self.version,
+            'name': self.name,
+            'token': self.token,
+            'events': [e.slug for e in self.events.all()],
+            'expires': self.expires.isoformat() if self.expires else None,
+            'endpoints': self.endpoints,
+            'version': self.version,
         }
 
     def update_events(self):

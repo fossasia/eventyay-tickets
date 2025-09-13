@@ -9,18 +9,14 @@ from eventyay.base.models import TalkQuestion, TalkQuestionTarget, TalkQuestionV
 
 class TalkQuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
     def __init__(self, *args, skip_limited_questions=False, **kwargs):
-        self.event = kwargs.pop("event", None)
-        self.submission = kwargs.pop("submission", None)
-        self.speaker = kwargs.pop("speaker", None)
-        self.review = kwargs.pop("review", None)
-        self.track = kwargs.pop("track", None) or getattr(
-            self.submission, "track", None
-        )
-        self.submission_type = kwargs.pop("submission_type", None) or getattr(
-            self.submission, "submission_type", None
-        )
-        self.target_type = kwargs.pop("target", TalkQuestionTarget.SUBMISSION)
-        self.for_reviewers = kwargs.pop("for_reviewers", False)
+        self.event = kwargs.pop('event', None)
+        self.submission = kwargs.pop('submission', None)
+        self.speaker = kwargs.pop('speaker', None)
+        self.review = kwargs.pop('review', None)
+        self.track = kwargs.pop('track', None) or getattr(self.submission, 'track', None)
+        self.submission_type = kwargs.pop('submission_type', None) or getattr(self.submission, 'submission_type', None)
+        self.target_type = kwargs.pop('target', TalkQuestionTarget.SUBMISSION)
+        self.for_reviewers = kwargs.pop('for_reviewers', False)
         if self.target_type == TalkQuestionTarget.SUBMISSION:
             target_object = self.submission
         elif self.target_type == TalkQuestionTarget.SPEAKER:
@@ -29,7 +25,7 @@ class TalkQuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             target_object = self.review
         else:
             target_object = self.speaker
-        readonly = kwargs.pop("readonly", False)
+        readonly = kwargs.pop('readonly', False)
 
         super().__init__(*args, **kwargs)
 
@@ -37,9 +33,7 @@ class TalkQuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
         if self.target_type:
             self.queryset = self.queryset.filter(target=self.target_type)
         else:
-            self.queryset = self.queryset.exclude(
-                target=TalkQuestionTarget.REVIEWER
-            ).order_by("-target", "position")
+            self.queryset = self.queryset.exclude(target=TalkQuestionTarget.REVIEWER).order_by('-target', 'position')
         if skip_limited_questions:
             self.queryset = self.queryset.filter(
                 tracks__isnull=True,
@@ -47,31 +41,22 @@ class TalkQuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             )
         else:
             if self.track:
-                self.queryset = self.queryset.filter(
-                    Q(tracks__in=[self.track]) | Q(tracks__isnull=True)
-                )
+                self.queryset = self.queryset.filter(Q(tracks__in=[self.track]) | Q(tracks__isnull=True))
             if self.submission_type:
                 self.queryset = self.queryset.filter(
-                    Q(submission_types__in=[self.submission_type])
-                    | Q(submission_types__isnull=True)
+                    Q(submission_types__in=[self.submission_type]) | Q(submission_types__isnull=True)
                 )
         if self.for_reviewers:
             self.queryset = self.queryset.filter(is_visible_to_reviewers=True)
-        for question in self.queryset.prefetch_related("options"):
+        for question in self.queryset.prefetch_related('options'):
             initial_object = None
             initial = question.default_answer
             if target_object:
-                answers = [
-                    answer
-                    for answer in target_object.answers.all()
-                    if answer.question_id == question.id
-                ]
+                answers = [answer for answer in target_object.answers.all() if answer.question_id == question.id]
                 if answers:
                     initial_object = answers[0]
                     initial = (
-                        answers[0].answer_file
-                        if question.variant == TalkQuestionVariant.FILE
-                        else answers[0].answer
+                        answers[0].answer_file if question.variant == TalkQuestionVariant.FILE else answers[0].answer
                     )
 
             field = self.get_field(
@@ -82,7 +67,7 @@ class TalkQuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             )
             field.question = question
             field.answer = initial_object
-            self.fields[f"question_{question.pk}"] = field
+            self.fields[f'question_{question.pk}'] = field
 
     @cached_property
     def speaker_fields(self):

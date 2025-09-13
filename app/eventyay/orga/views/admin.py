@@ -21,14 +21,14 @@ from eventyay.base.models import User
 
 
 class AdminDashboard(PermissionRequired, TemplateView):
-    template_name = "orga/admin/admin.html"
-    permission_required = "person.administrator_user"
+    template_name = 'orga/admin/admin.html'
+    permission_required = 'person.administrator_user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        site_name = dict(settings.CONFIG.items("site")).get("name")
-        context["site_name"] = site_name
-        context["base_path"] = settings.BASE_PATH
+        site_name = dict(settings.CONFIG.items('site')).get('name')
+        context['site_name'] = site_name
+        context['base_path'] = settings.BASE_PATH
         return context
 
     @context
@@ -37,7 +37,7 @@ class AdminDashboard(PermissionRequired, TemplateView):
             return None
         try:
             client = app.broker_connection().channel().client
-            return client.llen("celery")
+            return client.llen('celery')
         except Exception as e:
             return str(e)
 
@@ -51,12 +51,12 @@ class AdminDashboard(PermissionRequired, TemplateView):
 
 
 class UpdateCheckView(PermissionRequired, FormView):
-    template_name = "orga/admin/update.html"
-    permission_required = "person.administrator_user"
+    template_name = 'orga/admin/update.html'
+    permission_required = 'person.administrator_user'
     form_class = UpdateSettingsForm
 
     def post(self, request, *args, **kwargs):
-        if "trigger" in request.POST:
+        if 'trigger' in request.POST:
             update_check.apply()
             return redirect(self.get_success_url())
         return super().post(request, *args, **kwargs)
@@ -72,8 +72,8 @@ class UpdateCheckView(PermissionRequired, FormView):
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        result["gs"] = GlobalSettings()
-        result["gs"].settings.set("update_check_ack", True)
+        result['gs'] = GlobalSettings()
+        result['gs'].settings.set('update_check_ack', True)
         return result
 
     @context
@@ -81,54 +81,54 @@ class UpdateCheckView(PermissionRequired, FormView):
         return check_result_table()
 
     def get_success_url(self):
-        return reverse("orga:admin.update")
+        return reverse('orga:admin.update')
 
 
 class AdminUserList(PermissionRequired, ListView):
-    template_name = "orga/admin/user_list.html"
-    permission_required = "person.administrator_user"
+    template_name = 'orga/admin/user_list.html'
+    permission_required = 'person.administrator_user'
     model = User
-    context_object_name = "users"
-    paginate_by = "250"
+    context_object_name = 'users'
+    paginate_by = '250'
 
     def dispatch(self, *args, **kwargs):
         with scopes_disabled():
             return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        search = self.request.GET.get("q", "").strip()
+        search = self.request.GET.get('q', '').strip()
         if not search or len(search) < 3:
             return User.objects.none()
         return (
             User.objects.filter(Q(name__icontains=search) | Q(email__icontains=search))
             .prefetch_related(
-                "teams",
-                "teams__organiser",
-                "teams__organiser__events",
-                "teams__limit_events",
+                'teams',
+                'teams__organiser',
+                'teams__organiser__events',
+                'teams__limit_events',
             )
             .annotate(
-                submission_count=Count("submissions", distinct=True),
+                submission_count=Count('submissions', distinct=True),
             )
         )
 
     def post(self, request, *args, **kwargs):
-        action = request.POST.get("action") or "-"
-        action, user_id = action.split("-")
+        action = request.POST.get('action') or '-'
+        action, user_id = action.split('-')
         user = User.objects.get(pk=user_id)
-        if action == "reset":
+        if action == 'reset':
             user.reset_password(event=None)
             messages.success(request, phrases.base.password_reset_success)
         return super().get(request, *args, **kwargs)
 
 
 class AdminUserDetail(PermissionRequired, DetailView):
-    template_name = "orga/admin/user_detail.html"
-    permission_required = "person.administrator_user"
+    template_name = 'orga/admin/user_detail.html'
+    permission_required = 'person.administrator_user'
     model = User
-    context_object_name = "user"
-    slug_url_kwarg = "code"
-    slug_field = "code"
+    context_object_name = 'user'
+    slug_url_kwarg = 'code'
+    slug_field = 'code'
 
     @gravatar_csp()
     def dispatch(self, *args, **kwargs):
@@ -136,48 +136,45 @@ class AdminUserDetail(PermissionRequired, DetailView):
             return super().dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        action = request.POST.get("action") or "-"
-        if action == "pw-reset":
+        action = request.POST.get('action') or '-'
+        if action == 'pw-reset':
             self.get_object().reset_password(event=None)
             messages.success(request, phrases.base.password_reset_success)
-        elif action == "deactivate":
+        elif action == 'deactivate':
             user = self.get_object()
             user.is_active = False
             user.save()
-            messages.success(request, _("The user has been deactivated."))
-        elif action == "activate":
+            messages.success(request, _('The user has been deactivated.'))
+        elif action == 'activate':
             user = self.get_object()
             user.is_active = True
             user.save()
-            messages.success(request, _("The user has been activated."))
+            messages.success(request, _('The user has been activated.'))
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse("orga:admin.user.list")
+        return reverse('orga:admin.user.list')
 
     @context
     def tablist(self):
         return {
-            "teams": _("Teams"),
-            "submissions": _("Proposals"),
-            "actions": _("Last actions"),
+            'teams': _('Teams'),
+            'submissions': _('Proposals'),
+            'actions': _('Last actions'),
         }
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        result["teams"] = self.object.teams.all().prefetch_related(
-            "organiser", "limit_events", "organiser__events"
-        )
-        result["submissions"] = self.object.submissions.all()
-        result["last_actions"] = self.object.own_actions()[:10]
+        result['teams'] = self.object.teams.all().prefetch_related('organiser', 'limit_events', 'organiser__events')
+        result['submissions'] = self.object.submissions.all()
+        result['last_actions'] = self.object.own_actions()[:10]
         return result
 
 
 class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
-
     @property
     def action_object_name(self):
-        return _("User") + f": {self.get_object().name}"
+        return _('User') + f': {self.get_object().name}'
 
     @property
     def action_next_url(self):
@@ -185,7 +182,7 @@ class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
 
     @property
     def action_back_url(self):
-        return reverse("orga:admin.user.view", kwargs={"code": self.get_object().code})
+        return reverse('orga:admin.user.view', kwargs={'code': self.get_object().code})
 
     def dispatch(self, *args, **kwargs):
         with scopes_disabled():
@@ -193,8 +190,8 @@ class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
 
     def post(self, request, *args, **kwargs):
         self.get_object().shred()
-        messages.success(request, _("The user has been deleted."))
+        messages.success(request, _('The user has been deleted.'))
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse("orga:admin.user.list")
+        return reverse('orga:admin.user.list')

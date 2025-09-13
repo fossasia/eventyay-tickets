@@ -10,8 +10,8 @@ class SubmissionCommentForm(forms.ModelForm):
 
     class Meta:
         model = SubmissionComment
-        fields = ("text",)
-        widgets = {"text": MarkdownWidget}
+        fields = ('text',)
+        widgets = {'text': MarkdownWidget}
 
     def __init__(self, *args, submission=None, user=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,7 +22,5 @@ class SubmissionCommentForm(forms.ModelForm):
         self.instance.submission = self.submission
         self.instance.user = self.user
         instance = super().save(*args, **kwargs)
-        instance.log_action(
-            "eventyay.submission.comment.create", person=self.user, orga=True
-        )
+        instance.log_action('eventyay.submission.comment.create', person=self.user, orga=True)
         return instance

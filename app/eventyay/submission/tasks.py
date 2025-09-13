@@ -8,14 +8,12 @@ from eventyay.base.models.event import Event
 LOGGER = logging.getLogger(__name__)
 
 
-@app.task(name="eventyay.submission.recalculate_review_scores")
+@app.task(name='eventyay.submission.recalculate_review_scores')
 def recalculate_all_review_scores(*, event_id: int):
     with scopes_disabled():
-        event = (
-            Event.objects.prefetch_related("submissions").filter(pk=event_id).first()
-        )
+        event = Event.objects.prefetch_related('submissions').filter(pk=event_id).first()
     if not event:
-        LOGGER.error(f"Could not find Event ID {event_id} for export.")
+        LOGGER.error(f'Could not find Event ID {event_id} for export.')
         return
 
     with scope(event=event):

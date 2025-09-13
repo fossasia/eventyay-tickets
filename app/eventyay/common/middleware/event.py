@@ -29,31 +29,27 @@ logger = logging.getLogger(__name__)
 
 def get_login_redirect(request):
     params = request.GET.copy()
-    next_url = params.pop("next", None)
+    next_url = params.pop('next', None)
     next_url = next_url[0] if next_url else request.path
-    params = request.GET.urlencode() if request.GET else ""
-    params = f"?next={quote(next_url)}&{params}"
-    event = getattr(request, "event", None)
+    params = request.GET.urlencode() if request.GET else ''
+    params = f'?next={quote(next_url)}&{params}'
+    event = getattr(request, 'event', None)
     if event:
-        url = (
-            event.orga_urls.login
-            if request.path.startswith("/orga")
-            else event.urls.login
-        )
+        url = event.orga_urls.login if request.path.startswith('/orga') else event.urls.login
         return redirect(url.full() + params)
-    return redirect(reverse("eventyay_common:auth.login") + params)
+    return redirect(reverse('eventyay_common:auth.login') + params)
 
 
 class EventPermissionMiddleware:
     UNAUTHENTICATED_ORGA_URLS = (
-        "invitation.view",
-        "auth",
-        "login",
-        "auth.reset",
-        "auth.recover",
-        "event.login",
-        "event.auth.reset",
-        "event.auth.recover",
+        'invitation.view',
+        'auth',
+        'login',
+        'auth.reset',
+        'auth.recover',
+        'event.login',
+        'event.auth.reset',
+        'event.auth.recover',
     )
 
     def __init__(self, get_response):
@@ -62,68 +58,46 @@ class EventPermissionMiddleware:
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
             return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
-        if (
-            request.user.is_anonymous
-            and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS
-        ):
+        if request.user.is_anonymous and url.url_name not in self.UNAUTHENTICATED_ORGA_URLS:
             return get_login_redirect(request)
         return None
 
     def __call__(self, request):
         url = resolve(request.path_info)
 
-        organizer_slug = url.kwargs.get("organizer")
+        organizer_slug = url.kwargs.get('organizer')
         if organizer_slug:
-            request.organizer = get_object_or_404(
-                Organizer, slug__iexact=organizer_slug
-            )
+            request.organizer = get_object_or_404(Organizer, slug__iexact=organizer_slug)
 
-        event_slug = url.kwargs.get("event")
+        event_slug = url.kwargs.get('event')
         if event_slug:
             with scopes_disabled():
                 try:
-                    queryset = Event.objects.prefetch_related(
-                        "submissions", "extra_links", "schedules"
-                    ).select_related("organizer")
+                    queryset = Event.objects.prefetch_related('submissions', 'extra_links', 'schedules').select_related(
+                        'organizer'
+                    )
                     latest_schedule_subquery = (
-                        Schedule.objects.filter(
-                            event=OuterRef("pk"), published__isnull=False
-                        )
-                        .order_by("-published")
-                        .values("pk")[:1]
+                        Schedule.objects.filter(event=OuterRef('pk'), published__isnull=False)
+                        .order_by('-published')
+                        .values('pk')[:1]
                     )
-                    queryset = queryset.annotate(
-                        _current_schedule_pk=Subquery(latest_schedule_subquery)
-                    )
+                    queryset = queryset.annotate(_current_schedule_pk=Subquery(latest_schedule_subquery))
                     request.event = get_object_or_404(queryset, slug__iexact=event_slug)
                 except ValueError:
                     # Happens mostly on malformed or malicious input
                     raise Http404()
-        event = getattr(request, "event", None)
+        event = getattr(request, 'event', None)
 
         self._select_locale(request)
-        is_exempt = (
-            url.url_name == "export"
-            if "agenda" in url.namespaces
-            else request.path.startswith("/api/")
-        )
+        is_exempt = url.url_name == 'export' if 'agenda' in url.namespaces else request.path.startswith('/api/')
 
-        if "orga" in url.namespaces or (
-            "plugins" in url.namespaces and request.path.startswith("/orga")
-        ):
+        if 'orga' in url.namespaces or ('plugins' in url.namespaces and request.path.startswith('/orga')):
             response = self._handle_orga_url(request, url)
             if response:
                 return response
-        elif (
-            event
-            and request.event.custom_domain
-            and not request.uses_custom_domain
-            and not is_exempt
-        ):
-            response = redirect(
-                urljoin(request.event.custom_domain, request.get_full_path())
-            )
-            response["Access-Control-Allow-Origin"] = "*"
+        elif event and request.event.custom_domain and not request.uses_custom_domain and not is_exempt:
+            response = redirect(urljoin(request.event.custom_domain, request.get_full_path()))
+            response['Access-Control-Allow-Origin'] = '*'
             return response
         if event:
             with scope(event=event):
@@ -131,14 +105,14 @@ class EventPermissionMiddleware:
         else:
             response = self.get_response(request)
 
-        if is_exempt and "Access-Control-Allow-Origin" not in response:
-            response["Access-Control-Allow-Origin"] = "*"
+        if is_exempt and 'Access-Control-Allow-Origin' not in response:
+            response['Access-Control-Allow-Origin'] = '*'
         return response
 
     def _select_locale(self, request):
         supported = (
             request.event.locales
-            if (hasattr(request, "event") and request.event)
+            if (hasattr(request, 'event') and request.event)
             else list(settings.LANGUAGES_INFORMATION)
         )
         language = (
@@ -153,7 +127,7 @@ class EventPermissionMiddleware:
         request.LANGUAGE_CODE = translation.get_language()
 
         with suppress(zoneinfo.ZoneInfoNotFoundError):
-            if hasattr(request, "event") and request.event:
+            if hasattr(request, 'event') and request.event:
                 tzname = request.event.timezone
             elif request.user.is_authenticated:
                 tzname = request.user.timezone
@@ -163,9 +137,9 @@ class EventPermissionMiddleware:
             request.timezone = tzname
 
     def _language_from_browser(self, request, supported):
-        accept_value = request.headers.get("Accept-Language", "")
+        accept_value = request.headers.get('Accept-Language', '')
         for accept_lang, _ in parse_accept_lang_header(accept_value):
-            if accept_lang == "*":
+            if accept_lang == '*':
                 break
 
             if not language_code_re.search(accept_lang):
@@ -184,7 +158,7 @@ class EventPermissionMiddleware:
             return self._validate_language(request.user.locale, supported)
 
     def _language_from_request(self, request, supported):
-        lang = request.GET.get("lang")
+        lang = request.GET.get('lang')
         if lang:
             lang = self._validate_language(lang, supported)
             if lang:
@@ -192,7 +166,7 @@ class EventPermissionMiddleware:
                 return lang
 
     def _language_from_event(self, request, supported):
-        if hasattr(request, "event") and request.event:
+        if hasattr(request, 'event') and request.event:
             return self._validate_language(request.event.locale, supported)
 
     @staticmethod

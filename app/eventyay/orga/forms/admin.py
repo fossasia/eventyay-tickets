@@ -8,27 +8,27 @@ from eventyay.base.models.settings import GlobalSettings
 class GlobalSettingsForm(HierarkeyForm):
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettings()
-        super().__init__(*args, obj=self.obj, attribute_name="settings", **kwargs)
+        super().__init__(*args, obj=self.obj, attribute_name='settings', **kwargs)
 
 
 class UpdateSettingsForm(GlobalSettingsForm):
     update_check_enabled = forms.BooleanField(
         required=False,
-        label=_("Perform update checks"),
+        label=_('Perform update checks'),
         help_text=_(
-            "During the update check, eventyay will report an anonymous, unique installation ID, "
-            "the current version of eventyay and your installed plugins and the number of active and "
-            "inactive events in your installation to servers operated by the eventyay developers. We "
-            "will only store anonymous data, never any IP addresses and we will not know who you are "
-            "or where to find your instance. You can disable this behavior here at any time."
+            'During the update check, eventyay will report an anonymous, unique installation ID, '
+            'the current version of eventyay and your installed plugins and the number of active and '
+            'inactive events in your installation to servers operated by the eventyay developers. We '
+            'will only store anonymous data, never any IP addresses and we will not know who you are '
+            'or where to find your instance. You can disable this behavior here at any time.'
         ),
     )
     update_check_email = forms.EmailField(
         required=False,
-        label=_("Email notifications"),
+        label=_('Email notifications'),
         help_text=_(
-            "We will notify you at this address if we detect that a new update is available. This "
-            "address will not be transmitted to eventyay.com, the emails will be sent by your server "
-            "locally."
+            'We will notify you at this address if we detect that a new update is available. This '
+            'address will not be transmitted to eventyay.com, the emails will be sent by your server '
+            'locally.'
         ),
     )

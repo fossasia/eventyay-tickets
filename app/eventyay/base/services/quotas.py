@@ -241,7 +241,9 @@ class QuotaAvailability:
             self.count_waitinglist[q] = 0
 
         # Fetch which quotas belong to which products and variations
-        q_products = Quota.products.through.objects.filter(quota_id__in=[q.pk for q in quotas]).values('quota_id', 'product_id')
+        q_products = Quota.products.through.objects.filter(quota_id__in=[q.pk for q in quotas]).values(
+            'quota_id', 'product_id'
+        )
         for m in q_products:
             self._product_to_quotas[m['product_id']].append(self._quota_objects[m['quota_id']])
 
@@ -297,7 +299,11 @@ class QuotaAvailability:
             .filter(
                 Q(
                     Q(variation_id__isnull=True)
-                    & Q(product_id__in={i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas})
+                    & Q(
+                        product_id__in={
+                            i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas
+                        }
+                    )
                 )
                 | Q(
                     variation_id__in={
@@ -343,9 +349,9 @@ class QuotaAvailability:
             )
         else:
             op_lookup = op_lookup.annotate(is_exited=Value(0, output_field=models.IntegerField()))
-        op_lookup = op_lookup.values('order__status', 'product_id', 'subevent_id', 'variation_id', 'is_exited').annotate(
-            c=Count('*')
-        )
+        op_lookup = op_lookup.values(
+            'order__status', 'product_id', 'subevent_id', 'variation_id', 'is_exited'
+        ).annotate(c=Count('*'))
         for line in sorted(
             op_lookup,
             key=lambda li: (int(li['is_exited']), li['order__status']),
@@ -392,7 +398,11 @@ class QuotaAvailability:
                 & Q(
                     Q(
                         Q(variation_id__isnull=True)
-                        & Q(product_id__in={i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas})
+                        & Q(
+                            product_id__in={
+                                i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas
+                            }
+                        )
                     )
                     | Q(
                         variation_id__in={
@@ -435,7 +445,11 @@ class QuotaAvailability:
                 & Q(
                     Q(
                         Q(variation_id__isnull=True)
-                        & Q(product_id__in={i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas})
+                        & Q(
+                            product_id__in={
+                                i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas
+                            }
+                        )
                     )
                     | Q(
                         variation_id__in={
@@ -474,7 +488,11 @@ class QuotaAvailability:
                 & Q(
                     Q(
                         Q(variation_id__isnull=True)
-                        & Q(product_id__in={i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas})
+                        & Q(
+                            product_id__in={
+                                i['product_id'] for i in q_products if self._quota_objects[i['quota_id']] in quotas
+                            }
+                        )
                     )
                     | Q(
                         variation_id__in={

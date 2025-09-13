@@ -1,8 +1,8 @@
 from rest_framework import exceptions
 
-LEGACY = "LEGACY"
-CURRENT_VERSION = "v1"
-DEV_PREVIEW = "DEV_PREVIEW"
+LEGACY = 'LEGACY'
+CURRENT_VERSION = 'v1'
+DEV_PREVIEW = 'DEV_PREVIEW'
 
 DEPRECATED_VERSIONS = [LEGACY]
 CURRENT_VERSIONS = [
@@ -43,13 +43,9 @@ def get_serializer_by_version(name, version):
 
 
 def get_api_version_from_request(request):
-    api_version = (
-        request.headers.get("eventyay-version")
-        or getattr(request.auth, "version", None)
-        or CURRENT_VERSION
-    )
+    api_version = request.headers.get('eventyay-version') or getattr(request.auth, 'version', None) or CURRENT_VERSION
     if api_version not in SUPPORTED_VERSIONS:
-        raise exceptions.APIException(f"Unsupported version: {api_version}")
+        raise exceptions.APIException(f'Unsupported version: {api_version}')
 
     if request.auth and not request.auth.version:
         request.auth.version = api_version
