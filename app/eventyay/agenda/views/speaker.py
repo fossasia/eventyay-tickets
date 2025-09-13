@@ -28,13 +28,13 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
     context_object_name = 'speakers'
     template_name = 'agenda/speakers.html'
     permission_required = 'schedule.list_schedule'
-    default_filters = ('user__name__icontains',)
+    default_filters = ('user__fullname__icontains',)
 
     def get_queryset(self):
         qs = (
             SpeakerProfile.objects.filter(user__in=self.request.event.speakers, event=self.request.event)
             .select_related('user', 'event')
-            .order_by('user__name')
+            .order_by('user__fullname')
         )
         qs = self.filter_queryset(qs)
 

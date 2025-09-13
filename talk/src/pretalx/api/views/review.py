@@ -53,7 +53,7 @@ from pretalx.submission.rules import get_reviewable_submissions
 class ReviewViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     queryset = Review.objects.none()
-    search_fields = ("submission__title", "user__name")
+    search_fields = ("submission__title", "user__fullname")
     filterset_class = ReviewFilter
     endpoint = "reviews"
     # We only permit access to this endpoint if the user can see all reviews,
