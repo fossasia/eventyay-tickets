@@ -1,9 +1,6 @@
 <template lang="pug">
 transition(name="sidebar")
 	.c-rooms-sidebar(v-show="show && !snapBack", :style="style", role="navigation", @pointerdown="onPointerdown", @pointermove="onPointermove", @pointerup="onPointerup", @pointercancel="onPointercancel")
-		router-link.logo(:to="{name: 'home'}", v-if="$mq.above['m']", :class="{'fit-to-width': theme.logo.fitToWidth}")
-			img(:src="theme.logo.url", :alt="world.title")
-		bunt-icon-button#btn-close-sidebar(v-else, @click="$emit('close')") menu
 		scrollbars(y)
 			.global-links(role="group", aria-label="pages")
 				router-link.room(v-if="roomsByType.page.includes(rooms[0])", :to="{name: 'home'}", v-html="$emojify(rooms[0].name)")
@@ -78,10 +75,6 @@ transition(name="sidebar")
 					router-link.room(:to="{name: 'admin:rooms:index'}", v-if="hasPermission('room:update')") {{ $t('RoomsSidebar:admin-rooms:label') }}
 					router-link.room(:to="{name: 'admin:kiosks:index'}", v-if="hasPermission('world:users.manage')") {{ $t('RoomsSidebar:admin-kiosks:label') }}
 					router-link.room(:to="{name: 'admin:config'}", v-if="hasPermission('world:update')") {{ $t('RoomsSidebar:admin-config:label') }}
-		router-link.profile(:to="{name: 'preferences'}")
-			avatar(:user="user", :size="36")
-			.display-name {{ user.profile.display_name }}
-			.mdi.mdi-cog
 		transition(name="prompt")
 			channel-browser(v-if="showChannelBrowser", @close="showChannelBrowser = false", @createChannel="showChannelBrowser = false, showChatCreationPrompt = true")
 			create-stage-prompt(v-else-if="showStageCreationPrompt", @close="showStageCreationPrompt = false")
@@ -231,7 +224,15 @@ export default {
 	background-color: var(--clr-sidebar)
 	display: flex
 	flex-direction: column
-	height: var(--vh100)
+	position: fixed
+	top: 50px
+	left: 0
+	z-index: 901
+	width: var(--sidebar-width)
+	padding-top: 1rem
+	height: calc(var(--vh100) - 48px)
+	// Visual separation shadow similar to app bar
+	box-shadow: 0 2px 4px rgba(0,0,0,0.22), 0 3px 9px -2px rgba(0,0,0,0.35)
 	.logo
 		font-size: 18px
 		text-align: center
@@ -490,36 +491,16 @@ export default {
 				color: var(--clr-sidebar-text-primary)
 	.buffer
 		flex: auto
-	> .profile
-		display: flex
-		padding: 8px
-		align-items: center
-		cursor: pointer
-		color: var(--clr-sidebar-text-primary)
-		&:hover
-			background-color: rgba(255, 255, 255, 0.3)
-		.c-avatar
-			background-color: $clr-white
-			border-radius: 50%
-			padding: 4px
-		.display-name
-			flex: auto
-			font-weight: 600
-			font-size: 18px
-			margin-left: 8px
-		.mdi
-			font-size: 24px
-			line-height: 1
 	.room-attendee
 		display: flex
 #app:not(.override-sidebar-collapse) .c-rooms-sidebar
 	+below('l')
 		position: fixed
 		left: 0
-		top: 0
+		top: 48px
 		z-index: 901
 		width: var(--sidebar-width)
-		height: var(--vh100)
+		height: calc(var(--vh100) - 48px)
 		touch-action: pan-y
 		> .c-scrollbars .scroll-content
 			touch-action: pan-y

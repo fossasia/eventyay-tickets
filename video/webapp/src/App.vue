@@ -18,21 +18,22 @@
 			h1 {{ $t('App:fatal-connection-error:else:headline') }}
 		p.code error code: {{ fatalConnectionError.code }}
 	template(v-else-if="world")
-		app-bar(v-if="$mq.below['l']", @toggle-sidebar="toggleSidebar")
-		transition(name="backdrop")
-			.sidebar-backdrop(v-if="$mq.below['l'] && showSidebar && !overrideSidebarCollapse", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['l'] || showSidebar || overrideSidebarCollapse", @close="showSidebar = false")
-		router-view(:key="!$route.path.startsWith('/admin') ? $route.fullPath : null", :role="roomHasMedia ? '' : 'main'")
-		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
-		media-source(v-if="roomHasMedia && user.profile.greeted", ref="primaryMediaSource", :room="room", :key="room.id", role="main")
-		media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
-		media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
-		#media-source-iframes
-		notifications(:hasBackgroundMedia="!!backgroundRoom")
-		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
-		transition(name="prompt")
-			greeting-prompt(v-if="!user.profile.greeted")
-		.native-permission-blocker(v-if="askingPermission")
+		// AppBar stays fixed; only main content shifts
+		app-bar(@toggle-sidebar="toggleSidebar", :show-hamburger="!$mq?.above?.l")
+		.app-content(:class="{'sidebar-open': showSidebar}", role="main", tabindex="-1")
+			// router-view no longer carries role=main; main landmark is the scroll container
+			router-view(:key="!$route.path.startsWith('/admin') ? $route.fullPath : null")
+			//- defining keys like this keeps the playing dom element alive for uninterupted transitions
+			media-source(v-if="roomHasMedia && user.profile.greeted", ref="primaryMediaSource", :room="room", :key="room.id", role="main")
+			media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
+			media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
+			#media-source-iframes
+			notifications(:hasBackgroundMedia="!!backgroundRoom")
+			.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
+			transition(name="prompt")
+				greeting-prompt(v-if="!user.profile.greeted")
+			.native-permission-blocker(v-if="askingPermission")
+		rooms-sidebar(:show="showSidebar", @close="showSidebar = false")
 	.connecting(v-else-if="!fatalError")
 		bunt-progress-circular(size="huge")
 		.details(v-if="socketCloseCode == 1006") {{ $t('App:error-code:1006') }}
@@ -57,7 +58,9 @@ export default {
 		return {
 			backgroundRoom: null,
 			showSidebar: false,
-			windowHeight: null
+			windowHeight: null,
+			lastIsLarge: null,
+			manuallyOpenedSidebar: false
 		}
 	},
 	computed: {
@@ -134,7 +137,12 @@ export default {
 		room: 'roomChange',
 		call: 'callChange',
 		$route() {
-			this.showSidebar = false
+			// Keep sidebar open on large screens; optionally close on small to save space.
+			const isLarge = !!this.$mq?.above?.l
+			if (!isLarge) {
+				this.showSidebar = false
+				this.manuallyOpenedSidebar = false
+			}
 		},
 		stageStreamCollapsed: {
 			handler() {
@@ -145,22 +153,66 @@ export default {
 	},
 	mounted() {
 		this.windowHeight = window.innerHeight
+		// Auto-open sidebar on initial load for large screens
+		if (this.$mq?.above?.l) this.showSidebar = true
+		this.lastIsLarge = !!this.$mq?.above?.l
 		window.addEventListener('resize', this.onResize)
 		window.addEventListener('focus', this.onFocus, true)
+		window.addEventListener('pointerdown', this.onGlobalPointerDown, true)
+		window.addEventListener('keydown', this.onKeydown, true)
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.onResize)
 		window.removeEventListener('focus', this.onFocus)
+		window.removeEventListener('pointerdown', this.onGlobalPointerDown, true)
+		window.removeEventListener('keydown', this.onKeydown, true)
 	},
 	methods: {
+		onKeydown(e) {
+			if (e.key === 'Escape' || e.key === 'Esc') {
+				if (this.showSidebar && this.manuallyOpenedSidebar) {
+					this.showSidebar = false
+					this.manuallyOpenedSidebar = false
+					// Prevent the Escape from triggering other handlers if we handled it
+					// but only stop propagation, not default to avoid interfering with other browser behaviors
+					e.stopPropagation()
+				}
+			}
+		},
 		onResize() {
 			this.windowHeight = window.innerHeight
+			const isLarge = !!this.$mq?.above?.l
+			if (this.lastIsLarge === null) {
+				this.lastIsLarge = isLarge
+				return
+			}
+			// Transition small -> large: always open
+			if (isLarge && !this.lastIsLarge) {
+				this.showSidebar = true
+				this.manuallyOpenedSidebar = false // auto state, not manual
+			}
+			// Transition large -> small: always close
+			if (!isLarge && this.lastIsLarge) {
+				this.showSidebar = false
+				this.manuallyOpenedSidebar = false // reset manual flag
+			}
+			this.lastIsLarge = isLarge
 		},
 		onFocus() {
 			this.$store.dispatch('notifications/clearDesktopNotifications')
 		},
 		toggleSidebar() {
-			this.showSidebar = !this.showSidebar
+			const next = !this.showSidebar
+			this.showSidebar = next
+			this.manuallyOpenedSidebar = next // set true only when opening
+		},
+		onGlobalPointerDown(event) {
+			if (!this.showSidebar || !this.manuallyOpenedSidebar) return
+			const sidebarEl = document.querySelector('.c-rooms-sidebar')
+			const hamburgerEl = document.querySelector('.c-app-bar .hamburger')
+			if (sidebarEl?.contains(event.target) || hamburgerEl?.contains(event.target)) return
+			this.showSidebar = false
+			this.manuallyOpenedSidebar = false
 		},
 		clearTokenAndReload() {
 			localStorage.removeItem('token')
@@ -230,19 +282,27 @@ export default {
 .v-app
 	flex: auto
 	min-height: 0
-	display: grid
-	grid-template-columns: var(--sidebar-width) auto
-	grid-template-rows: auto
-	grid-template-areas: "rooms-sidebar main"
+	display: flex
+	flex-direction: column
 	--sidebar-width: 280px
 	--pretalx-clr-primary: var(--clr-primary)
 	.c-app-bar
-		grid-area: app-bar
-	.c-rooms-sidebar
-		grid-area: rooms-sidebar
+		flex: none
+	.app-content
+		flex: auto
+		min-height: 0
+		position: relative
+		transition: margin-left .10s ease, width .10s ease
+		width: 100vw
+		height: calc(var(--vh100) - 48px)
+		overflow-y: auto
+		-webkit-overflow-scrolling: touch
+		overscroll-behavior: contain
+		&.sidebar-open
+			margin-left: var(--sidebar-width)
+			width: calc(100vw - var(--sidebar-width))
 	.c-room-header
-		grid-area: main
-		height: 100vh
+		height: calc(var(--vh100) - 48px)
 	> .bunt-progress-circular
 		position: fixed
 		top: 50%
@@ -306,31 +366,4 @@ export default {
 		position: absolute
 		width: 0
 		height: 0
-
-	+below('l')
-		&.override-sidebar-collapse
-			grid-template-rows: 48px 1fr
-			grid-template-areas: "app-bar app-bar" "rooms-sidebar main"
-		&:not(.override-sidebar-collapse)
-			grid-template-columns: auto
-			grid-template-rows: 48px 1fr
-			grid-template-areas: "app-bar" "main"
-
-			.sidebar-backdrop
-				position: fixed
-				top: 0
-				left: 0
-				height: var(--vh100)
-				width: 100vw
-				z-index: 900
-				background-color: $clr-secondary-text-light
-				&.backdrop-enter-active, &.backdrop-leave-active
-					transition: opacity .2s
-				&.backdrop-enter-from, &.backdrop-leave-to
-					opacity: 0
-			.fatal-connection-error
-				.mdi
-					font-size: 128px
-				h1
-					font-size: 24px
 </style>

@@ -289,22 +289,20 @@ defineExpose({ isPlaying })
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
 .c-media-source .c-livestream, .c-media-source .c-januscall, .c-media-source .c-januschannelcall, iframe.iframe-media-source
 	position: fixed
-	transition: all .3s ease
 	&.size-tiny, &.background
 		bottom: calc(var(--vh100) - 48px - 3px)
 		right: 4px + 36px + 4px
 		+below('l')
 			bottom: calc(var(--vh100) - 48px - 48px - 3px)
 	&:not(.size-tiny):not(.background)
-		bottom: calc(var(--vh100) - 56px - var(--mediasource-placeholder-height))
+		top: 105px
+		bottom: auto
 		right: calc(100vw - var(--sidebar-width) - var(--mediasource-placeholder-width))
 		width: var(--mediasource-placeholder-width)
 		height: var(--mediasource-placeholder-height)
 		+below('l')
-			bottom: calc(var(--vh100) - 48px - 56px - var(--mediasource-placeholder-height))
 			right: calc(100vw - var(--mediasource-placeholder-width))
 iframe.iframe-media-source
-	transition: all .3s ease
 	border: none
 	&.background
 		pointer-events: none
@@ -314,4 +312,11 @@ iframe.iframe-media-source
 		&.hide-if-background
 			width: 0
 			height: 0
+// When sidebar is collapsed (no .sidebar-open on .app-content) and media is in normal size, anchor it under the fixed AppBar at left edge
+.app-content:not(.sidebar-open) .c-media-source .c-livestream:not(.size-tiny):not(.background),
+.app-content:not(.sidebar-open) .c-media-source .c-januscall:not(.size-tiny):not(.background),
+.app-content:not(.sidebar-open) .c-media-source .c-januschannelcall:not(.size-tiny):not(.background),
+.app-content:not(.sidebar-open) .c-media-source iframe.iframe-media-source:not(.size-tiny):not(.background)
+	left: 0
+	right: auto
 </style>
