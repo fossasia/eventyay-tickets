@@ -684,6 +684,7 @@ export default {
 	&.size-tiny
 		height: 48px
 		width: 86px // TODO total guesstimate
+		top: 55px
 		pointer-events: none
 		.controls, .mdi
 			opacity: 0

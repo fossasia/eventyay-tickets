@@ -7,7 +7,7 @@
 			span.bar
 		router-link.logo(:to="{name: 'home'}", :class="{anonymous: isAnonymous}")
 			img(:src="theme.logo.url", :alt="world.title")
-	router-link.user-profile(:to="{name: 'preferences'}")
+	div.user-profile
 		avatar(v-if="!isAnonymous", :user="user", :size="32")
 		span.display-name(v-if="!isAnonymous") {{ user.profile.display_name }}
 		span.display-name(v-else) {{ $t('AppBar:user-anonymous') }}

@@ -251,7 +251,7 @@ defineExpose({ isPlaying })
 		z-index: 101
 	.background-room
 		position: fixed
-		top: 3px
+		top: 55px
 		right: 4px
 		card()
 		display: flex
