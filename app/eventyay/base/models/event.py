@@ -32,7 +32,7 @@ from django.utils.html import format_html
 from django.utils.timezone import make_aware, now
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
-from django_scopes import ScopedManager, scopes_disabled
+from django_scopes import scope, ScopedManager, scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from .mixins import OrderedModel, PretalxModel
@@ -815,9 +815,9 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         self.orders.all().delete()
 
     def save(self, *args, **kwargs):
+        was_created = not bool(self.pk)
         obj = super().save(*args, **kwargs)
         self.cache.clear()
-        was_created = not bool(self.pk)
 
         if was_created:
             self.build_initial_data()
@@ -1624,9 +1624,10 @@ class Event(EventMixin, LoggedModel, PretalxModel):
     def _get_default_submission_type(self):
         from eventyay.base.models import SubmissionType
 
-        sub_type = SubmissionType.objects.filter(event=self).first()
-        if not sub_type:
-            sub_type = SubmissionType.objects.create(event=self, name='Talk')
+        with scope(event=self):
+            sub_type = SubmissionType.objects.filter(event=self).first()
+            if not sub_type:
+                sub_type = SubmissionType.objects.create(event=self, name='Talk')
         return sub_type
 
     @cached_property
@@ -1845,12 +1846,14 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         from eventyay.base.models import MailTemplate
 
         try:
-            return self.mail_templates.get(role=role)
+            with scope(event=self):
+                return self.mail_templates.get(role=role)
         except MailTemplate.DoesNotExist:
             subject, text = get_default_template(role)
-            template, __ = MailTemplate.objects.get_or_create(
-                event=self, role=role, defaults={'subject': subject, 'text': text}
-            )
+            with scope(event=self):
+                template, __ = MailTemplate.objects.get_or_create(
+                    event=self, role=role, defaults={'subject': subject, 'text': text}
+                )
             return template
 
     def build_initial_data(self):
@@ -1861,56 +1864,63 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         if not hasattr(self, 'cfp'):
             CfP.objects.create(event=self, default_type=self._get_default_submission_type())
 
-        if not self.schedules.filter(version__isnull=True).exists():
-            Schedule.objects.create(event=self)
+        from eventyay.base.models import SubmissionType
+
+        with scope(event=self):
+            if not self.schedules.filter(version__isnull=True).exists():
+                Schedule.objects.create(event=self)
 
         for role, __ in MailTemplateRoles.choices:
             self.get_mail_template(role)
+        
+        with scope(event=self):
+            if not self.review_phases.all().exists():
+                from eventyay.base.models import ReviewPhase
 
-        if not self.review_phases.all().exists():
-            from eventyay.base.models import ReviewPhase
+                cfp_deadline = self.cfp.deadline
+                rp = ReviewPhase.objects.create(
+                    event=self,
+                    name=_('Review'),
+                    start=cfp_deadline,
+                    end=self.datetime_from - relativedelta(months=-3),
+                    is_active=bool(not cfp_deadline or cfp_deadline < now()),
+                    position=0,
+                )
+                ReviewPhase.objects.create(
+                    event=self,
+                    name=_('Selection'),
+                    start=rp.end,
+                    is_active=False,
+                    position=1,
+                    can_review=False,
+                    can_see_other_reviews='always',
+                    can_change_submission_state=True,
+                )
+        
+        with scope(event=self):
+            if not self.score_categories.all().exists():
+                from eventyay.base.models import ReviewScore, ReviewScoreCategory
 
-            cfp_deadline = self.cfp.deadline
-            rp = ReviewPhase.objects.create(
-                event=self,
-                name=_('Review'),
-                start=cfp_deadline,
-                end=self.datetime_from - relativedelta(months=-3),
-                is_active=bool(not cfp_deadline or cfp_deadline < now()),
-                position=0,
-            )
-            ReviewPhase.objects.create(
-                event=self,
-                name=_('Selection'),
-                start=rp.end,
-                is_active=False,
-                position=1,
-                can_review=False,
-                can_see_other_reviews='always',
-                can_change_submission_state=True,
-            )
-        if not self.score_categories.all().exists():
-            from eventyay.base.models import ReviewScore, ReviewScoreCategory
-
-            category = ReviewScoreCategory.objects.create(
-                event=self,
-                name=str(_('Score')),
-            )
-            ReviewScore.objects.create(
-                category=category,
-                value=0,
-                label=str(_('No')),
-            )
-            ReviewScore.objects.create(
-                category=category,
-                value=1,
-                label=str(_('Maybe')),
-            )
-            ReviewScore.objects.create(
-                category=category,
-                value=2,
-                label=str(_('Yes')),
-            )
+                category = ReviewScoreCategory.objects.create(
+                    event=self,
+                    name=str(_('Score')),
+                )
+                ReviewScore.objects.create(
+                    category=category,
+                    value=0,
+                    label=str(_('No')),
+                )
+                ReviewScore.objects.create(
+                    category=category,
+                    value=1,
+                    label=str(_('Maybe')),
+                )
+                ReviewScore.objects.create(
+                    category=category,
+                    value=2,
+                    label=str(_('Yes')),
+                )
+        
         self.save()
 
     build_initial_data.alters_data = True
