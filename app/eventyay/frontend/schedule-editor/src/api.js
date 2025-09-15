@@ -1,4 +1,4 @@
-const basePath = process.env.BASE_PATH || '/talk';
+const basePath = process.env.BASE_PATH || '';
 const api = {
 	eventSlug: basePath ? window.location.pathname.split("/")[4] : window.location.pathname.split("/")[3],
 	http (verb, url, body) {

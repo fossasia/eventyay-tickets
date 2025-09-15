@@ -18,5 +18,11 @@ export default defineConfig({
         assetFileNames: "[ext]/global-nav-menu.[name][extname]",
       }
     }
-  }
+  },
+  server: {
+    cors: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",   // or restrict to your Django domain
+    },
+  },
 })
