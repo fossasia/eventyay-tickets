@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-06 10:28+0000\n"
-"PO-Revision-Date: 2025-09-14 11:37+0000\n"
-"Last-Translator: marvel at flowers <qiuhangli_2024@qq.com>\n"
+"PO-Revision-Date: 2025-09-15 08:38+0000\n"
+"Last-Translator: Supaplex <bejokeup@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/open-event/eventyay-tickets/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -932,7 +932,7 @@ msgstr ""
 #: pretix/base/configurations/default_setting.py:913
 #: pretix/control/forms/event.py:101
 msgid "Default language"
-msgstr ""
+msgstr "預設語言"
 
 #: pretix/base/configurations/default_setting.py:923
 msgid "Region"
@@ -2264,7 +2264,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/items/questions.html:3
 #: pretix/control/templates/pretixcontrol/items/questions.html:8
 msgid "Questions"
-msgstr ""
+msgstr "問題"
 
 #: pretix/base/exporters/dekodi.py:82
 #, python-brace-format
@@ -3486,7 +3486,7 @@ msgstr ""
 
 #: pretix/base/forms/user.py:32 pretix/control/forms/users.py:29
 msgid "New password"
-msgstr ""
+msgstr "新密碼"
 
 #: pretix/base/forms/user.py:36 pretix/control/forms/users.py:33
 msgid "Repeat new password"
@@ -7816,7 +7816,7 @@ msgstr ""
 #: pretix/control/forms/event.py:393
 #: pretix/control/forms/organizer_forms/organizer_update_form.py:31
 msgid "Custom domain"
-msgstr ""
+msgstr "自定網域"
 
 #: pretix/control/forms/event.py:396
 #: pretix/control/forms/organizer_forms/organizer_update_form.py:33
@@ -19456,7 +19456,7 @@ msgstr ""
 #: pretix/plugins/statistics/templates/pretixplugins/statistics/index.html:116
 #: pretix/plugins/statistics/templates/pretixplugins/statistics/index.html:118
 msgid "Available"
-msgstr ""
+msgstr "可使用"
 
 #: pretix/plugins/statistics/templates/pretixplugins/statistics/index.html:123
 msgid "On Sale"
@@ -20378,7 +20378,7 @@ msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/index.html:38
 msgid "Schedule"
-msgstr ""
+msgstr "議程時間"
 
 #: pretix/presale/templates/pretixpresale/event/index.html:43
 msgid "Sessions"
