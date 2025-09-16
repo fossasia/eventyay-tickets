@@ -31,7 +31,7 @@ base_patterns = [
     url(r'^js_helpers/states/$', js_helpers.states, name='js_helpers.states'),
     # url(r'^api/v1/', include(('eventyay.api.urls', 'eventyayapi'), namespace='api-v1')),
     # url(r'^api/$', RedirectView.as_view(url='/api/v1/'), name='redirect-api-version'),
-    # url(r'^accounts/', include('allauth.urls')),
+    url(r'^accounts/', include('allauth.urls')),
 ]
 
 control_patterns = [
