@@ -230,8 +230,8 @@ class SpeakerToggleArrived(SpeakerViewMixin, View):
         self.object.log_action(
             action,
             data={'event': self.request.event.slug},
-            person=self.request.user,
-            orga=True,
+            user=self.request.user,
+            # orga=True,
         )
         if url := self.request.GET.get('next'):
             if url and url_has_allowed_host_and_scheme(url, allowed_hosts=None):
