@@ -64,3 +64,5 @@ dev-sent-emails
 node_modules
 dist
 dist-ssr
+
+app/eventyay/data

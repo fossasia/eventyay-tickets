@@ -64,6 +64,7 @@ debug_patterns = []
 
 if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
     debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
+    debug_patterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 common_patterns = (
     base_patterns
