@@ -87,7 +87,7 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
     @context
     def questions_exist(self):
-        return self.request.event.questions.filter(target='speaker').exists()
+        return self.request.event.talkquestions.filter(target='speaker').exists()
 
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
