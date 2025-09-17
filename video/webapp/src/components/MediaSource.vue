@@ -283,8 +283,6 @@ defineExpose({ isPlaying })
 			top: 51px
 	.background-room-enter-active, .background-room-leave-active
 		transition: transform .3s ease
-	// .background-room-enter-active
-	// 	transition-delay: .1s
 	.background-room-enter-from, .background-room-leave-to
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
 .c-media-source .c-livestream, .c-media-source .c-januscall, .c-media-source .c-januschannelcall, iframe.iframe-media-source
@@ -296,11 +294,13 @@ defineExpose({ isPlaying })
 			bottom: calc(var(--vh100) - 48px - 48px - 3px)
 	&:not(.size-tiny):not(.background)
 		top: 105px
-		bottom: auto
-		right: calc(100vw - var(--sidebar-width) - var(--mediasource-placeholder-width))
 		width: var(--mediasource-placeholder-width)
 		height: var(--mediasource-placeholder-height)
-		+below('l')
+		// When content area is shifted due to sidebar-open, account for sidebar width on the right edge
+		.app-content.sidebar-open &
+			right: calc(100vw - var(--sidebar-width) - var(--mediasource-placeholder-width))
+		// Otherwise anchor to right edge of viewport
+		.app-content:not(.sidebar-open) &
 			right: calc(100vw - var(--mediasource-placeholder-width))
 iframe.iframe-media-source
 	border: none

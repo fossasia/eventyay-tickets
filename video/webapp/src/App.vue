@@ -1,5 +1,5 @@
 <template lang="pug">
-.v-app(:key="`${userLocale}-${userTimezone}`", :class="{'has-background-room': backgroundRoom, 'override-sidebar-collapse': overrideSidebarCollapse}", :style="[browserhackStyle, mediaConstraintsStyle]")
+.v-app(:key="`${userLocale}-${userTimezone}`", :class="{'has-background-room': backgroundRoom}", :style="[browserhackStyle, mediaConstraintsStyle]")
 	.fatal-connection-error(v-if="fatalConnectionError")
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle
@@ -19,7 +19,7 @@
 		p.code error code: {{ fatalConnectionError.code }}
 	template(v-else-if="world")
 		// AppBar stays fixed; only main content shifts
-		app-bar(@toggle-sidebar="toggleSidebar", :show-hamburger="!$mq?.above?.l")
+		app-bar(@toggle-sidebar="toggleSidebar")
 		.app-content(:class="{'sidebar-open': showSidebar}", role="main", tabindex="-1")
 			// router-view no longer carries role=main; main landmark is the scroll container
 			router-view(:key="!$route.path.startsWith('/admin') ? $route.fullPath : null")
@@ -58,9 +58,7 @@ export default {
 		return {
 			backgroundRoom: null,
 			showSidebar: false,
-			windowHeight: null,
-			lastIsLarge: null,
-			manuallyOpenedSidebar: false
+			windowHeight: null
 		}
 	},
 	computed: {
@@ -89,12 +87,6 @@ export default {
 			return this.mediaSourceRefs.primary?.$refs.livestream ? !this.mediaSourceRefs.primary.$refs.livestream.playing : false
 		},
 		// force open sidebar on medium screens on home page (with no media) so certain people can find the menu
-		overrideSidebarCollapse() {
-			return this.$mq.below.l &&
-				this.$mq.above.m &&
-				this.$route.name === 'home' &&
-				!this.roomHasMedia
-		},
 		// safari cleverly includes the address bar cleverly in 100vh
 		mediaConstraintsStyle() {
 			const hasStageTools = this.room?.modules.some(module => stageToolModules.includes(module.type))
@@ -137,12 +129,8 @@ export default {
 		room: 'roomChange',
 		call: 'callChange',
 		$route() {
-			// Keep sidebar open on large screens; optionally close on small to save space.
-			const isLarge = !!this.$mq?.above?.l
-			if (!isLarge) {
-				this.showSidebar = false
-				this.manuallyOpenedSidebar = false
-			}
+			// Always close the sidebar after navigation for consistent drawer UX on all screen sizes
+			this.showSidebar = false
 		},
 		stageStreamCollapsed: {
 			handler() {
@@ -153,9 +141,6 @@ export default {
 	},
 	mounted() {
 		this.windowHeight = window.innerHeight
-		// Auto-open sidebar on initial load for large screens
-		if (this.$mq?.above?.l) this.showSidebar = true
-		this.lastIsLarge = !!this.$mq?.above?.l
 		window.addEventListener('resize', this.onResize)
 		window.addEventListener('focus', this.onFocus, true)
 		window.addEventListener('pointerdown', this.onGlobalPointerDown, true)
@@ -169,50 +154,28 @@ export default {
 	},
 	methods: {
 		onKeydown(e) {
-			if (e.key === 'Escape' || e.key === 'Esc') {
-				if (this.showSidebar && this.manuallyOpenedSidebar) {
-					this.showSidebar = false
-					this.manuallyOpenedSidebar = false
-					// Prevent the Escape from triggering other handlers if we handled it
-					// but only stop propagation, not default to avoid interfering with other browser behaviors
-					e.stopPropagation()
-				}
+			if ((e.key === 'Escape' || e.key === 'Esc') && this.showSidebar) {
+				this.showSidebar = false
+				// Prevent the Escape from triggering other handlers if we handled it
+				e.stopPropagation()
 			}
 		},
 		onResize() {
+			// Only track height for CSS vars; no breakpoint-based sidebar behavior
 			this.windowHeight = window.innerHeight
-			const isLarge = !!this.$mq?.above?.l
-			if (this.lastIsLarge === null) {
-				this.lastIsLarge = isLarge
-				return
-			}
-			// Transition small -> large: always open
-			if (isLarge && !this.lastIsLarge) {
-				this.showSidebar = true
-				this.manuallyOpenedSidebar = false // auto state, not manual
-			}
-			// Transition large -> small: always close
-			if (!isLarge && this.lastIsLarge) {
-				this.showSidebar = false
-				this.manuallyOpenedSidebar = false // reset manual flag
-			}
-			this.lastIsLarge = isLarge
 		},
 		onFocus() {
 			this.$store.dispatch('notifications/clearDesktopNotifications')
 		},
 		toggleSidebar() {
-			const next = !this.showSidebar
-			this.showSidebar = next
-			this.manuallyOpenedSidebar = next // set true only when opening
+			this.showSidebar = !this.showSidebar
 		},
 		onGlobalPointerDown(event) {
-			if (!this.showSidebar || !this.manuallyOpenedSidebar) return
+			if (!this.showSidebar) return
 			const sidebarEl = document.querySelector('.c-rooms-sidebar')
 			const hamburgerEl = document.querySelector('.c-app-bar .hamburger')
 			if (sidebarEl?.contains(event.target) || hamburgerEl?.contains(event.target)) return
 			this.showSidebar = false
-			this.manuallyOpenedSidebar = false
 		},
 		clearTokenAndReload() {
 			localStorage.removeItem('token')
@@ -245,11 +208,18 @@ export default {
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (this.call) return // When a DM call is running, we never want background media
 			const newRoomHasMedia = newRoom && newRoom.modules && newRoom.modules.some(module => mediaModules.includes(module.type))
+			// We treat "undefined / not callable" as true to avoid race conditions.
+			let primaryWasPlaying = true
+			const primaryRef = this.mediaSourceRefs.primary
+			if (typeof primaryRef?.isPlaying === 'function') {
+				const result = primaryRef.isPlaying()
+				if (result === false) primaryWasPlaying = false
+			}
 			if (oldRoom &&
 				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
-				this.mediaSourceRefs.primary?.isPlaying() &&
+				primaryWasPlaying &&
 				// don't background bbb room when switching to new bbb room
 				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive)) &&
 				!newRoomHasMedia 
@@ -292,7 +262,8 @@ export default {
 		flex: auto
 		min-height: 0
 		position: relative
-		transition: margin-left .10s ease, width .10s ease
+		// Smoothly shift content when sidebar opens/closes
+		transition: margin-left .3s ease, width .3s ease
 		width: 100vw
 		height: calc(var(--vh100) - 48px)
 		overflow-y: auto
