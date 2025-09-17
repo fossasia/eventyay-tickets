@@ -1,6 +1,6 @@
 import logging
 from django.dispatch import receiver
-from django.template.loader import get_template
+from django.template.loader import render_to_string
 from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -94,8 +94,7 @@ def html_head_exhibitor(sender, request=None, **kwargs):
     url = resolve(request.path_info)
     if url.namespace == 'plugins:exhibitor':
         try:
-            template = get_template('exhibitor/control_head.html')
-            return template.render({'request': request})
+            return render_to_string('exhibitor/control_head.html', {'request': request}, request=request)
         except Exception as e:
             logger.warning(f"Could not render exhibitor control head template: {e}")
             return ''
