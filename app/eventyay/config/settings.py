@@ -50,12 +50,9 @@ def instance_name(request):
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = os.environ.get(
-    'DATA_DIR',
-    config.get('eventyay', 'datadir', fallback='data')
-)
+DATA_DIR = BASE_DIR / 'data'
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+MEDIA_ROOT = DATA_DIR / 'media'
 PROFILE_DIR = os.path.join(DATA_DIR, 'profiles')
 BASE_PATH = ''
 STATIC_URL = BASE_PATH + '/static/'
@@ -103,7 +100,6 @@ _LIBRARY_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -119,8 +115,6 @@ _LIBRARY_APPS = (
     'jquery',
     'rest_framework.authtoken',
     'rules',
-    'allauth',
-    'allauth.account',
     'oauth2_provider',
     'statici18n',
     'rest_framework',
@@ -179,6 +173,8 @@ CORE_MODULES = (
         'eventyay.base',
         'eventyay.presale',
         'eventyay.control',
+        'eventyay.plugins.checkinlists',
+        'eventyay.plugins.reports',
     )
 )
 
@@ -730,16 +726,13 @@ COMPRESS_CSS_FILTERS = (
 TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-DATA_DIR = BASE_DIR / 'data'
-LOG_DIR = DATA_DIR / 'logs'
-MEDIA_ROOT = Path(talk_config.get('filesystem', 'media', fallback=DATA_DIR / 'media'))
 
 IS_HTML_EXPORT = False
 HTMLEXPORT_ROOT = Path(
     talk_config.get(
         'filesystem',
         'htmlexport',
-        fallback=DATA_DIR / 'htmlexport',
+        fallback=str(Path(DATA_DIR) / 'htmlexport'),
     )
 )
 
