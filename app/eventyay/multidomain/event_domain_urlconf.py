@@ -25,7 +25,7 @@ presale_patterns = [
 
 raw_plugin_patterns = []
 for app in apps.get_app_configs():
-    if hasattr(app, 'PretixPluginMeta'):
+    if hasattr(app, 'EventyayPluginMeta'):
         if importlib.util.find_spec(app.name + '.urls'):
             urlmod = importlib.import_module(app.name + '.urls')
             if hasattr(urlmod, 'event_patterns'):

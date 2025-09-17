@@ -1,0 +1,11 @@
+data/
+*.sqlite
+.cache
+static.dist/
+build/
+dist/
+*.egg-info/
+*.bak
+eventyay/static/jsi18n/
+node_modules/
+
