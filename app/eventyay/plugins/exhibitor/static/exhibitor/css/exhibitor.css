@@ -1,0 +1,249 @@
+/* Exhibitor Plugin Styles */
+
+.exhibitor-directory {
+    padding: 20px;
+}
+
+.exhibitor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.exhibitor-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.exhibitor-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.exhibitor-logo {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.exhibitor-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.exhibitor-description {
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.exhibitor-booth {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.exhibitor-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.exhibitor-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+
+.exhibitor-btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.exhibitor-btn-primary:hover {
+    background: #0056b3;
+}
+
+.exhibitor-btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.exhibitor-btn-secondary:hover {
+    background: #545b62;
+}
+
+.exhibitor-search {
+    margin-bottom: 20px;
+}
+
+.exhibitor-search input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.exhibitor-filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.exhibitor-filter select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+}
+
+.exhibitor-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 5px;
+}
+
+.exhibitor-pagination button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.exhibitor-pagination button:hover {
+    background: #f8f9fa;
+}
+
+.exhibitor-pagination button.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.exhibitor-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.exhibitor-qr-code {
+    max-width: 150px;
+    height: auto;
+    margin: 10px 0;
+}
+
+.lead-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.lead-table th,
+.lead-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.lead-table th {
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.lead-table tr:hover {
+    background: #f8f9fa;
+}
+
+.lead-status {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.lead-status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.lead-status.contacted {
+    background: #d4edda;
+    color: #155724;
+}
+
+.lead-status.qualified {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.lead-status.converted {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.exhibitor-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2em;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .exhibitor-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .exhibitor-filters {
+        flex-direction: column;
+    }
+    
+    .exhibitor-actions {
+        flex-direction: column;
+    }
+    
+    .exhibitor-stats {
+        grid-template-columns: 1fr;
+    }
+}

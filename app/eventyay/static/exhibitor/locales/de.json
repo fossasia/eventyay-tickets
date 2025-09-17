@@ -1,0 +1,136 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Anzeigen",
+    "create": "Erstellen",
+    "back": "Zurück",
+    "confirm": "Bestätigen",
+    "actions": "Aktionen",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "save_changes": "Änderungen speichern"
+  },
+  "exhibitors": {
+    "directory": {
+      "title": "Aussteller"
+    },
+    "fields": {
+      "name": "Name",
+      "description": "Beschreibung",
+      "email": "E-Mail",
+      "url": "Website",
+      "logo": "Logo",
+      "booth_name": "Stand Name",
+      "booth_id": "Stand ID",
+      "booth": "Stand",
+      "leads": "Leads",
+      "status": "Status",
+      "sort_order": "Sortierreihenfolge"
+    },
+    "actions": {
+      "add": "Aussteller hinzufügen",
+      "add_first": "Ersten Aussteller hinzufügen",
+      "copy_key": "Zugriffsschlüssel kopieren",
+      "key_copied": "Zugriffsschlüssel in Zwischenablage kopiert",
+      "regenerate_key": "Schlüssel neu generieren",
+      "enable_scanning": "Lead-Scanning aktivieren",
+      "disable_scanning": "Lead-Scanning deaktivieren",
+      "download_qr": "QR-Code herunterladen"
+    },
+    "search": {
+      "placeholder": "Aussteller suchen...",
+      "no_results": "Keine Aussteller gefunden",
+      "try_different": "Versuchen Sie einen anderen Suchbegriff oder löschen Sie Filter",
+      "clear": "Suche löschen"
+    },
+    "filter": {
+      "all_categories": "Alle Kategorien"
+    },
+    "empty": {
+      "title": "Noch keine Aussteller",
+      "description": "Beginnen Sie, indem Sie Ihren ersten Aussteller zur Veranstaltung hinzufügen."
+    },
+    "create_title": "Neuen Aussteller hinzufügen",
+    "edit_title": "Aussteller bearbeiten",
+    "delete": {
+      "title": "Aussteller löschen",
+      "message": "Sind Sie sicher, dass Sie {name} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "featured": "Hervorgehoben",
+    "about": "Über",
+    "no_description": "Keine Beschreibung verfügbar.",
+    "contact_info": "Kontaktinformationen",
+    "lead_management": "Lead-Verwaltung",
+    "export_leads": "Leads exportieren",
+    "total_leads": "Gesamt Leads",
+    "leads_today": "Heute",
+    "leads_this_week": "Diese Woche",
+    "follow_up_status": "Follow-up Status",
+    "recent_leads": "Aktuelle Leads",
+    "view_all_leads": "Alle Leads anzeigen",
+    "integrations": "Integrationen",
+    "tickets": "Tickets",
+    "tickets_description": "Ticket-Typen und Verkäufe für diesen Aussteller verwalten",
+    "manage_tickets": "Tickets verwalten",
+    "talks": "Vorträge",
+    "talks_description": "Sprecher und Sessions mit diesem Aussteller verbinden",
+    "manage_talks": "Vorträge verwalten",
+    "videos": "Videos",
+    "videos_description": "Werbevideo und virtuelle Stand-Inhalte hochladen",
+    "manage_videos": "Videos verwalten",
+    "quick_actions": "Schnellaktionen",
+    "settings": "Einstellungen",
+    "lead_scanning_enabled": "Lead-Scanning aktivieren",
+    "allow_voucher_access": "Gutschein-Zugriff erlauben",
+    "allow_lead_access": "Lead-Zugriff erlauben",
+    "access_qr": "Zugriffs-QR-Code",
+    "qr_description": "Scannen Sie diesen QR-Code mit der mobilen App, um auf Aussteller-Funktionen zuzugreifen",
+    "upload_logo": "Klicken Sie, um Logo hochzuladen",
+    "logo_requirements": "Max 5MB, JPG/PNG/GIF/WebP",
+    "booth_id_placeholder": "Leer lassen für automatische Generierung",
+    "booth_id_help": "Eindeutige Kennung für den Stand. Leer lassen für automatische Generierung.",
+    "sort_order_help": "Niedrigere Zahlen erscheinen zuerst in Auflistungen",
+    "visit_website": "Website besuchen",
+    "contact": "Kontakt",
+    "leads": "Leads",
+    "recent": "aktuell",
+    "validation": {
+      "name_required": "Aussteller-Name muss mindestens 2 Zeichen lang sein",
+      "booth_name_required": "Stand-Name ist erforderlich",
+      "email_invalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "url_invalid": "Bitte geben Sie eine gültige URL ein",
+      "logo_too_large": "Logo-Datei muss kleiner als 5MB sein",
+      "logo_invalid_type": "Logo muss eine Bilddatei sein (JPG, PNG, GIF, WebP)"
+    },
+    "messages": {
+      "created": "Aussteller erfolgreich erstellt",
+      "updated": "Aussteller erfolgreich aktualisiert",
+      "deleted": "Aussteller erfolgreich gelöscht",
+      "save_error": "Fehler beim Speichern des Ausstellers",
+      "delete_error": "Fehler beim Löschen des Ausstellers",
+      "update_error": "Fehler beim Aktualisieren des Ausstellers",
+      "key_regenerated": "Zugriffsschlüssel erfolgreich neu generiert",
+      "key_regenerate_error": "Fehler beim Neu-Generieren des Zugriffsschlüssels",
+      "export_started": "Export gestartet, Download beginnt in Kürze",
+      "export_error": "Fehler beim Exportieren der Leads"
+    }
+  },
+  "leads": {
+    "attendee": "Teilnehmer",
+    "scanned": "Gescannt",
+    "status": {
+      "pending": "Ausstehend",
+      "contacted": "Kontaktiert",
+      "qualified": "Qualifiziert",
+      "converted": "Konvertiert"
+    }
+  },
+  "pagination": {
+    "previous": "Vorherige",
+    "next": "Nächste"
+  }
+}

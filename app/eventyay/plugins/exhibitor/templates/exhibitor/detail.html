@@ -1,0 +1,71 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{{ exhibitor.name }} - {% trans "Exhibitor Details" %}{% endblock %}
+
+{% block content %}
+<!-- Vue.js App Container -->
+<div id="exhibitor-detail-app" 
+     data-exhibitor-id="{{ exhibitor.id }}"
+     data-can-manage="{% if 'can_change_event_settings' in request.eventpermset %}true{% else %}false{% endif %}">
+    <!-- Loading fallback while Vue.js loads -->
+    <div class="text-center py-5">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">{% trans "Loading..." %}</span>
+        </div>
+        <p class="mt-2 text-muted">{% trans "Loading exhibitor details..." %}</p>
+    </div>
+</div>
+
+<!-- Notifications Container -->
+<div id="notifications-container"></div>
+{% endblock %}
+
+{% block extra_script %}
+<script src="{% static 'vuejs/vue.min.js' %}"></script>
+<script src="https://unpkg.com/pinia@2/dist/pinia.iife.js"></script>
+<script src="https://unpkg.com/vue-i18n@9/dist/vue-i18n.global.js"></script>
+<script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="{% static 'exhibitor/js/exhibitor-app.js' %}" type="module"></script>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'exhibitor/css/exhibitor.css' %}">
+<style>
+/* Additional styles for Vue.js integration */
+[v-cloak] {
+    display: none !important;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.3s;
+}
+
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
+/* Bootstrap 5 compatibility */
+.btn-close {
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='m.235.739l15.026 15.026-1.061 1.061L.174 1.8z'/%3e%3cpath d='M15.261.739L.235 15.765l1.061 1.061L16.322 1.8z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    border: 0;
+    border-radius: 0.25rem;
+    opacity: 0.5;
+    padding: 0.25rem 0.25rem;
+    width: 1em;
+    height: 1em;
+}
+
+.btn-close:hover {
+    opacity: 0.75;
+}
+
+.me-2 { margin-right: 0.5rem !important; }
+.me-3 { margin-right: 1rem !important; }
+.ms-1 { margin-left: 0.25rem !important; }
+.ms-2 { margin-left: 0.5rem !important; }
+.mb-4 { margin-bottom: 1.5rem !important; }
+.d-none { display: none !important; }
+</style>
+{% endblock %}

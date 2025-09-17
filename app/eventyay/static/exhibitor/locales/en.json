@@ -1,0 +1,136 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "create": "Create",
+    "back": "Back",
+    "confirm": "Confirm",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "save_changes": "Save Changes"
+  },
+  "exhibitors": {
+    "directory": {
+      "title": "Exhibitors"
+    },
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "email": "Email",
+      "url": "Website",
+      "logo": "Logo",
+      "booth_name": "Booth Name",
+      "booth_id": "Booth ID",
+      "booth": "Booth",
+      "leads": "Leads",
+      "status": "Status",
+      "sort_order": "Sort Order"
+    },
+    "actions": {
+      "add": "Add Exhibitor",
+      "add_first": "Add Your First Exhibitor",
+      "copy_key": "Copy Access Key",
+      "key_copied": "Access key copied to clipboard",
+      "regenerate_key": "Regenerate Key",
+      "enable_scanning": "Enable Lead Scanning",
+      "disable_scanning": "Disable Lead Scanning",
+      "download_qr": "Download QR Code"
+    },
+    "search": {
+      "placeholder": "Search exhibitors...",
+      "no_results": "No exhibitors found",
+      "try_different": "Try a different search term or clear filters",
+      "clear": "Clear Search"
+    },
+    "filter": {
+      "all_categories": "All Categories"
+    },
+    "empty": {
+      "title": "No Exhibitors Yet",
+      "description": "Get started by adding your first exhibitor to the event."
+    },
+    "create_title": "Add New Exhibitor",
+    "edit_title": "Edit Exhibitor",
+    "delete": {
+      "title": "Delete Exhibitor",
+      "message": "Are you sure you want to delete {name}? This action cannot be undone."
+    },
+    "featured": "Featured",
+    "about": "About",
+    "no_description": "No description provided.",
+    "contact_info": "Contact Information",
+    "lead_management": "Lead Management",
+    "export_leads": "Export Leads",
+    "total_leads": "Total Leads",
+    "leads_today": "Today",
+    "leads_this_week": "This Week",
+    "follow_up_status": "Follow-up Status",
+    "recent_leads": "Recent Leads",
+    "view_all_leads": "View All Leads",
+    "integrations": "Integrations",
+    "tickets": "Tickets",
+    "tickets_description": "Manage ticket types and sales for this exhibitor",
+    "manage_tickets": "Manage Tickets",
+    "talks": "Talks",
+    "talks_description": "Connect speakers and sessions to this exhibitor",
+    "manage_talks": "Manage Talks",
+    "videos": "Videos",
+    "videos_description": "Upload promotional videos and virtual booth content",
+    "manage_videos": "Manage Videos",
+    "quick_actions": "Quick Actions",
+    "settings": "Settings",
+    "lead_scanning_enabled": "Enable Lead Scanning",
+    "allow_voucher_access": "Allow Voucher Access",
+    "allow_lead_access": "Allow Lead Access",
+    "access_qr": "Access QR Code",
+    "qr_description": "Scan this QR code with the mobile app to access exhibitor features",
+    "upload_logo": "Click to upload logo",
+    "logo_requirements": "Max 5MB, JPG/PNG/GIF/WebP",
+    "booth_id_placeholder": "Leave empty to auto-generate",
+    "booth_id_help": "Unique identifier for the booth. Leave empty to generate automatically.",
+    "sort_order_help": "Lower numbers appear first in listings",
+    "visit_website": "Visit Website",
+    "contact": "Contact",
+    "leads": "leads",
+    "recent": "recent",
+    "validation": {
+      "name_required": "Exhibitor name must be at least 2 characters long",
+      "booth_name_required": "Booth name is required",
+      "email_invalid": "Please enter a valid email address",
+      "url_invalid": "Please enter a valid URL",
+      "logo_too_large": "Logo file must be less than 5MB",
+      "logo_invalid_type": "Logo must be an image file (JPG, PNG, GIF, WebP)"
+    },
+    "messages": {
+      "created": "Exhibitor created successfully",
+      "updated": "Exhibitor updated successfully",
+      "deleted": "Exhibitor deleted successfully",
+      "save_error": "Error saving exhibitor",
+      "delete_error": "Error deleting exhibitor",
+      "update_error": "Error updating exhibitor",
+      "key_regenerated": "Access key regenerated successfully",
+      "key_regenerate_error": "Error regenerating access key",
+      "export_started": "Export started, download will begin shortly",
+      "export_error": "Error exporting leads"
+    }
+  },
+  "leads": {
+    "attendee": "Attendee",
+    "scanned": "Scanned",
+    "status": {
+      "pending": "Pending",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "converted": "Converted"
+    }
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

@@ -1,0 +1,1 @@
+# Template tags package for exhibitor plugin
