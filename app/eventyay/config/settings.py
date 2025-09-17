@@ -26,11 +26,14 @@ from eventyay.helpers.config import EnvOrParserConfig
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
 from pycountry import currencies
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = os.environ.get("EVENTYAY_DATA_DIR", os.path.join(BASE_DIR, "data"))
-LOG_DIR = os.path.join(DATA_DIR, "logs")
-MEDIA_ROOT = os.path.join(DATA_DIR, "media")
+DATA_DIR = os.environ.get(
+    'DATA_DIR',
+    config.get('eventyay', 'datadir', fallback='data')
+)
+LOG_DIR = os.path.join(DATA_DIR, 'logs')
+MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+PROFILE_DIR = os.path.join(DATA_DIR, 'profiles')
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o775
 FILE_UPLOAD_PERMISSIONS = 0o644
 
@@ -60,8 +63,16 @@ def instance_name(request):
     return {'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')}
 
 debug_fallback = 'runserver' in sys.argv
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_PATH = ''
+STATIC_URL = BASE_PATH + '/static/'
+MEDIA_URL = BASE_PATH + '/media/'
+if not os.path.exists(DATA_DIR):
+    os.mkdir(DATA_DIR)
+if not os.path.exists(LOG_DIR):
+    os.mkdir(LOG_DIR)
+if not os.path.exists(MEDIA_ROOT):
+    os.mkdir(MEDIA_ROOT)
 
 DATABASE_REPLICA = 'default'
 # Quick-start development settings - unsuitable for production
@@ -107,6 +118,7 @@ _LIBRARY_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'django_filters',
     'django_otp',
     'django_otp.plugins.otp_totp',
@@ -116,6 +128,12 @@ _LIBRARY_APPS = (
     'oauth2_provider',
     'statici18n',
     'rest_framework',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.mediawiki',
 )
 
 if DEBUG and importlib.util.find_spec('django_extensions'):
@@ -139,6 +157,18 @@ _OURS_APPS = (
     'eventyay.helpers',
     'eventyay.multidomain',
     'eventyay.presale',
+    'eventyay.plugins.socialauth',
+    'eventyay.plugins.banktransfer',
+    'eventyay.plugins.badges',
+    'eventyay.plugins.ticketoutputpdf',
+    'eventyay.plugins.sendmail',
+    'eventyay.plugins.statistics',
+    'eventyay.plugins.reports',
+    'eventyay.plugins.checkinlists',
+    'eventyay.plugins.manualpayment',
+    'eventyay.plugins.returnurl',
+    'eventyay.plugins.scheduledtasks',
+    'eventyay.plugins.webcheckin',
 )
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
@@ -152,6 +182,7 @@ _LIBRARY_MIDDLEWARES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 )
 
 if DEBUG and importlib.util.find_spec('debug_toolbar'):
@@ -182,6 +213,8 @@ CORE_MODULES = {
     'eventyay.base',
     'eventyay.presale',
     'eventyay.control',
+    'eventyay.plugins.checkinlists',
+    'eventyay.plugins.reports',
 }
 
 template_loaders = (
@@ -631,14 +664,18 @@ CELERY_TASK_ROUTES = (
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
-STATIC_ROOT = BASE_DIR / 'static'
+
+STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static') ]
+
+
+
+STATIC_ROOT = BASE_DIR / 'static.dist'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
-STATICFILES_DIRS = []
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
 
 
@@ -769,13 +806,15 @@ EVENTYAY_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 
 PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
+
 PRETIX_PLUGINS_DEFAULT = config.get(
     'eventyay',
     'plugins_default',
     fallback='eventyay.plugins.sendmail,eventyay.plugins.statistics,eventyay.plugins.checkinlists,eventyay.plugins.autocheckin',
 )
-PRETIX_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
 PRETIX_PLUGINS_EXCLUDE = config.get('eventyay', 'plugins_exclude', fallback='').split(',')
+
+PRETIX_ADMIN_AUDIT_COMMENTS = config.getboolean('eventyay', 'audit_comments', fallback=False)
 
 LOG_CSP = config.getboolean('eventyay', 'csp_log', fallback=True)
 CSP_ADDITIONAL_HEADER = config.get('eventyay', 'csp_additional_header', fallback='')

@@ -1,11 +1,15 @@
 from django.urls import include, path, re_path
 from rest_framework import routers
-
+import importlib
+from django.apps import apps
 from . import views
 
-event_router = routers.DefaultRouter()
+orga_router = routers.DefaultRouter(trailing_slash=False)
+
+event_router = routers.DefaultRouter(trailing_slash=False)
 event_router.register(r"rooms", views.rooms.RoomViewSet)
 
+router = routers.DefaultRouter(trailing_slash=False)
 urlpatterns = [
     path("events/<str:event_id>/", views.EventView.as_view(), name="root"),
     re_path("events/(?P<event_id>[^/]+)/schedule_update/?$", views.schedule_update),
@@ -19,3 +23,4 @@ urlpatterns = [
     path("create-event/", views.CreateEventView.as_view()),
     path("events/<str:event_id>/export-talk", views.ExportView.as_view()),
 ]
+
