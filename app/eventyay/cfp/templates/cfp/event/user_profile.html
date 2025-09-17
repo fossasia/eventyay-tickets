@@ -15,7 +15,7 @@
 {% endblock cfp_header %}
 
 {% block content %}
-    {% html_signal "pretalx.cfp.signals.html_above_profile_page" sender=request.event request=request %}
+    {% html_signal "eventyay.cfp.signals.html_above_profile_page" sender=request.event request=request %}
 
     <h2>{% translate "Your Profile" %}</h2>
     <p>
@@ -83,7 +83,7 @@
         </div>
     </form>
 
-    {% html_signal "pretalx.common.signals.profile_bottom_html" sender=request.event user=user %}
+    {% html_signal "eventyay.common.signals.profile_bottom_html" sender=request.event user=user %}
 
     <div>&nbsp;</div>
     <h3>{% translate "Account deletion" %}</h3>

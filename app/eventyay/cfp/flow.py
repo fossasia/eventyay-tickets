@@ -395,7 +395,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
         info_data = self.cfp_session.get('data', {}).get('info', {})
         track = info_data.get('track')
         if track:
-            questions = self.event.questions.exclude(
+            questions = self.event.talkquestions.exclude(
                 Q(target=TalkQuestionTarget.SUBMISSION)
                 & (
                     (~Q(tracks__in=[info_data.get('track')]) & Q(tracks__isnull=False))
@@ -403,7 +403,7 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
                 )
             )
         else:
-            questions = self.event.questions.exclude(
+            questions = self.event.talkquestions.exclude(
                 Q(target=TalkQuestionTarget.SUBMISSION)
                 & (~Q(submission_types__in=[info_data.get('submission_type')]) & Q(submission_types__isnull=False))
             )

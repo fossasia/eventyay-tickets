@@ -84,9 +84,9 @@ class GeneralView(TemplateView):
         result['past_events'] = []
         result['future_events'] = []
         for event in qs:
-            if event.date_from <= _now <= event.date_to:
+            if event.date_from.date() <= _now <= event.date_to.date():
                 result['current_events'].append(event)
-            elif event.date_to < _now:
+            elif event.date_to.date() < _now:
                 result['past_events'].append(event)
             else:
                 result['future_events'].append(event)

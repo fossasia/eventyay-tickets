@@ -967,12 +967,12 @@ class Submission(GenerateCode, PretalxModel):
                 field_name = _field.verbose_name or _field.name
                 data.append({'name': field_name, 'value': field_content})
         for answer in self.answers.all().order_by('question__position'):
-            if answer.talkquestion.variant == 'boolean':
-                data.append({'name': answer.talkquestion.question, 'value': answer.boolean_answer})
+            if answer.question.variant == 'boolean':
+                data.append({'name': answer.question.question, 'value': answer.boolean_answer})
             elif answer.answer_file:
-                data.append({'name': answer.talkquestion.question, 'value': answer.answer_file})
+                data.append({'name': answer.question.question, 'value': answer.answer_file})
             else:
-                data.append({'name': answer.talkquestion.question, 'value': answer.answer or '-'})
+                data.append({'name': answer.question.question, 'value': answer.answer or '-'})
         for content in data:
             field_name = content['name']
             field_content = content['value']

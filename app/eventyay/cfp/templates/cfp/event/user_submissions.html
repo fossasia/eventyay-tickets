@@ -32,7 +32,7 @@
             {% if not forloop.last %}<hr>{% endif %}
         {% endfor %}
     {% endif %}
-    {% html_signal "pretalx.cfp.signals.html_above_submission_list" sender=request.event request=request %}
+    {% html_signal "eventyay.cfp.signals.html_above_submission_list" sender=request.event request=request %}
     {% if drafts %}
         <h2>{% translate "Your drafts" %}</h2>
         <div class="table-responsive">
