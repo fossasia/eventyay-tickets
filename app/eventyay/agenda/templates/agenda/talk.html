@@ -35,7 +35,7 @@
 
 {% block agenda_content %}
     <article>
-        {% html_signal "pretalx.agenda.signals.html_above_session_pages" sender=request.event request=request submission=submission %}
+        {% html_signal "eventyay.agenda.signals.html_above_session_pages" sender=request.event request=request submission=submission %}
         <h3 class="talk-title">
             <div class="heading-with-buttons">
                 <span>
@@ -144,7 +144,7 @@
                 </section>
             {% endif %}
             <section>
-                {% html_signal "pretalx.agenda.signals.html_below_session_pages" sender=request.event request=request submission=submission %}
+                {% html_signal "eventyay.agenda.signals.html_below_session_pages" sender=request.event request=request submission=submission %}
             </section>
             {% if submission_tags %}
               {% for tag_item in submission_tags %}

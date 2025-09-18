@@ -403,7 +403,7 @@ class Submission(GenerateCode, PretalxModel):
                 question__event=self.event,
                 question__target=TalkQuestionTarget.SUBMISSION,
             )
-            .select_related('talkquestion')
+            .select_related('question')
             .order_by('question__position')
         )
         if self.track:

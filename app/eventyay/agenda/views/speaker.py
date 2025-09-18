@@ -84,7 +84,7 @@ class SpeakerView(PermissionRequired, TemplateView):
             question__is_public=True,
             question__event=self.request.event,
             question__target=TalkQuestionTarget.SPEAKER,
-        ).select_related('talkquestion')
+        ).select_related('question')
 
 
 class SpeakerRedirect(DetailView):
