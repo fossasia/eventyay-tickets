@@ -18,6 +18,7 @@ from ..helpers.plugin_enable import is_video_enabled
 from ..multidomain.urlreverse import get_event_domain
 from .views.event import EventCreatedFor
 
+
 logger = logging.getLogger(__name__)
 
 

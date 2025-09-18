@@ -4,6 +4,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import etag
 from django.views.i18n import JavaScriptCatalog
 
+
 # Yes, we want to regenerate this every time the module has been imported to
 # refresh the cache at least at every code deployment
 import_date = timezone.now().strftime('%Y%m%d%H%M')

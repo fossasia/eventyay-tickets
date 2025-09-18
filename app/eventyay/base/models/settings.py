@@ -6,6 +6,7 @@ from django.utils.translation import gettext_noop
 from hierarkey.models import GlobalSettingsBase, Hierarkey
 from i18nfield.strings import LazyI18nString
 
+
 hierarkey = Hierarkey(attribute_name='settings')
 
 

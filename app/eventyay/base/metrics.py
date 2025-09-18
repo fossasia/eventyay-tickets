@@ -10,6 +10,7 @@ from django.db import connection
 from eventyay.base.models import Event, Invoice, Order, OrderPosition, Organizer
 from eventyay.celery_app import app
 
+
 if settings.HAS_REDIS:
     import django_redis
 
@@ -32,7 +33,7 @@ def _float_to_go_string(d):
         return repr(float(d))
 
 
-class Metric(object):
+class Metric:
     """
     Base Metrics Object
     """
@@ -53,7 +54,7 @@ class Metric(object):
         # test if every required label is provided
         for labelname in self.labelnames:
             if labelname not in labels:
-                raise ValueError('Label {0} not specified.'.format(labelname))
+                raise ValueError(f'Label {labelname} not specified.')
 
         # now test if no further labels are required
         if len(labels) != len(self.labelnames):
@@ -68,7 +69,7 @@ class Metric(object):
         else:
             named_labels = []
             for labelname in labelnames or self.labelnames:
-                named_labels.append('{}="{}"'.format(labelname, labels[labelname]))
+                named_labels.append(f'{labelname}="{labels[labelname]}"')
 
             return metricname + '{' + ','.join(named_labels) + '}'
 

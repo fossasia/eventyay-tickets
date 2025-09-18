@@ -1,6 +1,7 @@
 import text_unidecode
 from django import template
 
+
 register = template.Library()
 
 

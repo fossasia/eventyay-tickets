@@ -42,7 +42,7 @@ def serve_metrics(request):
     output = []
     for metric, sub in m.items():
         for label, value in sub.items():
-            output.append('{}{} {}'.format(metric, label, str(value)))
+            output.append(f'{metric}{label} {str(value)}')
 
     content = '\n'.join(output) + '\n'
 

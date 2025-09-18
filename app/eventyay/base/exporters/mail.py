@@ -30,13 +30,13 @@ class MailExporter(BaseExporter):
 
         if self.is_multievent:
             return (
-                '{}_pretixemails.txt'.format(self.events.first().organizer.slug),
+                f'{self.events.first().organizer.slug}_pretixemails.txt',
                 'text/plain',
                 data.encode('utf-8'),
             )
         else:
             return (
-                '{}_pretixemails.txt'.format(self.event.slug),
+                f'{self.event.slug}_pretixemails.txt',
                 'text/plain',
                 data.encode('utf-8'),
             )

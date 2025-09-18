@@ -149,7 +149,7 @@ class UserAnonymizeView(
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get('id'))
         self.object.log_action('pretix.user.anonymized', user=request.user)
-        self.object.email = '{}@disabled.eventyay.com'.format(self.object.pk)
+        self.object.email = f'{self.object.pk}@disabled.eventyay.com'
         self.object.fullname = ''
         self.object.is_active = False
         self.object.notifications_send = False

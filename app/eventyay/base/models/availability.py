@@ -5,6 +5,7 @@ from django.utils.functional import cached_property
 
 from .mixins import PretalxModel
 
+
 zerotime = dt.time(0, 0)
 
 

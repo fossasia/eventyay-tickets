@@ -5,6 +5,7 @@ from jinja2 import Environment
 
 from .helpers.jinja import url_for
 
+
 jj_globals = {
     'url_for': url_for,
     'site_url': settings.SITE_URL,

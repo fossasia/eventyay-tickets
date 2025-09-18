@@ -17,7 +17,7 @@ def modelcopy(obj: models.Model, **kwargs):
     n = obj.__class__(**kwargs)
     for f in obj._meta.fields:
         val = getattr(obj, f.name)
-        if isinstance(val, (models.Model, File)):
+        if isinstance(val, models.Model | File):
             setattr(n, f.name, copy.copy(val))
         else:
             setattr(n, f.name, copy.deepcopy(val))

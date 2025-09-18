@@ -8,6 +8,7 @@ from eventyay.base.models import BillingInvoice, Organizer
 from eventyay.base.models.organizer import OrganizerBillingModel
 from eventyay.base.settings import GlobalSettingsObject
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,19 +35,17 @@ def get_stripe_key(key_type: str) -> str:
     gs = GlobalSettingsObject()
 
     try:
-        prod_key = getattr(gs.settings, 'payment_stripe_{}_key'.format(key_type), None)
-        test_key = getattr(gs.settings, 'payment_stripe_test_{}_key'.format(key_type), None)
+        prod_key = getattr(gs.settings, f'payment_stripe_{key_type}_key', None)
+        test_key = getattr(gs.settings, f'payment_stripe_test_{key_type}_key', None)
     except AttributeError as e:
         logger.error('Missing attribute for Stripe %s key: %s', key_type, str(e))
         raise ValidationError(
-            'Missing attribute for Stripe {} key: {}. Please contact the administrator to set the Stripe key.'.format(
-                key_type, str(e)
-            ),
+            f'Missing attribute for Stripe {key_type} key: {str(e)}. Please contact the administrator to set the Stripe key.',
         )
 
     if not prod_key and not test_key:
         logger.error('No Stripe %s key found', key_type)
-        raise ValidationError('Please contact the administrator to set the Stripe {} key.'.format(key_type))
+        raise ValidationError(f'Please contact the administrator to set the Stripe {key_type} key.')
 
     logger.info('Get successful %s key', key_type)
 
@@ -147,7 +146,7 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
     organizer = Organizer.objects.get(slug=organizer_slug)
     if not organizer:
         logger.error('Organizer %s not found.', organizer_slug)
-        raise ValidationError('Organizer {} not found.'.format(organizer_slug))
+        raise ValidationError(f'Organizer {organizer_slug} not found.')
     billing_settings = OrganizerBillingModel.objects.filter(organizer_id=organizer.id).first()
     if billing_settings and billing_settings.stripe_customer_id:
         return billing_settings.stripe_customer_id
@@ -155,7 +154,7 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
         'No billing settings or Stripe customer ID found for organizer %s',
         organizer_slug,
     )
-    raise ValidationError('No stripe_customer_id found for organizer {}'.format(organizer_slug))
+    raise ValidationError(f'No stripe_customer_id found for organizer {organizer_slug}')
 
 
 @handle_stripe_errors('create_stripe_customer')

@@ -113,7 +113,7 @@ class JSONExporter(BaseExporter):
         }
 
         return (
-            '{}_pretixdata.json'.format(self.event.slug),
+            f'{self.event.slug}_pretixdata.json',
             'application/json',
             json.dumps(jo, cls=DjangoJSONEncoder),
         )

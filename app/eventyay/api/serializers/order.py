@@ -28,10 +28,10 @@ from eventyay.base.models import (
     Invoice,
     InvoiceAddress,
     InvoiceLine,
-    Product,
-    ProductVariation,
     Order,
     OrderPosition,
+    Product,
+    ProductVariation,
     Question,
     QuestionAnswer,
     Seat,
@@ -116,7 +116,7 @@ class InvoiceAddressSerializer(I18nAwareModelSerializer):
         if data.get('state'):
             cc = str(data.get('country') or self.instance.country or '')
             if cc not in COUNTRIES_WITH_STATE_IN_ADDRESS:
-                raise ValidationError({'state': ['States are not supported in country "{}".'.format(cc)]})
+                raise ValidationError({'state': [f'States are not supported in country "{cc}".']})
             if not pycountry.subdivisions.get(code=cc + '-' + data.get('state')):
                 raise ValidationError(
                     {'state': ['"{}" is not a known subdivision of the country "{}".'.format(data.get('state'), cc)]}
@@ -186,17 +186,15 @@ class AnswerSerializer(I18nAwareModelSerializer):
                 pk=data['answer'][len('file:') :],
             )
         except (ValidationError, IndexError):  # invalid uuid
-            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+            raise ValidationError(f'The submitted file ID "{data}" was not found.')
         except CachedFile.DoesNotExist:
-            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+            raise ValidationError(f'The submitted file ID "{data}" was not found.')
 
         allowed_types = ('image/png', 'image/jpeg', 'image/gif', 'application/pdf')
         if cf.type not in allowed_types:
-            raise ValidationError(
-                'The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data)
-            )
+            raise ValidationError(f'The submitted file "{data}" has a file type that is not allowed in this field.')
         if cf.file.size > 10 * 1024 * 1024:
-            raise ValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
+            raise ValidationError(f'The submitted file "{data}" is too large to be used in this field.')
 
         data['options'] = []
         data['answer'] = cf.file
@@ -466,7 +464,7 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
         if data.get('state'):
             cc = str(data.get('country') or self.instance.country or '')
             if cc not in COUNTRIES_WITH_STATE_IN_ADDRESS:
-                raise ValidationError({'state': ['States are not supported in country "{}".'.format(cc)]})
+                raise ValidationError({'state': [f'States are not supported in country "{cc}".']})
             if not pycountry.subdivisions.get(code=cc + '-' + data.get('state')):
                 raise ValidationError(
                     {'state': ['"{}" is not a known subdivision of the country "{}".'.format(data.get('state'), cc)]}
@@ -800,7 +798,7 @@ class OrderSerializer(I18nAwareModelSerializer):
 
     def validate_locale(self, l):
         if l not in set(k for k in self.instance.event.settings.locales):
-            raise ValidationError('"{}" is not a supported locale for this event.'.format(l))
+            raise ValidationError(f'"{l}" is not a supported locale for this event.')
         return l
 
     def update(self, instance, validated_data):
@@ -996,7 +994,7 @@ class OrderPositionCreateSerializer(I18nAwareModelSerializer):
         if data.get('state'):
             cc = str(data.get('country') or self.instance.country or '')
             if cc not in COUNTRIES_WITH_STATE_IN_ADDRESS:
-                raise ValidationError({'state': ['States are not supported in country "{}".'.format(cc)]})
+                raise ValidationError({'state': [f'States are not supported in country "{cc}".']})
             if not pycountry.subdivisions.get(code=cc + '-' + data.get('state')):
                 raise ValidationError(
                     {'state': ['"{}" is not a known subdivision of the country "{}".'.format(data.get('state'), cc)]}
@@ -1279,15 +1277,17 @@ class OrderCreateSerializer(I18nAwareModelSerializer):
                             v_budget[v] -= new_disc
                             if new_disc == Decimal('0.00') or pos_data.get('price') is not None:
                                 errs[i]['voucher'] = [
-                                    'The voucher has a remaining budget of {}, therefore a discount of {} can not be '
-                                    'given.'.format(v_budget[v] + new_disc, disc)
+                                    f'The voucher has a remaining budget of {v_budget[v] + new_disc}, therefore a discount of {disc} can not be '
+                                    'given.'
                                 ]
                                 continue
                             pos_data['price'] = price + (disc - new_disc)
                         else:
                             v_budget[v] -= disc
 
-                seated = pos_data.get('product').seat_category_mappings.filter(subevent=pos_data.get('subevent')).exists()
+                seated = (
+                    pos_data.get('product').seat_category_mappings.filter(subevent=pos_data.get('subevent')).exists()
+                )
                 if pos_data.get('seat'):
                     if not seated:
                         errs[i]['seat'] = ['The specified product does not allow to choose a seat.']

@@ -114,7 +114,7 @@ class CheckinList(LoggedModel):
     # tricks PostgreSQL into a bad subplan that sequentially scans all events.
     def checkin_count(self):
         return self.event.cache.get_or_set(
-            'checkin_list_{}_checkin_count'.format(self.pk),
+            f'checkin_list_{self.pk}_checkin_count',
             lambda: self.positions.using(settings.DATABASE_REPLICA)
             .annotate(
                 checkedin=Exists(
@@ -138,14 +138,14 @@ class CheckinList(LoggedModel):
     @property
     def position_count(self):
         return self.event.cache.get_or_set(
-            'checkin_list_{}_position_count'.format(self.pk),
+            f'checkin_list_{self.pk}_position_count',
             lambda: self.positions.count(),
             60,
         )
 
     def touch(self):
-        self.event.cache.delete('checkin_list_{}_position_count'.format(self.pk))
-        self.event.cache.delete('checkin_list_{}_checkin_count'.format(self.pk))
+        self.event.cache.delete(f'checkin_list_{self.pk}_position_count')
+        self.event.cache.delete(f'checkin_list_{self.pk}_checkin_count')
 
     @staticmethod
     def annotate_with_numbers(qs, event):
@@ -270,7 +270,7 @@ class Checkin(models.Model):
         ordering = (('-datetime'),)
 
     def __repr__(self):
-        return "<Checkin: pos {} on list '{}' at {}>".format(self.position, self.list, self.datetime)
+        return f"<Checkin: pos {self.position} on list '{self.list}' at {self.datetime}>"
 
     def save(self, **kwargs):
         super().save(**kwargs)

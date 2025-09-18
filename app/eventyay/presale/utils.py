@@ -20,6 +20,7 @@ from eventyay.multidomain.urlreverse import (
 )
 from eventyay.presale.signals import process_request, process_response
 
+
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
@@ -56,9 +57,9 @@ def _detect_event(request, require_live=True, require_plugin=None):
             domain = get_event_domain(request.event)
             if domain:
                 if request.port and request.port not in (80, 443):
-                    domain = '%s:%d' % (domain, request.port)
+                    domain = f'{domain}:{request.port}'
                 path = request.get_full_path().split('/', 2)[-1]
-                r = redirect(urljoin('%s://%s' % (request.scheme, domain), path))
+                r = redirect(urljoin(f'{request.scheme}://{domain}', path))
                 r['Access-Control-Allow-Origin'] = '*'
                 return r
         else:
@@ -77,9 +78,9 @@ def _detect_event(request, require_live=True, require_plugin=None):
                 domain = get_event_domain(request.event)
                 if domain:
                     if request.port and request.port not in (80, 443):
-                        domain = '%s:%d' % (domain, request.port)
+                        domain = f'{domain}:{request.port}'
                     path = request.get_full_path().split('/', 3)[-1]
-                    r = redirect(urljoin('%s://%s' % (request.scheme, domain), path))
+                    r = redirect(urljoin(f'{request.scheme}://{domain}', path))
                     r['Access-Control-Allow-Origin'] = '*'
                     return r
             elif 'organizer' in url.kwargs:
@@ -90,9 +91,9 @@ def _detect_event(request, require_live=True, require_plugin=None):
             domain = get_organizer_domain(request.organizer)
             if domain:
                 if request.port and request.port not in (80, 443):
-                    domain = '%s:%d' % (domain, request.port)
+                    domain = f'{domain}:{request.port}'
                 path = request.get_full_path().split('/', 2)[-1]
-                r = redirect(urljoin('%s://%s' % (request.scheme, domain), path))
+                r = redirect(urljoin(f'{request.scheme}://{domain}', path))
                 r['Access-Control-Allow-Origin'] = '*'
                 return r
         if hasattr(request, 'event'):
@@ -103,8 +104,8 @@ def _detect_event(request, require_live=True, require_plugin=None):
                     request.user.is_authenticated
                     and request.user.has_event_permission(request.organizer, request.event, request=request)
                 )
-                if not can_access and 'eventyay_event_access_{}'.format(request.event.pk) in request.session:
-                    sparent = SessionStore(request.session.get('eventyay_event_access_{}'.format(request.event.pk)))
+                if not can_access and f'eventyay_event_access_{request.event.pk}' in request.session:
+                    sparent = SessionStore(request.session.get(f'eventyay_event_access_{request.event.pk}'))
                     try:
                         parentdata = sparent.load()
                     except:

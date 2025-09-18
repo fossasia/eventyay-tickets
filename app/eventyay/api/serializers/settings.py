@@ -10,6 +10,7 @@ from rest_framework.exceptions import ValidationError
 from eventyay.api.serializers.fields import UploadedFileField
 from eventyay.base.settings import DEFAULTS
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,7 +30,7 @@ class SettingsSerializer(serializers.Serializer):
             if callable(form_kwargs):
                 form_kwargs = form_kwargs()
             if 'serializer_class' not in DEFAULTS[fname]:
-                raise ValidationError('{} has no serializer class'.format(fname))
+                raise ValidationError(f'{fname} has no serializer class')
             f = DEFAULTS[fname]['serializer_class'](**kwargs)
             f._label = form_kwargs.get('label', fname)
             f._help_text = form_kwargs.get('help_text')

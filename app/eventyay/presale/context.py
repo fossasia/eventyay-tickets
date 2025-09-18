@@ -26,6 +26,7 @@ from .signals import (
     html_page_header,
 )
 
+
 logger = logging.getLogger(__name__)
 
 

@@ -54,7 +54,11 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
         for cartpos in cart_positions:
             a = cartpos.addons.all()
             for addon in cartpos.product.addons.all():
-                count = sum(1 for product in a if product.product.category_id == addon.addon_category_id and not product.is_bundled)
+                count = sum(
+                    1
+                    for product in a
+                    if product.product.category_id == addon.addon_category_id and not product.is_bundled
+                )
                 if not addon.min_count <= count <= addon.max_count:
                     self._completed = False
                     return False
@@ -96,10 +100,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
                     current_addon_products[a.product_id, a.variation_id].append(a)
 
             for iao in cartpos.product.addons.all():
-                ckey = '{}-{}'.format(
-                    cartpos.subevent.pk if cartpos.subevent else 0,
-                    iao.addon_category.pk,
-                )
+                ckey = f'{cartpos.subevent.pk if cartpos.subevent else 0}-{iao.addon_category.pk}'
 
                 if ckey not in product_cache:
                     # Get all products to possibly show
@@ -255,9 +256,9 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
         self.request = request
         data = []
         for f in self.forms:
-            for c in f['categories']:
+            for category in f['categories']:
                 try:
-                    selected = self._clean_category(f, c)
+                    selected = self._clean_category(f, category)
                 except ValidationError as e:
                     messages.error(request, e.message % e.params if e.params else e.message)
                     return self.get(request, *args, **kwargs)

@@ -286,7 +286,9 @@ class ProductSerializer(I18nAwareModelSerializer):
         # Meta data
         if meta_data is not None:
             for key, value in meta_data.items():
-                ProductMetaValue.objects.create(property=self.product_meta_properties.get(key), value=value, product=product)
+                ProductMetaValue.objects.create(
+                    property=self.product_meta_properties.get(key), value=value, product=product
+                )
         return product
 
     def update(self, instance, validated_data):

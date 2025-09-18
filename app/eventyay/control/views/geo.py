@@ -9,13 +9,14 @@ from django.views.generic.base import View
 
 from eventyay.base.settings import GlobalSettingsObject
 
+
 logger = logging.getLogger(__name__)
 
 
 class GeoCodeView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         q = self.request.GET.get('q')
-        cd = cache.get('geocode:{}'.format(q))
+        cd = cache.get(f'geocode:{q}')
         if cd:
             return JsonResponse({'success': True, 'results': cd}, status=200)
 
@@ -27,18 +28,18 @@ class GeoCodeView(LoginRequiredMixin, View):
                 res = self._use_mapquest(q)
             else:
                 return JsonResponse({'success': False, 'results': []}, status=200)
-        except IOError:
+        except OSError:
             logger.exception('Geocoding failed')
             return JsonResponse({'success': False, 'results': []}, status=200)
 
-        cache.set('geocode:{}'.format(q), res, timeout=3600 * 6)
+        cache.set(f'geocode:{q}', res, timeout=3600 * 6)
         return JsonResponse({'success': True, 'results': res}, status=200)
 
     def _use_opencage(self, q):
         gs = GlobalSettingsObject()
 
         r = requests.get(
-            'https://api.opencagedata.com/geocode/v1/json?q={}&key={}'.format(quote(q), gs.settings.opencagedata_apikey)
+            f'https://api.opencagedata.com/geocode/v1/json?q={quote(q)}&key={gs.settings.opencagedata_apikey}'
         )
         r.raise_for_status()
         d = r.json()
@@ -56,9 +57,7 @@ class GeoCodeView(LoginRequiredMixin, View):
         gs = GlobalSettingsObject()
 
         r = requests.get(
-            'https://www.mapquestapi.com/geocoding/v1/address?location={}&key={}'.format(
-                quote(q), gs.settings.mapquest_apikey
-            )
+            f'https://www.mapquestapi.com/geocoding/v1/address?location={quote(q)}&key={gs.settings.mapquest_apikey}'
         )
         r.raise_for_status()
         d = r.json()

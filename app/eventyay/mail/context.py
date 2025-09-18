@@ -24,9 +24,12 @@ def get_mail_context(**kwargs):
         if slot and slot.start and slot.room:
             kwargs['slot'] = kwargs['submission'].slot
     context = {}
-    for _recv, placeholders in register_mail_placeholders.send(sender=event):
-        if not isinstance(placeholders, (list, tuple)):
-            placeholders = [placeholders]
+    for _recv, single_or_many_placeholders in register_mail_placeholders.send(sender=event):
+        placeholders = (
+            single_or_many_placeholders
+            if isinstance(single_or_many_placeholders, list | tuple)
+            else [single_or_many_placeholders]
+        )
         for placeholder in placeholders:
             if all(required in kwargs for required in placeholder.required_context):
                 context[placeholder.identifier] = placeholder.render(kwargs)
@@ -35,12 +38,14 @@ def get_mail_context(**kwargs):
 
 def get_available_placeholders(event, kwargs):
     params = {}
-    for _recv, placeholders in register_mail_placeholders.send(sender=event):
-        if not isinstance(placeholders, (list, tuple)):
-            placeholders = [placeholders]
+    for _recv, single_or_many_placeholders in register_mail_placeholders.send(sender=event):
+        placeholders = (
+            single_or_many_placeholders
+            if isinstance(single_or_many_placeholders, list | tuple)
+            else [single_or_many_placeholders]
+        )
         for placeholder in placeholders:
-            if all(required in kwargs for required in placeholder.required_context):
-                params[placeholder.identifier] = placeholder
+            params[placeholder.identifier] = placeholder.render(kwargs)
     return params
 
 

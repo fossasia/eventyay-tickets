@@ -6,6 +6,7 @@ from eventyay.common.signals import (
     register_my_data_exporters,
 )
 
+
 schedule_release = EventPluginSignal()
 """
 This signal allows you to trigger additional events when a new schedule

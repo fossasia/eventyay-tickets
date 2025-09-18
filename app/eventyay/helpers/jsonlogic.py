@@ -17,6 +17,7 @@ In particular, we changed:
 import logging
 from functools import reduce
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,10 +34,8 @@ def if_(*args):
 
 def soft_equals(a, b):
     """Implements the '==' operator, which does type JS-style coertion."""
-    if isinstance(a, str) or isinstance(b, str):
+    if isinstance(a, str | bool) or isinstance(b, str | bool):
         return str(a) == str(b)
-    if isinstance(a, bool) or isinstance(b, bool):
-        return bool(a) is bool(b)
     return a == b
 
 
@@ -93,7 +92,7 @@ def merge(*args):
     """Implements the 'merge' operator for merging lists."""
     ret = []
     for arg in args:
-        if isinstance(arg, (list, tuple)):
+        if isinstance(arg, list | tuple):
             ret += list(arg)
         else:
             ret.append(arg)
@@ -235,4 +234,4 @@ class Logic:
         elif operator in self._operations:
             return self._operations[operator](*values)
         else:
-            raise ValueError('Unrecognized operation %s' % operator)
+            raise ValueError(f'Unrecognized operation {operator}')

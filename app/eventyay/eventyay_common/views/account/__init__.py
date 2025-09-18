@@ -1,20 +1,20 @@
-from .basic import GeneralSettingsView, NotificationSettingsView, NotificationFlipOffView, HistoryView, DummyView
+from .basic import DummyView, GeneralSettingsView, HistoryView, NotificationFlipOffView, NotificationSettingsView
+from .oauth import (
+    OAuthApplicationDeleteView,
+    OAuthApplicationRegistrationView,
+    OAuthApplicationRollView,
+    OAuthApplicationUpdateView,
+    OAuthAuthorizedAppListView,
+    OAuthAuthorizedAppRevokeView,
+    OAuthOwnAppListView,
+)
 from .two_factor_auth import (
-    TwoFactorAuthSettingsView,
-    TwoFactorAuthEnableView,
-    TwoFactorAuthDisableView,
     TwoFactorAuthDeviceAddView,
     TwoFactorAuthDeviceConfirmTOTPView,
     TwoFactorAuthDeviceConfirmWebAuthnView,
     TwoFactorAuthDeviceDeleteView,
+    TwoFactorAuthDisableView,
+    TwoFactorAuthEnableView,
     TwoFactorAuthRegenerateEmergencyView,
-)
-from .oauth import (
-    OAuthAuthorizedAppListView,
-    OAuthAuthorizedAppRevokeView,
-    OAuthOwnAppListView,
-    OAuthApplicationRegistrationView,
-    OAuthApplicationUpdateView,
-    OAuthApplicationRollView,
-    OAuthApplicationDeleteView,
+    TwoFactorAuthSettingsView,
 )

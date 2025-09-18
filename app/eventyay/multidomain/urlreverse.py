@@ -11,6 +11,7 @@ from eventyay.base.models import Event, Organizer
 
 from .models import KnownDomain
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -108,7 +109,7 @@ def eventreverse(obj, name, kwargs=None):
     c = None
     if not kwargs:
         c = obj.cache
-        url = c.get('urlrev_{}'.format(name))
+        url = c.get(f'urlrev_{name}')
         if url:
             return url
 
@@ -147,7 +148,7 @@ def eventreverse(obj, name, kwargs=None):
     kwargs['organizer'] = organizer.slug
     url = reverse(name, kwargs=kwargs, urlconf=maindomain_urlconf)
     if not kwargs and c:
-        c.set('urlrev_{}'.format(url), url)
+        c.set(f'urlrev_{url}', url)
     return url
 
 
@@ -210,20 +211,16 @@ def generate_token(event, customer_code, position):
         'profile': profile,
         'traits': list(
             {
-                'eventyay-video-event-{}'.format(event.slug),
-                'eventyay-video-subevent-{}'.format(position.subevent_id),
-                'eventyay-video-item-{}'.format(position.item_id),
-                'eventyay-video-variation-{}'.format(position.variation_id),
-                'eventyay-video-category-{}'.format(position.item.category_id),
+                f'eventyay-video-event-{event.slug}',
+                f'eventyay-video-subevent-{position.subevent_id}',
+                f'eventyay-video-item-{position.item_id}',
+                f'eventyay-video-variation-{position.variation_id}',
+                f'eventyay-video-category-{position.item.category_id}',
             }
-            | {'eventyay-video-item-{}'.format(p.item_id) for p in position.addons.all()}
-            | {'eventyay-video-variation-{}'.format(p.variation_id) for p in position.addons.all() if p.variation_id}
-            | {
-                'eventyay-video-category-{}'.format(p.item.category_id)
-                for p in position.addons.all()
-                if p.item.category_id
-            }
+            | {f'eventyay-video-item-{p.item_id}' for p in position.addons.all()}
+            | {f'eventyay-video-variation-{p.variation_id}' for p in position.addons.all() if p.variation_id}
+            | {f'eventyay-video-category-{p.item.category_id}' for p in position.addons.all() if p.item.category_id}
         ),
     }
     token = jwt.encode(payload, event.settings.venueless_secret, algorithm='HS256')
-    return '{}/#token={}'.format(event.settings.venueless_url, token).replace('//#', '/#')
+    return f'{event.settings.venueless_url}/#token={token}'.replace('//#', '/#')

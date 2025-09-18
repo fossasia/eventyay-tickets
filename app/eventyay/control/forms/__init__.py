@@ -155,9 +155,9 @@ class SizeFileField(forms.FileField):
     def _sizeof_fmt(num, suffix='B'):
         for unit in ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']:
             if abs(num) < 1024.0:
-                return '%3.1f%s%s' % (num, unit, suffix)
+                return f'{num:3.1f}{unit}{suffix}'
             num /= 1024.0
-        return '%.1f%s%s' % (num, 'Yi', suffix)
+        return f'{num:.1f}Yi{suffix}'
 
     def clean(self, *args, **kwargs):
         data = super().clean(*args, **kwargs)
@@ -296,9 +296,9 @@ class SingleLanguageWidget(forms.Select):
                     v
                     if k in settings.LANGUAGES_OFFICIAL
                     else (
-                        '{} (inofficial translation)'.format(v)
+                        f'{v} (inofficial translation)'
                         if k not in settings.LANGUAGES_INCUBATING
-                        else '{} (translation in progress)'.format(v)
+                        else f'{v} (translation in progress)'
                     ),
                 )
             )

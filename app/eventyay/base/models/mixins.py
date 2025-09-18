@@ -9,6 +9,7 @@ from django_scopes import ScopedManager, scopes_disabled
 from i18nfield.utils import I18nJSONEncoder
 from rules.contrib.models import RulesModelBase, RulesModelMixin
 
+
 SENSITIVE_KEYS = ['password', 'secret', 'api_key']
 
 

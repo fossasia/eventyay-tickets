@@ -2650,7 +2650,7 @@ NAME_SCHEMES = OrderedDict(
                 ),
                 'concatenation': lambda d: (
                     str(d.get('family_name', ''))
-                    + str((', ' if d.get('family_name') and d.get('given_name') else ''))
+                    + str(', ' if d.get('family_name') and d.get('given_name') else '')
                     + str(d.get('given_name', ''))
                 ),
                 'sample': {
@@ -2753,7 +2753,7 @@ NAME_SCHEMES = OrderedDict(
                 ),
                 'concatenation': lambda d: (
                     ' '.join(str(p) for p in (d.get(key, '') for key in ['title', 'given_name', 'family_name']) if p)
-                    + str((', ' if d.get('degree') else ''))
+                    + str(', ' if d.get('degree') else '')
                     + str(d.get('degree', ''))
                 ),
                 'sample': {

@@ -12,7 +12,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from eventyay.base.models import Event, Product, LoggedModel, Organizer, SubEvent
+from eventyay.base.models import Event, LoggedModel, Organizer, Product, SubEvent
 
 
 @deconstructible
@@ -25,7 +25,7 @@ class SeatingPlanLayoutValidator:
                 raise ValidationError(_('Your layout file is not a valid JSON file.'))
         else:
             val = value
-        with open(finders.find('seating/seating-plan.schema.json'), 'r') as f:
+        with open(finders.find('seating/seating-plan.schema.json')) as f:
             schema = json.loads(f.read())
         try:
             jsonschema.validate(val, schema)

@@ -4,11 +4,9 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -16,7 +14,19 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('state', models.CharField(choices=[('pending', 'pending'), ('running', 'running'), ('error', 'error'), ('completed', 'completed')], default='pending', max_length=32)),
+                (
+                    'state',
+                    models.CharField(
+                        choices=[
+                            ('pending', 'pending'),
+                            ('running', 'running'),
+                            ('error', 'error'),
+                            ('completed', 'completed'),
+                        ],
+                        default='pending',
+                        max_length=32,
+                    ),
+                ),
             ],
             options={
                 'ordering': ('id',),
@@ -26,7 +36,22 @@ class Migration(migrations.Migration):
             name='BankTransaction',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('state', models.CharField(choices=[('imported', 'imported, unchecked'), ('nomatch', 'no match'), ('invalid', 'not valid'), ('error', 'error'), ('valid', 'valid'), ('already', 'valid, already paid'), ('discarded', 'manually discarded')], default='imported', max_length=32)),
+                (
+                    'state',
+                    models.CharField(
+                        choices=[
+                            ('imported', 'imported, unchecked'),
+                            ('nomatch', 'no match'),
+                            ('invalid', 'not valid'),
+                            ('error', 'error'),
+                            ('valid', 'valid'),
+                            ('already', 'valid, already paid'),
+                            ('discarded', 'manually discarded'),
+                        ],
+                        default='imported',
+                        max_length=32,
+                    ),
+                ),
                 ('message', models.TextField()),
                 ('checksum', models.CharField(db_index=True, max_length=190)),
                 ('payer', models.TextField(blank=True)),

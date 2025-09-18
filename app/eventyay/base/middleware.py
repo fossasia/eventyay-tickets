@@ -23,6 +23,7 @@ from eventyay.multidomain.urlreverse import (
     get_organizer_domain,
 )
 
+
 _supported = None
 
 

@@ -847,9 +847,9 @@ class OrderListExporter(MultiSheetListExporter):
 
     def get_filename(self):
         if self.is_multievent:
-            return '{}_orders'.format(self.events.first().organizer.slug)
+            return f'{self.events.first().organizer.slug}_orders'
         else:
-            return '{}_orders'.format(self.event.slug)
+            return f'{self.event.slug}_orders'
 
 
 class PaymentListExporter(ListExporter):
@@ -941,9 +941,9 @@ class PaymentListExporter(ListExporter):
 
     def get_filename(self):
         if self.is_multievent:
-            return '{}_payments'.format(self.events.first().organizer.slug)
+            return f'{self.events.first().organizer.slug}_payments'
         else:
-            return '{}_payments'.format(self.event.slug)
+            return f'{self.event.slug}_payments'
 
 
 class QuotaListExporter(ListExporter):
@@ -1002,7 +1002,7 @@ class QuotaListExporter(ListExporter):
             yield row
 
     def get_filename(self):
-        return '{}_quotas'.format(self.event.slug)
+        return f'{self.event.slug}_quotas'
 
 
 class GiftcardRedemptionListExporter(ListExporter):
@@ -1053,9 +1053,9 @@ class GiftcardRedemptionListExporter(ListExporter):
 
     def get_filename(self):
         if self.is_multievent:
-            return '{}_giftcardredemptions'.format(self.events.first().organizer.slug)
+            return f'{self.events.first().organizer.slug}_giftcardredemptions'
         else:
-            return '{}_giftcardredemptions'.format(self.event.slug)
+            return f'{self.event.slug}_giftcardredemptions'
 
 
 def generate_GiftCardListExporter(organizer):  # hackhack
@@ -1181,7 +1181,7 @@ def generate_GiftCardListExporter(organizer):  # hackhack
                 yield row
 
         def get_filename(self):
-            return '{}_giftcards'.format(organizer.slug)
+            return f'{organizer.slug}_giftcards'
 
     return GiftcardListExporter
 

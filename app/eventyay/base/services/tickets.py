@@ -21,6 +21,7 @@ from eventyay.base.signals import allow_ticket_download, register_ticket_outputs
 from eventyay.celery_app import app
 from eventyay.helpers.database import rolledback_transaction
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -168,12 +169,7 @@ def get_tickets_for_order(order, base_position=None):
                     ct = CachedCombinedTicket.objects.get(pk=retval)
                 tickets.append(
                     (
-                        '{}-{}-{}{}'.format(
-                            order.event.slug.upper(),
-                            order.code,
-                            ct.provider,
-                            ct.extension,
-                        ),
+                        f'{order.event.slug.upper()}-{order.code}-{ct.provider}{ct.extension}',
                         ct,
                     )
                 )
@@ -205,13 +201,7 @@ def get_tickets_for_order(order, base_position=None):
                             ct.extension,
                         )
                     else:
-                        fname = '{}-{}-{}-{}{}'.format(
-                            order.event.slug.upper(),
-                            order.code,
-                            pos.positionid,
-                            ct.provider,
-                            ct.extension,
-                        )
+                        fname = f'{order.event.slug.upper()}-{order.code}-{pos.positionid}-{ct.provider}{ct.extension}'
                     tickets.append((fname, ct))
                 except:
                     logger.exception('Failed to generate ticket.')

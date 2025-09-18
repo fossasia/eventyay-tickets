@@ -62,7 +62,7 @@ class LoginForm(forms.Form):
         if client_ip.is_private:
             # This is the private IP of the server, web server not set up correctly
             return None
-        return 'pretix_login_{}'.format(hashlib.sha1(str(client_ip).encode()).hexdigest())
+        return f'pretix_login_{hashlib.sha1(str(client_ip).encode()).hexdigest()}'
 
     def clean(self):
         if all(k in self.cleaned_data for k, f in self.fields.items() if f.required):

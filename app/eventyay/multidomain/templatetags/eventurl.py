@@ -9,6 +9,7 @@ from django.utils.html import conditional_escape
 
 from eventyay.multidomain.urlreverse import build_absolute_uri
 
+
 register = template.Library()
 
 

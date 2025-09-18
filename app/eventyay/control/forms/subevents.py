@@ -261,7 +261,7 @@ class SubEventProductVariationForm(SubEventProductOrVariationFormMixin, forms.Mo
         self.fields['price'].widget.attrs['placeholder'] = money_filter(
             self.variation.price, self.product.event.currency, hide_currency=True
         )
-        self.fields['price'].label = '{} – {}'.format(str(self.product), self.variation.value)
+        self.fields['price'].label = f'{str(self.product)} – {self.variation.value}'
 
     class Meta:
         model = SubEventProduct

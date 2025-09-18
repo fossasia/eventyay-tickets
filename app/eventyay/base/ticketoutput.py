@@ -1,7 +1,6 @@
 import os
 import tempfile
 from collections import OrderedDict
-from typing import Tuple
 from zipfile import ZipFile
 
 from django import forms
@@ -40,7 +39,7 @@ class BaseTicketOutput:
         """
         return True
 
-    def generate(self, position: OrderPosition) -> Tuple[str, str, str]:
+    def generate(self, position: OrderPosition) -> tuple[str, str, str]:
         """
         This method should generate the download file and return a tuple consisting of a
         filename, a file type and file content. The extension will be taken from the filename
@@ -62,7 +61,7 @@ class BaseTicketOutput:
         """
         raise NotImplementedError()
 
-    def generate_order(self, order: Order) -> Tuple[str, str, str]:
+    def generate_order(self, order: Order) -> tuple[str, str, str]:
         """
         This method is the same as order() but should not generate one file per order position
         but instead one file for the full order.
@@ -85,13 +84,13 @@ class BaseTicketOutput:
                 for pos in order.positions_with_tickets:
                     fname, __, content = self.generate(pos)
                     zipf.writestr(
-                        '{}-{}{}'.format(order.code, pos.positionid, os.path.splitext(fname)[1]),
+                        f'{order.code}-{pos.positionid}{os.path.splitext(fname)[1]}',
                         content,
                     )
 
             with open(os.path.join(d, 'tmp.zip'), 'rb') as zipf:
                 return (
-                    '{}-{}.zip'.format(order.code, self.identifier),
+                    f'{order.code}-{self.identifier}.zip',
                     'application/zip',
                     zipf.read(),
                 )

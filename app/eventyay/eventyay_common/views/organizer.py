@@ -18,6 +18,7 @@ from ...control.forms.organizer_forms import OrganizerForm, OrganizerUpdateForm
 from ...control.permissions import OrganizerPermissionRequiredMixin
 from ..tasks import send_organizer_webhook
 
+
 logger = logging.getLogger(__name__)
 
 

@@ -28,6 +28,7 @@ from ..helpers.plugin_enable import is_video_enabled
 from ..multidomain.urlreverse import get_event_domain
 from .signals import html_head, nav_topbar
 
+
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
@@ -90,13 +91,13 @@ def _default_context(request):
             ctx['complain_testmode_orders'] = False
 
         if not request.event.live and ctx['has_domain']:
-            child_sess = request.session.get('child_session_{}'.format(request.event.pk))
+            child_sess = request.session.get(f'child_session_{request.event.pk}')
             s = SessionStore()
             if not child_sess or not s.exists(child_sess):
-                s['eventyay_event_access_{}'.format(request.event.pk)] = request.session.session_key
+                s[f'eventyay_event_access_{request.event.pk}'] = request.session.session_key
                 s.create()
                 ctx['new_session'] = s.session_key
-                request.session['child_session_{}'.format(request.event.pk)] = s.session_key
+                request.session[f'child_session_{request.event.pk}'] = s.session_key
                 request.session['event_access'] = True
             else:
                 ctx['new_session'] = child_sess

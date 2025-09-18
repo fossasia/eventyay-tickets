@@ -32,12 +32,12 @@ from django.utils.translation import ngettext, pgettext
 
 from eventyay.base.decimal import round_decimal
 from eventyay.base.models import (
-    Product,
-    ProductCategory,
-    ProductVariation,
     Order,
     OrderPosition,
     OrderRefund,
+    Product,
+    ProductCategory,
+    ProductVariation,
     Question,
     Quota,
     RequiredAction,
@@ -56,6 +56,7 @@ from eventyay.helpers.daterange import daterange
 
 from ...base.models.orders import CancellationRequest
 from ..logdisplay import OVERVIEW_BANLIST
+
 
 NUM_WIDGET = '<div class="numwidget"><span class="num">{num}</span><span class="text">{text}</span></div>'
 
@@ -111,7 +112,7 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
                 'control:event.orders',
                 kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             )
-            + ('?subevent={}'.format(subevent.pk) if subevent else ''),
+            + (f'?subevent={subevent.pk}' if subevent else ''),
         },
         {
             'content': None if lazy else NUM_WIDGET.format(num=paidc, text=_('Attendees (paid)')),
@@ -122,7 +123,7 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
                 'control:event.orders.overview',
                 kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             )
-            + ('?subevent={}'.format(subevent.pk) if subevent else ''),
+            + (f'?subevent={subevent.pk}' if subevent else ''),
         },
         {
             'content': None
@@ -138,7 +139,7 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
                 'control:event.orders.overview',
                 kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             )
-            + ('?subevent={}'.format(subevent.pk) if subevent else ''),
+            + (f'?subevent={subevent.pk}' if subevent else ''),
         },
         {
             'content': None if lazy else NUM_WIDGET.format(num=prodc, text=_('Active products')),
@@ -193,7 +194,9 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
                 variation = vars.get(wlt['variation'])
                 if not product:
                     continue
-                quotas = variation._get_quotas(subevent=subevent) if variation else product._get_quotas(subevent=subevent)
+                quotas = (
+                    variation._get_quotas(subevent=subevent) if variation else product._get_quotas(subevent=subevent)
+                )
                 row = (
                     variation.check_quotas(subevent=subevent, count_waitinglist=False, _cache=quota_cache)
                     if variation
@@ -268,10 +271,10 @@ def quota_widgets(sender, subevent=None, lazy=False, **kwargs):
                 'content': None
                 if lazy
                 else NUM_WIDGET.format(
-                    num='{}/{}'.format(left, q.size) if q.size is not None else '\u221e',
+                    num=f'{left}/{q.size}' if q.size is not None else '\u221e',
                     text=_('{quota} left').format(quota=escape(q.name)),
                 ),
-                'lazy': 'quota-{}'.format(q.pk),
+                'lazy': f'quota-{q.pk}',
                 'display_size': 'small',
                 'priority': 50,
                 'url': reverse(
@@ -293,7 +296,10 @@ def shop_state_widget(sender, **kwargs):
         {
             'display_size': 'small',
             'priority': 1000,
-            'content': '<div class="shopstate">{t1}<br><span class="{cls}"><span class="fa {icon}"></span> {state}</span>{t2}</div>'.format(
+            'content': (
+                '<div class="shopstate">{t1}<br><span class="{cls}"><span class="fa {icon}">'
+                '</span> {state}</span>{t2}</div>'
+            ).format(
                 t1=_('Your ticket shop is'),
                 t2=_('Click here to change'),
                 state=_('live')
@@ -328,10 +334,10 @@ def checkin_widget(sender, subevent=None, lazy=False, **kwargs):
                 'content': None
                 if lazy
                 else NUM_WIDGET.format(
-                    num='{}/{}'.format(cl.inside_count, cl.position_count),
+                    num=f'{cl.inside_count}/{cl.position_count}',
                     text=_('Present – {list}').format(list=escape(cl.name)),
                 ),
-                'lazy': 'checkin-{}'.format(cl.pk),
+                'lazy': f'checkin-{cl.pk}',
                 'display_size': 'small',
                 'priority': 50,
                 'url': reverse(
@@ -611,7 +617,7 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                         + (date_format(event.date_from.astimezone(tz), 'TIME_FORMAT') if event.date_from else '')
                     )
                     + (
-                        ' <span class="fa fa-globe text-muted" data-toggle="tooltip" title="{}"></span>'.format(tzname)
+                        f' <span class="fa fa-globe text-muted" data-toggle="tooltip" title="{tzname}"></span>'
                         if tzname != request.timezone and not event.has_subevents
                         else ''
                     ),
@@ -642,7 +648,7 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                 if not lazy
                 else '',
                 'display_size': 'small',
-                'lazy': 'event-{}'.format(event.pk),
+                'lazy': f'event-{event.pk}',
                 'priority': 100,
                 'container_class': 'widget-container widget-container-event',
             }

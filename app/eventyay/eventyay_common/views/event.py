@@ -1,6 +1,5 @@
 import datetime as dt
 from datetime import datetime
-from datetime import timezone as tz
 from enum import StrEnum
 
 import jwt
@@ -8,7 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Case, F, Max, Min, Prefetch, Q, Sum, When, IntegerField
+from django.db.models import Case, F, IntegerField, Max, Min, Prefetch, Q, Sum, When
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -489,7 +488,7 @@ class VideoAccessAuthenticator(views.APIView):
 
     def generate_token_url(self, request):
         uid_token = encode_email(request.user.email)
-        iat = datetime.now(tz.utc)
+        iat = datetime.now(dt.UTC)
         exp = iat + dt.timedelta(days=1)
         payload = {
             'iss': self.request.event.settings.venueless_issuer,
@@ -499,14 +498,14 @@ class VideoAccessAuthenticator(views.APIView):
             'uid': uid_token,
             'traits': list(
                 {
-                    'eventyay-video-event-{}-organizer'.format(request.event.slug),
+                    f'eventyay-video-event-{request.event.slug}-organizer',
                     'admin',
                 }
             ),
         }
         token = jwt.encode(payload, self.request.event.settings.venueless_secret, algorithm='HS256')
         base_url = self.request.event.settings.venueless_url
-        return '{}/#token={}'.format(base_url, token).replace('//#', '/#')
+        return f'{base_url}/#token={token}'.replace('//#', '/#')
 
 
 class EventSearchView(views.APIView):

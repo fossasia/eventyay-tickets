@@ -49,7 +49,7 @@ class ContactForm(forms.Form):
                         default_prefix = prefix
                 try:
                     initial = self.initial.pop('phone', None)
-                    initial = PhoneNumber().from_string(initial) if initial else '+{}.'.format(default_prefix)
+                    initial = PhoneNumber().from_string(initial) if initial else f'+{default_prefix}.'
                 except NumberParseException:
                     initial = None
                 self.fields['phone'] = PhoneNumberField(
@@ -122,22 +122,21 @@ class AddOnRadioSelect(forms.RadioSelect):
         groups = []
         has_selected = False
         for index, (option_value, option_label, option_desc) in enumerate(chain(self.choices)):
-            if option_value is None:
-                option_value = ''
-            if isinstance(option_label, (list, tuple)):
+            str_value = option_value or ''
+            if isinstance(option_label, list | tuple):
                 raise TypeError('Choice groups are not supported here')
             group_name = None
             subgroup = []
             groups.append((group_name, subgroup, index))
 
-            selected = force_str(option_value) in value and (has_selected is False or self.allow_multiple_selected)
+            selected = force_str(str_value) in value and (has_selected is False or self.allow_multiple_selected)
             if selected is True and has_selected is False:
                 has_selected = True
             attrs['description'] = option_desc
             subgroup.append(
                 self.create_option(
                     name,
-                    option_value,
+                    str_value,
                     option_label,
                     selected,
                     index,

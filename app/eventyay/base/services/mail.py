@@ -6,9 +6,10 @@ import re
 import smtplib
 import ssl
 import warnings
+from collections.abc import Sequence
 from email.mime.image import MIMEImage
 from email.utils import formataddr
-from typing import Any, Dict, List, Sequence, Union
+from typing import Any
 from urllib.parse import urljoin, urlparse
 
 import pytz
@@ -51,6 +52,7 @@ from eventyay.celery_app import app
 from eventyay.multidomain.urlreverse import build_absolute_uri
 from eventyay.presale.ical import get_ical
 
+
 logger = logging.getLogger(__name__)
 INVALID_ADDRESS = 'invalid-eventyay-mail-address'
 
@@ -65,10 +67,10 @@ class SendMailException(Exception):  # NOQA: N818
 
 
 def mail(
-    email: Union[str, Sequence[str]],
+    email: str | Sequence[str],
     subject: str,
-    template: Union[str, LazyI18nString],
-    context: Dict[str, Any] = None,
+    template: str | LazyI18nString,
+    context: dict[str, Any] = None,
     event: Event = None,
     locale: str = None,
     order: Order = None,
@@ -315,7 +317,7 @@ class CustomEmail(EmailMultiAlternatives):
 def mail_send_task(
     self,
     *args,
-    to: List[str],
+    to: list[str],
     subject: str,
     body: str,
     html: str,
@@ -323,13 +325,13 @@ def mail_send_task(
     event: int = None,
     position: int = None,
     headers: dict = None,
-    bcc: List[str] = None,
-    invoices: List[int] = None,
+    bcc: list[str] = None,
+    invoices: list[int] = None,
     order: int = None,
     attach_tickets=False,
     user=None,
     attach_ical=False,
-    attach_cached_files: List[int] = None,
+    attach_cached_files: list[int] = None,
     attach_file_base64: str = None,
     attach_file_name: str = None,
 ) -> bool:
@@ -389,8 +391,10 @@ def mail_send_task(
                                     except:
                                         pass
                             else:
-                                message = (f'Attachment have not been send because {attach_size} bytes are '
-                                           'likely too large to arrive.')
+                                message = (
+                                    f'Attachment have not been send because {attach_size} bytes are '
+                                    'likely too large to arrive.'
+                                )
                                 order.log_action(
                                     'pretix.event.order.email.attachments.skipped',
                                     data={
@@ -414,7 +418,7 @@ def mail_send_task(
                             for i, e in enumerate(ical_events):
                                 cal = get_ical([e])
                                 email.attach(
-                                    'event-{}.ics'.format(i),
+                                    f'event-{i}.ics',
                                     cal.serialize(),
                                     'text/calendar',
                                 )
@@ -468,7 +472,7 @@ def mail_send_task(
                         order.log_action(
                             'pretix.event.order.email.error',
                             data={
-                                'subject': 'SMTP code {}, max retries exceeded'.format(e.smtp_code),
+                                'subject': f'SMTP code {e.smtp_code}, max retries exceeded',
                                 'message': e.smtp_error.decode()
                                 if isinstance(e.smtp_error, bytes)
                                 else str(e.smtp_error),
@@ -483,14 +487,14 @@ def mail_send_task(
                 order.log_action(
                     'pretix.event.order.email.error',
                     data={
-                        'subject': 'SMTP code {}'.format(e.smtp_code),
+                        'subject': f'SMTP code {e.smtp_code}',
                         'message': e.smtp_error.decode() if isinstance(e.smtp_error, bytes) else str(e.smtp_error),
                         'recipient': '',
                         'invoices': [],
                     },
                 )
 
-            raise SendMailException('Failed to send an email to {}.'.format(to))
+            raise SendMailException(f'Failed to send an email to {to}.')
         except smtplib.SMTPRecipientsRefused as e:
             smtp_codes = [a[0] for a in e.recipients.values()]
 
@@ -520,7 +524,7 @@ def mail_send_task(
                     },
                 )
 
-            raise SendMailException('Failed to send an email to {}.'.format(to))
+            raise SendMailException(f'Failed to send an email to {to}.')
         except Exception as e:
             if isinstance(
                 e,
@@ -558,7 +562,7 @@ def mail_send_task(
                     },
                 )
             logger.exception('Error sending email')
-            raise SendMailException('Failed to send an email to {}.'.format(to))
+            raise SendMailException(f'Failed to send an email to {to}.')
 
 
 def mail_send(*args, **kwargs):

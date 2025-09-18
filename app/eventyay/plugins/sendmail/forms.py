@@ -9,7 +9,7 @@ from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 from eventyay.base.email import get_available_placeholders
 from eventyay.base.forms import PlaceholderValidator
 from eventyay.base.forms.widgets import SplitDateTimePickerWidget
-from eventyay.base.models import CheckinList, Product, Order, SubEvent
+from eventyay.base.models import CheckinList, Order, Product, SubEvent
 from eventyay.control.forms import CachedFileField
 from eventyay.control.forms.widgets import Select2, Select2Multiple
 
@@ -46,8 +46,8 @@ class MailForm(forms.Form):
             '.tiff',
         ),
         help_text=_(
-            'Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs '
-            'of no more than 2 MB in size.'
+            'Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. '
+            'We recommend only using PDFs of no more than 2 MB in size.'
         ),
         max_size=10 * 1024 * 1024,
     )  # TODO i18n
@@ -108,7 +108,7 @@ class MailForm(forms.Form):
         return d
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        phs = [f'{{{p}}}' for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)

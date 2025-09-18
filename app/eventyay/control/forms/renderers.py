@@ -70,7 +70,7 @@ class BulkEditMixin:
 
     def wrap_field(self, html):
         field_class = self.get_field_class()
-        name = '{}{}'.format(self.field.form.prefix, self.field.name)
+        name = f'{self.field.form.prefix}{self.field.name}'
         checked = self.field.form.data and name in self.field.form.data.getlist('_bulk')
         html = (
             '<div class="{klass} bulk-edit-field-group">'

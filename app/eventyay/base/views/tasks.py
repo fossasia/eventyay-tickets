@@ -15,6 +15,7 @@ from eventyay.base.models import User
 from eventyay.base.services.tasks import ProfiledEventTask
 from eventyay.celery_app import app
 
+
 logger = logging.getLogger('pretix.base.tasks')
 
 

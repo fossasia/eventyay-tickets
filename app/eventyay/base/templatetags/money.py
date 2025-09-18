@@ -6,6 +6,7 @@ from django.conf import settings
 from django.template.defaultfilters import floatformat
 from django.utils import translation
 
+
 register = template.Library()
 
 
@@ -33,10 +34,10 @@ def money_filter(value: Decimal, arg='', hide_currency=False):
             # We display decimal places even if we shouldn't for this currency if rounding
             # would make the numbers incorrect. If this branch executes, it's likely a bug in
             # pretix, but we won't show wrong numbers!
-            return '{} {}'.format(arg, floatformat(value, 2))
+            return f'{arg} {floatformat(value, 2)}'
         return format_currency(value, arg, locale=translation.get_language()[:2])
     except:
-        return '{} {}'.format(arg, floatformat(value, places))
+        return f'{arg} {floatformat(value, places)}'
 
 
 @register.filter('money_numberfield')

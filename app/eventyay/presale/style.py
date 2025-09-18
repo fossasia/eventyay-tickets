@@ -27,6 +27,7 @@ from eventyay.multidomain.urlreverse import (
 )
 from eventyay.presale.signals import sass_postamble, sass_preamble
 
+
 logger = logging.getLogger('eventyay.presale.style')
 affected_keys = [
     'primary_font',
@@ -41,7 +42,7 @@ def compile_scss(object, file='main.scss', fonts=True):
 
     def static(path):
         sp = _static(path)
-        print("\n\n\nSTATIC PATH: {}\n\n\n".format(sp))
+        print(f'\n\n\nSTATIC PATH: {sp}\n\n\n')
         if not settings.MEDIA_URL.startswith('/') and sp.startswith('/'):
             if isinstance(object, Event):
                 domain = get_event_domain(object, fallback=True)
@@ -50,11 +51,11 @@ def compile_scss(object, file='main.scss', fonts=True):
             if domain:
                 siteurlsplit = urlsplit(settings.SITE_URL)
                 if siteurlsplit.port and siteurlsplit.port not in (80, 443):
-                    domain = '%s:%d' % (domain, siteurlsplit.port)
-                sp = urljoin('%s://%s' % (siteurlsplit.scheme, domain), sp)
+                    domain = f'{domain}:{siteurlsplit.port}'
+                sp = urljoin(f'{siteurlsplit.scheme}://{domain}', sp)
             else:
                 sp = urljoin(settings.SITE_URL, sp)
-        return '"{}"'.format(sp)
+        return f'"{sp}"'
 
     sassrules = []
     if object.settings.get('primary_color'):
@@ -76,15 +77,15 @@ def compile_scss(object, file='main.scss', fonts=True):
     if font != 'Open Sans' and fonts and font:
         sassrules.append(get_font_stylesheet(font))
         sassrules.append(
-            '$font-family-sans-serif: "{}", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif '
-            '!default'.format(font)
+            f'$font-family-sans-serif: "{font}", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, '
+            'sans-serif !default'
         )
 
     if isinstance(object, Event):
         for recv, resp in sass_preamble.send(object, filename=file):
             sassrules.append(resp)
 
-    sassrules.append('@import "{}";'.format(file))
+    sassrules.append(f'@import "{file}";')
 
     if isinstance(object, Event):
         for recv, resp in sass_postamble.send(object, filename=file):
@@ -95,7 +96,7 @@ def compile_scss(object, file='main.scss', fonts=True):
     srcchecksum = hashlib.sha1(sasssrc.encode('utf-8')).hexdigest()
 
     cp = cache.get_or_set('sass_compile_prefix', now().isoformat())
-    css = cache.get('sass_compile_{}_{}'.format(cp, srcchecksum))
+    css = cache.get(f'sass_compile_{cp}_{srcchecksum}')
     if not css:
         cf = dict(django_libsass.CUSTOM_FUNCTIONS)
         cf['static'] = static
@@ -107,7 +108,7 @@ def compile_scss(object, file='main.scss', fonts=True):
         )
         cssf = CSSCompressorFilter(css)
         css = cssf.output()
-        cache.set('sass_compile_{}_{}'.format(cp, srcchecksum), css, 600)
+        cache.set(f'sass_compile_{cp}_{srcchecksum}', css, 600)
 
     checksum = hashlib.sha1(css.encode('utf-8')).hexdigest()
     return css, checksum
@@ -117,7 +118,7 @@ def compile_scss(object, file='main.scss', fonts=True):
 def regenerate_css(event):
     # main.scss
     css, checksum = compile_scss(event)
-    fname = 'pub/{}/{}/presale.{}.css'.format(event.organizer.slug, event.slug, checksum[:16])
+    fname = f'pub/{event.organizer.slug}/{event.slug}/presale.{checksum[:16]}.css'
 
     if event.settings.get('presale_css_checksum', '') != checksum:
         newname = default_storage.save(fname, ContentFile(css.encode('utf-8')))
@@ -126,7 +127,7 @@ def regenerate_css(event):
 
     # widget.scss
     css, checksum = compile_scss(event, file='widget.scss', fonts=False)
-    fname = 'pub/{}/{}/widget.{}.css'.format(event.organizer.slug, event.slug, checksum[:16])
+    fname = f'pub/{event.organizer.slug}/{event.slug}/widget.{checksum[:16]}.css'
 
     if event.settings.get('presale_widget_css_checksum', '') != checksum:
         newname = default_storage.save(fname, ContentFile(css.encode('utf-8')))
@@ -141,7 +142,7 @@ def regenerate_organizer_css(organizer_id: int):
     with scope(organizer=organizer):
         # main.scss
         css, checksum = compile_scss(organizer)
-        fname = 'pub/{}/presale.{}.css'.format(organizer.slug, checksum[:16])
+        fname = f'pub/{organizer.slug}/presale.{checksum[:16]}.css'
         if organizer.settings.get('presale_css_checksum', '') != checksum:
             newname = default_storage.save(fname, ContentFile(css.encode('utf-8')))
             organizer.settings.set('presale_css_file', newname)
@@ -149,7 +150,7 @@ def regenerate_organizer_css(organizer_id: int):
 
         # widget.scss
         css, checksum = compile_scss(organizer, file='widget.scss', fonts=False)
-        fname = 'pub/{}/widget.{}.css'.format(organizer.slug, checksum[:16])
+        fname = f'pub/{organizer.slug}/widget.{checksum[:16]}.css'
         if organizer.settings.get('presale_widget_css_checksum', '') != checksum:
             newname = default_storage.save(fname, ContentFile(css.encode('utf-8')))
             organizer.settings.set('presale_widget_css_file', newname)
@@ -204,7 +205,7 @@ def get_font_stylesheet(font_name):
         if sty == 'sample':
             continue
         stylesheet.append('@font-face { ')
-        stylesheet.append('font-family: "{}";'.format(font_name))
+        stylesheet.append(f'font-family: "{font_name}";')
         if sty in ('italic', 'bolditalic'):
             stylesheet.append('font-style: italic;')
         else:

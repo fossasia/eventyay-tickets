@@ -12,6 +12,7 @@ from django.conf import settings
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.safestring import mark_safe
 
+
 try:
     from publicsuffixlist import PublicSuffixList
 
@@ -24,6 +25,7 @@ except ImportError:
 from i18nfield.strings import LazyI18nString
 
 from eventyay.common.views.redirect import safelink as sl
+
 
 register = template.Library()
 

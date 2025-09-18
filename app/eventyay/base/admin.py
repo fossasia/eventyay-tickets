@@ -8,6 +8,7 @@ from .models import (
     organizer,
 )
 
+
 admin.site.register(auth.User)
 admin.site.register(event.Event)
 admin.site.register(orders.Order)

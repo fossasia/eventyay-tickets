@@ -16,6 +16,7 @@ from eventyay.base.views.tasks import AsyncAction
 from eventyay.control.forms.orderimport import ProcessForm
 from eventyay.control.permissions import EventPermissionRequiredMixin
 
+
 logger = logging.getLogger(__name__)
 
 

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+
 DELIMITER = '\x1f'
 
 
@@ -57,7 +58,7 @@ class MultiStringField(TextField):
         elif lookup_name == 'icontains':
             return MultiStringIContains
         raise NotImplementedError(
-            "Lookup '{}' doesn't work with MultiStringField".format(lookup_name),
+            f"Lookup '{lookup_name}' doesn't work with MultiStringField",
         )
 
 

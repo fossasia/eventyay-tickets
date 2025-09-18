@@ -6,13 +6,14 @@ from django.utils.translation import gettext_lazy as _
 
 from eventyay.base.signals import register_sales_channels
 
+
 logger = logging.getLogger(__name__)
 _ALL_CHANNELS = None
 
 
 class SalesChannel:
     def __repr__(self):
-        return '<SalesChannel: {}>'.format(self.identifier)
+        return f'<SalesChannel: {self.identifier}>'
 
     @property
     def identifier(self) -> str:

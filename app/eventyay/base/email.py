@@ -39,6 +39,7 @@ from eventyay.base.signals import (
 )
 from eventyay.base.templatetags.rich_text import markdown_compile_email
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -462,7 +463,7 @@ def get_best_name(position_or_address, parts=False):
 
 def generate_sample_video_url():
     sample_token = secrets.token_urlsafe(16)
-    return '{}/#token={}'.format(settings.SITE_URL, sample_token)
+    return f'{settings.SITE_URL}/#token={sample_token}'
 
 
 @receiver(register_mail_placeholders, dispatch_uid='pretixbase_register_mail_placeholders')

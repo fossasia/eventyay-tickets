@@ -1,5 +1,6 @@
 from eventyay.common.signals import EventPluginSignal
 
+
 submission_state_change = EventPluginSignal()
 """
 This signal allows you to trigger additional events when a submission changes

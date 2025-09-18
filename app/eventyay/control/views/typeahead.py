@@ -16,11 +16,11 @@ from django.utils.translation import pgettext
 from eventyay.base.models import (
     EventMetaProperty,
     EventMetaValue,
+    Order,
+    Organizer,
     ProductMetaProperty,
     ProductMetaValue,
     ProductVariation,
-    Order,
-    Organizer,
     User,
     Voucher,
 )
@@ -532,20 +532,20 @@ def productvarquota_select2(request, **kwargs):
         if variations:
             choices.append((str(i.pk), _('{product} – Any variation').format(product=i), ''))
             for v in variations:
-                choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (i, v.value), ''))
+                choices.append((f'{i.pk}-{v.pk}', f'{i} – {v.value}', ''))
         else:
             choices.append((str(i.pk), str(i), ''))
     for q in quotaqs:
         if request.event.has_subevents:
             choices.append(
                 (
-                    'q-%d' % q.pk,
+                    f'q-{q.pk}',
                     _('Any product in quota "{quota}"').format(quota=q),
                     str(q.subevent),
                 )
             )
         else:
-            choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q), ''))
+            choices.append((f'q-{q.pk}', _('Any product in quota "{quota}"').format(quota=q), ''))
 
     doc = {
         'results': [

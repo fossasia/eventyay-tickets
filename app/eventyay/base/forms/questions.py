@@ -65,6 +65,7 @@ from eventyay.helpers.http import get_client_ip
 from eventyay.helpers.i18n import get_format_without_seconds
 from eventyay.presale.signals import question_form_fields
 
+
 logger = logging.getLogger(__name__)
 
 REQUIRED_NAME_PARTS = ['salutation', 'given_name', 'family_name', 'full_name']
@@ -238,7 +239,7 @@ class WrappedPhonePrefixSelect(Select):
             for country_code in values:
                 country_name = locale.territories.get(country_code)
                 if country_name:
-                    choices.append((prefix, '{} {}'.format(country_name, prefix)))
+                    choices.append((prefix, f'{country_name} {prefix}'))
         super().__init__(
             choices=sorted(choices, key=lambda item: item[1]),
             attrs={'aria-label': pgettext_lazy('phonenumber', 'International area code')},
@@ -677,9 +678,7 @@ class BaseQuestionsForm(forms.Form):
                         if str(default_country) in values:
                             default_prefix = prefix
                     try:
-                        initial = (
-                            PhoneNumber().from_string(initial.answer) if initial else '+{}.'.format(default_prefix)
-                        )
+                        initial = PhoneNumber().from_string(initial.answer) if initial else f'+{default_prefix}.'
                     except NumberParseException:
                         initial = None
                     field = PhoneNumberField(
@@ -725,9 +724,7 @@ class BaseQuestionsForm(forms.Form):
 
         for k, v in self.fields.items():
             if v.widget.attrs.get('autocomplete') or k == 'attendee_name_parts':
-                v.widget.attrs['autocomplete'] = 'section-{} '.format(self.prefix) + v.widget.attrs.get(
-                    'autocomplete', ''
-                )
+                v.widget.attrs['autocomplete'] = f'section-{self.prefix} ' + v.widget.attrs.get('autocomplete', '')
 
     def clean(self):
         d = super().clean()

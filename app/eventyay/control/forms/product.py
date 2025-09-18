@@ -194,7 +194,7 @@ class QuotaForm(I18nModelForm):
         initial = kwargs.get('initial', {})
         if self.instance and self.instance.pk and 'productvars' not in initial:
             initial['productvars'] = [str(i.pk) for i in self.instance.products.all()] + [
-                '{}-{}'.format(v.product_id, v.pk) for v in self.instance.variations.all()
+                f'{v.product_id}-{v.pk}' for v in self.instance.variations.all()
             ]
         kwargs['initial'] = initial
         super().__init__(**kwargs)
@@ -203,9 +203,9 @@ class QuotaForm(I18nModelForm):
         for product in products:
             if len(product.variations.all()) > 0:
                 for v in product.variations.all():
-                    choices.append(('{}-{}'.format(product.pk, v.pk), '{} – {}'.format(product, v.value)))
+                    choices.append((f'{product.pk}-{v.pk}', f'{product} – {v.value}'))
             else:
-                choices.append(('{}'.format(product.pk), str(product)))
+                choices.append((f'{product.pk}', str(product)))
 
         self.fields['productvars'] = forms.MultipleChoiceField(
             label=_('Products'),
@@ -836,10 +836,7 @@ class ProductBundleForm(I18nModelForm):
         if instance:
             try:
                 if instance.bundled_variation:
-                    initial['productvar'] = '%d-%d' % (
-                        instance.bundled_product.pk,
-                        instance.bundled_variation.pk,
-                    )
+                    initial['productvar'] = f'{instance.bundled_product.pk}-{instance.bundled_variation.pk}'
                 elif instance.bundled_product:
                     initial['productvar'] = str(instance.bundled_product.pk)
             except Product.DoesNotExist:
@@ -857,9 +854,9 @@ class ProductBundleForm(I18nModelForm):
 
             if variations:
                 for v in variations:
-                    choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (pname, v.value)))
+                    choices.append((f'{i.pk}-{v.pk}', f'{pname} – {v.value}'))
             else:
-                choices.append((str(i.pk), '%s' % pname))
+                choices.append((str(i.pk), f'{pname}'))
         self.fields['productvar'].choices = choices
         change_decimal_field(self.fields['designated_price'], self.event.currency)
 

@@ -1,6 +1,5 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from io import BytesIO
-from typing import List
 
 from django.http import FileResponse
 from reportlab.lib import colors
@@ -110,7 +109,7 @@ class InvoicePDFGenerator:
 
         return custom_styles
 
-    def _create_header(self) -> List[Flowable]:
+    def _create_header(self) -> list[Flowable]:
         """Create the header section of the invoice."""
         header_data = [
             [
@@ -120,7 +119,7 @@ class InvoicePDFGenerator:
             [
                 Paragraph('Making Events Happen', self.styles['body']),
                 Paragraph(
-                    f'Date: {datetime.now(timezone.utc).strftime("%B %d, %Y")}',
+                    f'Date: {datetime.now(UTC).strftime("%B %d, %Y")}',
                     self.styles['body'],
                 ),
             ],
@@ -143,7 +142,7 @@ class InvoicePDFGenerator:
             Spacer(1, 20),
         ]
 
-    def _create_billing_info(self) -> List[Flowable]:
+    def _create_billing_info(self) -> list[Flowable]:
         """Create the billing information section."""
         billing_data = [
             [
@@ -193,7 +192,7 @@ class InvoicePDFGenerator:
 
         return [billing_table, Spacer(1, 30)]
 
-    def _create_event_details(self) -> List[Flowable]:
+    def _create_event_details(self) -> list[Flowable]:
         """Create the event details section."""
         elements = [Paragraph('EVENT DETAILS', self.styles['subtitle']), Spacer(1, 10)]
 
@@ -229,7 +228,7 @@ class InvoicePDFGenerator:
             return f'{self.billing_invoice.voucher_value:.0f}% off'
         return ''
 
-    def _create_invoice_details(self) -> List[Flowable]:
+    def _create_invoice_details(self) -> list[Flowable]:
         """Create the invoice details section with items and totals."""
         elements = [
             Paragraph('INVOICE DETAILS', self.styles['subtitle']),
@@ -281,7 +280,7 @@ class InvoicePDFGenerator:
 
         return elements
 
-    def _create_totals(self) -> List[Flowable]:
+    def _create_totals(self) -> list[Flowable]:
         """Create the totals section."""
         totals_data = [
             [
@@ -315,7 +314,7 @@ class InvoicePDFGenerator:
 
         return [totals_table, Spacer(1, 30)]
 
-    def _create_footer(self) -> List[Flowable]:
+    def _create_footer(self) -> list[Flowable]:
         """Create the footer section with payment terms and notes."""
         footer_text = f"""
         <para alignment="left" spaceAfter="20">

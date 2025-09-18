@@ -2,6 +2,7 @@ from django.dispatch import Signal
 
 from eventyay.base.signals import EventPluginSignal
 
+
 global_html_head = Signal()
 """
 Arguments: ``request``

@@ -49,6 +49,7 @@ from eventyay.presale.style import regenerate_organizer_css
 from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -339,7 +340,7 @@ class OrganizerDetail(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['filter_form'] = self.filter_form
-        ctx['meta_fields'] = [self.filter_form['meta_{}'.format(p.name)] for p in self.organizer.meta_properties.all()]
+        ctx['meta_fields'] = [self.filter_form[f'meta_{p.name}'] for p in self.organizer.meta_properties.all()]
         return ctx
 
 

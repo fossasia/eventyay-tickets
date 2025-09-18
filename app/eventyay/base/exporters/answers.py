@@ -60,7 +60,7 @@ class AnswerFilesExporter(BaseExporter):
                 return None
             with open(os.path.join(d, 'tmp.zip'), 'rb') as zipf:
                 return (
-                    '{}_answers.zip'.format(self.event.slug),
+                    f'{self.event.slug}_answers.zip',
                     'application/zip',
                     zipf.read(),
                 )

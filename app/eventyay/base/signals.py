@@ -1,5 +1,6 @@
 import warnings
-from typing import Any, Callable, List, Tuple
+from collections.abc import Callable
+from typing import Any
 
 import django.dispatch
 from django.apps import apps
@@ -7,6 +8,7 @@ from django.conf import settings
 from django.dispatch.dispatcher import NO_RECEIVERS
 
 from .models import Event
+
 
 app_cache = {}
 
@@ -54,7 +56,7 @@ class EventPluginSignal(django.dispatch.Signal):
                 return True
         return False
 
-    def send(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
+    def send(self, sender: Event, **named) -> list[tuple[Callable, Any]]:
         """
         Send signal from sender to all connected receivers that belong to
         plugins enabled for the given Event.
@@ -77,7 +79,7 @@ class EventPluginSignal(django.dispatch.Signal):
                 responses.append((receiver, response))
         return responses
 
-    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> List[Tuple[Callable, Any]]:
+    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> list[tuple[Callable, Any]]:
         """
         Send signal from sender to all connected receivers. The return value of the first receiver
         will be used as the keyword argument specified by ``chain_kwarg_name`` in the input to the
@@ -101,7 +103,7 @@ class EventPluginSignal(django.dispatch.Signal):
                 response = receiver(signal=self, sender=sender, **named)
         return response
 
-    def send_robust(self, sender: Event, **named) -> List[Tuple[Callable, Any]]:
+    def send_robust(self, sender: Event, **named) -> list[tuple[Callable, Any]]:
         """
         Send signal from sender to all connected receivers. If a receiver raises an exception
         instead of returning a value, the exception is included as the result instead of
@@ -131,7 +133,7 @@ class EventPluginSignal(django.dispatch.Signal):
 
 
 class GlobalSignal(django.dispatch.Signal):
-    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> List[Tuple[Callable, Any]]:
+    def send_chained(self, sender: Event, chain_kwarg_name, **named) -> list[tuple[Callable, Any]]:
         """
         Send signal from sender to all connected receivers. The return value of the first receiver
         will be used as the keyword argument specified by ``chain_kwarg_name`` in the input to the

@@ -44,7 +44,7 @@ def webmanifest(request):
     "theme_color": "#2185d0",
     "background_color": "#2185d0",
     "display": "standalone"
-}"""
+}"""  # noqa: UP031 The template string has too many {} to use brace format.
         % (
             static('pretixbase/img/icons/android-chrome-192x192.png'),
             static('pretixbase/img/icons/android-chrome-512x512.png'),

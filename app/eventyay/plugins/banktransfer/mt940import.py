@@ -5,6 +5,7 @@ import mt940
 
 from eventyay.base.decimal import round_decimal
 
+
 """
 The parse_transaction_details and join_reference functions are
 Copyright (c) 2017 Nicole Klünder
@@ -161,7 +162,7 @@ def parse(file):
             result.append(
                 {
                     'amount': str(round_decimal(t.data['amount'].amount)),
-                    'reference': reference + (' EREF: {}'.format(eref) if eref else ''),
+                    'reference': reference + (f' EREF: {eref}' if eref else ''),
                     'payer': payer['name'].strip(),
                     'date': t.data['date'].isoformat(),
                     **{k: payer[k].strip() for k in ('iban', 'bic') if payer.get(k)},

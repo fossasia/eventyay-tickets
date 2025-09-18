@@ -1,32 +1,33 @@
 import base64
 import json
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from logging import getLogger
-from urllib.parse import quote, urlencode, urlparse
 from typing import cast
+from urllib.parse import quote, urlencode, urlparse
 
 import webauthn
-from django.urls import reverse
-from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
-from django.http import HttpRequest, HttpResponse
-from django.forms import BaseForm
-from django.views.generic import TemplateView, FormView
-from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
-from django.utils.translation import gettext, gettext_lazy as _
-from django.utils.functional import cached_property
+from django.contrib.auth import update_session_auth_hash
+from django.forms import BaseForm
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import FormView, TemplateView
 from django_otp.plugins.otp_static.models import StaticDevice
 from django_otp.plugins.otp_totp.models import TOTPDevice
-
 from webauthn.helpers import generate_challenge, generate_user_handle
 
-from eventyay.common.consts import KEY_LAST_FORCE_LOGIN
-from eventyay.base.models import User, WebAuthnDevice, U2FDevice
 from eventyay.base.forms.user import User2FADeviceAddForm
+from eventyay.base.models import U2FDevice, User, WebAuthnDevice
+from eventyay.common.consts import KEY_LAST_FORCE_LOGIN
 from eventyay.helpers.u2f import websafe_encode
+
 from .common import AccountMenuMixIn
 
 

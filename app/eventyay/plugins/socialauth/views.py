@@ -22,6 +22,7 @@ from eventyay.helpers.urls import build_absolute_uri
 from .schemas.login_providers import LoginProviders
 from .schemas.oauth2_params import OAuth2Params
 
+
 logger = logging.getLogger(__name__)
 adapter = get_adapter()
 
@@ -112,7 +113,8 @@ class OAuthReturnView(View):
             },
         )
 
-        # Update wikimedia_username if the user exists but has no wikimedia_username value set (Basically our existing users), or if the user has updated his username in his wikimedia account
+        # Update wikimedia_username if the user exists but has no wikimedia_username value set
+        # (basically our existing users), or if the user has updated his username in his wikimedia account
         if not created and (not user.wikimedia_username or user.wikimedia_username != wikimedia_username):
             user.wikimedia_username = wikimedia_username
             user.save()

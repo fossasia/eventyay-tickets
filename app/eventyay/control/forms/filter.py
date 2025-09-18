@@ -35,12 +35,12 @@ from eventyay.base.models import (
     EventMetaValue,
     Invoice,
     InvoiceAddress,
-    Product,
     Order,
     OrderPayment,
     OrderPosition,
     OrderRefund,
     Organizer,
+    Product,
     Question,
     QuestionAnswer,
     SubEvent,
@@ -52,6 +52,7 @@ from eventyay.helpers.countries import CachedCountries
 from eventyay.helpers.database import FixedOrderBy, rolledback_transaction
 from eventyay.helpers.dicts import move_to_end
 from eventyay.helpers.i18n import i18ncomp
+
 
 PAYMENT_PROVIDERS = []
 
@@ -138,7 +139,7 @@ class FilterForm(forms.Form):
                 val = localize(v)
             else:
                 val = v
-            string.append('{}: {}'.format(f.label, val))
+            string.append(f'{f.label}: {val}')
         return string
 
 
@@ -385,7 +386,7 @@ class EventOrderFilterForm(OrderFilterForm):
             if variations:
                 choices.append((str(i.pk), _('{product} – Any variation').format(product=str(i))))
                 for v in variations:
-                    choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (str(i), v.value)))
+                    choices.append((f'{i.pk}-{v.pk}', f'{str(i)} – {v.value}'))
             else:
                 choices.append((str(i.pk), str(i)))
         self.fields['product'].choices = choices
@@ -569,7 +570,7 @@ class EventOrderExpertFilterForm(EventOrderFilterForm):
         )
         self.fields['ticket_secret'] = forms.CharField(label=_('Ticket secret'), required=False)
         for q in self.event.questions.all():
-            self.fields['question_{}'.format(q.pk)] = forms.CharField(
+            self.fields[f'question_{q.pk}'] = forms.CharField(
                 label=q.question, required=False, help_text=_('Exact matches only')
             )
 
@@ -689,7 +690,7 @@ class OrderSearchFilterForm(OrderFilterForm):
             if p.name in seen:
                 continue
             seen.add(p.name)
-            self.fields['meta_{}'.format(p.name)] = forms.CharField(
+            self.fields[f'meta_{p.name}'] = forms.CharField(
                 label=p.name,
                 required=False,
                 widget=forms.TextInput(
@@ -710,23 +711,23 @@ class OrderSearchFilterForm(OrderFilterForm):
 
         filters_by_property_name = {}
         for i, p in enumerate(self.meta_properties):
-            d = fdata.get('meta_{}'.format(p.name))
+            d = fdata.get(f'meta_{p.name}')
             if d:
                 emv_with_value = EventMetaValue.objects.filter(event=OuterRef('event_id'), property__pk=p.pk, value=d)
                 emv_with_any_value = EventMetaValue.objects.filter(
                     event=OuterRef('event_id'),
                     property__pk=p.pk,
                 )
-                qs = qs.annotate(**{'attr_{}'.format(i): Exists(emv_with_value)})
+                qs = qs.annotate(**{f'attr_{i}': Exists(emv_with_value)})
                 if p.name in filters_by_property_name:
-                    filters_by_property_name[p.name] |= Q(**{'attr_{}'.format(i): True})
+                    filters_by_property_name[p.name] |= Q(**{f'attr_{i}': True})
                 else:
-                    filters_by_property_name[p.name] = Q(**{'attr_{}'.format(i): True})
+                    filters_by_property_name[p.name] = Q(**{f'attr_{i}': True})
                 if p.default == d:
-                    qs = qs.annotate(**{'attr_{}_any'.format(i): Exists(emv_with_any_value)})
+                    qs = qs.annotate(**{f'attr_{i}_any': Exists(emv_with_any_value)})
                     filters_by_property_name[p.name] |= Q(
                         **{
-                            'attr_{}_any'.format(i): False,
+                            f'attr_{i}_any': False,
                             'event__organizer_id': p.organizer_id,
                         }
                     )
@@ -1011,7 +1012,7 @@ class EventFilterForm(FilterForm):
             if p.name in seen:
                 continue
             seen.add(p.name)
-            self.fields['meta_{}'.format(p.name)] = forms.CharField(
+            self.fields[f'meta_{p.name}'] = forms.CharField(
                 label=p.name,
                 required=False,
                 widget=forms.TextInput(
@@ -1083,23 +1084,23 @@ class EventFilterForm(FilterForm):
 
         filters_by_property_name = {}
         for i, p in enumerate(self.meta_properties):
-            d = fdata.get('meta_{}'.format(p.name))
+            d = fdata.get(f'meta_{p.name}')
             if d:
                 emv_with_value = EventMetaValue.objects.filter(event=OuterRef('pk'), property__pk=p.pk, value=d)
                 emv_with_any_value = EventMetaValue.objects.filter(
                     event=OuterRef('pk'),
                     property__pk=p.pk,
                 )
-                qs = qs.annotate(**{'attr_{}'.format(i): Exists(emv_with_value)})
+                qs = qs.annotate(**{f'attr_{i}': Exists(emv_with_value)})
                 if p.name in filters_by_property_name:
-                    filters_by_property_name[p.name] |= Q(**{'attr_{}'.format(i): True})
+                    filters_by_property_name[p.name] |= Q(**{f'attr_{i}': True})
                 else:
-                    filters_by_property_name[p.name] = Q(**{'attr_{}'.format(i): True})
+                    filters_by_property_name[p.name] = Q(**{f'attr_{i}': True})
                 if p.default == d:
-                    qs = qs.annotate(**{'attr_{}_any'.format(i): Exists(emv_with_any_value)})
+                    qs = qs.annotate(**{f'attr_{i}_any': Exists(emv_with_any_value)})
                     filters_by_property_name[p.name] |= Q(
                         **{
-                            'attr_{}_any'.format(i): False,
+                            f'attr_{i}_any': False,
                             'organizer_id': p.organizer_id,
                         }
                     )
@@ -1389,11 +1390,11 @@ class VoucherFilterForm(FilterForm):
             if variations:
                 choices.append((str(i.pk), _('{product} – Any variation').format(product=i.name)))
                 for v in variations:
-                    choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (i.name, v.value)))
+                    choices.append((f'{i.pk}-{v.pk}', f'{i.name} – {v.value}'))
             else:
                 choices.append((str(i.pk), i.name))
         for q in self.event.quotas.all():
-            choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q)))
+            choices.append((f'q-{q.pk}', _('Any product in quota "{quota}"').format(quota=q)))
         self.fields['productvar'].choices = choices
 
     def filter_qs(self, qs):

@@ -36,6 +36,7 @@ from eventyay.control.permissions import (
 )
 from eventyay.eventyay_common.views.auth import get_u2f_appid, get_webauthn_rp_id
 
+
 logger = logging.getLogger(__name__)
 
 

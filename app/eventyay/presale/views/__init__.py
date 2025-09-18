@@ -14,8 +14,8 @@ from eventyay.base.i18n import language
 from eventyay.base.models import (
     CartPosition,
     InvoiceAddress,
-    ProductAddOn,
     OrderPosition,
+    ProductAddOn,
     Question,
     QuestionAnswer,
     QuestionOption,
@@ -185,8 +185,8 @@ class CartMixin:
             )
 
         positions = []
-        for k, g in groupby(sorted(lcp, key=keyfunc), key=keyfunc):
-            g = list(g)
+        for k, orig_group in groupby(sorted(lcp, key=keyfunc), key=keyfunc):
+            g = list(orig_group)
             group = g[0]
             group.count = len(g)
             group.total = group.count * group.price

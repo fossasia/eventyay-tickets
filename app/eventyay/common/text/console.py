@@ -7,6 +7,7 @@ from sys import executable
 
 from django.conf import settings
 
+
 ESCAPE = '\033'
 BOLD = f'{ESCAPE}[1m'
 RESET = f'{ESCAPE}[0m'

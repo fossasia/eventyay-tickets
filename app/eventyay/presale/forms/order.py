@@ -83,7 +83,7 @@ class OrderPositionChangeForm(forms.Form):
                             _('plus taxes'),
                         )
                     else:
-                        label += ' (- {})'.format(money_filter(current_price.gross - new_price.gross, event.currency))
+                        label += f' (- {money_filter(current_price.gross - new_price.gross, event.currency)})'
                 elif current_price.gross < new_price.gross:
                     if event.settings.display_net_prices:
                         label += ' ({}{} {})'.format(
@@ -105,7 +105,7 @@ class OrderPositionChangeForm(forms.Form):
                     'No other variation of this product is currently available for you.'
                 )
         else:
-            choices.append((str(i.pk), '%s' % pname))
+            choices.append((str(i.pk), str(pname)))
             self.fields['itemvar'].widget.attrs['disabled'] = True
             self.fields['itemvar'].help_text = _('No other variations of this product exist.')
 

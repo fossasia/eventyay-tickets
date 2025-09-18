@@ -27,10 +27,10 @@ from eventyay.base.forms.widgets import (
 )
 from eventyay.base.models import (
     InvoiceAddress,
-    ProductAddOn,
     Order,
     OrderFee,
     OrderPosition,
+    ProductAddOn,
     TaxRule,
 )
 from eventyay.base.models.event import SubEvent
@@ -421,7 +421,9 @@ class OrderPositionChangeForm(forms.Form):
         self.fields['tax_rule'].queryset = instance.event.tax_rules.all()
         self.fields['tax_rule'].label_from_instance = self.taxrule_label_from_instance
 
-        if not instance.seat and not (instance.product.seat_category_mappings.filter(subevent=instance.subevent).exists()):
+        if not instance.seat and not (
+            instance.product.seat_category_mappings.filter(subevent=instance.subevent).exists()
+        ):
             del self.fields['seat']
 
         choices = [('', _('(Unchanged)'))]
@@ -433,7 +435,7 @@ class OrderPositionChangeForm(forms.Form):
 
             if variations:
                 for v in variations:
-                    choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (pname, v.value)))
+                    choices.append((f'{i.pk}-{v.pk}', f'{pname} – {v.value}'))
             else:
                 choices.append((str(i.pk), pname))
         self.fields['productvar'].choices = choices
@@ -504,7 +506,7 @@ class OrderMailForm(forms.Form):
     subject = forms.CharField(label=_('Subject'), required=True)
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.order.event, base_parameters).keys())]
+        phs = [f'{{{p}}}' for p in sorted(get_available_placeholders(self.order.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)
@@ -687,7 +689,7 @@ class EventCancelForm(forms.Form):
     send_waitinglist_message = forms.CharField()
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        phs = [f'{{{p}}}' for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)

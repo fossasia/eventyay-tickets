@@ -15,7 +15,7 @@ class CachedCountries(Countries):
         django-countries performs a unicode-aware sorting based on pyuca which is incredibly
         slow.
         """
-        cache_key = 'countries:all:{}'.format(get_language_without_region())
+        cache_key = f'countries:all:{get_language_without_region()}'
         if self.cache_subkey:
             cache_key += ':' + self.cache_subkey
         if cache_key in self._cached_lists:

@@ -2,7 +2,6 @@ import logging
 from collections import defaultdict
 from decimal import Decimal
 from io import BytesIO
-from typing import Tuple
 
 import bleach
 import vat_moss.exchange_rates
@@ -40,6 +39,7 @@ from eventyay.base.models import Event, Invoice, Order
 from eventyay.base.signals import register_invoice_renderers
 from eventyay.base.templatetags.money import money_filter
 from eventyay.helpers.reportlab import ThumbnailingImageReader
+
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +88,7 @@ class BaseInvoiceRenderer:
     def __str__(self):
         return self.identifier
 
-    def generate(self, invoice: Invoice) -> Tuple[str, str, str]:
+    def generate(self, invoice: Invoice) -> tuple[str, str, str]:
         """
         This method should generate the invoice file and return a tuple consisting of a
         filename, a file type and file content. The extension will be taken from the filename

@@ -24,6 +24,7 @@ from eventyay.base.services.seating import (
 from eventyay.base.settings import validate_event_settings
 from eventyay.base.signals import api_event_settings_fields
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -217,7 +218,7 @@ class EventSerializer(I18nAwareModelSerializer):
         result = {}
         for k, product in value['seat_category_mapping'].items():
             if product not in product_cache:
-                raise ValidationError("Product '{id}' does not exist.".format(id=product))
+                raise ValidationError(f"Product '{product}' does not exist.")
             result[k] = product_cache[product]
         return {'seat_category_mapping': result}
 
@@ -473,7 +474,7 @@ class SubEventSerializer(I18nAwareModelSerializer):
         result = {}
         for k, product in value['seat_category_mapping'].items():
             if product not in product_cache:
-                raise ValidationError("Product '{id}' does not exist.".format(id=product))
+                raise ValidationError(f"Product '{product}' does not exist.")
             result[k] = product_cache[product]
         return {'seat_category_mapping': result}
 
@@ -509,7 +510,9 @@ class SubEventSerializer(I18nAwareModelSerializer):
             validated_data.pop('subeventproduct_set') if 'subeventproduct_set' in validated_data else {}
         )
         variation_price_overrides_data = (
-            validated_data.pop('subeventproductvariation_set') if 'subeventproductvariation_set' in validated_data else {}
+            validated_data.pop('subeventproductvariation_set')
+            if 'subeventproductvariation_set' in validated_data
+            else {}
         )
         meta_data = validated_data.pop('meta_data', None)
         seat_category_mapping = validated_data.pop('seat_category_mapping', None)
@@ -556,7 +559,9 @@ class SubEventSerializer(I18nAwareModelSerializer):
         subevent = super().update(instance, validated_data)
 
         if product_price_overrides_data is not None:
-            existing_product_overrides = {product.product: product.id for product in SubEventProduct.objects.filter(subevent=subevent)}
+            existing_product_overrides = {
+                product.product: product.id for product in SubEventProduct.objects.filter(subevent=subevent)
+            }
 
             for product_price_override_data in product_price_overrides_data:
                 id = existing_product_overrides.pop(product_price_override_data['product'], None)

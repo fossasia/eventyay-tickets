@@ -43,17 +43,15 @@ class ReportlabExportMixin:
     def render(self, form_data):
         self.form_data = form_data
         return (
-            'report-%s.pdf' % self.event.slug,
+            f'report-{self.event.slug}.pdf',
             'application/pdf',
             self.create(form_data),
         )
 
     def get_filename(self):
         tz = pytz.timezone(self.event.settings.timezone)
-        return '%s-%s.pdf' % (
-            self.name,
-            now().astimezone(tz).strftime('%Y-%m-%d-%H-%M-%S'),
-        )
+        current_time = now().astimezone(tz)
+        return f'{self.name}-{current_time:%Y-%m-%d-%H-%M-%S}.pdf'
 
     @staticmethod
     def register_fonts():
@@ -149,14 +147,11 @@ class ReportlabExportMixin:
         return settings.INSTANCE_NAME
 
     def get_left_header_string(self):
-        if self.event.has_subevents:
-            return '%s – %s' % (self.event.organizer.name, self.event.name)
+        event = self.event
+        if event.has_subevents:
+            return f'{event.organizer.name} – {event.name}'
         else:
-            return '%s – %s – %s' % (
-                self.event.organizer.name,
-                self.event.name,
-                self.event.get_date_range_display(),
-            )
+            return f'{event.organizer.name} – {event.name} – {event.get_date_range_display()}'
 
     def page_header(self, canvas, doc):
         from reportlab.lib.units import mm

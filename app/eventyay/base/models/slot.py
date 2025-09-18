@@ -20,6 +20,7 @@ from eventyay.common.urls import get_base_url
 from eventyay.talk_rules.agenda import is_agenda_submission_visible, is_agenda_visible
 from eventyay.talk_rules.submission import is_break, is_wip, orga_can_change_submissions
 
+
 INSTANCE_IDENTIFIER = None
 
 
@@ -83,8 +84,10 @@ class TalkSlot(PretalxModel):
 
     def __str__(self):
         """Help when debugging."""
-        return (f'TalkSlot(event={self.schedule.event.slug}, submission={getattr(self.submission, "title", None)}, '
-                f'schedule={self.schedule.version})')
+        return (
+            f'TalkSlot(event={self.schedule.event.slug}, submission={getattr(self.submission, "title", None)}, '
+            f'schedule={self.schedule.version})'
+        )
 
     @cached_property
     def event(self):
@@ -208,9 +211,9 @@ class TalkSlot(PretalxModel):
         vevent.add('summary').value = f'{self.submission.title} - {self.submission.display_speaker_names}'
         vevent.add('dtstamp').value = creation_time
         vevent.add('location').value = str(self.room.name)
-        vevent.add('uid').value = 'pretalx-{}-{}{}@{}'.format(
-            self.submission.event.slug, self.submission.code, self.id_suffix, netloc
-        )
+        vevent.add(
+            'uid'
+        ).value = f'pretalx-{self.submission.event.slug}-{self.submission.code}{self.id_suffix}@{netloc}'
 
         vevent.add('dtstart').value = self.local_start
         vevent.add('dtend').value = self.local_end
@@ -220,8 +223,6 @@ class TalkSlot(PretalxModel):
     def full_ical(self):
         netloc = urlparse(settings.SITE_URL).netloc
         cal = vobject.iCalendar()
-        cal.add('prodid').value = '-//pretalx//{}//{}'.format(
-            netloc, self.submission.code if self.submission else self.pk
-        )
+        cal.add('prodid').value = f'-//pretalx//{netloc}//{self.submission.code if self.submission else self.pk}'
         self.build_ical(cal)
         return cal

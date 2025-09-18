@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 
 from eventyay.base.models import Event
 
+
 register = template.Library()
 
 
