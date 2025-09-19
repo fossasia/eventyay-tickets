@@ -1,5 +1,4 @@
 import logging
-from urllib.parse import quote
 
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -39,7 +38,8 @@ class GeoCodeView(LoginRequiredMixin, View):
         gs = GlobalSettingsObject()
 
         r = requests.get(
-            f'https://api.opencagedata.com/geocode/v1/json?q={quote(q)}&key={gs.settings.opencagedata_apikey}'
+            'https://api.opencagedata.com/geocode/v1/json',
+            params={'q': q, 'key': gs.settings.opencagedata_apikey},
         )
         r.raise_for_status()
         d = r.json()
@@ -57,7 +57,8 @@ class GeoCodeView(LoginRequiredMixin, View):
         gs = GlobalSettingsObject()
 
         r = requests.get(
-            f'https://www.mapquestapi.com/geocoding/v1/address?location={quote(q)}&key={gs.settings.mapquest_apikey}'
+            'https://www.mapquestapi.com/geocoding/v1/address',
+            params={'location': q, 'key': gs.settings.mapquest_apikey},
         )
         r.raise_for_status()
         d = r.json()
