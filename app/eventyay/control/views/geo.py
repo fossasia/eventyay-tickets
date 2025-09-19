@@ -9,6 +9,7 @@ from django.views.generic.base import View
 from eventyay.base.settings import GlobalSettingsObject
 
 
+GEO_API_TIMEOUT = 5  # seconds
 logger = logging.getLogger(__name__)
 
 
@@ -40,6 +41,7 @@ class GeoCodeView(LoginRequiredMixin, View):
         r = requests.get(
             'https://api.opencagedata.com/geocode/v1/json',
             params={'q': q, 'key': gs.settings.opencagedata_apikey},
+            timeout=GEO_API_TIMEOUT,
         )
         r.raise_for_status()
         d = r.json()
@@ -59,6 +61,7 @@ class GeoCodeView(LoginRequiredMixin, View):
         r = requests.get(
             'https://www.mapquestapi.com/geocoding/v1/address',
             params={'location': q, 'key': gs.settings.mapquest_apikey},
+            timeout=GEO_API_TIMEOUT,
         )
         r.raise_for_status()
         d = r.json()
