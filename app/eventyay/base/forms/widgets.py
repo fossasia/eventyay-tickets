@@ -2,6 +2,8 @@ import os
 from datetime import date
 
 from django import forms
+from django.forms.widgets import DateInput as _DateInput
+from django.forms.widgets import TimeInput as _TimeInput
 from django.utils.formats import get_format
 from django.utils.functional import lazy
 from django.utils.timezone import get_current_timezone, now
@@ -174,6 +176,52 @@ class SplitDateTimePickerWidget(forms.SplitDateTimeWidget):
         )
         # Skip one hierarchy level
         forms.MultiWidget.__init__(self, widgets, attrs)
+
+
+class NativeDateInput(_DateInput):
+    input_type = 'date'
+
+
+class NativeTimeInput(_TimeInput):
+    input_type = 'time'
+
+
+class NativeSplitDateTimePickerWidget(forms.SplitDateTimeWidget):
+    ''' A SplitDateTimeWidget that uses the native HTML5 date and time input types. '''
+    # This template is to make two widgets appear side by side
+    template_name = 'pretixbase/forms/widgets/splitdatetime.html'
+
+    def __init__(
+        self,
+        attrs=None,
+        date_format=None,
+        time_format=None,
+        date_attrs=None,
+        time_attrs=None,
+    ):
+        # Add CSS class to each subwidget to re-position them side by side
+        if date_attrs is None:
+            date_attrs = {'class': 'splitdatetimepart'}
+        else:
+            date_attrs = dict(date_attrs)
+            date_attrs['class'] = date_attrs.get('class', '') + ' splitdatetimepart'
+        if time_attrs is None:
+            time_attrs = {'class': 'splitdatetimepart'}
+        else:
+            time_attrs = dict(time_attrs)
+            time_attrs['class'] = time_attrs.get('class', '') + ' splitdatetimepart'
+        widgets = (
+            NativeDateInput(
+                attrs=attrs if date_attrs is None else date_attrs,
+                format=date_format,
+            ),
+            NativeTimeInput(
+                attrs=attrs if time_attrs is None else time_attrs,
+                format=time_format,
+            ),
+        )
+        # Don't use the parent __init__, because its parameters don't make sense here
+        forms.MultiWidget.__init__(self, widgets)
 
 
 class BusinessBooleanRadio(forms.RadioSelect):

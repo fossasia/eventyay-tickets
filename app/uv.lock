@@ -1656,7 +1656,7 @@ requires-dist = [
     { name = "django", specifier = ">=5.2.5" },
     { name = "django-allauth", specifier = ">=0.63.6" },
     { name = "django-appconf", specifier = ">=1.1.0" },
-    { name = "django-bootstrap3", specifier = ">=24.3" },
+    { name = "django-bootstrap3", specifier = ">=25.2" },
     { name = "django-celery-beat", specifier = ">=2.7.0" },
     { name = "django-compressor", specifier = ">=4.5.1" },
     { name = "django-context-decorator", specifier = ">=1.6.1" },
