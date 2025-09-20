@@ -1,0 +1,56 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - "exhibitors/locale/**"
+  pull_request:
+    branches: [main, master]
+    paths-ignore:
+      - "exhibitors/locale/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Exhibitors Plugin Tests
+
+    steps:
+      - name: Checkout exhibitors plugin
+        uses: actions/checkout@v3
+
+      - name: Clone eventyay-tickets
+        run: |
+          git clone https://github.com/fossasia/eventyay-tickets.git ../eventyay-tickets
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y gettext libjpeg-dev zlib1g-dev libpq-dev
+
+      - name: Set up virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+
+          # Install eventyay-tickets with dev dependencies
+          cd ../eventyay-tickets
+          pip install -e ".[dev]"
+
+          # Go back to plugin directory and install it
+          cd ../eventyay-tickets-exhibitors
+          pip install -e .
+
+      - name: Compile translations
+        run: |
+          source venv/bin/activate
+          make
+
+      - name: Run tests
+        run: |
+          source venv/bin/activate
+          pytest tests --reruns 3

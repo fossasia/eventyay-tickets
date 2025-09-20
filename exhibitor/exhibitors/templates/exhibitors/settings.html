@@ -1,0 +1,93 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Exhibitor Settings" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>{% trans "Exhibitor Settings" %}</h1>
+
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <fieldset>
+            <legend>{% trans "Data access" %}</legend>
+            <p>{% trans "In this section, you can control which attendee data is shared with exhibitors when an exhibitor voucher is used or when the exhibitor uses the lead scanning app." %}</p>
+
+<div class="form-group">
+    <label class="col-md-3 control-label">{% trans "Exhibitor vouchers" %}</label>
+    <div class="col-md-9">
+        <!-- Required fields (disabled and checked by default) -->
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" checked disabled>
+                {% trans "Attendee Name" %} ({% trans "Required" %})
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" checked disabled>
+                {% trans "Attendee Email" %} ({% trans "Required" %})
+            </label>
+        </div>
+        
+        <!-- Optional fields -->
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="exhibitors_access_voucher" value="attendee_company"
+                       {% if 'attendee_company' in settings.allowed_fields %}checked{% endif %}>
+                {% trans "Attendee Company" %}
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="exhibitors_access_voucher" value="attendee_city"
+                       {% if 'attendee_city' in settings.allowed_fields %}checked{% endif %}>
+                {% trans "Attendee City" %}
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="exhibitors_access_voucher" value="attendee_country"
+                       {% if 'attendee_country' in settings.allowed_fields %}checked{% endif %}>
+                {% trans "Attendee Country" %}
+            </label>
+        </div>
+    </div>
+</div>
+        </fieldset>
+
+
+        <fieldset>
+            <legend>{% trans "Exhibitor login" %}</legend>
+
+            <div class="form-group">
+                <label class="col-md-3 control-label">{% trans "Access code email subject" %}</label>
+                <div class="col-md-9">
+                    <input type="text" name="exhibitors_access_mail_subject" class="form-control" value="{% trans 'Your exhibitor access code' %}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 control-label">{% trans "Access code email body" %}</label>
+                <div class="col-md-9">
+                    <textarea name="exhibitors_access_mail_body" class="form-control" rows="5">
+                        {% trans "Hello," %}
+                        {% trans "Your exhibitor ticketing account for {event} has been created." %}
+                        {% trans "You can access data associated to your account here:" %}
+                        {% trans "{exhibitor_login_url}" %}
+                        {% trans "Using the following access code: {exhibitor_access_code}" %}
+                        {% trans "Best regards, Your {event} team" %}
+                    </textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-group submit-group">
+            <div class="col-md-9 col-md-offset-3">
+                <button type="submit" class="btn btn-primary btn-save">
+                    {% trans "Save" %}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

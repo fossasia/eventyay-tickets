@@ -1,0 +1,151 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% block title %}
+    {% if action == 'edit' %}
+        {% trans "Edit Exhibitor" %}
+    {% else %}
+        {% trans "Add Exhibitor" %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>
+    {% if action == 'edit' %}
+        {% trans "Edit Exhibitor" %}
+    {% else %}
+        {% trans "Add Exhibitor" %}
+    {% endif %}
+</h1>
+
+<form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+  {% csrf_token %}
+  
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="id_name">{% trans "Exhibitor Name" %}</label>
+    <div class="col-md-9">
+      {{ form.name }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="id_description">{% trans "Exhibitor Description" %}</label>
+    <div class="col-md-9">
+      {{ form.description }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="id_email">{% trans "Contact Email" %}</label>
+    <div class="col-md-9">
+      {{ form.email }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="id_logo">{% trans "Exhibitor Logo" %}</label>
+    <div class="col-md-9">
+      {{ form.logo }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="id_url">{% trans "Exhibitor URL" %}</label>
+    <div class="col-md-9">
+      {{ form.url }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="id_booth">{% trans "Booth Name" %}</label>
+    <div class="col-md-9">
+      {{ form.booth_name }}
+    </div>
+  </div>
+  <div class="form-group">
+      <label class="col-md-3 control-label" for="id_booth_id">{% trans "Booth ID" %}</label>
+      <div class="col-md-9">
+          {{ form.booth_id }}
+      </div>
+  </div>
+  <div class="form-group">
+    <label class="col-md-3 control-label label-empty" for="id_allow_voucher_access">&nbsp;</label>
+    <div class="col-md-9">
+      <div class="checkbox">
+        <label for="id_allow_voucher_access">
+          <input type="checkbox" name="allow_voucher_access" id="id_allow_voucher_access">
+          {% trans "Allowed to access voucher data" %}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label label-empty" for="id_lead_scanning">&nbsp;</label>
+    <div class="col-md-9">
+        <div class="checkbox">
+            <label for="id_lead_scanning">
+                {{ form.lead_scanning_enabled }}
+                {% trans "Allow Lead scanning" %}
+            </label>
+        </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label label-empty" for="id_allow_lead_access">&nbsp;</label>
+    <div class="col-md-9">
+      <div class="checkbox">
+        <label for="id_allow_lead_access">
+          <input type="checkbox" name="allow_lead_access" id="id_allow_lead_access">
+          {% trans "Allowed to access scanned lead data" %}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label">{% trans "Lead scanning behavior" %}</label>
+    <div class="col-md-9">
+      <div class="radio">
+        <label for="id_lead_scanning_scope_by_device_0">
+          <input type="radio" name="lead_scanning_scope_by_device" value="False" id="id_lead_scanning_scope_by_device_0">
+          {% trans "Every attendee is one lead, even when scanned from multiple devices. Notes and ratings are shared between devices." %}
+        </label>
+      </div>
+      <div class="radio">
+        <label for="id_lead_scanning_scope_by_device_1">
+          <input type="radio" name="lead_scanning_scope_by_device" value="True" id="id_lead_scanning_scope_by_device_1">
+          {% trans "Every attendee is a new lead when scanned from a new device. Notes and ratings are specific to the device." %}
+        </label>
+      </div>
+    </div>
+  </div>
+
+<div class="form-group">
+    <label class="col-md-3 control-label" for="id_comment">{% trans "Comment" %}</label>
+    <div class="col-md-9">
+        {{ form.comment }}
+        <div class="help-block">
+            {% trans "The text entered in this field will not be visible to the user and is available for your convenience." %}
+        </div>
+    </div>
+</div>
+
+<div class="form-actions row">
+        <div class="col-md-6 text-right">
+            <button type="submit" class="btn btn-primary btn-lg">
+              {% if action == 'edit' %} 
+                {% trans "Save changes" %}
+              {% else %}
+               {% trans "Save" %}
+              {% endif %}
+            </button>
+        </div>
+        <div class="col-md-6 text-left">
+            <a class="btn btn-default btn-lg" href="{% url 'plugins:exhibitors:info' organizer=request.event.organizer.slug event=request.event.slug %}">
+              {% trans "Cancel" %}
+            </a>
+        </div>
+</div>
+</form>
+{% endblock %}
