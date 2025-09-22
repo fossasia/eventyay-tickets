@@ -37,6 +37,7 @@ from eventyay.celery_app import app
 from eventyay.helpers.database import rolledback_transaction
 from eventyay.helpers.models import modelcopy
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -396,12 +397,7 @@ def build_preview_invoice_pdf(event):
         invoice.invoice_to_zipcode = _('012345')
         invoice.invoice_to_city = _('Sample city')
         invoice.invoice_to_country = Country('DE')
-        invoice.invoice_to = '{}\n{}\n{} {}'.format(
-            invoice.invoice_to_name,
-            invoice.invoice_to_street,
-            invoice.invoice_to_zipcode,
-            invoice.invoice_to_city,
-        )
+        invoice.invoice_to = f'{invoice.invoice_to_name}\n{invoice.invoice_to_street}\n{invoice.invoice_to_zipcode} {invoice.invoice_to_city}'
         invoice.invoice_to_beneficiary = ''
         invoice.file = None
         invoice.save()

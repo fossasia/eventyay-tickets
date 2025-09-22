@@ -1,7 +1,6 @@
 import json
 from datetime import timedelta
 from tempfile import NamedTemporaryFile
-from typing import List
 from zipfile import ZipFile
 
 from dateutil.parser import parse
@@ -17,7 +16,7 @@ from eventyay.celery_app import app
 
 
 @app.task(base=ProfiledEventTask)
-def export(event: Event, shredders: List[str], session_key=None) -> None:
+def export(event: Event, shredders: list[str], session_key=None) -> None:
     known_shredders = event.get_data_shredders()
 
     with NamedTemporaryFile() as rawfile:

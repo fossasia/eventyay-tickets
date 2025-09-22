@@ -19,8 +19,8 @@ from ..decimal import round_decimal
 from .base import LoggedModel
 from .choices import PriceModeChoices
 from .event import Event, SubEvent
-from .product import Product, ProductVariation, Quota
 from .orders import Order, OrderPosition
+from .product import Product, ProductVariation, Quota
 
 
 def _generate_random_code(prefix=None):

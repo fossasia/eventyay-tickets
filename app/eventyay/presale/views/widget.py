@@ -51,6 +51,7 @@ from eventyay.presale.views.organizer import (
     weeks_for_template,
 )
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -65,7 +66,7 @@ def widget_css_etag(request, **kwargs):
 
 def widget_js_etag(request, lang, **kwargs):
     gs = GlobalSettingsObject()
-    return gs.settings.get('widget_checksum_{}'.format(lang))
+    return gs.settings.get(f'widget_checksum_{lang}')
 
 
 @gzip_page
@@ -95,7 +96,7 @@ def generate_widget_js(lang):
         # Provide isolation
         code.append('(function (siteglobals) {\n')
         code.append('var module = {}, exports = {};\n')
-        code.append('var lang = "%s";\n' % lang)
+        code.append(f'var lang = "{lang}";\n')
 
         c = JavaScriptCatalog()
         c.translation = DjangoTranslation(lang, domain='djangojs')
@@ -142,7 +143,7 @@ def generate_widget_js(lang):
         ]
         for fname in files:
             f = finders.find(fname)
-            with open(f, 'r', encoding='utf-8') as fp:
+            with open(f, encoding='utf-8') as fp:
                 code.append(fp.read())
 
         if settings.DEBUG:
@@ -159,12 +160,12 @@ def widget_js(request, lang, **kwargs):
     if lang not in [lc for lc, ll in settings.LANGUAGES]:
         raise Http404()
 
-    cached_js = cache.get('widget_js_data_{}'.format(lang))
+    cached_js = cache.get(f'widget_js_data_{lang}')
     if cached_js and not settings.DEBUG:
         return HttpResponse(cached_js, content_type='text/javascript')
 
     gs = GlobalSettingsObject()
-    fname = gs.settings.get('widget_file_{}'.format(lang))
+    fname = gs.settings.get(f'widget_file_{lang}')
     resp = None
     if fname and not settings.DEBUG:
         if isinstance(fname, File):
@@ -172,7 +173,7 @@ def widget_js(request, lang, **kwargs):
         try:
             data = default_storage.open(fname).read()
             resp = HttpResponse(data, content_type='text/javascript')
-            cache.set('widget_js_data_{}'.format(lang), data, 3600 * 4)
+            cache.set(f'widget_js_data_{lang}', data, 3600 * 4)
         except:
             logger.exception('Failed to open widget.js')
 
@@ -180,10 +181,10 @@ def widget_js(request, lang, **kwargs):
         data = generate_widget_js(lang).encode()
         checksum = hashlib.sha1(data).hexdigest()
         if not settings.DEBUG:
-            newname = default_storage.save('widget/widget.{}.{}.js'.format(lang, checksum), ContentFile(data))
-            gs.settings.set('widget_file_{}'.format(lang), 'file://' + newname)
-            gs.settings.set('widget_checksum_{}'.format(lang), checksum)
-            cache.set('widget_js_data_{}'.format(lang), data, 3600 * 4)
+            newname = default_storage.save(f'widget/widget.{lang}.{checksum}.js', ContentFile(data))
+            gs.settings.set(f'widget_file_{lang}', 'file://' + newname)
+            gs.settings.set(f'widget_checksum_{lang}', checksum)
+            cache.set(f'widget_js_data_{lang}', data, 3600 * 4)
         resp = HttpResponse(data, content_type='text/javascript')
     return resp
 

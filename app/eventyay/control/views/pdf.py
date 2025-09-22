@@ -31,6 +31,7 @@ from eventyay.control.permissions import EventPermissionRequiredMixin
 from eventyay.helpers.database import rolledback_transaction
 from eventyay.presale.style import get_fonts
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -121,18 +122,11 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
             try:
                 default_storage.delete(fexisting.name)
             except OSError:  # pragma: no cover
-                logger.error('Deleting file %s failed.' % fexisting.name)
+                logger.error(f'Deleting file {fexisting.name} failed.')
 
         # Create new file
         nonce = get_random_string(length=8)
-        fname = 'pub/%s-%s/%s/%s.%s.%s' % (
-            'event',
-            'settings',
-            self.request.event.pk,
-            self.get_layout_settings_key(),
-            nonce,
-            'pdf',
-        )
+        fname = f'pub/event-settings/{self.request.event.pk}/{self.get_layout_settings_key()}/{nonce}.pdf'
         newname = default_storage.save(fname, f.file)
         self.request.event.settings.set(self.get_background_settings_key(), 'file://' + newname)
 
@@ -222,7 +216,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
             resp = HttpResponse(data, content_type=mimet)
             ftype = fname.split('.')[-1]
-            resp['Content-Disposition'] = 'attachment; filename="ticket-preview.{}"'.format(ftype)
+            resp['Content-Disposition'] = f'attachment; filename="ticket-preview.{ftype}"'
             return resp
         elif 'data' in request.POST:
             if cf:
@@ -263,5 +257,5 @@ class PdfView(TemplateView):
     def get(self, request, *args, **kwargs):
         cf = get_object_or_404(CachedFile, id=kwargs.get('filename'), filename='background_preview.pdf')
         resp = FileResponse(cf.file, content_type='application/pdf')
-        resp['Content-Disposition'] = 'attachment; filename="{}"'.format(cf.filename)
+        resp['Content-Disposition'] = f'attachment; filename="{cf.filename}"'
         return resp

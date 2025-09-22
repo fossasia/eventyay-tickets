@@ -128,24 +128,24 @@ class InvoiceExporter(InvoiceExporterMixin, BaseExporter):
                             invoice_pdf_task.apply(args=(i.pk,))
                             i.refresh_from_db()
                         if not i.file:
-                            raise ExportError('Could not generate PDF for invoice {nr}'.format(nr=i.full_invoice_no))
+                            raise ExportError(f'Could not generate PDF for invoice {i.full_invoice_no}')
                         i.file.open('rb')
-                        zipf.writestr('{}-{}.pdf'.format(i.number, i.order.code), i.file.read())
+                        zipf.writestr(f'{i.number}-{i.order.code}.pdf', i.file.read())
                         i.file.close()
                     except FileNotFoundError:
                         invoice_pdf_task.apply(args=(i.pk,))
                         i.refresh_from_db()
                         i.file.open('rb')
-                        zipf.writestr('{}-{}.pdf'.format(i.number, i.order.code), i.file.read())
+                        zipf.writestr(f'{i.number}-{i.order.code}.pdf', i.file.read())
                         i.file.close()
                     counter += 1
                     if total and counter % max(10, total // 100) == 0:
                         self.progress_callback(counter / total * 100)
 
             if self.is_multievent:
-                filename = '{}_invoices.zip'.format(self.events.first().organizer.slug)
+                filename = f'{self.events.first().organizer.slug}_invoices.zip'
             else:
-                filename = '{}_invoices.zip'.format(self.event.slug)
+                filename = f'{self.event.slug}_invoices.zip'
 
             if output_file:
                 return filename, 'application/zip', None
@@ -419,9 +419,9 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
 
     def get_filename(self):
         if self.is_multievent:
-            return '{}_invoices'.format(self.events.first().organizer.slug)
+            return f'{self.events.first().organizer.slug}_invoices'
         else:
-            return '{}_invoices'.format(self.event.slug)
+            return f'{self.event.slug}_invoices'
 
 
 @receiver(register_data_exporters, dispatch_uid='exporter_invoices')

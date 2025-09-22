@@ -4,7 +4,6 @@ import json
 import logging
 from datetime import timedelta
 from decimal import Decimal
-from typing import Set
 
 from django import forms
 from django.contrib import messages
@@ -44,6 +43,7 @@ from eventyay.plugins.banktransfer.refund_export import (
     get_refund_export_csv,
 )
 from eventyay.plugins.banktransfer.tasks import process_banktransfers
+
 
 logger = logging.getLogger(__name__)
 
@@ -730,7 +730,7 @@ class RefundExportListView(ListView):
     @transaction.atomic()
     def post(self, request, *args, **kwargs):
         unite_transactions = request.POST.get('unite_transactions', False)
-        valid_refunds: Set[OrderRefund] = set()
+        valid_refunds: set[OrderRefund] = set()
         for refund in self.get_unexported().select_related('order', 'order__event'):
             if not refund.info_data:
                 # Should not happen

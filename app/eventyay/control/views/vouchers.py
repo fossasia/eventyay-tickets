@@ -95,9 +95,9 @@ class VoucherList(PaginationMixin, EventPermissionRequiredMixin, ListView):
         for v in self.get_queryset():
             if v.product:
                 if v.variation:
-                    prod = '%s – %s' % (str(v.product), str(v.variation))
+                    prod = f'{v.product} – {v.variation}'
                 else:
-                    prod = '%s' % str(v.product)
+                    prod = f'{v.product}'
             elif v.quota:
                 prod = _('Any product in quota "{quota}"').format(quota=str(v.quota.name))
             else:

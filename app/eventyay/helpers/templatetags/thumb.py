@@ -6,6 +6,7 @@ from django.core.files.storage import default_storage
 
 from eventyay.helpers.thumb import get_thumbnail
 
+
 register = template.Library()
 logger = logging.getLogger(__name__)
 

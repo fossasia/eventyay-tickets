@@ -112,9 +112,9 @@ class LogEntry(models.Model):
     def display_object(self):
         from . import (
             Event,
+            Order,
             Product,
             ProductCategory,
-            Order,
             Question,
             Quota,
             SubEvent,
@@ -312,8 +312,10 @@ class ActivityLog(models.Model):
         """Custom __str__ to help with debugging."""
         event = getattr(self.event, 'slug', 'None')
         person = getattr(self.person, 'name', 'None')
-        return (f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, '
-                f'action_type={self.action_type})')
+        return (
+            f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, '
+            f'action_type={self.action_type})'
+        )
 
     @cached_property
     def json_data(self):

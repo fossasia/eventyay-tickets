@@ -252,9 +252,9 @@ class WaitingListView(EventPermissionRequiredMixin, PaginationMixin, ListView):
         for w in self.get_queryset():
             if w.product:
                 if w.variation:
-                    prod = '%s – %s' % (str(w.product), str(w.variation))
+                    prod = f"{w.product} – {w.variation}"
                 else:
-                    prod = '%s' % str(w.product)
+                    prod = f"{w.product}"
             if w.voucher:
                 if w.voucher.redeemed >= w.voucher.max_usages:
                     status = _('Voucher redeemed')

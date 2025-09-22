@@ -8,6 +8,7 @@ from eventyay.api.models import ApiCall, WebHookCall
 from eventyay.base.signals import periodic_task
 from eventyay.helpers.periodic import minimum_interval
 
+
 register_webhook_events = Signal()
 """
 This signal is sent out to get all known webhook events. Receivers should return an

@@ -24,21 +24,6 @@ from .event import (
 from .feedback import Feedback
 from .giftcards import GiftCard, GiftCardAcceptance, GiftCardTransaction
 from .invoices import Invoice, InvoiceLine, invoice_filename
-from .product import (
-    Product,
-    ProductAddOn,
-    ProductBundle,
-    ProductCategory,
-    ProductMetaProperty,
-    ProductMetaValue,
-    ProductVariation,
-    Question,
-    QuestionOption,
-    Quota,
-    SubEventProduct,
-    SubEventProductVariation,
-    productpicture_upload_to,
-)
 from .log import ActivityLog, LogEntry
 from .mail import MailTemplate, MailTemplateRoles, QueuedMail
 from .mixins import FileCleanupMixin, GenerateCode, LogMixin, OrderedModel, PretalxModel, TimestampedModel
@@ -67,6 +52,21 @@ from .organizer import (
     Team,
     TeamAPIToken,
     TeamInvite,
+)
+from .product import (
+    Product,
+    ProductAddOn,
+    ProductBundle,
+    ProductCategory,
+    ProductMetaProperty,
+    ProductMetaValue,
+    ProductVariation,
+    Question,
+    QuestionOption,
+    Quota,
+    SubEventProduct,
+    SubEventProductVariation,
+    productpicture_upload_to,
 )
 from .profile import SpeakerProfile
 from .question import Answer, AnswerOption, TalkQuestion, TalkQuestionTarget, TalkQuestionVariant

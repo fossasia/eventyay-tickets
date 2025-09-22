@@ -21,6 +21,7 @@ from eventyay.plugins.sendmail.tasks import send_mails
 
 from . import forms
 
+
 logger = logging.getLogger(__name__)
 
 

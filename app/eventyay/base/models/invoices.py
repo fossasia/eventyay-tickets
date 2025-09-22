@@ -169,7 +169,7 @@ class Invoice(models.Model):
                 if COUNTRIES_WITH_STATE_IN_ADDRESS[str(self.invoice_to_country)][1] == 'long':
                     try:
                         state_name = pycountry.subdivisions.get(
-                            code='{}-{}'.format(self.invoice_to_country, self.invoice_to_state)
+                            code=f'{self.invoice_to_country}-{self.invoice_to_state}'
                         ).name
                     except:
                         pass
@@ -197,10 +197,7 @@ class Invoice(models.Model):
         return self._to_numeric_invoice_number(numeric_invoices + 1, c_length)
 
     def _get_invoice_number_from_order(self):
-        return '{order}-{count}'.format(
-            order=self.order.code,
-            count=Invoice.objects.filter(event=self.event, order=self.order).count() + 1,
-        )
+        return f'{self.order.code}-{Invoice.objects.filter(event=self.event, order=self.order).count() + 1}'
 
     def save(self, *args, **kwargs):
         if not self.order:
@@ -250,7 +247,7 @@ class Invoice(models.Model):
         """
         Returns the invoice number in a human-readable string with the event slug prepended.
         """
-        return '{prefix}{code}'.format(prefix=self.prefix, code=self.invoice_no)
+        return f'{self.prefix}{self.invoice_no}'
 
     @cached_property
     def canceled(self):
@@ -264,7 +261,7 @@ class Invoice(models.Model):
         )
 
     def __repr__(self):
-        return '<Invoice {} / {}>'.format(self.full_invoice_no, self.pk)
+        return f'<Invoice {self.full_invoice_no} / {self.pk}>'
 
 
 class InvoiceLine(models.Model):
@@ -319,4 +316,4 @@ class InvoiceLine(models.Model):
         ordering = ('position', 'pk')
 
     def __str__(self):
-        return 'Line {} of invoice {}'.format(self.position, self.invoice)
+        return f'Line {self.position} of invoice {self.invoice}'

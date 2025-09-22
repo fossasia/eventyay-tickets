@@ -48,6 +48,7 @@ from eventyay.helpers.cookies import set_cookie_without_samesite
 from eventyay.helpers.jwt_generate import generate_sso_token
 from eventyay.multidomain.middlewares import get_cookie_domain
 
+
 logger = logging.getLogger(__name__)
 
 

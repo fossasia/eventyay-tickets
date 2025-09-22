@@ -1,9 +1,7 @@
 import base64
 import logging
-from datetime import datetime
-from datetime import timezone as tz
+from datetime import UTC, datetime
 from decimal import Decimal
-from typing import Optional, Tuple
 from urllib.parse import urljoin
 
 import pytz
@@ -31,6 +29,7 @@ from ..helpers.jwt_generate import generate_sso_token
 from .base_tasks import CreateWorldTask, SendEventTask
 from .billing_invoice import InvoicePDFGenerator
 from .schemas.billing import CollectBillingResponse
+
 
 logger = logging.getLogger(__name__)
 
@@ -101,7 +100,7 @@ def send_team_webhook(self, user_id, team):
 @shared_task(
     bind=True, max_retries=5, default_retry_delay=60, base=SendEventTask
 )  # Retries up to 5 times with a 60-second delay
-def send_event_webhook(self, user_id: int, event: dict, action: str) -> Optional[dict]:
+def send_event_webhook(self, user_id: int, event: dict, action: str) -> dict | None:
     # Define the payload to send to the webhook
     user_model = get_user_model()
     user = user_model.objects.get(id=user_id)
@@ -142,7 +141,7 @@ def send_event_webhook(self, user_id: int, event: dict, action: str) -> Optional
 @shared_task(
     bind=True, max_retries=5, default_retry_delay=60, base=CreateWorldTask
 )  # Retries up to 5 times with a 60-second delay
-def create_world(self, is_video_creation: bool, event_data: dict) -> Optional[dict]:
+def create_world(self, is_video_creation: bool, event_data: dict) -> dict | None:
     """
     Create a video system for the specified event.
 
@@ -161,7 +160,7 @@ def create_world(self, is_video_creation: bool, event_data: dict) -> Optional[di
     - The user must choose to create a video.
     """
 
-    def _create_world(payload: dict, headers: dict) -> Optional[dict]:
+    def _create_world(payload: dict, headers: dict) -> dict | None:
         try:
             response = requests.post(
                 urljoin(settings.VIDEO_SERVER_HOSTNAME, 'api/v1/create-world/'),
@@ -196,7 +195,7 @@ def create_world(self, is_video_creation: bool, event_data: dict) -> Optional[di
         'timezone': event_data.get('timezone', ''),
         'locale': event_data.get('locale', ''),
         'traits': {
-            'attendee': 'eventyay-video-event-{}'.format(event_slug),
+            'attendee': f'eventyay-video-event-{event_slug}',
         },
     }
 
@@ -235,7 +234,7 @@ def collect_billing_invoice(
     event: Event,
     last_month_date: datetime,
     ticket_rate: Decimal,
-    invoice_voucher: Optional[InvoiceVoucher],
+    invoice_voucher: InvoiceVoucher | None,
 ) -> CollectBillingResponse:
     """
     Collect billing data for an event on a monthly basis. This function
@@ -309,7 +308,7 @@ def monthly_billing_collect(self):
         """
         Get the current billing period details
         """
-        today = datetime.now(tz.utc)
+        today = datetime.now(UTC)
         first_day_of_current_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         last_month_date = first_day_of_current_month - relativedelta(months=1)
         return last_month_date
@@ -472,8 +471,8 @@ def calculate_ticket_fee(
     amount: Decimal,
     rate: Decimal,
     event: Event,
-    invoice_voucher: Optional[InvoiceVoucher] = None,
-) -> Tuple[Decimal, Decimal, Decimal]:
+    invoice_voucher: InvoiceVoucher | None = None,
+) -> tuple[Decimal, Decimal, Decimal]:
     """
     Calculate the ticket fee for an event based on the given rate and amount
 
@@ -490,7 +489,7 @@ def calculate_ticket_fee(
 
     def _apply_voucher(
         ticket_fee: Decimal, voucher_discount: Decimal, invoice_voucher: InvoiceVoucher
-    ) -> Tuple[Decimal, Decimal]:
+    ) -> tuple[Decimal, Decimal]:
         final_ticket_fee = invoice_voucher.calculate_price(original_price=ticket_fee, event=event)
         voucher_discount = ticket_fee - final_ticket_fee
         return final_ticket_fee, voucher_discount
@@ -580,7 +579,7 @@ def billing_invoice_notification(self):
 @scopes_disabled()
 def retry_failed_payment(self):
     pending_invoices = BillingInvoice.objects.filter(status=BillingInvoice.STATUS_PENDING)
-    today = datetime.now(tz.utc)
+    today = datetime.now(UTC)
     logger.info('Start - running task to retry failed payment: %s', today)
     timezone = pytz.timezone(settings.TIME_ZONE)
     for invoice in pending_invoices:
@@ -610,7 +609,7 @@ def retry_failed_payment(self):
 @scopes_disabled()
 def check_billing_status_for_warning(self):
     pending_invoices = BillingInvoice.objects.filter(status=BillingInvoice.STATUS_PENDING, reminder_enabled=True)
-    today = datetime.now(tz.utc)
+    today = datetime.now(UTC)
     logger.info('Start - running task to check billing status for warning on: %s', today)
     timezone = pytz.timezone(settings.TIME_ZONE)
     for invoice in pending_invoices:

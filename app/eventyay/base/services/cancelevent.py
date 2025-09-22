@@ -31,6 +31,7 @@ from eventyay.base.services.orders import (
 from eventyay.base.services.tasks import ProfiledEventTask
 from eventyay.celery_app import app
 
+
 logger = logging.getLogger(__name__)
 
 

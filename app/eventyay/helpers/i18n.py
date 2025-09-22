@@ -8,6 +8,7 @@ from django.utils.formats import get_format
 
 from eventyay.config import settings
 
+
 date_conversion_to_moment = {
     '%a': 'ddd',
     '%A': 'dddd',

@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 
 from eventyay.base.models import Event
 
+
 register = template.Library()
 
 
@@ -69,7 +70,7 @@ def propagated(parser, token):
     try:
         tag, event, url, *args = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError('%r tag requires at least three arguments' % token.contents.split()[0])
+        raise template.TemplateSyntaxError(f'{token.contents.split()[0]!r} tag requires at least three arguments')
 
     nodelist = parser.parse(('endpropagated',))
     parser.delete_first_token()

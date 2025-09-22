@@ -35,9 +35,9 @@
                 </div>
             </div>
         </div>
-        {% bootstrap_field form.date_from layout="control" %}
+        {% bootstrap_field form.date_from %}
         {% if form.date_to %}
-            {% bootstrap_field form.date_to layout="control" %}
+            {% bootstrap_field form.date_to %}
         {% endif %}
         {% include "pretixcontrol/event/fragment_geodata.html" %}
         {% bootstrap_field form.currency layout="control" %}
@@ -51,8 +51,8 @@
     {% if form.presale_start %}
         <fieldset>
             <legend>{% trans "Timeline" %}</legend>
-            {% bootstrap_field form.presale_start layout="control" %}
-            {% bootstrap_field form.presale_end layout="control" %}
+            {% bootstrap_field form.presale_start %}
+            {% bootstrap_field form.presale_end %}
         </fieldset>
     {% endif %}
 

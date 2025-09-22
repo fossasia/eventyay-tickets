@@ -9,7 +9,6 @@ from eventyay.control.views import (
     event,
     geo,
     global_settings,
-    product,
     main,
     orderimport,
     orders,
@@ -17,6 +16,7 @@ from eventyay.control.views import (
     organizer_views,
     pages,
     pdf,
+    product,
     search,
     shredder,
     subevents,
@@ -338,10 +338,16 @@ urlpatterns = [
                 url(r'^products/(?P<product>\d+)/$', product.ProductUpdateGeneral.as_view(), name='event.product'),
                 url(r'^products/(?P<product>\d+)/up$', product.product_move_up, name='event.products.up'),
                 url(r'^products/(?P<product>\d+)/down$', product.product_move_down, name='event.products.down'),
-                url(r'^products/(?P<product>\d+)/delete$', product.ProductDelete.as_view(), name='event.products.delete'),
+                url(
+                    r'^products/(?P<product>\d+)/delete$', product.ProductDelete.as_view(), name='event.products.delete'
+                ),
                 url(r'^products/typeahead/meta/$', typeahead.product_meta_values, name='event.products.meta.typeahead'),
                 url(r'^products/select2$', typeahead.products_select2, name='event.products.select2'),
-                url(r'^products/select2/variation$', typeahead.variations_select2, name='event.products.variations.select2'),
+                url(
+                    r'^products/select2/variation$',
+                    typeahead.variations_select2,
+                    name='event.products.variations.select2',
+                ),
                 url(r'^categories/$', product.CategoryList.as_view(), name='event.products.categories'),
                 url(r'^categories/select2$', typeahead.category_select2, name='event.products.categories.select2'),
                 url(
@@ -349,9 +355,13 @@ urlpatterns = [
                     product.CategoryDelete.as_view(),
                     name='event.products.categories.delete',
                 ),
-                url(r'^categories/(?P<category>\d+)/up$', product.category_move_up, name='event.products.categories.up'),
                 url(
-                    r'^categories/(?P<category>\d+)/down$', product.category_move_down, name='event.products.categories.down'
+                    r'^categories/(?P<category>\d+)/up$', product.category_move_up, name='event.products.categories.up'
+                ),
+                url(
+                    r'^categories/(?P<category>\d+)/down$',
+                    product.category_move_down,
+                    name='event.products.categories.down',
                 ),
                 url(
                     r'^categories/(?P<category>\d+)/$',
@@ -366,7 +376,11 @@ urlpatterns = [
                     product.QuestionDelete.as_view(),
                     name='event.products.questions.delete',
                 ),
-                url(r'^questions/(?P<question>\d+)/$', product.QuestionView.as_view(), name='event.products.questions.show'),
+                url(
+                    r'^questions/(?P<question>\d+)/$',
+                    product.QuestionView.as_view(),
+                    name='event.products.questions.show',
+                ),
                 url(
                     r'^questions/(?P<question>\d+)/change$',
                     product.QuestionUpdate.as_view(),
@@ -387,13 +401,23 @@ urlpatterns = [
                 url(r'^quotas/$', product.QuotaList.as_view(), name='event.products.quotas'),
                 url(r'^quotas/(?P<quota>\d+)/$', product.QuotaView.as_view(), name='event.products.quotas.show'),
                 url(r'^quotas/select$', typeahead.quotas_select2, name='event.products.quotas.select2'),
-                url(r'^quotas/(?P<quota>\d+)/change$', product.QuotaUpdate.as_view(), name='event.products.quotas.edit'),
-                url(r'^quotas/(?P<quota>\d+)/delete$', product.QuotaDelete.as_view(), name='event.products.quotas.delete'),
+                url(
+                    r'^quotas/(?P<quota>\d+)/change$', product.QuotaUpdate.as_view(), name='event.products.quotas.edit'
+                ),
+                url(
+                    r'^quotas/(?P<quota>\d+)/delete$',
+                    product.QuotaDelete.as_view(),
+                    name='event.products.quotas.delete',
+                ),
                 url(r'^quotas/add$', product.QuotaCreate.as_view(), name='event.products.quotas.add'),
                 url(r'^vouchers/$', vouchers.VoucherList.as_view(), name='event.vouchers'),
                 url(r'^vouchers/tags/$', vouchers.VoucherTags.as_view(), name='event.vouchers.tags'),
                 url(r'^vouchers/rng$', vouchers.VoucherRNG.as_view(), name='event.vouchers.rng'),
-                url(r'^vouchers/product_select$', typeahead.productvarquota_select2, name='event.vouchers.productselect2'),
+                url(
+                    r'^vouchers/product_select$',
+                    typeahead.productvarquota_select2,
+                    name='event.vouchers.productselect2',
+                ),
                 url(r'^vouchers/(?P<voucher>\d+)/$', vouchers.VoucherUpdate.as_view(), name='event.voucher'),
                 url(
                     r'^vouchers/(?P<voucher>\d+)/delete$', vouchers.VoucherDelete.as_view(), name='event.voucher.delete'

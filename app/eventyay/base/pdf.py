@@ -44,6 +44,7 @@ from eventyay.base.templatetags.money import money_filter
 from eventyay.base.templatetags.phone_format import phone_format
 from eventyay.presale.style import get_fonts
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -105,7 +106,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'label': _('Product name and variation'),
                 'editor_sample': _('Sample product – sample variation'),
                 'evaluate': lambda orderposition, order, event: (
-                    '{} - {}'.format(orderposition.item.name, orderposition.variation)
+                    f'{orderposition.item.name} - {orderposition.variation}'
                     if orderposition.variation
                     else str(orderposition.item.name)
                 ),
@@ -466,7 +467,7 @@ DEFAULT_VARIABLES = OrderedDict(
                 'editor_sample': _('Add-on 1\nAdd-on 2'),
                 'evaluate': lambda op, order, ev: '\n'.join(
                     [
-                        '{} - {}'.format(p.item, p.variation) if p.variation else str(p.item)
+                        f'{p.item} - {p.variation}' if p.variation else str(p.item)
                         for p in (
                             op.addons.all()
                             if 'addons' in getattr(op, '_prefetched_objects_cache', {})
@@ -614,7 +615,7 @@ def images_from_questions(sender, *args, **kwargs):
     for q in sender.questions.all():
         if q.type != Question.TYPE_FILE:
             continue
-        d['question_{}'.format(q.identifier)] = {
+        d[f'question_{q.identifier}'] = {
             'label': _('Question: {question}').format(question=q.question),
             'evaluate': partial(get_answer, question_id=q.pk, etag=False),
             'etag': partial(get_answer, question_id=q.pk, etag=True),
@@ -652,7 +653,7 @@ def variables_from_questions(sender, *args, **kwargs):
     for q in sender.questions.all():
         if q.type == Question.TYPE_FILE:
             continue
-        d['question_{}'.format(q.pk)] = {
+        d[f'question_{q.pk}'] = {
             'label': _('Question: {question}').format(question=q.question),
             'editor_sample': _('<Answer: {question}>').format(question=q.question),
             'evaluate': partial(get_answer, question_id=q.pk),
@@ -747,7 +748,7 @@ class Renderer:
         content = o.get('content', 'dark')
         if content not in ('dark', 'white'):
             content = 'dark'
-        img = finders.find('pretixpresale/pdf/powered_by_eventyay_{}.png'.format(content))
+        img = finders.find(f'pretixpresale/pdf/powered_by_eventyay_{content}.png')
 
         ir = ThumbnailingImageReader(img)
         try:
@@ -884,7 +885,7 @@ class Renderer:
         try:
             text = '<br/>'.join(get_display(reshaper.reshape(l)) for l in text.split('<br/>'))
         except:
-            logger.exception('Reshaping/Bidi fixes failed on string {}'.format(repr(text)))
+            logger.exception(f'Reshaping/Bidi fixes failed on string {repr(text)}')
 
         p = Paragraph(text, style=style)
         w, h = p.wrapOn(canvas, float(o['width']) * mm, 1000 * mm)

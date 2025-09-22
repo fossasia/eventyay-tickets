@@ -24,6 +24,7 @@ from eventyay.helpers.security import (
     assert_session_valid,
 )
 
+
 logger = logging.getLogger(__name__)
 
 

@@ -11,6 +11,7 @@ from sentry_sdk.integrations.django import (
 from sentry_sdk.integrations.django.asgi import patch_get_response_async
 from sentry_sdk.utils import capture_internal_exceptions
 
+
 MASK = '*' * 8
 KEYS = frozenset(
     [

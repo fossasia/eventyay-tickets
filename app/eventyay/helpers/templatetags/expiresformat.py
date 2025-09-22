@@ -2,6 +2,7 @@ from django import template
 
 from eventyay.base.i18n import LazyExpiresDate
 
+
 register = template.Library()
 
 

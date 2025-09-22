@@ -33,10 +33,10 @@ from eventyay.api.serializers.product import (
 from eventyay.base.forms import I18nFormSet
 from eventyay.base.models import (
     CartPosition,
+    Order,
     Product,
     ProductCategory,
     ProductVariation,
-    Order,
     Question,
     QuestionAnswer,
     QuestionOption,
@@ -860,7 +860,7 @@ class QuotaCreate(EventPermissionRequiredMixin, CreateView):
             kwargs['instance'] = i
             kwargs.setdefault('initial', {})
             kwargs['initial']['productvars'] = [str(i.pk) for i in self.copy_from.products.all()] + [
-                '{}-{}'.format(v.product_id, v.pk) for v in self.copy_from.variations.all()
+                f'{v.product_id}-{v.pk}' for v in self.copy_from.variations.all()
             ]
         else:
             kwargs['instance'] = Quota(event=self.request.event)
@@ -1171,7 +1171,7 @@ class MetaDataEditorMixin:
 
     def _make_meta_form(self, p, val_instances):
         return self.meta_form(
-            prefix='prop-{}'.format(p.pk),
+            prefix=f'prop-{p.pk}',
             property=p,
             instance=val_instances.get(p.pk, self.meta_model(property=p, product=self.object)),
             data=(self.request.POST if self.request.method == 'POST' else None),
@@ -1332,7 +1332,7 @@ class ProductUpdateGeneral(ProductDetailMixin, EventPermissionRequiredMixin, Met
             if serializer:
                 d.update(serializer(form.instance).data)
             self.get_object().log_action(
-                'eventyay.event.product.{}.{}'.format(log_base, rm_verb),
+                f'eventyay.event.product.{log_base}.{rm_verb}',
                 user=self.request.user,
                 data=d,
             )
@@ -1359,9 +1359,9 @@ class ProductUpdateGeneral(ProductDetailMixin, EventPermissionRequiredMixin, Met
                     change_data['value'] = form.instance.value
                 change_data['id'] = form.instance.pk
                 self.get_object().log_action(
-                    'eventyay.event.product.{}.changed'.format(log_base)
+                    f'eventyay.event.product.{log_base}.changed'
                     if not created
-                    else 'eventyay.event.product.{}.added'.format(log_base),
+                    else f'eventyay.event.product.{log_base}.added',
                     user=self.request.user,
                     data=change_data,
                 )
@@ -1499,10 +1499,10 @@ class ProductUpdateGeneral(ProductDetailMixin, EventPermissionRequiredMixin, Met
         for rec, resp in product_formsets.send(sender=self.request.event, product=self.product, request=self.request):
             if isinstance(resp, (list, tuple)):
                 for k in resp:
-                    f['p-{}'.format(i)] = k
+                    f[f'p-{i}'] = k
                     i += 1
             else:
-                f['p-{}'.format(i)] = resp
+                f[f'p-{i}'] = resp
                 i += 1
         return f
 

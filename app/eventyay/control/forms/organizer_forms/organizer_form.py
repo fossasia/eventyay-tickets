@@ -128,7 +128,8 @@ class BillingSettingsForm(forms.ModelForm):
         label=_('Tax ID (e.g., VAT, GST)'),
         help_text=_(
             'If you are located in the EU, please provide your VAT ID. '
-            'Without this, we will need to charge VAT on our services and will not be able to issue reverse charge invoices.'
+            'Without this, we will need to charge VAT on our services and will not be able to issue reverse '
+            'charge invoices.'
         ),
         max_length=255,
         widget=forms.TextInput(attrs={'placeholder': ''}),

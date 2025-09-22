@@ -23,6 +23,7 @@ from eventyay.celery_app import app
 
 from .models import BankImportJob, BankTransaction
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -230,7 +231,7 @@ def _get_unknown_transactions(job: BankImportJob, data: list, event: Event = Non
             try:
                 amount = Decimal(amount)
             except:
-                logger.exception('Could not parse amount of transaction: {}'.format(amount))
+                logger.exception(f'Could not parse amount of transaction: {amount}')
                 amount = Decimal('0.00')
 
         trans = BankTransaction(

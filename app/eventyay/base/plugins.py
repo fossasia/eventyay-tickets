@@ -4,13 +4,13 @@ import os
 import sys
 from enum import Enum
 from itertools import groupby
-from typing import List
 
 from django.apps import AppConfig, apps
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
+
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class PluginType(Enum):
     EXPORT = 4
 
 
-def get_all_plugins(event=None) -> List[type]:
+def get_all_plugins(event=None) -> list[type]:
     """
     Returns the EventyayPluginMeta classes of all plugins found in the installed Django apps.
     If an event is provided, only plugins active for that event are returned.
@@ -110,7 +110,10 @@ class PluginConfig(AppConfig):
         if not hasattr(self, 'EventyayPluginMeta'):
             raise ImproperlyConfigured('A pretix plugin config should have a EventyayPluginMeta inner class.')
 
-        if hasattr(self.EventyayPluginMeta, 'compatibility') and not os.environ.get('PRETIX_IGNORE_CONFLICTS') == 'True':
+        if (
+            hasattr(self.EventyayPluginMeta, 'compatibility')
+            and not os.environ.get('PRETIX_IGNORE_CONFLICTS') == 'True'
+        ):
             self.check_compatibility()
 
     def check_compatibility(self):

@@ -3,7 +3,6 @@ import uuid
 from collections import Counter, OrderedDict
 from datetime import date, datetime, time
 from decimal import Decimal, DecimalException
-from typing import Tuple
 
 import dateutil.parser
 import pytz
@@ -859,7 +858,7 @@ class ProductVariation(models.Model):
         include_bundled=False,
         trust_parameters=False,
         fail_on_no_quotas=False,
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """
         This method is used to determine whether this ProductVariation is currently
         available for sale in terms of quotas.
@@ -1053,14 +1052,14 @@ class ProductBundle(models.Model):
     def describe(self):
         if self.count == 1:
             if self.bundled_variation_id:
-                return '{} – {}'.format(self.bundled_product.name, self.bundled_variation.value)
+                return f'{self.bundled_product.name} – {self.bundled_variation.value}'
             else:
                 return self.bundled_product.name
         else:
             if self.bundled_variation_id:
-                return '{}× {} – {}'.format(self.count, self.bundled_product.name, self.bundled_variation.value)
+                return f'{self.count}× {self.bundled_product.name} – {self.bundled_variation.value}'
             else:
-                return '{}x {}'.format(self.count, self.bundled_product.name)
+                return f'{self.count}x {self.bundled_product.name}'
 
     @staticmethod
     def clean_productvar(event, bundled_product, bundled_variation):
@@ -1504,7 +1503,9 @@ class Quota(LoggedModel):
         help_text=_('Leave empty for an unlimited number of tickets.'),
     )
     products = models.ManyToManyField(Product, verbose_name=_('Product'), related_name='quotas', blank=True)
-    variations = models.ManyToManyField(ProductVariation, related_name='quotas', blank=True, verbose_name=_('Variations'))
+    variations = models.ManyToManyField(
+        ProductVariation, related_name='quotas', blank=True, verbose_name=_('Variations')
+    )
 
     close_when_sold_out = models.BooleanField(
         verbose_name=_('Close this quota permanently once it is sold out'),
@@ -1564,7 +1565,7 @@ class Quota(LoggedModel):
         count_waitinglist=True,
         _cache=None,
         allow_cache=False,
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """
         This method is used to determine whether Products or ProductVariations belonging
         to this quota should currently be available for sale.

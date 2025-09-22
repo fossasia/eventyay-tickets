@@ -8,6 +8,7 @@ from eventyay.base.models import Event, Submission, User
 from eventyay.celery_app import app
 from eventyay.common.image import process_image
 
+
 logger = logging.getLogger(__name__)
 
 

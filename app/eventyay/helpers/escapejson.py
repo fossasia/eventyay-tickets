@@ -2,6 +2,7 @@ from django.utils.encoding import force_str
 from django.utils.functional import keep_lazy
 from django.utils.safestring import SafeText, mark_safe
 
+
 _json_escapes = {
     ord('>'): '\\u003E',
     ord('<'): '\\u003C',

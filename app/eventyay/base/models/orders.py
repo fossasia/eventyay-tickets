@@ -8,7 +8,7 @@ import string
 from collections import Counter
 from datetime import datetime, time, timedelta
 from decimal import Decimal
-from typing import Any, Dict, List, Union
+from typing import Any
 
 import dateutil
 import pycountry
@@ -60,6 +60,7 @@ from ...helpers.countries import CachedCountries, FastCountryField
 from .base import LockModel, LoggedModel
 from .event import Event, SubEvent
 from .product import Product, ProductVariation, Question, QuestionOption, Quota
+
 
 logger = logging.getLogger(__name__)
 
@@ -434,7 +435,7 @@ class Order(LockModel, LoggedModel):
         An order code which is unique among all events of a single organizer,
         built by concatenating the event slug and the order code.
         """
-        return '{event}-{code}'.format(event=self.event.slug.upper(), code=self.code)
+        return f'{self.event.slug.upper()}-{self.code}'
 
     @property
     def changable(self):
@@ -473,7 +474,7 @@ class Order(LockModel, LoggedModel):
                 minutes=self.event.settings.get('payment_term_minutes', as_type=int)
             )
         else:
-            raise ValueError("'payment_term_mode' has an invalid value '{}'.".format(mode))
+            raise ValueError(f"'payment_term_mode' has an invalid value '{mode}'.")
 
         self.expires = exp_by_date
 
@@ -834,7 +835,7 @@ class Order(LockModel, LoggedModel):
             term_last = make_aware(datetime.combine(term_last, time(hour=23, minute=59, second=59)), tz)
         return term_last
 
-    def _can_be_paid(self, count_waitinglist=True, ignore_date=False, force=False) -> Union[bool, str]:
+    def _can_be_paid(self, count_waitinglist=True, ignore_date=False, force=False) -> bool | str:
         error_messages = {
             'late_lastdate': _(
                 'The payment can not be accepted as the last date of payments configured in the '
@@ -867,7 +868,7 @@ class Order(LockModel, LoggedModel):
         count_waitinglist=True,
         force=False,
         check_voucher_usage=False,
-    ) -> Union[bool, str]:
+    ) -> bool | str:
         error_messages = {
             'unavailable': _('The ordered product "{product}" is no longer available.'),
             'seat_unavailable': _('The seat "{seat}" is no longer available.'),
@@ -935,8 +936,8 @@ class Order(LockModel, LoggedModel):
     def send_mail(
         self,
         subject: str,
-        template: Union[str, LazyI18nString],
-        context: Dict[str, Any] = None,
+        template: str | LazyI18nString,
+        context: dict[str, Any] = None,
         log_entry_type: str = 'eventyay.event.order.email.sent',
         user: User = None,
         headers: dict = None,
@@ -1053,12 +1054,7 @@ class Order(LockModel, LoggedModel):
 def answerfile_name(instance, filename: str) -> str:
     secret = get_random_string(length=32, allowed_chars=string.ascii_letters + string.digits)
     event = (instance.cartposition if instance.cartposition else instance.orderposition.order).event
-    return 'cachedfiles/answers/{org}/{ev}/{secret}.{filename}'.format(
-        org=event.organizer.slug,
-        ev=event.slug,
-        secret=secret,
-        filename=escape_uri_path(filename),
-    )
+    return f'cachedfiles/answers/{event.organizer.slug}/{event.slug}/{secret}.{escape_uri_path(filename)}'
 
 
 class QuestionAnswer(models.Model):
@@ -1390,7 +1386,7 @@ class AbstractPosition(models.Model):
 
     @property
     def state_name(self):
-        sd = pycountry.subdivisions.get(code='{}-{}'.format(self.country, self.state))
+        sd = pycountry.subdivisions.get(code=f'{self.country}-{self.state}')
         if sd:
             return sd.name
         return self.state
@@ -1555,11 +1551,7 @@ class OrderPayment(models.Model):
                 OrderPayment.PAYMENT_STATE_PENDING,
             ):
                 # Race condition detected, this payment is already confirmed
-                logger.info(
-                    'Failed payment {} but ignored due to likely race condition.'.format(
-                        self.full_id,
-                    )
-                )
+                logger.info(f'Failed payment {self.full_id} but ignored due to likely race condition.')
                 return
 
             if isinstance(info, str):
@@ -1621,11 +1613,7 @@ class OrderPayment(models.Model):
             locked_instance = OrderPayment.objects.select_for_update().get(pk=self.pk)
             if locked_instance.state == self.PAYMENT_STATE_CONFIRMED:
                 # Race condition detected, this payment is already confirmed
-                logger.info(
-                    'Confirmed payment {} but ignored due to likely race condition.'.format(
-                        self.full_id,
-                    )
-                )
+                logger.info(f'Confirmed payment {self.full_id} but ignored due to likely race condition.')
                 return
 
             locked_instance.state = self.PAYMENT_STATE_CONFIRMED
@@ -1651,7 +1639,7 @@ class OrderPayment(models.Model):
         )
 
         if self.order.status in (Order.STATUS_PAID, Order.STATUS_CANCELED):
-            logger.info('Confirmed payment {} but order is in status {}.'.format(self.full_id, self.order.status))
+            logger.info(f'Confirmed payment {self.full_id} but order is in status {self.order.status}.')
             return
 
         payment_sum = self.order.payments.filter(
@@ -1666,9 +1654,7 @@ class OrderPayment(models.Model):
         ).aggregate(s=Sum('amount'))['s'] or Decimal('0.00')
         if payment_sum - refund_sum < self.order.total:
             logger.info(
-                'Confirmed payment {} but payment sum is {} and refund sum is {}.'.format(
-                    self.full_id, payment_sum, refund_sum
-                )
+                f'Confirmed payment {self.full_id} but payment sum is {payment_sum} and refund sum is {refund_sum}.'
             )
             return
 
@@ -1773,7 +1759,7 @@ class OrderPayment(models.Model):
         field with ``-P-`` in between.
         :return:
         """
-        return '{}-P-{}'.format(self.order.code, self.local_id)
+        return f'{self.order.code}-P-{self.local_id}'
 
     def save(self, *args, **kwargs):
         if not self.local_id:
@@ -1959,7 +1945,7 @@ class OrderRefund(models.Model):
         field with ``-R-`` in between.
         :return:
         """
-        return '{}-R-{}'.format(self.order.code, self.local_id)
+        return f'{self.order.code}-R-{self.local_id}'
 
     def save(self, *args, **kwargs):
         if not self.local_id:
@@ -2039,7 +2025,7 @@ class OrderFee(models.Model):
 
     def __str__(self):
         if self.description:
-            return '{} - {}'.format(self.get_fee_type_display(), self.description)
+            return f'{self.get_fee_type_display()} - {self.description}'
         else:
             return self.get_fee_type_display()
 
@@ -2159,7 +2145,7 @@ class OrderPosition(AbstractPosition):
         )
 
     @classmethod
-    def transform_cart_positions(cls, cp: List, order) -> list:
+    def transform_cart_positions(cls, cp: list, order) -> list:
         from . import Voucher
 
         ops = []
@@ -2194,8 +2180,8 @@ class OrderPosition(AbstractPosition):
 
     def __str__(self):
         if self.variation:
-            return '#{} – {} – {}'.format(self.positionid, str(self.product), str(self.variation))
-        return '#{} – {}'.format(self.positionid, str(self.product))
+            return f'#{self.positionid} – {str(self.product)} – {str(self.variation)}'
+        return f'#{self.positionid} – {str(self.product)}'
 
     def __repr__(self):
         return '<OrderPosition: product %d, variation %d for order %s>' % (
@@ -2273,8 +2259,8 @@ class OrderPosition(AbstractPosition):
     def send_mail(
         self,
         subject: str,
-        template: Union[str, LazyI18nString],
-        context: Dict[str, Any] = None,
+        template: str | LazyI18nString,
+        context: dict[str, Any] = None,
         log_entry_type: str = 'eventyay.event.order.email.sent',
         user: User = None,
         headers: dict = None,
@@ -2491,7 +2477,7 @@ class InvoiceAddress(models.Model):
 
     @property
     def state_name(self):
-        sd = pycountry.subdivisions.get(code='{}-{}'.format(self.country, self.state))
+        sd = pycountry.subdivisions.get(code=f'{self.country}-{self.state}')
         if sd:
             return sd.name
         return self.state
@@ -2521,25 +2507,12 @@ class InvoiceAddress(models.Model):
 
 def cachedticket_name(instance, filename: str) -> str:
     secret = get_random_string(length=16, allowed_chars=string.ascii_letters + string.digits)
-    return 'tickets/{org}/{ev}/{code}-{no}-{prov}-{secret}.dat'.format(
-        org=instance.order_position.order.event.organizer.slug,
-        ev=instance.order_position.order.event.slug,
-        prov=instance.provider,
-        no=instance.order_position.positionid,
-        code=instance.order_position.order.code,
-        secret=secret,
-    )
+    return f'tickets/{instance.order_position.order.event.organizer.slug}/{instance.order_position.order.event.slug}/{instance.order_position.order.code}-{instance.order_position.positionid}-{instance.provider}-{secret}.dat'
 
 
 def cachedcombinedticket_name(instance, filename: str) -> str:
     secret = get_random_string(length=16, allowed_chars=string.ascii_letters + string.digits)
-    return 'tickets/{org}/{ev}/{code}-{prov}-{secret}.dat'.format(
-        org=instance.order.event.organizer.slug,
-        ev=instance.order.event.slug,
-        prov=instance.provider,
-        code=instance.order.code,
-        secret=secret,
-    )
+    return f'tickets/{instance.order.event.organizer.slug}/{instance.order.event.slug}/{instance.order.code}-{instance.provider}-{secret}.dat'
 
 
 class CachedTicket(models.Model):

@@ -37,7 +37,7 @@ def render_label(
             validation_text = pgettext('form', 'is valid')
         else:
             validation_text = pgettext('form', 'has errors')
-        opt += '<strong class="sr-only"> {}</strong>'.format(validation_text)
+        opt += f'<strong class="sr-only"> {validation_text}</strong>'
 
     if text_value(content) == '&#160;':
         # Empty label, e.g. checkbox
@@ -97,9 +97,7 @@ class CheckoutFieldRenderer(FieldRenderer):
         if self.field_help:
             help_text_and_errors.append(self.field_help)
         for idx, text in enumerate(help_text_and_errors):
-            html += '<div class="help-block" id="help-for-{id}-{idx}">{text}</div>'.format(
-                id=self.field.id_for_label, text=text, idx=idx
-            )
+            html += f'<div class="help-block" id="help-for-{self.field.id_for_label}-{idx}">{text}</div>'
         return html
 
     def add_help_attrs(self, widget=None):
@@ -110,7 +108,7 @@ class CheckoutFieldRenderer(FieldRenderer):
         if self.field_help:
             help_cnt += 1
         if help_cnt > 0:
-            help_ids = ['help-for-{id}-{idx}'.format(id=self.field.id_for_label, idx=idx) for idx in range(help_cnt)]
+            help_ids = [f'help-for-{self.field.id_for_label}-{idx}' for idx in range(help_cnt)]
             widget.attrs['aria-describedby'] = ' '.join(help_ids)
 
     def add_label(self, html):
@@ -129,7 +127,7 @@ class CheckoutFieldRenderer(FieldRenderer):
 
         if self.is_group_widget:
             label_for = ''
-            label_id = 'legend-{}'.format(self.field.html_name)
+            label_id = f'legend-{self.field.html_name}'
         else:
             label_for = self.field.id_for_label
             label_id = ''
@@ -148,7 +146,7 @@ class CheckoutFieldRenderer(FieldRenderer):
         return html
 
     def put_inside_label(self, html):
-        content = '{field} {label}'.format(field=html, label=self.label)
+        content = f'{html} {self.label}'
         return render_label(
             content=mark_safe(content),
             label_for=self.field.id_for_label,
@@ -157,9 +155,7 @@ class CheckoutFieldRenderer(FieldRenderer):
 
     def wrap_label_and_field(self, html):
         if self.is_group_widget:
-            attrs = ' role="group" aria-labelledby="legend-{}"'.format(self.field.html_name)
+            attrs = f' role="group" aria-labelledby="legend-{self.field.html_name}"'
         else:
             attrs = ''
-        return '<div class="{klass}"{attrs}>{html}</div>'.format(
-            klass=self.get_form_group_class(), html=html, attrs=attrs
-        )
+        return f'<div class="{self.get_form_group_class()}"{attrs}>{html}</div>'

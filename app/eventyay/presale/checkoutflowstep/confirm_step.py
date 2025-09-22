@@ -115,8 +115,8 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         self.request = request
 
         if self.confirm_messages and not self.all_optional:
-            for key, msg in self.confirm_messages.items():
-                if request.POST.get('confirm_{}'.format(key)) != 'yes':
+            for key, _msg in self.confirm_messages.items():
+                if request.POST.get(f'confirm_{key}') != 'yes':
                     msg = str(_('You need to check all checkboxes on the bottom of the page.'))
                     messages.error(self.request, msg)
                     if 'ajax' in self.request.POST or 'ajax' in self.request.GET:

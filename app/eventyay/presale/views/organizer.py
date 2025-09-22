@@ -74,20 +74,20 @@ def filter_qs_by_attr(qs, request):
         prop = props.get(attr)
         if not prop:
             continue
-        annotations = {'attr_{}'.format(i): Exists(emv_with_value)}
+        annotations = {f'attr_{i}': Exists(emv_with_value)}
         if qs.model == SubEvent:
-            annotations['attr_{}_sub'.format(i)] = Exists(semv_with_value)
-            annotations['attr_{}_sub_any'.format(i)] = Exists(semv_with_any_value)
-            filters = Q(**{'attr_{}_sub'.format(i): True})
-            filters |= Q(Q(**{'attr_{}_sub_any'.format(i): False}) & Q(**{'attr_{}'.format(i): True}))
+            annotations[f'attr_{i}_sub'] = Exists(semv_with_value)
+            annotations[f'attr_{i}_sub_any'] = Exists(semv_with_any_value)
+            filters = Q(**{f'attr_{i}_sub': True})
+            filters |= Q(Q(**{f'attr_{i}_sub_any': False}) & Q(**{f'attr_{i}': True}))
             if prop.default == v:
-                annotations['attr_{}_any'.format(i)] = Exists(emv_with_any_value)
-                filters |= Q(Q(**{'attr_{}_sub_any'.format(i): False}) & Q(**{'attr_{}_any'.format(i): False}))
+                annotations[f'attr_{i}_any'] = Exists(emv_with_any_value)
+                filters |= Q(Q(**{f'attr_{i}_sub_any': False}) & Q(**{f'attr_{i}_any': False}))
         else:
-            filters = Q(**{'attr_{}'.format(i): True})
+            filters = Q(**{f'attr_{i}': True})
             if prop.default == v:
-                annotations['attr_{}_any'.format(i)] = Exists(emv_with_any_value)
-                filters |= Q(**{'attr_{}_any'.format(i): False})
+                annotations[f'attr_{i}_any'] = Exists(emv_with_any_value)
+                filters |= Q(**{f'attr_{i}_any': False})
 
         qs = qs.annotate(**annotations).filter(filters)
     return qs
@@ -773,5 +773,5 @@ class OrganizerIcalDownload(OrganizerViewMixin, View):
             cal = get_ical(events)
 
         resp = HttpResponse(cal.serialize(), content_type='text/calendar')
-        resp['Content-Disposition'] = 'attachment; filename="{}.ics"'.format(request.organizer.slug)
+        resp['Content-Disposition'] = f'attachment; filename="{request.organizer.slug}.ics"'
         return resp

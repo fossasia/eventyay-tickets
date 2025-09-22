@@ -26,6 +26,7 @@ from eventyay.control.permissions import (
     StaffMemberRequiredMixin,
 )
 
+
 logger = logging.getLogger(__name__)
 
 

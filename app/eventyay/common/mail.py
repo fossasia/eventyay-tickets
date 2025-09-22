@@ -11,6 +11,7 @@ from eventyay.base.models import Event
 from eventyay.celery_app import app
 from eventyay.common.exceptions import SendMailException
 
+
 logger = logging.getLogger(__name__)
 
 

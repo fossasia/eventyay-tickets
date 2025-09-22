@@ -1,5 +1,6 @@
 from eventyay.common.signals import EventPluginSignal
 
+
 register_mail_placeholders = EventPluginSignal()
 """
 This signal is sent out to get all known email text placeholders. Receivers should return

@@ -5,6 +5,7 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+
 logger = logging.getLogger(__name__)
 
 

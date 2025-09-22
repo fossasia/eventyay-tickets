@@ -50,6 +50,7 @@ from eventyay.presale.views.event import (
 )
 from eventyay.presale.views.robots import NoSearchIndexViewMixin
 
+
 try:
     widget_data_cache = caches['redis']
 except:
@@ -74,7 +75,7 @@ class CartActionMixin:
         ) and self.kwargs.get('cart_namespace')
         if disclose_cart_id:
             cart_id = get_or_create_cart_id(self.request)
-            u += '&cart_id={}'.format(cart_id)
+            u += f'&cart_id={cart_id}'
         return u
 
     def get_success_url(self, value=None):
@@ -92,7 +93,7 @@ class CartActionMixin:
             ) and self.kwargs.get('cart_namespace')
             if disclose_cart_id:
                 cart_id = get_or_create_cart_id(self.request)
-                u += '&cart_id={}'.format(cart_id)
+                u += f'&cart_id={cart_id}'
             return u
         return self.get_next_url()
 
@@ -184,7 +185,7 @@ class CartActionMixin:
         # Compatibility patch that makes the frontend code a lot easier
         req_products = list(self.request.POST.lists())
         if '_voucher_product' in self.request.POST and '_voucher_code' in self.request.POST:
-            req_products.append(('%s' % self.request.POST['_voucher_product'], ('1',)))
+            req_products.append((self.request.POST['_voucher_product'], ('1',)))
             pass
 
         products = []
@@ -230,7 +231,7 @@ def create_empty_cart_id(request, replace_current=True):
     This is currently only invoked after an order has been created to make sure that all forms during
     checkout will show empty again if the same browser starts buying tickets again.
     """
-    session_keyname = 'current_cart_event_{}'.format(request.event.pk)
+    session_keyname = f'current_cart_event_{request.event.pk}'
     prefix = ''
     if request.resolver_match and request.resolver_match.kwargs.get('cart_namespace'):
         session_keyname += '_' + request.resolver_match.kwargs.get('cart_namespace')
@@ -302,7 +303,7 @@ def get_or_create_cart_id(request, create=True):
 
     If ``create`` is ``False`` and no session currently exists, ``None`` will be returned.
     """
-    session_keyname = 'current_cart_event_{}'.format(request.event.pk)
+    session_keyname = f'current_cart_event_{request.event.pk}'
     prefix = ''
     if request.resolver_match and request.resolver_match.kwargs.get('cart_namespace'):
         session_keyname += '_' + request.resolver_match.kwargs.get('cart_namespace')
@@ -322,7 +323,7 @@ def get_or_create_cart_id(request, create=True):
         cart_data = {}
         if prefix and 'take_cart_id' in request.GET and current_id:
             new_id = current_id
-            cached_widget_data = widget_data_cache.get('widget_data_{}'.format(current_id))
+            cached_widget_data = widget_data_cache.get(f'widget_data_{current_id}')
             if cached_widget_data:
                 cart_data['widget_data'] = cached_widget_data
         else:
@@ -473,7 +474,7 @@ class CartAdd(EventViewMixin, CartActionMixin, AsyncAction, View):
             except ValueError:
                 widget_data = {}
             else:
-                widget_data_cache.set('widget_data_{}'.format(cart_id), widget_data, 600)
+                widget_data_cache.set(f'widget_data_{cart_id}', widget_data, 600)
                 cs = cart_session(request)
                 cs['widget_data'] = widget_data
         else:
@@ -525,7 +526,9 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
 
         # Calculate how many options the user still has. If there is only one option, we can
         # check the box right away ;)
-        context['options'] = sum([(len(product.available_variations) if product.has_variations else 1) for product in products])
+        context['options'] = sum(
+            [(len(product.available_variations) if product.has_variations else 1) for product in products]
+        )
 
         context['allfree'] = all(
             product.display_price.gross == Decimal('0.00') for product in products if not product.has_variations

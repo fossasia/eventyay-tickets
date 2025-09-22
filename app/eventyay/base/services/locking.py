@@ -9,6 +9,7 @@ from django.utils.timezone import now
 
 from eventyay.base.models import EventLock
 
+
 logger = logging.getLogger('pretix.base.locking')
 LOCK_TIMEOUT = 120
 

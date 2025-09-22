@@ -25,6 +25,7 @@ from pytz import common_timezones, timezone
 from eventyay.base.channels import get_all_sales_channels
 from eventyay.base.email import get_available_placeholders
 from eventyay.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm
+from eventyay.base.forms.widgets import NativeSplitDateTimePickerWidget
 from eventyay.base.models import Event, Organizer, TaxRule, Team
 from eventyay.base.models.event import EventMetaValue, SubEvent
 from eventyay.base.reldate import RelativeDateField, RelativeDateTimeField
@@ -145,10 +146,10 @@ class EventWizardBasicsForm(I18nModelForm):
             'presale_end': SplitDateTimeField,
         }
         widgets = {
-            'date_from': SplitDateTimePickerWidget(),
-            'date_to': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_basics-date_from_0'}),
-            'presale_start': SplitDateTimePickerWidget(),
-            'presale_end': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_basics-presale_start_0'}),
+            'date_from': NativeSplitDateTimePickerWidget(),
+            'date_to': NativeSplitDateTimePickerWidget(),
+            'presale_start': NativeSplitDateTimePickerWidget(),
+            'presale_end': NativeSplitDateTimePickerWidget(),
             'slug': SlugWidget,
         }
 
@@ -710,7 +711,7 @@ class ProviderForm(SettingsForm):
                 v._required = v.one_required
                 v.one_required = False
                 v.widget.enabled_locales = self.locales
-            elif isinstance(v, (RelativeDateTimeField, RelativeDateField)):
+            elif isinstance(v, (RelativeDateTimeField | RelativeDateField)):
                 v.set_event(self.obj)
 
             if hasattr(v, '_as_type'):
@@ -1100,7 +1101,7 @@ class MailSettingsForm(SettingsForm):
     }
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        phs = [f'{{{p}}}' for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)

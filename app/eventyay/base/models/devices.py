@@ -120,7 +120,7 @@ class Device(LoggedModel):
         unique_together = (('organizer', 'device_id'),)
 
     def __str__(self):
-        return '#{}: {} ({} {})'.format(self.device_id, self.name, self.hardware_brand, self.hardware_model)
+        return f'#{self.device_id}: {self.name} ({self.hardware_brand} {self.hardware_model})'
 
     def save(self, *args, **kwargs):
         if not self.device_id:

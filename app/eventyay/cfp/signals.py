@@ -1,5 +1,6 @@
 from eventyay.common.signals import EventPluginSignal
 
+
 footer_link = EventPluginSignal()
 """
 This signal allows you to add links to the footer of an event page. You are

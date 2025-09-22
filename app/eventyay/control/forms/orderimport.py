@@ -29,7 +29,7 @@ class ProcessForm(forms.Form):
         kwargs['initial'] = initital
         super().__init__(*args, **kwargs)
 
-        header_choices = [('csv:{}'.format(h), _('CSV column: "{name}"').format(name=h)) for h in headers]
+        header_choices = [(f'csv:{h}', _('CSV column: "{name}"').format(name=h)) for h in headers]
 
         for c in get_all_columns(self.event):
             choices = []
@@ -37,7 +37,7 @@ class ProcessForm(forms.Form):
                 choices.append((c.default_value, c.default_label))
             choices += header_choices
             for k, v in c.static_choices():
-                choices.append(('static:{}'.format(k), v))
+                choices.append((f'static:{k}', v))
 
             self.fields[c.identifier] = forms.ChoiceField(
                 label=str(c.verbose_name),

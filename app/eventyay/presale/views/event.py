@@ -36,8 +36,8 @@ from django.views.generic import TemplateView
 
 from eventyay.base.channels import get_all_sales_channels
 from eventyay.base.models import (
-    ProductVariation,
     Order,
+    ProductVariation,
     Quota,
     SeatCategoryMapping,
     Voucher,
@@ -70,6 +70,7 @@ from . import (
     get_cart,
     iframe_entry_view_wrapper,
 )
+
 
 package_name = 'pretix_venueless'
 
@@ -416,7 +417,9 @@ def get_grouped_products(
     ):
         event.cache.set(quota_cache_key, quota_cache, 5)
     products = [
-        product for product in products if (len(product.available_variations) > 0 or not product.has_variations) and not product._remove
+        product
+        for product in products
+        if (len(product.available_variations) > 0 or not product.has_variations) and not product._remove
     ]
     return products, display_add_to_cart
 
@@ -815,7 +818,7 @@ class EventAuth(View):
         except:
             raise PermissionDenied(_('Please go back and try again.'))
 
-        parent = data.get('pretix_event_access_{}'.format(request.event.pk))
+        parent = data.get(f'pretix_event_access_{request.event.pk}')
 
         sparent = SessionStore(parent)
         try:
@@ -826,7 +829,7 @@ class EventAuth(View):
             if 'event_access' not in parentdata:
                 raise PermissionDenied(_('Please go back and try again.'))
 
-        request.session['pretix_event_access_{}'.format(request.event.pk)] = parent
+        request.session[f'pretix_event_access_{request.event.pk}'] = parent
         return redirect(eventreverse(request.event, 'presale:event.index'))
 
 
@@ -915,20 +918,16 @@ class JoinOnlineVideoView(EventViewMixin, View):
             'profile': profile,
             'traits': list(
                 {
-                    'eventyay-video-event-{}'.format(request.event.slug),
-                    'eventyay-video-subevent-{}'.format(order_position.subevent_id),
-                    'eventyay-video-item-{}'.format(order_position.item_id),
-                    'eventyay-video-variation-{}'.format(order_position.variation_id),
-                    'eventyay-video-category-{}'.format(order_position.item.category_id),
+                    f'eventyay-video-event-{request.event.slug}',
+                    f'eventyay-video-subevent-{order_position.subevent_id}',
+                    f'eventyay-video-item-{order_position.item_id}',
+                    f'eventyay-video-variation-{order_position.variation_id}',
+                    f'eventyay-video-category-{order_position.item.category_id}',
                 }
-                | {'eventyay-video-item-{}'.format(p.item_id) for p in order_position.addons.all()}
+                | {f'eventyay-video-item-{p.item_id}' for p in order_position.addons.all()}
+                | {f'eventyay-video-variation-{p.variation_id}' for p in order_position.addons.all() if p.variation_id}
                 | {
-                    'eventyay-video-variation-{}'.format(p.variation_id)
-                    for p in order_position.addons.all()
-                    if p.variation_id
-                }
-                | {
-                    'eventyay-video-category-{}'.format(p.item.category_id)
+                    f'eventyay-video-category-{p.item.category_id}'
                     for p in order_position.addons.all()
                     if p.item.category_id
                 }
@@ -937,4 +936,4 @@ class JoinOnlineVideoView(EventViewMixin, View):
 
         token = jwt.encode(payload, self.request.event.settings.venueless_secret, algorithm='HS256')
         baseurl = self.request.event.settings.venueless_url
-        return '{}/#token={}'.format(baseurl, token).replace('//#', '/#')
+        return f'{baseurl}/#token={token}'.replace('//#', '/#')

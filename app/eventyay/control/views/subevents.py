@@ -48,9 +48,9 @@ from eventyay.control.forms.subevents import (
     SubEventBulkEditForm,
     SubEventBulkForm,
     SubEventForm,
+    SubEventMetaValueForm,
     SubEventProductForm,
     SubEventProductVariationForm,
-    SubEventMetaValueForm,
     TimeFormSet,
 )
 from eventyay.control.permissions import EventPermissionRequiredMixin
@@ -208,7 +208,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
             self._default_meta = self.request.event.meta_data
 
         return self.meta_form(
-            prefix='prop-{}'.format(p.pk),
+            prefix=f'prop-{p.pk}',
             property=p,
             disabled=(
                 p.protected
@@ -280,7 +280,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                     'name': q.name,
                     'release_after_exit': q.release_after_exit,
                     'productvars': [str(i.pk) for i in q.products.all()]
-                    + ['{}-{}'.format(v.product_id, v.pk) for v in q.variations.all()],
+                    + [f'{v.product_id}-{v.pk}' for v in q.variations.all()],
                 }
                 for q in self.copy_from.quotas.prefetch_related('products', 'variations')
             ]
@@ -424,7 +424,9 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 for sei in SubEventProduct.objects.filter(subevent=self.copy_from).select_related('product')
             }
             se_var_instances = {
-                sei.variation_id: SubEventProductVariation(variation=sei.variation, price=sei.price, disabled=sei.disabled)
+                sei.variation_id: SubEventProductVariation(
+                    variation=sei.variation, price=sei.price, disabled=sei.disabled
+                )
                 for sei in SubEventProductVariation.objects.filter(subevent=self.copy_from).select_related('variation')
             }
 
@@ -435,7 +437,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                     inst = se_var_instances.get(v.pk) or SubEventProductVariation(subevent=self.object, variation=v)
                     formlist.append(
                         SubEventProductVariationForm(
-                            prefix='productvar-{}'.format(v.pk),
+                            prefix=f'productvar-{v.pk}',
                             product=i,
                             variation=v,
                             instance=inst,
@@ -446,7 +448,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 inst = se_product_instances.get(i.pk) or SubEventProduct(subevent=self.object, product=i)
                 formlist.append(
                     SubEventProductForm(
-                        prefix='product-{}'.format(i.pk),
+                        prefix=f'product-{i.pk}',
                         product=i,
                         instance=inst,
                         data=(self.request.POST if self.request.method == 'POST' else None),
@@ -1105,7 +1107,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                         inst = SubEventProductVariation(variation=v)
                     formlist.append(
                         SubEventProductVariationForm(
-                            prefix='productvar-{}'.format(v.pk),
+                            prefix=f'productvar-{v.pk}',
                             product=i,
                             variation=v,
                             instance=inst,
@@ -1120,7 +1122,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     inst = SubEventProduct(product=i)
                 formlist.append(
                     SubEventProductForm(
-                        prefix='product-{}'.format(i.pk),
+                        prefix=f'product-{i.pk}',
                         product=i,
                         instance=inst,
                         data=(self.request.POST if self.is_submitted else None),
@@ -1151,7 +1153,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                 inst.value = matches[p.id][0]['value']
             formlist.append(
                 SubEventMetaValueForm(
-                    prefix='prop-{}'.format(p.pk),
+                    prefix=f'prop-{p.pk}',
                     property=p,
                     default=self._default_meta.get(p.name, ''),
                     instance=inst,
@@ -1245,7 +1247,9 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     q.event = self.request.event
                     q.save()
                     for _i in f.cleaned_data.get('limit_products', []):
-                        to_save_products.append(CheckinList.limit_products.through(checkinlist_id=q.pk, product_id=_i.pk))
+                        to_save_products.append(
+                            CheckinList.limit_products.through(checkinlist_id=q.pk, product_id=_i.pk)
+                        )
                     for _i in f.cleaned_data.get('gates', []):
                         to_save_gates.append(CheckinList.gates.through(checkinlist_id=q.pk, gate_id=_i.pk))
                     change_data['id'] = q.pk

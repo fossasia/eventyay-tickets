@@ -4,7 +4,7 @@ import logging
 from collections import OrderedDict
 from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
-from typing import Any, Dict, Union
+from typing import Any
 
 import pytz
 from django import forms
@@ -46,6 +46,7 @@ from eventyay.helpers.money import DecimalTextInput
 from eventyay.multidomain.urlreverse import build_absolute_uri, eventreverse
 from eventyay.presale.views import get_cart, get_cart_total
 from eventyay.presale.views.cart import cart_session, get_or_create_cart_id
+
 
 logger = logging.getLogger(__name__)
 
@@ -609,7 +610,7 @@ class BasePaymentProvider:
         """
         return ''
 
-    def checkout_prepare(self, request: HttpRequest, cart: Dict[str, Any]) -> Union[bool, str]:
+    def checkout_prepare(self, request: HttpRequest, cart: dict[str, Any]) -> bool | str:
         """
         Will be called after the user selects this provider as their payment method.
         If you provided a form to the user to enter payment data, this method should
@@ -735,7 +736,7 @@ class BasePaymentProvider:
 
         return self._is_still_available(order=order)
 
-    def payment_prepare(self, request: HttpRequest, payment: OrderPayment) -> Union[bool, str]:
+    def payment_prepare(self, request: HttpRequest, payment: OrderPayment) -> bool | str:
         """
         Will be called if the user retries to pay an unpaid order (after the user filled in
         e.g. the form returned by :py:meth:`payment_form`) or if the user changes the payment
@@ -868,7 +869,7 @@ class BasePaymentProvider:
         """
         raise ValidationError('Not implemented')
 
-    def shred_payment_info(self, obj: Union[OrderPayment, OrderRefund]):
+    def shred_payment_info(self, obj: OrderPayment | OrderRefund):
         """
         When personal data is removed from an event, this method is called to scrub payment-related data
         from a payment or refund. By default, it removes all info from the ``info`` attribute. You can override
@@ -1243,7 +1244,7 @@ class GiftCardPayment(BasePaymentProvider):
     def payment_refund_supported(self, payment: OrderPayment) -> bool:
         return True
 
-    def checkout_prepare(self, request: HttpRequest, cart: Dict[str, Any]) -> Union[bool, str, None]:
+    def checkout_prepare(self, request: HttpRequest, cart: dict[str, Any]) -> bool | str | None:
         for p in get_cart(request):
             if p.item.issue_giftcard:
                 messages.error(
@@ -1325,7 +1326,7 @@ class GiftCardPayment(BasePaymentProvider):
                 ),
             )
 
-    def payment_prepare(self, request: HttpRequest, payment: OrderPayment) -> Union[bool, str, None]:
+    def payment_prepare(self, request: HttpRequest, payment: OrderPayment) -> bool | str | None:
         for p in payment.order.positions.all():
             if p.item.issue_giftcard:
                 messages.error(

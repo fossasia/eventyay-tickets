@@ -24,6 +24,7 @@ from eventyay.base.models import Event, Organizer
 from eventyay.helpers.cookies import set_cookie_without_samesite
 from eventyay.multidomain.models import KnownDomain
 
+
 LOCAL_HOST_NAMES = ('testserver', 'localhost')
 
 
@@ -48,7 +49,7 @@ class MultiDomainMiddleware(MiddlewareMixin):
         if domain == default_domain:
             request.urlconf = 'eventyay.multidomain.maindomain_urlconf'
         elif domain:
-            cached = cache.get('eventyay_multidomain_instance_{}'.format(domain))
+            cached = cache.get(f'eventyay_multidomain_instance_{domain}')
 
             if cached is None:
                 try:
@@ -59,7 +60,7 @@ class MultiDomainMiddleware(MiddlewareMixin):
                     orga = False
                     event = False
                 cache.set(
-                    'eventyay_multidomain_instance_{}'.format(domain),
+                    f'eventyay_multidomain_instance_{domain}',
                     (orga.pk if orga else None, event.pk if event else None),
                     3600,
                 )

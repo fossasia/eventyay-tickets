@@ -120,13 +120,16 @@ class LoggedModel(models.Model, LoggingMixin):
             event = self.event
         else:
             return None
-        return reverse(
-            'control:event.log',
-            kwargs={
-                'event': event.slug,
-                'organizer': event.organizer.slug,
-            },
-        ) + '?content_type={}&object={}'.format(self.logs_content_type.pk, self.pk)
+        return (
+            reverse(
+                'control:event.log',
+                kwargs={
+                    'event': event.slug,
+                    'organizer': event.organizer.slug,
+                },
+            )
+            + f'?content_type={self.logs_content_type.pk}&object={self.pk}'
+        )
 
     def top_logentries(self):
         qs = self.all_logentries()

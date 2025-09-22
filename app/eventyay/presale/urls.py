@@ -14,6 +14,7 @@ import eventyay.presale.views.user
 import eventyay.presale.views.waiting
 import eventyay.presale.views.widget
 
+
 # This is not a valid Django URL configuration, as the final
 # configuration is done by the eventyay.multidomain package.
 frame_wrapped_urls = [

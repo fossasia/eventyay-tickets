@@ -4,6 +4,7 @@ from functools import wraps
 
 from django.core.cache import cache
 
+
 logger = logging.getLogger(__name__)
 
 SKIPPED = object()
