@@ -17,6 +17,7 @@ from eventyay.base.views.tasks import AsyncAction
 from eventyay.control.permissions import EventPermissionRequiredMixin
 from eventyay.control.views.user import RecentAuthenticationRequiredMixin
 
+
 logger = logging.getLogger(__name__)
 
 

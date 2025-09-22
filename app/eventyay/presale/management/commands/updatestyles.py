@@ -44,12 +44,12 @@ class Command(BaseCommand):
         for lc, ll in settings.LANGUAGES:
             data = generate_widget_js(lc).encode()
             checksum = hashlib.sha1(data).hexdigest()
-            fname = gs.settings.get('widget_file_{}'.format(lc))
-            if not fname or gs.settings.get('widget_checksum_{}'.format(lc), '') != checksum:
-                newname = default_storage.save('pub/widget/widget.{}.{}.js'.format(lc, checksum), ContentFile(data))
-                gs.settings.set('widget_file_{}'.format(lc), 'file://' + newname)
-                gs.settings.set('widget_checksum_{}'.format(lc), checksum)
-                cache.delete('widget_js_data_{}'.format(lc))
+            fname = gs.settings.get(f'widget_file_{lc}')
+            if not fname or gs.settings.get(f'widget_checksum_{lc}', '') != checksum:
+                newname = default_storage.save(f'pub/widget/widget.{lc}.{checksum}.js', ContentFile(data))
+                gs.settings.set(f'widget_file_{lc}', 'file://' + newname)
+                gs.settings.set(f'widget_checksum_{lc}', checksum)
+                cache.delete(f'widget_js_data_{lc}')
                 if fname:
                     if isinstance(fname, File):
                         default_storage.delete(fname.name)

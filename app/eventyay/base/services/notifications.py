@@ -121,11 +121,7 @@ def send_notification_mail(notification: Notification, user: User):
     mail_send_task.apply_async(
         kwargs={
             'to': [user.email],
-            'subject': '[{}] {}: {}'.format(
-                settings.INSTANCE_NAME,
-                notification.event.settings.mail_prefix or notification.event.slug.upper(),
-                notification.title,
-            ),
+            'subject': f'[{settings.INSTANCE_NAME}] {notification.event.settings.mail_prefix or notification.event.slug.upper()}: {notification.title}',
             'body': body_plain,
             'html': body_html,
             'sender': settings.MAIL_FROM,

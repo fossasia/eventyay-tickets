@@ -49,7 +49,7 @@ class EventPermissionRequiredMixin:
 
     @classmethod
     def as_view(cls, **initkwargs):
-        view = super(EventPermissionRequiredMixin, cls).as_view(**initkwargs)
+        view = super().as_view(**initkwargs)
         return event_permission_required(cls.permission)(view)
 
 
@@ -89,7 +89,7 @@ class OrganizerPermissionRequiredMixin:
 
     @classmethod
     def as_view(cls, **initkwargs):
-        view = super(OrganizerPermissionRequiredMixin, cls).as_view(**initkwargs)
+        view = super().as_view(**initkwargs)
         return organizer_permission_required(cls.permission)(view)
 
 
@@ -143,7 +143,7 @@ class AdministratorPermissionRequiredMixin:
 
     @classmethod
     def as_view(cls, **initkwargs):
-        view = super(AdministratorPermissionRequiredMixin, cls).as_view(**initkwargs)
+        view = super().as_view(**initkwargs)
         return administrator_permission_required()(view)
 
 
@@ -155,5 +155,5 @@ class StaffMemberRequiredMixin:
 
     @classmethod
     def as_view(cls, **initkwargs):
-        view = super(StaffMemberRequiredMixin, cls).as_view(**initkwargs)
+        view = super().as_view(**initkwargs)
         return staff_member_required()(view)

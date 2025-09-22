@@ -25,6 +25,7 @@ from eventyay.helpers.config import EnvOrParserConfig
 
 from .settings_helpers import build_redis_tls_config
 
+
 _config = configparser.RawConfigParser()
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
@@ -45,10 +46,7 @@ def instance_name(request):
 debug_fallback = 'runserver' in sys.argv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = os.environ.get(
-    'DATA_DIR',
-    config.get('eventyay', 'datadir', fallback='data')
-)
+DATA_DIR = os.environ.get('DATA_DIR', config.get('eventyay', 'datadir', fallback='data'))
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 PROFILE_DIR = os.path.join(DATA_DIR, 'profiles')
@@ -159,9 +157,7 @@ _LIBRARY_MIDDLEWARES = (
 )
 
 if DEBUG and importlib.util.find_spec('debug_toolbar'):
-    _LIBRARY_MIDDLEWARES += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
+    _LIBRARY_MIDDLEWARES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 _OURS_MIDDLEWARES = (
     'eventyay.base.middleware.CustomCommonMiddleware',
@@ -495,8 +491,7 @@ CELERY_TASK_ROUTES = (
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static') ]
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
@@ -635,6 +630,6 @@ LOGGING = {
             'handlers': [CONSOLE_HANDLER],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': False,
-        }
+        },
     },
 }

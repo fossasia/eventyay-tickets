@@ -5,10 +5,11 @@ from typing import Any
 
 from celery import Task
 from django_scopes import scopes_disabled
-# from pretix_venueless.views import VenuelessSettingsForm
 
+# from pretix_venueless.views import VenuelessSettingsForm
 from ..base.models import Event
 from .utils import EventCreatedFor
+
 
 logger = logging.getLogger(__name__)
 

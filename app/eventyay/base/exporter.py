@@ -3,7 +3,6 @@ import re
 import tempfile
 from collections import OrderedDict, namedtuple
 from decimal import Decimal
-from typing import Tuple
 
 from defusedcsv import csv
 from django import forms
@@ -88,7 +87,7 @@ class BaseExporter:
         """
         return {}
 
-    def render(self, form_data: dict) -> Tuple[str, str, bytes]:
+    def render(self, form_data: dict) -> tuple[str, str, bytes]:
         """
         Render the exported file and return a tuple consisting of a filename, a file type
         and file content.
@@ -215,7 +214,7 @@ class ListExporter(BaseExporter):
                     f.read(),
                 )
 
-    def render(self, form_data: dict, output_file=None) -> Tuple[str, str, bytes]:
+    def render(self, form_data: dict, output_file=None) -> tuple[str, str, bytes]:
         if form_data.get('_format') == 'xlsx':
             return self._render_xlsx(form_data, output_file=output_file)
         elif form_data.get('_format') == 'default':
@@ -344,7 +343,7 @@ class MultiSheetListExporter(ListExporter):
                     f.read(),
                 )
 
-    def render(self, form_data: dict, output_file=None) -> Tuple[str, str, bytes]:
+    def render(self, form_data: dict, output_file=None) -> tuple[str, str, bytes]:
         if form_data.get('_format') == 'xlsx':
             return self._render_xlsx(form_data, output_file=output_file)
         elif ':' in form_data.get('_format'):

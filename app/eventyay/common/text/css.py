@@ -5,6 +5,7 @@ from cssutils.css import CSSMediaRule
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+
 acceptable_css_keywords = {
     'auto',
     'aqua',

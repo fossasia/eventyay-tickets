@@ -33,7 +33,7 @@ class ResendLinkView(EventViewMixin, TemplateView):
             from django_redis import get_redis_connection
 
             rc = get_redis_connection('redis')
-            if rc.exists('pretix_resend_{}_{}'.format(request.event.pk, user)):
+            if rc.exists(f'pretix_resend_{request.event.pk}_{user}'):
                 messages.error(
                     request,
                     _(
@@ -45,7 +45,7 @@ class ResendLinkView(EventViewMixin, TemplateView):
                 )
                 return redirect(eventreverse(self.request.event, 'presale:event.resend_link'))
             else:
-                rc.setex('pretix_resend_{}_{}'.format(request.event.pk, user), 3600 * 24, '1')
+                rc.setex(f'pretix_resend_{request.event.pk}_{user}', 3600 * 24, '1')
 
         orders = self.request.event.orders.filter(email__iexact=user)
 
@@ -66,7 +66,7 @@ class ResendLinkView(EventViewMixin, TemplateView):
             )
         except SendMailException:
             logger = logging.getLogger('pretix.presale.user')
-            logger.exception('A mail resending order links to {} could not be sent.'.format(user))
+            logger.exception(f'A mail resending order links to {user} could not be sent.')
             messages.error(
                 self.request,
                 _('We have trouble sending emails right now, please check back later.'),

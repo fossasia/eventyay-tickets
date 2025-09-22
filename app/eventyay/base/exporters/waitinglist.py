@@ -160,7 +160,7 @@ class WaitingListExporter(ListExporter):
             slug = event.organizer.slug if len(self.events) > 1 else event.slug
         else:
             slug = self.event.slug
-        return '{}_waitinglist'.format(slug)
+        return f'{slug}_waitinglist'
 
 
 @receiver(register_data_exporters, dispatch_uid='exporter_waitinglist')

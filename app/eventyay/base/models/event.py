@@ -48,6 +48,7 @@ from eventyay.helpers.thumb import get_thumbnail
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
 
+
 TALK_HOSTNAME = settings.TALK_HOSTNAME
 
 
@@ -975,7 +976,9 @@ class Event(EventMixin, LoggedModel):
             imv.product = product_map[imv.product.pk]
             imv.save()
 
-        for ia in ProductAddOn.objects.filter(base_product__event=other).prefetch_related('base_product', 'addon_category'):
+        for ia in ProductAddOn.objects.filter(base_product__event=other).prefetch_related(
+            'base_product', 'addon_category'
+        ):
             ia.pk = None
             ia.base_product = product_map[ia.base_product.pk]
             ia.addon_category = category_map[ia.addon_category.pk]

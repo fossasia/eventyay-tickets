@@ -12,6 +12,7 @@ from eventyay.base.signals import register_notification_types
 from eventyay.base.templatetags.money import money_filter
 from eventyay.helpers.urls import build_absolute_uri
 
+
 logger = logging.getLogger(__name__)
 _ALL_TYPES = None
 
@@ -62,7 +63,7 @@ class NotificationType:
         self.event = event
 
     def __repr__(self):
-        return '<NotificationType: {}>'.format(self.action_type)
+        return f'<NotificationType: {self.action_type}>'
 
     @property
     def action_type(self) -> str:
@@ -179,7 +180,7 @@ class ParametrizedOrderNotificationType(NotificationType):
         if order.event.has_subevents:
             ses = []
             for se in self.event.subevents.filter(id__in=order.positions.values_list('subevent', flat=True)):
-                ses.append('{} ({})'.format(se.name, se.get_date_range_display()))
+                ses.append(f'{se.name} ({se.get_date_range_display()})')
             n.add_attribute(pgettext_lazy('subevent', 'Dates'), '\n'.join(ses))
         else:
             n.add_attribute(_('Event date'), order.event.get_date_range_display())

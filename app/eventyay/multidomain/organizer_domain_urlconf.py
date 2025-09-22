@@ -12,6 +12,7 @@ from eventyay.presale.urls import (
     organizer_patterns,
 )
 
+
 presale_patterns = [
     url(
         r'',

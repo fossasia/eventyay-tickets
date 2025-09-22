@@ -4,6 +4,7 @@ import logging
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 
+
 logger = logging.getLogger('eventyay.security.csp')
 
 

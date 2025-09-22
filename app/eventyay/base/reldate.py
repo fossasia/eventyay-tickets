@@ -1,6 +1,5 @@
 import datetime
 from collections import namedtuple
-from typing import Union
 
 import pytz
 from dateutil import parser
@@ -9,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
+
 
 BASE_CHOICES = (
     ('date_from', _('Event start')),
@@ -32,7 +32,7 @@ class RelativeDateWrapper:
     will be used.
     """
 
-    def __init__(self, data: Union[datetime.datetime, RelativeDate]):
+    def __init__(self, data: datetime.datetime | RelativeDate):
         self.data = data
 
     def date(self, event) -> datetime.date:
@@ -141,7 +141,7 @@ class RelativeDateWrapper:
                         minutes_before=None,
                     )
             if data.base_date_name not in [k[0] for k in BASE_CHOICES]:
-                raise ValueError('{} is not a valid base date'.format(data.base_date_name))
+                raise ValueError(f'{data.base_date_name} is not a valid base date')
         else:
             data = parser.parse(input)
         return RelativeDateWrapper(data)

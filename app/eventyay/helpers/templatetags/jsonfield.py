@@ -16,7 +16,7 @@ def sqlite_compile_json_path(key_transforms):
     for key_transform in key_transforms:
         try:
             num = int(key_transform)
-            path.append('[{}]'.format(num))
+            path.append(f'[{num}]')
         except ValueError:  # non-integer
             path.append('.')
             path.append(key_transform)
@@ -51,7 +51,7 @@ class JSONExtract(Expression):
             params.extend(arg_params)
             json_path = postgres_compile_json_path(self.path)
             params.append(json_path)
-            template = '{} #> %s'.format(arg_sql)
+            template = f'{arg_sql} #> %s'
             return template, params
         else:
             raise NotSupportedError('Functions on JSONFields are only supported on PostgreSQL.')

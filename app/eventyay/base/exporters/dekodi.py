@@ -207,7 +207,7 @@ class DekodiNREIExporter(BaseExporter):
             'Data': [self._encode_invoice(i) for i in qs],
         }
         return (
-            '{}_nrei.json'.format(self.event.slug),
+            f'{self.event.slug}_nrei.json',
             'application/json',
             json.dumps(jo, cls=DjangoJSONEncoder, indent=4),
         )

@@ -1,6 +1,7 @@
+from collections.abc import Iterable
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
-from typing import Any, Dict, Iterable, List, Tuple
+from typing import Any
 
 from django.db.models import (
     Case,
@@ -17,7 +18,7 @@ from django.db.models import (
 from django.utils.timezone import make_aware
 from django.utils.translation import gettext_lazy as _
 
-from eventyay.base.models import Event, Product, ProductCategory, Order, OrderPosition
+from eventyay.base.models import Event, Order, OrderPosition, Product, ProductCategory
 from eventyay.base.models.event import SubEvent
 from eventyay.base.models.orders import OrderFee, OrderPayment
 from eventyay.base.signals import order_fee_type_name
@@ -36,7 +37,7 @@ class Dontsum:
         return str(self.value)
 
 
-def tuplesum(tuples: Iterable[Tuple]) -> Tuple:
+def tuplesum(tuples: Iterable[tuple]) -> tuple:
     """
     Takes a list of tuples of size n. In our case, those are e.g. tuples of size 2 containing
     a number of sales and a sum of their toal amount.
@@ -93,7 +94,7 @@ def order_overview(
     date_until=None,
     fees=False,
     admission_only=False,
-) -> Tuple[List[Tuple[ProductCategory, List[Product]]], Dict[str, Tuple[Decimal, Decimal]]]:
+) -> tuple[list[tuple[ProductCategory, list[Product]]], dict[str, tuple[Decimal, Decimal]]]:
     products = (
         event.products.all()
         .select_related(
@@ -285,7 +286,7 @@ def order_overview(
         for pprov, total in sorted(num['total'].items(), key=lambda i: i[0]):
             ppobj = DummyObject()
             if pprov[0] == OrderFee.FEE_TYPE_PAYMENT:
-                ppobj.name = '{} - {}'.format(names[pprov[0]], provider_names.get(pprov[1], pprov[1]))
+                ppobj.name = f'{names[pprov[0]]} - {provider_names.get(pprov[1], pprov[1])}'
             else:
                 name = pprov[1]
                 for r, resp in order_fee_type_name.send(sender=event, fee_type=pprov[0], internal_type=pprov[1]):
@@ -293,7 +294,7 @@ def order_overview(
                         name = resp
                         break
 
-                ppobj.name = '{} - {}'.format(names[pprov[0]], name)
+                ppobj.name = f'{names[pprov[0]]} - {name}'
             ppobj.provider = pprov[1]
             ppobj.has_variations = False
             ppobj.num = {}

@@ -3,12 +3,13 @@ import logging
 from django import forms
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, DetailView
-from django.shortcuts import redirect
-from oauth2_provider.scopes import get_scopes_backend
+from django.views.generic import DetailView, ListView
+from oauth2_provider.generators import generate_client_secret
 from oauth2_provider.models import get_application_model
+from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.views import (
     ApplicationDelete,
     ApplicationDetail,
@@ -16,7 +17,6 @@ from oauth2_provider.views import (
     ApplicationRegistration,
     ApplicationUpdate,
 )
-from oauth2_provider.generators import generate_client_secret
 
 from eventyay.api.models import OAuthAccessToken, OAuthApplication, OAuthRefreshToken
 from eventyay.control.signals import oauth_application_registered

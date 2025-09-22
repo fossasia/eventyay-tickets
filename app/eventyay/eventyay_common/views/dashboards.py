@@ -1,5 +1,6 @@
 from datetime import timedelta
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
+from zoneinfo import ZoneInfo
 
 import pytz
 from django.contrib.contenttypes.models import ContentType
@@ -24,14 +25,13 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from pytz.tzinfo import DstTzInfo
-from zoneinfo import ZoneInfo
 
 from eventyay.base.models import (
     Event,
-    Product,
-    ProductCategory,
     Order,
     OrderRefund,
+    Product,
+    ProductCategory,
     Question,
     Quota,
     RequiredAction,
@@ -49,6 +49,7 @@ from eventyay.helpers.plugin_enable import is_video_enabled
 
 from ...base.models.orders import CancellationRequest
 from ..utils import EventCreatedFor, get_subevent
+
 
 OVERVIEW_BANLIST = ['pretix.plugins.sendmail.order.email.sent']
 
@@ -71,7 +72,7 @@ class EventIndexView(TemplateView):
     template_name = 'eventyay_common/event/index.html'
 
     @staticmethod
-    def rearrange(widgets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def rearrange(widgets: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Sort widget boxes according to priority.
         """
@@ -81,7 +82,7 @@ class EventIndexView(TemplateView):
             'full': 3,
         }
 
-        def sort_key(element: Dict[str, Any]) -> tuple:
+        def sort_key(element: dict[str, Any]) -> tuple:
             return (
                 element.get('priority', 1),
                 mapping.get(element.get('display_size', 'small'), 1),
@@ -89,12 +90,12 @@ class EventIndexView(TemplateView):
 
         return sorted(widgets, key=sort_key, reverse=True)
 
-    def _get_user_permissions(self) -> Dict[str, bool]:
+    def _get_user_permissions(self) -> dict[str, bool]:
         """
         Centralize permission checks for the event.
         """
         request = self.request
-        print("\n", request, "\n")
+        print('\n', request, '\n')
         return {
             'can_view_orders': request.user.has_event_permission(
                 request.organizer, request.event, 'can_view_orders', request=request
@@ -116,7 +117,7 @@ class EventIndexView(TemplateView):
             ),
         }
 
-    def _collect_dashboard_widgets(self, subevent: Optional[SubEvent], can_view_orders: bool) -> List[Dict[str, Any]]:
+    def _collect_dashboard_widgets(self, subevent: SubEvent | None, can_view_orders: bool) -> list[dict[str, Any]]:
         """
         Collect and filter dashboard widgets based on permissions.
         """
@@ -129,7 +130,7 @@ class EventIndexView(TemplateView):
             widgets.extend(result)
         return self.rearrange(widgets)
 
-    def _filter_log_entries(self, qs: QuerySet, permissions: Dict[str, bool]) -> QuerySet:
+    def _filter_log_entries(self, qs: QuerySet, permissions: dict[str, bool]) -> QuerySet:
         """
         Apply log entry filtering based on user permissions.
 
@@ -163,7 +164,7 @@ class EventIndexView(TemplateView):
 
         return qs
 
-    def _check_event_statuses(self, can_view_orders: bool) -> Dict[str, Any]:
+    def _check_event_statuses(self, can_view_orders: bool) -> dict[str, Any]:
         """
         Centralize various event status checks.
         """
@@ -349,7 +350,7 @@ class EventWidgetGenerator:
         """
 
     @classmethod
-    def generate_widget(cls, event: Event, request: HttpRequest, lazy: bool = False) -> Dict[str, Any]:
+    def generate_widget(cls, event: Event, request: HttpRequest, lazy: bool = False) -> dict[str, Any]:
         """
         Generate a complete widget for an event.
         """
@@ -401,7 +402,7 @@ class EventWidgetGenerator:
 
 def widgets_for_event_qs(
     request: HttpRequest, qs: QuerySet[Event], nmax: int, lazy: bool = False
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """
     Generate event widgets for dashboard display.
     """
@@ -437,7 +438,7 @@ def annotated_event_query(request: HttpRequest, lazy: bool = False) -> QuerySet[
     return qs
 
 
-def rearrange(widgets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def rearrange(widgets: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """
     Sort widget boxes according to priority.
     """
@@ -447,7 +448,7 @@ def rearrange(widgets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         'full': 3,
     }
 
-    def sort_key(element: Dict[str, Any]) -> Tuple[int, int]:
+    def sort_key(element: dict[str, Any]) -> tuple[int, int]:
         return (
             element.get('priority', 1),
             mapping.get(element.get('display_size', 'small'), 1),

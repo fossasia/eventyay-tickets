@@ -3,7 +3,6 @@ import logging
 from collections import Counter, namedtuple
 from datetime import datetime, time, timedelta
 from decimal import Decimal
-from typing import List, Optional
 
 from celery.exceptions import MaxRetriesExceededError
 from django.conf import settings
@@ -41,11 +40,11 @@ from eventyay.base.models import (
     Device,
     Event,
     GiftCard,
-    Product,
-    ProductVariation,
     Order,
     OrderPayment,
     OrderPosition,
+    Product,
+    ProductVariation,
     Quota,
     Seat,
     SeatCategoryMapping,
@@ -53,7 +52,6 @@ from eventyay.base.models import (
     Voucher,
 )
 from eventyay.base.models.event import SubEvent
-from eventyay.base.models.product import ProductBundle
 from eventyay.base.models.orders import (
     InvoiceAddress,
     OrderFee,
@@ -61,6 +59,7 @@ from eventyay.base.models.orders import (
     generate_secret,
 )
 from eventyay.base.models.organizer import TeamAPIToken
+from eventyay.base.models.product import ProductBundle
 from eventyay.base.models.tax import TaxRule
 from eventyay.base.payment import BasePaymentProvider, PaymentException
 from eventyay.base.reldate import RelativeDateWrapper
@@ -93,6 +92,7 @@ from eventyay.base.signals import (
 from eventyay.celery_app import app
 from eventyay.helpers.models import modelcopy
 from eventyay.helpers.periodic import minimum_interval
+
 
 error_messages = {
     'unavailable': _('Some of the products you selected were no longer available. Please see below for details.'),
@@ -601,7 +601,7 @@ def _check_date(event: Event, now_dt: datetime):
 def _check_positions(
     event: Event,
     now_dt: datetime,
-    positions: List[CartPosition],
+    positions: list[CartPosition],
     address: InvoiceAddress = None,
     sales_channel='web',
 ):
@@ -824,7 +824,11 @@ def _check_positions(
             delete(cp)
             continue
 
-        if cp.subevent and cp.product.pk in cp.subevent.product_overrides and cp.subevent.product_overrides[cp.product.pk].disabled:
+        if (
+            cp.subevent
+            and cp.product.pk in cp.subevent.product_overrides
+            and cp.subevent.product_overrides[cp.product.pk].disabled
+        ):
             err = err or error_messages['unavailable']
             delete(cp)
             continue
@@ -885,12 +889,12 @@ def _check_positions(
 
 
 def _get_fees(
-    positions: List[CartPosition],
+    positions: list[CartPosition],
     payment_provider: BasePaymentProvider,
     address: InvoiceAddress,
     meta_info: dict,
     event: Event,
-    gift_cards: List[GiftCard],
+    gift_cards: list[GiftCard],
 ):
     fees = []
     total = sum([c.price for c in positions])
@@ -934,7 +938,7 @@ def _get_fees(
 def _create_order(
     event: Event,
     email: str,
-    positions: List[CartPosition],
+    positions: list[CartPosition],
     now_dt: datetime,
     payment_provider: BasePaymentProvider,
     locale: str = None,
@@ -1095,7 +1099,7 @@ def _order_placed_email_attendee(event: Event, order: Order, position: OrderPosi
 def _perform_order(
     event: Event,
     payment_provider: str,
-    position_ids: List[str],
+    position_ids: list[str],
     email: str,
     locale: str,
     address: int,
@@ -1481,7 +1485,7 @@ class OrderChangeManager:
         self._invoice_dirty = False
         self._invoices = []
 
-    def change_product(self, position: OrderPosition, product: Product, variation: Optional[ProductVariation]):
+    def change_product(self, position: OrderPosition, product: Product, variation: ProductVariation | None):
         if (not variation and product.has_variations) or (variation and variation.product_id != product.pk):
             raise OrderError(self.error_messages['product_without_variation'])
 
@@ -1547,7 +1551,7 @@ class OrderChangeManager:
         self,
         position: OrderPosition,
         product: Product,
-        variation: Optional[ProductVariation],
+        variation: ProductVariation | None,
         subevent: SubEvent,
     ):
         if (not variation and product.has_variations) or (variation and variation.product_id != product.pk):
@@ -1567,7 +1571,9 @@ class OrderChangeManager:
         if price is None:  # NOQA
             raise OrderError(self.error_messages['product_invalid'])
 
-        new_quotas = variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        new_quotas = (
+            variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        )
         if not new_quotas:
             raise OrderError(self.error_messages['quota_missing'])
 
@@ -1723,7 +1729,9 @@ class OrderChangeManager:
         if seat and subevent and seat.subevent_id != subevent.pk:
             raise OrderError(self.error_messages['seat_subevent_mismatch'].format(seat=seat.name))
 
-        new_quotas = variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        new_quotas = (
+            variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        )
         if not new_quotas:
             raise OrderError(self.error_messages['quota_missing'])
 
@@ -2473,7 +2481,7 @@ def perform_order(
     self,
     event: Event,
     payment_provider: str,
-    positions: List[str],
+    positions: list[str],
     email: str = None,
     locale: str = None,
     address: int = None,

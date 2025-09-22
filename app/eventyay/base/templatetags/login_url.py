@@ -2,6 +2,7 @@ from django import template
 from django.urls import reverse
 from django.utils.http import urlencode
 
+
 register = template.Library()
 
 

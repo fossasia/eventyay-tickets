@@ -1,7 +1,6 @@
 from collections import Counter, defaultdict, namedtuple
 from datetime import datetime, time, timedelta
 from decimal import Decimal
-from typing import List, Optional
 
 from celery.exceptions import MaxRetriesExceededError
 from django.core.exceptions import ValidationError
@@ -270,7 +269,7 @@ class CartManager:
                         cp.delete()
         return err
 
-    def _update_subevents_cache(self, se_ids: List[int]):
+    def _update_subevents_cache(self, se_ids: list[int]):
         self._subevents_cache.update(
             {
                 i.pk: i
@@ -278,7 +277,7 @@ class CartManager:
             }
         )
 
-    def _update_products_cache(self, product_ids: List[int], variation_ids: List[int]):
+    def _update_products_cache(self, product_ids: list[int], variation_ids: list[int]):
         self._products_cache.update(
             {
                 i.pk: i
@@ -411,10 +410,10 @@ class CartManager:
     def _get_price(
         self,
         product: Product,
-        variation: Optional[ProductVariation],
-        voucher: Optional[Voucher],
-        custom_price: Optional[Decimal],
-        subevent: Optional[SubEvent],
+        variation: ProductVariation | None,
+        voucher: Voucher | None,
+        custom_price: Decimal | None,
+        subevent: SubEvent | None,
         cp_is_net: bool = None,
         force_custom_price=False,
         bundled_sum=Decimal('0.00'),
@@ -465,7 +464,9 @@ class CartManager:
             cp.product.requires_seat = self.event.settings.seating_choice and cp.requires_seat
 
             if cp.is_bundled:
-                bundle = cp.addon_to.product.bundles.filter(bundled_product=cp.product, bundled_variation=cp.variation).first()
+                bundle = cp.addon_to.product.bundles.filter(
+                    bundled_product=cp.product, bundled_variation=cp.variation
+                ).first()
                 if bundle:
                     price = bundle.designated_price or 0
                 else:
@@ -626,7 +627,7 @@ class CartManager:
             raise CartError(error_messages['voucher_no_match'])
         self._voucher_use_diff += voucher_use_diff
 
-    def add_new_products(self, products: List[dict]):
+    def add_new_products(self, products: list[dict]):
         # Fetch products from the database
         self._update_products_cache([i['product'] for i in products], [i['variation'] for i in products])
         self._update_subevents_cache([i['subevent'] for i in products if i.get('subevent')])
@@ -659,7 +660,9 @@ class CartManager:
             # Check whether the specified products are part of what we just fetched from the database
             # If they are not, the user supplied product IDs which either do not exist or belong to
             # a different event
-            if i['product'] not in self._products_cache or (i['variation'] and i['variation'] not in self._variations_cache):
+            if i['product'] not in self._products_cache or (
+                i['variation'] and i['variation'] not in self._variations_cache
+            ):
                 raise CartError(error_messages['not_for_sale'])
 
             product = self._products_cache[i['product']]
@@ -832,7 +835,9 @@ class CartManager:
             # Check whether the specified products are part of what we just fetched from the database
             # If they are not, the user supplied product IDs which either do not exist or belong to
             # a different event
-            if a['product'] not in self._products_cache or (a['variation'] and a['variation'] not in self._variations_cache):
+            if a['product'] not in self._products_cache or (
+                a['variation'] and a['variation'] not in self._variations_cache
+            ):
                 raise CartError(error_messages['not_for_sale'])
 
             # Only attach addons to things that are actually in this user's cart
@@ -1018,7 +1023,8 @@ class CartManager:
 
             if product.max_per_order and count > product.max_per_order:
                 raise CartError(
-                    _(error_messages['max_products_per_product']) % {'max': product.max_per_order, 'product': product.name}
+                    _(error_messages['max_products_per_product'])
+                    % {'max': product.max_per_order, 'product': product.name}
                 )
 
             if product.min_per_order and count < product.min_per_order:
@@ -1035,7 +1041,8 @@ class CartManager:
                         }
                 if not err:
                     raise CartError(
-                        _(error_messages['min_products_per_product']) % {'min': product.min_per_order, 'product': product.name}
+                        _(error_messages['min_products_per_product'])
+                        % {'min': product.min_per_order, 'product': product.name}
                     )
         return err
 
@@ -1376,7 +1383,7 @@ def get_fees(event, request, total, invoice_address, provider, positions):
 def add_products_to_cart(
     self,
     event: int,
-    products: List[dict],
+    products: list[dict],
     cart_id: str = None,
     locale='en',
     invoice_address: int = None,
@@ -1517,7 +1524,7 @@ def clear_cart(self, event: Event, cart_id: str = None, locale='en', sales_chann
 def set_cart_addons(
     self,
     event: Event,
-    addons: List[dict],
+    addons: list[dict],
     cart_id: str = None,
     locale='en',
     invoice_address: int = None,

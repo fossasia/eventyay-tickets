@@ -20,7 +20,7 @@ class WebHookForm(forms.ModelForm):
         self.fields['events'].choices = [
             (
                 a.action_type,
-                mark_safe('{} – <code>{}</code>'.format(a.verbose_name, a.action_type)),
+                mark_safe(f'{a.verbose_name} – <code>{a.action_type}</code>'),
             )
             for a in get_all_webhook_events().values()
         ]

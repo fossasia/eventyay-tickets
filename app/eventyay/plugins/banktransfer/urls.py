@@ -5,6 +5,7 @@ from eventyay.plugins.banktransfer.api import BankImportJobViewSet
 
 from . import views
 
+
 urlpatterns = [
     url(
         r'^control/organizer/(?P<organizer>[^/]+)/banktransfer/import/',

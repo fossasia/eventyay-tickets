@@ -33,9 +33,9 @@ class KnownDomain(models.Model):
             self.organizer.get_cache().clear()
             for event in self.organizer.events.all():
                 event.get_cache().clear()
-        cache.delete('pretix_multidomain_organizer_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_instance_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_event_{}'.format(self.domainname))
+        cache.delete(f'pretix_multidomain_organizer_{self.domainname}')
+        cache.delete(f'pretix_multidomain_instance_{self.domainname}')
+        cache.delete(f'pretix_multidomain_event_{self.domainname}')
 
     @scopes_disabled()
     def delete(self, *args, **kwargs):
@@ -45,7 +45,7 @@ class KnownDomain(models.Model):
             self.organizer.get_cache().clear()
             for event in self.organizer.events.all():
                 event.get_cache().clear()
-        cache.delete('pretix_multidomain_organizer_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_instance_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_event_{}'.format(self.domainname))
+        cache.delete(f'pretix_multidomain_organizer_{self.domainname}')
+        cache.delete(f'pretix_multidomain_instance_{self.domainname}')
+        cache.delete(f'pretix_multidomain_event_{self.domainname}')
         super().delete(*args, **kwargs)

@@ -16,6 +16,7 @@ from eventyay.helpers.i18n import get_javascript_format, get_moment_locale
 
 from .text.phrases import phrases
 
+
 logger = logging.getLogger(__name__)
 
 

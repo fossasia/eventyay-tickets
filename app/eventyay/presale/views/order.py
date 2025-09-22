@@ -380,8 +380,8 @@ class OrderPaymentStart(EventViewMixin, OrderDetailMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         resp = self.payment.payment_provider.payment_prepare(request, self.payment)
-        if 'payment_change_{}'.format(self.order.pk) in request.session:
-            del request.session['payment_change_{}'.format(self.order.pk)]
+        if f'payment_change_{self.order.pk}' in request.session:
+            del request.session[f'payment_change_{self.order.pk}']
         if isinstance(resp, str):
             return redirect(resp)
         elif resp is True:
@@ -469,8 +469,8 @@ class OrderPaymentConfirm(EventViewMixin, OrderDetailMixin, TemplateView):
         except PaymentException as e:
             messages.error(request, str(e))
             return redirect(self.get_order_url())
-        if 'payment_change_{}'.format(self.order.pk) in request.session:
-            del request.session['payment_change_{}'.format(self.order.pk)]
+        if f'payment_change_{self.order.pk}' in request.session:
+            del request.session[f'payment_change_{self.order.pk}']
         return redirect(resp or self.get_order_url())
 
     def get_context_data(self, **kwargs):
@@ -675,7 +675,7 @@ class OrderPayChangeMethod(EventViewMixin, OrderDetailMixin, TemplateView):
         for p in self.provider_forms:
             if p['provider'].identifier == request.POST.get('payment', ''):
                 request.session['payment'] = p['provider'].identifier
-                request.session['payment_change_{}'.format(self.order.pk)] = '1'
+                request.session[f'payment_change_{self.order.pk}'] = '1'
 
                 with transaction.atomic():
                     old_fee, new_fee, fee, newpayment = change_payment_provider(self.order, p['provider'], None)
@@ -1070,22 +1070,16 @@ class OrderDownloadMixin:
                         value.extension,
                     )
                 else:
-                    resp['Content-Disposition'] = 'attachment; filename="{}-{}-{}-{}{}"'.format(
-                        self.request.event.slug.upper(),
-                        self.order.code,
-                        self.order_position.positionid,
-                        self.output.identifier,
-                        value.extension,
+                    filename = (
+                        f'{self.request.event.slug.upper()}-{self.order.code}-{self.order_position.positionid}'
+                        f'-{self.output.identifier}{value.extension}'
                     )
+                    resp['Content-Disposition'] = f'attachment; filename="{filename}"'
                 return resp
         elif isinstance(value, CachedCombinedTicket):
             resp = FileResponse(value.file.file, content_type=value.type)
-            resp['Content-Disposition'] = 'attachment; filename="{}-{}-{}{}"'.format(
-                self.request.event.slug.upper(),
-                self.order.code,
-                self.output.identifier,
-                value.extension,
-            )
+            filename = f'{self.request.event.slug.upper()}-{self.order.code}-{self.output.identifier}{value.extension}'
+            resp['Content-Disposition'] = f'attachment; filename="{filename}"'
             return resp
         else:
             return redirect(self.get_self_url())
@@ -1189,7 +1183,7 @@ class InvoiceDownload(EventViewMixin, OrderDetailMixin, View):
         except FileNotFoundError:
             invoice_pdf_task.apply(args=(invoice.pk,))
             return self.get(request, *args, **kwargs)
-        resp['Content-Disposition'] = 'inline; filename="{}.pdf"'.format(invoice.number)
+        resp['Content-Disposition'] = f'inline; filename="{invoice.number}.pdf"'
         resp._csp_ignore = True  # Some browser's PDF readers do not work with CSP
         return resp
 
@@ -1242,7 +1236,7 @@ class OrderChange(EventViewMixin, OrderDetailMixin, TemplateView):
             ia = None
         for p in positions:
             p.form = OrderPositionChangeForm(
-                prefix='op-{}'.format(p.pk),
+                prefix=f'op-{p.pk}',
                 instance=p,
                 invoice_address=ia,
                 event=self.request.event,

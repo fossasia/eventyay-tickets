@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image, ImageOps
 from PIL.Image import MAX_IMAGE_PIXELS, DecompressionBombError, Resampling
 
+
 THUMBNAIL_SIZES = {
     'tiny': (64, 64),
     'default': (460, 460),

@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.db.models import Func, Value
 
+
 logger = logging.getLogger(__name__)
 
 

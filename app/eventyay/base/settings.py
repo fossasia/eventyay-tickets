@@ -21,6 +21,7 @@ from eventyay.base.configurations.lazy_i18n_string_list_base import (
 )
 from eventyay.base.reldate import RelativeDateWrapper
 
+
 DEFAULTS = DEFAULT_SETTINGS.copy()
 SETTINGS_AFFECTING_CSS = CSS_SETTINGS.copy()
 PERSON_NAME_TITLE_GROUPS = TITLE_GROUP.copy()

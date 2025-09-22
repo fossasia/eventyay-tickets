@@ -1,14 +1,14 @@
 import hashlib
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from enum import StrEnum
-from typing import Optional
 
 import jwt
 from django.conf import settings
 from django.http import HttpRequest
 
 from eventyay.base.models import SubEvent
+
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ def generate_token(request):
     @return: jwt
     """
     uid_token = encode_email(request.user.email)
-    iat = datetime.now(timezone.utc)
+    iat = datetime.now(UTC)
     exp = iat + timedelta(days=30)
 
     payload = {
@@ -66,7 +66,7 @@ def check_create_permission(request):
     return False
 
 
-def get_subevent(request: HttpRequest) -> Optional[SubEvent]:
+def get_subevent(request: HttpRequest) -> SubEvent | None:
     """
     Retrieve a specific subevent based on request parameters.
     """

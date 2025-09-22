@@ -2,6 +2,7 @@ from django.dispatch import Signal
 
 from eventyay.base.signals import DeprecatedSignal, EventPluginSignal
 
+
 html_page_start = Signal()
 """
 This signal allows you to put code in the beginning of the main page for every

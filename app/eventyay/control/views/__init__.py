@@ -74,7 +74,7 @@ class LargeResultSetPage(collections.abc.Sequence):
         self.paginator = paginator
 
     def __repr__(self):
-        return '<Page %s>' % self.number
+        return f'<Page {self.number}>'
 
     def __len__(self):
         return len(self.object_list)
@@ -127,7 +127,7 @@ class LargeResultSetPage(collections.abc.Sequence):
         return self.number * self.paginator.per_page
 
 
-class LargeResultSetPaginator(object):
+class LargeResultSetPaginator:
     def __init__(self, object_list, per_page, orphans=0, allow_empty_first_page=True):
         self.object_list = object_list
         self._check_object_list_is_ordered()
@@ -171,12 +171,12 @@ class LargeResultSetPaginator(object):
         ordered = getattr(self.object_list, 'ordered', None)
         if ordered is not None and not ordered:
             obj_list_repr = (
-                '{} {}'.format(self.object_list.model, self.object_list.__class__.__name__)
+                f'{self.object_list.model} {self.object_list.__class__.__name__}'
                 if hasattr(self.object_list, 'model')
-                else '{!r}'.format(self.object_list)
+                else f'{self.object_list!r}'
             )
             warnings.warn(
-                'Pagination may yield inconsistent results with an unordered object_list: {}.'.format(obj_list_repr),
+                f'Pagination may yield inconsistent results with an unordered object_list: {obj_list_repr}.',
                 UnorderedObjectListWarning,
                 stacklevel=3,
             )

@@ -5,7 +5,7 @@ import os
 import re
 from datetime import datetime, time, timedelta
 from decimal import Decimal, DecimalException
-from urllib.parse import quote, urlencode
+from urllib.parse import urlencode
 
 import vat_moss.id
 from django.conf import settings
@@ -60,10 +60,10 @@ from eventyay.base.models import (
     Checkin,
     Invoice,
     InvoiceAddress,
-    Product,
-    ProductVariation,
     LogEntry,
     Order,
+    Product,
+    ProductVariation,
     QuestionAnswer,
     Quota,
     generate_secret,
@@ -149,6 +149,7 @@ from eventyay.control.signals import order_search_forms
 from eventyay.control.views import PaginationMixin
 from eventyay.helpers.safedownload import check_token
 from eventyay.presale.signals import question_form_fields
+
 
 logger = logging.getLogger(__name__)
 
@@ -508,23 +509,20 @@ class OrderDownload(AsyncAction, OrderView):
                 resp = HttpResponseRedirect(value.file.file.read())
                 return resp
             else:
-                resp = FileResponse(value.file.file, content_type=value.type)
-                resp['Content-Disposition'] = 'attachment; filename="{}-{}-{}-{}{}"'.format(
-                    self.request.event.slug.upper(),
-                    self.order.code,
-                    self.order_position.positionid,
-                    self.output.identifier,
-                    value.extension,
+                filename = (
+                    f'{self.request.event.slug.upper()}-{self.order.code}-'
+                    f'{self.order_position.positionid}-{self.output.identifier}{value.extension}'
                 )
+                resp = FileResponse(value.file.file, content_type=value.type)
+                resp['Content-Disposition'] = f'attachment; filename="{filename}"'
                 return resp
         elif isinstance(value, CachedCombinedTicket):
-            resp = FileResponse(value.file.file, content_type=value.type)
-            resp['Content-Disposition'] = 'attachment; filename="{}-{}-{}{}"'.format(
-                self.request.event.slug.upper(),
-                self.order.code,
-                self.output.identifier,
-                value.extension,
+            filename = (
+                f'{self.request.event.slug.upper()}-{self.order.code}-'
+                f'{self.output.identifier}{value.extension}'
             )
+            resp = FileResponse(value.file.file, content_type=value.type)
+            resp['Content-Disposition'] = f'attachment; filename="{filename}"'
             return resp
         else:
             return redirect(self.get_self_url())
@@ -1108,7 +1106,7 @@ class OrderRefundView(OrderView):
                         refunds.append(refund)
 
             for p in payments:
-                value = self.request.POST.get('refund-{}'.format(p.pk), '0') or '0'
+                value = self.request.POST.get(f'refund-{p.pk}', '0') or '0'
                 value = formats.sanitize_separators(value)
                 try:
                     value = Decimal(value)
@@ -1227,8 +1225,9 @@ class OrderRefundView(OrderView):
                                     {
                                         'subject': gettext('Your gift card code'),
                                         'message': gettext(
-                                            'Hello,\n\nwe have refunded you {amount} for your order.\n\nYou can use the gift '
-                                            'card code {giftcard} to pay for future ticket purchases in our shop.\n\n'
+                                            'Hello,\n\nwe have refunded you {amount} for your order.\n\n'
+                                            'You can use the gift card code {giftcard} to pay for '
+                                            'future ticket purchases in our shop.\n\n'
                                             'Your {event} team'
                                         ).format(
                                             event='{event}',
@@ -1443,11 +1442,14 @@ class OrderTransition(OrderView):
                                     'code': self.order.code,
                                 },
                             )
-                            + '?start-action=do_nothing&start-mode=partial&start-partial_amount={}&giftcard={}&comment={}'.format(
-                                round_decimal(self.order.pending_sum * -1),
-                                'true' if self.req and self.req.refund_as_giftcard else 'false',
-                                quote(gettext('Order canceled')),
-                            )
+                            + '?'
+                            + urlencode({
+                                'start-action': 'do_nothing',
+                                'start-mode': 'partial',
+                                'start-partial_amount': round_decimal(self.order.pending_sum * -1),
+                                'giftcard': 'true' if self.req and self.req.refund_as_giftcard else 'false',
+                                'comment': gettext('Order canceled'),
+                            })
                         )
 
                 messages.success(self.request, _('The order has been canceled.'))
@@ -1551,7 +1553,7 @@ class OrderCheckVATID(OrderView):
             except vat_moss.errors.InvalidError:
                 messages.error(self.request, _('This VAT ID is not valid.'))
             except vat_moss.errors.WebServiceUnavailableError:
-                logger.exception('VAT ID checking failed for country {}'.format(ia.country))
+                logger.exception(f'VAT ID checking failed for country {ia.country}')
                 messages.error(
                     self.request,
                     _(
@@ -1693,7 +1695,7 @@ class InvoiceDownload(EventPermissionRequiredMixin, View):
             invoice_pdf_task.apply(args=(self.invoice.pk,))
             return self.get(request, *args, **kwargs)
 
-        resp['Content-Disposition'] = 'inline; filename="{}.pdf"'.format(self.invoice.number)
+        resp['Content-Disposition'] = f'inline; filename="{self.invoice.number}.pdf"'
         resp._csp_ignore = True  # Some browser's PDF readers do not work with CSP
         return resp
 
@@ -1863,7 +1865,7 @@ class OrderChange(OrderView):
         fees = list(self.order.fees.all())
         for f in fees:
             f.form = OrderFeeChangeForm(
-                prefix='of-{}'.format(f.pk),
+                prefix=f'of-{f.pk}',
                 instance=f,
                 data=self.request.POST if self.request.method == 'POST' else None,
             )
@@ -1874,7 +1876,7 @@ class OrderChange(OrderView):
         positions = list(self.order.positions.select_related('product', 'product__tax_rule'))
         for p in positions:
             p.form = OrderPositionChangeForm(
-                prefix='op-{}'.format(p.pk),
+                prefix=f'op-{p.pk}',
                 instance=p,
                 products=self.products,
                 initial={'seat': p.seat.seat_guid if p.seat else None},
@@ -2287,7 +2289,7 @@ class OrderSendMail(EventPermissionRequiredMixin, OrderViewMixin, FormView):
                     self.request,
                     _('Failed to send mail to the following user: {}'.format(order.email)),
                 )
-            return super(OrderSendMail, self).form_valid(form)
+            return super().form_valid(form)
 
     def get_success_url(self):
         return reverse(

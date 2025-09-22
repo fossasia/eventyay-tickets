@@ -1,5 +1,6 @@
 import re
 
+
 # banlist based on http://www.bannedwordlist.com/lists/swearWords.txt
 banlist = [
     'anal',

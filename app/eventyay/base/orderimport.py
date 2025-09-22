@@ -23,8 +23,8 @@ from i18nfield.strings import LazyI18nString
 from eventyay.base.channels import get_all_sales_channels
 from eventyay.base.forms.questions import guess_country
 from eventyay.base.models import (
-    ProductVariation,
     OrderPosition,
+    ProductVariation,
     Question,
     QuestionAnswer,
     QuestionOption,
@@ -219,11 +219,13 @@ class Variation(ImportColumn):
     @cached_property
     def products(self):
         return list(
-            ProductVariation.objects.filter(active=True, product__active=True, product__event=self.event).select_related('product')
+            ProductVariation.objects.filter(
+                active=True, product__active=True, product__event=self.event
+            ).select_related('product')
         )
 
     def static_choices(self):
-        return [(str(p.pk), '{} – {}'.format(p.product, p.value)) for p in self.products]
+        return [(str(p.pk), f'{p.product} – {p.value}') for p in self.products]
 
     def clean(self, value, previous_values):
         if value:
@@ -271,7 +273,7 @@ class InvoiceAddressNamePart(ImportColumn):
 
     @property
     def identifier(self):
-        return 'invoice_address_name_{}'.format(self.key)
+        return f'invoice_address_name_{self.key}'
 
     def assign(self, value, order, position, invoice_address, **kwargs):
         invoice_address.name_parts[self.key] = value or ''
@@ -394,7 +396,7 @@ class AttendeeNamePart(ImportColumn):
 
     @property
     def identifier(self):
-        return 'attendee_name_{}'.format(self.key)
+        return f'attendee_name_{self.key}'
 
     def assign(self, value, order, position, invoice_address, **kwargs):
         position.attendee_name_parts[self.key] = value or ''
@@ -641,7 +643,9 @@ class SeatColumn(ImportColumn):
                     _('The seat you selected has already been taken. Please select a different seat.')
                 )
             self._cached.add(value)
-        elif previous_values['product'].seat_category_mappings.filter(subevent=previous_values.get('subevent')).exists():
+        elif (
+            previous_values['product'].seat_category_mappings.filter(subevent=previous_values.get('subevent')).exists()
+        ):
             raise ValidationError(_('You need to select a specific seat.'))
         return value
 
@@ -683,7 +687,7 @@ class QuestionColumn(ImportColumn):
 
     @property
     def identifier(self):
-        return 'question_{}'.format(self.q.pk)
+        return f'question_{self.q.pk}'
 
     def clean(self, value, previous_values):
         if value:

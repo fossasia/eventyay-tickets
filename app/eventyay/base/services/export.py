@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -31,7 +31,7 @@ class ExportError(LazyLocaleException):
 
 
 @app.task(base=ProfiledEventTask, throws=(ExportError,), bind=True)
-def export(self, event: Event, fileid: str, provider: str, form_data: Dict[str, Any]) -> None:
+def export(self, event: Event, fileid: str, provider: str, form_data: dict[str, Any]) -> None:
     def set_progress(val):
         if not self.request.called_directly:
             self.update_state(state='PROGRESS', meta={'value': val})
@@ -63,7 +63,7 @@ def multiexport(
     token: int,
     fileid: str,
     provider: str,
-    form_data: Dict[str, Any],
+    form_data: dict[str, Any],
 ) -> None:
     if device:
         device = Device.objects.get(pk=device)

@@ -96,7 +96,7 @@ class CheckInListMixin(BaseExporter):
                         + (
                             [
                                 (
-                                    'name:{}'.format(k),
+                                    f'name:{k}',
                                     _('Attendee name: {part}').format(part=label),
                                 )
                                 for k, label, w in name_scheme['fields']
@@ -627,7 +627,7 @@ class CSVCheckinList(CheckInListMixin, ListExporter):
             yield row
 
     def get_filename(self):
-        return '{}_checkin'.format(self.event.slug)
+        return f'{self.event.slug}_checkin'
 
 
 class CheckinLogList(ListExporter):
@@ -695,7 +695,7 @@ class CheckinLogList(ListExporter):
             ]
 
     def get_filename(self):
-        return '{}_checkinlog'.format(self.event.slug)
+        return f'{self.event.slug}_checkinlog'
 
     @property
     def _fields(self):

@@ -23,6 +23,7 @@ from eventyay.base.models import (
 from eventyay.base.signals import activitylog_display, activitylog_object_link
 from eventyay.common.text.phrases import phrases
 
+
 # Usually, we don't have to include the object name in activity log
 # strings, because we use ActivityLog.content_object to get the object
 # and display it above the message. However, in some cases, like when

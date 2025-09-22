@@ -18,6 +18,7 @@ from eventyay.base.models import LogEntry
 from eventyay.base.services.tasks import ProfiledTask, TransactionAwareTask
 from eventyay.celery_app import app
 
+
 logger = logging.getLogger(__name__)
 _ALL_EVENTS = None
 
@@ -27,7 +28,7 @@ class WebhookEvent:
         pass
 
     def __repr__(self):
-        return '<WebhookEvent: {}>'.format(self.action_type)
+        return f'<WebhookEvent: {self.action_type}>'
 
     @property
     def action_type(self) -> str:

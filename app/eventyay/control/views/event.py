@@ -57,9 +57,9 @@ from eventyay.control.forms.event import (
     EventSettingsForm,
     EventUpdateForm,
     InvoiceSettingsForm,
-    ProductMetaPropertyForm,
     MailSettingsForm,
     PaymentSettingsForm,
+    ProductMetaPropertyForm,
     ProviderForm,
     QuickSetupForm,
     QuickSetupProductFormSet,
@@ -116,7 +116,7 @@ class MetaDataEditorMixin:
 
     def _make_meta_form(self, p, val_instances):
         return self.meta_form(
-            prefix='prop-{}'.format(p.pk),
+            prefix=f'prop-{p.pk}',
             property=p,
             disabled=(
                 p.protected
@@ -684,7 +684,7 @@ class InvoicePreview(EventPermissionRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         fname, ftype, fcontent = build_preview_invoice_pdf(request.event)
         resp = HttpResponse(fcontent, content_type=ftype)
-        resp['Content-Disposition'] = 'attachment; filename="{}"'.format(fname)
+        resp['Content-Disposition'] = f'attachment; filename="{fname}"'
         return resp
 
 
@@ -805,7 +805,7 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
             if s.startswith('*'):
                 ctx[p.identifier] = s
             elif url_pattern.match(s):
-                ctx[p.identifier] = '<a href="{}" target="_blank" rel="noopener noreferrer">{}</a>'.format(s, s)
+                ctx[p.identifier] = f'<a href="{s}" target="_blank" rel="noopener noreferrer">{s}</a>'
             else:
                 ctx[p.identifier] = '<span class="placeholder" title="{}">{}</span>'.format(
                     _('This value will be replaced based on dynamic parameters.'), s
@@ -896,7 +896,7 @@ class TicketSettingsPreview(EventPermissionRequiredMixin, View):
         fname, mimet, data = tickets.preview(self.request.event.pk, self.output.identifier)
         resp = HttpResponse(data, content_type=mimet)
         ftype = fname.split('.')[-1]
-        resp['Content-Disposition'] = 'attachment; filename="ticket-preview.{}"'.format(ftype)
+        resp['Content-Disposition'] = f'attachment; filename="ticket-preview.{ftype}"'
         return resp
 
     def get_error_url(self) -> str:
@@ -1018,7 +1018,7 @@ class TicketSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
             else:
                 for k, v in provider.settings_form_fields.items():
                     if v.required and not self.request.event.settings.get(
-                        'ticketoutput_%s_%s' % (provider.identifier, k)
+                        f'ticketoutput_{provider.identifier}_{k}'
                     ):
                         provider.evaluated_preview_allowed = False
                         break
@@ -1494,8 +1494,8 @@ class WidgetSettings(EventSettingsViewMixin, EventPermissionRequiredMixin, FormV
         if domain:
             siteurlsplit = urlsplit(settings.SITE_URL)
             if siteurlsplit.port and siteurlsplit.port not in (80, 443):
-                domain = '%s:%d' % (domain, siteurlsplit.port)
-            ctx['urlprefix'] = '%s://%s' % (siteurlsplit.scheme, domain)
+                domain = f'{domain}:{siteurlsplit.port}'
+            ctx['urlprefix'] = f'{siteurlsplit.scheme}://{domain}'
         return ctx
 
 
@@ -1610,8 +1610,8 @@ class QuickSetupView(FormView):
                 'bank_details_sepa_bank',
             ):
                 self.request.event.settings.set(
-                    'payment_banktransfer_%s' % f,
-                    form.cleaned_data['payment_banktransfer_%s' % f],
+                    f'payment_banktransfer_{f}',
+                    form.cleaned_data[f'payment_banktransfer_{f}'],
                 )
 
         if form.cleaned_data.get('payment_stripe__enabled', None):

@@ -1,7 +1,8 @@
 import logging
 import uuid
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 import django.dispatch
 from django.apps import apps
@@ -10,6 +11,7 @@ from django.core.cache import cache
 from django.dispatch.dispatcher import NO_RECEIVERS
 
 from eventyay.base.models import Event
+
 
 app_cache = {}
 logger = logging.getLogger(__name__)

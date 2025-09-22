@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from typing import List, Union
 
 from django import forms
 from django.conf import settings
@@ -107,7 +106,8 @@ class GlobalSettingsForm(SettingsForm):
                         required=False,
                         label=_('Leaflet tiles attribution'),
                         help_text=_('e.g. {sample}').format(
-                            sample='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            sample='&copy; <a href="https://www.openstreetmap.org/copyright">'
+                                   'OpenStreetMap</a> contributors'
                         ),
                     ),
                 ),
@@ -337,7 +337,7 @@ class StripeKeyValidator:
     multiple prefix validation.
     """
 
-    def __init__(self, prefix: Union[str, List[str]]) -> None:
+    def __init__(self, prefix: str | list[str]) -> None:
         if not prefix:
             raise ValueError('Prefix cannot be empty')
 

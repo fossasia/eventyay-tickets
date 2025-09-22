@@ -3,6 +3,7 @@ from django.core.checks import ERROR, INFO, WARNING, CheckMessage, register
 
 from eventyay.celery_app import app
 
+
 CONFIG_HINT = 'https://docs.pretalx.org/administrator/configure/'
 
 

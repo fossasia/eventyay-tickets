@@ -9,6 +9,7 @@ from django.utils.translation import pgettext_lazy
 from eventyay.base.reldate import RelativeDateWrapper
 from eventyay.base.signals import timeline_events
 
+
 TimelineEvent = namedtuple('TimelineEvent', ('event', 'subevent', 'datetime', 'description', 'edit_url'))
 
 

@@ -30,7 +30,9 @@ from eventyay.helpers.urls import build_absolute_uri
 from ...helpers.u2f import pub_key_from_der, websafe_decode
 from .base import LoggingMixin
 
+
 logger = logging.getLogger(__name__)
+
 
 class UserManager(BaseUserManager):
     """
@@ -210,10 +212,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         }
         action_url = request.build_absolute_uri(f'{base_action_url}?{urlencode(params)}')
         logger.info('Action URL for %s to reset password: %s', self.email, action_url)
-        context = {
-            'user': self,
-            'url': action_url
-        }
+        context = {'user': self, 'url': action_url}
         mail(
             self.email,
             subject,
@@ -235,16 +234,16 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         return LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(User), object_id=self.pk)
 
     def _get_teams_for_organizer(self, organizer):
-        if 'o{}'.format(organizer.pk) not in self._teamcache:
-            self._teamcache['o{}'.format(organizer.pk)] = list(self.teams.filter(organizer=organizer))
-        return self._teamcache['o{}'.format(organizer.pk)]
+        if f'o{organizer.pk}' not in self._teamcache:
+            self._teamcache[f'o{organizer.pk}'] = list(self.teams.filter(organizer=organizer))
+        return self._teamcache[f'o{organizer.pk}']
 
     def _get_teams_for_event(self, organizer, event):
-        if 'e{}'.format(event.pk) not in self._teamcache:
-            self._teamcache['e{}'.format(event.pk)] = list(
+        if f'e{event.pk}' not in self._teamcache:
+            self._teamcache[f'e{event.pk}'] = list(
                 self.teams.filter(organizer=organizer).filter(Q(all_events=True) | Q(limit_events=event))
             )
-        return self._teamcache['e{}'.format(event.pk)]
+        return self._teamcache[f'e{event.pk}']
 
     def get_event_permission_set(self, organizer, event) -> set:
         """
@@ -290,7 +289,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
             return True
         teams = self._get_teams_for_event(organizer, event)
         if teams:
-            self._teamcache['e{}'.format(event.pk)] = teams
+            self._teamcache[f'e{event.pk}'] = teams
             if isinstance(perm_name, (tuple, list)):
                 return any([any(team.has_permission(p) for team in teams) for p in perm_name])
             if not perm_name or any([team.has_permission(perm_name) for team in teams]):
@@ -452,7 +451,7 @@ class U2FDevice(Device):
         # https://www.w3.org/TR/webauthn/#sctn-encoded-credPubKey-examples
         pub_key = pub_key_from_der(websafe_decode(d['publicKey'].replace('+', '-').replace('/', '_')))
         pub_key = binascii.unhexlify(
-            'A5010203262001215820{:064x}225820{:064x}'.format(pub_key.public_numbers().x, pub_key.public_numbers().y)
+            f'A5010203262001215820{pub_key.public_numbers().x:064x}225820{pub_key.public_numbers().y:064x}'
         )
         return pub_key
 

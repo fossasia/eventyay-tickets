@@ -25,6 +25,13 @@ class FakeChoiceField(forms.ChoiceField):
         return True
 
 
+RECIPIENT_PLACEHOLDER = (
+    'email,number,name,tag\njohn@example.org,3,John,example\n\n-- {} --\n\njohn@example.org\njane@example.net'.format(
+        _('or')
+    )
+)
+
+
 class VoucherForm(I18nModelForm):
     productvar = FakeChoiceField(
         label=_('Product'),
@@ -64,14 +71,12 @@ class VoucherForm(I18nModelForm):
             self.initial_instance_data = modelcopy(instance)
             try:
                 if instance.variation:
-                    initial['productvar'] = '%d-%d' % (
-                        instance.product.pk,
-                        instance.variation.pk,
-                    )
+                    initial['productvar'] = f'{instance.product.pk}-{instance.variation.pk}'
                 elif instance.product:
                     initial['productvar'] = str(instance.product.pk)
                 elif instance.quota:
-                    initial['productvar'] = 'q-%d' % instance.quota.pk
+                    initial['productvar'] = f'q-{instance.quota.pk}'
+
             except Product.DoesNotExist:
                 pass
         else:
@@ -103,12 +108,12 @@ class VoucherForm(I18nModelForm):
             iv = self.data.get('productvar') or initial.get('productvar', '')
             if iv.startswith('q-'):
                 q = self.instance.event.quotas.get(pk=iv[2:])
-                choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q)))
+                choices.append((f'q-{q.pk}', _('Any product in quota "{quota}"').format(quota=q)))
             elif '-' in iv:
                 productid, varid = iv.split('-')
                 i = self.instance.event.products.get(pk=productid)
                 v = i.variations.get(pk=varid)
-                choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (str(i), v.value)))
+                choices.append((f'{i.pk}-{v.pk}', f'{str(i)} – {v.value}'))
             elif iv:
                 i = self.instance.event.products.get(pk=iv)
                 if i.variations.exists():
@@ -277,21 +282,19 @@ class VoucherBulkForm(VoucherForm):
         widget=forms.Textarea(
             attrs={
                 'data-display-dependency': '#id_send',
-                'placeholder': 'email,number,name,tag\njohn@example.org,3,John,example\n\n-- {} --\n\njohn@example.org\njane@example.net'.format(
-                    _('or')
-                ),
+                'placeholder': RECIPIENT_PLACEHOLDER,
             }
         ),
         required=False,
         help_text=_(
-            'You can either supply a list of email addresses with one email address per line, or a CSV file with a title column '
-            'and one or more of the columns "email", "number", "name", or "tag".'
+            'You can either supply a list of email addresses with one email address per line, or a CSV file with a '
+            'title column and one or more of the columns "email", "number", "name", or "tag".'
         ),
     )
     Recipient = namedtuple('Recipient', 'email number name tag')
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.instance.event, base_parameters).keys())]
+        phs = [f'{{{p}}}' for p in sorted(get_available_placeholders(self.instance.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)

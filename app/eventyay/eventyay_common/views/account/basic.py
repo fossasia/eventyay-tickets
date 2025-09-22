@@ -1,21 +1,22 @@
-from logging import getLogger
 from collections import defaultdict
+from logging import getLogger
 
-from django.urls import reverse
-from django.shortcuts import redirect, get_object_or_404
-from django.http import HttpRequest, HttpResponse
-from django.views.generic import UpdateView, TemplateView, ListView
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
-from django.utils.functional import cached_property
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+from django.utils.functional import cached_property
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import ListView, TemplateView, UpdateView
 from django_scopes import scopes_disabled
 
-from eventyay.base.models import User, Event, NotificationSetting, LogEntry
-from eventyay.base.notifications import get_all_notification_types
 from eventyay.base.forms.user import UserSettingsForm
+from eventyay.base.models import Event, LogEntry, NotificationSetting, User
+from eventyay.base.notifications import get_all_notification_types
+
 from ...navigation import get_account_navigation
 from .common import AccountMenuMixIn
 
@@ -128,14 +129,14 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
                 self.request.user.log_action('pretix.user.settings.notifications.enabled', user=self.request.user)
             dest = reverse('eventyay_common:account.notifications')
             if self.event:
-                dest += '?event={}'.format(self.event.pk)
+                dest += f'?event={self.event.pk}'
             return redirect(dest)
         else:
             for method, __ in NotificationSetting.CHANNELS:
                 old_enabled = self.currently_set[method]
 
                 for at in self.types.keys():
-                    val = request.POST.get('{}:{}'.format(method, at))
+                    val = request.POST.get(f'{method}:{at}')
 
                     # True → False
                     if old_enabled.get(at) is True and val == 'off':
@@ -168,7 +169,7 @@ class NotificationSettingsView(LoginRequiredMixin, AccountMenuMixIn, TemplateVie
             self.request.user.log_action('pretix.user.settings.notifications.changed', user=self.request.user)
             dest = reverse('eventyay_common:account.notifications')
             if self.event:
-                dest += '?event={}'.format(self.event.pk)
+                dest += f'?event={self.event.pk}'
             return redirect(dest)
 
     def get_context_data(self, **kwargs):

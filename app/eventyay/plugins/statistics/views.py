@@ -1,6 +1,7 @@
 import datetime
 import json
 from decimal import Decimal
+from itertools import chain
 
 import dateutil.parser
 import dateutil.rrule
@@ -9,10 +10,10 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 
 from eventyay.base.models import (
-    Product,
     Order,
     OrderPayment,
     OrderPosition,
+    Product,
     SubEvent,
 )
 from eventyay.control.permissions import EventPermissionRequiredMixin
@@ -88,15 +89,16 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
                 paid_by_day[day] = paid_by_day.get(day, 0) + 1
 
             data = []
-            for d in dateutil.rrule.rrule(
+            pool = chain(
+                (ordered_by_day.keys() if paid_by_day else [datetime.date.today()]),
+                (paid_by_day.keys() if paid_by_day else [datetime.date(1970, 1, 1)]),
+            )
+            for rule in dateutil.rrule.rrule(
                 dateutil.rrule.DAILY,
                 dtstart=min(ordered_by_day.keys()) if ordered_by_day else datetime.date.today(),
-                until=max(
-                    max(ordered_by_day.keys() if paid_by_day else [datetime.date.today()]),
-                    max(paid_by_day.keys() if paid_by_day else [datetime.date(1970, 1, 1)]),
-                ),
+                until=max(pool),
             ):
-                d = d.date()
+                d = rule.date()
                 data.append(
                     {
                         'date': d.strftime('%Y-%m-%d'),
@@ -134,7 +136,9 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
                 [
                     {
                         'product': product_names[product],
-                        'product_short': product_names[product] if len(product_names[product]) < 15 else (product_names[product][:15] + '…'),
+                        'product_short': product_names[product]
+                        if len(product_names[product]) < 15
+                        else (product_names[product][:15] + '…'),
                         'ordered': cnt,
                         'paid': num_paid.get(product, 0),
                     }
@@ -174,12 +178,12 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
 
             data = []
             total = 0
-            for d in dateutil.rrule.rrule(
+            for rule in dateutil.rrule.rrule(
                 dateutil.rrule.DAILY,
                 dtstart=min(rev_by_day.keys() if rev_by_day else [datetime.date.today()]),
                 until=max(rev_by_day.keys() if rev_by_day else [datetime.date.today()]),
             ):
-                d = d.date()
+                d = rule.date()
                 total += float(rev_by_day.get(d, 0))
                 data.append(
                     {
@@ -225,9 +229,9 @@ class IndexView(EventPermissionRequiredMixin, ChartContainingView, TemplateView)
                 }
                 product_cache[None] = None
 
-                for product in seats_qs:
-                    product = product_cache[product['product']]
-                    if product_cache[product['product']] not in ctx['seats']['products']:
+                for seat in seats_qs:
+                    product = product_cache[seat['product']]
+                    if product not in ctx['seats']['products']:
                         price = None
                         if product and product.has_variations:
                             price = product.variations.filter(active=True).aggregate(Min('default_price'))[

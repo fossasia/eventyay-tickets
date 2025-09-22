@@ -11,6 +11,7 @@ from eventyay.eventyay_common.views import (
 )
 from eventyay.eventyay_common.views.orders import MyOrdersView
 
+
 app_name = 'eventyay_common'
 
 app_name = 'eventyay_common'

@@ -27,14 +27,10 @@ class TaxedPrice:
         self.name = name
 
     def __repr__(self):
-        return '{} + {}% = {}'.format(localize(self.net), localize(self.rate), localize(self.gross))
+        return f'{localize(self.net)} + {localize(self.rate)}% = {localize(self.gross)}'
 
     def print(self, currency):
-        return '{} + {}% = {}'.format(
-            money_filter(self.net, currency),
-            localize(self.rate),
-            money_filter(self.gross, currency),
-        )
+        return f'{money_filter(self.net, currency)} + {localize(self.rate)}% = {money_filter(self.gross, currency)}'
 
     def __sub__(self, other):
         newgross = self.gross - other.gross
@@ -282,7 +278,7 @@ class TaxRule(LoggedModel):
                 gross -= subtract_from_gross
                 net = round_decimal(gross - (gross * (1 - 100 / (100 + rate))), currency)
         else:
-            raise ValueError('Unknown base price type: {}'.format(base_price_is))
+            raise ValueError(f'Unknown base price type: {base_price_is}')
 
         return TaxedPrice(net=net, gross=gross, tax=gross - net, rate=rate, name=self.name)
 

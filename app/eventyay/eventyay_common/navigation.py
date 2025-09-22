@@ -1,5 +1,5 @@
 import logging
-from typing import List, TypedDict
+from typing import TypedDict
 
 from django.http import HttpRequest
 from django.urls import reverse
@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from eventyay.base.models import Event
 from eventyay.control.navigation import merge_in
-from eventyay.control.signals import nav_event, nav_global
+from eventyay.control.signals import nav_global
 
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class MenuItem(TypedDict):
     icon: str
 
 
-def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
+def get_global_navigation(request: HttpRequest) -> list[MenuItem]:
     """Generate navigation items for global."""
     url = request.resolver_match
     if not url:
@@ -62,7 +62,7 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
     return nav
 
 
-def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
+def get_event_navigation(request: HttpRequest, event: Event) -> list[MenuItem]:
     """Generate navigation items for an event."""
     url = request.resolver_match
     if not url:
@@ -85,7 +85,7 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     return nav
 
 
-def get_account_navigation(request: HttpRequest) -> List[MenuItem]:
+def get_account_navigation(request: HttpRequest) -> list[MenuItem]:
     """Generate navigation items for account."""
     resolver_match = request.resolver_match
     if not resolver_match:

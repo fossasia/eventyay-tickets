@@ -250,7 +250,7 @@ docs = [
     "sphinx>=8.2.3",
 ]
 lint = [
-    "ruff>=0.12.9",
+    "ruff>=0.13.0",
 ]
 test = [
     "pytest>=7.2.2",
@@ -271,14 +271,19 @@ indent-style = "space"
 quote-style = "single"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I"]
+select = ["E", "F", "W", "I", "UP", "PLE", "PLW"]
 ignore = ["E722", "E741"]
+# Enable `from __future__ import annotations` imports
+future-annotations = true
 
 [tool.ruff.lint.per-file-ignores]
 # These files re-export models.
 "**/__init__.py" = ["F401"]
 # These files have long lines.
 "**/migrations/*.py" = ["E501"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
 
 [tool.setuptools]
 packages = ["eventyay"]

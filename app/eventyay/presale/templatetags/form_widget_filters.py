@@ -1,6 +1,7 @@
 from django import template
 from django.forms.widgets import CheckboxInput
 
+
 register = template.Library()
 
 

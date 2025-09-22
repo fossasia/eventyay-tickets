@@ -1,7 +1,6 @@
 import json
 import os
 from datetime import timedelta
-from typing import List, Tuple
 
 from django.db import transaction
 from django.db.models import Max, Q
@@ -64,7 +63,7 @@ class BaseDataShredder:
     def __str__(self):
         return self.identifier
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         """
         This method is called to export the data that is about to be shred and return a list of tuples consisting of a
         filename, a file type and file content.
@@ -143,7 +142,7 @@ class PhoneNumberShredder(BaseDataShredder):
     identifier = 'phone_numbers'
     description = _('This will remove all phone numbers from orders.')
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         yield (
             'phone-by-order.json',
             'application/json',
@@ -176,7 +175,7 @@ class EmailAddressShredder(BaseDataShredder):
         'This will remove all e-mail addresses from orders and attendees, as well as logged email contents.'
     )
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         yield (
             'emails-by-order.json',
             'application/json',
@@ -190,7 +189,7 @@ class EmailAddressShredder(BaseDataShredder):
             'application/json',
             json.dumps(
                 {
-                    '{}-{}'.format(op.order.code, op.positionid): op.attendee_email
+                    f'{op.order.code}-{op.positionid}': op.attendee_email
                     for op in OrderPosition.all.filter(order__event=self.event, attendee_email__isnull=False)
                 },
                 indent=4,
@@ -232,7 +231,7 @@ class WaitingListShredder(BaseDataShredder):
     identifier = 'waiting_list'
     description = _('This will remove all names, email addresses, and phone numbers from the waiting list.')
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         yield (
             'waiting-list.json',
             'application/json',
@@ -272,13 +271,13 @@ class AttendeeInfoShredder(BaseDataShredder):
         'changes to them.'
     )
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         yield (
             'attendee-info.json',
             'application/json',
             json.dumps(
                 {
-                    '{}-{}'.format(op.order.code, op.positionid): {
+                    f'{op.order.code}-{op.positionid}': {
                         'name': op.attendee_name,
                         'company': op.company,
                         'street': op.street,
@@ -340,7 +339,7 @@ class InvoiceAddressShredder(BaseDataShredder):
     tax_relevant = True
     description = _('This will remove all invoice addresses from orders, as well as logged changes to them.')
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         yield (
             'invoice-addresses.json',
             'application/json',
@@ -373,7 +372,7 @@ class QuestionAnswerShredder(BaseDataShredder):
     identifier = 'question_answers'
     description = _('This will remove all answers to questions, as well as logged changes to them.')
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         d = {}
         for op in OrderPosition.all.filter(order__event=self.event).prefetch_related('answers', 'answers__question'):
             for a in op.answers.all():
@@ -412,13 +411,13 @@ class InvoiceShredder(BaseDataShredder):
         'personal data from the database. Invoice numbers and totals will be conserved.'
     )
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         for i in self.event.invoices.filter(shredded=False):
             if not i.file:
                 invoice_pdf_task.apply(args=(i.pk,))
                 i.refresh_from_db()
             i.file.open('rb')
-            yield 'invoices/{}.pdf'.format(i.number), 'application/pdf', i.file.read()
+            yield f'invoices/{i.number}.pdf', 'application/pdf', i.file.read()
             i.file.close()
 
     @transaction.atomic
@@ -440,7 +439,7 @@ class CachedTicketShredder(BaseDataShredder):
     identifier = 'cachedtickets'
     description = _('This will remove all cached ticket files. No download will be offered.')
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         pass
 
     @transaction.atomic
@@ -458,7 +457,7 @@ class PaymentInfoShredder(BaseDataShredder):
         'removed or personal data only. No download will be offered.'
     )
 
-    def generate_files(self) -> List[Tuple[str, str, str]]:
+    def generate_files(self) -> list[tuple[str, str, str]]:
         pass
 
     @transaction.atomic
