@@ -322,6 +322,12 @@ input[type=number].short {
   }
 }
 
+.form-group:has(.datepickerfield),
+.form-group:has(.timepickerfield),
+.form-group:has(.splitdatetimerow) {
+  position: relative;
+}
+
 .propagated-settings-box {
   position: relative;
   .propagated-settings-overlay {
