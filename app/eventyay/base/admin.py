@@ -11,6 +11,10 @@ from .models import (
 from ..api.models import OAuthApplication, OAuthAccessToken, OAuthRefreshToken, OAuthIDToken, WebHook, WebHookCall, ApiCall, WebHookEventListener
 
 # User and Authentication
+
+class TeamAdmin(admin.ModelAdmin):
+    filter_horizontal = ('members', 'limit_events')
+
 admin.site.register(auth.User)
 admin.site.register(auth.U2FDevice)
 admin.site.register(auth.WebAuthnDevice)
@@ -25,7 +29,8 @@ admin.site.register(event.SubEventMetaValue)
 admin.site.register(event.RequiredAction)
 
 # Organizer Management
-admin.site.register(organizer.Organizer)
+admin.site.register(organizer.Team, TeamAdmin)
+
 admin.site.register(Team)
 admin.site.register(TeamInvite)
 
@@ -42,10 +47,6 @@ admin.site.register(orders.CachedTicket)
 admin.site.register(orders.CachedCombinedTicket)
 admin.site.register(orders.CancellationRequest)
 admin.site.register(orders.RevokedTicketSecret)
-
-# Items and Categories
-#products to be plaecd here 
-# Check-in Management
 admin.site.register(checkin.Checkin)
 admin.site.register(checkin.CheckinList)
 
