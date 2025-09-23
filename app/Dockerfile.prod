@@ -17,7 +17,7 @@ ENV PYTHONUNBUFFERED=1
 
 # install system dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git build-essential gettext
+    apt-get install -y --no-install-recommends git build-essential gettext make npm
 
 # install python dependencies
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs
@@ -26,6 +26,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project --no-editable
 
+COPY Makefile Makefile
+COPY eventyay/static/npm_dir eventyay/static/npm_dir
+# Run npm stuff
+RUN make npminstall
 
 #########
 # FINAL #
@@ -64,6 +68,7 @@ RUN chown -R app:app $APP_HOME
 # Copy the Python environment from the builder
 # Note: The venv path in the builder must match the one in runner.
 COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
+COPY --from=builder --chown=app:app $APP_HOME/eventyay/static.dist/node_prefix $APP_HOME/eventyay/static.dist/node_prefix
 
 # change to the app user
 USER app
