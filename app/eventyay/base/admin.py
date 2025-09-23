@@ -30,8 +30,6 @@ admin.site.register(event.RequiredAction)
 
 # Organizer Management
 admin.site.register(organizer.Team, TeamAdmin)
-
-admin.site.register(Team)
 admin.site.register(TeamInvite)
 
 # Orders and Payments

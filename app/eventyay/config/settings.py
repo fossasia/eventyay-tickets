@@ -26,6 +26,10 @@ from eventyay.helpers.config import EnvOrParserConfig
 from .settings_helpers import build_db_tls_config, build_redis_tls_config
 from pycountry import currencies
 
+# Configuration file handling
+_config = configparser.RawConfigParser()
+config = EnvOrParserConfig(_config)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = os.environ.get(
     'DATA_DIR',
@@ -45,8 +49,8 @@ if not os.path.exists(LOG_DIR):
 if not os.path.exists(MEDIA_ROOT):
     os.mkdir(MEDIA_ROOT)
 
-# Configuration file handling
-_config = configparser.RawConfigParser()
+
+
 
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
@@ -56,7 +60,6 @@ else:
         encoding='utf-8',
     )
 
-config = EnvOrParserConfig(_config)
 
 def instance_name(request):
     from django.conf import settings

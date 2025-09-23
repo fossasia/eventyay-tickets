@@ -2,7 +2,7 @@ from asgiref.sync import async_to_sync
 from django.db import transaction
 from rest_framework import viewsets
 
-from eventyay.base.api.auth import (
+from eventyay.api.auth.api_auth import (
     ApiAccessRequiredPermission,
     RoomPermissions,
 )
