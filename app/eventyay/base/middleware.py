@@ -184,7 +184,7 @@ def _merge_csp(a, b):
 
 
 class SecurityMiddleware(MiddlewareMixin):
-    CSP_EXEMPT = ('/api/v1/docs/',)
+    CSP_EXEMPT = ('/api/v1/docs/', '/video/',)
 
     def process_response(self, request, resp):
         if settings.DEBUG and resp.status_code >= 400:

@@ -193,10 +193,12 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         ordering = ('email',)
 
     def save(self, *args, **kwargs):
-        self.email = self.email.lower()
+        # Allow anonymous / token based users without email; only normalize if present
+        if self.email:
+            self.email = self.email.lower()
         is_new = not self.pk
         super().save(*args, **kwargs)
-        if is_new:
+        if is_new and self.email:  # only create notifications if an email-backed account
             self.notification_settings.create(
                 action_type='eventyay.event.order.refund.requested',
                 event=None,

@@ -52,6 +52,7 @@ from eventyay.helpers.json import safe_string
 from eventyay.helpers.thumb import get_thumbnail
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
+from .auth import User  # added for permission checks referencing User.UserType
 
 TALK_HOSTNAME = settings.TALK_HOSTNAME
 LANGUAGE_NAMES = {code: name for code, name in settings.LANGUAGES}
@@ -351,7 +352,7 @@ class EventMixin:
             'name': str(self.name),
         }
         img = getattr(self, 'event', self).social_image
-        if img:
+        if (img):
             eventdict['image'] = img
 
         if self.settings.show_times:
@@ -1414,7 +1415,6 @@ class Event(EventMixin, LoggedModel):
     def get_all_permissions(self, user):
         result = defaultdict(set)
         if user.is_banned:  # pragma: no cover
-            # safeguard only
             return result
 
         allow_empty_traits = user.type == User.UserType.PERSON
@@ -1430,20 +1430,14 @@ class Event(EventMixin, LoggedModel):
             ):
                 result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
 
-        for grant in user.world_grants.all():
-            result[self].update(
-                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
-            )
+        # Removed user.world_grants loop (attribute not present on unified User model)
 
         for room in self.rooms.all():
             for role, required_traits in room.trait_grants.items():
                 if (
                     isinstance(required_traits, list)
                     and all(
-                        any(
-                            x in user.traits
-                            for x in (r if isinstance(r, list) else [r])
-                        )
+                        any(x in user.traits for x in (r if isinstance(r, list) else [r]))
                         for r in required_traits
                     )
                     and (required_traits or allow_empty_traits)
@@ -2021,6 +2015,9 @@ class Event(EventMixin, LoggedModel):
         locale_names = dict(self.available_content_locales)
         return [(code, locale_names[code]) for code in self.content_locales]
 
+    async def refresh_from_db_if_outdated(self, allowed_age=0):
+        from channels.db import database_sync_to_async
+        await database_sync_to_async(self.refresh_from_db)()
 
 class SubEvent(EventMixin, LoggedModel):
     """

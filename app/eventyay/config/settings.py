@@ -149,6 +149,7 @@ _OURS_APPS = (
     'eventyay.api',
     'eventyay.base',
     'eventyay.common',
+    'eventyay.core.CoreConfig',
     'eventyay.control.ControlConfig',
     'eventyay.eventyay_common',
     'eventyay.features.live.LiveConfig',
@@ -666,7 +667,9 @@ CELERY_TASK_ROUTES = (
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static') ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'webapp', 'dist'),
+]
 
 
 

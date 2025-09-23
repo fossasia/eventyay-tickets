@@ -179,19 +179,23 @@ def get_room_config(room, permissions):
 
 def get_event_config_for_user(event, user):
     permissions = event.get_all_permissions(user)
+    cfg = event.config or {}
+    world_block = {
+        "id": str(event.id),
+        "title": getattr(event, "title", getattr(event, "name", "")),
+        "pretalx": cfg.get("pretalx", {}),
+        "profile_fields": cfg.get("profile_fields", []),
+        "social_logins": cfg.get("social_logins", []),
+        "iframe_blockers": cfg.get(
+            "iframe_blockers",
+            {"default": {"enabled": False, "policy_url": None}},
+        ),
+        "onsite_traits": cfg.get("onsite_traits", []),
+    }
     result = {
-        "event": {
-            "id": str(event.id),
-            "title": event.title,
-            "pretalx": event.config.get("pretalx", {}),
-            "profile_fields": event.config.get("profile_fields", []),
-            "social_logins": event.config.get("social_logins", []),
-            "iframe_blockers": event.config.get(
-                "iframe_blockers",
-                {"default": {"enabled": False, "policy_url": None}},
-            ),
-            "onsite_traits": event.config.get("onsite_traits", []),
-        },
+        # Provide both keys for compatibility: frontend expects 'world', prior code used 'event'
+        "world": world_block,
+        "event": world_block,
         "permissions": list(permissions[event]),
         "rooms": [],
     }
@@ -370,30 +374,31 @@ def generate_tokens(event, number, traits, days, by_user, long=False):
 
 
 def _config_serializer(event, *args, **kwargs):
-    bbb_defaults = event.config.get("bbb_defaults", {})
+    bbb_defaults = (event.config or {}).get("bbb_defaults", {})
     bbb_defaults.pop("secret", None)  # Protect secret legacy contents
+    cfg = event.config or {}
     return EventConfigSerializer(
         instance={
-            "theme": event.config.get("theme", {}),
-            "title": event.title,
+            "theme": cfg.get("theme", {}),
+            "title": getattr(event, "title", getattr(event, "name", "")),
             "locale": event.locale,
-            "date_locale": event.config.get("date_locale", "en-ie"),
+            "date_locale": cfg.get("date_locale", "en-ie"),
             "roles": event.roles,
             "bbb_defaults": bbb_defaults,
-            "track_exhibitor_views": event.config.get("track_exhibitor_views", True),
-            "track_room_views": event.config.get("track_room_views", True),
-            "track_event_views": event.config.get("track_event_views", False),
-            "pretalx": event.config.get("pretalx", {}),
-            "video_player": event.config.get("video_player"),
+            "track_exhibitor_views": cfg.get("track_exhibitor_views", True),
+            "track_room_views": cfg.get("track_room_views", True),
+            "track_event_views": cfg.get("track_event_views", False),
+            "pretalx": cfg.get("pretalx", {}),
+            "video_player": cfg.get("video_player"),
             "timezone": event.timezone,
             "trait_grants": event.trait_grants,
-            "connection_limit": event.config.get("connection_limit", 0),
-            "profile_fields": event.config.get("profile_fields", []),
-            "social_logins": event.config.get("social_logins", []),
-            "onsite_traits": event.config.get("onsite_traits", []),
-            "conftool_url": event.config.get("conftool_url", ""),
-            "conftool_password": event.config.get("conftool_password", ""),
-            "iframe_blockers": event.config.get(
+            "connection_limit": cfg.get("connection_limit", 0),
+            "profile_fields": cfg.get("profile_fields", []),
+            "social_logins": cfg.get("social_logins", []),
+            "onsite_traits": cfg.get("onsite_traits", []),
+            "conftool_url": cfg.get("conftool_url", ""),
+            "conftool_password": cfg.get("conftool_password", ""),
+            "iframe_blockers": cfg.get(
                 "iframe_blockers",
                 {"default": {"enabled": False, "policy_url": None}},
             ),
