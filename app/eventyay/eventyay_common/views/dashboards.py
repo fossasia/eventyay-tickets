@@ -94,7 +94,6 @@ class EventIndexView(TemplateView):
         Centralize permission checks for the event.
         """
         request = self.request
-        print("\n", request, "\n")
         return {
             'can_view_orders': request.user.has_event_permission(
                 request.organizer, request.event, 'can_view_orders', request=request
