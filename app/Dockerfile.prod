@@ -71,6 +71,9 @@ RUN chown -R app:app $APP_HOME
 # Note: The venv path in the builder must match the one in runner.
 COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
 COPY --from=builder --chown=app:app $APP_HOME/eventyay/static/node_prefix $APP_HOME/eventyay/static/node_prefix
+# That seems to require executable permissions, but those are lost when copying from
+# the previous layer .... why?
+RUN chmod +x $APP_HOME/eventyay/static/node_prefix/node_modules/rollup/dist/bin/rollup
 
 # change to the app user
 USER app
