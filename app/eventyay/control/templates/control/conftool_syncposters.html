@@ -1,43 +1,36 @@
-{% extends "control/base.html" %}
+{% extends "pretixcontrol/admin/base.html" %}
 {% load i18n %}
 {% load formset_tags %}
 
-{% block content %}
-<h1>{% trans "Sync conftool posters" %}</h1>
+{% block video_admin_content %}
+<h1 class="page-header">{% trans "Sync conftool posters" %}</h1>
 
 {% if "task_id" in request.GET %}
     <div class="messages">
         {% if task_state == "SUCCESS" %}
-            <div class="success">
-                {% trans "Completed." %}
-            </div>
+            <div class="alert alert-success">{% trans "Completed." %}</div>
         {% elif task_state == "FAILURE" %}
-            <div class="error">
-                {% trans "Failed." %}
-                <br>
-                {{ task.result }}
-            </div>
+            <div class="alert alert-danger">{% trans "Failed." %}<br>{{ task.result }}</div>
         {% elif task_state == "STARTED" %}
-            <div class="info">
-                {% trans "Task is running." %}
-            </div>
+            <div class="alert alert-info">{% trans "Task is running." %}</div>
             <meta http-equiv="refresh" content="1">
         {% elif task_state == "PENDING" %}
-            <div class="info">
-                {% trans "Task is waiting to start." %}
-            </div>
+            <div class="alert alert-info">{% trans "Task is waiting to start." %}</div>
             <meta http-equiv="refresh" content="1">
         {% else %}
-            <div class="error">
-                {{ task_state }}
-            </div>
+            <div class="alert alert-danger">{{ task_state }}</div>
         {% endif %}
     </div>
 {% else %}
-    <form method="post">
+    <form method="post" class="form-horizontal">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">{% trans "Sync" %}</button>
+        <div class="form-body">{{ form.as_p }}</div>
+        <div class="video-admin-btn-row">
+            <button type="submit" class="btn btn-primary">
+                <span class="fa fa-refresh"></span> {% trans "Sync" %}
+            </button>
+            <a href="{% url 'control:systemlog.list' %}" class="btn btn-default">{% trans "Back" %}</a>
+        </div>
     </form>
 {% endif %}
 {% endblock %}

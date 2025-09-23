@@ -205,3 +205,19 @@ pre {
 .text-muted {
     color: #888;
 }
+
+/* Sidebar overrides to keep navigation text color consistent with common dashboard */
+.sidebar-nav li > a,
+.sidebar-nav li > a:visited,
+.sidebar-nav li > a.active,
+.sidebar-nav li > a:hover,
+.sidebar-nav li > a:focus,
+.sidebar-nav .nav-second-level li > a {
+    color: #333 !important; /* inherit standard dashboard text color */
+    text-decoration: none;
+}
+
+.sidebar-nav li > a:hover,
+.sidebar-nav li > a:focus {
+    background-color: #f2f2f2; /* subtle hover, matching existing active bg (#eeeeee close) */
+}

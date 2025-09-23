@@ -1,23 +1,18 @@
-{% extends "control/base.html" %}
+{% extends "pretixcontrol/admin/base.html" %}
 {% load i18n %}
 
-{% block content %}
-<h1>{% trans "Delete event data" %}</h1>
-<form method="post">
+{% block video_admin_content %}
+<h1 class="page-header">{% trans "Delete event data" %}</h1>
+<form method="post" class="form">
     {% csrf_token %}
-    <label>
-        <input type="checkbox" required>
-        {% trans "Delete statistics, systemlog, chat messages, questions, …" %}
-    </label>
-    <label>
-        <input type="checkbox" required>
-        {% trans "Delete user accounts and audit logs" %}
-    </label>
-    <label>
-        <input type="checkbox" required>
-        {% trans "Delete all uploaded files" %}
-    </label>
-    <button type="submit">{% trans "Delete" %}</button>
-
+    <div class="checkbox"><label><input type="checkbox" required> {% trans "Delete statistics, systemlog, chat messages, questions, …" %}</label></div>
+    <div class="checkbox"><label><input type="checkbox" required> {% trans "Delete user accounts and audit logs" %}</label></div>
+    <div class="checkbox"><label><input type="checkbox" required> {% trans "Delete all uploaded files" %}</label></div>
+    <div class="video-admin-btn-row">
+        <button type="submit" class="btn btn-danger">
+            <span class="fa fa-trash"></span> {% trans "Delete" %}
+        </button>
+        <a href="{% url 'control:event.list' %}" class="btn btn-default">{% trans "Cancel" %}</a>
+    </div>
 </form>
 {% endblock %}

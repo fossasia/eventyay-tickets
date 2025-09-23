@@ -78,7 +78,7 @@ class UserUpdate(SuperuserBase, UpdateView):
     queryset = User.objects.all()
     context_object_name = "users"
     form_class = UserForm
-    success_url = "/control/video/users/"
+    success_url = "/control/admin/video/users/"
 
     def form_valid(self, form):
         LogEntry.objects.create(
@@ -116,13 +116,13 @@ class SignupView(AdminBase, FormView):
             self.request,
             _("The user has been created successfully, they can now log in."),
         )
-        return redirect("/control/video/")
+        return redirect("/control/admin/video/")
 
 
 class ProfileView(AdminBase, FormView):
     template_name = "control/profile.html"
     form_class = ProfileForm
-    success_url = "/control/video/auth/profile/"
+    success_url = "/control/admin/video/auth/profile/"
 
     def form_valid(self, form):
         LogEntry.objects.create(
@@ -179,7 +179,7 @@ class EventList(AdminBase, ListView):
 class EventAdminToken(AdminBase, DetailView):
     template_name = "control/event_clear.html"
     queryset = Event.objects.all()
-    success_url = "/control/video/events/"
+    success_url = "/control/admin/video/events/"
 
     def get(self, request, *args, **kwargs):
         event = self.get_object()
@@ -224,7 +224,7 @@ class FormsetMixin:
 class EventCreate(FormsetMixin, AdminBase, CreateView):
     template_name = "control/event_create.html"
     form_class = EventForm
-    success_url = "/control/events/"
+    success_url = "/control/admin/video/events/"
 
     @cached_property
     def copy_from(self):
@@ -306,7 +306,7 @@ class EventUpdate(FormsetMixin, AdminBase, UpdateView):
     template_name = "control/event_update.html"
     form_class = EventForm
     queryset = Event.objects.all()
-    success_url = "/control/events/"
+    success_url = "/control/admin/video/events/"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -337,7 +337,7 @@ class EventUpdate(FormsetMixin, AdminBase, UpdateView):
 class EventClear(AdminBase, DetailView):
     template_name = "control/event_clear.html"
     queryset = Event.objects.all()
-    success_url = "/control/events/"
+    success_url = "/control/admin/video/events/"
 
     def post(self, request, *args, **kwargs):
         LogEntry.objects.create(
@@ -360,7 +360,7 @@ class BBBServerList(AdminBase, ListView):
 class BBBServerCreate(AdminBase, CreateView):
     template_name = "control/bbb_form.html"
     form_class = BBBServerForm
-    success_url = "/control/video/bbbs/"
+    success_url = "/control/admin/video/bbbs/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -380,7 +380,7 @@ class BBBServerUpdate(AdminBase, UpdateView):
     template_name = "control/bbb_form.html"
     form_class = BBBServerForm
     queryset = BBBServer.objects.all()
-    success_url = "/control/video/bbbs/"
+    success_url = "/control/admin/video/bbbs/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -398,7 +398,7 @@ class BBBServerUpdate(AdminBase, UpdateView):
 class BBBServerDelete(AdminBase, DeleteView):
     template_name = "control/bbb_delete.html"
     queryset = BBBServer.objects.all()
-    success_url = "/control/video/bbbs/"
+    success_url = "/control/admin/video/bbbs/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
@@ -424,7 +424,7 @@ class JanusServerList(AdminBase, ListView):
 class JanusServerCreate(AdminBase, CreateView):
     template_name = "control/janus_form.html"
     form_class = JanusServerForm
-    success_url = "/control/janus/"
+    success_url = "/control/admin/video/janus/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -444,7 +444,7 @@ class JanusServerUpdate(AdminBase, UpdateView):
     template_name = "control/janus_form.html"
     form_class = JanusServerForm
     queryset = JanusServer.objects.all()
-    success_url = "/control/janus/"
+    success_url = "/control/admin/video/janus/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -462,7 +462,7 @@ class JanusServerUpdate(AdminBase, UpdateView):
 class JanusServerDelete(AdminBase, DeleteView):
     template_name = "control/janus_delete.html"
     queryset = JanusServer.objects.all()
-    success_url = "/control/janus/"
+    success_url = "/control/admin/video/janus/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
@@ -488,7 +488,7 @@ class TurnServerList(AdminBase, ListView):
 class TurnServerCreate(AdminBase, CreateView):
     template_name = "control/turn_form.html"
     form_class = TurnServerForm
-    success_url = "/control/turns/"
+    success_url = "/control/admin/video/turns/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -508,7 +508,7 @@ class TurnServerUpdate(AdminBase, UpdateView):
     template_name = "control/turn_form.html"
     form_class = TurnServerForm
     queryset = TurnServer.objects.all()
-    success_url = "/control/turns/"
+    success_url = "/control/admin/video/turns/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -526,7 +526,7 @@ class TurnServerUpdate(AdminBase, UpdateView):
 class TurnServerDelete(AdminBase, DeleteView):
     template_name = "control/turn_delete.html"
     queryset = TurnServer.objects.all()
-    success_url = "/control/turns/"
+    success_url = "/control/admin/video/turns/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
@@ -584,7 +584,7 @@ class StreamingServerList(AdminBase, ListView):
 class StreamingServerCreate(AdminBase, CreateView):
     template_name = "control/streaming_form.html"
     form_class = StreamingServerForm
-    success_url = "/control/streamingservers/"
+    success_url = "/control/admin/video/streamingservers/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -604,7 +604,7 @@ class StreamingServerUpdate(AdminBase, UpdateView):
     template_name = "control/streaming_form.html"
     form_class = StreamingServerForm
     queryset = StreamingServer.objects.all()
-    success_url = "/control/streamingservers/"
+    success_url = "/control/admin/video/streamingservers/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -622,7 +622,7 @@ class StreamingServerUpdate(AdminBase, UpdateView):
 class StreamingServerDelete(AdminBase, DeleteView):
     template_name = "control/streaming_delete.html"
     queryset = StreamingServer.objects.all()
-    success_url = "/control/video/streamingservers/"
+    success_url = "/control/admin/video/streamingservers/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
