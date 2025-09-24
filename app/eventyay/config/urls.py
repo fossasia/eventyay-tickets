@@ -75,6 +75,3 @@ common_patterns = (
     + admin_patterns
     + talk_patterns
 )
-
-if settings.DEBUG:
-    common_patterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
