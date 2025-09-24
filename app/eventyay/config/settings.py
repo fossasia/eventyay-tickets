@@ -135,6 +135,7 @@ _OURS_APPS = (
     'eventyay.presale',
     'eventyay.plugins.socialauth',
     'eventyay.plugins.banktransfer',
+    'eventyay.plugins.badges',
     'eventyay.plugins.sendmail',
     'eventyay.plugins.statistics',
     'eventyay.plugins.reports',
@@ -142,6 +143,7 @@ _OURS_APPS = (
     'eventyay.plugins.manualpayment',
     'eventyay.plugins.returnurl',
     'eventyay.plugins.scheduledtasks',
+    'eventyay.plugins.ticketoutputpdf',
     'eventyay.plugins.webcheckin',
 )
 

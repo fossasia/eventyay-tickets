@@ -1,6 +1,7 @@
 import importlib.util
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import include, path
 from django.urls import re_path as url
 from django.views.generic import RedirectView
@@ -59,3 +60,6 @@ if settings.DEBUG and importlib.util.find_spec('debug_toolbar'):
 common_patterns = (
     base_patterns + control_patterns + debug_patterns + common_patterns + page_patterns + admin_patterns
 )
+
+if settings.DEBUG:
+    common_patterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

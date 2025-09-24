@@ -10,7 +10,10 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # install system dependencies
-RUN apt-get update && apt-get install -y netcat-traditional git build-essential gettext
+RUN apt-get update && apt-get install --no-install-recommends -y netcat-traditional git build-essential gettext make npm
+
+# copy project files
+COPY . .
 
 # install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -23,12 +26,12 @@ COPY ./entrypoint.sh .
 RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
 
-# copy project
-COPY . .
-
 # Expose virtual env
 ENV VIRTUAL_ENV=/usr/src/app/.venv
 ENV PATH="/usr/src/app/.venv/bin:$PATH"
+
+# Run npm stuff
+RUN make npminstall
 
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

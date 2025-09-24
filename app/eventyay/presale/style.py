@@ -41,7 +41,6 @@ def compile_scss(object, file='main.scss', fonts=True):
 
     def static(path):
         sp = _static(path)
-        print("\n\n\nSTATIC PATH: {}\n\n\n".format(sp))
         if not settings.MEDIA_URL.startswith('/') and sp.startswith('/'):
             if isinstance(object, Event):
                 domain = get_event_domain(object, fallback=True)
