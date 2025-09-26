@@ -72,7 +72,7 @@ export default {
 	.choose-type
 		display: flex
 		flex-direction: column
-		height: 89vh
+		height: auto
 		> *
 			margin: 16px
 		h2

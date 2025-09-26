@@ -23,9 +23,10 @@
 					.actions
 						bunt-icon-button(v-if="iframeDomain.domain !== 'default'", @click="removeIframeDomain(iframeDomain)") delete-outline
 				bunt-button.btn-add-domain(@click="addIframeDomain") Add domain
-	.ui-form-actions
-		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
-		.errors {{ validationErrors.join(', ') }}
+	.ui-form-actions-wrapper
+		.ui-form-actions
+			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+			.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
 import {useVuelidate} from '@vuelidate/core'
