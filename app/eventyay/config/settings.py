@@ -437,7 +437,7 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
 
-TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/') if not DEBUG else 'http://localhost:8000/'
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -723,7 +723,7 @@ COMPRESS_CSS_FILTERS = (
     'compressor.filters.cssmin.CSSCompressorFilter',
 )
 
-TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
+TALK_BASE_PATH = ''
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

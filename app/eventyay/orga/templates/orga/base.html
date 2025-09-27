@@ -122,7 +122,7 @@
                 {% endif %}
                 {% block navbar_right %}{% endblock navbar_right %}
                 <li class="nav-item d-none d-md-block">
-                    <a class="nav-link active" href="{% url "orga:user.view" %}">
+                    <a class="nav-link active" href="{% url "eventyay_common:account.general" %}">
                         <i class="fa fa-user"></i>
                         {{ request.user.get_display_name }}
                     </a>

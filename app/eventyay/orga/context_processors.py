@@ -34,7 +34,7 @@ def orga_events(request):
     site_config = dict(config.items('site'))
     context['site_config'] = site_config
     context['base_path'] = settings.BASE_PATH
-    context['tickets_common'] = urljoin(settings.BASE_PATH, 'common')
+    context['tickets_common'] = urljoin(settings.BASE_PATH, '/common')
     # Login button label
     key = site_config.get('call_for_speaker_login_button_label', 'default')
     button_label = CALL_FOR_SPEAKER_LOGIN_BTN_LABELS.get(key)
