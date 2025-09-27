@@ -148,10 +148,10 @@ class Organizer(LoggedModel, PretalxModel):
     def shred(self, person=None):
         """Irrevocably deletes the organizer and all related events and their
         data."""
-        from eventyay.base.models import ActivityLog
+        from eventyay.base.models import LogEntry
 
-        ActivityLog.objects.create(
-            person=person,
+        LogEntry.objects.create(
+            user=person,
             action_type='eventyay.organizer.delete',
             content_object=self,
             is_orga_action=True,

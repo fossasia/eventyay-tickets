@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
-from eventyay.base.models.log import ActivityLog
+from eventyay.base.models.log import LogEntry
 from eventyay.common.text.phrases import phrases
 from eventyay.common.views.mixins import EventPermissionRequired, PermissionRequired
 from eventyay.base.models.event import Event
@@ -201,7 +201,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
 
     @context
     def history(self):
-        return ActivityLog.objects.filter(event=self.request.event).select_related('person', 'event')[:20]
+        return LogEntry.objects.filter(event=self.request.event).select_related('user', 'event')[:20]
 
     def get_context_data(self, **kwargs):
         # Tiles can have priorities

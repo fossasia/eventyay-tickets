@@ -21,7 +21,7 @@ from django_context_decorator import context
 from eventyay.talk_rules.agenda import is_agenda_submission_visible
 from eventyay.common.exceptions import SubmissionError
 from eventyay.common.forms.fields import SizeFileInput
-from eventyay.base.models import ActivityLog
+from eventyay.base.models import LogEntry
 from eventyay.common.text.phrases import phrases
 from eventyay.common.views.generic import CreateOrUpdateView
 from eventyay.common.views.generic import OrgaCRUDView
@@ -719,7 +719,7 @@ class SubmissionStats(EventPermissionRequired, TemplateView):
         talk_ids = self.request.event.submissions.exclude(state=SubmissionStates.DELETED).values_list('id', flat=True)
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date()
-            for log in ActivityLog.objects.filter(
+            for log in LogEntry.objects.filter(
                 event=self.request.event,
                 action_type='eventyay.submission.create',
                 content_type=ContentType.objects.get_for_model(Submission),
@@ -804,7 +804,7 @@ class SubmissionStats(EventPermissionRequired, TemplateView):
         )
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date().isoformat()
-            for log in ActivityLog.objects.filter(
+            for log in LogEntry.objects.filter(
                 event=self.request.event,
                 action_type='eventyay.submission.create',
                 content_type=ContentType.objects.get_for_model(Submission),

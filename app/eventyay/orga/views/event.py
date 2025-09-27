@@ -22,7 +22,7 @@ from django_scopes import scope, scopes_disabled
 from formtools.wizard.views import SessionWizardView
 
 from eventyay.common.forms import I18nEventFormSet, I18nFormSet
-from eventyay.base.models import ActivityLog
+from eventyay.base.models import LogEntry
 from eventyay.common.text.phrases import phrases
 from eventyay.common.views.mixins import (
     ActionConfirmMixin,
@@ -231,12 +231,12 @@ class EventLive(EventSettingsPermission, TemplateView):
 
 class EventHistory(EventSettingsPermission, ListView):
     template_name = 'orga/event/history.html'
-    model = ActivityLog
+    model = LogEntry
     context_object_name = 'log_entries'
     paginate_by = 200
 
     def get_queryset(self):
-        return ActivityLog.objects.filter(event=self.request.event)
+        return LogEntry.objects.filter(event=self.request.event)
 
 
 class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):

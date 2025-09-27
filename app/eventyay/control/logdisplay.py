@@ -526,7 +526,10 @@ def eventyaycontrol_logentry_display(sender: Event, logentry: LogEntry, **kwargs
         'eventyay.giftcards.transaction.manual': _('A manual transaction has been performed.'),
     }
 
-    data = json.loads(logentry.data)
+    try:
+        data = json.loads(logentry.data or "{}")
+    except (TypeError, json.JSONDecodeError):
+        data = {}
 
     if logentry.action_type.startswith('eventyay.event.product.variation'):
         if 'value' not in data:
