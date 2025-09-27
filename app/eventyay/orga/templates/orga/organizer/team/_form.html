@@ -14,7 +14,7 @@
         {{ form.limit_events.as_field_group }}
         {{ form.can_create_events.as_field_group }}
         {{ form.can_change_teams.as_field_group }}
-        {{ form.can_change_organiser_settings.as_field_group }}
+        {{ form.can_change_organizer_settings.as_field_group }}
         {{ form.can_change_event_settings.as_field_group }}
         {{ form.can_change_submissions.as_field_group }}
         {{ form.is_reviewer.as_field_group }}
@@ -32,7 +32,7 @@
 
     </form>
 
-    <span id="vars" remoteUrl="{{ request.organiser.orga_urls.user_search }}"></span>
+    <span id="vars" remoteUrl="{{ request.organizer.orga_urls.user_search }}"></span>
     {% compress js %}
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
         <script defer src="{% static "orga/js/teamSettings.js" %}"></script>

@@ -17,14 +17,14 @@ from django.contrib.auth.models import (
 )
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.contenttypes.models import ContentType
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.crypto import get_random_string, salted_hmac
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, override
 from django_otp.models import Device
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
@@ -34,12 +34,14 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 from eventyay.base.i18n import language
 from eventyay.common.image import create_thumbnail
 from eventyay.common.text.path import path_with_hash
+from eventyay.common.urls import EventUrls
 from eventyay.helpers.urls import build_absolute_uri
 from eventyay.talk_rules.person import is_administrator
 
 from ...helpers.u2f import pub_key_from_der, websafe_decode
 from .base import LoggingMixin
 from .mixins import FileCleanupMixin, GenerateCode
+# from eventyay.person.signals import delete_user as delete_user_signal
 
 logger = logging.getLogger(__name__)
 
@@ -557,6 +559,191 @@ class User(
         if self.locale in event.locales:
             return self.locale
         return event.locale
+    
+    def log_action(
+        self, action: str, data: dict = None, user=None, person=None, orga: bool = False
+    ):
+        """Create a log entry for this user.
+
+        :param action: The log action that took place.
+        :param data: Addition data to be saved.
+        :param person: The person modifying this user. Defaults to this user.
+        :type person: :class:`~pretalx.person.models.user.User`
+        :param orga: Was this action initiated by a privileged user?
+        """
+        from eventyay.base.models.log import LogEntry
+
+        if data:
+            data = json.dumps(data)
+
+        LogEntry.objects.create(
+            user=user or person or self,
+            content_object=self,
+            action_type=action,
+            data=data,
+            is_orga_action=orga,
+        )
+    
+    def logged_actions(self):
+        """Returns all log entries that were made about this user."""
+        from eventyay.base.models.log import LogEntry
+
+        return LogEntry.objects.filter(
+            content_type=ContentType.objects.get_for_model(type(self)),
+            object_id=self.pk,
+        )
+    
+    def own_actions(self):
+        """Returns all log entries that were made by this user."""
+        from eventyay.base.models.log import LogEntry
+
+        return LogEntry.objects.filter(user=self)
+    
+    def get_password_reset_url(self, event=None, orga=False):
+        if event:
+            path = "orga:event.auth.recover" if orga else "cfp:event.recover"
+            url = build_absolute_uri(
+                path,
+                kwargs={"token": self.pw_reset_token, "event": event.slug},
+            )
+        else:
+            url = build_absolute_uri(
+                "orga:auth.recover", kwargs={"token": self.pw_reset_token}
+            )
+        return url
+    
+    @transaction.atomic
+    def reset_password(self, event, user=None, mail_text=None, orga=False):
+        from eventyay.base.models.mail import QueuedMail
+
+        self.pw_reset_token = get_random_string(32)
+        self.pw_reset_time = now()
+        self.save()
+
+        context = {
+            "name": self.fullname or "",
+            "url": self.get_password_reset_url(event=event, orga=orga),
+        }
+        if not mail_text:
+            mail_text = _(
+                """Hi {name},
+
+you have requested a new password for your eventyay account.
+To reset your password, click on the following link:
+
+  {url}
+
+If this wasn’t you, you can just ignore this email.
+
+All the best,
+the eventyay robot"""
+            )
+
+        with override(self.locale):
+            QueuedMail(
+                subject=_("Password recovery"),
+                text=str(mail_text).format(**context),
+                locale=self.locale,
+                to=self.email,
+            ).send()
+        self.log_action(
+            action="eventyay.user.password.reset", user=user
+        )
+
+    reset_password.alters_data = True
+
+    class orga_urls(EventUrls):
+        admin = "/orga/admin/users/{self.code}/"
+
+    @transaction.atomic
+    def change_password(self, new_password):
+        from eventyay.base.models.mail import QueuedMail
+
+        self.set_password(new_password)
+        self.pw_reset_token = None
+        self.pw_reset_time = None
+        self.save()
+
+        context = {
+            "name": self.name or "",
+        }
+        mail_text = _(
+            """Hi {name},
+
+Your eventyay account password was just changed.
+
+If you did not change your password, please contact the site administration immediately.
+
+All the best,
+the eventyay team"""
+        )
+
+        with override(self.locale):
+            QueuedMail(
+                subject=_("[eventyay] Password changed"),
+                text=str(mail_text).format(**context),
+                locale=self.locale,
+                to=self.email,
+            ).send()
+
+        self.log_action(action="eventyay.user.password.changed", user=self)
+
+    change_password.alters_data = True
+
+    # @transaction.atomic
+    # def deactivate(self):
+    #     """Delete the user by unsetting all of their information."""
+    #     import random
+    #     from eventyay.base.models import Answer
+
+    #     self.email = f"deleted_user_{random.randint(0, 999)}@localhost"
+    #     while self.__class__.objects.filter(
+    #         email__iexact=self.email
+    #     ).exists():  # pragma: no cover
+    #         self.email = f"deleted_user_{random.randint(0, 99999)}"
+    #     self.name = "Deleted User"
+    #     self.is_active = False
+    #     self.is_superuser = False
+    #     self.is_administrator = False
+    #     self.locale = "en"
+    #     self.timezone = "UTC"
+    #     self.pw_reset_token = None
+    #     self.pw_reset_time = None
+    #     self.set_unusable_password()
+    #     self._delete_files()
+    #     self.save()
+    #     self.profiles.all().update(biography="")
+    #     for answer in Answer.objects.filter(
+    #         person=self, question__contains_personal_data=True
+    #     ):
+    #         answer.delete()  # Iterate to delete answer files, too
+    #     for team in self.teams.all():
+    #         team.members.remove(self)
+    #     delete_user_signal.send(None, user=self, db_delete=True)
+
+    # deactivate.alters_data = True
+
+    # @transaction.atomic
+    # def shred(self):
+    #     """Actually remove the user account."""
+    #     from eventyay.base.models import Submission
+
+    #     with scopes_disabled():
+    #         if (
+    #             Submission.all_objects.filter(speakers__in=[self]).count()
+    #             or self.teams.count()
+    #             or self.answers.count()
+    #         ):
+    #             raise Exception(
+    #                 f"Cannot delete user <{self.email}> because they have submissions, answers, or teams. Please deactivate this user instead."
+    #             )
+    #         self.logged_actions().delete()
+    #         self.own_actions().update(person=None)
+    #         self._delete_files()
+    #         delete_user_signal.send(None, user=self, db_delete=True)
+    #         self.delete()
+
+    # shred.alters_data = True
 
     @cached_property
     def guid(self) -> str:

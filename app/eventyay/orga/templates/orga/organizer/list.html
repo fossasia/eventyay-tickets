@@ -19,25 +19,25 @@
     </form>
     <div class="dashboard-list event-blocks">
         {% if request.user.is_administrator %}
-            <a class="dashboard-block symbol" href="{% url "orga:organiser.create" %}">
+            <a class="dashboard-block symbol" href="{% url "orga:organizer.create" %}">
                 <i class="fa fa-plus-circle"></i>
             </a>
         {% endif %}
-        {% for organiser in organisers %}
-            <a class="event-block dashboard-block" href="{{ organiser.orga_urls.base }}">
-                <h2 class="name">{{ organiser.name }}</h2>
+        {% for organizer in organizers %}
+            <a class="event-block dashboard-block" href="{{ organizer.orga_urls.base }}">
+                <h2 class="name">{{ organizer.name }}</h2>
                 <div class="stats">
                     <div class="submissions">
-                        {{ organiser.event_count }}
-                        {% blocktranslate trimmed count count=organiser.event_count %}
+                        {{ organizer.event_count }}
+                        {% blocktranslate trimmed count count=organizer.event_count %}
                             Event
                         {% plural %}
                             Events
                         {% endblocktranslate %}
                     </div>
                     <div class="state inactive">
-                        {{ organiser.team_count }}
-                        {% blocktranslate trimmed count count=organiser.team_count context "number of teams" %}
+                        {{ organizer.team_count }}
+                        {% blocktranslate trimmed count count=organizer.team_count context "number of teams" %}
                             Team
                         {% plural %}
                             Teams
@@ -47,7 +47,7 @@
             </a>
         {% endfor %}
     </div>
-    {% if not organisers and not can_create_organiser %}
-        <div class="alert alert-info">{% translate "There are no organisers you can edit." %}</div>
+    {% if not organizers and not can_create_organizer %}
+        <div class="alert alert-info">{% translate "There are no organizers you can edit." %}</div>
     {% endif %}
 {% endblock content %}

@@ -180,16 +180,16 @@
                                         {% if request.event %}
                                             <span class="context-name font-weight-bold">{{ request.event.name }}</span>
                                             <span class="context-meta">{{ request.event.get_date_range_display }}</span>
-                                        {% elif request.organiser %}
-                                            <span class="context-name font-weight-bold">{{ request.organiser.name }}</span>
-                                            <span class="context-meta">{% translate "Organiser account" %}</span>
+                                        {% elif request.organizer %}
+                                            <span class="context-name font-weight-bold">{{ request.organizer.name }}</span>
+                                            <span class="context-meta">{% translate "Organizer account" %}</span>
                                         {% else %}
                                             <span class="context-name font-weight-bold">{% translate "Talk dashboard" %}</span>
                                         {% endif %}
                                     </div>
                                 </div>
                             </div>
-                            <div id="nav-search-input-wrapper" class="d-none dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url 'orga:nav.typeahead' %}" data-event-typeahead data-organiser="{% if request.event %}{{ request.event.organiser.pk }}{% elif request.organiser %}{{ request.organiser.pk }}{% endif %}">
+                            <div id="nav-search-input-wrapper" class="d-none dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url 'orga:nav.typeahead' %}" data-event-typeahead data-organizer="{% if request.event %}{{ request.event.organizer.pk }}{% elif request.organizer %}{{ request.organizer.pk }}{% endif %}">
                                 <div class="query-holder">
                                     <div class="form-box">
                                         <input type="search" class="form-control" placeholder="{% translate 'Search' %} (Alt + k)" data-typeahead-query>
@@ -224,7 +224,7 @@
                                         <span>{{ phrases.base.general }}</span>
                                     </a>
                                     {% if can_change_teams %}
-                                        <a href="{{ request.event.organiser.orga_urls.teams }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
+                                        <a href="{{ request.event.organizer.orga_urls.teams }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
                                             <span>{% translate "Teams" %}</span>
                                         </a>
                                     {% endif %}
@@ -430,21 +430,21 @@
                             {% include "orga/includes/sidebar_nav.html" %}
                         {% endfor %}
                     {% endif %}
-                {% elif request.organiser %}  {# if request.event #}
-                    <a class="nav-link {% if "/settings/" in request.path %} active{% endif %}" href="{{ request.organiser.orga_urls.settings }}">
+                {% elif request.organizer %}  {# if request.event #}
+                    <a class="nav-link {% if "/settings/" in request.path %} active{% endif %}" href="{{ request.organizer.orga_urls.settings }}">
                         <i class="fa fa-cog"></i>
                         <span>{% translate "Settings" %}</span>
                     </a>
-                    {% has_perm "event.update_team" request.user request.organiser as can_change_teams %}
-                    {% has_perm "event.view_organiser" request.user request.organiser as can_view_speakers %}
+                    {% has_perm "event.update_team" request.user request.organizer as can_change_teams %}
+                    {% has_perm "event.view_organizer" request.user request.organizer as can_view_speakers %}
                     {% if can_change_teams %}
-                        <a class="nav-link {% if "/teams/" in request.path %} active{% endif %}" href="{% url "orga:organiser.teams.list" organiser=request.organiser.slug %}">
+                        <a class="nav-link {% if "/teams/" in request.path %} active{% endif %}" href="{% url "orga:organizer.teams.list" organizer=request.organizer.slug %}">
                             <i class="fa fa-users"></i>
                             <span>{% translate "Teams" %}</span>
                         </a>
                     {% endif %}
                     {% if can_view_speakers %}
-                        <a class="nav-link {% if "/speakers/" in request.path %} active{% endif %}" href="{% url "orga:organiser.speakers" organiser=request.organiser.slug %}">
+                        <a class="nav-link {% if "/speakers/" in request.path %} active{% endif %}" href="{% url "orga:organizer.speakers" organizer=request.organizer.slug %}">
                             <i class="fa fa-address-card-o"></i>
                             <span>{% translate "Speakers" %}</span>
                         </a>
@@ -452,16 +452,16 @@
                     {% for nav_element in nav_global %}
                         {% include "orga/includes/sidebar_nav.html" %}
                     {% endfor %}
-                {% else %}  {# elif request.organiser #}
-                    {% has_perm "event.view_any_organiser" request.user request as can_see_organiser_lists %}
-                    {% if can_see_organiser_lists %}
+                {% else %}  {# elif request.organizer #}
+                    {% has_perm "event.view_any_organizer" request.user request as can_see_organizer_lists %}
+                    {% if can_see_organizer_lists %}
                         <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="{% url "orga:event.list" %}">
                             <i class="fa fa-calendar-o"></i>
                             <span>{% translate "Events" %}</span>
                         </a>
-                        <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="{% url "orga:organiser.list" %}">
+                        <a class="nav-link {% if "/orga/organizer/" in request.path %} active{% endif %}" href="{% url "orga:organizer.list" %}">
                             <i class="fa fa-users"></i>
-                            <span>{% translate "Organisers" %}</span>
+                            <span>{% translate "Organizers" %}</span>
                         </a>
                     {% endif %}
                     {% if request.user.is_administrator %}

@@ -3,13 +3,13 @@ from django.views.generic.base import RedirectView
 
 from eventyay.orga.views import (
     admin,
-    # auth,
+    auth,
     cards,
     cfp,
     dashboard,
     event,
     mails,
-    # organiser,
+    organizer,
     person,
     plugins,
     review,
@@ -19,12 +19,11 @@ from eventyay.orga.views import (
     typeahead,
 )
 
-from eventyay.eventyay_common.views import (
-    auth,
-)
-
 app_name = 'orga'
 urlpatterns = [
+    path("", RedirectView.as_view(url="event", permanent=False), name="base"),
+    path("reset/", auth.ResetView.as_view(), name="auth.reset"),
+    path("reset/<token>", auth.RecoverView.as_view(), name="auth.recover"),
     path('admin/', admin.AdminDashboard.as_view(), name='admin.dashboard'),
     path('admin/update/', admin.UpdateCheckView.as_view(), name='admin.update'),
     path(
@@ -46,11 +45,79 @@ urlpatterns = [
         name='invitation.view',
     ),
     path('nav/typeahead/', typeahead.nav_typeahead, name='nav.typeahead'),
+        path(
+        "organizer/",
+        dashboard.DashboardOrganizerListView.as_view(),
+        name="organizer.list",
+    ),
+    path("organizer/new", organizer.OrganizerDetail.as_view(), name="organizer.create"),
+    path(
+        "organizer/<slug:organizer>/",
+        include(
+            [
+                path(
+                    "",
+                    dashboard.DashboardOrganizerEventListView.as_view(),
+                    name="organizer.dashboard",
+                ),
+                path(
+                    "settings/",
+                    organizer.OrganizerDetail.as_view(),
+                    name="organizer.settings",
+                ),
+                path(
+                    "settings/delete/",
+                    organizer.OrganizerDelete.as_view(),
+                    name="organizer.delete",
+                ),
+                path("api/users", organizer.speaker_search, name="organizer.user_list"),
+                *organizer.TeamView.get_urls(
+                    url_base="teams",
+                    url_name="organizer.teams",
+                    namespace="orga",
+                ),
+                path(
+                    "teams/<int:team_pk>/members/<int:user_pk>/delete/",
+                    organizer.TeamMemberDelete.as_view(),
+                    name="organizer.teams.members.delete",
+                ),
+                path(
+                    "teams/<int:team_pk>/members/<int:user_pk>/reset/",
+                    organizer.TeamResetPassword.as_view(),
+                    name="organizer.teams.members.reset",
+                ),
+                path(
+                    "teams/<int:pk>/invites/<int:invite_pk>/uninvite/",
+                    organizer.TeamUninvite.as_view(),
+                    name="organizer.teams.invites.uninvite",
+                ),
+                path(
+                    "teams/<int:pk>/invites/<int:invite_pk>/resend/",
+                    organizer.TeamResend.as_view(),
+                    name="organizer.teams.invites.resend",
+                ),
+                path(
+                    "speakers/",
+                    organizer.OrganizerSpeakerList.as_view(),
+                    name="organizer.speakers",
+                ),
+            ]
+        ),
+    ),
+    path("event/new/", event.EventWizard.as_view(), name="event.create"),
+    path("event/", dashboard.DashboardEventListView.as_view(), name="event.list"),
     path(
         'event/<slug:event>/',
         include(
             [
-                path('login/', auth.login, name='event.login'),
+                path("login/", auth.LoginView.as_view(), name="event.login"),
+                path("delete", event.EventDelete.as_view(), name="event.delete"),
+                path("reset/", auth.ResetView.as_view(), name="event.auth.reset"),
+                path(
+                    "reset/<token>",
+                    auth.RecoverView.as_view(),
+                    name="event.auth.recover",
+                ),
                 path('live', event.EventLive.as_view(), name='event.live'),
                 path('', dashboard.EventDashboardView.as_view(), name='event.dashboard'),
                 path('history/', event.EventHistory.as_view(), name='event.history'),

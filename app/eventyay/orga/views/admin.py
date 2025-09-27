@@ -26,9 +26,10 @@ class AdminDashboard(PermissionRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        site_name = dict(settings.CONFIG.items('site')).get('name')
+        site_name = dict(settings.TALK_CONFIG.items('site')).get('name')
         context['site_name'] = site_name
         context['base_path'] = settings.BASE_PATH
+        context['settings'] = settings
         return context
 
     @context
@@ -100,11 +101,11 @@ class AdminUserList(PermissionRequired, ListView):
         if not search or len(search) < 3:
             return User.objects.none()
         return (
-            User.objects.filter(Q(name__icontains=search) | Q(email__icontains=search))
+            User.objects.filter(Q(fullname__icontains=search) | Q(email__icontains=search))
             .prefetch_related(
                 'teams',
-                'teams__organiser',
-                'teams__organiser__events',
+                'teams__organizer',
+                'teams__organizer__events',
                 'teams__limit_events',
             )
             .annotate(
@@ -165,7 +166,7 @@ class AdminUserDetail(PermissionRequired, DetailView):
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        result['teams'] = self.object.teams.all().prefetch_related('organiser', 'limit_events', 'organiser__events')
+        result['teams'] = self.object.teams.all().prefetch_related('organizer', 'limit_events', 'organizer__events')
         result['submissions'] = self.object.submissions.all()
         result['last_actions'] = self.object.own_actions()[:10]
         return result
@@ -174,7 +175,7 @@ class AdminUserDetail(PermissionRequired, DetailView):
 class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
     @property
     def action_object_name(self):
-        return _('User') + f': {self.get_object().name}'
+        return _('User') + f': {self.get_object().fullname if self.get_object().fullname else self.get_object().email}'
 
     @property
     def action_next_url(self):

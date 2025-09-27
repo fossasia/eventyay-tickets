@@ -6,14 +6,14 @@
 {% load static %}
 {% load thumbnail %}
 
-{% block extra_title %}{{ user.name }} :: {% endblock extra_title %}
+{% block extra_title %}{{ user.fullname }} :: {% endblock extra_title %}
 
 {% block scripts %}
   <script defer src="{% static "common/js/copy.js" %}"></script>
 {% endblock scripts %}
 
 {% block content %}
-  <h2 class="d-flex">{{ user.name }}
+  <h2 class="d-flex">{{ user.fullname }}
     <form method="post">
       {% csrf_token %}
       <button class="btn btn-warning btn-sm ml-1 mr-1" type="submit" name="action" value="pw-reset">
@@ -77,7 +77,7 @@
         <thead>
           <tr>
             <th>{% translate "Team" %}</th>
-            <th>{% translate "Organiser" %}</th>
+            <th>{% translate "Organizer" %}</th>
             <th>{% translate "Events" %}</th>
             <th>{% translate "Permissions" %}</th>
           </tr>
@@ -86,7 +86,7 @@
           {% for team in user.teams.all %}
             <tr>
               <td><a href="{{ team.urls.base }}">{{ team.name }}</a></td>
-              <td><a href="{{ team.organiser.orga_urls.base }}">{{ team.organiser.name }}</a></td>
+              <td><a href="{{ team.organizer.orga_urls.base }}">{{ team.organizer.name }}</a></td>
               <td>
                 {% if team.limit_events.all %}
                   {% for event in team.limit_events.all %}
@@ -94,18 +94,18 @@
                   {% endfor %}
                 {% else %}
                   {% translate "All events" %}:
-                  {% for event in team.organiser.events.all %}
+                  {% for event in team.organizer.events.all %}
                     <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>{% if not forloop.last %},{% endif %}
                   {% endfor %}
                 {% endif %}
               </td>
 
               <td>
-                <ul>
+                {% comment %} <ul>
                   {% for permission in team.permission_set_display %}
                     <li>{{ permission }}</li>
                   {% endfor %}
-                </ul>
+                </ul> {% endcomment %}
               </td>
             </tr>
           {% empty %}
