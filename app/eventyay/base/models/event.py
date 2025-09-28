@@ -1601,21 +1601,6 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
         self.plugins = ','.join(modules)
 
-    def enable_plugin(self, module: str) -> None:
-        """Enables a plugin. If the given plugin is available and was not in the list of
-        active plugins, it will be added and installed() will be called."""
-        plugins_active = self.plugin_list
-        if module not in plugins_active:
-            plugins_active.append(module)
-            self.set_plugins(plugins_active)
-
-    def disable_plugin(self, module: str) -> None:
-        """Disables a plugin. If the given plugin is in the list of active
-        plugins, it will be removed and uninstall() will be called."""
-        plugins_active = self.plugin_list
-        if module in plugins_active:
-            plugins_active.remove(module)
-            self.set_plugins(plugins_active)
 
     @cached_property
     def visible_primary_color(self):
