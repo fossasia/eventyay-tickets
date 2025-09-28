@@ -54,7 +54,11 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
         for cartpos in cart_positions:
             a = cartpos.addons.all()
             for addon in cartpos.product.addons.all():
-                count = sum(1 for product in a if product.product.category_id == addon.addon_category_id and not product.is_bundled)
+                count = sum(
+                    1
+                    for product in a
+                    if product.product.category_id == addon.addon_category_id and not product.is_bundled
+                )
                 if not addon.min_count <= count <= addon.max_count:
                     self._completed = False
                     return False

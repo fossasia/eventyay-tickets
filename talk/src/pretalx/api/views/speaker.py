@@ -28,8 +28,8 @@ from pretalx.submission.rules import (
 class SpeakerSearchFilter(filters.SearchFilter):
     def get_search_fields(self, view, request):
         if view.is_orga:
-            return ("user__name", "user__email")
-        return ("user__name",)
+            return ("user__fullname", "user__email")
+        return ("user__fullname",)
 
 
 @extend_schema_view(
@@ -70,7 +70,7 @@ class SpeakerViewSet(
     serializer_class = SpeakerSerializer
     queryset = SpeakerProfile.objects.none()
     lookup_field = "user__code__iexact"
-    search_fields = ("user__name", "user__email")
+    search_fields = ("user__fullname", "user__email")
     endpoint = "speakers"
     filter_backends = (SpeakerSearchFilter, DjangoFilterBackend)
 

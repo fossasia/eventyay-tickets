@@ -92,10 +92,16 @@ class PermissionMiddleware:
             return self.get_response(request)
 
         if hasattr(request, 'organizer'):
-            # If the user is on a organizer's subdomain, he should be redirected to eventyay
-            new_url = urljoin(settings.SITE_URL, request.get_full_path())
-            logger.info('Organizer info is seen, redirecting to: %s', new_url)
-            return redirect(new_url)
+            if not settings.DEBUG:
+                new_url = urljoin(settings.SITE_URL, request.get_full_path())
+                if new_url != request.build_absolute_uri():
+                    logger.info('Organizer info is seen, redirecting to: %s', new_url)
+                    return redirect(new_url)
+            else:
+                logger.debug(
+                    "Organizer info detected, but skipping redirect in DEBUG for host=%s",
+                    request.get_host(),
+                )
 
         # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
         # TODO: Instead of hardcoding URL, we should check the `request.resolver_match`.

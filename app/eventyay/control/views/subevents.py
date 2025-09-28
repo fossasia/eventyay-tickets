@@ -424,7 +424,9 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 for sei in SubEventProduct.objects.filter(subevent=self.copy_from).select_related('product')
             }
             se_var_instances = {
-                sei.variation_id: SubEventProductVariation(variation=sei.variation, price=sei.price, disabled=sei.disabled)
+                sei.variation_id: SubEventProductVariation(
+                    variation=sei.variation, price=sei.price, disabled=sei.disabled
+                )
                 for sei in SubEventProductVariation.objects.filter(subevent=self.copy_from).select_related('variation')
             }
 
@@ -1245,7 +1247,9 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     q.event = self.request.event
                     q.save()
                     for _i in f.cleaned_data.get('limit_products', []):
-                        to_save_products.append(CheckinList.limit_products.through(checkinlist_id=q.pk, product_id=_i.pk))
+                        to_save_products.append(
+                            CheckinList.limit_products.through(checkinlist_id=q.pk, product_id=_i.pk)
+                        )
                     for _i in f.cleaned_data.get('gates', []):
                         to_save_gates.append(CheckinList.gates.through(checkinlist_id=q.pk, gate_id=_i.pk))
                     change_data['id'] = q.pk

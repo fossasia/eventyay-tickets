@@ -1,6 +1,6 @@
 from eventyay.common.signals import EventPluginSignal
 
-register_mail_placeholders = EventPluginSignal()
+talk_register_mail_placeholders = EventPluginSignal()
 """
 This signal is sent out to get all known email text placeholders. Receivers should return
 an instance of a subclass of pretalx.mail.placeholder.BaseMailTextPlaceholder or a list of these.
