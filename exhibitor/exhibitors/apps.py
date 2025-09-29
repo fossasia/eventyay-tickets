@@ -4,8 +4,8 @@ from . import __version__
 
 try:
     from pretix.base.plugins import PluginConfig
-except ImportError:
-    raise RuntimeError("Please use a later version of eventyay-tickets")
+except ImportError as e:
+    raise RuntimeError("Please use a later version of eventyay-tickets") from e
 
 
 class ExhibitorApp(PluginConfig):

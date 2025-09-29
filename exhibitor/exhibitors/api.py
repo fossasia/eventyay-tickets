@@ -81,7 +81,7 @@ class LeadCreateView(views.APIView):
         attendee_data = {
             'name': order_position.attendee_name,  # Always included
             'email': order_position.attendee_email,  # Always included
-            'company': order_position.company, # Always included
+            'company': order_position.company if 'company_name' in allowed_fields else None,
             'city': order_position.city if 'attendee_city' in allowed_fields else None,
             'country': str(order_position.country) if 'attendee_country' in allowed_fields else None,
             'note': '',
@@ -132,10 +132,15 @@ class LeadCreateView(views.APIView):
             )
 
         # Check for duplicate scan
-        if Lead.objects.filter(
-            exhibitor=exhibitor,
-            pseudonymization_id=pseudonymization_id
-        ).exists():
+        # If lead_scanning_scope_by_device is enabled, check duplicates per device
+        duplicate_filter = {
+            'exhibitor': exhibitor,
+            'pseudonymization_id': pseudonymization_id
+        }
+        if exhibitor.lead_scanning_scope_by_device:
+            duplicate_filter['device_name'] = device_name
+            
+        if Lead.objects.filter(**duplicate_filter).exists():
             attendee_data = self.get_allowed_attendee_data(
                 order_position,
                 settings,
@@ -274,11 +279,15 @@ class LeadUpdateView(views.APIView):
             for tag_name in tags:
                 tag, created = ExhibitorTag.objects.get_or_create(
                     exhibitor=exhibitor,
-                    name=tag_name
+                    name=tag_name,
+                    defaults={'use_count': 1}
                 )
                 if not created:
                     tag.use_count += 1
                     tag.save()
+                else:
+                    # For newly created tags, the use_count is already set to 1 via defaults
+                    pass
 
         lead.attendee = attendee_data
         lead.save()

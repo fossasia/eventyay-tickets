@@ -37,7 +37,7 @@ You can auto-fix some of these issues by running::
     isort .
     black .
 
-To automatically check for these issues before you commit, you can run ``.install-hooks``.
+To automatically check for these issues before you commit, you can run ``.install-hooks.sh``.
 
 
 License
@@ -50,4 +50,4 @@ Released under the terms of the Apache License 2.0
 
 
 
-.. _eventyay-tickets: https://github.com/fossasia/eventyay-tickets 
+.. _eventyay-tickets: https://github.com/fossasia/eventyay-tickets

@@ -6,10 +6,9 @@ def populate_booth_ids(apps, schema_editor):
     starting_id = 1000
     
     # Update all exhibitors that don't have a booth_id
-    for exhibitor in ExhibitorInfo.objects.all().order_by('id'):
-        exhibitor.booth_id = starting_id
+    for i, exhibitor in enumerate(ExhibitorInfo.objects.all().order_by('id')):
+        exhibitor.booth_id = starting_id + i
         exhibitor.save()
-        starting_id += 1
 
 def reverse_populate_booth_ids(apps, schema_editor):
     ExhibitorInfo = apps.get_model('exhibitors', 'ExhibitorInfo')

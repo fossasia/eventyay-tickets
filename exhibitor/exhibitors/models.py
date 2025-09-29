@@ -39,7 +39,7 @@ class ExhibitorSettings(models.Model):
         return list(set(default_fields + self.allowed_fields))
 
     class Meta:
-        unique_together = ('event',)
+        pass
 
 class ExhibitorInfo(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)

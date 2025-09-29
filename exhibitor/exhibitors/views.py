@@ -33,8 +33,13 @@ class SettingsView(EventPermissionRequiredMixin, ListView):
     def post(self, request, *args, **kwargs):
         settings, _ = ExhibitorSettings.objects.get_or_create(event=self.request.event)
         
+        # Define whitelist of supported field names
+        supported_fields = ['attendee_name', 'attendee_email', 'company_name', 'badge_id', 'phone', 'address']
+        
         # Get selected fields, excluding default fields
         allowed_fields = request.POST.getlist('exhibitors_access_voucher')
+        # Validate allowed_fields against whitelist
+        allowed_fields = [field for field in allowed_fields if field in supported_fields]
         
         # Update settings
         settings.allowed_fields = allowed_fields
@@ -67,9 +72,7 @@ class ExhibitorCreateView(EventPermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.event = self.request.event
-        form.instance.lead_scanning_enabled = (
-            self.request.POST.get('lead_scanning_enabled') == 'on'
-        )
+        form.instance.lead_scanning_enabled = form.cleaned_data.get('lead_scanning_enabled', False)
 
         # Only generate booth_id if none was provided
         if not form.cleaned_data.get('booth_id'):
@@ -103,7 +106,7 @@ class ExhibitorEditView(EventPermissionRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         exhibitor = form.save(commit=False)
-        exhibitor.lead_scanning_enabled = self.request.POST.get('lead_scanning_enabled') == 'on'
+        exhibitor.lead_scanning_enabled = form.cleaned_data.get('lead_scanning_enabled', False)
         
         # generate booth_id if none provided and there isn't an existing one
         if not form.cleaned_data.get('booth_id') and not exhibitor.booth_id:
@@ -141,7 +144,8 @@ class ExhibitorCopyKeyView(EventPermissionRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         exhibitor = get_object_or_404(ExhibitorInfo, pk=kwargs['pk'])
-        response = HttpResponse(exhibitor.key)
+        from django.utils.html import escape
+        response = HttpResponse(escape(exhibitor.key))
         response['Content-Disposition'] = (
             'attachment; filename="password.txt"'
         )
