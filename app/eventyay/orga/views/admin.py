@@ -175,7 +175,7 @@ class AdminUserDetail(PermissionRequired, DetailView):
 class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
     @property
     def action_object_name(self):
-        return _('User') + f': {self.get_object().fullname if self.get_object().fullname else self.get_object().email}'
+        return _('User') + f': {self.get_object().fullname or self.get_object().email}'
 
     @property
     def action_next_url(self):

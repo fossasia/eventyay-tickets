@@ -73,7 +73,7 @@ DATABASE_REPLICA = 'default'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
-SITE_URL = config.get('eventyay', 'url', fallback='http://localhost') if not DEBUG else 'http://localhost:8000'
+SITE_URL = 'http://localhost:8000' if DEBUG else config.get('eventyay', 'url', fallback='http://localhost')
 SITE_NETLOC = urlparse(SITE_URL).netloc
 
 ALLOWED_HOSTS = ['*', '127.0.0.1']
@@ -874,6 +874,6 @@ MANAGERS = ADMINS = [(email, email) for email in emails if email]
 if ADMINS:
     LOGGING["handlers"]["mail_admins"] = {
         "level": email_level,
-        "class": "pretalx.common.exceptions.PretalxAdminEmailHandler",
+        "class": "eventyay.common.exceptions.PretalxAdminEmailHandler",
     }
     LOGGING["loggers"]["django.request"]["handlers"].append("mail_admins")
