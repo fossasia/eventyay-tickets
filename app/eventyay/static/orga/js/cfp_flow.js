@@ -2,7 +2,7 @@ var api = {
     submit(data) {
         var fullHeaders = {}
         fullHeaders["Content-Type"] = "application/json"
-        fullHeaders["X-CSRFToken"] = getCookie("pretalx_csrftoken")
+        fullHeaders["X-CSRFToken"] = getCookie("eventyay_csrftoken")
 
         let options = {
             method: "POST",
