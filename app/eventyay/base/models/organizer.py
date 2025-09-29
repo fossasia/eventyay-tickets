@@ -422,6 +422,10 @@ class Team(LoggedModel, PretalxModel):
         if self.all_events:
             return self.organizer.events.all()
         return self.limit_events.all()
+    
+    class orga_urls(EventUrls):
+        base = "{self.organizer.orga_urls.teams}{self.pk}/"
+        delete = "{base}delete/"
 
 
 class TeamInvite(models.Model):
@@ -443,6 +447,45 @@ class TeamInvite(models.Model):
 
     def __str__(self) -> str:
         return _("Invite to team '{team}' for '{email}'").format(team=str(self.team), email=self.email)
+    
+    @cached_property
+    def organizer(self):
+        return self.team.organizer
+
+    @cached_property
+    def invitation_url(self):
+        return build_absolute_uri("orga:invitation.view", kwargs={"code": self.token})
+
+    def send(self):
+        from django.utils.translation import get_language
+        from eventyay.base.models.mail import QueuedMail
+
+        invitation_link = self.invitation_url
+        invitation_text = _(
+            """Hi!
+You have been invited to the {name} event organizer team - Please click here to accept:
+
+{invitation_link}
+
+See you there,
+The {organizer} team"""
+        ).format(
+            name=str(self.team.name),
+            invitation_link=invitation_link,
+            organizer=str(self.team.organizer.name),
+        )
+        invitation_subject = _("You have been invited to an organizer team")
+
+        mail = QueuedMail.objects.create(
+            to=self.email,
+            subject=str(invitation_subject),
+            text=str(invitation_text),
+            locale=get_language(),
+        )
+        mail.send()
+        return mail
+
+    send.alters_data = True
 
 
 class TeamAPIToken(models.Model):

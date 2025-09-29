@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div id="nav-search-input-wrapper" class="d-none dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url 'orga:nav.typeahead' %}" data-event-typeahead data-organiser="{% if request.event %}{{ request.event.organiser.pk }}{% elif request.organiser %}{{ request.organiser.pk }}{% endif %}">
+        <div id="nav-search-input-wrapper" class="d-none dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url 'orga:nav.typeahead' %}" data-event-typeahead data-organizer="{% if request.event %}{{ request.event.organizer.pk }}{% elif request.organizer %}{{ request.organizer.pk }}{% endif %}">
             <div class="query-holder">
                 <div class="form-box">
                     <input type="search" class="form-control" placeholder="{% translate 'Search' %} (Alt + k)" data-typeahead-query>

@@ -64,7 +64,7 @@ class DashboardEventListView(TemplateView):
         context['current_orga_events'] = []
         context['past_orga_events'] = []
         for event in self.queryset:
-            if event.date_to >= now().date():
+            if event.date_to >= now():
                 context['current_orga_events'].insert(0, event)
             else:
                 context['past_orga_events'].append(event)
@@ -216,12 +216,12 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         result['timeline'] = stages.values()
         result['go_to_target'] = 'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         _now = now()
-        today = _now.date()
+        today = _now
         can_change_settings = self.request.user.has_perm('event.change_settings.event', event)
         can_change_submissions = self.request.user.has_perm('submission.orga_update_submission', event)
         result['tiles'] = self.get_cfp_tiles(_now, can_change_submissions=can_change_submissions)
-        if today < event.date_from.date():
-            days = (event.date_from.date() - today).days
+        if today < event.date_from:
+            days = (event.date_from - today).days
             result['tiles'].append(
                 {
                     'large': days,
@@ -229,8 +229,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     'priority': 10,
                 }
             )
-        elif today > event.date_to.date():
-            days = (today - event.date_from.date()).days
+        elif today > event.date_to:
+            days = (today - event.date_from).days
             result['tiles'].append(
                 {
                     'large': days,
@@ -238,8 +238,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                     'priority': 80,
                 }
             )
-        elif event.date_to != event.date_from.date():
-            day = (today - event.date_from.date()).days + 1
+        elif event.date_to != event.date_from:
+            day = (today - event.date_from).days + 1
             result['tiles'].append(
                 {
                     'large': _('Day {number}').format(number=day),

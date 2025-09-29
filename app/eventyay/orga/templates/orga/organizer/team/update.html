@@ -1,4 +1,4 @@
-{% extends "orga/organiser/team/_form.html" %}
+{% extends "orga/organizer/team/_form.html" %}
 {% load i18n %}
 
 {% block form %}
@@ -25,10 +25,10 @@
                                     <a href="mailto:{{ member.email }}">{{ member.email }}</a>
                                 </td>
                                 <td class="flip text-right">
-                                    <a href="{{ request.organiser.orga_urls.teams }}{{ team.id }}/members/{{ member.id }}/reset/" class="btn btn-sm btn-warning">
+                                    <a href="{{ request.organizer.orga_urls.teams }}{{ team.id }}/members/{{ member.id }}/reset/" class="btn btn-sm btn-warning">
                                         {{ phrases.base.password_reset_heading }}
                                     </a>
-                                    <a href="{{ request.organiser.orga_urls.teams }}{{ team.id }}/members/{{ member.id }}/delete/"
+                                    <a href="{{ request.organizer.orga_urls.teams }}{{ team.id }}/members/{{ member.id }}/delete/"
                                        class="btn btn-sm btn-danger" title="{% translate "Remove team member" %}"
                                     >
                                         <i class="fa fa-trash"></i>
