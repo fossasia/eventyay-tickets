@@ -2,7 +2,7 @@ var api = {
     submit(data) {
         var fullHeaders = {}
         fullHeaders["Content-Type"] = "application/json"
-        fullHeaders["X-CSRFToken"] = getCookie("pretalx_csrftoken")
+        fullHeaders["X-CSRFToken"] = getCookie("eventyay_csrftoken")
 
         let options = {
             method: "POST",
@@ -30,7 +30,7 @@ var api = {
 }
 
 let currentLanguage = "en"
-let currentModal = Vue.observable({
+let currentModal = Vue.reactive({
     type: null,
     data: null,
     show: false,
@@ -58,15 +58,17 @@ document.onclick = (event) => {
         currentModal.data = null
     }
 }
-document.onkeypress = (event) => {
+document.onkeydown = (event) => {
     if (!currentModal.data) return
     let isEscape = false
-    if ("key" in evt) {
-        isEscape = evt.key === "Escape" || evt.key === "Esc"
+    if ("key" in event) {
+        isEscape = event.key === "Escape" || event.key === "Esc"
     } else {
-        isEscape = evt.keyCode === 27
+        isEscape = event.keyCode === 27
     }
-    currentModal.data = null
+    if (isEscape) {
+        currentModal.data = null
+    }
 }
 
 function areEqual() {
@@ -127,63 +129,138 @@ function areEqual() {
     return true
 }
 
-Vue.component("field", {
-    template: `
-    <div>
-      <h2 v-if="isModal" class="mb-4">Change input field</h2>
-      <div :class="['form-group', 'row', field.field_source].concat(isModal ? '' : 'editable')" v-bind:style="style" @click.stop="makeModal" v-if="!(isModal && isQuestion)">
-      <label class="col-md-3 col-form-label pt-0">
-        <template v-if="field.widget !== 'CheckboxInput'">
-          <template v-if="isModal">
-            <div class="i18n-form-group mb-2 title-input" @click.stop="">
-              <input type="text" class="form-control" :title="locale" :lang="locale" v-model="field.label[locale]" v-for="locale in locales">
-            </div>
-          </template>
-          <template v-else>
-            {{ field.label[currentLanguage] }}
-            <br>
-          </template>
-          <template v-if="isModal && editRequirement">
-            <span v-if="!field.required & !field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=true">Optional</span>
-            <span v-else-if="!field.hard_required" :class="[editable ? 'editable' : '', 'optional']" @click.stop="field.required=false"><strong>Required</strong></span>
-            <span v-else class="optional"><strong>Required</strong></span>
-          </template>
-          <template v-else>
-            <span v-if="!field.required" class="optional">Optional</span>
-            <span v-else class="optional"><strong>Required</strong></span>
-          </template>
-        </template>
-      </label>
-      <div class="col-md-9">
-        <input class="form-control" type="text" :placeholder="field.title" readonly disabled v-if="field.widget === 'TextInput' || field.widget === 'NumberInput' || field.widget === 'EmailInput'">
-        <select class="form-control" type="text" :placeholder="field.title" readonly disabled v-else-if="field.widget === 'Select'"></select>
-        <textarea class="form-control" type="text" :placeholder="field.title" readonly disabled v-else-if="field.widget === 'Textarea' || field.widget === 'MarkdownWidget'"></textarea>
-        <div class="form-check" v-else-if="field.widget === 'CheckboxInput'">
-          <input type="checkbox" class="form-check-input">
-          <label class="form-check-label">{{ field.label[currentLanguage] }}</label>
-        </div>
-        <div class="row bootstrap4-multi-input" v-else-if="field.widget === 'ClearableFileInput'">
-          <div class="col-12"><input type="file"></div>
-        </div>
-
-        <template v-if="!isModal">
-          <div class="text-muted" v-if="display_help_text" v-html="display_help_text"></div>
-        </template>
-        <template v-else>
-          <div class="i18n-form-group" @click.stop="">
-            <input type="text" class="form-control" :title="locale" :lang="locale" v-model="field.help_text[locale]" v-for="locale in locales">
-          </div>
-          <div class="text-muted" v-if="fixed_help_text">{{ fixed_help_text }}</div>
-        </template>
-      </div>
-      </div>
-      <div v-else>
-        <p>
-          This is a custom question you added to the CfP. You can change or remove this CfP question <a :href="questionUrl">here</a>.
-        </p>
-      </div>
-    </div>
-  `,
+const FieldComponent = {
+    render() {
+    const h = Vue.h;
+        const isQuestion = this.field.key.startsWith("question_");
+        const questionUrl = window.location.pathname.replace(
+            "flow/",
+            this.field.key.replace("question_", "questions/")
+        ) + "/edit";
+        const displayHelpText = isQuestion ? 
+            marked.parse(this.fixed_help_text, markedOptions) :
+            marked.parse(
+                this.field.help_text[currentLanguage] + " " + this.fixed_help_text,
+                markedOptions
+            );
+        const labelContent = [];
+        if (this.field.widget !== 'CheckboxInput') {
+            if (this.isModal) {
+                labelContent.push(
+                    h('div', { class: 'i18n-form-group mb-2 title-input', onClick: (e) => e.stopPropagation() }, 
+                        this.locales.map(locale => 
+                            h('input', {
+                                type: 'text',
+                                class: 'form-control',
+                                title: locale,
+                                lang: locale,
+                                value: this.field.label[locale],
+                                onInput: (e) => { this.field.label[locale] = e.target.value; }
+                            })
+                        )
+                    )
+                );
+                // Requirement editing logic
+                if (this.editRequirement) {
+                    if (!this.field.required && !this.field.hard_required) {
+                        labelContent.push(
+                            h('span', {
+                                class: this.editable ? 'editable optional' : 'optional',
+                                onClick: (e) => { e.stopPropagation(); this.field.required = true; }
+                            }, 'Optional')
+                        );
+                    } else if (!this.field.hard_required) {
+                        labelContent.push(
+                            h('span', {
+                                class: this.editable ? 'editable optional' : 'optional',
+                                onClick: (e) => { e.stopPropagation(); this.field.required = false; }
+                            }, [h('strong', 'Required')])
+                        );
+                    } else {
+                        labelContent.push(h('span', { class: 'optional' }, [h('strong', 'Required')]));
+                    }
+                }
+            } else {
+                labelContent.push(
+                    h('span', {
+                        class: this.editable ? 'editable' : '',
+                        onClick: (e) => {
+                            e.stopPropagation();
+                            if (this.editable) {
+                                currentModal.data = this.field;
+                                currentModal.type = 'field';
+                                currentModal.show = true;
+                            }
+                        }
+                    }, this.field.label[this.currentLanguage]),
+                    h('br'),
+                    !this.field.required ?
+                        h('span', { class: 'optional' }, 'Optional') :
+                        h('span', { class: 'optional' }, [h('strong', 'Required')])
+                );
+            }
+        }
+        const fieldInput = this.getFieldInput(h);
+        // Help text content
+        let helpTextContent;
+        if (this.isModal) {
+            helpTextContent = [
+                h('div', { class: 'i18n-form-group', onClick: (e) => e.stopPropagation() },
+                    this.locales.map(locale =>
+                        h('input', {
+                            type: 'text',
+                            class: 'form-control',
+                            title: locale,
+                            lang: locale,
+                            value: this.field.help_text[locale],
+                            onInput: (e) => { this.field.help_text[locale] = e.target.value; }
+                        })
+                    )
+                ),
+                this.fixed_help_text ? h('div', { class: 'text-muted' }, this.fixed_help_text) : null
+            ];
+        } else {
+            helpTextContent = h('div', {
+                class: 'text-muted',
+                innerHTML: this.display_help_text
+            });
+        }
+        if (this.isModal && isQuestion) {
+            return h('div', [
+                h('h2', { class: 'mb-4' }, 'Change input field'),
+                h('p', [
+                    'This is a custom question you added to the CfP. You can change or remove this CfP question ',
+                    h('a', { href: questionUrl }, 'here'),
+                    '.'
+                ])
+            ]);
+        }
+        const mainContent = h('div', {
+            class: ['form-group', 'row', this.field.field_source].concat(this.isModal ? '' : 'editable'),
+            style: this.style,
+            onClick: (e) => {
+                e.stopPropagation();
+                this.makeModal(e);
+            }
+        }, [
+            h('label', { class: 'col-md-3 col-form-label pt-0' }, 
+                this.field.widget === 'CheckboxInput' ? [
+                    h('div', { class: 'form-check' }, [
+                        h('input', { type: 'checkbox', class: 'form-check-input' }),
+                        h('label', { class: 'form-check-label' }, this.field.label[this.currentLanguage])
+                    ])
+                ] : labelContent
+            ),
+            h('div', { class: 'col-md-9' }, [
+                fieldInput,
+                helpTextContent
+            ])
+        ]);
+        return h('div', [
+            this.isModal ? h('h2', { class: 'mb-4' }, 'Change input field') : null,
+            mainContent
+        ]);
+    },
     data() {
         return {
             editRequirement: false,
@@ -231,7 +308,7 @@ Vue.component("field", {
         makeModal(event) {
             if (this.isModal) return
             if (!this.isModal && !this.editable) {
-                Vue.set(currentModal, "data", null)
+                currentModal.data = null
                 currentModal.type = null
                 currentModal.show = false
             } else {
@@ -240,6 +317,72 @@ Vue.component("field", {
                 currentModal.show = true
             }
         },
+        getFieldInput(h) {
+            switch (this.field.widget) {
+                case 'TextInput':
+                case 'NumberInput':
+                case 'EmailInput':
+                    return h('input', { 
+                        class: 'form-control', 
+                        type: 'text', 
+                        placeholder: this.field.title,
+                        readonly: true,
+                        disabled: true
+                    });
+                case 'Select':
+                    return h('select', { 
+                        class: 'form-control', 
+                        type: 'text', 
+                        placeholder: this.field.title,
+                        readonly: true,
+                        disabled: true
+                    });
+                case 'Textarea':
+                case 'MarkdownWidget':
+                    return h('textarea', { 
+                        class: 'form-control', 
+                        type: 'text', 
+                        placeholder: this.field.title,
+                        readonly: true,
+                        disabled: true,
+                        style: { height: '2.5em' }
+                    });
+                case 'CheckboxInput':
+                    return null; // Handled in label
+                case 'ClearableFileInput':
+                    return h('div', { class: 'row bootstrap4-multi-input' }, [
+                        h('div', { class: 'col-12' }, [
+                            h('input', { type: 'file' })
+                        ])
+                    ]);
+                default:
+                    return null;
+            }
+        },
+        getHelpTextContent(h, displayHelpText) {
+            if (this.isModal) {
+                return [
+                    h('div', { class: 'i18n-form-group', onClick: (e) => e.stopPropagation() }, 
+                        this.locales.map(locale => 
+                            h('input', {
+                                type: 'text',
+                                class: 'form-control',
+                                title: locale,
+                                lang: locale,
+                                modelValue: this.field.help_text[locale],
+                                onInput: (e) => { this.field.help_text[locale] = e.target.value; }
+                            })
+                        )
+                    ),
+                    this.fixed_help_text ? h('div', { class: 'text-muted' }, this.fixed_help_text) : null
+                ];
+            } else {
+                return h('div', { 
+                    class: 'text-muted',
+                    innerHTML: this.display_help_text
+                });
+            }
+        }
     },
     created() {
         this.fixed_help_text = this.field.full_help_text.replace(
@@ -247,70 +390,123 @@ Vue.component("field", {
             "",
         )
     },
-})
+}
 
-Vue.component("step", {
-    template: `
-    <div class="step" @click="editingTitle = false; editingText = false">
-      <div :class="['step-header', 'header', eventConfiguration.header_pattern]" :style="headerStyle">
-        <img :src="eventConfiguration.header_image" v-if="eventConfiguration.header_image">
-      </div>
-      <div class="step-main-container">
-        <div class="submission-steps stages">
-          <span :class="['step', 'step-' + stp.phase]" v-for="stp in headerSteps">
-              <div class="step-icon">
-                  <span :class="['fa', 'fa-' + stp.icon]"></span>
-              </div>
-              <div class="step-label">
-                  {{ stp.label }}
-              </div>
-          </span>
-        </div>
-        <h2 class="edit-container">
-          <span v-if="!editingTitle" :class="[editable ? 'editable' : '']" @click.stop="editTitle">{{ step.title[currentLanguage] || '…' }}</span>
-          <span v-else>
-          <div class="col-md-9"><div class="i18n-form-group" @click.stop="">
-            <input type="text" class="form-control" :title="locale" :lang="locale" v-model="step.title[locale]" v-for="locale in locales">
-          </div></div>
-          </span>
-        </h2>
-        <div class="edit-container">
-          <span v-if="!editingText" :class="[editable ? 'editable' : '']" @click.stop="editText" v-html="marked(step.text[currentLanguage] || '…')"></span>
-          <span v-else @click.stop="">
-            <div class="col-md-9"><div class="i18n-form-group">
-              <textarea type="text" class="form-control" :title="locale" :lang="locale" v-model="step.text[locale]" v-for="locale in locales"></textarea>
-            </div></div>
-          </span>
-        </div>
-        <form v-if="step.identifier != 'user'">
-          <field :field="field" v-for="field in step.fields" :key="field.key" :locales="locales" v-if="field.widget !== 'HiddenInput'">
-          </field>
-        </form>
-        <form v-else id="auth-form">
-          <div class="auth-form-block">
-            <h4 class="text-center">I already have an account</h4>
-            <div class="form-group"><input type="text" class="form-control" placeholder="Email address" readonly disabled></div>
-            <div class="form-group"><input type="password" class="form-control" placeholder="Password" readonly disabled></div>
-            <button type="submit" class="btn btn-lg btn-success btn-block" disabled>Log in</button>
-          </div>
-          <div class="auth-form-block">
-            <h4 class="text-center">I need a new account</h4>
-            <div class="form-group"><input type="text" class="form-control" placeholder="Name" readonly disabled></div>
-            <div class="form-group"><input type="text" class="form-control" placeholder="Email address" readonly disabled></div>
-            <div class="form-group"><input type="password" class="form-control" placeholder="Password" readonly disabled></div>
-            <div class="form-group"><input type="password" class="form-control" placeholder="Password (again)" readonly disabled></div>
-            <button type="submit" class="btn btn-lg btn-info btn-block" disabled>Register</button>
-            <div class="overlay">
-              This form cannot be modified – a page to login or register needs to be in place, but you can change the page title and description.
-            </div>
-          </div>
-        </form>
-        <div v-if="step.identifier == 'questions'" class="alert alert-info">
-          This step will only be shown if you have questions configured.
-        </div>
-      </div>
-    </div>
-  `,
+const StepComponent = {
+    render() {
+    const h = Vue.h;
+    const headerSteps = this.headerSteps;
+    const stepPosition = this.stepPosition;
+    const titleContent = this.editingTitle ? 
+            h('span', { onClick: (e) => e.stopPropagation() }, [
+                h('div', { class: 'col-md-9' }, [
+                    h('div', { class: 'i18n-form-group', onClick: (e) => e.stopPropagation() }, 
+                        this.locales.map(locale => 
+                            h('input', {
+                                type: 'text',
+                                class: 'form-control',
+                                title: locale,
+                                lang: locale,
+                                value: this.step.title[locale],
+                                onInput: (e) => { this.step.title[locale] = e.target.value; }
+                            })
+                        )
+                    )
+                ])
+            ]) :
+            h('span', {
+                class: this.editable ? 'editable' : '',
+                onClick: (e) => {
+                    if (this.editable) {
+                        e.stopPropagation();
+                        this.editingTitle = true;
+                    }
+                }
+            }, this.step.title[this.currentLanguage] || '…');
+        const textContent = this.editingText ?
+            h('span', { onClick: (e) => e.stopPropagation() }, [
+                h('div', { class: 'col-md-9' }, [
+                    h('div', { class: 'i18n-form-group' }, 
+                        this.locales.map(locale => 
+                            h('textarea', {
+                                class: 'form-control',
+                                title: locale,
+                                lang: locale,
+                                value: this.step.text[locale],
+                                onInput: (e) => { this.step.text[locale] = e.target.value; },
+                                style: { height: '2.5em' }
+                            })
+                        )
+                    )
+                ])
+            ]) :
+            h('span', {
+                class: this.editable ? 'editable' : '',
+                onClick: (e) => {
+                    if (this.editable) {
+                        e.stopPropagation();
+                        this.editingText = true;
+                    }
+                },
+                innerHTML: this.marked(this.step.text[this.currentLanguage] || '…')
+            });
+        const fieldComponent = Vue.resolveComponent('field');
+        const formContent = this.step.identifier !== 'user' ? 
+            h('form', 
+                this.step.fields.filter(field => field && field.widget !== 'HiddenInput').map(field => {
+                    return h(fieldComponent, { 
+                        field: field,
+                        locales: this.locales,
+                        key: field.key
+                    });
+                })
+            ) :
+            h('form', { id: 'auth-form' }, [
+                h('div', { class: 'auth-form-block' }, [
+                    h('h4', { class: 'text-center' }, 'I already have an account'),
+                    h('div', { class: 'form-group' }, [h('input', { type: 'text', class: 'form-control', placeholder: 'Email address', readonly: true, disabled: true })]),
+                    h('div', { class: 'form-group' }, [h('input', { type: 'password', class: 'form-control', placeholder: 'Password', readonly: true, disabled: true })]),
+                    h('button', { type: 'submit', class: 'btn btn-lg btn-success btn-block', disabled: true }, 'Log in')
+                ]),
+                h('div', { class: 'auth-form-block' }, [
+                    h('h4', { class: 'text-center' }, 'I need a new account'),
+                    h('div', { class: 'form-group' }, [h('input', { type: 'text', class: 'form-control', placeholder: 'Name', readonly: true, disabled: true })]),
+                    h('div', { class: 'form-group' }, [h('input', { type: 'text', class: 'form-control', placeholder: 'Email address', readonly: true, disabled: true })]),
+                    h('div', { class: 'form-group' }, [h('input', { type: 'password', class: 'form-control', placeholder: 'Password', readonly: true, disabled: true })]),
+                    h('div', { class: 'form-group' }, [h('input', { type: 'password', class: 'form-control', placeholder: 'Password (again)', readonly: true, disabled: true })]),
+                    h('button', { type: 'submit', class: 'btn btn-lg btn-info btn-block', disabled: true }, 'Register'),
+                    h('div', { class: 'overlay' }, 'This form cannot be modified – a page to login or register needs to be in place, but you can change the page title and description.')
+                ])
+            ]);
+        const questionAlert = this.step.identifier === 'questions' ? 
+            h('div', { class: 'alert alert-info' }, 'This step will only be shown if you have questions configured.') : 
+            null;
+        return h('div', { class: 'step', onClick: () => { this.editingTitle = false; this.editingText = false; } }, [
+            h('div', { 
+                class: ['step-header', 'header', this.eventConfiguration.header_pattern],
+                style: this.headerStyle
+            }, this.eventConfiguration.header_image ? 
+                h('img', { src: this.eventConfiguration.header_image }) : 
+                null
+            ),
+            h('div', { class: 'step-main-container' }, [
+                h('div', { class: 'submission-steps stages' }, 
+                    headerSteps.map(stp => 
+                        h('span', { class: ['step', 'step-' + stp.phase] }, [
+                            h('div', { class: 'step-icon' }, 
+                                h('span', { class: ['fa', 'fa-' + stp.icon] })
+                            ),
+                            h('div', { class: 'step-label' }, stp.label)
+                        ])
+                    )
+                ),
+                h('h2', { class: 'edit-container' }, titleContent),
+                h('div', { class: 'edit-container' }, textContent),
+                formContent,
+                questionAlert
+            ])
+        ]);
+    },
     data() {
         return {
             editingTitle: false,
@@ -376,54 +572,86 @@ Vue.component("step", {
             return result
         },
     },
-})
+}
 
-var app = new Vue({
-    el: "#flow",
-    template: `
-    <div :class="currentModal.data ? 'defocused' : 'focused'" :style="{'--color': eventConfiguration.primary_color || '#2185d0'}">
-      <div id="flow-modal" v-if="currentModal.data">
-        <form>
-          <field :field="currentModal.data" :isModal="true" key="modal" :locales="locales"></field>
-        </form>
-      </div>
-      <div id="flow">
-        <div id="loading" v-if="loading">
-            <i class="fa fa-spinner fa-pulse fa-4x fa-fw text-primary mb-4 mt-4"></i>
-            <h3 class="mt-2 mb-4">Loading talks, please wait.</h3>
-        </div>
-        <div id="steps" v-else>
-          <step v-for="step in stepsConfiguration" :step="step" :eventConfiguration="eventConfiguration" :key="step.identifier" :steps="stepsConfiguration" :locales="locales">
-          </step>
-        </div>
-      </div>
-      <div id="unassigned-group" class="d-none">
-        <div class="step-header" ref="stepHeader"></div>
-        <div id='unassigned-fields'>
-          <div class="input-group">
-            <div class="input-group-prepend input-group-text"><i class="fa fa-search"></i></div>
-            <input type="text" class="form-control" placeholder="Search..." v-model="search">
-          </div>
-          <div id="unassigned-container" ref="unassigned">
-              <field v-for="field in filteredFields" :field="field" :key="field.id"></field>
-          </div>
-        </div>
-      </div>
-      <div id="dirty-flow" class="alert alert-warning" v-if="configurationChanged">
-        <span>
-          Unsaved configuration changes!
-        </span>
-        <button class="btn btn-success" @click="save" :disabled="saving">
-          <span v-if="saving">
-            <i class="fa fa-spinner fa-pulse fa-fw text-success mb-2 mt-2"></i>
-          </span>
-          <span v-else>
-            Save now
-          </span>
-        </button>
-      </div>
-    </div>
-  `,
+const app = Vue.createApp({
+    render() {
+        const h = Vue.h;
+        const stepComponent = Vue.resolveComponent('step');
+        const fieldComponent = Vue.resolveComponent('field');
+        const modalContent = currentModal.data ? 
+            h('div', { id: 'flow-modal' }, [
+                h('form', [
+                    h(fieldComponent, { 
+                        field: currentModal.data,
+                        isModal: true,
+                        key: 'modal',
+                        locales: this.locales
+                    })
+                ])
+            ]) : null;
+        const loadingContent = this.loading ?
+            h('div', { id: 'loading' }, [
+                h('i', { class: 'fa fa-spinner fa-pulse fa-4x fa-fw text-primary mb-4 mt-4' }),
+                h('h3', { class: 'mt-2 mb-4' }, 'Loading talks, please wait.')
+            ]) :
+            h('div', { id: 'steps' }, 
+                this.stepsConfiguration.map(step => {
+                    return h(stepComponent, {
+                        step: step,
+                        eventConfiguration: this.eventConfiguration,
+                        key: step.identifier,
+                        steps: this.stepsConfiguration,
+                        locales: this.locales
+                    });
+                })
+            );
+        const unassignedContent = h('div', { id: 'unassigned-group', class: 'd-none' }, [
+            h('div', { class: 'step-header', ref: 'stepHeader' }),
+            h('div', { id: 'unassigned-fields' }, [
+                h('div', { class: 'input-group' }, [
+                    h('div', { class: 'input-group-prepend input-group-text' }, 
+                        h('i', { class: 'fa fa-search' })
+                    ),
+                    h('input', {
+                        type: 'text',
+                        class: 'form-control',
+                        placeholder: 'Search...',
+                        value: this.search,
+                        onInput: (e) => { this.search = e.target.value; }
+                    })
+                ]),
+                h('div', { id: 'unassigned-container', ref: 'unassigned' }, 
+                    this.filteredFields.map(field => {
+                        return h(fieldComponent, { field: field, key: field.id });
+                    })
+                )
+            ])
+        ]);
+        const dirtyFlowContent = this.configurationChanged ?
+            h('div', { id: 'dirty-flow', class: 'alert alert-warning' }, [
+                h('span', 'Unsaved configuration changes!'),
+                h('button', {
+                    class: 'btn btn-success',
+                    onClick: this.save,
+                    disabled: this.saving
+                }, this.saving ? 
+                    h('span', [
+                        h('i', { class: 'fa fa-spinner fa-pulse fa-fw text-success mb-2 mt-2' })
+                    ]) : 
+                    h('span', 'Save now')
+                )
+            ]) : null;
+        return h('div', {
+            class: currentModal.data ? 'defocused' : 'focused',
+            style: { '--color': this.eventConfiguration.primary_color || '#2185d0' }
+        }, [
+            modalContent,
+            h('div', { id: 'flow' }, loadingContent),
+            unassignedContent,
+            dirtyFlowContent
+        ]);
+    },
     data() {
         return {
             steps: null,
@@ -488,3 +716,7 @@ var app = new Vue({
         },
     },
 })
+
+app.component("field", FieldComponent)
+app.component("step", StepComponent)
+app.mount("#flow")

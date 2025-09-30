@@ -6,9 +6,7 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="{% static "common/css/headers-uncompressed.css" %}" />
-    {% compress css %}
-        <link rel="stylesheet" href="{% static "orga/css/flow.css" %}">
-    {% endcompress %}
+    <link rel="stylesheet" href='{% static "orga/css/flow.css" %}'>
 {% endblock stylesheets %}
 
 {% block scripts %}

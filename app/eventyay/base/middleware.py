@@ -210,8 +210,6 @@ class SecurityMiddleware(MiddlewareMixin):
                 '{static}',
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
-                "'unsafe-eval'",  # let Vue’s template compiler run
-                "'unsafe-inline'",
                 'http://localhost:8080',
             ],
             'object-src': ["'none'"],
