@@ -732,7 +732,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
     ('text/vue', 'eventyay.helpers.compressor.VueCompiler'),
 )
-COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
+# COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
 COMPRESS_CSS_FILTERS = (
     # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
