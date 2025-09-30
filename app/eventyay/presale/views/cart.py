@@ -113,10 +113,12 @@ class CartActionMixin:
             return InvoiceAddress()
 
     def _product_from_post_value(self, key, value, voucher=None):
+        print("\n\n\nproduct something\n\n\n")
         if value.strip() == '' or '_' not in key:
             return
 
-        if not key.startswith('product_') and not key.startswith('variation_') and not key.startswith('seat_'):
+        if not key.startswith('item_') and not key.startswith('variation_') and not key.startswith('seat_'):
+            print("\n\n\nnot product something\n\n\n")
             return
 
         parts = key.split('_')
@@ -151,7 +153,7 @@ class CartActionMixin:
         elif amount == 0:
             return
 
-        if key.startswith('product_'):
+        if key.startswith('item_'):
             try:
                 return {
                     'product': int(parts[1]),
@@ -183,6 +185,8 @@ class CartActionMixin:
 
         # Compatibility patch that makes the frontend code a lot easier
         req_products = list(self.request.POST.lists())
+        print("\n\n\nself.request.POST", self.request.POST, "\n\n\n")
+        print("\n\n\nreq_products", req_products, "\n\n\n")
         if '_voucher_product' in self.request.POST and '_voucher_code' in self.request.POST:
             req_products.append(('%s' % self.request.POST['_voucher_product'], ('1',)))
             pass
