@@ -722,6 +722,7 @@ FRONTEND_DIR = BASE_DIR / 'frontend'
 # because when `collectstatic` was invoked by `rebuild` command,
 # it only sees the settings before Vite runs.
 STATICFILES_DIRS.append(FRONTEND_DIR / 'global-nav-menu' / 'dist')
+STATICFILES_DIRS.append(FRONTEND_DIR / 'schedule-editor' / 'dist')
 
 VITE_DEV_SERVER_PORT = 8080
 VITE_DEV_SERVER = f'http://localhost:{VITE_DEV_SERVER_PORT}'
