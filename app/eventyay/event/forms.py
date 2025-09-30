@@ -7,44 +7,44 @@ from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.fields import ColorField, ImageField
-from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
-from pretalx.common.forms.renderers import InlineFormRenderer
-from pretalx.common.forms.widgets import (
+from eventyay.common.forms.fields import ColorField, ImageField
+from eventyay.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from eventyay.common.forms.renderers import InlineFormRenderer
+from eventyay.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     HtmlDateInput,
     HtmlDateTimeInput,
     TextInputWithAddon,
 )
-from pretalx.common.text.phrases import phrases
-from pretalx.event.models import Event, Organiser, Team, TeamInvite
-from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
-from pretalx.submission.models import Track
+from eventyay.common.text.phrases import phrases
+from eventyay.base.models import Event, Organizer, Team, TeamInvite
+from eventyay.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
+from eventyay.base.models import Track
 
 
 class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     @scopes_disabled()
-    def __init__(self, *args, organiser=None, instance=None, **kwargs):
-        self.organiser = organiser
+    def __init__(self, *args, organizer=None, instance=None, **kwargs):
+        self.organizer = organizer
         super().__init__(*args, instance=instance, **kwargs)
         is_updating = instance and getattr(instance, "pk", None)
         if is_updating:
-            self.fields["limit_events"].queryset = instance.organiser.events.all()
+            self.fields["limit_events"].queryset = instance.organizer.events.all()
         else:
-            self.fields["limit_events"].queryset = organiser.events.all()
+            self.fields["limit_events"].queryset = organizer.events.all()
         if is_updating and not instance.all_events and instance.limit_events.count():
             self.fields["limit_tracks"].queryset = Track.objects.filter(
                 event__in=instance.limit_events.all()
             )
         else:
             self.fields["limit_tracks"].queryset = Track.objects.filter(
-                event__organiser=organiser
+                event__organizer=organizer
             ).order_by("-event__date_from", "name")
 
     @scopes_disabled()
     def save(self, *args, **kwargs):
-        self.instance.organiser = self.organiser
+        self.instance.organizer = self.organizer
         return super().save(*args, **kwargs)
 
     def clean(self):
@@ -61,7 +61,7 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         permissions = (
             "can_create_events",
             "can_change_teams",
-            "can_change_organiser_settings",
+            "can_change_organizer_settings",
             "can_change_event_settings",
             "can_change_submissions",
             "is_reviewer",
@@ -81,7 +81,7 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "limit_events",
             "can_create_events",
             "can_change_teams",
-            "can_change_organiser_settings",
+            "can_change_organizer_settings",
             "can_change_event_settings",
             "can_change_submissions",
             "is_reviewer",
@@ -151,7 +151,7 @@ class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
         fields = ("email",)
 
 
-class OrganiserForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
+class OrganizerForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, **kwargs):
         kwargs["locales"] = "en"
         super().__init__(*args, **kwargs)
@@ -160,7 +160,7 @@ class OrganiserForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             self.fields["slug"].disabled = True
 
     class Meta:
-        model = Organiser
+        model = Organizer
         fields = ("name", "slug")
 
 
@@ -174,29 +174,29 @@ class EventWizardInitialForm(forms.Form):
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["organiser"] = forms.ModelChoiceField(
-            label=_("Organiser"),
+        self.fields["organizer"] = forms.ModelChoiceField(
+            label=_("Organizer"),
             queryset=(
-                Organiser.objects.filter(
+                Organizer.objects.filter(
                     id__in=user.teams.filter(can_create_events=True).values_list(
-                        "organiser", flat=True
+                        "organizer", flat=True
                     )
                 )
                 if not user.is_administrator
-                else Organiser.objects.all()
+                else Organizer.objects.all()
             ),
             widget=EnhancedSelect,
             empty_label=None,
             required=True,
             help_text=_(
-                "The organiser running the event can copy settings from previous events and share team permissions across all or multiple events."
+                "The organizer running the event can copy settings from previous events and share team permissions across all or multiple events."
             ),
         )
-        self.fields["organiser"].initial = self.fields["organiser"].queryset.first()
+        self.fields["organizer"].initial = self.fields["organizer"].queryset.first()
 
 
 class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
-    def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
+    def __init__(self, *args, user=None, locales=None, organizer=None, **kwargs):
         self.locales = locales or []
         super().__init__(*args, **kwargs, locales=locales)
         self.fields["locale"].choices = [
@@ -246,7 +246,7 @@ class EventWizardTimelineForm(forms.ModelForm):
         widget=HtmlDateTimeInput,
     )
 
-    def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
+    def __init__(self, *args, user=None, locales=None, organizer=None, **kwargs):
         super().__init__(*args, **kwargs)
 
     def clean(self):
@@ -281,7 +281,7 @@ class EventWizardDisplayForm(forms.Form):
         widget=HeaderSelect,
     )
 
-    def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
+    def __init__(self, *args, user=None, locales=None, organizer=None, **kwargs):
         super().__init__(*args, **kwargs)
         logo = Event._meta.get_field("logo")
         self.fields["logo"] = ImageField(
@@ -294,9 +294,9 @@ class EventWizardCopyForm(forms.Form):
     def copy_from_queryset(user):
         return Event.objects.filter(
             Q(
-                organiser_id__in=user.teams.filter(
+                organizer_id__in=user.teams.filter(
                     all_events=True, can_change_event_settings=True
-                ).values_list("organiser", flat=True)
+                ).values_list("organizer", flat=True)
             )
             | Q(
                 id__in=user.teams.filter(can_change_event_settings=True).values_list(
@@ -305,7 +305,7 @@ class EventWizardCopyForm(forms.Form):
             )
         )
 
-    def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
+    def __init__(self, *args, user=None, locales=None, organizer=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["copy_from_event"] = forms.ModelChoiceField(
             label=_("Copy configuration from"),

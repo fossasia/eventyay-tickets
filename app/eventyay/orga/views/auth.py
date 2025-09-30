@@ -10,10 +10,10 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.views.generic import FormView
 
-from pretalx.cfp.forms.auth import RecoverForm, ResetForm
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views import GenericLoginView, GenericResetView
-from pretalx.person.models import User
+from eventyay.cfp.forms.auth import RecoverForm, ResetForm
+from eventyay.common.text.phrases import phrases
+from eventyay.common.views import GenericLoginView, GenericResetView
+from eventyay.base.models import User
 
 
 class LoginView(GenericLoginView):

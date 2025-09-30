@@ -48,6 +48,9 @@ def instance_name(request):
 
 
 debug_fallback = 'runserver' in sys.argv
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / 'data'
@@ -70,10 +73,8 @@ DATABASE_REPLICA = 'default'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
-SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
+SITE_URL = 'http://localhost:8000' if DEBUG else config.get('eventyay', 'url', fallback='http://localhost')
 SITE_NETLOC = urlparse(SITE_URL).netloc
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
 
 ALLOWED_HOSTS = ['*', '127.0.0.1']
 
@@ -87,6 +88,7 @@ HAS_CELERY = config.has_option('celery', 'broker')
 if HAS_CELERY:
     CELERY_BROKER_URL = config.get('celery', 'broker')
     CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+    CELERY_TASK_ALWAYS_EAGER = False
 else:
     CELERY_TASK_ALWAYS_EAGER = True
 
@@ -177,6 +179,12 @@ CORE_MODULES = (
         'eventyay.plugins.reports',
     )
 )
+
+PLUGINS = []
+from importlib.metadata import entry_points
+for entry_point in entry_points(group="pretalx.plugin"):
+    PLUGINS.append(entry_point.module)
+    # INSTALLED_APPS += tuple(entry_point.module)
 
 _LIBRARY_MIDDLEWARES = (
     'django.middleware.security.SecurityMiddleware',
@@ -426,6 +434,16 @@ django.conf.locale.LANG_INFO.update(EXTRA_LANG_INFO)
 
 EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
+
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_HOST = config.get("mail", "host")
+    EMAIL_PORT = config.get("mail", "port")
+    EMAIL_HOST_USER = config.get("mail", "user")
+    EMAIL_HOST_PASSWORD = config.get("mail", "password")
+    EMAIL_USE_TLS = config.getboolean("mail", "tls")
+    EMAIL_USE_SSL = config.getboolean("mail", "ssl")
 
 # Internal settings
 SESSION_COOKIE_NAME = 'eventyay_session'
@@ -714,7 +732,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
     ('text/vue', 'eventyay.helpers.compressor.VueCompiler'),
 )
-COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
+# COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
 COMPRESS_CSS_FILTERS = (
     # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
@@ -849,3 +867,13 @@ LOGGING = {
         },
     },
 }
+
+email_level = config.get("logging", "email_level", fallback="ERROR") or "ERROR"
+emails = config.get("logging", "email", fallback="").split(",")
+MANAGERS = ADMINS = [(email, email) for email in emails if email]
+if ADMINS:
+    LOGGING["handlers"]["mail_admins"] = {
+        "level": email_level,
+        "class": "eventyay.common.exceptions.PretalxAdminEmailHandler",
+    }
+    LOGGING["loggers"]["django.request"]["handlers"].append("mail_admins")

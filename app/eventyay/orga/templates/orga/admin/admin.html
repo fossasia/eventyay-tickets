@@ -29,7 +29,7 @@
     {% endif %}
 
     <p>
-        {% translate "Your eventyay version is:" %} <strong>{{ pretalx_version|copyable }}</strong>.
+        {% translate "Your eventyay version is:" %} <strong>{{ eventyay_version|copyable }}</strong>.
         {% url 'orga:admin.update' as update_url %}
         {% blocktranslate trimmed %}
             You can check for updates <a href="{{ update_url }}">here</a>.
@@ -39,9 +39,9 @@
     <h2>{% translate "Settings" %}</h2>
 
     <p>
-        {% if settings.CONFIG_FILES %}
+        {% if settings.TALK_CONFIG_FILES %}
             {% translate "Settings have been loaded from:" %}
-            {% for config_file in settings.CONFIG_FILES %}
+            {% for config_file in settings.TALK_CONFIG_FILES %}
                 <code>{{ config_file|copyable }}</code>{% if not forloop.last %},{% endif %}
             {% endfor %}
         {% else %}

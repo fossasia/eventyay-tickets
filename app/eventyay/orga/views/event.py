@@ -31,7 +31,7 @@ from eventyay.common.views.mixins import (
     PermissionRequired,
     SensibleBackWizardMixin,
 )
-from eventyay.control.forms.event import (
+from eventyay.event.forms import (
     EventWizardBasicsForm,
     EventWizardCopyForm,
     EventWizardDisplayForm,
@@ -533,7 +533,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                 )
         elif self.steps.current == 'display':
             date_to = self.get_cleaned_data_for_step('timeline').get('date_to')
-            if date_to and date_to < now().date():
+            if date_to and date_to < now():
                 messages.warning(
                     self.request,
                     _('Did you really mean to make your event take place in the past?'),
