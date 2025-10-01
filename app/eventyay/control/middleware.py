@@ -95,6 +95,8 @@ class PermissionMiddleware:
             if not settings.DEBUG:
                 new_url = urljoin(settings.SITE_URL, request.get_full_path())
                 bau = request.build_absolute_uri()
+                if bau.startswith('http://'):
+                    bau = 'https://' + bau[7:]
                 if new_url != bau:
                     logger.info('Organizer info is seen, redirecting to: %s', new_url)
                     logger.info('build_absolute_uri was: %s', bau)
