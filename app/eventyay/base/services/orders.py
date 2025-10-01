@@ -824,7 +824,11 @@ def _check_positions(
             delete(cp)
             continue
 
-        if cp.subevent and cp.product.pk in cp.subevent.product_overrides and cp.subevent.product_overrides[cp.product.pk].disabled:
+        if (
+            cp.subevent
+            and cp.product.pk in cp.subevent.product_overrides
+            and cp.subevent.product_overrides[cp.product.pk].disabled
+        ):
             err = err or error_messages['unavailable']
             delete(cp)
             continue
@@ -1111,7 +1115,7 @@ def _perform_order(
     else:
         pprov = None
 
-    if email == settings.PRETIX_EMAIL_NONE_VALUE:
+    if email == settings.EVENTYAY_EMAIL_NONE_VALUE:
         email = None
 
     addr = None
@@ -1567,7 +1571,9 @@ class OrderChangeManager:
         if price is None:  # NOQA
             raise OrderError(self.error_messages['product_invalid'])
 
-        new_quotas = variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        new_quotas = (
+            variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        )
         if not new_quotas:
             raise OrderError(self.error_messages['quota_missing'])
 
@@ -1723,7 +1729,9 @@ class OrderChangeManager:
         if seat and subevent and seat.subevent_id != subevent.pk:
             raise OrderError(self.error_messages['seat_subevent_mismatch'].format(seat=seat.name))
 
-        new_quotas = variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        new_quotas = (
+            variation.quotas.filter(subevent=subevent) if variation else product.quotas.filter(subevent=subevent)
+        )
         if not new_quotas:
             raise OrderError(self.error_messages['quota_missing'])
 

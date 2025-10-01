@@ -210,6 +210,7 @@ class SecurityMiddleware(MiddlewareMixin):
                 '{static}',
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
+                'http://localhost:8080',
             ],
             'object-src': ["'none'"],
             'frame-src': [
@@ -217,10 +218,17 @@ class SecurityMiddleware(MiddlewareMixin):
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
             ],
-            'style-src': ['{static}', '{media}'],
+            'style-src': [
+                '{static}',
+                '{media}',
+                "'unsafe-inline'",  # allow inline styles
+            ],
             'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com'],
             'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com'] + img_src,
-            'font-src': ['{static}'],
+            'font-src': [
+                '{static}',
+                'https://fonts.gstatic.com',  # fix Google Fonts
+            ],
             'media-src': ['{static}', 'data:'],
             # form-action is not only used to match on form actions, but also on URLs
             # form-actions redirect to. In the context of e.g. payment providers or
@@ -272,6 +280,17 @@ class SecurityMiddleware(MiddlewareMixin):
         elif 'Content-Security-Policy' in resp:
             del resp['Content-Security-Policy']
 
+        # ==============================
+        # Add this **for development only**
+        if settings.DEBUG:
+            h['script-src'] += ["'unsafe-inline'", "http://localhost:8080"]
+            h['connect-src'] += ["http://localhost:8080", "ws://localhost:8080"]
+        # ==============================
+
+        # Then continue with rendering CSP
+        resp['Content-Security-Policy'] = _render_csp(h).format(
+            static=staticdomain, dynamic=dynamicdomain, media=mediadomain
+        )
         return resp
 
 

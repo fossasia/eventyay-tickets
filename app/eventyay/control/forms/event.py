@@ -33,6 +33,9 @@ from eventyay.base.settings import (
     PERSON_NAME_TITLE_GROUPS,
     validate_event_settings,
 )
+from eventyay.common.forms.fields import ColorField, ImageField
+from eventyay.common.forms.widgets import EnhancedSelect, HtmlDateInput, HtmlDateTimeInput
+from eventyay.common.text.phrases import phrases
 from eventyay.control.forms import (
     MultipleLanguagesWidget,
     SlugWidget,
@@ -43,6 +46,7 @@ from eventyay.control.forms.widgets import Select2
 from eventyay.helpers.countries import CachedCountries
 from eventyay.multidomain.models import KnownDomain
 from eventyay.multidomain.urlreverse import build_absolute_uri
+from eventyay.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from eventyay.plugins.banktransfer.payment import BankTransfer
 
 
@@ -286,6 +290,85 @@ class EventWizardCopyForm(forms.Form):
             required=False,
         )
         self.fields['copy_from_event'].widget.choices = self.fields['copy_from_event'].choices
+
+
+class EventWizardDisplayForm(forms.Form):
+    primary_color = ColorField(
+        label=Event._meta.get_field('primary_color').verbose_name,
+        help_text=Event._meta.get_field('primary_color').help_text,
+        required=False,
+    )
+    header_pattern = forms.ChoiceField(
+        label=phrases.orga.event_header_pattern_label,
+        help_text=phrases.orga.event_header_pattern_help_text,
+        choices=Event.HEADER_PATTERN_CHOICES,
+        required=False,
+        widget=HeaderSelect,
+    )
+
+    def __init__(self, *args, user=None, locales=None, organizer=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        logo = Event._meta.get_field('logo')
+        self.fields['logo'] = ImageField(required=False, label=logo.verbose_name, help_text=logo.help_text)
+
+
+class EventWizardInitialForm(forms.Form):
+    locales = forms.MultipleChoiceField(
+        choices=settings.LANGUAGES,
+        label=_('Use languages'),
+        help_text=_('Choose all languages that your event should be available in.'),
+        widget=MultipleLanguagesWidget,
+    )
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['organizer'] = forms.ModelChoiceField(
+            label=_('Organizer'),
+            queryset=(
+                Organizer.objects.filter(
+                    id__in=user.teams.filter(can_create_events=True).values_list('organizer', flat=True)
+                )
+                if not user.is_administrator
+                else Organizer.objects.all()
+            ),
+            widget=EnhancedSelect,
+            empty_label=None,
+            required=True,
+            help_text=_(
+                'The organizer running the event can copy settings from previous events and share team permissions across all or multiple events.'
+            ),
+        )
+        self.fields['organizer'].initial = self.fields['organizer'].queryset.first()
+
+
+class EventWizardTimelineForm(forms.ModelForm):
+    deadline = forms.DateTimeField(
+        required=False,
+        help_text=_(
+            'The default deadline for your Call for Papers. You can assign additional deadlines to individual session types, which will take precedence over this deadline.'
+        ),
+        widget=HtmlDateTimeInput,
+    )
+
+    def __init__(self, *args, user=None, locales=None, organizer=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        data = super().clean()
+        date_from = data.get('date_from')
+        date_to = data.get('date_to')
+        if date_from and date_to and date_from > date_to:
+            error = forms.ValidationError(phrases.orga.event_date_start_invalid)
+            self.add_error('date_from', error)
+        return data
+
+    class Meta:
+        model = Event
+        fields = ('date_from', 'date_to')
+        widgets = {
+            'date_from': HtmlDateInput,
+            'date_to': HtmlDateInput,
+        }
 
 
 class EventMetaValueForm(forms.ModelForm):

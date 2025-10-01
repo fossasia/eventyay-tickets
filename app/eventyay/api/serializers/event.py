@@ -509,7 +509,9 @@ class SubEventSerializer(I18nAwareModelSerializer):
             validated_data.pop('subeventproduct_set') if 'subeventproduct_set' in validated_data else {}
         )
         variation_price_overrides_data = (
-            validated_data.pop('subeventproductvariation_set') if 'subeventproductvariation_set' in validated_data else {}
+            validated_data.pop('subeventproductvariation_set')
+            if 'subeventproductvariation_set' in validated_data
+            else {}
         )
         meta_data = validated_data.pop('meta_data', None)
         seat_category_mapping = validated_data.pop('seat_category_mapping', None)
@@ -556,7 +558,9 @@ class SubEventSerializer(I18nAwareModelSerializer):
         subevent = super().update(instance, validated_data)
 
         if product_price_overrides_data is not None:
-            existing_product_overrides = {product.product: product.id for product in SubEventProduct.objects.filter(subevent=subevent)}
+            existing_product_overrides = {
+                product.product: product.id for product in SubEventProduct.objects.filter(subevent=subevent)
+            }
 
             for product_price_override_data in product_price_overrides_data:
                 id = existing_product_overrides.pop(product_price_override_data['product'], None)

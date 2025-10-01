@@ -286,8 +286,8 @@ def collect_billing_invoice(
         voucher_value=invoice_voucher.value if invoice_voucher else 0,
         monthly_bill=last_month_date,
         reminder_schedule=settings.BILLING_REMINDER_SCHEDULE,
-        created_by=settings.PRETIX_EMAIL_NONE_VALUE,
-        updated_by=settings.PRETIX_EMAIL_NONE_VALUE,
+        created_by=settings.EVENTYAY_EMAIL_NONE_VALUE,
+        updated_by=settings.EVENTYAY_EMAIL_NONE_VALUE,
     )
     billing_invoice.next_reminder_datetime = get_next_reminder_datetime(settings.BILLING_REMINDER_SCHEDULE)
     billing_invoice.save()
@@ -692,7 +692,7 @@ def billing_invoice_send_email(subject, content, invoice, organizer_billing):
         kwargs={
             'subject': subject,
             'body': content,
-            'sender': settings.PRETIX_EMAIL_NONE_VALUE,
+            'sender': settings.EVENTYAY_EMAIL_NONE_VALUE,
             'to': organizer_billing_contact,
             'html': None,
             'attach_file_base64': pdf_base64,

@@ -219,7 +219,9 @@ class Variation(ImportColumn):
     @cached_property
     def products(self):
         return list(
-            ProductVariation.objects.filter(active=True, product__active=True, product__event=self.event).select_related('product')
+            ProductVariation.objects.filter(
+                active=True, product__active=True, product__event=self.event
+            ).select_related('product')
         )
 
     def static_choices(self):
@@ -641,7 +643,9 @@ class SeatColumn(ImportColumn):
                     _('The seat you selected has already been taken. Please select a different seat.')
                 )
             self._cached.add(value)
-        elif previous_values['product'].seat_category_mappings.filter(subevent=previous_values.get('subevent')).exists():
+        elif (
+            previous_values['product'].seat_category_mappings.filter(subevent=previous_values.get('subevent')).exists()
+        ):
             raise ValidationError(_('You need to select a specific seat.'))
         return value
 

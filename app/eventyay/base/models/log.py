@@ -52,9 +52,11 @@ class LogEntry(models.Model):
     oauth_application = models.ForeignKey('api.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)
     event = models.ForeignKey('Event', null=True, blank=True, on_delete=models.SET_NULL)
     action_type = models.CharField(max_length=255)
-    data = models.TextField(default='{}')
+    data = models.TextField(default='{}', null=True, blank=True)
     visible = models.BooleanField(default=True)
     shredded = models.BooleanField(default=False)
+
+    is_orga_action = models.BooleanField(default=False)
 
     objects = VisibleOnlyManager()
     all = models.Manager()
@@ -69,6 +71,30 @@ class LogEntry(models.Model):
             if response:
                 return response
         return self.action_type
+    
+    def __str__(self):
+        """Custom __str__ to help with debugging."""
+        event = getattr(self.event, 'slug', 'None')
+        user = getattr(self.user, 'name', 'None')
+        return (
+            f'LogEntry(event={event}, user={user}, content_object={self.content_object}, '
+            f'action_type={self.action_type})'
+        )
+
+    @property
+    def person(self):
+        return self.user
+    
+    @property
+    def timestamp(self):
+        return self.datetime
+
+    @cached_property
+    def json_data(self):
+        if self.data:
+            with suppress(json.JSONDecodeError):
+                return json.loads(self.data)
+        return {}
 
     @property
     def webhook_type(self):
@@ -312,8 +338,10 @@ class ActivityLog(models.Model):
         """Custom __str__ to help with debugging."""
         event = getattr(self.event, 'slug', 'None')
         person = getattr(self.person, 'name', 'None')
-        return (f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, '
-                f'action_type={self.action_type})')
+        return (
+            f'ActivityLog(event={event}, person={person}, content_object={self.content_object}, '
+            f'action_type={self.action_type})'
+        )
 
     @cached_property
     def json_data(self):

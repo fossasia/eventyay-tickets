@@ -1,0 +1,40 @@
+{% extends "orga/generic/_form.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block form %}
+    <form method="post">
+        {% csrf_token %}
+        <legend id="permissions" class="mt-4">{% translate "Permissions" %}</legend>
+        {% include "common/forms/errors.html" %}
+        {{ form.name.as_field_group }}
+        {{ form.all_events.as_field_group }}
+        {{ form.limit_events.as_field_group }}
+        {{ form.can_create_events.as_field_group }}
+        {{ form.can_change_teams.as_field_group }}
+        {{ form.can_change_organizer_settings.as_field_group }}
+        {{ form.can_change_event_settings.as_field_group }}
+        {{ form.can_change_submissions.as_field_group }}
+        {{ form.is_reviewer.as_field_group }}
+        <div id="review-settings">
+            <div class="form-group row">
+                <div class="col-md-9 offset-md-3">
+                    <h3 id="review-settings">{% translate "Review settings" %}</h3>
+                </div>
+            </div>
+            {{ form.force_hide_speaker_names.as_field_group }}
+            {{ form.limit_tracks.as_field_group }}
+        </div>
+
+        {% include "orga/includes/submit_row.html" with submit_value="team" submit_name="form" %}
+
+    </form>
+
+    <span id="vars" remoteUrl="{{ request.organizer.orga_urls.user_search }}"></span>
+    {% compress js %}
+        <script defer src="{% static "orga/js/speakers.js" %}"></script>
+        <script defer src="{% static "orga/js/teamSettings.js" %}"></script>
+    {% endcompress %}
+{% endblock form %}

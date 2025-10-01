@@ -29,4 +29,6 @@ npminstall:
 	mkdir -p eventyay/static.dist/node_prefix/
 	cp -r eventyay/static/npm_dir/* eventyay/static.dist/node_prefix/
 	npm install --prefix=eventyay/static.dist/node_prefix
+	npm ci --prefix=eventyay/frontend/schedule-editor
+	npm run build --prefix=eventyay/frontend/schedule-editor
 

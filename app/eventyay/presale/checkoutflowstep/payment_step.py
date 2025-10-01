@@ -16,7 +16,7 @@ from .template_flow_step import TemplateFlowStep
 class PaymentStep(CartMixin, TemplateFlowStep):
     priority = 200
     identifier = 'payment'
-    template_name = 'eventyaypresale/event/checkout_payment.html'
+    template_name = 'pretixpresale/event/checkout_payment.html'
     label = pgettext_lazy('checkoutflow', 'Payment')
     icon = 'credit-card'
 

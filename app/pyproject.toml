@@ -279,3 +279,7 @@ ignore = ["E722", "E741"]
 "**/__init__.py" = ["F401"]
 # These files have long lines.
 "**/migrations/*.py" = ["E501"]
+
+[tool.setuptools]
+packages = ["eventyay"]
+

@@ -465,7 +465,9 @@ class CartManager:
             cp.product.requires_seat = self.event.settings.seating_choice and cp.requires_seat
 
             if cp.is_bundled:
-                bundle = cp.addon_to.product.bundles.filter(bundled_product=cp.product, bundled_variation=cp.variation).first()
+                bundle = cp.addon_to.product.bundles.filter(
+                    bundled_product=cp.product, bundled_variation=cp.variation
+                ).first()
                 if bundle:
                     price = bundle.designated_price or 0
                 else:
@@ -659,7 +661,9 @@ class CartManager:
             # Check whether the specified products are part of what we just fetched from the database
             # If they are not, the user supplied product IDs which either do not exist or belong to
             # a different event
-            if i['product'] not in self._products_cache or (i['variation'] and i['variation'] not in self._variations_cache):
+            if i['product'] not in self._products_cache or (
+                i['variation'] and i['variation'] not in self._variations_cache
+            ):
                 raise CartError(error_messages['not_for_sale'])
 
             product = self._products_cache[i['product']]
@@ -832,7 +836,9 @@ class CartManager:
             # Check whether the specified products are part of what we just fetched from the database
             # If they are not, the user supplied product IDs which either do not exist or belong to
             # a different event
-            if a['product'] not in self._products_cache or (a['variation'] and a['variation'] not in self._variations_cache):
+            if a['product'] not in self._products_cache or (
+                a['variation'] and a['variation'] not in self._variations_cache
+            ):
                 raise CartError(error_messages['not_for_sale'])
 
             # Only attach addons to things that are actually in this user's cart
@@ -1018,7 +1024,8 @@ class CartManager:
 
             if product.max_per_order and count > product.max_per_order:
                 raise CartError(
-                    _(error_messages['max_products_per_product']) % {'max': product.max_per_order, 'product': product.name}
+                    _(error_messages['max_products_per_product'])
+                    % {'max': product.max_per_order, 'product': product.name}
                 )
 
             if product.min_per_order and count < product.min_per_order:
@@ -1035,7 +1042,8 @@ class CartManager:
                         }
                 if not err:
                     raise CartError(
-                        _(error_messages['min_products_per_product']) % {'min': product.min_per_order, 'product': product.name}
+                        _(error_messages['min_products_per_product'])
+                        % {'min': product.min_per_order, 'product': product.name}
                     )
         return err
 

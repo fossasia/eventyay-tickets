@@ -62,7 +62,7 @@
                                     </p>
                                     {% for product in c.products %}
                                         {% if product.has_variations %}
-                                            <details class="product-with-variations" {% if event.settings.show_variations_expanded or product.expand %}open{% endif %}>
+                                            <details class="item-with-variations" {% if event.settings.show_variations_expanded or product.expand %}open{% endif %}>
                                                 <summary class="row-fluid product-row headline">
                                                     <div class="col-md-8 col-xs-12">
                                                         {% if product.picture %}

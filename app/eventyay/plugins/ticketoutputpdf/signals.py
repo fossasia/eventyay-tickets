@@ -1,0 +1,165 @@
+import copy
+import json
+
+from django.dispatch import receiver
+from django.urls import reverse
+from django.utils.html import escape
+from django.utils.translation import gettext_lazy as _
+
+from eventyay.base.channels import get_all_sales_channels
+from eventyay.base.signals import (  # NOQA: legacy import
+    EventPluginSignal,
+    event_copy_data,
+    product_copy_data,
+    logentry_display,
+    logentry_object_link,
+    register_data_exporters,
+    register_multievent_data_exporters,
+    register_ticket_outputs,
+)
+from eventyay.control.signals import product_forms
+from eventyay.plugins.ticketoutputpdf.forms import TicketLayoutProductForm
+from eventyay.plugins.ticketoutputpdf.models import (
+    TicketLayout,
+    TicketLayoutProduct,
+)
+
+
+@receiver(register_ticket_outputs, dispatch_uid='output_pdf')
+def register_ticket_outputs(sender, **kwargs):
+    from .ticketoutput import PdfTicketOutput
+
+    return PdfTicketOutput
+
+
+@receiver(register_data_exporters, dispatch_uid='dataexport_pdf')
+def register_data(sender, **kwargs):
+    from .exporters import AllTicketsPDF
+
+    return AllTicketsPDF
+
+
+@receiver(register_multievent_data_exporters, dispatch_uid='dataexport_multievent_pdf')
+def register_multievent_data(sender, **kwargs):
+    from .exporters import AllTicketsPDF
+
+    return AllTicketsPDF
+
+
+@receiver(product_forms, dispatch_uid='eventyay_ticketoutputpdf_product_forms')
+def control_product_forms(sender, request, product, **kwargs):
+    forms = []
+    for k, v in sorted(list(get_all_sales_channels().items()), key=lambda a: (int(a[0] != 'web'), a[0])):
+        try:
+            inst = TicketLayoutProduct.objects.get(product=product, sales_channel=k)
+        except TicketLayoutProduct.DoesNotExist:
+            inst = TicketLayoutProduct(product=product)
+        forms.append(
+            TicketLayoutProductForm(
+                instance=inst,
+                event=sender,
+                sales_channel=v,
+                data=(request.POST if request.method == 'POST' else None),
+                prefix='ticketlayoutproduct_{}'.format(k),
+            )
+        )
+    return forms
+
+
+@receiver(product_copy_data, dispatch_uid='eventyay_ticketoutputpdf_product_copy')
+def copy_product(sender, source, target, **kwargs):
+    for tli in TicketLayoutProduct.objects.filter(product=source):
+        TicketLayoutProduct.objects.create(product=target, layout=tli.layout, sales_channel=tli.sales_channel)
+
+
+@receiver(signal=event_copy_data, dispatch_uid='eventyay_ticketoutputpdf_copy_data')
+def pdf_event_copy_data_receiver(sender, other, product_map, question_map, **kwargs):
+    if sender.ticket_layouts.exists():  # idempotency
+        return
+    layout_map = {}
+    for bl in other.ticket_layouts.all():
+        oldid = bl.pk
+        bl = copy.copy(bl)
+        bl.pk = None
+        bl.event = sender
+
+        layout = json.loads(bl.layout)
+        for o in layout:
+            if o['type'] == 'textarea':
+                if o['content'].startswith('question_'):
+                    newq = question_map.get(int(o['content'][9:]))
+                    if newq:
+                        o['content'] = 'question_{}'.format(newq.pk)
+        bl.layout = json.dumps(layout)
+
+        bl.save()
+
+        if bl.background and bl.background.name:
+            bl.background.save('background.pdf', bl.background)
+
+        layout_map[oldid] = bl
+
+    for bi in TicketLayoutProduct.objects.filter(product__event=other):
+        TicketLayoutProduct.objects.create(
+            product=product_map.get(bi.product_id),
+            layout=layout_map.get(bi.layout_id),
+            sales_channel=bi.sales_channel,
+        )
+    return layout_map
+
+
+@receiver(signal=logentry_display, dispatch_uid='eventyay_ticketoutputpdf_logentry_display')
+def pdf_logentry_display(sender, logentry, **kwargs):
+    if not logentry.action_type.startswith('eventyay.plugins.ticketoutputpdf'):
+        return
+
+    plains = {
+        'eventyay.plugins.ticketoutputpdf.layout.added': _('Ticket layout created.'),
+        'eventyay.plugins.ticketoutputpdf.layout.deleted': _('Ticket layout deleted.'),
+        'eventyay.plugins.ticketoutputpdf.layout.changed': _('Ticket layout changed.'),
+    }
+
+    if logentry.action_type in plains:
+        return plains[logentry.action_type]
+
+
+@receiver(
+    signal=logentry_object_link,
+    dispatch_uid='eventyay_ticketoutputpdf_logentry_object_link',
+)
+def pdf_logentry_object_link(sender, logentry, **kwargs):
+    if not logentry.action_type.startswith('eventyay.plugins.ticketoutputpdf.layout') or not isinstance(
+        logentry.content_object, TicketLayout
+    ):
+        return
+
+    a_text = _('Ticket layout {val}')
+    a_map = {
+        'href': reverse(
+            'plugins:ticketoutputpdf:edit',
+            kwargs={
+                'event': sender.slug,
+                'organizer': sender.organizer.slug,
+                'layout': logentry.content_object.id,
+            },
+        ),
+        'val': escape(logentry.content_object.name),
+    }
+    a_map['val'] = '<a href="{href}">{val}</a>'.format_map(a_map)
+    return a_text.format_map(a_map)
+
+
+override_layout = EventPluginSignal()
+"""
+Arguments: ``layout``, ``orderposition``
+This signal allows you to forcefully override the ticket layout that is being used to create the ticket PDF. Use with
+care, as this will render any specifically by the organizer selected templates useless.
+
+The ``layout`` keyword argument will contain the layout which has been originally selected by the system, the
+``orderposition`` keyword argument will contain the ``OrderPosition`` which is being generated.
+
+If you implement this signal and do not want to override the layout, make sure to return the ``layout`` keyword argument
+which you have been passed.
+
+As with all plugin signals, the ``sender`` keyword will contain the event.
+"""

@@ -1504,7 +1504,9 @@ class Quota(LoggedModel):
         help_text=_('Leave empty for an unlimited number of tickets.'),
     )
     products = models.ManyToManyField(Product, verbose_name=_('Product'), related_name='quotas', blank=True)
-    variations = models.ManyToManyField(ProductVariation, related_name='quotas', blank=True, verbose_name=_('Variations'))
+    variations = models.ManyToManyField(
+        ProductVariation, related_name='quotas', blank=True, verbose_name=_('Variations')
+    )
 
     close_when_sold_out = models.BooleanField(
         verbose_name=_('Close this quota permanently once it is sold out'),

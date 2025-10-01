@@ -30,13 +30,13 @@ class PluginType(Enum):
 
 def get_all_plugins(event=None) -> List[type]:
     """
-    Returns the PretixPluginMeta classes of all plugins found in the installed Django apps.
+    Returns the EventyayPluginMeta classes of all plugins found in the installed Django apps.
     If an event is provided, only plugins active for that event are returned.
     """
     plugins = []
     for app in apps.get_app_configs():
-        if hasattr(app, 'PretixPluginMeta'):
-            meta = app.PretixPluginMeta
+        if hasattr(app, 'EventyayPluginMeta'):
+            meta = app.EventyayPluginMeta
             meta.module = app.name
             meta.app = app
             if app.name in settings.PRETIX_PLUGINS_EXCLUDE:
@@ -107,10 +107,10 @@ class PluginConfig(AppConfig):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not hasattr(self, 'PretixPluginMeta'):
-            raise ImproperlyConfigured('A pretix plugin config should have a PretixPluginMeta inner class.')
+        if not hasattr(self, 'EventyayPluginMeta'):
+            raise ImproperlyConfigured('A pretix plugin config should have a EventyayPluginMeta inner class.')
 
-        if hasattr(self.PretixPluginMeta, 'compatibility') and not os.environ.get('PRETIX_IGNORE_CONFLICTS') == 'True':
+        if hasattr(self.EventyayPluginMeta, 'compatibility') and not os.environ.get('PRETIX_IGNORE_CONFLICTS') == 'True':
             self.check_compatibility()
 
     def check_compatibility(self):
@@ -119,7 +119,7 @@ class PluginConfig(AppConfig):
         Exits the program if incompatibility is detected.
         """
         try:
-            for requirement in self.PretixPluginMeta.compatibility:
+            for requirement in self.EventyayPluginMeta.compatibility:
                 package_name, _, required_version = requirement.partition('==')
                 installed_version = importlib.metadata.version(package_name)
                 if installed_version != required_version:

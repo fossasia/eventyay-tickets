@@ -416,7 +416,9 @@ def get_grouped_products(
     ):
         event.cache.set(quota_cache_key, quota_cache, 5)
     products = [
-        product for product in products if (len(product.available_variations) > 0 or not product.has_variations) and not product._remove
+        product
+        for product in products
+        if (len(product.available_variations) > 0 or not product.has_variations) and not product._remove
     ]
     return products, display_add_to_cart
 

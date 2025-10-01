@@ -30,7 +30,7 @@ from eventyay.presale.views.questions import QuestionsViewMixin
 class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
     priority = 50
     identifier = 'questions'
-    template_name = 'eventyaypresale/event/checkout_questions.html'
+    template_name = 'pretixpresale/event/checkout_questions.html'
     label = pgettext_lazy('checkoutflow', 'Your information')
 
     def is_applicable(self, request):

@@ -96,7 +96,7 @@ def system_information(request):
 
     if settings.DEBUG:
         context['development_mode'] = True
-        context['pretalx_version'] = settings.PRETALX_VERSION
+        context['eventyay_version'] = settings.EVENTYAY_VERSION
 
     context['warning_update_available'] = False
     context['warning_update_check_active'] = False
