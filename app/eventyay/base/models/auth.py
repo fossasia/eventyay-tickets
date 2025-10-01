@@ -21,7 +21,7 @@ from django.contrib.auth.models import (
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q, JSONField
 from django.http import HttpRequest
 from django.urls import reverse
@@ -118,11 +118,11 @@ class User(
     PermissionsMixin,
     LoggingMixin,
     RulesModelMixin,
+    VersionedModel,
     GenerateCode,
     FileCleanupMixin,
     AbstractBaseUser,
     metaclass=RulesModelBase,
-    VersionedModel,
 ):
     """
     This is the unified user model used by eventyay for both authentication and video/event functionality.

@@ -28,7 +28,7 @@ from pycountry import currencies
 from eventyay import __version__
 from eventyay.common.settings.config import build_config
 
-
+_config = configparser.RawConfigParser()
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
 else:
