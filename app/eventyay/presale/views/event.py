@@ -253,7 +253,7 @@ def get_grouped_products(
             # Restrict variations if the voucher only allows one
             product.available_variations = [v for v in product.available_variations if v.pk == voucher.variation_id]
 
-        if get_all_sales_channels()[channel].unlimited_items_per_order:
+        if get_all_sales_channels()[channel].unlimited_products_per_order:
             max_per_order = sys.maxsize
         else:
             max_per_order = product.max_per_order or int(event.settings.max_products_per_order)

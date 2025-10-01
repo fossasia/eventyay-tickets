@@ -179,7 +179,7 @@
                         <input type="hidden" name="price_{{ line.product.id }}_{{ line.variation.id }}"
                                 value="{% if event.settings.display_net_prices %}{{ line.bundle_sum_net }}{% else %}{{ line.bundle_sum }}{% endif %}" />
                     {% else %}
-                        <input type="hidden" name="item_{{ line.product.id }}"
+                        <input type="hidden" name="product_{{ line.product.id }}"
                                 value="1" />
                         <input type="hidden" name="price_{{ line.product.id }}"
                                 value="{% if event.settings.display_net_prices %}{{ line.bundle_sum_net }}{% else %}{{ line.bundle_sum }}{% endif %}" />

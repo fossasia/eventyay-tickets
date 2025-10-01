@@ -27,7 +27,7 @@ from .template_flow_step import TemplateFlowStep
 class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     priority = 1001
     identifier = 'confirm'
-    template_name = 'eventyaypresale/event/checkout_confirm.html'
+    template_name = 'pretixpresale/event/checkout_confirm.html'
     task = perform_order
     known_errortypes = ['OrderError']
     label = pgettext_lazy('checkoutflow', 'Review order')
@@ -51,7 +51,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         if self.payment_provider:
             ctx['payment'] = self.payment_provider.checkout_confirm_render(self.request)
             ctx['payment_provider'] = self.payment_provider
-        ctx['require_approval'] = any(cp.item.require_approval for cp in ctx['cart']['positions'])
+        ctx['require_approval'] = any(cp.product.require_approval for cp in ctx['cart']['positions'])
         ctx['addr'] = self.invoice_address
         ctx['confirm_messages'] = self.confirm_messages
         ctx['cart_session'] = self.cart_session
@@ -60,7 +60,7 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         self.cart_session['shown_total'] = str(ctx['cart']['total'])
 
         email = self.cart_session.get('contact_form_data', {}).get('email')
-        if email != settings.PRETIX_EMAIL_NONE_VALUE:
+        if email != settings.EVENTYAY_EMAIL_NONE_VALUE:
             ctx['contact_info'] = [
                 (_('E-mail'), email),
             ]

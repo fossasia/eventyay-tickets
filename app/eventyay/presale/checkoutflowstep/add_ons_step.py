@@ -30,7 +30,7 @@ from .template_flow_step import TemplateFlowStep
 class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
     priority = 40
     identifier = 'addons'
-    template_name = 'eventyaypresale/event/checkout_addons.html'
+    template_name = 'pretixpresale/event/checkout_addons.html'
     task = set_cart_addons
     known_errortypes = ['CartError']
     requires_valid_cart = False

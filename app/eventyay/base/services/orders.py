@@ -1115,7 +1115,7 @@ def _perform_order(
     else:
         pprov = None
 
-    if email == settings.PRETIX_EMAIL_NONE_VALUE:
+    if email == settings.EVENTYAY_EMAIL_NONE_VALUE:
         email = None
 
     addr = None

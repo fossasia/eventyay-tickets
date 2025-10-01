@@ -89,12 +89,12 @@ def preview(event: int, provider: str):
         rolledback_transaction(),
         language(event.settings.locale, event.settings.region),
     ):
-        item = event.items.create(
+        product = event.products.create(
             name=_('Sample product'),
             default_price=42.23,
             description=_('Sample product description'),
         )
-        item2 = event.items.create(name=_('Sample workshop'), default_price=23.40)
+        product2 = event.products.create(name=_('Sample workshop'), default_price=23.40)
 
         from eventyay.base.models import Order
 
@@ -110,19 +110,19 @@ def preview(event: int, provider: str):
 
         scheme = PERSON_NAME_SCHEMES[event.settings.name_scheme]
         sample = {k: str(v) for k, v in scheme['sample'].items()}
-        p = order.positions.create(item=item, attendee_name_parts=sample, price=item.default_price)
+        p = order.positions.create(product=product, attendee_name_parts=sample, price=product.default_price)
         s = event.subevents.first()
         order.positions.create(
-            item=item2,
+            product=product2,
             attendee_name_parts=sample,
-            price=item.default_price,
+            price=product.default_price,
             addon_to=p,
             subevent=s,
         )
         order.positions.create(
-            item=item2,
+            product=product2,
             attendee_name_parts=sample,
-            price=item.default_price,
+            price=product.default_price,
             addon_to=p,
             subevent=s,
         )
@@ -220,12 +220,12 @@ def get_tickets_for_order(order, base_position=None):
 
 
 @app.task(base=EventTask, acks_late=True)
-def invalidate_cache(event: Event, item: int = None, provider: str = None, order: int = None, **kwargs):
+def invalidate_cache(event: Event, product: int = None, provider: str = None, order: int = None, **kwargs):
     qs = CachedTicket.objects.filter(order_position__order__event=event)
     qsc = CachedCombinedTicket.objects.filter(order__event=event)
 
-    if item:
-        qs = qs.filter(order_position__item_id=item)
+    if product:
+        qs = qs.filter(order_position__product_id=product)
 
     if provider:
         qs = qs.filter(provider=provider)

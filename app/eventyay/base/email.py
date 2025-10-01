@@ -40,6 +40,8 @@ from eventyay.base.signals import (
 from eventyay.mail.signals import talk_register_mail_placeholders
 from eventyay.base.templatetags.rich_text import markdown_compile_email
 
+from zoneinfo import ZoneInfo
+
 logger = logging.getLogger(__name__)
 
 
@@ -512,7 +514,7 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             'expire_date',
             ['event', 'order'],
-            lambda event, order: LazyExpiresDate(order.expires.astimezone(event.timezone)),
+            lambda event, order: LazyExpiresDate(order.expires.astimezone(ZoneInfo(event.timezone))),
             lambda event: LazyDate(djnow() + timedelta(days=15)),
         ),
         SimpleFunctionalMailTextPlaceholder(

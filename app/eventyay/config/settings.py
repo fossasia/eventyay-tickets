@@ -446,6 +446,8 @@ else:
     EMAIL_USE_SSL = config.getboolean("mail", "ssl")
 
 # Internal settings
+EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
+
 SESSION_COOKIE_NAME = 'eventyay_session'
 LANGUAGE_COOKIE_NAME = 'eventyay_language'
 CSRF_COOKIE_NAME = 'eventyay_csrftoken'
@@ -468,7 +470,6 @@ USE_TZ = True
 
 LANGUAGES_RTL = {'ar', 'he'}
 
-LANGUAGE_COOKIE_NAME = 'eventyay_language'
 LANGUAGES_INFORMATION = {
     'en': {
         'name': _('English'),
@@ -770,7 +771,7 @@ EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallba
 EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 EVENTYAY_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 
-
+PDFTK = config.get('tools', 'pdftk', fallback=None)
 PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 

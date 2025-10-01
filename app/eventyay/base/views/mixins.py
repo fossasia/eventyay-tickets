@@ -244,7 +244,7 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
                     to_attr='answerlist',
                 ),
                 Prefetch(
-                    'item__questions',
+                    'product__questions',
                     qqs.prefetch_related(
                         Prefetch(
                             'options',
