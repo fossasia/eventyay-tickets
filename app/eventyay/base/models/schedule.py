@@ -672,7 +672,7 @@ class Schedule(PretalxModel):
         result['speakers'] = [
             {
                 'code': user.code,
-                'name': user.name,
+                'name': user.fullname,
                 'avatar': (user.get_avatar_url(event=self.event) if include_avatar else None),
                 'avatar_thumbnail_default': (
                     user.get_avatar_url(event=self.event, thumbnail='default') if include_avatar else None

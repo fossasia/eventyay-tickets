@@ -179,24 +179,24 @@ def questions_for_user(event, user):
     from eventyay.talk_rules.orga import can_view_speaker_names
 
     if user.has_perm('submission.update_question', event):
-        # Organisers with edit permissions can see everything
-        return event.questions(manager='all_objects').all()
+        # Organizers with edit permissions can see everything
+        return event.talkquestions(manager='all_objects').all()
     if not user.is_anonymous and is_only_reviewer(user, event) and can_view_speaker_names(user, event):
-        return event.questions(manager='all_objects').filter(
+        return event.talkquestions(manager='all_objects').filter(
             Q(is_visible_to_reviewers=True) | Q(target=TalkQuestionTarget.REVIEWER),
             active=True,
         )
     if user.has_perm('submission.orga_list_question', event):
-        # Other team members can either view all active questions
-        # or only questions open to reviewers
-        return event.questions(manager='all_objects').all()
+        # Other team members can either view all active talkquestions
+        # or only talkquestions open to reviewers
+        return event.talkquestions(manager='all_objects').all()
 
     # Now we are left with anonymous users or users with very limited permissions.
-    # They can see all public (non-reviewer) questions if they are already publicly
+    # They can see all public (non-reviewer) talkquestions if they are already publicly
     # visible in the schedule. Otherwise, nothing.
     if user.has_perm('submission.list_question', event):
-        return event.questions.all().filter(is_public=True)
-    return event.questions.none()
+        return event.talkquestions.all().filter(is_public=True)
+    return event.talkquestions.none()
 
 
 def annotate_assigned(queryset, event, user):

@@ -15,6 +15,7 @@ from .comment import SubmissionComment
 from .devices import Device, Gate
 from .event import (
     Event,
+    EventExtraLink,
     Event_SettingsStore,
     EventLock,
     EventMetaProperty,

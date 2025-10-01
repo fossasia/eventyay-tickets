@@ -115,7 +115,7 @@ class QuestionsForm(BaseQuestionsForm):
 
 
 class AddOnRadioSelect(forms.RadioSelect):
-    option_template_name = 'eventyaypresale/forms/addon_choice_option.html'
+    option_template_name = 'pretixpresale/forms/addon_choice_option.html'
 
     def optgroups(self, name, value, attrs=None):
         attrs = attrs or {}

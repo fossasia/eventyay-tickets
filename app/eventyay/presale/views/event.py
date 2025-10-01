@@ -253,7 +253,7 @@ def get_grouped_products(
             # Restrict variations if the voucher only allows one
             product.available_variations = [v for v in product.available_variations if v.pk == voucher.variation_id]
 
-        if get_all_sales_channels()[channel].unlimited_items_per_order:
+        if get_all_sales_channels()[channel].unlimited_products_per_order:
             max_per_order = sys.maxsize
         else:
             max_per_order = product.max_per_order or int(event.settings.max_products_per_order)
@@ -416,7 +416,9 @@ def get_grouped_products(
     ):
         event.cache.set(quota_cache_key, quota_cache, 5)
     products = [
-        product for product in products if (len(product.available_variations) > 0 or not product.has_variations) and not product._remove
+        product
+        for product in products
+        if (len(product.available_variations) > 0 or not product.has_variations) and not product._remove
     ]
     return products, display_add_to_cart
 

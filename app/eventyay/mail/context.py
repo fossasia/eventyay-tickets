@@ -14,7 +14,7 @@ from eventyay.schedule.notifications import (
 )
 
 from .placeholders import SimpleFunctionalMailTextPlaceholder
-from .signals import register_mail_placeholders
+from eventyay.mail.signals import talk_register_mail_placeholders
 
 
 def get_mail_context(**kwargs):
@@ -24,7 +24,7 @@ def get_mail_context(**kwargs):
         if slot and slot.start and slot.room:
             kwargs['slot'] = kwargs['submission'].slot
     context = {}
-    for _recv, placeholders in register_mail_placeholders.send(sender=event):
+    for _recv, placeholders in talk_register_mail_placeholders.send(sender=event):
         if not isinstance(placeholders, (list, tuple)):
             placeholders = [placeholders]
         for placeholder in placeholders:
@@ -35,7 +35,7 @@ def get_mail_context(**kwargs):
 
 def get_available_placeholders(event, kwargs):
     params = {}
-    for _recv, placeholders in register_mail_placeholders.send(sender=event):
+    for _recv, placeholders in talk_register_mail_placeholders.send(sender=event):
         if not isinstance(placeholders, (list, tuple)):
             placeholders = [placeholders]
         for placeholder in placeholders:
@@ -91,7 +91,7 @@ def placeholder_aliases(identifiers, args, func, sample, explanation=None):
     return result
 
 
-@receiver(register_mail_placeholders, dispatch_uid='pretalx_register_base_placeholders')
+@receiver(talk_register_mail_placeholders, dispatch_uid='pretalx_register_base_placeholders')
 def base_placeholders(sender, **kwargs):
     with override(sender.locale):
         date_format = get_notification_date_format()
@@ -266,7 +266,7 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             'name',
             ['user'],
-            lambda user: user.name,
+            lambda user: user.fullname,
             _('Jane Doe'),
             _('The addressed user’s full name'),
         ),

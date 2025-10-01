@@ -17,7 +17,7 @@ ENV PYTHONUNBUFFERED=1
 
 # install system dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git build-essential gettext
+    apt-get install -y --no-install-recommends git build-essential gettext make npm
 
 # install python dependencies
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs
@@ -25,6 +25,17 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project --no-editable
+
+COPY Makefile Makefile
+COPY eventyay/static/npm_dir eventyay/static/npm_dir
+# Run npm stuff
+RUN mkdir eventyay/static/node_prefix/
+RUN cp -r eventyay/static/npm_dir/* eventyay/static/node_prefix/
+RUN npm install --prefix=eventyay/static/node_prefix
+# schedule editor
+COPY eventyay/frontend/schedule-editor eventyay/frontend/schedule-editor
+RUN npm ci --prefix=eventyay/frontend/schedule-editor
+RUN npm run build --prefix=eventyay/frontend/schedule-editor
 
 
 #########
@@ -48,7 +59,7 @@ RUN mkdir $APP_HOME/static
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional
+RUN apt-get update && apt-get install -y --no-install-recommends netcat-traditional nodejs
 
 # copy entrypoint.prod.sh
 COPY ./entrypoint.prod.sh .
@@ -64,6 +75,8 @@ RUN chown -R app:app $APP_HOME
 # Copy the Python environment from the builder
 # Note: The venv path in the builder must match the one in runner.
 COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
+COPY --from=builder --chown=app:app $APP_HOME/eventyay/static/node_prefix $APP_HOME/eventyay/static/node_prefix
+COPY --from=builder --chown=app:app $APP_HOME/eventyay/frontend/schedule-editor/dist $APP_HOME/eventyay/frontend/schedule-editor/dist
 
 # change to the app user
 USER app

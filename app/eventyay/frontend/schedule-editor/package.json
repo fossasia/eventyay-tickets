@@ -1,0 +1,57 @@
+{
+  "name": "@pretalx/schedule-editor",
+  "version": "0.0.0",
+  "description": "",
+  "author": "",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "lint": "npm run lint:eslint && npm run lint:stylelint",
+    "lint:eslint": "eslint . --ext .js,.vue",
+    "lint:stylelint": "stylelint \"**/*.{styl,vue}\"",
+    "i18n:extract": "npx i18next-parser 'src/**/*.vue' -c i18next-parser.config.cjs",
+    "i18n:convert2gettext": "i18next-conv -l en -s locales/en/translation.json -t locales/en/translation.po",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "analyze": "ANALYZE=true npm run build",
+    "prepublishOnly": "npm run build:lib"
+  },
+  "type": "module",
+  "main": "dist/schedule-editor.common.js",
+  "dependencies": {
+    "buntpapier": "^2.0.0-alpha.25",
+    "i18next": "^22.4.8",
+    "lodash": "^4.17.20",
+    "markdown-it": "^12.1.0",
+    "moment": "^2.27.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
+    "moment-timezone": "^0.5.31",
+    "moment-timezone-data-webpack-plugin": "^1.3.0",
+    "process": "^0.11.10",
+    "vue": "^3.3.4",
+    "vue-template-compiler": "^2.7.14"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^8.20.0",
+    "eslint-plugin-vue": "^9.2.0",
+    "eslint-plugin-vue-pug": "^0.5.4",
+    "i18next-conv": "^14.0.0",
+    "i18next-parser": "^9.0.1",
+    "pug": "^3.0.3",
+    "stylelint-config-standard": "^26.0.0",
+    "stylelint-plugin-stylus": "^0.16.1",
+    "stylus": "^0.54.7",
+    "vite": "^4.5.14",
+    "vite-bundle-visualizer": "^0.10.0"
+  },
+  "bugs": {
+    "url": "https://github.com/pretalx/schedule-editor/issues"
+  },
+  "homepage": "https://github.com/pretalx/schedule-editor#readme",
+  "license": "ISC",
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pretalx/schedule-editor.git"
+  }
+}

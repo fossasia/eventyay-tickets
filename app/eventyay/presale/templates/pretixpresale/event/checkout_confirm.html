@@ -72,7 +72,7 @@
                 </div>
             </div>
         {% endif %}
-        {% eventsignal event "pretix.presale.signals.checkout_confirm_page_content" request=request %}
+        {% eventsignal event "eventyay.presale.signals.checkout_confirm_page_content" request=request %}
         <div class="row">
             {% if invoice_address_asked %}
                 <div class="col-md-6 col-xs-12">

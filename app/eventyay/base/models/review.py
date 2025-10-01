@@ -147,8 +147,10 @@ class Review(PretalxModel):
         }
 
     def __str__(self):
-        return (f'Review(event={self.submission.event.slug}, submission={self.submission.title}, '
-                f'user={self.user.get_display_name}, score={self.score})')
+        return (
+            f'Review(event={self.submission.event.slug}, submission={self.submission.title}, '
+            f'user={self.user.get_display_name}, score={self.score})'
+        )
 
     @property
     def log_parent(self):

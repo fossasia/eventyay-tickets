@@ -1,9 +1,12 @@
+import json
 import string
 from datetime import date, datetime, time
 
 import pytz
+from django_scopes import scope
+from django.conf import settings
 from django.core.validators import MinLengthValidator, RegexValidator
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Exists, OuterRef, Q
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -13,14 +16,75 @@ from django.utils.translation import gettext_lazy as _
 
 from eventyay.base.models.base import LoggedModel
 from eventyay.base.validators import OrganizerSlugBanlistValidator
+from eventyay.common.urls import EventUrls, build_absolute_uri
 
 from ..settings import settings_hierarkey
 from . import BillingInvoice
 from .auth import User
+from .mixins import PretalxModel
+
+from eventyay.talk_rules.event import (
+    can_change_any_organizer_settings,
+    can_change_organizer_settings,
+    can_change_teams,
+    has_any_organizer_permissions,
+    is_any_organizer,
+)
+
+
+def check_access_permissions(organizer):
+    """We run this method when team permissions are changed, inside a transaction.
+
+    We need to make sure that after the change is made, there is still somebody who has
+    administrator access to every event and the organizer itself.
+    """
+    warnings = []
+    teams = organizer.teams.all().annotate(member_count=models.Count('members')).filter(member_count__gt=0)
+    if not [t for t in teams if t.can_change_teams]:
+        raise Exception(
+            _(
+                'There must be at least one team with the permission to change teams, as otherwise nobody can create new teams or grant permissions to existing teams.'
+            )
+        )
+    if not [t for t in teams if t.can_create_events]:
+        warnings.append(
+            (
+                'no_can_create_events',
+                _('Nobody on your teams has the permission to create new events.'),
+            )
+        )
+    if not [t for t in teams if t.can_change_organizer_settings]:
+        warnings.append(
+            (
+                'no_can_change_organizer_settings',
+                _('Nobody on your teams has the permission to change organizer-level settings.'),
+            )
+        )
+
+    for event in organizer.events.all():
+        event_teams = teams.filter(models.Q(limit_events=event) | models.Q(all_events=True)).distinct()
+        if not event_teams:
+            raise Exception(
+                str(
+                    _(
+                        'There must be at least one team with access to every event. Currently, nobody has access to {event_name}.'
+                    )
+                ).format(event_name=event.name)
+            )
+        if not [t for t in event_teams if t.can_change_event_settings]:
+            warnings.append(
+                (
+                    'no_can_change_event_settings',
+                    str(
+                        _('Nobody on your teams has the permissions to change settings for the event {event_name}')
+                    ).format(event_name=event.name),
+                )
+            )
+    return warnings
 
 
 @settings_hierarkey.add(cache_namespace='organizer')
-class Organizer(LoggedModel):
+class Organizer(LoggedModel, PretalxModel):
     """
     This model represents an entity organizing events, e.g. a company, institution,
     charity, person, …
@@ -55,13 +119,56 @@ class Organizer(LoggedModel):
         unique=True,
     )
 
+    objects = models.Manager()
+
     class Meta:
         verbose_name = _('Organizer')
         verbose_name_plural = _('Organizers')
         ordering = ('name',)
+        rules_permissions = {
+            'view': has_any_organizer_permissions,
+            'update': can_change_organizer_settings,
+            'list': can_change_any_organizer_settings,
+            'view_any': is_any_organizer,
+        }
 
     def __str__(self) -> str:
         return self.name
+
+    class orga_urls(EventUrls):
+        base_path = settings.BASE_PATH
+        base = '{base_path}/orga/organizer/{self.slug}/'
+        settings = '{base_path}/orga/organizer/{self.slug}/settings/'
+        delete = '{settings}delete'
+        teams = '{base}teams/'
+        new_team = '{teams}new'
+        user_search = '{base}api/users'
+
+    @transaction.atomic
+    def shred(self, person=None):
+        """Irrevocably deletes the organizer and all related events and their
+        data."""
+        from eventyay.base.models import LogEntry
+
+        LogEntry.objects.create(
+            user=person,
+            action_type='eventyay.organizer.delete',
+            content_object=self,
+            is_orga_action=True,
+            data=json.dumps(
+                {
+                    'slug': self.slug,
+                    'name': str(self.name),
+                }
+            ),
+        )
+        for event in self.events.all():
+            with scope(event=event):
+                event.shred(person=person)
+        # We keep our logged actions, even with the now-broken content type
+        self.delete()
+
+    shred.alters_data = True
 
     def save(self, *args, **kwargs):
         obj = super().save(*args, **kwargs)
@@ -169,7 +276,19 @@ def generate_api_token():
     return get_random_string(length=64, allowed_chars=string.ascii_lowercase + string.digits)
 
 
-class Team(LoggedModel):
+TEAM_PERMISSIONS = {
+    'list': can_change_teams,
+    'view': can_change_teams,
+    'create': can_change_teams,
+    'update': can_change_teams,
+    'delete': can_change_teams,
+    'invite': can_change_teams,
+    'delete_invite': can_change_teams,
+    'remove_member': can_change_teams,
+}
+
+
+class Team(LoggedModel, PretalxModel):
     """
     A team is a collection of people given certain access rights to one or more events of an organizer.
 
@@ -243,6 +362,8 @@ class Team(LoggedModel):
     can_view_vouchers = models.BooleanField(default=False, verbose_name=_('Can view vouchers'))
     can_change_vouchers = models.BooleanField(default=False, verbose_name=_('Can change vouchers'))
 
+    objects = models.Manager()
+
     def __str__(self) -> str:
         return _('%(name)s on %(object)s') % {
             'name': str(self.name),
@@ -276,6 +397,35 @@ class Team(LoggedModel):
     class Meta:
         verbose_name = _('Team')
         verbose_name_plural = _('Teams')
+        rules_permissions = TEAM_PERMISSIONS
+
+    # From Talk
+    limit_tracks = models.ManyToManyField(to='Track', verbose_name=_('Limit to tracks'), blank=True)
+    can_change_submissions = models.BooleanField(default=False, verbose_name=_('Can work with and change proposals'))
+    is_reviewer = models.BooleanField(default=False, verbose_name=_('Is a reviewer'))
+    force_hide_speaker_names = models.BooleanField(
+        verbose_name=_('Always hide speaker names'),
+        help_text=_(
+            'Normally, anonymisation is configured in the event review settings. '
+            'This setting will <strong>override the event settings</strong> and always hide speaker names for this team.'
+        ),
+        default=False,
+    )
+
+    @cached_property
+    def permission_set_display(self) -> set:
+        """The same as :meth:`permission_set`, but with human-readable names."""
+        return {getattr(self._meta.get_field(attr), 'verbose_name', None) or attr for attr in self.permission_set}
+
+    @cached_property
+    def events(self):
+        if self.all_events:
+            return self.organizer.events.all()
+        return self.limit_events.all()
+    
+    class orga_urls(EventUrls):
+        base = "{self.organizer.orga_urls.teams}{self.pk}/"
+        delete = "{base}delete/"
 
 
 class TeamInvite(models.Model):
@@ -297,6 +447,45 @@ class TeamInvite(models.Model):
 
     def __str__(self) -> str:
         return _("Invite to team '{team}' for '{email}'").format(team=str(self.team), email=self.email)
+    
+    @cached_property
+    def organizer(self):
+        return self.team.organizer
+
+    @cached_property
+    def invitation_url(self):
+        return build_absolute_uri("orga:invitation.view", kwargs={"code": self.token})
+
+    def send(self):
+        from django.utils.translation import get_language
+        from eventyay.base.models.mail import QueuedMail
+
+        invitation_link = self.invitation_url
+        invitation_text = _(
+            """Hi!
+You have been invited to the {name} event organizer team - Please click here to accept:
+
+{invitation_link}
+
+See you there,
+The {organizer} team"""
+        ).format(
+            name=str(self.team.name),
+            invitation_link=invitation_link,
+            organizer=str(self.team.organizer.name),
+        )
+        invitation_subject = _("You have been invited to an organizer team")
+
+        mail = QueuedMail.objects.create(
+            to=self.email,
+            subject=str(invitation_subject),
+            text=str(invitation_text),
+            locale=get_language(),
+        )
+        mail.send()
+        return mail
+
+    send.alters_data = True
 
 
 class TeamAPIToken(models.Model):

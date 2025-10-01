@@ -1,11 +1,15 @@
 import binascii
+from contextlib import suppress
+from hashlib import md5
 import json
 import os
 import uuid
 import logging
 from datetime import timedelta
+from pathlib import Path
 from typing import TYPE_CHECKING
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urljoin
+import uuid
 
 from channels.db import database_sync_to_async
 from django.conf import settings
@@ -22,20 +26,52 @@ from django.db.models import Q, JSONField
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.crypto import get_random_string, salted_hmac
+from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, override
 from django_otp.models import Device
 from django_scopes import scopes_disabled
+from rest_framework.authtoken.models import Token
+from rules.contrib.models import RulesModelBase, RulesModelMixin
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from eventyay.base.i18n import language
 from eventyay.base.models.cache import VersionedModel
+from eventyay.common.image import create_thumbnail
+from eventyay.common.text.path import path_with_hash
+from eventyay.common.urls import EventUrls
 from eventyay.helpers.urls import build_absolute_uri
+from eventyay.talk_rules.person import is_administrator
 
 from ...helpers.u2f import pub_key_from_der, websafe_decode
 from .base import LoggingMixin
+from .mixins import FileCleanupMixin, GenerateCode
+# from eventyay.person.signals import delete_user as delete_user_signal
 
 logger = logging.getLogger(__name__)
+
+
+def avatar_path(instance, filename):
+    if instance.code:
+        extension = Path(filename).suffix
+        filename = f'{instance.code}{extension}'
+    return path_with_hash(filename, base_path='avatars')
+
+
+class UserQuerySet(models.QuerySet):
+    def with_profiles(self, event):
+        from django.db.models import Prefetch
+
+        from eventyay.base.models.profile import SpeakerProfile
+
+        return self.prefetch_related(
+            Prefetch(
+                'profiles',
+                queryset=SpeakerProfile.objects.filter(event=event).select_related('event'),
+                to_attr='_event_profiles',
+            ),
+        ).distinct()
+
 
 class UserManager(BaseUserManager):
     """
@@ -55,6 +91,7 @@ class UserManager(BaseUserManager):
             raise Exception('You must provide a password')
         user = self.model(email=email)
         user.is_staff = True
+        user.is_administrator = True
         user.is_superuser = True
         user.set_password(password)
         user.save()
@@ -77,8 +114,16 @@ class SuperuserPermissionSet:
         return True
 
 
-
-class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
+class User(
+    PermissionsMixin,
+    LoggingMixin,
+    RulesModelMixin,
+    GenerateCode,
+    FileCleanupMixin,
+    AbstractBaseUser,
+    metaclass=RulesModelBase,
+    VersionedModel,
+):
     """
     This is the unified user model used by eventyay for both authentication and video/event functionality.
 
@@ -110,6 +155,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         ANONYMOUS = "anon"
 
     USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     # Original ticketing fields
@@ -134,7 +180,6 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     notifications_token = models.CharField(max_length=255, default=generate_notifications_token)
     auth_backend = models.CharField(max_length=255, default='native')
     session_token = models.CharField(max_length=32, default=generate_session_token)
-
 
     # Video/Event fields
     client_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
@@ -169,6 +214,49 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
     _grant_cache = None
     _membership_cache = None
     _block_cache = {}
+
+    # From Talk
+    code = models.CharField(max_length=16, unique=True, null=True)
+    nick = models.CharField(max_length=60, null=True, blank=True)
+    is_administrator = models.BooleanField(
+        default=False,
+        help_text='Should only be ``True`` for people with administrative access to the server eventyay runs on.',
+    )
+    avatar = models.ImageField(
+        null=True,
+        blank=True,
+        verbose_name=_('Profile picture'),
+        help_text=_(
+            'We recommend uploading an image at least 400px wide. '
+            'A square image works best, as we display it in a circle in several places.'
+        ),
+        upload_to=avatar_path,
+    )
+    avatar_thumbnail = models.ImageField(null=True, blank=True, upload_to='avatars/')
+    avatar_thumbnail_tiny = models.ImageField(null=True, blank=True, upload_to='avatars/')
+    get_gravatar = models.BooleanField(
+        default=False,
+        verbose_name=_('Retrieve profile picture via gravatar'),
+        help_text=_(
+            'If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.'
+        ),
+    )
+    avatar_source = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('Profile Picture Source'),
+        help_text=_('Please enter the name of the author or source of image and a link if applicable.'),
+    )
+    avatar_license = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name=_('Profile Picture License'),
+        help_text=_('Please enter the name of the license of the photo and link to it if applicable.'),
+    )
+    pw_reset_token = models.CharField(null=True, max_length=160, verbose_name='Password reset token')
+    pw_reset_time = models.DateTimeField(null=True, verbose_name='Password reset time')
+
+    # ====
     if TYPE_CHECKING:
         from django.db.models import QuerySet
 
@@ -176,11 +264,14 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
 
         notification_settings: QuerySet[NotificationSetting]
 
-    objects: UserManager = UserManager()
+    objects = UserManager().from_queryset(UserQuerySet)()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._teamcache = {}
+        self.permission_cache = {}
+        self.event_profile_cache = {}
+        self.event_permission_cache = {}
 
         self._grant_cache = None
         self._membership_cache = None
@@ -191,11 +282,20 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         verbose_name = _('User')
         verbose_name_plural = _('Users')
         ordering = ('email',)
+        rules_permissions = {
+            'administrator': is_administrator,
+        }
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         is_new = not self.pk
+        # Check if we need to get the profile picture from gravatar
+        update_gravatar = not kwargs.get('update_fields') or 'get_gravatar' in kwargs['update_fields']
         super().save(*args, **kwargs)
+        if self.get_gravatar and update_gravatar:
+            from eventyay.person.tasks import gravatar_cache
+
+            gravatar_cache.apply_async(args=(self.pk,), ignore_result=True)
         if is_new:
             self.notification_settings.create(
                 action_type='eventyay.event.order.refund.requested',
@@ -272,10 +372,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin, VersionedModel):
         }
         action_url = request.build_absolute_uri(f'{base_action_url}?{urlencode(params)}')
         logger.info('Action URL for %s to reset password: %s', self.email, action_url)
-        context = {
-            'user': self,
-            'url': action_url
-        }
+        context = {'user': self, 'url': action_url}
         mail(
             self.email,
             subject,
@@ -689,6 +786,304 @@ class ShortToken(models.Model):
     )
     long_token = models.TextField()
 
+    # From talk
+    def get_display_name(self) -> str:
+        """Returns a user's name or 'Unnamed user'."""
+        return str(self.fullname) if self.fullname else str(self)
+
+    def has_perm(self, perm, obj, *args, **kwargs):
+        cached_result = None
+        with suppress(TypeError):
+            cached_result = self.permission_cache.get((perm, obj))
+        if cached_result is not None:
+            return cached_result
+        result = super().has_perm(perm, obj, *args, **kwargs)
+        self.permission_cache[(perm, obj)] = result
+        return result
+
+    def event_profile(self, event):
+        """Retrieve (and/or create) the event.
+
+        :class:`~eventyay.base.models.profile.SpeakerProfile` for this user.
+
+        :type event: :class:`eventyay.base.models.event.Event`
+        :retval: :class:`eventyay.base.models.profile.EventProfile`
+        """
+        if profile := self.event_profile_cache.get(event.pk):
+            return profile
+
+        if hasattr(self, '_event_profiles') and len(self._event_profiles) == 1:
+            profile = self._event_profiles[0]
+            if profile.event_id == event.pk:
+                self.event_profile_cache[event.pk] = profile
+                return profile
+
+        try:
+            profile = self.profiles.select_related('event').get(event=event)
+        except Exception:
+            from eventyay.base.models.profile import SpeakerProfile
+
+            profile = SpeakerProfile(event=event, user=self)
+            if self.pk:
+                profile.save()
+
+        self.event_profile_cache[event.pk] = profile
+        return profile
+
+    def get_locale_for_event(self, event):
+        if self.locale in event.locales:
+            return self.locale
+        return event.locale
+    
+    def log_action(
+        self, action: str, data: dict = None, user=None, person=None, orga: bool = False
+    ):
+        """Create a log entry for this user.
+
+        :param action: The log action that took place.
+        :param data: Addition data to be saved.
+        :param person: The person modifying this user. Defaults to this user.
+        :type person: :class:`~pretalx.person.models.user.User`
+        :param orga: Was this action initiated by a privileged user?
+        """
+        from eventyay.base.models.log import LogEntry
+
+        if data:
+            data = json.dumps(data)
+
+        LogEntry.objects.create(
+            user=user or person or self,
+            content_object=self,
+            action_type=action,
+            data=data,
+            is_orga_action=orga,
+        )
+    
+    def logged_actions(self):
+        """Returns all log entries that were made about this user."""
+        from eventyay.base.models.log import LogEntry
+
+        return LogEntry.objects.filter(
+            content_type=ContentType.objects.get_for_model(type(self)),
+            object_id=self.pk,
+        )
+    
+    def own_actions(self):
+        """Returns all log entries that were made by this user."""
+        from eventyay.base.models.log import LogEntry
+
+        return LogEntry.objects.filter(user=self)
+    
+    def get_password_reset_url(self, event=None, orga=False):
+        if event:
+            path = "orga:event.auth.recover" if orga else "cfp:event.recover"
+            url = build_absolute_uri(
+                path,
+                kwargs={"token": self.pw_reset_token, "event": event.slug},
+            )
+        else:
+            url = build_absolute_uri(
+                "orga:auth.recover", kwargs={"token": self.pw_reset_token}
+            )
+        return url
+    
+    @transaction.atomic
+    def reset_password(self, event, user=None, mail_text=None, orga=False):
+        from eventyay.base.models.mail import QueuedMail
+
+        self.pw_reset_token = get_random_string(32)
+        self.pw_reset_time = now()
+        self.save()
+
+        context = {
+            "name": self.fullname or "",
+            "url": self.get_password_reset_url(event=event, orga=orga),
+        }
+        if not mail_text:
+            mail_text = _(
+                """Hi {name},
+
+you have requested a new password for your eventyay account.
+To reset your password, click on the following link:
+
+  {url}
+
+If this wasn’t you, you can just ignore this email.
+
+All the best,
+the eventyay robot"""
+            )
+
+        with override(self.locale):
+            QueuedMail(
+                subject=_("Password recovery"),
+                text=str(mail_text).format(**context),
+                locale=self.locale,
+                to=self.email,
+            ).send()
+        self.log_action(
+            action="eventyay.user.password.reset", user=user
+        )
+
+    reset_password.alters_data = True
+
+    class orga_urls(EventUrls):
+        admin = "/orga/admin/users/{self.code}/"
+
+    @transaction.atomic
+    def change_password(self, new_password):
+        from eventyay.base.models.mail import QueuedMail
+
+        self.set_password(new_password)
+        self.pw_reset_token = None
+        self.pw_reset_time = None
+        self.save()
+
+        context = {
+            "name": self.name or "",
+        }
+        mail_text = _(
+            """Hi {name},
+
+Your eventyay account password was just changed.
+
+If you did not change your password, please contact the site administration immediately.
+
+All the best,
+the eventyay team"""
+        )
+
+        with override(self.locale):
+            QueuedMail(
+                subject=_("[eventyay] Password changed"),
+                text=str(mail_text).format(**context),
+                locale=self.locale,
+                to=self.email,
+            ).send()
+
+        self.log_action(action="eventyay.user.password.changed", user=self)
+
+    change_password.alters_data = True
+
+    # @transaction.atomic
+    # def deactivate(self):
+    #     """Delete the user by unsetting all of their information."""
+    #     import random
+    #     from eventyay.base.models import Answer
+
+    #     self.email = f"deleted_user_{random.randint(0, 999)}@localhost"
+    #     while self.__class__.objects.filter(
+    #         email__iexact=self.email
+    #     ).exists():  # pragma: no cover
+    #         self.email = f"deleted_user_{random.randint(0, 99999)}"
+    #     self.name = "Deleted User"
+    #     self.is_active = False
+    #     self.is_superuser = False
+    #     self.is_administrator = False
+    #     self.locale = "en"
+    #     self.timezone = "UTC"
+    #     self.pw_reset_token = None
+    #     self.pw_reset_time = None
+    #     self.set_unusable_password()
+    #     self._delete_files()
+    #     self.save()
+    #     self.profiles.all().update(biography="")
+    #     for answer in Answer.objects.filter(
+    #         person=self, question__contains_personal_data=True
+    #     ):
+    #         answer.delete()  # Iterate to delete answer files, too
+    #     for team in self.teams.all():
+    #         team.members.remove(self)
+    #     delete_user_signal.send(None, user=self, db_delete=True)
+
+    # deactivate.alters_data = True
+
+    # @transaction.atomic
+    # def shred(self):
+    #     """Actually remove the user account."""
+    #     from eventyay.base.models import Submission
+
+    #     with scopes_disabled():
+    #         if (
+    #             Submission.all_objects.filter(speakers__in=[self]).count()
+    #             or self.teams.count()
+    #             or self.answers.count()
+    #         ):
+    #             raise Exception(
+    #                 f"Cannot delete user <{self.email}> because they have submissions, answers, or teams. Please deactivate this user instead."
+    #             )
+    #         self.logged_actions().delete()
+    #         self.own_actions().update(person=None)
+    #         self._delete_files()
+    #         delete_user_signal.send(None, user=self, db_delete=True)
+    #         self.delete()
+
+    # shred.alters_data = True
+
+    @cached_property
+    def guid(self) -> str:
+        return str(uuid.uuid5(uuid.NAMESPACE_URL, f'acct:{self.email.strip()}'))
+
+    @cached_property
+    def gravatar_parameter(self) -> str:
+        return md5(self.email.strip().encode()).hexdigest()
+
+    @cached_property
+    def has_avatar(self) -> bool:
+        return bool(self.avatar) and self.avatar != 'False'
+
+    @cached_property
+    def avatar_url(self) -> str:
+        if self.has_avatar:
+            return self.avatar.url
+
+    def get_avatar_url(self, event=None, thumbnail=None):
+        """Returns the full avatar URL, where user.avatar_url returns the
+        absolute URL."""
+        if not self.avatar_url:
+            return ''
+        if not thumbnail:
+            image = self.avatar
+        else:
+            image = self.avatar_thumbnail_tiny if thumbnail == 'tiny' else self.avatar_thumbnail
+            if not image:
+                image = create_thumbnail(self.avatar, thumbnail)
+        if not image:
+            return
+        if event and event.custom_domain:
+            return urljoin(event.custom_domain, image.url)
+        return urljoin(settings.SITE_URL, image.url)
+
+    def regenerate_token(self) -> Token:
+        """Generates a new API access token, deleting the old one."""
+        self.log_action(action='eventyay.user.token.reset')
+        Token.objects.filter(user=self).delete()
+        return Token.objects.create(user=self)
+
+    regenerate_token.alters_data = True
+
+    def get_permissions_for_event(self, event) -> set:
+        """Returns a set of all permission a user has for the given event.
+
+        :type event: :class:`~eventyay.base.models.event.Event`
+        """
+        if permissions := self.event_permission_cache.get(event.pk):
+            return permissions
+        if self.is_administrator:
+            return {
+                'can_create_events',
+                'can_change_teams',
+                'can_change_organiser_settings',
+                'can_change_event_settings',
+                'can_change_submissions',
+                'is_reviewer',
+            }
+        permissions = set()
+        teams = event.teams.filter(members__in=[self])
+        if teams:
+            permissions = set().union(*[team.permission_set() for team in teams])
+        self.event_permission_cache[event.pk] = permissions
+        return permissions
 
 # Staff session models (from ticketing)
 class StaffSession(models.Model):

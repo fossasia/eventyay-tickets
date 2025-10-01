@@ -274,6 +274,11 @@ class EventCreateView(SafeSessionWizardView):
                     send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
                 event.settings.set('create_for', create_for)
 
+                event.log_action(
+                        action='eventyay.event.added',
+                        user=self.request.user,
+                    )
+
         # The user automatically creates a world when selecting the add video option in the create ticket form.
         event_data = dict(
             id=basics_data.get('slug'),

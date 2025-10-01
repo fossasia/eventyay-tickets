@@ -92,10 +92,16 @@ class PermissionMiddleware:
             return self.get_response(request)
 
         if hasattr(request, 'organizer'):
-            # If the user is on a organizer's subdomain, he should be redirected to eventyay
-            new_url = urljoin(settings.SITE_URL, request.get_full_path())
-            logger.info('Organizer info is seen, redirecting to: %s', new_url)
-            return redirect(new_url)
+            if not settings.DEBUG:
+                new_url = urljoin(settings.SITE_URL, request.get_full_path())
+                if new_url != request.build_absolute_uri():
+                    logger.info('Organizer info is seen, redirecting to: %s', new_url)
+                    return redirect(new_url)
+            else:
+                logger.debug(
+                    "Organizer info detected, but skipping redirect in DEBUG for host=%s",
+                    request.get_host(),
+                )
 
         # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
         # TODO: Instead of hardcoding URL, we should check the `request.resolver_match`.
@@ -115,7 +121,7 @@ class PermissionMiddleware:
             return self._login_redirect(request)
         except SessionReauthRequired:
             if url_name not in ('user.reauth', 'auth.logout'):
-                return redirect(reverse('eventyay_common:user.reauth') + '?next=' + quote(request.get_full_path()))
+                return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
 
         if not request.user.require_2fa and settings.EVENTYAY_OBLIGATORY_2FA and url_name not in self.EXCEPTIONS_2FA:
             page_2fa_setting_url = reverse('eventyay_common:account.2fa')

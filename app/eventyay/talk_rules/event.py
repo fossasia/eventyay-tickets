@@ -43,15 +43,15 @@ def can_change_teams(user, obj):
         return True
     if event := getattr(obj, 'event', None):
         return check_team_permission(user, event, 'can_change_teams')
-    return user.teams.filter(organiser=obj.organiser, can_change_teams=True).exists()
+    return user.teams.filter(organizer=obj.organizer, can_change_teams=True).exists()
 
 
 @rules.predicate
-def can_change_organiser_settings(user, obj):
+def can_change_organizer_settings(user, obj):
     event = getattr(obj, 'event', None)
     if event:
-        obj = event.organiser
-    return user.is_administrator or user.teams.filter(organiser=obj, can_change_organiser_settings=True).exists()
+        obj = event.organizer
+    return user.is_administrator or user.teams.filter(organizer=obj, can_change_organizer_settings=True).exists()
 
 
 @rules.predicate
@@ -60,14 +60,14 @@ def has_any_permission(user, obj):
 
 
 @rules.predicate
-def has_any_organiser_permissions(user, obj):
-    organiser = getattr(obj, 'organiser', None) or obj
-    return user.is_administrator or user.teams.filter(organiser=organiser).exists()
+def has_any_organizer_permissions(user, obj):
+    organizer = getattr(obj, 'organizer', None) or obj
+    return user.is_administrator or user.teams.filter(organizer=organizer).exists()
 
 
 @rules.predicate
-def can_change_any_organiser_settings(user, obj):
-    return user.is_administrator or user.teams.filter(can_change_organiser_settings=True).exists()
+def can_change_any_organizer_settings(user, obj):
+    return user.is_administrator or user.teams.filter(can_change_organizer_settings=True).exists()
 
 
 @rules.predicate
@@ -76,6 +76,6 @@ def can_create_events(user, obj):
 
 
 @rules.predicate
-def is_any_organiser(user, obj):
+def is_any_organizer(user, obj):
     return user.is_administrator or user.teams.all().exists()
 

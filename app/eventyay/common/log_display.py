@@ -12,6 +12,7 @@ from eventyay.base.models import (
     CfP,
     Event,
     MailTemplate,
+    LogEntry,
     QueuedMail,
     Review,
     SpeakerProfile,
@@ -133,7 +134,7 @@ LOG_NAMES = {
 
 
 @receiver(activitylog_display)
-def default_activitylog_display(sender: Event, activitylog: ActivityLog, **kwargs):
+def default_activitylog_display(sender: Event, activitylog: LogEntry, **kwargs):
     if templated_entry := TEMPLATE_LOG_NAMES.get(activitylog.action_type):
         message = str(templated_entry)
         # Check if all placeholders are present in activitylog.data
@@ -155,7 +156,7 @@ def _submission_label_text(submission: Submission) -> str:
 
 
 @receiver(activitylog_object_link)
-def default_activitylog_object_link(sender: Event, activitylog: ActivityLog, **kwargs):
+def default_activitylog_object_link(sender: Event, activitylog: LogEntry, **kwargs):
     if not activitylog.content_object:
         return
     url = ''

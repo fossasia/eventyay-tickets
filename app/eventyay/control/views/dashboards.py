@@ -193,7 +193,9 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
                 variation = vars.get(wlt['variation'])
                 if not product:
                     continue
-                quotas = variation._get_quotas(subevent=subevent) if variation else product._get_quotas(subevent=subevent)
+                quotas = (
+                    variation._get_quotas(subevent=subevent) if variation else product._get_quotas(subevent=subevent)
+                )
                 row = (
                     variation.check_quotas(subevent=subevent, count_waitinglist=False, _cache=quota_cache)
                     if variation

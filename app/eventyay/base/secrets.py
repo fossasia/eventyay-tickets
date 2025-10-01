@@ -58,7 +58,7 @@ class BaseTicketSecretGenerator:
 
     def generate_secret(
         self,
-        item: Product,
+        product: Product,
         variation: ProductVariation = None,
         subevent: SubEvent = None,
         attendee_name: str = None,
@@ -66,7 +66,7 @@ class BaseTicketSecretGenerator:
         force_invalidate=False,
     ) -> str:
         """
-        Generate a new secret for a ticket with product ``item``, variation ``variation``, subevent ``subevent``,
+        Generate a new secret for a ticket with product ``product``, variation ``variation``, subevent ``subevent``,
         attendee name ``attendee_name`` (can be ``None``) and the current secret ``current_secret`` (if any).
 
         The result must be a string that should only contain the characters ``A-Za-z0-9+/=``.
@@ -76,15 +76,15 @@ class BaseTicketSecretGenerator:
         If ``force_invalidate`` is set to ``True``, the method MUST return a different secret than ``current_secret``,
         such that ``current_secret`` can get revoked.
 
-        If ``force_invalidate`` is set to ``False`` and ``item``, ``variation`` and ``subevent`` have the same value
+        If ``force_invalidate`` is set to ``False`` and ``product``, ``variation`` and ``subevent`` have the same value
         as when ``current_secret`` was generated, then this method MUST return ``current_secret`` unchanged.
 
-        If ``force_invalidate`` is set to ``False`` and ``item``, ``variation`` and ``subevent`` have a different value
+        If ``force_invalidate`` is set to ``False`` and ``product``, ``variation`` and ``subevent`` have a different value
         as when ``current_secret`` was generated, then this method MAY OR MAY NOT return ``current_secret`` unchanged,
         depending on the semantics of the method.
 
         .. note:: While it is guaranteed that ``generate_secret`` and the revocation list process are called every
-                  time the ``item``, ``variation``, or ``subevent`` parameters change, it is currently **NOT**
+                  time the ``product``, ``variation``, or ``subevent`` parameters change, it is currently **NOT**
                   guaranteed that this process is triggered if the ``attendee_name`` parameter changes. You should
                   therefore not rely on this value for more than informational or debugging purposes.
         """
@@ -98,7 +98,7 @@ class RandomTicketSecretGenerator(BaseTicketSecretGenerator):
 
     def generate_secret(
         self,
-        item: Product,
+        product: Product,
         variation: ProductVariation = None,
         subevent: SubEvent = None,
         attendee_name: str = None,
@@ -181,7 +181,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
 
     def generate_secret(
         self,
-        item: Product,
+        product: Product,
         variation: ProductVariation = None,
         subevent: SubEvent = None,
         current_secret: str = None,
@@ -191,7 +191,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
             ticket = self._parse(current_secret)
             if ticket:
                 unchanged = (
-                    ticket.item == item.pk
+                    ticket.product == product.pk
                     and ticket.variation == (variation.pk if variation else 0)
                     and ticket.subevent == (subevent.pk if subevent else 0)
                 )
@@ -200,7 +200,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
 
         t = pretix_sig1_pb2.Ticket()
         t.seed = get_random_string(9)
-        t.item = item.pk
+        t.product = product.pk
         t.variation = variation.pk if variation else 0
         t.subevent = subevent.pk if subevent else 0
         payload = t.SerializeToString()
@@ -228,7 +228,7 @@ def assign_ticket_secret(
     if 'attendee_name' in inspect.signature(gen.generate_secret).parameters:
         kwargs['attendee_name'] = position.attendee_name
     secret = gen.generate_secret(
-        item=position.item,
+        product=position.product,
         variation=position.variation,
         subevent=position.subevent,
         current_secret=position.secret,

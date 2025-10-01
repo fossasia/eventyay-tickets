@@ -43,7 +43,7 @@ class RecentAuthenticationRequiredMixin:
     max_time = 3600
 
     def dispatch(self, request, *args, **kwargs):
-        tdelta = time.time() - request.session.get('pretix_auth_login_time', 0)
+        tdelta = time.time() - request.session.get('eventyay_auth_login_time', 0)
         if tdelta > self.max_time:
             return redirect(reverse('control:user.reauth') + '?next=' + quote(request.get_full_path()))
         return super().dispatch(request, *args, **kwargs)
@@ -110,8 +110,8 @@ class ReauthView(TemplateView):
 
         if valid:
             t = int(time.time())
-            request.session['pretix_auth_login_time'] = t
-            request.session['pretix_auth_last_used'] = t
+            request.session['eventyay_auth_login_time'] = t
+            request.session['eventyay_auth_last_used'] = t
             next_url = get_auth_backends()[request.user.auth_backend].get_next_url(request)
             if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
                 return redirect(next_url)
@@ -126,7 +126,7 @@ class ReauthView(TemplateView):
         if u and u == request.user:
             next_url = backend.get_next_url(request)
             t = int(time.time())
-            request.session['pretix_auth_login_time'] = t
+            request.session['eventyay_auth_login_time'] = t
             request.session['pretix_auth_last_used'] = t
             if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
                 return redirect(next_url)
