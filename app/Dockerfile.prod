@@ -32,6 +32,11 @@ COPY eventyay/static/npm_dir eventyay/static/npm_dir
 RUN mkdir eventyay/static/node_prefix/
 RUN cp -r eventyay/static/npm_dir/* eventyay/static/node_prefix/
 RUN npm install --prefix=eventyay/static/node_prefix
+# schedule editor
+COPY eventyay/frontend/schedule-editor eventyay/frontend/schedule-editor
+RUN npm ci --prefix=eventyay/frontend/schedule-editor
+RUN npm run build --prefix=eventyay/frontend/schedule-editor
+
 
 #########
 # FINAL #
@@ -71,6 +76,7 @@ RUN chown -R app:app $APP_HOME
 # Note: The venv path in the builder must match the one in runner.
 COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
 COPY --from=builder --chown=app:app $APP_HOME/eventyay/static/node_prefix $APP_HOME/eventyay/static/node_prefix
+COPY --from=builder --chown=app:app $APP_HOME/eventyay/frontend/schedule-editor/dist $APP_HOME/eventyay/frontend/schedule-editor/dist
 
 # change to the app user
 USER app
