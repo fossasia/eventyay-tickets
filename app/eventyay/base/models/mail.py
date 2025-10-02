@@ -233,7 +233,7 @@ class MailTemplate(PretalxModel):
                 'url',
                 ['event', 'user'],
                 None,
-                'https://pretalx.example.com/democon/me/submissions/',
+                'https://eventyay.example.com/democon/me/submissions/',
                 is_visible=False,
             )
             kwargs = ['event', 'user']
@@ -242,14 +242,14 @@ class MailTemplate(PretalxModel):
                 'invitation_link',
                 ['event', 'user'],
                 None,
-                'https://pretalx.example.com/democon/invitation/123abc/',
+                'https://eventyay.example.com/democon/invitation/123abc/',
             )
         elif self.role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
             placeholders['orga_url'] = SimpleFunctionalMailTextPlaceholder(
                 'orga_url',
                 ['event', 'submission'],
                 None,
-                'https://pretalx.example.com/orga/events/democon/submissions/124ABCD/',
+                'https://eventyay.example.com/orga/events/democon/submissions/124ABCD/',
             )
 
         kwargs = ['event', 'user', 'submission', 'slot']

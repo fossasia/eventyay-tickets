@@ -227,6 +227,10 @@ class User(
             'administrator': is_administrator,
         }
 
+    @property
+    def name(self):
+        return self.fullname
+
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         is_new = not self.pk
