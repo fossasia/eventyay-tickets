@@ -150,7 +150,8 @@ class EventIndexView(TemplateView):
                 ContentType.objects.get_for_model(Order),
             ]
 
-            if permissions['can_change_products']:
+            # TODO: We should define known permissions in form of constants/enums.
+            if permissions.get('can_change_products'):
                 allowed_types += [
                     ContentType.objects.get_for_model(Product),
                     ContentType.objects.get_for_model(ProductCategory),

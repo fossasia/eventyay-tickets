@@ -1,12 +1,10 @@
 import json
 from contextlib import suppress
 
-from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, models
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django_scopes import ScopedManager, scopes_disabled
-from i18nfield.utils import I18nJSONEncoder
 from rules.contrib.models import RulesModelBase, RulesModelMixin
 
 from eventyay.helpers.json import CustomJSONEncoder
@@ -26,7 +24,18 @@ class LogMixin:
     log_prefix = None
     log_parent = None
 
-    def log_action(self, action, data=None, user=None, api_token=None, auth=None, person=None, orga=False, content_object=None, save=True):
+    def log_action(
+        self,
+        action,
+        data=None,
+        user=None,
+        api_token=None,
+        auth=None,
+        person=None,
+        orga=False,
+        content_object=None,
+        save=True,
+    ):
         """
         Create a LogEntry (instead of ActivityLog), similar to LoggingMixin.
         """
@@ -39,13 +48,14 @@ class LogMixin:
             else:
                 return
 
-        from .log import LogEntry
-        from .event import Event
-        from .devices import Device
-        from .organizer import TeamAPIToken
         from eventyay.api.models import OAuthAccessToken, OAuthApplication
-        from ..services.notifications import notify
         from eventyay.api.webhooks import notify_webhooks
+
+        from ..services.notifications import notify
+        from .devices import Device
+        from .event import Event
+        from .log import LogEntry
+        from .organizer import TeamAPIToken
 
         # Resolve event
         event = None
@@ -55,7 +65,7 @@ class LogMixin:
             event = self.event
 
         # Ensure user is authenticated
-        if user and not getattr(user, "is_authenticated", True):
+        if user and not getattr(user, 'is_authenticated', True):
             user = None
 
         # Auth / token mapping
@@ -89,7 +99,7 @@ class LogMixin:
             event=event,
             data=data,
             is_orga_action=orga,
-            **kwargs
+            **kwargs,
         )
 
         if save:
@@ -103,8 +113,9 @@ class LogMixin:
 
     def logged_actions(self):
         """Return all logs for this object."""
-        from .log import LogEntry
         from django.contrib.contenttypes.models import ContentType
+
+        from .log import LogEntry
 
         return (
             LogEntry.objects.filter(

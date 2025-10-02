@@ -1,13 +1,12 @@
 import binascii
-from contextlib import suppress
-from hashlib import md5
 import json
 import logging
-from datetime import timedelta
-from pathlib import Path
-from typing import TYPE_CHECKING
-from urllib.parse import urlencode, urljoin
 import uuid
+from datetime import timedelta
+from hashlib import md5
+from pathlib import Path
+from typing import TYPE_CHECKING, Self
+from urllib.parse import urlencode, urljoin
 
 from django.conf import settings
 from django.contrib.auth.models import (
@@ -24,7 +23,8 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string, salted_hmac
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _, override
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import override
 from django_otp.models import Device
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
@@ -41,6 +41,7 @@ from eventyay.talk_rules.person import is_administrator
 from ...helpers.u2f import pub_key_from_der, websafe_decode
 from .base import LoggingMixin
 from .mixins import FileCleanupMixin, GenerateCode
+
 # from eventyay.person.signals import delete_user as delete_user_signal
 
 logger = logging.getLogger(__name__)
@@ -183,7 +184,8 @@ class User(
         default=False,
         verbose_name=_('Retrieve profile picture via gravatar'),
         help_text=_(
-            'If you have registered with an email address that has a gravatar account, we can retrieve your profile picture from there.'
+            'If you have registered with an email address that has a gravatar account, '
+            'we can retrieve your profile picture from there.'
         ),
     )
     avatar_source = models.TextField(
@@ -200,8 +202,6 @@ class User(
     )
     pw_reset_token = models.CharField(null=True, max_length=160, verbose_name='Password reset token')
     pw_reset_time = models.DateTimeField(null=True, verbose_name='Password reset time')
-
-    # ====
 
     if TYPE_CHECKING:
         from django.db.models import QuerySet
@@ -516,13 +516,12 @@ class User(
         """Returns a user's name or 'Unnamed user'."""
         return str(self.fullname) if self.fullname else str(self)
 
-    def has_perm(self, perm, obj, *args, **kwargs):
-        cached_result = None
-        with suppress(TypeError):
-            cached_result = self.permission_cache.get((perm, obj))
+    # Override to add caching.
+    def has_perm(self, perm: str, obj: Self | None = None) -> bool:
+        cached_result = self.permission_cache.get((perm, obj))
         if cached_result is not None:
             return cached_result
-        result = super().has_perm(perm, obj, *args, **kwargs)
+        result = super().has_perm(perm, obj)
         self.permission_cache[(perm, obj)] = result
         return result
 
@@ -559,10 +558,8 @@ class User(
         if self.locale in event.locales:
             return self.locale
         return event.locale
-    
-    def log_action(
-        self, action: str, data: dict = None, user=None, person=None, orga: bool = False
-    ):
+
+    def log_action(self, action: str, data: dict = None, user=None, person=None, orga: bool = False):
         """Create a log entry for this user.
 
         :param action: The log action that took place.
@@ -583,7 +580,7 @@ class User(
             data=data,
             is_orga_action=orga,
         )
-    
+
     def logged_actions(self):
         """Returns all log entries that were made about this user."""
         from eventyay.base.models.log import LogEntry
@@ -592,26 +589,24 @@ class User(
             content_type=ContentType.objects.get_for_model(type(self)),
             object_id=self.pk,
         )
-    
+
     def own_actions(self):
         """Returns all log entries that were made by this user."""
         from eventyay.base.models.log import LogEntry
 
         return LogEntry.objects.filter(user=self)
-    
+
     def get_password_reset_url(self, event=None, orga=False):
         if event:
-            path = "orga:event.auth.recover" if orga else "cfp:event.recover"
+            path = 'orga:event.auth.recover' if orga else 'cfp:event.recover'
             url = build_absolute_uri(
                 path,
-                kwargs={"token": self.pw_reset_token, "event": event.slug},
+                kwargs={'token': self.pw_reset_token, 'event': event.slug},
             )
         else:
-            url = build_absolute_uri(
-                "orga:auth.recover", kwargs={"token": self.pw_reset_token}
-            )
+            url = build_absolute_uri('orga:auth.recover', kwargs={'token': self.pw_reset_token})
         return url
-    
+
     @transaction.atomic
     def reset_password(self, event, user=None, mail_text=None, orga=False):
         from eventyay.base.models.mail import QueuedMail
@@ -621,8 +616,8 @@ class User(
         self.save()
 
         context = {
-            "name": self.fullname or "",
-            "url": self.get_password_reset_url(event=event, orga=orga),
+            'name': self.fullname or '',
+            'url': self.get_password_reset_url(event=event, orga=orga),
         }
         if not mail_text:
             mail_text = _(
@@ -641,19 +636,17 @@ the eventyay robot"""
 
         with override(self.locale):
             QueuedMail(
-                subject=_("Password recovery"),
+                subject=_('Password recovery'),
                 text=str(mail_text).format(**context),
                 locale=self.locale,
                 to=self.email,
             ).send()
-        self.log_action(
-            action="eventyay.user.password.reset", user=user
-        )
+        self.log_action(action='eventyay.user.password.reset', user=user)
 
     reset_password.alters_data = True
 
     class orga_urls(EventUrls):
-        admin = "/orga/admin/users/{self.code}/"
+        admin = '/orga/admin/users/{self.code}/'
 
     @transaction.atomic
     def change_password(self, new_password):
@@ -665,7 +658,7 @@ the eventyay robot"""
         self.save()
 
         context = {
-            "name": self.name or "",
+            'name': self.name or '',
         }
         mail_text = _(
             """Hi {name},
@@ -680,13 +673,13 @@ the eventyay team"""
 
         with override(self.locale):
             QueuedMail(
-                subject=_("[eventyay] Password changed"),
+                subject=_('[eventyay] Password changed'),
                 text=str(mail_text).format(**context),
                 locale=self.locale,
                 to=self.email,
             ).send()
 
-        self.log_action(action="eventyay.user.password.changed", user=self)
+        self.log_action(action='eventyay.user.password.changed', user=self)
 
     change_password.alters_data = True
 
@@ -735,7 +728,8 @@ the eventyay team"""
     #             or self.answers.count()
     #         ):
     #             raise Exception(
-    #                 f"Cannot delete user <{self.email}> because they have submissions, answers, or teams. Please deactivate this user instead."
+    #                 f"Cannot delete user <{self.email}> because they have submissions, answers, or teams. "
+    #                 "Please deactivate this user instead."
     #             )
     #         self.logged_actions().delete()
     #         self.own_actions().update(person=None)
