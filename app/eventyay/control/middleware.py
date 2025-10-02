@@ -94,8 +94,12 @@ class PermissionMiddleware:
         if hasattr(request, 'organizer'):
             if not settings.DEBUG:
                 new_url = urljoin(settings.SITE_URL, request.get_full_path())
-                if new_url != request.build_absolute_uri():
+                bau = request.build_absolute_uri()
+                if bau.startswith('http://'):
+                    bau = 'https://' + bau[7:]
+                if new_url != bau:
                     logger.info('Organizer info is seen, redirecting to: %s', new_url)
+                    logger.info('build_absolute_uri was: %s', bau)
                     return redirect(new_url)
             else:
                 logger.debug(
