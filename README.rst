@@ -199,7 +199,7 @@ The directory `app/eventyay` is mounted into the docker, thus live editing is su
 Deployment
 ----------
 
-* copy all of the deployment directory onto the server as `/home/fossasia/enext`
+* copy all of the `deployment` directory onto the server (eg. as `/home/fossasia/enext`)
 * prepare the used volumes in docker-compose: one for static files and one for
   the postgres database. Create on the server:
         /home/fossasia/enext/data/static

@@ -9,7 +9,8 @@ services:
       dockerfile: Dockerfile.prod
     command: gunicorn eventyay.config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./data/static:/home/app/web/static
+      - ./data/static:/home/app/web/eventyay/static.dist
+      - ./data/data:/data
     ports:
       - 8000:8000
     expose:
