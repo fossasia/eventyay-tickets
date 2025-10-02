@@ -1,15 +1,14 @@
 import copy
-import pytz
+import datetime as dt
 import string
 import uuid
-import zoneinfo
-import datetime as dt
 from collections import OrderedDict
 from datetime import datetime, time, timedelta
-from dateutil.relativedelta import relativedelta
 from operator import attrgetter
 from urllib.parse import urljoin, urlparse
+from zoneinfo import ZoneInfo
 
+from dateutil.relativedelta import relativedelta
 from django.conf import global_settings as default_django_settings
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
@@ -32,12 +31,13 @@ from django.utils.html import format_html
 from django.utils.timezone import make_aware, now
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
-from django_scopes import scope, ScopedManager, scopes_disabled
+from django_scopes import ScopedManager, scope, scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
+from rules.contrib.models import RulesModelBase, RulesModelMixin
 
-from .mixins import OrderedModel, PretalxModel
 from eventyay.base.models.base import LoggedModel
 from eventyay.base.models.fields import MultiStringField
+from eventyay.base.models.mixins import FileCleanupMixin, TimestampedModel
 from eventyay.base.reldate import RelativeDateWrapper
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.base.validators import EventSlugBanlistValidator
@@ -51,8 +51,15 @@ from eventyay.helpers.database import GroupConcat
 from eventyay.helpers.daterange import daterange
 from eventyay.helpers.json import safe_string
 from eventyay.helpers.thumb import get_thumbnail
+from eventyay.talk_rules.event import (
+    can_change_event_settings,
+    can_create_events,
+    has_any_permission,
+    is_event_visible,
+)
 
 from ..settings import settings_hierarkey
+from .mixins import OrderedModel, PretalxModel
 from .organizer import Organizer, OrganizerBillingModel, Team
 
 TALK_HOSTNAME = settings.TALK_HOSTNAME
@@ -71,7 +78,7 @@ class EventMixin:
         Returns a shorter formatted string containing the start date of the event with respect
         to the current locale and to the ``show_times`` setting.
         """
-        tz = tz or pytz.timezone(self.settings.timezone)
+        tz = tz or ZoneInfo(key=self.settings.timezone)
         return _date(
             self.date_from.astimezone(tz),
             ('SHORT_DATETIME_FORMAT' if self.settings.show_times and show_times else 'DATE_FORMAT'),
@@ -83,7 +90,7 @@ class EventMixin:
         to the current locale and to the ``show_times`` setting. Returns an empty string
         if ``show_date_to`` is ``False``.
         """
-        tz = tz or pytz.timezone(self.settings.timezone)
+        tz = tz or ZoneInfo(key=self.settings.timezone)
         if not self.settings.show_date_to or not self.date_to:
             return ''
         return _date(
@@ -132,14 +139,14 @@ class EventMixin:
         of the event with respect to the current locale and to the ``show_date_to``
         setting. Times are not shown.
         """
-        tz = tz or pytz.timezone(self.settings.timezone)
+        tz = tz or ZoneInfo(key=self.settings.timezone)
         if (not self.settings.show_date_to and not force_show_end) or not self.date_to:
             return _date(self.date_from.astimezone(tz), 'DATE_FORMAT')
         return daterange(self.date_from.astimezone(tz), self.date_to.astimezone(tz))
 
     @property
     def timezone(self):
-        return pytz.timezone(self.settings.timezone)
+        return ZoneInfo(key=self.settings.timezone)
 
     @property
     def effective_presale_end(self):
@@ -385,8 +392,13 @@ def default_mail_settings():
     }
 
 
+# We don't subclass PretalxModel because:
+# - We want to avoid the `objects = ScopedManager()` (we may use it later, after the making "enext" stable enough).
+# - We don't want to inherit the LogMixin (already have LoggedModel).
 @settings_hierarkey.add(parent_field='organizer', cache_namespace='event')
-class Event(EventMixin, LoggedModel, PretalxModel):
+class Event(
+    EventMixin, LoggedModel, TimestampedModel, FileCleanupMixin, RulesModelMixin, models.Model, metaclass=RulesModelBase
+):
     """
     This model represents an event. An event is anything you can buy
     tickets for.
@@ -531,7 +543,6 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         help_text=_('Create Video platform for Event.'),
         default=False,
     )
-    objects = ScopedManager(organizer='organizer')
 
     # Fields for talk
     timezone = models.CharField(
@@ -628,8 +639,6 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         ('topo', _('Topography')),
         ('graph', _('Graph Paper')),
     )
-
-    objects = models.Manager()
 
     class urls(EventUrls):
         base_path = settings.BASE_PATH
@@ -749,6 +758,15 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         verbose_name_plural = _('Events')
         ordering = ('date_from', 'name')
         unique_together = (('organizer', 'slug'),)
+
+        # Note: The views which use these permissions need to revisit the permission names.
+        # The permission names change when we move the code to a different app.
+        rules_permissions = {
+            'orga_access': has_any_permission,
+            'view': is_event_visible | has_any_permission,
+            'update': can_change_event_settings,
+            'create': can_create_events,
+        }
 
     def __str__(self):
         return str(self.name)
@@ -908,7 +926,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         """
         The last datetime of payments for this event.
         """
-        tz = pytz.timezone(self.settings.timezone)
+        tz = ZoneInfo(key=self.settings.timezone)
         return make_aware(
             datetime.combine(
                 self.settings.get('payment_term_last', as_type=RelativeDateWrapper).datetime(self).date(),
@@ -1311,7 +1329,6 @@ class Event(EventMixin, LoggedModel, PretalxModel):
     @property
     def has_paid_things(self):
         from .product import Product, ProductVariation
-        from .product import Product, ProductVariation
 
         return (
             Product.objects.filter(event=self, default_price__gt=0).exists()
@@ -1601,7 +1618,6 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
         self.plugins = ','.join(modules)
 
-
     @cached_property
     def visible_primary_color(self):
         return self.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
@@ -1623,13 +1639,6 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         if feature in self.feature_flags:
             return self.feature_flags[feature]
         return default_feature_flags().get(feature, False)
-
-    @cached_property
-    def current_schedule(self):
-        if pk := getattr(self, '_current_schedule_pk', None):
-            # The event middleware prefetches the current schedule
-            return self.schedules.get(pk=pk)
-        return self.schedules.order_by('-published').filter(published__isnull=False).first()
 
     @cached_property
     def duration(self):
@@ -1665,7 +1674,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
     @cached_property
     def tz(self):
-        return zoneinfo.ZoneInfo(self.timezone)
+        return ZoneInfo(self.timezone)
 
     @cached_property
     def talks(self):
@@ -1827,8 +1836,8 @@ class Event(EventMixin, LoggedModel, PretalxModel):
         return self.schedules.order_by('-published').filter(published__isnull=False).first()
 
     def get_mail_template(self, role):
-        from eventyay.mail.default_templates import get_default_template
         from eventyay.base.models import MailTemplate
+        from eventyay.mail.default_templates import get_default_template
 
         try:
             with scope(event=self):
@@ -1842,14 +1851,10 @@ class Event(EventMixin, LoggedModel, PretalxModel):
             return template
 
     def build_initial_data(self):
-        from eventyay.base.models import MailTemplateRoles
-        from eventyay.base.models import Schedule
-        from eventyay.base.models import CfP
+        from eventyay.base.models import CfP, MailTemplateRoles, Schedule
 
         if not hasattr(self, 'cfp'):
             CfP.objects.create(event=self, default_type=self._get_default_submission_type())
-
-        from eventyay.base.models import SubmissionType
 
         with scope(event=self):
             if not self.schedules.filter(version__isnull=True).exists():
@@ -1857,7 +1862,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
 
         for role, __ in MailTemplateRoles.choices:
             self.get_mail_template(role)
-        
+
         with scope(event=self):
             if not self.review_phases.all().exists():
                 from eventyay.base.models import ReviewPhase
@@ -1881,7 +1886,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
                     can_see_other_reviews='always',
                     can_change_submission_state=True,
                 )
-        
+
         with scope(event=self):
             if not self.score_categories.all().exists():
                 from eventyay.base.models import ReviewScore, ReviewScoreCategory
@@ -1905,7 +1910,7 @@ class Event(EventMixin, LoggedModel, PretalxModel):
                     value=2,
                     label=str(_('Yes')),
                 )
-        
+
         self.save()
 
     build_initial_data.alters_data = True
@@ -2061,13 +2066,11 @@ class SubEvent(EventMixin, LoggedModel):
     @cached_property
     def product_overrides(self):
         from .product import SubEventProduct
-        from .product import SubEventProduct
 
         return {si.product_id: si for si in SubEventProduct.objects.filter(subevent=self)}
 
     @cached_property
     def var_overrides(self):
-        from .product import SubEventProductVariation
         from .product import SubEventProductVariation
 
         return {si.variation_id: si for si in SubEventProductVariation.objects.filter(subevent=self)}
