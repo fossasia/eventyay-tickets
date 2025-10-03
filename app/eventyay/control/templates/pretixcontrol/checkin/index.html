@@ -42,7 +42,7 @@
             {% bootstrap_field filter_form.status layout='inline' %}
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
-            {% bootstrap_field filter_form.item layout='inline' %}
+            {% bootstrap_field filter_form.product layout='inline' %}
         </div>
         <div class="col-md-2 col-sm-6 col-xs-12">
             <button class="btn btn-primary btn-block" type="submit">
@@ -71,8 +71,8 @@
                         <th></th>
                         <th>{% trans "Order code" %} <a href="?{% url_replace request 'ordering' '-code'%}"><i class="fa fa-caret-down"></i></a>
                       <a href="?{% url_replace request 'ordering' 'code'%}"><i class="fa fa-caret-up"></i></a></th>
-                        <th>{% trans "Item" %} <a href="?{% url_replace request 'ordering' '-item'%}"><i class="fa fa-caret-down"></i></a>
-                      <a href="?{% url_replace request 'ordering' 'item'%}"><i class="fa fa-caret-up"></i></a></th>
+                        <th>{% trans "product" %} <a href="?{% url_replace request 'ordering' '-product'%}"><i class="fa fa-caret-down"></i></a>
+                      <a href="?{% url_replace request 'ordering' 'product'%}"><i class="fa fa-caret-up"></i></a></th>
                         {% if request.event.has_subevents and not checkinlist.subevent %}
                             <th>{% trans "Date" context "subevents" %} <a href="?{% url_replace request 'ordering' '-date'%}"><i class="fa fa-caret-down"></i></a>
                                 <a href="?{% url_replace request 'ordering' 'date'%}"><i class="fa fa-caret-up"></i></a></th>
@@ -109,7 +109,7 @@
                                     <span class="label label-warning">{% trans "TEST MODE" %}</span>
                                 {% endif %}
                             </td>
-                            <td>{{ e.item }}{% if e.variation %} – {{ e.variation }}{% endif %}</td>
+                            <td>{{ e.product }}{% if e.variation %} – {{ e.variation }}{% endif %}</td>
                             {% if request.event.has_subevents and not checkinlist.subevent %}
                                 <td>
                                     {{ e.subevent.name }} – {{ e.subevent.get_date_range_display }} {{ e.subevent.date_from|date:"TIME_FORMAT" }}
