@@ -16,7 +16,6 @@ from eventyay.control.views import CreateView, PaginationMixin, UpdateView
 
 from ...control.forms.organizer_forms import OrganizerForm, OrganizerUpdateForm
 from ...control.permissions import OrganizerPermissionRequiredMixin
-from ..tasks import send_organizer_webhook
 
 logger = logging.getLogger(__name__)
 
@@ -75,13 +74,6 @@ class OrganizerCreate(CreateView):
             can_change_vouchers=True,
         )
         # Trigger webhook in talk to create organiser in talk component
-        organizer_data = {
-            'name': self.object.name,
-            'slug': self.object.slug,
-            'action': 'create',
-        }
-        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
-
         team.members.add(self.request.user)
         return response
 
@@ -115,12 +107,6 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
     @transaction.atomic
     def form_valid(self, form):
         response = super().form_valid(form)
-        organizer_data = {
-            'name': self.object.name,
-            'slug': self.object.slug,
-            'action': 'update',
-        }
-        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
         return response
 
     def get_success_url(self) -> str:
