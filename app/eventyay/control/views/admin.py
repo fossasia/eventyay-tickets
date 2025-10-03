@@ -1,8 +1,11 @@
+from datetime import UTC
 from zoneinfo import ZoneInfo
+import dateutil.parser
 
 from cron_descriptor import Options, get_description
 from django.conf import settings
 from django.contrib import messages
+from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -18,7 +21,14 @@ from django.views.generic import (
 )
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
 
-from eventyay.base.models import Organizer
+from django.utils.timezone import make_aware, is_aware
+
+from django.utils.functional import cached_property
+from eventyay.control.forms.filter import AttendeeFilterForm
+
+from eventyay.base.models.checkin import Checkin
+from eventyay.base.models.orders import OrderPosition
+from eventyay.base.models.organizer import Organizer
 from eventyay.base.models.submission import Submission
 from eventyay.base.models.vouchers import InvoiceVoucher
 from eventyay.control.forms.admin.vouchers import InvoiceVoucherForm
@@ -64,6 +74,119 @@ class AdminEventList(EventList):
     """Inherit from EventList to add a custom template for the admin event list."""
 
     template_name = 'pretixcontrol/admin/events/index.html'
+
+
+class AttendeeListView(ListView):
+    template_name = 'pretixcontrol/admin/attendees/index.html'
+    context_object_name = 'attendees'
+    paginate_by = 25
+
+    @cached_property
+    def filter_form(self):
+        return AttendeeFilterForm(data=self.request.GET)
+
+    def get_queryset(self):
+        qs = (
+            OrderPosition.objects.select_related('order', 'product', 'order__event', 'order__event__organizer')
+            .prefetch_related('checkins')
+            .filter(order__status='p')
+        )
+
+        if not self.request.user.has_active_staff_session(self.request.session.session_key):
+            allowed_organizers = self.request.user.teams.values_list('organizer', flat=True)
+            qs = qs.filter(order__event__organizer_id__in=allowed_organizers)
+
+        if self.filter_form.is_valid():
+            qs = self.filter_form.filter_qs(qs)
+
+        ordering = self.request.GET.get('ordering')
+
+        if not ordering:
+            qs = qs.order_by('-order__event__date_from', 'order__event__name')
+        else:
+            ordering_map = {
+                'name': 'attendee_name_cached',
+                '-name': '-attendee_name_cached',
+                'email': 'attendee_email',
+                '-email': '-attendee_email',
+                'event': 'order__event__name',
+                '-event': '-order__event__name',
+                'order_code': 'order__code',
+                '-order_code': '-order__code',
+                'product': 'product__name',
+                '-product': '-product__name',
+            }
+            if ordering in ordering_map:
+                qs = qs.order_by(ordering_map[ordering])
+
+        attendees = []
+
+        for pos in qs:
+            name = pos.attendee_name_cached or ''
+            email = pos.attendee_email or pos.order.email
+            event = pos.order.event.name
+            order_code = pos.order.code
+            product = str(pos.product.name)
+
+            event_slug = pos.order.event.slug
+            organizer_slug = pos.order.event.organizer.slug
+
+            testmode = pos.order.testmode
+
+            checkins = pos.checkins.all()
+            entry_checkin = checkins.filter(type=Checkin.TYPE_ENTRY).order_by('-datetime').first()
+            exit_checkin = checkins.filter(type=Checkin.TYPE_EXIT).order_by('-datetime').first()
+
+            def parse_datetime(dt):
+                if not dt:
+                    return None
+                if isinstance(dt, str):
+                    return make_aware(dateutil.parser.parse(dt), UTC)
+                elif not is_aware(dt):
+                    return make_aware(dt, UTC)
+                else:
+                    return dt
+
+            entry_time = parse_datetime(entry_checkin.datetime if entry_checkin else None)
+            exit_time = parse_datetime(exit_checkin.datetime if exit_checkin else None)
+
+            if not entry_time and not exit_time:
+                check_in_status = 'Not checked in'
+            elif entry_time and not exit_time:
+                check_in_status = 'Checked in'
+            elif not entry_time and exit_time:
+                check_in_status = 'Checked out (no entry record)'
+            elif exit_time < entry_time:
+                check_in_status = 'Invalid check-in data (exit before entry)'
+            elif exit_time == entry_time:
+                check_in_status = 'Checked in and out at same time'
+            else:
+                check_in_status = 'Checked in but left'
+
+            attendees.append(
+                {
+                    'name': name,
+                    'email': email,
+                    'event': event,
+                    'event_slug': event_slug,
+                    'organizer_slug': organizer_slug,
+                    'order_code': order_code,
+                    'product': product,
+                    'check_in_status': check_in_status,
+                    'testmode': testmode,
+                }
+            )
+
+        if ordering in ('check_in_status', '-check_in_status'):
+            reverse_sort = ordering.startswith('-')
+            attendees.sort(key=lambda x: x['check_in_status'], reverse=reverse_sort)
+
+        return attendees
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['filter_form'] = self.filter_form
+        return ctx
 
 
 class SubmissionListView(ListView):

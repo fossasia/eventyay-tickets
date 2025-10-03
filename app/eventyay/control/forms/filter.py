@@ -891,6 +891,100 @@ class OrganizerFilterForm(FilterForm):
         return qs
 
 
+class AttendeeFilterForm(FilterForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._checkin_status = None
+
+    query = forms.CharField(
+        label=_('Name or email'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Name or email')}),
+    )
+
+    event_query = forms.CharField(
+        label=_('Event name'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Event name')}),
+    )
+
+    event_status = forms.ChoiceField(
+        label=_('Event filter'),
+        choices=(
+            ('', _('All events')),
+            ('ongoing', _('Ongoing events')),
+            ('recent', _('Recent events')),
+        ),
+        required=False,
+    )
+
+    checkin_status = forms.ChoiceField(
+        label=_('Check-in status'),
+        choices=(
+            ('', _('All attendees')),
+            ('present', _('Present')),
+            ('left', _('Checked in but left')),
+            ('checked_in', _('Checked in')),
+            ('not_checked_in', _('Not checked in')),
+        ),
+        required=False,
+    )
+
+    ordering = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def filter_qs(self, qs):
+        fdata = self.cleaned_data
+
+        # Search by attendee name or email
+        if fdata.get('query'):
+            qs = qs.filter(
+                Q(attendee_name_cached__icontains=fdata['query'])
+                | Q(order__email__icontains=fdata['query'])
+                | Q(attendee_email__icontains=fdata['query'])
+            )
+
+        # Search by event name
+        if fdata.get('event_query'):
+            qs = qs.filter(
+                Q(order__event__name__icontains=fdata['event_query'])
+                | Q(order__event__slug__icontains=fdata['event_query'])
+            )
+
+        # Event status filter
+        if fdata.get('event_status'):
+            now_ = now()
+            if fdata['event_status'] == 'ongoing':
+                qs = qs.filter(
+                    Q(order__event__date_from__lte=now_)
+                    & (Q(order__event__date_to__gte=now_) | Q(order__event__date_to__isnull=True))
+                )
+            elif fdata['event_status'] == 'recent':
+                qs = qs.filter(
+                    Q(order__event__date_to__lt=now_)
+                    | (Q(order__event__date_to__isnull=True) & Q(order__event__date_from__lt=now_))
+                )
+
+        # Check-in status filter
+        checkin_status = fdata.get('checkin_status')
+        if checkin_status:
+            qs = qs.annotate(
+                entry_time=Max('checkins__datetime', filter=Q(checkins__type=Checkin.TYPE_ENTRY)),
+                exit_time=Max('checkins__datetime', filter=Q(checkins__type=Checkin.TYPE_EXIT)),
+            )
+            if checkin_status == 'present':
+                qs = qs.filter(entry_time__isnull=False).filter(
+                    Q(exit_time__isnull=True) | Q(exit_time__lt=F('entry_time'))
+                )
+            elif checkin_status == 'left':
+                qs = qs.filter(exit_time__isnull=False, exit_time__gt=F('entry_time'))
+            elif checkin_status == 'checked_in':
+                qs = qs.filter(entry_time__isnull=False)
+            elif checkin_status == 'not_checked_in':
+                qs = qs.filter(entry_time__isnull=True)
+
+        return qs
+
+
 class SubmissionFilterForm(forms.Form):
     query = forms.CharField(
         label=_('Title or speaker'),
