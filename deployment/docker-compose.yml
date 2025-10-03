@@ -1,4 +1,4 @@
-name: eventyay
+name: eventyay-next
 
 services:
   web:
@@ -19,6 +19,8 @@ services:
       - ./.env
     depends_on:
       - db
+      - redis
+
   db:
     image: postgres:15
     container_name: eventyay-next-db
@@ -26,6 +28,16 @@ services:
       - ./data/postgres:/var/lib/postgresql/data/
     env_file:
       - ./.env
+
+  redis:
+    image: redis:latest
+    container_name: eventyay-next-redis
+    restart: unless-stopped
+    volumes:
+      - rd:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
   watchtower:
     image: containrrr/watchtower
     container_name: eventyay-next-watchtower
@@ -38,4 +50,7 @@ services:
       WATCHTOWER_POLL_INTERVAL: 600
       WATCHTOWER_NOTIFICATION_URL: ${WATCHTOWER_NOTIFICATION_URL}
     command: watchtower eventyay-next-web --cleanup
+
+volumes:
+  rd:
 
