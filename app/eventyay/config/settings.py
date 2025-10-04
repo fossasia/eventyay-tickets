@@ -856,7 +856,7 @@ CELERY_TASK_QUEUES = (
     Queue('notifications', routing_key='notifications.#'),
 )
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-CELERY_TASK_ALWAYS_EAGER = os.environ.get("EVENTYAY_CELERY_EAGER", "") == "true"
+CELERY_TASK_ALWAYS_EAGER = os.environ.get("EVENTYAY_CELERY_EAGER", "true" if DEBUG else "") == "true"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_ROUTES = (
     [
