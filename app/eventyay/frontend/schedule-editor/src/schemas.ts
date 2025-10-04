@@ -1,4 +1,5 @@
 import { z } from 'zod';
+z.config({ jitless: true });
 
 // Helper function to transform title to a record
 const toTitleRecord = (val: unknown): Record<string, string> => {
@@ -13,7 +14,7 @@ const toTitleRecord = (val: unknown): Record<string, string> => {
 
 export const SpeakerSchema = z.object({
   code: z.string(),
-  name: z.string().nullable().transform(val => val ?? ''), // FIX: Handle null names
+  name: z.string().nullable().transform(val => val ?? ''),
 });
 
 export const RoomSchema = z.object({

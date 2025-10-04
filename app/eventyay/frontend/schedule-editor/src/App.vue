@@ -33,8 +33,8 @@
 			#session-editor-wrapper(v-if="editorSession", @click="editorSession = null")
 				form#session-editor(@click.stop="", @submit.prevent="editorSave")
 					h3.session-editor-title(v-if="editorSession.code")
-						a(v-if="editorSession.code", :href="`/orga/event/${eventSlug}/submissions/${editorSession.code}/`") {{editorSession.title }}
-						span(v-else) {{editorSession.title }}
+						a(v-if="editorSession.code", :href="`/orga/event/${eventSlug}/submissions/${editorSession.code}/`") {{ getLocalizedString(editorSession.title) }}
+						span(v-else) {{ getLocalizedString(editorSession.title) }}
 					.data
 						.data-row(v-if="editorSession.code && editorSession.speakers && editorSession.speakers.length > 0").form-group.row
 							label.data-label.col-form-label.col-md-3 {{ $t('Speakers') }}
