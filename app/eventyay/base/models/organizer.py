@@ -385,7 +385,13 @@ class Team(LoggedModel, TimestampedModel, RulesModelMixin, models.Model, metacla
 
     def permission_set(self) -> set:
         attribs = dir(self)
-        return {a for a in attribs if a.startswith('can_') and self.has_permission(a)}
+        return {
+            attr
+            for attr in attribs
+            if (attr.startswith("can_") or attr.startswith("is_"))
+            and getattr(self, attr, False) is True
+            and self.has_permission(attr)
+        }
 
     @property
     def can_change_settings(self):  # Legacy compatiblilty
