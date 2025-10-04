@@ -15,7 +15,7 @@ class EventyayBaseConfig(AppConfig):
         from django.conf import settings
 
         try:
-            from .celery_app import app as celery_app  # NOQA
+            from eventyay.celery_app import app as celery_app  # NOQA
         except ImportError:
             pass
 
@@ -27,6 +27,6 @@ class EventyayBaseConfig(AppConfig):
 
 default_app_config = 'eventyay.base.EventyayBaseConfig'
 try:
-    import pretix.celery_app as celery  # NOQA
+    import eventyay.celery_app as celery  # NOQA
 except ImportError:
     pass
