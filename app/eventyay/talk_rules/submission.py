@@ -178,7 +178,7 @@ def questions_for_user(event, user):
     from eventyay.base.models import TalkQuestionTarget
     from eventyay.talk_rules.orga import can_view_speaker_names
 
-    if user.has_perm('base.update_question', event):
+    if user.has_perm('base.update_talkquestion', event):
         # Organizers with edit permissions can see everything
         return event.talkquestions(manager='all_objects').all()
     if not user.is_anonymous and is_only_reviewer(user, event) and can_view_speaker_names(user, event):
@@ -186,15 +186,16 @@ def questions_for_user(event, user):
             Q(is_visible_to_reviewers=True) | Q(target=TalkQuestionTarget.REVIEWER),
             active=True,
         )
-    if user.has_perm('base.orga_list_question', event):
+    if user.has_perm('base.orga_list_talkquestion', event):
         # Other team members can either view all active talkquestions
         # or only talkquestions open to reviewers
+        return
         return event.talkquestions(manager='all_objects').all()
 
     # Now we are left with anonymous users or users with very limited permissions.
     # They can see all public (non-reviewer) talkquestions if they are already publicly
     # visible in the schedule. Otherwise, nothing.
-    if user.has_perm('base.list_question', event):
+    if user.has_perm('base.list_talkquestion', event):
         return event.talkquestions.all().filter(is_public=True)
     return event.talkquestions.none()
 
