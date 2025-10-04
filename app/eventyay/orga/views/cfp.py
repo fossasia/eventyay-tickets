@@ -285,7 +285,7 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
 
 
 class CfPQuestionToggle(PermissionRequired, View):
-    permission_required = 'base.update_question'
+    permission_required = 'base.update_talkquestion'
 
     def get_object(self) -> TalkQuestion:
         return TalkQuestion.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
@@ -301,7 +301,7 @@ class CfPQuestionToggle(PermissionRequired, View):
 
 class CfPQuestionRemind(EventPermissionRequired, FormView):
     template_name = 'orga/cfp/question/remind.html'
-    permission_required = 'base.orga_view_question'
+    permission_required = 'base.orga_view_talkquestion'
     form_class = ReminderFilterForm
 
     def get_form_kwargs(self):
