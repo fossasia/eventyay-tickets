@@ -14,6 +14,7 @@ import configparser
 import importlib.util
 import os
 import sys
+from importlib.metadata import entry_points
 from pathlib import Path
 from urllib.parse import urlparse
 import django.conf.locale
@@ -124,7 +125,7 @@ _LIBRARY_APPS = (
     'django_pdb',
     'jquery',
     'rest_framework.authtoken',
-    'rules',
+    'rules.apps.AutodiscoverRulesConfig',
     'oauth2_provider',
     'statici18n',
     'rest_framework',
@@ -194,8 +195,7 @@ CORE_MODULES = (
 )
 
 PLUGINS = []
-from importlib.metadata import entry_points
-for entry_point in entry_points(group="pretalx.plugin"):
+for entry_point in entry_points(group='pretalx.plugin'):
     PLUGINS.append(entry_point.module)
     # INSTALLED_APPS += tuple(entry_point.module)
 
@@ -321,6 +321,11 @@ DATABASES = {
     }
 }
 
+
+AUTHENTICATION_BACKENDS = (
+    'rules.permissions.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -456,14 +461,14 @@ EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
 
 if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:
-    EMAIL_HOST = config.get("mail", "host")
-    EMAIL_PORT = config.get("mail", "port")
-    EMAIL_HOST_USER = config.get("mail", "user")
-    EMAIL_HOST_PASSWORD = config.get("mail", "password")
-    EMAIL_USE_TLS = config.getboolean("mail", "tls")
-    EMAIL_USE_SSL = config.getboolean("mail", "ssl")
+    EMAIL_HOST = config.get('mail', 'host')
+    EMAIL_PORT = config.get('mail', 'port')
+    EMAIL_HOST_USER = config.get('mail', 'user')
+    EMAIL_HOST_PASSWORD = config.get('mail', 'password')
+    EMAIL_USE_TLS = config.getboolean('mail', 'tls')
+    EMAIL_USE_SSL = config.getboolean('mail', 'ssl')
 
 # Internal settings
 EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
@@ -476,11 +481,13 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:1337', 'http://next.eventyay.com:1337'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
-TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+TRUST_X_FORWARDED_FOR = config.get('eventyay', 'trust_x_forwarded_for', fallback=False)
 
-TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/') if not DEBUG else 'http://localhost:8000/'
+TALK_HOSTNAME = (
+    config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+    if not DEBUG
+    else 'http://localhost:8000/'
+)
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -863,8 +870,7 @@ CELERY_TASK_ROUTES = (
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static') ]
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
@@ -1116,6 +1122,12 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': False,
         },
+        # We need it to debug permission issues.
+        'rules': {
+            'handlers': [CONSOLE_HANDLER],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
         'eventyay': {
             'handlers': [CONSOLE_HANDLER],
             'level': 'DEBUG' if DEBUG else 'INFO',
@@ -1124,12 +1136,12 @@ LOGGING = {
     },
 }
 
-email_level = config.get("logging", "email_level", fallback="ERROR") or "ERROR"
-emails = config.get("logging", "email", fallback="").split(",")
+email_level = config.get('logging', 'email_level', fallback='ERROR') or 'ERROR'
+emails = config.get('logging', 'email', fallback='').split(',')
 MANAGERS = ADMINS = [(email, email) for email in emails if email]
 if ADMINS:
-    LOGGING["handlers"]["mail_admins"] = {
-        "level": email_level,
-        "class": "eventyay.common.exceptions.PretalxAdminEmailHandler",
+    LOGGING['handlers']['mail_admins'] = {
+        'level': email_level,
+        'class': 'eventyay.common.exceptions.PretalxAdminEmailHandler',
     }
-    LOGGING["loggers"]["django.request"]["handlers"].append("mail_admins")
+    LOGGING['loggers']['django.request']['handlers'].append('mail_admins')

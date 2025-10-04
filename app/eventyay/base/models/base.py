@@ -41,7 +41,18 @@ def cached_file_delete(sender, instance, **kwargs):
 
 
 class LoggingMixin:
-    def log_action(self, action, data=None, user=None, api_token=None, auth=None, save=True):
+    def log_action(
+        self,
+        action,
+        data=None,
+        user=None,
+        person=None,
+        orga=False,
+        content_object=None,
+        api_token=None,
+        auth=None,
+        save=True,
+    ):
         """
         Create a LogEntry object that is related to this object.
         See the LogEntry documentation for details.
@@ -79,7 +90,14 @@ class LoggingMixin:
         elif isinstance(api_token, TeamAPIToken):
             kwargs['api_token'] = api_token
 
-        logentry = LogEntry(content_object=self, user=user, action_type=action, event=event, **kwargs)
+        logentry = LogEntry(
+            content_object=content_object or self,
+            user=user or person,
+            is_orga_action=orga,
+            action_type=action,
+            event=event,
+            **kwargs,
+        )
         if isinstance(data, dict):
             sensitivekeys = ['password', 'secret', 'api_key']
 
