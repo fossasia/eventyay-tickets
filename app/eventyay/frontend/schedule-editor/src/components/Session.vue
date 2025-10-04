@@ -7,7 +7,7 @@
 		.duration {{ durationPretty }}
 	.info
 		.title {{ getLocalizedString(session.title) }}
-		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
+		.speakers(v-if="hasSpeakersWithNames") {{ speakerNames }}
 		.pending-line(v-if="session.state && session.state !== 'confirmed' && session.state !== 'accepted'")
 			i.fa.fa-exclamation-circle
 			span {{ $t('Pending proposal state') }}
@@ -71,6 +71,18 @@ const emit = defineEmits<{
 }>()
 
 const isBreak = computed(() => !props.session.code)
+
+const hasSpeakersWithNames = computed(() => {
+  return props.session.speakers && props.session.speakers.some(speaker => speaker.name)
+})
+
+const speakerNames = computed(() => {
+  if (!props.session.speakers) return ''
+  return props.session.speakers
+    .filter(speaker => speaker.name) // Only include speakers with names
+    .map(speaker => speaker.name)
+    .join(', ')
+})
 
 const classes = computed(() => {
   const cls: string[] = []
