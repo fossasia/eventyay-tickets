@@ -13,7 +13,7 @@ const toTitleRecord = (val: unknown): Record<string, string> => {
 
 export const SpeakerSchema = z.object({
   code: z.string(),
-  name: z.string(),
+  name: z.string().nullable().transform(val => val ?? ''), // FIX: Handle null names
 });
 
 export const RoomSchema = z.object({
@@ -59,8 +59,11 @@ export const TalkSchema = z.object({
   duration: z.number().optional()
 });
 
-// Define warning schema
-const WarningRecordSchema = z.record(z.string(), z.array(z.string()));
+export const WarningSchema = z.object({
+  message: z.string(),
+});
+
+const WarningRecordSchema = z.record(z.string(), z.array(WarningSchema));
 
 export const ScheduleSchema = z.object({
   version: z.nullable(z.string().nullable()),
@@ -79,10 +82,6 @@ export const ScheduleSchema = z.object({
 export const AvailabilitySchema = z.object({
   rooms: z.record(z.string(), z.array(AvailabilityEntrySchema)).optional(),
   talks: z.record(z.string(), z.array(AvailabilityEntrySchema)).optional(),
-});
-
-export const WarningSchema = z.object({
-  message: z.string(),
 });
 
 export const WarningsSchema = z.record(z.string(), z.array(WarningSchema)).optional();
