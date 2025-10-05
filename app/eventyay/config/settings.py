@@ -14,13 +14,17 @@ import configparser
 import importlib.util
 import os
 import sys
+from importlib.metadata import entry_points
 from pathlib import Path
+from urllib.parse import urlparse
 
 import django.conf.locale
 from django.utils.translation import gettext_lazy as _
 from kombu import Queue
 from pycountry import currencies
 
+from eventyay import __version__
+from eventyay.common.settings.config import build_config
 from eventyay.helpers.config import EnvOrParserConfig
 
 from .settings_helpers import build_redis_tls_config
@@ -34,6 +38,8 @@ else:
         encoding='utf-8',
     )
 config = EnvOrParserConfig(_config)
+talk_config, TALK_CONFIG_FILES = build_config()
+TALK_CONFIG = talk_config
 
 
 def instance_name(request):
@@ -43,14 +49,14 @@ def instance_name(request):
 
 
 debug_fallback = 'runserver' in sys.argv
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = os.environ.get(
-    'DATA_DIR',
-    config.get('eventyay', 'datadir', fallback='data')
-)
+DATA_DIR = BASE_DIR / 'data'
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
-MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+MEDIA_ROOT = DATA_DIR / 'media'
 PROFILE_DIR = os.path.join(DATA_DIR, 'profiles')
 BASE_PATH = ''
 STATIC_URL = BASE_PATH + '/static/'
@@ -68,9 +74,8 @@ DATABASE_REPLICA = 'default'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
-SITE_URL = config.get('eventyay', 'url', fallback='http://localhost')
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
+SITE_URL = 'http://localhost:8000' if DEBUG else config.get('eventyay', 'url', fallback='http://localhost')
+SITE_NETLOC = urlparse(SITE_URL).netloc
 
 ALLOWED_HOSTS = ['*', '127.0.0.1']
 
@@ -84,6 +89,7 @@ HAS_CELERY = config.has_option('celery', 'broker')
 if HAS_CELERY:
     CELERY_BROKER_URL = config.get('celery', 'broker')
     CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+    CELERY_TASK_ALWAYS_EAGER = False
 else:
     CELERY_TASK_ALWAYS_EAGER = True
 
@@ -106,7 +112,12 @@ _LIBRARY_APPS = (
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_static',
     'django_celery_beat',
+    'django.forms',
     'djangoformsetjs',
+    'django_pdb',
+    'jquery',
+    'rest_framework.authtoken',
+    'rules.apps.AutodiscoverRulesConfig',
     'oauth2_provider',
     'statici18n',
     'rest_framework',
@@ -125,13 +136,20 @@ if DEBUG and importlib.util.find_spec('debug_toolbar'):
     _LIBRARY_APPS += ('debug_toolbar',)
 
 _OURS_APPS = (
+    # agenda, orga and common must be on top to load contexts before forms gets initialized.
+    'eventyay.agenda',
+    'eventyay.common',
+    'eventyay.orga',
     'eventyay.api',
     'eventyay.base',
-    'eventyay.common',
+    'eventyay.cfp',
     'eventyay.control',
+    'eventyay.event',
     'eventyay.eventyay_common',
     'eventyay.helpers',
+    'eventyay.mail',
     'eventyay.multidomain',
+    'eventyay.person',
     'eventyay.presale',
     'eventyay.plugins.socialauth',
     'eventyay.plugins.banktransfer',
@@ -145,9 +163,28 @@ _OURS_APPS = (
     'eventyay.plugins.scheduledtasks',
     'eventyay.plugins.ticketoutputpdf',
     'eventyay.plugins.webcheckin',
+    'eventyay.schedule',
+    'eventyay.submission',
 )
 
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
+
+CORE_MODULES = (
+    INSTALLED_APPS
+    + tuple(module for module in talk_config.get('site', 'core_modules').split(',') if module)
+    + (
+        'eventyay.base',
+        'eventyay.presale',
+        'eventyay.control',
+        'eventyay.plugins.checkinlists',
+        'eventyay.plugins.reports',
+    )
+)
+
+PLUGINS = []
+for entry_point in entry_points(group='pretalx.plugin'):
+    PLUGINS.append(entry_point.module)
+    # INSTALLED_APPS += tuple(entry_point.module)
 
 _LIBRARY_MIDDLEWARES = (
     'django.middleware.security.SecurityMiddleware',
@@ -161,12 +198,14 @@ _LIBRARY_MIDDLEWARES = (
 )
 
 if DEBUG and importlib.util.find_spec('debug_toolbar'):
-    _LIBRARY_MIDDLEWARES += (
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    )
+    _LIBRARY_MIDDLEWARES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 _OURS_MIDDLEWARES = (
     'eventyay.base.middleware.CustomCommonMiddleware',
+    'eventyay.common.middleware.SessionMiddleware',  # Add session handling
+    'eventyay.common.middleware.MultiDomainMiddleware',  # Check which host is used and if it is valid
+    'eventyay.common.middleware.EventPermissionMiddleware',  # Sets locales, request.event, available events, etc.
+    'eventyay.common.middleware.CsrfViewMiddleware',  # Protect against CSRF attacks before forms/data are processed
     'eventyay.multidomain.middlewares.MultiDomainMiddleware',
     'eventyay.multidomain.middlewares.SessionMiddleware',
     'eventyay.multidomain.middlewares.CsrfViewMiddleware',
@@ -180,14 +219,6 @@ _OURS_MIDDLEWARES = (
 )
 
 MIDDLEWARE = _LIBRARY_MIDDLEWARES + _OURS_MIDDLEWARES
-
-CORE_MODULES = {
-    'eventyay.base',
-    'eventyay.presale',
-    'eventyay.control',
-    'eventyay.plugins.checkinlists',
-    'eventyay.plugins.reports',
-}
 
 template_loaders = (
     'django.template.loaders.filesystem.Loader',
@@ -213,11 +244,17 @@ TEMPLATES = (
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'eventyay.config.settings.instance_name',
+                'eventyay.agenda.context_processors.is_html_export',
+                'eventyay.common.context_processors.add_events',
+                'eventyay.common.context_processors.locale_context',
+                'eventyay.common.context_processors.messages',
+                'eventyay.common.context_processors.system_information',
+                'eventyay.orga.context_processors.orga_events',
                 'eventyay.base.context.contextprocessor',
                 'eventyay.control.context.contextprocessor',
                 'eventyay.presale.context.contextprocessor',
                 'eventyay.eventyay_common.context.contextprocessor',
-                'django.template.context_processors.request',
             ],
             'loaders': template_loaders,
         },
@@ -241,6 +278,12 @@ TEMPLATES = (
 
 WSGI_APPLICATION = 'eventyay.config.wsgi.application'
 
+EVENTYAY_VERSION = __version__
+
+# FILE_UPLOAD_DEFAULT_LIMIT = int(config.get("files", "upload_limit")) * 1024 * 1024
+FILE_UPLOAD_DEFAULT_LIMIT = 10 * 1024 * 1024
+
+FORM_RENDERER = 'eventyay.common.forms.renderers.TabularFormRenderer'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -259,6 +302,11 @@ DATABASES = {
     }
 }
 
+
+AUTHENTICATION_BACKENDS = (
+    'rules.permissions.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -286,7 +334,7 @@ ENTROPY = {
     'giftcard_secret': config.getint('entropy', 'giftcard_secret', fallback=12),
 }
 EVENTYAY_PRIMARY_COLOR = '#2185d0'
-
+DEFAULT_EVENT_PRIMARY_COLOR = '#2185d0'
 
 DEFAULT_CURRENCY = config.get('eventyay', 'currency', fallback='EUR')
 CURRENCY_PLACES = {
@@ -392,7 +440,19 @@ django.conf.locale.LANG_INFO.update(EXTRA_LANG_INFO)
 EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = config.get('mail', 'from', fallback='eventyay@localhost')
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = config.get('mail', 'host')
+    EMAIL_PORT = config.get('mail', 'port')
+    EMAIL_HOST_USER = config.get('mail', 'user')
+    EMAIL_HOST_PASSWORD = config.get('mail', 'password')
+    EMAIL_USE_TLS = config.getboolean('mail', 'tls')
+    EMAIL_USE_SSL = config.getboolean('mail', 'ssl')
+
 # Internal settings
+EVENTYAY_EMAIL_NONE_VALUE = 'info@eventyay.com'
+
 SESSION_COOKIE_NAME = 'eventyay_session'
 LANGUAGE_COOKIE_NAME = 'eventyay_language'
 CSRF_COOKIE_NAME = 'eventyay_csrftoken'
@@ -401,11 +461,15 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:1337', 'http://next.eventyay.com:1337'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
+TRUST_X_FORWARDED_FOR = config.get('eventyay', 'trust_x_forwarded_for', fallback=False)
 
-TALK_HOSTNAME = config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+TALK_HOSTNAME = (
+    config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+    if not DEBUG
+    else 'http://localhost:8000/'
+)
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 
 TIME_ZONE = 'UTC'
 
@@ -416,6 +480,157 @@ USE_TZ = True
 
 LANGUAGES_RTL = {'ar', 'he'}
 
+LANGUAGES_INFORMATION = {
+    'en': {
+        'name': _('English'),
+        'natural_name': 'English',
+        'official': True,
+        'percentage': 100,
+    },
+    'de': {
+        'name': _('German'),
+        'natural_name': 'Deutsch',
+        'official': True,
+        'percentage': 100,
+        'path': 'de_DE',
+    },
+    'de-formal': {
+        'name': _('German (formal)'),
+        'natural_name': 'Deutsch',
+        'official': True,
+        'percentage': 100,
+        'public_code': 'de',
+        'path': 'de_Formal',
+    },
+    'ar': {
+        'name': _('Arabic'),
+        'natural_name': 'اَلْعَرَبِيَّةُ',
+        'official': False,
+        'percentage': 72,
+    },
+    'cs': {
+        'name': _('Czech'),
+        'natural_name': 'Čeština',
+        'official': False,
+        'percentage': 97,
+    },
+    'el': {
+        'name': _('Greek'),
+        'natural_name': 'Ελληνικά',
+        'official': False,
+        'percentage': 90,
+    },
+    'es': {
+        'name': _('Spanish'),
+        'natural_name': 'Español',
+        'official': False,
+        'percentage': 80,
+    },
+    'fa-ir': {
+        'name': _('Persian'),
+        'natural_name': 'قارسی',
+        'official': False,
+        'percentage': 99,
+        'path': 'fa_IR',
+        'public_code': 'fa_IR',
+    },
+    'fr': {
+        'name': _('French'),
+        'natural_name': 'Français',
+        'official': False,
+        'percentage': 98,
+        'path': 'fr_FR',
+    },
+    'it': {
+        'name': _('Italian'),
+        'natural_name': 'Italiano',
+        'official': False,
+        'percentage': 95,
+    },
+    'ja-jp': {
+        'name': _('Japanese'),
+        'natural_name': '日本語',
+        'official': False,
+        'percentage': 69,
+        'public_code': 'jp',
+    },
+    'nl': {
+        'name': _('Dutch'),
+        'natural_name': 'Nederlands',
+        'official': False,
+        'percentage': 88,
+    },
+    'pt-br': {
+        'name': _('Brasilian Portuguese'),
+        'natural_name': 'Português brasileiro',
+        'official': False,
+        'percentage': 89,
+        'public_code': 'pt',
+    },
+    'pt-pt': {
+        'name': _('Portuguese'),
+        'natural_name': 'Português',
+        'official': False,
+        'percentage': 89,
+        'public_code': 'pt',
+    },
+    'ru': {
+        'name': _('Russian'),
+        'natural_name': 'Русский',
+        'official': True,
+        'percentage': 0,
+    },
+    'sw': {
+        'name': _('Swahili'),
+        'natural_name': 'Kiswahili',
+        'official': False,
+        'percentage': 0,
+    },
+    'ua': {
+        'name': _('Ukrainian'),
+        'natural_name': 'Українська',
+        'official': True,
+        'percentage': 0,
+    },
+    'zh-hant': {
+        'name': _('Traditional Chinese (Taiwan)'),
+        'natural_name': '漢語',
+        'official': False,
+        'percentage': 66,
+        'public_code': 'zh',
+    },
+    'zh-hans': {
+        'name': _('Simplified Chinese'),
+        'natural_name': '简体中文',
+        'official': False,
+        'percentage': 86,
+        'public_code': 'zh',
+    },
+}
+LANGUAGES_RTL = {
+    'ar',
+    'fa-ir',
+}
+
+for section in talk_config.sections():
+    # Plugins can add languages, which will not be visible
+    # without the providing plugin being activated
+    if section.startswith('language:'):
+        language_code = section[len('language:') :]
+        LANGUAGES_INFORMATION[language_code] = {
+            'name': talk_config.get(section, 'name'),
+            'public_code': talk_config.get(section, 'public_code', fallback=None) or language_code,
+            'natural_name': talk_config.get(section, 'name'),
+            'visible': False,
+            'official': False,
+            'percentage': None,
+        }
+
+
+for code, language in LANGUAGES_INFORMATION.items():
+    language['code'] = code
+
+LANGUAGES = [(language['code'], language['name']) for language in LANGUAGES_INFORMATION.values()]
 
 METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
 METRICS_USER = config.get('metrics', 'user', fallback='metrics')
@@ -497,8 +712,7 @@ CELERY_TASK_ROUTES = (
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static') ]
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
@@ -510,11 +724,26 @@ STATICFILES_FINDERS = (
 )
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
 
+# We have some Vue 3 frontend apps which are built with Vite, we need to
+# tell Django to collect their compiled output files.
+# Note that those apps must be built before running collectstatic.
+FRONTEND_DIR = BASE_DIR / 'frontend'
+# Note: We must assume that the directory exists,
+# because when `collectstatic` was invoked by `rebuild` command,
+# it only sees the settings before Vite runs.
+STATICFILES_DIRS.append(FRONTEND_DIR / 'global-nav-menu' / 'dist')
+STATICFILES_DIRS.append(FRONTEND_DIR / 'schedule-editor' / 'dist')
+
+VITE_DEV_SERVER_PORT = 8080
+VITE_DEV_SERVER = f'http://localhost:{VITE_DEV_SERVER_PORT}'
+VITE_DEV_MODE = DEBUG
+VITE_IGNORE = False  # Used to ignore `collectstatic`/`rebuild`
+
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
     ('text/vue', 'eventyay.helpers.compressor.VueCompiler'),
 )
-
+# COMPRESS_ROOT = os.path.join(BASE_DIR, 'static/')
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not debug_fallback
 COMPRESS_CSS_FILTERS = (
     # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
@@ -523,9 +752,18 @@ COMPRESS_CSS_FILTERS = (
     'compressor.filters.cssmin.CSSCompressorFilter',
 )
 
-TALK_BASE_PATH = config.get('eventyay', 'talk_base_path', fallback='/talks')
+TALK_BASE_PATH = ''
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+IS_HTML_EXPORT = False
+HTMLEXPORT_ROOT = Path(
+    talk_config.get(
+        'filesystem',
+        'htmlexport',
+        fallback=str(Path(DATA_DIR) / 'htmlexport'),
+    )
+)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -542,7 +780,7 @@ EVENTYAY_OBLIGATORY_2FA = config.getboolean('eventyay', 'obligatory_2fa', fallba
 EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 EVENTYAY_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 
-
+PDFTK = config.get('tools', 'pdftk', fallback=None)
 PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 
@@ -633,10 +871,26 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': False,
         },
+        # We need it to debug permission issues.
+        'rules': {
+            'handlers': [CONSOLE_HANDLER],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'propagate': False,
+        },
         'eventyay': {
             'handlers': [CONSOLE_HANDLER],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': False,
-        }
+        },
     },
 }
+
+email_level = config.get('logging', 'email_level', fallback='ERROR') or 'ERROR'
+emails = config.get('logging', 'email', fallback='').split(',')
+MANAGERS = ADMINS = [(email, email) for email in emails if email]
+if ADMINS:
+    LOGGING['handlers']['mail_admins'] = {
+        'level': email_level,
+        'class': 'eventyay.common.exceptions.PretalxAdminEmailHandler',
+    }
+    LOGGING['loggers']['django.request']['handlers'].append('mail_admins')

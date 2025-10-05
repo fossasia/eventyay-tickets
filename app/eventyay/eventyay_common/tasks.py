@@ -36,35 +36,6 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
-def send_organizer_webhook(self, user_id, organizer):
-    # Define the payload to send to the webhook
-    payload = {
-        'name': organizer.get('name'),
-        'slug': organizer.get('slug'),
-        'action': organizer.get('action'),
-    }
-    # Define the headers, including the Authorization header with the Bearer token
-    headers = get_header_token(user_id)
-
-    try:
-        # Send the POST request with the payload and the headers
-        response = requests.post(
-            urljoin(settings.TALK_HOSTNAME, 'webhook/organiser/'),
-            json=payload,
-            headers=headers,
-        )
-        response.raise_for_status()  # Raise exception for bad status codes
-    except requests.RequestException as e:
-        # Log any errors that occur
-        logger.error('Error sending webhook to talk component: %s', e)
-        # Retry the task if an exception occurs (with exponential backoff by default)
-        try:
-            self.retry(exc=e)
-        except self.MaxRetriesExceededError:
-            logger.error('Max retries exceeded for sending organizer webhook.')
-
-
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
 def send_team_webhook(self, user_id, team):
     # Define the payload to send to the webhook
     payload = {
@@ -88,47 +59,6 @@ def send_team_webhook(self, user_id, team):
             headers=headers,
         )
         response.raise_for_status()  # Raise exception for bad status codes
-    except requests.RequestException as e:
-        # Log any errors that occur
-        logger.error('Error sending webhook to talk component: %s', e)
-        # Retry the task if an exception occurs (with exponential backoff by default)
-        try:
-            self.retry(exc=e)
-        except self.MaxRetriesExceededError:
-            logger.error('Max retries exceeded for sending organizer webhook.')
-
-
-@shared_task(
-    bind=True, max_retries=5, default_retry_delay=60, base=SendEventTask
-)  # Retries up to 5 times with a 60-second delay
-def send_event_webhook(self, user_id: int, event: dict, action: str) -> Optional[dict]:
-    # Define the payload to send to the webhook
-    user_model = get_user_model()
-    user = user_model.objects.get(id=user_id)
-    payload = {
-        'organiser_slug': event.get('organiser_slug'),
-        'name': event.get('name'),
-        'slug': event.get('slug'),
-        'date_from': event.get('date_from'),
-        'date_to': event.get('date_to'),
-        'timezone': event.get('timezone'),
-        'locale': event.get('locale'),
-        'locales': event.get('locales'),
-        'user_email': user.email,
-        'action': action,
-        'is_video_creation': event.get('is_video_creation'),
-    }
-    headers = get_header_token(user_id)
-
-    try:
-        # Send the POST request with the payload and the headers
-        response = requests.post(
-            urljoin(settings.TALK_HOSTNAME, 'webhook/event/'),
-            json=payload,
-            headers=headers,
-        )
-        response.raise_for_status()  # Raise exception for bad status codes
-        return response.json()
     except requests.RequestException as e:
         # Log any errors that occur
         logger.error('Error sending webhook to talk component: %s', e)
@@ -286,8 +216,8 @@ def collect_billing_invoice(
         voucher_value=invoice_voucher.value if invoice_voucher else 0,
         monthly_bill=last_month_date,
         reminder_schedule=settings.BILLING_REMINDER_SCHEDULE,
-        created_by=settings.PRETIX_EMAIL_NONE_VALUE,
-        updated_by=settings.PRETIX_EMAIL_NONE_VALUE,
+        created_by=settings.EVENTYAY_EMAIL_NONE_VALUE,
+        updated_by=settings.EVENTYAY_EMAIL_NONE_VALUE,
     )
     billing_invoice.next_reminder_datetime = get_next_reminder_datetime(settings.BILLING_REMINDER_SCHEDULE)
     billing_invoice.save()
@@ -692,7 +622,7 @@ def billing_invoice_send_email(subject, content, invoice, organizer_billing):
         kwargs={
             'subject': subject,
             'body': content,
-            'sender': settings.PRETIX_EMAIL_NONE_VALUE,
+            'sender': settings.EVENTYAY_EMAIL_NONE_VALUE,
             'to': organizer_billing_contact,
             'html': None,
             'attach_file_base64': pdf_base64,

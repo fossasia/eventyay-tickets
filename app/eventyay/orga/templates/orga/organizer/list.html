@@ -1,0 +1,53 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load rules %}
+{% load static %}
+
+{% block extra_title %}{% translate "Teams" %} :: {% endblock extra_title %}
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/dashboard.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block content %}
+    <form class="mb-4 m-2">
+        <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
+    </form>
+    <div class="dashboard-list event-blocks">
+        {% if request.user.is_administrator %}
+            <a class="dashboard-block symbol" href="{% url "orga:organizer.create" %}">
+                <i class="fa fa-plus-circle"></i>
+            </a>
+        {% endif %}
+        {% for organizer in organizers %}
+            <a class="event-block dashboard-block" href="{{ organizer.orga_urls.base }}">
+                <h2 class="name">{{ organizer.name }}</h2>
+                <div class="stats">
+                    <div class="submissions">
+                        {{ organizer.event_count }}
+                        {% blocktranslate trimmed count count=organizer.event_count %}
+                            Event
+                        {% plural %}
+                            Events
+                        {% endblocktranslate %}
+                    </div>
+                    <div class="state inactive">
+                        {{ organizer.team_count }}
+                        {% blocktranslate trimmed count count=organizer.team_count context "number of teams" %}
+                            Team
+                        {% plural %}
+                            Teams
+                        {% endblocktranslate %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    {% if not organizers and not can_create_organizer %}
+        <div class="alert alert-info">{% translate "There are no organizers you can edit." %}</div>
+    {% endif %}
+{% endblock content %}
