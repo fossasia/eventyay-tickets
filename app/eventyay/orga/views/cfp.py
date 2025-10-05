@@ -55,8 +55,8 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     form_class = CfPForm
     model = CfP
     template_name = 'orga/cfp/text.html'
-    permission_required = 'event.update_event'
-    write_permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
+    write_permission_required = 'base.update_event'
 
     @context
     def tablist(self):
@@ -285,7 +285,7 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
 
 
 class CfPQuestionToggle(PermissionRequired, View):
-    permission_required = 'submission.update_question'
+    permission_required = 'base.update_talkquestion'
 
     def get_object(self) -> TalkQuestion:
         return TalkQuestion.all_objects.filter(event=self.request.event, pk=self.kwargs.get('pk')).first()
@@ -301,7 +301,7 @@ class CfPQuestionToggle(PermissionRequired, View):
 
 class CfPQuestionRemind(EventPermissionRequired, FormView):
     template_name = 'orga/cfp/question/remind.html'
-    permission_required = 'submission.orga_view_question'
+    permission_required = 'base.orga_view_talkquestion'
     form_class = ReminderFilterForm
 
     def get_form_kwargs(self):
@@ -388,7 +388,7 @@ class SubmissionTypeView(OrderActionMixin, OrgaCRUDView):
 
 
 class SubmissionTypeDefault(PermissionRequired, View):
-    permission_required = 'submission.update_submissiontype'
+    permission_required = 'base.update_submissiontype'
 
     def get_object(self):
         return get_object_or_404(self.request.event.submission_types, pk=self.kwargs.get('pk'))
@@ -478,7 +478,7 @@ class AccessCodeSend(PermissionRequired, UpdateView):
     form_class = AccessCodeSendForm
     context_object_name = 'access_code'
     template_name = 'orga/cfp/submitteraccesscode/send.html'
-    permission_required = 'submission.view_submitteraccesscode'
+    permission_required = 'base.view_submitteraccesscode'
 
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.access_codes
@@ -510,7 +510,7 @@ class AccessCodeSend(PermissionRequired, UpdateView):
 @method_decorator(csp_update({'SCRIPT_SRC': "'self' 'unsafe-eval'"}), name='dispatch')
 class CfPFlowEditor(EventPermissionRequired, TemplateView):
     template_name = 'orga/cfp/flow.html'
-    permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

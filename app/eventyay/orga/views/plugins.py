@@ -12,7 +12,7 @@ from eventyay.common.views.mixins import EventPermissionRequired
 
 class EventPluginsView(EventPermissionRequired, TemplateView):
     template_name = 'orga/plugins.html'
-    permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
 
     @context
     @cached_property

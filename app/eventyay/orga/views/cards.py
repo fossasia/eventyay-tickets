@@ -106,7 +106,7 @@ class SubmissionCard(Flowable):
 
 
 class SubmissionCards(EventPermissionRequired, View):
-    permission_required = 'submission.orga_update_submission'
+    permission_required = 'base.orga_update_submission'
 
     def get_queryset(self):
         return (

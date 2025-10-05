@@ -24,7 +24,7 @@ class ScheduleFeed(Feed):
     description_template = 'agenda/feed/description.html'
 
     def get_object(self, request, *args, **kwargs):
-        if not request.user.has_perm('schedule.list_schedule', request.event):
+        if not request.user.has_perm('base.list_schedule', request.event):
             raise Http404()
         return request.event
 

@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def generate_sso_token(user_email):
     jwt_payload = {
         'email': user_email,
-        'has_perms': 'orga.edit_schedule',
+        'has_perms': 'base.edit_schedule',
         'exp': datetime.now(timezone.utc) + timedelta(hours=1),
         'iat': datetime.now(timezone.utc),
     }

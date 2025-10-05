@@ -10,13 +10,13 @@ from django.views.generic import TemplateView
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
+from eventyay.base.models import Submission, SubmissionStates
+from eventyay.base.models.event import Event
 from eventyay.base.models.log import LogEntry
+from eventyay.base.models.organizer import Organizer
 from eventyay.common.text.phrases import phrases
 from eventyay.common.views.mixins import EventPermissionRequired, PermissionRequired
-from eventyay.base.models.event import Event
-from eventyay.base.models.organizer import Organizer
 from eventyay.event.stages import get_stages
-from eventyay.base.models import Submission, SubmissionStates
 from eventyay.talk_rules.submission import get_missing_reviews
 
 
@@ -75,7 +75,7 @@ class DashboardEventListView(TemplateView):
 
 
 class DashboardOrganizerEventListView(PermissionRequired, DashboardEventListView):
-    permission_required = 'event.view_organizer'
+    permission_required = 'base.view_organizer'
 
     def get_permission_object(self):
         return self.request.organizer
@@ -91,7 +91,7 @@ class DashboardOrganizerEventListView(PermissionRequired, DashboardEventListView
 
 class DashboardOrganizerListView(PermissionRequired, TemplateView):
     template_name = 'orga/organizer/list.html'
-    permission_required = 'event.list_organizer'
+    permission_required = 'base.list_organizer'
 
     def filter_organizer(self, organizer, query):
         name = {'en': organizer.name} if isinstance(organizer.name, str) else organizer.name.data
@@ -121,7 +121,7 @@ class DashboardOrganizerListView(PermissionRequired, TemplateView):
 
 class EventDashboardView(EventPermissionRequired, TemplateView):
     template_name = 'orga/event/dashboard.html'
-    permission_required = 'event.orga_access_event'
+    permission_required = 'base.orga_access_event'
 
     def get_cfp_tiles(self, _now, can_change_submissions=False):
         result = []
@@ -217,8 +217,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         result['go_to_target'] = 'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         _now = now()
         today = _now
-        can_change_settings = self.request.user.has_perm('event.change_settings.event', event)
-        can_change_submissions = self.request.user.has_perm('submission.orga_update_submission', event)
+        can_change_settings = self.request.user.has_perm('base.change_settings.event', event)
+        can_change_submissions = self.request.user.has_perm('base.orga_update_submission', event)
         result['tiles'] = self.get_cfp_tiles(_now, can_change_submissions=can_change_submissions)
         if today < event.date_from:
             days = (event.date_from - today).days
