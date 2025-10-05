@@ -99,6 +99,7 @@ dependencies = [
     "et-xmlfile>=2.0.0",
     "eventyay-paypal @ git+https://github.com/fossasia/eventyay-tickets-paypal.git@4728e6733d971edb4db6df4ebfe12caefd371d55",
     "eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@1d461de9ac7ef743cb2e6ddbace3434ba5ec6fcc",
+    "exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@enext",
     "execnet>=2.1.1",
     "faker>=37.3.0",
     "fakeredis>=2.26.2",
