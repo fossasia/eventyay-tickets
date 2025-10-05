@@ -42,7 +42,17 @@ export const TalkSchema = z.object({
     z.record(z.string(), z.string())
   ]).transform(toTitleRecord),
   abstract: z.string().optional(),
-  speakers: z.array(z.string()).optional().default([]),
+  speakers: z.union([
+    z.array(z.string()),
+    z.array(z.object({ name: z.string() }))
+  ]).transform(val => {
+    // Transform to array of strings (speaker names) for consistency
+    if (val.length === 0) return [];
+    if (typeof val[0] === 'string') {
+      return val as string[];
+    }
+    return (val as { name: string }[]).map(speaker => speaker.name);
+  }).optional().default([]),
   room: z.union([
     z.number(),
     z.string().transform(val => parseInt(val, 10) || 0)

@@ -259,10 +259,14 @@ def serialize_break(slot):
 def serialize_slot(slot, warnings=None):
     base_data = serialize_break(slot)
     if slot.submission:
+        speakers_list = [
+            {'name': getattr(speaker, 'name', None) or getattr(speaker, 'get_display_name', lambda: str(speaker))()}
+            for speaker in slot.submission.speakers.all()
+        ]
         submission_data = {
             'id': slot.pk,
             'title': str(slot.submission.title),
-            'speakers': [{'name': speaker.name} for speaker in slot.submission.speakers.all()],
+            'speakers': speakers_list,
             'submission_type': str(slot.submission.submission_type.name),
             'track': (
                 {

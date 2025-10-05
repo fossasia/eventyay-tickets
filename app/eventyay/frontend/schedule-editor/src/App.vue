@@ -110,7 +110,7 @@ interface Talk {
   code: string
   title: Record<string, string>
   abstract?: string
-  speakers?: string[] // array of speaker codes
+  speakers?: string[]
   track?: string
   room?: string
   duration: number
@@ -414,7 +414,9 @@ function editorSave(): void {
     start: editorSession.value.start?.toISOString(),
     end: editorSession.value.end?.toISOString(),
     room: editorSession.value.room?.id,
-    speakers: editorSession.value.speakers?.map(s => s.code),
+    speakers: editorSession.value.speakers?.map(s => 
+      typeof s === 'string' ? s : s.name
+    ) || [],
     track: editorSession.value.track?.id,
     abstract: editorSession.value.abstract,
     state: editorSession.value.state
