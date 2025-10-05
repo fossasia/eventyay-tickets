@@ -10,9 +10,9 @@
 {% block submission_title %}{% translate "Speakers" %} :: {% endblock submission_title %}
 
 {% block submission_content %}
-    {% has_perm "submission.update_submission" request.user submission as can_edit_speakers %}
-    {% has_perm "mail.send_queuedmail" request.user request.event as can_send_mails %}
-    {% has_perm "person.mark_arrived_speakerprofile" request.user request.event as can_mark_speaker %}
+    {% has_perm "base.update_submission" request.user submission as can_edit_speakers %}
+    {% has_perm "base.send_queuedmail" request.user request.event as can_send_mails %}
+    {% has_perm "base.mark_arrived_speakerprofile" request.user request.event as can_mark_speaker %}
     {% if can_edit_speakers %}<div class="alert">
         <form method="POST" class="form d-flex w-100 flex-column">
             {% csrf_token %}

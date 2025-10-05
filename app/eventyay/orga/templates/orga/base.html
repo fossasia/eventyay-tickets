@@ -202,11 +202,11 @@
                     {% endblock %}
                 </div>
                 {% if request.event %}
-                    {% has_perm "event.orga_access_event" request.user request.event as can_see_orga_area %}
-                    {% has_perm "submission.orga_update_submission" request.user request.event as can_see_orga_exclusive %}
-                    {% has_perm "event.update_team" request.user request.event as can_change_teams %}
-                    {% has_perm "event.update_event" request.user request.event as can_change_settings %}
-                    {% has_perm "person.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
+                    {% has_perm "base.orga_access_event" request.user request.event as can_see_orga_area %}
+                    {% has_perm "base.orga_update_submission" request.user request.event as can_see_orga_exclusive %}
+                    {% has_perm "base.update_team" request.user request.event as can_change_teams %}
+                    {% has_perm "base.update_event" request.user request.event as can_change_settings %}
+                    {% has_perm "base.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
                     {% if can_see_orga_exclusive %}
                         {% if can_change_settings %}
                             <div class="nav-fold">
@@ -435,8 +435,8 @@
                         <i class="fa fa-cog"></i>
                         <span>{% translate "Settings" %}</span>
                     </a>
-                    {% has_perm "event.update_team" request.user request.organizer as can_change_teams %}
-                    {% has_perm "event.view_organizer" request.user request.organizer as can_view_speakers %}
+                    {% has_perm "base.update_team" request.user request.organizer as can_change_teams %}
+                    {% has_perm "base.view_organizer" request.user request.organizer as can_view_speakers %}
                     {% if can_change_teams %}
                         <a class="nav-link {% if "/teams/" in request.path %} active{% endif %}" href="{% url "orga:organizer.teams.list" organizer=request.organizer.slug %}">
                             <i class="fa fa-users"></i>
@@ -453,7 +453,7 @@
                         {% include "orga/includes/sidebar_nav.html" %}
                     {% endfor %}
                 {% else %}  {# elif request.organizer #}
-                    {% has_perm "event.view_any_organizer" request.user request as can_see_organizer_lists %}
+                    {% has_perm "base.view_any_organizer" request.user request as can_see_organizer_lists %}
                     {% if can_see_organizer_lists %}
                         <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="{% url "orga:event.list" %}">
                             <i class="fa fa-calendar-o"></i>

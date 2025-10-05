@@ -21,10 +21,10 @@
 {% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}session{% plural %}sessions{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% has_perm "submission.create_submission" request.user request.event as can_create_submission %}
-    {% has_perm "submission.state_change_submission" request.user request.event as can_change_submission %}
-    {% has_perm "person.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
-    {% has_perm "mail.send_queuedmail" request.user request.event as can_send_mails %}
+    {% has_perm "base.create_submission" request.user request.event as can_create_submission %}
+    {% has_perm "base.state_change_submission" request.user request.event as can_change_submission %}
+    {% has_perm "base.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
+    {% has_perm "base.send_queuedmail" request.user request.event as can_send_mails %}
     <h2 class="d-flex align-items-center">
         <span>
             {{ page_obj.paginator.count }}

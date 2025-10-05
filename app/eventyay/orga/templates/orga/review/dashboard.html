@@ -21,8 +21,8 @@
 {% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% has_perm "submission.create_review" request.user request.event as can_review %}
-    {% has_perm "person.reviewer_list_speakerprofile" request.user request.event as can_view_speakers %}
+    {% has_perm "base.create_review" request.user request.event as can_review %}
+    {% has_perm "base.reviewer_list_speakerprofile" request.user request.event as can_view_speakers %}
     <div class="alert alert-info">
         <div>
             {% if can_review and next_submission %}
