@@ -43,7 +43,7 @@
             {{ wizard.management_form }}
             <div class="d-flex align-items-start">
                 <h2>{% block submission_step_title %}{{ title|default:'' }}{% endblock submission_step_title %}</h2>
-                {% has_perm "event.update_event" request.user request.event as can_edit_cfp %}
+                {% has_perm "base.update_event" request.user request.event as can_edit_cfp %}
                 {% if can_edit_cfp %}{% block orga_edit_link %}{% orga_edit_link request.event.cfp.urls.editor %}{% endblock %}{% endif %}
             </div>
             {% block submission_step_text %}<p>{{ text|rich_text }}</p>{% endblock %}

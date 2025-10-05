@@ -44,7 +44,7 @@ class SpeakerList(EventPermissionRequired, Sortable, Filterable, PaginationMixin
     default_filters = ('user__email__icontains', 'user__fullname__icontains')
     sortable_fields = ('user__email', 'user__fullname')
     default_sort_field = 'user__fullname'
-    permission_required = 'person.orga_list_speakerprofile'
+    permission_required = 'base.orga_list_speakerprofile'
 
     def get_filter_form(self):
         any_arrived = SpeakerProfile.objects.filter(event=self.request.event, has_arrived=True).exists()
@@ -127,8 +127,8 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
     template_name = 'orga/speaker/form.html'
     form_class = SpeakerProfileForm
     model = User
-    permission_required = 'person.orga_list_speakerprofile'
-    write_permission_required = 'person.update_speakerprofile'
+    permission_required = 'base.orga_list_speakerprofile'
+    write_permission_required = 'base.update_speakerprofile'
 
     def get_success_url(self) -> str:
         return self.profile.orga_urls.base
@@ -163,8 +163,8 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
             speaker=speaker,
             event=self.request.event,
             for_reviewers=(
-                not self.request.user.has_perm('submission.orga_update_submission', self.request.event)
-                and self.request.user.has_perm('submission.list_review', self.request.event)
+                not self.request.user.has_perm('base.orga_update_submission', self.request.event)
+                and self.request.user.has_perm('base.list_review', self.request.event)
             ),
         )
 
@@ -188,7 +188,7 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
 
 
 class SpeakerPasswordReset(SpeakerViewMixin, ActionConfirmMixin, DetailView):
-    permission_required = 'person.update_speakerprofile'
+    permission_required = 'base.update_speakerprofile'
     model = User
     context_object_name = 'speaker'
     action_confirm_icon = 'key'
@@ -221,7 +221,7 @@ class SpeakerPasswordReset(SpeakerViewMixin, ActionConfirmMixin, DetailView):
 
 
 class SpeakerToggleArrived(SpeakerViewMixin, View):
-    permission_required = 'person.update_speakerprofile'
+    permission_required = 'base.update_speakerprofile'
 
     def dispatch(self, request, event, code):
         self.profile.has_arrived = not self.profile.has_arrived
@@ -260,7 +260,7 @@ class SpeakerInformationView(OrgaCRUDView):
 
 
 class SpeakerExport(EventPermissionRequired, FormView):
-    permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
     template_name = 'orga/speaker/export.html'
     form_class = SpeakerExportForm
 

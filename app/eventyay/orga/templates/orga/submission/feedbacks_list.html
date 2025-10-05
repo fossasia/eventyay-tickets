@@ -20,7 +20,7 @@
         </h4>
 
         {% for entry in submission.list %}
-            {% has_perm "submission.view_feedback_submission" request.user entry.talk as can_see_feedback %}
+            {% has_perm "base.view_feedback_submission" request.user entry.talk as can_see_feedback %}
             {% if can_see_feedback %}
                 <div class="card mb-2">
                     <div class="card-body pb-0">{{ entry.review|rich_text }}</div>

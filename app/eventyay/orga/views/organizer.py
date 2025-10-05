@@ -44,7 +44,7 @@ class TeamView(OrgaCRUDView):
     template_namespace = "orga/organizer"
     url_name = "organizer.teams"
     context_object_name = "team"
-    permission_required = "event.update_team"
+    permission_required = "base.update_team"
 
     def get_queryset(self):
         return self.request.organizer.teams.all().order_by("-all_events", "-id")
@@ -154,7 +154,7 @@ class TeamView(OrgaCRUDView):
 
 
 class InviteMixin(PermissionRequired):
-    permission_required = "event.update_team"
+    permission_required = "base.update_team"
     model = TeamInvite
 
     def get_permission_object(self):
@@ -223,7 +223,7 @@ class TeamResend(InviteMixin, ActionConfirmMixin, DetailView):
 
 
 class TeamMemberMixin(PermissionRequired):
-    permission_required = "event.update_team"
+    permission_required = "base.update_team"
 
     def get_permission_object(self):
         return self.request.organizer
@@ -300,7 +300,7 @@ class TeamResetPassword(TeamMemberMixin, ActionConfirmMixin, TemplateView):
 class OrganizerDetail(PermissionRequired, CreateOrUpdateView):
     template_name = "orga/organizer/detail.html"
     model = Organizer
-    permission_required = "event.update_organizer"
+    permission_required = "base.update_organizer"
     form_class = OrganizerForm
 
     def get_object(self, queryset=None):
@@ -324,7 +324,7 @@ class OrganizerDetail(PermissionRequired, CreateOrUpdateView):
 
 
 class OrganizerDelete(PermissionRequired, ActionConfirmMixin, DetailView):
-    permission_required = "person.administrator_user"
+    permission_required = "base.administrator_user"
     model = Organizer
     action_text = (
         _(
@@ -385,7 +385,7 @@ def get_speaker_access_events_for_user(*, user, organizer):
                 for event in team_events:
                     if event.pk in events or event.pk in no_access_events:
                         continue
-                    if user.has_perm("person.orga_list_speakerprofile", event):
+                    if user.has_perm("base.orga_list_speakerprofile", event):
                         events.add(event.pk)
                     else:
                         no_access_events.add(event.pk)
@@ -397,7 +397,7 @@ class OrganizerSpeakerList(
     PermissionRequired, Sortable, Filterable, PaginationMixin, ListView
 ):
     template_name = "orga/organizer/speaker_list.html"
-    permission_required = "event.view_organizer"
+    permission_required = "base.view_organizer"
     context_object_name = "speakers"
     default_filters = ("email__icontains", "fullname__icontains")
     sortable_fields = ("email", "fullname", "accepted_submission_count", "submission_count")
