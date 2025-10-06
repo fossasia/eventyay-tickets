@@ -21,6 +21,7 @@ export default {
 			default: false
 		}
 	},
+	emits: ['edit', 'change'],
 	data() {
 		return {
 			hasLoaded: false

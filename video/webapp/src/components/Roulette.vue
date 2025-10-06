@@ -76,7 +76,7 @@ export default {
 	mounted() {
 		this.startVideo()
 	},
-	destroyed() {
+	unmounted() {
 		if (this.soundMeter) {
 			this.soundMeter.context.close()
 		}

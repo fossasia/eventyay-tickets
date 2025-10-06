@@ -5,7 +5,8 @@
 	template(v-else)
 		.asking-form(v-if="showAskingForm")
 			bunt-input-outline-container(:label="$t('Questions:asking-form:label')")
-				textarea(v-model="question", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
+				template(#default="{focus, blur}")
+					textarea(v-model="question", @focus="focus", @blur="blur")
 			.actions
 				bunt-button#btn-cancel(@click="showAskingForm = false") {{ $t('Prompt:cancel:label') }}
 				bunt-button#btn-submit-question(@click="submitQuestion") {{ $t('Questions:asking-form:submit') }}
@@ -33,6 +34,7 @@ export default {
 			default: false
 		}
 	},
+	emits: ['change'],
 	data() {
 		return {
 			question: '',

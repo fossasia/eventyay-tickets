@@ -2,7 +2,6 @@
 // - volatile channels are automatically left, so we should remove them from `joinedChannels`. Leaving them in does not make any difference right now though. OUTDATED?
 // - use map for joinedChannels
 
-import Vue from 'vue'
 import api from 'lib/api'
 import router from 'router'
 import i18n from 'i18n'
@@ -51,8 +50,8 @@ export default {
 		},
 		channelName(state, getters, rootState) {
 			return function(channel) {
-				if (this.isDirectMessageChannel(channel)) {
-					return this.directMessageChannelName(channel)
+				if (getters.isDirectMessageChannel(channel)) {
+					return getters.directMessageChannelName(channel)
 				} else {
 					return rootState.rooms.find(room => room.modules.some(m => m.channel_id === channel.id)).name
 				}
@@ -125,7 +124,7 @@ export default {
 				state.timeline.unshift(...results)
 				// cache profiles the server sent us
 				for (const user of Object.values(users)) {
-					Vue.set(state.usersLookup, user.id, user)
+					state.usersLookup[user.id] = user
 				}
 				// assume past events don't just appear and stop forever when results are smaller than count
 				state.beforeCursor = results.length < 25 ? null : results[0].event_id
@@ -155,13 +154,13 @@ export default {
 				channel: state.channel,
 				id: pointer
 			})
-			Vue.set(state.readPointers, state.channel, pointer)
+			state.readPointers[state.channel] = pointer
 		},
 		async fetchUsers({state}, ids) {
 			if (!ids?.length) return
 			const users = await api.call('user.fetch', {ids})
 			for (const user of Object.values(users)) {
-				Vue.set(state.usersLookup, user.id, user)
+				state.usersLookup[user.id] = user
 			}
 		},
 		sendMessage({state}, {content}) {
@@ -192,7 +191,7 @@ export default {
 		updateUser({state}, {id, update}) {
 			if (!state.usersLookup[id]) return
 			for (const [key, value] of Object.entries(update)) {
-				Vue.set(state.usersLookup[id], key, value)
+				state.usersLookup[id][key] = value
 			}
 		},
 		async moderateUser({state}, {user, action}) {
@@ -292,7 +291,7 @@ export default {
 				switch (event.content.membership) {
 					case 'join': {
 						state.members.push(event.content.user)
-						Vue.set(state.usersLookup, event.content.user.id, event.content.user)
+						state.usersLookup[event.content.user.id] = event.content.user
 						break
 					}
 					case 'leave':
@@ -324,7 +323,7 @@ export default {
 			// hit the user profile cache for each message
 			if (event.users) {
 				for (const user of Object.values(event.users)) {
-					Vue.set(state.usersLookup, user.id, user)
+					state.usersLookup[user.id] = user
 				}
 			}
 			if (!state.usersLookup[event.sender]) {
@@ -336,7 +335,7 @@ export default {
 		},
 		'api::chat.read_pointers'({state}, readPointers) {
 			for (const [channel, pointer] of Object.entries(readPointers)) {
-				Vue.set(state.readPointers, channel, pointer)
+				state.readPointers[channel] = pointer
 				// TODO passively close desktop notifications
 			}
 		},
@@ -355,7 +354,7 @@ export default {
 			const channel = state.joinedChannels.find(c => c.id === channelId) || getters.automaticallyJoinedChannels.includes(channelId) ? {id: channelId} : null
 			if (!channel) return
 			// Increment notification count
-			Vue.set(state.notificationCounts, channel.id, (state.notificationCounts[channel.id] || 0) + 1)
+			state.notificationCounts[channel.id] = (state.notificationCounts[channel.id] || 0) + 1
 			// TODO show desktop notification when window in focus but route is somewhere else?
 			let body = i18n.t('DirectMessage:notification-unread:text')
 			if (data.event.content.type === 'text') {
@@ -385,7 +384,7 @@ export default {
 			}
 			if (event.users) {
 				for (const user of Object.values(event.users)) {
-					Vue.set(state.usersLookup, user.id, user)
+					state.usersLookup[user.id] = user
 				}
 			}
 		},

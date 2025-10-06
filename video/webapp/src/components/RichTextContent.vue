@@ -26,6 +26,7 @@ export default {
 			readOnly: true
 		})
 		quill.setContents(this.content)
+		this.quill = quill
 	},
 	methods: {
 		handleClick(event) {

@@ -44,7 +44,7 @@ export function renderSvg(random, userProfile, config) {
 		.lightness(95)
 		.hsl().string()
 	const size = 48
-	const fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif"
+	const fontFamily = '-apple-system, BlinkMacSystemFont, \'Segoe UI\', \'Roboto\', \'Oxygen\', \'Ubuntu\', \'Fira Sans\', \'Droid Sans\', \'Helvetica Neue\', sans-serif'
 	const fontSize = 0.5
 	const fontWeight = 500
 

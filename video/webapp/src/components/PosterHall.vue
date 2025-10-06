@@ -3,17 +3,18 @@
 	template(v-if="posters")
 		.list-actions
 			bunt-input-outline-container#input-search
-				.search-field(slot-scope="{focus, blur}")
-					.icon.mdi.mdi-magnify
-					.applied-filter(v-for="filter of filters", :title="`${$t(`PosterHall:filter:field-${filter.field}`)}: ${filter.value}`")
-						.field {{ $t(`PosterHall:filter:field-${filter.field}`) }}:
-						.value {{ filter.label }}
-						bunt-icon-button(@click="removeFilter(filter)") close
-					input(ref="input", name="search", v-model="search", :placeholder="$t('PosterHall:input-search:placeholder')", @focus="focus", @blur="blur", autofocus, autocomplete="off")
-			menu-dropdown(v-model="showAddFilters", placement="bottom-end", @mousedown.native.stop="")
-				template(v-slot:button="{toggle}")
+				template(#default="{focus, blur}")
+					.search-field
+						.icon.mdi.mdi-magnify
+						.applied-filter(v-for="filter of filters", :title="`${$t(`PosterHall:filter:field-${filter.field}`)}: ${filter.value}`")
+							.field {{ $t(`PosterHall:filter:field-${filter.field}`) }}:
+							.value {{ filter.label }}
+							bunt-icon-button(@click="removeFilter(filter)") close
+						input(ref="input", name="search", v-model="search", :placeholder="$t('PosterHall:input-search:placeholder')", @focus="focus", @blur="blur", autofocus, autocomplete="off")
+			menu-dropdown(v-model="showAddFilters", placement="bottom-end", @mousedown.stop="")
+				template(#button="{toggle}")
 					bunt-button(icon="filter-plus", @click="toggle") {{ $t('PosterHall:button-add-filter') }}
-				template(v-slot:menu)
+				template(#menu)
 					scrollbars.not-menu-item(y)
 						.filter
 							label {{ $t(`PosterHall:add-filter:header-categories`) }}
@@ -27,27 +28,28 @@
 								.filter-item(v-for="tag of tags", :title="tag.name", :class="{active: filters.some(filter => filter.field === 'tag' && filter.value === tag.name)}", @click="toggleFilter({field: 'tag', value: tag.key, label: tag.name})")
 									.name {{ tag.name }}
 									.count {{ tag.count }}
-		RecycleScroller.posters.bunt-scrollbar(:items="flatCategorizedFilteredPosters", type-field="type", v-slot="{item: poster}", v-scrollbar.y="")
-			h2.category(v-if="poster.type === 'category'") {{ poster.label }}
-			router-link.poster(v-else, :to="{name: 'poster', params: {posterId: poster.id}}", :key="poster.id")
-				.content
-					.tags
-						.tag(v-for="tag of poster.tags") {{ tag }}
-					h3.title {{ poster.title }}
-					.authors(v-if="poster.authors && poster.authors.authors") {{ poster.authors.authors.map(a => a.name).join(' / ') }}
-					rich-text-content.abstract(:content="poster.abstract", v-dynamic-line-clamp)
-					.actions
-						bunt-button {{ $t('PosterHall:more:label') }}
-				img.poster-screenshot(v-if="poster.poster_preview", :src="poster.poster_preview")
-				.preview-placeholder(v-else)
-					.mdi(:class="`mdi-${getIconByFileEnding(poster.poster_url)}`")
+		.posters.bunt-scrollbar(:items="flatCategorizedFilteredPosters", type-field="type", v-scrollbar.y="")
+			template(v-for="poster of flatCategorizedFilteredPosters", :key="poster.id")
+				h2.category(v-if="poster.type === 'category'") {{ poster.label }}
+				router-link.poster(v-else, :to="{name: 'poster', params: {posterId: poster.id}}", :key="poster.id")
+					.content
+						.tags
+							.tag(v-for="tag of poster.tags") {{ tag }}
+						h3.title {{ poster.title }}
+						.authors(v-if="poster.authors && poster.authors.authors") {{ poster.authors.authors.map(a => a.name).join(' / ') }}
+						rich-text-content.abstract(:content="poster.abstract", v-dynamic-line-clamp)
+						.actions
+							bunt-button {{ $t('PosterHall:more:label') }}
+					img.poster-screenshot(v-if="poster.poster_preview", :src="poster.poster_preview")
+					.preview-placeholder(v-else)
+						.mdi(:class="`mdi-${getIconByFileEnding(poster.poster_url)}`")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 // TODO
 // - put categories through config key map
 
-import intersection from 'lodash/intersection'
+import { intersection } from 'lodash'
 import api from 'lib/api'
 import MenuDropdown from 'components/MenuDropdown'
 import RichTextContent from 'components/RichTextContent'

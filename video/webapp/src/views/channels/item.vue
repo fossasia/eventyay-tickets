@@ -44,7 +44,7 @@ export default {
 	async created() {
 		await this.pollOnlineStatus()
 	},
-	destroyed() {
+	unmounted() {
 		if (this.pollOnlineStatusStatusTimeout) {
 			window.clearTimeout(this.pollOnlineStatusStatusTimeout)
 		}

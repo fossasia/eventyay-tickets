@@ -18,7 +18,7 @@ bunt-input-outline-container.c-chat-input
 						i.bunt-icon.mdi.mdi-file
 						| {{ file.name }}
 					bunt-icon-button#btn-remove-attachment(@click="removeFile(file)") close-circle
-		bunt-progress-circular(size="small" v-if="uploading")
+		bunt-progress-circular(size="small", v-if="uploading")
 	.ui-background-blocker(v-if="autocompleteCoordinates", @click="closeAutocomplete")
 		.autocomplete-dropdown(:style="autocompleteCoordinates")
 			template(v-if="autocomplete.options")
@@ -34,6 +34,7 @@ bunt-input-outline-container.c-chat-input
 // - parse ascii emoticons ;)
 // - parse colon emoji :+1:
 // - add scrollbar when overflowing parent
+import { markRaw } from 'vue'
 import api from 'lib/api'
 import Quill from 'quill'
 import 'lib/quill/emoji'
@@ -47,6 +48,7 @@ const Delta = Quill.import('delta')
 
 export default {
 	components: { Avatar, EmojiPickerButton, UploadButton },
+	emits: ['send'],
 	props: {
 		message: Object // initialize with existing message to edit
 	},
@@ -84,7 +86,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.quill = new Quill(this.$refs.editor, {
+		this.quill = markRaw(new Quill(this.$refs.editor, {
 			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
 			placeholder: this.$t('ChatInput:input:placeholder'),
 			formats: ['emoji', 'mention'],
@@ -114,7 +116,7 @@ export default {
 					}
 				}
 			}
-		})
+		}))
 		this.quill.on('text-change', this.onTextChange)
 		this.quill.on('selection-change', this.onSelectionChange)
 		// TODO paste
@@ -187,9 +189,11 @@ export default {
 			this.autocomplete.selected = index
 		},
 		handleMention() {
-			if (!this.autocomplete) return
-			this.quill.deleteText(this.autocomplete.range.index, this.autocomplete.range.length)
+			if (!this.autocomplete) return true
 			const user = this.autocomplete.options[this.autocomplete.selected]
+			if (!user) return true
+			this.quill.setSelection(this.autocomplete.range.index, 0)
+			this.quill.deleteText(this.autocomplete.range.index, this.autocomplete.range.length)
 			this.quill.insertEmbed(this.autocomplete.range.index, 'mention', {
 				id: user.id,
 				name: user.profile.display_name
@@ -200,7 +204,6 @@ export default {
 		send() {
 			const contents = this.quill.getContents()
 			let text = ''
-			console.log(contents)
 			for (const op of contents.ops) {
 				if (typeof op.insert === 'string') {
 					text += op.insert

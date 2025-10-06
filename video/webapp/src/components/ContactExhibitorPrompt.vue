@@ -22,6 +22,7 @@ export default {
 	props: {
 		exhibitor: Object,
 	},
+	emits: ['close'],
 	data() {
 		return {
 			timer: 31,
@@ -33,7 +34,7 @@ export default {
 		this.tickTimer()
 		this.request = (await api.call('exhibition.contact', {exhibitor: this.exhibitor.id})).contact_request
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		clearTimeout(this.ticker)
 	},
 	methods: {
