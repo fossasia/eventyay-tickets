@@ -71,7 +71,7 @@ class ScheduleMixin:
 
 
 class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
-    permission_required = 'schedule.list_schedule'
+    permission_required = 'base.list_schedule'
 
     def get(self, request, *args, **kwargs):
         url = resolve(self.request.path_info)
@@ -90,7 +90,7 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
 class ScheduleView(PermissionRequired, ScheduleMixin, TemplateView):
     template_name = 'agenda/schedule.html'
-    permission_required = 'schedule.view_schedule'
+    permission_required = 'base.view_schedule'
 
     def get_text(self, request, **kwargs):
         data = ScheduleData(
@@ -121,7 +121,7 @@ class ScheduleView(PermissionRequired, ScheduleMixin, TemplateView):
 
     def dispatch(self, request, **kwargs):
         if not self.has_permission() and self.request.user.has_perm(
-            'submission.list_featured_submission', self.request.event
+            'base.list_featured_submission', self.request.event
         ):
             messages.success(request, _('Our schedule is not live yet.'))
             return HttpResponseRedirect(self.request.event.urls.featured)
@@ -221,7 +221,7 @@ class ScheduleNoJsView(ScheduleView):
 
 class ChangelogView(EventPermissionRequired, TemplateView):
     template_name = 'agenda/changelog.html'
-    permission_required = 'schedule.list_schedule'
+    permission_required = 'base.list_schedule'
 
     @context
     def schedules(self):

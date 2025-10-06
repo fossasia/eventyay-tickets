@@ -29,7 +29,7 @@ from eventyay.base.models import Submission, SubmissionStates
 
 
 class TalkMixin(PermissionRequired):
-    permission_required = 'submission.view_public_submission'
+    permission_required = 'base.view_public_submission'
 
     def get_queryset(self):
         return self.request.event.submissions.prefetch_related(
@@ -90,7 +90,7 @@ class TalkView(TalkMixin, TemplateView):
 
         ctx = super().get_context_data(**kwargs)
         schedule = self.request.event.current_schedule or self.request.event.wip_schedule
-        if not self.request.user.has_perm('schedule.view_schedule', schedule):
+        if not self.request.user.has_perm('base.view_schedule', schedule):
             return ctx
         qs = schedule.talks.filter(room__isnull=False).select_related('room') if schedule else TalkSlot.objects.none()
         ctx['talk_slots'] = qs.filter(submission=self.submission).order_by('start').select_related('room')
@@ -184,7 +184,7 @@ class SingleICalView(EventPageMixin, TalkMixin, View):
 
 class FeedbackView(TalkMixin, FormView):
     form_class = FeedbackForm
-    permission_required = 'submission.view_feedback_page_submission'
+    permission_required = 'base.view_feedback_page_submission'
 
     def get_queryset(self):
         return self.request.event.submissions.prefetch_related(
@@ -201,7 +201,7 @@ class FeedbackView(TalkMixin, FormView):
     @context
     @cached_property
     def can_give_feedback(self):
-        return self.request.user.has_perm('submission.give_feedback_submission', self.talk)
+        return self.request.user.has_perm('base.give_feedback_submission', self.talk)
 
     @context
     @cached_property
@@ -250,7 +250,7 @@ class TalkSocialMediaCard(SocialMediaCardMixin, TalkView):
 
 
 class OnlineVideoJoin(EventPermissionRequired, View):
-    permission_required = 'agenda.view_schedule'
+    permission_required = 'base.view_schedule'
 
     def get(self, request, *args, **kwargs):
         # First check video is configured or not

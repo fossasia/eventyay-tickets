@@ -28,7 +28,7 @@ def is_only_reviewer(user, obj):
 @rules.predicate
 def can_mark_speakers_arrived(user, obj):
     event = obj.event
-    return (event.date_from - dt.timedelta(days=3)) <= now().date() <= event.date_to
+    return (event.date_from - dt.timedelta(days=3)) <= now() <= event.date_to
 
 
 @rules.predicate

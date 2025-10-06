@@ -15,7 +15,7 @@
 {% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% has_perm "person.reviewer_list_speakerprofile" request.user request.event as can_view_speakers %}
+    {% has_perm "base.reviewer_list_speakerprofile" request.user request.event as can_view_speakers %}
     <div class="alert alert-info">
         {% if next_submission %}
             {% blocktranslate trimmed count count=missing_reviews %}

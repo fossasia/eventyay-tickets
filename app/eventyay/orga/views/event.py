@@ -58,8 +58,8 @@ from eventyay.submission.tasks import recalculate_all_review_scores
 
 
 class EventSettingsPermission(EventPermissionRequired):
-    permission_required = 'event.update_event'
-    write_permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
+    write_permission_required = 'base.update_event'
 
     @property
     def permission_object(self):
@@ -500,7 +500,7 @@ def condition_copy(wizard):
 
 
 class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView):
-    permission_required = 'event.create_event'
+    permission_required = 'base.create_event'
     file_storage = FileSystemStorage(location=Path(settings.MEDIA_ROOT) / 'new_event')
     form_list = [
         ('initial', EventWizardInitialForm),
@@ -627,7 +627,7 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
 
 
 class EventDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
-    permission_required = 'person.administrator_user'
+    permission_required = 'base.administrator_user'
     model = Event
     action_text = (
         _(

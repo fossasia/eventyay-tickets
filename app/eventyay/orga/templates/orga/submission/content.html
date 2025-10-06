@@ -19,8 +19,8 @@
 {% endblock scripts %}
 
 {% block submission_content %}
-    {% has_perm "mail.send_queuedmail" request.user request.event as can_send_mails %}
-    {% has_perm "submission.list_all_review" request.user request.event as can_view_all_reviews %}
+    {% has_perm "base.send_queuedmail" request.user request.event as can_send_mails %}
+    {% has_perm "base.list_all_review" request.user request.event as can_view_all_reviews %}
     <form method="post" enctype="multipart/form-data">
         <fieldset>
             {% if not submission %}
