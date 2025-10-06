@@ -348,8 +348,8 @@ function changeDay(day: Moment): void {
   window.location.hash = day.format('YYYY-MM-DD')
 }
 
-function saveTalk(session: Talk): void {
-  api.saveTalk(session as any).then((response: any) => {
+async function saveTalk(session: Talk): Promise<void> {
+  await api.saveTalk(session as any).then((response: any) => {
     if (response) {
       warnings[session.code] = response.warnings
       const talk = schedule.value?.talks.find((s) => s.id === session.id)
@@ -365,7 +365,7 @@ interface RescheduleEvent {
   room: Room
 }
 
-function rescheduleSession(e: RescheduleEvent): void {
+async function rescheduleSession(e: RescheduleEvent): Promise<void> {
   if (!schedule.value) return
   const movedSession = schedule.value.talks.find((s) => s.id === e.session.id)
   stopDragging()
@@ -373,7 +373,8 @@ function rescheduleSession(e: RescheduleEvent): void {
   movedSession.start = e.start as string
   movedSession.end = e.end as string
   movedSession.room = e.room.id
-  saveTalk(movedSession)
+  await saveTalk(movedSession)
+  await fetchAdditionalScheduleData()
 }
 
 interface CreateSessionEvent {
@@ -389,13 +390,14 @@ async function createSession(e: CreateSessionEvent): Promise<void> {
   }
   
   editorStart(newSession)
+  await fetchAdditionalScheduleData()
 }
 
 function editorStart(session: SessionData | Talk): void {
   editorSession.value = { ...session } as SessionData
 }
 
-function editorSave(): void {
+async function editorSave(): Promise<void> {
   if (!editorSession.value) return
 
   editorSessionWaiting.value = true
@@ -422,7 +424,7 @@ function editorSave(): void {
     state: editorSession.value.state
   }
   
-  saveTalk(talk)
+  await saveTalk(talk)
 
   const sessionInSchedule = schedule.value?.talks.find((s) => s.id === editorSession.value?.id)
   if (sessionInSchedule && editorSession.value) {
@@ -433,17 +435,19 @@ function editorSave(): void {
   }
   editorSessionWaiting.value = false
   editorSession.value = null
+  await fetchAdditionalScheduleData()
 }
 
-function editorDelete() {
+async function editorDelete(): Promise<void> {
   if (!editorSession.value) return
   editorSessionWaiting.value = true
-  api.deleteTalk({ id: String(editorSession.value.id) } as any)
+  await api.deleteTalk({ id: String(editorSession.value.id) } as any)
   if (schedule.value) {
     schedule.value.talks = schedule.value.talks.filter((s) => s.id !== editorSession.value?.id)
   }
   editorSessionWaiting.value = false
   editorSession.value = null
+  await fetchAdditionalScheduleData()
 }
 
 function showNewBreakHint() {
@@ -474,7 +478,7 @@ function startDragging({ event, session }: DragStartEvent) {
   draggedSession.value = session as SessionData
 }
 
-function stopDragging() {
+async function stopDragging(): Promise<void> {
   try {
     if (isUnassigning.value && draggedSession.value) {
       if (draggedSession.value.code) {
@@ -483,11 +487,13 @@ function stopDragging() {
           movedSession.start = null
           movedSession.end = null
           movedSession.room = undefined
-          saveTalk(movedSession)
+          await saveTalk(movedSession)
+          await fetchAdditionalScheduleData()
         }
       } else if (schedule.value?.talks.find((s) => s.id === draggedSession.value!.id)) {
         schedule.value.talks = schedule.value.talks.filter((s) => s.id !== draggedSession.value!.id)
-        api.deleteTalk({ id: String(draggedSession.value.id) } as any)
+        await api.deleteTalk({ id: String(draggedSession.value.id) } as any)
+        await fetchAdditionalScheduleData()
       }
     }
   } finally {
@@ -521,6 +527,7 @@ async function pollUpdates() {
   })
   if (hasUpdates) {
     schedule.value.talks = updatedTalks
+    await fetchAdditionalScheduleData()
   }
   since.value = sched.now || schedule.value.now
   window.setTimeout(pollUpdates, 10 * 125)

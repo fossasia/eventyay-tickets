@@ -90,39 +90,39 @@ const api = {
   },
 
   async saveTalk(talk: TalkPayload,{ action = 'PATCH' }: { action?: string } = {}): Promise<Talk | void> {
-  const url = new URL(window.location.href);
-  url.pathname = `${url.pathname}api/talks/${talk.id ? `${talk.id}/` : ''}`;
-  url.search = window.location.search;
+    const url = new URL(window.location.href);
+    url.pathname = `${url.pathname}api/talks/${talk.id ? `${talk.id}/` : ''}`;
+    url.search = window.location.search;
 
-  let payload: HttpRequestBody = null;
-  if (action !== 'DELETE') {
-    const roomId = typeof talk.room === 'object' ? talk.room.id : talk.room;
-    const duration = talk.duration ?? calculateDuration(talk.start, talk.end);
+    let payload: HttpRequestBody = null;
+    if (action !== 'DELETE') {
+      const roomId = typeof talk.room === 'object' ? talk.room.id : talk.room;
+      const duration = talk.duration ?? calculateDuration(talk.start, talk.end);
+      
+      // RESTORED UTC CONVERSION - same as original JS version
+      const convertToUTC = (date: string | Moment | undefined): string | undefined => {
+        if (!date) return undefined;
+        return typeof date === 'string' 
+          ? moment(date).utc().format()
+          : date.utc().format();
+      };
+      
+      payload = {
+        room: roomId,
+        start: convertToUTC(talk.start),
+        end: convertToUTC(talk.end),
+        duration,
+        title: talk.title,
+        description: talk.description,
+      };
+    }
     
-    // RESTORED UTC CONVERSION - same as original JS version
-    const convertToUTC = (date: string | Moment | undefined): string | undefined => {
-      if (!date) return undefined;
-      return typeof date === 'string' 
-        ? moment(date).utc().format()
-        : date.utc().format();
-    };
+    const response = await this.http<Talk>(action, url.toString(), payload);
     
-    payload = {
-      room: roomId,
-      start: convertToUTC(talk.start),
-      end: convertToUTC(talk.end),
-      duration,
-      title: talk.title,
-      description: talk.description,
-    };
-  }
-  
-  const response = await this.http<Talk>(action, url.toString(), payload);
-  
-  if (action !== 'DELETE') {
-    return TalkSchema.parse(response);
-  }
-},
+    if (action !== 'DELETE') {
+      return TalkSchema.parse(response);
+    }
+  },
 
   async deleteTalk(talk: { id: number }): Promise<void> {
     await this.saveTalk({ id: talk.id }, { action: 'DELETE' });
