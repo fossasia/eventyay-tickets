@@ -23,7 +23,7 @@ dependencies = [
         'djangorestframework==3.15.*',
         'python-dateutil==2.9.*',
         'isoweek',
-        'requests==2.31.*',
+        'requests==2.32.*',
         'pytz',
         'django-bootstrap3==24.3',
         'django-formset-js-improved==0.5.0.3',
