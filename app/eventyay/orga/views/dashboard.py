@@ -217,8 +217,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         result['go_to_target'] = 'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         _now = now()
         today = _now
-        can_change_settings = self.request.user.has_perm('event.change_settings.event', event)
-        can_change_submissions = self.request.user.has_perm('submission.orga_update_submission', event)
+        can_change_settings = self.request.user.has_perm('base.change_settings.event', event)
+        can_change_submissions = self.request.user.has_perm('base.orga_update_submission', event)
         result['tiles'] = self.get_cfp_tiles(_now, can_change_submissions=can_change_submissions)
         if today < event.date_from:
             days = (event.date_from - today).days

@@ -461,6 +461,7 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:1337', 'http://next.eventyay.com:1337'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_DOMAIN = config.get('eventyay', 'cookie_domain', fallback=None)
 
+TRUST_X_FORWARDED_FOR = config.get('eventyay', 'trust_x_forwarded_for', fallback=False)
 
 TALK_HOSTNAME = (
     config.get('eventyay', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')

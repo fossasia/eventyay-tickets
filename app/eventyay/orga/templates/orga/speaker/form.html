@@ -19,9 +19,9 @@
 {% endblock alternate_link %}
 
 {% block content %}
-    {% has_perm "person.update_speakerprofile" request.user form.instance as can_edit_speaker %}
-    {% has_perm "mail.send_queuedmail" request.user request.event as can_send_mails %}
-    {% has_perm "person.mark_arrived_speakerprofile" request.user request.event as can_mark_speaker %}
+    {% has_perm "base.update_speakerprofile" request.user form.instance as can_edit_speaker %}
+    {% has_perm "base.send_queuedmail" request.user request.event as can_send_mails %}
+    {% has_perm "base.mark_arrived_speakerprofile" request.user request.event as can_mark_speaker %}
     <h2 class="d-flex justify-content-between align-items-baseline">
         {% include "orga/includes/user_name.html" with user=form.instance.user lightbox=True %}
         <span class="ml-2">

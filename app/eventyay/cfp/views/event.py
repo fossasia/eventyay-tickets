@@ -13,7 +13,7 @@ from eventyay.talk_rules.event import get_events_for_user
 
 
 class EventPageMixin(PermissionRequired):
-    permission_required = 'event.view_event'
+    permission_required = 'base.view_event'
 
     def get_permission_object(self):
         return getattr(self.request, 'event', None)
