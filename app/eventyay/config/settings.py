@@ -87,8 +87,8 @@ ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
 
 HAS_CELERY = config.has_option('celery', 'broker')
 if HAS_CELERY:
-    CELERY_BROKER_URL = config.get('celery', 'broker')
-    CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+    CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
+    CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
     CELERY_TASK_ALWAYS_EAGER = False
 else:
     CELERY_TASK_ALWAYS_EAGER = True
@@ -668,12 +668,12 @@ if HAS_REDIS:
 
     CACHES['redis'] = {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config.get('redis', 'location'),
+        'LOCATION': config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0',
         'OPTIONS': redis_options,
     }
     CACHES['redis_sessions'] = {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config.get('redis', 'location'),
+        'LOCATION': config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0',
         'TIMEOUT': 3600 * 24 * 30,
         'OPTIONS': redis_options,
     }
