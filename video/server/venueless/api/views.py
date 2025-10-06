@@ -20,17 +20,18 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from venueless.api.auth import (
+from eventyay.base.api.auth import (
     ApiAccessRequiredPermission,
     RoomPermissions,
     UserDeletePermissions,
-    WorldPermissions,
+    EventPermissions,
 )
-from venueless.api.serializers import RoomSerializer, WorldSerializer
-from venueless.core.models import Channel, User
-from venueless.core.services.world import notify_schedule_change, notify_world_change
+from eventyay.api.serializers.rooms import RoomSerializer, EventSerializer
+from eventyay.base.models import Channel, User
+from eventyay.base.services.event import notify_schedule_change, notify_event_change
 
-from ..core.models import Room, World
+from eventyay.base.models.event import Event
+from eventyay.base.models.room import Room
 from .task import configure_video_settings_for_talks
 from .utils import get_protocol
 
@@ -43,19 +44,19 @@ class RoomViewSet(viewsets.ModelViewSet):
     permission_classes = [ApiAccessRequiredPermission & RoomPermissions]
 
     def get_queryset(self):
-        return self.request.world.rooms.with_permission(
-            traits=self.request.auth.get("traits"), world=self.request.world
+        return self.request.event.rooms.with_permission(
+            traits=self.request.auth.get("traits"), event=self.request.event
         )
 
     def perform_create(self, serializer):
-        serializer.save(world=self.request.world)
+        serializer.save(event=self.request.event)
         for m in serializer.instance.module_config:
             if m["type"] == "chat.native":
                 Channel.objects.get_or_create(
-                    room=serializer.instance, world=self.request.world
+                    room=serializer.instance, event=self.request.event
                 )
         transaction.on_commit(  # pragma: no cover
-            lambda: async_to_sync(notify_world_change)(self.request.world.id)
+            lambda: async_to_sync(notify_event_change)(self.request.event.id)
         )
 
     def perform_update(self, serializer):
@@ -63,80 +64,80 @@ class RoomViewSet(viewsets.ModelViewSet):
         for m in serializer.instance.module_config:
             if m["type"] == "chat.native":
                 Channel.objects.get_or_create(
-                    room=serializer.instance, world=self.request.world
+                    room=serializer.instance, event=self.request.event
                 )
         transaction.on_commit(  # pragma: no cover
-            lambda: async_to_sync(notify_world_change)(self.request.world.id)
+            lambda: async_to_sync(notify_event_change)(self.request.event.id)
         )
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
         for m in instance.module_config:
             if m["type"] == "chat.native":
-                Channel.objects.filter(room=instance, world=self.request.world).delete()
+                Channel.objects.filter(room=instance, event=self.request.event).delete()
         transaction.on_commit(  # pragma: no cover
-            lambda: async_to_sync(notify_world_change)(self.request.world.id)
+            lambda: async_to_sync(notify_event_change)(self.request.event.id)
         )
 
 
-class WorldView(APIView):
-    permission_classes = [ApiAccessRequiredPermission & WorldPermissions]
+class EventView(APIView):
+    permission_classes = [ApiAccessRequiredPermission & EventPermissions]
 
     def get(self, request, **kwargs):
-        return Response(WorldSerializer(request.world).data)
+        return Response(EventSerializer(request.event).data)
 
     @transaction.atomic
     def patch(self, request, **kwargs):
-        serializer = WorldSerializer(request.world, data=request.data, partial=True)
+        serializer = EventSerializer(request.event, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         transaction.on_commit(  # pragma: no cover
-            lambda: async_to_sync(notify_world_change)(request.world.id)
+            lambda: async_to_sync(notify_event_change)(request.event.id)
         )
         return Response(serializer.data)
 
 
-class WorldThemeView(APIView):
+class EventThemeView(APIView):
     permission_classes = []
 
     def get(self, request, **kwargs):
         """
-        Retrieve theme config of a world
+        Retrieve theme config of an event
         @param request: request obj
-        @param kwargs: world_id
-        @return: theme data of a world
+        @param kwargs: event_id
+        @return: theme data of an event
         """
         try:
-            world = get_object_or_404(World, id=kwargs["world_id"])
-            return Response(WorldSerializer(world).data["config"]["theme"])
+            event = get_object_or_404(Event, id=kwargs["event_id"])
+            return Response(EventSerializer(event).data["config"]["theme"])
         except KeyError:
             logger.error(
-                "error happened when trying to get theme data of world: %s",
-                kwargs["world_id"],
+                "error happened when trying to get theme data of event: %s",
+                kwargs["event_id"],
             )
             return Response(
-                "error happened when trying to get theme data of world: "
-                + kwargs["world_id"],
+                "error happened when trying to get theme data of event: "
+                + kwargs["event_id"],
                 status=503,
             )
 
 
-class CreateWorldView(APIView):
+class CreateEventView(APIView):
     authentication_classes = []  # disables authentication
     permission_classes = []
 
     @staticmethod
     def post(request, *args, **kwargs) -> JsonResponse:
-        payload = CreateWorldView.get_payload_from_token(request)
+        payload = CreateEventView.get_payload_from_token(request)
 
-        # check if user has permission to create world
+        # check if user has permission to create event
         if payload.get("has_permission"):
             secret = get_random_string(length=64)
             config = {
                 "JWT_secrets": [
                     {
                         "issuer": "any",
-                        "audience": "venueless",
+                        "audience": "eventyay",
                         "secret": secret,
                     }
                 ]
@@ -162,27 +163,27 @@ class CreateWorldView(APIView):
                 "scheduleuser": ["schedule-update"],
             }
 
-            # if world already exists, update it, otherwise create a new world
-            world_id = request.data.get("id")
+            # if event already exists, update it, otherwise create a new event
+            event_id = request.data.get("id")
             domain_path = "{}{}/{}".format(
                 settings.DOMAIN_PATH,
                 settings.BASE_PATH,
                 request.data.get("id"),
             )
             try:
-                if not world_id:
-                    raise ValidationError("World ID is required")
-                if World.objects.filter(id=world_id).exists():
-                    world = World.objects.get(id=world_id)
-                    world.title = title
-                    world.domain = domain_path
-                    world.locale = request.data.get("locale") or "en"
-                    world.timezone = request.data.get("timezone") or "UTC"
-                    world.trait_grants = trait_grants
-                    world.save()
+                if not event_id:
+                    raise ValidationError("Event ID is required")
+                if Event.objects.filter(id=event_id).exists():
+                    event = Event.objects.get(id=event_id)
+                    event.title = title
+                    event.domain = domain_path
+                    event.locale = request.data.get("locale") or "en"
+                    event.timezone = request.data.get("timezone") or "UTC"
+                    event.trait_grants = trait_grants
+                    event.save()
                 else:
-                    world = World.objects.create(
-                        id=world_id,
+                    event = Event.objects.create(
+                        id=event_id,
                         title=title,
                         domain=domain_path,
                         locale=request.data.get("locale") or "en",
@@ -191,31 +192,31 @@ class CreateWorldView(APIView):
                         trait_grants=trait_grants,
                     )
                 configure_video_settings_for_talks.delay(
-                    world_id, days=30, number=1, traits=["schedule-update"], long=True
+                    event_id, days=30, number=1, traits=["schedule-update"], long=True
                 )
                 site_url = settings.SITE_URL
                 protocol = get_protocol(site_url)
-                world.domain = "{}://{}".format(protocol, domain_path)
-                return JsonResponse(model_to_dict(world, exclude=["roles"]), status=201)
+                event.domain = "{}://{}".format(protocol, domain_path)
+                return JsonResponse(model_to_dict(event, exclude=["roles"]), status=201)
             except IntegrityError as e:
-                logger.error(f"Database integrity error while saving world: {e}")
+                logger.error(f"Database integrity error while saving event: {e}")
                 return JsonResponse(
                     {
-                        "error": "A world with this ID already exists or database constraint violated"
+                        "error": "An event with this ID already exists or database constraint violated"
                     },
                     status=400,
                 )
             except ValidationError as e:
-                logger.error(f"Validation error while saving world: {e}")
+                logger.error(f"Validation error while saving event: {e}")
                 return JsonResponse({"error": str(e)}, status=400)
             except Exception as e:
-                logger.error(f"Unexpected error creating world: {e}")
+                logger.error(f"Unexpected error creating event: {e}")
                 return JsonResponse(
                     {"error": "An unexpected error occurred"}, status=500
                 )
         else:
             return JsonResponse(
-                {"error": "World cannot be created due to missing permission"},
+                {"error": "Event cannot be created due to missing permission"},
                 status=403,
             )
 
@@ -254,7 +255,7 @@ class UserFavouriteView(APIView):
         try:
             talk_list = json.loads(request.body.decode())
             user_code = UserFavouriteView.get_uid_from_token(
-                request, kwargs["world_id"]
+                request, kwargs["event_id"]
             )
             user = User.objects.get(token_id=user_code)
             if not user_code or not user:
@@ -277,15 +278,15 @@ class UserFavouriteView(APIView):
         except Exception as e:
             logger.error(
                 "error happened when trying to add fav talks: %s",
-                kwargs["world_id"],
+                kwargs["event_id"],
             )
             logger.error(e)
             # Since this is called from background so no error should be returned
             return JsonResponse([], safe=False, status=200)
 
     @staticmethod
-    def get_uid_from_token(request, world_id):
-        world = get_object_or_404(World, id=world_id)
+    def get_uid_from_token(request, event_id):
+        event = get_object_or_404(Event, id=event_id)
         auth_header = get_authorization_header(request).split()
         if auth_header and auth_header[0].lower() == b"bearer":
             if len(auth_header) == 1:
@@ -296,7 +297,7 @@ class UserFavouriteView(APIView):
                 raise exceptions.AuthenticationFailed(
                     "Invalid token header. Token string should not contain spaces."
                 )
-        token_decode = world.decode_token(token=auth_header[1])
+        token_decode = event.decode_token(token=auth_header[1])
         return token_decode.get("uid")
 
 
@@ -306,8 +307,8 @@ class ExportView(APIView):
     @staticmethod
     def get(request, *args, **kwargs):
         export_type = request.GET.get("export_type", "json")
-        world = get_object_or_404(World, id=kwargs["world_id"])
-        talk_config = world.config.get("pretalx")
+        event = get_object_or_404(Event, id=kwargs["event_id"])
+        talk_config = event.config.get("pretalx")
         user = User.objects.filter(token_id=request.user)
         talk_base_url = (
             talk_config.get("domain")
@@ -345,10 +346,10 @@ def get_domain(path):
 @api_view(http_method_names=["POST"])
 @permission_classes([ApiAccessRequiredPermission])
 def schedule_update(request, **kwargs):
-    """POST endpoint to notify venueless that schedule data has changed.
+    """POST endpoint to notify eventyay that schedule data has changed.
 
     Optionally, the request may contain data for the ``pretalx`` field in the
-    world config.
+    event config.
     """
     domain = get_domain(request.data.get("domain"))
     event = request.data.get("event")
@@ -356,18 +357,18 @@ def schedule_update(request, **kwargs):
     if not domain or not event:
         return Response("Missing fields in request.", status=401)
 
-    pretalx_config = request.world.config.get("pretalx", {})
+    pretalx_config = request.event.config.get("pretalx", {})
     if domain != get_domain(
         pretalx_config.get("domain")
     ) or event != pretalx_config.get("event"):
         return Response("Incorrect domain or event data", status=401)
 
     # We assume that only pretalx uses this endpoint
-    request.world.config["pretalx"]["connected"] = True
-    request.world.config["pretalx"]["pushed"] = now().isoformat()
-    request.world.save()
+    request.event.config["pretalx"]["connected"] = True
+    request.event.config["pretalx"]["pushed"] = now().isoformat()
+    request.event.save()
 
-    async_to_sync(notify_schedule_change)(request.world.id)
+    async_to_sync(notify_schedule_change)(request.event.id)
     return Response(status=200)
 
 
