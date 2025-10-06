@@ -1,0 +1,34 @@
+from django.db import models
+from django.db.models import JSONField
+
+
+class AuditLog(models.Model):
+    id = models.BigAutoField(
+        primary_key=True,
+    )
+    event = models.ForeignKey(
+        "Event",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="audits",
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        "User",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="audit_logs",
+    )
+    type = models.CharField(max_length=255)
+    data = JSONField()
+
+    def serialize_public(self):
+        return {
+            "id": self.id,
+            "timestamp": self.timestamp.isoformat(),
+            "user": self.user.serialize_public(),
+            "type": self.type,
+            "data": self.data,
+        }

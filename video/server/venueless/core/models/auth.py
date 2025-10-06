@@ -9,7 +9,9 @@ from django.db.models import JSONField
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 
-from venueless.core.models.cache import VersionedModel
+from eventyay.base.models.cache import VersionedModel
+from eventyay.base.models.room import Room
+from eventyay.base.models.event import Event
 
 
 class User(VersionedModel):
@@ -26,7 +28,7 @@ class User(VersionedModel):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     client_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
     token_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
-    world = models.ForeignKey(to="World", db_index=True, on_delete=models.CASCADE)
+    event = models.ForeignKey(to="Event", db_index=True, on_delete=models.CASCADE)
     moderation_state = models.CharField(
         max_length=8,
         default=ModerationState.NONE,
@@ -53,14 +55,14 @@ class User(VersionedModel):
     )
 
     class Meta:
-        unique_together = (("token_id", "world"), ("client_id", "world"))
+        unique_together = (("token_id", "event"), ("client_id", "event"))
 
     def soft_delete(self):
-        from venueless.storage.models import StoredFile
+        from eventyay.base.models.storage_model import StoredFile
 
         self.bbb_invites.clear()
         self.room_grants.all().delete()
-        self.world_grants.all().delete()
+        self.event_grants.all().delete()
         self.rouletterequest_set.all().delete()
         self.roulette_pairing_left.all().delete()
         self.roulette_pairing_right.all().delete()
@@ -113,7 +115,7 @@ class User(VersionedModel):
         trait_badges_map=None,
         include_client_state=False,
     ):
-        # Important: If this is updated, venueless.core.services.user.get_public_users also needs to be updated!
+        # Important: If this is updated, eventyay.core.services.user.get_public_users also needs to be updated!
         # For performance reasons, it does not use this method directly.
         d = {
             "id": str(self.id),
@@ -154,7 +156,7 @@ class User(VersionedModel):
 
     def _update_grant_cache(self):
         self._grant_cache = {
-            "world": set(self.world_grants.values_list("role", flat=True))
+            "event": set(self.event_grants.values_list("role", flat=True))
         }
         for v in self.room_grants.values("role", "room"):
             self._grant_cache.setdefault(v["room"], set())
@@ -164,7 +166,7 @@ class User(VersionedModel):
         if self._grant_cache is None:
             self._update_grant_cache()
 
-        roles = self._grant_cache["world"]
+        roles = self._grant_cache["event"]
         if room:
             roles |= self._grant_cache.get(room.id, set())
         return roles
@@ -173,7 +175,7 @@ class User(VersionedModel):
         if self._grant_cache is None:
             await database_sync_to_async(self._update_grant_cache)()
 
-        roles = self._grant_cache["world"]
+        roles = self._grant_cache["event"]
         if room:
             roles |= self._grant_cache.get(room.id, set())
         return roles
@@ -209,8 +211,8 @@ class User(VersionedModel):
 
 
 class RoomGrant(models.Model):
-    world = models.ForeignKey(
-        "World", related_name="room_grants", on_delete=models.CASCADE
+    event = models.ForeignKey(
+        "Event", related_name="room_grants", on_delete=models.CASCADE
     )
     room = models.ForeignKey(
         "Room", related_name="role_grants", on_delete=models.CASCADE
@@ -231,12 +233,12 @@ class RoomGrant(models.Model):
         return r
 
 
-class WorldGrant(models.Model):
-    world = models.ForeignKey(
-        "World", related_name="world_grants", on_delete=models.CASCADE
+class EventGrant(models.Model):
+    event = models.ForeignKey(
+        "Event", related_name="event_grants", on_delete=models.CASCADE
     )
     user = models.ForeignKey(
-        "User", related_name="world_grants", on_delete=models.CASCADE
+        "User", related_name="event_grants", on_delete=models.CASCADE
     )
     role = models.CharField(max_length=200)
 
@@ -256,8 +258,8 @@ def generate_short_token():
 
 
 class ShortToken(models.Model):
-    world = models.ForeignKey(
-        "World", related_name="short_tokens", on_delete=models.CASCADE
+    event = models.ForeignKey(
+        "Event", related_name="short_tokens", on_delete=models.CASCADE
     )
     expires = models.DateTimeField()
     short_token = models.CharField(
