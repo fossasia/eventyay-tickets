@@ -76,7 +76,7 @@ dependencies = [
         'openpyxl==3.1.*',
         'django-oauth-toolkit==2.4.*',
         'oauthlib >= 3.3.1',
-        'django-phonenumber-field==7.3.*',
+        'django-phonenumber-field==8.3.*',
         'phonenumberslite==8.13.*',
         'python-bidi==0.6.*', # Support for Arabic in reportlab
         'arabic-reshaper==3.0.0', # Support for Arabic in reportlab
