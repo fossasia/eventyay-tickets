@@ -86,7 +86,7 @@ dependencies = [
         'protobuf==5.28.*',
         'cryptography>=3.4.2',
         'pycryptodome==3.20.*',
-        'sepaxml==2.6.*',
+        'sepaxml==2.7.*',
         'geoip2==4.*',
         'sendgrid==6.11.*',
         'importlib_metadata==8.*',
