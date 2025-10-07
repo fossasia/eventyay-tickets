@@ -62,7 +62,7 @@ dependencies = [
         'stripe==11.3.*',
         'chardet==5.2.*',
         'mt-940==4.30.*',
-        'django-i18nfield==1.9.*,>=1.9.4',
+        'django-i18nfield==1.11.*',
         'psycopg2-binary==2.9.9',
         'tqdm==4.*',
         'vobject==0.9.*',
