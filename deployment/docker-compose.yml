@@ -8,6 +8,7 @@ services:
     volumes:
       - ./data/static:/home/app/web/eventyay/static.dist
       - ./data/data:/data
+      - ./eventyay.cfg:/etc/eventyay/eventyay.cfg:ro
     ports:
       - 8000:8000
     expose:
@@ -21,6 +22,8 @@ services:
   worker:
     container_name: eventyay-next-worker
     command: celery -A eventyay.celery_app worker -l info
+    volumes:
+      - ./eventyay.cfg:/etc/eventyay/eventyay.cfg:ro
     env_file:
       - ./.env
     depends_on:
