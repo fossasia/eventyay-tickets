@@ -100,7 +100,7 @@ dependencies = [
         # Note: To install eventyay-stripe/Paypal dependencies, replace {your_token} with your GitHub token
         # Access is required to the private repositories, if you don't have access, you can remove the dependencies
         'eventyay-paypal @ git+https://your_token@github.com/fossasia/eventyay-tickets-paypal.git@master',
-        'django_celery_beat==2.7.0',
+        'django_celery_beat==2.8.1',
         'cron-descriptor==1.4.5',
         'django-allauth[socialaccount] >= 65.11.2',
         'eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@master',
