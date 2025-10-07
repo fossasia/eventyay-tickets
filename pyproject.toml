@@ -56,7 +56,7 @@ dependencies = [
         'sentry-sdk==2.19.*',
         'babel',
         'pycparser==2.22',
-        'django-redis==5.4.*',
+        'django-redis==6.0.*',
         'redis==5.0.*',
         'fakeredis==2.26.*',
         'stripe==11.3.*',
