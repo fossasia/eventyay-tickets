@@ -111,7 +111,7 @@ dependencies = [
 [project.optional-dependencies]
 memcached = ["pylibmc"]
 dev = [
-            'django-debug-toolbar==4.4.*',
+            'django-debug-toolbar==6.0.*',
             'ruff>=0.11.0,<0.12.0',
             'coveralls',
             'coverage',
