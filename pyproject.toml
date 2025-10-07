@@ -42,7 +42,7 @@ dependencies = [
         'webauthn==2.2.*',
         'django-formtools==2.5.1',
         "celery==5.4.*",
-        'kombu==5.3.*',
+        'kombu==5.5.*',
         'django-statici18n==2.5.*',
         'css-inline==0.14.*',
         'BeautifulSoup4==4.12.*',
