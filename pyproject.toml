@@ -88,7 +88,7 @@ dependencies = [
         'pycryptodome==3.20.*',
         'sepaxml==2.6.*',
         'geoip2==4.*',
-        'sendgrid==6.11.*',
+        'sendgrid==6.12.*',
         'importlib_metadata==8.*',
         'qrcode==7.4.*',
         'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
