@@ -1,5 +1,5 @@
 -e ../
-sphinx==2.3.*
+sphinx==8.2.*
 sphinx-rtd-theme
 sphinxcontrib-httpdomain
 sphinxcontrib-images
