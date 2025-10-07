@@ -94,7 +94,7 @@ dependencies = [
         'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
         'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master',
         'django-sso==3.0.2',
-        'PyJWT~=2.8.0',
+        'PyJWT~=2.10.1',
         'exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@master',
         'pyvat==1.3.18',
         # Note: To install eventyay-stripe/Paypal dependencies, replace {your_token} with your GitHub token
