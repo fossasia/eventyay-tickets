@@ -117,7 +117,7 @@ dev = [
             'coverage',
             'pytest==8.3.*',
             'pytest-django==4.*',
-            'pytest-xdist==3.6.*',
+            'pytest-xdist==3.8.*',
             'pytest-mock==3.14.*',
             'pytest-rerunfailures==14.*',
             'responses',
