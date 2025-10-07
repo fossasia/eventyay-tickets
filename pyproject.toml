@@ -33,7 +33,7 @@ dependencies = [
         'django-scopes==2.0.*',
         'django-localflavor==4.0',
         'django-cors-headers',
-        'reportlab==4.2.*',
+        'reportlab==4.4.*',
         'Pillow==11.0.*',
         'pypdf==5.1.*',
         'django-libsass==0.9',
