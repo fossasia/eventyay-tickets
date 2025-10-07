@@ -25,7 +25,7 @@ dependencies = [
         'isoweek',
         'requests==2.31.*',
         'pytz',
-        'django-bootstrap3==24.3',
+        'django-bootstrap3==25.2',
         'django-formset-js-improved==0.5.0.3',
         'django-compressor==4.5.1',
         'django-hierarkey==1.2.*',
