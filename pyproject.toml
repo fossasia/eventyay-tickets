@@ -39,7 +39,7 @@ dependencies = [
         'django-libsass==0.9',
         'libsass==0.23.*',
         'django-otp==1.5.*',
-        'webauthn==2.2.*',
+        'webauthn==2.7.*',
         'django-formtools==2.5.1',
         "celery==5.4.*",
         'kombu==5.3.*',
