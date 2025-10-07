@@ -58,7 +58,7 @@ dependencies = [
         'pycparser==2.22',
         'django-redis==5.4.*',
         'redis==5.0.*',
-        'fakeredis==2.26.*',
+        'fakeredis==2.32.*',
         'stripe==11.3.*',
         'chardet==5.2.*',
         'mt-940==4.30.*',
