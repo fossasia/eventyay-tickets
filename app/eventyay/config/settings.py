@@ -1145,3 +1145,15 @@ if ADMINS:
         'class': 'eventyay.common.exceptions.PretalxAdminEmailHandler',
     }
     LOGGING['loggers']['django.request']['handlers'].append('mail_admins')
+
+BOOTSTRAP3 = {
+    'success_css_class': '',
+    'field_renderers': {
+        'default': 'bootstrap3.renderers.FieldRenderer',
+        'inline': 'bootstrap3.renderers.InlineFieldRenderer',
+        'control': 'eventyay.control.forms.renderers.ControlFieldRenderer',
+        'bulkedit': 'eventyay.control.forms.renderers.BulkEditFieldRenderer',
+        'bulkedit_inline': 'eventyay.control.forms.renderers.InlineBulkEditFieldRenderer',
+        'checkout': 'eventyay.presale.forms.renderers.CheckoutFieldRenderer',
+    },
+}
