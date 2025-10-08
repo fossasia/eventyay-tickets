@@ -19,9 +19,10 @@ from django.views.generic import (
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
 
 from eventyay.base.models import Organizer
+from eventyay.base.models.submission import Submission
 from eventyay.base.models.vouchers import InvoiceVoucher
 from eventyay.control.forms.admin.vouchers import InvoiceVoucherForm
-from eventyay.control.forms.filter import OrganizerFilterForm, TaskFilterForm
+from eventyay.control.forms.filter import OrganizerFilterForm, SubmissionFilterForm, TaskFilterForm
 from eventyay.control.permissions import AdministratorPermissionRequiredMixin
 from eventyay.control.views import PaginationMixin
 from eventyay.control.views.main import EventList
@@ -63,6 +64,77 @@ class AdminEventList(EventList):
     """Inherit from EventList to add a custom template for the admin event list."""
 
     template_name = 'pretixcontrol/admin/events/index.html'
+
+
+class SubmissionListView(ListView):
+    template_name = 'pretixcontrol/admin/submissions/index.html'
+    context_object_name = 'submissions'
+    paginate_by = 25
+
+    @cached_property
+    def filter_form(self):
+        return SubmissionFilterForm(data=self.request.GET)
+
+    def get_queryset(self):
+        from django_scopes import scopes_disabled
+        with scopes_disabled():
+            qs = (
+                Submission.objects.select_related('event', 'submission_type')
+                .prefetch_related('speakers')
+            )
+
+            # Restrict for non-staff users
+            if not self.request.user.has_active_staff_session(self.request.session.session_key):
+                allowed_organizers = self.request.user.teams.values_list('organizer', flat=True)
+                qs = qs.filter(event__organizer_id__in=allowed_organizers)
+
+            # Apply filters
+            if self.filter_form.is_valid():
+                qs = self.filter_form.filter_qs(qs)
+
+            # Ordering logic
+            ordering = self.request.GET.get('ordering')
+            ordering_map = {
+                'title': 'title',
+                '-title': '-title',
+                'event': 'event__name',
+                '-event': '-event__name',
+                'speakers': 'speakers',
+                '-speakers': '-speakers',
+                'state': 'state',
+                '-state': '-state',
+                'session_type': 'submission_type__name',
+                '-session_type': '-submission_type__name',
+            }
+
+            if ordering in ordering_map:
+                qs = qs.order_by(ordering_map[ordering])
+            else:
+                qs = qs.order_by('-event__date_from', 'title')
+
+            # Build display list
+            submissions = []
+            for s in qs:
+                speakers = ', '.join(sp.get_display_name() for sp in s.speakers.all())
+                submissions.append({
+                    'title': s.title,
+                    'speakers': speakers,
+                    'event': s.event.name,
+                    'session_type': s.submission_type.name if s.submission_type else '',
+                    'proposal_state': s.state,
+                    'event_slug': s.event.slug,
+                    'organizer_slug': s.event.organizer.slug,
+                    'code': s.code,
+                    'track': s.track if s.track else '',
+                    'tags': s.tags if s.tags else '',
+                })
+
+        return submissions
+    
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['filter_form'] = self.filter_form
+        return ctx
 
 
 class TaskList(PaginationMixin, ListView):

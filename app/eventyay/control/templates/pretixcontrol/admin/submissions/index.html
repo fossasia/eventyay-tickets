@@ -1,0 +1,153 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load urlreplace %}
+{% load bootstrap3 %}
+
+{% block title %}
+    {% translate "Submissions" %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% translate "Submissions" %}
+    </h1>
+    <p>
+        {% translate "This is a list of all talk submissions across events." %}
+    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% translate "Filter" %}</h3>
+        </div>
+
+        <div class="panel-body">
+            <form method="get" class="row filter-form">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.query layout='inline' %}
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.event_query layout='inline' %}
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.submission_type layout='inline' %}
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.track layout='inline' %}
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.tags layout='inline' %}
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    {% bootstrap_field filter_form.proposal_state layout='inline' %}
+                </div>
+                <div class="col-xs-12 text-right" style="margin-top:10px;">
+                    <button class="btn btn-primary" type="submit">
+                        <span class="fa fa-filter"></span>
+                        <span class="hidden-md">
+                            {% translate "Filter" %}
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if submissions %}
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            {% translate "Title" %}
+                            <a href="?{% url_replace request 'ordering' 'title' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-title' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Speakers" %}
+                            <a href="?{% url_replace request 'ordering' 'speakers' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-speakers' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Event" %}
+                            <a href="?{% url_replace request 'ordering' 'event' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-event' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Session Type" %}
+                            <a href="?{% url_replace request 'ordering' 'session_type' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-session_type' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {% translate "Proposal State" %}
+                            <a href="?{% url_replace request 'ordering' 'state' %}">
+                                <i class="fa fa-caret-up"></i>
+                            </a>
+                            <a href="?{% url_replace request 'ordering' '-state' %}">
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for submission in submissions %}
+                        <tr>
+                            <td>
+                                <strong>
+                                    <a href="{% url 'orga:submissions.content.view' event=submission.event_slug code=submission.code %}">
+                                    {{ submission.title }}
+                                </a>
+                                </strong>
+                            </td>
+                            <td>{{ submission.speakers }}</td>
+                            <td>
+                                <a href="{% url 'control:event.index' organizer=submission.organizer_slug event=submission.event_slug %}">
+                                    {{ submission.event }}
+                                </a>
+                            </td>
+                            <td>{{ submission.session_type }}</td>
+                            <td>
+                                {% if submission.proposal_state == "accepted" %}
+                                    <span class="label label-success">{{ submission.proposal_state|capfirst }}</span>
+                                {% elif submission.proposal_state == "rejected" %}
+                                    <span class="label label-danger">{{ submission.proposal_state|capfirst }}</span>
+                                {% elif submission.proposal_state == "confirmed" %}
+                                    <span class="label label-primary">{{ submission.proposal_state|capfirst }}</span>
+                                {% elif submission.proposal_state == "withdrawn" %}
+                                    <span class="label label-default">{{ submission.proposal_state|capfirst }}</span>
+                                {% else %}
+                                    <span class="label label-info">{{ submission.proposal_state|capfirst }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% include "pretixcontrol/pagination.html" %}
+
+    {% else %}
+        <div class="empty-collection">
+            <p>
+                {% translate "There are no submissions to show." %}
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

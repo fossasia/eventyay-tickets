@@ -891,6 +891,95 @@ class OrganizerFilterForm(FilterForm):
         return qs
 
 
+class SubmissionFilterForm(forms.Form):
+    query = forms.CharField(
+        label=_('Title or speaker'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Title, speaker name or email')}),
+    )
+
+    event_query = forms.CharField(
+        label=_('Event name'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Event name')}),
+    )
+
+    proposal_state = forms.ChoiceField(
+        label=_('Proposal state'),
+        choices=(
+            ('', _('All proposals')),
+            ('submitted', _('Submitted')),
+            ('accepted', _('Accepted')),
+            ('rejected', _('Rejected')),
+            ('confirmed', _('Confirmed')),
+            ('withdrawn', _('Withdrawn')),
+        ),
+        required=False,
+    )
+    
+    submission_type = forms.CharField(
+        label=_('Session Type'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Session Type')}),
+    )
+
+    track = forms.CharField(
+        label=_('Track'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Track')}),
+    )
+
+    tags = forms.CharField(
+        label=_('Tags'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Tags')}),
+    )
+
+    ordering = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def filter_qs(self, qs):
+        fdata = self.cleaned_data
+
+        # Search by title or speaker
+        if fdata.get('query'):
+            qs = qs.filter(
+                Q(title__icontains=fdata['query'])
+                | Q(speakers__fullname__icontains=fdata['query'])
+                | Q(speakers__email__icontains=fdata['query'])
+            ).distinct()
+
+        # Search by event name
+        if fdata.get('event_query'):
+            qs = qs.filter(
+                Q(event__name__icontains=fdata['event_query'])
+                | Q(event__slug__icontains=fdata['event_query'])
+            )
+
+        # Filter by proposal state
+        if fdata.get('proposal_state'):
+            qs = qs.filter(state=fdata['proposal_state'])
+        
+        # Filter by session type
+        if fdata.get('submission_type'):
+            qs = qs.filter(
+                Q(submission_type__name__icontains=fdata['submission_type'])
+            )
+
+        # Filter by track
+        if fdata.get('track'):
+            qs = qs.filter(
+                Q(track__name__icontains=fdata['track'])
+            )
+
+        # Filter by tags
+        if fdata.get('tags'):
+            qs = qs.filter(
+                Q(tags__tag__icontains=fdata['tags'])
+            )
+
+        return qs
+
+
 class GiftCardFilterForm(FilterForm):
     orders = {
         'issuance': 'issuance',
