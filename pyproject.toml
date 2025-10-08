@@ -90,7 +90,7 @@ dependencies = [
         'geoip2==4.*',
         'sendgrid==6.11.*',
         'importlib_metadata==8.*',
-        'qrcode==7.4.*',
+        'qrcode==8.2',
         'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
         'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master',
         'django-sso==3.0.2',
