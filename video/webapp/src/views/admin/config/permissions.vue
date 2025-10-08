@@ -34,7 +34,7 @@
 						h4 {{ key }}
 						bunt-icon-button(@click.stop="deleteRole(key)") delete-outline
 					.role-config-permissions(v-if="expandedRoles.includes(key)", @click.stop="")
-						bunt-checkbox(v-for="p of config.available_permissions", :label="p", :value="val.includes(p)", name="p", @input="togglePermission(key, p, $event)")
+						bunt-checkbox(v-for="p of config.available_permissions", :label="p", :modelValue="val.includes(p)", name="p", @update:modelValue="togglePermission(key, p, $event)")
 				.role-add
 					.role-head
 						bunt-input(label="role name", v-model="newRoleName", name="newRoleName")
@@ -45,8 +45,9 @@
 					h3 Traits enabling on-site behaviour
 					p Users with the following traits will be treated as on-site attendees. This currently only disables stream autoplaying by default.
 					bunt-input.onsite-traits(name="onsite-traits", label="On-site Traits", v-model="onsiteTraits")
-	.ui-form-actions
-		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+	.ui-form-actions-wrapper
+		.ui-form-actions
+			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 </template>
 <script>
 import api from 'lib/api'
@@ -84,7 +85,7 @@ export default {
 			this.rooms = await api.call('room.config.list')
 			this.onsiteTraits = stringifyTraitGrants(this.config.onsite_traits)
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 	},
@@ -102,11 +103,11 @@ export default {
 			}
 		},
 		deleteRole(role) {
-			this.$delete(this.config.roles, role)
+			delete this.config.roles[role]
 		},
 		addRole() {
 			if (this.newRoleName) {
-				this.$set(this.config.roles, this.newRoleName, [])
+				this.config.roles[this.newRoleName] = []
 				this.expandedRoles.push(this.newRoleName)
 				this.newRoleName = ''
 			}
@@ -115,25 +116,31 @@ export default {
 			if (toggle) {
 				this.config.roles[role].push(perm)
 			} else {
-				this.$set(this.config.roles, role, this.config.roles[role].filter((i) => i !== perm))
+				this.config.roles[role] = this.config.roles[role].filter((i) => i !== perm)
 			}
 		},
 
 		async save() {
+			if (!this.config) return
 			this.saving = true
-			await api.call('world.config.patch', {
-				roles: this.config.roles,
-				trait_grants: this.config.trait_grants,
-				onsite_traits: parseTraitGrants(this.onsiteTraits)
-			})
-			for (const room of this.rooms.filter((r) => this.changedRoomIds.includes(r.id))) {
-				await api.call('room.config.patch', {
-					room: room.id,
-					trait_grants: room.trait_grants
+			try {
+				await api.call('world.config.patch', {
+					roles: this.config.roles,
+					trait_grants: this.config.trait_grants,
+					onsite_traits: parseTraitGrants(this.onsiteTraits)
 				})
+				for (const room of this.rooms.filter((r) => this.changedRoomIds.includes(r.id))) {
+					await api.call('room.config.patch', {
+						room: room.id,
+						trait_grants: room.trait_grants
+					})
+				}
+			} catch (error) {
+				console.error(error.apiError || error)
+				this.error = error.apiError?.code || error.message || error.toString()
+			} finally {
+				this.saving = false
 			}
-			this.saving = false
-			// TODO error handling
 		},
 	}
 }

@@ -1,7 +1,7 @@
 import importlib.util
 
 from django.apps import apps
-from django.urls import include
+from django.urls import include, path
 from django.urls import re_path as url
 from django.views.generic import TemplateView
 

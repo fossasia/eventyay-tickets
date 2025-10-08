@@ -8,7 +8,7 @@
 
 {% block extra_title %}
     {% block submission_title %}{% endblock submission_title %}
-    {% has_perm "person.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
+    {% has_perm "base.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
     {% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %} ::
 {% endblock extra_title %}
 
@@ -18,11 +18,11 @@
 
 {% block content %}
     {% if submission %}
-        {% has_perm "submission.update_submission" request.user submission as can_edit_submission %}
-        {% has_perm "submission.view_reviews_submission" request.user submission as can_view_reviews %}
-        {% has_perm "submission.review_submission" request.user submission as can_review %}
-        {% has_perm "person.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
-        {% has_perm "mail.send_queuedmail" request.user request.event as can_send_mails %}
+        {% has_perm "base.update_submission" request.user submission as can_edit_submission %}
+        {% has_perm "base.view_reviews_submission" request.user submission as can_view_reviews %}
+        {% has_perm "base.review_submission" request.user submission as can_review %}
+        {% has_perm "base.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
+        {% has_perm "base.send_queuedmail" request.user request.event as can_send_mails %}
         <div id="main-title" class="d-md-flex justify-content-between">
             <h2>
                 <span>

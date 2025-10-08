@@ -20,7 +20,7 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 		locales: ['en', 'de', 'pt_BR', 'ar', 'fr', 'es', 'uk', 'ru'],
 		theme: {
 			logo: {
-				url: '/video/eventyay-video-logo.svg',
+				url: '/video/eventyay-video-logo.png',
 				fitToWidth: false
 			},
 			colors: {

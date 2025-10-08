@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import api from 'lib/api'
 import router from 'router'
 import i18n from 'i18n'
@@ -32,7 +31,7 @@ export default {
 		},
 		dismissContactRequest({state}, contactRequest) {
 			// dismissing only soft-removes the contact request popup on THIS client
-			Vue.set(contactRequest, 'weDismissed', true)
+			contactRequest.weDismissed = true
 		},
 		async 'api::exhibition.exhibition_data_update'({commit, state}, {data}) {
 			commit('setData', data)

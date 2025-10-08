@@ -26,6 +26,7 @@ export default {
 		room: Object,
 		currentSession: Object
 	},
+	emits: ['close'],
 	data() {
 		return {
 			selectedSession: null

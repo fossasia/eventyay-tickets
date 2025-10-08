@@ -27,7 +27,7 @@ from eventyay.base.models import TalkQuestionTarget
 class SpeakerList(EventPermissionRequired, Filterable, ListView):
     context_object_name = 'speakers'
     template_name = 'agenda/speakers.html'
-    permission_required = 'schedule.list_schedule'
+    permission_required = 'base.list_schedule'
     default_filters = ('user__fullname__icontains',)
 
     def get_queryset(self):
@@ -50,7 +50,7 @@ class SpeakerList(EventPermissionRequired, Filterable, ListView):
 
 class SpeakerView(PermissionRequired, TemplateView):
     template_name = 'agenda/speaker.html'
-    permission_required = 'person.view_speakerprofile'
+    permission_required = 'base.view_speakerprofile'
     slug_field = 'code'
 
     @context
@@ -93,14 +93,14 @@ class SpeakerRedirect(DetailView):
     def dispatch(self, request, **kwargs):
         speaker = self.get_object()
         profile = speaker.profiles.filter(event=self.request.event).first()
-        if profile and self.request.user.has_perm('person.view_speakerprofile', profile):
+        if profile and self.request.user.has_perm('base.view_speakerprofile', profile):
             return redirect(profile.urls.public.full())
         raise Http404()
 
 
 class SpeakerTalksIcalView(PermissionRequired, DetailView):
     context_object_name = 'profile'
-    permission_required = 'person.view_speakerprofile'
+    permission_required = 'base.view_speakerprofile'
     slug_field = 'code'
 
     def get_object(self, queryset=None):

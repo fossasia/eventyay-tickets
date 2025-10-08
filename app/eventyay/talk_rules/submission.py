@@ -178,7 +178,7 @@ def questions_for_user(event, user):
     from eventyay.base.models import TalkQuestionTarget
     from eventyay.talk_rules.orga import can_view_speaker_names
 
-    if user.has_perm('submission.update_question', event):
+    if user.has_perm('base.update_talkquestion', event):
         # Organizers with edit permissions can see everything
         return event.talkquestions(manager='all_objects').all()
     if not user.is_anonymous and is_only_reviewer(user, event) and can_view_speaker_names(user, event):
@@ -186,15 +186,16 @@ def questions_for_user(event, user):
             Q(is_visible_to_reviewers=True) | Q(target=TalkQuestionTarget.REVIEWER),
             active=True,
         )
-    if user.has_perm('submission.orga_list_question', event):
+    if user.has_perm('base.orga_list_talkquestion', event):
         # Other team members can either view all active talkquestions
         # or only talkquestions open to reviewers
+        return
         return event.talkquestions(manager='all_objects').all()
 
     # Now we are left with anonymous users or users with very limited permissions.
     # They can see all public (non-reviewer) talkquestions if they are already publicly
     # visible in the schedule. Otherwise, nothing.
-    if user.has_perm('submission.list_question', event):
+    if user.has_perm('base.list_talkquestion', event):
         return event.talkquestions.all().filter(is_public=True)
     return event.talkquestions.none()
 
@@ -234,12 +235,12 @@ def submissions_for_user(event, user):
     if not user.is_anonymous:
         if is_only_reviewer(user, event):
             return limit_for_reviewers(event.submissions.all(), event, user)
-        if user.has_perm('submission.orga_list_submission', event):
+        if user.has_perm('base.orga_list_submission', event):
             return event.submissions.all()
 
     # Fall through: both anon users and users without permissions
     # get here, e.g. speakers or attendees.
-    if user.has_perm('schedule.list_schedule', event):
+    if user.has_perm('base.list_schedule', event):
         return event.current_schedule.slots
     return event.submissions.none()
 

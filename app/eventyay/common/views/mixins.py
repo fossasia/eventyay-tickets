@@ -1,3 +1,4 @@
+import logging
 import urllib
 from collections import defaultdict
 from contextlib import suppress
@@ -6,10 +7,10 @@ from urllib.parse import quote
 from csp.decorators import csp_exempt
 from django import forms
 from django.conf import settings
-from django.core.exceptions import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist, ImproperlyConfigured
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
@@ -23,6 +24,7 @@ from eventyay.common.forms import SearchForm
 from eventyay.common.text.phrases import phrases
 
 SessionStore = import_string(f'{settings.SESSION_ENGINE}.SessionStore')
+logger = logging.getLogger(__name__)
 
 
 class ActionFromUrl:
@@ -212,26 +214,34 @@ class PermissionRequired(PermissionRequiredMixin):
 
     def has_permission(self):
         result = None
-        with suppress(Exception):
-            result = super().has_permission()
+        result = super().has_permission()
+        logger.debug(
+            'Result of permission check (for %s on "%s") from parent class: %s',
+            self.get_permission_required(),
+            self.get_permission_object(),
+            result,
+        )
         if not result:
             request = getattr(self, 'request', None)
             if request and hasattr(request, 'event'):
                 key = f'eventyay_event_access_{request.event.pk}'
                 if key in request.session:
                     sparent = SessionStore(request.session.get(key))
-                    parentdata = []
-                    with suppress(Exception):
-                        parentdata = sparent.load()
+                    parentdata = sparent.load()
                     return 'event_access' in parentdata
         return result
 
     def get_login_url(self):
         """We do this to avoid leaking data about existing pages."""
+        logger.debug('Refuse to return login URL')
         raise Http404()
 
     def handle_no_permission(self):
         request = getattr(self, 'request', None)
+        if not request or not isinstance(request, HttpRequest):
+            raise ImproperlyConfigured('PermissionRequiredMixin requires a request.')
+        # Debug log to trace why 404 happened
+        logger.debug('User %s has no permission to access %s', request.user, request.path)
         if (
             request
             and hasattr(request, 'event')

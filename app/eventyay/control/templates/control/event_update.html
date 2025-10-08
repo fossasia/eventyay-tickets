@@ -1,0 +1,89 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load formset_tags %}
+
+{% block video_admin_content %}
+<h1 class="page-header">{% trans "Update event" %}</h1>
+<form method="post" class="form-horizontal">
+    {% csrf_token %}
+    <div class="form-body">
+        {{ form.as_p }}
+    </div>
+
+    <h3>{% trans "Planned usages" %}</h3>
+    <div id="formset" data-formset-prefix="{{ formset.prefix }}">
+        {{ formset.management_form }}
+
+        {% if formset.errors %}
+            {% for error in formset.errors %}
+                <div class="alert alert-danger"><strong>{{ error|escape }}</strong></div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed video-admin-table">
+            <thead>
+                <tr>
+                    <th>{% trans "Start" %}</th>
+                    <th>{% trans "End" %}</th>
+                    <th>{% trans "Attendees" %}</th>
+                    <th>{% trans "Notes" %}</th>
+                    <th>{% trans "Delete" %}</th>
+                </tr>
+            </thead>
+            <tbody data-formset-body>
+            {% for form in formset %}
+            <tr data-formset-form>
+                <td>
+                    {{ form.start }}
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">{{ error|escape }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="text-danger small">{{ error|escape }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td>{{ form.end }}</td>
+                <td>{{ form.attendees }}</td>
+                <td>{{ form.notes }}</td>
+                <td><label>{{ form.DELETE }} {% trans "Delete" %}</label></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+
+        <script type="form-template" data-formset-empty-form>
+            {% escapescript %}
+            <tr data-formset-form>
+                <td>{{ formset.empty_form.start }}</td>
+                <td>{{ formset.empty_form.end }}</td>
+                <td>{{ formset.empty_form.attendees }}</td>
+                <td>{{ formset.empty_form.notes }}</td>
+                <td><label>{{ formset.empty_form.DELETE }} {% trans "Delete" %}</label></td>
+            </tr>
+            {% endescapescript %}
+        </script>
+
+        <button type="button" data-formset-add class="btn btn-default btn-xs">
+            <span class="fa fa-plus"></span> {% trans "Add planning" %}
+        </button>
+
+        <script>jQuery(function($) { $('#formset').formset({ animateForms: false, reorderMode: 'dom' }); });</script>
+    </div>
+
+    <div class="video-admin-btn-row">
+        <button type="submit" class="btn btn-primary">
+            <span class="fa fa-save"></span> {% trans "Save" %}
+        </button>
+        <a href="{% url 'control:event.list' %}" class="btn btn-default">{% trans "Back" %}</a>
+    </div>
+    <hr>
+    <label>{% trans "JWT config" %}</label>
+    <pre>{{ jwtconf }}</pre>
+</form>
+{% endblock %}

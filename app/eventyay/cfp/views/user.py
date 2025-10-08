@@ -111,11 +111,11 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
 
 
 class SubmissionViewMixin:
-    permission_required = 'submission.update_submission'
+    permission_required = 'base.update_submission'
 
     def has_permission(self):
         return super().has_permission() or self.request.user.has_perm(
-            'submission.orga_list_submission', self.request.event
+            'base.orga_list_submission', self.request.event
         )
 
     def dispatch(self, request, *args, **kwargs):
@@ -168,14 +168,14 @@ class SubmissionsWithdrawView(LoggedInEventPageMixin, SubmissionViewMixin, Detai
     template_name = 'cfp/event/user_submission_withdraw.html'
     model = Submission
     context_object_name = 'submission'
-    permission_required = 'submission.is_speaker_submission'
+    permission_required = 'base.is_speaker_submission'
 
     def get_permission_object(self):
         return self.get_object()
 
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
-        if self.request.user.has_perm('submission.withdraw_submission', obj):
+        if self.request.user.has_perm('base.withdraw_submission', obj):
             if obj.state == SubmissionStates.ACCEPTED:
                 with override(obj.event.locale):
                     obj.event.send_orga_mail(
@@ -219,7 +219,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_anonymous:
             return get_login_redirect(request)
-        if not request.user.has_perm('submission.is_speaker_submission', self.submission):
+        if not request.user.has_perm('base.is_speaker_submission', self.submission):
             self.template_name = 'cfp/event/user_submission_confirm_error.html'
         return super().dispatch(request, *args, **kwargs)
 
@@ -245,7 +245,7 @@ class SubmissionConfirmView(LoggedInEventPageMixin, SubmissionViewMixin, FormVie
     def form_valid(self, form):
         submission = self.submission
         form.save()
-        if self.request.user.has_perm('submission.confirm_submission', submission):
+        if self.request.user.has_perm('base.confirm_submission', submission):
             submission.confirm(person=self.request.user)
             messages.success(self.request, phrases.cfp.submission_confirmed)
         elif submission.state == SubmissionStates.CONFIRMED:
@@ -276,8 +276,8 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     model = Submission
     form_class = InfoForm
     context_object_name = 'submission'
-    permission_required = 'submission.view_submission'
-    write_permission_required = 'submission.update_submission'
+    permission_required = 'base.view_submission'
+    write_permission_required = 'base.update_submission'
 
     def get_permission_object(self):
         return self.object
@@ -435,7 +435,7 @@ class DeleteAccountView(LoggedInEventPageMixin, View):
 class SubmissionInviteView(LoggedInEventPageMixin, SubmissionViewMixin, FormView):
     form_class = SubmissionInvitationForm
     template_name = 'cfp/event/user_submission_invitation.html'
-    permission_required = 'submission.add_speaker_submission'
+    permission_required = 'base.add_speaker_submission'
 
     def get_permission_object(self):
         return self.get_object()
@@ -479,7 +479,7 @@ class SubmissionInviteAcceptView(LoggedInEventPageMixin, DetailView):
     @context
     @cached_property
     def can_accept_invite(self):
-        return self.request.user.has_perm('submission.add_speaker_submission', self.get_object())
+        return self.request.user.has_perm('base.add_speaker_submission', self.get_object())
 
     def post(self, request, *args, **kwargs):
         if not self.can_accept_invite:

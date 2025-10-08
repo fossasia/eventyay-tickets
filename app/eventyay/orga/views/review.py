@@ -41,7 +41,7 @@ from eventyay.talk_rules.submission import (
 
 class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     template_name = 'orga/review/dashboard.html'
-    permission_required = 'submission.list_review'
+    permission_required = 'base.list_review'
     paginate_by = 100
     max_page_size = 100_000
     usable_states = (
@@ -171,19 +171,19 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     @context
     @cached_property
     def can_change_submissions(self):
-        return self.request.user.has_perm('submission.orga_update_submission', self.request.event)
+        return self.request.user.has_perm('base.orga_update_submission', self.request.event)
 
     @context
     @cached_property
     def can_accept_submissions(self):
         return self.request.event.submissions.filter(
             state=SubmissionStates.SUBMITTED
-        ).exists() and self.request.user.has_perm('submission.accept_or_reject_submission', self.request.event)
+        ).exists() and self.request.user.has_perm('base.accept_or_reject_submission', self.request.event)
 
     @context
     @cached_property
     def can_see_all_reviews(self):
-        return self.request.user.has_perm('submission.list_all_review', self.request.event)
+        return self.request.user.has_perm('base.list_all_review', self.request.event)
 
     @context
     @cached_property
@@ -270,7 +270,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             except (Submission.DoesNotExist, ValueError):
                 total['error'] += 1
                 continue
-            if not request.user.has_perm('submission.' + value + '_submission', submission):
+            if not request.user.has_perm('base.' + value + '_submission', submission):
                 total['error'] += 1
                 continue
             if pending:
@@ -298,7 +298,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
 
 class BulkReview(EventPermissionRequired, TemplateView):
     template_name = 'orga/review/bulk.html'
-    permission_required = 'submission.create_review'
+    permission_required = 'base.create_review'
     paginate_by = None
 
     @context
@@ -422,16 +422,16 @@ class ReviewViewMixin:
         if self.request.user in self.submission.speakers.all():
             return True
         if self.object and self.object.pk:
-            return not self.request.user.has_perm('submission.update_review', self.get_object())
-        return not self.request.user.has_perm('submission.review_submission', self.get_object() or self.submission)
+            return not self.request.user.has_perm('base.update_review', self.get_object())
+        return not self.request.user.has_perm('base.review_submission', self.get_object() or self.submission)
 
 
 class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
     form_class = ReviewForm
     model = Review
     template_name = 'orga/submission/review.html'
-    permission_required = 'submission.view_reviews_submission'
-    write_permission_required = 'submission.review_submission'
+    permission_required = 'base.view_reviews_submission'
+    write_permission_required = 'base.review_submission'
 
     @context
     @cached_property
@@ -590,7 +590,7 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
 
 class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, ActionConfirmMixin, TemplateView):
     template_name = 'orga/submission/review_delete.html'
-    permission_required = 'submission.delete_review'
+    permission_required = 'base.delete_review'
 
     def get_permission_object(self):
         return self.object
@@ -610,7 +610,7 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, ActionCon
 
 
 class RegenerateDecisionMails(EventPermissionRequired, ActionConfirmMixin, TemplateView):
-    permission_required = 'submission.accept_or_reject_submission'
+    permission_required = 'base.accept_or_reject_submission'
     action_title = _('Regenerate decision emails')
     action_confirm_label = _('Regenerate decision emails')
     action_confirm_color = 'success'
@@ -654,7 +654,7 @@ class RegenerateDecisionMails(EventPermissionRequired, ActionConfirmMixin, Templ
 
 class ReviewAssignment(EventPermissionRequired, FormView):
     template_name = 'orga/review/assignment.html'
-    permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
 
     @cached_property
     def form_type(self):
@@ -700,7 +700,7 @@ class ReviewAssignment(EventPermissionRequired, FormView):
 
 class ReviewAssignmentImport(EventPermissionRequired, FormView):
     template_name = 'orga/review/assignment-import.html'
-    permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
     form_class = ReviewAssignImportForm
 
     def get_form_kwargs(self):
@@ -716,7 +716,7 @@ class ReviewAssignmentImport(EventPermissionRequired, FormView):
 
 
 class ReviewExport(EventPermissionRequired, FormView):
-    permission_required = 'event.update_event'
+    permission_required = 'base.update_event'
     template_name = 'orga/review/export.html'
     form_class = ReviewExportForm
 

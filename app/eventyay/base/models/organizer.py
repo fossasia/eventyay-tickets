@@ -1,9 +1,9 @@
 import json
+import logging
 import string
 from datetime import date, datetime, time
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-import pytz
-from django_scopes import scope
 from django.conf import settings
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models, transaction
@@ -13,16 +13,13 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import get_current_timezone, make_aware, now
 from django.utils.translation import gettext_lazy as _
+from django_scopes import scope
+from rules.contrib.models import RulesModelBase, RulesModelMixin
 
 from eventyay.base.models.base import LoggedModel
+from eventyay.base.models.mixins import TimestampedModel
 from eventyay.base.validators import OrganizerSlugBanlistValidator
 from eventyay.common.urls import EventUrls, build_absolute_uri
-
-from ..settings import settings_hierarkey
-from . import BillingInvoice
-from .auth import User
-from .mixins import PretalxModel
-
 from eventyay.talk_rules.event import (
     can_change_any_organizer_settings,
     can_change_organizer_settings,
@@ -30,6 +27,12 @@ from eventyay.talk_rules.event import (
     has_any_organizer_permissions,
     is_any_organizer,
 )
+
+from ..settings import settings_hierarkey
+from . import BillingInvoice
+from .auth import User
+
+logger = logging.getLogger(__name__)
 
 
 def check_access_permissions(organizer):
@@ -41,9 +44,11 @@ def check_access_permissions(organizer):
     warnings = []
     teams = organizer.teams.all().annotate(member_count=models.Count('members')).filter(member_count__gt=0)
     if not [t for t in teams if t.can_change_teams]:
+        # TODO: Should use a concrete exception type
         raise Exception(
             _(
-                'There must be at least one team with the permission to change teams, as otherwise nobody can create new teams or grant permissions to existing teams.'
+                'There must be at least one team with the permission to change teams, '
+                'as otherwise nobody can create new teams or grant permissions to existing teams.'
             )
         )
     if not [t for t in teams if t.can_create_events]:
@@ -64,10 +69,12 @@ def check_access_permissions(organizer):
     for event in organizer.events.all():
         event_teams = teams.filter(models.Q(limit_events=event) | models.Q(all_events=True)).distinct()
         if not event_teams:
+            # TODO: Should use a concrete exception type
             raise Exception(
                 str(
                     _(
-                        'There must be at least one team with access to every event. Currently, nobody has access to {event_name}.'
+                        'There must be at least one team with access to every event. '
+                        'Currently, nobody has access to {event_name}.'
                     )
                 ).format(event_name=event.name)
             )
@@ -83,8 +90,11 @@ def check_access_permissions(organizer):
     return warnings
 
 
+# We don't subclass PretalxModel because:
+# - We want to avoid the `objects = ScopedManager()` (we may use it later, after the making "enext" stable enough).
+# - We don't want to inherit the LogMixin (already have LoggedModel).
 @settings_hierarkey.add(cache_namespace='organizer')
-class Organizer(LoggedModel, PretalxModel):
+class Organizer(LoggedModel, TimestampedModel, RulesModelMixin, models.Model, metaclass=RulesModelBase):
     """
     This model represents an entity organizing events, e.g. a company, institution,
     charity, person, …
@@ -119,12 +129,13 @@ class Organizer(LoggedModel, PretalxModel):
         unique=True,
     )
 
-    objects = models.Manager()
-
     class Meta:
         verbose_name = _('Organizer')
         verbose_name_plural = _('Organizers')
         ordering = ('name',)
+
+        # Note: The views which use these permissions need to revisit the permission names.
+        # The permission names change when we move the code to a different app.
         rules_permissions = {
             'view': has_any_organizer_permissions,
             'update': can_change_organizer_settings,
@@ -201,8 +212,12 @@ class Organizer(LoggedModel, PretalxModel):
         return ObjectRelatedCache(self)
 
     @property
-    def timezone(self):
-        return pytz.timezone(self.settings.timezone)
+    def timezone(self) -> ZoneInfo:
+        try:
+            return ZoneInfo(key=self.settings.timezone)
+        except ZoneInfoNotFoundError:
+            logger.warning('Wrong data in organizer timezone setting: %s', self.settings.timezone)
+            return ZoneInfo(key='UTC')
 
     @cached_property
     def all_logentries_link(self):
@@ -288,7 +303,7 @@ TEAM_PERMISSIONS = {
 }
 
 
-class Team(LoggedModel, PretalxModel):
+class Team(LoggedModel, TimestampedModel, RulesModelMixin, models.Model, metaclass=RulesModelBase):
     """
     A team is a collection of people given certain access rights to one or more events of an organizer.
 
@@ -362,8 +377,6 @@ class Team(LoggedModel, PretalxModel):
     can_view_vouchers = models.BooleanField(default=False, verbose_name=_('Can view vouchers'))
     can_change_vouchers = models.BooleanField(default=False, verbose_name=_('Can change vouchers'))
 
-    objects = models.Manager()
-
     def __str__(self) -> str:
         return _('%(name)s on %(object)s') % {
             'name': str(self.name),
@@ -372,7 +385,13 @@ class Team(LoggedModel, PretalxModel):
 
     def permission_set(self) -> set:
         attribs = dir(self)
-        return {a for a in attribs if a.startswith('can_') and self.has_permission(a)}
+        return {
+            attr
+            for attr in attribs
+            if (attr.startswith("can_") or attr.startswith("is_"))
+            and getattr(self, attr, False) is True
+            and self.has_permission(attr)
+        }
 
     @property
     def can_change_settings(self):  # Legacy compatiblilty
@@ -407,7 +426,8 @@ class Team(LoggedModel, PretalxModel):
         verbose_name=_('Always hide speaker names'),
         help_text=_(
             'Normally, anonymisation is configured in the event review settings. '
-            'This setting will <strong>override the event settings</strong> and always hide speaker names for this team.'
+            'This setting will <strong>override the event settings</strong> '
+            'and always hide speaker names for this team.'
         ),
         default=False,
     )
@@ -422,10 +442,10 @@ class Team(LoggedModel, PretalxModel):
         if self.all_events:
             return self.organizer.events.all()
         return self.limit_events.all()
-    
+
     class orga_urls(EventUrls):
-        base = "{self.organizer.orga_urls.teams}{self.pk}/"
-        delete = "{base}delete/"
+        base = '{self.organizer.orga_urls.teams}{self.pk}/'
+        delete = '{base}delete/'
 
 
 class TeamInvite(models.Model):
@@ -447,17 +467,18 @@ class TeamInvite(models.Model):
 
     def __str__(self) -> str:
         return _("Invite to team '{team}' for '{email}'").format(team=str(self.team), email=self.email)
-    
+
     @cached_property
     def organizer(self):
         return self.team.organizer
 
     @cached_property
     def invitation_url(self):
-        return build_absolute_uri("orga:invitation.view", kwargs={"code": self.token})
+        return build_absolute_uri('orga:invitation.view', kwargs={'code': self.token})
 
     def send(self):
         from django.utils.translation import get_language
+
         from eventyay.base.models.mail import QueuedMail
 
         invitation_link = self.invitation_url
@@ -474,7 +495,7 @@ The {organizer} team"""
             invitation_link=invitation_link,
             organizer=str(self.team.organizer.name),
         )
-        invitation_subject = _("You have been invited to an organizer team")
+        invitation_subject = _('You have been invited to an organizer team')
 
         mail = QueuedMail.objects.create(
             to=self.email,

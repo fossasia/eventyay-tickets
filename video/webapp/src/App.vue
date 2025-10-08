@@ -1,5 +1,5 @@
 <template lang="pug">
-#app(:class="{'has-background-room': backgroundRoom, 'override-sidebar-collapse': overrideSidebarCollapse}", :style="[themeVariables, browserhackStyle, mediaConstraintsStyle]", :key="`${userLocale}-${userTimezone}`")
+.v-app(:key="`${userLocale}-${userTimezone}`", :class="{'has-background-room': backgroundRoom}", :style="[browserhackStyle, mediaConstraintsStyle]")
 	.fatal-connection-error(v-if="fatalConnectionError")
 		template(v-if="fatalConnectionError.code === 'world.unknown_world'")
 			.mdi.mdi-help-circle
@@ -18,21 +18,22 @@
 			h1 {{ $t('App:fatal-connection-error:else:headline') }}
 		p.code error code: {{ fatalConnectionError.code }}
 	template(v-else-if="world")
-		app-bar(v-if="$mq.below['l']", @toggleSidebar="toggleSidebar")
-		transition(name="backdrop")
-			.sidebar-backdrop(v-if="$mq.below['l'] && showSidebar && !overrideSidebarCollapse", @pointerup="showSidebar = false")
-		rooms-sidebar(:show="$mq.above['l'] || showSidebar || overrideSidebarCollapse", @close="showSidebar = false")
-		router-view(:key="!$route.path.startsWith('/admin') ? $route.fullPath : null", :role="roomHasMedia ? '' : 'main'")
-		//- defining keys like this keeps the playing dom element alive for uninterupted transitions
-		media-source(v-if="roomHasMedia && user.profile.greeted", ref="primaryMediaSource", :room="room", :key="room.id", role="main")
-		media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
-		media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
-		#media-source-iframes
-		notifications(:has-background-media="!!backgroundRoom")
-		.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
-		transition(name="prompt")
-			greeting-prompt(v-if="!user.profile.greeted")
-		.native-permission-blocker(v-if="askingPermission")
+		// AppBar stays fixed; only main content shifts
+		app-bar(@toggle-sidebar="toggleSidebar")
+		.app-content(:class="{'sidebar-open': showSidebar}", role="main", tabindex="-1")
+			// router-view no longer carries role=main; main landmark is the scroll container
+			router-view(:key="!$route.path.startsWith('/admin') ? $route.fullPath : null")
+			//- defining keys like this keeps the playing dom element alive for uninterupted transitions
+			media-source(v-if="roomHasMedia && user.profile.greeted", ref="primaryMediaSource", :room="room", :key="room.id", role="main")
+			media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
+			media-source(v-else-if="backgroundRoom", ref="backgroundMediaSource", :room="backgroundRoom", :background="true", :key="backgroundRoom.id", @close="backgroundRoom = null")
+			#media-source-iframes
+			notifications(:hasBackgroundMedia="!!backgroundRoom")
+			.disconnected-warning(v-if="!connected") {{ $t('App:disconnected-warning:text') }}
+			transition(name="prompt")
+				greeting-prompt(v-if="!user.profile.greeted")
+			.native-permission-blocker(v-if="askingPermission")
+		rooms-sidebar(:show="showSidebar", @close="showSidebar = false")
 	.connecting(v-else-if="!fatalError")
 		bunt-progress-circular(size="huge")
 		.details(v-if="socketCloseCode == 1006") {{ $t('App:error-code:1006') }}
@@ -41,7 +42,6 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import { themeVariables } from 'theme'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
 import MediaSource from 'components/MediaSource'
@@ -56,7 +56,6 @@ export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
 	data() {
 		return {
-			themeVariables,
 			backgroundRoom: null,
 			showSidebar: false,
 			windowHeight: null
@@ -67,8 +66,10 @@ export default {
 		...mapState('notifications', ['askingPermission']),
 		...mapState('chat', ['call']),
 		room() {
-			if (this.$route.name.startsWith('admin')) return
-			if (this.$route.name === 'home') return this.rooms?.[0]
+			const routeName = this.$route?.name
+			if (!routeName) return
+			if (routeName.startsWith && routeName.startsWith('admin')) return
+			if (routeName === 'home') return this.rooms?.[0]
 			return this.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
 		// TODO since this is used EVERYWHERE, use provide/inject?
@@ -83,15 +84,9 @@ export default {
 		},
 		stageStreamCollapsed() {
 			if (this.$mq.above.m) return false
-			return this.$refs.primaryMediaSource?.$refs.livestream ? !this.$refs.primaryMediaSource.$refs.livestream.playing : false
+			return this.mediaSourceRefs.primary?.$refs.livestream ? !this.mediaSourceRefs.primary.$refs.livestream.playing : false
 		},
 		// force open sidebar on medium screens on home page (with no media) so certain people can find the menu
-		overrideSidebarCollapse() {
-			return this.$mq.below.l &&
-				this.$mq.above.m &&
-				this.$route.name === 'home' &&
-				!this.roomHasMedia
-		},
 		// safari cleverly includes the address bar cleverly in 100vh
 		mediaConstraintsStyle() {
 			const hasStageTools = this.room?.modules.some(module => stageToolModules.includes(module.type))
@@ -117,6 +112,15 @@ export default {
 				'--vh100': this.windowHeight + 'px',
 				'--vh': this.windowHeight && (this.windowHeight / 100) + 'px'
 			}
+		},
+		// Map the named refs used for media sources into a single object so
+		// other computed properties can safely reference them.
+		mediaSourceRefs() {
+			return {
+				primary: this.$refs.primaryMediaSource,
+				background: this.$refs.backgroundMediaSource,
+				channel: this.$refs.channelCallSource
+			}
 		}
 	},
 	watch: {
@@ -125,6 +129,7 @@ export default {
 		room: 'roomChange',
 		call: 'callChange',
 		$route() {
+			// Always close the sidebar after navigation for consistent drawer UX on all screen sizes
 			this.showSidebar = false
 		},
 		stageStreamCollapsed: {
@@ -138,13 +143,25 @@ export default {
 		this.windowHeight = window.innerHeight
 		window.addEventListener('resize', this.onResize)
 		window.addEventListener('focus', this.onFocus, true)
+		window.addEventListener('pointerdown', this.onGlobalPointerDown, true)
+		window.addEventListener('keydown', this.onKeydown, true)
 	},
-	destroyed() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.onResize)
 		window.removeEventListener('focus', this.onFocus)
+		window.removeEventListener('pointerdown', this.onGlobalPointerDown, true)
+		window.removeEventListener('keydown', this.onKeydown, true)
 	},
 	methods: {
+		onKeydown(e) {
+			if ((e.key === 'Escape' || e.key === 'Esc') && this.showSidebar) {
+				this.showSidebar = false
+				// Prevent the Escape from triggering other handlers if we handled it
+				e.stopPropagation()
+			}
+		},
 		onResize() {
+			// Only track height for CSS vars; no breakpoint-based sidebar behavior
 			this.windowHeight = window.innerHeight
 		},
 		onFocus() {
@@ -152,6 +169,13 @@ export default {
 		},
 		toggleSidebar() {
 			this.showSidebar = !this.showSidebar
+		},
+		onGlobalPointerDown(event) {
+			if (!this.showSidebar) return
+			const sidebarEl = document.querySelector('.c-rooms-sidebar')
+			const hamburgerEl = document.querySelector('.c-app-bar .hamburger')
+			if (sidebarEl?.contains(event.target) || hamburgerEl?.contains(event.target)) return
+			this.showSidebar = false
 		},
 		clearTokenAndReload() {
 			localStorage.removeItem('token')
@@ -175,23 +199,34 @@ export default {
 			if (newRoom === oldRoom) return
 			// TODO non-room urls
 			let title = this.world.title
-			if (this.room) {
-				title += ` | ${this.room.name}`
+			if (newRoom?.name) {
+				title += ` | ${newRoom.name}`
 			}
 			document.title = title
 			this.$store.dispatch('changeRoom', newRoom)
 			const isExclusive = module => module.type === 'call.bigbluebutton' || module.type === 'call.zoom'
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (this.call) return // When a DM call is running, we never want background media
+			const newRoomHasMedia = newRoom && newRoom.modules && newRoom.modules.some(module => mediaModules.includes(module.type))
+			// We treat "undefined / not callable" as true to avoid race conditions.
+			let primaryWasPlaying = true
+			const primaryRef = this.mediaSourceRefs.primary
+			if (typeof primaryRef?.isPlaying === 'function') {
+				const result = primaryRef.isPlaying()
+				if (result === false) primaryWasPlaying = false
+			}
 			if (oldRoom &&
 				this.rooms.includes(oldRoom) &&
 				!this.backgroundRoom &&
 				oldRoom.modules.some(module => mediaModules.includes(module.type)) &&
-				this.$refs.primaryMediaSource.isPlaying() &&
+				primaryWasPlaying &&
 				// don't background bbb room when switching to new bbb room
-				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive))
+				!(newRoom?.modules.some(isExclusive) && oldRoom?.modules.some(isExclusive)) &&
+				!newRoomHasMedia 
 			) {
 				this.backgroundRoom = oldRoom
+			} else if (newRoomHasMedia) {
+				this.backgroundRoom = null
 			}
 			// returning to room currently playing in background should maximize again
 			if (this.backgroundRoom && (
@@ -214,19 +249,31 @@ export default {
 }
 </script>
 <style lang="stylus">
-#app
-	display: grid
-	grid-template-columns: var(--sidebar-width) auto
-	grid-template-rows: auto
-	grid-template-areas: "rooms-sidebar main"
+.v-app
+	flex: auto
+	min-height: 0
+	display: flex
+	flex-direction: column
 	--sidebar-width: 280px
 	--pretalx-clr-primary: var(--clr-primary)
 	.c-app-bar
-		grid-area: app-bar
-	.c-rooms-sidebar
-		grid-area: rooms-sidebar
+		flex: none
+	.app-content
+		flex: auto
+		min-height: 0
+		position: relative
+		// Smoothly shift content when sidebar opens/closes
+		transition: margin-left .3s ease, width .3s ease
+		width: 100vw
+		height: calc(var(--vh100) - 48px)
+		overflow-y: auto
+		-webkit-overflow-scrolling: touch
+		overscroll-behavior: contain
+		&.sidebar-open
+			margin-left: var(--sidebar-width)
+			width: calc(100vw - var(--sidebar-width))
 	.c-room-header
-		grid-area: main
+		height: calc(var(--vh100) - 48px)
 	> .bunt-progress-circular
 		position: fixed
 		top: 50%
@@ -290,31 +337,4 @@ export default {
 		position: absolute
 		width: 0
 		height: 0
-
-	+below('l')
-		&.override-sidebar-collapse
-			grid-template-rows: 48px 1fr
-			grid-template-areas: "app-bar app-bar" "rooms-sidebar main"
-		&:not(.override-sidebar-collapse)
-			grid-template-columns: auto
-			grid-template-rows: 48px 1fr
-			grid-template-areas: "app-bar" "main"
-
-			.sidebar-backdrop
-				position: fixed
-				top: 0
-				left: 0
-				height: var(--vh100)
-				width: 100vw
-				z-index: 900
-				background-color: $clr-secondary-text-light
-				&.backdrop-enter-active, &.backdrop-leave-active
-					transition: opacity .2s
-				&.backdrop-enter, &.backdrop-leave-to
-					opacity: 0
-			.fatal-connection-error
-				.mdi
-					font-size: 128px
-				h1
-					font-size: 24px
 </style>

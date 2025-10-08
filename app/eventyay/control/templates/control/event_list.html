@@ -1,0 +1,70 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+
+{% block video_admin_content %}
+<div class="video-admin-header">
+    <h1 class="page-header">{% trans "Events" %}</h1>
+</div>
+<p class="text-muted page-intro">{% trans "Overview of events managed by the Video Admin. Use the table actions to manage settings, generate admin tokens, or clear data." %}</p>
+<div class="video-admin-table-wrapper">
+<table class="table table-striped table-hover video-admin-table">
+    <thead>
+    <tr>
+        <th>{% trans "ID" %}</th>
+        <th>{% trans "Name" %} / {% trans "Usage" %}</th>
+        <th>{% trans "URL" %}</th>
+        <th class="text-right">{% trans "Users" %}</th>
+        <th colspan="4" class="text-right">{% trans "Actions" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for event in events %}
+    <tr class="{% if not event.domain %}deleted{% endif %}">
+        <td><code>{{ event.pk }}</code></td>
+        <td>
+            <strong>{{ event.name }}</strong>
+            {% for u in event.planned_usages.all %}
+                <br>
+                <small class="text-muted">{{ u.start|date:"SHORT_DATE_FORMAT" }} – {{ u.end|date:"SHORT_DATE_FORMAT" }} ({{ u.attendees }}ppl)</small>
+            {% endfor %}
+        </td>
+        <td>
+            {% if event.domain %}
+            <a href="https://{{ event.domain }}" target="_blank">
+                {{ event.domain }}
+            </a>
+            {% endif %}
+        </td>
+        <td class="text-right">{{ event.user_count }}</td>
+        <td class="text-right video-admin-actions">
+            {% if event.user_count %}
+            <a href="{% url 'control:event.clear' pk=event.pk %}" class="btn btn-warning btn-xs">
+                <span class="fa fa-trash"></span> {% trans "Delete data" %}
+            </a>
+            {% endif %}
+        </td>
+        <td class="text-right video-admin-actions">
+            {% if event.domain and event.admin_token %}
+                <a href="{% url 'control:event.admin' pk=event.pk %}" class="btn btn-default btn-xs">
+                    <span class="fa fa-lock"></span> {% trans "Admin access" %}
+                </a>
+            {% endif %}
+        </td>
+        <td class="text-right video-admin-actions">
+            <a href="{% url 'control:event.create' %}?copy_from={{ event.pk|urlencode }}" class="btn btn-default btn-xs">
+                <span class="fa fa-clone"></span> {% trans "Clone" %}
+            </a>
+        </td>
+        <td class="text-right video-admin-actions">
+            <a href="{% url 'control:event.update' pk=event.pk %}" class="btn btn-default btn-xs">
+                <span class="fa fa-pencil"></span> {% trans "Edit" %}
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+        <tr><td colspan="8" class="text-muted">{% trans "No events yet." %}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

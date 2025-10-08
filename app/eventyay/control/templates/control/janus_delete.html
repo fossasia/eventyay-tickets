@@ -1,0 +1,14 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+
+{% block video_admin_content %}
+<h1 class="page-header">{% trans "Delete Janus server" %}</h1>
+<form method="post" class="form-inline">
+    {% csrf_token %}
+    <p>{% blocktrans with id=server.url %}Are you sure you want to delete {{ id }}?{% endblocktrans %}</p>
+    <div class="video-admin-btn-row">
+        <button type="submit" class="btn btn-danger"><span class="fa fa-trash"></span> {% trans "Delete" %}</button>
+        <a href="{% url 'control:janusserver.list' %}" class="btn btn-default">{% trans "Cancel" %}</a>
+    </div>
+</form>
+{% endblock %}

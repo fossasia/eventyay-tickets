@@ -18,6 +18,7 @@ export default {
 		},
 		background: Boolean
 	},
+	emits: ['close'],
 	data() {
 		return {
 			server: null,

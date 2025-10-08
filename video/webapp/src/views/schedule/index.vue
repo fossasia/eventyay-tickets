@@ -3,7 +3,7 @@
 	template(v-if="schedule")
 		div.filter-actions
 			app-dropdown(v-for="item in filter", :key="item.refKey", className="schedule")
-				template(slot="toggler")
+				template(#toggler)
 					span {{item.title}}
 					app-dropdown-content(className="schedule")
 						app-dropdown-item(v-for="track in item.data", :key="track.value")
@@ -20,15 +20,13 @@
 				bunt-select.timezone-item(name="timezone", :options="[{id: schedule.timezone, label: schedule.timezone}, {id: userTimezone, label: userTimezone}]", v-model="currentTimezone", @blur="saveTimezone")
 			template(v-else)
 				div.timezone-label.timezone-item.bunt-tab-header-item {{ schedule.timezone }}
-
 			.export.dropdown
 				bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
 				custom-dropdown(name="calendar-add1"
-					v-model="selectedExporter"
+					:modelValue="selectedExporter"
+					@update:modelValue="selectedExporter = $event; makeExport()"
 					:options="exportType"
-					label="Add to Calendar"
-					@input="makeExport")
-
+					label="Add to Calendar")
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :key="day.toISOString()", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		.scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
@@ -62,8 +60,7 @@
 <script>
 import _ from 'lodash'
 import { mapState, mapGetters } from 'vuex'
-import LinearSchedule from 'views/schedule/schedule-components/LinearSchedule'
-import GridSchedule from 'views/schedule/schedule-components/GridSchedule'
+import { LinearSchedule, GridSchedule } from '@pretalx/schedule'
 import moment from 'lib/timetravelMoment'
 import TimezoneChanger from 'components/TimezoneChanger'
 import scheduleProvidesMixin from 'components/mixins/schedule-provides'
@@ -193,7 +190,7 @@ export default {
 			return sessions
 		},
 		rooms() {
-			return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
+		  return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
 		},
 		filter() {
 			const filter = this.defaultFilter
@@ -231,9 +228,11 @@ export default {
 		},
 		changeDayByScroll(day) {
 			this.currentDay = day
-			const tabEl = this.$refs.tabs.$refs.tabElements.find(el => el.id === day.toISOString())
-			// TODO smooth scroll, seems to not work with chrome {behavior: 'smooth', block: 'center', inline: 'center'}
-			tabEl?.$el.scrollIntoView()
+			if (this.$refs.tabs) {
+				const tabElements = this.$refs.tabs.$refs.tabElements || []
+				const tabEl = tabElements.find(el => el.id === day.toISOString())
+				tabEl?.$el?.scrollIntoView()
+			}
 		},
 		getTrackName(track) {
 			const languageTrack = localStorage.userLanguage
@@ -279,6 +278,7 @@ export default {
 				window.URL.revokeObjectURL(downloadUrl)
 				a.remove()
 				this.isExporting = false
+				this.selectedExporter = null
 			} catch (error) {
 				this.isExporting = false
 				this.error = error

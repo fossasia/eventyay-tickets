@@ -59,6 +59,7 @@
             <script defer src="{% static "common/js/lightbox.js" %}"></script>
             <script src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
             <script src="{% static "agenda/js/join-online-event.js" %}"></script>
+            <script defer src="{% static "common/js/dropdown.js" %}"></script>
         {% endcompress %}
         {% block scripts %}{% endblock scripts %}
         {% block custom_header %}{% endblock custom_header %}
@@ -95,18 +96,36 @@
                     </div>
                     <div class="header-row-right">
                         {% if request.event and request.event.locales|length > 1 and not is_html_export %}
-                            <div class="locales">
-                                {% for l, name in request.event.named_locales %}
-                                    <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{% querystring locale=None %}{% endif %}"
-                                       class="{% if l|lower == request.LANGUAGE_CODE|lower %}active{% endif %}">{{ name }}</a>
-                                {% endfor %}
-                                •&nbsp;
-                            </div>
+                            {% if request.event.locales|length > 3 %}
+                                <details id="locale-dropdown-label" class="dropdown locales" aria-haspopup="menu" role="menu">
+                                    <summary>
+                                        {% for l, name in request.event.named_locales %}
+                                            {% if l|lower == request.LANGUAGE_CODE|lower %}{{ name }}{% endif %}
+                                        {% endfor %}
+                                        <i class="fa fa-caret-down ml-1"></i>
+                                    </summary>
+                                    <div id="locale-dropdown" class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                                        {% for l, name in request.event.named_locales %}
+                                            <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}"
+                                               class="dropdown-item {% if l|lower == request.LANGUAGE_CODE|lower %}active{% endif %}" role="menuitem" tabindex="-1">{{ name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </details>
+                            {% else %}
+                                <div class="locales-inline">
+                                    {% for l, name in request.event.named_locales %}
+                                        <a href="{% url "cfp:locale.set" event=request.event.slug %}?locale={{ l }}&next={{ request.path }}%3F{{ request.META.QUERY_STRING|urlencode }}"
+                                           class="locale-link {% if l|lower == request.LANGUAGE_CODE|lower %}active{% endif %}">
+                                            {{ name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         {% endif %}
                         {% block header_right %}{% endblock header_right %}
                         {% if request.event and request.user.is_authenticated and not is_html_export %}
                             <details id="user-dropdown-label" class="dropdown" aria-haspopup="menu" role="menu">
-                                {% has_perm "event.orga_access_event" request.user request.event as can_see_orga_area %}
+                                {% has_perm "base.orga_access_event" request.user request.event as can_see_orga_area %}
                                 <summary>
                                     {{ request.user.get_display_name }} <i class="fa fa-caret-down ml-1"></i>
                                 </summary>

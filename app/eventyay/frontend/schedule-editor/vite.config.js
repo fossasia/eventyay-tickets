@@ -49,11 +49,6 @@ export default {
 	server: {
 		host: true,  // binds to all interfaces
 		port: 8080,
-		cors: true,
-		strictPort: true,
-		headers: {
-			"Access-Control-Allow-Origin": "*"
-		  },
 		hmr: {
 			host: 'localhost',
 			protocol: 'ws',  // ensure correct websocket protocol

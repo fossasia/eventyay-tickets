@@ -3,7 +3,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import shuffle from 'lodash/shuffle'
+import { shuffle } from 'lodash'
 import { nativeToStyle as nativeEmojiToStyle } from 'lib/emoji'
 
 const MAX_PARTICLE_POOL = 70 // TODO derive from width to have consistent density
