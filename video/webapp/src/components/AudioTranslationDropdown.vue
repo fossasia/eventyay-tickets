@@ -11,6 +11,7 @@ div.c-audio-translation
 <script>
 export default {
 	name: 'AudioTranslationDropdown',
+	emits: ['languageChanged'],
 	props: {
 		languages: {
 			type: Array,

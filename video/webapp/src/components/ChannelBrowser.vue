@@ -6,7 +6,7 @@ prompt.c-channel-browser(@close="$emit('close')", :scrollable="false")
 			a(href="#", @click="$emit('createChannel')", v-if="hasPermission('world:rooms.create.chat')")  {{ $t('ChannelBrowser:create:label') }}
 		bunt-input(icon="search", name="search", :placeholder="$t('ChannelBrowser:search:placeholder')", v-model="search")
 		scrollbars.channels(y)
-			router-link.channel(v-for="channel of searchedChannels", :to="{name: 'room', params: {roomId: channel.room.id}}", @click.native="$emit('close')")
+			router-link.channel(v-for="channel of searchedChannels", :to="{name: 'room', params: {roomId: channel.room.id}}", @click="$emit('close')")
 				.channel-info
 					.name {{ channel.room.name }}
 					.description {{ channel.room.description }}
@@ -25,6 +25,7 @@ import fuzzysearch from 'lib/fuzzysearch'
 
 export default {
 	components: { Prompt },
+	emits: ['close', 'createChannel'],
 	data() {
 		return {
 			search: ''

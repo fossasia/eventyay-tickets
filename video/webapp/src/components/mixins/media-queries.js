@@ -1,4 +1,5 @@
-import throttle from 'lodash/throttle'
+import { reactive } from 'vue'
+import { throttle } from 'lodash'
 
 // TODO check semantics with rupture
 const SCALE = {
@@ -6,34 +7,33 @@ const SCALE = {
 	s: 768,
 	m: 992,
 	l: 1400,
-	xl: 1800,
-	hd: Infinity
+	xl: 1800
 }
 
 const Plugin = {
-	install(Vue) {
+	install(app) {
 		const match = function(value, direction) {
 			if (SCALE[value]) value = SCALE[value] + (direction === 'min' ? 1 : 0) + 'px'
 			return window.matchMedia(`(${direction}-width: ${value})`).matches
 		}
 		const proxyHandler = function(direction) {
 			return {
-				get(target, property, receiver) {
-					if (typeof property !== 'symbol' && property !== '_isVue') {
-						Vue.set(target, property, match(property, direction))
+				get(target, property, ...args) {
+					if (typeof property !== 'symbol' && !property.startsWith('__v')) {
+						target[property] = match(property, direction)
 					}
-					return Reflect.get(...arguments)
+					return Reflect.get(target, property, ...args)
 				}
 			}
 		}
 
-		const mq = Vue.observable({
-			above: new Proxy({}, proxyHandler('min')),
-			below: new Proxy({}, proxyHandler('max'))
+		const mq = reactive({
+			above: new Proxy(reactive({}), proxyHandler('min')),
+			below: new Proxy(reactive({}), proxyHandler('max'))
 		})
 		const updateMatches = function(object, direction) {
 			for (const key of Object.keys(object)) {
-				Vue.set(object, key, match(key, direction))
+				object[key] = match(key, direction)
 			}
 		}
 		const throttleResize = throttle(() => {
@@ -42,11 +42,7 @@ const Plugin = {
 		}, 200)
 
 		window.addEventListener('resize', throttleResize)
-		Object.defineProperty(Vue.prototype, '$mq', {
-			get() {
-				return mq
-			}
-		})
+		Object.defineProperty(app.config.globalProperties, '$mq', { get() { return mq } })
 	}
 }
 

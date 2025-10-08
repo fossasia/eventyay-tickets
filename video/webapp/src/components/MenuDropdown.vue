@@ -1,8 +1,8 @@
 <template lang="pug">
 .c-menu-dropdown
-	.ui-background-blocker(v-if="blockBackground && value", @click="$emit('input', false)")
+	.ui-background-blocker(v-if="blockBackground && modelValue", @click="$emit('update:modelValue', false)")
 	slot(name="button", :toggle="toggle")
-	.menu(v-if="value", ref="menu")
+	.menu(v-if="modelValue", ref="menu")
 		slot(name="menu")
 </template>
 <script>
@@ -11,7 +11,7 @@ import { createPopper } from '@popperjs/core'
 
 export default {
 	props: {
-		value: Boolean,
+		modelValue: Boolean,
 		placement: {
 			type: String,
 			default: 'bottom'
@@ -29,13 +29,14 @@ export default {
 			default: true
 		}
 	},
+	emits: ['update:modelValue'],
 	methods: {
 		async toggle(event) {
-			if (this.value) {
-				this.$emit('input', false)
+			if (this.modelValue) {
+				this.$emit('update:modelValue', false)
 				return
 			}
-			this.$emit('input', true)
+			this.$emit('update:modelValue', true)
 			await this.$nextTick()
 			const button = event.target.closest('.bunt-icon-button, .bunt-button') || event.target
 			createPopper(button, this.$refs.menu, {

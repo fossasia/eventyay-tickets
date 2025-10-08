@@ -11,6 +11,7 @@ export default {
 	props: {
 		expanded: Boolean
 	},
+	emits: ['expand'],
 	data() {
 		return {
 			particlePool: [],

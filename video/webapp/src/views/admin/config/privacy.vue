@@ -23,17 +23,20 @@
 					.actions
 						bunt-icon-button(v-if="iframeDomain.domain !== 'default'", @click="removeIframeDomain(iframeDomain)") delete-outline
 				bunt-button.btn-add-domain(@click="addIframeDomain") Add domain
-	.ui-form-actions
-		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
-		.errors {{ validationErrors.join(', ') }}
+	.ui-form-actions-wrapper
+		.ui-form-actions
+			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+			.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
+import {useVuelidate} from '@vuelidate/core'
 import api from 'lib/api'
 import ValidationErrorsMixin from 'components/mixins/validation-errors'
 
 export default {
 	components: { },
 	mixins: [ValidationErrorsMixin],
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			// We do not use the global config object since we cannot rely on it being up to date (theme is only updated
@@ -74,14 +77,14 @@ export default {
 			)
 			// Enforce some defaults
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 	},
 	methods: {
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 
 			const iframeBlockers = Object.fromEntries(this.iframeDomains.map(({domain, enabled, policy_url}) => [
 				domain,

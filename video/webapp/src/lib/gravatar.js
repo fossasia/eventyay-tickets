@@ -1,9 +1,9 @@
-import { createHash } from 'crypto'
+// Avoid importing Node 'crypto' which Vite externalizes for the browser; use js-md5 instead
+import md5 from 'js-md5'
 
 const getHash = function(id) {
-	const hash = createHash('md5')
-	hash.update(id.toLowerCase().trim())
-	return hash.digest('hex')
+	// blueimp-md5 returns hex string
+	return md5(id.toLowerCase().trim())
 }
 
 const getProfile = async function(hash) {

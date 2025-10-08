@@ -16,7 +16,7 @@
 	router-view(:room="room", :modules="modules")
 	transition(name="prompt")
 		recordings-prompt(v-if="showRecordingsPrompt", :room="room", @close="showRecordingsPrompt = false")
-		QRCodePrompt(v-if="showQRCodePrompt", :room="room", @close="showQRCodePrompt = false")
+		QRCodePrompt(v-else-if="showQRCodePrompt", :room="room", @close="showQRCodePrompt = false")
 </template>
 <script>
 // TODO

@@ -3,20 +3,22 @@
 	.ui-page-header
 		h1 Token Generator
 	scrollbars(y).ui-form-body
-		bunt-input(v-model="number", label="Number", name="number", :validation="$v.number")
-		bunt-input(v-model="days", label="Days", name="days", :validation="$v.days")
-		bunt-input(label="Traits (comma-separated)", @input="set_traits($event)", name="t"
-								:value="traits ? traits.join(', ') : ''")
+		bunt-input(v-model="number", label="Number", name="number", :validation="v$.number")
+		bunt-input(v-model="days", label="Days", name="days", :validation="v$.days")
+		bunt-input(name="t", label="Traits (comma-separated)", @update:modelValue="set_traits($event)", :modelValue="traits ? traits.join(', ') : ''")
 		bunt-button.btn-generate(@click="save", :loading="saving") Generate
 		bunt-input-outline-container(label="Result")
-			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="result")
+			template(#default="{focus, blur}")
+				textarea(@focus="focus", @blur="blur", v-model="result")
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
 import api from 'lib/api'
 import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
-import { required, integer } from 'vuelidate/lib/validators'
+import { required, integer } from '@vuelidate/validators'
 
 export default {
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			traits: [],
@@ -55,8 +57,8 @@ export default {
 			this.traits = t.split(',').map((i) => i.trim())
 		},
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 
 			this.saving = true
 			const r = await api.call('world.tokens.generate', {

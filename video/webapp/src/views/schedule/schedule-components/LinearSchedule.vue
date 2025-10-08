@@ -23,6 +23,7 @@ import Session from './Session'
 
 export default {
 	components: { Session },
+	emits: ['fav', 'unfav', 'changeDay'],
 	props: {
 		sessions: Array,
 		rooms: Array,
@@ -130,8 +131,8 @@ export default {
 		if ((nowIndex < 0) || (beforeIndex === 0)) return
 		const nowBucket = this.sessionBuckets[Math.max(0, nowIndex - 1)]
 		const scrollTop = this.$refs[this.getBucketName(nowBucket.date)]?.[0]?.offsetTop - 90
-		if (this.scrollParent) {
-			this.scrollParent.scrollTop = scrollTop
+		if (this.scrollParent && typeof this.scrollParent.scrollTo === 'function') {
+			this.scrollParent.scrollTo({ top: scrollTop })
 		} else {
 			window.scroll({top: scrollTop + this.getOffsetTop()})
 		}
@@ -155,8 +156,8 @@ export default {
 			const el = this.$refs[this.getBucketName(dayBucket.date)]?.[0]
 			if (!el) return
 			const scrollTop = el.offsetTop + this.getOffsetTop() - 8
-			if (this.scrollParent) {
-				this.scrollParent.scrollTop = scrollTop
+			if (this.scrollParent && typeof this.scrollParent.scrollTo === 'function') {
+				this.scrollParent.scrollTo({ top: scrollTop })
 			} else {
 				window.scroll({top: scrollTop})
 			}
@@ -180,6 +181,7 @@ export default {
 	display: flex
 	flex-direction: column
 	min-height: 0
+	max-height: 88vh
 	.bucket
 		padding-top: 8px
 		.bucket-label

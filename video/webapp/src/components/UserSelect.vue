@@ -2,14 +2,15 @@
 .c-user-select
 	.search-bar
 		bunt-input-outline-container
-			.search-field(slot-scope="{focus, blur}")
-				.selected-user(v-for="user of selectedUsers")
-					avatar(:user="user", :size="20")
-					.display-name
-						| {{ user.profile.display_name }}
-						.ui-badge(v-for="badge in user.badges") {{ badge }}
-					bunt-icon-button(@click="removeUser(user)") close
-				input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur", autofocus, autocomplete="off")
+			template(#default="{focus, blur}")
+				.search-field
+					.selected-user(v-for="user of selectedUsers")
+						avatar(:user="user", :size="20")
+						.display-name
+							| {{ user.profile.display_name }}
+							.ui-badge(v-for="badge in user.badges") {{ badge }}
+						bunt-icon-button(@click="removeUser(user)") close
+					input(ref="input", name="search", v-model="search", @focus="focus", @blur="blur", autofocus, autocomplete="off")
 		bunt-button(@click="submit") {{ buttonLabel }}
 	scrollbars.search-results(y)
 		.user(v-for="user of results", :class="{selected: isSelected(user), inactive: user.inactive}", @click="addUser(user)")
@@ -49,6 +50,7 @@ export default {
 			default: () => []
 		},
 	},
+	emits: ['selected'],
 	data() {
 		return {
 			selectedUsers: [],

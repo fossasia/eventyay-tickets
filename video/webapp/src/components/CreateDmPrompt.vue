@@ -3,7 +3,7 @@ prompt.c-create-dm-prompt(:scrollable="false", @close="$emit('close')")
 	.content
 		h1 {{ $t('CreateDMPrompt:headline:text') }}
 		p {{ $t('CreateDMPrompt:intro:text') }}
-		user-select(:button-label="$t('CreateDMPrompt:create-button:label')", @selected="create", :exclude="[this.user.id]")
+		user-select(:button-label="$t('CreateDMPrompt:create-button:label')", @selected="create", :exclude="[user.id]")
 </template>
 <script>
 import {mapGetters, mapState} from 'vuex'
@@ -12,6 +12,7 @@ import UserSelect from 'components/UserSelect'
 
 export default {
 	components: { Prompt, UserSelect },
+	emits: ['close'],
 	data() {
 		return {
 			selectedUser: null

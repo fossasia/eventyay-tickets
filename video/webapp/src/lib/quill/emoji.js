@@ -7,7 +7,7 @@ class EmojiBlot extends Embed {
 	static create(value) {
 		const node = super.create()
 		node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-		node.style.cssText = objectToCssString(nativeEmojiToStyle(value))
+		node.style = objectToCssString(nativeEmojiToStyle(value))
 		node.dataset.emoji = value
 		return node
 	}

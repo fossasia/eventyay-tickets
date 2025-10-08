@@ -1,5 +1,6 @@
-import Vue from 'vue'
+import {createApp, h as createElement} from 'vue'
 import Quill from 'quill'
+import Buntpapier from 'buntpapier'
 import IframeBlocker from 'components/IframeBlocker'
 
 const BlockEmbed = Quill.import('blots/block/embed')
@@ -25,15 +26,15 @@ export default class VideoResponsive extends BlockEmbed {
 		node.appendChild(innerNode)
 		const blocker = document.createElement('div')
 		innerNode.appendChild(blocker)
-		new Vue({
-			render: h => h(IframeBlocker, {
-				props: {
-					src,
-					frameborder: '0',
-					allowfullscreen: true
-				}
+		const app = createApp({
+			render: () => createElement(IframeBlocker, {
+				src,
+				frameborder: '0',
+				allowfullscreen: true
 			})
-		}).$mount(blocker)
+		})
+		app.use(Buntpapier)
+		app.mount(blocker)
 		return node
 	}
 

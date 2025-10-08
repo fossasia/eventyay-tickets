@@ -1,15 +1,14 @@
 /* global ENV_DEVELOPMENT */
 import config from 'config'
-import store from 'store'
 import WebSocketClient from './WebSocketClient'
 
-const api = Object.create(WebSocketClient.prototype)
-api.connect = function({token, clientId, inviteToken}) {
-	if (api._socket) {
-		api.close()
-	}
-	Object.assign(api, WebSocketClient.call(api, `${config.api.socket}`, {token, clientId, inviteToken}))
-	WebSocketClient.prototype.connect.call(api)
+let api = null
+export { api as default }
+
+export function initApi({ store, token, clientId, inviteToken }) {
+	api = new WebSocketClient(`${config.api.socket}`, { token, clientId, inviteToken })
+	api.connect()
+
 	api.on('closed', () => {
 		console.warn('socket closed')
 	})
@@ -52,7 +51,6 @@ api.connect = function({token, clientId, inviteToken}) {
 			)
 		}
 	})
-}
 
 api.uploadFile = function(file, filename, url, width, height) {
 	url = url || config.api.upload
@@ -90,5 +88,5 @@ api.uploadFilePromise = function(file, filename, url) {
 }
 
 window.api = api
+}
 
-export default api
