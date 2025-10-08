@@ -29,6 +29,7 @@
 				session(
 					v-for="session of nextSessions",
 					:session="session",
+					:now="now",
 					:faved="favs.includes(session.id)",
 					@fav="$store.dispatch('schedule/fav', $event)",
 					@unfav="$store.dispatch('schedule/unfav', $event)"
@@ -39,7 +40,7 @@
 				bunt-link-button(:to="{name: 'schedule:speakers'}") {{ $t('LandingPage:speakers:link') }}
 			.speakers-list
 				router-link.speaker(v-for="speaker of speakers.slice(0, 32)", :to="speaker.attendee ? {name: '', params: {}} : { name: 'schedule:speaker', params: { speakerId: speaker.code } }")
-					img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
+					img.avatar(v-if="speaker.avatar || speaker.avatar_url", :src="speaker.avatar || speaker.avatar_url")
 					identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
 					.name {{ speaker.name }}
 				router-link.additional-speakers(v-if="speakers.length > 32", :to="{name: 'schedule:speakers'}") {{ $t('LandingPage:speakers:more', {additional_speakers: speakers.length - 32}) }}

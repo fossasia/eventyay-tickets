@@ -55,16 +55,17 @@
 
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :user="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
-		a-v-device-prompt(v-if="showDevicePrompt", @close="closeDevicePrompt")
-		feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
-		prompt.screenshare-prompt(v-if="showScreensharePrompt", @close="showScreensharePrompt=false")
-			.content
-				h1 {{ $t('JanusVideoroom:tool-screenshare:on') }}
-				form(@submit.prevent="publishOwnScreenshareFeed")
-					bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
+		template
+			a-v-device-prompt(v-if="showDevicePrompt", @close="closeDevicePrompt")
+			feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
+			prompt.screenshare-prompt(v-if="showScreensharePrompt", @close="showScreensharePrompt=false")
+				.content
+					h1 {{ $t('JanusVideoroom:tool-screenshare:on') }}
+					form(@submit.prevent="publishOwnScreenshareFeed")
+						bunt-button(type="submit") {{ $t('JanusVideoroom:tool-screenshare:start') }}
 </template>
 <script>
-import {Janus} from 'janus-gateway'
+import Janus from 'lib/janus.js'
 import {mapState} from 'vuex'
 import api from 'lib/api'
 import ChatUserCard from 'components/ChatUserCard'
@@ -158,6 +159,7 @@ export default {
 			default: 'normal'
 		},
 	},
+	emits: ['hangup'],
 	data() {
 		return {
 			// State machines
@@ -235,7 +237,7 @@ export default {
 			this.onResize()
 		}
 	},
-	destroyed() {
+	unmounted() {
 		if (this.janus) {
 			this.cleanup()
 		}
@@ -258,7 +260,7 @@ export default {
 		}, 10000)
 		this.soundMeterInterval = window.setInterval(() => {
 			for (const idx in this.soundMeters) {
-				this.$set(this.soundLevels, idx, this.soundMeters[idx].slow.toFixed(2))
+				this.soundLevels[idx] = this.soundMeters[idx].slow.toFixed(2)
 			}
 		}, 200)
 	},
@@ -588,8 +590,9 @@ export default {
 					// For example, if the publisher is VP8 and this is Safari, let's avoid video
 					if (Janus.webRTCAdapter.browserDetails.browser === 'safari' &&
 						(video === 'vp9' || (video === 'vp8' && !Janus.safariVp8))) {
-						if (video)
+						if (video) {
 							video = video.toUpperCase()
+						}
 						log('venueless', 'info', 'Publisher is using ' + video + ', but Safari doesn\'t support it: disabling video')
 						subscribe.offer_video = false
 					}
@@ -686,7 +689,7 @@ export default {
 							remoteFeed.hasVideo = true
 						}
 						this.initSoundMeter(stream, remoteFeed.rfid)
-						this.$set(this.feeds, rfindex, remoteFeed) // force reactivity
+						this.feeds[rfindex] = remoteFeed
 					})
 				},
 			})
@@ -900,7 +903,7 @@ export default {
 				const actx = new AudioContext()
 				const soundmeter = new SoundMeter(actx)
 				soundmeter.connectToSource(stream)
-				this.$set(this.soundMeters, refname, soundmeter)
+				this.soundMeters[refname] = soundmeter
 			} catch (e) {
 				log('venueless', 'error', 'Could not init sound meter: ' + e)
 				// do not fail visibly, it is a nice-to-have feature
@@ -943,7 +946,7 @@ export default {
 		async fetchUser(feed) {
 			feed.venueless_user = await api.call('januscall.identify', {id: feed.rfid})
 			const rfindex = this.feeds.findIndex((rf) => rf.rfid === feed.rfid)
-			this.$set(this.feeds, rfindex, feed) // force reactivity
+			this.feeds[rfindex] = feed
 		},
 	},
 }

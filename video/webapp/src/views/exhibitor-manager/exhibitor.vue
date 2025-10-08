@@ -12,20 +12,21 @@
 				bunt-button.btn-save(@click="save", :loading="saving") {{ $t('Exhibitors:save:label') }}
 		exhibitor-preview(v-show="showPreview", :exhibitorProp="exhibitor")
 		.main-form(v-show="!showPreview", v-scrollbar.y="")
-			bunt-input(v-model="exhibitor.name", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:name:label')", name="name", :validation="$v.exhibitor.name")
-			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="$v.exhibitor.tagline")
-			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="shortText", :validation="$v.exhibitor.shortText")
+			bunt-input(v-model="exhibitor.name", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:name:label')", name="name", :validation="v$.exhibitor.name")
+			bunt-input(v-model="exhibitor.tagline", :label="$t('Exhibitors:tagline:label')", name="tagline", :validation="v$.exhibitor.tagline")
+			bunt-input(v-model="exhibitor.short_text", :label="$t('Exhibitors:short-text:label')", name="shortText", :validation="v$.exhibitor.short_text")
 			bunt-input-outline-container(v-if="exhibitor.text_legacy", :label="$t('Exhibitors:text:label')")
-				textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="exhibitor.text_legacy")
+				template(v-slot="{focus, blur}")
+					textarea(@focus="focus", @blur="blur", v-model="exhibitor.text_legacy")
 			rich-text-editor(v-else, v-model="exhibitor.text_content")
-			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo", :validation="$v.exhibitor.logo")
-			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList", :validation="$v.exhibitor.banner_list")
-			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail", :validation="$v.exhibitor.banner_detail")
-			bunt-select(v-model="exhibitor.size", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="$v.exhibitor.size")
-			bunt-input(v-model="exhibitor.sorting_priority", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="$v.exhibitor.sorting_priority")
-			bunt-select(v-model="exhibitor.room_id", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="$v.exhibitor.room_id")
-			bunt-select(v-model="exhibitor.highlighted_room_id", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:highlighted-room:label')", name="highlighted_room", :options="all_rooms_or_none", option-label="name", :validation="$v.exhibitor.highlighted_room_id")
-				template(slot-scope="{ option }")
+			upload-url-input(v-model="exhibitor.logo", :label="$t('Exhibitors:logo:label')", name="logo", :validation="v$.exhibitor.logo")
+			upload-url-input(v-model="exhibitor.banner_list", :label="$t('Exhibitors:banner-list:label')", name="bannerList", :validation="v$.exhibitor.banner_list")
+			upload-url-input(v-model="exhibitor.banner_detail", :label="$t('Exhibitors:banner-detail:label')", name="bannerDetail", :validation="v$.exhibitor.banner_detail")
+			bunt-select(v-model="exhibitor.size", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:size:label')", name="size", :options="sizes", :validation="v$.exhibitor.size")
+			bunt-input(v-model="exhibitor.sorting_priority", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:sorting-priority:label')", name="sortingPriority", :validation="v$.exhibitor.sorting_priority")
+			bunt-select(v-model="exhibitor.room_id", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:room:label')", name="room", :options="rooms", option-label="name", :validation="v$.exhibitor.room_id")
+			bunt-select(v-model="exhibitor.highlighted_room_id", :disabled="!hasPermission('world:rooms.create.exhibition')", :label="$t('Exhibitors:highlighted-room:label')", name="highlighted_room", :options="all_rooms_or_none", option-label="name", :validation="v$.exhibitor.highlighted_room_id")
+				template(v-slot="{ option }")
 					.label {{ option.name }}
 			table.links
 				thead
@@ -34,11 +35,11 @@
 						th
 						th
 				tbody
-					tr(v-for="(link, index) in exhibitor.social_media_links")
+					tr(v-for="(link, index) in exhibitor.social_media_links", :key="`social-${index}`")
 						td
-							bunt-select(v-model="link.display_text", :label="$t('Exhibitors:social-link-text:label')", name="displayText", :options="supportedNetworks", :validation="$v.exhibitor.social_media_links.$each[index].display_text")
+							bunt-select(v-model="link.display_text", :label="$t('Exhibitors:social-link-text:label')", name="displayText", :options="supportedNetworks", :validation="v$.exhibitor.social_media_links.$each[index].display_text")
 						td
-							bunt-input(:value="link.url", :label="$t('Exhibitors:link-url:label')", @input="set_social_media_link_url(index, $event)", name="url", :validation="$v.exhibitor.social_media_links.$each[index].url")
+								bunt-input(:model-value="link.url", :label="$t('Exhibitors:link-url:label')", @update:model-value="set_social_media_link_url(index, $event)", name="url", :validation="v$.exhibitor.social_media_links.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_social_media_link(index)") delete-outline
 				tfoot
@@ -54,16 +55,15 @@
 						th
 						th
 				tbody
-					tr(v-for="(link, index) in exhibitor.profileLinks")
+					tr(v-for="(link, index) in exhibitor.profileLinks", :key="`profile-${index}`")
 						td
-							bunt-input(:value="link.display_text", @input="set_link_text(index, link.category, $event)", :label="$t('Exhibitors:link-text:label')", name="displayText", :validation="$v.exhibitor.profileLinks.$each[index].display_text")
+							bunt-input(:model-value="link.display_text", @update:model-value="set_link_text(index, link.category, $event)", :label="$t('Exhibitors:link-text:label')", name="displayText", :validation="v$.exhibitor.profileLinks.$each[index].display_text")
 						td
-							bunt-input(:value="link.url", @input="set_link_url(index, link.category, $event)", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.profileLinks.$each[index].url")
+								bunt-input(:model-value="link.url", @update:model-value="set_link_url(index, link.category, $event)", :label="$t('Exhibitors:link-url:label')", name="url", :validation="v$.exhibitor.profileLinks.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
 							bunt-icon-button(@click="up_link(index, link.category)") arrow-up-bold-outline
 							bunt-icon-button(@click="down_link(index, link.category)") arrow-down-bold-outline
-				tfoot
 				tfoot
 					tr
 						td
@@ -77,16 +77,17 @@
 						th
 						th
 				tbody
-					tr(v-for="(link, index) in exhibitor.downloadLinks")
+					tr(v-for="(link, index) in exhibitor.downloadLinks", :key="`download-${index}`")
 						td
-							bunt-input(v-model="link.display_text", :label="$t('Exhibitors:link-text:label')", name="displayText", :validation="$v.exhibitor.downloadLinks.$each[index].display_text")
+							bunt-input(v-model="link.display_text", :label="$t('Exhibitors:link-text:label')", name="displayText", :validation="v$.exhibitor.downloadLinks.$each[index].display_text")
 						td
-							upload-url-input(v-model="link.url", :label="$t('Exhibitors:link-url:label')", name="url", :validation="$v.exhibitor.downloadLinks.$each[index].url")
+								upload-url-input(v-model="link.url", :label="$t('Exhibitors:link-url:label')", name="url", :validation="v$.exhibitor.downloadLinks.$each[index].url")
 						td.actions
 							bunt-icon-button(@click="remove_link(index, link.category)") delete-outline
 							bunt-icon-button(@click="up_link(index, link.category)") arrow-up-bold-outline
 							bunt-icon-button(@click="down_link(index, link.category)") arrow-down-bold-outline
 				tfoot
+					tr
 						td
 							bunt-button(@click="add_link('download')") {{ $t('Exhibitors:add-link:text') }}
 						td
@@ -97,7 +98,7 @@
 						th {{ $t('Exhibitors:staff:label') }}
 						th
 				tbody
-					tr(v-for="(user, index) in exhibitor.staff")
+					tr(v-for="(user, index) in exhibitor.staff", :key="`staff-${index}`")
 						td.user
 							avatar(:user="user", :size="36")
 							span.display-name {{ user ? user.profile.display_name : '' }}
@@ -129,9 +130,9 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { required, maxLength } from 'buntpapier/src/vuelidate/validators'
-import { helpers } from 'vuelidate/lib/validators'
-import { withParams } from 'vuelidate/lib/validators/common'
+import { useVuelidate } from '@vuelidate/core'
+import { required, maxLength } from 'lib/validators'
+import { helpers } from '@vuelidate/validators'
 import api from 'lib/api'
 import router from 'router'
 import Avatar from 'components/Avatar'
@@ -141,13 +142,16 @@ import UploadUrlInput from 'components/UploadUrlInput'
 import RichTextEditor from 'components/RichTextEditor'
 import ExhibitorPreview from 'views/exhibitors/item'
 
-const absrelurl = (message) => withParams({message: message}, value => helpers.regex('absrelurl', /^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
+// Wrap Vuelidate validators to support custom i18n messages like the previous buntpapier helpers
+// TODO doesn't actually find invalid URLs, perhaps use `url` from validators instead
+const absrelurl = (message) => helpers.withMessage(message, value => helpers.regex(/^(https?:\/\/|mailto:|\/)[^ ]+$/)(value))
 
 export default {
 	components: { Avatar, ExhibitorPreview, Prompt, UploadUrlInput, UserSelect, RichTextEditor },
 	props: {
 		exhibitorId: String
 	},
+	setup: () => ({ v$: useVuelidate() }),
 	data() {
 		return {
 			exhibitor: null,
@@ -189,7 +193,8 @@ export default {
 		}
 	},
 	validations() {
-		return {
+		if (!this.exhibitor) return {}
+		const rules = {
 			exhibitor: {
 				name: {
 					required: required(this.$t('Exhibitors:validation-name:required')),
@@ -210,7 +215,7 @@ export default {
 				tagline: {
 					maxLength: maxLength(250, this.$t('Exhibitors:validation-tagline:maxLength'))
 				},
-				shortText: {
+				short_text: {
 					maxLength: maxLength(500, this.$t('Exhibitors:validation-short-text:maxLength'))
 				},
 				size: {
@@ -223,8 +228,14 @@ export default {
 				sorting_priority: {
 					required: required(this.$t('Exhibitors:validation-sorting:required'))
 				},
-				social_media_links: {
-					$each: {
+				social_media_links: {},
+				profileLinks: {},
+				downloadLinks: {},
+			}
+		}
+
+				for (const [index] of this.exhibitor.social_media_links.entries()) {
+					rules.exhibitor.social_media_links[index] = {
 						display_text: {
 							required: required(this.$t('Exhibitors:validation-social-links-display-text:required'))
 						},
@@ -234,22 +245,10 @@ export default {
 							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
 						}
 					}
-				},
-				profileLinks: {
-					$each: {
-						display_text: {
-							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
-							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
-						},
-						url: {
-							required: required(this.$t('Exhibitors:validation-links-url:required')),
-							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
-							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
-						}
-					}
-				},
-				downloadLinks: {
-					$each: {
+				}
+
+				for (const [index] of this.exhibitor.profileLinks.entries()) {
+					rules.exhibitor.profileLinks[index] = {
 						display_text: {
 							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
 							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
@@ -261,22 +260,36 @@ export default {
 						}
 					}
 				}
-			}
-		}
+
+				for (const [index] of this.exhibitor.downloadLinks.entries()) {
+					rules.exhibitor.downloadLinks[index] = {
+						display_text: {
+							required: required(this.$t('Exhibitors:validation-links-display-text:required')),
+							maxLength: maxLength(300, this.$t('Exhibitors:validation-links-display-text:maxLength'))
+						},
+						url: {
+							required: required(this.$t('Exhibitors:validation-links-url:required')),
+							maxLength: maxLength(200, this.$t('Exhibitors:validation-url:maxLength')),
+							absrelurl: absrelurl(this.$t('Exhibitors:validation-links-url:required'))
+						}
+					}
+				}
+				return rules
 	},
 	async created() {
 		try {
-			if (this.exhibitorId !== '') {
+			if (this.exhibitorId) {
 				this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
-				this.$set(this.exhibitor, 'downloadLinks', this.exhibitor.links.filter(l => l.category === 'download').sort((a, b) => a.sorting_priority - b.sorting_priority))
-				this.$set(this.exhibitor, 'profileLinks', this.exhibitor.links.filter(l => l.category === 'profile').sort((a, b) => a.sorting_priority - b.sorting_priority))
+				this.exhibitor.downloadLinks = this.exhibitor.links.filter(l => l.category === 'download').sort((a, b) => a.sorting_priority - b.sorting_priority)
+				this.exhibitor.profileLinks = this.exhibitor.links.filter(l => l.category === 'profile').sort((a, b) => a.sorting_priority - b.sorting_priority)
 			} else {
 				this.exhibitor = {
 					id: '',
 					name: '',
 					tagline: '',
 					short_text: '',
-					text: '',
+					text_legacy: '',
+					text_content: '',
 					logo: '',
 					banner_list: '',
 					banner_detail: '',
@@ -289,8 +302,8 @@ export default {
 					staff: [],
 					contact_enabled: true,
 				}
-				this.$set(this.exhibitor, 'downloadLinks', [])
-				this.$set(this.exhibitor, 'profileLinks', [])
+				this.exhibitor.downloadLinks = []
+				this.exhibitor.profileLinks = []
 			}
 		} catch (error) {
 			this.error = error
@@ -298,89 +311,83 @@ export default {
 		}
 	},
 	methods: {
-		remove_social_media_link(link) {
-			this.$delete(this.exhibitor.social_media_links, link)
+		remove_social_media_link(index) {
+			this.exhibitor.social_media_links.splice(index, 1)
 		},
 		add_social_media_link() {
 			this.exhibitor.social_media_links.push({display_text: '', url: ''})
-		},
-		set_social_media_link_text(index, displayText) {
-			this.exhibitor.social_media_links[index].display_text = displayText
 		},
 		set_social_media_link_url(index, url) {
 			this.exhibitor.social_media_links[index].url = url
 		},
 		remove_link(index, category) {
 			if (category === 'profile') {
-				this.$delete(this.exhibitor.profileLinks, index)
+				this.exhibitor.profileLinks.splice(index, 1)
 			} else if (category === 'download') {
-				this.$delete(this.exhibitor.downloadLinks, index)
+				this.exhibitor.downloadLinks.splice(index, 1)
 			}
 		},
 		add_link(category) {
+			const newLink = {display_text: '', url: '', category, sorting_priority: 0}
 			if (category === 'profile') {
-				this.exhibitor.profileLinks.push({display_text: '', url: '', category: category, sorting_priority: 0})
+				this.exhibitor.profileLinks.push(newLink)
 			} else if (category === 'download') {
-				this.exhibitor.downloadLinks.push({display_text: '', url: '', category: category, sorting_priority: 0})
+				this.exhibitor.downloadLinks.push(newLink)
 			}
 		},
 		up_link(index, category) {
 			if (index === 0) return
-			if (category === 'profile') {
-				const l = this.exhibitor.profileLinks[index - 1]
-				this.$set(this.exhibitor.profileLinks, index - 1, this.exhibitor.profileLinks[index])
-				this.$set(this.exhibitor.profileLinks, index, l)
-			} else if (category === 'download') {
-				const l = this.exhibitor.downloadLinks[index - 1]
-				this.$set(this.exhibitor.downloadLinks, index - 1, this.exhibitor.downloadLinks[index])
-				this.$set(this.exhibitor.downloadLinks, index, l)
-			}
+			const arr = category === 'profile' 
+				? this.exhibitor.profileLinks 
+				: this.exhibitor.downloadLinks
+			
+			const temp = arr[index]
+			arr[index] = arr[index - 1]
+			arr[index - 1] = temp
 		},
 		down_link(index, category) {
-			if (category === 'profile') {
-				if (index === this.exhibitor.profileLinks.length - 1) return
-				const l = this.exhibitor.profileLinks[index + 1]
-				this.$set(this.exhibitor.profileLinks, index + 1, this.exhibitor.profileLinks[index])
-				this.$set(this.exhibitor.profileLinks, index, l)
-			} else if (category === 'download') {
-				if (index === this.exhibitor.downloadLinks.length - 1) return
-				const l = this.exhibitor.downloadLinks[index + 1]
-				this.$set(this.exhibitor.downloadLinks, index + 1, this.exhibitor.downloadLinks[index])
-				this.$set(this.exhibitor.downloadLinks, index, l)
-			}
+			const arr = category === 'profile' 
+				? this.exhibitor.profileLinks 
+				: this.exhibitor.downloadLinks
+			
+			if (index === arr.length - 1) return
+			const temp = arr[index]
+			arr[index] = arr[index + 1]
+			arr[index + 1] = temp
 		},
 		set_link_text(index, category, displayText) {
-			if (category === 'profile') {
-				this.exhibitor.profileLinks[index].display_text = displayText
-			} else if (category === 'download') {
-				this.exhibitor.downloadLinks[index].display_text = displayText
-			}
+			const arr = category === 'profile' 
+				? this.exhibitor.profileLinks 
+				: this.exhibitor.downloadLinks
+			
+			arr[index].display_text = displayText
 		},
 		set_link_url(index, category, url) {
-			if (category === 'profile') {
-				this.exhibitor.profileLinks[index].url = url
-			} else if (category === 'download') {
-				this.exhibitor.downloadLinks[index].url = url
-			}
+			const arr = category === 'profile' 
+				? this.exhibitor.profileLinks 
+				: this.exhibitor.downloadLinks
+			
+			arr[index].url = url
 		},
 		add_staff(users) {
-			this.exhibitor.staff = this.exhibitor.staff.concat(users)
-			this.exhibitor.staff = this.exhibitor.staff.filter((user, index) => this.exhibitor.staff.indexOf(user) === index)
+			this.exhibitor.staff = [...this.exhibitor.staff, ...users].filter(
+				(user, index, arr) => arr.findIndex(u => u.id === user.id) === index
+			)
 			this.showStaffPrompt = false
 		},
-		remove_staff(user) {
-			this.$delete(this.exhibitor.staff, user)
+		remove_staff(index) {
+			this.exhibitor.staff.splice(index, 1)
 		},
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			this.saving = true
 
 			this.exhibitor.profileLinks.forEach((l, i) => l.sorting_priority = i)
 			this.exhibitor.downloadLinks.forEach((l, i) => l.sorting_priority = i)
 			this.exhibitor.links = [...this.exhibitor.downloadLinks, ...this.exhibitor.profileLinks]
 
-			const exhibitor = (await api.call('exhibition.patch', {
+			const payload = {
 				id: this.exhibitorId,
 				name: this.exhibitor.name,
 				tagline: this.exhibitor.tagline,
@@ -398,10 +405,16 @@ export default {
 				links: this.exhibitor.links,
 				staff: this.exhibitor.staff,
 				contact_enabled: this.exhibitor.contact_enabled,
-			})).exhibitor
-			if (this.exhibitorId === '') await router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: exhibitor.id}})
-			this.saving = false
-			// TODO error handling
+			}
+
+			try {
+				const result = await api.call('exhibition.patch', payload)
+				if (!this.exhibitorId) {
+					await router.push({name: 'exhibitors:exhibitor', params: {exhibitorId: result.exhibitor.id}})
+				}
+			} finally {
+				this.saving = false
+			}
 		},
 		async deleteExhibitor() {
 			this.deleting = true
@@ -411,8 +424,9 @@ export default {
 				this.$router.replace({name: 'exhibitors'})
 			} catch (error) {
 				this.deleteError = this.$t(`error:${error.code}`)
+			} finally {
+				this.deleting = false
 			}
-			this.deleting = false
 		}
 	}
 }

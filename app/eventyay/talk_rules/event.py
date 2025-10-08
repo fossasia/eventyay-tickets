@@ -80,3 +80,4 @@ def can_create_events(user, obj):
 @rules.predicate
 def is_any_organizer(user, obj):
     return user.is_administrator or user.teams.all().exists()
+

@@ -6,14 +6,14 @@
 		h3 Summary report
 		div.flex-row
 			div
-				bunt-input(v-model="day_start", label="First day", name="day_start", :validation="$v.day_start")
+				bunt-input(v-model="day_start", label="First day", name="day_start", :validation="v$.day_start")
 			div
-				bunt-input(v-model="day_end", label="Last day", name="day_end", :validation="$v.day_end")
+				bunt-input(v-model="day_end", label="Last day", name="day_end", :validation="v$.day_end")
 		div.flex-row
 			div
-				bunt-input(v-model="time_start", label="Start of day", name="time_start", :validation="$v.time_start")
+				bunt-input(v-model="time_start", label="Start of day", name="time_start", :validation="v$.time_start")
 			div
-				bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="$v.time_end")
+				bunt-input(v-model="time_end", label="End of day", name="time_end", :validation="v$.time_end")
 		bunt-button.btn-generate(@click="generateSummary", :error="task == 'summary' && error") Generate PDF
 		bunt-button.btn-secondary(@click="generateRoomviews", :error="task == 'roomviews' && error") Room activity (XLSX)
 		bunt-button.btn-secondary(v-if="world.pretalx", @click="generateSessionviews", :error="task == 'sessionviews' && error") Session activity (XLSX)
@@ -41,10 +41,11 @@
 
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
 import { mapState } from 'vuex'
 import api from 'lib/api'
 import moment from 'lib/timetravelMoment'
-import {helpers, required} from 'vuelidate/lib/validators'
+import {helpers, required} from '@vuelidate/validators'
 import Prompt from 'components/Prompt'
 
 const day = helpers.regex('day', /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)
@@ -52,6 +53,7 @@ const time = helpers.regex('time', /^[0-9]{2}:[0-9]{2}$/)
 
 export default {
 	components: { Prompt },
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			day_start: moment().format('YYYY-MM-DD'),
@@ -110,37 +112,37 @@ export default {
 			required,
 		},
 	},
-	destroyed() {
+	unmounted() {
 		window.clearTimeout(this.timeout)
 	},
 	methods: {
 		async generateViews() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			await this.run('views', {
 				begin: this.day_start + 'T' + this.time_start,
 				end: this.day_end + 'T' + this.time_end,
 			})
 		},
 		async generateRoomviews() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			await this.run('roomviews', {
 				begin: this.day_start + 'T' + this.time_start,
 				end: this.day_end + 'T' + this.time_end,
 			})
 		},
 		async generateSessionviews() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			await this.run('sessionviews', {
 				begin: this.day_start + 'T' + this.time_start,
 				end: this.day_end + 'T' + this.time_end,
 			})
 		},
 		async generateSummary() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 
 			await this.run('summary', {
 				begin: this.day_start + 'T' + this.time_start,

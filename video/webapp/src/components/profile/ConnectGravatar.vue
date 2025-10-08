@@ -4,15 +4,15 @@ form.c-connect-gravatar(@submit.prevent="connectGravatar")
 	p {{ $t('profile/ConnectGravatar:text') }}
 	bunt-input(name="gravatar", :label="$t('profile/ConnectGravatar:gravatar-email:label')", v-model="email")
 	.actions
-		bunt-button#btn-cancel(@click="$emit('close')") {{ $t('Prompt:cancel:label') }}
-		bunt-button#btn-connect-gravatar(@click="connectGravatar", :loading="searchingGravatar", :error="gravatarError") {{ $t('profile/ConnectGravatar:gravatar-connect:label') }}
+		bunt-button#btn-cancel(type="button", @click="$emit('close')") {{ $t('Prompt:cancel:label') }}
+		bunt-button#btn-connect-gravatar(type="submit", :loading="searchingGravatar", :error="gravatarError") {{ $t('profile/ConnectGravatar:gravatar-connect:label') }}
 </template>
 <script>
 import api from 'lib/api'
 import { getHash, getProfile, getAvatarUrl } from 'lib/gravatar'
 
 export default {
-	components: {},
+	emits: ['close', 'change'],
 	data() {
 		return {
 			email: '',

@@ -9,7 +9,7 @@
 		.header
 			.drag
 			.name Name
-		SlickList.tbody(v-if="filteredRooms", v-model="rooms", lockAxis="y", :useDragHandle="true", v-scrollbar.y="", @input="onListSort")
+		SlickList.tbody(v-if="filteredRooms", v-model:list="rooms", lockAxis="y", :useDragHandle="true", v-scrollbar.y="", @update:list="onListSort")
 			RoomListItem(v-for="(room, index) of filteredRooms" :index="index", :key="index", :room="room", :disabled="filteredRooms !== rooms")
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
@@ -48,7 +48,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-@import '~styles/flex-table'
+@import 'flex-table'
 
 .c-admin-rooms
 	display: flex

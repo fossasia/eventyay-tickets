@@ -1,5 +1,5 @@
 <template lang="pug">
-.c-change-avatar(v-if="value")
+.c-change-avatar(v-if="modelValue")
 	.inputs
 		bunt-button.btn-randomize(@click="changeIdenticon") {{ $t('profile/ChangeAvatar:button-randomize:label') }}
 		span {{ $t('profile/ChangeAvatar:or') }}
@@ -8,115 +8,122 @@
 		.file-error(v-if="fileError")
 			.mdi.mdi-alert-octagon
 			.message {{ fileError }}
-		cropper(v-else-if="avatarImage", ref="cropper", classname="cropper", stencil-component="circle-stencil", :src="avatarImage", :stencil-props="{aspectRatio: '1/1'}", :restrictions="pixelsRestrictions")
-		identicon(v-else, :user="identiconUser", @click.native="changeIdenticon")
+		Cropper(v-else-if="avatarImage", ref="cropperRef", class="cropper", :stencilComponent="CircleStencil", :src="avatarImage", :stencilProps="{aspectRatio: '1/1'}", :sizeRestrictionsAlgorithm="pixelsRestrictions")
+		identicon(v-else, :user="identiconUser", @click="changeIdenticon")
 </template>
-<script>
+<script setup>
+import { ref, computed, onMounted, getCurrentInstance, nextTick } from 'vue'
 import { v4 as uuid } from 'uuid'
 import { Cropper, CircleStencil } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css'
 import api from 'lib/api'
 import Identicon from 'components/Identicon'
 import UploadButton from 'components/UploadButton'
 
 const MAX_AVATAR_SIZE = 128
 
-export default {
-	components: { Cropper, CircleStencil, Identicon, UploadButton },
-	props: {
-		value: Object,
-		profile: Object
-	},
-	data() {
-		return {
-			identicon: null,
-			avatarImage: null,
-			fileError: null,
-			changedImage: false
-		}
-	},
-	computed: {
-		identiconUser() {
-			return {
-				profile: {
-					...this.profile,
-					avatar: {
-						identicon: this.identicon
-					}
-				}
-			}
-		}
-	},
-	created() {
-		if (!this.value) {
-			this.$emit('input', {})
-			this.identicon = uuid()
-		} else if (this.value.url) {
-			this.avatarImage = this.value.url
-		} else if (this.value.identicon) {
-			this.identicon = this.value.identicon
-		}
-	},
-	methods: {
-		changeIdenticon() {
-			this.fileError = null
-			this.avatarImage = null
-			this.identicon = uuid()
-			this.$emit('blockSave', false)
-		},
-		fileSelected(event) {
-			// TODO block reupload while running?
-			this.fileError = null
-			this.avatarImage = null
-			this.$emit('blockSave', false)
-			if (!event.target.files.length === 1) return
-			const avatarFile = event.target.files[0]
-			const reader = new FileReader()
-			reader.readAsDataURL(avatarFile)
-			event.target.value = ''
-			reader.onload = event => {
-				if (event.target.readyState !== FileReader.DONE) return
-				const img = new Image()
-				img.onload = () => {
-					if (img.width < 128 || img.height < 128) {
-						this.fileError = this.$t('profile/ChangeAvatar:error:image-too-small')
-						this.$emit('blockSave', true)
-					} else {
-						this.changedImage = true
-						this.avatarImage = event.target.result
-					}
-				}
-				img.src = event.target.result
-			}
-		},
-		pixelsRestrictions({minWidth, minHeight, maxWidth, maxHeight, imageWidth, imageHeight}) {
-			return {
-				minWidth: Math.max(128, minWidth),
-				minHeight: Math.max(128, minHeight),
-				maxWidth: maxWidth,
-				maxHeight: maxHeight,
-			}
-		},
-		update() {
-			return new Promise((resolve, reject) => {
-				const { canvas } = this.$refs.cropper?.getResult() || {}
-				if (!canvas) {
-					this.$emit('input', {identicon: this.identicon})
-					return resolve()
-				}
-				if (!this.changedImage) return resolve()
+// Props & Emits
+const props = defineProps({
+	modelValue: Object,
+	profile: Object,
+})
+const emit = defineEmits(['update:modelValue', 'blockSave'])
 
-				canvas.toBlob(blob => {
-					const request = api.uploadFile(blob, 'avatar.png', null, MAX_AVATAR_SIZE, MAX_AVATAR_SIZE)
-					request.addEventListener('load', (event) => {
-						const response = JSON.parse(request.responseText)
-						this.$emit('input', {url: response.url})
-						resolve()
-					})
-				}, 'image/png') // TODO use original mimetype
-			})
-		},
+// Globals
+const { proxy } = getCurrentInstance()
+
+// State
+const identiconValue = ref(null)
+const avatarImage = ref(null)
+const fileError = ref(null)
+const changedImage = ref(false)
+const cropperRef = ref(null)
+
+// Derived
+const identiconUser = computed(() => ({
+	profile: {
+		...props.profile,
+		avatar: { identicon: identiconValue.value },
+	},
+}))
+
+// Actions
+function changeIdenticon() {
+	fileError.value = null
+	avatarImage.value = null
+	identiconValue.value = uuid()
+	emit('blockSave', false)
+}
+
+function fileSelected(event) {
+	fileError.value = null
+	avatarImage.value = null
+	emit('blockSave', false)
+	if (event.target.files.length !== 1) return
+	const avatarFile = event.target.files[0]
+	const reader = new FileReader()
+	reader.readAsDataURL(avatarFile)
+	event.target.value = ''
+	reader.onload = (readerEvent) => {
+		if (readerEvent.target.readyState !== FileReader.DONE) return
+		const img = new Image()
+		img.onload = () => {
+			if (img.width < 128 || img.height < 128) {
+				fileError.value = proxy.$t('profile/ChangeAvatar:error:image-too-small')
+				emit('blockSave', true)
+			} else {
+				changedImage.value = true
+				nextTick(() => {
+					avatarImage.value = readerEvent.target.result
+				})
+			}
+		}
+		img.src = readerEvent.target.result
 	}
 }
+
+function pixelsRestrictions({ minWidth, minHeight, maxWidth, maxHeight }) {
+	return {
+		minWidth: Math.max(128, minWidth),
+		minHeight: Math.max(128, minHeight),
+		maxWidth,
+		maxHeight,
+	}
+}
+
+function update() {
+		return new Promise((resolve) => {
+			const { canvas } = cropperRef.value?.getResult() || {}
+		if (!canvas) {
+			emit('update:modelValue', { identicon: identiconValue.value })
+			return resolve()
+		}
+		if (!changedImage.value) return resolve()
+
+		canvas.toBlob((blob) => {
+			const request = api.uploadFile(blob, 'avatar.png', null, MAX_AVATAR_SIZE, MAX_AVATAR_SIZE)
+			request.addEventListener('load', () => {
+				const response = JSON.parse(request.responseText)
+				emit('update:modelValue', { url: response.url })
+				resolve()
+			})
+		}, 'image/png')
+	})
+}
+
+onMounted(() => {
+	if (!props.modelValue) {
+		emit('update:modelValue', {})
+		identiconValue.value = uuid()
+	} else if (props.modelValue.url) {
+		avatarImage.value = props.modelValue.url
+	} else if (props.modelValue.identicon) {
+		identiconValue.value = props.modelValue.identicon
+	}
+})
+
+// Expose for parent refs
+defineExpose({ update })
 </script>
 <style lang="stylus">
 .c-change-avatar

@@ -33,7 +33,7 @@ export default {
 	mounted() {
 		window.addEventListener('message', this.onMessage)
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('message', this.onMessage)
 	},
 	methods: {

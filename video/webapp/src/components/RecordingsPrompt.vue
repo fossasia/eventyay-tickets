@@ -25,6 +25,7 @@ export default {
 	props: {
 		room: Object
 	},
+	emits: ['close'],
 	data() {
 		return {
 			recordings: null,

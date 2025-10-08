@@ -10,9 +10,9 @@
 	.actions(v-if="isManaging && hasPermission('room:poll.manage')")
 		bunt-icon-button(@click="$emit('edit')") pencil
 		menu-dropdown(v-model="showModerationMenu", strategy="fixed")
-			template(v-slot:button="{toggle}")
+			template(#button="{toggle}")
 				bunt-icon-button(@click="toggle") dots-vertical
-			template(v-slot:menu)
+			template(#menu)
 				.open-poll(v-if="['draft', 'closed'].includes(poll.state)", @click="doAction('open')") {{ $t('Poll:moderation-menu:open-poll:label') }}
 				.close-poll(v-if="poll.state === 'open'", @click="doAction('close')") {{ $t('Poll:moderation-menu:close-poll:label') }}
 				.redraft-poll(v-if="poll.state === 'open'", @click="doAction('redraft')") {{ $t('Poll:moderation-menu:redraft-poll:label') }}
@@ -37,6 +37,7 @@ export default {
 			default: false
 		}
 	},
+	emits: ['edit'],
 	data() {
 		return {
 			showModerationMenu: false

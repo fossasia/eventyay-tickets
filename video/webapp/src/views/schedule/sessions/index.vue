@@ -3,7 +3,7 @@
 	template(v-if="schedule")
 		div.filter-actions
 			app-dropdown(v-for="item in filter", :key="item.refKey", className="schedule")
-				template(slot="toggler")
+				template(#toggler)
 					span {{item.title}}
 					app-dropdown-content(className="schedule")
 						app-dropdown-item(v-for="track in item.data", :key="track.value")

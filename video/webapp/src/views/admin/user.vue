@@ -12,16 +12,16 @@
 				bunt-button.btn-delete(v-if="!user.deleted", @click="userAction = 'delete'") {{ $t('UserAction:action.delete:label') }}
 				bunt-button.btn-ban(v-if="!user.deleted && user.moderation_state !== 'banned'", @click="userAction = 'ban'") ban
 				bunt-button.btn-silence(v-if="!user.deleted && !user.moderation_state", @click="userAction = 'silence'") silence
-				bunt-button#btn-save(v-if="edit", :disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
+				bunt-button#btn-save(v-if="edit", :disabled="v$.$invalid && v$.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 				bunt-button#btn-edit(v-if="!user.deleted", @click="edit=true") edit
 		scrollbars.user-info(y)
 			.avatar-wrapper
 				avatar(:user="user", :size="128")
 				bunt-button#btn-change-avatar(@click="showChangeAvatar = true", v-if="edit") {{ $t('preferences/index:btn-change-avatar:label') }}
-			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="user.profile.display_name", :validation="$v.user.profile.display_name", :disabled="!edit")
-			bunt-input(name="id", label="ID", :value="user.id", :disabled="true")
-			bunt-input(name="token_id", label="External ID", :value="user.token_id", :disabled="true")
-			bunt-input(name="mod_state", label="Moderation state", :value="user.moderation_state || '-'", :disabled="true")
+			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="user.profile.display_name", :validation="v$.user.profile.display_name", :disabled="!edit")
+			bunt-input(name="id", label="ID", :modelValue="user.id", :disabled="true")
+			bunt-input(name="token_id", label="External ID", :modelValue="user.token_id", :disabled="true")
+			bunt-input(name="mod_state", label="Moderation state", :modelValue="user.moderation_state || '-'", :disabled="true")
 			change-additional-fields(v-model="user.profile.fields", :disabled="!edit")
 	bunt-progress-circular(v-else, size="huge")
 	transition(name="prompt")
@@ -35,6 +35,7 @@
 					bunt-button#btn-upload(:loading="savingAvatar", :disabled="blockSave", @click="uploadAvatar") {{ $t('preferences/index:btn-upload-save:label') }}
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
 import { mapState } from 'vuex'
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
@@ -42,13 +43,14 @@ import Prompt from 'components/Prompt'
 import ChangeAvatar from 'components/profile/ChangeAvatar'
 import UserActionPrompt from 'components/UserActionPrompt'
 import ChangeAdditionalFields from 'components/profile/ChangeAdditionalFields'
-import { required } from 'buntpapier/src/vuelidate/validators'
+import { required } from 'lib/validators'
 
 export default {
 	components: { Avatar, Prompt, UserActionPrompt, ChangeAdditionalFields, ChangeAvatar },
 	props: {
 		userId: String
 	},
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			user: null,
@@ -99,8 +101,8 @@ export default {
 			this.edit = false
 		},
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			this.saving = true
 			await this.$store.dispatch('adminUpdateUser', {profile: this.user.profile, id: this.user.id})
 			this.saving = false

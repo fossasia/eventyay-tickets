@@ -8,8 +8,7 @@ from django.http import Http404, HttpRequest
 from django.urls import resolve
 from django.utils import translation
 from django_scopes import get_scope
-
-from eventyay.base.models import GlobalSettings
+from eventyay.base.models.settings import GlobalSettings
 from eventyay.cfp.signals import footer_link, html_head
 from eventyay.helpers.formats.variants import get_day_month_date_format
 from eventyay.helpers.i18n import get_javascript_format, get_moment_locale

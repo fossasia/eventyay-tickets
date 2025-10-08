@@ -8,9 +8,9 @@
 		| {{ $t('Question:vote-count:label') }}
 	.content {{ question.content }}
 	menu-dropdown(v-if="isManaging && hasPermission('room:question.moderate')", v-model="showModerationMenu", strategy="fixed")
-		template(v-slot:button="{toggle}")
+		template(#button="{toggle}")
 			bunt-icon-button#btn-menu-toggle(@click="toggle") dots-vertical
-		template(v-slot:menu)
+		template(#menu)
 			.approve-question(v-if="question.state === 'mod_queue'", @click="doAction('approve')") {{ $t('Question:moderation-menu:approve-question:label') }}
 			.pin-question(v-if="question.state === 'visible' && !question.is_pinned", @click="doAction('pin')") {{ $t('Question:moderation-menu:pin-question:label') }}
 			.unpin-question(v-if="question.state === 'visible' && question.is_pinned", @click="doAction('unpin')") {{ $t('Question:moderation-menu:unpin-question:label') }}

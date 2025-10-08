@@ -12,9 +12,9 @@
 				.kiosk-url
 					label Kiosk Login URL:
 					copyable-text(:text="loginUrl")
-				bunt-input(name="name", v-model="kiosk.profile.display_name", label="Name", :validation="$v.kiosk.profile.display_name")
-				bunt-select(v-model="kiosk.profile.room_id", label="Room", name="room", :options="rooms", option-label="name", :validation="$v.kiosk.profile.room_id")
-				color-picker(name="background_color", v-model="kiosk.profile.background_color", label="Background color", :validation="$v.kiosk.profile.background_color")
+				bunt-input(name="name", v-model="kiosk.profile.display_name", label="Name", :validation="v$.kiosk.profile.display_name")
+				bunt-select(v-model="kiosk.profile.room_id", label="Room", name="room", :options="rooms", option-label="name", :validation="v$.kiosk.profile.room_id")
+				color-picker(name="background_color", v-model="kiosk.profile.background_color", label="Background color", :validation="v$.kiosk.profile.background_color")
 				bunt-switch(name="show_reactions", v-model="kiosk.profile.show_reactions", label="Show reaction cloud")
 				h2 Slides
 				p Select which slides to show on the kiosk. Slides will only show when they have content to show. Pinned poll and question slides will always take priority over others, there is no need to manually intervene during a session.
@@ -23,9 +23,10 @@
 				bunt-checkbox(name="show_pinned_question", v-model="kiosk.profile.slides.pinned_question", label="Pinned question")
 				bunt-checkbox(name="show_next_session", v-model="kiosk.profile.slides.next_session", label="Next session")
 				bunt-checkbox(name="show_viewers", v-model="kiosk.profile.slides.viewers", label="Active viewers")
-		.ui-form-actions
-			bunt-button.btn-save(@click="save", :loading="saving", :error-message="saveError") Save
-			.errors {{ validationErrors.join(', ') }}
+		.ui-form-actions-wrapper
+			.ui-form-actions
+				bunt-button.btn-save(@click="save", :loading="saving", :error-message="saveError") Save
+				.errors {{ validationErrors.join(', ') }}
 	bunt-progress-circular(v-else, size="huge")
 	transition(name="prompt")
 		prompt.delete-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
@@ -39,6 +40,7 @@
 				bunt-button.delete-kiosk(icon="delete", :disabled="deletingKioskName !== kiosk.profile.display_name", @click="deleteKiosk", :loading="deleting", :error-message="deleteError") delete this kiosk
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core'
 import api from 'lib/api'
 import { color, required } from 'lib/validators'
 import { inferRoomType } from 'lib/room-types'
@@ -54,6 +56,7 @@ export default {
 	props: {
 		kioskId: String
 	},
+	setup:() => ({v$:useVuelidate()}),
 	data() {
 		return {
 			error: null,
@@ -92,15 +95,15 @@ export default {
 	async created() {
 		try {
 			this.kiosk = await api.call('user.kiosk.fetch', {id: this.kioskId})
-			if (!this.kiosk.profile.show_reactions) this.$set(this.kiosk.profile, 'show_reactions', true)
-			if (!this.kiosk.profile.slides) this.$set(this.kiosk.profile, 'slides', {
+			if (!this.kiosk.profile.show_reactions) this.kiosk.profile.show_reactions = true
+			if (!this.kiosk.profile.slides) this.kiosk.profile.slides = {
 				pinned_poll: true,
 				pinned_poll_voting: true,
 				pinned_question: true,
 				next_session: true,
 				viewers: true,
 				reactions: true
-			})
+			}
 		} catch (error) {
 			this.error = error
 			console.error(error)
@@ -109,8 +112,8 @@ export default {
 	methods: {
 		async save() {
 			this.saveError = null
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			this.saving = true
 			try {
 				await api.call('user.admin.update', {
@@ -168,6 +171,7 @@ export default {
 		flex: auto
 		display: flex
 		flex-direction: column
+		height: auto
 
 	.ui-form-body
 		.bunt-checkbox

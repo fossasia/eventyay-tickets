@@ -1,18 +1,19 @@
 <template lang="pug">
 .c-additional-fields
 	template(v-for="field of fields")
-		bunt-input(v-if="field.type === 'text'", :name="field.label", :label="field.label", v-model="value[field.id]", :disabled="disabled")
+		bunt-input(v-if="field.type === 'text'", :name="field.label", :label="field.label", v-model="modelValue[field.id]", :disabled="disabled")
 		bunt-input-outline-container(v-if="field.type === 'textarea'", :label="field.label", :name="field.label", :class="{disabled: disabled}")
-			textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="value[field.id]", :disabled="disabled")
-		bunt-select(v-if="field.type === 'select'", v-model="value[field.id]", :label="field.label", name="field.label", :options="field.choices.split(', ')", :disabled="disabled")
-		bunt-input(v-if="field.type === 'link'", :name="field.label", :label="field.label", v-model="value[field.id]", :disabled="disabled")
+			template(#default="{focus, blur}")
+				textarea(@focus="focus", @blur="blur", v-model="modelValue[field.id]", :disabled="disabled")
+		bunt-select(v-if="field.type === 'select'", v-model="modelValue[field.id]", :label="field.label", name="field.label", :options="field.choices.split(', ')", :disabled="disabled")
+		bunt-input(v-if="field.type === 'link'", :name="field.label", :label="field.label", v-model="modelValue[field.id]", :disabled="disabled")
 </template>
 <script>
 import { mapState } from 'vuex'
 
 export default {
 	props: {
-		value: Object,
+		modelValue: Object,
 		disabled: {
 			type: Boolean,
 			default: false
