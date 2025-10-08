@@ -85,7 +85,7 @@ dependencies = [
         'text-unidecode==1.*',
         'protobuf==5.28.*',
         'cryptography>=3.4.2',
-        'pycryptodome==3.20.*',
+        'pycryptodome==3.23.*',
         'sepaxml==2.6.*',
         'geoip2==4.*',
         'sendgrid==6.11.*',
