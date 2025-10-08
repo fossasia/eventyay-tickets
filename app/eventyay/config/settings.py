@@ -738,7 +738,7 @@ WEBSOCKET_PROTOCOL = os.getenv(
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+        "BACKEND": "eventyay.base.storage.NoMapManifestStaticFilesStorage",
     },
 }
 
@@ -874,7 +874,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -1145,3 +1144,15 @@ if ADMINS:
         'class': 'eventyay.common.exceptions.PretalxAdminEmailHandler',
     }
     LOGGING['loggers']['django.request']['handlers'].append('mail_admins')
+
+BOOTSTRAP3 = {
+    'success_css_class': '',
+    'field_renderers': {
+        'default': 'bootstrap3.renderers.FieldRenderer',
+        'inline': 'bootstrap3.renderers.InlineFieldRenderer',
+        'control': 'eventyay.control.forms.renderers.ControlFieldRenderer',
+        'bulkedit': 'eventyay.control.forms.renderers.BulkEditFieldRenderer',
+        'bulkedit_inline': 'eventyay.control.forms.renderers.InlineBulkEditFieldRenderer',
+        'checkout': 'eventyay.presale.forms.renderers.CheckoutFieldRenderer',
+    },
+}
