@@ -1,6 +1,6 @@
 <template>
   <div
-    v-on-clickaway="away"
+    v-click-away="away"
     :class="elClass"
   >
     <bunt-button @click="toggle">
@@ -35,57 +35,58 @@
     <slot />
   </div>
 </template>
-<script>
-import { mixin as clickaway } from 'vue-clickaway'
+<script setup>
+import { reactive, computed, provide } from 'vue'
 
-export default {
-	name: 'AppDropdown',
-	mixins: [clickaway],
-	props: {
-		className: {
-			type: String,
-			default: '',
-		},
-	},
-	provide() {
-		return {
-			sharedState: this.sharedState
-		}
-	},
-	data() {
-		return {
-			sharedState: {
-				active: false,
-			},
-		}
-	},
-	computed: {
-		elClass() {
-			return this.className ? this.className + ' app-drop-down' : 'app-drop-down'
-		},
-	},
-	methods: {
-		toggle() {
-			this.sharedState.active = !this.sharedState.active
-		},
-		away() {
-			this.sharedState.active = false
-		}
-	}
+// Local directive usable as v-click-away in the template
+const vClickAway = {
+  beforeMount(el, binding) {
+    el.__clickOutside__ = function(event) {
+      if (!(el === event.target || el.contains(event.target))) {
+        binding.value(event)
+      }
+    }
+    document.addEventListener('click', el.__clickOutside__)
+  },
+  beforeUnmount(el) {
+    document.removeEventListener('click', el.__clickOutside__)
+  }
+}
+
+// Props
+const props = defineProps({
+  className: {
+    type: String,
+    default: ''
+  }
+})
+
+// Shared state provided to descendants
+const sharedState = reactive({ active: false })
+provide('sharedState', sharedState)
+
+// Computed class
+const elClass = computed(() => (props.className ? props.className + ' app-drop-down' : 'app-drop-down'))
+
+// Methods
+function toggle() {
+  sharedState.active = !sharedState.active
+}
+function away() {
+  sharedState.active = false
 }
 </script>
-  <style>
-  .app-drop-down {
+
+<style>
+.app-drop-down {
     margin: 12px 4px 12px 14px;
     border-radius: 5px;
     border: 2px solid rgba(0, 0, 0, 0.38);
-  }
-
-  .app-drop-down .bunt-button {
+}
+.app-drop-down .bunt-button {
     background-color: white;
-  }
-
-  .app-drop-down .bunt-button .bunt-button-content {
+}
+.app-drop-down .bunt-button .bunt-button-content {
     text-transform: capitalize;
-  }
-  </style>
+}
+</style>

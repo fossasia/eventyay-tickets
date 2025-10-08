@@ -8,6 +8,7 @@ export default {
 	props: {
 		loading: Boolean
 	},
+	emits: ['load'],
 	data() {
 		return {
 			isIntersecting: false

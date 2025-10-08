@@ -5,7 +5,8 @@ prompt.c-feedback-prompt(@close="$emit('close')")
 		p {{ $t('FeedbackPrompt:intro:text') }}
 		form(@submit.prevent="submit")
 			bunt-input-outline-container(:label="$t('FeedbackPrompt:message:label')")
-				textarea(v-model="message", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
+				template(#default="{focus, blur}")
+					textarea(v-model="message", @focus="focus", @blur="blur")
 			p.privacy {{ $t('FeedbackPrompt:privacy:text') }}
 			bunt-button(type="submit", :loading="loading") {{ $t('FeedbackPrompt:submit:label') }}
 </template>
@@ -19,6 +20,7 @@ export default {
 		module: String,
 		collectTrace: Function,
 	},
+	emits: ['close'],
 	data() {
 		return {
 			loading: false,

@@ -58,13 +58,14 @@ export default {
 	},
 	created() {
 		this.$store.dispatch('changeRoom', this.room)
-		this.fullscreen = this.$route.query.fullscreen ?? (!this.$route.name.endsWith('chat') && !this.$route.name.endsWith('anonymous'))
+		const routeName = this.$route.name
+		this.fullscreen = this.$route.query.fullscreen ?? (!routeName.endsWith('chat') && !routeName.endsWith('anonymous'))
 	},
 	mounted() {
 		window.addEventListener('resize', this.computeScale)
 		this.computeScale()
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		window.removeEventListener('resize', this.computeScale)
 	},
 	methods: {

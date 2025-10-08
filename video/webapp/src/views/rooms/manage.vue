@@ -20,9 +20,9 @@
 				.actions
 					bunt-icon-button(@click="showUrlPopup('question')") presentation
 					menu-dropdown(v-if="hasPermission('room:question.moderate')", v-model="showingQuestionsMenu", strategy="fixed")
-						template(v-slot:button="{toggle}")
+						template(#button="{toggle}")
 							bunt-icon-button(@click="toggle") dots-vertical
-						template(v-slot:menu)
+						template(#menu)
 							.archive-all(@click="$store.dispatch('question/archiveAll')") {{ $t('Questions:moderator-actions:archive-all:label') }}
 			questions(:module="modules['question']")
 		panel.chat(v-if="modules['chat.native']")
@@ -37,7 +37,7 @@
 		.copy-success(v-if="copiedUrl") Copied!
 		template(v-else)
 			.copy-url
-				bunt-input(ref="urlInput", name="presentation-url", :readonly="true", :value="getPresentationUrl(showingPresentationUrlFor)")
+				bunt-input(ref="urlInput", name="presentation-url", :readonly="true", :modelValue="getPresentationUrl(showingPresentationUrlFor)")
 				bunt-button(@click="copyUrl") Copy
 			.hint This url contains your personal token.
 				br
@@ -49,7 +49,8 @@
 				h1 {{ editedPoll.id ? 'Edit Poll' : 'Create a Poll' }}
 				.form-content
 					bunt-input-outline-container(name="poll-question", label="Question")
-						textarea(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="editedPoll.content")
+						template(#default="{focus, blur}")
+							textarea(v-model="editedPoll.content", @focus="focus", @blur="blur")
 					.option(v-for="(option, index) of editedPoll.options")
 						bunt-input(:name="`poll-option-${index}`", :label="`Option ${index + 1}`", v-model="option.content")
 						bunt-icon-button.btn-delete-poll-option(@click="editedPoll.options.splice(index, 1)") delete-outline

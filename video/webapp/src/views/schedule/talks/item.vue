@@ -17,7 +17,7 @@
 			.header {{ $t('schedule/talks/item:speakers:header', {count: talk.speakers.length})}}
 			.speakers-list
 				.speaker(v-for="speaker of talk.speakers")
-					img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
+					img.avatar(v-if="speaker.avatar || speaker.avatar_url", :src="speaker.avatar || speaker.avatar_url")
 					router-link.name(v-if="pretalxApiBaseUrl", :to="{name: 'schedule:speaker', params: {speakerId: speaker.code}}") {{ speaker.name }}
 					.name(v-else) {{ speaker.name }}
 					markdown-content.biography(:markdown="speaker.biography")
@@ -63,7 +63,7 @@ export default {
 	async created() {
 		// TODO error handling
 		if (!this.pretalxApiBaseUrl) return
-		this.talk = await (await fetch(`${this.pretalxApiBaseUrl}/talks/${this.talkId}/`)).json()
+		this.talk = ((talk) => ({ ...talk, slot: talk.slots[0] }))(await (await fetch(`${this.pretalxApiBaseUrl}/submissions/${this.talkId}/?expand=slots,speakers`)).json());
 	},
 	mounted() {
 		this.$nextTick(() => {

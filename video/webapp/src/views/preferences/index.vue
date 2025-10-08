@@ -7,7 +7,7 @@
 			.avatar-wrapper
 				avatar(:user="{profile}", :size="128")
 				bunt-button#btn-change-avatar(@click="showChangeAvatar = true") {{ $t('preferences/index:btn-change-avatar:label') }}
-			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="$v.profile.display_name")
+			bunt-input.display-name(name="displayName", :label="$t('profile/GreetingPrompt:displayname:label')", v-model.trim="profile.display_name", :validation="v$.profile.display_name")
 			change-additional-fields(v-model="profile.fields")
 			template(v-if="languages")
 				h2 {{ $t('preferences/index:interface-language:header') }}
@@ -23,7 +23,7 @@
 			p {{ $t('preferences/index:autoplay:description') }}
 			bunt-switch(name="autoplay", v-model="autoplay", :label="$t('preferences/index:switch-autoplay:label')")
 	.ui-form-actions
-		bunt-button#btn-save(:disabled="$v.$invalid && $v.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
+		bunt-button#btn-save(:disabled="v$.$invalid && v$.$dirty", :loading="saving", @click="save") {{ $t('preferences/index:btn-save:label') }}
 	transition(name="prompt")
 		prompt.change-avatar-prompt(v-if="showChangeAvatar", @close="showChangeAvatar = false")
 			.content
@@ -35,7 +35,8 @@
 <script>
 // TODO communicate language change to other tabs?
 import { mapState } from 'vuex'
-import cloneDeep from 'lodash/cloneDeep'
+import { cloneDeep } from 'lodash'
+import { useVuelidate } from '@vuelidate/core'
 import config from 'config'
 import { locales } from 'locales'
 import Avatar from 'components/Avatar'
@@ -43,10 +44,11 @@ import Prompt from 'components/Prompt'
 import ChangeAvatar from 'components/profile/ChangeAvatar'
 import ChangeAdditionalFields from 'components/profile/ChangeAdditionalFields'
 import ConnectGravatar from 'components/profile/ConnectGravatar'
-import { required } from 'buntpapier/src/vuelidate/validators'
+import { required } from 'lib/validators'
 
 export default {
 	components: { Avatar, Prompt, ChangeAvatar, ChangeAdditionalFields, ConnectGravatar},
+	setup:() => ({v$: useVuelidate()}),
 	data() {
 		return {
 			profile: null,
@@ -94,8 +96,8 @@ export default {
 			this.savingAvatar = false
 		},
 		async save() {
-			this.$v.$touch()
-			if (this.$v.$invalid) return
+			this.v$.$touch()
+			if (this.v$.$invalid) return
 			this.saving = true
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			this.$store.dispatch('notifications/updateSettings', this.notificationSettings)

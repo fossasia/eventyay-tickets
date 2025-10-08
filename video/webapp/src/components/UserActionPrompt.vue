@@ -27,6 +27,7 @@ export default {
 			default: 2500
 		}
 	},
+	emits: ['close'],
 	data() {
 		return {
 			loading: false,

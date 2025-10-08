@@ -1,17 +1,15 @@
 <template lang="pug">
 .c-color-picker
-	.color(:style="{'--color': value}")
-	bunt-input(v-bind="$attrs", :value="value", @input="$emit('input', $event)")
-
-	input.color-picker(type="color", :value="value", @change="$emit('input', $event.target.value)")
+	.color(:style="{'--color': modelValue}")
+	bunt-input(v-bind="$attrs", :modelValue="modelValue", @update:modelValue="$emit('update:modelValue', $event)")
+	input.color-picker(type="color", :value="modelValue", @change="$emit('update:modelValue', $event.target.value)")
 </template>
 <script>
-// TODO
-// - make picker accept 3 digit hex
 export default {
 	props: {
-		value: String
-	}
+		modelValue: String
+	},
+	emits: ['update:modelValue']
 }
 </script>
 <style lang="stylus">

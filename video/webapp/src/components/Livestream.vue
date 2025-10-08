@@ -176,7 +176,7 @@ export default {
 		this.$refs.video.textTracks.addEventListener('removetrack', this.onTextTracksChanged)
 		this.initializePlayer()
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.player?.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
 		this.$refs.video.textTracks.removeEventListener('addtrack', this.onTextTracksChanged)
@@ -684,6 +684,7 @@ export default {
 	&.size-tiny
 		height: 48px
 		width: 86px // TODO total guesstimate
+		top: 55px
 		pointer-events: none
 		.controls, .mdi
 			opacity: 0

@@ -32,8 +32,9 @@ bunt-input-outline-container.c-rich-text-editor(ref="outline", :label="label")
 		bunt-progress-circular(size="huge")
 
 </template>
-<script>
+<script setup>
 /* global ENV_DEVELOPMENT */
+import { ref, markRaw, onMounted, onBeforeUnmount } from 'vue'
 import Quill from 'quill'
 import BuntTheme from 'lib/quill/BuntTheme'
 import VideoResponsive from 'lib/quill/VideoResponsive'
@@ -43,89 +44,97 @@ import api from 'lib/api'
 
 const Delta = Quill.import('delta')
 
-export default {
-	props: {
-		value: [Delta, Object],
-		label: String
-	},
-	data() {
-		return {
-			quill: null,
-			uploading: false,
-		}
-	},
-	computed: {},
-	mounted() {
-		Quill.register('themes/bunt', BuntTheme, false)
-		Quill.register(VideoResponsive)
-		Quill.register(fullWidthFormat)
-		this.quill = new Quill(this.$refs.editor, {
-			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
-			theme: 'bunt',
-			modules: {
-				toolbar: {
-					container: this.$refs.toolbar,
-					handlers: {
-						image: () => {
-							const fileInput = document.createElement('input')
-							fileInput.setAttribute('type', 'file')
-							fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon')
-							fileInput.addEventListener('change', () => {
-								if (fileInput.files != null && fileInput.files[0] != null) {
-									const file = fileInput.files[0]
+const props = defineProps({
+	modelValue: Object,
+	label: String,
+})
+const emit = defineEmits(['update:modelValue'])
 
-									this.uploading = true
-									api.uploadFilePromise(file, file.name).then(data => {
-										if (data.error) {
-											alert(`Upload error: ${data.error}`) // Proper user-friendly messages
-											this.$emit('input', '')
-										} else {
-											const range = this.quill.getSelection(true)
-											this.quill.updateContents(new Delta()
-												.retain(range.index)
-												.delete(range.length)
-												.insert({ image: data.url }), Emitter.sources.USER)
-											this.quill.setSelection(range.index + 1, Emitter.sources.SILENT)
-										}
-										this.uploading = false
-									}).catch(error => {
-										// TODO: better error handling
-										console.log(error)
-										alert(`error: ${error}`)
-										this.uploading = false
-									})
-								}
-							})
-							fileInput.click()
-						},
-					}
+const outline = ref(null)
+const toolbar = ref(null)
+const editor = ref(null)
+
+const quill = ref(null)
+const uploading = ref(false)
+
+const onTextchange = (delta, oldContents, source) => {
+	if (quill.value) emit('update:modelValue', quill.value.getContents())
+}
+
+const onSelectionchange = (range, oldRange, source) => {
+	if (!outline.value) return
+	if (range === null && oldRange !== null) {
+		outline.value.blur()
+	} else if (range !== null && oldRange === null) {
+		outline.value.focus()
+	}
+}
+
+onMounted(() => {
+	Quill.register('themes/bunt', BuntTheme, false)
+	Quill.register(VideoResponsive)
+	Quill.register(fullWidthFormat)
+
+	const instance = markRaw(new Quill(editor.value, {
+		debug: ENV_DEVELOPMENT ? 'info' : 'warn',
+		theme: 'bunt',
+		modules: {
+			toolbar: {
+				container: toolbar.value,
+				handlers: {
+					image: () => {
+						const fileInput = document.createElement('input')
+						fileInput.setAttribute('type', 'file')
+						fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon')
+						fileInput.addEventListener('change', () => {
+							if (fileInput.files != null && fileInput.files[0] != null) {
+								const file = fileInput.files[0]
+
+								uploading.value = true
+								api.uploadFilePromise(file, file.name).then(data => {
+									if (data.error) {
+										alert(`Upload error: ${data.error}`)
+										emit('update:modelValue', '')
+									} else {
+										const range = instance.getSelection(true)
+										instance.updateContents(new Delta()
+											.retain(range.index)
+											.delete(range.length)
+											.insert({ image: data.url }), Emitter.sources.USER)
+										instance.setSelection(range.index + 1, Emitter.sources.SILENT)
+									}
+									uploading.value = false
+								}).catch(error => {
+									// TODO: better error handling
+									console.log(error)
+									alert(`error: ${error}`)
+									uploading.value = false
+								})
+							}
+						})
+						fileInput.click()
+					},
 				}
-			},
-			bounds: this.$refs.editor,
-		})
-		if (this.value) {
-			this.quill.setContents(this.value)
-		}
-		this.quill.on('selection-change', this.onSelectionchange)
-		this.quill.on('text-change', this.onTextchange)
-	},
-	destroyed() {
-		this.quill.off('selection-change', this.onSelectionchange)
-		this.quill.off('text-change', this.onTextchange)
-	},
-	methods: {
-		onTextchange(delta, oldContents, source) {
-			this.$emit('input', this.quill.getContents())
-		},
-		onSelectionchange(range, oldRange, source) {
-			if (range === null && oldRange !== null) {
-				this.$refs.outline.blur()
-			} else if (range !== null && oldRange === null) {
-				this.$refs.outline.focus()
 			}
 		},
-	},
-}
+		bounds: editor.value,
+	}))
+
+	quill.value = instance
+
+	if (props.modelValue && props.modelValue.ops && props.modelValue.ops.length > 0) {
+		instance.setContents(props.modelValue)
+	}
+
+	instance.on('selection-change', onSelectionchange)
+	instance.on('text-change', onTextchange)
+})
+
+onBeforeUnmount(() => {
+	if (!quill.value) return
+	quill.value.off('selection-change', onSelectionchange)
+	quill.value.off('text-change', onTextchange)
+})
 </script>
 <style lang="stylus">
 .c-rich-text-editor

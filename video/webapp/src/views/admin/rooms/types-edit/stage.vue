@@ -8,12 +8,12 @@
 		bunt-input(name="muxenvkey", v-if="$features.enabled('muxdata')", v-model="modules['livestream.native'].config.mux_env_key", label="MUX data environment key")
 		bunt-input(name="subtitle_url", v-model="modules['livestream.native'].config.subtitle_url", label="URL for external subtitles")
 		h4 Alternative Streams
-		.alternative(v-for="(a, i) in (modules['livestream.native'].config.alternatives || [])")
+		.alternative(v-for="(a, i) in (modules['livestream.native'].config.alternatives || [])" :key="i")
 			bunt-input(name="label", v-model="a.label", label="Label")
 			bunt-input(name="hls_url", v-model="a.hls_url", label="HLS URL")
 			bunt-icon-button(@click="deleteAlternativeStream(i)") delete-outline
-		bunt-button(@click="$set(modules['livestream.native'].config, 'alternatives', modules['livestream.native'].config.alternatives || []); modules['livestream.native'].config.alternatives.push({label: '', hls_url: ''})") Add alternative stream
-	bunt-input(v-else-if="modules['livestream.youtube']", name="ytid", v-model="modules['livestream.youtube'].config.ytid", label="YouTube Video ID", :validation="$v.modules['livestream.youtube'].config.ytid")
+		bunt-button(@click="modules['livestream.native'].config.alternatives = [...(modules['livestream.native'].config.alternatives || []), {label: '', hls_url: ''}]") Add alternative stream
+	bunt-input(v-else-if="modules['livestream.youtube']", name="ytid", v-model="modules['livestream.youtube'].config.ytid", label="YouTube Video ID", :validation="v$.modules['livestream.youtube'].config.ytid")
 	// Language and URL input for YouTube stream
 	.language-urls(v-if="modules['livestream.youtube']")
 		h4 Languages and YouTube ID
@@ -35,6 +35,8 @@
 	sidebar-addons(v-bind="$props")
 </template>
 <script>
+import { defineComponent } from 'vue'
+import { useVuelidate } from '@vuelidate/core'
 import features from 'features'
 import UploadUrlInput from 'components/UploadUrlInput'
 import mixin from './mixin'
@@ -51,24 +53,25 @@ if (features.enabled('iframe-player')) {
 	STREAM_SOURCE_OPTIONS.push({ id: 'iframe', label: 'Iframe player', module: 'livestream.iframe' })
 }
 
-export default {
+export default defineComponent({
 	components: { UploadUrlInput, SidebarAddons },
 	mixins: [mixin],
+	setup: () => ({ v$: useVuelidate() }),
 	data() {
 		return {
 			STREAM_SOURCE_OPTIONS,
-			ISO_LANGUAGE_OPTIONS: this.getLanguageOptions(),
-			b_streamSource: null,
-			// Initial empty array for languages and URLs
-			b_languageUrls: []
+			ISO_LANGUAGE_OPTIONS: [],
+			b_streamSource: null
 		}
 	},
-	validations: {
-		modules: {
-			'livestream.youtube': {
-				config: {
-					ytid: {
-						youtubeid: youtubeid('not a valid YouTube video ID (do not supply the full URL)')
+	validations() {
+		return {
+			modules: {
+				'livestream.youtube': {
+					config: {
+						ytid: {
+							youtubeid: youtubeid('not a valid YouTube video ID (do not supply the full URL)')
+						}
 					}
 				}
 			}
@@ -87,116 +90,100 @@ export default {
 		},
 		enablePrivacyEnhancedMode: {
 			get() {
-				return !!this.modules['livestream.youtube'].config.enablePrivacyEnhancedMode
+				return !!this.modules['livestream.youtube']?.config.enablePrivacyEnhancedMode
 			},
 			set(value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'enablePrivacyEnhancedMode', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'enablePrivacyEnhancedMode')
-				}
+				this.setYoutubeConfigProp('enablePrivacyEnhancedMode', value)
 			}
 		},
 		loop: {
 			get() {
-				return !!this.modules['livestream.youtube'].config.loop
+				return !!this.modules['livestream.youtube']?.config.loop
 			},
 			set(value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'loop', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'loop')
-				}
+				this.setYoutubeConfigProp('loop', value)
 			}
 		},
 		modestBranding: {
 			get() {
-				return !!this.modules['livestream.youtube'].config.modestBranding
+				return !!this.modules['livestream.youtube']?.config.modestBranding
 			},
 			set(value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'modestBranding', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'modestBranding')
-				}
+				this.setYoutubeConfigProp('modestBranding', value)
 			}
 		},
 		hideControls: {
 			get() {
-				return !!this.modules['livestream.youtube'].config.hideControls
+				return !!this.modules['livestream.youtube']?.config.hideControls
 			},
 			set(value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'hideControls', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'hideControls')
-				}
+				this.setYoutubeConfigProp('hideControls', value)
 			}
 		},
 		noRelated: {
 			get() {
-				return !!this.modules['livestream.youtube'].config.noRelated
+				return !!this.modules['livestream.youtube']?.config.noRelated
 			},
 			set(value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'noRelated', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'noRelated')
-				}
+				this.setYoutubeConfigProp('noRelated', value)
 			}
 		},
 		disableKb: {
 			get() {
-				return !!this.modules['livestream.youtube'].config.disableKb
+				return !!this.modules['livestream.youtube']?.config.disableKb
 			},
 			set(value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'disableKb', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'disableKb')
-				}
+				this.setYoutubeConfigProp('disableKb', value)
 			}
 		},
 		showInfo: {
 			get() {
-				return !!this.modules['livestream.youtube'].config.showInfo
+				return !!this.modules['livestream.youtube']?.config.showInfo
 			},
 			set(value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'showInfo', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'showInfo')
-				}
+				this.setYoutubeConfigProp('showInfo', value)
 			}
 		}
 	},
 	created() {
+		// Initialize language options
+		this.ISO_LANGUAGE_OPTIONS = this.getLanguageOptions()
+		
 		if (this.modules['livestream.native']) {
 			this.b_streamSource = 'hls'
 		} else if (this.modules['livestream.youtube']) {
 			this.b_streamSource = 'youtube'
 			// languageUrls is set in the created lifecycle hook
 			if (!this.modules['livestream.youtube'].config.languageUrls) {
-				this.$set(this.modules['livestream.youtube'].config, 'languageUrls', [])
+				this.modules['livestream.youtube'].config.languageUrls = []
 			}
 		} else if (this.modules['livestream.iframe']) {
 			this.b_streamSource = 'iframe'
 		}
 	},
 	methods: {
-		// Added methods addLanguageUrl and deleteLanguageUrl to manage dynamic fields for language and URL input
+		setYoutubeConfigProp(prop, value) {
+			if (!this.modules['livestream.youtube']) return
+			
+			if (value) {
+				this.modules['livestream.youtube'].config[prop] = true
+			} else {
+				delete this.modules['livestream.youtube'].config[prop]
+			}
+		},
 		addLanguageUrl() {
+			if (!this.modules['livestream.youtube']) return
 			if (!this.modules['livestream.youtube'].config.languageUrls) {
-				this.$set(this.modules['livestream.youtube'].config, 'languageUrls', [])
+				this.modules['livestream.youtube'].config.languageUrls = []
 			}
 			this.modules['livestream.youtube'].config.languageUrls.push({ language: '', youtube_id: '' })
 		},
 		deleteLanguageUrl(index) {
-			if (this.modules['livestream.youtube'].config.languageUrls) {
-				this.modules['livestream.youtube'].config.languageUrls.splice(index, 1)
-			}
+			if (!this.modules['livestream.youtube']?.config.languageUrls) return
+			this.modules['livestream.youtube'].config.languageUrls.splice(index, 1)
 		},
 		deleteAlternativeStream(index) {
+			if (!this.modules['livestream.native']?.config.alternatives) return
 			this.modules['livestream.native'].config.alternatives.splice(index, 1)
 			if (this.modules['livestream.native'].config.alternatives.length === 0) {
 				this.modules['livestream.native'].config.alternatives = undefined
@@ -209,7 +196,7 @@ export default {
 			}))
 		}
 	}
-}
+})
 </script>
 <style lang="stylus">
 .bunt-switch-container

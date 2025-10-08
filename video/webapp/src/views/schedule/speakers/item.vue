@@ -3,7 +3,7 @@
 	bunt-progress-circular(v-if="!speaker || !schedule", size="huge", :page="true")
 	scrollbars(v-else, y="")
 		.profile
-			img.avatar(v-if="speaker.avatar", :src="speaker.avatar")
+			img.avatar(v-if="speaker.avatar || speaker.avatar_url", :src="speaker.avatar || speaker.avatar_url")
 			identicon(v-else, :user="{id: speaker.name, profile: {display_name: speaker.name}}")
 			.content
 				h1 {{ speaker.name }}
@@ -13,6 +13,7 @@
 			session(
 				v-for="session of sessions",
 				:session="session",
+				:now="now",
 				:faved="favs.includes(session.id)",
 				@fav="$store.dispatch('schedule/fav', $event)",
 				@unfav="$store.dispatch('schedule/unfav', $event)"
@@ -40,6 +41,7 @@ export default {
 		}
 	},
 	computed: {
+		...mapState(['now']),
 		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessionsLookup', 'favs']),
 		sessions() {
@@ -65,8 +67,8 @@ export default {
 	mounted() {},
 	methods: {
 		generateSessionLinkUrl(sessionData) {
-			const publicPath = process.env.BASE_URL || '/video/'
-			return `${publicPath}schedule/talks/${sessionData.session.id}`
+			const router = this.$router
+			return router.resolve({ name: 'schedule:talk', params: { talkId: sessionData.session.id } }).href
 		}
 	}
 }

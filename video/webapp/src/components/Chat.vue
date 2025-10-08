@@ -5,8 +5,7 @@
 			scrollbars.timeline(y, ref="timeline", @scroll="timelineScrolled", v-resize-observer="onResize", @resize="onResize")
 				infinite-scroll(v-if="syncedScroll", :loading="fetchingMessages", @load="fetchMessages")
 					div
-				template(v-for="(message, index) of filteredTimeline")
-					chat-message(:message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", :key="message.event_id", @showUserCard="showUserCard")
+				chat-message(v-for="(message, index) of filteredTimeline", :key="message.event_id", :message="message", :previousMessage="filteredTimeline[index - 1]", :nextMessage="filteredTimeline[index + 1]", :mode="mode", @showUserCard="showUserCard")
 			.warning(v-if="mergedWarning")
 				.content
 					ChatContent(:content="$t('Chat:warning:missed-users', {count: mergedWarning.missed_users.length, missedUsers: mergedWarning.missed_users})", @clickMention="showUserCard")
@@ -27,143 +26,171 @@
 					span.display-name
 						| {{ user.profile.display_name }}
 						span.ui-badge(v-for="badge in user.badges") {{ badge }}
-		chat-user-card(v-if="userCardUser", ref="avatarCard", :sender="userCardUser", @close="userCardUser = false")
+		chat-user-card(v-if="userCardUser", ref="avatarCard", :user="userCardUser", @close="userCardUser = false")
 	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
-<script>
-import { mapState, mapGetters } from 'vuex'
+<script setup>
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { useStore } from 'vuex'
 import { createPopper } from '@popperjs/core'
 
-// import ChatContent from 'components/ChatContent'
+import ChatContent from 'components/ChatContent'
 import Avatar from 'components/Avatar'
 import ChatInput from 'components/ChatInput'
 import ChatUserCard from 'components/ChatUserCard'
 import ChatMessage from './ChatMessage'
 import InfiniteScroll from './InfiniteScroll'
 
-export default {
-	components: { ChatMessage, ChatUserCard, Avatar, InfiniteScroll, ChatInput },
-	props: {
-		room: Object,
-		module: {
-			type: Object,
-			required: true
-		},
-		mode: {
-			type: String, // 'standalone', 'compact'
-			default: 'compact'
-		},
-		showUserlist: {
-			type: Boolean,
-			default: true
-		}
+// Props & Emits
+const props = defineProps({
+	room: Object,
+	module: {
+		type: Object,
+		required: true
 	},
-	data() {
-		return {
-			userCardUser: null,
-			scrollPosition: 0,
-			syncedScroll: true
-		}
+	mode: {
+		type: String, // 'standalone', 'compact'
+		default: 'compact'
 	},
-	computed: {
-		...mapState(['connected']),
-		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages', 'warnings']),
-		...mapGetters('chat', ['activeJoinedChannel']),
-		...mapState('poll', ['polls']),
-		filteredTimeline() {
-			// We want to hide join/leave event (a) in rooms with force join (b) in stage chats (c) in direct messages
-			const showJoinleave = this.mode === 'standalone' && this.room && !this.room.force_join
-			return this.timeline.filter(message =>
-				(showJoinleave || message.event_type !== 'channel.member') &&
-				message.content.type !== 'deleted' &&
-				!message.replaces &&
-				(!message.content.poll_id || this.polls?.find(poll => poll.id === message.content.poll_id))
-			)
-		},
-		sortedMembers() {
-			return this.members.slice().sort((a, b) => {
-				const aBadges = a.badges?.length || 0
-				const bBadges = b.badges?.length || 0
-				if (!!aBadges === !!bBadges) {
-					const aName = a.profile?.display_name || ''
-					const bName = b.profile?.display_name || ''
-					return aName.localeCompare(bName)
-				}
-				return bBadges - aBadges
-			})
-		},
-		mergedWarning() {
-			if (this.warnings.length === 0) return null
-			// TODO dedupe users
-			return { missed_users: this.warnings.map(warning => warning.missed_users.map(user => '@' + user.id)).flat() }
-		}
-	},
-	watch: {
-		connected(value) {
-			if (value) {
-				// resubscribe
-				this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
-			}
-		},
-		async filteredTimeline() {
-			await this.$nextTick()
-			// TODO scroll to bottom when resizing
-			// restore scrollPosition after load
-			this.refreshScrollbar()
-			this.syncedScroll = true
-			this.$emit('change')
-		}
-	},
-	created() {
-		this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
-	},
-	beforeDestroy() {
-		this.$store.dispatch('chat/unsubscribe')
-	},
-	methods: {
-		fetchMessages() {
-			this.syncedScroll = false
-			this.$store.dispatch('chat/fetchMessages')
-		},
-		timelineScrolled(event) {
-			const scrollEl = this.$refs.timeline.$refs.content
-			this.scrollPosition = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight
-		},
-		onResize() {
-			this.refreshScrollbar()
-		},
-		refreshScrollbar() {
-			const scrollEl = this.$refs.timeline.$refs.content
-			this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition - scrollEl.clientHeight)
-		},
-		join() {
-			this.$store.dispatch('chat/join')
-		},
-		send(content) {
-			this.$store.dispatch('chat/sendMessage', {content})
-		},
-		async showUserCard(event, user, placement = 'left-start') {
-			console.log(user.id)
-			this.userCardUser = user
-			await this.$nextTick()
-			const target = event.target.closest('.user') || event.target
-			createPopper(target, this.$refs.avatarCard.$refs.card, {
-				placement,
-				strategy: 'fixed',
-				modifiers: [{
-					name: 'flip',
-					options: {
-						flipVariations: false
-					},
-				}, {
-					name: 'preventOverflow',
-					options: {
-						padding: 8
-					}
-				}]
-			})
-		}
+	showUserlist: {
+		type: Boolean,
+		default: true
 	}
+})
+const emit = defineEmits(['change'])
+
+// Store
+const store = useStore()
+
+// Local state
+const userCardUser = ref(null)
+const scrollPosition = ref(0)
+const syncedScroll = ref(true)
+
+// Refs to child components
+const timeline = ref(null)
+const avatarCard = ref(null)
+
+// Store-derived state
+const connected = computed(() => store.state.connected)
+const channel = computed(() => store.state.chat.channel)
+const members = computed(() => store.state.chat.members)
+const usersLookup = computed(() => store.state.chat.usersLookup)
+const timelineState = computed(() => store.state.chat.timeline)
+const fetchingMessages = computed(() => store.state.chat.fetchingMessages)
+const warnings = computed(() => store.state.chat.warnings || [])
+const activeJoinedChannel = computed(() => store.getters['chat/activeJoinedChannel'])
+const polls = computed(() => store.state.poll?.polls)
+
+// Computed values
+const filteredTimeline = computed(() => {
+	// We want to hide join/leave event (a) in rooms with force join (b) in stage chats (c) in direct messages
+	const showJoinleave = props.mode === 'standalone' && props.room && !props.room.force_join
+	return (timelineState.value || []).filter(message =>
+		(showJoinleave || message.event_type !== 'channel.member') &&
+		message.content.type !== 'deleted' &&
+		!message.replaces &&
+		(!message.content.poll_id || polls.value?.find(poll => poll.id === message.content.poll_id))
+	)
+})
+
+const sortedMembers = computed(() => {
+	return [...(members.value || [])].sort((a, b) => {
+		const aBadges = a.badges?.length || 0
+		const bBadges = b.badges?.length || 0
+		if (aBadges === bBadges) {
+			return (a.profile?.display_name || '').localeCompare(b.profile?.display_name || '')
+		}
+		return bBadges - aBadges
+	})
+})
+
+const mergedWarning = computed(() => {
+	if (!warnings.value?.length) return null
+	return {
+		missed_users: warnings.value.flatMap(warning =>
+			warning.missed_users.map(user => '@' + user.id)
+		)
+	}
+})
+
+// Watchers
+watch(connected, (value) => {
+	if (value) {
+		// resubscribe
+		store.dispatch('chat/subscribe', { channel: props.module.channel_id, config: props.module.config })
+	}
+})
+
+watch(filteredTimeline, async () => {
+	await nextTick()
+	// TODO scroll to bottom when resizing
+	// restore scrollPosition after load
+	refreshScrollbar()
+	syncedScroll.value = true
+	emit('change')
+})
+
+// Lifecycle
+onMounted(() => {
+	store.dispatch('chat/subscribe', { channel: props.module.channel_id, config: props.module.config })
+})
+
+onBeforeUnmount(() => {
+	store.dispatch('chat/unsubscribe')
+})
+
+// Methods
+function fetchMessages() {
+	syncedScroll.value = false
+	store.dispatch('chat/fetchMessages')
+}
+
+function timelineScrolled() {
+	const scrollEl = timeline.value?.$refs?.content
+	if (!scrollEl) return
+	scrollPosition.value = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight
+}
+
+function onResize() {
+	refreshScrollbar()
+}
+
+function refreshScrollbar() {
+	const scrollEl = timeline.value?.$refs?.content
+	if (!scrollEl || !timeline.value?.scrollTop) return
+	timeline.value.scrollTop(scrollEl.scrollHeight - scrollPosition.value - scrollEl.clientHeight)
+}
+
+function join() {
+	store.dispatch('chat/join')
+}
+
+function send(content) {
+	store.dispatch('chat/sendMessage', { content })
+}
+
+async function showUserCard(event, user, placement = 'left-start') {
+	console.log(user.id)
+	userCardUser.value = user
+	await nextTick()
+	const target = event.target.closest('.user') || event.target
+	if (!avatarCard.value?.$refs?.card) return
+	createPopper(target, avatarCard.value.$refs.card, {
+		placement,
+		strategy: 'fixed',
+		modifiers: [{
+			name: 'flip',
+			options: {
+				flipVariations: false
+			},
+		}, {
+			name: 'preventOverflow',
+			options: {
+				padding: 8
+			}
+		}]
+	})
 }
 </script>
 <style lang="stylus">

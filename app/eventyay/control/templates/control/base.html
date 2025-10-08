@@ -1,0 +1,16 @@
+{% extends "eventyay_common/base.html" %}
+{% load static %}
+{% load i18n %}
+{# Reusing the common dashboard layout. This template is now a thin wrapper so all child templates automatically gain the unified navigation/sidebar/header. #}
+
+{% block custom_header %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'control/style.css' %}">
+{% endblock %}
+
+{% block title %}{% block page_title %}{% endblock %}{% endblock %}
+
+{# Child templates already define "content"; eventyay_common/base.html provides the surrounding layout and messages. #}
+{% block content %}
+    {{ block.super }}
+{% endblock %}

@@ -9,7 +9,8 @@
 				bunt-button#btn-progress-state(v-if="announcement.state !== 'archived'", :loading="settingState", @click="progressState") {{ announcement.state === 'draft' ? 'activate' : 'archive' }}
 	scrollbars(y)
 		bunt-input-outline-container(label="Text", name="text")
-			textarea.text(slot-scope="{focus, blur}", @focus="focus", @blur="blur", v-model="announcement.text", :disabled="announcement.state !== 'draft'")
+			template(#default="{focus, blur}")
+				textarea.text(@focus="focus", @blur="blur", v-model="announcement.text", :disabled="announcement.state !== 'draft'")
 		bunt-input.floating-label(name="show-until", label="Show Until", type="datetime-local", v-model="plainShowUntil", :disabled="announcement.state !== 'draft'")
 		.button-group
 			bunt-button(:class="{selected: !announcement.show_until}", @click="clearShowUntil", :disabled="announcement.state !== 'draft'") forever
@@ -73,7 +74,7 @@ export default {
 		document.addEventListener('keydown', this.onGlobalKeyDown)
 		document.addEventListener('keyup', this.onGlobalKeyUp)
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		document.removeEventListener('keydown', this.onGlobalKeyDown)
 		document.removeEventListener('keyup', this.onGlobalKeyUp)
 	},

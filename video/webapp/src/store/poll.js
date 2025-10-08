@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import api from 'lib/api'
 
 export default {
@@ -31,7 +30,7 @@ export default {
 		},
 		async vote({state, rootState}, {poll, option}) {
 			await api.call('poll.vote', {room: rootState.activeRoom.id, id: poll.id, options: [option.id]})
-			Vue.set(poll, 'answers', [option.id])
+			poll.answers = [option.id]
 		},
 		openPoll({state, rootState}, poll) {
 			return api.call('poll.update', {room: rootState.activeRoom.id, id: poll.id, state: 'open'})
@@ -83,7 +82,7 @@ export default {
 			const existingPoll = state.polls.find(q => q.id === poll.id)
 			if (existingPoll) {
 				for (const [key, value] of Object.entries(poll)) {
-					Vue.set(existingPoll, key, value)
+					existingPoll[key] = value
 				}
 			} else {
 				state.polls.push(poll)
