@@ -65,7 +65,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-@import '~styles/flex-table'
+@import 'flex-table'
 
 .c-admin-announcements
 	display: flex

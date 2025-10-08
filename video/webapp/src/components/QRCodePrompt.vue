@@ -21,6 +21,7 @@ export default {
 	props: {
 		room: Object
 	},
+	emits: ['close'],
 	data() {
 		return {
 			url: null,

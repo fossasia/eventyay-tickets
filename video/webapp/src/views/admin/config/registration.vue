@@ -36,7 +36,7 @@
 									td
 										bunt-input(v-if="field.type === 'select'", v-model="field.choices", label="Choices (comma seperated)", name="choices")
 										bunt-select.link-network(v-if="field.type === 'link'", v-model="field.network", label="Link Type", name="link-type", :options="socialNetworks")
-											template(slot-scope="{ option }")
+											template(#default="{ option }")
 												.mdi(:class="`mdi-${option}`")
 												.label {{ option }}
 									td
@@ -52,8 +52,9 @@
 									td
 									td
 									td
-	.ui-form-actions
-		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+	.ui-form-actions-wrapper
+		.ui-form-actions
+			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 </template>
 <script>
 import api from 'lib/api'
@@ -107,7 +108,7 @@ export default {
 		try {
 			this.config = await api.call('world.config.get')
 		} catch (error) {
-			this.error = error
+			this.error = error.message || error.toString()
 			console.log(error)
 		}
 	},
@@ -115,10 +116,11 @@ export default {
 		addField() {
 			this.config.profile_fields.push({id: uuid(), label: '', type: 'text', searchable: false})
 		},
-		removeField(field) {
-			this.$delete(this.config.profile_fields, field)
+		removeField(index) {
+			this.config.profile_fields.splice(index, 1)
 		},
 		async save() {
+			if (!this.config) return
 			this.saving = true
 			try {
 				await api.call('world.config.patch', {
@@ -127,7 +129,7 @@ export default {
 				})
 			} catch (error) {
 				console.error(error.apiError || error)
-				this.error = error.apiError?.details?.social_logins?.join(', ') || error.apiError?.code || error
+				this.error = error.apiError?.details?.social_logins?.join(', ') || error.apiError?.code || error.message || error.toString()
 			} finally {
 				this.saving = false
 			}

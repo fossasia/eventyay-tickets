@@ -35,6 +35,7 @@ export default {
 			default: () => ([-3, 8])
 		}
 	},
+	emits: ['selected'],
 	data() {
 		return {
 			showEmojiPicker: false

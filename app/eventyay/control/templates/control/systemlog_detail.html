@@ -1,0 +1,43 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+
+{% block video_admin_content %}
+<h1 class="page-header">{% trans "System log entry" %}</h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <label>{% trans "Metadata" %}</label>
+        <pre>{{ systemlog.timestamp }} / {{ systemlog.module }} / {{ systemlog.event }}</pre>
+        <hr>
+        <label>{% trans "Message" %}</label>
+        <pre>{{ systemlog.message }}</pre>
+        <hr>
+        <label>{% trans "User Agent" %}</label>
+        <pre>{{ trace.userAgent }}</pre>
+    </div>
+</div>
+<h3>{% trans "Trace" %}</h3>
+<div class="video-admin-table-wrapper">
+<table class="table table-striped table-hover video-admin-table">
+    <thead>
+    <tr>
+        <th>{% trans "Tag" %}</th>
+        <th>{% trans "Timestamp" %}</th>
+        <th>{% trans "Level" %}</th>
+        <th>{% trans "Message" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for t in trace.trace %}
+    <tr>
+        <td>{{t.0}}</td>
+        <td>{{t.1}}</td>
+        <td>{{t.2}}</td>
+        <td class="break-all"><code>{{t.3}}</code></td>
+    </tr>
+    {% empty %}
+        <tr><td colspan="4" class="text-muted">{% trans "No trace entries." %}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

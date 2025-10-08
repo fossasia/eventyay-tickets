@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-iframe-blocker
-	iframe(v-if="showIframe", :src="src", v-bind="$attrs", v-on="$listeners")
+	iframe(v-if="showIframe", :src="src", v-bind="$attrs")
 	.consent-blocker(v-else)
 		.warning This content is hosted by a third party on
 		.domain {{ domain }}
@@ -10,7 +10,6 @@
 </template>
 <script>
 import store from 'store'
-
 export default {
 	inheritAttrs: false,
 	props: {
@@ -28,7 +27,6 @@ export default {
 			return new URL(this.src).host
 		},
 		config() {
-			console.log(store.state.world.iframe_blockers, this.domain)
 			for (const [domain, domainConfig] of Object.entries(store.state.world.iframe_blockers)) {
 				if (this.domain === domain || this.domain.endsWith('.' + domain)) return domainConfig
 			}

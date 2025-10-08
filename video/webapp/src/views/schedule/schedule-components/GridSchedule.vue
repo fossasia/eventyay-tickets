@@ -48,6 +48,7 @@ const getSliceName = function(date) {
 
 export default {
 	components: { Session },
+	emits: ['fav', 'unfav', 'changeDay'],
 	props: {
 		sessions: Array,
 		rooms: Array,
@@ -262,8 +263,8 @@ export default {
 		}
 		if (fragmentIsDate || !this.$refs.now) return
 		const scrollTop = this.$refs.now.offsetTop + this.getOffsetTop() - 90
-		if (this.scrollParent) {
-			this.scrollParent.scrollTop = scrollTop
+		if (this.scrollParent && typeof this.scrollParent.scrollTo === 'function') {
+			this.scrollParent.scrollTo({ top: scrollTop })
 		} else {
 			window.scroll({top: scrollTop})
 		}
@@ -309,8 +310,8 @@ export default {
 			const el = this.$refs[getSliceName(day)]?.[0]
 			if (!el) return
 			const offset = el.offsetTop + this.getOffsetTop()
-			if (this.scrollParent) {
-				this.scrollParent.scrollTop = offset
+			if (this.scrollParent && typeof this.scrollParent.scrollTo === 'function') {
+				this.scrollParent.scrollTo({ top: offset })
 			} else {
 				window.scroll({top: offset})
 			}
@@ -335,6 +336,8 @@ export default {
 		grid-template-columns: 78px repeat(var(--total-rooms), 1fr) auto
 		// grid-gap: 8px
 		position: relative
+		max-height: 88vh
+		overflow: auto
 		min-width: min-content
 		> .room
 			position: sticky

@@ -32,7 +32,7 @@ export function localize(string) {
 	return Object.values(string)[0]
 }
 
-export async function init(Vue) {
+export async function init(app) {
 	await i18next
 		// dynamic locale loader using webpack chunks
 		.use({
@@ -40,7 +40,7 @@ export async function init(Vue) {
 			init(services, backendOptions, i18nextOptions) {},
 			async read(language, namespace, callback) {
 				try {
-					const locale = await import(/* webpackChunkName: "locale-[request]" */ `./locales/${language}.json`)
+					const locale = await import(`./locales/${language}.json`)
 					callback(null, locale.default)
 				} catch (error) {
 					callback(error)
@@ -63,7 +63,7 @@ export async function init(Vue) {
 			nsSeparator: false,
 			postProcess: ['themeOverwrites']
 		})
-	Vue.prototype.$i18n = i18next
-	Vue.prototype.$t = i18next.t.bind(i18next)
-	Vue.prototype.$localize = localize
+	app.config.globalProperties.$i18n = i18next
+	app.config.globalProperties.$t = i18next.t.bind(i18next)
+	app.config.globalProperties.$localize = localize
 }

@@ -24,6 +24,7 @@ export default {
 	props: {
 		placeholder: String
 	},
+	emits: ['selected'],
 	data() {
 		return {
 			search: '',

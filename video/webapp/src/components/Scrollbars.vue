@@ -2,7 +2,7 @@
 .c-scrollbars
 	.scroll-content(ref="content", @scroll="onScroll")
 		slot
-	template(v-for="dim of Object.keys(dimensions)")
+	template(v-for="dim of Object.keys(dimensions)", :key="dim")
 		div(:class="[`scrollbar-rail-${dim}`, {active: draggingDimension === dim}]", @pointerdown="onPointerdown(dim, $event)")
 			.scrollbar-thumb(:ref="`thumb-${dim}`", :style="thumbStyles[dim]")
 </template>
@@ -10,7 +10,7 @@
 import ResizeObserver from 'resize-observer-polyfill'
 
 export default {
-	components: {},
+	emits: ['scroll', 'resize'],
 	props: {
 		y: Boolean,
 		x: Boolean
@@ -99,7 +99,7 @@ export default {
 			childList: true
 		})
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.resizeObserver.disconnect()
 		this.mutationObserver.disconnect()
 	},
@@ -116,8 +116,9 @@ export default {
 			this.computeThumbPositions()
 			this.$emit('resize')
 		},
-		onPointerdown(dimension, $event) {
-			const el = this.$refs[`thumb-${dimension}`][0]
+		onPointerdown(dimension, event) {
+			const ref = this.$refs[`thumb-${dimension}`]
+			const el = Array.isArray(ref) ? ref[0] : ref
 			event.stopPropagation()
 			el.setPointerCapture(event.pointerId)
 			this.draggingDimension = dimension
@@ -126,9 +127,10 @@ export default {
 			el.addEventListener('pointermove', this.onPointermove)
 			el.addEventListener('pointerup', this.onPointerup)
 		},
-		onPointermove() {
+		onPointermove(event) {
 			if (this.draggingDimension === 'x') {
 				const maxX = this.$refs.content.clientWidth - this.dimensions.x.thumbLength
+				if (maxX <= 0) return
 				const newPosition = event.clientX - this.$refs.content.getBoundingClientRect().left - this.draggingOffset
 				this.dimensions.x.thumbPosition = Math.min(Math.max(0, newPosition), maxX)
 				this.$refs.content.scrollLeft = this.dimensions.x.thumbPosition / maxX * (this.$refs.content.scrollWidth - this.$refs.content.clientWidth)
@@ -136,6 +138,7 @@ export default {
 
 			if (this.draggingDimension === 'y') {
 				const maxY = this.$refs.content.clientHeight - this.dimensions.y.thumbLength
+				if (maxY <= 0) return
 				if (this.dimensions.y.direction === 'reverse') {
 					const newPosition = this.$refs.content.clientHeight - (event.clientY - this.$refs.content.getBoundingClientRect().top + (this.dimensions.y.thumbLength - this.draggingOffset))
 					this.dimensions.y.thumbPosition = Math.min(Math.max(0, newPosition), maxY)
@@ -149,7 +152,8 @@ export default {
 		},
 		onPointerup(event) {
 			const dimension = this.draggingDimension
-			const el = this.$refs[`thumb-${dimension}`][0]
+			const ref = this.$refs[`thumb-${dimension}`]
+			const el = Array.isArray(ref) ? ref[0] : ref
 			this.draggingDimension = null
 			el.releasePointerCapture(event.pointerId)
 			el.removeEventListener('pointermove', this.onPointermove)
@@ -167,31 +171,17 @@ export default {
 		},
 		computeThumbPositions() {
 			if (this.dimensions.x) {
-				this.dimensions.x.thumbPosition = this.$refs.content.scrollLeft / (this.$refs.content.scrollWidth - this.$refs.content.clientWidth) * (this.$refs.content.clientWidth - this.dimensions.x.thumbLength)
+				const denom = (this.$refs.content.scrollWidth - this.$refs.content.clientWidth)
+				const track = (this.$refs.content.clientWidth - this.dimensions.x.thumbLength)
+				this.dimensions.x.thumbPosition = denom > 0 ? (this.$refs.content.scrollLeft / denom) * track : 0
 			}
 			if (this.dimensions.y) {
+				const denom = (this.$refs.content.scrollHeight - this.$refs.content.clientHeight)
+				const track = (this.$refs.content.clientHeight - this.dimensions.y.thumbLength)
 				if (this.dimensions.y.direction === 'reverse') {
-					this.dimensions.y.thumbPosition = -1 * this.$refs.content.scrollTop / (this.$refs.content.scrollHeight - this.$refs.content.clientHeight) * (this.$refs.content.clientHeight - this.dimensions.y.thumbLength)
+					this.dimensions.y.thumbPosition = denom > 0 ? (-1 * this.$refs.content.scrollTop / denom) * track : 0
 				} else {
-					this.dimensions.y.thumbPosition = this.$refs.content.scrollTop / (this.$refs.content.scrollHeight - this.$refs.content.clientHeight) * (this.$refs.content.clientHeight - this.dimensions.y.thumbLength)
-				}
-			}
-		},
-		updateThumb(dimension) {
-			const state = this[dimension]
-			if (!state) return
-			if (state.visibleRatio >= 1) {
-				state.thumbEl.style.display = 'none'
-			} else {
-				state.thumbEl.style.display = null
-				if (dimension === 'x') {
-					state.railEl.style.width = state.railLength + 'px'
-					state.thumbEl.style.width = state.thumbLength + 'px'
-					state.thumbEl.style.left = state.thumbPosition + 'px'
-				} else if (dimension === 'y') {
-					state.railEl.style.height = state.railLength + 'px'
-					state.thumbEl.style.height = state.thumbLength + 'px'
-					state.thumbEl.style.top = state.thumbPosition + 'px'
+					this.dimensions.y.thumbPosition = denom > 0 ? (this.$refs.content.scrollTop / denom) * track : 0
 				}
 			}
 		}

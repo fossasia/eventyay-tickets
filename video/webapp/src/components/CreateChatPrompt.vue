@@ -5,12 +5,13 @@ prompt.c-create-chat-prompt(@close="$emit('close')")
 		p {{ $t('CreateChatPrompt:intro:text') }}
 		form(@submit.prevent="create")
 			bunt-select(name="type", :label="$t('CreateChatPrompt:type:label')", v-model="type", :options="types")
-				template(slot-scope="{ option }")
+				template(#default="{ option }")
 					.mdi(:class="`mdi-${option.icon}`")
 					.label {{ option.label }}
 			bunt-input(name="name", :label="$t('CreateChatPrompt:name:label')", :icon="selectedType.icon", :placeholder="$t('CreateChatPrompt:name:placeholder')", v-model="name")
 			bunt-input-outline-container(:label="$t('CreateChatPrompt:description:label')")
-				textarea(v-model="description", slot-scope="{focus, blur}", @focus="focus", @blur="blur")
+				template(#default= "{focus, blur}")
+					textarea(v-model="description", @focus="focus", @blur="blur")
 			bunt-button(type="submit", :loading="loading") {{ $t('CreateChatPrompt:submit:label') }}
 </template>
 <script>
@@ -19,6 +20,7 @@ import Prompt from 'components/Prompt'
 
 export default {
 	components: { Prompt },
+	emits: ['close'],
 	data() {
 		return {
 			name: '',

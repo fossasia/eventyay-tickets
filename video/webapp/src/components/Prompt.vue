@@ -20,6 +20,7 @@ export default {
 			default: true
 		}
 	},
+	emits: ['close'],
 	mounted() {
 		this.$nextTick(() => {
 			if (!this.scrollable) return
@@ -73,6 +74,6 @@ export default {
 			z-index: 10
 .prompt-enter-active, .prompt-leave-active
 	transition: opacity .3s
-.prompt-enter, .prompt-leave-to
+.prompt-enter-from, .prompt-leave-to
 	opacity: 0
 </style>

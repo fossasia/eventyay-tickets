@@ -38,23 +38,15 @@ export function getEmojiDataFromNative(native) {
 
 export function nativeToStyle(unicodeEmoji) {
 	// maps multi-codepoint emoji like 🇻🇦 / \uD83C\uDDFB\uD83C\uDDE6 => 1f1fb-1f1e6.svg
-	const codepoints = Array.from(unicodeEmoji).map(c => c.codePointAt(0).toString(16))
-	let src
-	// drop modifiers if we don't have the full emoji
-	// for example red heart => heart
-	while (codepoints.length) {
-		try {
-			src = require(`twemoji-emojis/vendor/svg/${codepoints.join('-')}.svg`)
-			break
-		} catch (e) {}
-		codepoints.pop()
+	let codepoints = Array.from(unicodeEmoji).map(c => c.codePointAt(0).toString(16))
+	// Remove trailing FE0F (variation selector) if present, for Twemoji compatibility
+	if (codepoints.length > 1 && codepoints[codepoints.length - 1] === 'fe0f') {
+		codepoints = codepoints.slice(0, -1)
 	}
-
-	// if we don't have the emoji, show❓
-	if (!src) {
-		src = require('twemoji-emojis/vendor/svg/2753.svg')
+	function buildCdnUrl(cps) {
+		return `https://twemoji.maxcdn.com/v/latest/svg/${cps.join('-')}.svg`
 	}
-
+	const src = buildCdnUrl(codepoints)
 	return {'background-image': `url(${src})`}
 }
 
@@ -129,7 +121,7 @@ export function emojifyString(input) {
 }
 
 export const emojiPlugin = {
-	install(Vue) {
-		Vue.prototype.$emojify = emojifyString
+	install(app) {
+		app.config.globalProperties.$emojify = emojifyString
 	}
 }

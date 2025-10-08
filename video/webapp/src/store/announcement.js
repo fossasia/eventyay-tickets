@@ -1,6 +1,5 @@
 // TODO sync dismissed announcements between tabs
 
-import Vue from 'vue'
 import moment from 'moment'
 
 export default {
@@ -42,7 +41,7 @@ export default {
 			if (existingAnnouncement) {
 				for (let [key, value] of Object.entries(announcement)) {
 					if (key === 'show_until' && value) value = moment(value)
-					Vue.set(existingAnnouncement, key, value)
+					existingAnnouncement[key] = value
 				}
 			} else {
 				state.rawAnnouncements.push(announcement)

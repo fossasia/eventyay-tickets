@@ -24,7 +24,7 @@ class EventMiddleware:
 
         if not hasattr(request, 'sales_channel'):
             # The environ lookup is only relevant during unit testing
-            request.sales_channel = request.environ.get('PRETIX_SALES_CHANNEL', WebshopSalesChannel())
+            request.sales_channel = request.META.get('PRETIX_SALES_CHANNEL', WebshopSalesChannel())
 
         if url.namespace != 'presale':
             return self.get_response(request)

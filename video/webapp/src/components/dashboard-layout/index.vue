@@ -1,4 +1,5 @@
 <script>
+import { h as createElement, Comment } from 'vue'
 export default {
 	props: {
 		columnMinWidth: {
@@ -23,9 +24,9 @@ export default {
 		this.observer.disconnect()
 	},
 	methods: {},
-	render(createElement) {
+	render() {
 		// filter out v-if=false nodes
-		const panels = this.$slots.default.filter(vnode => !vnode.isComment)
+		const panels = this.$slots.default().filter(vnode => vnode.type !== Comment)
 		const panelCount = panels.length
 		const columns = []
 		if (this.contentRect) {

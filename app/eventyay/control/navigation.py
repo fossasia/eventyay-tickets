@@ -665,6 +665,84 @@ def get_admin_navigation(request):
         },
     ]
 
+    # --- Inject Video Admin navigation (now part of admin sidebar) -------------
+    if request.user.is_authenticated and request.user.is_staff:
+        path = request.path.rstrip('/')
+        video_root = '/control/admin/video'
+        def is_active(prefix, exact=False):
+            if exact:
+                return path == prefix.rstrip('/')
+            return path == prefix.rstrip('/') or path.startswith(prefix.rstrip('/') + '/')
+        video_children = [
+            {
+                'label': _('Dashboard'),
+                'url': f'{video_root}/',
+                'active': is_active(video_root, exact=True),
+            },
+            {
+                'label': _('Events'),
+                'url': f'{video_root}/events/',
+                'active': is_active(f'{video_root}/events'),
+            },
+            {
+                'label': _('BBB servers'),
+                'url': f'{video_root}/bbbs/',
+                'active': is_active(f'{video_root}/bbbs') and 'moveroom' not in path,
+            },
+            {
+                'label': _('Move BBB room'),
+                'url': f'{video_root}/bbbs/moveroom/',
+                'active': is_active(f'{video_root}/bbbs/moveroom', exact=True),
+            },
+            {
+                'label': _('Janus servers'),
+                'url': f'{video_root}/janus/',
+                'active': is_active(f'{video_root}/janus'),
+            },
+            {
+                'label': _('TURN servers'),
+                'url': f'{video_root}/turns/',
+                'active': is_active(f'{video_root}/turns'),
+            },
+            {
+                'label': _('Streaming servers'),
+                'url': f'{video_root}/streamingservers/',
+                'active': is_active(f'{video_root}/streamingservers'),
+            },
+            {
+                'label': _('Streamkey generator'),
+                'url': f'{video_root}/streamkey/',
+                'active': is_active(f'{video_root}/streamkey', exact=True),
+            },
+            {
+                'label': _('System log'),
+                'url': f'{video_root}/systemlog/',
+                'active': is_active(f'{video_root}/systemlog'),
+            },
+            {
+                'label': _('Conftool posters'),
+                'url': f'{video_root}/conftool/syncposters/',
+                'active': is_active(f'{video_root}/conftool/syncposters', exact=True),
+            },
+            
+            # {
+            #     'label': _('Users'),
+            #     'url': f'{video_root}/users/',
+            #     'active': is_active(f'{video_root}/users'),
+            # },
+        ]
+        parent_active = any(c['active'] for c in video_children) or is_active(video_root)
+        nav.append(
+            {
+                'label': _('Video Admin'),
+                'url': f'{video_root}/',
+                'active': parent_active,
+                'icon': 'video-camera',
+                'children': video_children,
+            }
+        )
+    # --------------------------------------------------------------------------
+
     merge_in(
         nav,
         sorted(
