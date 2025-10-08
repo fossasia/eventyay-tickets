@@ -738,7 +738,7 @@ WEBSOCKET_PROTOCOL = os.getenv(
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+        "BACKEND": "eventyay.base.storage.NoMapManifestStaticFilesStorage",
     },
 }
 
@@ -874,7 +874,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
-STATICFILES_STORAGE = 'eventyay.base.storage.NoMapManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
