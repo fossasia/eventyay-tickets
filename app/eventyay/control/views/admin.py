@@ -99,8 +99,8 @@ class SubmissionListView(ListView):
                 '-title': '-title',
                 'event': 'event__name',
                 '-event': '-event__name',
-                'speakers': 'speakers',
-                '-speakers': '-speakers',
+                'speakers': 'speakers__fullname',
+                '-speakers': '-speakers__fullname',
                 'state': 'state',
                 '-state': '-state',
                 'session_type': 'submission_type__name',
@@ -125,8 +125,8 @@ class SubmissionListView(ListView):
                     'event_slug': s.event.slug,
                     'organizer_slug': s.event.organizer.slug,
                     'code': s.code,
-                    'track': s.track if s.track else '',
-                    'tags': s.tags if s.tags else '',
+                    'track': s.track.name if s.track else '',
+                    'tags': ', '.join(t.tag for t in s.tags.all()) if s.tags else '',
                 })
 
         return submissions

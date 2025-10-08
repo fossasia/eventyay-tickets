@@ -105,17 +105,26 @@
                     </tr>
                 </thead>
 
+               {% with accepted="label-success" rejected="label-danger" confirmed="label-primary" withdrawn="label-default" default="label-info" %}
                 <tbody>
                     {% for submission in submissions %}
                         <tr>
                             <td>
                                 <strong>
                                     <a href="{% url 'orga:submissions.content.view' event=submission.event_slug code=submission.code %}">
-                                    {{ submission.title }}
-                                </a>
+                                        {{ submission.title }}
+                                    </a>
                                 </strong>
                             </td>
-                            <td>{{ submission.speakers }}</td>
+                            <td>
+                                {% if submission.speakers|length > 40 %}
+                                    <span title="{{ submission.speakers }}">
+                                        {{ submission.speakers|slice:":40" }}&hellip;
+                                    </span>
+                                {% else %}
+                                    {{ submission.speakers }}
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{% url 'control:event.index' organizer=submission.organizer_slug event=submission.event_slug %}">
                                     {{ submission.event }}
@@ -123,21 +132,25 @@
                             </td>
                             <td>{{ submission.session_type }}</td>
                             <td>
-                                {% if submission.proposal_state == "accepted" %}
-                                    <span class="label label-success">{{ submission.proposal_state|capfirst }}</span>
-                                {% elif submission.proposal_state == "rejected" %}
-                                    <span class="label label-danger">{{ submission.proposal_state|capfirst }}</span>
-                                {% elif submission.proposal_state == "confirmed" %}
-                                    <span class="label label-primary">{{ submission.proposal_state|capfirst }}</span>
-                                {% elif submission.proposal_state == "withdrawn" %}
-                                    <span class="label label-default">{{ submission.proposal_state|capfirst }}</span>
-                                {% else %}
-                                    <span class="label label-info">{{ submission.proposal_state|capfirst }}</span>
-                                {% endif %}
+                                <span class="label 
+                                    {% if submission.proposal_state == 'accepted' %}
+                                        {{ accepted }}
+                                    {% elif submission.proposal_state == 'rejected' %}
+                                        {{ rejected }}
+                                    {% elif submission.proposal_state == 'confirmed' %}
+                                        {{ confirmed }}
+                                    {% elif submission.proposal_state == 'withdrawn' %}
+                                        {{ withdrawn }}
+                                    {% else %}
+                                        {{ default }}
+                                    {% endif %}">
+                                    {{ submission.proposal_state|capfirst }}
+                                </span>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
+            {% endwith %}
             </table>
         </div>
 
