@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-06 10:28+0000\n"
 "PO-Revision-Date: 2025-10-09 10:51+0000\n"
-"Last-Translator: Yucheng Lin <yuchenglinedu@gmail.com>\n"
+"Last-Translator: Supaplex <bejokeup@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/eventyay/eventyay/zh_Hant/>\n"
 "Language: zh_Hant\n"
@@ -74,12 +74,12 @@ msgstr "目標 URL"
 #: pretix/api/models.py:97 pretix/base/models/devices.py:100
 #: pretix/base/models/organizer.py:198
 msgid "All events (including newly created ones)"
-msgstr "所有事件（包含新建立的事件）"
+msgstr "所有活動（包含新建立的活動）"
 
 #: pretix/api/models.py:98 pretix/base/models/devices.py:101
 #: pretix/base/models/organizer.py:199 pretix/base/models/vouchers.py:544
 msgid "Limit to events"
-msgstr "限制於特定事件"
+msgstr "限制於特定活動"
 
 #: pretix/api/serializers/cart.py:60 pretix/api/serializers/order.py:1124
 msgid "The product \"{}\" is not assigned to a quota."
@@ -99,7 +99,7 @@ msgstr ""
 #: pretix/api/serializers/checkin.py:47 pretix/base/models/event.py:1582
 #: pretix/base/models/items.py:1260 pretix/base/models/items.py:1490
 msgid "One or more items do not belong to this event."
-msgstr ""
+msgstr "一個或多個項不屬於此活動。"
 
 #: pretix/api/serializers/checkin.py:51 pretix/api/serializers/checkin.py:54
 #: pretix/base/models/items.py:1501 pretix/base/models/items.py:1504
@@ -5505,11 +5505,11 @@ msgstr ""
 
 #: pretix/base/models/vouchers.py:140 pretix/base/models/vouchers.py:532
 msgid "Price mode"
-msgstr ""
+msgstr "價格模式"
 
 #: pretix/base/models/vouchers.py:146 pretix/base/models/vouchers.py:538
 msgid "Voucher value"
-msgstr ""
+msgstr "優惠券價格"
 
 #: pretix/base/models/vouchers.py:155 pretix/control/forms/vouchers.py:31
 msgid "This product is added to the user's cart if the voucher is redeemed."
@@ -5533,7 +5533,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/vouchers/tags.html:49
 #: pretix/control/views/vouchers.py:73
 msgid "Tag"
-msgstr ""
+msgstr "標籤"
 
 #: pretix/base/models/vouchers.py:188
 msgid ""
@@ -5553,7 +5553,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/vouchers/index.html:6
 #: pretix/control/templates/pretixcontrol/vouchers/index.html:11
 msgid "Vouchers"
-msgstr ""
+msgstr "優惠券"
 
 #: pretix/base/models/vouchers.py:231
 msgid "You cannot select a quota that belongs to a different event."
@@ -5666,23 +5666,23 @@ msgstr ""
 #: pretix/base/models/vouchers.py:562
 #: pretix/control/forms/organizer_forms/organizer_form.py:138
 msgid "Invoice Voucher"
-msgstr ""
+msgstr "發票優惠券"
 
 #: pretix/base/models/vouchers.py:563
 msgid "Invoice Vouchers"
-msgstr ""
+msgstr "發票優惠券"
 
 #: pretix/base/models/waitinglist.py:40
 msgid "On waiting list since"
-msgstr ""
+msgstr "從…仍在等候名單上"
 
 #: pretix/base/models/waitinglist.py:60
 msgid "Assigned voucher"
-msgstr ""
+msgstr "已分配優惠券"
 
 #: pretix/base/models/waitinglist.py:69
 msgid "The product the user waits for."
-msgstr ""
+msgstr "使用者等待的產品。"
 
 #: pretix/base/models/waitinglist.py:77
 msgid "The variation of the product selected above."
@@ -5754,37 +5754,37 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/event/index.html:171
 msgctxt "subevent"
 msgid "Dates"
-msgstr ""
+msgstr "日期"
 
 #: pretix/base/notifications.py:185 pretix/base/pdf.py:182
 #: pretix/plugins/badges/exporters.py:261
 #: pretix/plugins/ticketoutputpdf/exporters.py:59
 msgid "Event date"
-msgstr ""
+msgstr "活動日期"
 
 #: pretix/base/notifications.py:191
 #: pretix/control/templates/pretixcontrol/order/index.html:552
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:263
 msgid "Net total"
-msgstr ""
+msgstr "淨額總計"
 
 #: pretix/base/notifications.py:193
 msgid "Pending amount"
-msgstr ""
+msgstr "待付金額"
 
 #: pretix/base/notifications.py:195 pretix/control/forms/filter.py:146
 #: pretix/control/forms/orderimport.py:16
 msgid "Order status"
-msgstr ""
+msgstr "訂單狀態"
 
 #: pretix/base/notifications.py:213
 msgid "Purchased products"
-msgstr ""
+msgstr "已購買產品"
 
 #: pretix/base/notifications.py:214
 #: pretix/base/templates/pretixbase/email/order_details.html:139
 msgid "View order details"
-msgstr ""
+msgstr "檢視訂單詳情"
 
 #: pretix/base/notifications.py:225
 #, python-brace-format
@@ -10582,12 +10582,12 @@ msgstr ""
 #: pretix/control/navigation.py:74
 msgctxt "action"
 msgid "Cancellation"
-msgstr ""
+msgstr "取消"
 
 #: pretix/control/navigation.py:82
 #: pretix/control/templates/pretixcontrol/event/widget.html:11
 msgid "Widget"
-msgstr ""
+msgstr "小工具"
 
 #: pretix/control/navigation.py:95 pretix/control/navigation.py:369
 #: pretix/control/navigation.py:550
@@ -10595,15 +10595,15 @@ msgstr ""
 #: pretix/eventyay_common/navigation.py:63
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:87
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
 #: pretix/control/navigation.py:143
 msgid "Categories"
-msgstr ""
+msgstr "類別"
 
 #: pretix/control/navigation.py:172
 msgid "Overview"
-msgstr ""
+msgstr "概覽"
 
 #: pretix/control/navigation.py:180
 #: pretix/control/templates/pretixcontrol/order/index.html:699
@@ -10611,28 +10611,28 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/orders/refunds.html:12
 #: pretix/presale/templates/pretixpresale/event/order.html:128
 msgid "Refunds"
-msgstr ""
+msgstr "退款"
 
 #: pretix/control/navigation.py:188 pretix/control/navigation.py:453
 msgid "Export"
-msgstr ""
+msgstr "匯出"
 
 #: pretix/control/navigation.py:206
 msgid "Import"
-msgstr ""
+msgstr "匯入"
 
 #: pretix/control/navigation.py:235
 msgid "All vouchers"
-msgstr ""
+msgstr "所有優惠券"
 
 #: pretix/control/navigation.py:243
 msgid "Tags"
-msgstr ""
+msgstr "標籤"
 
 #: pretix/control/navigation.py:255
 msgctxt "navigation"
 msgid "Check-in"
-msgstr ""
+msgstr "報到"
 
 #: pretix/control/navigation.py:264
 #: pretix/control/templates/pretixcontrol/checkin/lists.html:3
@@ -10643,16 +10643,16 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/subevents/detail.html:143
 #: pretix/plugins/checkinlists/apps.py:10
 msgid "Check-in lists"
-msgstr ""
+msgstr "報到清單"
 
 #: pretix/control/navigation.py:288
 msgid "My orders"
-msgstr ""
+msgstr "我的訂單"
 
 #: pretix/control/navigation.py:294 pretix/control/navigation.py:359
 #: pretix/control/templates/pretixcontrol/events/index.html:7
 msgid "My events"
-msgstr ""
+msgstr "我的活動"
 
 #: pretix/control/navigation.py:306
 #: pretix/control/templates/pretixcontrol/orders/search.html:7
@@ -10660,26 +10660,26 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/search/orders.html:7
 #: pretix/control/templates/pretixcontrol/search/orders.html:9
 msgid "Order search"
-msgstr ""
+msgstr "訂單查詢"
 
 #: pretix/control/navigation.py:312 pretix/eventyay_common/navigation.py:31
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/control.html:8
 msgid "Account"
-msgstr ""
+msgstr "帳號"
 
 #: pretix/control/navigation.py:323
 #: pretix/control/templates/pretixcontrol/user/settings.html:17
 #: pretix/eventyay_common/templates/eventyay_common/account/settings.html:17
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 #: pretix/control/navigation.py:328
 msgid "2FA"
-msgstr ""
+msgstr "二階段認證"
 
 #: pretix/control/navigation.py:333
 msgid "Authorized apps"
-msgstr ""
+msgstr "已授權 app"
 
 #: pretix/control/navigation.py:338
 #: pretix/control/templates/pretixcontrol/user/history.html:4
@@ -10688,59 +10688,59 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/user/settings.html:71
 #: pretix/eventyay_common/templates/eventyay_common/account/settings.html:71
 msgid "Account history"
-msgstr ""
+msgstr "帳號歷史記錄"
 
 #: pretix/control/navigation.py:399
 #: pretix/control/templates/pretixcontrol/organizers/billing.html:15
 msgid "Billing settings"
-msgstr ""
+msgstr "付款設定"
 
 #: pretix/control/navigation.py:429 pretix/control/navigation.py:436
 msgid "Devices"
-msgstr ""
+msgstr "裝置"
 
 #: pretix/control/navigation.py:490
 #: pretix/control/templates/pretixcontrol/admin/dashboard.html:5
 msgid "Admin Dashboard"
-msgstr ""
+msgstr "管理員儀表板"
 
 #: pretix/control/navigation.py:496
 msgid "All Events"
-msgstr ""
+msgstr "所有活動"
 
 #: pretix/control/navigation.py:502
 msgid "All Organizers"
-msgstr ""
+msgstr "所有主辦方"
 
 #: pretix/control/navigation.py:508
 #: pretix/control/templates/pretixcontrol/admin/task_management/task_management.html:7
 #: pretix/control/templates/pretixcontrol/admin/task_management/task_management.html:10
 msgid "Task management"
-msgstr ""
+msgstr "任務管理"
 
 #: pretix/control/navigation.py:514
 msgid "Pages"
-msgstr ""
+msgstr "頁面"
 
 #: pretix/control/navigation.py:526
 msgid "All users"
-msgstr ""
+msgstr "所有使用者"
 
 #: pretix/control/navigation.py:531
 #: pretix/control/templates/pretixcontrol/admin/user/staff_session_list.html:5
 #: pretix/control/templates/pretixcontrol/admin/user/staff_session_list.html:7
 msgid "Admin sessions"
-msgstr ""
+msgstr "管理員階段"
 
 #: pretix/control/navigation.py:544
 #: pretix/control/templates/pretixcontrol/global_settings_base.html:5
 #: pretix/control/templates/pretixcontrol/global_settings_base.html:7
 msgid "Global settings"
-msgstr ""
+msgstr "全域設定"
 
 #: pretix/control/navigation.py:555
 msgid "Update check"
-msgstr ""
+msgstr "更新檢查"
 
 #: pretix/control/navigation.py:560
 #: pretix/control/templates/pretixcontrol/global_sso.html:7
@@ -20873,7 +20873,7 @@ msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/position.html:39
 msgid "Additional information"
-msgstr ""
+msgstr "額外資訊"
 
 #: pretix/presale/templates/pretixpresale/event/position.html:44
 #, python-format
@@ -20891,12 +20891,12 @@ msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/resend_link.html:30
 msgid "Send links"
-msgstr ""
+msgstr "傳送連結"
 
 #: pretix/presale/templates/pretixpresale/event/voucher.html:9
 #: pretix/presale/templates/pretixpresale/event/voucher.html:12
 msgid "Voucher redemption"
-msgstr ""
+msgstr "兌換優惠券"
 
 #: pretix/presale/templates/pretixpresale/event/voucher.html:17
 msgid "This voucher is valid only for the following specific date and time."
@@ -20936,10 +20936,13 @@ msgid ""
 "                                                        from %(start_date)s\n"
 "                                                    "
 msgstr ""
+"\n"
+"                                                        來自%(start_date)s\n"
+"                                                    "
 
 #: pretix/presale/templates/pretixpresale/fragment_login_status.html:11
 msgid "account"
-msgstr ""
+msgstr "帳號"
 
 #: pretix/presale/templates/pretixpresale/fragment_modals.html:13
 msgid ""
@@ -21013,7 +21016,7 @@ msgstr ""
 
 #: pretix/presale/templates/pretixpresale/index.html:7
 msgid "Hello!"
-msgstr ""
+msgstr "您好！"
 
 #: pretix/presale/templates/pretixpresale/index.html:9
 #, python-format
@@ -21037,30 +21040,30 @@ msgstr ""
 
 #: pretix/presale/templates/pretixpresale/index.html:24
 msgid "Enjoy!"
-msgstr ""
+msgstr "好好使用吧！"
 
 #: pretix/presale/templates/pretixpresale/organizers/calendar.html:6
 #: pretix/presale/templates/pretixpresale/organizers/calendar_week.html:6
 msgid "Event overview"
-msgstr ""
+msgstr "活動概覽"
 
 #: pretix/presale/templates/pretixpresale/organizers/calendar.html:30
 #: pretix/presale/templates/pretixpresale/organizers/calendar_week.html:32
 #: pretix/presale/templates/pretixpresale/organizers/index.html:39
 msgid "Week"
-msgstr ""
+msgstr "週"
 
 #: pretix/presale/templates/pretixpresale/organizers/calendar.html:36
 #: pretix/presale/templates/pretixpresale/organizers/calendar_week.html:38
 #: pretix/presale/templates/pretixpresale/organizers/index.html:44
 msgid "Month"
-msgstr ""
+msgstr "月"
 
 #: pretix/presale/templates/pretixpresale/organizers/calendar.html:42
 #: pretix/presale/templates/pretixpresale/organizers/calendar_week.html:44
 #: pretix/presale/templates/pretixpresale/organizers/index.html:50
 msgid "iCal"
-msgstr ""
+msgstr "iCal"
 
 #: pretix/presale/templates/pretixpresale/organizers/calendar.html:80
 #: pretix/presale/templates/pretixpresale/organizers/calendar_week.html:108
@@ -21069,31 +21072,31 @@ msgstr ""
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:8
 msgid "Event list"
-msgstr ""
+msgstr "活動清單"
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:25
 msgid "Past events"
-msgstr ""
+msgstr "過往活動"
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:27
 msgid "Upcoming events"
-msgstr ""
+msgstr "未來活動"
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:53
 msgid "Show upcoming"
-msgstr ""
+msgstr "顯示未來的活動"
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:55
 msgid "Show past events"
-msgstr ""
+msgstr "顯示過往的活動"
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:137
 msgid "More info"
-msgstr ""
+msgstr "更多資訊"
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:145
 msgid "No archived events found."
-msgstr ""
+msgstr "找不到已歸檔的活動。"
 
 #: pretix/presale/templates/pretixpresale/organizers/index.html:149
 msgid "No public upcoming events found."
@@ -21140,11 +21143,11 @@ msgstr ""
 
 #: pretix/presale/views/cart.py:382
 msgid "Your cart has been updated."
-msgstr ""
+msgstr "已經更新你的購物車了。"
 
 #: pretix/presale/views/cart.py:385 pretix/presale/views/cart.py:410
 msgid "Your cart is now empty."
-msgstr ""
+msgstr "你的購物車已經是空的了。"
 
 #: pretix/presale/views/cart.py:425
 msgid "The products have been successfully added to your cart."
@@ -21311,104 +21314,104 @@ msgstr ""
 
 #: pretix/presale/views/widget.py:301
 msgid "This is not an event series."
-msgstr ""
+msgstr "這並非系列活動。"
 
 #: pretix/settings.py:463
 msgid "English"
-msgstr ""
+msgstr "英語"
 
 #: pretix/settings.py:464
 msgid "German"
-msgstr ""
+msgstr "德語"
 
 #: pretix/settings.py:465
 msgid "German (informal)"
-msgstr ""
+msgstr "德語 (非正式的)"
 
 #: pretix/settings.py:466
 msgid "Arabic"
-msgstr ""
+msgstr "阿拉伯語"
 
 #: pretix/settings.py:467
 msgid "Chinese (simplified)"
-msgstr ""
+msgstr "簡體中文"
 
 #: pretix/settings.py:468
 msgid "Danish"
-msgstr ""
+msgstr "丹麥語"
 
 #: pretix/settings.py:469
 msgid "Dutch"
-msgstr ""
+msgstr "荷蘭語"
 
 #: pretix/settings.py:470
 msgid "Dutch (informal)"
-msgstr ""
+msgstr "荷蘭語 (非正式的)"
 
 #: pretix/settings.py:471
 msgid "French"
-msgstr ""
+msgstr "法語"
 
 #: pretix/settings.py:472
 msgid "Finnish"
-msgstr ""
+msgstr "芬蘭語"
 
 #: pretix/settings.py:473
 msgid "Greek"
-msgstr ""
+msgstr "希臘語"
 
 #: pretix/settings.py:474
 msgid "Italian"
-msgstr ""
+msgstr "義大利語"
 
 #: pretix/settings.py:475
 msgid "Latvian"
-msgstr ""
+msgstr "拉脫維亞語"
 
 #: pretix/settings.py:476
 msgid "Polish"
-msgstr ""
+msgstr "波蘭語"
 
 #: pretix/settings.py:477
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "葡萄牙語 (葡萄牙)"
 
 #: pretix/settings.py:478
 msgid "Portuguese (Brazil)"
-msgstr ""
+msgstr "葡萄牙語 (巴西)"
 
 #: pretix/settings.py:479
 msgid "Russian"
-msgstr ""
+msgstr "俄語"
 
 #: pretix/settings.py:480
 msgid "Spanish"
-msgstr ""
+msgstr "西班牙語"
 
 #: pretix/settings.py:481 pretix/settings.py:537
 msgid "Swahili"
-msgstr ""
+msgstr "史瓦希利語"
 
 #: pretix/settings.py:482
 msgid "Turkish"
-msgstr ""
+msgstr "土耳其語"
 
 #: pretix/settings.py:483
 msgid "Ukrainian"
-msgstr ""
+msgstr "烏克蘭語"
 
 #: pretix/settings.py:809
 msgid "User profile only"
-msgstr ""
+msgstr "只有使用者設定檔"
 
 #: pretix/settings.py:810
 msgid "Read access"
-msgstr ""
+msgstr "讀取權限"
 
 #: pretix/settings.py:811
 msgid "Write access"
-msgstr ""
+msgstr "寫入權限"
 
 #: pretix/settings.py:822
 msgid "Kosovo"
-msgstr ""
+msgstr "科索沃"
