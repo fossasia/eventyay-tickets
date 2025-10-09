@@ -2,7 +2,12 @@ import copy
 import datetime as dt
 import string
 import uuid
-from collections import OrderedDict
+import zoneinfo
+import jwt
+from typing import List
+import icalendar
+import datetime as dt
+from collections import OrderedDict, defaultdict
 from datetime import datetime, time, timedelta
 from operator import attrgetter
 from urllib.parse import urljoin, urlparse
@@ -46,6 +51,8 @@ from eventyay.common.plugins import get_all_plugins
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.text.phrases import phrases
 from eventyay.common.urls import EventUrls
+from eventyay.core.permissions import Permission, SYSTEM_ROLES
+from eventyay.core.utils.json import CustomJSONEncoder
 from eventyay.consts import TIMEZONE_CHOICES
 from eventyay.helpers.database import GroupConcat
 from eventyay.helpers.daterange import daterange
@@ -63,7 +70,159 @@ from .mixins import OrderedModel, PretalxModel
 from .organizer import Organizer, OrganizerBillingModel, Team
 
 TALK_HOSTNAME = settings.TALK_HOSTNAME
+LANGUAGE_NAMES = {code: name for code, name in settings.LANGUAGES}
 
+def event_css_path(instance, filename):
+    return path_with_hash(filename, base_path=f"{instance.slug}/css/")
+
+def event_logo_path(instance, filename):
+    return path_with_hash(filename, base_path=f"{instance.slug}/img/")
+
+def default_roles():
+    attendee = [
+        Permission.EVENT_VIEW,
+        Permission.EVENT_EXHIBITION_CONTACT,
+        Permission.EVENT_CHAT_DIRECT,
+    ]
+    viewer = attendee + [Permission.ROOM_VIEW, Permission.ROOM_CHAT_READ]
+    participant = viewer + [
+        Permission.ROOM_CHAT_JOIN,
+        Permission.ROOM_CHAT_SEND,
+        Permission.ROOM_QUESTION_READ,
+        Permission.ROOM_QUESTION_ASK,
+        Permission.ROOM_QUESTION_VOTE,
+        Permission.ROOM_POLL_READ,
+        Permission.ROOM_POLL_VOTE,
+        Permission.ROOM_ROULETTE_JOIN,
+        Permission.ROOM_BBB_JOIN,
+        Permission.ROOM_JANUSCALL_JOIN,
+        Permission.ROOM_ZOOM_JOIN,
+    ]
+    room_creator = [Permission.EVENT_ROOMS_CREATE_CHAT]
+    room_owner = participant + [
+        Permission.ROOM_INVITE,
+        Permission.ROOM_DELETE,
+    ]
+    speaker = participant + [
+        Permission.ROOM_BBB_MODERATE,
+        Permission.ROOM_JANUSCALL_MODERATE,
+        Permission.ROOM_POLL_EARLY_RESULTS,
+    ]
+    moderator = speaker + [
+        Permission.ROOM_VIEWERS,
+        Permission.ROOM_CHAT_MODERATE,
+        Permission.ROOM_ANNOUNCE,
+        Permission.ROOM_BBB_RECORDINGS,
+        Permission.ROOM_QUESTION_MODERATE,
+        Permission.ROOM_POLL_EARLY_RESULTS,
+        Permission.ROOM_POLL_MANAGE,
+        Permission.EVENT_ANNOUNCE,
+    ]
+    admin = (
+        moderator
+        + room_creator
+        + [
+            Permission.EVENT_UPDATE,
+            Permission.ROOM_DELETE,                                                                                                                                                                                                           
+            Permission.ROOM_UPDATE,
+            Permission.EVENT_ROOMS_CREATE_BBB,
+            Permission.EVENT_ROOMS_CREATE_STAGE,
+            Permission.EVENT_ROOMS_CREATE_EXHIBITION,
+            Permission.EVENT_ROOMS_CREATE_POSTER,
+            Permission.EVENT_USERS_LIST,
+            Permission.EVENT_USERS_MANAGE,
+            Permission.EVENT_GRAPHS,
+            Permission.EVENT_CONNECTIONS_UNLIMITED,
+        ]
+    )
+    apiuser = admin + [Permission.EVENT_API, Permission.EVENT_SECRETS]
+    scheduleuser = [Permission.EVENT_API]
+    return {
+        "attendee": attendee,
+        "viewer": viewer,
+        "participant": participant,
+        "room_creator": room_creator,
+        "room_owner": room_owner,
+        "speaker": speaker,
+        "moderator": moderator,
+        "admin": admin,
+        "apiuser": apiuser,
+        "scheduleuser": scheduleuser,
+    }
+
+
+def default_grants():
+    return {
+        "attendee": ["attendee"],
+        "admin": ["admin"],
+        "scheduleuser": ["schedule-update"],
+    }
+
+
+FEATURE_FLAGS = [
+    "schedule-control",
+    "iframe-player",
+    "roulette",
+    "muxdata",
+    "page.landing",
+    "zoom",
+    "janus",
+    "polls",
+    "poster",
+    "conftool",
+    "cross-origin-isolation",
+]
+
+
+def default_feature_flags():
+    return {
+        "show_schedule": True,
+        "show_featured": "pre_schedule",  
+        "show_widget_if_not_public": False,
+        "export_html_on_release": False,
+        "use_tracks": True,
+        "use_feedback": True,
+        "use_submission_comments": True,
+        "present_multiple_times": False,
+        "submission_public_review": True,
+        "chat-moderation": True,
+    }
+
+def default_display_settings():
+    return {
+        "schedule": "grid",
+        "imprint_url": None,
+        "header_pattern": "",
+        "html_export_url": "",
+        "meta_noindex": False,
+        "texts": {"agenda_session_above": "", "agenda_session_below": ""},
+    }
+
+
+def default_review_settings():
+    return {
+        "score_mandatory": False,
+        "text_mandatory": False,
+        "aggregate_method": "median",  
+        "score_format": "words_numbers",
+    }
+
+
+def default_mail_settings():
+    return {
+        "mail_from": "",
+        "reply_to": "",
+        "signature": "",
+        "subject_prefix": "",
+        "smtp_use_custom": "",
+        "smtp_host": "",
+        "smtp_port": 587,
+        "smtp_username": "",
+        "smtp_password": "",
+        "smtp_use_tls": "",
+        "smtp_use_ssl": "",
+        "mail_on_new_submission": False,
+    }
 
 class EventMixin:
     def clean(self):
@@ -562,7 +721,6 @@ class Event(
         null=True,
         blank=True,
     )
-    feature_flags = models.JSONField(default=default_feature_flags)
     display_settings = models.JSONField(default=default_display_settings)
     review_settings = models.JSONField(default=default_review_settings)
     mail_settings = models.JSONField(default=default_mail_settings)
@@ -630,6 +788,13 @@ class Event(
         null=True,
         blank=True,
     )
+        # Virtual platform fields
+    config = models.JSONField(null=True, blank=True)
+    roles = models.JSONField(null=True, blank=True, default=default_roles, encoder=CustomJSONEncoder)
+    trait_grants = models.JSONField(null=True, blank=True, default=default_grants)
+    domain = models.CharField(max_length=250, unique=True, null=True, blank=True, validators=[RegexValidator(regex=r"^[a-z0-9-.:]+(/[a-zA-Z0-9-_./]*)?$")])
+    feature_flags = models.JSONField(default=default_feature_flags)
+    external_auth_url = models.URLField(null=True, blank=True)
 
     HEADER_PATTERN_CHOICES = (
         ('', _('Plain')),
@@ -1154,6 +1319,333 @@ class Event(
             question_map=question_map,
             checkin_list_map=checkin_list_map,
         )
+    def decode_token(self, token, allow_raise=False):
+        exc = None
+        for jwt_config in self.config.get("JWT_secrets", []):
+            secret = jwt_config["secret"]
+            audience = jwt_config["audience"]
+            issuer = jwt_config["issuer"]
+            try:
+                return jwt.decode(
+                    token,
+                    secret,
+                    algorithms=["HS256"],
+                    audience=audience,
+                    issuer=issuer,
+                )
+            except jwt.exceptions.ExpiredSignatureError:
+                if allow_raise:
+                    raise
+            except jwt.exceptions.InvalidTokenError as e:
+                exc = e
+        if exc and allow_raise:
+            raise exc
+
+    def has_permission_implicit(
+        self,
+        *,
+        traits,
+        permissions: List[Permission],
+        room=None,
+        allow_empty_traits=True,
+    ):
+        for role, required_traits in self.trait_grants.items():
+            if (
+                isinstance(required_traits, list)
+                and all(
+                    any(x in traits for x in (r if isinstance(r, list) else [r]))
+                    for r in required_traits
+                )
+                and (required_traits or allow_empty_traits)
+            ):
+                if any(
+                    p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                    for p in permissions
+                ):
+                    return True
+
+        if room:
+            for role, required_traits in room.trait_grants.items():
+                if (
+                    isinstance(required_traits, list)
+                    and all(
+                        any(x in traits for x in (r if isinstance(r, list) else [r]))
+                        for r in required_traits
+                    )
+                    and (required_traits or allow_empty_traits)
+                ):
+                    if any(
+                        p.value in self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                        for p in permissions
+                    ):
+                        return True
+
+    def has_permission(self, *, user, permission: Permission, room=None):
+        """
+        Returns whether a user holds a given permission either on the world or on a specific room.
+        ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
+        """
+        if user.is_banned:  # pragma: no cover
+            # safeguard only
+            return False
+
+        if not isinstance(permission, list):
+            permission = [permission]
+
+        if user.is_silenced and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
+            return False
+
+        if self.has_permission_implicit(
+            traits=user.traits,
+            permissions=permission,
+            room=room,
+            allow_empty_traits=user.type == User.UserType.PERSON,
+        ):
+            return True
+
+        roles = user.get_role_grants(room)
+        for r in roles:
+            if any(
+                p.value in self.roles.get(r, SYSTEM_ROLES.get(r, []))
+                for p in permission
+            ):
+                return True
+
+    async def has_permission_async(self, *, user, permission: Permission, room=None):
+        """
+        Returns whether a user holds a given permission either on the world or on a specific room.
+        ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
+        """
+        if user.is_banned:  # pragma: no cover
+            # safeguard only
+            return False
+
+        if not isinstance(permission, list):
+            permission = [permission]
+
+        if user.is_silenced and not any(
+            p in MAX_PERMISSIONS_IF_SILENCED for p in permission
+        ):
+            return False
+
+        if self.has_permission_implicit(
+            traits=user.traits,
+            permissions=permission,
+            room=room,
+            allow_empty_traits=user.type == User.UserType.PERSON,
+        ):
+            return True
+
+        roles = await user.get_role_grants_async(room)
+        for r in roles:
+            if any(
+                p.value in self.roles.get(r, SYSTEM_ROLES.get(r, []))
+                for p in permission
+            ):
+                return True
+
+    def get_all_permissions(self, user):
+        result = defaultdict(set)
+        if user.is_banned:  # pragma: no cover
+            # safeguard only
+            return result
+
+        allow_empty_traits = user.type == User.UserType.PERSON
+
+        for role, required_traits in self.trait_grants.items():
+            if (
+                isinstance(required_traits, list)
+                and all(
+                    any(x in user.traits for x in (r if isinstance(r, list) else [r]))
+                    for r in required_traits
+                )
+                and (required_traits or allow_empty_traits)
+            ):
+                result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
+
+        for grant in user.world_grants.all():
+            result[self].update(
+                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
+            )
+
+        for room in self.rooms.all():
+            for role, required_traits in room.trait_grants.items():
+                if (
+                    isinstance(required_traits, list)
+                    and all(
+                        any(
+                            x in user.traits
+                            for x in (r if isinstance(r, list) else [r])
+                        )
+                        for r in required_traits
+                    )
+                    and (required_traits or allow_empty_traits)
+                ):
+                    result[room].update(
+                        self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                    )
+
+        for grant in user.room_grants.select_related("room"):
+            result[grant.room].update(
+                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
+            )
+        if user.is_silenced:
+            for key in result.keys():
+                result[key] &= MAX_PERMISSIONS_IF_SILENCED
+
+        return result
+
+    def clear_data(self):
+        """
+        Clears all personal information. It generally leaves structure such as rooms and exhibitors intact, but to make
+        sure all personal data is scrubbed, it also clears all uploaded files, which includes things like exhibitor
+        logos.
+        """
+        from eventyay.base.models import (
+            ChatEvent,
+            ContactRequest,
+            ExhibitorStaff,
+            ExhibitorView,
+            Feedback,
+            Membership,
+            Poll,
+            PosterPresenter,
+            Question,
+            Reaction,
+            RoomView,
+        )
+        from eventyay.base.models.storage_model import StoredFile
+
+        self.audit_logs.all().delete()
+        self.event_grants.all().delete()
+        self.room_grants.all().delete()
+        self.bbb_calls.all().delete()
+        ChatEvent.objects.filter(channel__event=self).delete()
+        Membership.objects.filter(channel__event=self).delete()
+        ExhibitorStaff.objects.filter(exhibitor__event=self).delete()
+        PosterPresenter.objects.filter(poster__event=self).delete()
+        ContactRequest.objects.filter(exhibitor__event=self).delete()
+        ExhibitorView.objects.filter(exhibitor__event=self).delete()
+        Reaction.objects.filter(room__event=self).delete()
+        RoomView.objects.filter(room__event=self).delete()
+        EventView.objects.filter(event=self).delete()
+        RoomQuestion.objects.filter(room__event=self).delete()
+        Poll.objects.filter(room__event=self).delete()
+        SystemLog.objects.filter(event=self).delete()
+        for f in StoredFile.objects.filter(event=self):
+            f.full_delete()
+
+        self.user_set.all().delete()
+        self.domain = None
+        self.save()
+
+    def clone_from(self, old, new_secrets):
+        from eventyay.base.models import Channel
+        from eventyay.base.models.storage_model import StoredFile
+        if self.pk == old.pk:
+            raise ValueError("Illegal attempt to clone into same event")
+        def clone_stored_files(*, inst=None, attrs=None, struct=None, url=None):
+            if inst and attrs:
+                for a in attrs:
+                    if getattr(inst, a):
+                        setattr(inst, a, clone_stored_files(url=getattr(inst, a)))
+            elif url:
+                media_base = urljoin(
+                    f'http{"" if settings.DEBUG else "s"}://{old.domain}',
+                    settings.MEDIA_URL,
+                )
+                if url.startswith(media_base):
+                    mlen = len(media_base)
+                    fname = url[mlen:]
+                    try:
+                        src = StoredFile.objects.get(event=old, file=fname)
+                    except StoredFile.DoesNotExist:
+                        return url
+                    sf = StoredFile.objects.create(
+                        event=self,
+                        date=src.date,
+                        filename=src.filename,
+                        type=src.type,
+                        file=File(src.file, src.filename),
+                        public=src.public,
+                        user=None,
+                    )
+                    return sf.file.url
+                else:
+                    # probably external or something we don't understand
+                    return url
+            elif isinstance(struct, str):
+                return clone_stored_files(url=struct)
+            elif isinstance(struct, dict):
+                return {k: clone_stored_files(struct=v) for k, v in struct.items()}
+            elif isinstance(struct, (list, tuple)):
+                return [clone_stored_files(struct=e) for e in struct]
+            else:
+                return struct
+
+        self.config = old.config or {}
+        if new_secrets:
+            secret = get_random_string(length=64)
+            self.config["JWT_secrets"] = [
+                {
+                    "issuer": "any",
+                    "audience": "eventyay",
+                    "secret": secret,
+                }
+            ]
+        self.roles = old.roles
+        self.trait_grants = old.trait_grants
+        self.locale = old.locale
+        self.timezone = old.timezone
+        self.feature_flags = old.feature_flags
+        self.external_auth_url = old.external_auth_url
+        self.save()
+
+        room_map = {}
+        for r in old.rooms.all():
+            try:
+                has_channel = r.channel
+            except Exception:
+                has_channel = False
+
+            old_id = r.pk
+            r.pk = None
+            r.event = self
+            r.module_config = clone_stored_files(struct=r.module_config)
+            r.save()
+            room_map[old_id] = r
+            if has_channel:
+                Channel.objects.create(room=r, event=self)
+        for r in old.rooms.prefetch_related(
+            "exhibitors", "exhibitors__links", "exhibitors__social_media_links"
+        ):
+            for ex in r.exhibitors.all():
+                old_links = list(ex.links.all())
+                old_smlinks = list(ex.social_media_links.all())
+
+                ex.pk = None
+                ex.event = self
+                ex.room = room_map[ex.room_id]
+                if ex.highlighted_room_id:
+                    ex.highlighted_room = room_map[ex.highlighted_room_id]
+                clone_stored_files(
+                    inst=ex, attrs=["logo", "banner_list", "banner_detail"]
+                )
+                ex.text_content = clone_stored_files(struct=ex.text_content)
+                ex.save()
+
+                for link in old_smlinks:
+                    link.pk = None
+                    link.exhibitor = ex
+                    link.save()
+
+                for link in old_links:
+                    link.pk = None
+                    clone_stored_files(inst=link, attrs=["url"])
+                    link.exhibitor = ex
+                    link.save()
 
     def get_payment_providers(self, cached=False) -> dict:
         """
@@ -2315,3 +2807,33 @@ class SubEventMetaValue(LoggedModel):
         super().save(*args, **kwargs)
         if self.subevent:
             self.subevent.event.cache.clear()
+
+class EventPlannedUsage(models.Model):
+    event = models.ForeignKey('Event', on_delete=models.CASCADE, related_name="planned_usages")
+    start = models.DateField()
+    end = models.DateField()
+    attendees = models.PositiveIntegerField()
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ("start",)
+
+    def as_ical(self):
+        import icalendar
+        event = icalendar.Event()
+        event["uid"] = f"{self.event.id}-{self.id}"
+        event["dtstart"] = self.start
+        event["dtend"] = self.start
+        event["summary"] = str(self.event.name)
+        event["description"] = self.notes
+        event["url"] = self.event.domain
+        return event
+
+class EventView(models.Model):
+    event = models.ForeignKey('Event', related_name="views", on_delete=models.CASCADE)
+    start = models.DateTimeField(auto_now_add=True)
+    end = models.DateTimeField(null=True, db_index=True)
+    user = models.ForeignKey('User', related_name="event_views", on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [models.Index(fields=["start"])]

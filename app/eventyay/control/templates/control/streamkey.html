@@ -1,0 +1,27 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load formset_tags %}
+
+{% block video_admin_content %}
+<h1 class="page-header">{% trans "Stream key generator" %}</h1>
+
+{% if result %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p>{% trans "Stream server" %}: <code>{{result.input_server}}</code></p>
+        <p>{% trans "Stream key" %}: <code>{{result.input_key}}</code></p>
+        <p>{% trans "HLS URL" %}: <code>{{result.output}}</code></p>
+    </div>
+</div>
+{% endif %}
+
+<form method="post" class="form-horizontal">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="video-admin-btn-row">
+        <button type="submit" class="btn btn-primary">
+            <span class="fa fa-cog"></span> {% trans "Generate" %}
+        </button>
+    </div>
+</form>
+{% endblock %}

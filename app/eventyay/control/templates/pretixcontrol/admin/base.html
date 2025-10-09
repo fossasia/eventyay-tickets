@@ -1,6 +1,12 @@
 {% extends "pretixcontrol/base.html" %}
-{% load i18n %}
+{% load i18n static %}
+{% block custom_header %}
+    {{ block.super }}
+{% endblock %}
 {% block content %}
+<div class="video-admin-wrapper">
+    {% block video_admin_content %}{% endblock %}
+</div>
 {% endblock %}
 
 {% block nav_top_header %}
@@ -18,9 +24,8 @@
 {% block nav %}
     {% for nav in admin_nav_products %}
         <li>
-            <a href="{{ nav.url }}" {% if nav.active %}class="active"{% endif %}
-                    {% if nav.external %}target="_blank"{% endif %}
-                    {% if nav.children %}class="has-children"{% endif %}>
+            <a href="{{ nav.url }}" {% if nav.active %}class="active{% if nav.children %} has-children{% endif %}"{% elif nav.children %}class="has-children"{% endif %}
+                    {% if nav.external %}target="_blank"{% endif %}>
                 {% if nav.icon %}
                     {% if "<svg" in nav.icon %}
                         {{ nav.icon|safe }}
