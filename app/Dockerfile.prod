@@ -27,11 +27,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-editable
 
 COPY Makefile Makefile
-COPY eventyay/static/npm_dir eventyay/static/npm_dir
-# Run npm stuff
-RUN mkdir eventyay/static/node_prefix/
-RUN cp -r eventyay/static/npm_dir/* eventyay/static/node_prefix/
-RUN npm install --prefix=eventyay/static/node_prefix
 # global-nav-menu
 COPY eventyay/frontend/global-nav-menu eventyay/frontend/global-nav-menu
 RUN npm ci --prefix=eventyay/frontend/global-nav-menu
