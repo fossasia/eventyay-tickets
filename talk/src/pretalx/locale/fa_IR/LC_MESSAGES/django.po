@@ -3719,10 +3719,6 @@ msgstr "شما از eventyay به‌عنوان superuser استفاده می‌�
 msgid "Please click here to switch to an administrator account."
 msgstr "لطفا اینجا کلیک کنید تا به یک حساب کاربری مدیریت تغییر دهید."
 
-#: pretalx/orga/templates/orga/base.html:146
-msgid "Starting with version 1.1.0, eventyay automatically checks for updates in the background. During this check, anonymous data is transmitted to servers operated by the eventyay developers. Click on this message to find out more, disable this feature or enter your email address to get notified via email if a new update arrives. This message will disappear once you clicked it."
-msgstr "از نسخه ۱.۱.۰ به بعد، eventyay به‌صورت خودکار به‌روزرسانی‌ها را در پس‌زمینه بررسی می‌کند. در طول این بررسی، داده‌های ناشناس به سرورهای توسعه‌دهندگان eventyay ارسال می‌شود. روی این پیام کلیک کنید تا بیشتر بدانید، این ویژگی را غیرفعال کنید یا نشانی رایانامه خود را وارد کنید تا در صورت دریافت یک به‌روزرسانی جدید مطلع شوید. این پیام پس از کلیک شما ناپدید خواهد شد."
-
 #: pretalx/orga/templates/orga/base.html:170
 msgid "Organiser account"
 msgstr "حساب کاربری برگزارکننده"
