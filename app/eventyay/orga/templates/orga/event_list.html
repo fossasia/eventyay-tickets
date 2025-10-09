@@ -14,7 +14,7 @@
 {% endblock stylesheets %}
 
 {% block content %}
-    {% has_perm "event.create_event" request.user request.user as can_create_event %}
+    {% has_perm "base.create_event" request.user request.user as can_create_event %}
 
     {% if current_orga_events or past_orga_events or can_create_event %}
         <form class="mb-4 m-2">
@@ -27,7 +27,7 @@
                     {% include "orga/includes/dashboard_block_event.html" %}
                 {% endfor %}
                 {% if can_create_event %}
-                    <a class="dashboard-block symbol" href="{% url "orga:event.create" %}">
+                    <a class="dashboard-block symbol" href="{% url "eventyay_common:events.add" %}">
                         <i class="fa fa-plus-circle" title="{% translate "Create a new event" %}"></i>
                     </a>
                 {% endif %}

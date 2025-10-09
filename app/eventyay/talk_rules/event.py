@@ -43,7 +43,9 @@ def can_change_teams(user, obj):
         return True
     if event := getattr(obj, 'event', None):
         return check_team_permission(user, event, 'can_change_teams')
-    return user.teams.filter(organizer=obj.organizer, can_change_teams=True).exists()
+
+    organizer = getattr(obj, 'organizer', obj)
+    return user.teams.filter(organizer=organizer, can_change_teams=True).exists()
 
 
 @rules.predicate
@@ -78,3 +80,4 @@ def can_create_events(user, obj):
 @rules.predicate
 def is_any_organizer(user, obj):
     return user.is_administrator or user.teams.all().exists()
+

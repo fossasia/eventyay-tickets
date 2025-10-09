@@ -60,7 +60,7 @@ class OutboxList(EventPermissionRequired, Sortable, Filterable, PaginationMixin,
     )
     sortable_fields = ('to', 'subject', 'pk')
     paginate_by = 25
-    permission_required = 'mail.list_queuedmail'
+    permission_required = 'base.list_queuedmail'
 
     def get_queryset(self):
         qs = (
@@ -98,7 +98,7 @@ class SentMail(EventPermissionRequired, Sortable, Filterable, PaginationMixin, L
     default_sort_field = '-sent'
     sortable_fields = ('to', 'subject', 'sent')
     paginate_by = 25
-    permission_required = 'mail.list_queuedmail'
+    permission_required = 'base.list_queuedmail'
 
     def get_filter_form(self):
         return QueuedMailFilterForm(self.request.GET, event=self.request.event, sent=True)
@@ -119,7 +119,7 @@ class SentMail(EventPermissionRequired, Sortable, Filterable, PaginationMixin, L
 
 
 class OutboxSend(ActionConfirmMixin, OutboxList):
-    permission_required = 'mail.send_queuedmail'
+    permission_required = 'base.send_queuedmail'
     action_object_name = ''
     action_confirm_label = phrases.base.send
     action_confirm_color = 'success'
@@ -184,7 +184,7 @@ class OutboxSend(ActionConfirmMixin, OutboxList):
 
 
 class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
-    permission_required = 'mail.delete_queuedmail'
+    permission_required = 'base.delete_queuedmail'
     action_object_name = ''
 
     def get_permission_object(self):
@@ -243,7 +243,7 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
 
 
 class OutboxPurge(ActionConfirmMixin, OutboxList):
-    permission_required = 'mail.delete_queuedmail'
+    permission_required = 'base.delete_queuedmail'
     action_object_name = ''
 
     @context
@@ -273,8 +273,8 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     model = QueuedMail
     form_class = MailDetailForm
     template_name = 'orga/mails/outbox_form.html'
-    write_permission_required = 'mail.update_queuedmail'
-    permission_required = 'mail.view_queuedmail'
+    write_permission_required = 'base.update_queuedmail'
+    permission_required = 'base.view_queuedmail'
 
     def get_object(self, queryset=None) -> QueuedMail:
         return self.request.event.queued_mails.filter(pk=self.kwargs.get('pk')).first()
@@ -306,7 +306,7 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
 
 
 class MailCopy(PermissionRequired, View):
-    permission_required = 'mail.send_queuedmail'
+    permission_required = 'base.send_queuedmail'
 
     def get_object(self) -> QueuedMail:
         return get_object_or_404(self.request.event.queued_mails, pk=self.kwargs.get('pk'))
@@ -319,7 +319,7 @@ class MailCopy(PermissionRequired, View):
 
 
 class MailPreview(PermissionRequired, View):
-    permission_required = 'mail.send_queuedmail'
+    permission_required = 'base.send_queuedmail'
 
     def get_object(self) -> QueuedMail:
         return get_object_or_404(self.request.event.queued_mails, pk=self.kwargs.get('pk'))
@@ -331,11 +331,11 @@ class MailPreview(PermissionRequired, View):
 
 class ComposeMailChoice(EventPermissionRequired, TemplateView):
     template_name = 'orga/mails/compose_choice.html'
-    permission_required = 'mail.send_queuedmail'
+    permission_required = 'base.send_queuedmail'
 
 
 class ComposeMailBaseView(EventPermissionRequired, FormView):
-    permission_required = 'mail.send_queuedmail'
+    permission_required = 'base.send_queuedmail'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -421,7 +421,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
 class ComposeTeamsMail(ComposeMailBaseView):
     form_class = WriteTeamsMailForm
     template_name = 'orga/mails/compose_reviewer_mail_form.html'
-    permission_required = 'event.update_team'
+    permission_required = 'base.update_team'
 
     def dispatch(self, request, *args, **kwargs):
         # Gotta handle errors directly here, as these emails are always sent directly
@@ -460,7 +460,7 @@ class ComposeSessionMail(ComposeMailBaseView):
 class ComposeDraftReminders(EventPermissionRequired, FormView):
     form_class = DraftRemindersForm
     template_name = 'orga/mails/send_draft_reminders.html'
-    permission_required = 'mail.send_queuedmail'
+    permission_required = 'base.send_queuedmail'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

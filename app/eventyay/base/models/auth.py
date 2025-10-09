@@ -1,5 +1,7 @@
 import binascii
 import json
+import os
+import uuid
 import logging
 import uuid
 from datetime import timedelta
@@ -8,6 +10,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Self
 from urllib.parse import urlencode, urljoin
 
+from channels.db import database_sync_to_async
 from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -16,8 +19,9 @@ from django.contrib.auth.models import (
 )
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
-from django.db.models import Q
+from django.db.models import Q, JSONField
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.crypto import get_random_string, salted_hmac
@@ -32,6 +36,7 @@ from rules.contrib.models import RulesModelBase, RulesModelMixin
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from eventyay.base.i18n import language
+from eventyay.base.models.cache import VersionedModel
 from eventyay.common.image import create_thumbnail
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.urls import EventUrls
@@ -102,6 +107,9 @@ def generate_session_token():
     return get_random_string(length=32)
 
 
+def generate_short_token():
+    return get_random_string(length=24)
+
 class SuperuserPermissionSet:
     def __contains__(self, item):
         return True
@@ -111,13 +119,15 @@ class User(
     PermissionsMixin,
     LoggingMixin,
     RulesModelMixin,
+    VersionedModel,
     GenerateCode,
     FileCleanupMixin,
     AbstractBaseUser,
     metaclass=RulesModelBase,
 ):
     """
-    This is the user model used by eventyay for authentication.
+    This is the unified user model used by eventyay for both authentication and video/event functionality.
+
 
     :param email: The user's email address, used for identification.
     :type email: str
@@ -135,10 +145,21 @@ class User(
     :type timezone: str
     """
 
+    class ModerationState(models.TextChoices):
+        NONE = ""
+        SILENCED = "silenced"
+        BANNED = "banned"
+
+    class UserType(models.TextChoices):
+        PERSON = "person"
+        KIOSK = "kiosk"
+        ANONYMOUS = "anon"
+
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    # Original ticketing fields
     email = models.EmailField(
         unique=True, db_index=True, null=True, blank=True, verbose_name=_('E-mail'), max_length=190
     )
@@ -160,6 +181,40 @@ class User(
     notifications_token = models.CharField(max_length=255, default=generate_notifications_token)
     auth_backend = models.CharField(max_length=255, default='native')
     session_token = models.CharField(max_length=32, default=generate_session_token)
+
+    # Video/Event fields
+    client_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
+    token_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
+    event = models.ForeignKey(to="Event", db_index=True, on_delete=models.CASCADE, null=True, blank=True)
+    moderation_state = models.CharField(
+        max_length=8,
+        default=ModerationState.NONE,
+        choices=ModerationState.choices,
+    )
+    type = models.CharField(
+        max_length=8, default=UserType.PERSON, choices=UserType.choices
+    )
+    show_publicly = models.BooleanField(default=True)
+    profile = JSONField(default=dict)
+    client_state = JSONField(default=dict)
+    traits = JSONField(blank=True, default=list)
+    pretalx_id = models.CharField(max_length=200, null=True, blank=True)
+    blocked_users = models.ManyToManyField(
+        "self", related_name="blocked_by", symmetrical=False
+    )
+    last_login = models.DateTimeField(null=True, blank=True)
+    deleted = models.BooleanField(default=False)
+    social_login_id_twitter = models.CharField(
+        null=True, blank=True, max_length=190, db_index=True
+    )
+    social_login_id_linkedin = models.CharField(
+        null=True, blank=True, max_length=190, db_index=True
+    )
+
+    # Cache attributes for video functionality
+    _grant_cache = None
+    _membership_cache = None
+    _block_cache = {}
 
     # From Talk
     code = models.CharField(max_length=16, unique=True, null=True)
@@ -218,6 +273,11 @@ class User(
         self.permission_cache = {}
         self.event_profile_cache = {}
         self.event_permission_cache = {}
+
+        self._grant_cache = None
+        self._membership_cache = None
+        self._block_cache = {}
+
 
     class Meta:
         verbose_name = _('User')
@@ -287,6 +347,7 @@ class User(
 
     def send_security_notice(self, messages, email=None):
         from eventyay.base.services.mail import SendMailException, mail
+
 
         try:
             with language(self.locale):
@@ -474,6 +535,7 @@ class User(
         kwargs = {permission: True}
 
         return Organizer.objects.filter(id__in=self.teams.filter(**kwargs).values_list('organizer', flat=True))
+
 
     def has_active_staff_session(self, session_key=None):
         """
@@ -808,7 +870,221 @@ the eventyay team"""
         self.event_permission_cache[event.pk] = permissions
         return permissions
 
+    # Video/Event methods
+    def soft_delete(self):
+        """Soft delete for video/event functionality"""
+        from eventyay.base.models.storage_model import StoredFile
 
+        self.bbb_invites.clear()
+        self.room_grants.all().delete()
+        self.event_grants.all().delete()
+        self.rouletterequest_set.all().delete()
+        self.roulette_pairing_left.all().delete()
+        self.roulette_pairing_right.all().delete()
+        self.audit_logs.filter(
+            type__startswith="auth.user.profile",
+            data__object=str(self.pk),
+        ).update(
+            data={
+                "object": str(self.pk),
+                "old": {"__redacted": True},
+                "new": {"__redacted": True},
+            }
+        )
+        self.exhibitor_staff.all().delete()
+        self.poster_presenter.all().delete()
+        self.chat_channels.filter(channel__room__isnull=False).delete()
+
+        for dm_channel in self.chat_channels.filter(channel__room__isnull=True):
+            if dm_channel.channel.members.filter(user__deleted=False).count() == 1:
+                # Last one standing, delete DM channel including all messages as well as shared pictures
+                for event in dm_channel.channel.chat_events.filter(
+                    event_type="channel.message"
+                ):
+                    if event.content.get("files", []):
+                        for file in event.content.get("files", []):
+                            basename = os.path.basename(file["url"])
+                            fileid = basename.split(".")[0]
+                            sf = StoredFile.objects.filter(id=fileid, user=self).first()
+                            if sf:
+                                sf.full_delete()
+                dm_channel.channel.delete()
+
+        if "avatar" in self.profile and "url" in self.profile["avatar"]:
+            basename = os.path.basename(self.profile["avatar"]["url"])
+            fileid = basename.split(".")[0]
+            sf = StoredFile.objects.filter(id=fileid, user=self).first()
+            if sf:
+                sf.full_delete()
+
+        self.deleted = True
+        self.client_id = None
+        self.token_id = None
+        self.show_publicly = False
+        self.profile = {}
+        self.save()
+
+    def serialize_public(
+        self,
+        include_admin_info=False,
+        trait_badges_map=None,
+        include_client_state=False,
+    ):
+        """Serialize user for public display in video/event context"""
+        # Important: If this is updated, eventyay.base.services.user.get_public_users also needs to be updated!
+        # For performance reasons, it does not use this method directly.
+        d = {
+            "id": str(self.id),
+            "profile": self.profile,
+            "pretalx_id": self.pretalx_id,
+            "deleted": self.deleted,
+            "badges": (
+                sorted(
+                    list(
+                        {
+                            badge
+                            for trait, badge in trait_badges_map.items()
+                            if trait in self.traits
+                        }
+                    )
+                )
+                if trait_badges_map
+                else []
+            ),
+        }
+        d["inactive"] = self.last_login is None or self.last_login < now() - timedelta(
+            hours=36
+        )
+        if include_admin_info:
+            d["moderation_state"] = self.moderation_state
+            d["token_id"] = self.token_id
+        if include_client_state:
+            d["client_state"] = self.client_state
+        return d
+
+    @property
+    def is_banned(self):
+        return self.moderation_state == self.ModerationState.BANNED or self.deleted
+
+    @property
+    def is_silenced(self):
+        return self.moderation_state == self.ModerationState.SILENCED
+
+    # Role and grant methods (video/event)
+    def _update_grant_cache(self):
+        self._grant_cache = {
+            "event": set(self.event_grants.values_list("role", flat=True))
+        }
+        for v in self.room_grants.values("role", "room"):
+            self._grant_cache.setdefault(v["room"], set())
+            self._grant_cache[v["room"]].add(v["role"])
+
+    def get_role_grants(self, room=None):
+        if self._grant_cache is None:
+            self._update_grant_cache()
+
+        roles = self._grant_cache["event"]
+        if room:
+            roles |= self._grant_cache.get(room.id, set())
+        return roles
+
+    async def get_role_grants_async(self, room=None):
+        if self._grant_cache is None:
+            await database_sync_to_async(self._update_grant_cache)()
+
+        roles = self._grant_cache["event"]
+        if room:
+            roles |= self._grant_cache.get(room.id, set())
+        return roles
+
+    def _update_membership_cache(self):
+        self._membership_cache = {
+            str(i) for i in self.chat_channels.values_list("channel_id", flat=True)
+        }
+
+    async def is_member_of_channel_async(self, channel_id):
+        if self._membership_cache is None:
+            await database_sync_to_async(self._update_membership_cache)()
+        return str(channel_id) in self._membership_cache
+
+    async def is_blocked_in_channel_async(self, channel):
+        if channel.room:
+            return False
+        if channel.id not in self._block_cache:
+
+            @database_sync_to_async
+            def _add():
+                self._block_cache[channel.id] = channel.members.filter(
+                    user__in=self.blocked_by.all()
+                ).exists()
+
+            await _add()
+        return self._block_cache[channel.id]
+
+    def clear_caches(self):
+        self._membership_cache = None
+        self._grant_cache = None
+        self._block_cache = {}
+
+
+# Related models for video/event functionality
+class RoomGrant(models.Model):
+    event = models.ForeignKey(
+        "Event", related_name="room_grants", on_delete=models.CASCADE
+    )
+    room = models.ForeignKey(
+        "Room", related_name="role_grants", on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        "User", related_name="room_grants", on_delete=models.CASCADE
+    )
+    role = models.CharField(max_length=200)
+
+    def save(self, *args, **kwargs):
+        r = super().save(*args, **kwargs)
+        self.user.touch()
+        return r
+
+    def delete(self, *args, **kwargs):
+        r = super().delete(*args, **kwargs)
+        self.user.touch()
+        return r
+
+
+class EventGrant(models.Model):
+    event = models.ForeignKey(
+        "Event", related_name="event_grants", on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        "User", related_name="event_grants", on_delete=models.CASCADE
+    )
+    role = models.CharField(max_length=200)
+
+    def save(self, *args, **kwargs):
+        r = super().save(*args, **kwargs)
+        self.user.touch()
+        return r
+
+    def delete(self, *args, **kwargs):
+        r = super().delete(*args, **kwargs)
+        self.user.touch()
+        return r
+
+
+class ShortToken(models.Model):
+    event = models.ForeignKey(
+        "Event", related_name="short_tokens", on_delete=models.CASCADE
+    )
+    expires = models.DateTimeField()
+    short_token = models.CharField(
+        db_index=True,
+        unique=True,
+        default=generate_short_token,
+        max_length=150,
+    )
+    long_token = models.TextField()
+
+# Staff session models (from ticketing)
 class StaffSession(models.Model):
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     date_start = models.DateTimeField(auto_now_add=True)

@@ -82,13 +82,13 @@ def widget_data(request, event, version=None):
         response['Access-Control-Allow-Origin'] = '*'
         response['Access-Control-Allow-Headers'] = 'authorization,content-type'
         return response
-    if not request.user.has_perm('schedule.view_widget_schedule', event):
+    if not request.user.has_perm('base.view_widget_schedule', event):
         raise Http404()
 
     version = version or unquote(request.GET.get('v') or '')
     schedule = None
     if version and version == 'wip':
-        if not request.user.has_perm('schedule.orga_view_schedule', event):
+        if not request.user.has_perm('base.orga_view_schedule', event):
             raise Http404()
         schedule = request.event.wip_schedule
     elif version:
@@ -113,7 +113,7 @@ def widget_script(request, event):
     # /<event>/widget/schedule.js path, as it cuts down the transferred data
     # by about 80% for the schedule.js file, which is the largest file on the
     # main schedule page).
-    if not request.user.has_perm('schedule.view_widget_schedule', request.event):
+    if not request.user.has_perm('base.view_widget_schedule', request.event):
         raise Http404()
 
     file_path = finders.find(WIDGET_PATH)

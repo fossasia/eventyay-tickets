@@ -12,8 +12,8 @@
 {% endblock stylesheets %}
 
 {% block content %}
-    {% has_perm "person.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
-    {% has_perm "event.update_event" request.user request.event as can_change_settings %}
+    {% has_perm "base.orga_list_speakerprofile" request.user request.event as can_view_speakers %}
+    {% has_perm "base.update_event" request.user request.event as can_change_settings %}
     {% if "congratulations" in request.GET %}
         <div class="alert alert-success congratulations">
             <span></span>
