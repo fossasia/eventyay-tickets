@@ -659,7 +659,7 @@ def get_admin_navigation(request):
         },
         {
             'label': _('Talk admin config'),
-            'url': '/talk/orga/admin/',
+            'url': '/orga/admin/',
             'active': False,
             'icon': 'group',
         },
