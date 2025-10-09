@@ -151,19 +151,6 @@
                 </a>
             </div>
         {% endif %}
-        {% if warning_update_check_active %}
-            <div class="global-top-warning">
-                <a href="{% url "orga:admin.update" %}">
-                    {% blocktranslate trimmed %}
-                        Starting with version 1.1.0, eventyay automatically checks for updates in the background.
-                        During this check, anonymous data is transmitted to servers operated by the eventyay
-                        developers. Click on this message to find out more, disable this feature or enter your
-                        email address to get notified via email if a new update arrives. This message will
-                        disappear once you clicked it.
-                    {% endblocktranslate %}
-                </a>
-            </div>
-        {% endif %}
         <div id="page-wrapper">
             {% if request.user.is_authenticated %}
             <aside class="nav flex-column sidebar">

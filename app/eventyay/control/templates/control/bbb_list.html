@@ -1,0 +1,57 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+
+{% block video_admin_content %}
+<div class="video-admin-header">
+    <h1 class="page-header">{% trans "BBB servers" %}</h1>
+    <div class="video-admin-actions-right">
+        <a href="{% url 'control:bbbserver.create' %}" class="btn btn-primary btn-sm" aria-label="{% trans 'Add new BBB server' %}">
+            <span class="fa fa-plus" aria-hidden="true"></span> {% trans "Add new server" %}
+        </a>
+    </div>
+</div>
+
+
+<div class="video-admin-table-wrapper">
+<table class="table table-striped table-hover video-admin-table">
+    <thead>
+    <tr>
+        <th>{% trans "ID" %}</th>
+        <th>{% trans "URL" %}</th>
+        <th>{% trans "Event" %}</th>
+        <th class="text-right">{% trans "Current cost" %}</th>
+        <th class="text-right" colspan="2">{% trans "Actions" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for s in servers %}
+    <tr class="{% if not s.active %}deleted{% endif %}">
+        <td><code>{{ s.pk }}</code></td>
+        <td>{{ s.url }}</td>
+        <td>
+            {% if s.event_exclusive %}
+                {{ s.event_exclusive }}
+            {% else %}
+                {% trans "All" %}
+            {% endif %}
+            {% if s.rooms_only %}
+                <span class="label label-info">rooms only</span>
+            {% endif %}
+        </td>
+        <td class="text-right">{{ s.cost }}</td>
+        <td class="text-right video-admin-actions">
+            <a href="{% url 'control:bbbserver.update' pk=s.pk %}" class="btn btn-default btn-xs">
+                <span class="fa fa-pencil"></span> {% trans "Edit" %}
+            </a>
+            <a href="{% url 'control:bbbserver.delete' pk=s.pk %}" class="btn btn-danger btn-xs">
+                <span class="fa fa-trash"></span> {% trans "Delete" %}
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+        <tr><td colspan="6" class="text-muted">{% trans "No servers configured yet." %}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

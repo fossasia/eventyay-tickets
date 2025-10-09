@@ -1,0 +1,6 @@
+from django.apps import AppConfig
+
+
+class ImportersConfig(AppConfig):
+    name = "eventyay.features.importers"
+    label = "importers"

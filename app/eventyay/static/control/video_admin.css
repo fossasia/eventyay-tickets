@@ -1,0 +1,25 @@
+/* Layout tweaks specific to Video Admin pages integrated into pretix admin */
+.video-admin-wrapper h1.page-title { margin-top: 0; font-size: 24px; }
+.video-admin-table th, .video-admin-table td { vertical-align: middle; }
+.video-admin-actions a.btn, .video-admin-actions button.btn { margin-right: .3rem; }
+/* Use existing bootstrap table classes instead of bare tables */
+.video-admin-table { width: 100%; }
+.video-admin-table thead th { white-space: nowrap; }
+/* Responsive overflow */
+.video-admin-table-wrapper { width: 100%; overflow-x: auto; }
+
+/* Harmonize buttons */
+.video-admin-btn-row { margin-bottom: 1rem; }
+.video-admin-btn-row a.btn { margin-right: .5rem; }
+
+/* Header with right-aligned action */
+.video-admin-header { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.video-admin-header .page-header { margin: 0 0 .5rem 0; }
+.page-intro { margin-top: .25rem; margin-bottom: 1rem; }
+
+/* Fix double class attribute issues in nav injection */
+.sidebar-nav a.has-children { position: relative; }
+.sidebar-nav a.has-children + a.arrow { display: inline-block; }
+
+/* Active highlight for nested video admin children */
+.sidebar-nav .nav-second-level a.active { font-weight: 600; }

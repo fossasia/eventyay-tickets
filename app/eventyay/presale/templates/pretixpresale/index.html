@@ -7,18 +7,23 @@
         <h3>{% trans "Hello!" %}</h3>
         <p>
             {% blocktrans trimmed with a_attr="href='https://eventyay.com'" %}
-                This is a self-hosted installation of <a {{ a_attr }}>eventyay, your open source event solution.</a>.
+                This is an installation of <a {{ a_attr }}>eventyay</a> - the open source event management platform.
             {% endblocktrans %}
         </p>
         <p>
             {% blocktrans trimmed %}
-                If you're looking to buy a ticket, you need to follow a direct link to an event or organizer profile.
+                Eventyay empowers communities and organizations to create, manage, and host events of all kinds — from conferences to online meetups.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans trimmed %}
+                If you’re looking to buy tickets, submit a session proposal, join an online event, or create your own, please follow the direct link to the specific event or organizer profile.
             {% endblocktrans %}
         </p>
         <p>
             {% url 'control:index' as index_url %}
             {% blocktrans trimmed with a_attr="href="|add:index_url %}
-                If you're looking to configure this installation, please <a {{ a_attr }}>head over here</a>.
+                To log in and access your events, please <a {{ a_attr }}>head over here</a>.
             {% endblocktrans %}
         </p>
         <p>{% trans "Enjoy!" %}</p>

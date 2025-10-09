@@ -1,0 +1,56 @@
+import hashlib
+import json
+
+from asgiref.sync import async_to_sync
+from django.core.files.base import ContentFile
+from django.utils.timezone import now
+
+from eventyay.celery_app import app
+from eventyay.base.services.event import notify_schedule_change
+from eventyay.core.tasks import EventTask
+from eventyay.features.importers.conftool import (
+    create_posters_from_conftool,
+    fetch_schedule_from_conftool,
+)
+from eventyay.base.models.storage_model import StoredFile
+
+
+@app.task(base=EventTask)
+def conftool_update_schedule(event):
+    u = event.config.get("conftool_url")
+    p = event.config.get("conftool_password")
+
+    if not u or not p or not event.config.get("pretalx").get("conftool"):
+        return "invalid"
+
+    d = fetch_schedule_from_conftool(u, p)
+    v = d.pop("version")
+    checksum = hashlib.sha256(json.dumps(d, sort_keys=True).encode()).hexdigest()
+    d["version"] = v
+    document = json.dumps(d, sort_keys=True)
+
+    if StoredFile.objects.filter(
+        event=event, filename=f"conftool_schedule_{checksum}.json"
+    ).exists():
+        return "unchanged"
+
+    sf = StoredFile.objects.create(
+        event=event,
+        date=now(),
+        filename=f"conftool_schedule_{checksum}.json",
+        type="application/json",
+        file=ContentFile(document, "schedule.json"),
+        public=True,
+    )
+    event.config["pretalx"]["url"] = sf.file.url
+    event.config["pretalx"]["conftool"] = True
+    event.save()
+    async_to_sync(notify_schedule_change)(event.id)
+    return sf.pk
+
+
+@app.task(base=EventTask)
+def conftool_sync_posters(event):
+    u = event.config.get("conftool_url")
+    p = event.config.get("conftool_password")
+    create_posters_from_conftool(event, u, p)
