@@ -65,13 +65,13 @@
             You entered a voucher code that allows you to buy one of the following products at the specified price:
         {% endblocktrans %}
     </p>
-    {% if event.presale_is_running or event.settings.show_items_outside_presale_period %}
+    {% if event.presale_is_running or event.settings.show_products_outside_presale_period %}
         <form method="post"
                 action="{% eventurl request.event "presale:event.cart.add" cart_namespace=cart_namespace %}?next={{ cart_redirect|urlencode }}{% if "iframe" in request.GET and not new_tab %}&iframe={{ request.GET.iframe }}{% endif %}{% if "take_cart_id" in request.GET and new_tab %}&take_cart_id={{ request.GET.take_cart_id }}{% endif %}" {% if new_tab %}target="_blank"{% else %}
                 data-asynctask
                 data-asynctask-headline="{% trans "We're now trying to reserve this for you!" %}"
                 class="{% if voucher.seating_available %}has-seating{% endif %}"
-                data-asynctask-text="{% blocktrans with time=event.settings.reservation_time %}Once the items are in your cart, you will have {{ time }} minutes to complete your purchase.{% endblocktrans %}"
+                data-asynctask-text="{% blocktrans with time=event.settings.reservation_time %}Once the products are in your cart, you will have {{ time }} minutes to complete your purchase.{% endblocktrans %}"
             {% endif %}>
             {% csrf_token %}
             <input type="hidden" name="subevent" value="{{ subevent.id|default_if_none:"" }}" />
@@ -85,7 +85,7 @@
                 {% endif %}
             {% endif %}
 
-            {% for tup in items_by_category %}
+            {% for tup in products_by_category %}
                 <section>
                     {% if tup.0 %}
                         <h3>{{ tup.0.name }}</h3>
@@ -93,40 +93,40 @@
                             <p>{{ tup.0.description|localize|rich_text }}</p>
                         {% endif %}
                     {% endif %}
-                    {% for item in tup.1 %}
-                        {% if item.has_variations %}
-                            <div class="item-with-variations">
+                    {% for product in tup.1 %}
+                        {% if product.has_variations %}
+                            <div class="product-with-variations">
                                 <div class="row-fluid product-row headline">
                                     <div class="col-md-8 col-xs-12">
-                                        {% if item.picture %}
-                                            <a href="{{ item.picture.url }}" class="productpicture"
-                                                    data-title="{{ item.name|force_escape|force_escape }}"
+                                        {% if product.picture %}
+                                            <a href="{{ product.picture.url }}" class="productpicture"
+                                                    data-title="{{ product.name|force_escape|force_escape }}"
                                                     {# Yes, double-escape to prevent XSS in lightbox #}
-                                                    data-lightbox="{{ item.id }}">
-                                                <img src="{{ item.picture|thumb:'60x60^' }}"
-                                                        alt="{{ item.name }}"/>
+                                                    data-lightbox="{{ product.id }}">
+                                                <img src="{{ product.picture|thumb:'60x60^' }}"
+                                                        alt="{{ product.name }}"/>
                                             </a>
                                         {% endif %}
-                                        <div class="product-description {% if item.picture %}with-picture{% endif %}">
+                                        <div class="product-description {% if product.picture %}with-picture{% endif %}">
                                             <h4>
-                                                {{ item.name }}
+                                                {{ product.name }}
                                             </h4>
-                                            {% if item.description %}
+                                            {% if product.description %}
                                                 <div class="product-description">
-                                                    {{ item.description|localize|rich_text }}
+                                                    {{ product.description|localize|rich_text }}
                                                 </div>
                                             {% endif %}
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-xs-6 price">
-                                        {% if item.min_price != item.max_price or item.free_price %}
-                                            {% blocktrans trimmed with minprice=item.min_price|money:event.currency %}
+                                        {% if product.min_price != product.max_price or product.free_price %}
+                                            {% blocktrans trimmed with minprice=product.min_price|money:event.currency %}
                                                 from {{ minprice }}
                                             {% endblocktrans %}
-                                        {% elif not item.min_price and not item.max_price %}
+                                        {% elif not product.min_price and not product.max_price %}
                                             {% trans "FREE" context "price" %}
                                         {% else %}
-                                            {{ item.min_price|money:event.currency }}
+                                            {{ product.min_price|money:event.currency }}
                                         {% endif %}
                                     </div>
                                     <div class="col-md-2 col-xs-6 availability-box">
@@ -134,11 +134,11 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="">
-                                    {% for var in item.available_variations %}
+                                    {% for var in product.available_variations %}
                                         <div class="row-fluid product-row variation">
                                             <div class="col-md-8 col-xs-12">
                                                 <h5>
-                                                    <label for="variation_{{ item.id }}_{{ var.id }}">
+                                                    <label for="variation_{{ product.id }}_{{ var.id }}">
                                                         {{ var }}
                                                     </label>
                                                 </h5>
@@ -157,14 +157,14 @@
                                                     {% endif %}
                                                     <ins>
                                                 {% endif %}
-                                                {% if item.free_price %}
+                                                {% if product.free_price %}
                                                     <div class="input-group input-group-price">
                                                         <span class="input-group-addon">{{ event.currency }}</span>
-                                                        <input type="number" class="form-control input-item-price"
+                                                        <input type="number" class="form-control input-product-price"
                                                                 placeholder="0"
                                                                 min="{% if event.settings.display_net_prices %}{{ var.display_price.net|stringformat:"0.2f" }}{% else %}{{ var.display_price.gross|stringformat:"0.2f" }}{% endif %}"
-                                                                name="price_{{ item.id }}_{{ var.id }}"
-                                                                title="{% blocktrans trimmed with item=var.value %}Modify price for {{ item }}{% endblocktrans %}"
+                                                                name="price_{{ product.id }}_{{ var.id }}"
+                                                                title="{% blocktrans trimmed with product=var.value %}Modify price for {{ product }}{% endblocktrans %}"
                                                                 value="{% if event.settings.display_net_prices %}{{var.display_price.net|stringformat:"0.2f" }}{% else %}{{ var.display_price.gross|stringformat:"0.2f" }}{% endif %}"
                                                                 step="any">
                                                     </div>
@@ -175,10 +175,10 @@
                                                 {% else %}
                                                     {{ var.display_price.gross|money:event.currency }}
                                                 {% endif %}
-                                                {% if item.original_price or var.original_price %}
+                                                {% if product.original_price or var.original_price %}
                                                     </ins>
                                                 {% endif %}
-                                            {% if item.includes_mixed_tax_rate %}
+                                            {% if product.includes_mixed_tax_rate %}
                                                 {% if event.settings.display_net_prices %}
                                                     <small>{% trans "plus taxes" %}</small>
                                                 {% else %}
@@ -197,30 +197,30 @@
                                             {% if var.cached_availability.0 == 100 %}
                                                 <div class="col-md-2 col-xs-6 availability-box available radio-box">
                                                     {% if max_times > 1 %}
-                                                        {% if item.order_max == 1 %}
-                                                            <label class="item-checkbox-label">
+                                                        {% if product.order_max == 1 %}
+                                                            <label class="product-checkbox-label">
                                                                 <input type="checkbox"
                                                                         value="1"
-                                                                        id="variation_{{ item.id }}_{{ var.id }}"
-                                                                        name="variation_{{ item.id }}_{{ var.id }}"
+                                                                        id="variation_{{ product.id }}_{{ var.id }}"
+                                                                        name="variation_{{ product.id }}_{{ var.id }}"
                                                                         {% if options == 1 %}checked{% endif %}
-                                                                        title="{% blocktrans with item=item.name var=var.name %}Amount of {{ item }} – {{ var }} to order{% endblocktrans %}">
+                                                                        title="{% blocktrans with product=product.name var=var.name %}Amount of {{ product }} – {{ var }} to order{% endblocktrans %}">
                                                             </label>
                                                         {% else %}
-                                                            <input type="number" class="form-control input-item-count" placeholder="0" min="0"
+                                                            <input type="number" class="form-control input-product-count" placeholder="0" min="0"
                                                                     pattern="\d*"
-                                                                    max="{{ item.order_max }}"
-                                                                    id="variation_{{ item.id }}_{{ var.id }}"
-                                                                    name="variation_{{ item.id }}_{{ var.id }}"
+                                                                    max="{{ product.order_max }}"
+                                                                    id="variation_{{ product.id }}_{{ var.id }}"
+                                                                    name="variation_{{ product.id }}_{{ var.id }}"
                                                                     {% if options == 1 %}value="1"{% endif %}
-                                                                    title="{% blocktrans with item=item.name var=var.name %}Amount of {{ item }} – {{ var }} to order{% endblocktrans %}">
+                                                                    title="{% blocktrans with product=product.name var=var.name %}Amount of {{ product }} – {{ var }} to order{% endblocktrans %}">
                                                         {% endif %}
                                                     {% else %}
                                                         <label>
-                                                            <input type="radio" name="_voucher_item"
+                                                            <input type="radio" name="_voucher_product"
                                                                     {% if options == 1 %}checked="checked"{% endif %}
-                                                                    id="variation_{{ item.id }}_{{ var.id }}"
-                                                                    value="variation_{{ item.id }}_{{ var.id }}">
+                                                                    id="variation_{{ product.id }}_{{ var.id }}"
+                                                                    value="variation_{{ product.id }}_{{ var.id }}">
                                                         </label>
                                                     {% endif %}
                                                 </div>
@@ -235,103 +235,103 @@
                         {% else %}
                             <div class="row-fluid product-row simple">
                                 <div class="col-md-8 col-xs-12">
-                                    {% if item.picture %}
-                                        <a href="{{ item.picture.url }}" class="productpicture"
-                                                data-title="{{ item.name|force_escape|force_escape }}"
+                                    {% if product.picture %}
+                                        <a href="{{ product.picture.url }}" class="productpicture"
+                                                data-title="{{ product.name|force_escape|force_escape }}"
                                                 {# Yes, double-escape to prevent XSS in lightbox #}
-                                                data-lightbox="{{ item.id }}">
-                                            <img src="{{ item.picture|thumb:'60x60^' }}"
-                                                    alt="{{ item.name }}"/>
+                                                data-lightbox="{{ product.id }}">
+                                            <img src="{{ product.picture|thumb:'60x60^' }}"
+                                                    alt="{{ product.name }}"/>
                                         </a>
                                     {% endif %}
-                                    <div class="product-description {% if item.picture %}with-picture{% endif %}">
+                                    <div class="product-description {% if product.picture %}with-picture{% endif %}">
                                         <h4>
-                                            <label for="item_{{ item.id }}">{{ item.name }}</label>
+                                            <label for="product_{{ product.id }}">{{ product.name }}</label>
                                         </h4>
-                                        {% if item.description %}
+                                        {% if product.description %}
                                             <div class="product-description">
-                                                {{ item.description|localize|rich_text }}
+                                                {{ product.description|localize|rich_text }}
                                             </div>
                                         {% endif %}
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-xs-6 price">
-                                    {% if item.original_price %}
+                                    {% if product.original_price %}
                                         {% if event.settings.display_net_prices %}
-                                            <del>{{ item.original_price.net|money:event.currency }}</del>
+                                            <del>{{ product.original_price.net|money:event.currency }}</del>
                                         {% else %}
-                                            <del>{{ item.original_price.gross|money:event.currency }}</del>
+                                            <del>{{ product.original_price.gross|money:event.currency }}</del>
                                         {% endif %}
                                         <ins>
                                     {% endif %}
-                                    {% if item.free_price %}
+                                    {% if product.free_price %}
                                         <div class="input-group input-group-price">
                                             <span class="input-group-addon">{{ event.currency }}</span>
-                                            <input type="number" class="form-control input-item-price" placeholder="0"
-                                                    min="{% if event.settings.display_net_prices %}{{ item.display_price.net|stringformat:"0.2f" }}{% else %}{{ item.display_price.gross|stringformat:"0.2f" }}{% endif %}"
-                                                    name="price_{{ item.id }}"
-                                                    title="{% blocktrans trimmed with item=item.name %}Modify price for {{ item }}{% endblocktrans %}"
-                                                    value="{% if event.settings.display_net_prices %}{{ item.display_price.net|stringformat:"0.2f" }}{% else %}{{ item.display_price.gross|stringformat:"0.2f" }}{% endif %}"
+                                            <input type="number" class="form-control input-product-price" placeholder="0"
+                                                    min="{% if event.settings.display_net_prices %}{{ product.display_price.net|stringformat:"0.2f" }}{% else %}{{ product.display_price.gross|stringformat:"0.2f" }}{% endif %}"
+                                                    name="price_{{ product.id }}"
+                                                    title="{% blocktrans trimmed with product=product.name %}Modify price for {{ product }}{% endblocktrans %}"
+                                                    value="{% if event.settings.display_net_prices %}{{ product.display_price.net|stringformat:"0.2f" }}{% else %}{{ product.display_price.gross|stringformat:"0.2f" }}{% endif %}"
                                                     step="any">
                                         </div>
-                                    {% elif not item.display_price.gross %}
+                                    {% elif not product.display_price.gross %}
                                         {% trans "FREE" context "price" %}
                                     {% elif event.settings.display_net_prices %}
-                                        {{ item.display_price.net|money:event.currency }}
+                                        {{ product.display_price.net|money:event.currency }}
                                     {% else %}
-                                        {{ item.display_price.gross|money:event.currency }}
+                                        {{ product.display_price.gross|money:event.currency }}
                                     {% endif %}
-                                    {% if item.original_price %}
+                                    {% if product.original_price %}
                                         </ins>
                                     {% endif %}
-                                    {% if item.includes_mixed_tax_rate %}
+                                    {% if product.includes_mixed_tax_rate %}
                                         {% if event.settings.display_net_prices %}
                                             <small>{% trans "plus taxes" %}</small>
                                         {% else %}
                                             <small>{% trans "incl. taxes" %}</small>
                                         {% endif %}
-                                    {% elif item.display_price.rate and item.display_price.gross and event.settings.display_net_prices %}
-                                        <small>{% blocktrans trimmed with rate=item.display_price.rate|floatformat:-2 name=item.display_price.name %}
+                                    {% elif product.display_price.rate and product.display_price.gross and event.settings.display_net_prices %}
+                                        <small>{% blocktrans trimmed with rate=product.display_price.rate|floatformat:-2 name=product.display_price.name %}
                                             <strong>plus</strong> {{ rate }}% {{ name }}
                                         {% endblocktrans %}</small>
-                                    {% elif item.display_price.rate and item.display_price.gross%}
-                                        <small>{% blocktrans trimmed with rate=item.display_price.rate|floatformat:-2 name=item.display_price.name %}
+                                    {% elif product.display_price.rate and product.display_price.gross%}
+                                        <small>{% blocktrans trimmed with rate=product.display_price.rate|floatformat:-2 name=product.display_price.name %}
                                             incl. {{ rate }}% {{ name }}
                                         {% endblocktrans %}</small>
                                     {% endif %}
                                 </div>
-                                {% if item.cached_availability.0 == 100 %}
+                                {% if product.cached_availability.0 == 100 %}
                                     <div class="col-md-2 col-xs-6 availability-box available radio-box">
                                         {% if max_times > 1 %}
-                                            {% if item.order_max == 1 %}
-                                                <label class="item-checkbox-label">
+                                            {% if product.order_max == 1 %}
+                                                <label class="product-checkbox-label">
                                                     <input type="checkbox"
                                                             value="1"
-                                                            id="item_{{ item.id }}"
-                                                            name="item_{{ item.id }}"
+                                                            id="product_{{ product.id }}"
+                                                            name="product_{{ product.id }}"
                                                             {% if options == 1 %}checked{% endif %}
-                                                            title="{% blocktrans with item=item.name %}Amount of {{ item }} to order{% endblocktrans %}">
+                                                            title="{% blocktrans with product=product.name %}Amount of {{ product }} to order{% endblocktrans %}">
                                                 </label>
                                             {% else %}
-                                                <input type="number" class="form-control input-item-count" placeholder="0" min="0"
+                                                <input type="number" class="form-control input-product-count" placeholder="0" min="0"
                                                         pattern="\d*"
-                                                        max="{{ item.order_max }}"
-                                                        id="item_{{ item.id }}"
-                                                        name="item_{{ item.id }}"
+                                                        max="{{ product.order_max }}"
+                                                        id="product_{{ product.id }}"
+                                                        name="product_{{ product.id }}"
                                                         {% if options == 1 %}value="1"{% endif %}
-                                                        title="{% blocktrans with item=item.name %}Amount of {{ item }} to order{% endblocktrans %}">
+                                                        title="{% blocktrans with product=product.name %}Amount of {{ product }} to order{% endblocktrans %}">
                                             {% endif %}
                                         {% else %}
                                             <label>
-                                                <input type="radio" name="_voucher_item"
+                                                <input type="radio" name="_voucher_product"
                                                         {% if options == 1 %}checked="checked"{% endif %}
-                                                        id="item_{{ item.id }}"
-                                                        value="item_{{ item.id }}">
+                                                        id="product_{{ product.id }}"
+                                                        value="product_{{ product.id }}">
                                             </label>
                                         {% endif %}
                                     </div>
                                 {% else %}
-                                    {% include "pretixpresale/event/fragment_availability.html" with price=item.display_price.gross avail=item.cached_availability.0 %}
+                                    {% include "pretixpresale/event/fragment_availability.html" with price=product.display_price.gross avail=product.cached_availability.0 %}
                                 {% endif %}
                                 <div class="clearfix"></div>
                             </div>

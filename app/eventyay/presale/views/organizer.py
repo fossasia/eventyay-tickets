@@ -40,8 +40,8 @@ def filter_qs_by_attr(qs, request):
     models in the format ?attr[meta_name]=meta_value
     """
     attrs = {}
-    for i, item in enumerate(request.GET.items()):
-        k, v = item
+    for i, product in enumerate(request.GET.items()):
+        k, v = product
         if k.startswith('attr[') and k.endswith(']'):
             attrs[k[5:-1]] = v
 
@@ -53,8 +53,8 @@ def filter_qs_by_attr(qs, request):
 
     props = {p.name: p for p in request.organizer.meta_properties.filter(name__in=attrs.keys())}
 
-    for i, item in enumerate(attrs.items()):
-        attr, v = item
+    for i, product in enumerate(attrs.items()):
+        attr, v = product
         emv_with_value = EventMetaValue.objects.filter(
             event=OuterRef('event' if qs.model == SubEvent else 'pk'),
             property__name=attr,

@@ -118,7 +118,7 @@
     <div class="row">
         <div class="col-xs-12 col-lg-10">
             {% for cr in order.cancellation_requests.all %}
-                <div class="panel panel-warning items">
+                <div class="panel panel-warning products">
                     <div class="panel-heading">
                         <h3 class="panel-title">
                             {% trans "Cancellation request" %}
@@ -151,7 +151,7 @@
                 </div>
             {% endfor %}
 
-            <div class="panel panel-primary items">
+            <div class="panel panel-primary products">
                 <div class="panel-heading">
                     <h3 class="panel-title">
                         {% trans "Order details" %}
@@ -279,7 +279,7 @@
                     </dl>
                 </div>
             </div>
-            <div class="panel panel-default items">
+            <div class="panel panel-default products">
                 <div class="panel-heading">
                     <div class="pull-right flip">
                         <a href="{% url "control:event.order.info" event=request.event.slug organizer=request.event.organizer.slug code=order.code %}">
@@ -294,11 +294,11 @@
                         {% endif %}
                     </div>
                     <h3 class="panel-title">
-                        {% trans "Ordered items" %}
+                        {% trans "Ordered products" %}
                     </h3>
                 </div>
                 <div class="panel-body">
-                    {% for line in items.positions %}
+                    {% for line in products.positions %}
                         <div class="row-fluid product-row {% if line.canceled %}pos-canceled{% endif %}">
                             <div class="col-md-9 col-xs-6">
                                 {% if line.addon_to %}
@@ -306,7 +306,7 @@
                                 {% else %}
                                     #{{ line.positionid }} –
                                 {% endif %}
-                                <strong>{{ line.item }}</strong>
+                                <strong>{{ line.product }}</strong>
                                 {% if line.variation %}
                                     – {{ line.variation }}
                                 {% endif %}
@@ -390,12 +390,12 @@
                                 {% endif %}
                                 {% if line.has_questions %}
                                     <dl>
-                                        {% if line.item.admission and event.settings.attendee_names_asked %}
+                                        {% if line.product.admission and event.settings.attendee_names_asked %}
                                             <dt>{% trans "Attendee name" %}</dt>
                                             <dd>{% if line.attendee_name %}{{ line.attendee_name }}{% else %}
                                                 <em>{% trans "not answered" %}</em>{% endif %}</dd>
                                         {% endif %}
-                                        {% if line.item.admission and event.settings.attendee_emails_asked %}
+                                        {% if line.product.admission and event.settings.attendee_emails_asked %}
                                             <dt>{% trans "Attendee email" %}</dt>
                                             <dd>
                                                 {% if line.attendee_email %}
@@ -418,7 +418,7 @@
                                                 {% endif %}
                                             </dd>
                                         {% endif %}
-                                        {% if line.item.admission and event.settings.attendee_company_asked %}
+                                        {% if line.product.admission and event.settings.attendee_company_asked %}
                                             <dt>
                                                 {% trans "Attendee company" %}
                                             </dt>
@@ -426,7 +426,7 @@
                                                 {% if line.company %}{{ line.company }}{% else %}<em>{% trans "not answered" %}</em>{% endif %}
                                             </dd>
                                         {% endif %}
-                                        {% if line.item.admission and event.settings.attendee_addresses_asked %}
+                                        {% if line.product.admission and event.settings.attendee_addresses_asked %}
                                             <dt>
                                                 {% trans "Attendee address" %}
                                             </dt>
@@ -513,7 +513,7 @@
                             <div class="clearfix"></div>
                         </div>
                     {% endfor %}
-                    {% for fee in items.fees %}
+                    {% for fee in products.fees %}
                         <div class="row-fluid product-row {% if fee.canceled %}pos-canceled{% endif %}">
                             <div class="col-md-4 col-xs-6">
                                 <strong>{{ fee.get_fee_type_display }}</strong>
@@ -552,7 +552,7 @@
                             <strong>{% trans "Net total" %}</strong>
                         </div>
                         <div class="col-md-3 col-xs-6 col-md-offset-5 price">
-                            {{ items.net_total|money:event.currency }}
+                            {{ products.net_total|money:event.currency }}
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -561,7 +561,7 @@
                             <strong>{% trans "Taxes" %}</strong>
                         </div>
                         <div class="col-md-3 col-xs-6 col-md-offset-5 price">
-                            {{ items.tax_total|money:event.currency }}
+                            {{ products.tax_total|money:event.currency }}
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -570,7 +570,7 @@
                             <strong>{% trans "Total" %}</strong>
                         </div>
                         <div class="col-md-3 col-xs-6 col-md-offset-5 price">
-                            <strong>{{ items.total|money:event.currency }}</strong>
+                            <strong>{{ products.total|money:event.currency }}</strong>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -599,7 +599,7 @@
             {% eventsignal event "eventyay.control.signals.order_info" order=order request=request %}
             <div class="row payments">
                 <div class="col-md-12">
-                    <div class="panel panel-default items">
+                    <div class="panel panel-default products">
                         <div class="panel-heading">
                             <h3 class="panel-title">
                                 {% trans "Payments" %}
@@ -693,7 +693,7 @@
                         </div>
                     </div>
                     {% if refunds %}
-                        <div class="panel panel-default items">
+                        <div class="panel panel-default products">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
                                     {% trans "Refunds" %}
@@ -859,7 +859,7 @@
                     </div>
                 {% endif %}
                 <div class="{% if request.event.settings.invoice_address_asked or order.invoice_address %}col-md-6{% else %}col-md-12{% endif %}">
-                    <div class="panel panel-default items">
+                    <div class="panel panel-default products">
                         <div class="panel-heading">
                             <h3 class="panel-title">
                                 {% trans "Internal comment" %}

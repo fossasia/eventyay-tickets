@@ -111,7 +111,7 @@ def generate_short_token():
     return get_random_string(length=24)
 
 class SuperuserPermissionSet:
-    def __contains__(self, item):
+    def __contains__(self, product):
         return True
 
 

@@ -184,7 +184,7 @@ class ParametrizedOrderNotificationType(NotificationType):
         else:
             n.add_attribute(_('Event date'), order.event.get_date_range_display())
 
-        positions = list(order.positions.select_related('item', 'variation', 'subevent'))
+        positions = list(order.positions.select_related('product', 'variation', 'subevent'))
         fees = list(order.fees.all())
 
         n.add_attribute(_('Order code'), order.code)
@@ -211,21 +211,21 @@ class ParametrizedOrderNotificationType(NotificationType):
         n.add_attribute(_('Order positions'), str(order.positions.count()))
 
         def sortkey(op):
-            return op.item_id, op.variation_id, op.subevent_id
+            return op.product_id, op.variation_id, op.subevent_id
 
         def groupkey(op):
-            return op.item, op.variation, op.subevent
+            return op.product, op.variation, op.subevent
 
         cart = [(k, list(v)) for k, v in groupby(sorted(positions, key=sortkey), key=groupkey)]
-        items = []
-        for (item, variation, subevent), pos in cart:
-            ele = [str(len(pos)) + 'x ' + str(item)]
+        products = []
+        for (product, variation, subevent), pos in cart:
+            ele = [str(len(pos)) + 'x ' + str(product)]
             if variation:
                 ele.append(str(variation.value))
             if subevent:
                 ele.append(str(subevent))
-            items.append(' – '.join(ele))
-        n.add_attribute(_('Purchased products'), '\n'.join(items))
+            products.append(' – '.join(ele))
+        n.add_attribute(_('Purchased products'), '\n'.join(products))
         n.add_action(_('View order details'), order_url)
         return n
 

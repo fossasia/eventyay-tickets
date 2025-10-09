@@ -44,7 +44,7 @@ class CheckinListForm(forms.ModelForm):
         self.event = kwargs.pop('event')
         kwargs.pop('locales', None)
         super().__init__(**kwargs)
-        self.fields['limit_products'].queryset = self.event.items.all()
+        self.fields['limit_products'].queryset = self.event.products.all()
         self.fields['auto_checkin_sales_channels'] = forms.MultipleChoiceField(
             label=self.fields['auto_checkin_sales_channels'].label,
             help_text=self.fields['auto_checkin_sales_channels'].help_text,
@@ -117,7 +117,7 @@ class SimpleCheckinListForm(forms.ModelForm):
         self.event = kwargs.pop('event')
         kwargs.pop('locales', None)
         super().__init__(**kwargs)
-        self.fields['limit_products'].queryset = self.event.items.all()
+        self.fields['limit_products'].queryset = self.event.products.all()
 
         if not self.event.organizer.gates.exists():
             del self.fields['gates']

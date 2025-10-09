@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/item/base.html" %}
+{% extends "pretixcontrol/product/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
 {% load formset_tags %}
@@ -116,7 +116,7 @@
                         {% bootstrap_field form.generate_tickets layout="control" %}
                         {% bootstrap_field form.checkin_attention layout="control" %}
                     </fieldset>
-                    <fieldset id="tab-item-additional-settings">
+                    <fieldset id="tab-product-additional-settings">
                         <legend>{% trans "Additional settings" %}</legend>
                         {% bootstrap_field form.issue_giftcard layout="control" %}
                         {% bootstrap_field form.show_quota_left layout="control" %}
@@ -138,7 +138,7 @@
                             {% trans "Product history" %}
                         </h3>
                     </div>
-                    {% include "pretixcontrol/includes/logs.html" with obj=item %}
+                    {% include "pretixcontrol/includes/logs.html" with obj=product %}
                 </div>
             </div>
         </div>

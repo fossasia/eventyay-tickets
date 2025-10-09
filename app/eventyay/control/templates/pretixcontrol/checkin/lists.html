@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/items/base.html" %}
+{% extends "pretixcontrol/products/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Check-in lists" %}{% endblock %}
 {% block inside %}
@@ -125,9 +125,9 @@
                                 <em>{% trans "All" %}</em>
                             {% else %}
                                 <ul>
-                                    {% for item in cl.limit_products.all %}
+                                    {% for product in cl.limit_products.all %}
                                         <li>
-                                            <a href="{% url "control:event.item" organizer=request.event.organizer.slug event=request.event.slug item=item.id %}">{{ item.name }}</a>
+                                            <a href="{% url "control:event.product" organizer=request.event.organizer.slug event=request.event.slug product=product.id %}">{{ product.name }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>

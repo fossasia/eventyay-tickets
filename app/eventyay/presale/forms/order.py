@@ -11,7 +11,7 @@ from eventyay.base.templatetags.money import money_filter
 
 
 class OrderPositionChangeForm(forms.Form):
-    itemvar = forms.ChoiceField(
+    productvar = forms.ChoiceField(
         label=_('Product'),
         required=False,
     )
@@ -23,20 +23,20 @@ class OrderPositionChangeForm(forms.Form):
         event = kwargs.pop('event')
         kwargs['initial'] = initial
         if instance.variation_id:
-            initial['itemvar'] = f'{instance.item_id}-{instance.variation_id}'
+            initial['productvar'] = f'{instance.product_id}-{instance.variation_id}'
         else:
-            initial['itemvar'] = f'{instance.item_id}'
+            initial['productvar'] = f'{instance.product_id}'
 
         super().__init__(*args, **kwargs)
 
         choices = []
 
-        i = instance.item
+        i = instance.product
         pname = str(i)
         variations = list(i.variations.all())
 
         if variations:
-            current_quotas = instance.variation.quotas.all() if instance.variation else instance.item.quotas.all()
+            current_quotas = instance.variation.quotas.all() if instance.variation else instance.product.quotas.all()
             qa = QuotaAvailability()
             for v in variations:
                 qa.queue(*v.quotas.all())
@@ -100,13 +100,13 @@ class OrderPositionChangeForm(forms.Form):
                 choices.append((f'{i.pk}-{v.pk}', label))
 
             if not choices:
-                self.fields['itemvar'].widget.attrs['disabled'] = True
-                self.fields['itemvar'].help_text = _(
+                self.fields['productvar'].widget.attrs['disabled'] = True
+                self.fields['productvar'].help_text = _(
                     'No other variation of this product is currently available for you.'
                 )
         else:
             choices.append((str(i.pk), '%s' % pname))
-            self.fields['itemvar'].widget.attrs['disabled'] = True
-            self.fields['itemvar'].help_text = _('No other variations of this product exist.')
+            self.fields['productvar'].widget.attrs['disabled'] = True
+            self.fields['productvar'].help_text = _('No other variations of this product exist.')
 
-        self.fields['itemvar'].choices = choices
+        self.fields['productvar'].choices = choices

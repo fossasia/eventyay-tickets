@@ -120,7 +120,7 @@
                             {% include "pretixcontrol/fragment_quota_box_paid.html" with quota=q %}
                         {% endfor %}
                         {% if e.first_quotas|length > 3 %}
-                            <a href="{% url 'control:event.items.quotas' organizer=e.organizer.slug event=e.slug %}"
+                            <a href="{% url 'control:event.products.quotas' organizer=e.organizer.slug event=e.slug %}"
                                class="quotabox-more" data-toggle="tooltip" title="{% trans 'More quotas' %}"
                                aria-label="{% trans 'More quotas' %}" data-placement="top">
                                 &middot;&middot;&middot;

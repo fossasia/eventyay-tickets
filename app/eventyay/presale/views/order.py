@@ -1232,8 +1232,8 @@ class OrderChange(EventViewMixin, OrderDetailMixin, TemplateView):
     @cached_property
     def positions(self):
         positions = list(
-            self.order.positions.select_related('item', 'item__tax_rule').prefetch_related(
-                'item__quotas', 'item__variations', 'item__variations__quotas'
+            self.order.positions.select_related('product', 'product__tax_rule').prefetch_related(
+                'product__quotas', 'product__variations', 'product__variations__quotas'
             )
         )
         try:
@@ -1260,26 +1260,26 @@ class OrderChange(EventViewMixin, OrderDetailMixin, TemplateView):
                 return False
 
             try:
-                change_item = None
-                if p.form.cleaned_data['itemvar']:
-                    if '-' in p.form.cleaned_data['itemvar']:
-                        itemid, varid = p.form.cleaned_data['itemvar'].split('-')
+                change_product = None
+                if p.form.cleaned_data['productvar']:
+                    if '-' in p.form.cleaned_data['productvar']:
+                        productid, varid = p.form.cleaned_data['productvar'].split('-')
                     else:
-                        itemid, varid = p.form.cleaned_data['itemvar'], None
+                        productid, varid = p.form.cleaned_data['productvar'], None
 
-                    item = self.request.event.items.get(pk=itemid)
+                    product = self.request.event.products.get(pk=productid)
                     if varid:
-                        variation = item.variations.get(pk=varid)
+                        variation = product.variations.get(pk=varid)
                     else:
                         variation = None
-                    if item != p.item or variation != p.variation:
-                        change_item = (item, variation)
+                    if product != p.product or variation != p.variation:
+                        change_product = (product, variation)
 
-                if change_item is not None:
-                    ocm.change_item(p, *change_item)
+                if change_product is not None:
+                    ocm.change_product(p, *change_product)
                     new_price = get_price(
-                        change_item[0],
-                        change_item[1],
+                        change_product[0],
+                        change_product[1],
                         voucher=p.voucher,
                         subevent=p.subevent,
                         invoice_address=ia,
@@ -1288,8 +1288,8 @@ class OrderChange(EventViewMixin, OrderDetailMixin, TemplateView):
                     if new_price.gross != p.price or new_price.rate != p.tax_rate:
                         ocm.change_price(p, new_price.gross)
 
-                    if change_item[0].tax_rule != p.tax_rule or new_price.rate != p.tax_rate:
-                        ocm.change_tax_rule(p, change_item[0].tax_rule)
+                    if change_product[0].tax_rule != p.tax_rule or new_price.rate != p.tax_rate:
+                        ocm.change_tax_rule(p, change_product[0].tax_rule)
 
             except OrderError as e:
                 p.custom_error = str(e)

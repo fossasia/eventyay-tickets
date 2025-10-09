@@ -108,7 +108,7 @@
                         {% elif e.best_availability_state == 20 %}
                             <span class="label label-warning">{% trans "Reserved" %}</span>
                         {% elif e.best_availability_state < 20 %}
-                            {% if e.has_paid_item %}
+                            {% if e.has_paid_product %}
                                 <span class="fa fa-ticket" aria-hidden="true"></span> {% trans "Sold out" %}
                             {% else %}
                                 <span class="fa fa-ticket" aria-hidden="true"></span> {% trans "Fully booked" %}

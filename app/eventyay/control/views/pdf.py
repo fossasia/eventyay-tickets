@@ -62,12 +62,12 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
         return None, f
 
     def _get_preview_position(self):
-        item = self.request.event.items.create(
+        product = self.request.event.products.create(
             name=_('Sample product'),
             default_price=42.23,
             description=_('Sample product description'),
         )
-        item2 = self.request.event.items.create(name=_('Sample workshop'), default_price=23.40)
+        product2 = self.request.event.products.create(name=_('Sample workshop'), default_price=23.40)
 
         from pretix.base.models import Order
 
@@ -83,9 +83,9 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
         scheme = PERSON_NAME_SCHEMES[self.request.event.settings.name_scheme]
         sample = {k: str(v) for k, v in scheme['sample'].items()}
-        p = order.positions.create(item=item, attendee_name_parts=sample, price=item.default_price)
-        order.positions.create(item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p)
-        order.positions.create(item=item2, attendee_name_parts=sample, price=item.default_price, addon_to=p)
+        p = order.positions.create(product=product, attendee_name_parts=sample, price=product.default_price)
+        order.positions.create(product=product2, attendee_name_parts=sample, price=product.default_price, addon_to=p)
+        order.positions.create(product=product2, attendee_name_parts=sample, price=product.default_price, addon_to=p)
 
         InvoiceAddress.objects.create(order=order, name_parts=sample, company=_('Sample company'))
         return p

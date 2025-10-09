@@ -175,7 +175,7 @@ class EventWizard(SafeSessionWizardView):
                     clone_from,
                     'can_change_event_settings',
                     request,
-                ) and request.user.has_event_permission(clone_from.organizer, clone_from, 'can_change_items', request)
+                ) and request.user.has_event_permission(clone_from.organizer, clone_from, 'can_change_products', request)
             if not allow:
                 messages.error(self.request, _('You do not have permission to clone this event.'))
             else:
@@ -246,7 +246,7 @@ class EventWizard(SafeSessionWizardView):
                         organizer=event.organizer,
                         name=_('Team {event}').format(event=event.name),
                         can_change_event_settings=True,
-                        can_change_items=True,
+                        can_change_products=True,
                         can_view_orders=True,
                         can_change_orders=True,
                         can_view_vouchers=True,

@@ -107,12 +107,12 @@
                     {% if request.GET.status == "e" %}selected="selected"{% endif %}>
                 {% trans "Voucher expired" %}</option>
         </select>
-        <select name="item" class="form-control">
+        <select name="product" class="form-control">
             <option value="">{% trans "All products" %}</option>
-            {% for item in items %}
-                <option value="{{ item.id }}"
-                        {% if request.GET.item|add:0 == item.id %}selected="selected"{% endif %}>
-                    {{ item }}
+            {% for product in products %}
+                <option value="{{ product.id }}"
+                        {% if request.GET.product|add:0 == product.id %}selected="selected"{% endif %}>
+                    {{ product }}
                 </option>
             {% endfor %}
         </select>
@@ -167,7 +167,7 @@
                         <td>{{ e.phone|default:"" }}</td>
                         {% endif %}
                         <td>
-                            {{ e.item }}
+                            {{ e.product }}
                             {% if e.variation %}
                                 – {{ e.variation }}
                             {% endif %}

@@ -81,7 +81,7 @@ class SettingsSandbox:
     def _convert_key(self, key: str) -> str:
         return '%s_%s_%s' % (self._type, self._key, key)
 
-    def __setitem__(self, key: str, value: Any) -> None:
+    def __setproduct__(self, key: str, value: Any) -> None:
         self.set(key, value)
 
     def __setattr__(self, key: str, value: Any) -> None:
@@ -89,13 +89,13 @@ class SettingsSandbox:
             return super().__setattr__(key, value)
         self.set(key, value)
 
-    def __getattr__(self, item: str) -> Any:
-        return self.get(item)
+    def __getattr__(self, product: str) -> Any:
+        return self.get(product)
 
-    def __getitem__(self, item: str) -> Any:
-        return self.get(item)
+    def __getproduct__(self, product: str) -> Any:
+        return self.get(product)
 
-    def __delitem__(self, key: str) -> None:
+    def __delproduct__(self, key: str) -> None:
         del self._event.settings[self._convert_key(key)]
 
     def __delattr__(self, key: str) -> None:

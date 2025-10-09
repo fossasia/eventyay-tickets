@@ -70,7 +70,7 @@ def _default_context(request):
 
     _js_payment_weekdays_disabled = '[]'
     if getattr(request, 'event', None) and hasattr(request, 'organizer') and request.user.is_authenticated:
-        ctx['nav_items'] = get_event_navigation(request)
+        ctx['nav_products'] = get_event_navigation(request)
 
         if request.event.settings.get('payment_term_weekdays'):
             _js_payment_weekdays_disabled = '[0,6]'
@@ -106,12 +106,12 @@ def _default_context(request):
             # Do not use .get() for lazy evaluation
             ctx['selected_subevents'] = request.event.subevents.filter(pk=request.GET.get('subevent'))
     elif getattr(request, 'organizer', None) and request.user.is_authenticated:
-        ctx['nav_items'] = get_organizer_navigation(request)
+        ctx['nav_products'] = get_organizer_navigation(request)
     elif request.user.is_authenticated:
-        ctx['nav_items'] = get_global_navigation(request)
+        ctx['nav_products'] = get_global_navigation(request)
 
     if request.user.is_authenticated and request.user.has_active_staff_session(request.session.session_key):
-        ctx['admin_nav_items'] = get_admin_navigation(request)
+        ctx['admin_nav_products'] = get_admin_navigation(request)
 
     ctx['js_payment_weekdays_disabled'] = _js_payment_weekdays_disabled
 

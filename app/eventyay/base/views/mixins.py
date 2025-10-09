@@ -30,7 +30,7 @@ class BaseQuestionsViewMixin:
 
     @staticmethod
     def _keyfunc(pos):
-        # Sort addons after the item they are an addon to
+        # Sort addons after the product they are an addon to
         if isinstance(pos, OrderPosition):
             i = pos.addon_to.positionid if pos.addon_to else pos.positionid
         else:
@@ -67,10 +67,10 @@ class BaseQuestionsViewMixin:
             )
             form.pos = cartpos or orderpos
             form.show_copy_answers_to_addon_button = form.pos.addon_to and (
-                set(form.pos.addon_to.item.questions.all()) & set(form.pos.item.questions.all())
+                set(form.pos.addon_to.product.questions.all()) & set(form.pos.product.questions.all())
                 or (
-                    form.pos.addon_to.item.admission
-                    and form.pos.item.admission
+                    form.pos.addon_to.product.admission
+                    and form.pos.product.admission
                     and (
                         self.request.event.settings.attendee_names_asked
                         or self.request.event.settings.attendee_emails_asked
@@ -237,7 +237,7 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
         if self.only_user_visible:
             qqs = qqs.filter(ask_during_checkin=False, hidden=False)
         return list(
-            self.order.positions.select_related('item', 'variation').prefetch_related(
+            self.order.positions.select_related('product', 'variation').prefetch_related(
                 Prefetch(
                     'answers',
                     QuestionAnswer.objects.prefetch_related('options'),

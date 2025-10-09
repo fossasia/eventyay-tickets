@@ -323,9 +323,9 @@ class Team(LoggedModel, TimestampedModel, RulesModelMixin, models.Model, metacla
     :type can_change_organizer_settings: bool
     :param can_change_event_settings: If ``True``, the members can change the settings of the associated events.
     :type can_change_event_settings: bool
-    :param can_change_items: If ``True``, the members can change and add items and related objects
+    :param can_change_products: If ``True``, the members can change and add products and related objects
                              for the associated events.
-    :type can_change_items: bool
+    :type can_change_products: bool
     :param can_view_orders: If ``True``, the members can inspect details of all orders of the associated events.
     :type can_view_orders: bool
     :param can_change_orders: If ``True``, the members can change details of orders of the associated events.
@@ -363,7 +363,7 @@ class Team(LoggedModel, TimestampedModel, RulesModelMixin, models.Model, metacla
     can_manage_gift_cards = models.BooleanField(default=False, verbose_name=_('Can manage gift cards'))
 
     can_change_event_settings = models.BooleanField(default=False, verbose_name=_('Can change event settings'))
-    can_change_items = models.BooleanField(default=False, verbose_name=_('Can change product settings'))
+    can_change_products = models.BooleanField(default=False, verbose_name=_('Can change product settings'))
     can_view_orders = models.BooleanField(default=False, verbose_name=_('Can view orders'))
     can_change_orders = models.BooleanField(default=False, verbose_name=_('Can change orders'))
     can_checkin_orders = models.BooleanField(

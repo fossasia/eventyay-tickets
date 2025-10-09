@@ -57,7 +57,7 @@ class SalesChannel:
     def unlimited_products_per_order(self) -> bool:
         """
         If this property is ``True``, purchases made using this sales channel are not limited to the maximum amount of
-        items defined in the event settings.
+        products defined in the event settings.
         """
         return False
 

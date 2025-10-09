@@ -90,10 +90,10 @@
                     <em id="cart-deadline" data-expires="{{ cart.first_expiry|date:"Y-m-d H:i:sO" }}">
                         {% if cart.minutes_left > 0 or cart.seconds_left > 0 %}
                             {% blocktrans trimmed with minutes=cart.minutes_left %}
-                                The items in your cart are reserved for you for {{ minutes }} minutes.
+                                The products in your cart are reserved for you for {{ minutes }} minutes.
                             {% endblocktrans %}
                         {% else %}
-                            {% trans "The items in your cart are no longer reserved for you." %}
+                            {% trans "The products in your cart are no longer reserved for you." %}
                         {% endif %}
                     </em>
                     <div class="row checkout-button-row">
@@ -301,10 +301,10 @@
             {% eventsignal event "eventyay.presale.signals.front_page_top" request=request subevent=subevent %}
         {% endif %}
 
-        {% if ev.presale_is_running or event.settings.show_items_outside_presale_period %}
+        {% if ev.presale_is_running or event.settings.show_products_outside_presale_period %}
             <form method="post" data-asynctask
                     data-asynctask-headline="{% trans "We're now trying to reserve this for you!" %}"
-                    data-asynctask-text="{% blocktrans with time=event.settings.reservation_time %}Once the items are in your cart, you will have {{ time }} minutes to complete your purchase.{% endblocktrans %}"
+                    data-asynctask-text="{% blocktrans with time=event.settings.reservation_time %}Once the products are in your cart, you will have {{ time }} minutes to complete your purchase.{% endblocktrans %}"
                     class="{% if event.seating_plan_id %}has-seating{% endif %}"
                     action="{% eventurl request.event "presale:event.cart.add" cart_namespace=cart_namespace %}?next={{ cart_redirect|urlencode }}&next_error={{ request.path|urlencode }}">
                 {% csrf_token %}

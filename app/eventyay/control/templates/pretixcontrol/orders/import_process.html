@@ -1,7 +1,7 @@
 {% extends "pretixcontrol/event/base.html" %}
 {% load i18n %}
 {% load static %}
-{% load getitem %}
+{% load getproduct %}
 {% load bootstrap3 %}
 {% block title %}{% trans "Import attendees" %}{% endblock %}
 {% block content %}
@@ -25,7 +25,7 @@
                     {% for r in sample_rows %}
                         <tr>
                             {% for fn in parsed.fieldnames %}
-                                <td>{{ r|getitem:fn }}</td>
+                                <td>{{ r|getproduct:fn }}</td>
                             {% endfor %}
                         </tr>
                     {% endfor %}

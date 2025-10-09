@@ -82,9 +82,9 @@ class LazyRuleVars:
         self._clist = clist
         self._dt = dt
 
-    def __getitem__(self, item):
-        if item[0] != '_' and hasattr(self, item):
-            return getattr(self, item)
+    def __getproduct__(self, product):
+        if product[0] != '_' and hasattr(self, product):
+            return getattr(self, product)
         raise KeyError()
 
     @property
@@ -93,7 +93,7 @@ class LazyRuleVars:
 
     @property
     def product(self):
-        return self._position.item_id
+        return self._position.product_id
 
     @property
     def variation(self):
@@ -206,7 +206,7 @@ class SQLLogic:
             if values[0] == 'now':
                 return Value(now())
             elif values[0] == 'product':
-                return F('item_id')
+                return F('product_id')
             elif values[0] == 'variation':
                 return F('variation_id')
             elif values[0] == 'entries_number':
@@ -411,7 +411,7 @@ def perform_checkin(
         )
 
     # Do this outside of transaction so it is saved even if the checkin fails for some other reason
-    checkin_questions = list(clist.event.questions.filter(ask_during_checkin=True, items__in=[op.item_id]))
+    checkin_questions = list(clist.event.questions.filter(ask_during_checkin=True, products__in=[op.product_id]))
     require_answers = []
     if checkin_questions:
         answers = {a.question: a for a in op.answers.all()}
@@ -425,7 +425,7 @@ def perform_checkin(
         # Lock order positions
         op = OrderPosition.all.select_for_update().get(pk=op.pk)
 
-        if not clist.all_products and op.item_id not in [i.pk for i in clist.limit_products.all()]:
+        if not clist.all_products and op.product_id not in [i.pk for i in clist.limit_products.all()]:
             raise CheckInError(
                 _('This order position has an invalid product for this check-in list.'),
                 'product',
@@ -519,7 +519,7 @@ def order_placed(sender, **kwargs):
         return
     for op in order.positions.all():
         for cl in cls:
-            if cl.all_products or op.item_id in {i.pk for i in cl.limit_products.all()}:
+            if cl.all_products or op.product_id in {i.pk for i in cl.limit_products.all()}:
                 if not cl.subevent_id or cl.subevent_id == op.subevent_id:
                     ci = Checkin.objects.create(
                         position=op,

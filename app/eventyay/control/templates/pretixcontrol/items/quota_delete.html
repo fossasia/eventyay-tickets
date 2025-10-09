@@ -1,4 +1,4 @@
-{% extends "pretixcontrol/items/base.html" %}
+{% extends "pretixcontrol/products/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
 {% block title %}{% trans "Delete quota" %}{% endblock %}
@@ -11,9 +11,9 @@
             <div class="alert alert-info">
                 <p>{% blocktrans %}The following products might be no longer available for sale:{% endblocktrans %}</p>
                 <ul>
-                    {% for item in dependent %}
+                    {% for product in dependent %}
                         <li>
-                            <a href="{% url "control:event.item" organizer=request.event.organizer.slug event=request.event.slug item=item.pk %}">{{ item.name }}</a>
+                            <a href="{% url "control:event.product" organizer=request.event.organizer.slug event=request.event.slug product=product.pk %}">{{ product.name }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -26,14 +26,14 @@
                     {% plural %}
                     That will cause {{ count }} voucher to be unusable.
                 {% endblocktrans %}
-                <a href="{% url "control:event.vouchers" organizer=request.organizer.slug event=request.event.slug %}?itemvar=q-{{ quota.pk }}"
+                <a href="{% url "control:event.vouchers" organizer=request.organizer.slug event=request.event.slug %}?productvar=q-{{ quota.pk }}"
                    class="btn btn-default">
                     {% trans "Show affected vouchers" %}
                 </a>
             </div>
         {% endif %}
 		<div class="form-group submit-group">
-            <a href="{% url "control:event.items.quotas" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default btn-cancel">
+            <a href="{% url "control:event.products.quotas" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default btn-cancel">
                 {% trans "Cancel" %}
             </a>
             <button type="submit" class="btn btn-delete btn-danger btn-save">

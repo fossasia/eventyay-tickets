@@ -676,7 +676,7 @@ class BasePaymentProvider:
 
         If the payment is completed, you should call ``payment.confirm()``. Please note that this might
         raise a ``Quota.QuotaExceededException`` if (and only if) the payment term of this order is over and
-        some of the items are sold out. You should use the exception message to display a meaningful error
+        some of the products are sold out. You should use the exception message to display a meaningful error
         to the user.
 
         The default implementation just returns ``None`` and therefore leaves the
@@ -1245,7 +1245,7 @@ class GiftCardPayment(BasePaymentProvider):
 
     def checkout_prepare(self, request: HttpRequest, cart: Dict[str, Any]) -> Union[bool, str, None]:
         for p in get_cart(request):
-            if p.item.issue_giftcard:
+            if p.product.issue_giftcard:
                 messages.error(
                     request,
                     _('You cannot pay with gift cards when buying a gift card.'),
@@ -1327,7 +1327,7 @@ class GiftCardPayment(BasePaymentProvider):
 
     def payment_prepare(self, request: HttpRequest, payment: OrderPayment) -> Union[bool, str, None]:
         for p in payment.order.positions.all():
-            if p.item.issue_giftcard:
+            if p.product.issue_giftcard:
                 messages.error(
                     request,
                     _('You cannot pay with gift cards when buying a gift card.'),
@@ -1380,7 +1380,7 @@ class GiftCardPayment(BasePaymentProvider):
         # This method will only be called when retrying payments, e.g. after a payment_prepare call. It is not called
         # during the order creation phase because this payment provider is a special case.
         for p in payment.order.positions.all():  # noqa - just a safeguard
-            if p.item.issue_giftcard:
+            if p.product.issue_giftcard:
                 raise PaymentException(_('You cannot pay with gift cards when buying a gift card.'))
 
         gcpk = payment.info_data.get('gift_card')

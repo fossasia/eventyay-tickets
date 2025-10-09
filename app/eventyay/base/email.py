@@ -275,7 +275,7 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
         if order:
             htmlctx['order'] = order
             positions = list(
-                order.positions.select_related('item', 'variation', 'subevent', 'addon_to').annotate(
+                order.positions.select_related('product', 'variation', 'subevent', 'addon_to').annotate(
                     has_addons=Count('addons')
                 )
             )
@@ -284,7 +284,7 @@ class TemplateBasedMailRenderer(BaseHTMLMailRenderer):
                 for k, v in groupby(
                     positions,
                     key=lambda op: (
-                        op.item,
+                        op.product,
                         op.variation,
                         op.subevent,
                         op.attendee_name,
@@ -710,7 +710,7 @@ def base_placeholders(sender, **kwargs):
         SimpleFunctionalMailTextPlaceholder(
             'product',
             ['waiting_list_entry'],
-            lambda waiting_list_entry: waiting_list_entry.item.name,
+            lambda waiting_list_entry: waiting_list_entry.product.name,
             _('Sample Admission Ticket'),
         ),
         SimpleFunctionalMailTextPlaceholder(

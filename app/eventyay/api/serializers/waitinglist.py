@@ -15,7 +15,7 @@ class WaitingListSerializer(I18nAwareModelSerializer):
             'email',
             'phone',
             'voucher',
-            'item',
+            'product',
             'variation',
             'locale',
             'subevent',
@@ -32,19 +32,19 @@ class WaitingListSerializer(I18nAwareModelSerializer):
 
         WaitingListEntry.clean_duplicate(
             full_data.get('email'),
-            full_data.get('item'),
+            full_data.get('product'),
             full_data.get('variation'),
             full_data.get('subevent'),
             self.instance.pk if self.instance else None,
         )
-        WaitingListEntry.clean_itemvar(event, full_data.get('item'), full_data.get('variation'))
+        WaitingListEntry.clean_productvar(event, full_data.get('product'), full_data.get('variation'))
         WaitingListEntry.clean_subevent(event, full_data.get('subevent'))
 
-        if 'item' in data or 'variation' in data:
+        if 'product' in data or 'variation' in data:
             availability = (
                 full_data.get('variation').check_quotas(count_waitinglist=True, subevent=full_data.get('subevent'))
                 if full_data.get('variation')
-                else full_data.get('item').check_quotas(count_waitinglist=True, subevent=full_data.get('subevent'))
+                else full_data.get('product').check_quotas(count_waitinglist=True, subevent=full_data.get('subevent'))
             )
             if availability[0] == 100:
                 raise ValidationError('This product is currently available.')

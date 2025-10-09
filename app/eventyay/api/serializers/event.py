@@ -267,7 +267,7 @@ class EventSerializer(I18nAwareModelSerializer):
 
         # Product Meta properties
         if product_meta_properties is not None:
-            for key, value in product_meta_properties.products():
+            for key, value in product_meta_properties.items():
                 event.product_meta_properties.create(name=key, default=value, event=event)
 
         # Seats

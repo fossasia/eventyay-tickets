@@ -2,7 +2,7 @@
 {% load eventurl %}
 {% load urlreplace %}
 <form class="form-inline" method="get" id="monthselform" action="{% eventurl event "presale:event.index" cart_namespace=cart_namespace %}">
-    {% for f, v in request.GET.items %}
+    {% for f, v in request.GET.products %}
         {% if f != "month" and f != "year" %}
             <input type="hidden" name="{{ f }}" value="{{ v }}">
         {% endif %}

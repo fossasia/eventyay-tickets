@@ -186,14 +186,14 @@
         <div class="panel-heading">
             {% if order.can_modify_answers %}
                 <div class="pull-right flip">
-                    <a href="{% eventurl event "presale:event.order.modify" secret=order.secret order=order.code %}" aria-label="{% trans "Change ordered items" %}">
+                    <a href="{% eventurl event "presale:event.order.modify" secret=order.secret order=order.code %}" aria-label="{% trans "Change ordered products" %}">
                         <span class="fa fa-edit" aria-hidden="true"></span>
                         {% trans "Change details" %}
                     </a>
                 </div>
             {% endif %}
             <h3 class="panel-title">
-                {% trans "Ordered items" %}
+                {% trans "Ordered products" %}
             </h3>
         </div>
         <div class="panel-body">

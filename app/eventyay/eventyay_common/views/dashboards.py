@@ -110,8 +110,8 @@ class EventIndexView(TemplateView):
             'can_view_vouchers': request.user.has_event_permission(
                 request.organizer, request.event, 'can_view_vouchers', request=request
             ),
-            'can_change_items': request.user.has_event_permission(
-                request.organizer, request.event, 'can_change_items', request=request
+            'can_change_products': request.user.has_event_permission(
+                request.organizer, request.event, 'can_change_products', request=request
             ),
         }
 

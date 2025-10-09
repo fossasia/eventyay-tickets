@@ -218,7 +218,7 @@ class EventWizardBasicsForm(I18nModelForm):
                 organizer=organizer,
                 all_events=True,
                 can_change_event_settings=True,
-                can_change_items=True,
+                can_change_products=True,
                 can_change_orders=True,
                 can_change_vouchers=True,
             ).exists()
@@ -257,11 +257,11 @@ class EventWizardCopyForm(forms.Form):
                 organizer_id__in=user.teams.filter(
                     all_events=True,
                     can_change_event_settings=True,
-                    can_change_items=True,
+                    can_change_products=True,
                 ).values_list('organizer', flat=True)
             )
             | Q(
-                id__in=user.teams.filter(can_change_event_settings=True, can_change_items=True).values_list(
+                id__in=user.teams.filter(can_change_event_settings=True, can_change_products=True).values_list(
                     'limit_events__id', flat=True
                 )
             )

@@ -49,7 +49,7 @@ def _default_context(request: HttpRequest):
     if not request.user.is_authenticated:
         return ctx
 
-    ctx['nav_items'] = get_global_navigation(request)
+    ctx['nav_products'] = get_global_navigation(request)
     ctx['staff_session'] = request.user.has_active_staff_session(request.session.session_key)
     ctx['staff_need_to_explain'] = (
         StaffSession.objects.filter(user=request.user, date_end__isnull=False).filter(
@@ -75,7 +75,7 @@ def _default_context(request: HttpRequest):
     if not organizer:
         return ctx
 
-    ctx['nav_items'] = get_event_navigation(request, event)
+    ctx['nav_products'] = get_event_navigation(request, event)
     ctx['has_domain'] = get_event_domain(event, fallback=True) is not None
     if not event.testmode:
         with scope(organizer=organizer):

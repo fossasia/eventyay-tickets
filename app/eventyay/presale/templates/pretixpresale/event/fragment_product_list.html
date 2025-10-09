@@ -107,6 +107,7 @@
                                         <label class="sr-only" for="price-variation-{{ product.pk }}-{{ var.pk }}">{% blocktrans trimmed with product=var.value %}Modify price for {{ product }}{% endblocktrans %}</label>
                                         <div class="input-group input-group-price">
                                             <span class="input-group-addon">{{ event.currency }}</span>
+
                                             <input type="number" class="form-control input-item-price"
                                                    id="price-variation-{{ product.pk }}-{{ var.pk }}"
                                                    {% if not ev.presale_is_running %}disabled{% endif %}
@@ -153,7 +154,7 @@
                                     {% elif var.cached_availability.0 == 100 %}
                                     <div class="col-md-2 col-xs-6 availability-box available">
 										{% if var.order_max == 1 %}
-                                            <label class="item-checkbox-label">
+                                            <label class="product-checkbox-label">
                                                 <input type="checkbox" value="1"
                                                        {% if not ev.presale_is_running %}disabled{% endif %}
                                                        id="variation_{{ product.id }}_{{ var.id }}"
@@ -161,7 +162,7 @@
                                                        title="{% blocktrans with product=product.name var=var.name %}Amount of {{ product }} – {{ var }} to order{% endblocktrans %}">
                                             </label>
                                         {% else %}
-                                            <input type="number" class="form-control input-item-count" placeholder="0" min="0"
+                                            <input type="number" class="form-control input-product-count" placeholder="0" min="0"
                                                    {% if not ev.presale_is_running %}disabled{% endif %}
                                                    max="{{ var.order_max }}"
                                                    pattern="\d*"
@@ -179,7 +180,7 @@
                 </details>
                 </article>
             {% else %}
-                <article class="row-fluid product-row simple" id="item-{{ product.id }}">
+                <article class="row-fluid product-row simple" id="product-{{ product.id }}">
                     <div class="col-md-8 col-xs-12">
                         {% if product.picture %}
                             <a href="{{ product.picture.url }}" class="productpicture"
@@ -193,7 +194,7 @@
                         {% endif %}
                         <div class="product-description {% if product.picture %}with-picture{% endif %}">
                             <h4>
-                                <label for="item_{{ product.pk }}">{{ product.name }}</label>
+                                <label for="product_{{ product.pk }}">{{ product.name }}</label>
                             </h4>
                             {% if product.description %}
                                 <div class="product-description">
@@ -225,10 +226,10 @@
                         {% endif %}
                         {% if product.free_price %}
                             <div class="input-group input-group-price">
-                                <label class="sr-only" for="price-item-{{ product.pk }}">{% blocktrans trimmed with product=product.name %}Modify price for {{ product }}{% endblocktrans %}</label>
+                                <label class="sr-only" for="price-product-{{ product.pk }}">{% blocktrans trimmed with product=product.name %}Modify price for {{ product }}{% endblocktrans %}</label>
                                 <span class="input-group-addon">{{ event.currency }}</span>
                                 <input type="number" class="form-control input-item-price" placeholder="0"
-                                       id="price-item-{{ product.pk }}"
+                                       id="price-product-{{ product.pk }}"
                                        {% if not ev.presale_is_running %}disabled{% endif %}
                                        min="{% if event.settings.display_net_prices %}{{ product.display_price.net|money_numberfield:event.currency }}{% else %}{{ product.display_price.gross|money_numberfield:event.currency }}{% endif %}"
                                        name="price_{{ product.id }}"
@@ -274,15 +275,15 @@
                                 <label class="item-checkbox-label">
                                     <input type="checkbox" value="1" {% if productnum == 1 %}checked{% endif %}
                                            {% if not ev.presale_is_running %}disabled{% endif %}
-                                           name="item_{{ product.id }}" id="item_{{ product.id }}">
+                                           name="product_{{ product.id }}" id="product_{{ product.id }}">
                                 </label>
                             {% else %}
-                                <input type="number" class="form-control input-item-count" placeholder="0" min="0"
+                                <input type="number" class="form-control input-product-count" placeholder="0" min="0"
                                        {% if not ev.presale_is_running %}disabled{% endif %}
                                        pattern="\d*" {% if productnum == 1 %}value="1"{% endif %}
                                        max="{{ product.order_max }}"
-                                       name="item_{{ product.id }}"
-                                       id="item_{{ product.id }}"
+                                       name="product_{{ product.id }}"
+                                       id="product_{{ product.id }}"
                                        title="{% blocktrans with product=product.name %}Amount of {{ product }} to order{% endblocktrans %}">
                             {% endif %}
                         </div>

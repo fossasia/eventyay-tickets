@@ -11,11 +11,11 @@
     </h2>
     <form method="post" href="">
         {% csrf_token %}
-        {% for position, positions in formgroups.items %}
-            <div class="panel panel-default items">
+        {% for position, positions in formgroups.products %}
+            <div class="panel panel-default products">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <strong>{{ position.item }}</strong>
+                        <strong>{{ position.product }}</strong>
                         {% if position.variation %}
                             – {{ position.variation }}
                         {% endif %}
@@ -43,7 +43,7 @@
                         {% for p in positions %}
                             {% if p.pk != position.pk %}
                                 {# Add-Ons #}
-                                <legend>+ {{ p.item.name }}{% if p.variation %} – {{ p.variation.value }}{% endif %}</legend>
+                                <legend>+ {{ p.product.name }}{% if p.variation %} – {{ p.variation.value }}{% endif %}</legend>
                             {% endif %}
                             {% if p.attendee_name %}
                                 <div class="form-group">

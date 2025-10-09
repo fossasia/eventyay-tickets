@@ -210,7 +210,7 @@ class AddOnsStep(CartMixin, AsyncAction, TemplateFlowStep):
 
         total_selected_quantity = sum(a[0] for a in selected.values())
         exceeds_single_allowed = (
-            any(sum(v[0] for k, v in selected.products() if k[0] == i) > 1 for i in category['products'])
+            any(sum(v[0] for k, v in selected.items() if k[0] == i) > 1 for i in category['products'])
             and not category['multi_allowed']
         )
 

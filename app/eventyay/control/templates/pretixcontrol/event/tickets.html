@@ -1,6 +1,6 @@
 {% extends "pretixcontrol/event/settings_base.html" %}
 {% load i18n %}
-{% load getitem %}
+{% load getproduct %}
 {% load bootstrap3 %}
 {% block inside %}
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
@@ -44,7 +44,7 @@
                             <h3 class="panel-title">
                                 {% with 'ticketoutput_'|add:provider.identifier|add:'__enabled' as field_name %}
 									{% if field_name in provider.form.fields %}
-                                    	{% bootstrap_field provider.form|getitem:field_name layout='inline' label=provider.verbose_name %}
+                                    	{% bootstrap_field provider.form|getproduct:field_name layout='inline' label=provider.verbose_name %}
 									{% endif %}
                                 {% endwith %}
                             </h3>

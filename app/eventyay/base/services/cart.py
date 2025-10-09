@@ -74,7 +74,7 @@ error_messages = {
     'max_products_per_product': _('You cannot select more than %(max)s products of the product %(product)s.'),
     'min_products_per_product': _('You need to select at least %(min)s products of the product %(product)s.'),
     'min_products_per_product_removed': _(
-        'We removed %(product)s from your cart as you can not buy less than %(min)s items of it.'
+        'We removed %(product)s from your cart as you can not buy less than %(min)s products of it.'
     ),
     'not_started': _('The presale period for this event has not yet started.'),
     'ended': _('The presale period for this event has ended.'),
@@ -906,7 +906,7 @@ class CartManager:
             for iao in product.addons.all():
                 selected = selected_addons[cp.id, iao.addon_category_id]
                 n_per_i = Counter()
-                for (i, v), c in selected.products():
+                for (i, v), c in selected.items():
                     n_per_i[i] += c
                 if sum(selected.values()) > iao.max_count:
                     # TODO: Proper i18n

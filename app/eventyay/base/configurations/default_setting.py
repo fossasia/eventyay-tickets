@@ -74,7 +74,7 @@ DEFAULT_SETTINGS = {
         'serializer_class': serializers.IntegerField,
         'form_kwargs': dict(
             min_value=1,
-            label=_('Maximum number of items per order'),
+            label=_('Maximum number of products per order'),
             help_text=_('Add-on products will be excluded from the count.'),
         ),
     },
@@ -439,7 +439,7 @@ DEFAULT_SETTINGS = {
         'form_kwags': dict(
             min_value=0,
             label=_('Reservation period'),
-            help_text=_("The number of minutes the items in a user's cart are reserved for this user."),
+            help_text=_("The number of minutes the products in a user's cart are reserved for this user."),
         ),
     },
     'redirect_to_checkout_directly': {

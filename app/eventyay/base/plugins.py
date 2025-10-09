@@ -64,7 +64,7 @@ CATEGORY_LABELS = {
     'EXPORTER': _('Exporters'),
     'RECORDING': _('Recording integrations'),
     'LANGUAGE': _('Languages'),
-    'OTHER': pgettext_lazy('category of items', 'Other'),
+    'OTHER': pgettext_lazy('category of products', 'Other'),
 }
 
 

@@ -329,7 +329,7 @@ class EventUpdate(
             form_data['text'].data
             for form_data in sorted(
                 self.confirm_texts_formset.cleaned_data,
-                key=operator.itemgetter('ORDER'),
+                key=operator.productgetter('ORDER'),
             )
             if not form_data.get('DELETE', False)
         )
@@ -1192,7 +1192,7 @@ class EventLog(EventPermissionRequiredMixin, PaginationMixin, ListView):
             if self.request.user.has_event_permission(
                 self.request.organizer,
                 self.request.event,
-                'can_change_items',
+                'can_change_products',
                 request=self.request,
             ):
                 allowed_types += [
