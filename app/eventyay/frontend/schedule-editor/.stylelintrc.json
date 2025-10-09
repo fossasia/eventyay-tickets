@@ -1,0 +1,43 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-stylus/standard"
+  ],
+  "rules": {
+    "rule-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "custom-property-empty-line-before": null,
+    "string-quotes": null,
+    "no-empty-source": null,
+    "max-line-length": null,
+    "no-descending-specificity": null,
+    "color-function-notation": "legacy",
+    "no-invalid-position-at-import-rule": null,
+    "font-family-name-quotes": "always-where-recommended",
+    "selector-class-pattern": null,
+    "font-family-no-missing-generic-family-keyword": null,
+    "declaration-block-no-redundant-longhand-properties": [
+      true,
+      {
+        "ignoreShorthands": ["grid-template"]
+      }
+    ],
+    "alpha-value-notation": "number",
+    "stylus/declaration-colon": "always",
+    "stylus/media-feature-colon": "always",
+    "stylus/indentation": "tab",
+    "stylus/selector-list-comma": "always",
+    "stylus/selector-list-comma-newline-after": "always-multi-line",
+    "stylus/selector-type-no-unknown": [
+      true,
+      {
+        "ignoreTypes": [
+          "page-training-detail-text-rule-set",
+          "page-training-detail-logic-rule-set",
+          "iron-pages",
+          "view-model-aso-panel"
+        ]
+      }
+    ]
+  }
+}
