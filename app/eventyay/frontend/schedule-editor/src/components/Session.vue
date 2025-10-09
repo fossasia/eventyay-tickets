@@ -1,13 +1,13 @@
 <template lang="pug">
-.c-linear-schedule-session(:style="style", @pointerdown.stop="$emit('startDragging', {session: session, event: $event})", :class="classes")
+.c-linear-schedule-session(:style="style", @pointerdown.stop="onPointerDown", :class="classes")
 	.time-box
-		.start(:class="{'has-ampm': startTime.ampm}", v-if="startTime")
+		.start(:class="{'has-ampm': startTime?.ampm}", v-if="startTime")
 			.time {{ startTime.time }}
 			.ampm(v-if="startTime.ampm") {{ startTime.ampm }}
 		.duration {{ durationPretty }}
 	.info
 		.title {{ getLocalizedString(session.title) }}
-		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
+		.speakers(v-if="hasSpeakersWithNames") {{ speakerNames }}
 		.pending-line(v-if="session.state && session.state !== 'confirmed' && session.state !== 'accepted'")
 			i.fa.fa-exclamation-circle
 			span {{ $t('Pending proposal state') }}
@@ -18,102 +18,135 @@
 			span(v-if="warnings.length > 1") {{ warnings.length }}
 			i.fa.fa-exclamation-triangle
 </template>
-<script>
-import moment from 'moment-timezone'
-import MarkdownIt from 'markdown-it'
+
+<script lang="ts" setup>
+import { computed } from 'vue'
+import moment, { Moment } from 'moment-timezone'
 import { getLocalizedString } from '~/utils'
 
-const markdownIt = MarkdownIt({
-	linkify: true,
-	breaks: true
+interface Speaker {
+  name: string
+  code?: string
+  [key: string]: string | undefined
+}
+
+interface Track {
+  name: string | Record<string, string>
+  color?: string
+  id?: number | string
+  [key: string]: string | number | Record<string, string> | undefined
+}
+
+interface Session {
+  id: number | string
+  title: string | Record<string, string>
+  speakers?: Speaker[]
+  state?: string
+  track?: Track
+  start?: Moment
+  end?: Moment
+  code?: string | null
+  duration: number
+  abstract?: string
+  room?: string | number
+  [key: string]: string | number | boolean | Record<string, string> | Speaker[] | Track | Moment | null | undefined
+}
+
+interface Warning {
+  message: string
+  type?: string
+  [key: string]: string | undefined
+}
+
+const props = defineProps<{
+  session: Session
+  warnings?: Warning[]
+  isDragged?: boolean
+  isDragClone?: boolean
+  overrideStart?: Moment | null
+}>()
+
+const emit = defineEmits<{
+  (e: 'startDragging', payload: { session: Session; event: PointerEvent }): void
+}>()
+
+const isBreak = computed(() => !props.session.code)
+
+const hasSpeakersWithNames = computed(() => {
+  return props.session.speakers && props.session.speakers.some(speaker => speaker.name)
 })
 
-export default {
-	props: {
-		session: Object,
-		warnings: Array,
-		isDragged: Boolean,
-		isDragClone: {
-			type: Boolean,
-			default: false
-		},
-		overrideStart: {
-			type: Object,
-			default: null
-		}
-	},
-	inject: {
-		eventUrl: { default: null },
-		generateSessionLinkUrl: {
-			default () {
-				return ({eventUrl, session}) => `${eventUrl}talk/${session.id}/`
-			}
-		}
-	},
-	data () {
-		return {
-			getLocalizedString
-		}
-	},
-	computed: {
-		link () {
-			return this.generateSessionLinkUrl({eventUrl: this.eventUrl, session: this.session})
-		},
-		isBreak () {
-			return !this.session.code
-		},
-		classes () {
-			let classes = []
-			if (this.isBreak) classes.push('isbreak')
-			else {
-				classes.push('istalk')
-				if (this.session.state !== "confirmed" && this.session.state !== "accepted") classes.push('pending')
-				else if (this.session.state !== "confirmed") classes.push('unconfirmed')
-			}
-			if (this.isDragged) classes.push('dragging')
-			if (this.isDragClone) classes.push('clone')
-			return classes
-		},
-		style () {
-			return {
-				'--track-color': this.session.track?.color || 'var(--color-primary)'
-			}
-		},
-		startTime () {
-			// check if 12h or 24h locale
-			const time = this.overrideStart  || this.session.start
-			if (!time) return
-			if (moment.localeData().longDateFormat('LT').endsWith(' A')) {
-				return {
-					time: time.format('h:mm'),
-					ampm: time.format('A')
-				}
-			} else {
-				return {
-					time: moment(time).format('LT')
-				}
-			}
-		},
-		durationMinutes () {
-			if (!this.session.start) return this.session.duration
-			return moment(this.session.end).diff(this.session.start, 'minutes')
-		},
-		durationPretty () {
-			if (!this.durationMinutes) return
-			let minutes = this.durationMinutes
-			const hours = Math.floor(minutes / 60)
-			if (minutes <= 60) {
-				return `${minutes}min`
-			}
-			minutes = minutes % 60
-			if (minutes) {
-				return `${hours}h${minutes}min`
-			}
-			return `${hours}h`
-		}
-	}
+const speakerNames = computed(() => {
+  if (!props.session.speakers) return ''
+  return props.session.speakers
+    .filter(speaker => speaker.name) // Only include speakers with names
+    .map(speaker => speaker.name)
+    .join(', ')
+})
+
+const classes = computed(() => {
+  const cls: string[] = []
+  if (isBreak.value) {
+    cls.push('isbreak')
+  } else {
+    cls.push('istalk')
+    if (
+      props.session.state !== 'confirmed' &&
+      props.session.state !== 'accepted'
+    ) {
+      cls.push('pending')
+    } else if (props.session.state !== 'confirmed') {
+      cls.push('unconfirmed')
+    }
+  }
+  if (props.isDragged) cls.push('dragging')
+  if (props.isDragClone) cls.push('clone')
+  return cls
+})
+
+const style = computed(() => ({
+  '--track-color': props.session.track?.color || 'var(--color-primary)'
+}))
+
+const startTime = computed< { time: string; ampm?: string } | undefined>(() => {
+  const time: Moment | undefined = props.overrideStart || props.session.start
+  if (!time) return undefined
+
+  if (moment.localeData().longDateFormat('LT').endsWith(' A')) {
+    return {
+      time: time.format('h:mm'),
+      ampm: time.format('A'),
+    }
+  } else {
+    return { time: time.format('LT') }
+  }
+})
+
+const durationMinutes = computed<number>(() => {
+  if (!props.session.start || !props.session.end) return props.session.duration
+  return moment(props.session.end).diff(props.session.start, 'minutes')
+})
+
+const durationPretty = computed<string | undefined>(() => {
+  const minutes = durationMinutes.value
+  if (!minutes) return undefined
+
+  if (minutes <= 60) {
+    return `${minutes}min`
+  }
+  const hours = Math.floor(minutes / 60)
+  const leftoverMinutes = minutes % 60
+  if (leftoverMinutes) {
+    return `${hours}h${leftoverMinutes}min`
+  }
+  return `${hours}h`
+})
+
+function onPointerDown(event: PointerEvent): void {
+  emit('startDragging', { session: props.session, event })
 }
 </script>
+
 <style lang="stylus">
 .c-linear-schedule-session
 	display: flex

@@ -9,6 +9,8 @@ export default function loadGettext () {
     name: 'load-gettext',
     async transform (src, id) {
       if (fileRegex.test(id)) {
+			src = src.replaceAll('#~|', '#~#|');
+			src = src.replace(/msgid_plural ""\\nmsgstr\\[0\\] ""\\nmsgstr\\[1\\] ""/g, '');
 				// Load known keys from ./locales/en/translation.json
 				// and use them to replace the keys in the source code
 				// with the corresponding values

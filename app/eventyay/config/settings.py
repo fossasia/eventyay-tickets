@@ -660,67 +660,6 @@ METRICS_ENABLED = config.getboolean('metrics', 'enabled', fallback=False)
 METRICS_USER = config.get('metrics', 'user', fallback='metrics')
 METRICS_PASSPHRASE = config.get('metrics', 'passphrase', fallback='')
 
-# Redis configuration
-redis_connection_kwargs = {
-    "retry": Retry(ExponentialBackoff(), 3),
-    "health_check_interval": 120,
-}
-
-if os.getenv("EVENTYAY_REDIS_URLS", _config.get("redis", "urls", fallback="")):
-    REDIS_HOSTS = [
-        {"address": u, **redis_connection_kwargs}
-        for u in os.getenv(
-            "EVENTYAY_REDIS_URLS", _config.get("redis", "urls", fallback="")
-        ).split(",")
-    ]
-else:
-    redis_auth = os.getenv(
-        "EVENTYAY_REDIS_AUTH",
-        _config.get("redis", "auth", fallback=""),
-    )
-    redis_url = (
-        "redis://"
-        + ((":" + redis_auth + "@") if redis_auth else "")
-        + os.getenv(
-            "EVENTYAY_REDIS_HOST",
-            _config.get("redis", "host", fallback="127.0.0.1"),
-        )
-        + ":"
-        + os.getenv(
-            "EVENTYAY_REDIS_PORT",
-            _config.get("redis", "port", fallback="6379"),
-        )
-        + "/"
-        + os.getenv(
-            "EVENTYAY_REDIS_DB",
-            _config.get("redis", "db", fallback="0"),
-        )
-    )
-    REDIS_HOSTS = [{"address": redis_url, **redis_connection_kwargs}]
-
-REDIS_USE_PUBSUB = os.getenv(
-    "EVENTYAY_REDIS_USE_PUBSUB",
-    _config.get("redis", "use_pubsub", fallback="false"),
-) in (True, "yes", "on", "true", "True", "1")
-
-# Channel layers configuration
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": (
-            "channels_redis.pubsub.RedisPubSubChannelLayer"
-            if REDIS_USE_PUBSUB
-            else "channels_redis.core.RedisChannelLayer"
-        ),
-        "CONFIG": {
-            "hosts": REDIS_HOSTS,
-            "prefix": "eventyay:{}:asgi:".format(
-                _config.get("redis", "db", fallback="0")
-            ),
-            "capacity": 10000,
-        },
-    },
-}
-
 # URL configurations
 SHORT_URL = os.getenv(
     "EVENTYAY_SHORT_URL",
@@ -730,10 +669,6 @@ SHORT_URL = os.getenv(
 if os.getenv("EVENTYAY_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("EVENTYAY_COOKIE_DOMAIN", "")
 
-
-MEDIA_URL = os.getenv(
-    "EVENTYAY_MEDIA_URL", _config.get("urls", "media", fallback="/media/")
-)
 
 WEBSOCKET_PROTOCOL = os.getenv(
     "EVENTYAY_WEBSOCKET_PROTOCOL",
@@ -836,6 +771,7 @@ if HAS_REDIS:
         'TIMEOUT': 3600 * 24 * 30,
         'OPTIONS': redis_options,
     }
+    REDIS_USE_PUBSUB = config.getboolean('redis', 'use_pubsub', fallback=True)
     if not HAS_MEMCACHED:
         CACHES['default'] = CACHES['redis']
         REAL_CACHE_USED = True
@@ -849,8 +785,6 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
-CELERY_BROKER_URL = REDIS_HOSTS[0]["address"]
-CELERY_RESULT_BACKEND = REDIS_HOSTS[0]["address"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_DEFAULT_QUEUE = "default"
@@ -862,7 +796,6 @@ CELERY_TASK_QUEUES = (
     Queue('notifications', routing_key='notifications.#'),
 )
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-CELERY_TASK_ALWAYS_EAGER = os.environ.get("EVENTYAY_CELERY_EAGER", "true" if DEBUG else "") == "true"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_ROUTES = (
     [
