@@ -1,0 +1,40 @@
+[project]
+name = "pretalx-venueless"
+dynamic = ["version"]
+description = "Static venueless for pretalx, e.g. information, venue listings, a Code of Conduct, etc."
+readme = "README.rst"
+license = {text = "Apache Software License"}
+keywords = ["pretalx"]
+authors = [
+  {name = "Tobias Kunze", email = "r@rixx.de"},
+]
+maintainers = [
+  {name = "Tobias Kunze", email = "r@rixx.de"},
+]
+
+dependencies = [
+    "PyJWT",
+]
+
+[project.urls]
+homepage = "https://github.com/pretalx/pretalx-venueless"
+repository = "https://github.com/pretalx/pretalx-venueless.git"
+
+[project.entry-points."pretalx.plugin"]
+pretalx_venueless = "pretalx_venueless:PretalxPluginMeta"
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "pretalx_venueless.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["pretalx*"]
+
+[tool.check-manifest]
+ignore = [".*"]

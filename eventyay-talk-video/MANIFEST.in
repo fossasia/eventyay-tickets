@@ -1,0 +1,6 @@
+recursive-include pretalx_venueless/static *
+recursive-include pretalx_venueless/templates *
+exclude pretalx_venueless/locale/django.pot
+recursive-include pretalx_venueless/locale *
+recursive-include pretalx_venueless *.py
+include Makefile
