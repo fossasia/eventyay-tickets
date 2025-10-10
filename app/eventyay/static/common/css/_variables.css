@@ -29,7 +29,7 @@
   --color-success-light: color-mix(in srgb, var(--color-success), white 10%);
   --color-bg: var(--color-white);
 
-  --color-info: #4697c9;
+  --color-info: #2185d0;
   --color-info-text: color-mix(in srgb, var(--color-info), black 10%);
   --color-info-text-dark: color-mix(in srgb, var(--color-info), black 40%);
 
