@@ -3,15 +3,13 @@ $(function () {
     const isAdminMode = JSON.parse(document.getElementById('is_admin_mode').textContent);
     const currentPath = window.location.pathname;
     const queryString = window.location.search;
-    const talkHostNamePath= JSON.parse(document.getElementById('talk_hostname_url').textContent);
-
     const backUrl = `${currentPath}${queryString}`;
 
     // Constructing logout path using URLSearchParams
     const logoutParams = new URLSearchParams({ back: backUrl });
 
     const ticketsPath = `/control/`;
-    const talksPath = `${talkHostNamePath}orga/event/`
+    const talksPath = `/orga/event/`
     const mainDashboardPath = `/common/`;
     const orderPath = `/common/orders/`;
     const eventPath = `/control/events/`;
