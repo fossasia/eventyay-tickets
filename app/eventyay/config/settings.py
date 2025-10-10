@@ -816,10 +816,10 @@ CELERY_TASK_QUEUES = (
 )
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_ROUTES = [
-    ('eventyay.base.services.notifications.*', {'queue': 'notifications'}),
-    ('eventyay.api.webhooks.*', {'queue': 'notifications'}),
-]
+CELERY_TASK_ROUTES = {
+    'eventyay.base.services.notifications.*': {'queue': 'notifications'},
+    'eventyay.api.webhooks.*': {'queue': 'notifications'},
+}
 
 
 # Static files (CSS, JavaScript, Images)
