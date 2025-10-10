@@ -120,7 +120,7 @@ dev = [
             'pytest-django==4.*',
             'pytest-xdist==3.6.*',
             'pytest-mock==3.14.*',
-            'pytest-rerunfailures==14.*',
+            'pytest-rerunfailures==16.*',
             'responses',
             'potypo',
             'freezegun',
