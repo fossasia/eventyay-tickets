@@ -18,6 +18,7 @@ from importlib.metadata import entry_points
 from pathlib import Path
 from urllib.parse import urlparse
 import django.conf.locale
+from django.contrib.messages import constants as messages  # NOQA
 from django.utils.translation import gettext_lazy as _
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -899,7 +900,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+MESSAGE_TAGS = {
+    messages.INFO: 'alert-info',
+    messages.ERROR: 'alert-danger',
+    messages.WARNING: 'alert-warning',
+    messages.SUCCESS: 'alert-success',
+}
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Template configuration
 template_loaders = (
