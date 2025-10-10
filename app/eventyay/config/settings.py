@@ -18,6 +18,7 @@ from importlib.metadata import entry_points
 from pathlib import Path
 from urllib.parse import urlparse
 import django.conf.locale
+from django.contrib.messages import constants as messages  # NOQA
 from django.utils.translation import gettext_lazy as _
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -90,16 +91,6 @@ X_FRAME_OPTIONS = 'DENY'
 
 # URL settings
 ROOT_URLCONF = 'eventyay.multidomain.maindomain_urlconf'
-
-
-HAS_CELERY = config.has_option('celery', 'broker')
-if HAS_CELERY:
-    CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
-    CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
-    CELERY_TASK_ALWAYS_EAGER = False
-else:
-    CELERY_TASK_ALWAYS_EAGER = True
-
 
 AUTH_USER_MODEL = 'base.User'
 _LIBRARY_APPS = (
@@ -746,38 +737,69 @@ if HAS_MEMCACHED:
         'LOCATION': config.get('memcached', 'location'),
     }
 
-HAS_REDIS = config.has_option('redis', 'location')
-if HAS_REDIS:
-    redis_options = {
-        'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        'REDIS_CLIENT_KWARGS': {'health_check_interval': 30},
-    }
-    redis_tls_config = build_redis_tls_config(config)
-    if redis_tls_config is not None:
-        redis_options['CONNECTION_POOL_KWARGS'] = redis_tls_config
-        redis_options['REDIS_CLIENT_KWARGS'].update(redis_tls_config)
+# Redis Configuration
+redis_connection_kwargs = {
+    "retry": Retry(ExponentialBackoff(), 3),
+    "health_check_interval": 30,
+}
 
-    if config.has_option('redis', 'password'):
-        redis_options['PASSWORD'] = config.get('redis', 'password')
+REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
+HAS_REDIS = bool(REDIS_URL)
+REDIS_HOSTS = [{
+    "address": REDIS_URL,
+    **redis_connection_kwargs,
+}]
 
-    CACHES['redis'] = {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0',
-        'OPTIONS': redis_options,
-    }
-    CACHES['redis_sessions'] = {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0',
-        'TIMEOUT': 3600 * 24 * 30,
-        'OPTIONS': redis_options,
-    }
-    REDIS_USE_PUBSUB = config.getboolean('redis', 'use_pubsub', fallback=True)
-    if not HAS_MEMCACHED:
-        CACHES['default'] = CACHES['redis']
-        REAL_CACHE_USED = True
-    if config.getboolean('redis', 'sessions', fallback=False):
-        SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-        SESSION_CACHE_ALIAS = 'redis_sessions'
+REDIS_USE_PUBSUB = True
+
+redis_options = {
+    'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+    'REDIS_CLIENT_KWARGS': {'health_check_interval': 30},
+}
+redis_tls_config = build_redis_tls_config(config)
+if redis_tls_config is not None:
+    redis_options['CONNECTION_POOL_KWARGS'] = redis_tls_config
+    redis_options['REDIS_CLIENT_KWARGS'].update(redis_tls_config)
+
+if config.has_option('redis', 'password'):
+    redis_options['PASSWORD'] = config.get('redis', 'password')
+
+CACHES['redis'] = {
+    'BACKEND': 'django_redis.cache.RedisCache',
+    'LOCATION': REDIS_URL,
+    'OPTIONS': redis_options,
+}
+CACHES['redis_sessions'] = {
+    'BACKEND': 'django_redis.cache.RedisCache',
+    'LOCATION': REDIS_URL,
+    'TIMEOUT': 3600 * 24 * 30,
+    'OPTIONS': redis_options,
+}
+
+# Channels (WebSocket) configuration
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": (
+            "channels_redis.pubsub.RedisPubSubChannelLayer"
+            if REDIS_USE_PUBSUB
+            else "channels_redis.core.RedisChannelLayer"
+        ),
+        "CONFIG": {
+            "hosts": REDIS_HOSTS,
+            "prefix": "eventyay:{}:asgi:".format(
+                _config.get("redis", "db", fallback="0")
+            ),
+            "capacity": 10000,
+        },
+    },
+}
+
+if not HAS_MEMCACHED:
+    CACHES['default'] = CACHES['redis']
+    REAL_CACHE_USED = True
+if config.getboolean('redis', 'sessions', fallback=False):
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_CACHE_ALIAS = 'redis_sessions'
 
 if not SESSION_ENGINE:
     if REAL_CACHE_USED:
@@ -785,6 +807,10 @@ if not SESSION_ENGINE:
     else:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
+# Celery configuration
+CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
+CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
+CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_DEFAULT_QUEUE = "default"
@@ -797,12 +823,11 @@ CELERY_TASK_QUEUES = (
 )
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_ROUTES = (
-    [
-        ('eventyay.base.services.notifications.*', {'queue': 'notifications'}),
-        ('eventyay.api.webhooks.*', {'queue': 'notifications'}),
-    ],
-)
+CELERY_TASK_ROUTES = {
+    'eventyay.base.services.notifications.*': {'queue': 'notifications'},
+    'eventyay.api.webhooks.*': {'queue': 'notifications'},
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -881,7 +906,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+MESSAGE_TAGS = {
+    messages.INFO: 'alert-info',
+    messages.ERROR: 'alert-danger',
+    messages.WARNING: 'alert-warning',
+    messages.SUCCESS: 'alert-success',
+}
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Template configuration
 template_loaders = (

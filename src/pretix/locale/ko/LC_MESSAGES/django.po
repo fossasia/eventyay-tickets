@@ -8,17 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-06 10:28+0000\n"
-"PO-Revision-Date: 2025-09-30 14:34+0000\n"
-"Last-Translator: Jakub Paw <jakub201307@gmail.com>\n"
-"Language-Team: Polish <https://hosted.weblate.org/projects/open-event/"
-"eventyay-tickets/pl_INFORMAL/>\n"
-"Language: pl_Informal\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: pretix/api/auth/devicesecurity.py:6
 msgid ""
@@ -40,7 +37,7 @@ msgstr ""
 
 #: pretix/api/models.py:18
 msgid "Application name"
-msgstr "Imię aplikacji"
+msgstr ""
 
 #: pretix/api/models.py:21
 msgid "Redirection URIs"
@@ -48,39 +45,39 @@ msgstr ""
 
 #: pretix/api/models.py:22
 msgid "Allowed URIs list, space separated"
-msgstr "Lista dozwolonych URI, spacja oddziela"
+msgstr ""
 
 #: pretix/api/models.py:26
 msgid "Allowed list with space separated"
-msgstr "Dozwolona lista z spacją oddzieloną"
+msgstr ""
 
 #: pretix/api/models.py:30
 #: pretix/plugins/socialauth/templates/socialauth/social_auth_settings.html:56
 msgid "Client ID"
-msgstr "ID klienta"
+msgstr ""
 
 #: pretix/api/models.py:34
 msgid "Client secret"
-msgstr "Sekret Klienta"
+msgstr ""
 
 #: pretix/api/models.py:95
 msgid "Enable webhook"
-msgstr "Włącz webhook"
+msgstr ""
 
 #: pretix/api/models.py:96
 #: pretix/control/templates/pretixcontrol/organizers/webhooks.html:36
 msgid "Target URL"
-msgstr "URL docelowy"
+msgstr ""
 
 #: pretix/api/models.py:97 pretix/base/models/devices.py:100
 #: pretix/base/models/organizer.py:198
 msgid "All events (including newly created ones)"
-msgstr "Wszystkie wydarzenia (z nowo utworzonymi)"
+msgstr ""
 
 #: pretix/api/models.py:98 pretix/base/models/devices.py:101
 #: pretix/base/models/organizer.py:199 pretix/base/models/vouchers.py:544
 msgid "Limit to events"
-msgstr "Limituj do wydarzeń"
+msgstr ""
 
 #: pretix/api/serializers/cart.py:60 pretix/api/serializers/order.py:1124
 msgid "The product \"{}\" is not assigned to a quota."
@@ -95,12 +92,12 @@ msgstr ""
 #: pretix/base/services/orders.py:1183
 #, python-brace-format
 msgid "The selected seat \"{seat}\" is not available."
-msgstr "Wybrane siedzenie \"{seat}\" jest zajęte."
+msgstr ""
 
 #: pretix/api/serializers/checkin.py:47 pretix/base/models/event.py:1582
 #: pretix/base/models/items.py:1260 pretix/base/models/items.py:1490
 msgid "One or more items do not belong to this event."
-msgstr "Jedno albo więcej z przedmiotów nie nalężą do tego wydarzenia."
+msgstr ""
 
 #: pretix/api/serializers/checkin.py:51 pretix/api/serializers/checkin.py:54
 #: pretix/base/models/items.py:1501 pretix/base/models/items.py:1504
@@ -10568,7 +10565,7 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/organizers/index.html:133
 #: pretix/presale/templates/pretixpresale/organizers/index.html:135
 msgid "Tickets"
-msgstr "Bilety"
+msgstr ""
 
 #: pretix/control/navigation.py:58
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
@@ -10647,10 +10644,8 @@ msgid "Check-in lists"
 msgstr ""
 
 #: pretix/control/navigation.py:288
-#, fuzzy
-#| msgid "My Orders"
 msgid "My orders"
-msgstr "Moje zamówienia"
+msgstr ""
 
 #: pretix/control/navigation.py:294 pretix/control/navigation.py:359
 #: pretix/control/templates/pretixcontrol/events/index.html:7
@@ -11330,16 +11325,14 @@ msgid "Lost password?"
 msgstr ""
 
 #: pretix/control/templates/pretixcontrol/auth/login.html:53
-#, fuzzy
-#| msgid "Login with email"
 msgid "Login with Email"
-msgstr "Zaloguj się za pomocą e-maila"
+msgstr ""
 
 #: pretix/control/templates/pretixcontrol/auth/login.html:61
 #: pretix/plugins/socialauth/templates/socialauth/social_auth_settings.html:33
 #, python-format
 msgid "Login with %(provider_capitalized)s"
-msgstr "Zaloguj się z %(provider_capitalized)s"
+msgstr ""
 
 #: pretix/control/templates/pretixcontrol/auth/login_2fa.html:9
 #: pretix/control/templates/pretixcontrol/user/reauth.html:9
@@ -13265,7 +13258,6 @@ msgid "That will cause %(count)s voucher to be unusable."
 msgid_plural "That will cause %(count)s voucher to be unusable."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: pretix/control/templates/pretixcontrol/item/delete.html:29
 #: pretix/control/templates/pretixcontrol/items/quota_delete.html:31
@@ -14839,7 +14831,6 @@ msgid "1 order"
 msgid_plural "%(s)s orders"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: pretix/control/templates/pretixcontrol/orders/overview.html:5
 #: pretix/control/templates/pretixcontrol/orders/overview.html:12
@@ -16239,7 +16230,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/user/orders.html:6
 #: pretix/control/templates/pretixcontrol/user/orders.html:8
 msgid "My Orders"
-msgstr "Moje zamówienia"
+msgstr ""
 
 #: pretix/control/templates/pretixcontrol/user/orders.html:69
 msgid "You have not made any orders yet."
@@ -16784,7 +16775,6 @@ msgid "{num} order"
 msgid_plural "{num} orders"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: pretix/control/views/event.py:185
 #: pretix/control/views/organizer_views/organizer_view.py:127
@@ -17884,10 +17874,8 @@ msgid "Tickets Dashboard"
 msgstr ""
 
 #: pretix/eventyay_common/templates/eventyay_common/event/fragment_dashboard.html:34
-#, fuzzy
-#| msgid "Speakers"
 msgid "Talks and Speakers"
-msgstr "Głośniki"
+msgstr ""
 
 #: pretix/eventyay_common/templates/eventyay_common/event/fragment_dashboard.html:39
 msgid ""
@@ -17928,10 +17916,8 @@ msgstr ""
 
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:55
 #: pretix/eventyay_common/templates/eventyay_common/events/create_foundation.html:16
-#, fuzzy
-#| msgid "Tickets"
 msgid "Tickets system"
-msgstr "Bilety"
+msgstr ""
 
 #: pretix/eventyay_common/templates/eventyay_common/event/settings.html:67
 msgid "Setting"
@@ -18707,7 +18693,6 @@ msgid_plural ""
 "and a total of %(sum)s."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: pretix/plugins/banktransfer/templates/pretixplugins/banktransfer/sepa_export.html:23
 msgid ""
@@ -19847,7 +19832,6 @@ msgid "You need to choose exactly one option from this category."
 msgid_plural "You need to choose %(min_count)s options from this category."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: pretix/presale/templates/pretixpresale/event/checkout_addons.html:53
 #, python-format
@@ -20050,10 +20034,8 @@ msgid ""
 msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:198
-#, fuzzy
-#| msgid "My Orders"
 msgid "Place order"
-msgstr "Moje zamówienia"
+msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/checkout_confirm.html:200
 msgid "Submit registration"
@@ -20210,7 +20192,6 @@ msgid "One product"
 msgid_plural "%(num)s products"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: pretix/presale/templates/pretixpresale/event/fragment_cart.html:298
 #, python-format
@@ -20395,19 +20376,19 @@ msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/index.html:38
 msgid "Schedule"
-msgstr "Harmonogram"
+msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/index.html:43
 msgid "Sessions"
-msgstr "Sesje"
+msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/index.html:48
 msgid "Speakers"
-msgstr "Głośniki"
+msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/index.html:61
 msgid "Join online event"
-msgstr "Dołącz do wydarzenia online"
+msgstr ""
 
 #: pretix/presale/templates/pretixpresale/event/index.html:104
 #: pretix/presale/templates/pretixpresale/event/index.html:122
@@ -20983,10 +20964,8 @@ msgid "Can't find your ticket?"
 msgstr ""
 
 #: pretix/presale/templates/pretixpresale/fragment_modals.html:31
-#, fuzzy
-#| msgid "Login with email"
 msgid "Resend the email"
-msgstr "Zaloguj się za pomocą e-maila"
+msgstr ""
 
 #: pretix/presale/templates/pretixpresale/fragment_modals.html:33
 msgid "to receive it."
@@ -21021,10 +21000,8 @@ msgid ""
 msgstr ""
 
 #: pretix/presale/templates/pretixpresale/fragment_modals.html:56
-#, fuzzy
-#| msgid "Login with email"
 msgid "Login here"
-msgstr "Zaloguj się za pomocą e-maila"
+msgstr ""
 
 #: pretix/presale/templates/pretixpresale/fragment_week_calendar.html:78
 #: pretix/presale/views/widget.py:349
@@ -21433,17 +21410,3 @@ msgstr ""
 #: pretix/settings.py:822
 msgid "Kosovo"
 msgstr ""
-
-#, fuzzy
-#~| msgid "Sessions"
-#~ msgid "Versions"
-#~ msgstr "Sesje"
-
-#~ msgid "Logout"
-#~ msgstr "Wyloguj się"
-
-#~ msgid "Want to create a %(event_name)s account?"
-#~ msgstr "Chcesz utworzyć konto %(event_name)s?"
-
-#~ msgid "Already have a %(event_name)s account?"
-#~ msgstr "Masz już konto %(event_name)s?"
