@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import configparser
+import importlib_metadata
 import importlib.util
 import os
 import sys
@@ -188,7 +189,24 @@ CORE_MODULES = (
 PLUGINS = []
 for entry_point in entry_points(group='pretalx.plugin'):
     PLUGINS.append(entry_point.module)
-    # INSTALLED_APPS += tuple(entry_point.module)
+    # TODO:
+    # pretalx_venueless , pretalx_downstream and pretalx_pages module's import statement must be changed w.r.t. enext.
+    # Then you can uncomment the below code safely.
+    # INSTALLED_APPS += (entry_point.module, )
+
+entry_points = importlib_metadata.entry_points()
+
+PRETIX_PLUGINS_EXCLUDE = config.get('eventyay', 'plugins_exclude', fallback='').split(',')
+
+for entry_point in entry_points.select(group='pretix.plugin'):
+    if entry_point.module not in PRETIX_PLUGINS_EXCLUDE:
+        PLUGINS.append(entry_point.module)
+        # TODO:
+        # pretix_venueless and pretix_pages module's import statement must be changed w.r.t. enext.
+        # Then you can remove the below check safely.
+        if entry_point.module == 'pretix_venueless' or entry_point.module == 'pretix_pages':
+            continue
+        INSTALLED_APPS += (entry_point.module,)
 
 _LIBRARY_MIDDLEWARES = (
     'corsheaders.middleware.CorsMiddleware',
