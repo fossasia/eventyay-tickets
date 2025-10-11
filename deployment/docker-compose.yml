@@ -26,7 +26,7 @@ services:
     volumes:
       - ./eventyay.cfg:/etc/eventyay.cfg:ro
     env_file:
-      - ./.env.dev
+      - ./.env
     depends_on:
       - db
       - redis
