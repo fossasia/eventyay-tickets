@@ -1,5 +1,4 @@
-{% extends "orga/base.html" %}
-
+{% extends "pretixcontrol/admin/base.html" %}
 {% load compress %}
 {% load copyable %}
 {% load i18n %}
@@ -11,11 +10,11 @@
     {% endcompress %}
 {% endblock scripts %}
 
-{% block extra_title %}{% translate "Administrator information" %} :: {% endblock extra_title %}
+{% block title %}{% translate "System information" %} :: {% endblock title %}
 
 {% block content %}
 
-    <h1>{% translate "Administrator information" %}</h1>
+    <h1>{% translate "System information" %}</h1>
 
     {% if settings.DEBUG %}
         <div class="alert alert-danger"><span></span><span>
@@ -30,7 +29,7 @@
 
     <p>
         {% translate "Your eventyay version is:" %} <strong>{{ eventyay_version|copyable }}</strong>.
-        {% url 'orga:admin.update' as update_url %}
+        {% url 'control:admin.update' as update_url %}
         {% blocktranslate trimmed %}
             You can check for updates <a href="{{ update_url }}">here</a>.
         {% endblocktranslate %}
@@ -39,9 +38,9 @@
     <h2>{% translate "Settings" %}</h2>
 
     <p>
-        {% if settings.TALK_CONFIG_FILES %}
+        {% if settings %}
             {% translate "Settings have been loaded from:" %}
-            {% for config_file in settings.TALK_CONFIG_FILES %}
+            {% for config_file in settings.LOADED_FILES %}
                 <code>{{ config_file|copyable }}</code>{% if not forloop.last %},{% endif %}
             {% endfor %}
         {% else %}

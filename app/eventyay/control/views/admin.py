@@ -1,3 +1,4 @@
+import sys
 from datetime import UTC
 from zoneinfo import ZoneInfo
 import dateutil.parser
@@ -7,7 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
@@ -15,22 +16,29 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     CreateView,
     DeleteView,
+    FormView,
     ListView,
     TemplateView,
     UpdateView,
 )
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
+from django_context_decorator import context
 
 from django.utils.timezone import make_aware, is_aware
 
 from django.utils.functional import cached_property
+from eventyay.celery_app import app
 from eventyay.control.forms.filter import AttendeeFilterForm
+from eventyay.control.forms.admin.admin import UpdateSettingsForm
 
 from eventyay.base.models.checkin import Checkin
 from eventyay.base.models.orders import OrderPosition
 from eventyay.base.models.organizer import Organizer
+from eventyay.base.models.settings import GlobalSettings
 from eventyay.base.models.submission import Submission
 from eventyay.base.models.vouchers import InvoiceVoucher
+from eventyay.base.services.update_check import check_result_table, update_check
+from eventyay.common.text.phrases import phrases
 from eventyay.control.forms.admin.vouchers import InvoiceVoucherForm
 from eventyay.control.forms.filter import OrganizerFilterForm, SubmissionFilterForm, TaskFilterForm
 from eventyay.control.permissions import AdministratorPermissionRequiredMixin

@@ -42,13 +42,18 @@ from .settings_helpers import build_redis_tls_config
 
 # Configuration file handling
 _config = configparser.RawConfigParser()
+LOADED_FILES = []
+
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
-    _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
+    config_file_path = os.environ.get('EVENTYAY_CONFIG_FILE')
+    _config.read_file(open(config_file_path, encoding='utf-8'))
+    LOADED_FILES.append(config_file_path)
 else:
-    _config.read(
-        ['/etc/eventyay/eventyay.cfg', os.path.expanduser('~/.eventyay.cfg'), 'eventyay.cfg'],
-        encoding='utf-8',
-    )
+    possible_files = ['/etc/eventyay/eventyay.cfg', os.path.expanduser('~/.eventyay.cfg'), 'eventyay.cfg']
+    for file_path in possible_files:
+        if os.path.exists(file_path):
+            _config.read(file_path, encoding='utf-8')
+            LOADED_FILES.append(file_path)
 
 config = EnvOrParserConfig(_config)
 talk_config, TALK_CONFIG_FILES = build_config()
