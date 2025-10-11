@@ -14,6 +14,7 @@ import configparser
 import importlib.util
 import os
 import sys
+import socket
 from importlib.metadata import entry_points
 from pathlib import Path
 from urllib.parse import urlparse
@@ -731,13 +732,20 @@ if HAS_MEMCACHED:
         'LOCATION': config.get('memcached', 'location'),
     }
 
+def redis_fallback_url(db: int):
+    try:
+        socket.create_connection(("eventyay-next-redis", 6379), timeout=1)
+        return f"redis://eventyay-next-redis:6379/{db}"
+    except OSError:
+        return f"redis://localhost:6379/{db}"
+
 # Redis Configuration
 redis_connection_kwargs = {
     "retry": Retry(ExponentialBackoff(), 3),
     "health_check_interval": 30,
 }
 
-REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
+REDIS_URL = config.get('redis', 'location', fallback=redis_fallback_url(0))
 HAS_REDIS = bool(REDIS_URL)
 REDIS_HOSTS = [{
     "address": REDIS_URL,
@@ -802,8 +810,8 @@ if not SESSION_ENGINE:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Celery configuration
-CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
-CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
+CELERY_BROKER_URL = config.get('celery', 'broker', fallback=redis_fallback_url(2))
+CELERY_RESULT_BACKEND = config.get('celery', 'backend', fallback=redis_fallback_url(1))
 CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"

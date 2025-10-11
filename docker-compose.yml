@@ -18,6 +18,7 @@ services:
 
   redis:
     image: redis:latest
+    platform: linux/amd64
     container_name: eventyay-next-redis
     restart: unless-stopped
     volumes:
