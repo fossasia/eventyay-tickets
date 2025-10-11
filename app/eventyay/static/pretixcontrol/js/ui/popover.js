@@ -18,7 +18,7 @@ $(function () {
     const accountPath = `/common/account/`;
     const adminPath = `/control/admin/`;
 
-    const logoutPath = `/control/logout?${logoutParams}`;
+    const logoutPath = `/common/logout/?${logoutParams}`;
 
     const options = {
         html: true,
