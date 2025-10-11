@@ -1,4 +1,4 @@
-name: eventyay
+name: eventyay-next
 
 services:
   web:
@@ -14,6 +14,17 @@ services:
       - ./.env.dev
     depends_on:
       - db
+      - redis
+
+  redis:
+    image: redis:latest
+    container_name: eventyay-next-redis
+    restart: unless-stopped
+    volumes:
+      - rd:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
   db:
     image: postgres:15
     platform: linux/amd64
@@ -25,3 +36,4 @@ services:
 
 volumes:
   postgres_data_dev:
+  rd:
