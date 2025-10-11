@@ -39,7 +39,7 @@ $(function () {
 
     // Constructing logout path using URLSearchParams
     let logoutParams = new URLSearchParams({ back: backUrl });
-    var logoutPath = `/control/logout?${logoutParams}`;
+    var logoutPath = `/common/logout/?${logoutParams}`;
 
     var profilePath = `/control/settings/`;
     var orderPath = `/control/settings/orders/`;
