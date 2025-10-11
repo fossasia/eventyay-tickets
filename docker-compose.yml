@@ -16,8 +16,22 @@ services:
       - db
       - redis
 
+  worker:
+    build: ./app
+    platform: linux/amd64
+    container_name: eventyay-next-worker
+    entrypoint: celery -A eventyay worker -l info
+    volumes:
+      - ./app/eventyay:/usr/src/app/eventyay
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+      - redis
+
   redis:
     image: redis:latest
+    platform: linux/amd64
     container_name: eventyay-next-redis
     restart: unless-stopped
     volumes:
