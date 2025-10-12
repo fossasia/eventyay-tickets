@@ -34,6 +34,7 @@ base_patterns = [
     # url(r'^api/v1/', include(('eventyay.api.urls', 'eventyayapi'), namespace='api-v1')),
     # url(r'^api/$', RedirectView.as_view(url='/api/v1/'), name='redirect-api-version'),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^', include('eventyay.plugins.socialauth.urls')),
 ]
 
 control_patterns = [

@@ -11,6 +11,7 @@ from pytz import common_timezones
 
 from eventyay.base.models import User
 from eventyay.control.forms import SingleLanguageWidget
+from eventyay.person.utils import is_wikimedia_user
 
 
 class UserSettingsForm(forms.ModelForm):
@@ -62,7 +63,8 @@ class UserSettingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        self.fields['email'].required = True
+        # Make email optional for Wikimedia users
+        self.fields['email'].required = not is_wikimedia_user(self.user)
         self.fields['wikimedia_username'].widget.attrs['readonly'] = True
         if self.user.auth_backend != 'native':
             del self.fields['old_pw']

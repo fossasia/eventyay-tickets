@@ -41,6 +41,7 @@ from eventyay.common.image import create_thumbnail
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.urls import EventUrls
 from eventyay.helpers.urls import build_absolute_uri
+from eventyay.person.utils import is_placeholder_email
 from eventyay.talk_rules.person import is_administrator
 
 from ...helpers.u2f import pub_key_from_der, websafe_decode
@@ -164,7 +165,8 @@ class User(
         unique=True, db_index=True, null=True, blank=True, verbose_name=_('E-mail'), max_length=190
     )
     fullname = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('Full name'))
-    wikimedia_username = models.CharField(max_length=255, blank=True, null=True, verbose_name=('Wikimedia username'))
+    wikimedia_username = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('Wikimedia username'))
+    is_wikimedia_user = models.BooleanField(default=False, verbose_name=_('Is Wikimedia user'))
     is_active = models.BooleanField(default=True, verbose_name=_('Is active'))
     is_staff = models.BooleanField(default=False, verbose_name=_('Is site admin'))
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name=_('Date joined'))
@@ -348,6 +350,9 @@ class User(
     def send_security_notice(self, messages, email=None):
         from eventyay.base.services.mail import SendMailException, mail
 
+        # Skip email notifications for placeholder Wikimedia emails
+        if is_placeholder_email(self.email):
+            return
 
         try:
             with language(self.locale):
@@ -367,6 +372,10 @@ class User(
 
     def send_password_reset(self, request: HttpRequest):
         from eventyay.base.services.mail import mail
+
+        # Skip email notifications for placeholder Wikimedia emails
+        if is_placeholder_email(self.email):
+            return
 
         subject = _('Password recovery')
         security_token = default_token_generator.make_token(self)
@@ -681,6 +690,12 @@ class User(
         self.pw_reset_time = now()
         self.save()
 
+        self.log_action(action='eventyay.user.password.reset', user=user)
+
+        # Skip email notifications for placeholder Wikimedia emails
+        if is_placeholder_email(self.email):
+            return
+
         context = {
             'name': self.fullname or '',
             'url': self.get_password_reset_url(event=event, orga=orga),
@@ -707,7 +722,6 @@ the eventyay robot"""
                 locale=self.locale,
                 to=self.email,
             ).send()
-        self.log_action(action='eventyay.user.password.reset', user=user)
 
     reset_password.alters_data = True
 
@@ -722,6 +736,12 @@ the eventyay robot"""
         self.pw_reset_token = None
         self.pw_reset_time = None
         self.save()
+
+        self.log_action(action='eventyay.user.password.changed', user=self)
+
+        # Skip email notifications for placeholder Wikimedia emails
+        if is_placeholder_email(self.email):
+            return
 
         context = {
             'name': self.name or '',
@@ -744,8 +764,6 @@ the eventyay team"""
                 locale=self.locale,
                 to=self.email,
             ).send()
-
-        self.log_action(action='eventyay.user.password.changed', user=self)
 
     change_password.alters_data = True
 

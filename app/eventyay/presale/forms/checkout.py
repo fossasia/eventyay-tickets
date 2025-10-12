@@ -17,6 +17,7 @@ from eventyay.base.forms.questions import (
 )
 from eventyay.base.i18n import get_babel_locale, language
 from eventyay.base.validators import EmailBanlistValidator
+from eventyay.person.utils import is_wikimedia_user
 from eventyay.presale.signals import contact_form_fields
 
 
@@ -34,11 +35,21 @@ class ContactForm(forms.Form):
         self.all_optional = kwargs.pop('all_optional', False)
         super().__init__(*args, **kwargs)
 
+        # Make email optional for Wikimedia users
+        if self.request and self.request.user and is_wikimedia_user(self.request.user):
+            self.fields['email'].required = False
+            self.fields['email'].help_text = _('E-mail (optional for Wikimedia users)')
+        else:
+            self.fields['email'].required = True
+
         if self.event.settings.order_email_asked_twice:
             self.fields['email_repeat'] = forms.EmailField(
                 label=_('E-mail address (repeated)'),
                 help_text=_('Please enter the same email address again to make sure you typed it correctly.'),
             )
+            # Make email_repeat optional for Wikimedia users too
+            if self.request and self.request.user and is_wikimedia_user(self.request.user):
+                self.fields['email_repeat'].required = False
 
         if self.event.settings.order_phone_asked:
             with language(get_babel_locale()):
@@ -82,6 +93,16 @@ class ContactForm(forms.Form):
                 v.widget.is_required = False
 
     def clean(self):
+        cleaned_data = super().clean()
+
+        # For Wikimedia users, skip email validation
+        if self.request and self.request.user and is_wikimedia_user(self.request.user):
+            return cleaned_data
+
+        # For non-Wikimedia users, validate email is provided
+        if not cleaned_data.get('email'):
+            raise ValidationError(_('Email is required'))
+
         if (
             self.event.settings.order_email_asked_twice
             and self.cleaned_data.get('email')
@@ -90,6 +111,7 @@ class ContactForm(forms.Form):
             if self.cleaned_data.get('email').lower() != self.cleaned_data.get('email_repeat').lower():
                 raise ValidationError(_('Please enter the same email address twice.'))
 
+        return cleaned_data
 
 class InvoiceAddressForm(BaseInvoiceAddressForm):
     required_css_class = 'required'
