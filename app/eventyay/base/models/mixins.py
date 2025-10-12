@@ -1,13 +1,13 @@
 import json
 from contextlib import suppress
 
+from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, models
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django_scopes import ScopedManager, scopes_disabled
+from i18nfield.utils import I18nJSONEncoder
 from rules.contrib.models import RulesModelBase, RulesModelMixin
-
-from eventyay.helpers.json import CustomJSONEncoder
 
 SENSITIVE_KEYS = ['password', 'secret', 'api_key']
 
@@ -24,22 +24,8 @@ class LogMixin:
     log_prefix = None
     log_parent = None
 
-    def log_action(
-        self,
-        action,
-        data=None,
-        user=None,
-        api_token=None,
-        auth=None,
-        person=None,
-        orga=False,
-        content_object=None,
-        save=True,
-    ):
-        """
-        Create a LogEntry (instead of ActivityLog), similar to LoggingMixin.
-        """
-        if not getattr(self, 'pk', None):
+    def log_action(self, action, data=None, person=None, orga=False, content_object=None):
+        if not self.pk:
             return
 
         if action.startswith('.'):
@@ -48,81 +34,35 @@ class LogMixin:
             else:
                 return
 
-        from eventyay.api.models import OAuthAccessToken, OAuthApplication
-        from eventyay.api.webhooks import notify_webhooks
-
-        from ..services.notifications import notify
-        from .devices import Device
-        from .event import Event
-        from .log import LogEntry
-        from .organizer import TeamAPIToken
-
-        # Resolve event
-        event = None
-        if isinstance(self, Event):
-            event = self
-        elif hasattr(self, 'event'):
-            event = self.event
-
-        # Ensure user is authenticated
-        if user and not getattr(user, 'is_authenticated', True):
-            user = None
-
-        # Auth / token mapping
-        kwargs = {}
-        if isinstance(auth, OAuthAccessToken):
-            kwargs['oauth_application'] = auth.application
-        elif isinstance(auth, OAuthApplication):
-            kwargs['oauth_application'] = auth
-        elif isinstance(auth, TeamAPIToken):
-            kwargs['api_token'] = auth
-        elif isinstance(auth, Device):
-            kwargs['device'] = auth
-        elif isinstance(api_token, TeamAPIToken):
-            kwargs['api_token'] = api_token
-
-        # Sanitize data
-        if isinstance(data, dict):
-            sensitive_keys = ['password', 'secret', 'api_key']
-            for sensitive in sensitive_keys:
-                for k, v in data.items():
-                    if sensitive in k and v:
-                        data[k] = '********'
-            data = json.dumps(data, cls=CustomJSONEncoder, sort_keys=True)
+        if data and isinstance(data, dict):
+            for key, value in data.items():
+                if any(sensitive_key in key for sensitive_key in SENSITIVE_KEYS):
+                    value = data[key]
+                    data[key] = '********' if value else value
+            data = json.dumps(data, cls=I18nJSONEncoder)
         elif data:
             raise TypeError(f'Logged data should always be a dictionary, not {type(data)}.')
 
-        log_entry = LogEntry.objects.create(
+        from eventyay.base.models import ActivityLog
+
+        return ActivityLog.objects.create(
+            event=getattr(self, 'event', None),
+            person=person,
             content_object=content_object or self,
-            user=user or person,
             action_type=action,
-            event=event,
             data=data,
             is_orga_action=orga,
-            **kwargs,
         )
 
-        if save:
-            log_entry.save()
-            if getattr(log_entry, 'notification_type', None):
-                notify.apply_async(args=(log_entry.pk,))
-            if getattr(log_entry, 'webhook_type', None):
-                notify_webhooks.apply_async(args=(log_entry.pk,))
-
-        return log_entry
-
     def logged_actions(self):
-        """Return all logs for this object."""
-        from django.contrib.contenttypes.models import ContentType
-
-        from .log import LogEntry
+        from eventyay.base.models import ActivityLog
 
         return (
-            LogEntry.objects.filter(
+            ActivityLog.objects.filter(
                 content_type=ContentType.objects.get_for_model(type(self)),
                 object_id=self.pk,
             )
-            .select_related('event', 'user')
+            .select_related('event', 'person')
             .prefetch_related('content_object')
         )
 

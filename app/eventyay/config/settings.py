@@ -16,6 +16,12 @@ import os
 import sys
 from importlib.metadata import entry_points
 from pathlib import Path
+# Ensure local ticket-video plugin is importable
+_PLUGIN_LOCAL = Path(__file__).resolve().parents[3] / 'eventyay-ticket-video'
+if _PLUGIN_LOCAL.is_dir():
+    p = str(_PLUGIN_LOCAL)
+    if p not in sys.path:
+        sys.path.insert(0, p)
 from urllib.parse import urlparse
 import django.conf.locale
 from django.contrib.messages import constants as messages  # NOQA
@@ -30,6 +36,7 @@ from pycountry import currencies
 from eventyay import __version__
 from eventyay.common.settings.config import build_config
 
+# Configuration file handling
 _config = configparser.RawConfigParser()
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
@@ -76,6 +83,10 @@ DATABASE_REPLICA = 'default'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# Video / websocket base path adjustments
+BASE_PATH = ''  # root for classic app
+VIDEO_BASE_PATH = '/video'
+WEBSOCKET_URL = os.getenv('EVENTYAY_WEBSOCKET_URL', '/ws/event/')  # prefix; event id appended client-side
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 
@@ -168,8 +179,8 @@ _OURS_APPS = (
     'eventyay.plugins.scheduledtasks',
     'eventyay.plugins.ticketoutputpdf',
     'eventyay.plugins.webcheckin',
-    'eventyay.schedule',
-    'eventyay.submission',
+    # Load local ticket-video plugin
+    'pretix_venueless',
 )
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
@@ -265,6 +276,7 @@ TEMPLATES = (
                 'eventyay.control.context.contextprocessor',
                 'eventyay.presale.context.contextprocessor',
                 'eventyay.eventyay_common.context.contextprocessor',
+                'django.template.context_processors.request',
             ],
             'loaders': template_loaders,
         },
@@ -655,6 +667,10 @@ if os.getenv("EVENTYAY_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("EVENTYAY_COOKIE_DOMAIN", "")
 
 
+MEDIA_URL = os.getenv(
+    "EVENTYAY_MEDIA_URL", _config.get("urls", "media", fallback="/media/")
+)
+
 WEBSOCKET_PROTOCOL = os.getenv(
     "EVENTYAY_WEBSOCKET_PROTOCOL",
     _config.get("websocket", "protocol", fallback="wss"),
@@ -828,10 +844,14 @@ CELERY_TASK_ROUTES = {
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'webapp', 'dist'),
+    # Added to make sure root package static assets (e.g. pretixcontrol/scss/) are found
+    os.path.join(BASE_DIR, 'static'),
+]
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

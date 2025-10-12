@@ -23,10 +23,9 @@
 						.key {{ key }}
 						.value {{ val }}
 					bunt-input(v-model="config.theme.textOverwrites[key]", :name="key")
-	.ui-form-actions-wrapper
-		.ui-form-actions
-			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
-			.errors {{ validationErrors.join(', ') }}
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core'

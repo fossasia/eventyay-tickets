@@ -2,6 +2,7 @@ import datetime as dt
 from datetime import datetime
 from datetime import timezone as tz
 from enum import StrEnum
+from urllib.parse import urlparse
 
 import jwt
 from django.conf import settings
@@ -19,6 +20,7 @@ from django.views.generic import ListView
 from django_scopes import scope
 from pytz import timezone
 from rest_framework import views
+from django.views import View
 
 from eventyay.base.forms import SafeSessionWizardView
 from eventyay.base.i18n import language
@@ -36,7 +38,7 @@ from eventyay.control.views import PaginationMixin, UpdateView
 from eventyay.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from eventyay.control.views.product import MetaDataEditorMixin
 from eventyay.eventyay_common.forms.event import EventCommonSettingsForm
-from eventyay.eventyay_common.tasks import create_world
+from eventyay.eventyay_common.tasks import create_world, send_event_webhook
 from eventyay.eventyay_common.utils import (
     EventCreatedFor,
     check_create_permission,
@@ -228,40 +230,51 @@ class EventCreateView(SafeSessionWizardView):
         has_permission = check_create_permission(self.request)
         final_is_video_creation = foundation_data.get('is_video_creation', True) and has_permission
 
-        with transaction.atomic(), language(basics_data['locale']):
-            event = form_dict['basics'].instance
-            event.organizer = foundation_data['organizer']
-            event.plugins = settings.PRETIX_PLUGINS_DEFAULT
-            event.has_subevents = foundation_data['has_subevents']
-            event.is_video_creation = final_is_video_creation
-            event.testmode = True
-            form_dict['basics'].save()
+        if create_for == EventCreatedFor.TALK:
+            event_dict = {
+                'organiser_slug': (foundation_data.get('organizer').slug if foundation_data.get('organizer') else None),
+                'name': (basics_data.get('name').data if basics_data.get('name') else None),
+                'slug': basics_data.get('slug'),
+                'is_public': False,
+                'date_from': str(basics_data.get('date_from')),
+                'date_to': str(basics_data.get('date_to')),
+                'timezone': str(basics_data.get('timezone')),
+                'locale': basics_data.get('locale'),
+                'locales': foundation_data.get('locales'),
+                'is_video_creation': final_is_video_creation,
+            }
+            send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
+        else:
+            with transaction.atomic(), language(basics_data['locale']):
+                event = form_dict['basics'].instance
+                event.organizer = foundation_data['organizer']
+                event.plugins = settings.PRETIX_PLUGINS_DEFAULT
+                event.has_subevents = foundation_data['has_subevents']
+                event.is_video_creation = final_is_video_creation
+                event.testmode = True
+                form_dict['basics'].save()
 
-            with scope(organizer=event.organizer):
-                event.checkin_lists.create(name=_('Default'), all_products=True)
-            event.set_defaults()
-            event.settings.set('timezone', basics_data['timezone'])
-            event.settings.set('locale', basics_data['locale'])
-            event.settings.set('locales', foundation_data['locales'])
-            if create_for == EventCreatedFor.BOTH:
-                event_dict = {
-                    'organiser_slug': event.organizer.slug,
-                    'name': event.name.data,
-                    'slug': event.slug,
-                    'is_public': event.live,
-                    'date_from': str(event.date_from),
-                    'date_to': str(event.date_to),
-                    'timezone': str(basics_data.get('timezone')),
-                    'locale': event.settings.locale,
-                    'locales': event.settings.locales,
-                    'is_video_creation': final_is_video_creation,
-                }
-            event.settings.set('create_for', create_for)
-
-            event.log_action(
-                    action='eventyay.event.added',
-                    user=self.request.user,
-                )
+                with scope(organizer=event.organizer):
+                    event.checkin_lists.create(name=_('Default'), all_products=True)
+                event.set_defaults()
+                event.settings.set('timezone', basics_data['timezone'])
+                event.settings.set('locale', basics_data['locale'])
+                event.settings.set('locales', foundation_data['locales'])
+                if create_for == EventCreatedFor.BOTH:
+                    event_dict = {
+                        'organiser_slug': event.organizer.slug,
+                        'name': event.name.data,
+                        'slug': event.slug,
+                        'is_public': event.live,
+                        'date_from': str(event.date_from),
+                        'date_to': str(event.date_to),
+                        'timezone': str(basics_data.get('timezone')),
+                        'locale': event.settings.locale,
+                        'locales': event.settings.locales,
+                        'is_video_creation': final_is_video_creation,
+                    }
+                    send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
+                event.settings.set('create_for', create_for)
 
         # The user automatically creates a world when selecting the add video option in the create ticket form.
         event_data = dict(
@@ -362,6 +375,22 @@ class EventUpdate(
             messages.error(self.request, _('You do not have permission to perform this action.'))
             return False
 
+        send_event_webhook.delay(
+            user_id=self.request.user.id,
+            event={
+                'organiser_slug': self.request.event.organizer.slug,
+                'name': self.request.event.name.data,
+                'slug': self.request.event.slug,
+                'date_from': str(self.request.event.date_from),
+                'date_to': str(self.request.event.date_to),
+                'timezone': str(self.request.event.settings.timezone),
+                'locale': self.request.event.settings.locale,
+                'locales': self.request.event.settings.locales,
+                'is_video_creation': self.request.event.is_video_creation,
+            },
+            action='create',
+        )
+
         return True
 
     def enable_video_system(self, request: HttpRequest) -> bool:
@@ -404,6 +433,19 @@ class EventUpdate(
                 event = form.instance
                 event.date_from = self.reset_timezone(zone, event.date_from)
                 event.date_to = self.reset_timezone(zone, event.date_to)
+                if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH:
+                    event_dict = {
+                        'organiser_slug': event.organizer.slug,
+                        'name': event.name.data,
+                        'slug': event.slug,
+                        'date_from': str(event.date_from),
+                        'date_to': str(event.date_to),
+                        'timezone': str(event.settings.timezone),
+                        'locale': event.settings.locale,
+                        'locales': event.settings.locales,
+                        'is_video_creation': request.event.is_video_creation,
+                    }
+                    send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='update')
                 return self.form_valid(form)
             else:
                 messages.error(
@@ -420,32 +462,94 @@ class EventUpdate(
         return tz.localize(dt.replace(tzinfo=None)) if dt is not None else None
 
 
-class VideoAccessAuthenticator(views.APIView):
+class VideoAccessAuthenticator(View):
     def get(self, request, *args, **kwargs):
         """
         Check if the video configuration is complete, the plugin is enabled, and the user has permission to modify the event settings.
-        If all conditions are met, generate a token and include it in the URL for the video system.
+        If configuration is missing, automatically set it up. Then generate a token and redirect to video system.
         @param request: user request
         @param args: arguments
         @param kwargs: keyword arguments
         @return: redirect to the video system
         """
-        #  Check if the video configuration is fulfilled and the plugin is enabled
-        if (
-            'pretix_venueless' not in self.request.event.get_plugins()
-            or not self.request.event.settings.venueless_url
-            or not self.request.event.settings.venueless_issuer
-            or not self.request.event.settings.venueless_audience
-            or not self.request.event.settings.venueless_secret
-        ):
-            raise PermissionDenied(_('Event information is not available or the video plugin is turned off.'))
         # Check if the organizer has permission for the event
         if not self.request.user.has_event_permission(
             self.request.organizer, self.request.event, 'can_change_event_settings'
         ):
             raise PermissionDenied(_('You do not have permission to access this video system.'))
+
+        # Auto-setup video configuration if missing
+        self._ensure_video_configuration()
+
         # Generate token and include in url to video system
         return redirect(self.generate_token_url(request))
+
+    def _ensure_video_configuration(self):
+        """
+        Ensure video configuration is set up properly, similar to admin token flow
+        """
+        event = self.request.event
+        request = self.request
+
+        # Ensure JWT configuration exists
+        if not event.config or not event.config.get("JWT_secrets"):
+            from django.utils.crypto import get_random_string
+
+            secret = get_random_string(length=64)
+            event.config = {
+                "JWT_secrets": [
+                    {
+                        "issuer": "any",
+                        "audience": "eventyay",
+                        "secret": secret,
+                    }
+                ]
+            }
+            event.save()
+
+        # Get or use existing JWT secret
+        jwt_config = event.config["JWT_secrets"][0]
+        secret = jwt_config["secret"]
+        audience = jwt_config["audience"]
+        issuer = jwt_config["issuer"]
+
+        # Setup video plugin settings for the webapp
+        if (
+            not event.settings.venueless_secret
+            or not event.settings.venueless_issuer
+            or not event.settings.venueless_audience
+            or not event.settings.venueless_url
+        ):
+
+            event.settings.venueless_secret = secret
+            event.settings.venueless_issuer = issuer
+            event.settings.venueless_audience = audience
+            # Choose base site dynamically: prefer current request host (useful for local dev)
+            scheme = 'https' if request.is_secure() else 'http'
+            base_site = f"{scheme}://{request.get_host()}"
+            event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+
+        # If the saved URL points to a different host than the current request (e.g., prod domain),
+        # adjust it to the current host so local development goes to localhost.
+        try:
+            saved = urlparse(str(event.settings.venueless_url))
+            current_host = request.get_host()
+            if saved.netloc and saved.netloc != current_host:
+                scheme = 'https' if request.is_secure() else 'http'
+                base_site = f"{scheme}://{current_host}"
+                event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+        except Exception:
+            # If parsing fails for any reason, fall back to the current request host
+            scheme = 'https' if request.is_secure() else 'http'
+            base_site = f"{scheme}://{request.get_host()}"
+            event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+
+        # Ensure the pretix_venueless plugin is enabled
+        current_plugins = set(event.get_plugins())
+        if 'pretix_venueless' not in current_plugins:
+            current_plugins.add('pretix_venueless')
+            event.plugins = ','.join(current_plugins)
+            event.save()
 
     def generate_token_url(self, request):
         uid_token = encode_email(request.user.email)

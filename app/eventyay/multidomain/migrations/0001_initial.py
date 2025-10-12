@@ -5,6 +5,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [
@@ -16,26 +17,8 @@ class Migration(migrations.Migration):
             name='KnownDomain',
             fields=[
                 ('domainname', models.CharField(max_length=255, primary_key=True, serialize=False)),
-                (
-                    'event',
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.PROTECT,
-                        related_name='domains',
-                        to='base.event',
-                    ),
-                ),
-                (
-                    'organizer',
-                    models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name='domains',
-                        to='base.organizer',
-                    ),
-                ),
+                ('event', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='domains', to='base.event')),
+                ('organizer', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='domains', to='base.organizer')),
             ],
             options={
                 'verbose_name': 'Known domain',

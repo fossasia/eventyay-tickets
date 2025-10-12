@@ -5,7 +5,8 @@
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
-import { Session } from '@pretalx/schedule'
+// Replace '@pretalx/schedule' Session import with local implementation
+import Session from 'views/schedule/schedule-components/Session.vue'
 
 export default {
 	components: {Session},

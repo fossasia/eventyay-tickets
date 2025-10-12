@@ -443,7 +443,10 @@ def login(
     user.last_login = now()
     user.save(update_fields=["last_login"])
 
-    if event.config.get("track_event_views", False):
+    # Safely handle missing event.config (can be None for newly created events or misconfigured instances)
+    event_config_obj = getattr(event, "config", None) or {}
+    track_event_views = bool(event_config_obj.get("track_event_views", False))
+    if track_event_views:
         view = start_view(user)
     else:
         view = None

@@ -62,7 +62,7 @@
                     </div>
                     {% if request.event.has_subevents %}
                         <div class="col-md-1 col-xs-6">
-                            {% bootstrap_field filter_form.product layout='inline' %}
+                            {% bootstrap_field filter_form.item layout='inline' %}
                         </div>
                         <div class="col-md-2 col-xs-6">
                             {% bootstrap_field filter_form.subevent layout='inline' %}
@@ -72,7 +72,7 @@
                         </div>
                     {% else %}
                         <div class="col-md-2 col-xs-6">
-                            {% bootstrap_field filter_form.product layout='inline' %}
+                            {% bootstrap_field filter_form.item layout='inline' %}
                         </div>
                         <div class="col-md-2 col-xs-6">
                             {% bootstrap_field filter_form.provider layout='inline' %}

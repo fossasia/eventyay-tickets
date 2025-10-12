@@ -228,6 +228,7 @@ export default {
 			// const version = await (await fetch(`${getters.pretalxApiBaseUrl}/schedules/`)).json()
 			// console.log(version.results[0].version)
 			try {
+				state.errorLoading = null
 				state.schedule = await (await fetch(getters.pretalxScheduleUrl)).json()
 				state.schedule.session_type = state.schedule.talks.reduce((acc, current) => {
 					const isDuplicate = acc.some(item => item.session_type === current.session_type)
