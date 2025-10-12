@@ -116,8 +116,20 @@ const markdownIt = MarkdownIt('zero', {})
 markdownIt.use(markdownEmoji)
 
 export function emojifyString(input) {
-	if (!input) return
-	return markdownIt.renderInline(input)
+	// Guard against non-string inputs to avoid markdown-it crashing with state.src.replace
+	if (input == null) return ''
+	let text = input
+	if (typeof text !== 'string') {
+		// Attempt to pick a meaningful string if a common shape is used
+		if (typeof input.name === 'string') text = input.name
+		else if (typeof input.title === 'string') text = input.title
+		else if (typeof input.text === 'string') text = input.text
+		else {
+			// Fallback: do not attempt to render arbitrary objects
+			return ''
+		}
+	}
+	return markdownIt.renderInline(text)
 }
 
 export const emojiPlugin = {
