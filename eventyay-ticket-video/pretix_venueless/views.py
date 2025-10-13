@@ -15,19 +15,6 @@ from django.utils.translation import gettext, gettext_lazy as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from i18nfield.forms import I18nFormField
-<<<<<<< HEAD
-from pretix.base.forms import (
-    I18nMarkdownTextarea, SecretKeySettingsField, SettingsForm,
-)
-from pretix.base.models import CheckinList, Event, Item, Order, Question
-from pretix.base.reldate import RelativeDateTimeField
-from pretix.base.services.checkin import perform_checkin
-from pretix.control.views.event import (
-    EventSettingsFormView, EventSettingsViewMixin,
-)
-from pretix.presale.views import EventViewMixin
-from pretix.presale.views.order import OrderPositionDetailMixin
-=======
 from eventyay.base.forms import (
     I18nMarkdownTextarea, SecretKeySettingsField, SettingsForm,
 )
@@ -40,7 +27,6 @@ from eventyay.control.views.event import (
 )
 from eventyay.presale.views import EventViewMixin
 from eventyay.presale.views.order import OrderPositionDetailMixin
->>>>>>> 90cf27cd3 (Add integrated code from eventyay-talk-video and eventyay-ticket-video)
 
 
 class VenuelessSettingsForm(SettingsForm):
@@ -81,11 +67,7 @@ class VenuelessSettingsForm(SettingsForm):
         ),
         label=_('Limit to products'),
         required=False,
-<<<<<<< HEAD
-        queryset=Item.objects.none(),
-=======
         queryset=Product.objects.none(),
->>>>>>> 90cf27cd3 (Add integrated code from eventyay-talk-video and eventyay-ticket-video)
         initial=None
     )
     venueless_questions = forms.ModelMultipleChoiceField(
@@ -112,11 +94,7 @@ class VenuelessSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         event = kwargs['obj']
         super().__init__(*args, **kwargs)
-<<<<<<< HEAD
-        self.fields['venueless_items'].queryset = event.items.all()
-=======
         self.fields['venueless_items'].queryset = event.products.all()
->>>>>>> 90cf27cd3 (Add integrated code from eventyay-talk-video and eventyay-ticket-video)
         self.fields['venueless_questions'].queryset = event.questions.all()
 
     def clean(self):
