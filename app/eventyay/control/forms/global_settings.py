@@ -282,28 +282,19 @@ class GlobalSettingsForm(SettingsForm):
         )
 
         self.field_groups = [
-            (_('Basics'), [
-                'footer_text',
-                'footer_link',
-                'banner_message',
-                'banner_message_detail',
+            ('basics', _('Basics'), [
+                'footer_text', 'footer_link', 'banner_message', 'banner_message_detail',
             ]),
-            (_('Localization'), [
+            ('localization', _('Localization'), [
                 'region',
             ]),
-            (_('Email'), [
-                'mail_from',
-                'email_vendor',
-                'send_grid_api_key',
-                'smtp_host',
-                'smtp_port',
-                'smtp_username',
-                'smtp_password',
-                'smtp_use_tls',
-                'smtp_use_ssl',
+            ('email', _('Email'), [
+                'mail_from', 'email_vendor', 'send_grid_api_key',
+                'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password',
+                'smtp_use_tls', 'smtp_use_ssl',
             ]),
-            (_('Payment Gateways'), [
-                # PayPal (from plugin)
+            ('payment_gateways', _('Payment Gateways'), [
+                # PayPal
                 'payment_paypal_connect_client_id',
                 'payment_paypal_connect_secret_key',
                 'payment_paypal_connect_endpoint',
@@ -322,20 +313,15 @@ class GlobalSettingsForm(SettingsForm):
                 'payment_stripe_publishable_key',
                 'payment_stripe_test_secret_key',
                 'payment_stripe_test_publishable_key',
-                # new stripe webhook
                 'stripe_webhook_secret_key',
             ]),
-            (_('Ticket fee'), [
+            ('ticket_fee', _('Ticket fee'), [
                 'ticket_fee_percentage',
             ]),
-            (_('Maps'), [
-                'opencagedata_apikey',
-                'mapquest_apikey',
-                'leaflet_tiles',
-                'leaflet_tiles_attribution',
+            ('maps', _('Maps'), [
+                'opencagedata_apikey', 'mapquest_apikey', 'leaflet_tiles', 'leaflet_tiles_attribution',
             ]),
         ]
-
 
 
 class UpdateSettingsForm(SettingsForm):

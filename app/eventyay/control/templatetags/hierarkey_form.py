@@ -77,5 +77,14 @@ def propagated(parser, token):
 
 
 @register.filter
-def getitem(dictionary, key):
-    return dictionary.get(key)
+def getitem(value, key):
+    """
+    Template filter to safely access dictionary or object attributes by key.
+    Example: {{ form|getitem:field_name }}
+    """
+    try:
+        if isinstance(value, dict):
+            return value.get(key)
+        return getattr(value, key, None)
+    except Exception:
+        return None

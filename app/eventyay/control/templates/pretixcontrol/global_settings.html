@@ -13,7 +13,7 @@
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         <ul class="nav nav-tabs" role="tablist">
-            {% for group_label, field_names in form.field_groups %}
+            {% for group_key, group_label, field_names in form.field_groups %}
                 <li role="presentation" class="{% if forloop.first %}active{% endif %}">
                     <a href="#tab{{ forloop.counter }}" aria-controls="tab{{ forloop.counter }}" role="tab" data-toggle="tab">
                         {{ group_label }}
@@ -23,9 +23,9 @@
         </ul>
 
         <div class="tab-content">
-            {% for group_label, field_names in form.field_groups %}
+            {% for group_key, group_label, field_names in form.field_groups %}
                 <div role="tabpanel" class="tab-pane {% if forloop.first %}active{% endif %}" id="tab{{ forloop.counter }}">
-                    {% if group_label == "Payment Gateways" %}
+                    {% if group_key == "payment_gateways" %}
                         <fieldset>
                             <legend>{% translate "Stripe" %}</legend>
                             {% for field_name in field_names %}
