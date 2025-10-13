@@ -1,8 +1,9 @@
 from logging import getLogger
 
-from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.views.generic.list import ListView
 
 from eventyay.base.models import Submission
 from ..forms.filters import SessionsFilterForm
@@ -11,7 +12,7 @@ from ..forms.filters import SessionsFilterForm
 logger = getLogger(__name__)
 
 
-class MySessionsView(ListView):
+class MySessionsView(LoginRequiredMixin, ListView):
     template_name = 'eventyay_common/sessions/sessions.html'
     paginate_by = 20
 
@@ -21,8 +22,8 @@ class MySessionsView(ListView):
         with scopes_disabled():
             qs = (
                 Submission.objects
-                .filter(Q(speakers__email=user.email))
-                .select_related('event__organizer')
+                .filter(speakers__email__iexact=user.email)
+                .select_related('event', 'event__organizer', 'submission_type')
                 .order_by('-event__date_from')
             )
 
