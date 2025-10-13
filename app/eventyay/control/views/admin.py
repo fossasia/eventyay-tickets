@@ -25,8 +25,9 @@ from django_celery_beat.models import PeriodicTask, PeriodicTasks
 from django_context_decorator import context
 
 from django.utils.timezone import make_aware, is_aware
-
 from django.utils.functional import cached_property
+from redis.exceptions import RedisError
+
 from eventyay.celery_app import app
 from eventyay.control.forms.filter import AttendeeFilterForm
 from eventyay.control.forms.admin.admin import UpdateSettingsForm
@@ -45,6 +46,9 @@ from eventyay.control.permissions import AdministratorPermissionRequiredMixin
 from eventyay.control.views import PaginationMixin
 from eventyay.control.views.main import EventList
 
+
+import logging
+logger = logging.getLogger(__name__)
 
 class AdminDashboard(AdministratorPermissionRequiredMixin, TemplateView):
     template_name = 'pretixcontrol/admin/dashboard.html'
