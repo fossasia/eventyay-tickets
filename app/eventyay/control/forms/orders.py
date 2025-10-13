@@ -421,7 +421,9 @@ class OrderPositionChangeForm(forms.Form):
         self.fields['tax_rule'].queryset = instance.event.tax_rules.all()
         self.fields['tax_rule'].label_from_instance = self.taxrule_label_from_instance
 
-        if not instance.seat and not (instance.product.seat_category_mappings.filter(subevent=instance.subevent).exists()):
+        if not instance.seat and not (
+            instance.product.seat_category_mappings.filter(subevent=instance.subevent).exists()
+        ):
             del self.fields['seat']
 
         choices = [('', _('(Unchanged)'))]

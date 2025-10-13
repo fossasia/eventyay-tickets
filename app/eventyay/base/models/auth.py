@@ -388,10 +388,7 @@ class User(
         }
         action_url = request.build_absolute_uri(f'{base_action_url}?{urlencode(params)}')
         logger.info('Action URL for %s to reset password: %s', self.email, action_url)
-        context = {
-            'user': self,
-            'url': action_url
-        }
+        context = {'user': self, 'url': action_url}
         mail(
             self.email,
             subject,

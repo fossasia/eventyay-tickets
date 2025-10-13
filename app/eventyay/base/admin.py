@@ -1,11 +1,14 @@
 from django.contrib import admin
+from django.http import HttpRequest
+from django_scopes import scopes_disabled
+
 from .models import (
-    Announcement, AuditLog, auth, base, BBBCall, BBBServer, BillingInvoice, 
-    billing, Channel, ChatEvent, checkin, choices, Device, devices, event, 
-    Exhibitor, SystemLog, fields, Gate, GiftCard, GiftCardAcceptance, 
-    GiftCardTransaction, giftcards, Invoice, invoices, JanusServer, log, notifications, Order, OrderPayment, OrderRefund, 
-    orders, organizer, page, Poll, Poster, roomquestion, Quota, Room, roulette, 
-    seating, StreamingServer, tax, Team, TeamInvite, TurnServer, vouchers, 
+    Announcement, AuditLog, auth, base, BBBCall, BBBServer, BillingInvoice,
+    billing, Channel, ChatEvent, checkin, choices, Device, devices, event,
+    Exhibitor, SystemLog, fields, Gate, GiftCard, GiftCardAcceptance,
+    GiftCardTransaction, giftcards, Invoice, invoices, JanusServer, log, notifications, Order, OrderPayment, OrderRefund,
+    orders, organizer, page, Poll, Poster, roomquestion, Quota, Room, roulette,
+    seating, StreamingServer, tax, Team, TeamInvite, TurnServer, vouchers,
     WaitingListEntry, waitinglist, room, exhibitor, poll, poster, chat
 )
 from ..api.models import OAuthApplication, OAuthAccessToken, OAuthRefreshToken, OAuthIDToken, WebHook, WebHookCall, ApiCall, WebHookEventListener
@@ -14,6 +17,13 @@ from ..api.models import OAuthApplication, OAuthAccessToken, OAuthRefreshToken, 
 
 class TeamAdmin(admin.ModelAdmin):
     filter_horizontal = ('members', 'limit_events')
+
+    # The Team model has ManyToMany relation to Track model, which is scoped to Event.
+    # We need to disable the scopes because the admin view does not have an event in context.
+    @scopes_disabled()
+    def change_view(self, request: HttpRequest, object_id, form_url = '', extra_context = None):
+        return super().change_view(request, object_id, form_url, extra_context)
+
 
 admin.site.register(auth.User)
 admin.site.register(auth.U2FDevice)
