@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import configparser
+import importlib
 import importlib_metadata
 import importlib.util
 import os
 import sys
+from collections import OrderedDict
 from importlib.metadata import entry_points
 from pathlib import Path
 from urllib.parse import urlparse
@@ -186,27 +188,51 @@ CORE_MODULES = (
     )
 )
 
-PLUGINS = []
-for entry_point in entry_points(group='pretalx.plugin'):
-    PLUGINS.append(entry_point.module)
-    # TODO:
-    # pretalx_venueless , pretalx_downstream and pretalx_pages module's import statement must be changed w.r.t. enext.
-    # Then you can uncomment the below code safely.
-    # INSTALLED_APPS += (entry_point.module, )
+raw_exclude = config.get('eventyay', 'plugins_exclude', fallback='')
+PLUGINS_EXCLUDE = [m.strip() for m in raw_exclude.split(',') if m.strip()]
 
-entry_points = importlib_metadata.entry_points()
+eps = importlib_metadata.entry_points()
 
-PRETIX_PLUGINS_EXCLUDE = config.get('eventyay', 'plugins_exclude', fallback='').split(',')
+# Pretix plugins
+pretix_plugins = [
+    ep.module
+    for ep in eps.select(group='pretix.plugin')
+    if ep.module not in PLUGINS_EXCLUDE
+]
 
-for entry_point in entry_points.select(group='pretix.plugin'):
-    if entry_point.module not in PRETIX_PLUGINS_EXCLUDE:
-        PLUGINS.append(entry_point.module)
-        # TODO:
-        # pretix_venueless and pretix_pages module's import statement must be changed w.r.t. enext.
-        # Then you can remove the below check safely.
-        if entry_point.module == 'pretix_venueless' or entry_point.module == 'pretix_pages':
-            continue
-        INSTALLED_APPS += (entry_point.module,)
+# Pretalx plugins
+pretalx_plugins = [
+    ep.module
+    for ep in eps.select(group='pretalx.plugin')
+    if ep.module not in PLUGINS_EXCLUDE
+]
+
+ALL_PLUGINS = sorted(pretix_plugins + pretalx_plugins)
+
+
+# ---------------------------
+# TODO: Adjust import paths for pretix_venueless, pretix_downstream, pretalx_pages
+# Once ready, remove below 2 lines of code and just add Pretix plugins to INSTALLED_APPS like:
+# INSTALLED_APPS += tuple(pretix_plugins)
+SAFE_PRETIX_PLUGINS = [
+    m for m in pretix_plugins if m not in {'pretix_venueless', 'pretix_pages'}
+]
+INSTALLED_APPS += tuple(SAFE_PRETIX_PLUGINS)
+
+# ---------------------------
+# TODO: Adjust import paths for pretalx_venueless, pretalx_downstream, pretalx_pages
+# Once ready, uncomment the following line to add Pretalx plugins to INSTALLED_APPS
+# INSTALLED_APPS += tuple(pretalx_plugins)
+
+# Optional: Dynamic Import
+LOADED_PLUGINS = OrderedDict()
+for module_name in ALL_PLUGINS:
+    try:
+        module = importlib.import_module(module_name)
+        LOADED_PLUGINS[module_name] = module
+    except Exception as e:
+        # Log errors but continue
+        print(f"Failed to load plugin {module_name}: {e}")
 
 _LIBRARY_MIDDLEWARES = (
     'corsheaders.middleware.CorsMiddleware',
