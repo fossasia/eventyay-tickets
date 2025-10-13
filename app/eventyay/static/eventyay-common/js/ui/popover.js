@@ -14,7 +14,7 @@ $(function () {
     const talksPath = `/orga/event/`
     const mainDashboardPath = `/common/`;
     const orderPath = `/common/orders/`;
-    const sessionPath = `/common/sessions`;
+    const sessionPath = `/common/sessions/`;
     const eventPath = `/common/events/`;
     const organizerPath = `/common/organizers/`;
 

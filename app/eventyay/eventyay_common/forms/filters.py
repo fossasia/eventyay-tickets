@@ -25,7 +25,7 @@ class UserOrderFilterForm(forms.Form):
 
 class SessionsFilterForm(forms.Form):
     event = forms.ModelChoiceField(
-        queryset=None,
+        queryset=Event.objects.none(),
         required=False,
         label=_('Event'),
         widget=forms.Select(attrs={'class': 'form-control'}),
