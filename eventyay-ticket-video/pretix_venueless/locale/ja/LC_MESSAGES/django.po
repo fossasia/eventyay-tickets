@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-17 13:21+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pretix_venueless/__init__.py:16
+msgid "Venueless integration"
+msgstr ""
+
+#: pretix_venueless/__init__.py:18
+msgid "Integrates pretix with venueless.org"
+msgstr ""
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:8
+#: pretix_venueless/templates/pretix_venueless/order_info.html:41
+msgid "Join online event"
+msgstr ""
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:30
+msgid "You can now join the event using the following button:"
+msgstr ""
+
+#: pretix_venueless/templates/pretix_venueless/order_info.html:49
+msgid ""
+"You will be able to join this event with your browser right here when it "
+"starts."
+msgstr ""
+
+#: pretix_venueless/templates/pretix_venueless/settings.html:5
+#: pretix_venueless/views.py:178
+msgid "Venueless"
+msgstr ""
+
+#: pretix_venueless/templates/pretix_venueless/settings.html:12
+msgid "Save"
+msgstr ""
+
+#: pretix_venueless/views.py:27
+msgid "Venueless URL"
+msgstr ""
+
+#: pretix_venueless/views.py:31
+msgid "Venueless secret"
+msgstr ""
+
+#: pretix_venueless/views.py:35
+msgid "Venueless issuer"
+msgstr ""
+
+#: pretix_venueless/views.py:39
+msgid "Venueless audience"
+msgstr ""
+
+#: pretix_venueless/views.py:43
+msgid "Do not allow access before"
+msgstr ""
+
+#: pretix_venueless/views.py:47
+msgid "Allow users to access the live event before their order is paid"
+msgstr ""
+
+#: pretix_venueless/views.py:51
+msgid "Allow buyers of all admission products"
+msgstr ""
+
+#: pretix_venueless/views.py:61
+msgid "Limit to products"
+msgstr ""
+
+#: pretix_venueless/views.py:72
+msgid "Transmit answers to questions"
+msgstr ""
+
+#: pretix_venueless/views.py:78
+msgid "Introductory text"
+msgstr ""
+
+#: pretix_venueless/views.py:118
+msgid "Unknown order code or not authorized to access this order."
+msgstr ""

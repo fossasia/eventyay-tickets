@@ -589,6 +589,12 @@ def get_admin_navigation(request):
             'icon': 'group',
         },
         {
+            'label': _('All Attendees'),
+            'url': reverse('control:admin.attendees'),
+            'active': 'attendees' in url.url_name,
+            'icon': 'ticket',
+        },
+        {
             'label': _('All Sessions'),
             'url': reverse('control:admin.submissions'),
             'active': 'submissions' in url.url_name,

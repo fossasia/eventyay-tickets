@@ -66,13 +66,13 @@ class CheckInListShow(EventPermissionRequiredMixin, PaginationMixin, ListView):
                     )
                 ),
             )
-            .select_related('item', 'variation', 'order', 'addon_to')
+            .select_related('product', 'variation', 'order', 'addon_to')
         )
         if self.list.subevent:
             qs = qs.filter(subevent=self.list.subevent)
 
         if not self.list.all_products:
-            qs = qs.filter(item__in=self.list.limit_products.values_list('id', flat=True))
+            qs = qs.filter(product__in=self.list.limit_products.values_list('id', flat=True))
 
         if filter and self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)

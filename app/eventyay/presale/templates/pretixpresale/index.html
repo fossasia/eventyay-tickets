@@ -21,7 +21,7 @@
             {% endblocktrans %}
         </p>
         <p>
-            {% url 'control:index' as index_url %}
+            {% url 'eventyay_common:dashboard' as index_url %}
             {% blocktrans trimmed with a_attr="href="|add:index_url %}
                 To log in and access your events, please <a {{ a_attr }}>head over here</a>.
             {% endblocktrans %}

@@ -1,0 +1,104 @@
+{% extends "orga/base.html" %}
+{% load compress %}
+{% load copyable %}
+{% load i18n %}
+{% load static %}
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "pretalx_venueless/settings.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+{% block content %}
+    {% if connect_in_progress %}
+        <h2>{% trans "Confirm your Eventyay video connection" %}</h2>
+        <div class="alert alert-info">
+            <div>
+                {% blocktranslate trimmed %}
+                    <b>Eventyay video</b> is asking to connect to your pretalx event. If you confirm
+                    this connection, pretalx will notify Eventyay video about all schedule changes.
+                {% endblocktranslate %}
+            </div>
+        </div>
+    {% else %}
+        <h2>{% trans "Eventyay video" %}</h2>
+    {% endif %}
+    {% if last_push %}
+        <div class="alert alert-success">
+            {% blocktranslate trimmed with last_push=last_push %}
+                Successfully connected to Eventyay video. Data was last pushed on {{ last_push }}.
+            {% endblocktranslate %}
+        </div>
+    {% elif not connect_in_progress %}
+        <div class="alert alert-warning">
+            <div>
+                {% blocktranslate trimmed %}
+                    Setting up the connection with Eventyay video will configure the pretalx settings
+                    in Eventyay video, and will automatically push schedule changes to Eventyay video users.
+                    Please use Eventyay video to begin this process. Go to <b>Config → Event</b> in Eventyay video,
+                    and enter the following settings to create the connection:
+                {% endblocktranslate %}
+                <ul>
+                    <li>pretalx domain:
+                        {{ request.event.custom_domain|default:settings.SITE_URL|copyable }}
+                    </li>
+                    <li>
+                        pretalx event slug: {{ request.event.slug|copyable }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>{% translate "Main settings" %}</h2>
+        <p>
+            {% blocktranslate trimmed %}
+                These settings will get filled in automatically when you set up
+                your event with Eventyay video. Please follow the instructions at the
+                top of this page!
+            {% endblocktranslate %}
+        </p>
+
+        {% include "common/forms/errors.html" %}
+
+        {{ form.url.as_field_group }}
+        {{ form.token.as_field_group }}
+        {{ form.return_url.as_field_group }}
+
+        <h2>{% translate "Join link settings" %}</h2>
+        <p>
+            {% blocktranslate trimmed %}
+                These settings are only required if you want to distribute the sign-up links to
+                Eventyay video for your speakers by way of pretalx.
+            {% endblocktranslate %}
+        </p>
+
+        {{ form.show_join_link.as_field_group }}
+        <div id="join-link-settings">
+            {{ form.join_url.as_field_group }}
+            {{ form.secret.as_field_group }}
+            {{ form.issuer.as_field_group }}
+            {{ form.audience.as_field_group }}
+            {{ form.join_start.as_field_group }}
+            {{ form.join_text.as_field_group }}
+        </div>
+
+        <div class="submit-group panel">
+            <span></span>
+            <span class="d-flex flex-row-reverse">
+                <button
+                    type="submit" class="btn btn-success btn-lg"
+                    name="action" value="save"
+                >
+                    <i class="fa fa-check"></i>
+                    {% if connect_in_progress %}
+                        {% trans "Connect" %}
+                    {% else %}
+                        {% trans "Save" %}
+                    {% endif %}
+                </button>
+            </span>
+        </div>
+    </form>
+
+{% endblock %}
