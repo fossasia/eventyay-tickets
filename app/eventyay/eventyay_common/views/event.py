@@ -514,16 +514,14 @@ class VideoAccessAuthenticator(View):
         issuer = jwt_config["issuer"]
 
         # Setup video plugin settings for the webapp
-        if (
-            not event.settings.venueless_secret
-            or not event.settings.venueless_issuer
-            or not event.settings.venueless_audience
-            or not event.settings.venueless_url
-        ):
-
+        # Set each video config setting individually if missing
+        if not event.settings.venueless_secret:
             event.settings.venueless_secret = secret
+        if not event.settings.venueless_issuer:
             event.settings.venueless_issuer = issuer
+        if not event.settings.venueless_audience:
             event.settings.venueless_audience = audience
+        if not event.settings.venueless_url:
             # Choose base site dynamically: prefer current request host (useful for local dev)
             scheme = 'https' if request.is_secure() else 'http'
             base_site = f"{scheme}://{request.get_host()}"
