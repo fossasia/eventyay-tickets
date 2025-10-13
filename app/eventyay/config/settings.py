@@ -179,6 +179,8 @@ _OURS_APPS = (
     'eventyay.plugins.scheduledtasks',
     'eventyay.plugins.ticketoutputpdf',
     'eventyay.plugins.webcheckin',
+    'eventyay.schedule',
+    'eventyay.submission',
     # Load local ticket-video plugin
     'pretix_venueless',
 )
@@ -667,10 +669,6 @@ if os.getenv("EVENTYAY_COOKIE_DOMAIN", ""):
     CSRF_COOKIE_DOMAIN = os.getenv("EVENTYAY_COOKIE_DOMAIN", "")
 
 
-MEDIA_URL = os.getenv(
-    "EVENTYAY_MEDIA_URL", _config.get("urls", "media", fallback="/media/")
-)
-
 WEBSOCKET_PROTOCOL = os.getenv(
     "EVENTYAY_WEBSOCKET_PROTOCOL",
     _config.get("websocket", "protocol", fallback="wss"),
@@ -753,7 +751,7 @@ redis_connection_kwargs = {
     "health_check_interval": 30,
 }
 
-REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
+REDIS_URL = config.get('redis', 'location')
 HAS_REDIS = bool(REDIS_URL)
 REDIS_HOSTS = [{
     "address": REDIS_URL,
@@ -818,8 +816,8 @@ if not SESSION_ENGINE:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Celery configuration
-CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
-CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
+CELERY_BROKER_URL = config.get('celery', 'broker')
+CELERY_RESULT_BACKEND = config.get('celery', 'backend')
 CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
@@ -851,7 +849,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
