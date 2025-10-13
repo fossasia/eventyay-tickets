@@ -1,0 +1,175 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-12 00:15+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: local/pretalx-venueless/pretalx_venueless/apps.py:12
+msgid "Venueless integration"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/apps.py:15
+msgid ""
+"Venueless integration in pretalx: Notify venueless about new schedule "
+"releases!"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:12
+#: local/pretalx-venueless/pretalx_venueless/models.py:16
+msgid ""
+"Generate a token with the trait 'world:api' in the Config -> Token Generator"
+" menu in Venueless. Leave empty to leave unchanged."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:14
+#: local/pretalx-venueless/pretalx_venueless/models.py:18
+msgid "Venueless Token"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:18
+#: local/pretalx-venueless/pretalx_venueless/models.py:23
+msgid "URL of your Venueless event"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:19
+#: local/pretalx-venueless/pretalx_venueless/models.py:24
+#: local/pretalx-venueless/pretalx_venueless/models.py:40
+msgid "Venueless URL"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:58
+msgid ""
+"This field is required if you want to show a join button to your speakers."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:33
+msgid ""
+"If you enable this feature, speakers will find a venueless join button on "
+"their profile pages."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:35
+msgid "Show join button"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:39
+msgid "URL used for sign-up links"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:45
+msgid "Venueless secret"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:50
+msgid "Venueless issuer"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:55
+msgid "Venueless audience"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:60
+msgid "Do not allow access before"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/models.py:63
+msgid "Introductory text"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/signals.py:35
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:23
+msgid "Venueless"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/join_link.html:9
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/join_link.html:27
+msgid "Join online event"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/join_link.html:18
+msgid "You can now join the event using the following button:"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/join_link.html:33
+msgid ""
+"You will be able to join this event with your browser right here when it "
+"starts."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:13
+msgid "Confirm your Venueless connection"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:16
+msgid ""
+"<b>Venueless</b> is asking to connect to your pretalx event. If you confirm "
+"this connection, pretalx will notify Venueless about all schedule changes."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:27
+#, python-format
+msgid ""
+"Successfully connected to venueless. Data was last pushed on %(last_push)s."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:34
+msgid ""
+"Setting up the connection with Venueless will configure the pretalx settings"
+" in Venueless, and will automatically push schedule changes to venueless "
+"users. Please use Venueless to begin this process. Go to <b>Config → "
+"Event</b> in Venueless, and enter the following settings to create the "
+"connection:"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:53
+msgid "Main settings"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:55
+msgid ""
+"These settings will get filled in automatically when you set up your event "
+"with venueless. Please follow the instructions at the top of this page!"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:68
+msgid "Join link settings"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:70
+msgid ""
+"These settings are only required if you want to distribute the sign-up links"
+" to venueless for your speakers by way of pretalx."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:95
+msgid "Connect"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:97
+msgid "Save"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/views.py:66
+msgid "Yay! We saved your changes."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/views.py:74
+msgid "Unable to reach Venueless:"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/views.py:93
+msgid "Unknown user or not authorized to access venueless."
+msgstr ""

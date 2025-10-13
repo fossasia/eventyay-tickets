@@ -4,17 +4,27 @@ services:
   web:
     image: eventyay/eventyay-next:enext
     container_name: eventyay-next-web
-    build:
-      context: ../app
-      dockerfile: Dockerfile.prod
     command: gunicorn eventyay.config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./data/static:/home/app/web/eventyay/static.dist
       - ./data/data:/data
+      - ./eventyay.cfg:/etc/eventyay.cfg:ro
     ports:
       - 8000:8000
     expose:
       - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    image: eventyay/eventyay-next:enext
+    container_name: eventyay-next-worker
+    entrypoint: celery -A eventyay worker -l info
+    volumes:
+      - ./eventyay.cfg:/etc/eventyay.cfg:ro
     env_file:
       - ./.env
     depends_on:

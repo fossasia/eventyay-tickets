@@ -589,6 +589,18 @@ def get_admin_navigation(request):
             'icon': 'group',
         },
         {
+            'label': _('All Attendees'),
+            'url': reverse('control:admin.attendees'),
+            'active': 'attendees' in url.url_name,
+            'icon': 'ticket',
+        },
+        {
+            'label': _('All Sessions'),
+            'url': reverse('control:admin.submissions'),
+            'active': 'submissions' in url.url_name,
+            'icon': 'sticky-note-o',
+        },
+        {
             'label': _('Task management'),
             'url': reverse('control:admin.task_management'),
             'active': 'task_management' in url.url_name,
@@ -659,7 +671,7 @@ def get_admin_navigation(request):
         },
         {
             'label': _('Talk admin config'),
-            'url': '/talk/orga/admin/',
+            'url': '/orga/admin/',
             'active': False,
             'icon': 'group',
         },

@@ -891,6 +891,189 @@ class OrganizerFilterForm(FilterForm):
         return qs
 
 
+class AttendeeFilterForm(FilterForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._checkin_status = None
+
+    query = forms.CharField(
+        label=_('Name or email'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Name or email')}),
+    )
+
+    event_query = forms.CharField(
+        label=_('Event name'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Event name')}),
+    )
+
+    event_status = forms.ChoiceField(
+        label=_('Event filter'),
+        choices=(
+            ('', _('All events')),
+            ('ongoing', _('Ongoing events')),
+            ('recent', _('Recent events')),
+        ),
+        required=False,
+    )
+
+    checkin_status = forms.ChoiceField(
+        label=_('Check-in status'),
+        choices=(
+            ('', _('All attendees')),
+            ('present', _('Present')),
+            ('left', _('Checked in but left')),
+            ('checked_in', _('Checked in')),
+            ('not_checked_in', _('Not checked in')),
+        ),
+        required=False,
+    )
+
+    ordering = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def filter_qs(self, qs):
+        fdata = self.cleaned_data
+
+        # Search by attendee name or email
+        if fdata.get('query'):
+            qs = qs.filter(
+                Q(attendee_name_cached__icontains=fdata['query'])
+                | Q(order__email__icontains=fdata['query'])
+                | Q(attendee_email__icontains=fdata['query'])
+            )
+
+        # Search by event name
+        if fdata.get('event_query'):
+            qs = qs.filter(
+                Q(order__event__name__icontains=fdata['event_query'])
+                | Q(order__event__slug__icontains=fdata['event_query'])
+            )
+
+        # Event status filter
+        if fdata.get('event_status'):
+            now_ = now()
+            if fdata['event_status'] == 'ongoing':
+                qs = qs.filter(
+                    Q(order__event__date_from__lte=now_)
+                    & (Q(order__event__date_to__gte=now_) | Q(order__event__date_to__isnull=True))
+                )
+            elif fdata['event_status'] == 'recent':
+                qs = qs.filter(
+                    Q(order__event__date_to__lt=now_)
+                    | (Q(order__event__date_to__isnull=True) & Q(order__event__date_from__lt=now_))
+                )
+
+        # Check-in status filter
+        checkin_status = fdata.get('checkin_status')
+        if checkin_status:
+            qs = qs.annotate(
+                entry_time=Max('checkins__datetime', filter=Q(checkins__type=Checkin.TYPE_ENTRY)),
+                exit_time=Max('checkins__datetime', filter=Q(checkins__type=Checkin.TYPE_EXIT)),
+            )
+            if checkin_status == 'present':
+                qs = qs.filter(entry_time__isnull=False).filter(
+                    Q(exit_time__isnull=True) | Q(exit_time__lt=F('entry_time'))
+                )
+            elif checkin_status == 'left':
+                qs = qs.filter(exit_time__isnull=False, exit_time__gt=F('entry_time'))
+            elif checkin_status == 'checked_in':
+                qs = qs.filter(entry_time__isnull=False)
+            elif checkin_status == 'not_checked_in':
+                qs = qs.filter(entry_time__isnull=True)
+
+        return qs
+
+
+class SubmissionFilterForm(forms.Form):
+    query = forms.CharField(
+        label=_('Title or speaker'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Title, speaker name or email')}),
+    )
+
+    event_query = forms.CharField(
+        label=_('Event name'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Event name')}),
+    )
+
+    proposal_state = forms.ChoiceField(
+        label=_('Proposal state'),
+        choices=(
+            ('', _('All proposals')),
+            ('submitted', _('Submitted')),
+            ('accepted', _('Accepted')),
+            ('rejected', _('Rejected')),
+            ('confirmed', _('Confirmed')),
+            ('withdrawn', _('Withdrawn')),
+        ),
+        required=False,
+    )
+    
+    submission_type = forms.CharField(
+        label=_('Session Type'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Session Type')}),
+    )
+
+    track = forms.CharField(
+        label=_('Track'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Track')}),
+    )
+
+    tags = forms.CharField(
+        label=_('Tags'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Tags')}),
+    )
+
+    ordering = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def filter_qs(self, qs):
+        fdata = self.cleaned_data
+
+        # Search by title or speaker
+        if fdata.get('query'):
+            qs = qs.filter(
+                Q(title__icontains=fdata['query'])
+                | Q(speakers__fullname__icontains=fdata['query'])
+                | Q(speakers__email__icontains=fdata['query'])
+            ).distinct()
+
+        # Search by event name
+        if fdata.get('event_query'):
+            qs = qs.filter(
+                Q(event__name__icontains=fdata['event_query'])
+                | Q(event__slug__icontains=fdata['event_query'])
+            )
+
+        # Filter by proposal state
+        if fdata.get('proposal_state'):
+            qs = qs.filter(state=fdata['proposal_state'])
+        
+        # Filter by session type
+        if fdata.get('submission_type'):
+            qs = qs.filter(
+                Q(submission_type__name__icontains=fdata['submission_type'])
+            )
+
+        # Filter by track
+        if fdata.get('track'):
+            qs = qs.filter(
+                Q(track__name__icontains=fdata['track'])
+            )
+
+        # Filter by tags
+        if fdata.get('tags'):
+            qs = qs.filter(
+                Q(tags__tag__icontains=fdata['tags'])
+            )
+
+        return qs
+
+
 class GiftCardFilterForm(FilterForm):
     orders = {
         'issuance': 'issuance',

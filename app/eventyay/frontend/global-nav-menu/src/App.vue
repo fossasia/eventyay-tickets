@@ -28,6 +28,27 @@ function handleKeyDown(event: KeyboardEvent) {
     closeMenu()
   }
 }
+function handleLogout(event: Event) {
+  event.preventDefault()
+  
+  // Create and submit a form for logout
+  const form = document.createElement('form')
+  form.method = 'POST'
+  form.action = '/common/logout/'
+  
+  // Add CSRF token
+  const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]') as HTMLInputElement
+  if (csrfToken) {
+    const csrfInput = document.createElement('input')
+    csrfInput.type = 'hidden'
+    csrfInput.name = 'csrfmiddlewaretoken'
+    csrfInput.value = csrfToken.value
+    form.appendChild(csrfInput)
+  }
+  
+  document.body.appendChild(form)
+  form.submit()
+}
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
@@ -57,40 +78,40 @@ onBeforeUnmount(() => {
             </a>
           </li>
           <li>
-            <a href='/tickets/control/' :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' class='block'>
+            <a href='/control/' :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' class='block'>
               <div class='i-fa-ticket h-3 w-3'></div>
               <div>Tickets</div>
             </a>
           </li>
           <li>
-            <a href='/talk/orga/event/' :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' class='block'>
+            <a href='/orga/event/' :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' class='block'>
               <div class='i-fa-microphone h-3 w-3'></div>
               <div>Talks</div>
             </a>
           </li>
         </ul>
       </div>
-      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' href='/tickets/common/orders/'>
+      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' href='/common/orders/'>
         <div class='i-fa-shopping-cart h-3 w-3'></div>
         <div>My orders</div>
       </a>
-      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' href='/tickets/common/events/'>
+      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' href='/common/events/'>
         <div class='i-fa-calendar h-3 w-3'></div>
         <div>My events</div>
       </a>
-      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' href='/tickets/common/organizers/'>
+      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES]' href='/common/organizers/'>
         <div class='i-fa-users h-3 w-3'></div>
         <div>Organizers</div>
       </a>
-      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES, WITH_BORDER_CLASSES]' href='/tickets/common/account/'>
+      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES, WITH_BORDER_CLASSES]' href='/common/account/'>
         <div class='i-fa-user h-3 w-3'></div>
         <div>Accounts</div>
       </a>
-      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES, WITH_BORDER_CLASSES]' href='/tickets/control/admin/'>
+      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES, WITH_BORDER_CLASSES]' href='/control/admin/'>
         <div class='i-fa-cog h-3 w-3'></div>
         <div>Admin</div>
       </a>
-      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES, WITH_BORDER_CLASSES]' href='/tickets/control/logout'>
+      <a :class='[ENTRY_CLASSES, WITH_ICON_CLASSES, WITH_BORDER_CLASSES, "w-full text-left"]' @click='handleLogout' href="#">
         <div class='i-fa-sign-out h-3 w-3'></div>
         <div>Logout</div>
       </a>
