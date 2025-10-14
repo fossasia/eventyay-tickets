@@ -404,6 +404,7 @@ class EventUpdate(
                 event = form.instance
                 event.date_from = self.reset_timezone(zone, event.date_from)
                 event.date_to = self.reset_timezone(zone, event.date_to)
+                messages.success(self.request, _("Your changes have been saved."))
                 return self.form_valid(form)
             else:
                 messages.error(
