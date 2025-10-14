@@ -217,6 +217,7 @@ class SecurityMiddleware(MiddlewareMixin):
                 '{static}',
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
+                'https://www.youtube.com',
             ],
             'style-src': [
                 '{static}',
