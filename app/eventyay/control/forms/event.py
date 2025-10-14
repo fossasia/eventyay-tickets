@@ -417,7 +417,6 @@ class EventMetaValueForm(forms.ModelForm):
 
 class EventUpdateForm(I18nModelForm):
     def __init__(self, *args, **kwargs):
-        self.change_slug = kwargs.pop('change_slug', False)
         self.domain = kwargs.pop('domain', False)
 
         kwargs.setdefault('initial', {})
@@ -428,10 +427,6 @@ class EventUpdateForm(I18nModelForm):
                 kwargs['initial'].setdefault('domain', initial_domain.domainname)
 
         super().__init__(*args, **kwargs)
-        if not self.change_slug:
-            self.fields['slug'].widget.attrs['readonly'] = 'readonly'
-        self.fields['location'].widget.attrs['rows'] = '3'
-        self.fields['location'].widget.attrs['placeholder'] = _('Sample Conference Center\nHeidelberg, Germany')
         if self.domain:
             self.fields['domain'] = forms.CharField(
                 max_length=255,
@@ -483,39 +478,22 @@ class EventUpdateForm(I18nModelForm):
         return instance
 
     def clean_slug(self):
-        if self.change_slug:
-            return self.cleaned_data['slug']
         return self.instance.slug
 
     class Meta:
         model = Event
         localized_fields = '__all__'
         fields = [
-            'name',
-            'slug',
             'currency',
-            'date_from',
-            'date_to',
-            'date_admission',
-            'is_public',
             'presale_start',
             'presale_end',
-            'location',
-            'geo_lat',
-            'geo_lon',
             'sales_channels',
         ]
         field_classes = {
-            'date_from': SplitDateTimeField,
-            'date_to': SplitDateTimeField,
-            'date_admission': SplitDateTimeField,
             'presale_start': SplitDateTimeField,
             'presale_end': SplitDateTimeField,
         }
         widgets = {
-            'date_from': SplitDateTimePickerWidget(),
-            'date_to': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_date_from_0'}),
-            'date_admission': SplitDateTimePickerWidget(attrs={'data-date-default': '#id_date_from_0'}),
             'presale_start': SplitDateTimePickerWidget(),
             'presale_end': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_presale_start_0'}),
             'sales_channels': CheckboxSelectMultiple(),
@@ -523,10 +501,6 @@ class EventUpdateForm(I18nModelForm):
 
 
 class EventSettingsForm(SettingsForm):
-    timezone = forms.ChoiceField(
-        choices=((a, a) for a in common_timezones),
-        label=_('Event timezone'),
-    )
     name_scheme = forms.ChoiceField(
         label=_('Name format'),
         help_text=_(
@@ -545,7 +519,6 @@ class EventSettingsForm(SettingsForm):
     )
 
     auto_fields = [
-        'imprint_url',
         'checkout_email_helptext',
         'presale_has_ended_text',
         'voucher_explanation_text',
@@ -556,9 +529,6 @@ class EventSettingsForm(SettingsForm):
         'show_products_outside_presale_period',
         'display_net_prices',
         'presale_start_show_date',
-        'locales',
-        'locale',
-        'region',
         'show_quota_left',
         'waiting_list_enabled',
         'waiting_list_hours',
@@ -570,7 +540,6 @@ class EventSettingsForm(SettingsForm):
         'waiting_list_phones_explanation_text',
         'max_products_per_order',
         'reservation_time',
-        'contact_mail',
         'show_variations_expanded',
         'hide_sold_out',
         'meta_noindex',
@@ -661,9 +630,9 @@ class EventSettingsForm(SettingsForm):
             for k, v in PERSON_NAME_TITLE_GROUPS.items()
         ]
         if not self.event.has_subevents:
-            del self.fields['frontpage_subevent_ordering']
-            del self.fields['event_list_type']
-            del self.fields['event_list_available_only']
+            self.fields.pop('frontpage_subevent_ordering', None)
+            self.fields.pop('event_list_type', None)
+            self.fields.pop('event_list_available_only', None)
 
         # create "virtual" fields for better UX when editing <name>_asked and <name>_required fields
         self.virtual_keys = []
@@ -692,10 +661,10 @@ class EventSettingsForm(SettingsForm):
             )
             self.virtual_keys.append(virtual_key)
 
-            if self.initial[required_key]:
-                self.initial[virtual_key] = 'required'
-            elif self.initial[asked_key]:
-                self.initial[virtual_key] = 'optional'
+            if self.initial.get(required_key):
+                self.initial[virtual_key] = "required"
+            elif self.initial.get(asked_key):
+                self.initial[virtual_key] = "optional"
             else:
                 self.initial[virtual_key] = 'do_not_ask'
 

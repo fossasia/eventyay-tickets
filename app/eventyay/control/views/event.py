@@ -250,26 +250,41 @@ class EventUpdate(
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        if (
-            form.is_valid()
-            and self.sform.is_valid()
-            and all([f.is_valid() for f in self.meta_forms])
-            and self.product_meta_property_formset.is_valid()
-            and self.confirm_texts_formset.is_valid()
-        ):
-            # reset timezone
-            zone = timezone(self.sform.cleaned_data['timezone'])
-            event = form.instance
-            event.date_from = self.reset_timezone(zone, event.date_from)
-            event.date_to = self.reset_timezone(zone, event.date_to)
-            event.presale_start = self.reset_timezone(zone, event.presale_start)
-            event.presale_end = self.reset_timezone(zone, event.presale_end)
+
+        # Check each form individually and collect validation results
+        form_valid = form.is_valid()
+        sform_valid = self.sform.is_valid()
+        meta_forms_valid = all([f.is_valid() for f in self.meta_forms])
+        product_meta_property_formset_valid = self.product_meta_property_formset.is_valid()
+        confirm_texts_formset_valid = self.confirm_texts_formset.is_valid()
+
+        if (form_valid and sform_valid and meta_forms_valid and
+            product_meta_property_formset_valid and confirm_texts_formset_valid):
+            # Timezone processing for presale_start and presale_end (fields in this form)
+            # is now handled within form.clean()
             return self.form_valid(form)
         else:
-            messages.error(
-                self.request,
-                _('We could not save your changes. See below for details.'),
-            )
+            # Add specific error messages for each form that failed validation
+            error_messages = []
+            if not form_valid:
+                error_messages.append("Main form validation failed.")
+            if not sform_valid:
+                error_messages.append("Settings form validation failed.")
+            if not meta_forms_valid:
+                error_messages.append("Meta data form validation failed.")
+            if not product_meta_property_formset_valid:
+                error_messages.append("Product meta property form validation failed.")
+            if not confirm_texts_formset_valid:
+                error_messages.append("Confirmation texts form validation failed.")
+
+            if error_messages:
+                for msg in error_messages:
+                    messages.error(self.request, msg)
+            else:
+                messages.error(
+                    self.request,
+                    _('We could not save your changes. See below for details.'),
+                )
             return self.form_invalid(form)
 
     @staticmethod
