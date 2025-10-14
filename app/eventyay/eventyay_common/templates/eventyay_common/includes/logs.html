@@ -1,0 +1,55 @@
+{% load static %}
+{% load i18n %}
+<ul class="list-group">
+    {% for log in obj.top_logentries %}
+        <li class="list-group-item logentry">
+            <p class="meta">
+                <span class="fa fa-clock-o"></span> {{ log.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                {% if log.user %}
+                    {% if log.user.is_staff %}
+                        <span class="fa fa-id-card fa-danger fa-fw"
+                                data-toggle="tooltip"
+                                title="{% trans "This change was performed by a system administrator." %}">
+                        </span>
+                    {% else %}
+                        <span class="fa fa-user fa-fw"></span>
+                    {% endif %}
+                    {{ log.user.get_full_name }}
+                    {% if log.oauth_application %}
+                        <span class="fa fa-plug fa-fw"></span>
+                        {{ log.oauth_application.name }}
+                    {% endif %}
+                {% elif log.device %}
+                    <span class="fa fa-mobile fa-fw"></span>
+                    {{ log.device.name }}
+                {% elif log.api_token %}
+                    <span class="fa fa-key fa-fw"></span>
+                    {{ log.api_token.name }}
+                {% endif %}
+                {% if log.shredded %}
+                    <span class="fa fa-eraser fa-danger fa-fw"
+                          data-toggle="tooltip"
+                          title="{% trans "Personal data was cleared from this log entry." %}">
+                    </span>
+                {% endif %}
+            </p>
+
+            <p>
+                {{ log.display }}
+                {% if staff_session %}
+                    <a href="" class="btn btn-default btn-xs" data-expandlogs data-id="{{ log.pk }}">
+                        <span class="fa-eye fa fa-fw"></span>
+                        {% trans "Inspect" %}
+                    </a>
+                {% endif %}
+            </p>
+        </li>
+    {% endfor %}
+    {% if obj.all_logentries_link and obj.top_logentries_has_more %}
+        <li class="list-group-item logentry">
+            <a href="{{ obj.all_logentries_link }}">
+                {% trans "View full log" %}
+            </a>
+        </li>
+    {% endif %}
+</ul>

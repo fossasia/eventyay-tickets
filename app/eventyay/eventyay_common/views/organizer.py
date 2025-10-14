@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models import Count
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -80,16 +81,12 @@ class OrganizerCreate(CreateView):
     def get_success_url(self) -> str:
         return reverse('eventyay_common:organizers')
 
-
 class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
     model = Organizer
     form_class = OrganizerUpdateForm
     template_name = 'eventyay_common/organizers/edit.html'
     permission = 'can_change_organizer_settings'
     context_object_name = 'organizer'
-
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
 
     @cached_property
     def object(self) -> Organizer:
@@ -100,12 +97,55 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['talk_edit_url'] = urljoin(settings.TALK_HOSTNAME, f'orga/organiser/{self.object.slug}/settings/')
-        ctx['talk_teams_url'] = urljoin(settings.TALK_HOSTNAME, f'orga/organiser/{self.object.slug}/teams/')
+        org = self.object
+
+        # Add Teams section only if user has team permissions
+        user = self.request.user
+        if user.has_organizer_permission(org, 'can_change_teams', request=self.request):
+            ctx['teams'] = (
+                org.teams.annotate(
+                    memcount=Count('members', distinct=True),
+                    eventcount=Count('limit_events', distinct=True),
+                    invcount=Count('invites', distinct=True),
+                )
+                .all()
+                .order_by('name')
+            )
+            ctx['can_manage_teams'] = True
+        else:
+            ctx['teams'] = []
+            ctx['can_manage_teams'] = False
+
         return ctx
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        
+        can_edit_general_info = self.request.user.has_organizer_permission(
+            self.request.organizer,
+            'can_change_organizer_settings',
+            request=self.request
+        )
+        
+        if not can_edit_general_info:
+            form.fields['name'].disabled = True
+            form.fields['slug'].disabled = True
+
+        return form
 
     @transaction.atomic
     def form_valid(self, form):
+        can_edit_general_info = self.request.user.has_organizer_permission(
+            self.request.organizer,
+            'can_change_organizer_settings',
+            request=self.request
+        )
+
+        if not can_edit_general_info:
+            form.cleaned_data['name'] = self.object.name
+            form.cleaned_data['slug'] = self.object.slug
+
+        messages.success(self.request, _('Your changes have been saved.'))
         response = super().form_valid(form)
         return response
 

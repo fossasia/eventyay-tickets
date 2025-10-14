@@ -28,13 +28,15 @@ urlpatterns = [
     path('register/', auth.register, name='auth.register'),
     path('forgot/', auth.Forgot.as_view(), name='auth.forgot'),
     path('forgot/recover/', auth.Recover.as_view(), name='auth.forgot.recover'),
+    path('invite/<str:token>', auth.invite, name='auth.invite'),
     path('', dashboards.eventyay_common_dashboard, name='dashboard'),
     path('widgets.json/', dashboards.user_index_widgets_lazy, name='dashboard.widgets'),
     path('organizers/', organizer.OrganizerList.as_view(), name='organizers'),
     path('organizers/add', organizer.OrganizerCreate.as_view(), name='organizers.add'),
-    path('organizer/<str:organizer>/update', organizer.OrganizerUpdate.as_view(), name='organizer.update'),
+    path('organizer/<str:organizer>/', organizer.OrganizerUpdate.as_view(), name='organizer.update'),
     path('organizer/<str:organizer>/teams', team.TeamListView.as_view(), name='organizer.teams'),
     path('organizer/<str:organizer>/team/add', team.TeamCreateView.as_view(), name='organizer.team.add'),
+    path('organizer/<str:organizer>/team/<str:team>', team.TeamMemberView.as_view(), name='organizer.team'),
     path('organizer/<str:organizer>/team/<str:team>/edit', team.TeamUpdateView.as_view(), name='organizer.team.edit'),
     path(
         'organizer/<str:organizer>/team/<str:team>/delete', team.TeamDeleteView.as_view(), name='organizer.team.delete'
