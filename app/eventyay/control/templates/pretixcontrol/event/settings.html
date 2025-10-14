@@ -25,9 +25,6 @@
         <div class="tabbed-form">
             <fieldset>
                 <legend>{% trans "Basics" %}</legend>
-                {% if form.domain %}
-                    {% bootstrap_field form.domain layout="control" %}
-                {% endif %}
                 {% bootstrap_field form.currency layout="control" %}
                 {% bootstrap_field form.sales_channels layout="control" %}
 
