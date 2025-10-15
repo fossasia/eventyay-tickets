@@ -380,10 +380,10 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
             team_name = self.object.name
             self.object.delete()
             messages.success(self.request, _(f"The team '{team_name}' has been deleted."))
-            return redirect(success_url)
         else:
             messages.error(self.request, _(f"The team '{team_name}' cannot be deleted."))
-            return redirect(success_url)
+        
+        return redirect(success_url)
 
     def get_success_url(self):
         return reverse(

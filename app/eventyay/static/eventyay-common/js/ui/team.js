@@ -1,18 +1,15 @@
-document.addEventListener('DOMContentLoaded', function () {
-    toggleReviewSettings();
+document.addEventListener('DOMContentLoaded', () => {
+    const reviewerCheckbox = document.getElementById('id_is_reviewer');
+    const reviewSettings = document.getElementById('review-settings');
 
-    document.getElementById('id_is_reviewer').addEventListener('change', function () {
+    const toggleReviewSettings = () => {
+        if (!reviewerCheckbox || !reviewSettings) return;
+
+        reviewSettings.style.display = reviewerCheckbox.checked ? 'block' : 'none';
+    };
+
+    if (reviewerCheckbox) {
+        reviewerCheckbox.addEventListener('change', toggleReviewSettings);
         toggleReviewSettings();
-    });
-
-    function toggleReviewSettings() {
-        let reviewSettings = document.getElementById('review-settings');
-        let isReviewerChecked = document.getElementById('id_is_reviewer').checked;
-
-        if (isReviewerChecked) {
-            reviewSettings.style.display = 'block';
-        } else {
-            reviewSettings.style.display = 'none';
-        }
     }
 });

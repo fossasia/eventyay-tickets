@@ -40,7 +40,8 @@
                     </td>
                     <td class="text-right flip">
                         <button type="submit" name="remove-member" value="{{ u.id }}"
-                                class="btn btn-delete btn-danger btn-sm btn-block">
+                                class="btn btn-delete btn-danger btn-sm btn-block"
+                                onclick="return confirm('{% trans "Are you sure you want to remove this member?" %}');">
                             <i class="fa fa-times"></i> {% trans "Remove" %}
                         </button>
                     </td>
