@@ -33,38 +33,10 @@ footer {
 nav.navbar {
     margin: 0;
 }
-
-.navbar-brand {
-    font-weight: 600; 
-    padding-top: 0.3125rem; 
-    padding-bottom: 0.3125rem;
-    display: flex;
-    align-items: center;
-    color: $navbar-inverse-link-color;
-    font-size: 1.75rem;
-    white-space: nowrap;
-    
-    &:hover,
-    &:focus {
-        color: $navbar-inverse-link-hover-color;
-        text-decoration: none;
-       
-        outline: none;
-        box-shadow: 0 0 0 0px rgba($navbar-inverse-link-hover-color, 0.5);
-    }
-}
-
 .navbar-brand img {
-    height: 30px;
+    height: 100%;
     width: auto;
-    margin-right: 0.5rem;
-    margin-left: 1rem;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.navbar-brand span {
-    margin-top: -0.625rem; // -10px equivalent to match eventyay-talk
+    display: inline;
 }
 
 #side-menu img.fa-img {
@@ -251,7 +223,7 @@ body.loading #wrapper {
     height: 100vh;
     background: rgba(255, 255, 255, .7);
     opacity: 0;
-    z-index: 900000;
+    z-index: 20;
     visibility: hidden;
     padding: 10px;
 
@@ -721,7 +693,9 @@ h1 .label {
         margin-bottom: 5px;
     }
 }
-
+.popover{
+    padding: 0;
+}
 .popover-content {
     position: relative;
     padding: 5px 0;
@@ -729,7 +703,7 @@ h1 .label {
     #submenu {
         position: absolute;
         top: 0;
-        right: 101%;
+        right: 100%;  
         font-size: 16px;
         font-weight: normal;
         cursor: pointer;
@@ -737,10 +711,11 @@ h1 .label {
         min-width: 200px;
         padding: 5px 0;
         border-radius: 4px;
-        z-index: 9999;
+        z-index: 20;
         background-clip: padding-box;
         border: 1px solid rgba(0, 0, 0, 0.2);
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.2s ease-in-out;
     }
     .profile-menu {
         color: darken($btn-primary-bg, 10%);
@@ -864,3 +839,128 @@ h1 .label {
 @import "../../pretixbase/scss/_rtl.scss";
 @import "../../bootstrap/scss/_rtl.scss";
 @import "_rtl.scss";
+
+
+.dashboard-item {
+    cursor: pointer;
+    
+    #submenu {
+        display: none;
+    }
+    
+    
+    &:hover {
+        #submenu {
+            display: block;
+        }
+    }
+    
+  
+    &.desktop-menu-open {
+        
+    }
+    
+   
+    &.desktop-submenu-open {
+        #submenu {
+            display: block;
+        }
+    }
+    
+  
+    &.menu-open {
+        #submenu {
+            display: block;
+        }
+    }
+    
+    &[tabindex] {
+        outline: none;
+    }
+}
+
+
+@media (max-width: $screen-md-max) {
+    .dashboard-item {
+        min-height: 44px;
+        
+        &:active {
+            background-color: darken($btn-primary-bg, 5%) !important;
+        }
+        
+        &.menu-open {
+          
+            &::after {
+                display: none;
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.3);
+                z-index: 20;
+            }
+        }
+        
+        #submenu {
+           
+            position: absolute;
+            top: 100%; 
+            left: 0;
+            right: auto;
+            width: 100%; 
+            max-width: 300px;
+            z-index: 10;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            
+            // Add smooth animation
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.2s ease-in-out;
+            
+            .submenu-item {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                
+                a {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    width: 100%;
+                    padding: 12px 16px;
+                    text-decoration: none;
+                    border-bottom: 1px solid #f0f0f0;
+                    text-align: left;
+                    
+                    i {
+                        margin-right: 8px;
+                        width: 16px;
+                        text-align: center;
+                        flex-shrink: 0;
+                    }
+                    
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+            
+            
+            &.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+       
+        &.menu-open #submenu {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+}
