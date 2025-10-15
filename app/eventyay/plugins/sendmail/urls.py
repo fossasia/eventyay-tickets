@@ -1,16 +1,21 @@
-from django.urls import re_path as url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(
-        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/sendmail/$',
+    path(
+        'control/event/<str:organizer>/<str:event>/sendmail/',
         views.SenderView.as_view(),
         name='send',
     ),
-    url(
-        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/sendmail/history/',
+    path(
+        'control/event/<str:organizer>/<str:event>/sendmail/history/',
         views.EmailHistoryView.as_view(),
         name='history',
+    ),
+    path(
+        'control/event/<str:organizer>/<str:event>/sendmail/templates/',
+        views.MailTemplatesView.as_view(),
+        name='templates',
     ),
 ]
