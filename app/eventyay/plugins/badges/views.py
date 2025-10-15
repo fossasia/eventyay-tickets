@@ -30,18 +30,26 @@ from eventyay.plugins.badges.tasks import badges_create_pdf
 
 from .models import BadgeLayout
 
+class BadgePluginEnabledMixin:
 
-class LayoutListView(EventPermissionRequiredMixin, ListView):
+    def dispatch(self, request, *args, **kwargs):
+        if 'pretix.plugins.badges' not in request.event.get_plugins():
+            return redirect('control:event.settings.plugins', 
+                          organizer=request.event.organizer.slug, 
+                          event=request.event.slug)
+        return super().dispatch(request, *args, **kwargs)
+
+class LayoutListView(BadgePluginEnabledMixin, EventPermissionRequiredMixin, ListView):
     model = BadgeLayout
     permission = ('can_change_event_settings', 'can_view_orders')
     template_name = 'pretixplugins/badges/index.html'
     context_object_name = 'layouts'
 
     def get_queryset(self):
-        return self.request.event.badge_layouts.prefetch_related('product_assignments')
+        return self.request.event.badge_layouts.prefetch_related('item_assignments')
 
 
-class LayoutCreate(EventPermissionRequiredMixin, CreateView):
+class LayoutCreate(BadgePluginEnabledMixin, EventPermissionRequiredMixin, CreateView):
     model = BadgeLayout
     form_class = BadgeLayoutForm
     template_name = 'pretixplugins/badges/edit.html'
@@ -59,7 +67,7 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
         if form.instance.background and form.instance.background.name:
             form.instance.background.save('background.pdf', form.instance.background)
         form.instance.log_action(
-            'eventyay.plugins.badges.layout.added',
+            'pretix.plugins.badges.layout.added',
             user=self.request.user,
             data=dict(form.cleaned_data),
         )
@@ -101,7 +109,7 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
         return kwargs
 
 
-class LayoutSetDefault(EventPermissionRequiredMixin, DetailView):
+class LayoutSetDefault(BadgePluginEnabledMixin, EventPermissionRequiredMixin, DetailView):
     model = BadgeLayout
     permission = 'can_change_event_settings'
 
@@ -130,7 +138,7 @@ class LayoutSetDefault(EventPermissionRequiredMixin, DetailView):
         )
 
 
-class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
+class LayoutDelete(BadgePluginEnabledMixin, EventPermissionRequiredMixin, DeleteView):
     model = BadgeLayout
     template_name = 'pretixplugins/badges/delete.html'
     permission = 'can_change_event_settings'
@@ -181,7 +189,7 @@ class LayoutEditorView(BaseEditorView):
         self.layout.layout = self.request.POST.get('data')
         self.layout.save(update_fields=['layout'])
         self.layout.log_action(
-            action='eventyay.plugins.badges.layout.changed',
+            action='pretix.plugins.badges.layout.changed',
             user=self.request.user,
             data={'layout': self.request.POST.get('data')},
         )
@@ -222,7 +230,7 @@ class LayoutEditorView(BaseEditorView):
         self.layout.background.save('background.pdf', f.file)
 
 
-class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
+class OrderPrintDo(BadgePluginEnabledMixin, EventPermissionRequiredMixin, AsyncAction, View):
     task = badges_create_pdf
     permission = 'can_view_orders'
     known_errortypes = ['OrderError']
