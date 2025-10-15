@@ -27,11 +27,7 @@ from eventyay.base.i18n import language
 from eventyay.base.models import Event, EventMetaValue, Organizer, Quota
 from eventyay.base.services import tickets
 from eventyay.base.services.quotas import QuotaAvailability
-from eventyay.control.forms.event import (
-    EventUpdateForm,
-    EventWizardBasicsForm,
-    EventWizardFoundationForm,
-)
+from eventyay.control.forms.event import EventWizardBasicsForm, EventWizardFoundationForm
 from eventyay.control.forms.filter import EventFilterForm
 from eventyay.control.permissions import EventPermissionRequiredMixin
 from eventyay.control.views import PaginationMixin, UpdateView
@@ -46,7 +42,7 @@ from eventyay.eventyay_common.utils import (
     generate_token,
 )
 from eventyay.helpers.plugin_enable import is_video_enabled
-
+from ..forms.event import EventUpdateForm
 
 class EventList(PaginationMixin, ListView):
     model = Event
@@ -359,8 +355,10 @@ class EventUpdate(
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        if self.request.user.has_active_staff_session(self.request.session.session_key):
-            kwargs['domain'] = True
+        # Pass necessary kwargs to the EventUpdateForm in common
+        is_staff_session = self.request.user.has_active_staff_session(self.request.session.session_key)
+        kwargs['change_slug'] = is_staff_session
+        kwargs['domain'] = is_staff_session
         return kwargs
 
     def enable_talk_system(self, request: HttpRequest) -> bool:
@@ -446,6 +444,7 @@ class EventUpdate(
                         'is_video_creation': request.event.is_video_creation,
                     }
                     send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='update')
+                messages.success(self.request, _("Your changes have been saved."))
                 return self.form_valid(form)
             else:
                 messages.error(
