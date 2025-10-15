@@ -1230,7 +1230,7 @@ class EventFilterForm(FilterForm):
             qs = qs.filter(
                 Q(organizer__teams__members=user) &
                 (Q(organizer__teams__all_events=True) |
-                 Q(organizer__teams__limit_events__in=qs))
+                 Q(organizer__teams__limit_events__in=qs.values_list('pk', flat=True)))
             ).distinct()
         elif fdata.get('status') == 'live':
             qs = qs.filter(live=True)
