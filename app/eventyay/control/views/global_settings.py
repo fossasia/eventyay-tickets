@@ -43,7 +43,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('control:admin.global.settings')
+        return reverse('eventyay_admin:admin.global.settings')
 
 
 class SSOView(AdministratorPermissionRequiredMixin, FormView):
@@ -73,7 +73,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('control:admin.global.sso')
+        return reverse('eventyay_admin:admin.global.sso')
 
     def create_oauth_application(self, redirect_uris):
         application, created = OAuthApplication.objects.get_or_create(
@@ -103,7 +103,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
 
 class DeleteOAuthApplicationView(AdministratorPermissionRequiredMixin, DeleteView):
     model = OAuthApplication
-    success_url = reverse_lazy('control:admin.global.sso')
+    success_url = reverse_lazy('eventyay_admin:admin.global.sso')
 
 
 class UpdateCheckView(StaffMemberRequiredMixin, FormView):
@@ -133,7 +133,7 @@ class UpdateCheckView(StaffMemberRequiredMixin, FormView):
         return ctx
 
     def get_success_url(self):
-        return reverse('control:admin.global.update')
+        return reverse('eventyay_admin:admin.global.update')
 
 
 class MessageView(TemplateView):
@@ -188,4 +188,4 @@ class ToggleBillingValidationView(AdministratorPermissionRequiredMixin, Template
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
-        return reverse('control:admin.toggle.billing.validation')
+        return reverse('eventyay_admin:admin.toggle.billing.validation')
