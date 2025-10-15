@@ -2,9 +2,9 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load urlreplace %}
-{% block title %}{% trans "Organizers" %}{% endblock %}
+{% block title %}{% translate "Organizers" %}{% endblock %}
 {% block content %}
-	<h1>{% trans "Organizers" %}</h1>
+	<h1>{% translate "Organizers" %}</h1>
     <form class="row filter-form" action="" method="get">
         <div class="col-md-10 col-sm-6 col-xs-12">
             {% bootstrap_field filter_form.query layout='inline' %}
@@ -13,7 +13,7 @@
             <button class="btn btn-primary btn-block" type="submit">
                 <span class="fa fa-search"></span>
                 <span class="hidden-md">
-                    {% trans "Search" %}
+                    {% translate "Search" %}
                 </span>
             </button>
         </div>
@@ -22,7 +22,7 @@
         <p>
             <a href='{% url "eventyay_common:organizers.add" %}' class="btn btn-default">
                 <span class="fa fa-plus"></span>
-                {% trans "Create a new organizer" %}
+                {% translate "Create a new organizer" %}
             </a>
         </p>
     {% endif %}
@@ -30,17 +30,17 @@
 		<thead>
 			<tr>
                 <th>
-                    {% trans "Name" %}
+                    {% translate "Name" %}
                     <a href="?{% url_replace request 'ordering' '-name' %}"><i class="fa fa-caret-down"></i></a>
                     <a href="?{% url_replace request 'ordering' 'name' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th>
-                    {% trans "Short form" %}
+                    {% translate "Short form" %}
                     <a href="?{% url_replace request 'ordering' '-slug' %}"><i class="fa fa-caret-down"></i></a>
                     <a href="?{% url_replace request 'ordering' 'slug' %}"><i class="fa fa-caret-up"></i></a>
                 </th>
                 <th class="text-right flip">
-                    {% trans "Actions" %}
+                    {% translate "Actions" %}
                 </th>
 			</tr>
 		</thead>
@@ -53,7 +53,7 @@
                 <td>{{ organizer.slug }}</td>
                 <td class="text-right flip">
                     <a href='{% url "eventyay_common:organizer.update" organizer=organizer.slug  %}'
-                            class="btn btn-sm btn-default" title='{% trans "Edit" %}'
+                            class="btn btn-sm btn-default" title='{% translate "Edit" %}'
                             data-toggle="tooltip">
                         <span class="fa fa-edit"></span>
                     </a>

@@ -4,14 +4,14 @@
 
 {% block inner %}
     <h1>
-        {% trans "Team:" %} {{ team.name }}
+        {% translate "Team:" %} {{ team.name }}
         <a href="{% url "eventyay_common:organizer.team.edit" organizer=organizer.slug team=team.pk %}"
            class="btn btn-default">
             <span class="fa fa-edit"></span>
-            {% trans "Edit" %}
+            {% translate "Edit" %}
         </a>
     </h1>
-    <h3>{% trans "Team members" %}</h3>
+    <h3>{% translate "Team members" %}</h3>
     <form action="" method="post">
         {% csrf_token %}
         <!-- Trick browsers into taking this as a default -->
@@ -19,7 +19,7 @@
         <table class="table table-condensed table-hover">
             <thead>
             <tr>
-                <th>{% trans "Member" %}</th>
+                <th>{% translate "Member" %}</th>
                 <th width="150"></th>
             </tr>
             </thead>
@@ -30,19 +30,19 @@
                         {{ u.email }}
                         {% if u.require_2fa %}
                             <span class="fa fa-shield text-success" data-toggle="tooltip"
-                                    title="{% trans "Two-factor authentication enabled" %}">
+                                    title="{% translate "Two-factor authentication enabled" %}">
                             </span>
                         {% else %}
                             <span class="fa fa-shield disabled" data-toggle="tooltip"
-                                    title="{% trans "Two-factor authentication disabled" %}">
+                                    title="{% translate "Two-factor authentication disabled" %}">
                             </span>
                         {% endif %}
                     </td>
                     <td class="text-right flip">
                         <button type="submit" name="remove-member" value="{{ u.id }}"
                                 class="btn btn-delete btn-danger btn-sm btn-block"
-                                onclick="return confirm('{% trans "Are you sure you want to remove this member?" %}');">
-                            <i class="fa fa-times"></i> {% trans "Remove" %}
+                                onclick="return confirm('{% translate "Are you sure you want to remove this member?" %}');">
+                            <i class="fa fa-times"></i> {% translate "Remove" %}
                         </button>
                     </td>
                 </tr>
@@ -52,9 +52,9 @@
                     <td>
                         {{ i.email }}
                         <span class="fa fa-envelope-o" data-toggle="tooltip"
-                              title="{% trans "invited, pending response" %}"></span>
+                              title="{% translate "invited, pending response" %}"></span>
                         <button type="submit" name="resend-invite" value="{{ i.id }}"
-                                data-toggle="tooltip" title="{% trans "resend invite" %}"
+                                data-toggle="tooltip" title="{% translate "resend invite" %}"
                                 class="btn-invisible">
                             <span class="fa fa-repeat"></span>
                         </button>
@@ -62,7 +62,7 @@
                     <td class="text-right flip">
                         <button type="submit" name="remove-invite" value="{{ i.id }}"
                                 class="btn btn-delete btn-danger btn-sm btn-block">
-                            <i class="fa fa-times"></i> {% trans "Remove" %}
+                            <i class="fa fa-times"></i> {% translate "Remove" %}
                         </button>
                     </td>
                 </tr>
@@ -80,14 +80,14 @@
                 </td>
                 <td class="text-right flip">
                     <button type="submit" class="btn btn-primary btn-sm btn-block">
-                        <i class="fa fa-plus"></i> {% trans "Add" %}
+                        <i class="fa fa-plus"></i> {% translate "Add" %}
                     </button>
                 </td>
             </tr>
             </tfoot>
         </table>
     </form>
-    <h3>{% trans "API tokens" %}</h3>
+    <h3>{% translate "API tokens" %}</h3>
     <form action="" method="post">
         {% csrf_token %}
         <!-- Trick browsers into taking this as a default -->
@@ -95,7 +95,7 @@
         <table class="table table-condensed table-hover">
             <thead>
             <tr>
-                <th>{% trans "Name" %}</th>
+                <th>{% translate "Name" %}</th>
                 <th width="150"></th>
             </tr>
             </thead>
@@ -108,7 +108,7 @@
                     <td class="text-right flip">
                         <button type="submit" name="remove-token" value="{{ t.id }}"
                                 class="btn btn-delete btn-danger btn-sm btn-block">
-                            <i class="fa fa-times"></i> {% trans "Remove" %}
+                            <i class="fa fa-times"></i> {% translate "Remove" %}
                         </button>
                     </td>
                 </tr>
@@ -121,7 +121,7 @@
                 </td>
                 <td class="text-right flip">
                     <button type="submit" class="btn btn-primary btn-sm btn-block">
-                        <i class="fa fa-plus"></i> {% trans "Add" %}
+                        <i class="fa fa-plus"></i> {% translate "Add" %}
                     </button>
                 </td>
             </tr>
@@ -131,7 +131,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                {% trans "Team history" %}
+                {% translate "Team history" %}
             </h3>
         </div>
         {% include "eventyay_common/includes/logs.html" with obj=team %}
