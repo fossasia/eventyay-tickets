@@ -16,8 +16,9 @@ import os
 import sys
 from importlib.metadata import entry_points
 from pathlib import Path
-# Ensure local ticket-video plugin is importable
-_PLUGIN_LOCAL = Path(__file__).resolve().parents[3] / 'eventyay-ticket-video'
+# Ensure local ticket-video plugin is importable (now inside app/plugins)
+# Location: app/plugins/eventyay-ticket-video/pretix_venueless
+_PLUGIN_LOCAL = Path(__file__).resolve().parents[2] / 'plugins' / 'eventyay-ticket-video'
 if _PLUGIN_LOCAL.is_dir():
     p = str(_PLUGIN_LOCAL)
     if p not in sys.path:
