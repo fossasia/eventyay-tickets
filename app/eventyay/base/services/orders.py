@@ -1136,6 +1136,25 @@ def _perform_order(
         requires_seat = Value(0, output_field=IntegerField())
     positions = CartPosition.objects.annotate(requires_seat=requires_seat).filter(id__in=position_ids, event=event)
 
+    # Check one ticket per user per product restriction
+    if email:
+        product_ids = set()
+        for p in positions:
+            product_ids.add(p.product_id)
+        if product_ids:
+            existing = (
+                OrderPosition.objects.filter(
+                    order__event=event,
+                    order__email=email,
+                    order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID],
+                    product_id__in=product_ids,
+                ).exists()
+            )
+            if existing:
+                raise OrderError(_(
+                    'Only one ticket per user is allowed for this product. You already have a ticket.'
+                ))
+
     validate_order.send(
         event,
         payment_provider=pprov,

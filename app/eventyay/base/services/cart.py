@@ -22,6 +22,7 @@ from eventyay.base.models import (
     CartPosition,
     Event,
     InvoiceAddress,
+    Order,
     Product,
     ProductVariation,
     Seat,
@@ -29,7 +30,8 @@ from eventyay.base.models import (
     Voucher,
 )
 from eventyay.base.models.event import SubEvent
-from eventyay.base.models.orders import OrderFee
+from eventyay.base.models.orders import OrderFee, OrderPosition
+from eventyay.base.models.product import ProductMetaValue
 from eventyay.base.models.tax import TAXED_ZERO, TaxedPrice, TaxRule
 from eventyay.base.reldate import RelativeDateWrapper
 from eventyay.base.services.checkin import _save_answers
@@ -134,6 +136,8 @@ error_messages = {
         "Gift cards can be entered later on when you're asked for your payment details."
     ),
     'country_blocked': _('One of the selected products is not available in the selected country.'),
+    'one_ticket_per_user': _('Only one ticket per user is allowed for a product in your cart. You already have a ticket.'),
+    'one_ticket_per_user_cart': _('Only one ticket per user is allowed for this product. You can only have one ticket in your cart.'),
 }
 
 
@@ -1047,6 +1051,59 @@ class CartManager:
                     )
         return err
 
+    def _check_one_ticket_per_user(self):
+        """
+        Enforce per-product "one ticket per user" restriction:
+        - If a product has the meta flag enabled, the user cannot have more than one
+          of that product in their cart, and if an email is present, also cannot have
+          an existing paid/pending order for that product.
+        """
+        # Build per-product counts from current cart positions
+        per_product_counts = Counter(p.product_id for p in self.positions)
+
+        # Apply pending operations to get the final intended counts
+        for op in self._operations:
+            if isinstance(op, self.AddOperation):
+                per_product_counts[op.product.id] += op.count
+            elif isinstance(op, self.RemoveOperation):
+                if op.position:
+                    per_product_counts[op.position.product_id] -= 1
+
+        # For all affected products, check meta flag and enforce max 1
+        affected_product_ids = set(per_product_counts.keys())
+        if not affected_product_ids:
+            return None
+
+        # Find which of the affected products have the flag set via meta
+        flagged_product_ids = set(
+            ProductMetaValue.objects.filter(
+                product_id__in=affected_product_ids,
+                property__name='limit_one_per_user',
+            ).values_list('product_id', flat=True)
+        )
+
+        # Enforce cart-level limit of 1 for flagged products
+        for pid in flagged_product_ids:
+            if per_product_counts.get(pid, 0) > 1:
+                return error_messages['one_ticket_per_user_cart']
+
+        # If we have an email, also check existing orders for flagged products
+        email = None
+        if hasattr(self, 'invoice_address') and self.invoice_address and self.invoice_address.email:
+            email = self.invoice_address.email
+
+        if email and flagged_product_ids:
+            exists = OrderPosition.objects.filter(
+                order__event=self.event,
+                order__email=email,
+                order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID],
+                product_id__in=flagged_product_ids,
+            ).exists()
+            if exists:
+                return error_messages['one_ticket_per_user']
+
+        return None
+
     def _perform_operations(self):
         vouchers_ok = self._get_voucher_availability()
         quotas_ok = self._get_quota_availability()
@@ -1054,6 +1111,7 @@ class CartManager:
         new_cart_positions = []
 
         err = err or self._check_min_max_per_product()
+        err = err or self._check_one_ticket_per_user()
 
         self._operations.sort(key=lambda a: self.order[type(a)])
         seats_seen = set()
