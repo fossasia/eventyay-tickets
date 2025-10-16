@@ -172,8 +172,13 @@ except Exception:
 
 plugin_patterns = [url(r'', include((raw_plugin_patterns, 'plugins')))]
 
+# Add storage URLs for file uploads
+storage_patterns = [
+    url(r'^storage/', include('eventyay.storage.urls', namespace='storage')),
+]
+
 # Adjust urlpatterns: add event_identifier aware pattern excluding assets
-urlpatterns = common_patterns + [
+urlpatterns = common_patterns + storage_patterns + [
     url(r'^video/assets/(?P<path>.*)$', VideoAssetView.as_view(), name='video.assets.legacy'),
     url(r'^video/(?P<path>[^?]*\.[a-zA-Z0-9._-]+)$', VideoAssetView.as_view(), name='video.assets'),
     # /video/<event_identifier>/... (exclude assets as identifier)

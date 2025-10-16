@@ -218,6 +218,7 @@ class SecurityMiddleware(MiddlewareMixin):
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
                 'https://www.youtube.com',
+                'https:',  # Allow all HTTPS iframes
             ],
             'style-src': [
                 '{static}',
@@ -225,7 +226,7 @@ class SecurityMiddleware(MiddlewareMixin):
                 "'unsafe-inline'",  # allow inline styles
             ],
             'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com', 'https:', 'blob:'],
-            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com'] + img_src,
+            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com', 'https://twemoji.maxcdn.com'] + img_src,
             'font-src': [
                 '{static}',
                 'https://fonts.gstatic.com',  # fix Google Fonts
