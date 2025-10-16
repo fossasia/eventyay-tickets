@@ -1,0 +1,193 @@
+name: Webapp & Backend CI
+
+on:
+  pull_request:
+    branches: [ enext ]
+    paths:
+      - "app/eventyay/webapp/**"
+      - "app/**.py"
+      - "app/**/**.py"
+      - "app/pyproject.toml"
+      - "app/uv.lock"
+      - ".github/workflows/webapp-backend-ci.yml"
+
+jobs:
+  python-uv-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Sync dependencies
+        run: uv sync --directory app
+
+      - name: Django checks
+        env:
+          EVENTYAY_CONFIG_FILE: app/eventyay.cfg
+        run: uv run python app/manage.py check
+
+  webapp-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/eventyay/webapp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: app/eventyay/webapp/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  pytest-integration:
+    name: Integration tests (pytest)
+    runs-on: ubuntu-latest
+    needs: python-uv-check
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: eventyay
+          POSTGRES_PASSWORD: eventyay
+          POSTGRES_DB: eventyay-db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U eventyay -d eventyay-db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Sync dependencies
+        run: uv sync --directory app --group test
+
+      - name: Run pytest
+        env:
+          POSTGRES_USER: eventyay
+          POSTGRES_PASSWORD: eventyay
+          POSTGRES_DB: eventyay-db
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: "5432"
+          EVENTYAY_CONFIG_FILE: app/eventyay.cfg
+          PRETIX_REDIS_LOCATION: redis://redis:6379/0
+          PRETIX_CELERY_BROKER: redis://redis:6379/2
+          PRETIX_CELERY_BACKEND: redis://redis:6379/1
+          DEBUG: "1"
+        working-directory: app
+        run: uv run pytest tests/ -v --tb=short
+
+  backend-smoke:
+    name: Backend smoke test (healthcheck)
+    runs-on: ubuntu-latest
+    needs: python-uv-check
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: eventyay
+          POSTGRES_PASSWORD: eventyay
+          POSTGRES_DB: eventyay-db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U eventyay -d eventyay-db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Sync dependencies
+        run: uv sync --directory app
+
+      - name: Wait for Postgres and migrate
+        env:
+          POSTGRES_USER: eventyay
+          POSTGRES_PASSWORD: eventyay
+          POSTGRES_DB: eventyay-db
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: "5432"
+          EVENTYAY_CONFIG_FILE: app/eventyay.cfg
+          PRETIX_REDIS_LOCATION: redis://redis:6379/0
+          PRETIX_CELERY_BROKER: redis://redis:6379/2
+          PRETIX_CELERY_BACKEND: redis://redis:6379/1
+        run: |
+          for i in {1..30}; do
+            if (echo > /dev/tcp/postgres/5432) >/dev/null 2>&1; then echo "Postgres is up"; break; fi; sleep 2; done
+          for i in {1..30}; do
+            if (echo > /dev/tcp/redis/6379) >/dev/null 2>&1; then echo "Redis is up"; break; fi; sleep 2; done
+          uv run python app/manage.py migrate --noinput
+
+      - name: Run dev server
+        env:
+          POSTGRES_USER: eventyay
+          POSTGRES_PASSWORD: eventyay
+          POSTGRES_DB: eventyay-db
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: "5432"
+          DEBUG: "1"
+          EVENTYAY_CONFIG_FILE: app/eventyay.cfg
+          PRETIX_REDIS_LOCATION: redis://redis:6379/0
+          PRETIX_CELERY_BROKER: redis://redis:6379/2
+          PRETIX_CELERY_BACKEND: redis://redis:6379/1
+        run: |
+          set -e
+          uv run python app/manage.py runserver 0.0.0.0:8000 &
+          echo $! > server.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8000/healthcheck/ >/dev/null; then echo "Server is healthy"; break; fi; sleep 2; done
+
+      - name: Verify healthcheck
+        run: curl -f http://127.0.0.1:8000/healthcheck/
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then kill -TERM "$(cat server.pid)" || true; fi
