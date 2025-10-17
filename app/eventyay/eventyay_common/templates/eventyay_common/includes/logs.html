@@ -9,7 +9,7 @@
                     {% if log.user.is_staff %}
                         <span class="fa fa-id-card fa-danger fa-fw"
                                 data-toggle="tooltip"
-                                title="{% trans "This change was performed by a system administrator." %}">
+                                title="{% translate "This change was performed by a system administrator." %}">
                         </span>
                     {% else %}
                         <span class="fa fa-user fa-fw"></span>
@@ -29,7 +29,7 @@
                 {% if log.shredded %}
                     <span class="fa fa-eraser fa-danger fa-fw"
                           data-toggle="tooltip"
-                          title="{% trans "Personal data was cleared from this log entry." %}">
+                          title="{% translate "Personal data was cleared from this log entry." %}">
                     </span>
                 {% endif %}
             </p>
@@ -39,7 +39,7 @@
                 {% if staff_session %}
                     <a href="" class="btn btn-default btn-xs" data-expandlogs data-id="{{ log.pk }}">
                         <span class="fa-eye fa fa-fw"></span>
-                        {% trans "Inspect" %}
+                        {% translate "Inspect" %}
                     </a>
                 {% endif %}
             </p>
@@ -48,7 +48,7 @@
     {% if obj.all_logentries_link and obj.top_logentries_has_more %}
         <li class="list-group-item logentry">
             <a href="{{ obj.all_logentries_link }}">
-                {% trans "View full log" %}
+                {% translate "View full log" %}
             </a>
         </li>
     {% endif %}
