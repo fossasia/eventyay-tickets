@@ -127,25 +127,33 @@ $(function () {
 
         $("#id_dependency_values").prop("required", true);
         $val.hide();
-        $val.parent().append("<div class=\"help-block loading-indicator\"><span class=\"fa" +
-            " fa-cog fa-spin\"></span></div>");
+        $val.parent().append("<div class=\"help-block loading-indicator\"><span class=\"fa fa-cog fa-spin\"></span></div>");
 
-        apiGET('/api/v1/organizers/' + $("body").attr("data-organizer") + '/events/' + $("body").attr("data-event") + '/questions/' + val + '/', function (data) {
-            if (data.type === "B") {
-                $val.append($("<option>").attr("value", "True").text(gettext("Yes")));
-                $val.append($("<option>").attr("value", "False").text(gettext("No")));
-            } else {
-                for (var i = 0; i < data.options.length; i++) {
-                    var opt = data.options[i];
-                    var $opt = $("<option>").attr("value", opt.identifier).text(i18nToString(opt.answer));
-                    $val.append($opt);
+        var ajaxUrl = '/control/event/' + $("body").attr("data-organizer") + '/' + $("body").attr("data-event") + '/questions/' + val + '/options/';
+        $.ajax({
+            url: ajaxUrl,
+            type: 'GET',
+            success: function (data) {
+                if (data.type === "B") {
+                    $val.append($("<option>").attr("value", "True").text(gettext("Yes")));
+                    $val.append($("<option>").attr("value", "False").text(gettext("No")));
+                } else {
+                    for (var i = 0; i < data.options.length; i++) {
+                        var opt = data.options[i];
+                        var $opt = $("<option>").attr("value", opt.identifier).text(opt.answer);
+                        $val.append($opt);
+                    }
                 }
+                if (oldval) {
+                    $val.val(oldval);
+                }
+                $val.parent().find(".loading-indicator").remove();
+                $val.show();
+            },
+            error: function(xhr, status, error) {
+                $val.parent().find(".loading-indicator").remove();
+                $val.show();
             }
-            if (oldval) {
-                $val.val(oldval);
-            }
-            $val.parent().find(".loading-indicator").remove();
-            $val.show();
         });
     }
 
