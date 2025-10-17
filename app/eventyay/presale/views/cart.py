@@ -446,6 +446,8 @@ class CartAdd(EventViewMixin, CartActionMixin, AsyncAction, View):
     known_errortypes = ['CartError']
 
     def get_success_message(self, value):
+        if isinstance(value, dict) and value.get('warning'):
+            return value['warning']
         return _('The products have been successfully added to your cart.')
 
     def _ajax_response_data(self):

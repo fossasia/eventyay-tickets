@@ -137,7 +137,7 @@ error_messages = {
     ),
     'country_blocked': _('One of the selected products is not available in the selected country.'),
     'one_ticket_per_user': _('Only one ticket per user is allowed for a product in your cart. You already have a ticket.'),
-    'one_ticket_per_user_cart': _('Only one ticket per user is allowed for this product. You can only have one ticket in your cart.'),
+    'one_ticket_per_user_cart': _('Only one ticket per user is allowed for this product. Quantity has been adjusted to 1.'),
 }
 
 
@@ -205,6 +205,11 @@ class CartManager:
         self.invoice_address = invoice_address
         self._widget_data = widget_data or {}
         self._sales_channel = sales_channel
+        self._last_warning = None
+
+    def get_last_warning(self):
+        """Get the last warning message from cart operations."""
+        return self._last_warning
 
     @property
     def positions(self):
@@ -1057,6 +1062,7 @@ class CartManager:
         - If a product has the meta flag enabled, the user cannot have more than one
           of that product in their cart, and if an email is present, also cannot have
           an existing paid/pending order for that product.
+        - Adjusts quantities to 1 instead of blocking the operation.
         """
         # Build per-product counts from current cart positions
         per_product_counts = Counter(p.product_id for p in self.positions)
@@ -1082,10 +1088,22 @@ class CartManager:
             ).values_list('product_id', flat=True)
         )
 
-        # Enforce cart-level limit of 1 for flagged products
-        for pid in flagged_product_ids:
-            if per_product_counts.get(pid, 0) > 1:
-                return error_messages['one_ticket_per_user_cart']
+        # Adjust quantities for flagged products that exceed 1
+        # Only products with the 'limit_one_per_user' meta property are affected
+        quantity_adjusted = False
+        for i, op in enumerate(self._operations):
+            if isinstance(op, self.AddOperation) and op.product.id in flagged_product_ids:
+                # This product has the limit_one_per_user flag, check if total would exceed 1
+                final_count = per_product_counts.get(op.product.id, 0)
+                if final_count > 1:
+                    # Calculate how many are currently in cart (before this operation)
+                    current_count = final_count - op.count
+                    # Calculate maximum additional items that can be added (to reach total of 1)
+                    max_additional = max(0, 1 - current_count)
+                    if op.count > max_additional:
+                        # Replace the operation with adjusted count
+                        self._operations[i] = op._replace(count=max_additional)
+                        quantity_adjusted = True
 
         # If we have an email, also check existing orders for flagged products
         email = None
@@ -1102,16 +1120,25 @@ class CartManager:
             if exists:
                 return error_messages['one_ticket_per_user']
 
+        # Return warning message if quantity was adjusted
+        if quantity_adjusted:
+            return error_messages['one_ticket_per_user_cart']
+
         return None
 
     def _perform_operations(self):
         vouchers_ok = self._get_voucher_availability()
         quotas_ok = self._get_quota_availability()
         err = None
+        warning = None
         new_cart_positions = []
 
         err = err or self._check_min_max_per_product()
-        err = err or self._check_one_ticket_per_user()
+        warning = self._check_one_ticket_per_user()
+        # Only treat as error if it's not a quantity adjustment warning
+        if warning and warning != error_messages['one_ticket_per_user_cart']:
+            err = err or warning
+            warning = None
 
         self._operations.sort(key=lambda a: self.order[type(a)])
         seats_seen = set()
@@ -1311,7 +1338,7 @@ class CartManager:
         CartPosition.objects.bulk_create(
             [p for p in new_cart_positions if not getattr(p, '_answers', None) and not p.pk]
         )
-        return err
+        return err, warning
 
     def _require_locking(self):
         if self._voucher_use_diff:
@@ -1343,9 +1370,13 @@ class CartManager:
             with transaction.atomic():
                 self.now_dt = now_dt
                 self._extend_expiry_of_valid_existing_positions()
-                err = self._perform_operations() or err
+                err, warning = self._perform_operations()
+                err = err or err
             if err:
                 raise CartError(err)
+            # Store warning for later retrieval if needed
+            if warning:
+                self._last_warning = warning
 
 
 def update_tax_rates(event: Event, cart_id: str, invoice_address: InvoiceAddress):
@@ -1448,13 +1479,14 @@ def add_products_to_cart(
     invoice_address: int = None,
     widget_data=None,
     sales_channel='web',
-) -> None:
+) -> dict:
     """
     Adds a list of products to a user's cart.
     :param event: The event ID in question
     :param products: A list of dicts with the keys product, variation, count, custom_price, voucher, seat ID
     :param cart_id: Session ID of a guest
     :raises CartError: On any error that occurred
+    :returns: Dict with success status and optional warning message
     """
     with language(locale):
         ia = False
@@ -1476,6 +1508,14 @@ def add_products_to_cart(
                 )
                 cm.add_new_products(products)
                 cm.commit()
+                
+                # Check if there was a warning about quantity adjustment
+                warning = cm.get_last_warning()
+                if warning:
+                    return {'success': True, 'warning': str(warning)}
+                else:
+                    return {'success': True}
+                    
             except LockTimeoutException:
                 self.retry()
         except (MaxRetriesExceededError, LockTimeoutException):
