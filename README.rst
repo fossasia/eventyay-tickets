@@ -100,7 +100,35 @@ In case you cannot take adavantage of PostgreSQL *peer* mode, you need to create
    POSTGRES_HOST=
    POSTGRES_PORT=
 
-6. **Activate virtual environment**
+6. **Create and configure Redis container**
+
+Run a Redis container using Docker:
+
+  .. code-block:: sh
+
+   docker run -d --name eventyay-redis -p 6379:6379 redis:7
+
+Then copy the default configuration file to the system directory (create the directory if it doesn't exist):
+
+  .. code-block:: sh
+   
+   sudo mkdir -p /etc/eventyay
+   sudo cp eventyay.cfg /etc/eventyay/eventyay.cfg
+
+Edit the /etc/eventyay/eventyay.cfg file to configure Redis and Celery:
+
+  .. code-block:: sh
+
+   [redis]
+   location=redis://localhost:6379/0
+   sessions=true
+
+   [celery]
+   backend=redis://localhost:6379/1
+   broker=redis://localhost:6379/2
+
+
+7. **Activate virtual environment**
 
 After running ``uv sync```, ``uv`` will activate the virtual environment. But if you are back
 to work on the project another, we don't run ``uv``, then we activate the virtual environment by:
@@ -111,19 +139,19 @@ to work on the project another, we don't run ``uv``, then we activate the virtua
     . .venv/bin/activate
 
 
-7. **Initialize the database**:
+8. **Initialize the database**:
 
    .. code-block:: bash
 
       python manage.py migrate
 
-8. **Create a superuser account** (for accessing the admin panel):
+9. **Create a superuser account** (for accessing the admin panel):
 
    .. code-block:: bash
 
       python manage.py createsuperuser
 
-9. **Run the development server**:
+10. **Run the development server**:
 
     .. code-block:: bash
 

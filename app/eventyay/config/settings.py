@@ -35,7 +35,7 @@ if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
 else:
     _config.read(
-        ['/etc/eventyay/eventyay.cfg', os.path.expanduser('~/.eventyay.cfg'), 'eventyay.cfg'],
+        ['eventyay.cfg', os.path.expanduser('~/.eventyay.cfg'), '/etc/eventyay/eventyay.cfg'],
         encoding='utf-8',
     )
 
