@@ -73,6 +73,7 @@ class OrganizerCreate(CreateView):
             can_change_orders=True,
             can_view_vouchers=True,
             can_change_vouchers=True,
+            can_change_submissions=True,
         )
         # Trigger webhook in talk to create organiser in talk component
         team.members.add(self.request.user)
