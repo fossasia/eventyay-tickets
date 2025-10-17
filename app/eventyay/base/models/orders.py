@@ -273,7 +273,7 @@ class Order(LockModel, LoggedModel):
             
         return cls.objects.filter(
             event=event,
-            email=email,
+            email__iexact=email,
             status__in=[cls.STATUS_PENDING, cls.STATUS_PAID]
         ).exists()
 

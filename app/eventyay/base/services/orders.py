@@ -53,7 +53,7 @@ from eventyay.base.models import (
     Voucher,
 )
 from eventyay.base.models.event import SubEvent
-from eventyay.base.models.product import ProductBundle
+from eventyay.base.models.product import ProductBundle, ProductMetaValue
 from eventyay.base.models.orders import (
     InvoiceAddress,
     OrderFee,
@@ -1136,24 +1136,34 @@ def _perform_order(
         requires_seat = Value(0, output_field=IntegerField())
     positions = CartPosition.objects.annotate(requires_seat=requires_seat).filter(id__in=position_ids, event=event)
 
-    # Check one ticket per user per product restriction
+    # Check one ticket per user per product restriction (only for flagged products)
     if email:
         product_ids = set()
         for p in positions:
             product_ids.add(p.product_id)
         if product_ids:
-            existing = (
-                OrderPosition.objects.filter(
-                    order__event=event,
-                    order__email=email,
-                    order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID],
+            # Find which products have the limit_one_per_user flag
+            flagged_product_ids = set(
+                ProductMetaValue.objects.filter(
                     product_id__in=product_ids,
-                ).exists()
+                    property__name='limit_one_per_user',
+                ).values_list('product_id', flat=True)
             )
-            if existing:
-                raise OrderError(_(
-                    'Only one ticket per user is allowed for this product. You already have a ticket.'
-                ))
+            
+            # Only check existing orders for flagged products
+            if flagged_product_ids:
+                existing = (
+                    OrderPosition.objects.filter(
+                        order__event=event,
+                        order__email__iexact=email,
+                        order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID],
+                        product_id__in=flagged_product_ids,
+                    ).exists()
+                )
+                if existing:
+                    raise OrderError(_(
+                        'Only one ticket per user is allowed for this product. You already have a ticket.'
+                    ))
 
     validate_order.send(
         event,

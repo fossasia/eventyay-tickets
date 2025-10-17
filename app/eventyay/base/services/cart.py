@@ -1091,7 +1091,9 @@ class CartManager:
         # Adjust quantities for flagged products that exceed 1
         # Only products with the 'limit_one_per_user' meta property are affected
         quantity_adjusted = False
-        for i, op in enumerate(self._operations):
+        adjusted_operations = []
+        
+        for op in self._operations:
             if isinstance(op, self.AddOperation) and op.product.id in flagged_product_ids:
                 # This product has the limit_one_per_user flag, check if total would exceed 1
                 final_count = per_product_counts.get(op.product.id, 0)
@@ -1101,9 +1103,18 @@ class CartManager:
                     # Calculate maximum additional items that can be added (to reach total of 1)
                     max_additional = max(0, 1 - current_count)
                     if op.count > max_additional:
-                        # Replace the operation with adjusted count
-                        self._operations[i] = op._replace(count=max_additional)
+                        # Create new operation with adjusted count
+                        adjusted_operations.append(op._replace(count=max_additional))
                         quantity_adjusted = True
+                    else:
+                        adjusted_operations.append(op)
+                else:
+                    adjusted_operations.append(op)
+            else:
+                adjusted_operations.append(op)
+        
+        # Replace operations list with adjusted version
+        self._operations = adjusted_operations
 
         # If we have an email, also check existing orders for flagged products
         email = None
@@ -1111,14 +1122,18 @@ class CartManager:
             email = self.invoice_address.email
 
         if email and flagged_product_ids:
-            exists = OrderPosition.objects.filter(
-                order__event=self.event,
-                order__email=email,
-                order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID],
-                product_id__in=flagged_product_ids,
-            ).exists()
-            if exists:
-                return error_messages['one_ticket_per_user']
+            # Use the centralized classmethod to check for existing orders
+            has_existing_order = Order.user_has_existing_order(event=self.event, email=email)
+            if has_existing_order:
+                # Check if the existing order contains any of the flagged products
+                existing_flagged_products = OrderPosition.objects.filter(
+                    order__event=self.event,
+                    order__email__iexact=email,  # Case-insensitive email matching
+                    order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID],
+                    product_id__in=flagged_product_ids,
+                ).exists()
+                if existing_flagged_products:
+                    return error_messages['one_ticket_per_user']
 
         # Return warning message if quantity was adjusted
         if quantity_adjusted:
@@ -1371,7 +1386,6 @@ class CartManager:
                 self.now_dt = now_dt
                 self._extend_expiry_of_valid_existing_positions()
                 err, warning = self._perform_operations()
-                err = err or err
             if err:
                 raise CartError(err)
             # Store warning for later retrieval if needed
