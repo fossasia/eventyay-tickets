@@ -32,12 +32,14 @@
                 {% bootstrap_field filter_form.state layout='inline' %}
             </div>
             <div class="col-md-2 col-sm-6 col-xs-12">
-                <button class="btn btn-primary btn-block" type="submit">
-                    <span class="fa fa-filter"></span>
-                    <span class="hidden-md">
-                    {% trans "Filter" %}
-                </span>
-                </button>
+                <div class="form-group" style="gap: 20px; display: flex;">
+                    <button class="btn btn-primary" type="submit">
+                        <span class="fa fa-filter"></span>
+                    </button>
+                    <a href="?" class="btn btn-default">
+                        <span class="fa fa-eraser"></span>
+                    </a>
+                </div>
             </div>
         </form>
         <p>

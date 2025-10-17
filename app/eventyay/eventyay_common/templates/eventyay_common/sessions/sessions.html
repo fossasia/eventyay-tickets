@@ -18,9 +18,14 @@
                 {% bootstrap_field filter_form.event layout='inline' %}
             </div>
             <div class="col-md-2 col-xs-6">
-                <button type="submit" class="btn btn-primary">
-                    <span class="fa fa-filter"></span>
-                </button>
+                <div class="form-group" style="gap: 20px; display: flex;">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="fa fa-filter"></span>
+                    </button>
+                    <a href="?" class="btn btn-default">
+                        <span class="fa fa-eraser"></span>
+                    </a>
+                </div>
             </div>
         </form>
     </div>
