@@ -211,6 +211,7 @@ class SecurityMiddleware(MiddlewareMixin):
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
                 'http://localhost:8080',
+                "'unsafe-eval'",  # Required for buntpapier and other libraries that use eval()
             ],
             'object-src': ["'none'"],
             'frame-src': [
