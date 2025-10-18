@@ -62,8 +62,5 @@ urlpatterns = [
     url(r'^pages/add$', pages.PageCreate.as_view(), name='admin.pages.add'),
     url(r'^pages/(?P<id>\d+)/edit$', pages.PageUpdate.as_view(), name='admin.pages.edit'),
     url(r'^pages/(?P<id>\d+)/delete$', pages.PageDelete.as_view(), name='admin.pages.delete'),
-    path('video/', include('eventyay.control.video.urls')),
-    
-    # Legacy Video Admin redirects
-    url(r'^video/(?P<rest>.*)$', RedirectView.as_view(url='/admin/video/%(rest)s', permanent=True)),
+    path('video/', include(('eventyay.control.video.urls', 'video_admin'))),
 ]
