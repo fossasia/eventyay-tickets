@@ -16,9 +16,9 @@ import os
 import sys
 from importlib.metadata import entry_points
 from pathlib import Path
-# Ensure local ticket-video plugin is importable (now inside app/plugins)
-# Location: app/plugins/eventyay-ticket-video/pretix_venueless
-_PLUGIN_LOCAL = Path(__file__).resolve().parents[2] / 'plugins' / 'eventyay-ticket-video'
+# Ensure local ticket-video plugin is importable (now inside app/eventyay/plugins)
+# Location: app/eventyay/plugins/eventyay-ticket-video/pretix_venueless
+_PLUGIN_LOCAL = Path(__file__).resolve().parents[1] / 'plugins' / 'eventyay-ticket-video'
 if _PLUGIN_LOCAL.is_dir():
     p = str(_PLUGIN_LOCAL)
     if p not in sys.path:
@@ -752,7 +752,7 @@ redis_connection_kwargs = {
     "health_check_interval": 30,
 }
 
-REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
+REDIS_URL = config.get('redis', 'location')
 HAS_REDIS = bool(REDIS_URL)
 REDIS_HOSTS = [{
     "address": REDIS_URL,
@@ -817,8 +817,8 @@ if not SESSION_ENGINE:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Celery configuration
-CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/1'
-CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/2'
+CELERY_BROKER_URL = config.get('celery', 'broker')
+CELERY_RESULT_BACKEND = config.get('celery', 'backend')
 CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
