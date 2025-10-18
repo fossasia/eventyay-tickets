@@ -113,11 +113,11 @@ Then copy the default configuration file to the system directory (create the dir
   .. code-block:: sh
    
    sudo mkdir -p /etc/eventyay
-   sudo cp eventyay.cfg /etc/eventyay/eventyay.cfg
+   sudo cp ./eventyay.cfg /etc/eventyay/eventyay.cfg
 
 Edit the /etc/eventyay/eventyay.cfg file to configure Redis and Celery:
 
-  .. code-block:: sh
+  .. code-block:: ini
 
    [redis]
    location=redis://localhost:6379/0

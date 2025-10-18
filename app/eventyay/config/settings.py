@@ -34,6 +34,8 @@ _config = configparser.RawConfigParser()
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
 else:
+    # Note: In ConfigParser, later files override earlier ones.
+    # Therefore, placing '/etc/eventyay/eventyay.cfg' last makes it the highest precedence.
     _config.read(
         ['eventyay.cfg', os.path.expanduser('~/.eventyay.cfg'), '/etc/eventyay/eventyay.cfg'],
         encoding='utf-8',
