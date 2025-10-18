@@ -82,13 +82,8 @@
                         {% bootstrap_field filter_form.query layout='inline' %}
                     </div>
                     <div class="col-md-2 col-xs-12">
-                        <div class="form-group" style="gap: 20px; display: flex;">
-                            <button class="btn btn-primary" type="submit">
-                                <span class="fa fa-filter"></span>
-                            </button>
-                            <a href="?" class="btn btn-default">
-                                <span class="fa fa-eraser"></span>
-                            </a>
+                        <div class="filter-actions">
+                            {% include "eventyay_common/filter_actions.html" %}
                             <a href="{% url "control:event.orders.search" event=request.event.slug organizer=request.event.organizer.slug %}" class="btn btn-default" data-toggle="tooltip" title="{% trans "Advanced search" %}">
                                 <span class="fa fa-cog"></span>
                             </a>

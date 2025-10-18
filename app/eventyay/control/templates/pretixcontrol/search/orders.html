@@ -28,14 +28,7 @@
             {% endfor %}
         </div>
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="form-group" style="gap: 20px; display: flex;">
-                <button class="btn btn-primary" type="submit">
-                    <span class="fa fa-filter"></span>
-                </button>
-                <a href="?" class="btn btn-default">
-                    <span class="fa fa-eraser"></span>
-                </a>
-            </div>
+            {% include "eventyay_common/filter_actions.html" %}
         </div>
     </form>
     <div class="table-responsive">

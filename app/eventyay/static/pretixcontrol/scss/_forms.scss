@@ -604,9 +604,20 @@ table td > .checkbox input[type="checkbox"] {
   color: lighten($text-color, 25%); // lighten the text some for contrast
 }
 
-.panel .filter-form {
-  .form-group {
-    margin-bottom: 10px;
+// Filter actions container - works for both panel and non-panel layouts
+.filter-form .filter-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 0;
+  
+  // Override Bootstrap grid constraints when inside filter-actions
+  &.col-md-2,
+  &.col-sm-6,
+  &.col-xs-12 {
+    flex: 1 1 auto;
+    max-width: none;
+    width: auto;
   }
 }
 
@@ -679,5 +690,13 @@ table td > .checkbox input[type="checkbox"] {
         opacity: 1;
       }
     }
+  }
+}
+
+// Responsive styles for filter actions
+@media (max-width: 768px) {
+  .filter-form .filter-actions {
+    flex-direction: column;
+    gap: 10px;
   }
 }
