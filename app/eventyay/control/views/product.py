@@ -768,6 +768,32 @@ class DescriptionCreate(QuestionCreate):
     template_name = 'pretixcontrol/items/description_edit.html'
 
 
+@event_permission_required('can_view_items')
+def question_options_ajax(request, organizer, event, question):
+    try:
+        question_obj = request.event.questions.get(id=question)
+        
+        if question_obj.type == Question.TYPE_BOOLEAN:
+            options = [
+                {'identifier': 'True', 'answer': str(_('Yes'))},
+                {'identifier': 'False', 'answer': str(_('No'))}
+            ]
+        else:
+            options = []
+            for option in question_obj.options.all():
+                options.append({
+                    'identifier': option.identifier,
+                    'answer': str(option.answer)
+                })
+        
+        return JsonResponse({
+            'type': question_obj.type,
+            'options': options
+        })
+    except Question.DoesNotExist:
+        return JsonResponse({'error': 'Question not found'}, status=404)
+
+
 class QuotaList(PaginationMixin, ListView):
     model = Quota
     context_object_name = 'quotas'
@@ -1568,7 +1594,6 @@ class ProductDelete(EventPermissionRequiredMixin, DeleteView):
 def question_options_ajax(request, organizer, event, question):
     try:
         question_obj = request.event.questions.get(id=question)
-        
         if question_obj.type == Question.TYPE_BOOLEAN:
             options = [
                 {'identifier': 'True', 'answer': str(_('Yes'))},
