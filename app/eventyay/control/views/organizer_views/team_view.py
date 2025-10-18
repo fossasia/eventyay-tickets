@@ -58,12 +58,19 @@ class TeamCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         form.instance.log_action(
             'pretix.team.created',
             user=self.request.user,
-            data={
-                k: [e.id for e in getattr(self.object, k).all()] if isinstance(self.model._meta.get_field(k), ManyToManyField) else getattr(self.object, k)
-            for k in form.changed_data
-            },
+            data=self._build_changed_data_dict(form, self.object),
         )
         return ret
+    
+    def _build_changed_data_dict(self, form, obj):
+        data = {}
+        for k in form.changed_data:
+            field = self.model._meta.get_field(k)
+            if isinstance(field, ManyToManyField):
+                data[k] = [e.id for e in getattr(obj, k).all()]
+            else:
+                data[k] = getattr(obj, k)
+        return data
 
     def form_invalid(self, form):
         messages.error(self.request, _('Your changes could not be saved.'))

@@ -264,12 +264,19 @@ class TeamCreateView(OrganizerDetailViewMixin, CreateView, OrganizerPermissionRe
         form.instance.log_action(
             'eventyay.team.created',
             user=self.request.user,
-            data={
-            k: [e.id for e in getattr(self.object, k).all()] if isinstance(self.model._meta.get_field(k), ManyToManyField) else getattr(self.object, k)
-            for k in form.changed_data
-        },
+            data=self._build_changed_data_dict(form, self.object),
         )
         return response
+    
+    def _build_changed_data_dict(self, form, obj):
+        data = {}
+        for k in form.changed_data:
+            field = self.model._meta.get_field(k)
+            if isinstance(field, ManyToManyField):
+                data[k] = [e.id for e in getattr(obj, k).all()]
+            else:
+                data[k] = getattr(obj, k)
+        return data
 
     def form_invalid(self, form):
         messages.error(
@@ -338,7 +345,7 @@ class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
             )
 
         team_name = self.object.name
-        messages.success(self.request, _(f"Changes to the team '{team_name}' have been saved."))
+        messages.success(self.request, _("Changes to the team '%(team_name)s' have been saved.") % {"team_name": team_name})
         form.instance.organizer = self.request.organizer
         response = super().form_valid(form)
         return response
@@ -379,9 +386,9 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         if self.can_deleted():
             team_name = self.object.name
             self.object.delete()
-            messages.success(self.request, _(f"The team '{team_name}' has been deleted."))
+            messages.success(self.request, _("The team '%(team_name)s' has been deleted.") % {"team_name": team_name})
         else:
-            messages.error(self.request, _(f"The team '{team_name}' cannot be deleted."))
+            messages.success(self.request, _("The team '%(team_name)s' cannot be deleted.") % {"team_name": team_name})
         
         return redirect(success_url)
 

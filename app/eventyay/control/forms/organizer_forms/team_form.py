@@ -98,7 +98,6 @@ class TeamForm(forms.ModelForm):
             )
             self.add_error(None, error)
         
-
         if self.instance.pk and not data['can_change_teams']:
             if (
                 not self.instance.organizer.teams.exclude(pk=self.instance.pk)
