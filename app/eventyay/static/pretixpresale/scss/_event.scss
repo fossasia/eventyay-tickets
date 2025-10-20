@@ -165,8 +165,21 @@ section.front-page {
 }
 .event_logo_image {
     max-height: 140px;
+    max-width: 240px;
+    width: auto;
     border-radius: 10px;
 }
+
+@media (max-width: 768px) {
+    .event_logo_image {
+        max-height: 120px;
+        max-width: 120px;
+        width: auto;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+}
+
 #questions_group .panel-title a {
     line-height: 22px;
 }
