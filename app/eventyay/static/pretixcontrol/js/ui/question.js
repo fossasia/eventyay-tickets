@@ -129,7 +129,16 @@ $(function () {
         $val.hide();
         $val.parent().append("<div class=\"help-block loading-indicator\"><span class=\"fa fa-cog fa-spin\"></span></div>");
 
-        var ajaxUrl = '/control/event/' + $("body").attr("data-organizer") + '/' + $("body").attr("data-event") + '/questions/' + val + '/options/';
+        var organizer = $("body").attr("data-organizer");
+        var event = $("body").attr("data-event");
+        
+        if (!organizer || !event) {
+            $val.parent().find(".loading-indicator").remove();
+            $val.show();
+            return;
+        }
+        
+        var ajaxUrl = `/control/event/${organizer}/${event}/questions/${val}/options/`;
         $.ajax({
             url: ajaxUrl,
             type: 'GET',
