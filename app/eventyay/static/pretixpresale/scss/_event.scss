@@ -160,10 +160,10 @@ section.front-page {
     position: absolute;
     top: 0;
 }
-.event_logo_img_placement {
+.event-logo-img-placement {
     margin: 0 12%;
 }
-.event_logo_image {
+.event-logo-image {
     max-height: 140px;
     max-width: 240px;
     width: auto;
@@ -171,7 +171,7 @@ section.front-page {
 }
 
 @media (max-width: 768px) {
-    .event_logo_image {
+    .event-logo-image {
         max-height: 120px;
         max-width: 120px;
         width: auto;

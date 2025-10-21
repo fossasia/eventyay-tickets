@@ -2058,7 +2058,7 @@ Your {event} team"""
             help_text=_(
                 'If you provide a header image, it will be displayed instead of your event’s color '
                 'and/or header pattern at the top of all event pages. It will be center-aligned, '
-                'so when the window shrinks, the center parts will continue to be displayed, You '
+                'so when the window shrinks, the center parts will continue to be displayed, you '
                 'can increase the size with the setting below. The image will not be stretched. ' 
                 'Please do not upload files larger than 10.0MB!'
             ),
@@ -2079,7 +2079,7 @@ Your {event} team"""
             max_size=10 * 1024 * 1024,
             help_text=_(
                 'If you provide a logo image, we will by default not show your event name and date '
-                'in the page header. By default, The logo will be scaled down to a height of 140px. '
+                'in the page header. By default, the logo will be scaled down to a height of 140px. '
                 'We recommend not using small details on the picture '
                 'as it will be resized on smaller screens.'
             ),
