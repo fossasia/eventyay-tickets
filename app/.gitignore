@@ -8,4 +8,4 @@ dist/
 *.bak
 eventyay/static/jsi18n/
 node_modules/
-
+.zed

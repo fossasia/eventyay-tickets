@@ -95,7 +95,7 @@
                     {% endif %}
                     {% for q in line.questions %}
                         {% if q.type != "DES" %}
-                            <dt>{{ q.question }}</dt>
+                            <dt>{{ q.question|rich_text_snippet }}</dt>
                             <dd>
                                 {% if q.answer %}
                                     {% if q.answer.file %}
