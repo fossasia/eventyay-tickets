@@ -6,13 +6,19 @@ from django.utils.translation import pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 
+from eventyay.base.channels import get_all_sales_channels
 from eventyay.base.email import get_available_placeholders
-from eventyay.base.forms import PlaceholderValidator
+from eventyay.base.forms import PlaceholderValidator, SettingsForm
 from eventyay.base.forms.widgets import SplitDateTimePickerWidget
 from eventyay.base.models import CheckinList, Product, Order, SubEvent
 from eventyay.control.forms import CachedFileField
 from eventyay.control.forms.widgets import Select2, Select2Multiple
 
+MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP = _( 'If the order contains attendees with email addresses different from the person who orders the ' 'tickets, the following email will be sent out to the attendees.' )
+
+def contains_web_channel_validate(value):
+    if 'web' not in value:
+        raise ValidationError(_("The 'web' sales channel must be selected."))
 
 class MailForm(forms.Form):
     recipients = forms.ChoiceField(label=_('Send email to'), widget=forms.RadioSelect, initial='orders', choices=[])
@@ -205,3 +211,203 @@ class MailForm(forms.Form):
             del self.fields['subevent']
             del self.fields['subevents_from']
             del self.fields['subevents_to']
+
+class MailContentSettingsForm(SettingsForm):
+    mail_text_order_placed = I18nFormField(
+        label=_('Text sent to order contact address'),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_send_order_placed_attendee = forms.BooleanField(
+        label=_('Send an email to attendees'),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
+        required=False,
+    )
+    mail_text_order_placed_attendee = I18nFormField(
+        label=_('Text sent to attendees'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_order_paid = I18nFormField(
+        label=_('Text sent to order contact address'),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_send_order_paid_attendee = forms.BooleanField(
+        label=_('Send an email to attendees'),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
+        required=False,
+    )
+    mail_text_order_paid_attendee = I18nFormField(
+        label=_('Text sent to attendees'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_order_free = I18nFormField(
+        label=_('Text sent to order contact address'),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_send_order_free_attendee = forms.BooleanField(
+        label=_('Send an email to attendees'),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
+        required=False,
+    )
+    mail_text_order_free_attendee = I18nFormField(
+        label=_('Text sent to attendees'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_resend_link = I18nFormField(
+        label=_('Text (sent by admin)'),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_text_resend_all_links = I18nFormField(
+        label=_('Text (requested by user)'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_order_changed = I18nFormField(
+        label=_('Text'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_days_order_expire_warning = forms.IntegerField(
+        label=_('Number of days'),
+        required=True,
+        min_value=0,
+        help_text=_(
+            'This email will be sent out this many days before the order expires. If the '
+            'value is 0, the mail will never be sent.'
+        ),
+    )
+    mail_text_order_expire_warning = I18nFormField(
+        label=_('Text'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_waiting_list = I18nFormField(
+        label=_('Text'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_order_canceled = I18nFormField(
+        label=_('Text'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_order_custom_mail = I18nFormField(
+        label=_('Text'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    mail_text_download_reminder = I18nFormField(
+        label=_('Text sent to order contact address'),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_send_download_reminder_attendee = forms.BooleanField(
+        label=_('Send an email to attendees'),
+        help_text= MAIL_SEND_ORDER_PLACED_ATTENDEE_HELP,
+        required=False,
+    )
+    mail_text_download_reminder_attendee = I18nFormField(
+        label=_('Text sent to attendees'),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_days_download_reminder = forms.IntegerField(
+        label=_('Number of days'),
+        required=False,
+        min_value=0,
+        help_text=_(
+            'This email will be sent out this many days before the order event starts. If the '
+            'field is empty, the mail will never be sent.'
+        ),
+    )
+    mail_sales_channel_download_reminder = forms.MultipleChoiceField(
+        choices=lambda: [(ident, sc.verbose_name) for ident, sc in get_all_sales_channels().items()],
+        label=_('Sales channels'),
+        help_text=_(
+            'This email will only be send to orders from these sales channels. The online shop must be enabled.'
+        ),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+        validators=[contains_web_channel_validate],
+    )
+
+    mail_text_order_placed_require_approval = I18nFormField(
+        label=_('Received order'),
+        required=False,
+        widget=I18nTextarea,
+    )
+    mail_text_order_approved = I18nFormField(
+        label=_('Approved order'),
+        required=False,
+        widget=I18nTextarea,
+        help_text=_(
+            'This will only be sent out for non-free orders. Free orders will receive the free order '
+            'template from below instead.'
+        ),
+    )
+    mail_text_order_approved_free = I18nFormField(
+        label=_('Approved free order'),
+        required=False,
+        widget=I18nTextarea,
+        help_text=_(
+            'This will only be sent out for free orders. Non-free orders will receive the non-free order '
+            'template from above instead.'
+        ),
+    )
+    mail_text_order_denied = I18nFormField(
+        label=_('Denied order'),
+        required=False,
+        widget=I18nTextarea,
+    )
+
+    base_context = {
+        'mail_text_order_placed': ['event', 'order', 'payment'],
+        'mail_text_order_placed_attendee': ['event', 'order', 'position'],
+        'mail_text_order_placed_require_approval': ['event', 'order'],
+        'mail_text_order_approved': ['event', 'order'],
+        'mail_text_order_approved_free': ['event', 'order'],
+        'mail_text_order_denied': ['event', 'order', 'comment'],
+        'mail_text_order_paid': ['event', 'order', 'payment_info'],
+        'mail_text_order_paid_attendee': ['event', 'order', 'position'],
+        'mail_text_order_free': ['event', 'order'],
+        'mail_text_order_free_attendee': ['event', 'order', 'position'],
+        'mail_text_order_changed': ['event', 'order'],
+        'mail_text_order_canceled': ['event', 'order'],
+        'mail_text_order_expire_warning': ['event', 'order'],
+        'mail_text_order_custom_mail': ['event', 'order'],
+        'mail_text_download_reminder': ['event', 'order'],
+        'mail_text_download_reminder_attendee': ['event', 'order', 'position'],
+        'mail_text_resend_link': ['event', 'order'],
+        'mail_text_waiting_list': ['event', 'waiting_list_entry'],
+        'mail_text_resend_all_links': ['event', 'orders'],
+    }
+
+    def _set_field_placeholders(self, fn, base_parameters):
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        ht = _('Available placeholders: {list}').format(list=', '.join(phs))
+        if self.fields[fn].help_text:
+            self.fields[fn].help_text += f' {str(ht)}'
+        else:
+            self.fields[fn].help_text = ht
+        self.fields[fn].validators.append(PlaceholderValidator(phs))
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.get('obj')
+        super().__init__(*args, **kwargs)
+        for k, v in self.base_context.items():
+            if k in self.fields:
+                self._set_field_placeholders(k, v)
