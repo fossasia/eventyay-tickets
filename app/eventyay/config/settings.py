@@ -404,7 +404,7 @@ LANGUAGE_CODE = config.get('locale', 'default', fallback='en')
 
 
 LOCALE_PATHS = [
-    os.path.join(os.path.dirname(__file__), 'locale'),
+    BASE_DIR / 'locale',
 ]
 if config.has_option('languages', 'path'):
     LOCALE_PATHS.insert(0, config.get('languages', 'path'))

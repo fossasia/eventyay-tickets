@@ -16,17 +16,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: pretix/api/auth/devicesecurity.py:6
 msgid ""
 "Full device access (reading and changing orders and gift cards, reading of "
 "products and settings)"
 msgstr ""
+"Повний доступ до пристрою (читання та змінення замовлень та подарункових "
+"карток, читання продуктів та налаштувань)"
 
 #: pretix/api/auth/devicesecurity.py:22
 msgid "pretixSCAN"
-msgstr ""
+msgstr "pretixSCAN"
 
 #: pretix/api/auth/devicesecurity.py:52
 msgid "pretixSCAN (kiosk mode, online only)"
@@ -11326,14 +11328,16 @@ msgid "Lost password?"
 msgstr ""
 
 #: pretix/control/templates/pretixcontrol/auth/login.html:53
+#, fuzzy
+#| msgid "Login with email"
 msgid "Login with Email"
-msgstr ""
+msgstr "Увійти за допомогою електронної пошти"
 
 #: pretix/control/templates/pretixcontrol/auth/login.html:61
 #: pretix/plugins/socialauth/templates/socialauth/social_auth_settings.html:33
 #, python-format
 msgid "Login with %(provider_capitalized)s"
-msgstr ""
+msgstr "Увійти за допомогою %(provider_capitalized)s"
 
 #: pretix/control/templates/pretixcontrol/auth/login_2fa.html:9
 #: pretix/control/templates/pretixcontrol/user/reauth.html:9
@@ -20965,8 +20969,10 @@ msgid "Can't find your ticket?"
 msgstr ""
 
 #: pretix/presale/templates/pretixpresale/fragment_modals.html:31
+#, fuzzy
+#| msgid "Login with email"
 msgid "Resend the email"
-msgstr ""
+msgstr "Увійти за допомогою електронної пошти"
 
 #: pretix/presale/templates/pretixpresale/fragment_modals.html:33
 msgid "to receive it."
@@ -21001,8 +21007,10 @@ msgid ""
 msgstr ""
 
 #: pretix/presale/templates/pretixpresale/fragment_modals.html:56
+#, fuzzy
+#| msgid "Login with email"
 msgid "Login here"
-msgstr ""
+msgstr "Увійти за допомогою електронної пошти"
 
 #: pretix/presale/templates/pretixpresale/fragment_week_calendar.html:78
 #: pretix/presale/views/widget.py:349
@@ -21411,3 +21419,9 @@ msgstr ""
 #: pretix/settings.py:822
 msgid "Kosovo"
 msgstr ""
+
+#~ msgid "Want to create a %(event_name)s account?"
+#~ msgstr "Бажаєте створити обліковий запис %(event_name)s?"
+
+#~ msgid "Already have a %(event_name)s account?"
+#~ msgstr "Вже маєте обліковий запис %(event_name)s?"
