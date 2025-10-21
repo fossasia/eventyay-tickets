@@ -18,6 +18,7 @@ from importlib.metadata import entry_points
 from pathlib import Path
 from urllib.parse import urlparse
 import django.conf.locale
+from django.contrib.messages import constants as messages  # NOQA
 from django.utils.translation import gettext_lazy as _
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -736,7 +737,7 @@ redis_connection_kwargs = {
     "health_check_interval": 30,
 }
 
-REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
+REDIS_URL = config.get('redis', 'location')
 HAS_REDIS = bool(REDIS_URL)
 REDIS_HOSTS = [{
     "address": REDIS_URL,
@@ -801,8 +802,8 @@ if not SESSION_ENGINE:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Celery configuration
-CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
-CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
+CELERY_BROKER_URL = config.get('celery', 'broker')
+CELERY_RESULT_BACKEND = config.get('celery', 'backend')
 CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
@@ -899,7 +900,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+MESSAGE_TAGS = {
+    messages.INFO: 'alert-info',
+    messages.ERROR: 'alert-danger',
+    messages.WARNING: 'alert-warning',
+    messages.SUCCESS: 'alert-success',
+}
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Template configuration
 template_loaders = (

@@ -1,9 +1,11 @@
+import logging
 from typing import Any, Dict
 
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils.timezone import override
 from django.utils.translation import gettext
+from reportlab.platypus.doctemplate import LayoutError
 
 from eventyay.base.i18n import LazyLocaleException, language
 from eventyay.base.models import (
@@ -25,6 +27,8 @@ from eventyay.base.signals import (
 )
 from eventyay.celery_app import app
 
+logger = logging.getLogger(__name__)
+
 
 class ExportError(LazyLocaleException):
     pass
@@ -45,7 +49,14 @@ def export(self, event: Event, fileid: str, provider: str, form_data: Dict[str, 
         for receiver, response in responses:
             ex = response(event, set_progress)
             if ex.identifier == provider:
-                d = ex.render(form_data)
+                try:
+                    d = ex.render(form_data)
+                except LayoutError as e:
+                    logger.exception('Error while making PDF.')
+                    msg = gettext(
+                        'Your data table is too big for a PDF page. Please reduce the amount of data you are exporting.'
+                    )
+                    raise ExportError(msg) from e
                 if d is None:
                     raise ExportError(gettext('Your export did not contain any data.'))
                 file.filename, file.type, data = d

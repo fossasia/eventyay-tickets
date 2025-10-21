@@ -1,0 +1,68 @@
+{% load i18n %}
+{% load eventurl %}
+{% load rich_text %}
+{% load bootstrap3 %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans "Join online event" %}
+        </h3>
+    </div>
+    <ul class="list-group">
+        {% for p in positions %}
+            <li class="list-group-item">
+                <p>
+                    {{ p.item.name }}
+                    {% if p.variation %}
+                        – {{ p.variation.value }}
+                    {% endif %}
+                    {% if p.subevent %}
+                        – {{ p.subevent }}
+                    {% endif %}
+                    {% if p.attendee_name %}
+                        – {{ p.attendee_name }}
+                    {% endif %}
+                </p>
+                {% if request.event.settings.venueless_text %}
+                    {{ request.event.settings.venueless_text|rich_text }}
+                {% else %}
+                    <p>
+                        {% blocktrans trimmed %}
+                            You can now join the event using the following button:
+                        {% endblocktrans %}
+                    </p>
+                {% endif %}
+                <div class="form-inline text-center">
+                    <div class="form-group" style="display: inline-block; margin-right: 10px;">
+                        <form method="post" target="_blank"
+                              action="{% eventurl event 'plugins:pretix_venueless:join' order=order.code position=p.positionid secret=p.web_secret view_schedule=False %}">
+                            {% csrf_token %}
+                            <button class="btn btn-primary btn-lg">
+                                {% trans "Join online event" %}
+                            </button>
+                        </form>
+                    </div>
+                    {% if request.event.settings.venueless_talk_schedule_url %}
+                        <div class="form-group" style="display: inline-block;">
+                            <form method="post" target="_blank"
+                                  action="{% eventurl event 'plugins:pretix_venueless:join' order=order.code position=p.positionid secret=p.web_secret view_schedule=True %}">
+                                {% csrf_token %}
+                                <button class="btn btn-primary btn-lg">
+                                    {% trans "View schedule" %}
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item">
+                <p>
+                    {% blocktrans trimmed %}
+                        You will be able to join this event with your browser right here when it starts.
+                    {% endblocktrans %}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

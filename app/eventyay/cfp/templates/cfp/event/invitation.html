@@ -30,7 +30,7 @@
         </p>
 
         {% if submission.abstract %}
-            <div class="card ml-auto mr-auto col-md-9">
+            <div class="card ml-auto mr-auto p-0 col-md-9">
                 <div class="card-header">{% translate "Abstract:" %} {{ submission.title }}</div>
                 <div class="card-body mt-0 mb-0 mr-3 ml-3">
                     <p class="card-text">{{ submission.abstract|rich_text }}</p>

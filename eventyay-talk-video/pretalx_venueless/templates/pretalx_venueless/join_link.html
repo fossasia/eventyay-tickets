@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load rich_text %}
+
+{# required variables: user, event #}
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            {% trans "Join online event" %}
+        </h3>
+    </div>
+    <div class="card-body">
+        {% if event.venueless_settings.can_join %}
+            {% if event.venueless_settings.join_text %}
+                {{ event.venueless_settings.join_text|rich_text }}
+            {% else %}
+                <p>
+                    {% blocktranslate trimmed %}
+                        You can now join the event using the following button:
+                    {% endblocktranslate %}
+                </p>
+            {% endif %}
+            <div class="form-inline text-center">
+                <form method="post" target="_blank" action="{% url "plugins:pretalx_venueless:join" event=event.slug %}" class="w-100">
+                    {% csrf_token %}
+                    <button class="btn btn-primary btn-lg ml-auto  mr-auto">
+                        {% translate "Join online event" %}
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <p>
+                {% blocktranslate trimmed %}
+                    You will be able to join this event with your browser right here when it starts.
+                {% endblocktranslate %}
+            </p>
+        {% endif %}
+    </div>
+</div>

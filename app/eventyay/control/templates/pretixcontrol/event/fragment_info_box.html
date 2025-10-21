@@ -12,10 +12,9 @@
         <div class="info-row">
             {% trans "Teams of the organizer are" %} 
             <span></span>
-            {% for id, name in organizer_teams %}
-                <strong><a href="{% url 'control:organizer.team' request.organizer.slug id %}">{{ name }}</a></strong>
-                {% if not forloop.last %}, {% endif %}
-            {% endfor %}
+          {% for id, name in organizer_teams %}
+            <strong><a href="{% url 'control:organizer.team' request.organizer.slug id %}">{{ name }}</a></strong>{% if not forloop.last %}, {% endif %}
+          {% endfor %}
         </div>
     </div>
 </div>

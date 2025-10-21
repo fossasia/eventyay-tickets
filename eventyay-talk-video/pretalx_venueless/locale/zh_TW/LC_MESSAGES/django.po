@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-17 23:58+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: local/pretalx-venueless/pretalx_venueless/apps.py:10
+msgid "Venueless integration"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/apps.py:13
+msgid ""
+"Venueless integration in pretalx: Notify venueless about new schedule "
+"releases!"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:10
+msgid ""
+"Generate a token with the trait 'world:api' in the Config -> Token Generator"
+" menu in Venueless. Leave empty to leave unchanged."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:12
+msgid "Venueless Token"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:16
+msgid "URL of your Venueless event"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/forms.py:17
+msgid "Venueless URL"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/signals.py:33
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:21
+msgid "Venueless"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:11
+msgid "Confirm your Venueless connection"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:14
+msgid ""
+"<b>Venueless</b> is asking to connect to your pretalx event. If you confirm "
+"this connection, pretalx will notify Venueless about all schedule changes."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:25
+#, python-format
+msgid ""
+"Successfully connected to venueless. Data was last pushed on %(last_push)s."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:32
+msgid ""
+"Setting up the connection with Venueless will configure the pretalx settings"
+" in Venueless, and will automatically push schedule changes to venueless "
+"users. Please use Venueless to begin this process. Go to <b>Config → "
+"Event</b> in Venueless, and enter the following settings to create the "
+"connection:"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:61
+msgid "Connect"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:63
+msgid "Save"
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/views.py:60
+msgid "Yay! We saved your changes."
+msgstr ""
+
+#: local/pretalx-venueless/pretalx_venueless/views.py:68
+msgid "Unable to reach Venueless:"
+msgstr ""
