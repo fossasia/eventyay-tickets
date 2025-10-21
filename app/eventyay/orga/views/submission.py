@@ -716,7 +716,9 @@ class SubmissionStats(EventPermissionRequired, TemplateView):
 
     @cached_property
     def raw_submission_timeline_data(self):
-        talk_ids = self.request.event.submissions.exclude(state=SubmissionStates.DELETED).values_list('id', flat=True)
+        talk_ids = list(
+            map(str, self.request.event.submissions.exclude(state=SubmissionStates.DELETED).values_list('id', flat=True))
+        )
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date()
             for log in LogEntry.objects.filter(
@@ -799,8 +801,9 @@ class SubmissionStats(EventPermissionRequired, TemplateView):
 
     @context
     def talk_timeline_data(self):
-        talk_ids = self.request.event.submissions.filter(state__in=SubmissionStates.accepted_states).values_list(
-            'id', flat=True
+        talk_ids = list(
+            map(str, self.request.event.submissions.filter(state__in=SubmissionStates.accepted_states)
+                .values_list('id', flat=True))
         )
         data = Counter(
             log.timestamp.astimezone(self.request.event.tz).date().isoformat()
