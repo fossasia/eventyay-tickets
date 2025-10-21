@@ -104,7 +104,7 @@ dependencies = [
         'cron-descriptor==1.4.5',
         'django-allauth[socialaccount]',
         'eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@master',
-        'pydantic==2.12.2',
+        'pydantic==2.12.3',
         "urlman>=2.0.2",
         "rules>=3.5",
 ]
