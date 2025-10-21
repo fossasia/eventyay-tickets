@@ -43,10 +43,10 @@ export function nativeToStyle(unicodeEmoji) {
 	if (codepoints.length > 1 && codepoints[codepoints.length - 1] === 'fe0f') {
 		codepoints = codepoints.slice(0, -1)
 	}
-	function buildLocalUrl(cps) {
-		return `/twemoji/svg/${cps.join('-')}.svg`
+	function buildCdnUrl(cps) {
+		return `https://twemoji.maxcdn.com/v/latest/svg/${cps.join('-')}.svg`
 	}
-	const src = buildLocalUrl(codepoints)
+	const src = buildCdnUrl(codepoints)
 	return {'background-image': `url(${src})`}
 }
 
