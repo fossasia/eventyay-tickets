@@ -78,7 +78,6 @@
   padding-right: 0;
   padding-bottom: 0;
   #main-card {
-    min-width: 1200px;
     margin: 0 auto;
     main {
       padding: 1rem 0;
@@ -262,9 +261,6 @@ article .pretalx-session .pretalx-session-info .abstract {
     text-align: right;
     flex-direction: column;
   }
-  #main-container.main-schedule #main-card {
-    min-width: 1000px;
-  }
   #fahrplan {
     width: 100%;
 
@@ -292,9 +288,6 @@ article .pretalx-session .pretalx-session-info .abstract {
   }
   #main-container.main-schedule {
     max-width: 100%;
-  }
-  #main-container.main-schedule #main-card {
-    min-width: 90vw;
   }
 }
 @media (max-width: 800px) {

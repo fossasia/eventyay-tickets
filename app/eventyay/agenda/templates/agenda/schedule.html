@@ -24,7 +24,7 @@
             </a>
             <hr>
             {% for exporter in exporters %}
-                <a class="dropdown-item" href="{{ exporter.urls.base }}" role="menuitem" tabindex="-1">
+                <a class="dropdown-item" href="{{ exporter.urls.base }}" role="menuitem" tabindex="-1" target="_blank">
                     {% if exporter.icon|slice:":3" == "fa-" %}
                         <span class="fa {{ exporter.icon }} export-icon"></span>
                     {% else %}
