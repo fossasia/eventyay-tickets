@@ -83,10 +83,18 @@ const toggleFavState = async () => {
 
 const pageSetup = async () => {
     setupRun = true
-    eventSlug = window.location.pathname.split('/')[1]
-    submissionId = window.location.pathname.split('/')[3]
+    /**
+     * The page URL will be like `/talk/wikimania2025/schedule/`.
+     * From that, we extract `talk` for subSystem, `wikimania2025` for `eventSlug`.
+     * The implementation below is not clever, but we have to follow it,
+     * to keep the difference from upstream to minimum.
+     */
+    subSystem = window.location.pathname.split('/')[1]
+    eventSlug = window.location.pathname.split('/')[2]
+    submissionId = window.location.pathname.split('/')[4]
+    apiBaseUrl = new URL(`/${subSystem}/api/events/${eventSlug}/`, window.location).href
+    console.log('API base URL', apiBaseUrl)
     loggedIn = document.querySelector('#pretalx-messages').dataset.loggedIn === 'true'
-    apiBaseUrl = window.location.origin + '/api/events/' + eventSlug + '/'
 
     isFaved = await loadIsFaved()
     favButton = document.getElementById('fav-button')
