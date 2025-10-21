@@ -13,6 +13,7 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseRedirect,
+    JsonResponse,
 )
 from django.shortcuts import redirect
 from django.urls import resolve, reverse
@@ -765,6 +766,32 @@ class QuestionCreate(EventPermissionRequiredMixin, QuestionMixin, CreateView):
 class DescriptionCreate(QuestionCreate):
     form_class = DescriptionForm
     template_name = 'pretixcontrol/items/description_edit.html'
+
+
+@event_permission_required('can_view_items')
+def question_options_ajax(request, organizer, event, question):
+    try:
+        question_obj = request.event.questions.get(id=question)
+        
+        if question_obj.type == Question.TYPE_BOOLEAN:
+            options = [
+                {'identifier': 'True', 'answer': str(_('Yes'))},
+                {'identifier': 'False', 'answer': str(_('No'))}
+            ]
+        else:
+            options = []
+            for option in question_obj.options.all():
+                options.append({
+                    'identifier': option.identifier,
+                    'answer': str(option.answer)
+                })
+        
+        return JsonResponse({
+            'type': question_obj.type,
+            'options': options
+        })
+    except Question.DoesNotExist:
+        return JsonResponse({'error': 'Question not found'}, status=404)
 
 
 class QuotaList(PaginationMixin, ListView):
@@ -1561,3 +1588,28 @@ class ProductDelete(EventPermissionRequiredMixin, DeleteView):
                 'event': self.request.event.slug,
             },
         )
+
+
+@event_permission_required('can_change_items')
+def question_options_ajax(request, organizer, event, question):
+    try:
+        question_obj = request.event.questions.get(id=question)
+        if question_obj.type == Question.TYPE_BOOLEAN:
+            options = [
+                {'identifier': 'True', 'answer': str(_('Yes'))},
+                {'identifier': 'False', 'answer': str(_('No'))}
+            ]
+        else:
+            options = []
+            for option in question_obj.options.all():
+                options.append({
+                    'identifier': option.identifier,
+                    'answer': str(option.answer)
+                })
+        
+        return JsonResponse({
+            'type': question_obj.type,
+            'options': options
+        })
+    except Question.DoesNotExist:
+        return JsonResponse({'error': 'Question not found'}, status=404)
