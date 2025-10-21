@@ -241,35 +241,43 @@ class EventUpdate(
             },
         )
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if self.request.user.has_active_staff_session(self.request.session.session_key):
-            kwargs['change_slug'] = True
-            kwargs['domain'] = True
-        return kwargs
-
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        if (
-            form.is_valid()
-            and self.sform.is_valid()
-            and all([f.is_valid() for f in self.meta_forms])
-            and self.product_meta_property_formset.is_valid()
-            and self.confirm_texts_formset.is_valid()
-        ):
-            # reset timezone
-            zone = timezone(self.sform.cleaned_data['timezone'])
-            event = form.instance
-            event.date_from = self.reset_timezone(zone, event.date_from)
-            event.date_to = self.reset_timezone(zone, event.date_to)
-            event.presale_start = self.reset_timezone(zone, event.presale_start)
-            event.presale_end = self.reset_timezone(zone, event.presale_end)
+
+        # Check each form individually and collect validation results
+        form_valid = form.is_valid()
+        sform_valid = self.sform.is_valid()
+        meta_forms_valid = all([f.is_valid() for f in self.meta_forms])
+        product_meta_property_formset_valid = self.product_meta_property_formset.is_valid()
+        confirm_texts_formset_valid = self.confirm_texts_formset.is_valid()
+
+        if (form_valid and sform_valid and meta_forms_valid and
+            product_meta_property_formset_valid and confirm_texts_formset_valid):
+            # Timezone processing for presale_start and presale_end (fields in this form)
+            # is now handled within form.clean()
             return self.form_valid(form)
         else:
-            messages.error(
-                self.request,
-                _('We could not save your changes. See below for details.'),
-            )
+            # Add specific error messages for each form that failed validation
+            error_messages = []
+            if not form_valid:
+                error_messages.append("Main form validation failed.")
+            if not sform_valid:
+                error_messages.append("Settings form validation failed.")
+            if not meta_forms_valid:
+                error_messages.append("Meta data form validation failed.")
+            if not product_meta_property_formset_valid:
+                error_messages.append("Product meta property form validation failed.")
+            if not confirm_texts_formset_valid:
+                error_messages.append("Confirmation texts form validation failed.")
+
+            if error_messages:
+                for msg in error_messages:
+                    messages.error(self.request, msg)
+            else:
+                messages.error(
+                    self.request,
+                    _('We could not save your changes. See below for details.'),
+                )
             return self.form_invalid(form)
 
     @staticmethod
@@ -726,6 +734,44 @@ class MailSettings(EventSettingsViewMixin, EventSettingsFormView):
         ctx = super().get_context_data(**kwargs)
         ctx['renderers'] = self.request.event.get_html_mail_renderers()
         return ctx
+
+    def get_form(self):
+        form = super().get_form()
+
+        # List of email-content fields to exclude
+        exclude_fields = [
+            'mail_text_order_placed',
+            'mail_send_order_placed_attendee',
+            'mail_text_order_placed_attendee',
+            'mail_text_order_paid',
+            'mail_send_order_paid_attendee',
+            'mail_text_order_paid_attendee',
+            'mail_text_order_free',
+            'mail_send_order_free_attendee',
+            'mail_text_order_free_attendee',
+            'mail_text_resend_link',
+            'mail_text_resend_all_links',
+            'mail_text_order_changed',
+            'mail_days_order_expire_warning',
+            'mail_text_order_expire_warning',
+            'mail_text_waiting_list',
+            'mail_text_order_canceled',
+            'mail_text_order_custom_mail',
+            'mail_text_download_reminder',
+            'mail_send_download_reminder_attendee',
+            'mail_text_download_reminder_attendee',
+            'mail_days_download_reminder',
+            'mail_sales_channel_download_reminder',
+            'mail_text_order_placed_require_approval',
+            'mail_text_order_approved',
+            'mail_text_order_approved_free',
+            'mail_text_order_denied',
+        ]
+
+        for field in exclude_fields:
+            form.fields.pop(field, None)
+
+        return form
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):

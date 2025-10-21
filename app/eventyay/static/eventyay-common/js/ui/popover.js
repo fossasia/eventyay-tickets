@@ -14,6 +14,7 @@ $(function () {
     const talksPath = `/orga/event/`
     const mainDashboardPath = `/common/`;
     const orderPath = `/common/orders/`;
+    const sessionPath = `/common/sessions/`;
     const eventPath = `/common/events/`;
     const organizerPath = `/common/organizers/`;
 
@@ -52,6 +53,11 @@ $(function () {
             <div class="profile-menu">
                 <a href="${basePath}${orderPath}" target="_self" class="btn btn-outline-success">
                     <i class="fa fa-shopping-cart"></i> ${window.gettext('My orders')}
+                </a>
+            </div>
+            <div class="profile-menu">
+                <a href="${basePath}${sessionPath}" target="_self" class="btn btn-outline-success">
+                    <i class="fa fa-sticky-note-o"></i> ${window.gettext('My sessions')}
                 </a>
             </div>
             <div class="profile-menu">
