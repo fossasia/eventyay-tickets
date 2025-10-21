@@ -24,9 +24,9 @@
         <table class="table table-condensed table-hover table-quotas">
             <thead>
                 <tr>
-                    <th>{{ _('Order Code') }}</th>
+                    <th>{{ _('Order code') }}</th>
                     <th>{{ _('Event') }}</th>
-                    <th>{{ _('Date') }}</th>
+                    <th>{{ _('Order date') }}</th>
                     <th>{{ _('Order total') }}</th>
                     <th>{{ _('Status') }}</th>
                 </tr>
@@ -39,7 +39,9 @@
                             {{ order.code }}
                         </a>
                     </td>
-                    <td>{{ order.event.name }}</td>
+                    <td>
+                        <a href="{% eventurl order.event 'presale:event.index' %}">{{ order.event.name }}</a>
+                    </td>
                     <td>{{ order.datetime|date:"SHORT_DATETIME_FORMAT" }}</td>
                     <td>
                         {{ order.total|money:order.event.currency }}
