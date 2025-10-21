@@ -213,9 +213,7 @@ def rich_text_snippet(text: str):
 @register.filter
 def html_to_markdown_filter(html_text: str) -> str:
     """Convert HTML to markdown format."""
-    if not html_text:
-        return html_text
-    return html_to_markdown(html_text)
+    return html_text if not html_text else html_to_markdown(html_text)
 
 
 @register.filter
