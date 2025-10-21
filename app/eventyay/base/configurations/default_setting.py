@@ -2056,9 +2056,31 @@ Your {event} team"""
             ext_whitelist=('.png', '.jpg', '.gif', '.jpeg'),
             max_size=10 * 1024 * 1024,
             help_text=_(
+                'If you provide a header image, it will be displayed instead of your event’s color '
+                'and/or header pattern at the top of all event pages. It will be center-aligned, '
+                'so when the window shrinks, the center parts will continue to be displayed, you '
+                'can increase the size with the setting below. The image will not be stretched. ' 
+                'Please do not upload files larger than 10.0MB!'
+            ),
+        ),
+        'serializer_class': UploadedFileField,
+        'serializer_kwargs': dict(
+            allowed_types=['image/png', 'image/jpeg', 'image/gif'],
+            max_size=10 * 1024 * 1024,
+        ),
+    },
+    'event_logo_image': {
+        'default': None,
+        'type': File,
+        'form_class': ExtFileField,
+        'form_kwargs': dict(
+            label=_('Logo'),
+            ext_whitelist=('.png', '.jpg', '.gif', '.jpeg'),
+            max_size=10 * 1024 * 1024,
+            help_text=_(
                 'If you provide a logo image, we will by default not show your event name and date '
-                'in the page header. By default, we show your logo with a size of up to 1140x120 pixels. You '
-                'can increase the size with the setting below. We recommend not using small details on the picture '
+                'in the page header. By default, the logo will be scaled down to a height of 140px. '
+                'We recommend not using small details on the picture '
                 'as it will be resized on smaller screens.'
             ),
         ),
@@ -2084,7 +2106,7 @@ Your {event} team"""
         'form_class': forms.BooleanField,
         'serializer_class': serializers.BooleanField,
         'form_kwargs': dict(
-            label=_('Show event title even if a header image is present'),
+            label=_('Show event title even if a logo image is present'),
             help_text=_('The title will only be shown on the event front page.'),
         ),
     },

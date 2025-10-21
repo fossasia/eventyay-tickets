@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def is_visible(exporter, request, public=False):
     if not public:
-        return request.user.has_perm('base.orga_view_schedule', request.event)
+        return request.user.is_authenticated
     if not request.user.has_perm('base.list_schedule', request.event):
         return False
     if hasattr(exporter, 'is_public'):
