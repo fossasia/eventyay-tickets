@@ -25,7 +25,7 @@
 {% block above %}
     {{ request.organizer.slug|json_script:"organizer_name" }}
     {% if not event.live %}
-        <div class="offline-banner">
+        <div class="offline-banner {% if event.settings.logo_image %}offline-banner-absolute{% endif %}">
             <div class="container">
                 <span class="fa fa-user-secret" aria-hidden="true"></span>
                 {% trans "This shop is currently only visible to you and your team." %}
@@ -33,6 +33,11 @@
                     {% trans "Take it live now" %}
                 </a>
             </div>
+        </div>
+    {% endif %}
+    {% if event.settings.event_logo_image %}
+        <div class="event-logo-img-placement">
+            <img src="{{ event.settings.event_logo_image.url }}" alt="{% translate 'Event logo' %}" class="img-fluid event-logo-image">
         </div>
     {% endif %}
     <div class="container page-header-links {% if event.settings.theme_color_background|upper != "#FFFFFF" or event.settings.logo_image_large %}page-header-links-outside{% endif %}">
