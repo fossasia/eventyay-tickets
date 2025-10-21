@@ -170,6 +170,7 @@ _OURS_APPS = (
     'eventyay.plugins.webcheckin',
     'eventyay.schedule',
     'eventyay.submission',
+    'exhibitors',  
 )
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
@@ -182,6 +183,7 @@ CORE_MODULES = (
         'eventyay.control',
         'eventyay.plugins.checkinlists',
         'eventyay.plugins.reports',
+        'exhibitors', 
     )
 )
 
@@ -189,6 +191,10 @@ PLUGINS = []
 for entry_point in entry_points(group='pretalx.plugin'):
     PLUGINS.append(entry_point.module)
     # INSTALLED_APPS += tuple(entry_point.module)
+
+# Also check for eventyay plugins
+for entry_point in entry_points(group='eventyay.plugin'):
+    PLUGINS.append(entry_point.module)
 
 _LIBRARY_MIDDLEWARES = (
     'corsheaders.middleware.CorsMiddleware',
