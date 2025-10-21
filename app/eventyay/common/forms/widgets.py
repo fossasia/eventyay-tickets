@@ -99,6 +99,15 @@ class ImageInput(ClearableBasenameFileInput):
 
 class MarkdownWidget(Textarea):
     template_name = 'common/widgets/markdown.html'
+    
+    def value_from_datadict(self, data, files, name):
+        """Process HTML to markdown format before saving."""
+        value = super().value_from_datadict(data, files, name)
+        if value:
+            # Import here to avoid circular imports
+            from eventyay.base.templatetags.rich_text import html_to_markdown_filter
+            return html_to_markdown_filter(value)
+        return value
 
 
 class EnhancedSelectMixin(Select):

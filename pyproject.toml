@@ -47,6 +47,7 @@ dependencies = [
         'css-inline==0.14.*',
         'BeautifulSoup4==4.12.*',
         'lxml',
+        'markdownify>=1.2.0',
         'static3==0.7.*',
         'dj-static',
         'csscompressor',

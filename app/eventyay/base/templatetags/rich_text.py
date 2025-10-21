@@ -11,6 +11,7 @@ from django import template
 from django.conf import settings
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.safestring import mark_safe
+from markdownify import markdownify as html_to_markdown
 
 try:
     from publicsuffixlist import PublicSuffixList
@@ -207,6 +208,14 @@ def rich_text_without_links(text: str):
 @register.filter
 def rich_text_snippet(text: str):
     return render_markdown(text, cleaner=ABSLINK_CLEANER)
+
+
+@register.filter
+def html_to_markdown_filter(html_text: str) -> str:
+    """Convert HTML to markdown format."""
+    if not html_text:
+        return html_text
+    return html_to_markdown(html_text)
 
 
 @register.filter
