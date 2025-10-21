@@ -21,6 +21,10 @@
     {% compress js %}
         <script type="text/javascript" src="{% static "pretixpresale/js/ui/join-video-event.js" %}"></script>
     {% endcompress %}
+	{# Needed by popover.js #}
+    {{ base_path|json_script:"base_path" }}
+    {{ ev.organizer.slug|json_script:"organizer_name" }}
+    {{ ev.slug|json_script:"event_slug" }}
 {% endblock %}
 {% block content %}
 
