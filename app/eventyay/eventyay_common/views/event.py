@@ -34,7 +34,7 @@ from eventyay.control.views import PaginationMixin, UpdateView
 from eventyay.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from eventyay.control.views.product import MetaDataEditorMixin
 from eventyay.eventyay_common.forms.event import EventCommonSettingsForm
-from eventyay.eventyay_common.tasks import create_world, send_event_webhook
+from eventyay.eventyay_common.tasks import create_world
 from eventyay.eventyay_common.utils import (
     EventCreatedFor,
     check_create_permission,
@@ -226,52 +226,40 @@ class EventCreateView(SafeSessionWizardView):
         has_permission = check_create_permission(self.request)
         final_is_video_creation = foundation_data.get('is_video_creation', True) and has_permission
 
-        if create_for == EventCreatedFor.TALK:
-            event_dict = {
-                'organiser_slug': (foundation_data.get('organizer').slug if foundation_data.get('organizer') else None),
-                'name': (basics_data.get('name').data if basics_data.get('name') else None),
-                'slug': basics_data.get('slug'),
-                'is_public': False,
-                'date_from': str(basics_data.get('date_from')),
-                'date_to': str(basics_data.get('date_to')),
-                'timezone': str(basics_data.get('timezone')),
-                'locale': basics_data.get('locale'),
-                'locales': foundation_data.get('locales'),
-                'is_video_creation': final_is_video_creation,
-            }
-            send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
-        else:
-            with transaction.atomic(), language(basics_data['locale']):
-                event = form_dict['basics'].instance
-                event.organizer = foundation_data['organizer']
-                event.plugins = settings.PRETIX_PLUGINS_DEFAULT
-                event.has_subevents = foundation_data['has_subevents']
-                event.is_video_creation = final_is_video_creation
-                event.testmode = True
-                form_dict['basics'].save()
+        with transaction.atomic(), language(basics_data['locale']):
+            event = form_dict['basics'].instance
+            event.organizer = foundation_data['organizer']
+            event.plugins = settings.PRETIX_PLUGINS_DEFAULT
+            event.has_subevents = foundation_data['has_subevents']
+            event.is_video_creation = final_is_video_creation
+            event.testmode = True
+            form_dict['basics'].save()
 
-                with scope(organizer=event.organizer):
-                    event.checkin_lists.create(name=_('Default'), all_products=True)
-                event.set_defaults()
-                event.settings.set('timezone', basics_data['timezone'])
-                event.settings.set('locale', basics_data['locale'])
-                event.settings.set('locales', foundation_data['locales'])
-                if create_for == EventCreatedFor.BOTH:
-                    event_dict = {
-                        'organiser_slug': event.organizer.slug,
-                        'name': event.name.data,
-                        'slug': event.slug,
-                        'is_public': event.live,
-                        'date_from': str(event.date_from),
-                        'date_to': str(event.date_to),
-                        'timezone': str(basics_data.get('timezone')),
-                        'locale': event.settings.locale,
-                        'locales': event.settings.locales,
-                        'is_video_creation': final_is_video_creation,
-                    }
-                    send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
-                event.settings.set('create_for', create_for)
+            with scope(organizer=event.organizer):
+                event.checkin_lists.create(name=_('Default'), all_products=True)
+            event.set_defaults()
+            event.settings.set('timezone', basics_data['timezone'])
+            event.settings.set('locale', basics_data['locale'])
+            event.settings.set('locales', foundation_data['locales'])
+            if create_for == EventCreatedFor.BOTH:
+                event_dict = {
+                    'organiser_slug': event.organizer.slug,
+                    'name': event.name.data,
+                    'slug': event.slug,
+                    'is_public': event.live,
+                    'date_from': str(event.date_from),
+                    'date_to': str(event.date_to),
+                    'timezone': str(basics_data.get('timezone')),
+                    'locale': event.settings.locale,
+                    'locales': event.settings.locales,
+                    'is_video_creation': final_is_video_creation,
+                }
+            event.settings.set('create_for', create_for)
 
+            event.log_action(
+                    action='eventyay.event.added',
+                    user=self.request.user,
+                )
         # The user automatically creates a world when selecting the add video option in the create ticket form.
         event_data = dict(
             id=basics_data.get('slug'),
@@ -373,21 +361,6 @@ class EventUpdate(
             messages.error(self.request, _('You do not have permission to perform this action.'))
             return False
 
-        send_event_webhook.delay(
-            user_id=self.request.user.id,
-            event={
-                'organiser_slug': self.request.event.organizer.slug,
-                'name': self.request.event.name.data,
-                'slug': self.request.event.slug,
-                'date_from': str(self.request.event.date_from),
-                'date_to': str(self.request.event.date_to),
-                'timezone': str(self.request.event.settings.timezone),
-                'locale': self.request.event.settings.locale,
-                'locales': self.request.event.settings.locales,
-                'is_video_creation': self.request.event.is_video_creation,
-            },
-            action='create',
-        )
 
         return True
 
@@ -431,20 +404,6 @@ class EventUpdate(
                 event = form.instance
                 event.date_from = self.reset_timezone(zone, event.date_from)
                 event.date_to = self.reset_timezone(zone, event.date_to)
-                if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH:
-                    event_dict = {
-                        'organiser_slug': event.organizer.slug,
-                        'name': event.name.data,
-                        'slug': event.slug,
-                        'date_from': str(event.date_from),
-                        'date_to': str(event.date_to),
-                        'timezone': str(event.settings.timezone),
-                        'locale': event.settings.locale,
-                        'locales': event.settings.locales,
-                        'is_video_creation': request.event.is_video_creation,
-                    }
-                    send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='update')
-                messages.success(self.request, _("Your changes have been saved."))
                 return self.form_valid(form)
             else:
                 messages.error(
