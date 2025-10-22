@@ -35,6 +35,10 @@ RUN npm run build --prefix=eventyay/frontend/global-nav-menu
 COPY eventyay/frontend/schedule-editor eventyay/frontend/schedule-editor
 RUN npm ci --prefix=eventyay/frontend/schedule-editor
 RUN npm run build --prefix=eventyay/frontend/schedule-editor
+# webapp
+COPY eventyay/webapp eventyay/webapp
+RUN npm install --prefix=eventyay/webapp
+RUN npm run build --prefix=eventyay/webapp
 
 
 #########
@@ -76,6 +80,7 @@ RUN chown -R app:app $APP_HOME
 COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
 COPY --from=builder --chown=app:app $APP_HOME/eventyay/frontend/global-nav-menu/dist $APP_HOME/eventyay/frontend/global-nav-menu/dist
 COPY --from=builder --chown=app:app $APP_HOME/eventyay/frontend/schedule-editor/dist $APP_HOME/eventyay/frontend/schedule-editor/dist
+COPY --from=builder --chown=app:app $APP_HOME/eventyay/webapp/dist $APP_HOME/eventyay/webapp/dist
 
 # change to the app user
 USER app
