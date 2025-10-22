@@ -29,8 +29,10 @@ npminstall:
 	mkdir -p eventyay/static.dist/node_prefix/
 	cp -r eventyay/static/npm_dir/* eventyay/static.dist/node_prefix/
 	npm install --prefix=eventyay/static.dist/node_prefix
+	npm ci --prefix=eventyay/frontend/global-nav-menu
 	npm ci --prefix=eventyay/frontend/schedule-editor
-	npm run build --prefix=eventyay/frontend/schedule-editor
+	OUT_DIR=$(shell pwd)/eventyay/static npm run build --prefix=eventyay/frontend/global-nav-menu
+	OUT_DIR=$(shell pwd)/eventyay/static npm run build --prefix=eventyay/frontend/schedule-editor
 
 webappbuild:
 	npm install --prefix=eventyay/webapp
