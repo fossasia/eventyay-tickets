@@ -36,6 +36,7 @@ from .modules.room import RoomModule
 from .modules.roulette import RouletteModule
 from .modules.event import EventModule
 from .modules.zoom import ZoomModule
+from eventyay.base.models.cache import VersionedModel
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,17 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         # known_room_id_cache: contain IDs of rooms we know this user is allowed to see. updated after login and with
         # event update. used to quickly filter events.
         self.known_room_id_cache = set()
+
+    async def _maybe_refresh(self, obj, allowed_age=0):
+        """Refresh VersionedModel instances if their cached version is outdated.
+        Safe to call with None or non-VersionedModel objects.
+        """
+        if not obj:
+            return
+        if hasattr(obj, "refresh_from_db_if_outdated") and callable(
+            getattr(obj, "refresh_from_db_if_outdated")
+        ):
+            await obj.refresh_from_db_if_outdated(allowed_age=allowed_age)
 
     async def connect(self):
         self.content = []
@@ -152,7 +164,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
         if not self.user:
             if content[0] == "authenticate":
-                await self.event.refresh_from_db_if_outdated(allowed_age=30)
+                await self._maybe_refresh(self.event, allowed_age=30)
                 await self.components["user"].login(content[-1])
             else:
                 await self.send_error("protocol.unauthenticated")
@@ -165,8 +177,8 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
         component = self.components.get(namespace)
         if component:
             try:
-                await self.event.refresh_from_db_if_outdated(allowed_age=900)
-                await self.user.refresh_from_db_if_outdated(allowed_age=30)
+                await self._maybe_refresh(self.event, allowed_age=900)
+                await self._maybe_refresh(self.user, allowed_age=30)
                 await component.dispatch_command(content)
             except ConsumerException as e:
                 await self.send_error(e.code, e.message)
@@ -204,7 +216,7 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
                 return
             elif message["type"] == "user.broadcast":
                 if self.socket_id != message["socket"]:
-                    await self.user.refresh_from_db_if_outdated(allowed_age=0)
+                    await self._maybe_refresh(self.user, allowed_age=0)
                     await self.send_json([message["event_type"], message["data"]])
                 return
 
@@ -258,7 +270,9 @@ class MainConsumer(AsyncJsonWebsocketConsumer):
 
     async def send_json(self, content, close=False):
         try:
-            await super().send(text_data=orjson.dumps(content).decode(), close=close)
+            await super().send(
+                text_data=orjson.dumps(content, default=str).decode(), close=close
+            )
         except (RuntimeError, ConnectionClosed):
             # socket has been closed in the meantime
             pass

@@ -7,10 +7,9 @@
 		.ui-form-body
 			bunt-input(name="name", v-model="profile.display_name", label="Name", :validation="v$.profile.display_name")
 			bunt-select(v-model="profile.room_id", label="Room", name="room", :options="rooms", option-label="name", :validation="v$.profile.room_id")
-	.ui-form-actions-wrapper
-		.ui-form-actions
-			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") create
-			.errors {{ validationErrors.join(', ') }}
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") create
+		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core'
@@ -77,5 +76,5 @@ export default {
 		flex: auto
 		display: flex
 		flex-direction: column
-		height: auto
+		height: 83vh
 </style>

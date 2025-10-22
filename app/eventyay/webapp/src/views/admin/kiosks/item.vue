@@ -23,10 +23,9 @@
 				bunt-checkbox(name="show_pinned_question", v-model="kiosk.profile.slides.pinned_question", label="Pinned question")
 				bunt-checkbox(name="show_next_session", v-model="kiosk.profile.slides.next_session", label="Next session")
 				bunt-checkbox(name="show_viewers", v-model="kiosk.profile.slides.viewers", label="Active viewers")
-		.ui-form-actions-wrapper
-			.ui-form-actions
-				bunt-button.btn-save(@click="save", :loading="saving", :error-message="saveError") Save
-				.errors {{ validationErrors.join(', ') }}
+		.ui-form-actions
+			bunt-button.btn-save(@click="save", :loading="saving", :error-message="saveError") Save
+			.errors {{ validationErrors.join(', ') }}
 	bunt-progress-circular(v-else, size="huge")
 	transition(name="prompt")
 		prompt.delete-prompt(v-if="showDeletePrompt", @close="showDeletePrompt = false")
@@ -171,7 +170,7 @@ export default {
 		flex: auto
 		display: flex
 		flex-direction: column
-		height: auto
+		height: 83vh
 
 	.ui-form-body
 		.bunt-checkbox

@@ -16,6 +16,13 @@ import os
 import sys
 from importlib.metadata import entry_points
 from pathlib import Path
+# Ensure local ticket-video plugin is importable (now inside app/eventyay/plugins)
+# Location: app/eventyay/plugins/eventyay-ticket-video/pretix_venueless
+_PLUGIN_LOCAL = Path(__file__).resolve().parents[1] / 'plugins' / 'eventyay-ticket-video'
+if _PLUGIN_LOCAL.is_dir():
+    p = str(_PLUGIN_LOCAL)
+    if p not in sys.path:
+        sys.path.insert(0, p)
 from urllib.parse import urlparse
 import django.conf.locale
 from django.contrib.messages import constants as messages  # NOQA
@@ -30,6 +37,7 @@ from pycountry import currencies
 from eventyay import __version__
 from eventyay.common.settings.config import build_config
 
+# Configuration file handling
 _config = configparser.RawConfigParser()
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
@@ -76,6 +84,10 @@ DATABASE_REPLICA = 'default'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# Video / websocket base path adjustments
+BASE_PATH = ''  # root for classic app
+VIDEO_BASE_PATH = '/video'
+WEBSOCKET_URL = os.getenv('EVENTYAY_WEBSOCKET_URL', '/ws/event/')  # prefix; event id appended client-side
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 
@@ -170,6 +182,8 @@ _OURS_APPS = (
     'eventyay.plugins.webcheckin',
     'eventyay.schedule',
     'eventyay.submission',
+    # Load local ticket-video plugin
+    'pretix_venueless',
 )
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
@@ -265,6 +279,7 @@ TEMPLATES = (
                 'eventyay.control.context.contextprocessor',
                 'eventyay.presale.context.contextprocessor',
                 'eventyay.eventyay_common.context.contextprocessor',
+                'django.template.context_processors.request',
             ],
             'loaders': template_loaders,
         },
@@ -404,7 +419,7 @@ LANGUAGE_CODE = config.get('locale', 'default', fallback='en')
 
 
 LOCALE_PATHS = [
-    os.path.join(os.path.dirname(__file__), 'locale'),
+    BASE_DIR / 'locale',
 ]
 if config.has_option('languages', 'path'):
     LOCALE_PATHS.insert(0, config.get('languages', 'path'))
@@ -828,8 +843,11 @@ CELERY_TASK_ROUTES = {
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'webapp', 'dist'),
+    # Added to make sure root package static assets (e.g. pretixcontrol/scss/) are found
+    os.path.join(BASE_DIR, 'static'),
+]
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
 STATICFILES_FINDERS = (
@@ -838,19 +856,11 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
-# We have some Vue 3 frontend apps which are built with Vite, we need to
-# tell Django to collect their compiled output files.
-# Note that those apps must be built before running collectstatic.
 FRONTEND_DIR = BASE_DIR / 'frontend'
-# Note: We must assume that the directory exists,
-# because when `collectstatic` was invoked by `rebuild` command,
-# it only sees the settings before Vite runs.
-STATICFILES_DIRS.append(FRONTEND_DIR / 'global-nav-menu' / 'dist')
-STATICFILES_DIRS.append(FRONTEND_DIR / 'schedule-editor' / 'dist')
 
 VITE_DEV_SERVER_PORT = 8080
 VITE_DEV_SERVER = f'http://localhost:{VITE_DEV_SERVER_PORT}'
-VITE_DEV_MODE = DEBUG
+VITE_DEV_MODE = False  # Set to False to use static files instead of dev server
 VITE_IGNORE = False  # Used to ignore `collectstatic`/`rebuild`
 
 COMPRESS_PRECOMPILERS = (

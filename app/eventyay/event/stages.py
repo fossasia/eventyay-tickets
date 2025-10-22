@@ -78,7 +78,7 @@ STAGES = {
         ],
     },
     'SCHEDULE': {
-        'name': phrases.schedule.schedule,
+        'name': phrases.schedule.schedule if phrases.schedule else _('Schedule'),
         'method': _is_in_scheduling_stage,
         'icon': 'calendar-o',
         'links': [

@@ -9,7 +9,7 @@ from channels.layers import get_channel_layer
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Count, Max, OuterRef, Subquery
+from django.db.models import Count, Max, OuterRef, Subquery, Q
 from pytz import common_timezones
 from rest_framework import serializers
 
@@ -17,6 +17,9 @@ from eventyay.base.models.room import Room
 from eventyay.base.models.event import Event
 from eventyay.base.models.room import RoomConfigSerializer, RoomView
 from eventyay.core.permissions import Permission
+# Add missing imports for models referenced in this module
+from eventyay.base.models.chat import Channel
+from eventyay.base.models.audit import AuditLog
 
 
 class EventConfigSerializer(serializers.Serializer):
@@ -76,7 +79,17 @@ class EventConfigSerializer(serializers.Serializer):
 
 @database_sync_to_async
 def _get_event(event_id):
-    return Event.objects.filter(id=event_id).first()
+    """Retrieve Event by primary key or slug.
+    Frontend passes <event_identifier> in /video/<event_identifier>/ and websocket /ws/event/<event_identifier>/.
+    Previously only numeric primary key worked; now also accept slug.
+    """
+    # Try numeric ID first if it looks like one
+    if isinstance(event_id, str) and event_id.isdigit():
+        evt = Event.objects.filter(id=int(event_id)).first()
+        if evt:
+            return evt
+    # Fallback: match by slug OR (string) id (covers atypical string PK setups)
+    return Event.objects.filter(Q(slug=event_id) | Q(id=event_id)).first()
 
 
 async def get_event(event_id):
@@ -179,20 +192,36 @@ def get_room_config(room, permissions):
 
 def get_event_config_for_user(event, user):
     permissions = event.get_all_permissions(user)
+    cfg = event.config or {}
+    world_block = {
+        "id": str(event.id),
+        "title": getattr(event, "title", getattr(event, "name", "")),
+        "pretalx": cfg.get("pretalx", {}),
+        "profile_fields": cfg.get("profile_fields", []),
+        "social_logins": cfg.get("social_logins", []),
+        "iframe_blockers": cfg.get(
+            "iframe_blockers",
+            {"default": {"enabled": False, "policy_url": None}},
+        ),
+        "onsite_traits": cfg.get("onsite_traits", []),
+    }
+    # Build permission strings and include world:* aliases for event:* permissions for frontend compatibility
+    event_perm_values = [
+        p if isinstance(p, str) else p.value for p in permissions[event]
+    ]
+    world_aliases = []
+    for p in event_perm_values:
+        if p == "event.view":
+            world_aliases.append("world:view")
+        elif p.startswith("event:"):
+            world_aliases.append("world:" + p[len("event:"):])
+    merged_permissions = sorted(set(event_perm_values) | set(world_aliases))
+
     result = {
-        "event": {
-            "id": str(event.id),
-            "title": event.title,
-            "pretalx": event.config.get("pretalx", {}),
-            "profile_fields": event.config.get("profile_fields", []),
-            "social_logins": event.config.get("social_logins", []),
-            "iframe_blockers": event.config.get(
-                "iframe_blockers",
-                {"default": {"enabled": False, "policy_url": None}},
-            ),
-            "onsite_traits": event.config.get("onsite_traits", []),
-        },
-        "permissions": list(permissions[event]),
+        # Provide both keys for compatibility: frontend expects 'world', prior code used 'event'
+        "world": world_block,
+        "event": world_block,
+        "permissions": merged_permissions,
         "rooms": [],
     }
 
@@ -370,30 +399,31 @@ def generate_tokens(event, number, traits, days, by_user, long=False):
 
 
 def _config_serializer(event, *args, **kwargs):
-    bbb_defaults = event.config.get("bbb_defaults", {})
+    bbb_defaults = (event.config or {}).get("bbb_defaults", {})
     bbb_defaults.pop("secret", None)  # Protect secret legacy contents
+    cfg = event.config or {}
     return EventConfigSerializer(
         instance={
-            "theme": event.config.get("theme", {}),
-            "title": event.title,
+            "theme": cfg.get("theme", {}),
+            "title": getattr(event, "title", getattr(event, "name", "")),
             "locale": event.locale,
-            "date_locale": event.config.get("date_locale", "en-ie"),
+            "date_locale": cfg.get("date_locale", "en-ie"),
             "roles": event.roles,
             "bbb_defaults": bbb_defaults,
-            "track_exhibitor_views": event.config.get("track_exhibitor_views", True),
-            "track_room_views": event.config.get("track_room_views", True),
-            "track_event_views": event.config.get("track_event_views", False),
-            "pretalx": event.config.get("pretalx", {}),
-            "video_player": event.config.get("video_player"),
+            "track_exhibitor_views": cfg.get("track_exhibitor_views", True),
+            "track_room_views": cfg.get("track_room_views", True),
+            "track_event_views": cfg.get("track_event_views", False),
+            "pretalx": cfg.get("pretalx", {}),
+            "video_player": cfg.get("video_player"),
             "timezone": event.timezone,
             "trait_grants": event.trait_grants,
-            "connection_limit": event.config.get("connection_limit", 0),
-            "profile_fields": event.config.get("profile_fields", []),
-            "social_logins": event.config.get("social_logins", []),
-            "onsite_traits": event.config.get("onsite_traits", []),
-            "conftool_url": event.config.get("conftool_url", ""),
-            "conftool_password": event.config.get("conftool_password", ""),
-            "iframe_blockers": event.config.get(
+            "connection_limit": cfg.get("connection_limit", 0),
+            "profile_fields": cfg.get("profile_fields", []),
+            "social_logins": cfg.get("social_logins", []),
+            "onsite_traits": cfg.get("onsite_traits", []),
+            "conftool_url": cfg.get("conftool_url", ""),
+            "conftool_password": cfg.get("conftool_password", ""),
+            "iframe_blockers": cfg.get(
                 "iframe_blockers",
                 {"default": {"enabled": False, "policy_url": None}},
             ),
