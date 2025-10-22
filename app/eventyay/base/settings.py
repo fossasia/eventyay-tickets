@@ -1,6 +1,5 @@
 import json
 import operator
-from functools import partial
 from typing import Any
 
 from django.core.exceptions import ValidationError
