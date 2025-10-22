@@ -1,6 +1,6 @@
 import rules
 
-from pretalx.person.permissions import can_change_submissions
+from eventyay.person.permissions import can_change_submissions
 
 
 @rules.predicate
