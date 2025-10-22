@@ -264,7 +264,7 @@ class User(
 
         notification_settings: QuerySet[NotificationSetting]
 
-    objects: UserManager = UserManager()
+    objects: UserManager = UserManager.from_queryset(UserQuerySet)()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
