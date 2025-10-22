@@ -32,3 +32,7 @@ npminstall:
 	npm ci --prefix=eventyay/frontend/schedule-editor
 	npm run build --prefix=eventyay/frontend/schedule-editor
 
+webappbuild:
+	npm install --prefix=eventyay/webapp
+	npm run build --prefix=eventyay/webapp
+
