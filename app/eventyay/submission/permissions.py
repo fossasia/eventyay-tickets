@@ -1,8 +1,8 @@
 import rules
 from django.db.models import Q
 
-from pretalx.person.permissions import can_change_submissions, is_reviewer
-from pretalx.submission.models import SubmissionStates
+from eventyay.base.models import SubmissionStates
+from eventyay.person.permissions import can_change_submissions, is_reviewer
 
 
 @rules.predicate
