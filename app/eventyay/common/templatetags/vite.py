@@ -9,24 +9,48 @@ from django.utils.safestring import mark_safe
 register = template.Library()
 LOGGER = logging.getLogger(__name__)
 _MANIFEST = {}
-MANIFEST_PATH = settings.STATIC_ROOT / 'pretalx-manifest.json'
+
+# Try to load manifests from both global-nav-menu and schedule-editor directories
+MANIFEST_PATHS = [
+    settings.BASE_DIR / 'static' / 'schedule-editor' / 'pretalx-manifest.json',
+    settings.BASE_DIR / 'static' / 'global-nav-menu' / 'pretalx-manifest.json',
+    settings.STATIC_ROOT / 'pretalx-manifest.json'
+]
 
 # We're building the manifest if we don't have a dev server running AND if we're
 # not currently running `rebuild` (which creates the manifest in the first place).
 if not settings.VITE_DEV_MODE and not settings.VITE_IGNORE:
-    try:
-        with open(MANIFEST_PATH) as fp:
-            _MANIFEST = json.load(fp)
-    except Exception as e:
-        LOGGER.warning(f'Error reading vite manifest at {MANIFEST_PATH}: {str(e)}')
+    for manifest_path in MANIFEST_PATHS:
+        try:
+            with open(manifest_path) as fp:
+                _MANIFEST = json.load(fp)
+                LOGGER.info(f'Loaded vite manifest from {manifest_path}')
+                break
+        except Exception as e:
+            LOGGER.warning(f'Error reading vite manifest at {manifest_path}: {str(e)}')
+            continue
 
+
+def _get_manifest_subdir():
+    """Determine which subdirectory the current manifest belongs to."""
+    for manifest_path in MANIFEST_PATHS:
+        if manifest_path.exists():
+            if 'schedule-editor' in str(manifest_path):
+                return 'schedule-editor'
+            elif 'global-nav-menu' in str(manifest_path):
+                return 'global-nav-menu'
+    return ''
 
 def generate_script_tag(path, attrs):
     all_attrs = ' '.join(f'{key}="{value}"' for key, value in attrs.items())
     if settings.VITE_DEV_MODE:
         src = urljoin(settings.VITE_DEV_SERVER, path)
     else:
-        src = urljoin(settings.STATIC_URL, path)
+        subdir = _get_manifest_subdir()
+        if subdir:
+            src = urljoin(settings.STATIC_URL, f'{subdir}/{path}')
+        else:
+            src = urljoin(settings.STATIC_URL, path)
     return f'<script {all_attrs} src="{src}"></script>'
 
 
@@ -43,7 +67,11 @@ def generate_css_tags(asset, already_processed=None):
     if 'css' in manifest_entry:
         for css_path in manifest_entry['css']:
             if css_path not in already_processed:
-                full_path = urljoin(settings.STATIC_URL, css_path)
+                subdir = _get_manifest_subdir()
+                if subdir:
+                    full_path = urljoin(settings.STATIC_URL, f'{subdir}/{css_path}')
+                else:
+                    full_path = urljoin(settings.STATIC_URL, css_path)
                 tags.append(f'<link rel="stylesheet" href="{full_path}" />')
             already_processed.append(css_path)
 
