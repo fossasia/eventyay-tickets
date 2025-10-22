@@ -101,7 +101,7 @@ def can_view_all_reviews(user, obj):
 
 @rules.predicate
 def has_reviewer_access(user, obj):
-    from pretalx.submission.models import Submission
+    from eventyay.base.models import Submission
 
     obj = getattr(obj, "submission", obj)
     if not isinstance(obj, Submission):
