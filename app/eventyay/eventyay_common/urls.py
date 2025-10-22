@@ -26,6 +26,7 @@ urlpatterns = [
     path('login/', auth.login, name='auth.login'),
     path('login/2fa/', auth.Login2FAView.as_view(), name='auth.login.2fa'),
     path('register/', auth.register, name='auth.register'),
+    path('invite/<str:token>/', auth.invite, name='auth.invite'),
     path('forgot/', auth.Forgot.as_view(), name='auth.forgot'),
     path('forgot/recover/', auth.Recover.as_view(), name='auth.forgot.recover'),
     path('invite/<str:token>', auth.invite, name='auth.invite'),

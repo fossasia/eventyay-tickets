@@ -78,7 +78,6 @@ import SoundMeter from 'lib/webrtc/soundmeter'
 import Color from 'color'
 import {colors} from 'theme'
 import { v4 as uuid } from 'uuid'
-import adapter from 'webrtc-adapter'
 
 const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRatio, videoPadding) => {
 	let bestLayout = {

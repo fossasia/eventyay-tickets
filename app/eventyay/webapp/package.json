@@ -15,7 +15,6 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@popperjs/core": "^2.11.8",
-    "@pretalx/schedule": "^2.0.0-alpha.2",
     "@splidejs/splide": "^4.1.4",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",

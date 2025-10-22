@@ -32,23 +32,28 @@ export default {
 		update(val) {
 			this.$emit('update:modelValue', val)
 		},
-		upload() {
+		async upload() {
 			var file = this.$refs.fileInput.files[0]
 
-			api.uploadFilePromise(file, file.name, this.uploadUrl).then(data => {
+			this.uploading = true
+			try {
+				const data = await api.uploadFilePromise(file, file.name, this.uploadUrl)
 				if (data.error) {
-					alert(`Upload error: ${data.error}`) // Proper user-friendly messages
+					alert(`Upload error: ${data.error}`)
 					this.$emit('update:modelValue', '')
 				} else {
+					// Update field and optimistically save pretalx URL if the parent provided save()
 					this.$emit('update:modelValue', data.url)
+					if (this.$parent?.save) {
+						await this.$parent.save()
+					}
 				}
-				this.uploading = false
-			}).catch(error => {
-				// TODO: better error handling
+			} catch (error) {
 				console.log(error)
 				alert(`error: ${error}`)
+			} finally {
 				this.uploading = false
-			})
+			}
 		}
 	},
 }

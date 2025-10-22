@@ -34,10 +34,9 @@
 				template(#default="{focus, blur}")
 					textarea(@focus="focus", @blur="blur", v-model="hlsConfig")
 			.json-error-message {{ v$.hlsConfig.isJson.$message }}
-	.ui-form-actions-wrapper
-		.ui-form-actions
-			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
-			.errors {{ validationErrors.join(', ') }}
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+		.errors {{ validationErrors.join(', ') }}
 </template>
 <script setup>
 import { ref, computed, onMounted, getCurrentInstance } from 'vue'

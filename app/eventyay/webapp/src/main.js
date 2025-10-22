@@ -13,18 +13,20 @@ import Scrollbars from 'components/Scrollbars'
 import LinkIconButton from 'components/link-icon-button'
 import MediaQueries from 'components/mixins/media-queries'
 import dynamicLineClamp from './components/directives/dynamic-line-clamp'
+import scrollbarDirective from './components/directives/scrollbar'
 import 'styles/global.styl'
 import 'roboto-fontface'
 import 'roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'quill/dist/quill.core.css'
-import '@pretalx/schedule/style'
+// import '@pretalx/schedule/style'
 import 'styles/quill.styl'
 import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
 import config from 'config'
 import theme, { computeForegroundSidebarColor, getThemeConfig, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS, themeVariables } from 'theme'
+import 'webrtc-adapter'
 
 async function setThemeConfig() {
     const themeData = await getThemeConfig()
@@ -54,6 +56,7 @@ async function init({ token, inviteToken }) {
   app.use(MediaQueries)
   app.use(emojiPlugin)
   app.use(dynamicLineClamp)
+  app.use(scrollbarDirective)
   // Initialize i18n and theme
   await i18nInit(app)
   app.config.globalProperties.$features = features
@@ -107,7 +110,7 @@ async function init({ token, inviteToken }) {
   }
 
   // Handle kiosk mode
-  if (store.state.token && jwtDecode(store.state.token).traits.includes('-kiosk')) {
+  if (store.state.token && jwtDecode(store.state.token).traits?.includes?.('-kiosk')) {
     store.watch(
       state => state.user,
       ({ profile }) => {
@@ -123,7 +126,7 @@ async function init({ token, inviteToken }) {
     store.commit('updateNow')
     setInterval(() => store.commit('updateNow'), 60000)
   }, 60000 - (Date.now() % 60000))
-  
+
   setInterval(() => store.dispatch('notifications/pollExternals'), 1000)
   window.__venueless__release = RELEASE
 
@@ -145,8 +148,16 @@ if (config.externalAuthUrl && !token) {
 }
 
 // Clean up old service workers
-navigator.serviceWorker?.getRegistrations().then((registrations) => {
-  for (const registration of registrations) {
-    registration.unregister()
-  }
-})
+if ('serviceWorker' in navigator) {
+	// Do not aggressively unregister all, just skip if none (avoid InvalidStateError)
+	try {
+		navigator.serviceWorker.getRegistrations().then((registrations) => {
+			for (const registration of registrations) {
+				// only unregister legacy registrations whose scope does not match current basePath
+				if (registration.scope && !registration.scope.includes(config.basePath)) {
+					registration.unregister()
+				}
+			}
+		}).catch(() => {})
+	} catch (e) { /* ignore */ }
+}

@@ -27,7 +27,7 @@ class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
         url = self.event.get_mail_template(MailTemplateRoles.NEW_SCHEDULE).urls.base
         self.fields['notify_speakers'].help_text = f"<a href='{url}'>{_('Email template')}</a>"
         if not self.event.current_schedule:
-            self.fields['comment'].initial = phrases.schedule.first_schedule
+            self.fields['comment'].initial = phrases.schedule.first_schedule if phrases.schedule else _('We released our first schedule!')
         else:
             self.fields['comment'].initial = _('We released a new schedule version!')
         if not self.fields['version'].initial:

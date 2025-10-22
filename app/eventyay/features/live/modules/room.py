@@ -324,7 +324,8 @@ class RoomModule(BaseModule):
 
     @event("create", refresh_user=True)
     async def push_room_info(self, body):
-        await self.consumer.event.refresh_from_db_if_outdated(allowed_age=0)
+        # Refresh event data from database to ensure we have the latest configuration
+        await database_sync_to_async(self.consumer.event.refresh_from_db)()
         conf = await get_room_config_for_user(
             body["room"], self.consumer.event.id, self.consumer.user
         )
@@ -428,7 +429,8 @@ class RoomModule(BaseModule):
 
     @event("schedule")
     async def push_schedule_data(self, body):
-        await self.consumer.event.refresh_from_db_if_outdated(allowed_age=0)
+        # Refresh event data from database to ensure we have the latest configuration
+        await database_sync_to_async(self.consumer.event.refresh_from_db)()
         config = await get_room_config_for_user(
             body["room"], self.consumer.event.id, self.consumer.user
         )

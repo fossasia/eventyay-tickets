@@ -20,13 +20,15 @@
 				bunt-select.timezone-item(name="timezone", :options="[{id: schedule.timezone, label: schedule.timezone}, {id: userTimezone, label: userTimezone}]", v-model="currentTimezone", @blur="saveTimezone")
 			template(v-else)
 				div.timezone-label.timezone-item.bunt-tab-header-item {{ schedule.timezone }}
+
 			.export.dropdown
 				bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
 				custom-dropdown(name="calendar-add1"
-					:modelValue="selectedExporter"
-					@update:modelValue="selectedExporter = $event; makeExport()"
+					v-model="selectedExporter"
 					:options="exportType"
-					label="Add to Calendar")
+					label="Add to Calendar"
+					@input="makeExport")
+
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :key="day.toISOString()", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		.scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
@@ -60,7 +62,9 @@
 <script>
 import _ from 'lodash'
 import { mapState, mapGetters } from 'vuex'
-import { LinearSchedule, GridSchedule } from '@pretalx/schedule'
+// Replaced external '@pretalx/schedule' imports with local components to avoid TDZ runtime error in pretalx bundle
+import LinearSchedule from './schedule-components/LinearSchedule.vue'
+import GridSchedule from './schedule-components/GridSchedule.vue'
 import moment from 'lib/timetravelMoment'
 import TimezoneChanger from 'components/TimezoneChanger'
 import scheduleProvidesMixin from 'components/mixins/schedule-provides'
@@ -278,7 +282,6 @@ export default {
 				window.URL.revokeObjectURL(downloadUrl)
 				a.remove()
 				this.isExporting = false
-				this.selectedExporter = null
 			} catch (error) {
 				this.isExporting = false
 				this.error = error

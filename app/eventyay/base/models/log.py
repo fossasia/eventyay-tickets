@@ -53,7 +53,7 @@ class LogEntry(models.Model):
     oauth_application = models.ForeignKey('api.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)
     event = models.ForeignKey('Event', null=True, blank=True, on_delete=models.SET_NULL)
     action_type = models.CharField(max_length=255)
-    data = models.TextField(default='{}', null=True, blank=True)
+    data = models.TextField(default='{}')
     visible = models.BooleanField(default=True)
     shredded = models.BooleanField(default=False)
 
@@ -72,7 +72,7 @@ class LogEntry(models.Model):
             if response:
                 return response
         return self.action_type
-    
+
     def __str__(self):
         """Custom __str__ to help with debugging."""
         event = getattr(self.event, 'slug', 'None')
@@ -85,7 +85,7 @@ class LogEntry(models.Model):
     @property
     def person(self):
         return self.user
-    
+
     @property
     def timestamp(self):
         return self.datetime
