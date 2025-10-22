@@ -52,7 +52,7 @@
                 <details class="panel panel-default" open>
                     <summary class="panel-heading">
                         <h4 class="panel-title">
-                            <strong>{{ pos.item.name }}{% if pos.variation %}
+                            <strong>{{ pos.product.name }}{% if pos.variation %}
                                 – {{ pos.variation }}
                             {% endif %}</strong>
                             <i class="fa fa-angle-down collapse-indicator" aria-hidden="true"></i>
@@ -61,9 +61,9 @@
                     <div id="cp{{ pos.id }}">
                         <div class="panel-body questions-form">
                             {% for form in forms %}
-                                {% if form.pos.item != pos.item %}
+                                {% if form.pos.product != pos.product %}
                                     {# Add-Ons #}
-                                    <legend>+ {{ form.pos.item }}</legend>
+                                    <legend>+ {{ form.pos.product }}</legend>
                                 {% endif %}
                                 {% bootstrap_form form layout="checkout" %}
                             {% endfor %}

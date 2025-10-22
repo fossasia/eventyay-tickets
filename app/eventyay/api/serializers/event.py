@@ -664,6 +664,7 @@ class EventSettingsSerializer(SettingsSerializer):
         'locales',
         'locale',
         'region',
+        'allow_modifications',
         'last_order_modification_date',
         'allow_modifications_after_checkin',
         'show_quota_left',

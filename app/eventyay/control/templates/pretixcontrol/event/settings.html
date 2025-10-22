@@ -101,6 +101,19 @@
                 {% bootstrap_field sform.name_scheme layout="control" %}
                 {% bootstrap_field sform.name_scheme_titles layout="control" %}
                 {% bootstrap_field sform.checkout_show_copy_answers_button layout="control" %}
+                
+                <h4>{% translate "Changes to existing orders" %}</h4>
+                {% bootstrap_field sform.allow_modifications layout="control" %}
+                <div data-display-dependency-container>
+                    <div data-display-dependency="#id_settings-allow_modifications_1">
+                        {% bootstrap_field sform.last_order_modification_date layout="control" %}
+                        {% bootstrap_field sform.allow_modifications_after_checkin layout="control" %}
+                    </div>
+                    <div data-display-dependency="#id_settings-allow_modifications_2">
+                        {% bootstrap_field sform.last_order_modification_date layout="control" %}
+                        {% bootstrap_field sform.allow_modifications_after_checkin layout="control" %}
+                    </div>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>{% trans "Texts" %}</legend>
@@ -191,8 +204,6 @@
                 {% bootstrap_field sform.presale_start_show_date layout="control" %}
                 {% bootstrap_field form.presale_end layout="control" %}
                 {% bootstrap_field sform.show_products_outside_presale_period layout="control" %}
-                {% bootstrap_field sform.last_order_modification_date layout="control" %}
-                {% bootstrap_field sform.allow_modifications_after_checkin layout="control" %}
             </fieldset>
             <fieldset>
                 <legend>{% trans "Display" %}</legend>
