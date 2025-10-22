@@ -1,6 +1,6 @@
 import rules
 
-from pretalx.submission.models.submission import SubmissionStates
+from eventyay.base.models import SubmissionStates
 
 
 @rules.predicate
