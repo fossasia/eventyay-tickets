@@ -217,19 +217,21 @@ class SecurityMiddleware(MiddlewareMixin):
                 '{static}',
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
+                'https://www.youtube.com',
+                'https:',  # Allow all HTTPS iframes
             ],
             'style-src': [
                 '{static}',
                 '{media}',
                 "'unsafe-inline'",  # allow inline styles
             ],
-            'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com'],
-            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com'] + img_src,
+            'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com', 'https:', 'blob:'],
+            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com', 'https://twemoji.maxcdn.com'] + img_src,
             'font-src': [
                 '{static}',
                 'https://fonts.gstatic.com',  # fix Google Fonts
             ],
-            'media-src': ['{static}', 'data:'],
+            'media-src': ['{static}', 'data:', 'https:', 'blob:'],
             # form-action is not only used to match on form actions, but also on URLs
             # form-actions redirect to. In the context of e.g. payment providers or
             # single-sign-on this can be nearly anything so we cannot really restrict

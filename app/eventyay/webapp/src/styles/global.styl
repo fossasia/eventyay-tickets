@@ -20,7 +20,8 @@ body
 html, body, #app
 	margin: 0
 	height: 100%
-	overflow: hidden
+	// Do not globally hide overflow; individual scroll containers use v-scrollbar
+	overflow: visible
 
 .bunt-scrollbar
 	min-height: 0 // firefox can fuck off into space

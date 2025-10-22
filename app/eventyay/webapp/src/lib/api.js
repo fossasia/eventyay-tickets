@@ -6,7 +6,11 @@ let api = null
 export { api as default }
 
 export function initApi({ store, token, clientId, inviteToken }) {
+	if (api) {
+		try { api.close() } catch (e) { /* ignore */ }
+	}
 	api = new WebSocketClient(`${config.api.socket}`, { token, clientId, inviteToken })
+	console.info('[API] websocket URL', config.api.socket)
 	api.connect()
 
 	api.on('closed', () => {
@@ -52,41 +56,52 @@ export function initApi({ store, token, clientId, inviteToken }) {
 		}
 	})
 
-api.uploadFile = function(file, filename, url, width, height) {
-	url = url || config.api.upload
-	const data = new FormData()
-	data.append('file', file, filename)
-	if (width) data.append('width', width)
-	if (height) data.append('height', height)
-	const request = new XMLHttpRequest()
-	request.open('POST', url)
-	request.setRequestHeader('Accept', 'application/json')
-	if (api._config.token) {
-		request.setRequestHeader('Authorization', `Bearer ${api._config.token}`)
-	} else if (api._config.clientId) {
-		request.setRequestHeader('Authorization', `Client ${api._config.clientId}`)
-	}
-	request.send(data)
-	return request
-}
-
-// TODO unify, rename, progress support
-api.uploadFilePromise = function(file, filename, url) {
-	url = url || config.api.upload
-	const data = new FormData()
-	data.append('file', file, filename)
-	const authHeader = api._config.token ? `Bearer ${api._config.token}`
-		: (api._config.clientId ? `Client ${api._config.clientId}` : null)
-	return fetch(url, {
-		method: 'POST',
-		body: data,
-		headers: {
-			Accept: 'application/json',
-			Authorization: authHeader
+	api.uploadFile = function(file, filename, url, width, height) {
+		url = url || config.api.upload
+		const data = new FormData()
+		data.append('file', file, filename)
+		if (width) data.append('width', width)
+		if (height) data.append('height', height)
+		const request = new XMLHttpRequest()
+		request.open('POST', url)
+		request.setRequestHeader('Accept', 'application/json')
+		if (api._config.token) {
+			request.setRequestHeader('Authorization', `Bearer ${api._config.token}`)
+		} else if (api._config.clientId) {
+			request.setRequestHeader('Authorization', `Client ${api._config.clientId}`)
 		}
-	}).then(response => response.json())
-}
+		request.send(data)
+		return request
+	}
 
-window.api = api
+	// TODO unify, rename, progress support
+	api.uploadFilePromise = function(file, filename, url) {
+		url = url || config.api.upload
+		const data = new FormData()
+		data.append('file', file, filename)
+		const authHeader = api._config.token ? `Bearer ${api._config.token}`
+			: (api._config.clientId ? `Client ${api._config.clientId}` : null)
+		const headers = { Accept: 'application/json' }
+		if (authHeader) headers.Authorization = authHeader
+		return fetch(url, {
+			method: 'POST',
+			body: data,
+			headers
+		}).then(async response => {
+			const ct = response.headers.get('content-type') || ''
+			if (!response.ok) {
+				const text = await response.text().catch(() => '')
+				throw new Error(`Upload failed (${response.status}): ${text.slice(0, 200)}`)
+			}
+			if (ct.includes('application/json')) {
+				return response.json()
+			} else {
+				const text = await response.text().catch(() => '')
+				throw new Error(`Unexpected response content-type: ${ct || 'unknown'}; body: ${text.slice(0, 200)}`)
+			}
+		})
+	}
+
+	window.api = api
 }
 

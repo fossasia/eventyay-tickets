@@ -5,6 +5,9 @@ import config from 'config'
 export default {
 	enabled(feature) {
 		if (ENV_DEVELOPMENT) return true
-		return config.features?.includes(feature)
+		const feats = config.features
+		if (Array.isArray(feats)) return feats.includes(feature)
+		if (feats && typeof feats === 'object') return Boolean(feats[feature])
+		return false
 	}
 }

@@ -3,12 +3,12 @@ from django.template.loader import get_template
 from django.urls import resolve, reverse
 from django.utils.timezone import now
 from i18nfield.strings import LazyI18nString
-from pretix.base.models import Event, Order
-from pretix.base.reldate import RelativeDateWrapper
-from pretix.base.settings import settings_hierarkey
-from pretix.base.signals import event_copy_data, item_copy_data
-from pretix.control.signals import nav_event_settings
-from pretix.presale.signals import order_info_top, position_info_top
+from eventyay.base.models import Event, Order
+from eventyay.base.reldate import RelativeDateWrapper
+from eventyay.base.settings import settings_hierarkey
+from eventyay.base.signals import event_copy_data, product_copy_data
+from eventyay.control.signals import nav_event_settings
+from eventyay.presale.signals import order_info_top, position_info_top
 
 
 @receiver(order_info_top, dispatch_uid="venueless_order_info")
@@ -98,8 +98,8 @@ def event_copy_data_r(sender, other, item_map, question_map, **kwargs):
     ]
 
 
-@receiver(signal=item_copy_data, dispatch_uid="venueless_item_copy_data")
-def item_copy_data_r(sender, source, target, **kwargs):
+@receiver(signal=product_copy_data, dispatch_uid="venueless_product_copy_data")
+def product_copy_data_r(sender, source, target, **kwargs):
     items = sender.settings.get('venueless_items') or []
     items.append(target.pk)
     sender.settings['venueless_items'] = items

@@ -215,11 +215,33 @@ export default new Vuex.Store({
 			state.permission = permissions
 			commit('updateRooms', rooms)
 		},
+		// Backwards-compat: server emits 'event.updated' with a payload that contains both
+		// 'world' and 'event' keys. Mirror the 'world.updated' handling here.
+		'api::event.updated'({state, commit, dispatch}, payload) {
+			const world = payload.world || payload.event || payload
+			const rooms = payload.rooms || []
+			const permissions = payload.permissions
+			state.world = world
+			state.permission = permissions
+			commit('updateRooms', rooms)
+		},
 		'api::world.schedule.updated'({state, commit, dispatch}, pretalx) {
 			state.world.pretalx = pretalx
 			dispatch('schedule/fetch', {root: true})
 		},
+		// Backwards-compat: server emits 'event.schedule.updated' with pretalx config
+		'api::event.schedule.updated'({state, commit, dispatch}, pretalx) {
+			if (!state.world) state.world = {}
+			state.world.pretalx = pretalx
+			dispatch('schedule/fetch', {root: true})
+		},
 		'api::world.user_count_change'({state, commit, dispatch}, {room, users}) {
+			room = state.rooms.find(r => r.id === room)
+			room.users = users
+			commit('updateRooms', state.rooms)
+		},
+		// Backwards-compat: server emits 'event.user_count_change'
+		'api::event.user_count_change'({state, commit, dispatch}, {room, users}) {
 			room = state.rooms.find(r => r.id === room)
 			room.users = users
 			commit('updateRooms', state.rooms)

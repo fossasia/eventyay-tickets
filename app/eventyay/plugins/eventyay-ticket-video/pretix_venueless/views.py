@@ -15,17 +15,18 @@ from django.utils.translation import gettext, gettext_lazy as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_exempt
 from i18nfield.forms import I18nFormField
-from pretix.base.forms import (
+from eventyay.base.forms import (
     I18nMarkdownTextarea, SecretKeySettingsField, SettingsForm,
 )
-from pretix.base.models import CheckinList, Event, Item, Order, Question
-from pretix.base.reldate import RelativeDateTimeField
-from pretix.base.services.checkin import perform_checkin
-from pretix.control.views.event import (
+from eventyay.base.models import Event, Product, Order, Question
+from eventyay.base.models.checkin import CheckinList
+from eventyay.base.reldate import RelativeDateTimeField
+from eventyay.base.services.checkin import perform_checkin
+from eventyay.control.views.event import (
     EventSettingsFormView, EventSettingsViewMixin,
 )
-from pretix.presale.views import EventViewMixin
-from pretix.presale.views.order import OrderPositionDetailMixin
+from eventyay.presale.views import EventViewMixin
+from eventyay.presale.views.order import OrderPositionDetailMixin
 
 
 class VenuelessSettingsForm(SettingsForm):
@@ -66,7 +67,7 @@ class VenuelessSettingsForm(SettingsForm):
         ),
         label=_('Limit to products'),
         required=False,
-        queryset=Item.objects.none(),
+        queryset=Product.objects.none(),
         initial=None
     )
     venueless_questions = forms.ModelMultipleChoiceField(
@@ -93,7 +94,7 @@ class VenuelessSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         event = kwargs['obj']
         super().__init__(*args, **kwargs)
-        self.fields['venueless_items'].queryset = event.items.all()
+        self.fields['venueless_items'].queryset = event.products.all()
         self.fields['venueless_questions'].queryset = event.questions.all()
 
     def clean(self):

@@ -1,6 +1,9 @@
 <template lang="pug">
 .c-admin-room
-	.error(v-if="error") We could not fetch the current configuration.
+	.error(v-if="error")
+		span We could not fetch the current configuration.
+		span(v-if="errorCode")  ({{ errorCode }})
+		span(v-if="errorCode === 'protocol.denied'")  You likely lack admin permissions.
 	template(v-else-if="config")
 		.ui-page-header
 			bunt-icon-button(@click="$router.push({name: 'admin:rooms:index'})") arrow_left
@@ -36,11 +39,13 @@ export default {
 	data() {
 		return {
 			error: null,
+			errorCode: null,
 			config: null,
 			showDeletePrompt: false,
 			deletingRoomName: '',
 			deleting: false,
-			deleteError: null
+			deleteError: null,
+			_unwatchConnected: null
 		}
 	},
 	computed: {
@@ -49,14 +54,37 @@ export default {
 		}
 	},
 	async created() {
-		try {
-			this.config = await api.call('room.config.get', {room: this.roomId})
-		} catch (error) {
-			this.error = error
-			console.error(error)
-		}
+		await this.ensureConnectedAndFetch()
+	},
+	beforeUnmount() {
+		if (this._unwatchConnected) this._unwatchConnected()
 	},
 	methods: {
+		async ensureConnectedAndFetch() {
+			if (this.$store.state.connected) return this.fetchConfig()
+			// wait until websocket joined before calling
+			this._unwatchConnected = this.$store.watch(
+				state => state.connected,
+				(connected) => {
+					if (connected) {
+						if (this._unwatchConnected) this._unwatchConnected()
+						this._unwatchConnected = null
+						this.fetchConfig()
+					}
+				}
+			)
+		},
+		async fetchConfig() {
+			try {
+				this.error = null
+				this.errorCode = null
+				this.config = await api.call('room.config.get', {room: this.roomId})
+			} catch (error) {
+				this.error = error
+				this.errorCode = error?.code || error?.message || String(error)
+				console.error(error)
+			}
+		},
 		async deleteRoom() {
 			if (this.deletingRoomName !== this.config.name) return
 			this.deleting = true
