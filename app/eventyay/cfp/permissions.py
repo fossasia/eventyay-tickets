@@ -1,8 +1,8 @@
 import rules
 
-from pretalx.person.permissions import can_change_submissions, is_reviewer
-from pretalx.submission.models import SubmissionStates
-from pretalx.submission.permissions import can_be_edited
+from eventyay.base.models import SubmissionStates
+from eventyay.person.permissions import can_change_submissions, is_reviewer
+from eventyay.submission.permissions import can_be_edited
 
 
 @rules.predicate
