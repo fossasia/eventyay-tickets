@@ -752,7 +752,7 @@ redis_connection_kwargs = {
     "health_check_interval": 30,
 }
 
-REDIS_URL = config.get('redis', 'location')
+REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
 HAS_REDIS = bool(REDIS_URL)
 REDIS_HOSTS = [{
     "address": REDIS_URL,
@@ -817,8 +817,8 @@ if not SESSION_ENGINE:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Celery configuration
-CELERY_BROKER_URL = config.get('celery', 'broker')
-CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
+CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
 CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
