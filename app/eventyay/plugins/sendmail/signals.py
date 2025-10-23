@@ -13,7 +13,7 @@ def control_nav_import(sender, request=None, **kwargs):
         return []
     return [
         {
-            'label': _('Send out emails'),
+            'label': _('Mails'),
             'url': reverse(
                 'plugins:sendmail:send',
                 kwargs={
@@ -25,7 +25,7 @@ def control_nav_import(sender, request=None, **kwargs):
             'icon': 'envelope',
             'children': [
                 {
-                    'label': _('Send email'),
+                    'label': _('Compose emails'),
                     'url': reverse(
                         'plugins:sendmail:send',
                         kwargs={
@@ -36,7 +36,7 @@ def control_nav_import(sender, request=None, **kwargs):
                     'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'send'),
                 },
                 {
-                    'label': _('Email history'),
+                    'label': _('Sent emails'),
                     'url': reverse(
                         'plugins:sendmail:history',
                         kwargs={
@@ -45,6 +45,17 @@ def control_nav_import(sender, request=None, **kwargs):
                         },
                     ),
                     'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'history'),
+                },
+                {
+                    'label': _('Templates'),
+                    'url': reverse(
+                        'plugins:sendmail:templates',
+                        kwargs={
+                            'event': request.event.slug,
+                            'organizer': request.event.organizer.slug,
+                        },
+                    ),
+                    'active': (url.namespace == 'plugins:sendmail' and url.url_name == 'templates'),
                 },
             ],
         },

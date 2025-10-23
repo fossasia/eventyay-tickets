@@ -45,9 +45,8 @@
 					h3 Traits enabling on-site behaviour
 					p Users with the following traits will be treated as on-site attendees. This currently only disables stream autoplaying by default.
 					bunt-input.onsite-traits(name="onsite-traits", label="On-site Traits", v-model="onsiteTraits")
-	.ui-form-actions-wrapper
-		.ui-form-actions
-			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
 </template>
 <script>
 import api from 'lib/api'

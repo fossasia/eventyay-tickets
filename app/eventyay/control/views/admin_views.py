@@ -181,8 +181,62 @@ class EventAdminToken(AdminBase, DetailView):
     queryset = Event.objects.all()
     success_url = "/admin/video/events/"
 
+    def get_object(self, queryset=None):
+        """
+        Override get_object to handle both slug and pk lookups
+        """
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        pk = self.kwargs.get('pk')
+        if pk is None:
+            raise AttributeError("EventAdminToken view must be called with a pk argument.")
+
+        # Try to get the object by pk first (if it's numeric)
+        try:
+            if pk.isdigit():
+                return queryset.get(pk=pk)
+        except Event.DoesNotExist:
+            pass
+
+        # If pk lookup fails or pk is not numeric, try slug lookup
+        try:
+            return queryset.get(slug=pk)
+        except Event.DoesNotExist:
+            from django.http import Http404
+            raise Http404("Event not found")
+
     def get(self, request, *args, **kwargs):
         event = self.get_object()
+
+        # Ensure JWT configuration exists
+        if not event.config or not event.config.get("JWT_secrets"):
+            from django.utils.crypto import get_random_string
+            from django.conf import settings
+
+            secret = get_random_string(length=64)
+            event.config = {
+                "JWT_secrets": [
+                    {
+                        "issuer": "any",
+                        "audience": "eventyay",
+                        "secret": secret,
+                    }
+                ]
+            }
+            event.save()
+
+            # Also set up the video plugin settings for the webapp
+            try:
+                event.settings.venueless_secret = secret
+                event.settings.venueless_issuer = "any"
+                event.settings.venueless_audience = "eventyay"
+                # Point to SPA at /video/<event_slug>
+                base_site = getattr(settings, 'SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
+                event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+            except Exception:
+                pass
+
         jwt_config = event.config["JWT_secrets"][0]
         secret = jwt_config["secret"]
         audience = jwt_config["audience"]
@@ -204,7 +258,17 @@ class EventAdminToken(AdminBase, DetailView):
             action_type="event.adminaccess",
             data={},
         )
-        return redirect(f"https://{event.domain}#token={token}")
+
+        # Use the appropriate URL based on environment
+        if event.domain:
+            video_url = f"https://{event.domain}#token={token}"
+        else:
+            # For local development, use the current request's host
+            scheme = 'https' if request.is_secure() else 'http'
+            host = request.get_host()
+            video_url = f"{scheme}://{host}/video/{event.slug}#token={token}"
+
+        return redirect(video_url)
 
 
 class FormsetMixin:
@@ -268,6 +332,20 @@ class EventCreate(FormsetMixin, AdminBase, CreateView):
 
         self.object = form.save()
 
+        # Initialize Eventyay Video (ticket-video) defaults so the webapp works immediately
+        try:
+            secret = form.instance.config["JWT_secrets"][0]["secret"]
+            issuer = form.instance.config["JWT_secrets"][0]["issuer"]
+            audience = form.instance.config["JWT_secrets"][0]["audience"]
+            self.object.settings.venueless_secret = secret
+            self.object.settings.venueless_issuer = issuer
+            self.object.settings.venueless_audience = audience
+            # Point to SPA at /video/<event_id>
+            base_site = settings.SITE_URL.rstrip('/')
+            self.object.settings.venueless_url = f"{base_site}/video/{self.object.pk}"
+        except Exception:
+            pass
+
         for f in self.formset.extra_forms:
             if not f.has_changed():
                 continue
@@ -275,6 +353,19 @@ class EventCreate(FormsetMixin, AdminBase, CreateView):
                 continue
             f.instance.event = self.object
             f.save()
+
+        if self.copy_from:
+            try:
+                secret = form.instance.config["JWT_secrets"][0]["secret"]
+                issuer = form.instance.config["JWT_secrets"][0]["issuer"]
+                audience = form.instance.config["JWT_secrets"][0]["audience"]
+                self.object.settings.venueless_secret = secret
+                self.object.settings.venueless_issuer = issuer
+                self.object.settings.venueless_audience = audience
+                base_site = settings.SITE_URL.rstrip('/')
+                self.object.settings.venueless_url = f"{base_site}/video/{self.object.pk}"
+            except Exception:
+                pass
 
         LogEntry.objects.create(
             content_object=form.instance,

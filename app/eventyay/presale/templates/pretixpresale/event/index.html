@@ -21,6 +21,10 @@
     {% compress js %}
         <script type="text/javascript" src="{% static "pretixpresale/js/ui/join-video-event.js" %}"></script>
     {% endcompress %}
+	{# Needed by popover.js #}
+    {{ base_path|json_script:"base_path" }}
+    {{ ev.organizer.slug|json_script:"organizer_name" }}
+    {{ ev.slug|json_script:"event_slug" }}
 {% endblock %}
 {% block content %}
 
@@ -131,7 +135,7 @@
 
     {% if request.event.has_subevents %}
         {% if not subevent %}
-            {% if event_logo and request.event.settings.logo_show_title %}
+            {% if event_logo_image and request.event.settings.logo_show_title %}
                 <h2 class="content-header">
                     {{ event.name }}
                 </h2>
@@ -192,7 +196,7 @@
             {% endif %}
         {% endif %}
     {% else %}
-        {% if event_logo and request.event.settings.logo_show_title %}
+        {% if event_logo_image and request.event.settings.logo_show_title %}
             <h2 class="content-header">
                 {{ event.name }}
                 {% if request.event.settings.show_dates_on_frontpage %}
@@ -200,7 +204,7 @@
                 {% endif %}
             </h2>
         {% endif %}
-        {% if not event_logo %}
+        {% if not event_logo_image %}
             <h2 class="content-header">
                 {{ event.name }}
                 {% if request.event.settings.show_dates_on_frontpage %}

@@ -264,7 +264,7 @@ class SpeakerFilterForm(forms.Form):
     role = forms.ChoiceField(
         choices=(
             ('', phrases.base.all_choices),
-            ('true', phrases.schedule.speakers),
+            ('true', phrases.schedule.speakers if phrases.schedule else _('Speakers')),
             ('false', _('Non-accepted submitters')),
         ),
         required=False,
@@ -308,7 +308,7 @@ class UserSpeakerFilterForm(forms.Form):
 
     role = forms.ChoiceField(
         choices=(
-            ('speaker', phrases.schedule.speakers),
+            ('speaker', phrases.schedule.speakers if phrases.schedule else _('Speakers')),
             ('submitter', _('Non-accepted submitters')),
             ('all', phrases.base.all_choices),
         ),

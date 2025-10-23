@@ -269,9 +269,9 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=User.objects.none(),
         required=False,
-        label=phrases.schedule.speakers,
+        label=phrases.schedule.speakers if phrases.schedule else _('Speakers'),
         help_text=_('Select speakers that should receive the email regardless of the other filters.'),
-        widget=EnhancedSelectMultiple(attrs={'placeholder': phrases.schedule.speakers}),
+        widget=EnhancedSelectMultiple(attrs={'placeholder': phrases.schedule.speakers if phrases.schedule else _('Speakers')}),
     )
 
     def __init__(self, **kwargs):

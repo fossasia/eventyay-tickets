@@ -2,6 +2,7 @@ import datetime as dt
 from datetime import datetime
 from datetime import timezone as tz
 from enum import StrEnum
+from urllib.parse import urlparse
 
 import jwt
 from django.conf import settings
@@ -19,17 +20,14 @@ from django.views.generic import ListView
 from django_scopes import scope
 from pytz import timezone
 from rest_framework import views
+from django.views import View
 
 from eventyay.base.forms import SafeSessionWizardView
 from eventyay.base.i18n import language
 from eventyay.base.models import Event, EventMetaValue, Organizer, Quota
 from eventyay.base.services import tickets
 from eventyay.base.services.quotas import QuotaAvailability
-from eventyay.control.forms.event import (
-    EventUpdateForm,
-    EventWizardBasicsForm,
-    EventWizardFoundationForm,
-)
+from eventyay.control.forms.event import EventWizardBasicsForm, EventWizardFoundationForm
 from eventyay.control.forms.filter import EventFilterForm
 from eventyay.control.permissions import EventPermissionRequiredMixin
 from eventyay.control.views import PaginationMixin, UpdateView
@@ -44,7 +42,7 @@ from eventyay.eventyay_common.utils import (
     generate_token,
 )
 from eventyay.helpers.plugin_enable import is_video_enabled
-
+from ..forms.event import EventUpdateForm
 
 class EventList(PaginationMixin, ListView):
     model = Event
@@ -262,7 +260,6 @@ class EventCreateView(SafeSessionWizardView):
                     action='eventyay.event.added',
                     user=self.request.user,
                 )
-
         # The user automatically creates a world when selecting the add video option in the create ticket form.
         event_data = dict(
             id=basics_data.get('slug'),
@@ -346,8 +343,10 @@ class EventUpdate(
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        if self.request.user.has_active_staff_session(self.request.session.session_key):
-            kwargs['domain'] = True
+        # Pass necessary kwargs to the EventUpdateForm in common
+        is_staff_session = self.request.user.has_active_staff_session(self.request.session.session_key)
+        kwargs['change_slug'] = is_staff_session
+        kwargs['domain'] = is_staff_session
         return kwargs
 
     def enable_talk_system(self, request: HttpRequest) -> bool:
@@ -361,6 +360,7 @@ class EventUpdate(
         if not check_create_permission(self.request):
             messages.error(self.request, _('You do not have permission to perform this action.'))
             return False
+
 
         return True
 
@@ -420,32 +420,92 @@ class EventUpdate(
         return tz.localize(dt.replace(tzinfo=None)) if dt is not None else None
 
 
-class VideoAccessAuthenticator(views.APIView):
+class VideoAccessAuthenticator(View):
     def get(self, request, *args, **kwargs):
         """
         Check if the video configuration is complete, the plugin is enabled, and the user has permission to modify the event settings.
-        If all conditions are met, generate a token and include it in the URL for the video system.
+        If configuration is missing, automatically set it up. Then generate a token and redirect to video system.
         @param request: user request
         @param args: arguments
         @param kwargs: keyword arguments
         @return: redirect to the video system
         """
-        #  Check if the video configuration is fulfilled and the plugin is enabled
-        if (
-            'pretix_venueless' not in self.request.event.get_plugins()
-            or not self.request.event.settings.venueless_url
-            or not self.request.event.settings.venueless_issuer
-            or not self.request.event.settings.venueless_audience
-            or not self.request.event.settings.venueless_secret
-        ):
-            raise PermissionDenied(_('Event information is not available or the video plugin is turned off.'))
         # Check if the organizer has permission for the event
         if not self.request.user.has_event_permission(
             self.request.organizer, self.request.event, 'can_change_event_settings'
         ):
             raise PermissionDenied(_('You do not have permission to access this video system.'))
+
+        # Auto-setup video configuration if missing
+        self._ensure_video_configuration()
+
         # Generate token and include in url to video system
         return redirect(self.generate_token_url(request))
+
+    def _ensure_video_configuration(self):
+        """
+        Ensure video configuration is set up properly, similar to admin token flow
+        """
+        event = self.request.event
+        request = self.request
+
+        # Ensure JWT configuration exists
+        if not event.config or not event.config.get("JWT_secrets"):
+            from django.utils.crypto import get_random_string
+
+            secret = get_random_string(length=64)
+            event.config = {
+                "JWT_secrets": [
+                    {
+                        "issuer": "any",
+                        "audience": "eventyay",
+                        "secret": secret,
+                    }
+                ]
+            }
+            event.save()
+
+        # Get or use existing JWT secret
+        jwt_config = event.config["JWT_secrets"][0]
+        secret = jwt_config["secret"]
+        audience = jwt_config["audience"]
+        issuer = jwt_config["issuer"]
+
+        # Setup video plugin settings for the webapp
+        # Set each video config setting individually if missing
+        if not event.settings.venueless_secret:
+            event.settings.venueless_secret = secret
+        if not event.settings.venueless_issuer:
+            event.settings.venueless_issuer = issuer
+        if not event.settings.venueless_audience:
+            event.settings.venueless_audience = audience
+        if not event.settings.venueless_url:
+            # Choose base site dynamically: prefer current request host (useful for local dev)
+            scheme = 'https' if request.is_secure() else 'http'
+            base_site = f"{scheme}://{request.get_host()}"
+            event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+
+        # If the saved URL points to a different host than the current request (e.g., prod domain),
+        # adjust it to the current host so local development goes to localhost.
+        try:
+            saved = urlparse(str(event.settings.venueless_url))
+            current_host = request.get_host()
+            if saved.netloc and saved.netloc != current_host:
+                scheme = 'https' if request.is_secure() else 'http'
+                base_site = f"{scheme}://{current_host}"
+                event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+        except Exception:
+            # If parsing fails for any reason, fall back to the current request host
+            scheme = 'https' if request.is_secure() else 'http'
+            base_site = f"{scheme}://{request.get_host()}"
+            event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+
+        # Ensure the pretix_venueless plugin is enabled
+        current_plugins = set(event.get_plugins())
+        if 'pretix_venueless' not in current_plugins:
+            current_plugins.add('pretix_venueless')
+            event.plugins = ','.join(current_plugins)
+            event.save()
 
     def generate_token_url(self, request):
         uid_token = encode_email(request.user.email)

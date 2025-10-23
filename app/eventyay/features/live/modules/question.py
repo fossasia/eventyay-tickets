@@ -41,9 +41,9 @@ class QuestionModule(BaseModule):
             sender=self.consumer.user,
             room=self.room,
             state=(
-                Question.States.MOD_QUEUE
+                RoomQuestion.States.MOD_QUEUE
                 if requires_moderation
-                else Question.States.VISIBLE
+                else RoomQuestion.States.VISIBLE
             ),
         )
 
@@ -83,8 +83,8 @@ class QuestionModule(BaseModule):
 
         group = (
             GROUP_ROOM_QUESTION_MODERATE
-            if old_question["state"] != Question.States.VISIBLE
-            and new_question["state"] != Question.States.VISIBLE
+            if old_question["state"] != RoomQuestion.States.VISIBLE
+            and new_question["state"] != RoomQuestion.States.VISIBLE
             else GROUP_ROOM_QUESTION_READ
         )
         await self.consumer.channel_layer.group_send(
@@ -110,7 +110,7 @@ class QuestionModule(BaseModule):
         await self.consumer.send_success({"question": old_question["id"]})
         group = (
             GROUP_ROOM_QUESTION_MODERATE
-            if old_question["state"] != Question.States.VISIBLE
+            if old_question["state"] != RoomQuestion.States.VISIBLE
             else GROUP_ROOM_QUESTION_READ
         )
         await self.consumer.channel_layer.group_send(
@@ -147,7 +147,7 @@ class QuestionModule(BaseModule):
 
         group = (
             GROUP_ROOM_QUESTION_MODERATE
-            if question["state"] != Question.States.VISIBLE
+            if question["state"] != RoomQuestion.States.VISIBLE
             else GROUP_ROOM_QUESTION_READ
         )
         await self.consumer.channel_layer.group_send(
@@ -174,7 +174,7 @@ class QuestionModule(BaseModule):
         else:
             questions = await get_questions(
                 room=self.room.id,
-                state=Question.States.VISIBLE,
+                state=RoomQuestion.States.VISIBLE,
                 add_by_user=self.consumer.user,
                 for_user=self.consumer.user,
             )
@@ -188,7 +188,7 @@ class QuestionModule(BaseModule):
         await self.consumer.send_success({"id": str(question["id"])})
         group = (
             GROUP_ROOM_QUESTION_MODERATE
-            if question["state"] != Question.States.VISIBLE
+            if question["state"] != RoomQuestion.States.VISIBLE
             else GROUP_ROOM_QUESTION_READ
         )
         await self.consumer.channel_layer.group_send(

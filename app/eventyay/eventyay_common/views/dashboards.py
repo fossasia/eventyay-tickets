@@ -150,8 +150,7 @@ class EventIndexView(TemplateView):
                 ContentType.objects.get_for_model(Order),
             ]
 
-            # TODO: We should define known permissions in form of constants/enums.
-            if permissions.get('can_change_products'):
+            if permissions['can_change_products']:
                 allowed_types += [
                     ContentType.objects.get_for_model(Product),
                     ContentType.objects.get_for_model(ProductCategory),
@@ -321,19 +320,14 @@ class EventWidgetGenerator:
     @staticmethod
     def generate_video_button(event: Event) -> str:
         """
-        Generate a video button based on event configuration.
+        Generate a video button that always links to the video access view.
+        The access view will ensure configuration and plugin setup as needed.
         """
-        if is_video_enabled(event):
-            url = reverse(
-                'eventyay_common:event.create_access_to_video',
-                kwargs={'event': event.slug, 'organizer': event.organizer.slug},
-            )
-            return f'<a href="{url}" class="component">{_("Video")}</a>'
-        return f"""
-            <a href="#" data-toggle="modal" data-target="#alert-modal" class="component">
-                {_('Video')}
-            </a>
-        """
+        url = reverse(
+            'eventyay_common:event.create_access_to_video',
+            kwargs={'event': event.slug, 'organizer': event.organizer.slug},
+        )
+        return f'<a href="{url}" class="component">{_("Video")}</a>'
 
     @staticmethod
     def generate_talk_button(event: Event) -> str:

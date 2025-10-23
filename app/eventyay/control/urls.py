@@ -387,6 +387,7 @@ urlpatterns = [
                     product.QuestionUpdate.as_view(),
                     name='event.products.questions.edit',
                 ),
+                path('questions/<int:question>/options/', product.question_options_ajax, name='event.products.questions.options'),
                 url(r'^questions/add$', product.QuestionCreate.as_view(), name='event.products.questions.add'),
                 url(r'^descriptions/add$', product.DescriptionCreate.as_view(), name='event.products.descriptions.add'),
                 url(
