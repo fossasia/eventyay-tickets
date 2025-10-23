@@ -1500,7 +1500,7 @@ def add_products_to_cart(
     :param products: A list of dicts with the keys product, variation, count, custom_price, voucher, seat ID
     :param cart_id: Session ID of a guest
     :raises CartError: On any error that occurred
-    :returns: Dict with success status and optional warning message
+    :returns: {'success': bool, 'warning': str (optional)}
     """
     with language(locale):
         ia = False
