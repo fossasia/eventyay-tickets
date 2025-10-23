@@ -32,6 +32,8 @@ services:
       - 8001
     env_file:
       - ./.env
+    environment:
+      - MPLCONFIGDIR=/tmp/matplotlib
     depends_on:
       - db
       - redis
@@ -44,6 +46,8 @@ services:
       - ./eventyay.cfg:/etc/eventyay.cfg:ro
     env_file:
       - ./.env
+    environment:
+      - MPLCONFIGDIR=/tmp/matplotlib
     depends_on:
       - db
       - redis
