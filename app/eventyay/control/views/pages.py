@@ -32,7 +32,7 @@ class PageCreate(AdministratorPermissionRequiredMixin, FormView):
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:admin.pages',
+            'eventyay_admin.pages',
         )
 
     def form_valid(self, form):
@@ -54,7 +54,7 @@ class PageDetailMixin:
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:admin.pages',
+            'eventyay_admin.pages',
         )
 
 
@@ -73,7 +73,7 @@ class PageUpdate(AdministratorPermissionRequiredMixin, PageDetailMixin, UpdateVi
 
     def get_success_url(self) -> str:
         return reverse(
-            'control:admin.pages.edit',
+            'eventyay_admin.pages.edit',
             kwargs={
                 'id': self.object.pk,
             },

@@ -60,7 +60,7 @@
                        <td data-label="{% trans 'Last run at' %}">{{ task.formatted_last_run_at }}</td>
                        <td data-label="{% trans 'Total run count' %}">{{ task.total_run_count }}</td>
                        <td data-label="{% trans 'Enabled' %}">
-                           <form method="post" action="{% url 'control:admin.task_management' %}" class="task-form">
+                           <form method="post" action="{% url 'eventyay_admin:admin.task_management' %}" class="task-form">
                                {% csrf_token %}
                                <input type="hidden" name="task_id" value="{{ task.id }}">
                                <input type="hidden" name="enabled" value="{{ task.enabled|lower }}">

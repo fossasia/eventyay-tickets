@@ -38,25 +38,25 @@
         <td class="text-right">{{ event.user_count }}</td>
         <td class="text-right video-admin-actions">
             {% if event.user_count %}
-            <a href="{% url 'control:event.clear' pk=event.pk %}" class="btn btn-warning btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:event.clear' pk=event.pk %}" class="btn btn-warning btn-xs">
                 <span class="fa fa-trash"></span> {% trans "Delete data" %}
             </a>
             {% endif %}
         </td>
         <td class="text-right video-admin-actions">
             {% if event.domain and event.admin_token %}
-                <a href="{% url 'control:event.admin' pk=event.pk %}" class="btn btn-default btn-xs">
+                <a href="{% url 'eventyay_admin:video_admin:event.admin' pk=event.pk %}" class="btn btn-default btn-xs">
                     <span class="fa fa-lock"></span> {% trans "Admin access" %}
                 </a>
             {% endif %}
         </td>
         <td class="text-right video-admin-actions">
-            <a href="{% url 'control:event.create' %}?copy_from={{ event.pk|urlencode }}" class="btn btn-default btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:event.create' %}?copy_from={{ event.pk|urlencode }}" class="btn btn-default btn-xs">
                 <span class="fa fa-clone"></span> {% trans "Clone" %}
             </a>
         </td>
         <td class="text-right video-admin-actions">
-            <a href="{% url 'control:event.update' pk=event.pk %}" class="btn btn-default btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:event.update' pk=event.pk %}" class="btn btn-default btn-xs">
                 <span class="fa fa-pencil"></span> {% trans "Edit" %}
             </a>
         </td>

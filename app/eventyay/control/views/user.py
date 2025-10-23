@@ -192,7 +192,7 @@ class StopStaffSession(StaffMemberRequiredMixin, View):
 
         session.date_end = now()
         session.save()
-        return redirect(reverse('control:admin.user.sudo.edit', kwargs={'id': session.pk}))
+        return redirect(reverse('eventyay_admin:admin.user.sudo.edit', kwargs={'id': session.pk}))
 
 
 class StaffSessionList(AdministratorPermissionRequiredMixin, ListView):
@@ -211,7 +211,7 @@ class EditStaffSession(StaffMemberRequiredMixin, UpdateView):
     form_class = StaffSessionForm
 
     def get_success_url(self):
-        return reverse('control:admin.user.sudo.edit', kwargs={'id': self.object.pk})
+        return reverse('eventyay_admin:admin.user.sudo.edit', kwargs={'id': self.object.pk})
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

@@ -25,7 +25,7 @@
         </div>
     </form>
     <p>
-        <a href='{% url "control:admin.users.add" %}' class="btn btn-default">
+        <a href='{% url "eventyay_admin:admin.users.add" %}' class="btn btn-default">
             <span class="fa fa-plus"></span>
             {% trans "Create a new user" %}
         </a>
@@ -52,13 +52,13 @@
         {% for u in users %}
             <tr>
                 <td><strong>
-                    <a href='{% url "control:admin.users.edit" id=u.pk %}'>{{ u.email }}</a>
+                    <a href='{% url "eventyay_admin:admin.users.edit" id=u.pk %}'>{{ u.email }}</a>
                 </strong></td>
                 <td>{{ u.fullname|default_if_none:"" }}</td>
                 <td>{% if u.is_active %}<span class="fa fa-check-circle"></span>{% endif %}</td>
                 <td>{% if u.is_staff %}<span class="fa fa-check-circle"></span>{% endif %}</td>
                 <td class="text-right flip">
-                    <a href='{% url "control:admin.users.edit" id=u.id %}' class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                    <a href='{% url "eventyay_admin:admin.users.edit" id=u.id %}' class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
                 </td>
             </tr>
         {% endfor %}
