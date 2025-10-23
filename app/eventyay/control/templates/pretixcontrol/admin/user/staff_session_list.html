@@ -26,10 +26,10 @@
         {% for s in sessions %}
             <tr>
                 <td><strong>
-                    <a href="{% url "control:admin.user.sudo.edit" id=s.pk %}">{{ s.pk }}</a>
+                    <a href="{% url "eventyay_admin:admin.user.sudo.edit" id=s.pk %}">{{ s.pk }}</a>
                 </strong></td>
                 <td><strong>
-                    <a href="{% url "control:admin.users.edit" id=s.user.pk %}">{{ s.user.email }}</a>
+                    <a href="{% url "eventyay_admin:admin.users.edit" id=s.user.pk %}">{{ s.user.email }}</a>
                 </strong></td>
                 <td>
                     {{ s.date_start|date:"SHORT_DATETIME_FORMAT" }}
@@ -47,7 +47,7 @@
                     {% endif %}
                 </td>
                 <td class="text-right flip">
-                    <a href="{% url "control:admin.user.sudo.edit" id=s.id %}" class="btn btn-default btn-sm"><i
+                    <a href="{% url "eventyay_admin:admin.user.sudo.edit" id=s.id %}" class="btn btn-default btn-sm"><i
                             class="fa fa-edit"></i></a>
                 </td>
             </tr>

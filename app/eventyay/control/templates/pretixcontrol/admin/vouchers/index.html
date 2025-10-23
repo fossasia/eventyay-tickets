@@ -14,15 +14,15 @@
                 {% endblocktrans %}
             </p>
 
-            <a href='{% url "control:admin.vouchers.add" %}'
+            <a href='{% url "eventyay_admin:admin.vouchers.add" %}'
                     class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new voucher" %}</a>
         </div>
     {% else %}
         <p>
-            <a href='{% url "control:admin.vouchers.add" %}'
+            <a href='{% url "eventyay_admin:admin.vouchers.add" %}'
                     class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new voucher" %}</a>
         </p>
-        <form action='{% url "control:admin.vouchers" %}' method="post">
+        <form action='{% url "eventyay_admin:admin.vouchers" %}' method="post">
             {% csrf_token %}
             <div class="table-responsive">
                 <table class="table table-hover table-quotas">
@@ -53,7 +53,7 @@
                                 {% if not v.is_active %}
                                     <del>
                                 {% endif %}
-                                <strong><a href='{% url "control:admin.voucher" voucher=v.id %}'>{{ v.code }}</a></strong>
+                                <strong><a href='{% url "eventyay_admin:admin.voucher" voucher=v.id %}'>{{ v.code }}</a></strong>
                                 {% if not v.is_active %}
                                     </del>
                                 {% endif %}
@@ -63,7 +63,7 @@
                             </td>
                             <td>{{ v.valid_until|date }}</td>
                             <td class="text-right flip">
-                                <a href='{% url "control:admin.voucher.delete" voucher=v.id %}' class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                                <a href='{% url "eventyay_admin:admin.voucher.delete" voucher=v.id %}' class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
                     {% endfor %}

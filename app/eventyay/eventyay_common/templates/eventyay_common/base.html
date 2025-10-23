@@ -266,7 +266,7 @@
                     <ul>
                         {% for s in staff_need_to_explain %}
                             <li>
-                                <a href="{% url "control:admin.user.sudo.edit" id=s.pk %}">#{{ s.pk }}</a>
+                                <a href="{% url "eventyay_admin:admin.user.sudo.edit" id=s.pk %}">#{{ s.pk }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -277,7 +277,7 @@
                     <span class="fa fa-user-secret"></span>
                     {% blocktrans with user=request.user%}You are currently working on behalf of {{ user }}.{% endblocktrans %}
 
-                    <form action="{% url 'control:admin.users.impersonate.stop' %}" method="post" class="helper-display-inline">
+                    <form action="{% url 'eventyay_admin:admin.users.impersonate.stop' %}" method="post" class="helper-display-inline">
                         {% csrf_token %}
                         <button class="btn btn-default btn-sm">
                             {% trans "Stop impersonating" %}
@@ -290,7 +290,7 @@
                     <span class="fa fa-bell"></span>
                     {{ global_settings.banner_message }}
                     {% if global_settings.banner_message_detail %}
-                        <a href="{% url 'control:admin.global.message' %}">
+                        <a href="{% url 'eventyay_admin:admin.global.message' %}">
                             {% trans "Read more" %}
                         </a>
                     {% endif %}
@@ -322,7 +322,7 @@
                     {% endif %}
                     {% if warning_update_check_active %}
                         <div class="alert alert-info">
-                            <a href="{% url "control:admin.global.update" %}">
+                            <a href="{% url "eventyay_admin:admin.global.update" %}">
                                 {% blocktrans trimmed %}
                                 The system automatically checks for updates in the background.
                                 {% endblocktrans %}

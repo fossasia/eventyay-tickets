@@ -6,16 +6,16 @@
     <h1>{% trans "User" %} {{ user.email }}</h1>
     <p>
         {% if user.auth_backend == "native" %}
-            <form action='{% url "control:admin.users.reset" id=user.pk %}' method="post" class="form-inline helper-display-inline">
+            <form action='{% url "eventyay_admin:admin.users.reset" id=user.pk %}' method="post" class="form-inline helper-display-inline">
                 {% csrf_token %}
                 <button class="btn btn-default">{% trans "Send password reset email" %}</button>
             </form>
         {% endif %}
-        <form action='{% url "control:admin.users.impersonate" id=user.pk %}' method="post" class="form-inline helper-display-inline">
+        <form action='{% url "eventyay_admin:admin.users.impersonate" id=user.pk %}' method="post" class="form-inline helper-display-inline">
             {% csrf_token %}
             <button class="btn btn-default">{% trans "Impersonate user" %}</button>
         </form>
-        <a href='{% url "control:admin.users.anonymize" id=user.pk %}' class="btn btn-default">{% trans "Anonymize" %}</a>
+        <a href='{% url "eventyay_admin:admin.users.anonymize" id=user.pk %}' class="btn btn-default">{% trans "Anonymize" %}</a>
     </p>
     <div class="row">
         <div class="col-md-10 col-xs-12">
