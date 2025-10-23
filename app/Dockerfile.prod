@@ -38,7 +38,7 @@ RUN OUT_DIR=/home/app/web/eventyay/static npm run build --prefix=eventyay/fronte
 # webapp
 COPY eventyay/webapp eventyay/webapp
 RUN npm install --prefix=eventyay/webapp
-RUN npm run build --prefix=eventyay/webapp
+RUN OUT_DIR=/home/app/web/eventyay/static npm run build --prefix=eventyay/webapp
 
 
 #########
@@ -80,7 +80,7 @@ RUN chown -R app:app $APP_HOME
 COPY --from=builder --chown=app:app $APP_HOME/.venv $APP_HOME/.venv
 COPY --from=builder --chown=app:app $APP_HOME/eventyay/static/global-nav-menu $APP_HOME/eventyay/static/global-nav-menu
 COPY --from=builder --chown=app:app $APP_HOME/eventyay/static/schedule-editor $APP_HOME/eventyay/static/schedule-editor
-COPY --from=builder --chown=app:app $APP_HOME/eventyay/webapp/dist $APP_HOME/eventyay/webapp/dist
+COPY --from=builder --chown=app:app $APP_HOME/eventyay/static/webapp $APP_HOME/eventyay/static/webapp
 
 # change to the app user
 USER app

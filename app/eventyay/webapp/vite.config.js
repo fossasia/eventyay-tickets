@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -22,7 +22,8 @@ const stylusOptions = {
 
 export default defineConfig(({ mode }) => {
   const currentYear = new Date().getFullYear()
-  
+  const env = loadEnv(mode, process.cwd(), '')
+
   return {
     base: '/video',
     server: {
@@ -143,6 +144,8 @@ export default defineConfig(({ mode }) => {
       }
     },
     build: {
+      outDir: env.OUT_DIR ? `${env.OUT_DIR}/webapp` : 'dist',
+      emptyOutDir: false,
       target: 'esnext',
       sourcemap: true, // Added for debugging vendor-webrtc issue
       chunkSizeWarningLimit: 1250,
@@ -153,8 +156,8 @@ export default defineConfig(({ mode }) => {
         },
         output: {
           entryFileNames: (chunkInfo) => {
-            return chunkInfo.name === 'preloader' 
-              ? '[name].js' 
+            return chunkInfo.name === 'preloader'
+              ? '[name].js'
               : 'assets/[name]-[hash].js'
           },
           // Manual chunking to keep the main app bundle small and
