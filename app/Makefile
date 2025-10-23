@@ -36,5 +36,5 @@ npminstall:
 
 webappbuild:
 	npm install --prefix=eventyay/webapp
-	npm run build --prefix=eventyay/webapp
+	OUT_DIR=$(shell pwd)/eventyay/static npm run build --prefix=eventyay/webapp
 
