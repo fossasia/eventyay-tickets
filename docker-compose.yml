@@ -8,7 +8,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./app/eventyay:/usr/src/app/eventyay
-      - /usr/src/app/eventyay/webapp/dist
+      - /usr/src/app/eventyay/static/webapp
       - /usr/src/app/eventyay/webapp/node_modules
     ports:
       - 8000:8000
@@ -25,7 +25,7 @@ services:
     entrypoint: celery -A eventyay worker -l info
     volumes:
       - ./app/eventyay:/usr/src/app/eventyay
-      - /usr/src/app/eventyay/webapp/dist
+      - /usr/src/app/eventyay/static/webapp
       - /usr/src/app/eventyay/webapp/node_modules
     env_file:
       - ./.env.dev
