@@ -29,7 +29,7 @@
 
     <p>
         {% translate "Your eventyay version is:" %} <strong>{{ eventyay_version|copyable }}</strong>.
-        {% url 'control:admin.update' as update_url %}
+        {% url 'eventyay_admin:admin.update' as update_url %}
         {% blocktranslate trimmed %}
             You can check for updates <a href="{{ update_url }}">here</a>.
         {% endblocktranslate %}
