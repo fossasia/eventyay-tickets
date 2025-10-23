@@ -43,17 +43,16 @@ def i18n_uns(v):
         return LazyI18nString(str(v))
 
 
-settings_hierarkey.add_type(LazyI18nString, serialize=lambda s: json.dumps(s.data), unserialize=i18n_uns)
+def _serialize_i18n(s): return json.dumps(s.data)
+settings_hierarkey.add_type(LazyI18nString, serialize=_serialize_i18n, unserialize=i18n_uns)
 settings_hierarkey.add_type(
     LazyI18nStringList,
     serialize=operator.methodcaller('serialize'),
     unserialize=LazyI18nStringList.unserialize,
 )
-settings_hierarkey.add_type(
-    RelativeDateWrapper,
-    serialize=lambda rdw: rdw.to_string(),
-    unserialize=lambda s: RelativeDateWrapper.from_string(s),
-)
+def _serialize_rdw(rdw): return rdw.to_string()
+def _unserialize_rdw(s): return RelativeDateWrapper.from_string(s)
+settings_hierarkey.add_type(RelativeDateWrapper, serialize=_serialize_rdw, unserialize=_unserialize_rdw)
 
 
 @settings_hierarkey.set_global(cache_namespace='global')
