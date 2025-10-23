@@ -752,7 +752,7 @@ redis_connection_kwargs = {
     "health_check_interval": 30,
 }
 
-REDIS_URL = config.get('redis', 'location')
+REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
 HAS_REDIS = bool(REDIS_URL)
 REDIS_HOSTS = [{
     "address": REDIS_URL,
@@ -817,8 +817,8 @@ if not SESSION_ENGINE:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Celery configuration
-CELERY_BROKER_URL = config.get('celery', 'broker')
-CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
+CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
 CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
@@ -856,19 +856,11 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
-# We have some Vue 3 frontend apps which are built with Vite, we need to
-# tell Django to collect their compiled output files.
-# Note that those apps must be built before running collectstatic.
 FRONTEND_DIR = BASE_DIR / 'frontend'
-# Note: We must assume that the directory exists,
-# because when `collectstatic` was invoked by `rebuild` command,
-# it only sees the settings before Vite runs.
-STATICFILES_DIRS.append(FRONTEND_DIR / 'global-nav-menu' / 'dist')
-STATICFILES_DIRS.append(FRONTEND_DIR / 'schedule-editor' / 'dist')
 
 VITE_DEV_SERVER_PORT = 8080
 VITE_DEV_SERVER = f'http://localhost:{VITE_DEV_SERVER_PORT}'
-VITE_DEV_MODE = DEBUG
+VITE_DEV_MODE = False  # Set to False to use static files instead of dev server
 VITE_IGNORE = False  # Used to ignore `collectstatic`/`rebuild`
 
 COMPRESS_PRECOMPILERS = (
