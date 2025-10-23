@@ -842,7 +842,7 @@ CELERY_TASK_ROUTES = {
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'webapp', 'dist'),
+    os.path.join(BASE_DIR, 'static', 'webapp'),
     # Added to make sure root package static assets (e.g. pretixcontrol/scss/) are found
     os.path.join(BASE_DIR, 'static'),
 ]
