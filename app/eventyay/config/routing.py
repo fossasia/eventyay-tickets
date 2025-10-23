@@ -1,3 +1,7 @@
+import os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eventyay.config.settings')
+
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.conf import settings
