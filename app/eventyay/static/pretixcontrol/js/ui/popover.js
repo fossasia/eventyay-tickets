@@ -16,7 +16,7 @@ $(function () {
     const organizerPath = `/control/organizers/`;
 
     const accountPath = `/common/account/`;
-    const adminPath = `/control/admin/`;
+    const adminPath = `/admin/`;
 
     const logoutPath = `/common/logout/?${logoutParams}`;
 
