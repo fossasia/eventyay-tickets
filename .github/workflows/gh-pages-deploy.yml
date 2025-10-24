@@ -32,11 +32,9 @@ jobs:
         run: make html
         working-directory: doc  # Adjust to your Sphinx docs directory
 
-      - name: Copy CNAME to deploy directory
-        run: cp doc/CNAME doc/_build/html
-
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: doc/_build/html
+          cname: docs.eventyay.com
