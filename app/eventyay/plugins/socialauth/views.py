@@ -18,6 +18,7 @@ from eventyay.base.settings import GlobalSettingsObject
 from eventyay.control.permissions import AdministratorPermissionRequiredMixin
 from eventyay.eventyay_common.views.auth import process_login_and_set_cookie
 from eventyay.helpers.urls import build_absolute_uri
+from eventyay.person.utils import get_or_create_email_for_wikimedia_user
 
 from .schemas.login_providers import LoginProviders
 from .schemas.oauth2_params import OAuth2Params
@@ -95,27 +96,65 @@ class OAuthReturnView(View):
         social_account = request.user.socialaccount_set.filter(
             provider='mediawiki'
         ).last()  # Fetch only the latest signed in Wikimedia account
+        email = request.user.email
         wikimedia_username = ''
 
         if social_account:
             extra_data = social_account.extra_data
             wikimedia_username = extra_data.get('username', extra_data.get('realname', ''))
+            
+            # Guard: ensure we have a valid username
+            if not wikimedia_username or not wikimedia_username.strip():
+                # Use social account ID as fallback
+                wikimedia_username = f"wm_{social_account.uid}"
 
-        user, created = User.objects.get_or_create(
-            email=request.user.email,
-            defaults={
-                'locale': getattr(request, 'LANGUAGE_CODE', settings.LANGUAGE_CODE),
-                'timezone': getattr(request, 'timezone', settings.TIME_ZONE),
-                'auth_backend': 'native',
-                'password': '',
-                'wikimedia_username': wikimedia_username,
-            },
+        # Generate placeholder email for Wikimedia users without email
+        final_email = get_or_create_email_for_wikimedia_user(
+            wikimedia_username, 
+            email,
+            user_id=social_account.uid if social_account else None
         )
 
-        # Update wikimedia_username if the user exists but has no wikimedia_username value set (Basically our existing users), or if the user has updated his username in his wikimedia account
-        if not created and (not user.wikimedia_username or user.wikimedia_username != wikimedia_username):
-            user.wikimedia_username = wikimedia_username
-            user.save()
+        # For Wikimedia users, look up by wikimedia_username instead of email
+        # to avoid collisions between placeholder emails
+        if social_account:
+            user, created = User.objects.get_or_create(
+                wikimedia_username=wikimedia_username,
+                defaults={
+                    'email': final_email,
+                    'locale': getattr(request, 'LANGUAGE_CODE', settings.LANGUAGE_CODE),
+                    'timezone': getattr(request, 'timezone', settings.TIME_ZONE),
+                    'auth_backend': 'mediawiki',
+                    'password': '',
+                    'is_wikimedia_user': True,
+                },
+            )
+        else:
+            # Non-Wikimedia users: use email as before
+            user, created = User.objects.get_or_create(
+                email=final_email,
+                defaults={
+                    'locale': getattr(request, 'LANGUAGE_CODE', settings.LANGUAGE_CODE),
+                    'timezone': getattr(request, 'timezone', settings.TIME_ZONE),
+                    'auth_backend': 'native',
+                    'password': '',
+                },
+            )
+
+        # Update wikimedia_username and is_wikimedia_user if the user exists
+        if not created:
+            update_fields = []
+            if not user.wikimedia_username or user.wikimedia_username != wikimedia_username:
+                user.wikimedia_username = wikimedia_username
+                update_fields.append('wikimedia_username')
+            
+            # Update is_wikimedia_user if user exists and is logging in via Wikimedia
+            if social_account and not user.is_wikimedia_user:
+                user.is_wikimedia_user = True
+                update_fields.append('is_wikimedia_user')
+            
+            if update_fields:
+                user.save(update_fields=update_fields)
 
         return user
 
