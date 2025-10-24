@@ -522,6 +522,20 @@ class ProductUpdateForm(I18nModelForm):
         if self.event.tax_rules.exists():
             self.fields['tax_rule'].required = True
         self.fields['description'].widget.attrs['rows'] = '4'
+        # One ticket per user per product toggle (stored as Product meta)
+        self.fields['limit_one_per_user'] = forms.BooleanField(
+            label=_('Limit one ticket per user (for this product)'),
+            required=False,
+            help_text=_(
+                'If enabled, each user (identified by email address) can only purchase one ticket of this product.'
+            ),
+        )
+        try:
+            from eventyay.base.models.product import ProductMetaValue
+            mv = self.instance.meta_values.select_related('property').get(property__name='limit_one_per_user')
+            self.fields['limit_one_per_user'].initial = mv.value in (True, 'True', 'true', '1', 1)
+        except Exception:
+            self.fields['limit_one_per_user'].initial = False
         self.fields['sales_channels'] = forms.MultipleChoiceField(
             label=_('Sales channels'),
             required=False,
@@ -578,6 +592,18 @@ class ProductUpdateForm(I18nModelForm):
                     _('Gift card products should not be admission products at the same time.'),
                 )
         return d
+
+    def save(self, *args, **kwargs):
+        inst = super().save(*args, **kwargs)
+        # Persist meta flag limit_one_per_user via ProductMetaProperty/Value
+        from eventyay.base.models.product import ProductMetaProperty, ProductMetaValue
+        pmp, _ = inst.event.product_meta_properties.get_or_create(name='limit_one_per_user', defaults={'default': ''})
+        val = '1' if self.cleaned_data.get('limit_one_per_user') else ''
+        if val:
+            ProductMetaValue.objects.update_or_create(product=inst, property=pmp, defaults={'value': val})
+        else:
+            ProductMetaValue.objects.filter(product=inst, property=pmp).delete()
+        return inst
 
     class Meta:
         model = Product
