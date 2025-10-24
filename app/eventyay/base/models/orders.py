@@ -256,6 +256,27 @@ class Order(LockModel, LoggedModel):
     def email_confirm_hash(self):
         return hashlib.sha256(settings.SECRET_KEY.encode() + self.secret.encode()).hexdigest()[:9]
 
+    @classmethod
+    def user_has_existing_order(cls, event, email):
+        """
+        Check if a user (identified by email) already has an existing order for the event.
+        
+        Args:
+            event: The event to check
+            email: The user's email address
+            
+        Returns:
+            bool: True if user has existing order, False otherwise
+        """
+        if not email:
+            return False
+            
+        return cls.objects.filter(
+            event=event,
+            email__iexact=email,
+            status__in=[cls.STATUS_PENDING, cls.STATUS_PAID]
+        ).exists()
+
     @property
     def fees(self):
         """
