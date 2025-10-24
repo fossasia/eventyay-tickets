@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Case, F, Max, Min, Prefetch, Q, Sum, When, IntegerField
+from django.db.models import Case, F, IntegerField, Max, Min, Prefetch, Q, Sum, When
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
@@ -24,7 +24,6 @@ from pretix.base.i18n import language
 from pretix.base.models import Event, EventMetaValue, Organizer, Quota
 from pretix.base.services import tickets
 from pretix.base.services.quotas import QuotaAvailability
-
 from pretix.control.forms.event import EventWizardBasicsForm, EventWizardFoundationForm
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.permissions import EventPermissionRequiredMixin
@@ -40,7 +39,9 @@ from pretix.eventyay_common.utils import (
     generate_token,
 )
 from pretix.helpers.plugin_enable import is_video_enabled
+
 from ..forms.event import EventUpdateForm
+
 
 class EventList(PaginationMixin, ListView):
     model = Event
@@ -441,7 +442,7 @@ class EventUpdate(
                         'is_video_creation': request.event.is_video_creation,
                     }
                     send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='update')
-                messages.success(self.request, _("Your changes have been saved."))
+                messages.success(self.request, _('Your changes have been saved.'))
                 return self.form_valid(form)
             else:
                 messages.error(
