@@ -286,7 +286,7 @@ class SecurityMiddleware(MiddlewareMixin):
         # Add DEBUG mode settings before rendering CSP
         if settings.DEBUG:
             h.setdefault('script-src', []).extend(["'unsafe-inline'", "http://localhost:8080"])
-            h['connect-src'] += ["http://localhost:8080", "ws://localhost:8080"]
+            h.setdefault('connect-src', []).extend(["http://localhost:8080", "ws://localhost:8080"])
 
         if request.path not in self.CSP_EXEMPT and not getattr(resp, '_csp_ignore', False):
             for k, v in h.items():
