@@ -89,7 +89,7 @@ def send_update_notification_email():
                 '\n\nBest,\n\nyour pretix developers'
             )
         ),
-        {'url': build_absolute_uri('control:admin.global.update')},
+        {'url': build_absolute_uri('eventyay_admin:admin.global.update')},
     )
 
 

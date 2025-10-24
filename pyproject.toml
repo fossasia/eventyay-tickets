@@ -47,6 +47,7 @@ dependencies = [
         'css-inline==0.14.*',
         'BeautifulSoup4==4.12.*',
         'lxml',
+        'markdownify>=1.2.0',
         'static3==0.7.*',
         'dj-static',
         'csscompressor',
@@ -57,7 +58,7 @@ dependencies = [
         'babel',
         'pycparser==2.22',
         'django-redis==5.4.*',
-        'redis==5.0.*',
+        'redis==7.0.*',
         'fakeredis==2.26.*',
         'stripe==11.3.*',
         'chardet==5.2.*',
@@ -113,7 +114,7 @@ dependencies = [
 memcached = ["pylibmc"]
 dev = [
             'django-debug-toolbar==4.4.*',
-            'ruff>=0.11.0,<0.12.0',
+            'ruff>=0.11.0,<0.15.0',
             'coveralls',
             'coverage',
             'pytest==8.3.*',

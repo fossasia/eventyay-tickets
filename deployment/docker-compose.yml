@@ -19,6 +19,25 @@ services:
       - db
       - redis
 
+  websocket:
+    image: eventyay/eventyay-next:enext
+    container_name: eventyay-next-websocket
+    entrypoint: daphne -b 0.0.0.0 -p 8001 eventyay.config.routing:application
+    volumes:
+      - ./data/data:/data
+      - ./eventyay.cfg:/etc/eventyay.cfg:ro
+    ports:
+      - 8001:8001
+    expose:
+      - 8001
+    env_file:
+      - ./.env
+    environment:
+      - MPLCONFIGDIR=/tmp/matplotlib
+    depends_on:
+      - db
+      - redis
+
   worker:
     image: eventyay/eventyay-next:enext
     container_name: eventyay-next-worker
@@ -27,6 +46,8 @@ services:
       - ./eventyay.cfg:/etc/eventyay.cfg:ro
     env_file:
       - ./.env
+    environment:
+      - MPLCONFIGDIR=/tmp/matplotlib
     depends_on:
       - db
       - redis

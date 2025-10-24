@@ -8,6 +8,8 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./app/eventyay:/usr/src/app/eventyay
+      - /usr/src/app/eventyay/static/webapp
+      - /usr/src/app/eventyay/webapp/node_modules
     ports:
       - 8000:8000
     env_file:
@@ -23,8 +25,12 @@ services:
     entrypoint: celery -A eventyay worker -l info
     volumes:
       - ./app/eventyay:/usr/src/app/eventyay
+      - /usr/src/app/eventyay/static/webapp
+      - /usr/src/app/eventyay/webapp/node_modules
     env_file:
       - ./.env.dev
+    environment:
+      - MPLCONFIGDIR=/tmp/matplotlib
     depends_on:
       - db
       - redis

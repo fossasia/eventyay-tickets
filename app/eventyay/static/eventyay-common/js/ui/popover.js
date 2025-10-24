@@ -19,7 +19,7 @@ $(function () {
     const organizerPath = `/common/organizers/`;
 
     const accountPath = `/common/account/`;
-    const adminPath = `/control/admin/`;
+    const adminPath = `/admin/`;
 
     const logoutPath = `/common/logout/?${logoutParams}`;
 

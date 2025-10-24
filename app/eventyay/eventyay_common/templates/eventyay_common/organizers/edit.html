@@ -1,23 +1,22 @@
 {% extends "eventyay_common/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% block title %}{% trans "Organizer settings" %}{% endblock %}
+
+{% block title %}{% translate "Organizer settings" %}{% endblock %}
+
 {% block content %}
-	<h1>{% trans "Organizer edit" %}</h1>
+	<h1>{% translate "Organizer edit" %}</h1>
     <form action="" method="post" class="form-horizontal">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         <fieldset>
-            <legend>{% trans "General information" %}</legend>
+            <legend>{% translate "General information" %}</legend>
             {% bootstrap_field form.name layout="horizontal" %}
             {% bootstrap_field form.slug layout="horizontal" %}
         </fieldset>
+
         <fieldset>
-            <h4>{{ _('Tickets system:') }}
-                <a href='{% url "control:organizer.teams" organizer=organizer.slug  %}'
-                        class="btn btn-sm btn-default"
-                        data-toggle="tooltip">Ticket Teams
-                </a>
+            <h4>{{ _('Organizer settings:') }}
                 <a href='{% url "control:organizer.edit" organizer=organizer.slug  %}'
                         class="btn btn-sm btn-default" title="{{ _('Settings') }}"
                         data-toggle="tooltip">
@@ -25,23 +24,67 @@
                 </a>
             </h4>
         </fieldset>
-        <fieldset>
-            <h4>{{ _('Talk system:') }}
-                <a href='{{ talk_teams_url }}'
-                            class="btn btn-sm btn-default"
-                            data-toggle="tooltip">Talk Teams
-                </a>
-                <a href='{{ talk_edit_url }}'
-                        class="btn btn-sm btn-default" title="{{ _('Settings') }}"
-                        data-toggle="tooltip">
-                    <span class="fa fa-cog"></span>
-                </a>
-            </h4>
-        </fieldset>
+
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">
-                {% trans "Save" %}
+                {% translate "Save" %}
             </button>
         </div>
     </form>
+
+    {% if can_manage_teams %}
+        <hr>
+        <h2>{% translate "Teams" %}</h2>
+        <p>{% translate "The list below shows all teams that exist within this organizer." %}</p>
+
+        <a href="{% url 'eventyay_common:organizer.team.add' organizer=organizer.slug %}" class="btn btn-default">
+            <span class="fa fa-plus"></span> {% translate "Create a new team" %}
+        </a>
+
+        <table class="table table-condensed table-hover mt-3">
+            <thead>
+                <tr>
+                    <th>{% translate "Team name" %}</th>
+                    <th>{% translate "Members" %}</th>
+                    <th>{% translate "Events" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in teams %}
+                <tr>
+                    <td><strong>
+                        <a href="{% url 'eventyay_common:organizer.team' organizer=organizer.slug team=t.id %}">
+                            {{ t.name }}
+                        </a>
+                    </strong></td>
+                    <td>
+                        {{ t.memcount }}
+                        {% if t.invcount %}
+                        {% blocktranslate trimmed with count=t.invcount %}
+                            + {{ count }} invited
+                        {% endblocktranslate %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if t.all_events %}
+                        {% translate "All" %}
+                        {% else %}
+                        {{ t.eventcount }}
+                        {% endif %}
+                    </td>
+                    <td class="text-right flip">
+                        <a href="{% url 'eventyay_common:organizer.team' organizer=organizer.slug team=t.id %}"
+                            class="btn btn-default btn-sm"><i class="fa fa-list"></i></a>
+                        <a href="{% url 'eventyay_common:organizer.team.edit' organizer=organizer.slug team=t.id %}"
+                            class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                        <a href="{% url 'eventyay_common:organizer.team.delete' organizer=organizer.slug team=t.id %}"
+                            class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
 {% endblock %}
