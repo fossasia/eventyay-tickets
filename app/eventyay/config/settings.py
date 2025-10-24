@@ -745,7 +745,7 @@ redis_connection_kwargs = {
     'health_check_interval': 30,
 }
 
-REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
+REDIS_URL = config.get('redis', 'location')
 HAS_REDIS = bool(REDIS_URL)
 REDIS_HOSTS = [
     {
