@@ -318,7 +318,7 @@ aside.sidebar {
         overflow: hidden;
       }
       .context-name {
-        font-family: "Titillium Web";
+        font-family: "Open Sans";
         font-weight: 600;
         font-size: 15px;
       }
@@ -390,7 +390,7 @@ aside.sidebar {
           overflow: hidden;
         }
         .search-title {
-          font-family: "Titillium Web";
+          font-family: "Open Sans";
           padding-bottom: 4px;
           display: flex;
           align-items: center;
