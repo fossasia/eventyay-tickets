@@ -22,7 +22,7 @@ services:
   websocket:
     image: eventyay/eventyay-next:enext
     container_name: eventyay-next-websocket
-    entrypoint: daphne -b 0.0.0.0 -p 8001 eventyay.config.routing:application
+    entrypoint: daphne -b 0.0.0.0 -p 8001 eventyay.config.asgi:application
     volumes:
       - ./data/data:/data
       - ./eventyay.cfg:/etc/eventyay.cfg:ro
