@@ -1,17 +1,12 @@
-from datetime import datetime, timedelta, timezone
-
-import jwt
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django_scopes import scope
 
 from pretix.base.models import Event, Organizer, User
-from pretix.eventyay_common.tasks import create_world
-from pretix.eventyay_common.utils import encode_email
+from pretix.eventyay_common.tasks import send_event_webhook
 
 
 class Command(BaseCommand):
-    help = 'Enable video system for an event'
+    help = 'Enable talk system for an event'
 
     def add_arguments(self, parser):
         parser.add_argument('event_slug', type=str, help='Event slug')
@@ -39,28 +34,20 @@ class Command(BaseCommand):
             self.stderr.write(f'Event {organizer_slug}/{event_slug} does not exist')
             return
 
-        # Generate token for video system (admin token)
-        iat = datetime.now(timezone.utc)
-        exp = iat + timedelta(days=30)
-        payload = {
-            'exp': exp,
-            'iat': iat,
-            'uid': encode_email(user.email),
-            'has_permission': True,
-        }
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-
-        create_world(
-            is_video_creation=True,
-            event_data={
-                'id': event.slug,
-                'title': event.name.data,
-                'timezone': event.settings.timezone,
+        send_event_webhook(
+            user_id=user.id,
+            event={
+                'organiser_slug': event.organizer.slug,
+                'name': event.name.data,
+                'slug': event.slug,
+                'date_from': str(event.date_from),
+                'date_to': str(event.date_to),
+                'timezone': str(event.settings.timezone),
                 'locale': event.settings.locale,
-                'has_permission': True,
-                'token': token,
+                'locales': event.settings.locales,
+                'is_video_creation': event.is_video_creation,
             },
+            action='create',
         )
 
-        self.stdout.write(f'🎉 Video system enabled for event {organizer_slug}/{event_slug}.')
-
+        self.stdout.write(f'🎉 Talk system enabled for event {organizer_slug}/{event_slug}.')
