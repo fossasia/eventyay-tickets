@@ -72,6 +72,7 @@
             </a>
         {% endif %}
         {% include "pretixpresale/event/fragment_order_status.html" with order=order event=request.event class="pull-right flip" %}
+        {% include "pretixpresale/event/fragment_nav.html" with with_margin=with_margin is_video_plugin_enabled=is_video_plugin_enabled %}
         <div class="clearfix"></div>
     </h2>
     {% if order.status == "n" and not order.require_approval %}
