@@ -14,11 +14,15 @@
                     {% trans "Set to random" %}
                 </button>
                 {% bootstrap_field form.slug form_group_class="helper-display-inline" show_label=False layout="inline" %}
+                {% if form.slug.errors %}
+                    <span class="text-danger ml-2"><small>{% trans "Slug not available" %}</small></span>
+                {% endif %}
                 <div class="help-block">
                     {% blocktrans trimmed %}
                     This is the address your event will be available at. Should be short, only contain lowercase letters
                     and numbers, and must be unique. We recommend some kind of abbreviation with less than 30 characters
-                    that can be easily remembered. You cannot change the slug later on!
+                    that can be easily remembered. You cannot change the slug later on! If you don't provide a slug,
+                    a random one will be generated for you.
                     {% endblocktrans %}
                 </div>
                 <div class="slug-length alert alert-warning helper-display-none-soft">
