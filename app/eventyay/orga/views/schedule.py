@@ -47,7 +47,7 @@ if settings.VITE_DEV_MODE:
 
 logger = logging.getLogger(__name__)
 
-
+@method_decorator(csp_update({'SCRIPT_SRC': SCRIPT_SRC, 'DEFAULT_SRC': DEFAULT_SRC}), name='dispatch')
 class ScheduleView(EventPermissionRequired, TemplateView):
     template_name = 'orga/schedule/index.html'
     permission_required = 'base.orga_view_schedule'

@@ -506,7 +506,7 @@ class AccessCodeSend(PermissionRequired, UpdateView):
         )
         return result
 
-
+@method_decorator(csp_update({'SCRIPT_SRC': "'self' 'unsafe-eval'"}), name='dispatch')
 class CfPFlowEditor(EventPermissionRequired, TemplateView):
     template_name = 'orga/cfp/flow.html'
     permission_required = 'base.update_event'

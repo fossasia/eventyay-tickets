@@ -4,7 +4,6 @@
  Copyright 2013-2016 Blackrock Digital LLC
  MIT License
  Modified by Raphael Michel
- Modified by eventyay team to add sidebar toggle functionality
  */
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.
@@ -89,9 +88,6 @@ $(function () {
         }
     });
 
-    // REMOVE the submenu collapse functionality since we want to allow multiple submenus to stay open
-    // The metisMenu with toggle: false will handle this correctly
-
     // UNIVERSAL: Window resize handler
     let resizeTimeout;
     $(window).on('resize', function () {
@@ -132,8 +128,4 @@ $(function () {
     });
 
     $('ul.nav ul.nav-second-level a.active').parent().parent().addClass('in').parent().addClass('active');
-    // Initialize metisMenu with toggle: false to allow multiple menus to be open
-    $('#side-menu').metisMenu({
-        'toggle': false,
-    });
 });
