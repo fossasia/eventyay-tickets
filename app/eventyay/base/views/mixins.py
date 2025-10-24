@@ -237,7 +237,7 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
         if self.only_user_visible:
             qqs = qqs.filter(ask_during_checkin=False, hidden=False)
         return list(
-            self.order.positions.select_related('item', 'variation').prefetch_related(
+            self.order.positions.select_related('product', 'variation').prefetch_related(
                 Prefetch(
                     'answers',
                     QuestionAnswer.objects.prefetch_related('options'),
