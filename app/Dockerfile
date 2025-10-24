@@ -33,5 +33,8 @@ ENV PATH="/usr/src/app/.venv/bin:$PATH"
 # Run npm stuff
 RUN make npminstall
 
+# Build webapp
+RUN make webappbuild
+
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
