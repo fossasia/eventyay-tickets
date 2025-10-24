@@ -5,7 +5,7 @@
 <div class="video-admin-header">
     <h1 class="page-header">{% trans "BBB servers" %}</h1>
     <div class="video-admin-actions-right">
-        <a href="{% url 'control:bbbserver.create' %}" class="btn btn-primary btn-sm" aria-label="{% trans 'Add new BBB server' %}">
+        <a href="{% url 'eventyay_admin:video_admin:bbbserver.create' %}" class="btn btn-primary btn-sm" aria-label="{% trans 'Add new BBB server' %}">
             <span class="fa fa-plus" aria-hidden="true"></span> {% trans "Add new server" %}
         </a>
     </div>
@@ -40,10 +40,10 @@
         </td>
         <td class="text-right">{{ s.cost }}</td>
         <td class="text-right video-admin-actions">
-            <a href="{% url 'control:bbbserver.update' pk=s.pk %}" class="btn btn-default btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:bbbserver.update' pk=s.pk %}" class="btn btn-default btn-xs">
                 <span class="fa fa-pencil"></span> {% trans "Edit" %}
             </a>
-            <a href="{% url 'control:bbbserver.delete' pk=s.pk %}" class="btn btn-danger btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:bbbserver.delete' pk=s.pk %}" class="btn btn-danger btn-xs">
                 <span class="fa fa-trash"></span> {% trans "Delete" %}
             </a>
         </td>

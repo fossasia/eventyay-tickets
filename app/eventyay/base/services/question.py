@@ -6,13 +6,13 @@ from eventyay.base.models.roomquestion import RoomQuestion, QuestionVote
 
 @database_sync_to_async
 def create_question(**kwargs):
-    new = Question.objects.create(**kwargs)
+    new = RoomQuestion.objects.create(**kwargs)
     return new.serialize_public()
 
 
 @database_sync_to_async
 def get_question(pk, room):
-    question = Question.objects.with_score().get(pk=pk, room=room)
+    question = RoomQuestion.objects.with_score().get(pk=pk, room=room)
     return question.serialize_public()
 
 
@@ -29,7 +29,7 @@ def pin_question(pk, room):
 
 @database_sync_to_async
 def get_questions(room, add_by_user=None, for_user=None, **kwargs):
-    questions = Question.objects.filter(room=room)
+    questions = RoomQuestion.objects.filter(room=room)
     if add_by_user:
         questions = questions.filter(Q(**kwargs) | Q(sender=add_by_user))
     elif kwargs:
@@ -46,7 +46,7 @@ def get_questions(room, add_by_user=None, for_user=None, **kwargs):
 
 @database_sync_to_async
 def update_question(**kwargs):
-    question = Question.objects.get(pk=kwargs["id"], room=kwargs["room"])
+    question = RoomQuestion.objects.get(pk=kwargs["id"], room=kwargs["room"])
     for key, value in kwargs.items():
         setattr(question, key, value)
     question.save()
@@ -55,7 +55,7 @@ def update_question(**kwargs):
 
 @database_sync_to_async
 def delete_question(**kwargs):
-    Question.objects.all().filter(pk=kwargs["id"], room=kwargs["room"]).delete()
+    RoomQuestion.objects.all().filter(pk=kwargs["id"], room=kwargs["room"]).delete()
     return True
 
 
@@ -66,5 +66,5 @@ def vote_on_question(pk, room, user, vote):
     else:
         QuestionVote.objects.filter(question_id=pk, sender_id=user.id).delete()
 
-    question = Question.objects.with_score().get(pk=pk, room=room)
+    question = RoomQuestion.objects.with_score().get(pk=pk, room=room)
     return question.serialize_public()

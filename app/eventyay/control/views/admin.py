@@ -324,7 +324,7 @@ class TaskList(PaginationMixin, ListView):
                 f'The task {task.name} has been successfully {status_text}.',
             )
 
-            return HttpResponseRedirect(reverse('control:admin.task_management'))
+            return HttpResponseRedirect(reverse('eventyay_admin:admin.task_management'))
 
 
 class VoucherList(PaginationMixin, AdministratorPermissionRequiredMixin, ListView):
@@ -359,7 +359,7 @@ class VoucherCreate(AdministratorPermissionRequiredMixin, CreateView):
         return ctx
 
     def get_success_url(self) -> str:
-        return reverse('control:admin.vouchers')
+        return reverse('eventyay_admin:admin.vouchers')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -398,7 +398,7 @@ class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse('control:admin.vouchers')
+        return reverse('eventyay_admin:admin.vouchers')
 
 
 class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
@@ -436,4 +436,4 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
-        return reverse('control:admin.vouchers')
+        return reverse('eventyay_admin:admin.vouchers')

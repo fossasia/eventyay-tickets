@@ -17,19 +17,30 @@ import sys
 from importlib.metadata import entry_points
 from pathlib import Path
 from urllib.parse import urlparse
+
+# Ensure local ticket-video plugin is importable (now inside app/eventyay/plugins)
+# Location: app/eventyay/plugins/eventyay-ticket-video/pretix_venueless
+_PLUGIN_LOCAL = Path(__file__).resolve().parents[1] / 'plugins' / 'eventyay-ticket-video'
+if _PLUGIN_LOCAL.is_dir():
+    p = str(_PLUGIN_LOCAL)
+    if p not in sys.path:
+        sys.path.insert(0, p)
+
 import django.conf.locale
-from django.contrib.messages import constants as messages  # NOQA
+from django.contrib.messages import constants as messages
 from django.utils.translation import gettext_lazy as _
-from django.utils.crypto import get_random_string
 from kombu import Queue
+from pycountry import currencies
 from redis.asyncio.retry import Retry
 from redis.backoff import ExponentialBackoff
-from eventyay.helpers.config import EnvOrParserConfig
-from .settings_helpers import build_db_tls_config, build_redis_tls_config
-from pycountry import currencies
+
 from eventyay import __version__
 from eventyay.common.settings.config import build_config
+from eventyay.helpers.config import EnvOrParserConfig
 
+from .settings_helpers import build_redis_tls_config
+
+# Configuration file handling
 _config = configparser.RawConfigParser()
 if 'EVENTYAY_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('EVENTYAY_CONFIG_FILE'), encoding='utf-8'))
@@ -44,10 +55,11 @@ talk_config, TALK_CONFIG_FILES = build_config()
 TALK_CONFIG = talk_config
 
 
-
 def instance_name(request):
     from django.conf import settings
+
     return {'INSTANCE_NAME': getattr(settings, 'INSTANCE_NAME', 'eventyay')}
+
 
 debug_fallback = 'runserver' in sys.argv
 
@@ -76,6 +88,10 @@ DATABASE_REPLICA = 'default'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# Video / websocket base path adjustments
+BASE_PATH = ''  # root for classic app
+VIDEO_BASE_PATH = '/video'
+WEBSOCKET_URL = os.getenv('EVENTYAY_WEBSOCKET_URL', '/ws/event/')  # prefix; event id appended client-side
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'WhatAWonderfulWorldWeLiveIn196274623')
 
@@ -85,7 +101,7 @@ SITE_NETLOC = urlparse(SITE_URL).netloc
 # Debug configuration
 DEBUG = bool(int(os.environ.get('DEBUG', default=1)))
 
-ALLOWED_HOSTS = [ "*", "127.0.0.1" ]
+ALLOWED_HOSTS = ['*', '127.0.0.1']
 # Security settings
 X_FRAME_OPTIONS = 'DENY'
 
@@ -170,6 +186,8 @@ _OURS_APPS = (
     'eventyay.plugins.webcheckin',
     'eventyay.schedule',
     'eventyay.submission',
+    # Load local ticket-video plugin
+    'pretix_venueless',
 )
 INSTALLED_APPS = _LIBRARY_APPS + _OURS_APPS
 
@@ -241,7 +259,6 @@ TEMPLATES = (
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(DATA_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'templates'),
         ],
         'OPTIONS': {
             'context_processors': [
@@ -265,6 +282,7 @@ TEMPLATES = (
                 'eventyay.control.context.contextprocessor',
                 'eventyay.presale.context.contextprocessor',
                 'eventyay.eventyay_common.context.contextprocessor',
+                'django.template.context_processors.request',
             ],
             'loaders': template_loaders,
         },
@@ -296,7 +314,7 @@ FORM_RENDERER = 'eventyay.common.forms.renderers.TabularFormRenderer'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 WSGI_APPLICATION = 'eventyay.config.wsgi.application'
-ASGI_APPLICATION = "eventyay.config.routing.application"
+ASGI_APPLICATION = 'eventyay.config.routing.application'
 # Database configuration
 DATABASES = {
     'default': {
@@ -404,7 +422,7 @@ LANGUAGE_CODE = config.get('locale', 'default', fallback='en')
 
 
 LOCALE_PATHS = [
-    os.path.join(os.path.dirname(__file__), 'locale'),
+    BASE_DIR / 'locale',
 ]
 if config.has_option('languages', 'path'):
     LOCALE_PATHS.insert(0, config.get('languages', 'path'))
@@ -647,67 +665,57 @@ METRICS_PASSPHRASE = config.get('metrics', 'passphrase', fallback='')
 
 # URL configurations
 SHORT_URL = os.getenv(
-    "EVENTYAY_SHORT_URL",
-    _config.get("eventyay", "short_url", fallback=SITE_URL),
+    'EVENTYAY_SHORT_URL',
+    _config.get('eventyay', 'short_url', fallback=SITE_URL),
 )
 
-if os.getenv("EVENTYAY_COOKIE_DOMAIN", ""):
-    CSRF_COOKIE_DOMAIN = os.getenv("EVENTYAY_COOKIE_DOMAIN", "")
+if os.getenv('EVENTYAY_COOKIE_DOMAIN', ''):
+    CSRF_COOKIE_DOMAIN = os.getenv('EVENTYAY_COOKIE_DOMAIN', '')
 
 
 WEBSOCKET_PROTOCOL = os.getenv(
-    "EVENTYAY_WEBSOCKET_PROTOCOL",
-    _config.get("websocket", "protocol", fallback="wss"),
+    'EVENTYAY_WEBSOCKET_PROTOCOL',
+    _config.get('websocket', 'protocol', fallback='wss'),
 )
 
 # Storage configuration
 STORAGES = {
-    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {
-        "BACKEND": "eventyay.base.storage.NoMapManifestStaticFilesStorage",
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {
+        'BACKEND': 'eventyay.base.storage.NoMapManifestStaticFilesStorage',
     },
 }
 
-nanocdn = os.getenv("EVENTYAY_NANOCDN", _config.get("urls", "nanocdn", fallback=""))
+nanocdn = os.getenv('EVENTYAY_NANOCDN', _config.get('urls', 'nanocdn', fallback=''))
 if nanocdn:
     NANOCDN_URL = nanocdn
-    STORAGES["default"][
-        "BACKEND"
-    ] = "eventyay.base.integrations.platforms.storage.nanocdn.NanoCDNStorage"
+    STORAGES['default']['BACKEND'] = 'eventyay.base.integrations.platforms.storage.nanocdn.NanoCDNStorage'
 
 # Third-party service configurations
-ZOOM_KEY = os.getenv("EVENTYAY_ZOOM_KEY", _config.get("zoom", "key", fallback=""))
-ZOOM_SECRET = os.getenv(
-    "EVENTYAY_ZOOM_SECRET", _config.get("zoom", "secret", fallback="")
-)
+ZOOM_KEY = os.getenv('EVENTYAY_ZOOM_KEY', _config.get('zoom', 'key', fallback=''))
+ZOOM_SECRET = os.getenv('EVENTYAY_ZOOM_SECRET', _config.get('zoom', 'secret', fallback=''))
 
-CONTROL_SECRET = os.getenv(
-    "EVENTYAY_CONTROL_SECRET", _config.get("control", "secret", fallback="")
-)
+CONTROL_SECRET = os.getenv('EVENTYAY_CONTROL_SECRET', _config.get('control', 'secret', fallback=''))
 
-STATSD_HOST = os.getenv(
-    "EVENTYAY_STATSD_HOST", _config.get("statsd", "host", fallback="")
-)
-STATSD_PORT = os.getenv(
-    "EVENTYAY_STATSD_PORT", _config.get("statsd", "port", fallback="9125")
-)
-STATSD_PREFIX = "eventyay"
+STATSD_HOST = os.getenv('EVENTYAY_STATSD_HOST', _config.get('statsd', 'host', fallback=''))
+STATSD_PORT = os.getenv('EVENTYAY_STATSD_PORT', _config.get('statsd', 'port', fallback='9125'))
+STATSD_PREFIX = 'eventyay'
 
 TWITTER_CLIENT_ID = os.getenv(
-    "EVENTYAY_TWITTER_CLIENT_ID",
-    _config.get("twitter", "client_id", fallback=""),
+    'EVENTYAY_TWITTER_CLIENT_ID',
+    _config.get('twitter', 'client_id', fallback=''),
 )
 TWITTER_CLIENT_SECRET = os.getenv(
-    "EVENTYAY_TWITTER_CLIENT_SECRET",
-    _config.get("twitter", "client_secret", fallback=""),
+    'EVENTYAY_TWITTER_CLIENT_SECRET',
+    _config.get('twitter', 'client_secret', fallback=''),
 )
 LINKEDIN_CLIENT_ID = os.getenv(
-    "EVENTYAY_LINKEDIN_CLIENT_ID",
-    _config.get("linkedin", "client_id", fallback=""),
+    'EVENTYAY_LINKEDIN_CLIENT_ID',
+    _config.get('linkedin', 'client_id', fallback=''),
 )
 LINKEDIN_CLIENT_SECRET = os.getenv(
-    "EVENTYAY_LINKEDIN_CLIENT_SECRET",
-    _config.get("linkedin", "client_secret", fallback=""),
+    'EVENTYAY_LINKEDIN_CLIENT_SECRET',
+    _config.get('linkedin', 'client_secret', fallback=''),
 )
 
 # Cache configuration (merged from both projects)
@@ -715,9 +723,9 @@ CACHES = {
     'default': {
         'BACKEND': 'eventyay.helpers.cache.CustomDummyCache',
     },
-    "process": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "unique-snowflake",
+    'process': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     },
 }
 REAL_CACHE_USED = False
@@ -733,16 +741,18 @@ if HAS_MEMCACHED:
 
 # Redis Configuration
 redis_connection_kwargs = {
-    "retry": Retry(ExponentialBackoff(), 3),
-    "health_check_interval": 30,
+    'retry': Retry(ExponentialBackoff(), 3),
+    'health_check_interval': 30,
 }
 
-REDIS_URL = config.get('redis', 'location')
+REDIS_URL = config.get('redis', 'location') if not DEBUG else 'redis://localhost:6379/0'
 HAS_REDIS = bool(REDIS_URL)
-REDIS_HOSTS = [{
-    "address": REDIS_URL,
-    **redis_connection_kwargs,
-}]
+REDIS_HOSTS = [
+    {
+        'address': REDIS_URL,
+        **redis_connection_kwargs,
+    }
+]
 
 REDIS_USE_PUBSUB = True
 
@@ -772,18 +782,16 @@ CACHES['redis_sessions'] = {
 
 # Channels (WebSocket) configuration
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": (
-            "channels_redis.pubsub.RedisPubSubChannelLayer"
+    'default': {
+        'BACKEND': (
+            'channels_redis.pubsub.RedisPubSubChannelLayer'
             if REDIS_USE_PUBSUB
-            else "channels_redis.core.RedisChannelLayer"
+            else 'channels_redis.core.RedisChannelLayer'
         ),
-        "CONFIG": {
-            "hosts": REDIS_HOSTS,
-            "prefix": "eventyay:{}:asgi:".format(
-                _config.get("redis", "db", fallback="0")
-            ),
-            "capacity": 10000,
+        'CONFIG': {
+            'hosts': REDIS_HOSTS,
+            'prefix': 'eventyay:{}:asgi:'.format(_config.get('redis', 'db', fallback='0')),
+            'capacity': 10000,
         },
     },
 }
@@ -802,12 +810,12 @@ if not SESSION_ENGINE:
         SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Celery configuration
-CELERY_BROKER_URL = config.get('celery', 'broker')
-CELERY_RESULT_BACKEND = config.get('celery', 'backend')
+CELERY_BROKER_URL = config.get('celery', 'broker') if not DEBUG else 'redis://localhost:6379/2'
+CELERY_RESULT_BACKEND = config.get('celery', 'backend') if not DEBUG else 'redis://localhost:6379/1'
 CELERY_TASK_ALWAYS_EAGER = False if not DEBUG else True
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_TASK_DEFAULT_QUEUE = "default"
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_DEFAULT_QUEUE = 'default'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_QUEUES = (
     Queue('default', routing_key='default.#'),
@@ -828,8 +836,11 @@ CELERY_TASK_ROUTES = {
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static', 'webapp'),
+    # Added to make sure root package static assets (e.g. pretixcontrol/scss/) are found
+    os.path.join(BASE_DIR, 'static'),
+]
 
 STATIC_ROOT = BASE_DIR / 'static.dist'
 STATICFILES_FINDERS = (
@@ -838,19 +849,11 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 STATICI18N_ROOT = os.path.join(BASE_DIR, 'static')
-# We have some Vue 3 frontend apps which are built with Vite, we need to
-# tell Django to collect their compiled output files.
-# Note that those apps must be built before running collectstatic.
 FRONTEND_DIR = BASE_DIR / 'frontend'
-# Note: We must assume that the directory exists,
-# because when `collectstatic` was invoked by `rebuild` command,
-# it only sees the settings before Vite runs.
-STATICFILES_DIRS.append(FRONTEND_DIR / 'global-nav-menu' / 'dist')
-STATICFILES_DIRS.append(FRONTEND_DIR / 'schedule-editor' / 'dist')
 
 VITE_DEV_SERVER_PORT = 8080
 VITE_DEV_SERVER = f'http://localhost:{VITE_DEV_SERVER_PORT}'
-VITE_DEV_MODE = DEBUG
+VITE_DEV_MODE = False  # Set to False to use static files instead of dev server
 VITE_IGNORE = False  # Used to ignore `collectstatic`/`rebuild`
 
 COMPRESS_PRECOMPILERS = (
@@ -884,21 +887,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS configuration
 CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https?://([\w\-]+\.)?eventyay\.com$",# Allow any subdomain of eventyay.com
-    r"^https?://app-test\.eventyay\.com(:\d+)?$",  # Allow video-dev.eventyay.com with any port
-    r"^https?://app\.eventyay\.com(:\d+)?$", # Allow wikimania-live.eventyay.com with any port
+    r'^https?://([\w\-]+\.)?eventyay\.com$',  # Allow any subdomain of eventyay.com
+    r'^https?://app-test\.eventyay\.com(:\d+)?$',  # Allow video-dev.eventyay.com with any port
+    r'^https?://app\.eventyay\.com(:\d+)?$',  # Allow wikimania-live.eventyay.com with any port
 ]
 if DEBUG:
     CORS_ORIGIN_REGEX_WHITELIST = [
-        r"^http://localhost$",
-        r"^http://localhost:\d+$",
+        r'^http://localhost$',
+        r'^http://localhost:\d+$',
     ]
 
-#Video-Security settings
+# Video-Security settings
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSP_DEFAULT_SRC = ("'self'", "'unsafe-eval'")
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 MESSAGE_TAGS = {
     messages.INFO: 'alert-info',
@@ -908,49 +911,38 @@ MESSAGE_TAGS = {
 }
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-# Template configuration
-template_loaders = (
-    "django.template.loaders.filesystem.Loader",
-    "django.template.loaders.app_directories.Loader",
-)
-if not DEBUG:
-    template_loaders = (("django.template.loaders.cached.Loader", template_loaders),)
-
 # Debug toolbar configuration
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 DEBUG_TOOLBAR_CONFIG = {
-    "JQUERY_URL": "",
+    'JQUERY_URL': '',
 }
-INTERNAL_IPS = ("127.0.0.1", "::1")
+INTERNAL_IPS = ('127.0.0.1', '::1')
 
 # REST Framework configuration
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "eventyay.api.auth.api_auth.NoPermission",
+    'DEFAULT_PERMISSION_CLASSES': [
+        'eventyay.api.auth.api_auth.NoPermission',
     ],
-    "UNAUTHENTICATED_USER": "eventyay.api.auth.api_auth.AnonymousUser",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
-    "PAGE_SIZE": 50,
-    "DEFAULT_AUTHENTICATION_CLASSES": ("eventyay.api.auth.api_auth.EventTokenAuthentication",),
-    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
-    "UNICODE_JSON": False,
+    'UNAUTHENTICATED_USER': 'eventyay.api.auth.api_auth.AnonymousUser',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
+    'PAGE_SIZE': 50,
+    'DEFAULT_AUTHENTICATION_CLASSES': ('eventyay.api.auth.api_auth.EventTokenAuthentication',),
+    'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
+    'UNICODE_JSON': False,
 }
-
 
 
 # Login/Logout URLs
 
-LOGIN_REDIRECT_URL = "/control/video"
+LOGIN_REDIRECT_URL = '/control/video'
 
 # Version and environment
-EVENTYAY_COMMIT = os.environ.get("EVENTYAY_COMMIT_SHA", "unknown")
-EVENTYAY_ENVIRONMENT = os.environ.get("EVENTYAY_ENVIRONMENT", "unknown")
+EVENTYAY_COMMIT = os.environ.get('EVENTYAY_COMMIT_SHA', 'unknown')
+EVENTYAY_ENVIRONMENT = os.environ.get('EVENTYAY_ENVIRONMENT', 'unknown')
 
 # Sentry configuration
-SENTRY_DSN = os.environ.get(
-    "EVENTYAY_SENTRY_DSN", _config.get("sentry", "dsn", fallback="")
-)
+SENTRY_DSN = os.environ.get('EVENTYAY_SENTRY_DSN', _config.get('sentry', 'dsn', fallback=''))
 if SENTRY_DSN:
     import sentry_sdk
     from sentry_sdk.integrations.celery import CeleryIntegration
@@ -967,16 +959,16 @@ if SENTRY_DSN:
 
 # Multifactor authentication configuration
 MULTIFACTOR = {
-    "LOGIN_CALLBACK": False,
-    "RECHECK": True,
-    "RECHECK_MIN": 3600 * 24,
-    "RECHECK_MAX": 3600 * 24 * 7,
-    "FIDO_SERVER_ID": urlparse(SITE_URL).hostname,
-    "FIDO_SERVER_NAME": "Eventyay",
-    "TOKEN_ISSUER_NAME": "Eventyay",
-    "U2F_APPID": SITE_URL,
-    "FACTORS": ["FIDO2"],
-    "FALLBACKS": {},
+    'LOGIN_CALLBACK': False,
+    'RECHECK': True,
+    'RECHECK_MIN': 3600 * 24,
+    'RECHECK_MAX': 3600 * 24 * 7,
+    'FIDO_SERVER_ID': urlparse(SITE_URL).hostname,
+    'FIDO_SERVER_NAME': 'Eventyay',
+    'TOKEN_ISSUER_NAME': 'Eventyay',
+    'U2F_APPID': SITE_URL,
+    'FACTORS': ['FIDO2'],
+    'FALLBACKS': {},
 }
 
 # Adjustable settings
@@ -1010,9 +1002,9 @@ CSP_ADDITIONAL_HEADER = config.get('eventyay', 'csp_additional_header', fallback
 
 # Django allauth settings for social login
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+# Updated to use new allauth settings format (deprecated settings removed)
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
@@ -1083,6 +1075,12 @@ LOGGING = {
         'django.db.backends': {
             'handlers': [CONSOLE_HANDLER],
             'level': 'WARNING',
+            'propagate': False,
+        },
+        # Daphne always print color codes, so we bypass rich handler
+        'django.channels.server': {
+            'level': 'INFO',
+            'handlers': ['console'],
             'propagate': False,
         },
         # We need it to debug permission issues.

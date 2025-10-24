@@ -64,7 +64,7 @@ from eventyay.talk_rules.event import (
     has_any_permission,
     is_event_visible,
 )
-
+from .auth import User
 from ..settings import settings_hierarkey
 from .mixins import OrderedModel, PretalxModel
 from .organizer import Organizer, OrganizerBillingModel, Team
@@ -123,7 +123,7 @@ def default_roles():
         + room_creator
         + [
             Permission.EVENT_UPDATE,
-            Permission.ROOM_DELETE,                                                                                                                                                                                                           
+            Permission.ROOM_DELETE,
             Permission.ROOM_UPDATE,
             Permission.EVENT_ROOMS_CREATE_BBB,
             Permission.EVENT_ROOMS_CREATE_STAGE,
@@ -177,7 +177,7 @@ FEATURE_FLAGS = [
 def default_feature_flags():
     return {
         "show_schedule": True,
-        "show_featured": "pre_schedule",  
+        "show_featured": "pre_schedule",
         "show_widget_if_not_public": False,
         "export_html_on_release": False,
         "use_tracks": True,
@@ -203,7 +203,7 @@ def default_review_settings():
     return {
         "score_mandatory": False,
         "text_mandatory": False,
-        "aggregate_method": "median",  
+        "aggregate_method": "median",
         "score_format": "words_numbers",
     }
 
@@ -1321,7 +1321,9 @@ class Event(
         )
     def decode_token(self, token, allow_raise=False):
         exc = None
+        tried_any = False
         for jwt_config in self.config.get("JWT_secrets", []):
+            tried_any = True
             secret = jwt_config["secret"]
             audience = jwt_config["audience"]
             issuer = jwt_config["issuer"]
@@ -1338,6 +1340,25 @@ class Event(
                     raise
             except jwt.exceptions.InvalidTokenError as e:
                 exc = e
+        # Fallback to event settings used by the ticket-video plugin if no JWT_secrets configured
+        if not tried_any:
+            issuer = getattr(self.settings, 'venueless_issuer', None)
+            audience = getattr(self.settings, 'venueless_audience', None)
+            secret = getattr(self.settings, 'venueless_secret', None)
+            if issuer and audience and secret:
+                try:
+                    return jwt.decode(
+                        token,
+                        secret,
+                        algorithms=["HS256"],
+                        audience=audience,
+                        issuer=issuer,
+                    )
+                except jwt.exceptions.ExpiredSignatureError:
+                    if allow_raise:
+                        raise
+                except jwt.exceptions.InvalidTokenError as e:
+                    exc = e
         if exc and allow_raise:
             raise exc
 
@@ -1449,7 +1470,6 @@ class Event(
     def get_all_permissions(self, user):
         result = defaultdict(set)
         if user.is_banned:  # pragma: no cover
-            # safeguard only
             return result
 
         allow_empty_traits = user.type == User.UserType.PERSON
@@ -1465,10 +1485,7 @@ class Event(
             ):
                 result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
 
-        for grant in user.world_grants.all():
-            result[self].update(
-                self.roles.get(grant.role, SYSTEM_ROLES.get(grant.role, []))
-            )
+        # Removed user.world_grants loop (attribute not present on unified User model)
 
         for room in self.rooms.all():
             for role, required_traits in room.trait_grants.items():

@@ -87,7 +87,7 @@ class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationReq
         return ctx
 
     def get_success_url(self):
-        return reverse('control:admin.users.edit', kwargs=self.kwargs)
+        return reverse('eventyay_admin:admin.users.edit', kwargs=self.kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, _('Your changes have been saved.'))
@@ -113,7 +113,7 @@ class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationReq
 
 class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
+        return redirect(reverse('eventyay_admin:admin.users.edit', kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get('id'))
@@ -131,7 +131,7 @@ class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRe
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('control:admin.users.edit', kwargs=self.kwargs)
+        return reverse('eventyay_admin:admin.users.edit', kwargs=self.kwargs)
 
 
 class UserAnonymizeView(
@@ -164,12 +164,12 @@ class UserAnonymizeView(
             le.shredded = True
             le.save(update_fields=['data', 'shredded'])
 
-        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
+        return redirect(reverse('eventyay_admin:admin.users.edit', kwargs=self.kwargs))
 
 
 class UserImpersonateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
+        return redirect(reverse('eventyay_admin:admin.users.edit', kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get('id'))
@@ -255,7 +255,7 @@ class UserCreateView(AdministratorPermissionRequiredMixin, RecentAuthenticationR
         return i
 
     def get_success_url(self):
-        return reverse('control:admin.users')
+        return reverse('eventyay_admin:admin.users')
 
     def form_valid(self, form):
         messages.success(self.request, _('The new user has been created.'))

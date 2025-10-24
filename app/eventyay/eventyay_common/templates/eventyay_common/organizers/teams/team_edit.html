@@ -1,59 +1,66 @@
 {% extends "eventyay_common/organizers/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+
 {% block inner %}
     {% if team %}
-        <h1>{{ team.name }} {% trans "Team" %}</h1>
+        <h1>{{ team.name }} {% translate "Team" %}</h1>
     {% else %}
-        <h1>{% trans "Create a new team" %}</h1>
+        <h1>{% translate "Create a new team" %}</h1>
         <p>
-            {% blocktrans trimmed %}
+            {% blocktranslate trimmed %}
                 You will be able to add team members in the next step.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </p>
     {% endif %}
     <form class="form-horizontal" action="" method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         <fieldset>
-            <legend>{% trans "General information" %}</legend>
+            <legend>{% translate "General information" %}</legend>
             {% bootstrap_field form.name layout="control" %}
         </fieldset>
         <fieldset>
-            <legend>{% trans "Event permissions" %}</legend>
+            <legend>{% translate "Organizer permissions" %}</legend>
+            {% bootstrap_field form.can_create_events layout="control" %}
+            {% bootstrap_field form.can_manage_gift_cards layout="control" %}
+            {% bootstrap_field form.can_change_teams layout="control" %}
+            {% bootstrap_field form.can_change_organizer_settings layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% translate "Event permissions" %}</legend>
             {% bootstrap_field form.all_events layout="control" %}
             {% bootstrap_field form.limit_events layout="control" %}
             {% bootstrap_field form.can_change_event_settings layout="control" %}
         </fieldset>
         <fieldset>
-            <legend>{% trans "Organizer permissions" %}</legend>
-            {% bootstrap_field form.can_create_events layout="control" %}
-            {% bootstrap_field form.can_change_teams layout="control" %}
-            {% bootstrap_field form.can_change_organizer_settings layout="control" %}
+            <legend>{% translate "Ticket permissions" %}</legend>
+            {% bootstrap_field form.can_change_items layout="control" %}
+            {% bootstrap_field form.can_view_orders layout="control" %}
+            {% bootstrap_field form.can_change_orders layout="control" %}
+            {% bootstrap_field form.can_checkin_orders layout="control" %}
+            {% bootstrap_field form.can_view_vouchers layout="control" %}
+            {% bootstrap_field form.can_change_vouchers layout="control" %}
         </fieldset>
-        {% if team %}
-            <fieldset>
-                <h4>{% trans "Invite team member and specific team settings for Ticket system" %}
-                    <a href='{% url "control:organizer.team" organizer=request.organizer.slug team=team.id %}'
-                            class="btn btn-sm btn-default" title='{% trans "Edit" %}'
-                            data-toggle="tooltip">
-                        <span class="fa fa-edit"></span>
-                    </a>
-                </h4>
-            </fieldset>
-            <fieldset>
-                <h4>{% trans "Invite team member and specific team settings for Talk system" %}
-                    <a href='{{ talk_edit_url }}'
-                            class="btn btn-sm btn-default" title='{% trans "Edit" %}'
-                            data-toggle="tooltip">
-                        <span class="fa fa-edit"></span>
-                    </a>
-                </h4>
-            </fieldset>
-        {% endif %}
+        <fieldset>
+            <legend>{% translate "Talk permissions" %}</legend>
+            {% bootstrap_field form.can_change_submissions layout="control" %}
+            {% bootstrap_field form.is_reviewer layout="control" id="id_is_reviewer" %}
+            <div id="review-settings" class="form-group" style="display: none;">
+                <label class="control-label col-md-3" for="review-settings" id="review-settings-label">
+                    {% translate "Review settings" %}
+                </label>
+                <div class="col-md-9">
+                    <hr>
+                </div>
+                {% bootstrap_field form.force_hide_speaker_names layout="control" %}
+                {% bootstrap_field form.limit_tracks layout="control" %}
+            </div>
+        </fieldset>
+
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">
-                {% trans "Save" %}
+                {% translate "Save" %}
             </button>
         </div>
     </form>

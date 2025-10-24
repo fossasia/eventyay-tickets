@@ -4,7 +4,7 @@
 {% block video_admin_content %}
 <h1 class="page-header">{% trans "Users" %}</h1>
 <div class="video-admin-btn-row">
-    <a href="{% url 'control:auth.signup' %}" class="btn btn-primary btn-sm">
+    <a href="{% url 'eventyay_admin:video_admin:auth.signup' %}" class="btn btn-primary btn-sm">
         <span class="fa fa-user-plus"></span> {% trans "Add new user" %}
     </a>
 </div>
@@ -21,7 +21,7 @@
     <tr>
         <td><strong>{{ user.email }}</strong></td>
         <td class="text-right video-admin-actions">
-            <a href="{% url 'control:user.update' pk=user.pk %}" class="btn btn-default btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:user.update' pk=user.pk %}" class="btn btn-default btn-xs">
                 <span class="fa fa-pencil"></span> {% trans "Edit" %}
             </a>
         </td>

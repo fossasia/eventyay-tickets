@@ -87,8 +87,8 @@ class PermissionMiddleware:
 
         if not request.path.startswith(get_script_prefix() + 'control') and not request.path.startswith(
             get_script_prefix() + 'common'
-        ):
-            # This middleware should only touch the /control subpath
+        ) and not request.path.startswith(get_script_prefix() + 'admin'):
+            # This middleware should only touch the /control, /common, and /admin subpaths
             return self.get_response(request)
 
         if hasattr(request, 'organizer'):
@@ -187,7 +187,8 @@ class AuditLogMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith(get_script_prefix() + 'control') and request.user.is_authenticated:
+        if (request.path.startswith(get_script_prefix() + 'control') or 
+            request.path.startswith(get_script_prefix() + 'admin')) and request.user.is_authenticated:
             if getattr(request.user, 'is_hijacked', False):
                 hijack_history = request.session.get('hijack_history', False)
                 hijacker = get_object_or_404(User, pk=hijack_history[0])

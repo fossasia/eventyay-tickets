@@ -14,12 +14,12 @@
                 {% endblocktrans %}
             </p>
 
-            <a href="{% url "control:admin.pages.add" %}"
+            <a href="{% url "eventyay_admin:admin.pages.add" %}"
                     class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new page" %}</a>
         </div>
     {% else %}
         <p>
-            <a href="{% url "control:admin.pages.add" %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new page" %}
+            <a href="{% url "eventyay_admin:admin.pages.add" %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new page" %}
             </a>
         </p>
         <div class="table-responsive">
@@ -35,12 +35,12 @@
                 {% for p in pages %}
                     <tr>
                         <td>
-                            <strong><a href="{% url "control:admin.pages.edit" id=p.id%}">{{ p.title }}</a></strong>
+                            <strong><a href="{% url "eventyay_admin:admin.pages.edit" id=p.id%}">{{ p.title }}</a></strong>
                         </td>
                         <td class="text-right">
                             <a href="{% url "page" slug=p.slug %}" class="btn btn-default btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
-                            <a href="{% url "control:admin.pages.edit" id=p.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
-                            <a href="{% url "control:admin.pages.delete" id=p.id %}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            <a href="{% url "eventyay_admin:admin.pages.edit" id=p.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                            <a href="{% url "eventyay_admin:admin.pages.delete" id=p.id %}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 {% endfor %}

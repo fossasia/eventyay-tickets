@@ -5,7 +5,11 @@
 			h2 Rooms
 			bunt-link-button.btn-create(:to="{name: 'admin:rooms:new'}") Create a new room
 		bunt-input.search(name="search", placeholder="Search rooms", icon="search", v-model="search")
-	.rooms-list
+	.error(v-if="error")
+		span Failed to load rooms.
+		span(v-if="errorCode")  ({{ errorCode }})
+		span(v-if="errorCode === 'protocol.denied'")  You likely lack admin permissions.
+	.rooms-list(v-else)
 		.header
 			.drag
 			.name Name
@@ -26,7 +30,10 @@ export default {
 	data() {
 		return {
 			rooms: null,
-			search: ''
+			search: '',
+			error: null,
+			errorCode: null,
+			_unwatchConnected: null
 		}
 	},
 	computed: {
@@ -37,11 +44,42 @@ export default {
 		}
 	},
 	async created() {
-		this.rooms = await api.call('room.config.list')
+		await this.ensureConnectedAndFetch()
+	},
+	beforeUnmount() {
+		if (this._unwatchConnected) this._unwatchConnected()
 	},
 	methods: {
+		async ensureConnectedAndFetch() {
+			if (this.$store.state.connected) return this.fetchRooms()
+			this._unwatchConnected = this.$store.watch(
+				state => state.connected,
+				(connected) => {
+					if (connected) {
+						if (this._unwatchConnected) this._unwatchConnected()
+						this._unwatchConnected = null
+						this.fetchRooms()
+					}
+				}
+			)
+		},
+		async fetchRooms() {
+			try {
+				this.error = null
+				this.errorCode = null
+				this.rooms = await api.call('room.config.list')
+			} catch (e) {
+				this.error = e
+				this.errorCode = e?.code || e?.message || String(e)
+				console.error(e)
+			}
+		},
 		async onListSort() {
-			this.rooms = await api.call('room.config.reorder', this.rooms.map(room => room.id))
+			try {
+				this.rooms = await api.call('room.config.reorder', this.rooms.map(room => room.id))
+			} catch (e) {
+				console.error(e)
+			}
 			// TODO error handling
 		}
 	}

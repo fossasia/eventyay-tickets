@@ -8,7 +8,7 @@
         {% csrf_token %}
         <p>{% blocktrans %}Are you sure you want to delete the voucher <strong>{{ invoice_voucher }}</strong>?{% endblocktrans %}</p>
         <div class="form-group submit-group">
-            <a href='{% url "control:admin.vouchers" %}' class="btn btn-default btn-cancel">
+            <a href='{% url "eventyay_admin:admin.vouchers" %}' class="btn btn-default btn-cancel">
                 {% trans "Cancel" %}
             </a>
             <button type="submit" class="btn btn-delete btn-danger btn-save">
