@@ -241,14 +241,13 @@ class SecurityMiddleware(MiddlewareMixin):
         }
 
         # Allow inline scripts ONLY for video pages (Venueless integration requires it)
+        # VideoSPAView injects inline <script> tags with window.venueless configuration
         if request.path.startswith('/video/'):
             h['script-src-elem'] = [
                 '{static}',
-                'https://checkout.stripe.com',
-                'https://js.stripe.com',
-                'http://localhost:8080',
-                "'unsafe-eval'",
-                "'unsafe-inline'",  # Only for video pages - Venueless requires inline scripts
+                'http://localhost:8080',  # Development only
+                "'unsafe-eval'",  # Required for Vue.js and buntpapier libraries
+                "'unsafe-inline'",  # Required for server-injected configuration scripts
             ]
         if settings.LOG_CSP:
             base_path = settings.BASE_PATH
