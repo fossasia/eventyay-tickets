@@ -1,0 +1,226 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load eventurl %}
+{% load money %}
+
+{% block title %}
+    {% trans "Room Check-ins" %}: {{ room.name }}
+{% endblock %}
+
+{% block content %}
+<div class="navigation">
+    <div class="navigation-title">
+        <h1>{% trans "Room Check-ins" %}: {{ room.name }}</h1>
+    </div>
+    <div class="navigation-button">
+        <a href="{% eventurl request.event "control:event.rooms" %}" class="btn btn-default">
+            <i class="fa fa-arrow-left"></i> {% trans "Back to rooms" %}
+        </a>
+        <a href="{% eventurl request.event "control:event.room" room=room.pk %}" class="btn btn-primary">
+            <i class="fa fa-edit"></i> {% trans "Edit room" %}
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{% trans "Room Information" %}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>{% trans "Name" %}:</strong> {{ room.name }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>{% trans "Identifier" %}:</strong> {{ room.identifier }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>{% trans "Capacity" %}:</strong> {{ room.capacity|default:"-" }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>{% trans "Location" %}:</strong> {{ room.location|default:"-" }}
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 15px;">
+                    <div class="col-md-3">
+                        <div class="stat-box text-center">
+                            <h3 class="text-primary">{{ current_occupancy|default:0 }}</h3>
+                            <p>{% trans "Current Occupancy" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-box text-center">
+                            <h3 class="text-info">{{ checkins_today|default:0 }}</h3>
+                            <p>{% trans "Check-ins Today" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-box text-center">
+                            <h3 class="text-success">{{ total_checkins|default:0 }}</h3>
+                            <p>{% trans "Total Check-ins" %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-box text-center">
+                            <h3 class="text-warning">{{ avg_duration|default:"-" }}</h3>
+                            <p>{% trans "Avg. Duration" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans "Check-in History" %}
+            <span class="badge">{{ checkins.count }}</span>
+        </h3>
+    </div>
+    
+    {% if checkins %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Attendee" %}</th>
+                    <th>{% trans "Check-in Time" %}</th>
+                    <th>{% trans "Check-out Time" %}</th>
+                    <th>{% trans "Duration" %}</th>
+                    <th>{% trans "Device" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Status" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for checkin in checkins %}
+                <tr>
+                    <td>
+                        <strong>{{ checkin.position.attendee_name_cached|default:checkin.pseudonymization_id }}</strong>
+                        {% if checkin.position %}
+                            <br><small class="text-muted">{{ checkin.position.order.code }}-{{ checkin.position.positionid }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ checkin.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                        <br><small class="text-muted">{{ checkin.datetime|timesince }} {% trans "ago" %}</small>
+                    </td>
+                    <td>
+                        {% if checkin.type == "exit" %}
+                            {{ checkin.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                            <br><small class="text-muted">{{ checkin.datetime|timesince }} {% trans "ago" %}</small>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if checkin.duration_in_room %}
+                            {{ checkin.duration_in_room }}
+                        {% elif checkin.type == "entry" %}
+                            <span class="text-info">{% trans "Still in room" %}</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if checkin.device %}
+                            {{ checkin.device.name }}
+                            <br><small class="text-muted">{{ checkin.device.unique_token|truncatechars:8 }}</small>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if checkin.type == "entry" %}
+                            <span class="label label-success">{% trans "Entry" %}</span>
+                        {% elif checkin.type == "exit" %}
+                            <span class="label label-warning">{% trans "Exit" %}</span>
+                        {% else %}
+                            <span class="label label-default">{{ checkin.type|title }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if checkin.type == "entry" %}
+                            <span class="label label-info">{% trans "In Room" %}</span>
+                        {% else %}
+                            <span class="label label-default">{% trans "Exited Room" %}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if is_paginated %}
+    <div class="panel-footer">
+        <nav aria-label="{% trans 'Check-in pagination' %}">
+            <ul class="pagination pagination-sm">
+                {% if page_obj.has_previous %}
+                    <li>
+                        <a href="?page={{ page_obj.previous_page_number }}" aria-label="{% trans 'Previous' %}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="active"><span>{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li><a href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li>
+                        <a href="?page={{ page_obj.next_page_number }}" aria-label="{% trans 'Next' %}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="panel-body">
+        <div class="empty-state text-center">
+            <i class="fa fa-users fa-4x text-muted"></i>
+            <h3>{% trans "No check-ins yet" %}</h3>
+            <p class="text-muted">{% trans "This room hasn't had any check-ins yet." %}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.stat-box {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.stat-box h3 {
+    margin: 0 0 5px 0;
+    font-weight: bold;
+}
+
+.stat-box p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.empty-state {
+    padding: 60px 20px;
+}
+</style>
+{% endblock %}

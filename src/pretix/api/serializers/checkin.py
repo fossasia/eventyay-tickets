@@ -1,6 +1,7 @@
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.db.models import Q
 
 from pretix.api.serializers.event import SubEventSerializer
 from pretix.api.serializers.i18n import I18nAwareModelSerializer
@@ -72,7 +73,11 @@ class CheckinListSerializer(I18nAwareModelSerializer):
 
 
 class CheckinRedeemInputSerializer(serializers.Serializer):
-    lists = serializers.PrimaryKeyRelatedField(required=True, many=True, queryset=CheckinList.objects.none())
+    lists = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=True,
+        allow_empty=False
+    )
     secret = serializers.CharField(required=True, allow_null=False)
     force = serializers.BooleanField(default=False, required=False)
     source_type = serializers.ChoiceField(choices=['barcode'], default='barcode')
@@ -82,12 +87,39 @@ class CheckinRedeemInputSerializer(serializers.Serializer):
     nonce = serializers.CharField(required=False, allow_null=True)
     datetime = serializers.DateTimeField(required=False, allow_null=True)
     answers = serializers.JSONField(required=False, allow_null=True)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['lists'].child_relation.queryset = CheckinList.objects.filter(
-            event__in=self.context['events']
-        ).select_related('event')
+    
+    def validate_lists(self, value):
+        """Custom validation for checkin lists that handles scope properly"""
+        from django_scopes import scope
+        
+        events = self.context.get('events', [])
+        if not events:
+            raise serializers.ValidationError("No events available in context")
+        
+        # Get the organizer from the first event
+        organizer = events[0].organizer
+        
+        # Validate within the proper scope
+        with scope(organizer=organizer):
+            # Get available checkin lists for the events
+            available_lists = CheckinList.objects.filter(
+                event__in=events
+            ).select_related('event')
+            
+            available_ids = set(available_lists.values_list('id', flat=True))
+            
+            # Validate each list ID
+            validated_lists = []
+            for list_id in value:
+                if list_id not in available_ids:
+                    raise serializers.ValidationError(
+                        f'Invalid pk "{list_id}" - object does not exist.'
+                    )
+                validated_lists.append(
+                    available_lists.get(id=list_id)
+                )
+            
+            return validated_lists
 
 
 class MiniCheckinListSerializer(I18nAwareModelSerializer):

@@ -4,6 +4,7 @@ from .base import CachedFile, LoggedModel, cachedfile_name
 from .billing import BillingInvoice
 from .checkin import Checkin, CheckinList
 from .devices import Device, Gate
+from .room import Room, RoomCheckin
 from .event import (
     Event,
     Event_SettingsStore,
