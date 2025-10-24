@@ -1001,10 +1001,15 @@ LOG_CSP = config.getboolean('eventyay', 'csp_log', fallback=True)
 CSP_ADDITIONAL_HEADER = config.get('eventyay', 'csp_additional_header', fallback='')
 
 # Django allauth settings for social login
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+
 # Updated to use new allauth settings format (deprecated settings removed)
-ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+# ACCOUNT_LOGIN_METHODS = {'email'}
+# ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+# This is outdated, but it seems necessary
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
