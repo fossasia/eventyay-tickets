@@ -57,9 +57,10 @@ html[data-theme="light"],
     --object-tools-hover-bg: var(--close-button-hover-bg);
 
     --font-family-primary:
+        "Open Sans",
+        "OpenSans",
         "Segoe UI",
         system-ui,
-        Roboto,
         "Helvetica Neue",
         Arial,
         sans-serif,

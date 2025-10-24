@@ -99,7 +99,7 @@ export default {
 			font-size: 38px
 			line-height: 8px
 		.vote-count
-			font-family: 'Roboto-Condensed'
+			font-family: 'Open Sans'
 			font-weight: 200
 			font-size: 32px
 			line-height: 32px
