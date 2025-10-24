@@ -1,0 +1,113 @@
+from django.dispatch import receiver
+from django.template.loader import get_template
+from django.urls import resolve, reverse
+from django.utils.timezone import now
+from i18nfield.strings import LazyI18nString
+from eventyay.base.models import Event, Order
+from eventyay.base.reldate import RelativeDateWrapper
+from eventyay.base.settings import settings_hierarkey
+from eventyay.base.signals import event_copy_data, product_copy_data
+from eventyay.control.signals import nav_event_settings
+from eventyay.presale.signals import order_info_top, position_info_top
+
+
+@receiver(order_info_top, dispatch_uid="venueless_order_info")
+def w_order_info(sender: Event, request, order: Order, **kwargs):
+    if (
+            (order.status != Order.STATUS_PAID and not (order.status == Order.STATUS_PENDING and
+                                                        sender.settings.venueless_allow_pending))
+            or not order.positions.exists() or not sender.settings.venueless_secret
+    ):
+        return
+
+    positions = [
+        p for p in order.positions.filter(
+            product__admission=True, addon_to__isnull=True
+        )
+    ]
+    positions = [
+        p for p in positions
+        if (
+                not sender.settings.venueless_start or sender.settings.venueless_start.datetime(p.subevent or sender) <= now()
+        ) and (
+            sender.settings.venueless_all_products or p.product_id in (p.event.settings.venueless_products or[])
+        )
+    ]
+    if not positions:
+        return
+
+    template = get_template('pretix_venueless/order_info.html')
+    ctx = {
+        'order': order,
+        'event': sender,
+        'positions': positions,
+    }
+    return template.render(ctx, request=request)
+
+
+@receiver(position_info_top, dispatch_uid="venueless_position_info")
+def w_pos_info(sender: Event, request, order: Order, position, **kwargs):
+    if (
+            (order.status != Order.STATUS_PAID and not (order.status == Order.STATUS_PENDING and
+                                                        sender.settings.venueless_allow_pending))
+            or not order.positions.exists()
+            or position.canceled
+            or not position.product.admission
+            or (
+                not sender.settings.venueless_all_products and position.product_id not in (position.event.settings.venueless_products or [])
+            )
+            or not sender.settings.venueless_secret
+    ):
+        return
+    if sender.settings.venueless_start and sender.settings.venueless_start.datetime(position.subevent or sender) > now():
+        positions = []
+    else:
+        positions = [position]
+    template = get_template('pretix_venueless/order_info.html')
+    ctx = {
+        'order': order,
+        'event': sender,
+        'positions': positions,
+    }
+    return template.render(ctx, request=request)
+
+
+@receiver(nav_event_settings, dispatch_uid='venueless_nav')
+def navbar_info(sender, request, **kwargs):
+    url = resolve(request.path_info)
+    if not request.user.has_event_permission(request.organizer, request.event, 'can_change_event_settings',
+                                             request=request):
+        return []
+    return [{
+        'label': 'Eventyay video',
+        'url': reverse('plugins:pretix_venueless:settings', kwargs={
+            'event': request.event.slug,
+            'organizer': request.organizer.slug,
+        }),
+        'active': url.namespace == 'plugins:pretix_venueless',
+    }]
+
+
+@receiver(signal=event_copy_data, dispatch_uid="venueless_event_copy_data")
+def event_copy_data_r(sender, other, product_map, question_map, **kwargs):
+    sender.settings['venueless_products'] = [
+        product_map[product].pk for product in other.settings.get('venueless_products', default=[]) if product in product_map
+    ]
+    sender.settings['venueless_questions'] = [
+        question_map[q].pk for q in other.settings.get('venueless_questions', default=[]) if q in question_map
+    ]
+
+
+@receiver(signal=product_copy_data, dispatch_uid="venueless_product_copy_data")
+def product_copy_data_r(sender, source, target, **kwargs):
+    products = sender.settings.get('venueless_products') or []
+    products.append(target.pk)
+    sender.settings['venueless_products'] = products
+
+
+settings_hierarkey.add_default('venueless_start', None, RelativeDateWrapper)
+settings_hierarkey.add_default('venueless_text', None, LazyI18nString)
+settings_hierarkey.add_default('venueless_allow_pending', 'False', bool)
+settings_hierarkey.add_default('venueless_all_products', 'True', bool)
+settings_hierarkey.add_default('venueless_products', '[]', list)
+settings_hierarkey.add_default('venueless_questions', '[]', list)

@@ -211,31 +211,45 @@ class SecurityMiddleware(MiddlewareMixin):
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
                 'http://localhost:8080',
+                "'unsafe-eval'",  # Required for buntpapier and other libraries that use eval()
             ],
             'object-src': ["'none'"],
             'frame-src': [
                 '{static}',
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
+                'https://www.youtube.com',
+                'https:',  # Allow all HTTPS iframes
             ],
             'style-src': [
                 '{static}',
                 '{media}',
                 "'unsafe-inline'",  # allow inline styles
             ],
-            'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com'],
-            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com'] + img_src,
+            'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com', 'https:', 'blob:'],
+            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com', 'https://twemoji.maxcdn.com'] + img_src,
             'font-src': [
                 '{static}',
                 'https://fonts.gstatic.com',  # fix Google Fonts
             ],
-            'media-src': ['{static}', 'data:'],
+            'media-src': ['{static}', 'data:', 'https:', 'blob:'],
             # form-action is not only used to match on form actions, but also on URLs
             # form-actions redirect to. In the context of e.g. payment providers or
             # single-sign-on this can be nearly anything so we cannot really restrict
             # this. However, we'll restrict it to HTTPS.
             'form-action': ['{dynamic}', 'https:'] + (['http:'] if settings.SITE_URL.startswith('http://') else []),
         }
+
+        # Allow inline scripts ONLY for video pages (Venueless integration requires it)
+        # VideoSPAView injects inline <script> tags with window.venueless configuration
+        if request.path.startswith('/video/'):
+            h['script-src-elem'] = [
+                '{static}',
+                "'unsafe-eval'",  # Required for Vue.js and buntpapier libraries
+                "'unsafe-inline'",  # Required for server-injected configuration scripts
+            ]
+            if settings.DEBUG:
+                h['script-src-elem'].insert(1, 'http://localhost:8080')  # Development only
         if settings.LOG_CSP:
             base_path = settings.BASE_PATH
             h['report-uri'] = [f'{base_path}/csp_report/']
@@ -270,27 +284,18 @@ class SecurityMiddleware(MiddlewareMixin):
                     domain = '%s:%d' % (domain, siteurlsplit.port)
                 dynamicdomain += ' ' + domain
 
+        # Add DEBUG mode settings before rendering CSP
+        if settings.DEBUG:
+            h.setdefault('script-src', []).extend(["'unsafe-inline'", "http://localhost:8080"])
+            h.setdefault('connect-src', []).extend(["http://localhost:8080", "ws://localhost:8080"])
+
         if request.path not in self.CSP_EXEMPT and not getattr(resp, '_csp_ignore', False):
-            resp['Content-Security-Policy'] = _render_csp(h).format(
-                static=staticdomain, dynamic=dynamicdomain, media=mediadomain
-            )
             for k, v in h.items():
                 h[k] = ' '.join(v).format(static=staticdomain, dynamic=dynamicdomain, media=mediadomain).split(' ')
             resp['Content-Security-Policy'] = _render_csp(h)
         elif 'Content-Security-Policy' in resp:
             del resp['Content-Security-Policy']
 
-        # ==============================
-        # Add this **for development only**
-        if settings.DEBUG:
-            h['script-src'] += ["'unsafe-inline'", "http://localhost:8080"]
-            h['connect-src'] += ["http://localhost:8080", "ws://localhost:8080"]
-        # ==============================
-
-        # Then continue with rendering CSP
-        resp['Content-Security-Policy'] = _render_csp(h).format(
-            static=staticdomain, dynamic=dynamicdomain, media=mediadomain
-        )
         return resp
 
 

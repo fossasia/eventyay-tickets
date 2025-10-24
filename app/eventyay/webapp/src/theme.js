@@ -151,31 +151,56 @@ export function computeForegroundSidebarColor(colors) {
 }
 
 export async function getThemeConfig() {
-	const themeUrl = config.api.base + 'theme'
-	const response = await fetch(themeUrl, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
+	// Fast path: if backend provided theme in injected config, just use it and avoid network 404 spam
+	if (config.theme && (config.theme.colors || config.theme.logo)) {
+		return {
+			colors: config.theme.colors || configColors,
+			logo: Object.assign({}, DEFAULT_LOGO, config.theme.logo),
+			streamOfflineImage: config.theme.streamOfflineImage,
+			identicons: Object.assign({}, DEFAULT_IDENTICONS, config.theme.identicons),
 		}
-	})
-
-	let themeConfig
-	if (response.ok) {
-		const data = await response.json()
-		themeConfig = {
-			colors: data.colors || configColors,
-			logo: Object.assign({}, DEFAULT_LOGO, data.logo),
-			streamOfflineImage: data.streamOfflineImage,
-			identicons: Object.assign({}, DEFAULT_IDENTICONS, data.identicons),
-		}
-	} else {
-		console.error('Failed to fetch theme config, set default:', response.statusText)
-		themeConfig = {
+	}
+	if (config.noThemeEndpoint) {
+		return {
 			colors: configColors,
 			logo: Object.assign({}, DEFAULT_LOGO, config.theme?.logo),
 			streamOfflineImage: config.theme?.streamOfflineImage,
 			identicons: Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons),
 		}
 	}
-	return themeConfig
+	if (!config.api?.base) {
+		return {
+			colors: configColors,
+			logo: Object.assign({}, DEFAULT_LOGO, config.theme?.logo),
+			streamOfflineImage: config.theme?.streamOfflineImage,
+			identicons: Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons),
+		}
+	}
+	const themeUrl = config.api.base + 'theme'
+	try {
+		const response = await fetch(themeUrl, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		})
+		if (response.ok) {
+			const data = await response.json()
+			return {
+				colors: data.colors || configColors,
+				logo: Object.assign({}, DEFAULT_LOGO, data.logo),
+				streamOfflineImage: data.streamOfflineImage,
+				identicons: Object.assign({}, DEFAULT_IDENTICONS, data.identicons),
+			}
+		} else {
+			if (response.status !== 404) console.warn('Theme fetch failed', response.status, response.statusText)
+			else console.info('Theme endpoint missing (404), using defaults')
+		}
+	} catch (e) {
+		console.warn('Theme fetch error, using defaults', e)
+	}
+	return {
+		colors: configColors,
+		logo: Object.assign({}, DEFAULT_LOGO, config.theme?.logo),
+		streamOfflineImage: config.theme?.streamOfflineImage,
+		identicons: Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons),
+	}
 }

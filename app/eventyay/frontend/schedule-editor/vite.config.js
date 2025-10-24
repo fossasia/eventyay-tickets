@@ -37,7 +37,7 @@ export default {
 		}
 	},
 	build: {
-		outDir: process.env.OUT_DIR,
+		outDir: process.env.OUT_DIR ? `${process.env.OUT_DIR}/schedule-editor` : 'dist',
 		emptyOutDir: false,
 		manifest: 'pretalx-manifest.json',
 		assetsDir: '',

@@ -1,5 +1,9 @@
+from enum import StrEnum
+import logging
 import datetime as dt
-from urllib.parse import unquote, urlparse
+from http import HTTPStatus
+from urllib.parse import unquote, urlparse, urljoin
+from typing import TypeVar
 
 import jwt
 import requests
@@ -23,9 +27,25 @@ from eventyay.common.views.mixins import (
     PermissionRequired,
     SocialMediaCardMixin,
 )
-from eventyay.base.models import TalkSlot
+from eventyay.base.models import Event, TalkSlot, User
 from eventyay.submission.forms import FeedbackForm
 from eventyay.base.models import Submission, SubmissionStates
+
+
+logger = logging.getLogger(__name__)
+
+
+class TicketCheckResult(StrEnum):
+    HAS_TICKET = 'has_ticket'
+    MISCONFIGURED = 'missing_configuration'
+    NO_TICKET = 'no_ticket'
+
+
+class VideoJoinError(StrEnum):
+    # The string value looks diffrent from the enum name
+    # because other code may depend on this string value.
+    NOT_ALLOWED = 'user_not_allowed'
+    MISCONFIGURED = 'missing_configuration'
 
 
 class TalkMixin(PermissionRequired):
@@ -253,82 +273,117 @@ class OnlineVideoJoin(EventPermissionRequired, View):
     permission_required = 'base.view_schedule'
 
     def get(self, request, *args, **kwargs):
-        # First check video is configured or not
-        if (
-            'eventyay_venueless' not in request.event.plugin_list
-            or not request.event.venueless_settings
-            or not request.event.venueless_settings.join_url
-            or not request.event.venueless_settings.secret
-            or not request.event.venueless_settings.issuer
-            or not request.event.venueless_settings.audience
-        ):
-            return HttpResponse(status=403, content='missing_configuration')
-
         if not request.user.is_authenticated:
-            # redirect to login page if user not logged in yet
-            return HttpResponse(status=403, content='user_not_allowed')
+            return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.NOT_ALLOWED)
 
-        # prepare event data to check from ticket
-        if 'ticket_link' not in request.event.display_settings:
-            return HttpResponse(status=403, content='missing_configuration')
+        # First check video is configured or not
+        if 'pretalx_venueless' not in request.event.plugin_list:
+            logger.info('pretalx_venueless plugin is not enabled.')
+            return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.MISCONFIGURED)
+        event = request.event
+        logger.info('To check settings for event %s', event)
+        if not (venueless_settings := event.venueless_settings):
+            logger.info('venueless settings is missing.')
+            return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.MISCONFIGURED)
+        if not venueless_settings.join_url:
+            logger.info('venueless_settings.join_url is missing.')
+            return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.MISCONFIGURED)
+        if not venueless_settings.secret:
+            logger.info('venueless_settings.secret is missing.')
+            return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.MISCONFIGURED)
+        if not venueless_settings.issuer:
+            logger.info('venueless_settings.issuer is missing.')
+            return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.MISCONFIGURED)
+        if not venueless_settings.audience:
+            logger.info('venueless_settings.audience is missing.')
+            return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.MISCONFIGURED)
 
-        base_url, organizer, event = self.retrieve_info_from_url(request.event.display_settings['ticket_link'])
+        # If the logged-in user does not have "orga.view_schedule" permission, we check
+        # if he/she owns a ticket.
+        if not request.user.has_perm('agenda.view_schedule', event):
+            res = check_user_owning_ticket(request.user, event)
+            if res == TicketCheckResult.NO_TICKET:
+                return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.NOT_ALLOWED)
+            if res == TicketCheckResult.MISCONFIGURED:
+                return HttpResponse(status=HTTPStatus.FORBIDDEN, content=VideoJoinError.MISCONFIGURED)
 
-        if not organizer or not event or not base_url:
-            return HttpResponse(status=403, content='missing_configuration')
+        # Redirect user to online event
+        iat = dt.datetime.now(dt.UTC)
+        exp = iat + dt.timedelta(days=30)
+        profile = {
+            "display_name": request.user.name,
+            "fields": {
+                "pretalx_id": request.user.code,
+            },
+        }
+        if request.user.avatar_url:
+            profile["profile_picture"] = request.user.get_avatar_url(request.event)
 
-        check_payload = {'user_email': request.user.email}
-
-        # call to ticket to check if user order ticket yet or not
-        response = requests.post(f'{base_url}/api/v1/{organizer}/{event}/ticket-check', json=check_payload)
-
-        if response.status_code != 200:
-            return HttpResponse(status=403, content='user_not_allowed')
-
-        else:
-            # Redirect user to online event
-            iat = dt.datetime.utcnow()
-            exp = iat + dt.timedelta(days=30)
-            profile = {
-                'display_name': request.user.name,
-                'fields': {
-                    'eventyay_id': request.user.code,
-                },
-            }
-            if request.user.avatar_url:
-                profile['profile_picture'] = request.user.get_avatar_url(request.event)
-
-            payload = {
-                'iss': request.event.venueless_settings.issuer,
-                'aud': request.event.venueless_settings.audience,
-                'exp': exp,
-                'iat': iat,
-                'uid': encode_email(request.user.email),
-                'profile': profile,
-                'traits': list(
-                    {
-                        f'eventyay-video-event-{request.event.slug}',
-                    }
-                ),
-            }
-            token = jwt.encode(payload, request.event.venueless_settings.secret, algorithm='HS256')
-
-            return JsonResponse(
+        payload = {
+            "iss": venueless_settings.issuer,
+            "aud": venueless_settings.audience,
+            "exp": exp,
+            "iat": iat,
+            "uid": encode_email(request.user.email),
+            "profile": profile,
+            "traits": list(
                 {
-                    'redirect_url': '{}/#token={}'.format(request.event.venueless_settings.join_url, token).replace(
-                        '//#', '/#'
-                    )
-                },
-                status=200,
-            )
+                    f"eventyay-video-event-{request.event.slug}",
+                }
+            ),
+        }
+        token = jwt.encode(
+            payload, venueless_settings.secret, algorithm="HS256"
+        )
+        redirect_url = urljoin(venueless_settings.join_url, f'#token={token}')
+        logger.info('Redirect URL to Video: %s', redirect_url)
+        return JsonResponse(
+            {
+                'redirect_url': redirect_url
+            },
+            status=HTTPStatus.OK,
+        )
 
-    def retrieve_info_from_url(self, url):
-        parsed_url = urlparse(url)
-        ticket_host = settings.EVENTYAY_TICKET_BASE_PATH
-        path = parsed_url.path
-        parts = path.strip('/').split('/')
-        if len(parts) >= 2:
-            organizer, event = parts[-2:]
-            return ticket_host, unquote(organizer), unquote(event)
-        else:
-            return ticket_host, None, None
+
+_T = TypeVar('_T', str, None)
+# We use TypeVar because the 2nd and 3rd items must be both `str` or both `None` at the same time.
+# The annotation `tuple[str, str | None, str | None]` doesn't satisfy this requirement.
+def extract_event_info_from_url(url: str) -> tuple[str, _T, _T]:
+    parsed_url = urlparse(url)
+    ticket_host = settings.EVENTYAY_TICKET_BASE_PATH
+    path = parsed_url.path
+    parts = path.strip("/").split("/")
+    if len(parts) >= 2:
+        organizer, event = parts[-2:]
+        return ticket_host, unquote(organizer), unquote(event)
+    return ticket_host, None, None
+
+
+def check_user_owning_ticket(user: User, event: Event) -> TicketCheckResult:
+    """
+    Call eventyay-ticket API to check if user owns ticket for this event.
+
+    # NOTE: It doesn't work with the Docker setup for development, because we use fake domain then,
+    and inside the container, the fake domain points to the container itself, not the host.
+    """
+    if 'ticket_link' not in event.display_settings:
+        logger.info('display_settings[ticket_link] is missing.')
+        return TicketCheckResult.MISCONFIGURED
+    base_url, organizer, event = extract_event_info_from_url(
+            event.display_settings['ticket_link']
+        )
+    if not organizer or not event or not base_url:
+        logger.info('display_settings[ticket_link] is not valid.')
+        return TicketCheckResult.MISCONFIGURED
+    check_payload = {'user_email': user.email}
+    # call to ticket to check if user order ticket yet or not
+    api_url = urljoin(base_url, f'api/v1/{organizer}/{event}/ticket-check')
+    logger.info('To call API %s', api_url)
+    # In development, we disable the SSL verification.
+    response = requests.post(api_url, json=check_payload, verify=(not settings.DEBUG))
+
+    if response.status_code != HTTPStatus.OK:
+        logger.debug('Response from eventyay-ticket: %s', response.text)
+        logger.info('user is not allowed to join online event.')
+        return TicketCheckResult.NO_TICKET
+    return TicketCheckResult.HAS_TICKET

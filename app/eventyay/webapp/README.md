@@ -47,16 +47,22 @@ npm run i18n:report
 
 ## Conventions
 
+### Restored pages (Schedule & Config)
+- The Schedule pages are reachable again via the sidebar: “Schedule”, “Sessions”, and “Speakers” appear whenever a schedule is configured (pretalx domain/url) or once the schedule has been loaded.
+- An Admin Config quick link (gear icon) is now visible in the top bar for users with the `world:update` permission, linking to the full configuration section.
+
+If you don’t see the schedule links, configure a schedule under Admin → Config → Schedule, or ensure your world has pretalx settings. The store will auto-fetch the schedule on connect.
+
 We use three languages:
 
 ### JavaScript
-Currently ES2015 and Stage-3 features, as provided by babel.  
-Linting is done with Eslint and a slightly customized standard.js.  
+Currently ES2015 and Stage-3 features, as provided by babel.
+Linting is done with Eslint and a slightly customized standard.js.
 Listen to the Linter.
 
 ### Pug/Jade Templates
 Pug compiles down to HTML.
-Vue templates are all in jade/pug.  
+Vue templates are all in jade/pug.
 Has no linting.
 
 #### Pug guide
@@ -91,7 +97,7 @@ p This is an #[a(href="#") inline link] with spaces around it.
 ```
 
 ### Stylus
-Stylus is a preprocessor for CSS, like SASS or LESS.  
+Stylus is a preprocessor for CSS, like SASS or LESS.
 Has no linter.
 
 #### Stylus guide
@@ -166,6 +172,6 @@ https://materialdesignicons.com/
 
 
 ### Vue Files
-`.vue` files combine ES, jade template and stylus sheets into one file.  
-The template gets used as component templates.  
+`.vue` files combine ES, jade template and stylus sheets into one file.
+The template gets used as component templates.
 The stylus sheet is NOT scoped, so ALWAYS use a fitting root selector (for example the component root element class).

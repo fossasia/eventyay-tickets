@@ -37,6 +37,11 @@ class WebSocketClient extends EventEmitter {
 	}
 
 	call(name, data, opts) {
+		// Translate legacy world.* -> event.* for backend
+		if (name.startsWith('world.')) {
+			name = 'event.' + name.substring('world.'.length)
+		}
+
 		const options = {
 			timeout: 15000
 		}
@@ -138,6 +143,15 @@ class WebSocketClient extends EventEmitter {
 
 	_processMessage(rawMessage) {
 		const message = JSON.parse(rawMessage.data)
+
+		// If backend uses event.* translate to world.* for frontend store expecting legacy keys
+		if (typeof message[0] === 'string' && message[0].startsWith('event.')) {
+			message[0] = 'world.' + message[0].substring('event.'.length)
+		}
+		// Special case: initial authenticated payload contains event.config key
+		if (message[0] === 'authenticated' && message[1] && message[1]['event.config'] && !message[1]['world.config']) {
+			message[1]['world.config'] = message[1]['event.config']
+		}
 
 		const actionHandlers = {
 			error: this._handleError.bind(this),

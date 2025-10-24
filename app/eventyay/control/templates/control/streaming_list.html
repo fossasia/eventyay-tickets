@@ -4,7 +4,7 @@
 {% block video_admin_content %}
 <h1 class="page-header">{% trans "Streaming servers" %}</h1>
 <div class="video-admin-btn-row">
-    <a href="{% url 'control:streamingserver.create' %}" class="btn btn-primary btn-sm">
+    <a href="{% url 'eventyay_admin:video_admin:streamingserver.create' %}" class="btn btn-primary btn-sm">
         <span class="fa fa-plus"></span> {% trans "Add new server" %}
     </a>
 </div>
@@ -23,10 +23,10 @@
         <td><code>{{ s.pk }}</code></td>
         <td>{{ s.name }}</td>
         <td class="text-right video-admin-actions">
-            <a href="{% url 'control:streamingserver.update' pk=s.pk %}" class="btn btn-default btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:streamingserver.update' pk=s.pk %}" class="btn btn-default btn-xs">
                 <span class="fa fa-pencil"></span> {% trans "Edit" %}
             </a>
-            <a href="{% url 'control:streamingserver.delete' pk=s.pk %}" class="btn btn-danger btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:streamingserver.delete' pk=s.pk %}" class="btn btn-danger btn-xs">
                 <span class="fa fa-trash"></span> {% trans "Delete" %}
             </a>
         </td>

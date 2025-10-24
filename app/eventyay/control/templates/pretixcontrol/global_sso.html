@@ -56,7 +56,7 @@
                 </div>
             </div>
             <br>
-            <form action="{% url 'control:admin.global.sso.delete' application.pk %}" method="post" class="text-right">
+            <form action="{% url 'eventyay_admin:admin.global.sso.delete' application.pk %}" method="post" class="text-right">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form>

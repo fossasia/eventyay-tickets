@@ -1,0 +1,11 @@
+{
+  "index.html": {
+    "file": "js/global-nav-menu.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "css": [
+      "css/global-nav-menu.index.css"
+    ]
+  }
+}

@@ -4,7 +4,7 @@
 {% block video_admin_content %}
 <h1 class="page-header">{% trans "TURN servers" %}</h1>
 <div class="video-admin-btn-row">
-    <a href="{% url 'control:turnserver.create' %}" class="btn btn-primary btn-sm">
+    <a href="{% url 'eventyay_admin:video_admin:turnserver.create' %}" class="btn btn-primary btn-sm">
         <span class="fa fa-plus"></span> {% trans "Add new server" %}
     </a>
 </div>
@@ -31,10 +31,10 @@
             {% endif %}
         </td>
         <td class="text-right video-admin-actions">
-            <a href="{% url 'control:turnserver.update' pk=s.pk %}" class="btn btn-default btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:turnserver.update' pk=s.pk %}" class="btn btn-default btn-xs">
                 <span class="fa fa-pencil"></span> {% trans "Edit" %}
             </a>
-            <a href="{% url 'control:turnserver.delete' pk=s.pk %}" class="btn btn-danger btn-xs">
+            <a href="{% url 'eventyay_admin:video_admin:turnserver.delete' pk=s.pk %}" class="btn btn-danger btn-xs">
                 <span class="fa fa-trash"></span> {% trans "Delete" %}
             </a>
         </td>

@@ -78,7 +78,7 @@ class UserUpdate(SuperuserBase, UpdateView):
     queryset = User.objects.all()
     context_object_name = "users"
     form_class = UserForm
-    success_url = "/control/admin/video/users/"
+    success_url = "/admin/video/users/"
 
     def form_valid(self, form):
         LogEntry.objects.create(
@@ -116,13 +116,13 @@ class SignupView(AdminBase, FormView):
             self.request,
             _("The user has been created successfully, they can now log in."),
         )
-        return redirect("/control/admin/video/")
+        return redirect("/admin/video/")
 
 
 class ProfileView(AdminBase, FormView):
     template_name = "control/profile.html"
     form_class = ProfileForm
-    success_url = "/control/admin/video/auth/profile/"
+    success_url = "/admin/video/auth/profile/"
 
     def form_valid(self, form):
         LogEntry.objects.create(
@@ -179,10 +179,64 @@ class EventList(AdminBase, ListView):
 class EventAdminToken(AdminBase, DetailView):
     template_name = "control/event_clear.html"
     queryset = Event.objects.all()
-    success_url = "/control/admin/video/events/"
+    success_url = "/admin/video/events/"
+
+    def get_object(self, queryset=None):
+        """
+        Override get_object to handle both slug and pk lookups
+        """
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        pk = self.kwargs.get('pk')
+        if pk is None:
+            raise AttributeError("EventAdminToken view must be called with a pk argument.")
+
+        # Try to get the object by pk first (if it's numeric)
+        try:
+            if pk.isdigit():
+                return queryset.get(pk=pk)
+        except Event.DoesNotExist:
+            pass
+
+        # If pk lookup fails or pk is not numeric, try slug lookup
+        try:
+            return queryset.get(slug=pk)
+        except Event.DoesNotExist:
+            from django.http import Http404
+            raise Http404("Event not found")
 
     def get(self, request, *args, **kwargs):
         event = self.get_object()
+
+        # Ensure JWT configuration exists
+        if not event.config or not event.config.get("JWT_secrets"):
+            from django.utils.crypto import get_random_string
+            from django.conf import settings
+
+            secret = get_random_string(length=64)
+            event.config = {
+                "JWT_secrets": [
+                    {
+                        "issuer": "any",
+                        "audience": "eventyay",
+                        "secret": secret,
+                    }
+                ]
+            }
+            event.save()
+
+            # Also set up the video plugin settings for the webapp
+            try:
+                event.settings.venueless_secret = secret
+                event.settings.venueless_issuer = "any"
+                event.settings.venueless_audience = "eventyay"
+                # Point to SPA at /video/<event_slug>
+                base_site = getattr(settings, 'SITE_URL', 'http://127.0.0.1:8000').rstrip('/')
+                event.settings.venueless_url = f"{base_site}/video/{event.slug}"
+            except Exception:
+                pass
+
         jwt_config = event.config["JWT_secrets"][0]
         secret = jwt_config["secret"]
         audience = jwt_config["audience"]
@@ -204,7 +258,17 @@ class EventAdminToken(AdminBase, DetailView):
             action_type="event.adminaccess",
             data={},
         )
-        return redirect(f"https://{event.domain}#token={token}")
+
+        # Use the appropriate URL based on environment
+        if event.domain:
+            video_url = f"https://{event.domain}#token={token}"
+        else:
+            # For local development, use the current request's host
+            scheme = 'https' if request.is_secure() else 'http'
+            host = request.get_host()
+            video_url = f"{scheme}://{host}/video/{event.slug}#token={token}"
+
+        return redirect(video_url)
 
 
 class FormsetMixin:
@@ -224,7 +288,7 @@ class FormsetMixin:
 class EventCreate(FormsetMixin, AdminBase, CreateView):
     template_name = "control/event_create.html"
     form_class = EventForm
-    success_url = "/control/admin/video/events/"
+    success_url = "/admin/video/events/"
 
     @cached_property
     def copy_from(self):
@@ -268,6 +332,20 @@ class EventCreate(FormsetMixin, AdminBase, CreateView):
 
         self.object = form.save()
 
+        # Initialize Eventyay Video (ticket-video) defaults so the webapp works immediately
+        try:
+            secret = form.instance.config["JWT_secrets"][0]["secret"]
+            issuer = form.instance.config["JWT_secrets"][0]["issuer"]
+            audience = form.instance.config["JWT_secrets"][0]["audience"]
+            self.object.settings.venueless_secret = secret
+            self.object.settings.venueless_issuer = issuer
+            self.object.settings.venueless_audience = audience
+            # Point to SPA at /video/<event_id>
+            base_site = settings.SITE_URL.rstrip('/')
+            self.object.settings.venueless_url = f"{base_site}/video/{self.object.pk}"
+        except Exception:
+            pass
+
         for f in self.formset.extra_forms:
             if not f.has_changed():
                 continue
@@ -275,6 +353,19 @@ class EventCreate(FormsetMixin, AdminBase, CreateView):
                 continue
             f.instance.event = self.object
             f.save()
+
+        if self.copy_from:
+            try:
+                secret = form.instance.config["JWT_secrets"][0]["secret"]
+                issuer = form.instance.config["JWT_secrets"][0]["issuer"]
+                audience = form.instance.config["JWT_secrets"][0]["audience"]
+                self.object.settings.venueless_secret = secret
+                self.object.settings.venueless_issuer = issuer
+                self.object.settings.venueless_audience = audience
+                base_site = settings.SITE_URL.rstrip('/')
+                self.object.settings.venueless_url = f"{base_site}/video/{self.object.pk}"
+            except Exception:
+                pass
 
         LogEntry.objects.create(
             content_object=form.instance,
@@ -306,7 +397,7 @@ class EventUpdate(FormsetMixin, AdminBase, UpdateView):
     template_name = "control/event_update.html"
     form_class = EventForm
     queryset = Event.objects.all()
-    success_url = "/control/admin/video/events/"
+    success_url = "/admin/video/events/"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -337,7 +428,7 @@ class EventUpdate(FormsetMixin, AdminBase, UpdateView):
 class EventClear(AdminBase, DetailView):
     template_name = "control/event_clear.html"
     queryset = Event.objects.all()
-    success_url = "/control/admin/video/events/"
+    success_url = "/admin/video/events/"
 
     def post(self, request, *args, **kwargs):
         LogEntry.objects.create(
@@ -360,7 +451,7 @@ class BBBServerList(AdminBase, ListView):
 class BBBServerCreate(AdminBase, CreateView):
     template_name = "control/bbb_form.html"
     form_class = BBBServerForm
-    success_url = "/control/admin/video/bbbs/"
+    success_url = "/admin/video/bbbs/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -380,7 +471,7 @@ class BBBServerUpdate(AdminBase, UpdateView):
     template_name = "control/bbb_form.html"
     form_class = BBBServerForm
     queryset = BBBServer.objects.all()
-    success_url = "/control/admin/video/bbbs/"
+    success_url = "/admin/video/bbbs/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -398,7 +489,7 @@ class BBBServerUpdate(AdminBase, UpdateView):
 class BBBServerDelete(AdminBase, DeleteView):
     template_name = "control/bbb_delete.html"
     queryset = BBBServer.objects.all()
-    success_url = "/control/admin/video/bbbs/"
+    success_url = "/admin/video/bbbs/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
@@ -424,7 +515,7 @@ class JanusServerList(AdminBase, ListView):
 class JanusServerCreate(AdminBase, CreateView):
     template_name = "control/janus_form.html"
     form_class = JanusServerForm
-    success_url = "/control/admin/video/janus/"
+    success_url = "/admin/video/janus/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -444,7 +535,7 @@ class JanusServerUpdate(AdminBase, UpdateView):
     template_name = "control/janus_form.html"
     form_class = JanusServerForm
     queryset = JanusServer.objects.all()
-    success_url = "/control/admin/video/janus/"
+    success_url = "/admin/video/janus/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -462,7 +553,7 @@ class JanusServerUpdate(AdminBase, UpdateView):
 class JanusServerDelete(AdminBase, DeleteView):
     template_name = "control/janus_delete.html"
     queryset = JanusServer.objects.all()
-    success_url = "/control/admin/video/janus/"
+    success_url = "/admin/video/janus/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
@@ -488,7 +579,7 @@ class TurnServerList(AdminBase, ListView):
 class TurnServerCreate(AdminBase, CreateView):
     template_name = "control/turn_form.html"
     form_class = TurnServerForm
-    success_url = "/control/admin/video/turns/"
+    success_url = "/admin/video/turns/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -508,7 +599,7 @@ class TurnServerUpdate(AdminBase, UpdateView):
     template_name = "control/turn_form.html"
     form_class = TurnServerForm
     queryset = TurnServer.objects.all()
-    success_url = "/control/admin/video/turns/"
+    success_url = "/admin/video/turns/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -526,7 +617,7 @@ class TurnServerUpdate(AdminBase, UpdateView):
 class TurnServerDelete(AdminBase, DeleteView):
     template_name = "control/turn_delete.html"
     queryset = TurnServer.objects.all()
-    success_url = "/control/admin/video/turns/"
+    success_url = "/admin/video/turns/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):
@@ -584,7 +675,7 @@ class StreamingServerList(AdminBase, ListView):
 class StreamingServerCreate(AdminBase, CreateView):
     template_name = "control/streaming_form.html"
     form_class = StreamingServerForm
-    success_url = "/control/admin/video/streamingservers/"
+    success_url = "/admin/video/streamingservers/"
 
     @transaction.atomic()
     def form_valid(self, form):
@@ -604,7 +695,7 @@ class StreamingServerUpdate(AdminBase, UpdateView):
     template_name = "control/streaming_form.html"
     form_class = StreamingServerForm
     queryset = StreamingServer.objects.all()
-    success_url = "/control/admin/video/streamingservers/"
+    success_url = "/admin/video/streamingservers/"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -622,7 +713,7 @@ class StreamingServerUpdate(AdminBase, UpdateView):
 class StreamingServerDelete(AdminBase, DeleteView):
     template_name = "control/streaming_delete.html"
     queryset = StreamingServer.objects.all()
-    success_url = "/control/admin/video/streamingservers/"
+    success_url = "/admin/video/streamingservers/"
     context_object_name = "server"
 
     def delete(self, request, *args, **kwargs):

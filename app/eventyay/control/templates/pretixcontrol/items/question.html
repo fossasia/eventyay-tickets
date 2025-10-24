@@ -7,7 +7,7 @@
 {% block inside %}
     <h1>
         {% blocktrans with name=question.question %}Question: {{ name }}{% endblocktrans %}
-        <a href="{% url "control:event.items.questions.edit" event=request.event.slug organizer=request.event.organizer.slug question=question.pk %}"
+        <a href="{% url "control:event.products.questions.edit" event=request.event.slug organizer=request.event.organizer.slug question=question.pk %}"
                 class="btn btn-default">
             <span class="fa fa-edit"></span>
             {% trans "Edit question" %}
@@ -28,7 +28,7 @@
             </select>
             <select name="item" class="form-control">
                 <option value="">{% trans "All products" %}</option>
-                {% for item in items %}
+                {% for item in products %}
                     <option value="{{ item.id }}"
                             {% if request.GET.item|add:0 == item.id %}selected="selected"{% endif %}>
                         {{ item.name }}
@@ -46,12 +46,12 @@
                         No matching answers found.
                     {% endblocktrans %}
                 </p>
-                {% if not items %}
+                {% if not products %}
                     <p>
                         {% trans "You need to assign the question to a product to collect answers." %}
                     </p>
 
-                    <a href="{% url "control:event.items.questions.edit" event=request.event.slug organizer=request.event.organizer.slug question=question.pk %}"
+                    <a href="{% url "control:event.products.questions.edit" event=request.event.slug organizer=request.event.organizer.slug question=question.pk %}"
                             class="btn btn-primary btn-lg"><i class="fa fa-edit"></i> {% trans "Edit question" %}</a>
                 {% endif %}
             </div>

@@ -57,6 +57,10 @@ class AuthModule(BaseModule):
         super().__init__(consumer)
         self._current_view = None
 
+    def _event_config(self):
+        """Return event config dict (never None)."""
+        return (getattr(self.consumer.event, "config", None) or {}) if self.consumer.event else {}
+
     async def login(self, body):
         kwargs = {
             "event": self.consumer.event,
@@ -122,7 +126,7 @@ class AuthModule(BaseModule):
                 "authenticated",
                 {
                     "user.config": self.consumer.user.serialize_public(
-                        trait_badges_map=self.consumer.event.config.get(
+                        trait_badges_map=self._event_config().get(
                             "trait_badges_map"
                         ),
                         include_client_state=True,
@@ -162,7 +166,7 @@ class AuthModule(BaseModule):
         async with statsd() as s:
             s.increment(f"authentication.completed,event={self.consumer.event.pk}")
 
-        if self.consumer.event.config.get("pretalx", {}).get("conftool"):
+        if self._event_config().get("pretalx", {}).get("conftool"):
             async with aredis() as redis:
                 # This is a very hacky replacement of a cronjob. The main advantage is that it will only run while
                 # the event is in use and stop running after the event. Let's see how it works out in the real event.
@@ -177,7 +181,7 @@ class AuthModule(BaseModule):
                     )
 
     async def _enforce_connection_limit(self):
-        connection_limit = self.consumer.event.config.get("connection_limit")
+        connection_limit = self._event_config().get("connection_limit")
         if not connection_limit:
             return
 
@@ -261,7 +265,7 @@ class AuthModule(BaseModule):
         await user_broadcast(
             "user.updated",
             user.serialize_public(
-                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
+                trait_badges_map=self._event_config().get("trait_badges_map"),
                 include_client_state=True,
             ),
             user.pk,
@@ -283,7 +287,7 @@ class AuthModule(BaseModule):
         await user_broadcast(
             "user.updated",
             user.serialize_public(
-                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
+                trait_badges_map=self._event_config().get("trait_badges_map"),
                 include_client_state=user.type == User.UserType.KIOSK,
             ),
             user.pk,
@@ -302,7 +306,7 @@ class AuthModule(BaseModule):
                 self.consumer.event.id,
                 ids=body.get("ids")[:100],
                 include_admin_info=admin,
-                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
+                trait_badges_map=self._event_config().get("trait_badges_map"),
             )
             await self.consumer.send_success({u["id"]: u for u in users})
         elif "pretalx_ids" in body:
@@ -310,7 +314,7 @@ class AuthModule(BaseModule):
                 self.consumer.event.id,
                 pretalx_ids=body.get("pretalx_ids")[:100],
                 include_admin_info=admin,
-                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
+                trait_badges_map=self._event_config().get("trait_badges_map"),
             )
             await self.consumer.send_success({u["pretalx_id"]: u for u in users})
         else:
@@ -318,7 +322,7 @@ class AuthModule(BaseModule):
                 self.consumer.event.id,
                 body.get("id"),
                 include_admin_info=admin,
-                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
+                trait_badges_map=self._event_config().get("trait_badges_map"),
             )
             if user:
                 await self.consumer.send_success(user)
@@ -341,7 +345,7 @@ class AuthModule(BaseModule):
         if self._current_view and self.consumer.event:
             await database_sync_to_async(end_view)(
                 self._current_view,
-                delete=not self.consumer.event.config.get("track_event_views", False),
+                delete=not self._event_config().get("track_event_views", False),
             )
 
     @command("list")
@@ -361,16 +365,16 @@ class AuthModule(BaseModule):
                 user=self.consumer.user,
                 permission=Permission.EVENT_USERS_MANAGE,
             ),
-            trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
+            trait_badges_map=self._event_config().get("trait_badges_map"),
         )
         await self.consumer.send_success({"results": users})
 
     @command("list.search")
     async def user_list(self, body):
-        list_conf = self.consumer.event.config.get("user_list", {})
+        list_conf = self._event_config().get("user_list", {})
         page_size = list_conf.get("page_size", 20)
         search_min_chars = list_conf.get("search_min_chars", 0)
-        profile_fields = self.consumer.event.config.get("profile_fields", {})
+        profile_fields = self._event_config().get("profile_fields", {})
         badge = body.get("badge")
         search_fields = [
             field["id"]
@@ -399,7 +403,7 @@ class AuthModule(BaseModule):
                     user=self.consumer.user,
                     permission=Permission.EVENT_USERS_MANAGE,
                 ),
-                trait_badges_map=self.consumer.event.config.get("trait_badges_map"),
+                trait_badges_map=self._event_config().get("trait_badges_map"),
             )
         await self.consumer.send_success(result)
 
@@ -588,19 +592,25 @@ class AuthModule(BaseModule):
                 trait_badges_map=None,
                 include_client_state=True,
             )
-            jwt_config = self.consumer.event.config["JWT_secrets"][0]
+            cfg = self._event_config()
+            jwt_secrets = cfg.get("JWT_secrets") or []
+            if not jwt_secrets:
+                # Fail gracefully if JWT secrets are not configured
+                user["token"] = None
+                return user
+            jwt_config = jwt_secrets[0]
             iat = datetime.datetime.utcnow()
             exp = iat + datetime.timedelta(days=365)
             payload = {
-                "iss": jwt_config["issuer"],
-                "aud": jwt_config["audience"],
+                "iss": jwt_config.get("issuer", ""),
+                "aud": jwt_config.get("audience", ""),
                 "exp": exp,
                 "iat": iat,
                 "uid": user["token_id"],
                 "traits": ["-kiosk"],
             }
 
-            token = jwt.encode(payload, jwt_config["secret"], algorithm="HS256")
+            token = jwt.encode(payload, jwt_config.get("secret", ""), algorithm="HS256")
             st = ShortToken(event=self.consumer.event, long_token=token, expires=exp)
             st.save()
             user["token"] = st.short_token

@@ -9,7 +9,7 @@
     <div class="form-body">{{ form.as_p }}</div>
     <div class="video-admin-btn-row">
         <button type="submit" class="btn btn-primary"><span class="fa fa-save"></span> {% trans "Save" %}</button>
-        <a href="{% url 'control:turnserver.list' %}" class="btn btn-default">{% trans "Cancel" %}</a>
+        <a href="{% url 'eventyay_admin:video_admin:turnserver.list' %}" class="btn btn-default">{% trans "Cancel" %}</a>
     </div>
 </form>
 {% endblock %}

@@ -126,6 +126,7 @@ dependencies = [
     "libsass>=0.23.0",
     "lxml>=5.4.0",
     "markdown>=3.7",
+    "markdownify>=1.2.0",
     "matplotlib>=3.10.3",
     "maxminddb>=2.6.3",
     "mccabe>=0.7.0",
@@ -139,6 +140,7 @@ dependencies = [
     "openpyxl>=3.1.5",
     "orjson>=3.10.18",
     "packaging>=25.0",
+    "pandas>=2.3.3",
     "pdf2image>=1.17.0",
     "pdfrw>=0.4",
     "pep8-naming>=0.14.1",
@@ -279,6 +281,7 @@ ignore = ["E722", "E741"]
 "**/__init__.py" = ["F401"]
 # These files have long lines.
 "**/migrations/*.py" = ["E501"]
+"eventyay/config/settings.py" = ["E402"]
 
 [tool.setuptools]
 packages = ["eventyay"]

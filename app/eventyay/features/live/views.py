@@ -27,7 +27,7 @@ class SourceCache:
     @cached_property
     def source(self):
         wapath = os.path.normpath(
-            os.path.join(os.path.dirname(__file__), "../../../webapp/dist/index.html")
+            os.path.join(os.path.dirname(__file__), "../../../static/webapp/index.html")
         )
         try:
             with open(wapath) as f:

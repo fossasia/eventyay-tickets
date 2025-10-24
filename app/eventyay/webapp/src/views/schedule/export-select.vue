@@ -29,7 +29,7 @@
         >
         <transition name="fade">
           <div
-            v-if="hoveredOption === option.id"
+            v-if="hoveredOption === option"
             class="qr-popup"
           >
             <img
@@ -43,91 +43,72 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, watch, onMounted, onBeforeUnmount } from 'vue'
+<script>
 import QRCode from 'qrcode'
 import config from 'config'
 
-const props = defineProps({
-  options: {
-    type: Array,
-    required: true
-  },
-  modelValue: {
-    type: Object,
-    default: null
-  }
-})
-
-const emit = defineEmits(['input', 'update:modelValue'])
-
-const dropdown = ref(null)
-const isOpen = ref(false)
-const selectedOption = ref(props.modelValue ? props.modelValue.label : null)
-const hoveredOption = ref(null)
-const qrCodes = reactive({})
-
-watch(() => props.modelValue, (newVal) => {
-  selectedOption.value = newVal ? newVal.label : null
-})
-
-watch(() => props.options, (newOpts) => {
-  // regenerate QR codes when options change
-  for (const k in qrCodes) delete qrCodes[k]
-  if (Array.isArray(newOpts)) {
-    newOpts.forEach(option => generateQRCode(option))
-  }
-}, { immediate: true, deep: true })
-
-function selectOption(option) {
-  selectedOption.value = option.label
-  isOpen.value = false
-  emit('update:modelValue', option)
-  emit('input', option)
+export default {
+	props: {
+		options: {
+			type: Array,
+			required: true
+		}
+	},
+  emits: ['input', 'update:modelValue'],
+	data() {
+		return {
+			isOpen: false,
+			selectedOption: null,
+			hoveredOption: null,
+			qrCodes: {}
+		}
+	},
+	mounted() {
+		document.addEventListener('click', this.outsideClick)
+	},
+  beforeUnmount() {
+		document.removeEventListener('click', this.outsideClick)
+	},
+	created() {
+		this.options.forEach(option => {
+			this.generateQRCode(option)
+		})
+	},
+	methods: {
+		selectOption(option) {
+			this.selectedOption = option.label
+			this.isOpen = false
+			this.$emit('input', option)
+		},
+		outsideClick(event) {
+			const dropdown = this.$refs.dropdown
+			if (!dropdown.contains(event.target)) {
+				this.isOpen = false
+			}
+		},
+		generateQRCode(option) {
+			if (!['ics', 'xml', 'myics', 'myxml'].includes(option.id)) {
+				return
+			}
+			const url = config.api.base + 'export-talk?export_type=' + option.id
+			QRCode.toDataURL(url, { scale: 1 }, (err, url) => {
+				if (!err) this.qrCodes[option.id] = url
+			})
+		},
+		setHoveredOption(option) {
+			if (['ics', 'xml', 'myics', 'myxml'].includes(option.id)) {
+				this.hoveredOption = option
+			} else {
+				this.hoveredOption = null
+			}
+		},
+		clearHoveredOption(option) {
+			if (this.hoveredOption === option) {
+				this.hoveredOption = null
+			}
+		},
+	}
 }
-
-function outsideClick(event) {
-  const dd = dropdown.value
-  if (dd && !dd.contains(event.target)) {
-    isOpen.value = false
-  }
-}
-
-async function generateQRCode(option) {
-  if (!['ics', 'xml', 'myics', 'myxml'].includes(option.id)) return
-  const url = config.api.base + 'export-talk?export_type=' + option.id
-  // generate a larger image to avoid pixelation when scaled down
-  const popupSize = 150 // CSS popup size in px
-  const ratio = (typeof window !== 'undefined' && window.devicePixelRatio) ? window.devicePixelRatio : 1
-  const targetWidth = Math.ceil(popupSize * Math.max(1, ratio))
-  try {
-    const dataUrl = await QRCode.toDataURL(url, { width: targetWidth, margin: 1, errorCorrectionLevel: 'H' })
-    qrCodes[option.id] = dataUrl
-  } catch (err) {
-    // Keep behavior silent on error (same as previous implementation).
-    // Optional: console.error('QR generation failed', err)
-  }
-}
-
-function setHoveredOption(option) {
-  if (['ics', 'xml', 'myics', 'myxml'].includes(option.id)) {
-    hoveredOption.value = option.id
-  } else {
-    hoveredOption.value = null
-  }
-}
-
-function clearHoveredOption(option) {
-  if (hoveredOption.value === option.id) hoveredOption.value = null
-}
-
-onMounted(() => {
-  document.addEventListener('click', outsideClick)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', outsideClick)
-})
 </script>
 
 <style>
@@ -202,15 +183,5 @@ onBeforeUnmount(() => {
   width: 20px; /* Adjust as needed */
   height: 20px; /* Adjust as needed */
   align-self: flex-end;
-}
-
-/* Ensure QR images keep sharp edges and are not blurry when displayed */
-.dropdown-options img.default-image,
-.qr-popup img {
-  display: block;
-  object-fit: contain;
-  image-rendering: -webkit-optimize-contrast; /* Safari */
-  image-rendering: crisp-edges;
-  image-rendering: pixelated; /* fallback */
 }
 </style>

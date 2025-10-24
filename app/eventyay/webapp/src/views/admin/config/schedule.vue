@@ -38,10 +38,9 @@
 				upload-url-input(name="schedule-file", v-model="config.pretalx.url", label="Schedule file", :upload-url="uploadUrl", accept="application/vnd.ms-excel, .xlsx", :validation="v$.config.pretalx.url")
 			template(v-else-if="source === 'conftool'")
 				p conftool is controlled by the main conftool settings.
-	.ui-form-actions-wrapper
-		.ui-form-actions
-			bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
-			.errors {{ validationErrors.join(', ') }}
+	.ui-form-actions
+		bunt-button.btn-save(@click="save", :loading="saving", :error-message="error") Save
+		.errors {{ validationErrors.join(', ') }}
 </template>
 <script>
 // TODO:
