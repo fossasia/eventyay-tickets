@@ -9,6 +9,7 @@ from django.forms import CheckboxSelectMultiple, formset_factory
 from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
+from django.utils.crypto import get_random_string
 from django.utils.timezone import get_current_timezone_name
 from django.utils.translation import gettext, pgettext_lazy
 from django.utils.translation import gettext_lazy as _
@@ -74,6 +75,10 @@ class EventWizardFoundationForm(forms.Form):
         qs = Organizer.objects.all()
         if not self.user.has_active_staff_session(self.session.session_key):
             qs = qs.filter(id__in=self.user.teams.filter(can_create_events=True).values_list('organizer', flat=True))
+        # Make organizer required only if more than one exists
+        organizer_count = qs.count()
+        is_required = organizer_count > 1
+        
         self.fields['organizer'] = forms.ModelChoiceField(
             label=_('Organizer'),
             queryset=qs,
@@ -85,17 +90,19 @@ class EventWizardFoundationForm(forms.Form):
                 }
             ),
             empty_label=None,
-            required=True,
+            required=is_required,
         )
         self.fields['organizer'].widget.choices = self.fields['organizer'].choices
 
-        if len(self.fields['organizer'].choices) == 1:
-            self.fields['organizer'].initial = self.fields['organizer'].queryset.first()
+        # Auto-select if only one organizer exists
+        if organizer_count == 1:
+            self.fields['organizer'].initial = qs.first()
+            self.fields['organizer'].required = False
 
 
 class EventWizardBasicsForm(I18nModelForm):
     error_messages = {
-        'duplicate_slug': _('You already used this slug for a different event. Please choose a new one.'),
+        'duplicate_slug': _('This short name is already taken by another event. Please choose a different one or use the "Set to random" button for an automatic suggestion.'),
     }
     timezone = forms.ChoiceField(
         choices=((a, a) for a in common_timezones),
@@ -169,6 +176,27 @@ class EventWizardBasicsForm(I18nModelForm):
         self.fields['location'].widget.attrs['rows'] = '3'
         self.fields['location'].widget.attrs['placeholder'] = _('Sample Conference Center\nHeidelberg, Germany')
         self.fields['slug'].widget.prefix = build_absolute_uri(self.organizer, 'presale:organizer.index')
+        
+        # Generate a unique slug if none provided
+        if not self.initial.get('slug'):
+            charset = list('abcdefghjklmnpqrstuvwxyz3789')
+            
+            # Try different lengths until we find a unique slug
+            length = 6
+            counter = 0
+            while not self.initial.get('slug'):
+                if length <= 10:
+                    candidate = get_random_string(length=length, allowed_chars=charset)
+                    length += 1
+                else:
+                    # Fallback: add counter to ensure uniqueness
+                    candidate = f'{get_random_string(length=4, allowed_chars=charset)}{counter}'
+                    counter += 1
+                
+                if not self.organizer.events.filter(slug__iexact=candidate).exists():
+                    self.initial['slug'] = candidate
+                    break
+        
         if self.has_subevents:
             del self.fields['presale_start']
             del self.fields['presale_end']
@@ -208,7 +236,7 @@ class EventWizardBasicsForm(I18nModelForm):
         slug = self.cleaned_data['slug']
         if Event.objects.filter(slug__iexact=slug, organizer=self.organizer).exists():
             raise forms.ValidationError(self.error_messages['duplicate_slug'], code='duplicate_slug')
-        return slug
+        return slug.lower()
 
     @staticmethod
     def has_control_rights(user, organizer):
