@@ -239,6 +239,17 @@ class SecurityMiddleware(MiddlewareMixin):
             # this. However, we'll restrict it to HTTPS.
             'form-action': ['{dynamic}', 'https:'] + (['http:'] if settings.SITE_URL.startswith('http://') else []),
         }
+
+        # Allow inline scripts ONLY for video pages (Venueless integration requires it)
+        if request.path.startswith('/video/'):
+            h['script-src-elem'] = [
+                '{static}',
+                'https://checkout.stripe.com',
+                'https://js.stripe.com',
+                'http://localhost:8080',
+                "'unsafe-eval'",
+                "'unsafe-inline'",  # Only for video pages - Venueless requires inline scripts
+            ]
         if settings.LOG_CSP:
             base_path = settings.BASE_PATH
             h['report-uri'] = [f'{base_path}/csp_report/']
@@ -273,27 +284,18 @@ class SecurityMiddleware(MiddlewareMixin):
                     domain = '%s:%d' % (domain, siteurlsplit.port)
                 dynamicdomain += ' ' + domain
 
+        # Add DEBUG mode settings before rendering CSP
+        if settings.DEBUG:
+            h['script-src'] += ["'unsafe-inline'", "http://localhost:8080"]
+            h['connect-src'] += ["http://localhost:8080", "ws://localhost:8080"]
+
         if request.path not in self.CSP_EXEMPT and not getattr(resp, '_csp_ignore', False):
-            resp['Content-Security-Policy'] = _render_csp(h).format(
-                static=staticdomain, dynamic=dynamicdomain, media=mediadomain
-            )
             for k, v in h.items():
                 h[k] = ' '.join(v).format(static=staticdomain, dynamic=dynamicdomain, media=mediadomain).split(' ')
             resp['Content-Security-Policy'] = _render_csp(h)
         elif 'Content-Security-Policy' in resp:
             del resp['Content-Security-Policy']
 
-        # ==============================
-        # Add this **for development only**
-        if settings.DEBUG:
-            h['script-src'] += ["'unsafe-inline'", "http://localhost:8080"]
-            h['connect-src'] += ["http://localhost:8080", "ws://localhost:8080"]
-        # ==============================
-
-        # Then continue with rendering CSP
-        resp['Content-Security-Policy'] = _render_csp(h).format(
-            static=staticdomain, dynamic=dynamicdomain, media=mediadomain
-        )
         return resp
 
 
