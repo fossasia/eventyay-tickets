@@ -22,7 +22,7 @@ def w_order_info(sender: Event, request, order: Order, **kwargs):
 
     positions = [
         p for p in order.positions.filter(
-            item__admission=True, addon_to__isnull=True
+            product__admission=True, addon_to__isnull=True
         )
     ]
     positions = [
@@ -30,7 +30,7 @@ def w_order_info(sender: Event, request, order: Order, **kwargs):
         if (
                 not sender.settings.venueless_start or sender.settings.venueless_start.datetime(p.subevent or sender) <= now()
         ) and (
-            sender.settings.venueless_all_items or p.item_id in (p.event.settings.venueless_items or[])
+            sender.settings.venueless_all_products or p.product_id in (p.event.settings.venueless_products or[])
         )
     ]
     if not positions:
@@ -52,9 +52,9 @@ def w_pos_info(sender: Event, request, order: Order, position, **kwargs):
                                                         sender.settings.venueless_allow_pending))
             or not order.positions.exists()
             or position.canceled
-            or not position.item.admission
+            or not position.product.admission
             or (
-                not sender.settings.venueless_all_items and position.item_id not in (position.event.settings.venueless_items or [])
+                not sender.settings.venueless_all_products and position.product_id not in (position.event.settings.venueless_products or [])
             )
             or not sender.settings.venueless_secret
     ):
@@ -89,9 +89,9 @@ def navbar_info(sender, request, **kwargs):
 
 
 @receiver(signal=event_copy_data, dispatch_uid="venueless_event_copy_data")
-def event_copy_data_r(sender, other, item_map, question_map, **kwargs):
-    sender.settings['venueless_items'] = [
-        item_map[item].pk for item in other.settings.get('venueless_items', default=[]) if item in item_map
+def event_copy_data_r(sender, other, product_map, question_map, **kwargs):
+    sender.settings['venueless_products'] = [
+        product_map[product].pk for product in other.settings.get('venueless_products', default=[]) if product in product_map
     ]
     sender.settings['venueless_questions'] = [
         question_map[q].pk for q in other.settings.get('venueless_questions', default=[]) if q in question_map
@@ -100,14 +100,14 @@ def event_copy_data_r(sender, other, item_map, question_map, **kwargs):
 
 @receiver(signal=product_copy_data, dispatch_uid="venueless_product_copy_data")
 def product_copy_data_r(sender, source, target, **kwargs):
-    items = sender.settings.get('venueless_items') or []
-    items.append(target.pk)
-    sender.settings['venueless_items'] = items
+    products = sender.settings.get('venueless_products') or []
+    products.append(target.pk)
+    sender.settings['venueless_products'] = products
 
 
 settings_hierarkey.add_default('venueless_start', None, RelativeDateWrapper)
 settings_hierarkey.add_default('venueless_text', None, LazyI18nString)
 settings_hierarkey.add_default('venueless_allow_pending', 'False', bool)
-settings_hierarkey.add_default('venueless_all_items', 'True', bool)
-settings_hierarkey.add_default('venueless_items', '[]', list)
+settings_hierarkey.add_default('venueless_all_products', 'True', bool)
+settings_hierarkey.add_default('venueless_products', '[]', list)
 settings_hierarkey.add_default('venueless_questions', '[]', list)
