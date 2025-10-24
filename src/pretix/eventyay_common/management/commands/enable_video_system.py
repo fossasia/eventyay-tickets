@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django_scopes import scope
 
 from pretix.base.models import Event, Organizer, User
@@ -18,26 +18,23 @@ class Command(BaseCommand):
         parser.add_argument('-o', dest='organizer_slug', type=str, required=True, help='Organizer slug')
         parser.add_argument('-u', dest='user_email', type=str, required=True, help='User email address')
 
-    def handle(self, event_slug: str, organizer_slug: str, user_email: str, *args, **options):
+    def handle(self, event_slug: str, organizer_slug: str, user_email: str, **options):
 
         try:
             user = User.objects.get(email=user_email)
         except User.DoesNotExist:
-            self.stderr.write(f'User with email {user_email} does not exist')
-            return
+            raise CommandError(f'User with email {user_email} does not exist')
 
         try:
             organizer = Organizer.objects.get(slug=organizer_slug)
         except Organizer.DoesNotExist:
-            self.stderr.write(f'Organizer {organizer_slug} does not exist')
-            return
+            raise CommandError(f'Organizer {organizer_slug} does not exist')
 
         try:
             with scope(organizer=organizer):
                 event = Event.objects.get(slug=event_slug, organizer=organizer)
         except Event.DoesNotExist:
-            self.stderr.write(f'Event {organizer_slug}/{event_slug} does not exist')
-            return
+            raise CommandError(f'Event {organizer_slug}/{event_slug} does not exist')
 
         # Generate token for video system (admin token)
         iat = datetime.now(timezone.utc)
