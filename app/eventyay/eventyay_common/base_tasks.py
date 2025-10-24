@@ -165,8 +165,8 @@ class CreateWorldTask(Task):
             'venueless_secret': jwt_config['secret'],
             'venueless_issuer': jwt_config['issuer'],
             'venueless_audience': jwt_config['audience'],
-            'venueless_all_items': True,
-            'venueless_items': [],
+            'venueless_all_products': True,
+            'venueless_products': [],
             'venueless_questions': [],
         }
 

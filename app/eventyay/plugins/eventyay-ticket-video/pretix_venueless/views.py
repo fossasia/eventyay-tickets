@@ -54,15 +54,15 @@ class VenuelessSettingsForm(SettingsForm):
         label=_('Allow users to access the live event before their order is paid'),
         required=False,
     )
-    venueless_all_items = forms.BooleanField(
+    venueless_all_products = forms.BooleanField(
         label=_('Allow buyers of all admission products'),
         required=False
     )
-    venueless_items = forms.ModelMultipleChoiceField(
+    venueless_products = forms.ModelMultipleChoiceField(
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'scrolling-multiple-choice',
-                'data-inverse-dependency': '<[name$=venueless_all_items]'
+                'data-inverse-dependency': '<[name$=venueless_all_products]'
             }
         ),
         label=_('Limit to products'),
@@ -94,7 +94,7 @@ class VenuelessSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         event = kwargs['obj']
         super().__init__(*args, **kwargs)
-        self.fields['venueless_items'].queryset = event.products.all()
+        self.fields['venueless_products'].queryset = event.products.all()
         self.fields['venueless_questions'].queryset = event.questions.all()
 
     def clean(self):
@@ -144,7 +144,7 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
                 (self.order.status != Order.STATUS_PAID and not (self.order.status == Order.STATUS_PENDING and
                                                                  request.event.settings.venueless_allow_pending))
                 or self.position.canceled
-                or not self.position.item.admission
+                or not self.position.product.admission
         )
         if forbidden:
             raise PermissionDenied()
@@ -180,18 +180,18 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
                 {
                     'eventyay-video-event-{}'.format(request.event.slug),
                     'eventyay-video-subevent-{}'.format(self.position.subevent_id),
-                    'eventyay-video-item-{}'.format(self.position.item_id),
+                    'eventyay-video-product-{}'.format(self.position.product_id),
                     'eventyay-video-variation-{}'.format(self.position.variation_id),
-                    'eventyay-video-category-{}'.format(self.position.item.category_id),
+                    'eventyay-video-category-{}'.format(self.position.product.category_id),
                 } | {
-                    'eventyay-video-item-{}'.format(p.item_id)
+                    'eventyay-video-product-{}'.format(p.product_id)
                     for p in self.position.addons.all()
                 } | {
                     'eventyay-video-variation-{}'.format(p.variation_id)
                     for p in self.position.addons.all() if p.variation_id
                 } | {
-                    'eventyay-video-category-{}'.format(p.item.category_id)
-                    for p in self.position.addons.all() if p.item.category_id
+                    'eventyay-video-category-{}'.format(p.product.category_id)
+                    for p in self.position.addons.all() if p.product.category_id
                 }
             )
         }
