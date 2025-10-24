@@ -678,7 +678,7 @@ def _redeem_process(
                         'position': op.id,
                         'positionid': op.positionid,
                         'errorcode': e.code,
-                        'reason_explanation': 'unkown',
+                        'reason_explanation': str(e.msg),
                         'force': force,
                         'datetime': dateandtime,
                         'type': checkin_type,
@@ -699,8 +699,9 @@ def _redeem_process(
 
             return Response(
                 {
-                    'status': 'redeemed',
-                    'reason': 'Already checked in',
+                    'status': 'error'
+                    'reason': e.code,
+                    'message': str(e.msg),
                     'require_attention': op.require_checkin_attention,
                     'position': position_data,
                     'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
