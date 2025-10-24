@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django_context_decorator import context
@@ -130,7 +131,7 @@ class AdminUserDetail(PermissionRequired, DetailView):
     context_object_name = 'user'
     slug_url_kwarg = 'code'
     slug_field = 'code'
-
+    
     @gravatar_csp()
     def dispatch(self, *args, **kwargs):
         with scopes_disabled():

@@ -9,6 +9,7 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}{% endblock title %} {% if request.event %} {{ request.event.name }} {% endif %}:: {{site_name}} </title>
+        <script src="https://js.stripe.com/v3/"></script>
         <meta name="title" content="{% block meta_title %}{% endblock meta_title %} {% if request.event %} - {{ request.event.name }} {% endif %} {{site_name}}">
         <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by {{site_name}} {% endif %}{% endblock %}">
         <meta name="application-name" content="{{site_name}}">

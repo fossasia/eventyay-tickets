@@ -652,7 +652,6 @@ class EventDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         self.get_object().shred(person=self.request.user)
         return redirect(reverse('orga:event.list'))
 
-
 @method_decorator(csp_update({'SCRIPT_SRC': "'self' 'unsafe-eval'"}), name='dispatch')
 class WidgetSettings(EventSettingsPermission, FormView):
     form_class = WidgetSettingsForm

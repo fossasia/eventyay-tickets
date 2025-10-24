@@ -1,0 +1,276 @@
+.navbar-toggle-sidebar {
+  display: block;
+  float: left;
+  font-size: 16px;
+  margin-left: 10px;
+  background-color: transparent !important;
+  border: none;
+  padding: 0.5rem;
+  color: #fff;
+  margin-top: 8px;
+  margin-right: 0;
+  padding-right: 0;
+  
+  // Add fa-lg styling to match the requested properties
+  .fa-bars {
+    font-size: 1.33333em;
+    line-height: 0.75em;
+    vertical-align: -15%;
+  }
+  
+  &:hover, &:focus {
+    background-color: transparent !important;
+    color: rgba(255, 255, 255, 0.8);
+    outline: none;
+  }
+
+  .fa-bars, .icon-bar {
+    color: #fff;
+  }
+}
+
+body.sidebar-minimized {
+  #wrapper {
+    // Adjust padding or margin if the sidebar is fixed and page-wrapper needs to shift
+  }
+
+  .sidebar {
+    width: 60px;
+    overflow: hidden;
+
+    .nav > li > a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0;
+      padding: 15px 0;
+      text-align: center;
+      width: 100%;
+
+      span {
+        display: none;
+      }
+
+      .fa, svg {
+        font-size: 1.5rem;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        text-align: center;
+        width: auto;
+        position: relative;
+        left: 0;
+      }
+
+      .fa.fa-fw {
+        width: 1.25em;
+        text-align: center;
+        margin: 0 auto; // Center the icon
+      }
+
+      &::after, &::before {
+        display: none;
+      }
+    }
+
+    .nav > li > a.arrow {
+      display: none;
+    }
+
+    .sidebar-nav .nav-second-level {
+      display: none;
+    }
+
+    .context-selector .context-indicator .context-name,
+    .context-selector .context-indicator .context-meta {
+        display: none;
+    }
+  }
+
+  #page-wrapper {
+    margin-left: 60px;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-toggle-sidebar {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    width: 250px;
+    background-color: #f8f8f8;
+    z-index: 1000;
+    transform: translateX(-100%);
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+
+    .nav > li > a {
+      display: block;
+      font-size: inherit;
+      padding: 10px 15px; // Match the normal padding
+
+      span {
+        display: inline;
+      }
+    }
+  }
+
+  body:not(.sidebar-minimized) .sidebar {
+    transform: translateX(0%);
+  }
+
+  body.sidebar-minimized .sidebar {
+    transform: translateX(-100%);
+  }
+
+  #page-wrapper {
+    margin-left: 0 !important;
+  }
+
+  .navbar-brand {
+    z-index: 11;
+    position: relative;
+  }
+}
+
+body.sidebar-minimized.sidebar-hover {
+  .sidebar {
+    width: 250px;
+    overflow: visible;
+
+    .nav > li > a {
+      display: block;
+      align-items: normal;
+      justify-content: normal;
+      font-size: inherit;
+      padding: 10px 15px;
+      text-align: left;
+      width: auto;
+
+      span {
+        display: inline;
+      }
+
+      .fa, svg {
+        font-size: inherit;
+        margin: 0;
+        padding: 0;
+        display: inline;
+        text-align: inherit;
+        width: auto;
+        position: static;
+        left: auto;
+      }
+
+      .fa.fa-fw {
+        width: 1.25em;
+        text-align: center;
+      }
+
+      &::after, &::before {
+        display: block;
+      }
+    }
+
+    .nav > li > a.arrow {
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      .fa.arrow {
+        line-height: 19px;
+        width: 10px;
+        text-align: center;
+
+        &:before {
+          content: "\f104";
+        }
+      }
+    }
+
+    .nav > li.active > a > .fa.arrow:before {
+      content: "\f107";
+    }
+
+    .nav > li > a.has-children {
+      margin-right: 40px;
+    }
+
+    .sidebar-nav .nav-second-level {
+      &.collapse {
+        display: none;
+      }
+
+      &.collapse.in {
+        display: block;
+      }
+
+      li {
+        border-bottom: none;
+
+        a {
+          padding-left: 37px;
+        }
+      }
+    }
+
+    .sidebar-nav .nav-third-level {
+      &.collapse {
+        display: none;
+      }
+
+      &.collapse.in {
+        display: block;
+      }
+
+      li {
+        border-bottom: none;
+
+        a {
+          padding-left: 52px;
+        }
+      }
+    }
+
+    ul li {
+      border-bottom: 1px solid darken(#f5f5f5, 6.5%);
+      position: relative;
+
+      a {
+        &.active {
+          background-color: #eeeeee;
+        }
+      }
+    }
+
+    li.active {
+      > ul.nav-second-level {
+        display: block;
+      }
+    }
+
+    .context-selector {
+      .context-indicator {
+        .context-name,
+        .context-meta {
+          display: block;
+        }
+      }
+    }
+  }
+
+  #page-wrapper {
+    margin-left: 250px;
+  }
+}
+
+body.sidebar-minimized .sidebar {
+  min-height: 100vh;
+}
