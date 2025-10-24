@@ -221,14 +221,14 @@ class PermissionRequired(PermissionRequiredMixin):
         request = getattr(self, 'request', None)
 
         # Check for admin mode / active staff session
-        if request and hasattr(request, 'user') and hasattr(request.user, 'has_active_staff_session'):
-            if request.user.has_active_staff_session(request.session.session_key):
-                logger.debug(
-                    'User %s has active staff session - granting admin access to %s',
-                    request.user,
-                    request.path
-                )
-                return True
+        if request and hasattr(request, 'user') and hasattr(request.user, 'has_active_staff_session') and request.user.has_active_staff_session(request.session.session_key):
+            logger.debug(
+                'User %s has active staff session - granting admin access to %s',
+                request.user,
+                request.path
+            )
+            return True
+
 
         # Normal permission check
         result = None
