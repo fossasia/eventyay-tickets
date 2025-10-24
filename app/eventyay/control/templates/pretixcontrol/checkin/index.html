@@ -45,12 +45,7 @@
             {% bootstrap_field filter_form.product layout='inline' %}
         </div>
         <div class="col-md-2 col-sm-6 col-xs-12">
-            <button class="btn btn-primary btn-block" type="submit">
-                <span class="fa fa-filter"></span>
-                <span class="hidden-md">
-                    {% trans "Filter" %}
-                </span>
-            </button>
+            {% include "eventyay_common/filter_actions.html" %}
         </div>
     </form>
     {% if entries|length == 0 %}

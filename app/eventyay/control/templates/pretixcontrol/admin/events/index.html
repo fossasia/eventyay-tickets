@@ -37,11 +37,8 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="text-right">
-                        <button class="btn btn-primary" type="submit">
-                            <span class="fa fa-filter"></span>
-                            <span class="hidden-md">{% trans "Filter" %}</span>
-                        </button>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        {% include "eventyay_common/filter_actions.html" %}
                     </div>
                 </form>
             </div>
