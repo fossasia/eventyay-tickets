@@ -245,10 +245,11 @@ class SecurityMiddleware(MiddlewareMixin):
         if request.path.startswith('/video/'):
             h['script-src-elem'] = [
                 '{static}',
-                'http://localhost:8080',  # Development only
                 "'unsafe-eval'",  # Required for Vue.js and buntpapier libraries
                 "'unsafe-inline'",  # Required for server-injected configuration scripts
             ]
+            if settings.DEBUG:
+                h['script-src-elem'].insert(1, 'http://localhost:8080')  # Development only
         if settings.LOG_CSP:
             base_path = settings.BASE_PATH
             h['report-uri'] = [f'{base_path}/csp_report/']
