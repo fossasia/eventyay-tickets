@@ -2,7 +2,6 @@ from django.urls import include, path
 from django.views.generic.base import RedirectView
 
 from eventyay.orga.views import (
-    admin,
     auth,
     cards,
     cfp,
@@ -24,19 +23,6 @@ urlpatterns = [
     path("", RedirectView.as_view(url="event", permanent=False), name="base"),
     path("reset/", auth.ResetView.as_view(), name="auth.reset"),
     path("reset/<token>", auth.RecoverView.as_view(), name="auth.recover"),
-    path('admin/', admin.AdminDashboard.as_view(), name='admin.dashboard'),
-    path('admin/update/', admin.UpdateCheckView.as_view(), name='admin.update'),
-    path(
-        'admin/users/<slug:code>/',
-        admin.AdminUserDetail.as_view(),
-        name='admin.user.view',
-    ),
-    path(
-        'admin/users/<slug:code>/delete/',
-        admin.AdminUserDelete.as_view(),
-        name='admin.user.delete',
-    ),
-    path('admin/users/', admin.AdminUserList.as_view(), name='admin.user.list'),
     path('me', person.UserSettings.as_view(), name='user.view'),  # Change this to common/account/general.
     path('me/subuser', person.SubuserView.as_view(), name='user.subuser'),
     path(

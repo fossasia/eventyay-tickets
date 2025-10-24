@@ -670,10 +670,10 @@ def get_admin_navigation(request):
             ],
         },
         {
-            'label': _('Talk admin config'),
-            'url': '/orga/admin/',
-            'active': False,
-            'icon': 'group',
+            'label': _('System information'),
+            'url': reverse('eventyay_admin:admin.config'),
+            'active': 'config' in url.url_name,
+            'icon': 'cog',
         },
     ]
 

@@ -1,3 +1,4 @@
+import sys
 from datetime import UTC
 from zoneinfo import ZoneInfo
 import dateutil.parser
@@ -7,7 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
@@ -15,28 +16,39 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     CreateView,
     DeleteView,
+    FormView,
     ListView,
     TemplateView,
     UpdateView,
 )
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
+from django_context_decorator import context
 
 from django.utils.timezone import make_aware, is_aware
-
 from django.utils.functional import cached_property
+from redis.exceptions import RedisError
+
+from eventyay.celery_app import app
 from eventyay.control.forms.filter import AttendeeFilterForm
+from eventyay.control.forms.admin.admin import UpdateSettingsForm
 
 from eventyay.base.models.checkin import Checkin
 from eventyay.base.models.orders import OrderPosition
 from eventyay.base.models.organizer import Organizer
+from eventyay.base.models.settings import GlobalSettings
 from eventyay.base.models.submission import Submission
 from eventyay.base.models.vouchers import InvoiceVoucher
+from eventyay.base.services.update_check import check_result_table, update_check
+from eventyay.common.text.phrases import phrases
 from eventyay.control.forms.admin.vouchers import InvoiceVoucherForm
 from eventyay.control.forms.filter import OrganizerFilterForm, SubmissionFilterForm, TaskFilterForm
 from eventyay.control.permissions import AdministratorPermissionRequiredMixin
 from eventyay.control.views import PaginationMixin
 from eventyay.control.views.main import EventList
 
+
+import logging
+logger = logging.getLogger(__name__)
 
 class AdminDashboard(AdministratorPermissionRequiredMixin, TemplateView):
     template_name = 'pretixcontrol/admin/dashboard.html'
@@ -437,3 +449,65 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse('eventyay_admin:admin.vouchers')
+
+
+class SystemConfigView(AdministratorPermissionRequiredMixin, TemplateView):
+    template_name = 'pretixcontrol/admin/systemconfig.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_name'] = settings.INSTANCE_NAME
+        context['base_path'] = settings.BASE_PATH
+        context['settings'] = settings
+        return context
+
+    @context
+    def queue_length(self):
+        if settings.CELERY_TASK_ALWAYS_EAGER:
+            return None
+        try:
+            client = app.broker_connection().channel().client
+            return client.llen('celery')
+        except Exception as e:
+            return str(e)
+
+    @context
+    def executable(self):
+        return sys.executable
+
+    @context
+    def eventyay_version(self):
+        return settings.EVENTYAY_VERSION
+
+
+class UpdateCheckView(AdministratorPermissionRequiredMixin, FormView):
+    template_name = 'pretixcontrol/admin/update.html'
+    form_class = UpdateSettingsForm
+
+    def post(self, request, *args, **kwargs):
+        if 'trigger' in request.POST:
+            update_check.apply()
+            return redirect(self.get_success_url())
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, phrases.base.saved)
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, phrases.base.error_saving_changes)
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        result['gs'] = GlobalSettings()
+        result['gs'].settings.set('update_check_ack', True)
+        return result
+
+    @context
+    def result_table(self):
+        return check_result_table()
+
+    def get_success_url(self):
+        return reverse('eventyay_admin:admin.update')

@@ -115,7 +115,7 @@
             <ul class="navbar-nav">
                 {% if warning_update_available %}
                     <li class="nav-item">
-                        <a href="{% url "orga:admin.update" %}" class="text-danger nav-link">
+                        <a href="{% url "control:admin.update" %}" class="text-danger nav-link">
                             <i class="fa fa-bell"></i>
                         </a>
                     </li>
@@ -450,29 +450,6 @@
                             <i class="fa fa-users"></i>
                             <span>{% translate "Organizers" %}</span>
                         </a>
-                    {% endif %}
-                    {% if request.user.is_administrator %}
-                        <div class="nav-fold">
-                            <span class="has-children">
-                                <a class="nav-link nav-link-inner" href="{% url "orga:admin.dashboard" %}">
-                                    <i class="fa fa-cogs"></i>
-                                    <span class="sidebar-text">
-                                        {% translate "Administration" %}
-                                    </span>
-                                </a>
-                                <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseAdmin" aria-controls="collapseAdmin">
-                                    <i class="fa fa-angle-down"></i>
-                                </a>
-                            </span>
-                            <div class="collapse in{% if "/orga/admin/" in request.path %} show{% endif %}" aria-expand="true" id="collapseAdmin">
-                                <a class="nav-link nav-link-second-level {% if "/orga/admin/" == request.path %} active{% endif %}" href="{% url "orga:admin.dashboard" %}">
-                                    <span>{% translate "Admin information" %}</span>
-                                </a>
-                                <a href="{% url "orga:admin.user.list" %}" class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path %} active{% endif %}">
-                                    <span>{% translate "Users" %}</span>
-                                </a>
-                            </div>
-                        </div>
                     {% endif %}
                     {% for nav_element in nav_global %}
                         {% include "orga/includes/sidebar_nav.html" %}
