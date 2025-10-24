@@ -213,6 +213,24 @@ class PermissionRequired(PermissionRequiredMixin):
                     self.get_permission_object = lambda self: getattr(self, key)  # noqa
 
     def has_permission(self):
+        """Check if user has permission, with admin mode support.
+
+        If the user has an active staff session (admin mode), grant full access.
+        Otherwise, perform normal permission checks.
+        """
+        request = getattr(self, 'request', None)
+
+        # Check for admin mode / active staff session
+        if request and hasattr(request, 'user') and hasattr(request.user, 'has_active_staff_session'):
+            if request.user.has_active_staff_session(request.session.session_key):
+                logger.debug(
+                    'User %s has active staff session - granting admin access to %s',
+                    request.user,
+                    request.path
+                )
+                return True
+
+        # Normal permission check
         result = None
         result = super().has_permission()
         logger.debug(
@@ -222,7 +240,6 @@ class PermissionRequired(PermissionRequiredMixin):
             result,
         )
         if not result:
-            request = getattr(self, 'request', None)
             if request and hasattr(request, 'event'):
                 key = f'eventyay_event_access_{request.event.pk}'
                 if key in request.session:
