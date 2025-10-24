@@ -878,7 +878,7 @@ class JoinOnlineVideoView(EventViewMixin, View):
         # Check if Event allow all ticket type to join
         if self.request.event.settings.venueless_all_items:
             return True, None, order_list[0]
-        list_allow_ticket_type = self.request.event.settings.venueless_items
+        list_allow_ticket_type = self.request.event.settings.venueless_products
         if not list_allow_ticket_type:
             # no ticket allow to join
             return False, None, None
