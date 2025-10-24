@@ -3,13 +3,30 @@ from django.forms import Field
 from django.forms.models import ModelChoiceIterator
 from django.utils.translation import gettext_lazy as _
 
+from pretix.base.models import ItemCategory
 from pretix.plugins.badges.models import BadgeItem, BadgeLayout
 
 
 class BadgeLayoutForm(forms.ModelForm):
     class Meta:
         model = BadgeLayout
-        fields = ('name',)
+        fields = ('name', 'category')
+    
+    def __init__(self, *args, **kwargs):
+        event = kwargs.pop('event', None)
+        super().__init__(*args, **kwargs)
+        
+        if event:
+            # Only show categories that are actually used by items in this event
+            used_categories = ItemCategory.objects.filter(
+                items__event=event
+            ).distinct().order_by('name')
+            
+            self.fields['category'].queryset = used_categories
+            self.fields['category'].empty_label = _('(No specific category)')
+            self.fields['category'].help_text = _(
+                'If selected, this layout will be automatically assigned to items in this category.'
+            )
 
 
 NoLayoutSingleton = BadgeLayout(pk='-')

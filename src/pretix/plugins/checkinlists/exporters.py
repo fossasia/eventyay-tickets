@@ -31,6 +31,7 @@ from pretix.base.exporter import BaseExporter, ListExporter
 from pretix.base.models import (
     Checkin,
     InvoiceAddress,
+    ItemCategory,
     Order,
     OrderPosition,
     Question,
@@ -120,6 +121,16 @@ class CheckInListMixin(BaseExporter):
                     ),
                 ),
                 (
+                    'category',
+                    forms.ModelChoiceField(
+                        queryset=ItemCategory.objects.none(),
+                        label=_('Category'),
+                        required=False,
+                        empty_label=_('All categories'),
+                        help_text=_('Only include tickets for products in this category.'),
+                    ),
+                ),
+                (
                     'questions',
                     forms.ModelMultipleChoiceField(
                         queryset=self.event.questions.all(),
@@ -151,6 +162,12 @@ class CheckInListMixin(BaseExporter):
         )
         d['list'].widget.choices = d['list'].choices
         d['list'].required = True
+        
+        # Set up category queryset to show only categories used by products
+        d['category'].queryset = ItemCategory.objects.filter(
+            event=self.event,
+            items__isnull=False
+        ).distinct()
 
         return d
 
@@ -257,6 +274,9 @@ class CheckInListMixin(BaseExporter):
 
         if form_data.get('attention_only'):
             qs = qs.filter(Q(item__checkin_attention=True) | Q(order__checkin_attention=True))
+
+        if form_data.get('category'):
+            qs = qs.filter(item__category=form_data.get('category'))
 
         if not cl.include_pending:
             qs = qs.filter(order__status=Order.STATUS_PAID)

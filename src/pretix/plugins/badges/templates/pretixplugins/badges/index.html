@@ -39,8 +39,9 @@
                 <thead>
                 <tr>
                     <th>{% trans "Name" %}</th>
+                    <th>{% trans "Category" %}</th>
                     <th>{% trans "Default" %}</th>
-                    <th class="action-col-2"></th>
+                    <th class="action-col-3"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,6 +54,13 @@
                                 </a></strong>
                             {% else %}
                                 <strong>{{ l.name }}</strong>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if l.category %}
+                                <span class="label label-info">{{ l.category.name }}</span>
+                            {% else %}
+                                <span class="text-muted">{% trans "All categories" %}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -74,7 +82,14 @@
                         </td>
                         <td class="text-right flip">
                             {% if "can_change_event_settings" in request.eventpermset %}
-                                <a href="{% url "plugins:badges:edit" organizer=request.event.organizer.slug event=request.event.slug layout=l.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                                <a href="{% url "plugins:badges:update" organizer=request.event.organizer.slug event=request.event.slug layout=l.id %}" 
+                                   class="btn btn-default btn-sm" title="{% trans "Edit name and category" %}" data-toggle="tooltip">
+                                   <i class="fa fa-pencil"></i>
+                                </a>
+                                <a href="{% url "plugins:badges:edit" organizer=request.event.organizer.slug event=request.event.slug layout=l.id %}" 
+                                   class="btn btn-default btn-sm" title="{% trans "Visual editor" %}" data-toggle="tooltip">
+                                   <i class="fa fa-edit"></i>
+                                </a>
                                 <a href="{% url "plugins:badges:add" organizer=request.event.organizer.slug event=request.event.slug %}?copy_from={{ l.id }}"
                                         class="btn btn-default btn-sm" title="{% trans "Clone" %}" data-toggle="tooltip"><i class="fa fa-copy"></i></a>
                                 <a href="{% url "plugins:badges:delete" organizer=request.event.organizer.slug event=request.event.slug layout=l.id %}" class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>

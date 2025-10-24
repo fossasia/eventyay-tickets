@@ -36,6 +36,7 @@ from pretix.base.models import (
     Invoice,
     InvoiceAddress,
     Item,
+    ItemCategory,
     Order,
     OrderPayment,
     OrderPosition,
@@ -1177,6 +1178,12 @@ class CheckInFilterForm(FilterForm):
         required=False,
         empty_label=_('All products'),
     )
+    category = forms.ModelChoiceField(
+        label=_('Category'),
+        queryset=ItemCategory.objects.none(),
+        required=False,
+        empty_label=_('All categories'),
+    )
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
@@ -1184,8 +1191,18 @@ class CheckInFilterForm(FilterForm):
         super().__init__(*args, **kwargs)
         if self.list.all_products:
             self.fields['item'].queryset = self.event.items.all()
+            # Show categories that are used by any items in the event
+            self.fields['category'].queryset = ItemCategory.objects.filter(
+                event=self.event,
+                items__isnull=False
+            ).distinct()
         else:
             self.fields['item'].queryset = self.list.limit_products.all()
+            # Show categories that are used by items in the limited product list
+            self.fields['category'].queryset = ItemCategory.objects.filter(
+                event=self.event,
+                items__in=self.list.limit_products.all()
+            ).distinct()
 
     def filter_qs(self, qs):
         fdata = self.cleaned_data
@@ -1232,6 +1249,9 @@ class CheckInFilterForm(FilterForm):
 
         if fdata.get('item'):
             qs = qs.filter(item=fdata.get('item'))
+
+        if fdata.get('category'):
+            qs = qs.filter(item__category=fdata.get('category'))
 
         return qs
 
