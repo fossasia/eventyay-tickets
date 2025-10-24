@@ -22,6 +22,7 @@ from eventyay.base.models import (
     CartPosition,
     Event,
     InvoiceAddress,
+    Order,
     Product,
     ProductVariation,
     Seat,
@@ -29,7 +30,8 @@ from eventyay.base.models import (
     Voucher,
 )
 from eventyay.base.models.event import SubEvent
-from eventyay.base.models.orders import OrderFee
+from eventyay.base.models.orders import OrderFee, OrderPosition
+from eventyay.base.models.product import ProductMetaValue
 from eventyay.base.models.tax import TAXED_ZERO, TaxedPrice, TaxRule
 from eventyay.base.reldate import RelativeDateWrapper
 from eventyay.base.services.checkin import _save_answers
@@ -134,6 +136,8 @@ error_messages = {
         "Gift cards can be entered later on when you're asked for your payment details."
     ),
     'country_blocked': _('One of the selected products is not available in the selected country.'),
+    'one_ticket_per_user': _('Only one ticket per user is allowed for a product in your cart. You already have a ticket.'),
+    'one_ticket_per_user_cart': _('Only one ticket per user is allowed for this product. Quantity has been adjusted to 1.'),
 }
 
 
@@ -201,6 +205,11 @@ class CartManager:
         self.invoice_address = invoice_address
         self._widget_data = widget_data or {}
         self._sales_channel = sales_channel
+        self._last_warning = None
+
+    def get_last_warning(self):
+        """Get the last warning message from cart operations."""
+        return self._last_warning
 
     @property
     def positions(self):
@@ -1047,13 +1056,104 @@ class CartManager:
                     )
         return err
 
+    def _check_one_ticket_per_user(self):
+        """
+        Enforce per-product "one ticket per user" restriction:
+        - If a product has the meta flag enabled, the user cannot have more than one
+          of that product in their cart, and if an email is present, also cannot have
+          an existing paid/pending order for that product.
+        - Adjusts quantities to 1 instead of blocking the operation.
+        """
+        # Build per-product counts from current cart positions
+        per_product_counts = Counter(p.product_id for p in self.positions)
+
+        # Apply pending operations to get the final intended counts
+        for op in self._operations:
+            if isinstance(op, self.AddOperation):
+                per_product_counts[op.product.id] += op.count
+            elif isinstance(op, self.RemoveOperation):
+                if op.position:
+                    per_product_counts[op.position.product_id] -= 1
+
+        # For all affected products, check meta flag and enforce max 1
+        affected_product_ids = set(per_product_counts.keys())
+        if not affected_product_ids:
+            return None
+
+        # Find which of the affected products have the flag set via meta
+        flagged_product_ids = set(
+            ProductMetaValue.objects.filter(
+                product_id__in=affected_product_ids,
+                property__name='limit_one_per_user',
+            ).values_list('product_id', flat=True)
+        )
+
+        # Adjust quantities for flagged products that exceed 1
+        # Only products with the 'limit_one_per_user' meta property are affected
+        quantity_adjusted = False
+        adjusted_operations = []
+        
+        for op in self._operations:
+            if isinstance(op, self.AddOperation) and op.product.id in flagged_product_ids:
+                # This product has the limit_one_per_user flag, check if total would exceed 1
+                final_count = per_product_counts.get(op.product.id, 0)
+                if final_count > 1:
+                    # Calculate how many are currently in cart (before this operation)
+                    current_count = final_count - op.count
+                    # Calculate maximum additional items that can be added (to reach total of 1)
+                    max_additional = max(0, 1 - current_count)
+                    if op.count > max_additional:
+                        # Create new operation with adjusted count
+                        adjusted_operations.append(op._replace(count=max_additional))
+                        quantity_adjusted = True
+                    else:
+                        adjusted_operations.append(op)
+                else:
+                    adjusted_operations.append(op)
+            else:
+                adjusted_operations.append(op)
+        
+        # Replace operations list with adjusted version
+        self._operations = adjusted_operations
+
+        # If we have an email, also check existing orders for flagged products
+        email = None
+        if hasattr(self, 'invoice_address') and self.invoice_address and self.invoice_address.email:
+            email = self.invoice_address.email
+
+        if email and flagged_product_ids:
+            # Use the centralized classmethod to check for existing orders
+            has_existing_order = Order.user_has_existing_order(event=self.event, email=email)
+            if has_existing_order:
+                # Check if the existing order contains any of the flagged products
+                existing_flagged_products = OrderPosition.objects.filter(
+                    order__event=self.event,
+                    order__email__iexact=email,  # Case-insensitive email matching
+                    order__status__in=[Order.STATUS_PENDING, Order.STATUS_PAID],
+                    product_id__in=flagged_product_ids,
+                ).exists()
+                if existing_flagged_products:
+                    return error_messages['one_ticket_per_user']
+
+        # Return warning message if quantity was adjusted
+        if quantity_adjusted:
+            return error_messages['one_ticket_per_user_cart']
+
+        return None
+
     def _perform_operations(self):
         vouchers_ok = self._get_voucher_availability()
         quotas_ok = self._get_quota_availability()
         err = None
+        warning = None
         new_cart_positions = []
 
         err = err or self._check_min_max_per_product()
+        warning = self._check_one_ticket_per_user()
+        # Only treat as error if it's not a quantity adjustment warning
+        if warning and warning != error_messages['one_ticket_per_user_cart']:
+            err = err or warning
+            warning = None
 
         self._operations.sort(key=lambda a: self.order[type(a)])
         seats_seen = set()
@@ -1253,7 +1353,7 @@ class CartManager:
         CartPosition.objects.bulk_create(
             [p for p in new_cart_positions if not getattr(p, '_answers', None) and not p.pk]
         )
-        return err
+        return err, warning
 
     def _require_locking(self):
         if self._voucher_use_diff:
@@ -1285,9 +1385,12 @@ class CartManager:
             with transaction.atomic():
                 self.now_dt = now_dt
                 self._extend_expiry_of_valid_existing_positions()
-                err = self._perform_operations() or err
+                err, warning = self._perform_operations()
             if err:
                 raise CartError(err)
+            # Store warning for later retrieval if needed
+            if warning:
+                self._last_warning = warning
 
 
 def update_tax_rates(event: Event, cart_id: str, invoice_address: InvoiceAddress):
@@ -1390,13 +1493,14 @@ def add_products_to_cart(
     invoice_address: int = None,
     widget_data=None,
     sales_channel='web',
-) -> None:
+) -> dict:
     """
     Adds a list of products to a user's cart.
     :param event: The event ID in question
     :param products: A list of dicts with the keys product, variation, count, custom_price, voucher, seat ID
     :param cart_id: Session ID of a guest
     :raises CartError: On any error that occurred
+    :returns: {'success': bool, 'warning': str (optional)}
     """
     with language(locale):
         ia = False
@@ -1418,6 +1522,14 @@ def add_products_to_cart(
                 )
                 cm.add_new_products(products)
                 cm.commit()
+                
+                # Check if there was a warning about quantity adjustment
+                warning = cm.get_last_warning()
+                if warning:
+                    return {'success': True, 'warning': str(warning)}
+                else:
+                    return {'success': True}
+                    
             except LockTimeoutException:
                 self.retry()
         except (MaxRetriesExceededError, LockTimeoutException):

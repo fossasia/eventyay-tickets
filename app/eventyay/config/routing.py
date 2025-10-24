@@ -1,36 +1,25 @@
-import os
+"""
+DEPRECATED: This module is deprecated. Use eventyay.config.asgi instead.
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eventyay.config.settings')
+This file is kept for backwards compatibility with deployments that reference
+eventyay.config.routing:application. New deployments should use:
+    daphne eventyay.config.asgi:application
 
-# Initialize Django ASGI application early to ensure apps are loaded
-import django
-from django.core.asgi import get_asgi_application
+Routing configuration is now properly separated:
+- asgi.py: Main ASGI entry point with Django initialization
+- features/live/routing.py: WebSocket URL patterns
+"""
 
-django_asgi_app = get_asgi_application()
+import warnings
 
-# Now import modules that depend on Django apps
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.security.websocket import AllowedHostsOriginValidator
-from django.conf import settings
-from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-
-from eventyay.features.live import routing as live
-
-application = ProtocolTypeRouter(
-    {
-        "websocket": AllowedHostsOriginValidator(URLRouter(live.websocket_urlpatterns)),
-        "http": django_asgi_app,
-    }
+warnings.warn(
+    'eventyay.config.routing is deprecated. Use eventyay.config.asgi instead. '
+    'Update your Daphne command to: daphne eventyay.config.asgi:application',
+    DeprecationWarning,
+    stacklevel=2
 )
 
+# Import the application from the proper location
+from eventyay.config.asgi import application  # noqa: F401
 
-class PatchedSentryAsgiMiddleware(SentryAsgiMiddleware):
-    # Workaround for https://github.com/getsentry/sentry-python/issues/700
-
-    def event_processor(self, event, hint, asgi_scope):
-        asgi_scope.setdefault("method", "WEBSOCKET")
-        return super().event_processor(event, hint, asgi_scope)
-
-
-if settings.SENTRY_DSN:
-    application = PatchedSentryAsgiMiddleware(application)
+__all__ = ['application']
