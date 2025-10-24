@@ -74,3 +74,17 @@ def propagated(parser, token):
     nodelist = parser.parse(('endpropagated',))
     parser.delete_first_token()
     return PropagatedNode(nodelist, event, [f[1:-1] for f in args], url)
+
+
+@register.filter
+def getitem(value, key):
+    """
+    Template filter to safely access dictionary or object attributes by key.
+    Example: {{ form|getitem:field_name }}
+    """
+    try:
+        if isinstance(value, dict):
+            return value.get(key)
+        return getattr(value, key, None)
+    except Exception:
+        return None

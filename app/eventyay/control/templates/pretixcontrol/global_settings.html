@@ -1,6 +1,7 @@
 {% extends "pretixcontrol/global_settings_base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load getitem %}
 {% load static %}
 
 {% block custom_header %}
@@ -11,10 +12,55 @@
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_form form layout='control' %}
+        <ul class="nav nav-tabs" role="tablist">
+            {% for group_key, group_label, field_names in form.field_groups %}
+                <li role="presentation" class="{% if forloop.first %}active{% endif %}">
+                    <a href="#tab{{ forloop.counter }}" aria-controls="tab{{ forloop.counter }}" role="tab" data-toggle="tab">
+                        {{ group_label }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content">
+            {% for group_key, group_label, field_names in form.field_groups %}
+                <div role="tabpanel" class="tab-pane {% if forloop.first %}active{% endif %}" id="tab{{ forloop.counter }}">
+                    {% if group_key == "payment_gateways" %}
+                        <fieldset>
+                            <legend>{% translate "Stripe" %}</legend>
+                            {% for field_name in field_names %}
+                                {% if "payment_stripe" in field_name or "stripe_webhook" in field_name %}
+                                    {% with form|getitem:field_name as field %}
+                                        {% bootstrap_field field layout='control' %}
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>{% translate "PayPal" %}</legend>
+                            {% for field_name in field_names %}
+                                {% if "payment_paypal" in field_name %}
+                                    {% with form|getitem:field_name as field %}
+                                        {% bootstrap_field field layout='control' %}
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                        </fieldset>
+                    {% else %}
+                        {% for field_name in field_names %}
+                            {% with form|getitem:field_name as field %}
+                                {% bootstrap_field field layout='control' %}
+                            {% endwith %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">
-                {% trans "Save" %}
+                {% translate "Save" %}
             </button>
         </div>
     </form>
