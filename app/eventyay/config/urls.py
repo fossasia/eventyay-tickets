@@ -145,9 +145,11 @@ orga_patterns = [
 
 debug_patterns = []
 
-if settings.DEBUG and importlib.util.find_spec('debug_toolbar') and 'debug_toolbar' in settings.INSTALLED_APPS:
-    debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
+if settings.DEBUG:
+    if importlib.util.find_spec('debug_toolbar') and 'debug_toolbar' in settings.INSTALLED_APPS:
+        debug_patterns.append(path('__debug__/', include('debug_toolbar.urls')))
     debug_patterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    debug_patterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 common_patterns = (
     base_patterns

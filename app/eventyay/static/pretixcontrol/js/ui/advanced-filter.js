@@ -30,8 +30,20 @@ function initAdvancedFilter(root = document) {
     });
 }
 
+function initOrganizerAutoSubmit(root = document) {
+    if (typeof $ !== 'undefined') {
+        $(root).find('#id_organizer').on('change', function() {
+            $(this).closest('form').submit();
+        });
+    }
+}
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => initAdvancedFilter());
+    document.addEventListener('DOMContentLoaded', () => {
+        initAdvancedFilter();
+        initOrganizerAutoSubmit();
+    });
 } else {
     initAdvancedFilter();
+    initOrganizerAutoSubmit();
 }

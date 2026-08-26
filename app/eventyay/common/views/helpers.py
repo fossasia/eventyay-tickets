@@ -45,9 +45,30 @@ def redirect_or_json_redirect(request, redirect_url):
 
 
 def get_static(request, path, content_type, organizer=None, event=None, **kwargs):  # pragma: no cover
-    path = settings.BASE_DIR / 'static' / path
-    if not path.exists():
+    base_static = (settings.BASE_DIR / 'static').resolve()
+    base_dist = (settings.BASE_DIR / 'static.dist').resolve()
+
+    try:
+        file_path = (base_static / path).resolve()
+        if not (file_path.is_relative_to(base_static) or file_path.is_relative_to(base_dist)):
+            dist_path = (base_dist / path).resolve()
+            if dist_path.is_relative_to(base_dist) and dist_path.exists():
+                file_path = dist_path
+            else:
+                logger.warning("Static asset %s directory traversal blocked", path)
+                raise Http404()
+    except (ValueError, RuntimeError):
+        logger.warning("Static asset %s invalid path", path)
+        raise Http404()
+
+    if not file_path.exists():
+        dist_path = (base_dist / path).resolve()
+        if dist_path.is_relative_to(base_dist) and dist_path.exists():
+            file_path = dist_path
+
+    if not file_path.exists() or not (file_path.is_relative_to(base_static) or file_path.is_relative_to(base_dist)):
         logger.warning("Static asset %s not found", path)
         raise Http404()
-    logger.debug("Serving static asset %s", path)
-    return FileResponse(open(path, 'rb'), content_type=content_type, as_attachment=False)
+
+    logger.debug("Serving static asset %s", file_path)
+    return FileResponse(open(file_path, 'rb'), content_type=content_type, as_attachment=False)

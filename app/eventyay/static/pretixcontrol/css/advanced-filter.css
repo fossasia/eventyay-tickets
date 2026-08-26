@@ -349,3 +349,392 @@
   }
 
 }
+
+/* Events Overview Redesign Styles */
+.events-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  margin-bottom: 20px;
+}
+.events-page-header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  color: #101828;
+}
+.events-page-header .btn-primary {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 6px;
+  background-color: #0066cc;
+  border-color: #0066cc;
+  font-weight: 500;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.events-page-header .btn-primary:hover {
+  background-color: #0052a3;
+  border-color: #0052a3;
+}
+
+.events-status-tabs {
+  display: flex;
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e4e7ec;
+  width: 100%;
+}
+.events-status-tabs .tab-item {
+  margin-right: 32px;
+}
+.events-status-tabs .tab-item a {
+  display: inline-block;
+  padding: 8px 0 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475467;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s ease-in-out;
+}
+.events-status-tabs .tab-item.active a {
+  color: #0066cc;
+  border-bottom-color: #0066cc;
+  font-weight: 600;
+}
+.events-status-tabs .tab-item a:hover {
+  color: #0066cc;
+}
+
+.events-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+.events-search-wrapper {
+  position: relative;
+  flex: 1 1 45%;
+  max-width: 740px;
+  height: 38px;
+}
+.events-search-wrapper input.form-control {
+  width: 100%;
+  height: 38px;
+  padding-left: 14px;
+  padding-right: 38px;
+  border-radius: 6px;
+  border: 1px solid #d0d5dd;
+  box-shadow: none;
+  font-size: 14px;
+  color: #101828;
+  background-color: #ffffff;
+}
+.events-search-wrapper input.form-control::placeholder {
+  color: #667085;
+  font-size: 14px;
+}
+.events-search-wrapper .search-icon-inside {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #667085;
+  pointer-events: none;
+  font-size: 14px;
+  z-index: 2;
+}
+.events-organizer-wrapper {
+  flex: 1 1 35%;
+  max-width: 570px;
+  height: 38px;
+}
+.events-organizer-wrapper select,
+.events-organizer-wrapper .form-group,
+.events-organizer-wrapper .form-control {
+  margin-bottom: 0;
+  height: 38px;
+  border-radius: 6px;
+  border: 1px solid #d0d5dd;
+  width: 100%;
+  font-size: 14px;
+}
+.events-organizer-wrapper .form-group {
+  display: block;
+}
+/* Select2 overrides to match 38px height & flex alignment */
+.events-organizer-wrapper .select2-container {
+  width: 100%;
+  height: 38px;
+}
+.events-organizer-wrapper .select2-container .select2-selection--single {
+  height: 38px;
+  line-height: 36px;
+  border-radius: 6px;
+  border: 1px solid #d0d5dd;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+.events-organizer-wrapper .select2-container .select2-selection--single .select2-selection__rendered {
+  line-height: 36px;
+  padding-left: 14px;
+  padding-right: 28px;
+  color: #101828;
+  font-size: 14px;
+}
+.events-organizer-wrapper .select2-container .select2-selection--single .select2-selection__arrow {
+  height: 36px;
+  right: 10px;
+  top: 1px;
+}
+.events-filter-actions {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+  height: 38px;
+}
+.events-filter-actions .btn {
+  height: 38px;
+  padding: 6px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.events-filter-actions .btn-primary {
+  background-color: #0066cc;
+  border-color: #0066cc;
+  color: #ffffff;
+}
+.events-filter-actions .btn-primary:hover {
+  background-color: #0052a3;
+  border-color: #0052a3;
+}
+.events-filter-actions .btn-clear-filter {
+  background-color: #ffffff;
+  border: 1px solid #d0d5dd;
+  color: #344054;
+}
+.events-filter-actions .btn-clear-filter:hover {
+  background-color: #f9fafb;
+  border-color: #d0d5dd;
+  color: #101828;
+}
+
+/* Quota / Ticket Column Breakdown Styles */
+.quota-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  font-size: 12px;
+}
+.quota-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+.quota-name-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333333;
+  white-space: nowrap;
+}
+.quota-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 80px;
+  flex-shrink: 0;
+}
+.quota-bar-bg {
+  flex: 1 1 auto;
+  height: 6px;
+  background-color: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.quota-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background-color: #28a745;
+  transition: width 0.3s ease;
+}
+.quota-bar-fill.quota-full {
+  background-color: #28a745;
+}
+.quota-bar-fill.quota-high {
+  background-color: #28a745;
+}
+.quota-bar-fill.quota-low {
+  background-color: #6c757d;
+}
+.quota-percent {
+  font-size: 11px;
+  color: #555555;
+  min-width: 26px;
+  text-align: right;
+  font-weight: 500;
+}
+.quota-total-sales {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.shop-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+.shop-badge-success {
+  background-color: #28a745;
+  color: #ffffff;
+}
+.shop-badge-warning {
+  background-color: #f0ad4e;
+  color: #ffffff;
+}
+.shop-badge-danger {
+  background-color: #d9534f;
+  color: #ffffff;
+}
+
+/* Helper CSS classes to replace inline styles in index.html */
+.create-event-btn {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+.events-table-th-cb {
+  width: 30px;
+}
+.event-logo-img {
+  max-height: 30px;
+  max-width: 50px;
+}
+.event-logo-placeholder {
+  width: 30px;
+  height: 30px;
+  background-color: #eee;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #999;
+}
+
+/* Strict Global Anti-Horizontal Overflow Rules */
+.sr-only,
+.select2-hidden-accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  left: 0;
+  top: 0;
+}
+
+/* Clean Table Layout with Responsive Mobile Support */
+.events-table-wrapper {
+  width: 100%;
+}
+@media (min-width: 992px) {
+  .events-table-wrapper {
+    overflow-x: hidden;
+  }
+  .events-table {
+    width: 100%;
+    table-layout: fixed;
+  }
+}
+@media (max-width: 991px) {
+  .events-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .events-table {
+    min-width: 1050px;
+  }
+  .events-filter-bar {
+    flex-wrap: wrap;
+  }
+  .events-search-wrapper,
+  .events-organizer-wrapper {
+    max-width: none;
+    flex: 1 1 100%;
+  }
+}
+
+.events-table th,
+.events-table td {
+  padding: 8px 6px;
+  vertical-align: top;
+  font-size: 12px;
+}
+.events-table th:nth-child(1) { width: 40px; } /* Logo */
+.events-table th:nth-child(2) { width: 14%; } /* Event name */
+.events-table th:nth-child(3) { width: 10%; } /* Organizer */
+.events-table th:nth-child(4) { width: 8%; }  /* Start date */
+.events-table th:nth-child(5) { width: 8%; }  /* End date */
+.events-table th:nth-child(6) { width: 22%; } /* Tickets */
+.events-table th:nth-child(7) { width: 12%; } /* Sessions */
+.events-table th:nth-child(8) { width: 12%; } /* Speakers */
+.events-table th:nth-child(9) { width: 7%; }  /* Public URL */
+.events-table th:nth-child(10) { width: 7%; } /* Shop */
+
+.public-url-link {
+  color: #0066cc;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  word-break: break-all;
+  display: inline-block;
+}
+.public-url-link:hover {
+  text-decoration: underline;
+}
+.events-table th {
+  font-weight: 600;
+  color: #333333;
+  white-space: nowrap;
+}
+.events-table th a {
+  color: #888888;
+  margin-left: 3px;
+  text-decoration: none;
+}
+.events-table th a:hover {
+  color: #0275d8;
+}
+.events-table th a.active-sort {
+  color: #0066cc;
+}
