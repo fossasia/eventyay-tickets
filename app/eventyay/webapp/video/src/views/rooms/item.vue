@@ -1,13 +1,20 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
+	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']", style="container-type: inline-size;")
 		media-source-placeholder
+		LiveCaptions(v-if="ccEnabled", :ws-url="selectedCcWsUrl")
 		reactions-overlay(v-if="hasLivestream")
 		upcoming-stream-countdown(:room="room")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="hasLivestream")
 			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
-			AudioTranslationDropdown(v-if="showPluginLanguageDropdown", :key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange")
+			.cc-controls(v-if="showPluginLanguageDropdown", style="display: flex; align-items: center;")
+				button.stage-tool.cc-toggle(:class="{active: ccEnabled}", @click="toggleCc", style="margin-right: 8px;", :title="$t('Toggle Captions')")
+					i.mdi.mdi-closed-caption
+				AudioTranslationDropdown(v-if="ccEnabled", :key="`${room.id}-cc`", :languages="pluginLanguages", :selected-language="selectedCcLanguage", :label="$t('Caption Language')", @languageChanged="handleCcLanguageChange", icon="mdi-cog")
+				AudioTranslationDropdown(v-if="showPluginLanguageDropdown", :key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange", icon="mdi-headphones")
+				button.stage-tool.ai-toggle(:class="{active: isAiTtsEnabled}", @click="isAiTtsEnabled = !isAiTtsEnabled", :title="$t('Enable AI TTS')", style="margin-right: 8px;")
+					i.mdi.mdi-robot
 	media-source-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom'] || modules['call.jitsi']")
 	roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 	landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
@@ -36,9 +43,12 @@ import Polls from 'components/Polls'
 import Questions from 'components/Questions'
 import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 import AudioTranslationDropdown from 'components/AudioTranslationDropdown'
+import LiveCaptions from 'components/LiveCaptions'
 import UpcomingStreamCountdown from 'components/UpcomingStreamCountdown'
+import api from 'lib/api'
 import { normalizeAudioTranslationSource } from 'lib/validators'
 import { pluginLanguageStreams, roomUsesPluginLanguageStreams } from '../../interpretation-streams'
+import { interpretationApiUrl, interpretationAuthHeaders } from 'lib/interpretation-api'
 
 export default {
 	name: 'Room',
@@ -53,6 +63,7 @@ export default {
 		Questions,
 		MediaSourcePlaceholder,
 		AudioTranslationDropdown,
+		LiveCaptions,
 		UpcomingStreamCountdown,
 	},
 	props: {
@@ -69,6 +80,13 @@ export default {
 			},
 			activeStageTool: null, // reaction, qa
 			pluginLanguages: [],
+			ccEnabled: false,
+			isManualCCOverride: false,
+			selectedCcLanguage: 'Original',
+			listenerToken: null,
+			isAiTtsEnabled: false,
+			pollingInterval: null,
+			activeTranslationConfig: null,
 		}
 	},
 	computed: {
@@ -81,6 +99,14 @@ export default {
 		},
 		selectedPluginLanguage() {
 			return this.getLanguageForTranslation(this.currentInterpretation, this.pluginLanguages) || 'Original'
+		},
+		selectedCcWsUrl() {
+			if (!this.ccEnabled) return null
+			const lang = this.pluginLanguages.find(l => l.language === this.selectedCcLanguage)
+			if (lang && lang.caption_ws_url && this.listenerToken) {
+				return `${lang.caption_ws_url}?token=${this.listenerToken}`
+			}
+			return null
 		},
 		usesStreamPolling() {
 			return Boolean(
@@ -96,7 +122,8 @@ export default {
 				this.modules['livestream.native'] ||
 				this.modules['livestream.youtube']
 			)
-		}
+		},
+
 	},
 	watch: {
 		activeSidebarTab(tab) {
@@ -121,6 +148,9 @@ export default {
 				this.$store.dispatch('startStreamPolling', roomId)
 			}
 		},
+		isAiTtsEnabled() {
+			this.recomputeInterpretationAudio();
+		},
 	},
 	async created() {
 		if (this.modules['chat.native']) {
@@ -134,22 +164,65 @@ export default {
 			await this.$nextTick()
 			this.$store.dispatch('startStreamPolling', this.room.id)
 		}
+		if (this.room?.id) {
+			this.fetchListenerToken()
+		}
 	},
 	beforeUnmount() {
 		this.$store.dispatch('stopStreamPolling')
 	},
 	methods: {
+		async fetchListenerToken() {
+			if (!this.room?.id) return;
+			// Use interpretationApiUrl + interpretationAuthHeaders so X-CSRFToken is included
+			const url = interpretationApiUrl(this.$store, this.room.id, 'listener-token/');
+			const headers = await interpretationAuthHeaders(true);
+			try {
+				const response = await fetch(url, { method: 'POST', headers, credentials: 'include' });
+				if (response.ok) {
+					const data = await response.json();
+					if (data && data.token) {
+						this.listenerToken = data.token;
+					}
+				} else {
+					console.error('listener-token failed:', response.status);
+				}
+			} catch (err) {
+				console.error('Failed to fetch listener token', err);
+			}
+		},
 		changedTabContent(tab) {
 			if (tab === this.activeSidebarTab) return
 			this.unreadTabs[tab] = true
 		},
 		handlePluginLanguageChange(translationConfig) {
 			this.updateActiveTranslation(translationConfig)
+			if (!this.isManualCCOverride && this.ccEnabled) {
+				this.selectedCcLanguage = this.getLanguageForTranslation(translationConfig, this.pluginLanguages) || 'Original'
+			}
+		},
+		handleCcLanguageChange(translationConfig) {
+			this.isManualCCOverride = true
+			this.selectedCcLanguage = this.getLanguageForTranslation(translationConfig, this.pluginLanguages) || 'Original'
+		},
+		toggleCc() {
+			this.ccEnabled = !this.ccEnabled
+			if (this.ccEnabled && !this.isManualCCOverride) {
+				this.selectedCcLanguage = this.selectedPluginLanguage
+			}
 		},
 		updateActiveTranslation(translationConfig) {
+			this.activeTranslationConfig = translationConfig;
+			this.recomputeInterpretationAudio();
+		},
+		recomputeInterpretationAudio() {
+			let finalConfig = null;
+			if (this.selectedPluginLanguage !== 'Original') {
+				finalConfig = this.activeTranslationConfig;
+			}
 			this.$store.commit('updateInterpretationAudio', {
 				roomId: this.room?.id,
-				interpretation: translationConfig
+				interpretation: finalConfig
 			})
 		},
 		initializeLanguages() {

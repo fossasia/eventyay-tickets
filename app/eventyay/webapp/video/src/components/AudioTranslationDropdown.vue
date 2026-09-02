@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-audio-translation(:class="{open: menuOpen}")
 	.ui-background-blocker(v-if="menuOpen", @click="closeMenu")
-	.field-shell
+	.field-shell(v-if="!icon")
 		span.floating-label {{ resolvedLabel }}
 		button.language-toggle(
 			ref="toggle",
@@ -15,6 +15,20 @@
 		)
 			span.value {{ internalSelectedLanguage }}
 			i.mdi.mdi-menu-down(aria-hidden="true")
+	button.stage-tool(
+		v-else,
+		ref="toggle",
+		type="button",
+		:class="{ active: menuOpen }",
+		:aria-label="resolvedLabel",
+		aria-haspopup="listbox",
+		:aria-expanded="menuOpen ? 'true' : 'false'",
+		:aria-controls="menuId",
+		@click="toggleMenu",
+		@keydown="onToggleKeydown",
+		style="margin: 0; background: transparent; border: none;"
+	)
+		i.mdi(:class="icon")
 	ul.language-menu(
 		v-if="menuOpen",
 		ref="menu",
@@ -51,6 +65,10 @@ export default {
 			default: 'Original'
 		},
 		label: {
+			type: String,
+			default: null
+		},
+		icon: {
 			type: String,
 			default: null
 		}
@@ -111,7 +129,7 @@ export default {
 			const audioSource = normalizeAudioTranslationSource(selected?.url || selected?.youtube_id)
 			const useVideo = selected?.use_video || false
 
-			this.$emit('languageChanged', { url: audioSource, useVideo })
+			this.$emit('languageChanged', { ...(selected || {}), url: audioSource, useVideo })
 		},
 		async toggleMenu() {
 			if (this.menuOpen) {

@@ -33,6 +33,8 @@ import JanusCall from 'components/JanusCall';
 import JanusChannelCall from 'components/JanusChannelCall';
 import Livestream from 'components/Livestream';
 import { WhepClient } from 'lib/webrtc/whep';
+import { TTSParser } from 'lib/tts-parser';
+import { AudioScheduler } from 'lib/audio-scheduler';
 import {
 	getStagePlaybackMode,
 	PLAYBACK_MODE_SCHEDULE_DRIVEN,
@@ -74,6 +76,11 @@ let iframeInitInProgress = false;
 const whepAudioEl = ref(null);
 const translationIframeEl = ref(null);
 let whepClient = null;
+let ttsWs = null;
+let audioCtx = null;
+let audioScheduler = null;
+let expectedSeq = null;
+let segmentStore = {};
 
 // Template refs
 const livestream = ref(null);
@@ -250,8 +257,9 @@ async function applyInterpretation(interpConfig) {
 
 	const updateToken = ++interpretationUpdateToken;
 	disconnectWhepTranslation();
+	disconnectTtsTranslation();
 
-	const audioSource = interpConfig?.url || null;
+	const audioSource = interpConfig?.url || interpConfig?.youtube_id || null;
 	const requestedUseVideo = interpConfig?.useVideo || false;
 	const translationVideoId = audioSource ? normalizeYoutubeVideoId(audioSource) : null;
 	const useVideo = requestedUseVideo && !!translationVideoId;
@@ -282,7 +290,56 @@ async function applyInterpretation(interpConfig) {
 			isWhep = false;
 		}
 
-		if (isWhep) {
+
+                const ttsWsUrl = interpConfig?.tts_ws_url || null;
+		if (ttsWsUrl) {
+			languageIframeUrl.value = null;
+			if (!audioCtx) {
+				audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+			}
+			if (audioCtx.state === 'suspended') {
+				audioCtx.resume();
+			}
+			if (audioScheduler) {
+				audioScheduler.reset();
+			}
+			audioScheduler = AudioScheduler.create(audioCtx, {
+				jitterBufferSec: 0.25,
+				comfortNoiseEnabled: false,
+			});
+			segmentStore = {};
+			expectedSeq = null;
+			
+			ttsWs = new WebSocket(ttsWsUrl);
+			ttsWs.binaryType = 'arraybuffer';
+			ttsWs.onmessage = function (event) {
+				if (event.data instanceof ArrayBuffer) {
+					try {
+						const frame = TTSParser.parseFrame(event.data);
+						const seq = frame.header.seq;
+						if (!seq) return;
+						if (expectedSeq === null) expectedSeq = seq;
+						
+						if (!frame.header.error && frame.audioBytes && frame.audioBytes.byteLength > 0) {
+							const alignedBuffer = frame.audioBytes.buffer.slice(
+								frame.audioBytes.byteOffset,
+								frame.audioBytes.byteOffset + frame.audioBytes.byteLength
+							);
+							const int16 = new Int16Array(alignedBuffer);
+							const float32 = new Float32Array(int16.length);
+							for (let i = 0; i < int16.length; i++) {
+								float32[i] = int16[i] / 32768.0;
+							}
+							const audioBuffer = audioCtx.createBuffer(1, float32.length, 24000);
+							audioBuffer.copyToChannel(float32, 0);
+							audioScheduler.scheduleBuffer(audioBuffer);
+						}
+					} catch (e) {
+						console.error('TTS parsing failed', e);
+					}
+				}
+			};
+		} else if (isWhep) {
 			languageIframeUrl.value = null;
 			const client = new WhepClient(audioSource, whepAudioEl.value);
 			whepClient = client;
@@ -291,6 +348,9 @@ async function applyInterpretation(interpConfig) {
 				if (updateToken !== interpretationUpdateToken) {
 					client.disconnect();
 					if (whepClient === client) whepClient = null;
+				} else if (!mainPlayerPaused.value) {
+					// Autoplay often fails for async srcObject assignments. Force play.
+					resumeTranslationAudio();
 				}
 			} catch (err) {
 				console.error('Failed to connect to WHEP interpretation source', err);
@@ -335,6 +395,7 @@ onBeforeUnmount(() => {
 	window.removeEventListener('message', onWindowMessage);
 	if (whepClient) {
 		disconnectWhepTranslation();
+	disconnectTtsTranslation();
 	}
 	iframeEl.value?.remove();
 	if (api.socketState !== 'open') return;
@@ -391,6 +452,19 @@ function disconnectWhepTranslation() {
 	if (!whepClient) return;
 	whepClient.disconnect();
 	whepClient = null;
+}
+
+function disconnectTtsTranslation() {
+	if (ttsWs) {
+		ttsWs.close();
+		ttsWs = null;
+	}
+	if (audioScheduler) {
+		audioScheduler.reset();
+		audioScheduler = null;
+	}
+	segmentStore = {};
+	expectedSeq = null;
 }
 
 function unmuteYouTubePlayer() {
@@ -696,6 +770,7 @@ function destroyIframe() {
 	iframeEl.value = null;
 	languageIframeUrl.value = null;
 	disconnectWhepTranslation();
+	disconnectTtsTranslation();
 	consentBlockedUrl.value = null;
 }
 

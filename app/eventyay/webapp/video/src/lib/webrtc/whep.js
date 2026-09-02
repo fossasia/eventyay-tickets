@@ -15,6 +15,7 @@ export class WhepClient {
 	constructor(url, audioElement) {
 		this.url = url
 		this.audioElement = audioElement
+		this.abortController = new AbortController()
 		
 		const PeerConnectionClass = getNativeRTCPeerConnection()
 		this.peerConnection = new PeerConnectionClass()
@@ -39,7 +40,8 @@ export class WhepClient {
 				headers: {
 					'Content-Type': 'application/sdp'
 				},
-				body: this.peerConnection.localDescription.sdp
+				body: this.peerConnection.localDescription.sdp,
+				signal: this.abortController.signal
 			})
 
 			if (!response.ok) {
@@ -52,12 +54,16 @@ export class WhepClient {
 				sdp: answerSdp
 			})
 		} catch (error) {
+			if (error.name === 'AbortError') return;
 			console.error('WHEP connection failed:', error)
 			throw error
 		}
 	}
 
 	disconnect() {
+		if (this.abortController) {
+			this.abortController.abort()
+		}
 		if (this.peerConnection) {
 			this.peerConnection.close()
 			this.peerConnection = null
