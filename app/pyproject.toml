@@ -105,7 +105,7 @@ dependencies = [
     "eventyay-teamshifts @ git+https://github.com/fossasia/eventyay-teamshifts.git@dev",
     "eventyay-interpretation @ git+https://github.com/fossasia/eventyay-interpretation.git@dev",
     "eventyay-hubspot @ git+https://github.com/fossasia/eventyay-hubspot.git@dev",
-    "eventyay-business @ git+https://github.com/fossasia/eventyay-business.git@main",
+    "eventyay-business @ git+https://github.com/fossasia/eventyay-business.git@dev",
     "execnet>=2.1.2",
     "fido2>=2.2.0",
     "fonttools>=4.63.0",

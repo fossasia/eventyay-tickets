@@ -47,7 +47,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
         --upgrade-package exhibition \
         --upgrade-package eventyay-teamshifts \
         --upgrade-package eventyay-interpretation \
-        --upgrade-package eventyay-hubspot; \
+        --upgrade-package eventyay-hubspot \
+        --upgrade-package eventyay-business; \
     else \
       echo "=== Production build: using locked dependencies ===" && \
       uv sync --locked --no-install-project --no-editable; \
