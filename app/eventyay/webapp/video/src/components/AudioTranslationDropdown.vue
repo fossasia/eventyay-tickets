@@ -215,6 +215,7 @@ export default {
 		align-items: center
 		height: 32px
 		padding: 0 2px 0 8px
+		min-width: 120px
 		border: 1px solid $clr-grey-400
 		border-radius: 4px
 		background: $clr-white

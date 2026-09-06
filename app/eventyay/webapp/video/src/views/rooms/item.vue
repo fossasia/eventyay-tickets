@@ -8,13 +8,15 @@
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="hasLivestream")
 			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
-			.cc-controls(v-if="showPluginLanguageDropdown", style="display: flex; align-items: center;")
-				button.stage-tool.cc-toggle(:class="{active: ccEnabled}", @click="toggleCc", style="margin-right: 8px;", :title="$t('Toggle Captions')")
-					i.mdi.mdi-closed-caption
-				AudioTranslationDropdown(v-if="ccEnabled", :key="`${room.id}-cc`", :languages="pluginLanguages", :selected-language="selectedCcLanguage", :label="$t('Caption Language')", @languageChanged="handleCcLanguageChange", icon="mdi-cog")
-				AudioTranslationDropdown(v-if="showPluginLanguageDropdown", :key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange", icon="mdi-headphones")
-				button.stage-tool.ai-toggle(:class="{active: isAiTtsEnabled}", @click="isAiTtsEnabled = !isAiTtsEnabled", :title="$t('Enable AI TTS')", style="margin-right: 8px;")
-					i.mdi.mdi-robot
+			.cc-controls(v-if="showPluginLanguageDropdown", style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;")
+				.dropdown-wrapper(style="display: flex; align-items: center; gap: 4px;")
+					i.mdi.mdi-account-voice(style="font-size: 20px; color: var(--clr-secondary-text-light);")
+					AudioTranslationDropdown(:key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange")
+				button.stage-tool.cc-toggle(:class="{active: ccEnabled}", @click="toggleCc", :title="$t('Toggle Captions')", style="margin: 0; padding: 4px; display: flex; align-items: center;")
+					i.mdi.mdi-closed-caption(style="font-size: 22px;")
+				.dropdown-wrapper(v-if="ccEnabled", style="display: flex; align-items: center; gap: 4px;")
+					i.mdi.mdi-translate(style="font-size: 20px; color: var(--clr-secondary-text-light);")
+					AudioTranslationDropdown(:key="`${room.id}-cc`", :languages="pluginLanguages", :selected-language="selectedCcLanguage", :label="$t('Caption Language')", @languageChanged="handleCcLanguageChange")
 	media-source-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom'] || modules['call.jitsi']")
 	roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 	landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
@@ -315,7 +317,7 @@ export default {
 		flex: none
 		display: flex
 		min-height: 40px
-		justify-content: flex-end
+		justify-content: space-between
 		align-items: center
 		flex-wrap: wrap
 		gap: 6px
@@ -334,6 +336,8 @@ export default {
 			&.active::before
 				position: absolute
 				bottom: 6px
+				left: 50%
+				transform: translateX(-50%)
 				content: ''
 				display: block
 				height: 2px

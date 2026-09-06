@@ -127,10 +127,6 @@ export default {
 <style lang="stylus">
 .c-live-captions
         position: relative
-        
-        
-        
-        
         width: 100%
         background-color: #000000
         color: #ffffff
