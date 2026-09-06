@@ -116,3 +116,9 @@ def test_get_capability_registry():
         register_entitlements.disconnect(reg_receiver_1)
         register_entitlements.disconnect(reg_receiver_2)
         register_entitlements.disconnect(reg_receiver_invalid)
+
+@pytest.mark.django_db
+def test_check_entitlement_empty_capability(dummy_organizer):
+    """Empty capabilities should raise ValueError to prevent fail-open security bypass."""
+    with pytest.raises(ValueError, match="Capability cannot be empty"):
+        check_entitlement(dummy_organizer, capability="")

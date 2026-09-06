@@ -32,8 +32,7 @@ def check_entitlement(
     Otherwise, returns an EntitlementDecision with allowed=True.
     """
     if not capability:
-        # Graceful fallback if called without a capability, though strictly it should be passed
-        return EntitlementDecision(allowed=True)
+        raise ValueError("Capability cannot be empty when checking entitlements.")
         
     responses = entitlement_check.send(
         sender=organizer, event=event, capability=capability, quantity=quantity, **kwargs
