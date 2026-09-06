@@ -216,9 +216,12 @@ export default {
 			this.recomputeInterpretationAudio();
 		},
 		recomputeInterpretationAudio() {
-			let finalConfig = null;
-			if (this.selectedPluginLanguage !== 'Original') {
-				finalConfig = this.activeTranslationConfig;
+			let finalConfig = this.activeTranslationConfig;
+			if (finalConfig && finalConfig.language === 'Original') {
+				finalConfig = null;
+			}
+			if (finalConfig && !finalConfig.url && !finalConfig.youtube_id) {
+				finalConfig = null;
 			}
 			this.$store.commit('updateInterpretationAudio', {
 				roomId: this.room?.id,

@@ -17,7 +17,7 @@ export class WhepClient {
 		this.audioElement = audioElement
 		this.abortController = new AbortController()
 		
-		const PeerConnectionClass = getNativeRTCPeerConnection()
+		const PeerConnectionClass = window.RTCPeerConnection
 		this.peerConnection = new PeerConnectionClass()
 
 		this.peerConnection.ontrack = (event) => {
@@ -35,6 +35,23 @@ export class WhepClient {
 			const offer = await this.peerConnection.createOffer()
 			await this.peerConnection.setLocalDescription(offer)
 
+			// Wait for ICE gathering before sending the SDP
+			await new Promise((resolve) => {
+				if (this.peerConnection.iceGatheringState === 'complete') {
+					resolve();
+					return;
+				}
+				const timer = setTimeout(resolve, 500);
+				const handler = () => {
+					if (this.peerConnection.iceGatheringState === 'complete') {
+						clearTimeout(timer);
+						this.peerConnection.removeEventListener('icegatheringstatechange', handler);
+						resolve();
+					}
+				};
+				this.peerConnection.addEventListener('icegatheringstatechange', handler);
+			});
+
 			const response = await fetch(this.url, {
 				method: 'POST',
 				headers: {
@@ -48,7 +65,10 @@ export class WhepClient {
 				throw new Error(`WHEP endpoint returned ${response.status}`)
 			}
 
-			const answerSdp = await response.text()
+			const originalAnswerSdp = await response.text();
+			// Force the IP to the browser's hostname to avoid Docker/WSL NAT issues
+			const answerSdp = originalAnswerSdp.replace(/c=IN IP4 [0-9.]+/g, 'c=IN IP4 ' + window.location.hostname);
+
 			await this.peerConnection.setRemoteDescription({
 				type: 'answer',
 				sdp: answerSdp
