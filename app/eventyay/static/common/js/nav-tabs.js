@@ -18,7 +18,7 @@ const updateTabActiveState = () => {
 const alignTicketsSection = () => {
     if (window.location.hash !== '#tickets') return
 
-    const targetElement = document.querySelector('#ticket-list h3') || document.getElementById('tickets')
+    const targetElement = document.querySelector('h3[id^="category-"]') || document.getElementById('tickets')
     const stickyTabs = document.querySelector('.presale-sticky-tabs-wrap')
 
     if (targetElement) {
