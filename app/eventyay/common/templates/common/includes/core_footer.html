@@ -16,6 +16,10 @@
 </nav>
 {% endif %}
 
+{# Loaded here so the consent layer always ships with the footer that links to
+   it: a "Privacy settings" link without this include is a dead control. #}
+{% include "eventyay/privacy/consent.html" %}
+
 {% consent_provider as provider %}
 {% if provider == 'klaro' %}
     <nav class="core-footer-nav" aria-label="{% translate 'Privacy' %}">

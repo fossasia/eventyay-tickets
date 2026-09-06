@@ -25,24 +25,41 @@ if (configElement && klaro) {
         });
     });
 
-    // Contextual consent: replace placeholders with the real embed once the
-    // visitor has accepted the category that the embed's service belongs to.
+    // Contextual consent: the wrapper stays in the DOM for the life of the page
+    // so that accepting a category builds the embed and withdrawing it again
+    // tears the embed back down.
     const manager = klaro.getManager(config);
 
-    const revealConsentedEmbeds = () => {
-        document.querySelectorAll('[data-consent-embed]').forEach((placeholder) => {
-            if (!manager.getConsent(placeholder.dataset.consentEmbed)) {
-                return;
+    const buildEmbed = (wrapper) => {
+        const iframe = document.createElement('iframe');
+        iframe.src = wrapper.dataset.consentSrc;
+        iframe.title = wrapper.dataset.consentTitle || '';
+        iframe.loading = 'lazy';
+        iframe.allowFullscreen = true;
+        return iframe;
+    };
+
+    const syncConsentedEmbeds = () => {
+        document.querySelectorAll('[data-consent-embed]').forEach((wrapper) => {
+            const placeholder = wrapper.querySelector('[data-consent-placeholder]');
+            const iframe = wrapper.querySelector('iframe');
+            const consented = manager.getConsent(wrapper.dataset.consentEmbed);
+
+            if (consented && !iframe) {
+                wrapper.appendChild(buildEmbed(wrapper));
+                if (placeholder) {
+                    placeholder.hidden = true;
+                }
+            } else if (!consented && iframe) {
+                // Withdrawal: drop the frame so the third party stops loading.
+                iframe.remove();
+                if (placeholder) {
+                    placeholder.hidden = false;
+                }
             }
-            const iframe = document.createElement('iframe');
-            iframe.src = placeholder.dataset.consentSrc;
-            iframe.title = placeholder.dataset.consentTitle || '';
-            iframe.loading = 'lazy';
-            iframe.allowFullscreen = true;
-            placeholder.replaceWith(iframe);
         });
     };
 
-    manager.watch({ update: revealConsentedEmbeds });
-    revealConsentedEmbeds();
+    manager.watch({ update: syncConsentedEmbeds });
+    syncConsentedEmbeds();
 }

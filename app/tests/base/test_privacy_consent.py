@@ -1,6 +1,8 @@
 import json
+from pathlib import Path
 
 import pytest
+from django.conf import settings
 
 from eventyay.base.models.privacy import ConsentCategory, ConsentProvider, ThirdPartyService
 from eventyay.base.settings import GlobalSettingsObject
@@ -139,3 +141,40 @@ def test_embed_renders_directly_without_the_builtin_banner(gs, provider):
     context = consent_embed('youtube', 'https://example.org/v', 'Talk recording')
     assert context['blocked'] is False
     assert context['src'] == 'https://example.org/v'
+
+
+@pytest.mark.django_db
+def test_configured_cookie_names_reach_the_payload(gs):
+    """Klaro needs the cookie names to clear them when consent is withdrawn."""
+    gs.settings.set('privacy_category_analytics_enabled', True)
+    ThirdPartyService.objects.create(
+        name='matomo',
+        title='Matomo',
+        category=ConsentCategory.ANALYTICS,
+        cookie_names='_pk_id\n  _pk_ses  \n\n',
+    )
+
+    service = build_consent_config()['services'][0]
+
+    # Blank lines dropped and surrounding whitespace trimmed.
+    assert service['cookies'] == ['_pk_id', '_pk_ses']
+
+
+@pytest.mark.django_db
+def test_service_without_cookie_names_serializes_empty_list(gs):
+    gs.settings.set('privacy_category_analytics_enabled', True)
+    ThirdPartyService.objects.create(name='plausible', title='Plausible', category=ConsentCategory.ANALYTICS)
+
+    assert build_consent_config()['services'][0]['cookies'] == []
+
+
+def test_footer_link_and_consent_layer_ship_together():
+    """
+    The footer's "Privacy settings" link is inert unless the consent layer is
+    loaded, so the include lives in the same shared partial as the link.
+    """
+    partial = Path(settings.BASE_DIR) / 'common/templates/common/includes/core_footer.html'
+    footer = partial.read_text(encoding='utf-8')
+
+    assert 'data-privacy-settings' in footer
+    assert 'eventyay/privacy/consent.html' in footer

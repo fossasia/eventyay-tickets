@@ -93,6 +93,11 @@ class ThirdPartyService(models.Model):
     def required(self):
         return self.category == ConsentCategory.NECESSARY
 
+    @property
+    def cookie_name_list(self):
+        """``cookie_names`` as a list, one entry per non-empty line."""
+        return [line.strip() for line in self.cookie_names.splitlines() if line.strip()]
+
     def serialize_public(self):
         """Shape expected by the Klaro ``services`` config array."""
         return {
@@ -102,4 +107,6 @@ class ThirdPartyService(models.Model):
             'required': self.required,
             'default': self.required,
             'description': str(self.purpose),
+            # Klaro clears these when the visitor declines or withdraws consent.
+            'cookies': self.cookie_name_list,
         }
