@@ -1036,15 +1036,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/82/50/fb310c9479d082655
 
 [[package]]
 name = "django-statici18n"
-version = "2.7.1"
+version = "2.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-appconf" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/09/4608304c76b16b7b7320b6caeb0733056ce982e3e850fe8e0ecd570ffc6c/django_statici18n-2.7.1.tar.gz", hash = "sha256:2b875b350a0e4df20836a3661152610676179d59af84dfaeba2478f74d41f955", size = 7934, upload-time = "2026-03-15T12:23:24.004Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/2d/c5e7450c5f9569f08b4ce48ffea5c6d2120649c57f0c3bf23df16b3984e7/django_statici18n-2.8.0.tar.gz", hash = "sha256:0b5d99e5e6a2f6ef6c02103eb8751a0182ec7e24d5b7ea823fe41fa088798d30", size = 8015, upload-time = "2026-09-02T17:17:51.911Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9b/f6/0d4e3f5397545e5e80801bdfa03a05f47a1e86de836e096ef9cfa9822fe0/django_statici18n-2.7.1-py2.py3-none-any.whl", hash = "sha256:6e35ceca642563a449cf542f13535f986211352563af05979e1bec1b8e34db11", size = 9372, upload-time = "2026-03-15T12:23:22.828Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/12/129f6c0fcc4e45dbce5b409f90006f9d24a8000ca78886a735be630cd62a/django_statici18n-2.8.0-py2.py3-none-any.whl", hash = "sha256:e0ceb493d54e784bf58103d2e806df7d26fcdced088c25309c514ffb8f2c6e23", size = 9363, upload-time = "2026-09-02T17:18:01.991Z" },
 ]
 
 [[package]]
