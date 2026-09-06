@@ -16,3 +16,8 @@ reviews:
       instructions: |
         For each changed file, load every applicable file-specific instruction in `.github/instructions/*.md` according to its `applyTo` pattern.
         Confirm the pull request follows all matched instruction files and call out violations explicitly.
+
+knowledge_base:
+  code_guidelines:
+    filePatterns:
+      - "agents.md"
