@@ -24,7 +24,7 @@
     "@tiptap/extension-image": "^3.30.6",
     "@tiptap/extension-paragraph": "^3.30.6",
     "@tiptap/extension-text": "^3.30.6",
-    "@tiptap/extension-text-align": "^3.30.6",
+    "@tiptap/extension-text-align": "^3.31.2",
     "@tiptap/extensions": "^3.30.6",
     "@tiptap/starter-kit": "^3.30.6",
     "@vuelidate/core": "^2.0.3",
