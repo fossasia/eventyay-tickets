@@ -1,5 +1,6 @@
 import importlib
 import importlib.util
+import types
 
 import pytest
 from django.apps import apps
@@ -22,10 +23,10 @@ def test_missing_plugin_dependency_is_not_swallowed(monkeypatch):
 
 
 def test_broken_payment_plugin_view_is_not_swallowed(monkeypatch):
-    def boom(name):
-        raise AttributeError('missing webhook')
-
-    monkeypatch.setattr('eventyay.config.urls.importlib.import_module', boom)
+    monkeypatch.setattr(
+        'eventyay.config.urls.importlib.import_module',
+        lambda name: types.SimpleNamespace(),
+    )
     with pytest.raises(AttributeError):
         plugin_webhook_compat_paths('eventyay_paypal', '_paypal')
 
@@ -46,20 +47,42 @@ def test_installed_plugin_url_modules_still_import():
     assert failures == []
 
 
+def _reverse_installed_plugin_routes(routes):
+    checked = 0
+    for app_name, url_name, expected, kwargs in routes:
+        if not apps.is_installed(app_name):
+            continue
+        if kwargs:
+            assert reverse(url_name, kwargs=kwargs) == expected
+        else:
+            assert reverse(url_name) == expected
+        checked += 1
+    if checked == 0:
+        pytest.skip('No payment plugins installed')
+
+
 @pytest.mark.django_db
 def test_stripe_and_paypal_webhook_aliases_still_reverse():
-    assert reverse('stripe-payment-webhook-compat') == '/_stripe/webhook'
-    assert reverse('stripe-payment-webhook-tickets-compat') == '/tickets/_stripe/webhook'
-    assert reverse('paypal-payment-webhook-compat') == '/_paypal/webhook'
-    assert reverse('paypal-payment-webhook-tickets-compat') == '/tickets/_paypal/webhook'
+    _reverse_installed_plugin_routes(
+        [
+            ('eventyay_stripe', 'stripe-payment-webhook-compat', '/_stripe/webhook', None),
+            ('eventyay_stripe', 'stripe-payment-webhook-tickets-compat', '/tickets/_stripe/webhook', None),
+            ('eventyay_paypal', 'paypal-payment-webhook-compat', '/_paypal/webhook', None),
+            ('eventyay_paypal', 'paypal-payment-webhook-tickets-compat', '/tickets/_paypal/webhook', None),
+        ]
+    )
 
 
 @pytest.mark.django_db
 def test_payment_plugin_canonical_routes_still_reverse():
-    assert reverse('plugins:eventyay_stripe:webhook') == '/_stripe/webhook/'
-    assert reverse('plugins:eventyay_stripe:oauth.return') == '/_stripe/oauth_return/'
-    assert reverse('plugins:eventyay_paypal:webhook') == '/_paypal/webhook/'
-    assert reverse('plugins:eventyay_paypal:oauth.return') == '/_paypal/oauth_return/'
+    _reverse_installed_plugin_routes(
+        [
+            ('eventyay_stripe', 'plugins:eventyay_stripe:webhook', '/_stripe/webhook/', None),
+            ('eventyay_stripe', 'plugins:eventyay_stripe:oauth.return', '/_stripe/oauth_return/', None),
+            ('eventyay_paypal', 'plugins:eventyay_paypal:webhook', '/_paypal/webhook/', None),
+            ('eventyay_paypal', 'plugins:eventyay_paypal:oauth.return', '/_paypal/oauth_return/', None),
+        ]
+    )
 
 
 @pytest.mark.django_db

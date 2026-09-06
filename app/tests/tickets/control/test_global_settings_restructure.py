@@ -17,6 +17,7 @@ from eventyay.base.signals import register_global_settings
 from eventyay.control.forms.global_settings import (
     GlobalSettingsForm,
     GlobalTicketingSettingsForm,
+    paypal_connect_endpoint_choice,
 )
 
 
@@ -359,3 +360,13 @@ class TestPluginProvidedPaymentSettingsRegression:
             assert gs.settings.get('payment_customplugin_api_key') == 'test_secret_token_123'
         finally:
             register_global_settings.disconnect(dispatch_uid='test_custom_payment_receiver')
+
+
+def test_paypal_connect_endpoint_choice_maps_legacy_urls():
+    assert paypal_connect_endpoint_choice(None) == 'live'
+    assert paypal_connect_endpoint_choice('live') == 'live'
+    assert paypal_connect_endpoint_choice('sandbox') == 'sandbox'
+    assert paypal_connect_endpoint_choice('test') == 'sandbox'
+    assert paypal_connect_endpoint_choice('https://api.sandbox.paypal.com') == 'sandbox'
+    assert paypal_connect_endpoint_choice('https://api.paypal.com') == 'live'
+    assert paypal_connect_endpoint_choice('https://api-m.sandbox.paypal.com') == 'sandbox'
