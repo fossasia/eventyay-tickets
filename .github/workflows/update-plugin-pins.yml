@@ -28,6 +28,7 @@ env:
     eventyay-teamshifts
     eventyay-interpretation
     eventyay-hubspot
+    eventyay-business
 
 permissions:
   contents: write
