@@ -76,10 +76,12 @@
                             {% endif %}
                             <td>
                                 <div class="feedback-comment-cell text-break" style="max-width: 400px;">
-                                    <div class="feedback-comment-cell__text comment-text-content comment-text-collapsed mb-0">
-                                        {{ entry.review|rich_text }}
+                                    <div class="feedback-comment-cell__text">
+                                        <div class="comment-text-content comment-text-collapsed mb-0">
+                                            {{ entry.review|rich_text }}
+                                        </div>
+                                        <button class="btn btn-link btn-sm p-0 read-more-btn d-none mt-1 text-left" data-expanded="false" data-read-more="{% translate 'more' %}" data-show-less="{% translate 'less' %}">{% translate "more" %}</button>
                                     </div>
-                                    <button class="btn btn-link btn-sm p-0 read-more-btn d-none" data-expanded="false" data-read-more="{% translate 'Read more' %}" data-show-less="{% translate 'Show less' %}">{% translate "Read more" %}</button>
                                     {% if entry.report_count %}
                                         <span class="feedback-report-count mt-1" title="{% blocktranslate count counter=entry.report_count %}{{ counter }} report{% plural %}{{ counter }} reports{% endblocktranslate %}">
                                             {{ entry.report_count }}
