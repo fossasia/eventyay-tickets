@@ -820,7 +820,8 @@ return a dictionary mapping names of attributes in the settings store to DRF ser
 As with all event-plugin signals, the ``sender`` keyword argument will contain the event.
 """
 
-entitlement_check = GlobalSignal()
+
+entitlement_check = django.dispatch.Signal()
 """
 Sent to check if a capability is allowed for an organizer. 
 If any receiver returns False, the capability is denied.
@@ -828,14 +829,14 @@ Sender is an ``Organizer`` instance.
 Kwargs: ``capability`` (str)
 """
 
-entitlement_usage_recorded = GlobalSignal()
+entitlement_usage_recorded = django.dispatch.Signal()
 """
 Sent to record usage of a specific capability.
 Sender is an ``Organizer`` instance.
 Kwargs: ``capability`` (str), ``amount`` (int)
 """
 
-register_entitlements = GlobalSignal()
+register_entitlements = django.dispatch.Signal()
 """
 Sent to collect all available capabilities. 
 Receivers should return a dictionary of capabilities they define or enforce.
