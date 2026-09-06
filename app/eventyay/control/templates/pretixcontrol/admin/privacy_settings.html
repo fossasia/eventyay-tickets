@@ -1,0 +1,86 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}{% trans "Privacy & Compliance" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Privacy & Compliance" %}</h1>
+
+    {% if missing_cookie_policy %}
+        <div class="alert alert-warning">
+            {% trans "No Cookie Policy URL is configured. The consent banner cannot be enabled until one is published." %}
+        </div>
+    {% endif %}
+    {% for service in unclassified_services %}
+        <div class="alert alert-warning">
+            {% blocktrans trimmed with name=service.title %}
+                {{ name }} is enabled but has no consent category assigned.
+            {% endblocktrans %}
+        </div>
+    {% endfor %}
+
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+
+        <fieldset>
+            <legend>{% trans "Consent provider" %}</legend>
+            {% bootstrap_field form.privacy_consent_provider layout="horizontal" %}
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "Consent categories" %}</legend>
+            <p class="help-block">
+                {% trans "Strictly necessary services are always active and cannot be switched off by visitors." %}
+            </p>
+            {% bootstrap_field form.privacy_category_functional_enabled layout="horizontal" %}
+            {% bootstrap_field form.privacy_category_analytics_enabled layout="horizontal" %}
+            {% bootstrap_field form.privacy_category_marketing_enabled layout="horizontal" %}
+            {% bootstrap_field form.privacy_category_embed_enabled layout="horizontal" %}
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "Legal pages" %}</legend>
+            {% bootstrap_field form.privacy_policy_url layout="horizontal" %}
+            {% bootstrap_field form.privacy_cookie_policy_url layout="horizontal" %}
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "External CMP" %}</legend>
+            <p class="help-block">
+                {% trans "When an external CMP is selected, Eventyay cannot verify whether scripts are blocked correctly." %}
+            </p>
+            {% bootstrap_field form.privacy_cmp_provider_name layout="horizontal" %}
+            {% bootstrap_field form.privacy_cmp_script_url layout="horizontal" %}
+        </fieldset>
+
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">{% trans "Save" %}</button>
+        </div>
+    </form>
+
+    <h2>{% trans "Third-party services" %}</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans "Service" %}</th>
+                <th>{% trans "Provider" %}</th>
+                <th>{% trans "Consent category" %}</th>
+                <th>{% trans "Enabled" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in services %}
+                <tr>
+                    <td>{{ service.title }}</td>
+                    <td>{{ service.provider }}</td>
+                    <td>{{ service.get_category_display }}</td>
+                    <td>{% if service.enabled %}{% trans "Yes" %}{% else %}{% trans "No" %}{% endif %}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">{% trans "No third-party services are registered yet." %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

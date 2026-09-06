@@ -1,0 +1,15 @@
+{% load static %}
+{% load privacy_consent %}
+
+{% consent_config as klaro_config %}
+{% external_cmp_script as cmp_script %}
+
+{% if klaro_config %}
+    {# Config travels as JSON so no inline script is needed. #}
+    <script type="application/json" id="klaro-config">{{ klaro_config }}</script>
+    <script src="{% static 'klaro/klaro.js' %}" defer></script>
+    <script type="module" src="{% static 'eventyay/js/privacy/consent.js' %}"></script>
+{% elif cmp_script %}
+    {# External CMP mode: consent behaviour is managed outside Eventyay. #}
+    <script src="{{ cmp_script }}" async></script>
+{% endif %}

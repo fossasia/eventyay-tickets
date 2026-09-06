@@ -23,6 +23,7 @@ from eventyay.base.models import Event, GlobalPluginConfig, LogEntry, OrderPayme
 from eventyay.base.plugins import get_all_plugins
 from eventyay.base.services.mail import get_mail_backend
 from eventyay.base.services.update_check import check_result_table, update_check
+from eventyay.base.models.privacy import ThirdPartyService
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.common.sanitizers import sanitize_rich_text
 from eventyay.control.forms.global_settings import (
@@ -31,6 +32,7 @@ from eventyay.control.forms.global_settings import (
     SSOConfigForm,
     UpdateSettingsForm,
     MetaDataSettingsForm,
+    PrivacySettingsForm,
 )
 from eventyay.control.permissions import (
     AdministratorPermissionRequiredMixin,
@@ -550,3 +552,33 @@ class GlobalSettingsPagePreviewView(AdministratorPermissionRequiredMixin, View):
 
         return JsonResponse({'previews': previews})
 
+
+
+class PrivacySettingsView(AdministratorPermissionRequiredMixin, FormView):
+    template_name = 'pretixcontrol/admin/privacy_settings.html'
+    form_class = PrivacySettingsForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        gs = GlobalSettingsObject()
+        services = ThirdPartyService.objects.all()
+
+        context['services'] = services
+        context['provider'] = gs.settings.get('privacy_consent_provider', 'disabled')
+        # Surfaced as warnings on the overview so misconfiguration is visible
+        # rather than silently shipping a banner that blocks nothing.
+        context['unclassified_services'] = [s for s in services if s.enabled and not s.category]
+        context['missing_cookie_policy'] = not gs.settings.get('privacy_cookie_policy_url')
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('Your changes have been saved.'))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse('eventyay_admin:admin.global.privacy')

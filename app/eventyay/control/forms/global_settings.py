@@ -3,10 +3,12 @@ from typing import List, Union
 
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 
 from eventyay.base.forms import SECRET_REDACTED, SecretKeySettingsField, SecretKeySettingsWidget, SettingsForm
+from eventyay.base.models.privacy import ConsentProvider
 from eventyay.base.settings import EVENT_SERIES_CREATION_ENABLED, MEETUP_CREATION_ENABLED, GlobalSettingsObject
 from eventyay.base.signals import register_global_settings
 from eventyay.control.forms import ExtFileField
@@ -830,3 +832,55 @@ class GlobalBusinessSettingsForm(SettingsForm):
                 'billing_validation',
             ]),
         ]
+
+
+class PrivacySettingsForm(SettingsForm):
+    """
+    Privacy & Compliance configuration.
+
+    The consent provider is a single choice rather than independent switches,
+    which is what keeps the built-in Klaro banner and an external CMP from ever
+    running at the same time (issue #5414, section 9).
+    """
+
+    auto_fields = [
+        'privacy_cmp_provider_name',
+        'privacy_cmp_script_url',
+        'privacy_policy_url',
+        'privacy_cookie_policy_url',
+        'privacy_category_functional_enabled',
+        'privacy_category_analytics_enabled',
+        'privacy_category_marketing_enabled',
+        'privacy_category_embed_enabled',
+    ]
+
+    def __init__(self, *args, **kwargs):
+        self.obj = GlobalSettingsObject()
+        super().__init__(*args, obj=self.obj, **kwargs)
+
+        self.fields['privacy_consent_provider'] = forms.ChoiceField(
+            label=_('Consent provider'),
+            choices=ConsentProvider.choices,
+            required=True,
+            help_text=_(
+                'Existing deployments stay on "Disabled" until an administrator turns consent on.'
+            ),
+        )
+
+    def clean(self):
+        data = super().clean()
+        provider = data.get('privacy_consent_provider')
+
+        if provider == ConsentProvider.EXTERNAL and not data.get('privacy_cmp_script_url'):
+            raise ValidationError(
+                {'privacy_cmp_script_url': _('An external CMP needs a script URL to load.')}
+            )
+
+        # A banner that points at a missing policy page is worse than no banner,
+        # so refuse the combination instead of silently rendering a dead link.
+        if provider == ConsentProvider.KLARO and not data.get('privacy_cookie_policy_url'):
+            raise ValidationError(
+                {'privacy_cookie_policy_url': _('Publish a Cookie Policy before enabling the banner.')}
+            )
+
+        return data

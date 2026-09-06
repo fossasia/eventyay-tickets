@@ -576,6 +576,11 @@ def get_admin_navigation(request):
             'active': (url.url_name == 'admin.global.metadata'),
         },
         {
+            'label': _('Privacy & Compliance'),
+            'url': reverse('eventyay_admin:admin.global.privacy'),
+            'active': (url.url_name == 'admin.global.privacy'),
+        },
+        {
             'label': _('Generate keys for SSO'),
             'url': reverse('eventyay_admin:admin.global.sso'),
             'active': (url.url_name == 'admin.global.sso'),

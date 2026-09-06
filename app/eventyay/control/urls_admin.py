@@ -48,6 +48,7 @@ urlpatterns = [
     path('global/settings/preview/', global_settings.GlobalSettingsPagePreviewView.as_view(), name='admin.global.settings.preview'),
     path('global/settings/test-email/', global_settings.GlobalSettingsTestEmailView.as_view(), name='admin.global.settings.test_email'),
     path('global/metadata/', global_settings.MetaDataSettingsView.as_view(), name='admin.global.metadata'),
+    path('global/privacy/', global_settings.PrivacySettingsView.as_view(), name='admin.global.privacy'),
 
     path('global/gmail/connect/', gmail_oauth.GmailOAuthConnectView.as_view(), name='admin.global.gmail.connect'),
     path('global/gmail/callback/', gmail_oauth.GmailOAuthCallbackView.as_view(), name='admin.global.gmail.callback'),

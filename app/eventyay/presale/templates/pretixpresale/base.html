@@ -65,6 +65,7 @@
         <script type="text/javascript" src="{% static "utils/js/utils.js" %}"></script>
     {% endcompress %}
     <script type="module" src="{% static 'pretixpresale/js/ui/presale-login-modal.js' %}"></script>
+    {% include "eventyay/privacy/consent.html" %}
 {% endblock %}
 
 {% block custom_header %}

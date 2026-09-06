@@ -1,0 +1,15 @@
+{% load i18n %}
+<div class="consent-embed-placeholder"
+     data-consent-embed="{{ service }}"
+     data-consent-src="{{ src }}"
+     data-consent-title="{{ title }}">
+    <p>
+        {% blocktrans trimmed %}
+            This content is provided by an external service. To view it, allow embedded
+            content in Privacy settings.
+        {% endblocktrans %}
+    </p>
+    <button type="button" class="btn btn-default" data-privacy-settings>
+        {% trans "Allow embedded content" %}
+    </button>
+</div>

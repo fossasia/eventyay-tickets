@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load safelink %}
+{% load privacy_consent %}
 
 {% if core_footer_links %}
 <nav class="core-footer-nav" aria-label="{% translate 'Platform links' %}">
@@ -13,4 +14,13 @@
         {% endfor %}
     </div>
 </nav>
+{% endif %}
+
+{% consent_provider as provider %}
+{% if provider == 'klaro' %}
+    <nav class="core-footer-nav" aria-label="{% translate 'Privacy' %}">
+        <div class="core-footer-links-container">
+            <a href="#" class="core-footer-link" data-privacy-settings>{% translate "Privacy settings" %}</a>
+        </div>
+    </nav>
 {% endif %}
