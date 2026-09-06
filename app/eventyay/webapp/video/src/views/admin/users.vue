@@ -53,41 +53,44 @@
 						bunt-button.btn-ban(
 							v-if="hasPermission('world:users.manage') && user.moderation_state !== 'banned'",
 							:key="`${user.id}-ban`",
-							:loading="user.updating === 'ban'",
-							:error-message="(user.error && user.error.action === 'ban') ? user.error.message : null",
 							tooltipPlacement="left",
-							@click="doAction(user, 'ban', 'banned')")
-							| ban
+							@click="promptUserAction(user, 'ban')")
+							| {{ $t('ban') }}
 						bunt-button.btn-silence(
 							v-if="hasPermission('world:users.manage') && !user.moderation_state",
 							:key="`${user.id}-silence`",
-							:loading="user.updating === 'silence'",
-							:error-message="(user.error && user.error.action === 'silence') ? user.error.message : null",
 							tooltipPlacement="left",
-							@click="doAction(user, 'silence', 'silenced')")
-							| silence
+							@click="promptUserAction(user, 'silence')")
+							| {{ $t('silence') }}
 						bunt-button.btn-reactivate(
 							v-if="hasPermission('world:users.manage') && user.moderation_state",
 							:key="`${user.id}-reactivate`",
-							:loading="user.updating === 'reactivate'",
-							:error-message="(user.error && user.error.action === 'reactivate') ? user.error.message : null",
 							tooltipPlacement="left",
-							@click="doAction(user, 'reactivate', null)")
-							| {{ user.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
+							@click="promptUserAction(user, 'reactivate')")
+							| {{ user.moderation_state === 'banned' ? $t('unban') : $t('unsilence') }}
 			template(#after)
 				.load-more(v-if="!isLastPage")
 					bunt-button(@click="loadUsers(page + 1)", :loading="loadingMore") {{ $t('Load more') }}
 		bunt-progress-circular(v-else, size="huge", :page="true")
+	transition(name="prompt")
+		user-action-prompt(
+			v-if="userAction && selectedUser",
+			:action="userAction",
+			:user="selectedUser",
+			:closeDelay="0",
+			@close="completedUserAction"
+		)
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
 import api from 'lib/api'
 import Avatar from 'components/Avatar'
+import UserActionPrompt from 'components/UserActionPrompt'
 import debounce from 'lodash/debounce'
 
 export default {
 	name: 'AdminUsers',
-	components: { Avatar },
+	components: { Avatar, UserActionPrompt },
 	data() {
 		return {
 			users: null,
@@ -96,7 +99,9 @@ export default {
 			isLastPage: false,
 			loadingMore: false,
 			debouncedSearch: null,
-			currentSearchRequestId: 0
+			currentSearchRequestId: 0,
+			selectedUser: null,
+			userAction: null
 		}
 	},
 	computed: {
@@ -178,19 +183,23 @@ export default {
 			const name = user.profile?.display_name
 			return name ? `User ${name}` : `User ${user.id}`
 		},
-		async doAction(user, action, postState) {
-			user.updating = action
-			user.error = null
+		promptUserAction(user, action) {
+			this.selectedUser = user
+			this.userAction = action
+		},
+		async completedUserAction() {
+			const user = this.selectedUser
+			this.userAction = null
+			this.selectedUser = null
+			if (!user) return
 			try {
-				await api.call(`user.${action}`, {id: user.id})
-				user.moderation_state = postState
-			} catch (error) {
-				user.error = {
-					action,
-					message: error?.message || this.$t('Something went wrong.'),
+				const updatedUser = await api.call('user.fetch', {id: user.id})
+				if (updatedUser) {
+					user.moderation_state = updatedUser.moderation_state
 				}
+			} catch (e) {
+				console.error('Failed to refresh user moderation state:', e)
 			}
-			user.updating = null
 		}
 	}
 }
