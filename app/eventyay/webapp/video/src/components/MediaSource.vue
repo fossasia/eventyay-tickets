@@ -339,6 +339,13 @@ async function applyInterpretation(interpConfig) {
 					}
 				}
 			};
+			const activeTtsWs = ttsWs;
+			ttsWs.onclose = ttsWs.onerror = function () {
+				if (ttsWs === activeTtsWs) {
+					disconnectTtsTranslation();
+					unmuteMainPlayer();
+				}
+			};
 		} else if (isWhep) {
 			languageIframeUrl.value = null;
 			const client = new WhepClient(audioSource, whepAudioEl.value);
@@ -395,8 +402,8 @@ onBeforeUnmount(() => {
 	window.removeEventListener('message', onWindowMessage);
 	if (whepClient) {
 		disconnectWhepTranslation();
-	disconnectTtsTranslation();
 	}
+	disconnectTtsTranslation();
 	iframeEl.value?.remove();
 	if (api.socketState !== 'open') return;
 	// TODO move to store?
@@ -487,6 +494,9 @@ function pauseTranslationAudio() {
 	if (whepAudioEl.value && !whepAudioEl.value.paused) {
 		whepAudioEl.value.pause();
 	}
+	if (audioCtx && audioCtx.state === 'running') {
+		audioCtx.suspend();
+	}
 	pauseYouTubeTranslationIframe();
 }
 
@@ -495,6 +505,9 @@ function resumeTranslationAudio() {
 		whepAudioEl.value.play().catch(e =>
 			console.warn('Failed to resume WHEP interpretation audio:', e)
 		);
+	}
+	if (audioCtx && audioCtx.state === 'suspended') {
+		audioCtx.resume();
 	}
 	resumeYouTubeTranslationIframe();
 }

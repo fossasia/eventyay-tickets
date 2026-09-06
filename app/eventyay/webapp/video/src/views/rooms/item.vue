@@ -144,8 +144,12 @@ export default {
 		},
 		'room.id'(roomId) {
 			this.$store.dispatch('stopStreamPolling')
+			this.listenerToken = null
 			if (roomId && this.usesStreamPolling) {
 				this.$store.dispatch('startStreamPolling', roomId)
+			}
+			if (roomId) {
+				this.fetchListenerToken()
 			}
 		},
 		isAiTtsEnabled() {
@@ -174,11 +178,13 @@ export default {
 	methods: {
 		async fetchListenerToken() {
 			if (!this.room?.id) return;
+			const currentRoomId = this.room.id;
 			// Use interpretationApiUrl + interpretationAuthHeaders so X-CSRFToken is included
 			const url = interpretationApiUrl(this.$store, this.room.id, 'listener-token/');
 			const headers = await interpretationAuthHeaders(true);
 			try {
 				const response = await fetch(url, { method: 'POST', headers, credentials: 'include' });
+				if (this.room?.id !== currentRoomId) return;
 				if (response.ok) {
 					const data = await response.json();
 					if (data && data.token) {
@@ -188,7 +194,9 @@ export default {
 					console.error('listener-token failed:', response.status);
 				}
 			} catch (err) {
-				console.error('Failed to fetch listener token', err);
+				if (this.room?.id === currentRoomId) {
+					console.error('Failed to fetch listener token', err);
+				}
 			}
 		},
 		changedTabContent(tab) {
@@ -220,8 +228,14 @@ export default {
 			if (finalConfig && finalConfig.language === 'Original') {
 				finalConfig = null;
 			}
-			if (finalConfig && !finalConfig.url && !finalConfig.youtube_id) {
+			if (finalConfig && !finalConfig.url && !finalConfig.youtube_id && !finalConfig.tts_ws_url) {
 				finalConfig = null;
+			}
+			if (finalConfig) {
+				finalConfig = { ...finalConfig };
+				if (!this.isAiTtsEnabled) {
+					delete finalConfig.tts_ws_url;
+				}
 			}
 			this.$store.commit('updateInterpretationAudio', {
 				roomId: this.room?.id,

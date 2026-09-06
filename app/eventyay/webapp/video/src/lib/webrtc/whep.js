@@ -17,7 +17,7 @@ export class WhepClient {
 		this.audioElement = audioElement
 		this.abortController = new AbortController()
 		
-		const PeerConnectionClass = window.RTCPeerConnection
+		const PeerConnectionClass = getNativeRTCPeerConnection()
 		this.peerConnection = new PeerConnectionClass()
 
 		this.peerConnection.ontrack = (event) => {
@@ -36,20 +36,33 @@ export class WhepClient {
 			await this.peerConnection.setLocalDescription(offer)
 
 			// Wait for ICE gathering before sending the SDP
-			await new Promise((resolve) => {
+			await new Promise((resolve, reject) => {
+				const abortError = new Error('Aborted');
+				abortError.name = 'AbortError';
+				
+				if (this.abortController.signal.aborted) {
+					reject(abortError);
+					return;
+				}
 				if (this.peerConnection.iceGatheringState === 'complete') {
 					resolve();
 					return;
 				}
-				const timer = setTimeout(resolve, 500);
 				const handler = () => {
 					if (this.peerConnection.iceGatheringState === 'complete') {
-						clearTimeout(timer);
 						this.peerConnection.removeEventListener('icegatheringstatechange', handler);
+						this.abortController.signal.removeEventListener('abort', abortHandler);
 						resolve();
 					}
 				};
+				const abortHandler = () => {
+					if (this.peerConnection) {
+						this.peerConnection.removeEventListener('icegatheringstatechange', handler);
+					}
+					reject(abortError);
+				};
 				this.peerConnection.addEventListener('icegatheringstatechange', handler);
+				this.abortController.signal.addEventListener('abort', abortHandler, { once: true });
 			});
 
 			const response = await fetch(this.url, {
@@ -66,8 +79,10 @@ export class WhepClient {
 			}
 
 			const originalAnswerSdp = await response.text();
-			// Force the IP to the browser's hostname to avoid Docker/WSL NAT issues
-			const answerSdp = originalAnswerSdp.replace(/c=IN IP4 [0-9.]+/g, 'c=IN IP4 ' + window.location.hostname);
+			// Force the IP to the browser's hostname when it is a valid IPv4 address
+			const hostname = window.location.hostname;
+			const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) && hostname.split('.').every((octet) => Number(octet) <= 255);
+			const answerSdp = isIPv4 ? originalAnswerSdp.replace(/c=IN IP4 [0-9.]+/g, 'c=IN IP4 ' + hostname) : originalAnswerSdp;
 
 			await this.peerConnection.setRemoteDescription({
 				type: 'answer',

@@ -46,6 +46,8 @@ function createAudioScheduler(audioCtx, opts) {
 
   /** @type {number} audioCtx.currentTime when the last scheduled buffer ends */
   var nextScheduledTime = 0;
+  
+  var activeSources = new Set();
 
   /** @type {AudioBufferSourceNode|null} Currently playing comfort noise source */
   var comfortNoiseSource = null;
@@ -194,6 +196,10 @@ function createAudioScheduler(audioCtx, opts) {
       var source = audioCtx.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(audioCtx.destination);
+      activeSources.add(source);
+      source.onended = function () {
+        activeSources.delete(source);
+      };
       source.start(startTime);
 
       var endTime = startTime + audioBuffer.duration;
@@ -226,6 +232,13 @@ function createAudioScheduler(audioCtx, opts) {
      * AudioBufferSourceNodes (they will play to completion).
      */
     reset: function () {
+      activeSources.forEach(function(source) {
+        try {
+          source.stop();
+          source.disconnect();
+        } catch (e) {}
+      });
+      activeSources.clear();
       nextScheduledTime = 0;
       stopComfortNoise();
       if (idleTimer !== null) {
