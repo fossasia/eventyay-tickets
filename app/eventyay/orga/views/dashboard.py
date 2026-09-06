@@ -35,7 +35,8 @@ def legacy_orga_event_redirect(request, event):
                 return redirect(url, permanent=True)
         raise Http404()
 
-from eventyay.base.models import Submission, SubmissionStates
+from eventyay.base.models import Review, Submission, SubmissionStates
+from eventyay.base.models.profile import SpeakerProfile
 from eventyay.base.models.event import Event
 from eventyay.base.models.log import LogEntry
 from eventyay.base.models.organizer import Organizer
@@ -339,80 +340,88 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
                     'priority': 10,
                 })
             elif today > event.date_to:
-                days = (today - event.date_from).days
+                days = (today - event.date_to).days
                 from django.utils.translation import ngettext_lazy
                 tiles.append({
                     'large': days,
-                    'small': ngettext_lazy('day since event start', 'days since event start', days),
+                    'small': ngettext_lazy('day since event end', 'days since event end', days),
+                    'priority': 80,
+                })
+            elif event.date_to != event.date_from:
+                day = (today - event.date_from).days + 1
+                total_days = (event.date_to - event.date_from).days + 1
+                tiles.append({
+                    'large': _('Day {number}').format(number=day),
+                    'small': _('of {total_days} days').format(total_days=total_days),
+                    'url': event.urls.schedule + f'#{today.isoformat()}',
                     'priority': 10,
                 })
             result['upcoming_items'] = tiles
 
-        # Action required metrics
-        unconfirmed_sessions_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
+            # Action required metrics
+            unconfirmed_sessions_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
         
-        unscheduled_sessions_count = 0
-        if getattr(event, 'wip_schedule', None):
-            unscheduled_sessions_count = event.wip_schedule.talks.filter(
-                Q(start__isnull=True) | Q(room__isnull=True),
-                is_visible=True,
-                submission__state=SubmissionStates.CONFIRMED
-            ).count()
+            unscheduled_sessions_count = 0
+            if getattr(event, 'wip_schedule', None):
+                unscheduled_sessions_count = event.wip_schedule.talks.filter(
+                    Q(start__isnull=True) | Q(room__isnull=True),
+                    is_visible=True,
+                    submission__state=SubmissionStates.CONFIRMED
+                ).count()
             
-        incomplete_speakers_count = event.speakers.filter(
-            Q(profiles__event=event, profiles__biography__isnull=True) |
-            Q(profiles__event=event, profiles__biography='') |
-            Q(avatar__isnull=True) | Q(avatar='')
-        ).distinct().count()
+            incomplete_speakers_count = SpeakerProfile.objects.filter(
+                Q(event=event, user__in=event.speakers) &
+                (Q(biography__isnull=True) | Q(biography='') | Q(user__avatar__isnull=True) | Q(user__avatar=''))
+            ).distinct().count()
 
-        pending_notifications_count = event.queued_mails.filter(sent__isnull=True).count()
+            pending_notifications_count = event.queued_mails.filter(sent__isnull=True).count()
         
-        result['action_required'] = {
-            'unconfirmed_sessions': unconfirmed_sessions_count,
-            'unscheduled_sessions': unscheduled_sessions_count,
-            'incomplete_speakers': incomplete_speakers_count,
-            'pending_notifications': pending_notifications_count,
-        }
+            result['action_required'] = {
+                'unconfirmed_sessions': unconfirmed_sessions_count,
+                'unscheduled_sessions': unscheduled_sessions_count,
+                'incomplete_speakers': incomplete_speakers_count,
+                'pending_notifications': pending_notifications_count,
+            }
 
-        # At a glance metrics
-        submitted_proposals_count = event.submissions.count()
-        accepted_proposals_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
-        conversion_percentage = round((accepted_proposals_count / submitted_proposals_count * 100), 1) if submitted_proposals_count else 0
+            # At a glance metrics
+            submitted_proposals_count = event.submissions.count()
+            accepted_proposals_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
+            conversion_percentage = round((accepted_proposals_count / submitted_proposals_count * 100), 1) if submitted_proposals_count else 0
         
-        confirmed_sessions_count = event.submissions.filter(state=SubmissionStates.CONFIRMED).count()
+            confirmed_sessions_count = event.submissions.filter(state=SubmissionStates.CONFIRMED).count()
         
-        scheduled_sessions_count = 0
-        if getattr(event, 'current_schedule', None):
-            scheduled_sessions_count = event.current_schedule.talks.filter(
-                start__isnull=False, room__isnull=False, is_visible=True, submission__isnull=False
-            ).count()
+            scheduled_sessions_count = 0
+            if getattr(event, 'current_schedule', None):
+                scheduled_sessions_count = event.current_schedule.talks.filter(
+                    start__isnull=False, room__isnull=False, is_visible=True, submission__isnull=False
+                ).count()
 
-        speakers_count = event.speakers.count()
+            speakers_count = event.speakers.count()
         
-        is_reviewer = self.request.user.is_administrator or event.teams.filter(members__in=[self.request.user], is_reviewer=True).exists()
-        pending_reviews_count = get_missing_reviews(event, self.request.user).count() if is_reviewer else 0
-        rejected_proposals_count = event.submissions.filter(state=SubmissionStates.REJECTED).count()
-        withdrawn_proposals_count = event.submissions.filter(state__in=[SubmissionStates.WITHDRAWN, SubmissionStates.CANCELED]).count()
+            is_reviewer = self.request.user.is_administrator or event.teams.filter(members__in=[self.request.user], is_reviewer=True).exists()
+            pending_reviews_count = get_missing_reviews(event, self.request.user).count() if is_reviewer else 0
+            rejected_proposals_count = event.submissions.filter(state=SubmissionStates.REJECTED).count()
+            withdrawn_proposals_count = event.submissions.filter(state__in=[SubmissionStates.WITHDRAWN, SubmissionStates.CANCELED]).count()
         
-        emails_sent_count = event.queued_mails.filter(sent__isnull=False).count()
-        current_schedule_version = getattr(event.current_schedule, 'version', None) if getattr(event, 'current_schedule', None) else None
+            emails_sent_count = event.queued_mails.filter(sent__isnull=False).count()
+            current_schedule_version = getattr(event.current_schedule, 'version', None) if getattr(event, 'current_schedule', None) else None
         
-        active_reviewers_count = event.reviewers.filter(reviews__isnull=False).order_by('id').distinct().count()
+            active_reviewers_count = Review.objects.filter(submission__event=event).values('user').distinct().count()
 
-        result['at_a_glance'] = {
-            'talk_component_status': getattr(event, 'talk_component_presale_status', None),
-            'submitted_proposals': submitted_proposals_count,
-            'accepted_proposals': accepted_proposals_count,
-            'conversion_percentage': conversion_percentage,
-            'confirmed_sessions': confirmed_sessions_count,
-            'scheduled_sessions': scheduled_sessions_count,
-            'speakers': speakers_count,
-            'pending_reviews': pending_reviews_count,
-            'rejected_proposals': rejected_proposals_count,
-            'withdrawn_proposals': withdrawn_proposals_count,
-            'emails_sent': emails_sent_count,
-            'current_schedule_version': current_schedule_version,
-            'active_reviewers': active_reviewers_count,
-        }
+            result['at_a_glance'] = {
+                'talk_component_status': getattr(event, 'talk_component_presale_status', None),
+                'submitted_proposals': submitted_proposals_count,
+                'accepted_proposals': accepted_proposals_count,
+                'conversion_percentage': conversion_percentage,
+                'confirmed_sessions': confirmed_sessions_count,
+                'scheduled_sessions': scheduled_sessions_count,
+                'speakers': speakers_count,
+                'pending_reviews': pending_reviews_count,
+                'rejected_proposals': rejected_proposals_count,
+                'withdrawn_proposals': withdrawn_proposals_count,
+                'emails_sent': emails_sent_count,
+                'current_schedule_version': current_schedule_version,
+                'active_reviewers': active_reviewers_count,
+            }
         
         return result

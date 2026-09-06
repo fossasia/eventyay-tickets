@@ -10,7 +10,7 @@
     <div class="td-attention-layout">
         <div class="td-action-grid">
             {% if can_update_submission %}
-            <article class="td-action-card td-action-danger td-action-card-active">
+            <article class="td-action-card {% if action_required.unconfirmed_sessions > 0 %}td-action-danger td-action-card-active{% else %}td-action-ok-card{% endif %}">
                 <div class="td-action-header">
                     <span class="td-action-icon" aria-hidden="true"><span class="fa fa-exclamation-triangle"></span></span>
                     <span class="td-action-title">{% trans "Unconfirmed sessions" %}</span>
@@ -18,17 +18,21 @@
                 <div class="td-action-count">{{ action_required.unconfirmed_sessions }}</div>
                 <p class="td-action-desc">
                     {% blocktrans count var=action_required.unconfirmed_sessions %}
-                    accepted session is waiting for speaker confirmation.
+                    {{ var }} accepted session is waiting for speaker confirmation.
                     {% plural %}
-                    accepted sessions are waiting for speaker confirmation.
+                    {{ var }} accepted sessions are waiting for speaker confirmation.
                     {% endblocktrans %}
                 </p>
+                {% if action_required.unconfirmed_sessions > 0 %}
                 <a href="{{ request.event.orga_urls.submissions }}?state=accepted" class="td-action-btn">{% trans "Review sessions" %} <span aria-hidden="true">></span></a>
+                {% else %}
+                <div class="td-action-ok"><span class="fa fa-check" aria-hidden="true"></span> {% trans "All good" %}</div>
+                {% endif %}
             </article>
             {% endif %}
 
             {% if can_view_schedule %}
-            <article class="td-action-card td-action-warning td-action-card-active">
+            <article class="td-action-card {% if action_required.unscheduled_sessions > 0 %}td-action-warning td-action-card-active{% else %}td-action-ok-card{% endif %}">
                 <div class="td-action-header">
                     <span class="td-action-icon" aria-hidden="true"><span class="fa fa-calendar-times-o"></span></span>
                     <span class="td-action-title">{% trans "Unscheduled sessions" %}</span>
@@ -36,17 +40,21 @@
                 <div class="td-action-count">{{ action_required.unscheduled_sessions }}</div>
                 <p class="td-action-desc">
                     {% blocktrans count var=action_required.unscheduled_sessions %}
-                    confirmed session is not assigned to any slot.
+                    {{ var }} confirmed session is not assigned to any slot.
                     {% plural %}
-                    confirmed sessions are not assigned to any slot.
+                    {{ var }} confirmed sessions are not assigned to any slot.
                     {% endblocktrans %}
                 </p>
+                {% if action_required.unscheduled_sessions > 0 %}
                 <a href="{{ request.event.orga_urls.schedule }}" class="td-action-btn">{% trans "Open schedule" %} <span aria-hidden="true">></span></a>
+                {% else %}
+                <div class="td-action-ok"><span class="fa fa-check" aria-hidden="true"></span> {% trans "All good" %}</div>
+                {% endif %}
             </article>
             {% endif %}
 
             {% if can_list_speaker %}
-            <article class="td-action-card td-action-caution td-action-card-active">
+            <article class="td-action-card {% if action_required.incomplete_speakers > 0 %}td-action-caution td-action-card-active{% else %}td-action-ok-card{% endif %}">
                 <div class="td-action-header">
                     <span class="td-action-icon" aria-hidden="true"><span class="fa fa-user-times"></span></span>
                     <span class="td-action-title">{% trans "Speakers incomplete" %}</span>
@@ -54,17 +62,21 @@
                 <div class="td-action-count">{{ action_required.incomplete_speakers }}</div>
                 <p class="td-action-desc">
                     {% blocktrans count var=action_required.incomplete_speakers %}
-                    speaker is missing bio, photo or profile details.
+                    {{ var }} speaker is missing bio, photo or profile details.
                     {% plural %}
-                    speakers are missing bio, photo or profile details.
+                    {{ var }} speakers are missing bio, photo or profile details.
                     {% endblocktrans %}
                 </p>
+                {% if action_required.incomplete_speakers > 0 %}
                 <a href="{{ request.event.orga_urls.speakers }}" class="td-action-btn">{% trans "Review speakers" %} <span aria-hidden="true">></span></a>
+                {% else %}
+                <div class="td-action-ok"><span class="fa fa-check" aria-hidden="true"></span> {% trans "All good" %}</div>
+                {% endif %}
             </article>
             {% endif %}
 
             {% if can_send_mail %}
-            <article class="td-action-card td-action-info td-action-card-active">
+            <article class="td-action-card {% if action_required.pending_notifications > 0 %}td-action-info td-action-card-active{% else %}td-action-ok-card{% endif %}">
                 <div class="td-action-header">
                     <span class="td-action-icon" aria-hidden="true"><span class="fa fa-envelope-o"></span></span>
                     <span class="td-action-title">{% trans "Notifications pending" %}</span>
@@ -72,12 +84,16 @@
                 <div class="td-action-count">{{ action_required.pending_notifications }}</div>
                 <p class="td-action-desc">
                     {% blocktrans count var=action_required.pending_notifications %}
-                    email is waiting to be sent.
+                    {{ var }} email is waiting to be sent.
                     {% plural %}
-                    emails are waiting to be sent.
+                    {{ var }} emails are waiting to be sent.
                     {% endblocktrans %}
                 </p>
+                {% if action_required.pending_notifications > 0 %}
                 <a href="{{ request.event.orga_urls.outbox }}" class="td-action-btn">{% trans "Send notifications" %} <span aria-hidden="true">></span></a>
+                {% else %}
+                <div class="td-action-ok"><span class="fa fa-check" aria-hidden="true"></span> {% trans "All good" %}</div>
+                {% endif %}
             </article>
             {% endif %}
         </div>
