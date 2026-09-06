@@ -92,31 +92,13 @@ export default {
                 },
                 async onMessage(event) {
                         try {
-                                let data;
                                 if (event.data instanceof Blob) {
-                                        // This is a binary TTS frame from VoxBento
-                                        const buffer = await event.data.arrayBuffer();
-                                        const view = new DataView(buffer);
-                                        const version = view.getUint8(0);
-                                        if (version !== 1) {
-                                                console.error('Unknown TTS frame version:', version);
-                                                return;
-                                        }
-                                        const headerLength = view.getUint32(1); // big-endian
-                                        const headerBytes = new Uint8Array(buffer, 5, headerLength);
-                                        const headerString = new TextDecoder().decode(headerBytes);
-                                        data = JSON.parse(headerString);
-                                        
-                                        // Map TTS header format to our format
-                                        data.type = 'tts_bundle';
-                                        if (data.translation) {
-                                                data.translated = data.translation;
-                                        }
-                                } else {
-                                        data = JSON.parse(event.data);
+                                        return; // TTS removed for now
                                 }
-
+                                
+                                const data = JSON.parse(event.data);
                                 console.log('LiveCaptions received:', data);
+                                
 								if ((data.type === 'caption' || data.type === 'translated_caption') && data.text) {
                                         this.lines.push({ id: this.nextId++, text: data.text })
                                         if (this.lines.length > 100) {
@@ -127,17 +109,7 @@ export default {
                                                         this.$refs.log.scrollTop = this.$refs.log.scrollHeight
                                                 }
                                         })
-                                } else if (data.type === 'tts_bundle' && data.translated) {
-                                        this.lines.push({ id: this.nextId++, text: data.translated })
-                                        if (this.lines.length > 100) {
-                                                this.lines = this.lines.slice(-50)
-                                        }
-                                        this.$nextTick(() => {
-						if (!this.isAutoScrollPaused && this.$refs.log) {
-							this.$refs.log.scrollTop = this.$refs.log.scrollHeight
-						}
-					})
-				}
+                                }
 			} catch (e) {
 				console.error('Failed to parse caption message', e)
 			}

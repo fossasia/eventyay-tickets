@@ -33,8 +33,6 @@ import JanusCall from 'components/JanusCall';
 import JanusChannelCall from 'components/JanusChannelCall';
 import Livestream from 'components/Livestream';
 import { WhepClient } from 'lib/webrtc/whep';
-import { TTSParser } from 'lib/tts-parser';
-import { AudioScheduler } from 'lib/audio-scheduler';
 import {
 	getStagePlaybackMode,
 	PLAYBACK_MODE_SCHEDULE_DRIVEN,
@@ -76,11 +74,6 @@ let iframeInitInProgress = false;
 const whepAudioEl = ref(null);
 const translationIframeEl = ref(null);
 let whepClient = null;
-let ttsWs = null;
-let audioCtx = null;
-let audioScheduler = null;
-let expectedSeq = null;
-let segmentStore = {};
 
 // Template refs
 const livestream = ref(null);
@@ -257,7 +250,6 @@ async function applyInterpretation(interpConfig) {
 
 	const updateToken = ++interpretationUpdateToken;
 	disconnectWhepTranslation();
-	disconnectTtsTranslation();
 
 	const audioSource = interpConfig?.url || interpConfig?.youtube_id || null;
 	const requestedUseVideo = interpConfig?.useVideo || false;
@@ -291,62 +283,7 @@ async function applyInterpretation(interpConfig) {
 		}
 
 
-                const ttsWsUrl = interpConfig?.tts_ws_url || null;
-		if (ttsWsUrl) {
-			languageIframeUrl.value = null;
-			if (!audioCtx) {
-				audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-			}
-			if (audioCtx.state === 'suspended') {
-				audioCtx.resume();
-			}
-			if (audioScheduler) {
-				audioScheduler.reset();
-			}
-			audioScheduler = AudioScheduler.create(audioCtx, {
-				jitterBufferSec: 0.25,
-				comfortNoiseEnabled: false,
-			});
-			segmentStore = {};
-			expectedSeq = null;
-			
-			ttsWs = new WebSocket(ttsWsUrl);
-			ttsWs.binaryType = 'arraybuffer';
-			ttsWs.onmessage = function (event) {
-				if (event.data instanceof ArrayBuffer) {
-					try {
-						const frame = TTSParser.parseFrame(event.data);
-						const seq = frame.header.seq;
-						if (!seq) return;
-						if (expectedSeq === null) expectedSeq = seq;
-						
-						if (!frame.header.error && frame.audioBytes && frame.audioBytes.byteLength > 0) {
-							const alignedBuffer = frame.audioBytes.buffer.slice(
-								frame.audioBytes.byteOffset,
-								frame.audioBytes.byteOffset + frame.audioBytes.byteLength
-							);
-							const int16 = new Int16Array(alignedBuffer);
-							const float32 = new Float32Array(int16.length);
-							for (let i = 0; i < int16.length; i++) {
-								float32[i] = int16[i] / 32768.0;
-							}
-							const audioBuffer = audioCtx.createBuffer(1, float32.length, 24000);
-							audioBuffer.copyToChannel(float32, 0);
-							audioScheduler.scheduleBuffer(audioBuffer);
-						}
-					} catch (e) {
-						console.error('TTS parsing failed', e);
-					}
-				}
-			};
-			const activeTtsWs = ttsWs;
-			ttsWs.onclose = ttsWs.onerror = function () {
-				if (ttsWs === activeTtsWs) {
-					disconnectTtsTranslation();
-					unmuteMainPlayer();
-				}
-			};
-		} else if (isWhep) {
+		if (isWhep) {
 			languageIframeUrl.value = null;
 			const client = new WhepClient(audioSource, whepAudioEl.value);
 			whepClient = client;
@@ -403,7 +340,6 @@ onBeforeUnmount(() => {
 	if (whepClient) {
 		disconnectWhepTranslation();
 	}
-	disconnectTtsTranslation();
 	iframeEl.value?.remove();
 	if (api.socketState !== 'open') return;
 	// TODO move to store?
@@ -461,19 +397,6 @@ function disconnectWhepTranslation() {
 	whepClient = null;
 }
 
-function disconnectTtsTranslation() {
-	if (ttsWs) {
-		ttsWs.close();
-		ttsWs = null;
-	}
-	if (audioScheduler) {
-		audioScheduler.reset();
-		audioScheduler = null;
-	}
-	segmentStore = {};
-	expectedSeq = null;
-}
-
 function unmuteYouTubePlayer() {
 	if (!iframeEl.value || !iframeEl.value.contentWindow) return;
 	try {
@@ -494,9 +417,6 @@ function pauseTranslationAudio() {
 	if (whepAudioEl.value && !whepAudioEl.value.paused) {
 		whepAudioEl.value.pause();
 	}
-	if (audioCtx && audioCtx.state === 'running') {
-		audioCtx.suspend();
-	}
 	pauseYouTubeTranslationIframe();
 }
 
@@ -505,9 +425,6 @@ function resumeTranslationAudio() {
 		whepAudioEl.value.play().catch(e =>
 			console.warn('Failed to resume WHEP interpretation audio:', e)
 		);
-	}
-	if (audioCtx && audioCtx.state === 'suspended') {
-		audioCtx.resume();
 	}
 	resumeYouTubeTranslationIframe();
 }
@@ -783,7 +700,6 @@ function destroyIframe() {
 	iframeEl.value = null;
 	languageIframeUrl.value = null;
 	disconnectWhepTranslation();
-	disconnectTtsTranslation();
 	consentBlockedUrl.value = null;
 }
 
