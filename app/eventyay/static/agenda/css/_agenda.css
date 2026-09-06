@@ -1065,7 +1065,7 @@ dialog.agenda-wip-preview-leave-dialog::backdrop {
 
 .talk-emoji-picker__emoji:hover,
 .talk-emoji-picker__emoji:focus {
-  background: #f1f3f5;
+  background: #e3f2fd;
   outline: none;
 }
 
@@ -1124,10 +1124,9 @@ dialog.rate-me-dialog::backdrop {
 }
 
 .rate-me-emoji-options {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  width: 100%;
 }
 
 .rate-me-emoji-option {
@@ -1137,7 +1136,7 @@ dialog.rate-me-dialog::backdrop {
   justify-content: center;
   gap: 4px;
   margin: 0;
-  padding: 10px 4px;
+  padding: 6px 12px;
   border: 1px solid #e9ecef;
   border-radius: 10px;
   cursor: pointer;
@@ -1249,3 +1248,36 @@ dialog.rate-me-dialog::backdrop {
 }
 
 
+
+.minimalist-rating {
+  gap: 8px;
+}
+
+.minimalist-rating .rate-me-emoji {
+  font-size: 1.45rem;
+}
+
+.minimalist-rating .rate-me-emoji-option {
+  border: none;
+  background: transparent;
+  padding: 6px;
+  border-radius: 50%;
+  box-shadow: none;
+  filter: grayscale(100%) opacity(0.6);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.minimalist-rating .rate-me-emoji-option:hover {
+  background: #f8f9fa;
+  filter: grayscale(0%) opacity(1);
+  transform: scale(1.15);
+}
+
+.minimalist-rating .rate-me-emoji-option:has(input:checked),
+.minimalist-rating .rate-me-emoji-option.is-selected {
+  background: #e3f2fd;
+  border: none;
+  filter: grayscale(0%) opacity(1);
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px var(--color-primary, #2185d0);
+}

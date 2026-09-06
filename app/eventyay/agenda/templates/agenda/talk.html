@@ -51,11 +51,6 @@
                         {% translate "Comments" %}
                     {% endif %}
                 </h3>
-                {% if feedback_form %}
-                    <button type="button" class="btn btn-primary btn-sm rate-me-open-btn" data-dialog-id="rate-me-dialog">
-                        {% translate "Rate the session" %}
-                    </button>
-                {% endif %}
             </div>
 
             {% if feedback_form %}
@@ -70,7 +65,7 @@
                             {% csrf_token %}
                             {{ feedback_form.media }}
 
-                            <div class="d-flex align-items-end form-group mb-0 comment-compose-row">
+                            <div class="d-flex align-items-end form-group mb-2 comment-compose-row">
                                 <textarea name="{{ feedback_form.review.name }}" class="form-control youtube-comment-input main-comment-input flex-grow-1" rows="1" placeholder="{% translate 'Add a comment...' %}" required id="{{ feedback_form.review.id_for_label }}"></textarea>
                                 <div class="comment-compose-actions d-flex align-items-center ml-1">
                                     <button type="button" class="btn btn-link p-1 mb-0 emoji-picker-toggle" title="{% translate 'Insert emoji' %}" aria-label="{% translate 'Insert emoji' %}" aria-expanded="false" aria-haspopup="dialog">
@@ -85,6 +80,32 @@
 
                             <div class="comment-action-container d-flex justify-content-between align-items-center flex-wrap mt-2">
                                 <div class="d-flex align-items-center flex-wrap mt-0 comment-action-left">
+                                    <fieldset class="rate-me-emoji-rating m-0 p-0 border-0 mr-3">
+                                        <legend class="sr-only">{% translate "Rating" %}</legend>
+                                        <div class="rate-me-emoji-options minimalist-rating" role="radiogroup" aria-label="{% translate 'Rating' %}">
+                                            <label class="rate-me-emoji-option" title="{% translate 'Terrible' %}">
+                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="1">
+                                                <span class="rate-me-emoji" aria-hidden="true">😠</span>
+                                            </label>
+                                            <label class="rate-me-emoji-option" title="{% translate 'Bad' %}">
+                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="2">
+                                                <span class="rate-me-emoji" aria-hidden="true">😕</span>
+                                            </label>
+                                            <label class="rate-me-emoji-option" title="{% translate 'Okay' %}">
+                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="3">
+                                                <span class="rate-me-emoji" aria-hidden="true">😐</span>
+                                            </label>
+                                            <label class="rate-me-emoji-option" title="{% translate 'Good' %}">
+                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="4">
+                                                <span class="rate-me-emoji" aria-hidden="true">🙂</span>
+                                            </label>
+                                            <label class="rate-me-emoji-option" title="{% translate 'Excellent' %}">
+                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="5">
+                                                <span class="rate-me-emoji" aria-hidden="true">🤩</span>
+                                            </label>
+                                        </div>
+                                    </fieldset>
+
                                     {% if feedback_form.speaker %}
                                         {% if feedback_form.speaker.is_hidden %}
                                             {{ feedback_form.speaker }}
@@ -114,84 +135,7 @@
                     </div>
                 </div>
 
-                <dialog id="rate-me-dialog" class="rate-me-dialog" aria-labelledby="rate-me-dialog-title">
-                    <form method="post" action="" class="rate-me-dialog__card">
-                        {% csrf_token %}
-                        <div class="rate-me-dialog__header">
-                            <h3 id="rate-me-dialog-title">{% translate "Rate this session" %}</h3>
-                            <button type="button" class="btn btn-link rate-me-close-btn p-1" aria-label="{% translate 'Close' %}" data-dialog-id="rate-me-dialog">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <p class="rate-me-dialog__hint text-muted">
-                            {% translate "Pick a rating and leave feedback for the speakers." %}
-                        </p>
-                        <fieldset class="rate-me-emoji-rating mb-3">
-                            <legend class="sr-only">{% translate "Rating" %}</legend>
-                            <div class="rate-me-emoji-options" role="radiogroup" aria-label="{% translate 'Rating' %}">
-                                <label class="rate-me-emoji-option">
-                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="1" required>
-                                    <span class="rate-me-emoji" aria-hidden="true">😠</span>
-                                    <span class="rate-me-emoji-label">{% translate "Poor" %}</span>
-                                </label>
-                                <label class="rate-me-emoji-option">
-                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="2">
-                                    <span class="rate-me-emoji" aria-hidden="true">😕</span>
-                                    <span class="rate-me-emoji-label">{% translate "Fair" %}</span>
-                                </label>
-                                <label class="rate-me-emoji-option">
-                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="3">
-                                    <span class="rate-me-emoji" aria-hidden="true">😐</span>
-                                    <span class="rate-me-emoji-label">{% translate "Okay" %}</span>
-                                </label>
-                                <label class="rate-me-emoji-option">
-                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="4">
-                                    <span class="rate-me-emoji" aria-hidden="true">🙂</span>
-                                    <span class="rate-me-emoji-label">{% translate "Good" %}</span>
-                                </label>
-                                <label class="rate-me-emoji-option">
-                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="5">
-                                    <span class="rate-me-emoji" aria-hidden="true">🤩</span>
-                                    <span class="rate-me-emoji-label">{% translate "Excellent" %}</span>
-                                </label>
-                            </div>
-                        </fieldset>
-                        {% if feedback_form.speaker and not feedback_form.speaker.is_hidden %}
-                            <div class="rate-me-field">
-                                <label class="rate-me-field__label" for="rate-me-speaker">
-                                    {% translate "Send to" %}
-                                </label>
-                                <div class="speaker-target-chip speaker-target-chip--modal" title="{% translate 'All speakers: everyone on this session. Pick one speaker to send feedback only to them.' %}">
-                                    <i class="fa fa-users speaker-target-chip__icon" aria-hidden="true"></i>
-                                    <select name="{{ feedback_form.speaker.name }}" id="rate-me-speaker" class="form-control speaker-target-select">
-                                        <option value="">{{ feedback_form.speaker.field.empty_label }}</option>
-                                        {% for speaker in feedback_form.speaker.field.queryset %}
-                                            <option value="{{ speaker.pk }}">{{ speaker.get_display_name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        {% endif %}
-                        <div class="rate-me-field">
-                            <label class="rate-me-field__label" for="rate-me-review">{% translate "Leave feedback" %}</label>
-                            <textarea name="{{ feedback_form.review.name }}" id="rate-me-review" class="form-control rate-me-feedback-input" rows="3" placeholder="{% translate 'Share what you liked or what could improve…' %}" required></textarea>
-                        </div>
-                        {% if feedback_anonymous_mode == 'always' %}
-                            <input type="hidden" name="{{ feedback_form.is_public.name }}" value="False">
-                        {% elif feedback_anonymous_mode == 'optional' %}
-                            <div class="form-check mb-3">
-                                <input type="checkbox" name="{{ feedback_form.is_public.name }}" id="rate-me-is-public" class="form-check-input" checked>
-                                <label class="form-check-label" for="rate-me-is-public">{% translate "Visible to public" %}</label>
-                            </div>
-                        {% else %}
-                            <input type="hidden" name="{{ feedback_form.is_public.name }}" value="True">
-                        {% endif %}
-                        <div class="rate-me-dialog__actions">
-                            <button type="button" class="btn btn-outline-secondary rate-me-close-btn" data-dialog-id="rate-me-dialog">{% translate "Cancel" %}</button>
-                            <button type="submit" class="btn btn-primary">{% translate "Submit rating" %}</button>
-                        </div>
-                    </form>
-                </dialog>
+                </div>
             {% else %}
                 <div class="alert alert-info mb-5">
                     {% if not request.user.is_authenticated %}

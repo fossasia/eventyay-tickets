@@ -292,7 +292,7 @@ class TalkView(TalkMixin, TemplateView):
                 ).select_related('author', 'speaker').annotate(
                     upvote_count=Count('reactions', filter=Q(reactions__is_upvote=True)),
                     downvote_count=Count('reactions', filter=Q(reactions__is_upvote=False))
-                ).order_by('created')
+                ).order_by('-created')
                 
                 feedback_dict = {fb.id: fb for fb in all_published}
                 top_level_feedback = []
@@ -317,7 +317,11 @@ class TalkView(TalkMixin, TemplateView):
                             parent.cached_replies.append(fb)
                     else:
                         top_level_feedback.append(fb)
-                        
+                
+                # Sort replies chronologically (oldest first)
+                for fb in top_level_feedback:
+                    fb.cached_replies.sort(key=lambda x: x.created)
+
                 ctx['public_feedback'] = top_level_feedback
             else:
                 ctx['public_feedback'] = []
