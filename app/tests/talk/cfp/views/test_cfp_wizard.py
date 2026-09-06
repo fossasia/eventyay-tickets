@@ -210,6 +210,38 @@ class TestWizard:
         assert q.get("submission_type") == params_dict.get("academic_talk")
 
     @pytest.mark.django_db
+    def test_slides_pdf_survives_back_navigation(self, event, client):
+        response, current_url = self.perform_init_wizard(client, event=event)
+
+        pdf = SimpleUploadedFile(
+            "slides.pdf",
+            b"%PDF-1.4 test pdf content",
+            content_type="application/pdf",
+        )
+        data = {
+            "title": "Submission title",
+            "content_locale": "en",
+            "description": "Description",
+            "abstract": "Abstract",
+            "notes": "Notes",
+            "slot_count": 1,
+            "slides_files": pdf,
+            "action": "submit",
+        }
+
+        response = client.post(current_url, data=data)
+        assert response.status_code == 302
+        assert "/questions/" in response.url
+
+        response = client.post(response.url, data={"action": "back"})
+        assert response.status_code == 302
+        assert "/info/" in response.url
+
+        response = client.get(response.url)
+        assert response.status_code == 200
+        assert "slides.pdf" in response.content.decode()
+
+    @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
         event.mail_settings["mail_on_new_submission"] = True
         event.plugins = "tests"
