@@ -57,7 +57,8 @@
                             </th>
                         {% endif %}
                         <th>{% translate "COMMENT" %}</th>
-                    <th>{% translate "SESSION" %}</th>
+                        <th>{% translate "RATING" %}</th>
+                        <th>{% translate "SESSION" %}</th>
                     <th>{% translate "AUTHOR" %}</th>
                     <th>{% translate "RECEIVED" %}</th>
                     <th class="text-right"></th>
@@ -75,23 +76,28 @@
                             {% endif %}
                             <td>
                                 <div class="feedback-comment-cell text-break" style="max-width: 400px;">
-                                    <div class="feedback-comment-cell__text">
+                                    <div class="feedback-comment-cell__text comment-text-content comment-text-collapsed mb-0">
                                         {{ entry.review|rich_text }}
                                     </div>
+                                    <button class="btn btn-link btn-sm p-0 read-more-btn d-none" data-expanded="false" data-read-more="{% translate 'Read more' %}" data-show-less="{% translate 'Show less' %}">{% translate "Read more" %}</button>
                                     {% if entry.report_count %}
-                                        <span class="feedback-report-count" title="{% blocktranslate count counter=entry.report_count %}{{ counter }} report{% plural %}{{ counter }} reports{% endblocktranslate %}">
+                                        <span class="feedback-report-count mt-1" title="{% blocktranslate count counter=entry.report_count %}{{ counter }} report{% plural %}{{ counter }} reports{% endblocktranslate %}">
                                             {{ entry.report_count }}
                                         </span>
                                     {% elif entry.is_reported %}
-                                        <span class="feedback-report-count" title="{% translate '1 report' %}">1</span>
+                                        <span class="feedback-report-count mt-1" title="{% translate '1 report' %}">1</span>
                                     {% endif %}
                                 </div>
+                            </td>
+                            <td class="text-nowrap">
                                 {% if entry.rating %}
-                                    <div class="feedback-rating mt-1" aria-label="{% translate 'Rating' %}: {{ entry.rating }} / 5" title="{% translate 'Rating' %}: {{ entry.rating }} / 5">
-                                        {% for i in "12345"|make_list %}
-                                            <span class="{% if forloop.counter <= entry.rating %}text-warning{% else %}text-muted{% endif %}">★</span>
-                                        {% endfor %}
-                                    </div>
+                                    <span class="comment-rating-badge" title="{% translate 'Rating' %}: {{ entry.rating }}/5" aria-label="{% translate 'Rating' %}: {{ entry.rating }}/5">
+                                        {% if entry.rating == 1 %}😠 {% translate "Terrible" %}
+                                        {% elif entry.rating == 2 %}😕 {% translate "Poor" %}
+                                        {% elif entry.rating == 3 %}😐 {% translate "Average" %}
+                                        {% elif entry.rating == 4 %}🙂 {% translate "Good" %}
+                                        {% else %}🤩 {% translate "Excellent" %}{% endif %}
+                                    </span>
                                 {% endif %}
                             </td>
                             <td>
@@ -157,3 +163,49 @@
     {% include "orga/includes/pagination.html" %}
 
 {% endblock content %}
+
+{% block stylesheets %}
+{{ block.super }}
+<style>
+    .comment-text-collapsed {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.comment-text-collapsed').forEach((content) => {
+            if (content.scrollHeight <= content.clientHeight) {
+                return;
+            }
+            const btn = content.nextElementSibling;
+            if (!btn || !btn.classList.contains('read-more-btn')) {
+                return;
+            }
+            btn.classList.remove('d-none');
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const expanded = this.getAttribute('data-expanded') === 'true';
+                const readMoreText = this.getAttribute('data-read-more');
+                const showLessText = this.getAttribute('data-show-less');
+
+                if (expanded) {
+                    content.classList.add('comment-text-collapsed');
+                    this.textContent = readMoreText;
+                    this.setAttribute('data-expanded', 'false');
+                } else {
+                    content.classList.remove('comment-text-collapsed');
+                    this.textContent = showLessText;
+                    this.setAttribute('data-expanded', 'true');
+                }
+            });
+        });
+    });
+</script>
+{% endblock scripts %}

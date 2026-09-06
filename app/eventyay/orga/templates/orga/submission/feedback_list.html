@@ -10,13 +10,20 @@
         <div class="card mb-2">
             <div class="card-body pb-0">
                 {% if entry.rating %}
-                    <div class="feedback-rating mb-2" aria-label="{% translate 'Rating' %}: {{ entry.rating }} / 5" title="{% translate 'Rating' %}: {{ entry.rating }} / 5">
-                        {% for i in "12345"|make_list %}
-                            <span class="{% if forloop.counter <= entry.rating %}text-warning{% else %}text-muted{% endif %}">★</span>
-                        {% endfor %}
+                    <div class="feedback-rating mb-2" title="{% translate 'Rating' %}: {{ entry.rating }}/5" aria-label="{% translate 'Rating' %}: {{ entry.rating }}/5">
+                        <span class="comment-rating-badge">
+                            {% if entry.rating == 1 %}😠 {% translate "Terrible" %}
+                            {% elif entry.rating == 2 %}😕 {% translate "Poor" %}
+                            {% elif entry.rating == 3 %}😐 {% translate "Average" %}
+                            {% elif entry.rating == 4 %}🙂 {% translate "Good" %}
+                            {% else %}🤩 {% translate "Excellent" %}{% endif %}
+                        </span>
                     </div>
                 {% endif %}
-                {{ entry.review|rich_text }}
+                <div class="comment-text-content comment-text-collapsed mb-2">
+                    {{ entry.review|rich_text }}
+                </div>
+                <button class="btn btn-link btn-sm p-0 read-more-btn d-none mb-2" data-expanded="false" data-read-more="{% translate 'Read more' %}" data-show-less="{% translate 'Show less' %}">{% translate "Read more" %}</button>
             </div>
         </div>
     {% empty %}
@@ -26,3 +33,49 @@
     {% include "orga/includes/pagination.html" %}
 
 {% endblock submission_content %}
+
+{% block stylesheets %}
+{{ block.super }}
+<style>
+    .comment-text-collapsed {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.comment-text-collapsed').forEach((content) => {
+            if (content.scrollHeight <= content.clientHeight) {
+                return;
+            }
+            const btn = content.nextElementSibling;
+            if (!btn || !btn.classList.contains('read-more-btn')) {
+                return;
+            }
+            btn.classList.remove('d-none');
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const expanded = this.getAttribute('data-expanded') === 'true';
+                const readMoreText = this.getAttribute('data-read-more');
+                const showLessText = this.getAttribute('data-show-less');
+
+                if (expanded) {
+                    content.classList.add('comment-text-collapsed');
+                    this.textContent = readMoreText;
+                    this.setAttribute('data-expanded', 'false');
+                } else {
+                    content.classList.remove('comment-text-collapsed');
+                    this.textContent = showLessText;
+                    this.setAttribute('data-expanded', 'true');
+                }
+            });
+        });
+    });
+</script>
+{% endblock scripts %}
