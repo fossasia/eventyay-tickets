@@ -1,115 +1,109 @@
-{% extends "pretixcontrol/event/base.html" %}
+{% extends "pretixplugins/sendmail/_mail_editor.html" %}
 {% load i18n %}
-{% load bootstrap3 %}
+{% load static %}
 
-{% block title %}{% translate "Email editor" %}{% endblock %}
+{% block email_editor_title %}
+    {% translate "Email editor" %}
+{% endblock email_editor_title %}
 
-{% block content %}
-<nav id="event-nav" class="header-nav">
-    <div class="navigation">
-        <div class="navigation-title nav-title-group">
-            <h1>{% translate "Email editor" %}</h1>
-            <p class='text-muted nav-subtitle'>{% translate "Team members" %}</p>
-        </div>
-        {% include "pretixcontrol/event/component_link.html" %}
+{% block email_editor_title_detail %}
+  {% translate "Team members" %}
+{% endblock email_editor_title_detail %}
+
+{% block email_editor_info %}
+  <span data-toggle="tooltip" data-placement="bottom" title="{% translate 'Emails are addressed to the team members matching your filters.' %}">
+    <i class="fa fa-question-circle-o text-info ml-1"></i>
+  </span>
+{% endblock email_editor_info %}
+
+{% block email_editor_description %}
+  <p class="composer-description text-muted">
+    {% translate "Send an email to your team members." %}
+  </p>
+{% endblock email_editor_description %}
+
+{% block audience_summary %}
+  <span class="badge bg-info text-white badge-pill rounded-pill ml-2" id="recipient-count" hidden
+        data-label-one="{% translate 'recipient' %}"
+        data-label-other="{% translate 'recipients' %}"></span>
+{% endblock audience_summary %}
+
+{% block audience_actions %}
+  <span>
+    <button type="button" class="btn btn-sm btn-outline-info" id="show-recipient-list" data-dialog-target="#recipient-list-dialog" data-recipients-url="{% url 'control:event.mail.teams.recipients' organizer=request.event.organizer.slug event=request.event.slug %}">
+      {% translate "Show recipient list" %}
+    </button>
+    <button type="button" class="btn btn-sm btn-link" id="clear-filters">
+      {% translate "Clear filters" %}
+    </button>
+  </span>
+{% endblock audience_actions %}
+
+{% block recipient_form %}
+  {% if draft_id %}<input type="hidden" name="draft_id" value="{{ draft_id }}">{% endif %}
+
+  <div class="composer-filters">
+    {{ form.team_role.as_field_group }}
+    {{ form.teams.as_field_group }}
+    {{ form.permission_level.as_field_group }}
+    {{ form.status.as_field_group }}
+    {{ form.specific_people.as_field_group }}
+    <div class="composer-filter-span-2 composer-filter-checkbox">
+      {{ form.exclude_me.as_field_group }}
     </div>
-</nav>
+  </div>
 
-<form class="form-horizontal" method="post" enctype="multipart/form-data" novalidate>
-    {% csrf_token %}
-    {% if draft_id %}<input type="hidden" name="draft_id" value="{{ draft_id }}">{% endif %}
-    {% bootstrap_form_errors form %}
 
-    <div class="tabbed-form">
-        <!-- Recipients Section -->
-        <fieldset>
-            <legend>{% translate "Recipients" %}</legend>
-            {% bootstrap_form_errors form %}
-            {% bootstrap_field form.teams layout='horizontal' %}
-        </fieldset>
+{% endblock recipient_form %}
 
-        <!-- Content Section -->
-        <fieldset>
-            <legend>{% translate "Content" %}</legend>
-            {% bootstrap_form_errors form %}
-            {% bootstrap_field form.subject layout='horizontal' %}
-            <div class="form-group"
-                 data-email-preview-wrapper
-                 data-email-preview-url="{% url 'control:event.editor.email.preview' organizer=request.event.organizer.slug event=request.event.slug %}">
-                <label class="col-md-3 control-label" for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
-                <div class="col-md-9">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a data-toggle="tab" href="#team_message_edit">
-                                <i class="fa fa-pencil-square-o fa-fw"></i> {% translate "Edit" %}
-                            </a>
-                        </li>
-                        <li role="presentation">
-                            <a data-toggle="tab" href="#team_message_preview" data-email-preview-tab>
-                                <i class="fa fa-tv fa-fw"></i> {% translate "Preview" %}
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div id="team_message_edit" class="tab-pane fade in active">
-                            {% bootstrap_field form.message show_label=False form_group_class="" %}
-                        </div>
-                        <div id="team_message_preview" class="tab-pane">
-                            <div class="mail-preview-group">
-                                {% for locale in request.event.settings.locales %}
-                                    <div lang="{{ locale }}" class="mail-preview well"></div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% bootstrap_field form.attachment layout='horizontal' %}
-            <p class="help-block col-md-9 col-md-offset-3 text-muted">
-                <i class="fa fa-info-circle"></i> {% translate "Attachments are not saved in drafts. Please reattach files before sending." %}
-            </p>
-        </fieldset>
+{% block email_editor_actions_summary %}
+  <span id="recipient-summary"
+        data-label-one="{% translate 'recipient selected' %}"
+        data-label-other="{% translate 'recipients selected' %}"></span>
+{% endblock email_editor_actions_summary %}
 
-        <!-- Scheduling Section -->
-        <fieldset>
-            <legend>{% translate "Scheduling" %}</legend>
-            {% bootstrap_field form.scheduled_at layout='horizontal' %}
-        </fieldset>
+{% block draft_button %}
+  <button type="submit" class="btn btn-outline-info" name="action" value="draft" formnovalidate>
+    {% translate "Save draft" %}
+  </button>
+{% endblock draft_button %}
+
+{% block after_message %}
+  <section class="card mb-3">
+      <div class="card-header d-flex align-items-center">
+          <strong>{% translate "Attachment" %}</strong>
+          <span data-toggle="tooltip" data-placement="right" title="{% translate 'Attachments are not saved in drafts. Please reattach files before sending.' %}" class="ml-1" role="button" tabindex="0" aria-label="{% translate 'Attachment info' %}">
+              <i class="fa fa-info-circle text-info"></i>
+          </span>
+      </div>
+      <div class="card-body">
+          <fieldset>
+              {{ form.attachment.as_field_group }}
+          </fieldset>
+      </div>
+  </section>
+{% endblock after_message %}
+
+
+
+{% block mail_extra %}
+  <dialog class="info-dialog" id="recipient-list-dialog" aria-label="{% translate 'Recipients' %}">
+    <div class="dialog-content">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0">{% translate "Recipients" %}</h5>
+        <button type="button" class="btn btn-link p-0" data-recipient-close aria-label="{% translate 'Close' %}">&times;</button>
+      </div>
+    <div id="recipient-list-body"
+         data-loading-label="{% translate 'Loading recipients…' %}"
+         data-error-label="{% translate 'The recipient list could not be loaded.' %}"
+         data-empty-label="{% translate 'No recipients match these filters.' %}"
+         data-direct-label="{% translate 'Selected directly' %}"></div>
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-default" data-recipient-close>{% translate "Close" %}</button>
+      </div>
     </div>
-
-    {% if request.method == "POST" and output %}
-        <fieldset>
-            <legend>{% translate "E-mail preview" %}</legend>
-            <div class="tab-pane mail-preview-group">
-                {% for locale, out in output.items %}
-                    <div lang="{{ locale }}" class="mail-preview">
-                        <strong>{{ out.subject|safe }}</strong><br><br>
-                        {{ out.html|safe }}
-                    </div>
-                {% endfor %}
-            </div>
-        </fieldset>
-    {% endif %}
-
-    <div class="form-group submit-group clearfix">
-        <span class="text-muted pull-left" id="recipient-summary" style="padding-top: 7px;">
-            {% blocktranslate count count=recipient_count|default:0 %}
-                {{ count }} recipient selected
-            {% plural %}
-                {{ count }} recipients selected
-            {% endblocktranslate %}
-        </span>
-        <div class="pull-right">
-            <button type="submit" class="btn btn-default btn-save" name="action" value="draft" formnovalidate>
-                {% translate "Save draft" %}
-            </button>
-            <button type="submit" class="btn btn-default btn-save" name="action" value="preview">
-                {% translate "Preview email" %}
-            </button>
-            <button type="submit" class="btn btn-primary btn-save" name="action" value="send">
-                {% translate "Send to outbox" %}
-            </button>
-        </div>
-    </div>
-</form>
-{% endblock %}
+  </dialog>
+  
+  <script defer src="{% static 'common/js/modalDialog.js' %}"></script>
+  <script type="module" src="{% static 'orga/js/mail-recipients.js' %}"></script>
+{% endblock mail_extra %}

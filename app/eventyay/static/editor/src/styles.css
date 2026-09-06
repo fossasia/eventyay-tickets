@@ -7,6 +7,16 @@
   border-radius: 4px;
   background: #fff;
   min-height: 160px;
+  position: relative;
+  z-index: 10;
+}
+
+[data-tiptap-wrapper]:focus-within {
+  z-index: 11;
+}
+
+[data-tiptap-wrapper]:has([aria-expanded="true"]) {
+  z-index: 12;
 }
 
 /* ── Toolbar ─────────────────────────────────────────────────────────────── */
@@ -178,8 +188,9 @@
 .tiptap-placeholder-dropdown {
   position: absolute;
   top: calc(100% + 4px);
-  left: 0;
-  z-index: 1000;
+  right: 0;
+  left: auto;
+  z-index: 1060;
   list-style: none;
   margin: 0;
   padding: 4px 0;
@@ -188,7 +199,7 @@
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   min-width: 200px;
-  max-height: 240px;
+  max-height: min(280px, 50vh);
   overflow-y: auto;
 }
 

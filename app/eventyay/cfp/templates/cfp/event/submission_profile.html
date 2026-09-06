@@ -28,10 +28,11 @@
         {% elif field.name == 'availabilities' %}
             {% include "common/availabilities.html" %}
             {{ field.as_field_group }}
+        {% elif field.name == 'social_links' %}
+            {% include "common/speaker_social_links_formset.html" %}
         {% else %}
             {{ field.as_field_group }}
         {% endif %}
     {% endfor %}
-    {% include "common/speaker_social_links_formset.html" %}
 
 {% endblock inner %}

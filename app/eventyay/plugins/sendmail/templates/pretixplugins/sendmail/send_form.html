@@ -42,7 +42,7 @@
 {% endblock recipient_form %}
 
 {% block audience_summary %}
-  <span class="badge bg-info text-white ml-2" id="recipient-count" hidden
+  <span class="badge bg-info text-white badge-pill rounded-pill ml-2" id="recipient-count" hidden
         data-label-one="{% translate 'recipient' %}"
         data-label-other="{% translate 'recipients' %}"></span>
 {% endblock audience_summary %}
@@ -72,13 +72,15 @@
 
 {% block after_message %}
   <section class="card mb-3">
-      <div class="card-header"><strong>{% translate "Attachment" %}</strong></div>
+      <div class="card-header d-flex align-items-center">
+          <strong>{% translate "Attachment" %}</strong>
+          <span data-toggle="tooltip" data-placement="right" title="{% translate 'Attachments are not saved in drafts. Please reattach files before sending.' %}" class="ml-1" role="button" tabindex="0" aria-label="{% translate 'Attachment info' %}">
+              <i class="fa fa-info-circle text-info"></i>
+          </span>
+      </div>
       <div class="card-body">
           <fieldset>
               {{ form.attachment.as_field_group }}
-              <p class="help-block text-muted">
-                  <i class="fa fa-info-circle"></i> {% translate "Attachments are not saved in drafts. Please reattach files before sending." %}
-              </p>
           </fieldset>
       </div>
   </section>

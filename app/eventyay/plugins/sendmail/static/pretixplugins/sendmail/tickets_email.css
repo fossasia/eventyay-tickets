@@ -247,6 +247,101 @@
   width: 100%;
 }
 
+.mail-composer .composer-filters .composer-filter-checkbox {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.mail-composer .composer-filters .composer-filter-checkbox .form-group.row {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+.mail-composer .composer-filters .composer-filter-checkbox .col-md-3 {
+  display: none;
+}
+
+.mail-composer .composer-filters .composer-filter-checkbox .col-md-9 {
+  align-items: center;
+  display: flex;
+  min-height: var(--composer-control-height, 40px);
+}
+
+.mail-composer .composer-filters .composer-filter-checkbox .form-check {
+  align-items: center;
+  display: flex;
+  margin-bottom: 0;
+  min-height: var(--composer-control-height, 40px);
+}
+
+.mail-composer .composer-filters .composer-filter-checkbox input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.mail-composer .composer-filters .composer-filter-checkbox .form-check-label {
+  align-items: center;
+  display: inline-flex;
+  font-size: var(--composer-font-size);
+  margin-bottom: 0;
+}
+
+.mail-composer .composer-filters > div:has(.form-check) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.mail-composer .composer-filters .form-group.row:has(.form-check) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+.mail-composer .composer-filters .form-group.row:has(.form-check) > .col-md-3:empty {
+  display: none;
+}
+
+.mail-composer .composer-filters .form-group.row:has(.form-check) > .col-md-9 {
+  align-items: center;
+  display: flex;
+  min-height: var(--composer-control-height, 40px);
+}
+
+.mail-composer .composer-filters .form-group.row:has(.form-check) .form-check {
+  align-items: center;
+  display: flex;
+  margin-bottom: 0;
+  min-height: var(--composer-control-height, 40px);
+}
+
+.mail-composer .composer-filters .form-group.row:has(.form-check) input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.mail-composer .composer-filters .form-group.row:has(.form-check) .form-check-label {
+  align-items: center;
+  display: inline-flex;
+  font-size: var(--composer-font-size);
+  margin-bottom: 0;
+}
+
+.mail-composer .card-header [data-toggle="tooltip"],
+.mail-composer [data-toggle="tooltip"][role="button"] {
+  cursor: pointer;
+}
+
 .mail-composer button.mail-editor-mode-tab,
 .mail-composer .mail-editor-mode-tab {
   background-color: transparent;
@@ -275,4 +370,24 @@
   border-bottom: 1px solid var(--color-bg);
   box-shadow: none;
   color: var(--color-text);
+}
+
+.mail-composer .mail-editor-tabs[data-mail-editor-active="edit"] #mail-message-edit [data-tiptap-wrapper]:focus-within {
+  z-index: 11;
+}
+
+.mail-composer .mail-editor-tabs[data-mail-editor-active="edit"] #mail-message-edit [data-tiptap-wrapper]:has([aria-expanded="true"]) {
+  z-index: 12;
+}
+
+.mail-composer .tiptap-placeholder-menu {
+  position: relative;
+  z-index: 1060;
+}
+
+.mail-composer .tiptap-placeholder-dropdown {
+  left: auto;
+  max-height: min(280px, 50vh);
+  right: 0;
+  z-index: 1060;
 }

@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nTextField
 
 from eventyay.base.email import get_email_context
+from eventyay.mail.context import get_mail_context
 from eventyay.base.models.auth import User
 from eventyay.base.models.event import Event
 from eventyay.base.models.orders import InvoiceAddress, Order, OrderPosition
@@ -159,6 +160,11 @@ class EmailQueue(models.Model):
                 order_created_to=orig_filter.order_created_to,
                 orders=list(orig_filter.orders),
                 teams=list(orig_filter.teams),
+                team_role=orig_filter.team_role,
+                permission_level=orig_filter.permission_level,
+                status=orig_filter.status,
+                specific_people=list(orig_filter.specific_people),
+                exclude_me=orig_filter.exclude_me,
                 individual_attendees=list(getattr(orig_filter, 'individual_attendees', []) or []),
             )
 
@@ -229,7 +235,10 @@ class EmailQueue(models.Model):
     def _build_email_context(self, order, position, position_or_address, recipient):
         try:
             if self.composing_for != ComposingFor.ATTENDEES:
-                return get_email_context(event=self.event)
+                user_obj = User.objects.filter(email__iexact=recipient.email).first()
+                ctx = get_email_context(event=self.event, user=user_obj)
+                ctx.update(get_mail_context(event=self.event, user=user_obj))
+                return ctx
 
             # Only pass keys that are present. ``position=None`` still counts as
             # provided to get_email_context and would break position placeholders.
@@ -513,7 +522,14 @@ class EmailQueueFilter(models.Model):
     order_created_from = models.DateTimeField(null=True, blank=True)
     order_created_to = models.DateTimeField(null=True, blank=True)
     orders = ArrayField(models.IntegerField(), blank=True, default=list)
+
     teams = ArrayField(models.IntegerField(), blank=True, default=list)
+    team_role = models.CharField(max_length=20, blank=True, default='')
+    permission_level = models.CharField(max_length=50, blank=True, default='')
+    status = models.CharField(max_length=10, blank=True, default='')
+    specific_people = ArrayField(models.IntegerField(), blank=True, default=list)
+    exclude_me = models.BooleanField(default=False)
+
     individual_attendees = ArrayField(models.IntegerField(), blank=True, default=list)
 
     def __str__(self):

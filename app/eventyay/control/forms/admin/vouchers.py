@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django_scopes import scopes_disabled
@@ -5,8 +7,9 @@ from django_scopes import scopes_disabled
 from eventyay.base.forms import I18nModelForm
 from eventyay.base.forms.widgets import SplitDateTimePickerWidget
 from eventyay.base.models import Event, Organizer
-from eventyay.base.models.vouchers import InvoiceVoucher
+from eventyay.base.models.vouchers import InvoiceVoucher, Voucher
 from eventyay.control.forms import SplitDateTimeField
+
 
 WAIVER_TYPE_CHOICES = [
     ('none', _('No effect')),
@@ -153,7 +156,7 @@ class InvoiceVoucherForm(I18nModelForm):
         waiver_type = data.get('waiver_type', 'none')
         if waiver_type == 'percent_100':
             data['price_mode'] = 'percent'
-            data['value'] = 100
+            data['value'] = Decimal('100.00')
         elif waiver_type == 'percent':
             data['price_mode'] = 'percent'
             if not data.get('value'):
@@ -192,7 +195,21 @@ class InvoiceVoucherForm(I18nModelForm):
                     _('Select at least one event or organiser, or explicitly choose platform-wide scope.'),
                 )
 
+        Voucher.clean_value_and_budget(data)
+
         return data
+
+    def _post_clean(self):
+        super()._post_clean()
+        for field, error_list in list(self._errors.items()):
+            seen = set()
+            unique_errors = []
+            for err in error_list:
+                msg = str(err)
+                if msg not in seen:
+                    seen.add(msg)
+                    unique_errors.append(err)
+            self._errors[field] = self.error_class(unique_errors, renderer=self.renderer)
 
     def save(self, commit=True):
         instance = super().save(commit=False)
