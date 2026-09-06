@@ -254,6 +254,8 @@ class TestGlobalTicketingSettings:
         gs.settings.set('payment_paypal_connect_endpoint', 'https://api.paypal.com')
         form = GlobalTicketingSettingsForm()
         assert form.initial['payment_paypal_connect_endpoint'] == 'live'
+        assert 'payment_stripe_connect_client_id' in form.fields
+        assert 'payment_stripe_connect_secret_key' in form.fields
 
 
 @pytest.mark.django_db

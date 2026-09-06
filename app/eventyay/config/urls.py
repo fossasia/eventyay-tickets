@@ -29,11 +29,17 @@ def plugin_webhook_compat_paths(module_name: str, slug: str) -> list:
     Payment dashboards often post to /tickets/_stripe/webhook (and without a trailing
     slash). Plugins typically only register `/_provider/webhook/`, so those URLs 404 or
     301-redirect — both fail webhook delivery.
+
+    Import failures are isolated per plugin so a broken optional payment plugin cannot
+    prevent the rest of the URLconf — including other plugins — from loading.
     """
     try:
         webhook_view = importlib.import_module(f'{module_name}.views').webhook
     except ImportError:
         logger.debug('%s not installed; skipping %s webhook path aliases', module_name, slug)
+        return []
+    except (AttributeError, TypeError):
+        logger.exception('Unable to load %s webhook view; skipping %s webhook path aliases', module_name, slug)
         return []
     name = slug.lstrip('_')
     return [
