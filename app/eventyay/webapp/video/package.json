@@ -19,7 +19,7 @@
     "@mdi/font": "^7.4.47",
     "@popperjs/core": "^2.11.8",
     "@splidejs/splide": "^4.1.4",
-    "@tiptap/core": "^3.30.6",
+    "@tiptap/core": "^3.31.2",
     "@tiptap/extension-document": "^3.30.6",
     "@tiptap/extension-image": "^3.30.6",
     "@tiptap/extension-paragraph": "^3.30.6",
