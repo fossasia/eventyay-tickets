@@ -209,6 +209,7 @@ class TestGlobalTicketingSettings:
         assert 'payment_stripe_connect_publishable_key' in content
         assert 'payment_stripe_connect_secret_key' in content
         assert 'payment_paypal_connect_client_id' in content
+        assert 'payment_paypal_connect_endpoint' in content
 
         # Cart fields
         assert 'reservation_time' in content
@@ -227,6 +228,7 @@ class TestGlobalTicketingSettings:
             'payment_stripe_connect_secret_key': 'sk_live_ticket_stripe_key',
             'payment_stripe_connect_app_fee_percent': '2.50',
             'payment_paypal_connect_client_id': 'paypal_client_123',
+            'payment_paypal_connect_endpoint': 'sandbox',
             'reservation_time': '45',
             'max_products_per_order': '10',
         }
@@ -239,6 +241,7 @@ class TestGlobalTicketingSettings:
         assert gs.settings.get('payment_stripe_connect_publishable_key') == 'pk_live_ticket_stripe_key'
         assert gs.settings.get('payment_stripe_connect_app_fee_percent', as_type=Decimal) == Decimal('2.50')
         assert gs.settings.get('payment_paypal_connect_client_id') == 'paypal_client_123'
+        assert gs.settings.get('payment_paypal_connect_endpoint') == 'sandbox'
         assert gs.settings.get('reservation_time', as_type=int) == 45
         assert gs.settings.get('max_products_per_order', as_type=int) == 10
 

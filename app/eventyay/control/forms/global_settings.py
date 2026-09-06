@@ -666,10 +666,15 @@ class GlobalTicketingSettingsForm(SettingsForm):
                 ),
                 (
                     'payment_paypal_connect_endpoint',
-                    forms.CharField(
-                        label=_('API Endpoint'),
+                    forms.ChoiceField(
+                        label=_('Endpoint'),
                         required=False,
-                        help_text=_('PayPal API endpoint (e.g., https://api.paypal.com or https://api.sandbox.paypal.com).'),
+                        initial='live',
+                        choices=(
+                            ('live', _('Live')),
+                            ('sandbox', _('Sandbox')),
+                        ),
+                        help_text=_('Use Sandbox to test PayPal payments without charging real money.'),
                     ),
                 ),
                 # Cart

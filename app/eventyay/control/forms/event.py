@@ -1833,9 +1833,9 @@ class QuickSetupForm(I18nForm):
             if getattr(p, 'visible', True) and not p.name.startswith('.')
         }
 
-        if 'eventyay.plugins.stripe' not in plugins_available:
+        if 'eventyay_stripe' not in plugins_available:
             del self.fields['payment_stripe__enabled']
-        if 'eventyay.plugins.paypal' not in plugins_available:
+        if 'eventyay_paypal' not in plugins_available:
             del self.fields['payment_paypal__enabled']
             
         if 'eventyay.plugins.banktransfer' not in plugins_available:
