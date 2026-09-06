@@ -823,10 +823,10 @@ As with all event-plugin signals, the ``sender`` keyword argument will contain t
 
 entitlement_check = django.dispatch.Signal()
 """
-Sent to check if a capability is allowed for an organizer. 
-If any receiver returns False, the capability is denied.
+Sent to check if a capability is allowed for an organizer.
 Sender is an ``Organizer`` instance.
-Kwargs: ``capability`` (str)
+Kwargs: ``capability`` (str), ``event`` (Event or None), ``quantity`` (int).
+Receivers must accept **kwargs and return an ``EntitlementDecision`` object or a boolean.
 """
 
 entitlement_usage_recorded = django.dispatch.Signal()

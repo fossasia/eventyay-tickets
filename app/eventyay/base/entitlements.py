@@ -23,7 +23,7 @@ class EntitlementDecision:
 
 
 def check_entitlement(
-    organizer, event=None, capability: str = "", quantity: int = 1, **kwargs
+    organizer, capability: str, event=None, quantity: int = 1, **kwargs
 ) -> EntitlementDecision:
     """
     Checks if an organizer has a specific capability, accommodating a requested quantity.
