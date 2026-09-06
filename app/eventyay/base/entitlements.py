@@ -1,4 +1,6 @@
 import logging
+from dataclasses import dataclass
+from typing import Optional
 
 from eventyay.base.signals import (
     entitlement_check,
@@ -9,18 +11,45 @@ from eventyay.base.signals import (
 logger = logging.getLogger(__name__)
 
 
-def check_entitlement(organizer, capability: str, **kwargs) -> bool:
+@dataclass
+class EntitlementDecision:
+    allowed: bool
+    limit: Optional[int] = None
+    used: Optional[int] = None
+    remaining: Optional[int] = None
+    reason_code: Optional[str] = None
+    message: Optional[str] = None
+    upgrade_url: Optional[str] = None
+
+
+def check_entitlement(
+    organizer, event=None, capability: str = "", quantity: int = 1, **kwargs
+) -> EntitlementDecision:
     """
-    Checks if an organizer has a specific capability.
+    Checks if an organizer has a specific capability, accommodating a requested quantity.
     Dispatches the `entitlement_check` signal.
-    If ANY receiver returns False, access is denied.
-    Otherwise (if no receivers or all return True/None), access is allowed.
+    If ANY receiver returns an EntitlementDecision with allowed=False, access is denied.
+    Otherwise, returns an EntitlementDecision with allowed=True.
     """
-    responses = entitlement_check.send(sender=organizer, capability=capability, **kwargs)
+    if not capability:
+        # Graceful fallback if called without a capability, though strictly it should be passed
+        return EntitlementDecision(allowed=True)
+        
+    responses = entitlement_check.send(
+        sender=organizer, event=event, capability=capability, quantity=quantity, **kwargs
+    )
+    
+    final_decision = EntitlementDecision(allowed=True)
+    
     for receiver, response in responses:
-        if response is False:
-            return False
-    return True
+        if isinstance(response, EntitlementDecision):
+            if not response.allowed:
+                return response
+            final_decision = response
+        elif response is False:
+            return EntitlementDecision(allowed=False, reason_code="denied_by_plugin")
+            
+    return final_decision
 
 
 def record_usage(organizer, capability: str, amount: int = 1, **kwargs) -> None:
