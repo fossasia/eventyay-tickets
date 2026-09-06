@@ -1,6 +1,8 @@
 import pytest
 from django.test import Client
 
+pytest.importorskip('eventyay_paypal')
+
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
@@ -16,6 +18,5 @@ def test_paypal_payment_webhook_compat_paths_do_not_404(path):
     """PayPal webhooks must reach the plugin without APPEND_SLASH 301 redirects."""
     client = Client()
     response = client.post(path, data=b'{}', content_type='application/json')
-    assert response.status_code != 404, response.content
-    assert response.status_code not in (301, 302), response.get('Location')
     assert response.status_code == 400
+    assert response.get('Location') is None

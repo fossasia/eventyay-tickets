@@ -245,6 +245,16 @@ class TestGlobalTicketingSettings:
         assert gs.settings.get('reservation_time', as_type=int) == 45
         assert gs.settings.get('max_products_per_order', as_type=int) == 10
 
+    def test_ticketing_paypal_endpoint_coerces_legacy_urls(self):
+        gs = GlobalSettingsObject()
+        gs.settings.set('payment_paypal_connect_endpoint', 'https://api.sandbox.paypal.com')
+        form = GlobalTicketingSettingsForm()
+        assert form.initial['payment_paypal_connect_endpoint'] == 'sandbox'
+
+        gs.settings.set('payment_paypal_connect_endpoint', 'https://api.paypal.com')
+        form = GlobalTicketingSettingsForm()
+        assert form.initial['payment_paypal_connect_endpoint'] == 'live'
+
 
 @pytest.mark.django_db
 class TestLegacyUrlsAndRedirects:

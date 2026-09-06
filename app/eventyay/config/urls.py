@@ -1,3 +1,4 @@
+import importlib
 import importlib.util
 import logging
 
@@ -21,47 +22,37 @@ from eventyay.eventyay_common.views.custom import ConfirmEmailView, SignupView
 
 logger = logging.getLogger(__name__)
 
+
+def plugin_webhook_compat_paths(module_name: str, slug: str) -> list:
+    """Register /{slug}/webhook and /tickets/{slug}/webhook without a trailing slash.
+
+    Payment dashboards often post to /tickets/_stripe/webhook (and without a trailing
+    slash). Plugins typically only register `/_provider/webhook/`, so those URLs 404 or
+    301-redirect — both fail webhook delivery.
+    """
+    try:
+        webhook_view = importlib.import_module(f'{module_name}.views').webhook
+    except ImportError:
+        logger.debug('%s not installed; skipping %s webhook path aliases', module_name, slug)
+        return []
+    name = slug.lstrip('_')
+    return [
+        re_path(
+            rf'^{slug}/webhook/?$',
+            webhook_view,
+            name=f'{name}-payment-webhook-compat',
+        ),
+        re_path(
+            rf'^tickets/{slug}/webhook/?$',
+            webhook_view,
+            name=f'{name}-payment-webhook-tickets-compat',
+        ),
+    ]
+
+
 # Stripe payment plugin webhook compatibility (#2463).
-# Stripe Dashboard often posts to /tickets/_stripe/webhook (and without a trailing
-# slash). The plugin only registers `/_stripe/webhook/`, so those URLs 404 or
-# 301-redirect — both fail Stripe delivery. These aliases hit the same handler.
-_stripe_webhook_aliases = []
-try:
-    from eventyay_stripe.views import webhook as stripe_payment_webhook
-
-    _stripe_webhook_aliases = [
-        re_path(
-            r'^_stripe/webhook/?$',
-            stripe_payment_webhook,
-            name='stripe-payment-webhook-compat',
-        ),
-        re_path(
-            r'^tickets/_stripe/webhook/?$',
-            stripe_payment_webhook,
-            name='stripe-payment-webhook-tickets-compat',
-        ),
-    ]
-except ImportError:
-    logger.debug('eventyay_stripe not installed; skipping Stripe webhook path aliases')
-
-_paypal_webhook_aliases = []
-try:
-    from eventyay_paypal.views import webhook as paypal_payment_webhook
-
-    _paypal_webhook_aliases = [
-        re_path(
-            r'^_paypal/webhook/?$',
-            paypal_payment_webhook,
-            name='paypal-payment-webhook-compat',
-        ),
-        re_path(
-            r'^tickets/_paypal/webhook/?$',
-            paypal_payment_webhook,
-            name='paypal-payment-webhook-tickets-compat',
-        ),
-    ]
-except ImportError:
-    logger.debug('eventyay_paypal not installed; skipping PayPal webhook path aliases')
+_stripe_webhook_aliases = plugin_webhook_compat_paths('eventyay_stripe', '_stripe')
+_paypal_webhook_aliases = plugin_webhook_compat_paths('eventyay_paypal', '_paypal')
 
 
 base_patterns = [

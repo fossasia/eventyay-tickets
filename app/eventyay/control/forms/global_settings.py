@@ -21,6 +21,20 @@ from eventyay.helpers.image_optimize import optimize_uploaded_image
 
 logger = logging.getLogger(__name__)
 
+PAYPAL_CONNECT_ENDPOINT_CHOICES = (
+    ('live', _('Live')),
+    ('sandbox', _('Sandbox')),
+)
+
+
+def paypal_connect_endpoint_choice(value: str | None) -> str:
+    """Map stored PayPal endpoint values (including legacy URLs) to live/sandbox."""
+    raw = (value or 'live').strip().lower()
+    if raw in {'sandbox', 'test'} or 'sandbox' in raw:
+        return 'sandbox'
+    return 'live'
+
+
 class GlobalSettingsForm(SettingsForm):
     auto_fields = [
         'region',
@@ -670,10 +684,7 @@ class GlobalTicketingSettingsForm(SettingsForm):
                         label=_('Endpoint'),
                         required=False,
                         initial='live',
-                        choices=(
-                            ('live', _('Live')),
-                            ('sandbox', _('Sandbox')),
-                        ),
+                        choices=PAYPAL_CONNECT_ENDPOINT_CHOICES,
                         help_text=_('Use Sandbox to test PayPal payments without charging real money.'),
                     ),
                 ),
@@ -731,6 +742,10 @@ class GlobalTicketingSettingsForm(SettingsForm):
                 'max_products_per_order',
             ]),
         ]
+        self.initial['payment_paypal_connect_endpoint'] = paypal_connect_endpoint_choice(
+            self.initial.get('payment_paypal_connect_endpoint')
+            or self.obj.settings.get('payment_paypal_connect_endpoint')
+        )
 
 
 class SSOConfigForm(SettingsForm):
