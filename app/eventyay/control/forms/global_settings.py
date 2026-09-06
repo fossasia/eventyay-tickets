@@ -1,27 +1,49 @@
+import logging
+import os
 from collections import OrderedDict
 from typing import List, Union
 
 from django import forms
 from django.conf import settings
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import UploadedFile
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
 from eventyay.base.forms import SECRET_REDACTED, SecretKeySettingsField, SecretKeySettingsWidget, SettingsForm
 from eventyay.base.settings import EVENT_SERIES_CREATION_ENABLED, MEETUP_CREATION_ENABLED, GlobalSettingsObject
 from eventyay.base.signals import register_global_settings
-from eventyay.control.forms import ExtFileField
+from eventyay.common.urls import get_file_url_path
 from eventyay.consts import SizeKey
-from django.core.files.uploadedfile import UploadedFile
+from eventyay.control.forms import ExtFileField
 from eventyay.helpers.image_optimize import optimize_uploaded_image
-from django.core.files.storage import default_storage
-import os
-import logging
 
 
 logger = logging.getLogger(__name__)
 
 class GlobalSettingsForm(SettingsForm):
-    auto_fields = ['region', 'mail_from']
+    auto_fields = [
+        'region',
+        'mail_from',
+        'seo_homepage_title',
+        'seo_homepage_description',
+        'seo_og_title',
+        'seo_og_description',
+        'seo_twitter_title',
+        'seo_twitter_description',
+        'seo_fallback_text',
+    ]
+
+    seo_social_image = ExtFileField(
+        label=_('Social preview image'),
+        ext_whitelist=('.png', '.jpg', '.gif', '.jpeg', '.webp'),
+        max_size=settings.MAX_SIZE_CONFIG[SizeKey.UPLOAD_SIZE_IMAGE],
+        required=False,
+        help_text=_(
+            'This image is used for Open Graph and Twitter cards. '
+            'We recommend an image 1200 px wide and 630 px in height.'
+        ),
+    )
 
     def _setting_default(self):
         """
@@ -34,10 +56,6 @@ class GlobalSettingsForm(SettingsForm):
             global_settings.set(EVENT_SERIES_CREATION_ENABLED, True)
         if global_settings.get(MEETUP_CREATION_ENABLED) is None:
             global_settings.set(MEETUP_CREATION_ENABLED, False)
-        if global_settings.get('reservation_time') is None or global_settings.get('reservation_time') == '':
-            global_settings.set('reservation_time', 30)
-        if global_settings.get('max_products_per_order') is None or global_settings.get('max_products_per_order') == '':
-            global_settings.set('max_products_per_order', 0)
         if global_settings.get('smtp_port') is None or global_settings.get('smtp_port') == '':
             self.obj.settings.set('smtp_port', settings.EMAIL_PORT)
         if global_settings.get('smtp_host') is None or global_settings.get('smtp_host') == '':
@@ -64,6 +82,22 @@ class GlobalSettingsForm(SettingsForm):
         self.fields = OrderedDict(
             list(self.fields.items())
             + [
+                (
+                    'allow_all_users_create_organizer',
+                    forms.BooleanField(
+                        label=_('All registered users can create organizers'),
+                        help_text=_('If enabled, all registered users will be allowed to create organizers. System admins can always create organizers.'),
+                        required=False,
+                    ),
+                ),
+                (
+                    'allow_payment_users_create_organizer',
+                    forms.BooleanField(
+                        label=_('All accounts with payment information can create organizers'),
+                        help_text=_('If enabled, users with valid payment information on file will be allowed to create organizers. System admins can always create organizers.'),
+                        required=False,
+                    ),
+                ),
                 (
                     EVENT_SERIES_CREATION_ENABLED,
                     forms.BooleanField(
@@ -244,13 +278,293 @@ class GlobalSettingsForm(SettingsForm):
                         }),
                     ),
                 ),
+                (
+                    'update_check_perform',
+                    forms.BooleanField(
+                        required=False,
+                        label=_('Perform update checks'),
+                        help_text=_(
+                            'During the update check, eventyay will report an anonymous, unique installation ID, '
+                            'the current version of the system and your installed plugins and the number of active and '
+                            'inactive events in your installation to servers operated by the eventyay developers. We '
+                            'will only store anonymous data, never any IP addresses and we will not know who you are '
+                            'or where to find your instance. You can disable this behavior here at any time.'
+                        ),
+                    ),
+                ),
+                (
+                    'update_check_email',
+                    forms.EmailField(
+                        required=False,
+                        label=_('E-mail notifications'),
+                        help_text=_(
+                            'We will notify you at this address if we detect that a new update is available. This '
+                            'address will not be transmitted to eventyay.com, the emails will be sent by this server '
+                            'locally.'
+                        ),
+                    ),
+                ),
+                (
+                    'telemetry_enabled',
+                    forms.BooleanField(
+                        required=False,
+                        label=_('Enable telemetry'),
+                        help_text=_(
+                            'Send anonymous usage statistics (bucketed counts, deployment info) to help track '
+                            'version adoption and deployment patterns. No personal data is collected. '
+                            'Data is sent approximately once per day.'
+                        ),
+                    ),
+                ),
+                (
+                    'telemetry_endpoint',
+                    forms.URLField(
+                        required=False,
+                        label=_('Telemetry endpoint'),
+                        help_text=_('The URL where telemetry data will be sent (Google Apps Script URL).'),
+                    ),
+                ),
+                (
+                    'telemetry_api_key',
+                    SecretKeySettingsField(
+                        required=False,
+                        label=_('Telemetry API key'),
+                        help_text=_('API key for authenticating with the telemetry receiver.'),
+                    ),
+                ),
+                (
+                    'telemetry_contact_email',
+                    forms.EmailField(
+                        required=False,
+                        label=_('Maintainer contact'),
+                        help_text=_(
+                            'Optional email address included in telemetry data to identify who maintains this instance. '
+                            'Only visible to those with access to the telemetry data sheet.'
+                        ),
+                    ),
+                ),
+                # Etherpad collaborative notes
+                (
+                    'etherpad_enabled',
+                    forms.BooleanField(
+                        label=_('Enable Etherpad integration'),
+                        help_text=_('Allow events to attach collaborative Etherpad notes to their sessions.'),
+                        required=False,
+                    ),
+                ),
+                (
+                    'etherpad_base_url',
+                    forms.URLField(
+                        label=_('Default Etherpad instance URL'),
+                        help_text=_('Base URL of the Etherpad instance, e.g. {sample}').format(sample='https://pad.example.org'),
+                        required=False,
+                    ),
+                ),
+                (
+                    'etherpad_api_key',
+                    SecretKeySettingsField(
+                        label=_('Etherpad API key'),
+                        help_text=_(
+                            'API key of the Etherpad instance (found in APIKEY.txt). Required only for automatic pad '
+                            'creation; without it, pad links are generated as plain URLs that Etherpad creates on first visit.'
+                        ),
+                        required=False,
+                    ),
+                ),
+                (
+                    'etherpad_pad_name_pattern',
+                    forms.CharField(
+                        label=_('Pad name pattern'),
+                        help_text=_(
+                            'Pattern used to generate pad names. Available placeholders: {placeholders}.'
+                        ).format(placeholders='{event}, {submission}, {token}'),
+                        required=False,
+                    ),
+                ),
             ]
         )
         responses = register_global_settings.send(self)
         for r, response in sorted(responses, key=lambda r: str(r[0])):
             for key, value in response.items():
-                # We need to be this explicit, since OrderedDict.update does not retain ordering
-                self.fields[key] = value
+                # Payment settings belong to Ticketing, not GlobalSettingsForm
+                if not key.startswith('payment_'):
+                    self.fields[key] = value
+
+        # VoxBento
+        if 'voxbento_base_url' not in self.fields:
+            self.fields['voxbento_base_url'] = forms.URLField(
+                label=_('VoxBento Base URL'),
+                required=False,
+                help_text=_('Base URL of the VoxBento interpretation server (e.g. https://interpretation.eventyay.com).'),
+            )
+        if 'voxbento_client_id' not in self.fields:
+            self.fields['voxbento_client_id'] = forms.CharField(
+                label=_('VoxBento Client ID'),
+                required=False,
+                help_text=_('Client ID for authenticating with VoxBento API.'),
+            )
+        if 'voxbento_client_secret' not in self.fields:
+            self.fields['voxbento_client_secret'] = SecretKeySettingsField(
+                label=_('VoxBento Client Secret'),
+                required=False,
+                help_text=_('Client Secret for authenticating with VoxBento API.'),
+            )
+
+        # HubSpot
+        if 'hubspot_client_id' not in self.fields:
+            self.fields['hubspot_client_id'] = forms.CharField(
+                label=_('HubSpot Client ID'),
+                required=False,
+            )
+        if 'hubspot_client_secret' not in self.fields:
+            self.fields['hubspot_client_secret'] = SecretKeySettingsField(
+                label=_('HubSpot Client Secret'),
+                required=False,
+            )
+        if 'hubspot_property_sync_ttl_minutes' not in self.fields:
+            self.fields['hubspot_property_sync_ttl_minutes'] = forms.IntegerField(
+                label=_('HubSpot Property Sync TTL (minutes)'),
+                required=False,
+                min_value=0,
+                initial=60,
+            )
+
+        self.field_groups = [
+            ('meta-data', _('Meta data'), [
+                'seo_homepage_title',
+                'seo_homepage_description',
+                'seo_og_title',
+                'seo_og_description',
+                'seo_twitter_title',
+                'seo_twitter_description',
+                'seo_fallback_text',
+                'seo_social_image',
+            ]),
+            ('event-creation', _('Event Creation'), [
+                EVENT_SERIES_CREATION_ENABLED,
+                MEETUP_CREATION_ENABLED,
+            ]),
+            ('organizers', _('Organizers'), [
+                'allow_all_users_create_organizer',
+                'allow_payment_users_create_organizer',
+            ]),
+            ('localization', _('Localization'), [
+                'region',
+            ]),
+            ('email', _('Email'), [
+                'mail_from', 'email_vendor', 'send_grid_api_key',
+                'gmail_client_id', 'gmail_client_secret',
+                'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password',
+                'smtp_use_tls', 'smtp_use_ssl',
+            ]),
+            ('update-check', _('Update check'), [
+                'update_check_perform',
+                'update_check_email',
+                'telemetry_enabled',
+                'telemetry_endpoint',
+                'telemetry_api_key',
+                'telemetry_contact_email',
+            ]),
+            ('maps', _('Maps'), [
+                'opencagedata_apikey', 'mapquest_apikey', 'nominatim_geocoding_enabled', 'leaflet_tiles', 'leaflet_tiles_attribution',
+            ]),
+            ('etherpad', _('Etherpad'), [
+                'etherpad_enabled',
+                'etherpad_base_url',
+                'etherpad_api_key',
+                'etherpad_pad_name_pattern',
+            ]),
+            ('voxbento', _('VoxBento'), [
+                'voxbento_base_url',
+                'voxbento_client_id',
+                'voxbento_client_secret',
+            ]),
+            ('hubspot', _('HubSpot'), [
+                'hubspot_client_id',
+                'hubspot_client_secret',
+                'hubspot_property_sync_ttl_minutes',
+            ]),
+        ]
+
+        for name, field in self.fields.items():
+            if isinstance(field.widget, forms.ClearableFileInput):
+                field.widget.attrs['data-eventyay-file-wrapper'] = 'disabled'
+                field.widget.attrs['data-event-settings-image-tools'] = 'enabled'
+
+    def clean_voxbento_base_url(self):
+        url = (self.cleaned_data.get('voxbento_base_url') or '').strip()
+        if url:
+            if url.endswith('/'):
+                url = url[:-1]
+            if not url.startswith('http://') and not url.startswith('https://'):
+                url = 'https://' + url
+        return url
+
+    def clean_etherpad_pad_name_pattern(self):
+        pattern = (self.cleaned_data.get('etherpad_pad_name_pattern') or '').strip()
+        if pattern and '{submission}' not in pattern and '{token}' not in pattern:
+            raise forms.ValidationError(
+                _('The pattern must contain {submission} or {token} so each session gets a unique pad.')
+            )
+        return pattern
+
+    def clean(self):
+        data = super().clean()
+
+        # Validate SendGrid token is provided when SendGrid is selected
+        if data.get('email_vendor') == 'sendgrid':
+            if not data.get('send_grid_api_key'):
+                raise forms.ValidationError({'send_grid_api_key': _('This field is required when using SendGrid as email vendor.')})
+        if data.get('email_vendor') == 'gmail_api':
+            if not (data.get('gmail_client_id') or '').strip():
+                raise forms.ValidationError({'gmail_client_id': _('This field is required when using Gmail as email vendor.')})
+            secret = data.get('gmail_client_secret')
+            has_secret = (
+                secret == SECRET_REDACTED
+                or bool((secret or '').strip())
+                or self.obj.settings.get('gmail_client_secret')
+            )
+            if not has_secret:
+                raise forms.ValidationError({'gmail_client_secret': _('This field is required when using Gmail as email vendor.')})
+
+        return data
+
+    def save(self):
+        image_field = 'seo_social_image'
+        current_value = self.obj.settings.get(image_field, as_type=str, default='') or ''
+        new_value = self.cleaned_data.get(image_field)
+
+        if isinstance(new_value, UploadedFile):
+
+            clean_name, ext = os.path.splitext(new_value.name or image_field)
+            new_filename = self.get_new_filename(clean_name)
+            base_path, _ = os.path.splitext(new_filename)
+            optimized_name = f'{base_path}{ext}'
+            try:
+                optimized_path = default_storage.save(optimized_name, new_value)
+                self.cleaned_data[image_field] = f"file://{optimized_path}"
+                current_file = get_file_url_path(current_value)
+                if current_file:
+                    default_storage.delete(current_file)
+            except OSError:
+                logger.exception('Could not store original image for %s', image_field)
+                self.cleaned_data[image_field] = current_value
+
+        return super().save()
+
+
+class GlobalTicketingSettingsForm(SettingsForm):
+    def _setting_default(self):
+        global_settings = self.obj.settings
+        if global_settings.get('reservation_time') is None or global_settings.get('reservation_time') == '':
+            global_settings.set('reservation_time', 30)
+        if global_settings.get('max_products_per_order') is None or global_settings.get('max_products_per_order') == '':
+            global_settings.set('max_products_per_order', 0)
+
+    def __init__(self, *args, **kwargs):
+        self.obj = GlobalSettingsObject()
+        self._setting_default()
+        super().__init__(*args, obj=self.obj, **kwargs)
 
         self.fields = OrderedDict(
             list(self.fields.items())
@@ -358,60 +672,7 @@ class GlobalSettingsForm(SettingsForm):
                         help_text=_('PayPal API endpoint (e.g., https://api.paypal.com or https://api.sandbox.paypal.com).'),
                     ),
                 ),
-                (
-                    'allow_all_users_create_organizer',
-                    forms.BooleanField(
-                        label=_('All registered users can create organizers'),
-                        help_text=_('If enabled, all registered users will be allowed to create organizers. System admins can always create organizers.'),
-                        required=False,
-                    ),
-                ),
-                (
-                    'allow_payment_users_create_organizer',
-                    forms.BooleanField(
-                        label=_('All accounts with payment information can create organizers'),
-                        help_text=_('If enabled, users with valid payment information on file will be allowed to create organizers. System admins can always create organizers.'),
-                        required=False,
-                    ),
-                ),
-                # Etherpad collaborative notes
-                (
-                    'etherpad_enabled',
-                    forms.BooleanField(
-                        label=_('Enable Etherpad integration'),
-                        help_text=_('Allow events to attach collaborative Etherpad notes to their sessions.'),
-                        required=False,
-                    ),
-                ),
-                (
-                    'etherpad_base_url',
-                    forms.URLField(
-                        label=_('Default Etherpad instance URL'),
-                        help_text=_('Base URL of the Etherpad instance, e.g. {sample}').format(sample='https://pad.example.org'),
-                        required=False,
-                    ),
-                ),
-                (
-                    'etherpad_api_key',
-                    SecretKeySettingsField(
-                        label=_('Etherpad API key'),
-                        help_text=_(
-                            'API key of the Etherpad instance (found in APIKEY.txt). Required only for automatic pad '
-                            'creation; without it, pad links are generated as plain URLs that Etherpad creates on first visit.'
-                        ),
-                        required=False,
-                    ),
-                ),
-                (
-                    'etherpad_pad_name_pattern',
-                    forms.CharField(
-                        label=_('Pad name pattern'),
-                        help_text=_(
-                            'Pattern used to generate pad names. Available placeholders: {placeholders}.'
-                        ).format(placeholders='{event}, {submission}, {token}'),
-                        required=False,
-                    ),
-                ),
+                # Cart
                 (
                     'reservation_time',
                     forms.IntegerField(
@@ -433,199 +694,38 @@ class GlobalSettingsForm(SettingsForm):
             ]
         )
 
-        self.field_groups = [
-            ('localization', _('Localization'), [
-                'region',
-            ]),
-            ('email', _('Email'), [
-                'mail_from', 'email_vendor', 'send_grid_api_key',
-                'gmail_client_id', 'gmail_client_secret',
-                'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password',
-                'smtp_use_tls', 'smtp_use_ssl',
-            ]),
-            ('payment_gateways', _('Payment Gateways'), [
-                # Stripe for Ticket Payments
-                'payment_stripe_connect_client_id',
-                'payment_stripe_connect_publishable_key',
-                'payment_stripe_connect_secret_key',
-                'payment_stripe_connect_test_publishable_key',
-                'payment_stripe_connect_test_secret_key',
-                'payment_stripe_connect_app_fee_percent',
-                'payment_stripe_connect_app_fee_min',
-                'payment_stripe_connect_app_fee_max',
+        responses = register_global_settings.send(self)
+        payment_gateway_fields = [
+            # Stripe for Ticket Payments
+            'payment_stripe_connect_client_id',
+            'payment_stripe_connect_publishable_key',
+            'payment_stripe_connect_secret_key',
+            'payment_stripe_connect_test_publishable_key',
+            'payment_stripe_connect_test_secret_key',
+            'payment_stripe_connect_app_fee_percent',
+            'payment_stripe_connect_app_fee_min',
+            'payment_stripe_connect_app_fee_max',
 
-                # PayPal
-                'payment_paypal_connect_client_id',
-                'payment_paypal_connect_secret_key',
-                'payment_paypal_connect_endpoint',
-            ]),
+            # PayPal
+            'payment_paypal_connect_client_id',
+            'payment_paypal_connect_secret_key',
+            'payment_paypal_connect_endpoint',
+        ]
+        for r, response in sorted(responses, key=lambda r: str(r[0])):
+            for key, value in response.items():
+                if key.startswith('payment_'):
+                    if key not in self.fields:
+                        self.fields[key] = value
+                    if key not in payment_gateway_fields:
+                        payment_gateway_fields.append(key)
+
+        self.field_groups = [
+            ('payment-gateways', _('Payment Gateways'), payment_gateway_fields),
             ('cart', _('Cart'), [
                 'reservation_time',
                 'max_products_per_order',
             ]),
-            ('maps', _('Maps'), [
-                'opencagedata_apikey', 'mapquest_apikey', 'nominatim_geocoding_enabled', 'leaflet_tiles', 'leaflet_tiles_attribution',
-            ]),
-            ('organizers', _('Organizers'), [
-                'allow_all_users_create_organizer',
-                'allow_payment_users_create_organizer',
-            ]),
-            ('event_creation', _('Event Creation'), [
-                EVENT_SERIES_CREATION_ENABLED,
-                MEETUP_CREATION_ENABLED,
-            ]),
-            ('etherpad', _('Etherpad'), [
-                'etherpad_enabled',
-                'etherpad_base_url',
-                'etherpad_api_key',
-                'etherpad_pad_name_pattern',
-            ]),
         ]
-
-        if any(app.endswith('interpretation') or app == 'interpretation' for app in settings.INSTALLED_APPS):
-            self.fields['voxbento_base_url'] = forms.URLField(
-                label=_('VoxBento Base URL'),
-                required=False,
-                help_text=_('Base URL of the VoxBento interpretation server (e.g. https://interpretation.eventyay.com).'),
-            )
-            self.fields['voxbento_client_id'] = forms.CharField(
-                label=_('VoxBento Client ID'),
-                required=False,
-                help_text=_('Client ID for authenticating with VoxBento API.'),
-            )
-            self.fields['voxbento_client_secret'] = SecretKeySettingsField(
-                label=_('VoxBento Client Secret'),
-                required=False,
-                help_text=_('Client Secret for authenticating with VoxBento API.'),
-            )
-            self.field_groups.append(
-                ('voxbento', _('VoxBento'), [
-                    'voxbento_base_url',
-                    'voxbento_client_id',
-                    'voxbento_client_secret',
-                ])
-            )
-
-        if any(app.endswith('hubspot') or app == 'hubspot' for app in settings.INSTALLED_APPS):
-            self.fields['hubspot_client_id'] = forms.CharField(
-                label=_('HubSpot Client ID'),
-                required=False,
-            )
-            self.fields['hubspot_client_secret'] = SecretKeySettingsField(
-                label=_('HubSpot Client Secret'),
-                required=False,
-            )
-            self.fields['hubspot_property_sync_ttl_minutes'] = forms.IntegerField(
-                label=_('HubSpot Property Sync TTL (minutes)'),
-                required=False,
-                min_value=0,
-                initial=60,
-            )
-            self.field_groups.append(
-                ('hubspot', _('HubSpot'), [
-                    'hubspot_client_id',
-                    'hubspot_client_secret',
-                    'hubspot_property_sync_ttl_minutes',
-                ])
-            )
-
-
-
-    def clean_voxbento_base_url(self):
-        url = (self.cleaned_data.get('voxbento_base_url') or '').strip()
-        if url:
-            if url.endswith('/'):
-                url = url[:-1]
-            if not url.startswith('http://') and not url.startswith('https://'):
-                url = 'https://' + url
-        return url
-    def clean_etherpad_pad_name_pattern(self):
-
-        pattern = (self.cleaned_data.get('etherpad_pad_name_pattern') or '').strip()
-        if pattern and '{submission}' not in pattern and '{token}' not in pattern:
-            raise forms.ValidationError(
-                _('The pattern must contain {submission} or {token} so each session gets a unique pad.')
-            )
-        return pattern
-
-    def clean(self):
-        data = super().clean()
-
-        # Validate SendGrid token is provided when SendGrid is selected
-        if data.get('email_vendor') == 'sendgrid':
-            if not data.get('send_grid_api_key'):
-                raise forms.ValidationError({'send_grid_api_key': _('This field is required when using SendGrid as email vendor.')})
-        if data.get('email_vendor') == 'gmail_api':
-            if not (data.get('gmail_client_id') or '').strip():
-                raise forms.ValidationError({'gmail_client_id': _('This field is required when using Gmail as email vendor.')})
-            secret = data.get('gmail_client_secret')
-            has_secret = (
-                secret == SECRET_REDACTED
-                or bool((secret or '').strip())
-                or self.obj.settings.get('gmail_client_secret')
-            )
-            if not has_secret:
-                raise forms.ValidationError({'gmail_client_secret': _('This field is required when using Gmail as email vendor.')})
-
-
-
-        return data
-
-
-class UpdateSettingsForm(SettingsForm):
-    update_check_perform = forms.BooleanField(
-        required=False,
-        label=_('Perform update checks'),
-        help_text=_(
-            'During the update check, eventyay will report an anonymous, unique installation ID, '
-            'the current version of the system and your installed plugins and the number of active and '
-            'inactive events in your installation to servers operated by the eventyay developers. We '
-            'will only store anonymous data, never any IP addresses and we will not know who you are '
-            'or where to find your instance. You can disable this behavior here at any time.'
-        ),
-    )
-    update_check_email = forms.EmailField(
-        required=False,
-        label=_('E-mail notifications'),
-        help_text=_(
-            'We will notify you at this address if we detect that a new update is available. This '
-            'address will not be transmitted to eventyay.com, the emails will be sent by this server '
-            'locally.'
-        ),
-    )
-    
-    # Telemetry settings
-    telemetry_enabled = forms.BooleanField(
-        required=False,
-        label=_('Enable telemetry'),
-        help_text=_(
-            'Send anonymous usage statistics (bucketed counts, deployment info) to help track '
-            'version adoption and deployment patterns. No personal data is collected. '
-            'Data is sent approximately once per day.'
-        ),
-    )
-    telemetry_endpoint = forms.URLField(
-        required=False,
-        label=_('Telemetry endpoint'),
-        help_text=_('The URL where telemetry data will be sent (Google Apps Script URL).'),
-    )
-    telemetry_api_key = SecretKeySettingsField(
-        required=False,
-        label=_('Telemetry API key'),
-        help_text=_('API key for authenticating with the telemetry receiver.'),
-    )
-    telemetry_contact_email = forms.EmailField(
-        required=False,
-        label=_('Maintainer contact'),
-        help_text=_(
-            'Optional email address included in telemetry data to identify who maintains this instance. '
-            'Only visible to those with access to the telemetry data sheet.'
-        ),
-    )
-
-    def __init__(self, *args, **kwargs):
-        self.obj = GlobalSettingsObject()
-        super().__init__(*args, obj=self.obj, **kwargs)
 
 
 class SSOConfigForm(SettingsForm):
@@ -678,61 +778,6 @@ class StripeKeyValidator:
                 }
 
             raise forms.ValidationError(message, code='invalid-stripe-key', params=params)
-
-
-class MetaDataSettingsForm(SettingsForm):
-    auto_fields = [
-        'seo_homepage_title',
-        'seo_homepage_description',
-        'seo_og_title',
-        'seo_og_description',
-        'seo_twitter_title',
-        'seo_twitter_description',
-        'seo_fallback_text',
-    ]
-
-    seo_social_image = ExtFileField(
-        label=_('Social preview image'),
-        ext_whitelist=('.png', '.jpg', '.gif', '.jpeg', '.webp'),
-        max_size=settings.MAX_SIZE_CONFIG[SizeKey.UPLOAD_SIZE_IMAGE],
-        required=False,
-        help_text=_(
-            'This image is used for Open Graph and Twitter cards. '
-            'We recommend an image 1200 px wide and 630 px in height.'
-        ),
-    )
-
-    def __init__(self, *args, **kwargs):
-        self.obj = GlobalSettingsObject()
-        super().__init__(*args, obj=self.obj, **kwargs)
-        for name, field in self.fields.items():
-            if isinstance(field.widget, forms.ClearableFileInput):
-                field.widget.attrs['data-eventyay-file-wrapper'] = 'disabled'
-                field.widget.attrs['data-event-settings-image-tools'] = 'enabled'
-
-    def save(self):
-        image_field = 'seo_social_image'
-        current_value = self.obj.settings.get(image_field, as_type=str, default='') or ''
-        new_value = self.cleaned_data.get(image_field)
-        
-        # Simplified storage logic
-        if isinstance(new_value, UploadedFile):
-            from eventyay.common.urls import get_file_url_path
-            current_file = get_file_url_path(current_value)
-            if current_file:
-                default_storage.delete(current_file)
-            
-            clean_name, ext = os.path.splitext(new_value.name or image_field)
-            new_filename = self.get_new_filename(clean_name)
-            base_path, _ = os.path.splitext(new_filename)
-            optimized_name = f'{base_path}{ext}'
-            try:
-                optimized_path = default_storage.save(optimized_name, new_value)
-                self.cleaned_data[image_field] = f"file://{optimized_path}"
-            except OSError:
-                logger.exception('Could not store original image for %s', image_field)
-
-        return super().save()
 
 
 class GlobalBusinessSettingsForm(SettingsForm):

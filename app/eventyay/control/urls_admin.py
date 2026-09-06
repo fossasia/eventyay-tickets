@@ -44,6 +44,7 @@ urlpatterns = [
     ),
     url(r'^users/(?P<id>\d+)/anonymize', users.UserAnonymizeView.as_view(), name='admin.users.anonymize'),
     url(r'^global/settings/$', global_settings.GlobalSettingsView.as_view(), name='admin.global.settings'),
+    path('global/ticketing/', global_settings.GlobalTicketingSettingsView.as_view(), name='admin.global.ticketing'),
     path('global/business/', global_settings.GlobalBusinessSettingsView.as_view(), name='admin.global.business'),
     path('global/settings/preview/', global_settings.GlobalSettingsPagePreviewView.as_view(), name='admin.global.settings.preview'),
     path('global/settings/test-email/', global_settings.GlobalSettingsTestEmailView.as_view(), name='admin.global.settings.test_email'),
@@ -54,8 +55,7 @@ urlpatterns = [
     path('global/gmail/disconnect/', gmail_oauth.GmailOAuthDisconnectView.as_view(), name='admin.global.gmail.disconnect'),
 
     path('global/plugins/', global_settings.GlobalPluginManagementView.as_view(), name='admin.global.plugins'),
-
-    url(r'^global/update/$', global_settings.UpdateCheckView.as_view(), name='admin.global.update'),
+    path('global/update/', global_settings.UpdateRedirectView.as_view(), name='admin.global.update'),
     url(r'^global/message/$', global_settings.MessageView.as_view(), name='admin.global.message'),
     url(r'^vouchers/$', admin.VoucherList.as_view(), name='admin.vouchers'),
     url(r'^vouchers/add$', admin.VoucherCreate.as_view(), name='admin.vouchers.add'),

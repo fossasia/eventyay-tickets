@@ -28,14 +28,14 @@ from eventyay.common.sanitizers import sanitize_rich_text
 from eventyay.control.forms.global_settings import (
     GlobalBusinessSettingsForm,
     GlobalSettingsForm,
+    GlobalTicketingSettingsForm,
     SSOConfigForm,
-    UpdateSettingsForm,
-    MetaDataSettingsForm,
 )
 from eventyay.control.permissions import (
     AdministratorPermissionRequiredMixin,
     StaffMemberRequiredMixin,
 )
+
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +51,22 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         if tab in ('organizer_billing', 'ticket_fee', 'billing_validation', 'business'):
             target_hash = f'#tab-{tab}' if tab in ('organizer_billing', 'ticket_fee', 'billing_validation') else ''
             return redirect(reverse('eventyay_admin:admin.global.business') + target_hash)
+        if tab in ('payment_gateways', 'payment-gateways', 'payment', 'gateways'):
+            return redirect(reverse('eventyay_admin:admin.global.ticketing') + '#tab-payment-gateways')
+        if tab in ('cart',):
+            return redirect(reverse('eventyay_admin:admin.global.ticketing') + '#tab-cart')
+        if tab in ('meta_data', 'metadata', 'meta-data'):
+            return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-meta-data')
+        if tab in ('update_check', 'update', 'update-check'):
+            return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-update-check')
         return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if 'trigger' in request.POST:
+            update_check.apply()
+            messages.success(request, _('Update check has been performed.'))
+            return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-update-check')
+        return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         from eventyay.base.gmail.models import GmailOAuthCredential
@@ -65,6 +80,9 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         context['gmail_connect_url'] = reverse('eventyay_admin:admin.global.gmail.connect')
         context['gmail_disconnect_url'] = reverse('eventyay_admin:admin.global.gmail.disconnect')
         context['test_email_feedback'] = self.request.session.pop('admin_test_email_feedback', None)
+        context['gs'] = GlobalSettingsObject()
+        context['gs'].settings.set('update_check_ack', True)
+        context['tbl'] = check_result_table()
         return context
 
     def form_valid(self, form):
@@ -78,6 +96,23 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
 
     def get_success_url(self):
         return reverse('eventyay_admin:admin.global.settings')
+
+
+class GlobalTicketingSettingsView(AdministratorPermissionRequiredMixin, FormView):
+    template_name = 'pretixcontrol/admin/ticketing_settings.html'
+    form_class = GlobalTicketingSettingsForm
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('Your changes have been saved.'))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse('eventyay_admin:admin.global.ticketing')
 
 
 class GlobalBusinessSettingsView(AdministratorPermissionRequiredMixin, FormView):
@@ -97,21 +132,22 @@ class GlobalBusinessSettingsView(AdministratorPermissionRequiredMixin, FormView)
         return reverse('eventyay_admin:admin.global.business')
 
 
-class MetaDataSettingsView(AdministratorPermissionRequiredMixin, FormView):
-    template_name = 'pretixcontrol/admin/metadata.html'
-    form_class = MetaDataSettingsForm
+class MetaDataSettingsView(AdministratorPermissionRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-meta-data')
 
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, _('Your changes have been saved.'))
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-meta-data')
 
-    def form_invalid(self, form):
-        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
-        return super().form_invalid(form)
 
-    def get_success_url(self):
-        return reverse('eventyay_admin:admin.global.metadata')
+class UpdateRedirectView(StaffMemberRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-update-check')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('trigger') == '1':
+            update_check.apply()
+        return redirect(reverse('eventyay_admin:admin.global.settings') + '#tab-update-check')
 
 
 class SSOView(AdministratorPermissionRequiredMixin, FormView):
@@ -172,36 +208,6 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
 class DeleteOAuthApplicationView(AdministratorPermissionRequiredMixin, DeleteView):
     model = OAuthApplication
     success_url = reverse_lazy('eventyay_admin:admin.global.sso')
-
-
-class UpdateCheckView(StaffMemberRequiredMixin, FormView):
-    template_name = 'pretixcontrol/global_update.html'
-    form_class = UpdateSettingsForm
-
-    def post(self, request, *args, **kwargs):
-        if 'trigger' in request.POST:
-            update_check.apply()
-            return redirect(self.get_success_url())
-        return super().post(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, _('Your changes have been saved.'))
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
-        return super().form_invalid(form)
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data()
-        ctx['gs'] = GlobalSettingsObject()
-        ctx['gs'].settings.set('update_check_ack', True)
-        ctx['tbl'] = check_result_table()
-        return ctx
-
-    def get_success_url(self):
-        return reverse('eventyay_admin:admin.global.update')
 
 
 class MessageView(AdministratorPermissionRequiredMixin, TemplateView):
