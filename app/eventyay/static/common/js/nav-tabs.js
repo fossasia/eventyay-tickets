@@ -36,6 +36,16 @@ const initNavTabs = () => {
         alignTicketsSection()
     })
 
+    const ticketsTab = document.getElementById('nav-tab-tickets')
+
+    if (ticketsTab) {
+        ticketsTab.addEventListener('click', () => {
+            if (window.location.hash === '#tickets') {
+                setTimeout(alignTicketsSection, 0)
+            }
+        })
+    }
+
     window.addEventListener('load', alignTicketsSection)
 }
 
