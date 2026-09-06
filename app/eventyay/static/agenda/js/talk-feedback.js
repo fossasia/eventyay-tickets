@@ -36,7 +36,8 @@ function ensureEmojiPicker(root) {
   picker.id = 'talk-emoji-picker';
   picker.className = 'talk-emoji-picker d-none';
   picker.setAttribute('role', 'dialog');
-  picker.setAttribute('aria-label', 'Emoji picker');
+  const ariaLabel = typeof window.gettext === 'function' ? window.gettext('Emoji picker') : 'Emoji picker';
+  picker.setAttribute('aria-label', ariaLabel);
   const grid = document.createElement('div');
   grid.className = 'talk-emoji-picker__grid';
   COMMON_EMOJIS.forEach((emoji) => {
