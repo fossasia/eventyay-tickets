@@ -1,0 +1,89 @@
+{% extends "pretixcontrol/global_settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load getitem %}
+{% load static %}
+
+{% block title %}{% trans "Ticketing Settings" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Ticketing Settings" %}</h1>
+    {% block inner %}
+    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="tabbed-form">
+            <fieldset id="tab-payment-gateways">
+                <legend>{% translate "Payment Gateways" %}</legend>
+                <fieldset class="payment-gateway-section">
+                    <legend>{% translate "Stripe — Ticket Payments" %}</legend>
+                    <p class="help-block">
+                        {% translate "This configuration is used for ticket payments via the Stripe plugin." %}
+                    </p>
+
+                    <div class="payment-subsection">
+                        <h4>{% translate "Client Configuration" %}</h4>
+                        {% bootstrap_field form.payment_stripe_connect_client_id layout='control' %}
+                    </div>
+
+                    <div class="payment-subsection">
+                        <h4>{% translate "Live Credentials" %}</h4>
+                        {% bootstrap_field form.payment_stripe_connect_publishable_key layout='control' %}
+                        {% bootstrap_field form.payment_stripe_connect_secret_key layout='control' %}
+                    </div>
+
+                    <div class="payment-subsection">
+                        <h4>{% translate "Test Credentials" %}</h4>
+                        {% bootstrap_field form.payment_stripe_connect_test_publishable_key layout='control' %}
+                        {% bootstrap_field form.payment_stripe_connect_test_secret_key layout='control' %}
+                    </div>
+
+                    <div class="payment-subsection">
+                        <h4>{% translate "App Fees" %}</h4>
+                        <p class="help-block">
+                            {% translate "Configure the application fees charged on ticket payments." %}
+                        </p>
+                        {% bootstrap_field form.payment_stripe_connect_app_fee_percent layout='control' %}
+                        {% bootstrap_field form.payment_stripe_connect_app_fee_min layout='control' %}
+                        {% bootstrap_field form.payment_stripe_connect_app_fee_max layout='control' %}
+                    </div>
+                </fieldset>
+
+                <fieldset class="payment-gateway-section">
+                    <legend>{% translate "PayPal — Ticket Payments" %}</legend>
+                    <p class="help-block">
+                        {% translate "Configure PayPal payment processing." %}
+                    </p>
+                    {% bootstrap_field form.payment_paypal_connect_client_id layout='control' %}
+                    {% bootstrap_field form.payment_paypal_connect_secret_key layout='control' %}
+                    {% bootstrap_field form.payment_paypal_connect_endpoint layout='control' %}
+                </fieldset>
+
+                {% for group_key, group_label, field_names in form.field_groups %}
+                    {% if group_key == "payment-gateways" %}
+                        {% for field_name in field_names %}
+                            {% if not "payment_stripe_connect_" in field_name and not "payment_paypal_connect_" in field_name %}
+                                {% with form|getitem:field_name as field %}
+                                    {% bootstrap_field field layout='control' %}
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </fieldset>
+
+            <fieldset id="tab-cart">
+                <legend>{% translate "Cart" %}</legend>
+                {% bootstrap_field form.reservation_time layout='control' %}
+                {% bootstrap_field form.max_products_per_order layout='control' %}
+            </fieldset>
+        </div>
+
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% translate "Save" %}
+            </button>
+        </div>
+    </form>
+    {% endblock %}
+{% endblock %}

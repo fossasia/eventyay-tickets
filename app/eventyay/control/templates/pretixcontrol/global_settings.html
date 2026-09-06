@@ -6,10 +6,11 @@
 
 {% block custom_header %}
     <link rel="stylesheet" type="text/css" href="{% static 'orga/css/_flags.css' %}" />
-    <script type="text/javascript" src="{% static "move-email-elements/moveEmailElements.js" %}"></script>
+    <script type="text/javascript" src="{% static 'move-email-elements/moveEmailElements.js' %}"></script>
     <script type="text/javascript"
-            src="{% static "control/js/global-settings-pages.js" %}"
-            data-business-redirect-url="{% url 'eventyay_admin:admin.global.business' %}"></script>
+            src="{% static 'control/js/global-settings-pages.js' %}"
+            data-business-redirect-url="{% url 'eventyay_admin:admin.global.business' %}"
+            data-ticketing-redirect-url="{% url 'eventyay_admin:admin.global.ticketing' %}"></script>
 {% endblock %}
 
 {% block inner %}
@@ -20,75 +21,19 @@
             {% for group_key, group_label, field_names in form.field_groups %}
                 <fieldset id="tab-{{ group_key }}">
                     <legend>{{ group_label }}</legend>
-                    {% if group_key == "payment_gateways" %}
-                        <fieldset class="payment-gateway-section">
-                            <legend>{% translate "Stripe — Ticket Payments" %}</legend>
-                            <p class="help-block">
-                                {% translate "This configuration is used for ticket payments via the Stripe plugin." %}
-                            </p>
-
-                            <div class="payment-subsection">
-                                <h4>{% translate "Client Configuration" %}</h4>
-                                {% for field_name in field_names %}
-                                    {% if field_name == "payment_stripe_connect_client_id" %}
-                                        {% with form|getitem:field_name as field %}
-                                            {% bootstrap_field field layout='control' %}
-                                        {% endwith %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-
-                            <div class="payment-subsection">
-                                <h4>{% translate "Live Credentials" %}</h4>
-                                {% for field_name in field_names %}
-                                    {% if field_name == "payment_stripe_connect_publishable_key" or field_name == "payment_stripe_connect_secret_key" %}
-                                        {% with form|getitem:field_name as field %}
-                                            {% bootstrap_field field layout='control' %}
-                                        {% endwith %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-
-                            <div class="payment-subsection">
-                                <h4>{% translate "Test Credentials" %}</h4>
-                                {% for field_name in field_names %}
-                                    {% if field_name == "payment_stripe_connect_test_publishable_key" or field_name == "payment_stripe_connect_test_secret_key" %}
-                                        {% with form|getitem:field_name as field %}
-                                            {% bootstrap_field field layout='control' %}
-                                        {% endwith %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-
-                            <div class="payment-subsection">
-                                <h4>{% translate "App Fees" %}</h4>
-                                <p class="help-block">
-                                    {% translate "Configure the application fees charged on ticket payments." %}
-                                </p>
-                                {% for field_name in field_names %}
-                                    {% if "payment_stripe_connect_app_fee" in field_name %}
-                                        {% with form|getitem:field_name as field %}
-                                            {% bootstrap_field field layout='control' %}
-                                        {% endwith %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="payment-gateway-section">
-                            <legend>{% translate "PayPal — Ticket Payments" %}</legend>
-                            <p class="help-block">
-                                {% translate "Configure PayPal payment processing." %}
-                            </p>
-                            {% for field_name in field_names %}
-                                {% if "payment_paypal" in field_name %}
-                                    {% with form|getitem:field_name as field %}
-                                        {% bootstrap_field field layout='control' %}
-                                    {% endwith %}
-                                {% endif %}
-                            {% endfor %}
-                        </fieldset>
-                    {% elif group_key == "event_creation" %}
+                    {% if group_key == "meta-data" %}
+                        <p class="help-block">
+                            {% translate "Configure the default meta data and social sharing settings for the platform." %}
+                        </p>
+                        {% for field_name in field_names %}
+                            {% with form|getitem:field_name as field %}
+                                {% bootstrap_field field layout='control' %}
+                            {% endwith %}
+                        {% endfor %}
+                    {% elif group_key == "event-creation" %}
+                        <p class="help-block">
+                            {% translate "Configure which types of events organizers can create." %}
+                        </p>
                         <div class="form-group">
                             <label class="col-md-3 control-label">
                                 <strong>{{ form.event_series_creation_enabled.label }}</strong>
@@ -125,6 +70,12 @@
                                 {% endif %}
                             </div>
                         </div>
+                    {% elif group_key == "organizers" %}
+                        <p class="help-block">
+                            {% translate "Configure permissions for creating organizers." %}
+                        </p>
+                        {% bootstrap_field form.allow_all_users_create_organizer layout='control' %}
+                        {% bootstrap_field form.allow_payment_users_create_organizer layout='control' %}
                     {% elif group_key == "email" %}
                         {% for field_name in field_names %}
                             {% with form|getitem:field_name as field %}
@@ -169,46 +120,78 @@
                                 </div>
                             </div>
                         </div>
-                    {% elif group_key == "pages" %}
-                        {% for field_name in field_names %}
-                            {% with form|getitem:field_name as field %}
-                                {% if "footer_page_" in field_name %}
-                                    <div class="form-group"
-                                         data-richtext-preview-wrapper
-                                         data-richtext-preview-url="{% url 'eventyay_admin:admin.global.settings.preview' %}">
-                                        <label class="col-md-3 control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                        <div class="col-md-9">
-                                            <ul class="nav nav-tabs" role="tablist">
-                                                <li role="presentation" class="active">
-                                                    <a data-toggle="tab" href="#{{ field_name }}_edit">
-                                                        <i class="fa fa-pencil-square-o fa-fw"></i> {% trans "Edit" %}
-                                                    </a>
-                                                </li>
-                                                <li role="presentation">
-                                                    <a data-toggle="tab" href="#{{ field_name }}_preview" data-richtext-preview-tab>
-                                                        <i class="fa fa-tv fa-fw"></i> {% trans "Preview" %}
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <div class="tab-content">
-                                                <div id="{{ field_name }}_edit" class="tab-pane fade in active">
-                                                    {% bootstrap_field field show_label=False form_group_class="" %}
-                                                </div>
-                                                <div id="{{ field_name }}_preview" class="tab-pane">
-                                                    <div class="mail-preview-group">
-                                                        {% for locale_code, locale_name in form.fields.page_locales.choices %}
-                                                            <div lang="{{ locale_code }}" class="richtext-preview mail-preview well i18n-textarea-wrapper" data-lang="{{ locale_code }}"></div>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% else %}
+                    {% elif group_key == "update-check" %}
+                        <fieldset class="update-check-results-section">
+                            <legend>{% trans "Update check results" %}</legend>
+                            {% if not gs.settings.update_check_perform %}
+                                <div class="alert alert-warning">
+                                    {% trans "Update checks are disabled." %}
+                                </div>
+                            {% elif not gs.settings.update_check_last %}
+                                <div class="alert alert-info">
+                                    {% trans "No update check has been performed yet since the last update of this installation. Update checks are performed on a daily basis if your cronjob is set up properly." %}
+                                </div>
+                                <p>
+                                    <button type="submit" name="trigger" value="1" class="btn btn-default">
+                                        {% trans "Check for updates now" %}
+                                    </button>
+                                </p>
+                            {% elif "error" in gs.settings.update_check_result %}
+                                <div class="alert alert-danger">
+                                    {% trans "The last update check was not successful." %}
+                                    {% if gs.settings.update_check_result.error == "http_error" %}
+                                        {% trans "The eventyay server returned an error code." %}
+                                    {% elif gs.settings.update_check_result.error == "unavailable" %}
+                                        {% trans "The eventyay server could not be reached." %}
+                                    {% elif gs.settings.update_check_result.error == "development" %}
+                                        {% trans "This installation appears to be a development installation." %}
+                                    {% endif %}
+                                </div>
+                                <p>
+                                    <button type="submit" name="trigger" value="1" class="btn btn-default">
+                                        {% trans "Check for updates now" %}
+                                    </button>
+                                </p>
+                            {% else %}
+                                <p>
+                                    {% blocktrans trimmed with date=gs.settings.update_check_last|date:"SHORT_DATETIME_FORMAT" %}
+                                        Last updated: {{ date }}
+                                    {% endblocktrans %}
+                                    <button type="submit" name="trigger" value="1" class="btn btn-default btn-xs">
+                                        {% trans "Check for updates now" %}
+                                    </button>
+                                </p>
+                                <div class="table-responsive">
+                                    <table class="table table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th>{% trans "Component" %}</th>
+                                            <th>{% trans "Installed version" %}</th>
+                                            <th>{% trans "Latest version" %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for row in tbl %}
+                                        <tr class="{% if row.3 %}danger{% elif row.2 == "?" %}warning{% else %}success{% endif %}">
+                                            <td>{{ row.0 }}</td>
+                                            <td>{{ row.1 }}</td>
+                                            <td>{{ row.2 }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        </fieldset>
+
+                        <fieldset class="update-check-settings-section">
+                            <legend>{% trans "Update check settings" %}</legend>
+                            {% for field_name in field_names %}
+                                {% with form|getitem:field_name as field %}
                                     {% bootstrap_field field layout='control' %}
-                                {% endif %}
-                            {% endwith %}
-                        {% endfor %}
+                                {% endwith %}
+                            {% endfor %}
+                        </fieldset>
                     {% else %}
                         {% for field_name in field_names %}
                             {% with form|getitem:field_name as field %}
