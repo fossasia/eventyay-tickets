@@ -12,13 +12,22 @@ def test_missing_payment_plugin_does_not_register_webhook_aliases():
     assert plugin_webhook_compat_paths('definitely_not_installed_eventyay_plugin', '_x') == []
 
 
-def test_broken_payment_plugin_view_does_not_raise(monkeypatch):
+def test_missing_plugin_dependency_is_not_swallowed(monkeypatch):
+    def boom(name):
+        raise ModuleNotFoundError('No module named requests', name='requests')
+
+    monkeypatch.setattr('eventyay.config.urls.importlib.import_module', boom)
+    with pytest.raises(ModuleNotFoundError):
+        plugin_webhook_compat_paths('eventyay_paypal', '_paypal')
+
+
+def test_broken_payment_plugin_view_is_not_swallowed(monkeypatch):
     def boom(name):
         raise AttributeError('missing webhook')
 
     monkeypatch.setattr('eventyay.config.urls.importlib.import_module', boom)
-    assert plugin_webhook_compat_paths('eventyay_paypal', '_paypal') == []
-    assert plugin_webhook_compat_paths('eventyay_stripe', '_stripe') == []
+    with pytest.raises(AttributeError):
+        plugin_webhook_compat_paths('eventyay_paypal', '_paypal')
 
 
 @pytest.mark.django_db

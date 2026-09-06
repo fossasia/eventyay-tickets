@@ -30,17 +30,18 @@ def plugin_webhook_compat_paths(module_name: str, slug: str) -> list:
     slash). Plugins typically only register `/_provider/webhook/`, so those URLs 404 or
     301-redirect — both fail webhook delivery.
 
-    Import failures are isolated per plugin so a broken optional payment plugin cannot
+    Import failures are isolated per plugin so a missing payment plugin cannot
     prevent the rest of the URLconf — including other plugins — from loading.
+    Broken installed plugins still fail loudly.
     """
     try:
         webhook_view = importlib.import_module(f'{module_name}.views').webhook
-    except ImportError:
-        logger.debug('%s not installed; skipping %s webhook path aliases', module_name, slug)
-        return []
-    except (AttributeError, TypeError):
-        logger.exception('Unable to load %s webhook view; skipping %s webhook path aliases', module_name, slug)
-        return []
+    except ModuleNotFoundError as exc:
+        missing = exc.name or ''
+        if missing == module_name or missing.startswith(f'{module_name}.'):
+            logger.debug('%s not installed; skipping %s webhook path aliases', module_name, slug)
+            return []
+        raise
     name = slug.lstrip('_')
     return [
         re_path(

@@ -1,7 +1,12 @@
+import importlib.util
+
 import pytest
 from django.test import Client
 
-pytest.importorskip('eventyay_paypal')
+pytestmark = pytest.mark.skipif(
+    importlib.util.find_spec('eventyay_paypal') is None,
+    reason='eventyay_paypal is not installed',
+)
 
 
 @pytest.mark.django_db

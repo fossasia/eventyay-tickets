@@ -746,6 +746,16 @@ class GlobalTicketingSettingsForm(SettingsForm):
             self.initial.get('payment_paypal_connect_endpoint')
             or self.obj.settings.get('payment_paypal_connect_endpoint')
         )
+        if self.is_bound:
+            data = self.data.copy()
+            data['payment_paypal_connect_endpoint'] = paypal_connect_endpoint_choice(
+                data.get('payment_paypal_connect_endpoint')
+                or self.initial.get('payment_paypal_connect_endpoint')
+            )
+            self.data = data
+
+    def clean_payment_paypal_connect_endpoint(self):
+        return paypal_connect_endpoint_choice(self.cleaned_data.get('payment_paypal_connect_endpoint'))
 
 
 class SSOConfigForm(SettingsForm):

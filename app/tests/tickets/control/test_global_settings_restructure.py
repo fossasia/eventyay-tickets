@@ -257,6 +257,21 @@ class TestGlobalTicketingSettings:
         assert 'payment_stripe_connect_client_id' in form.fields
         assert 'payment_stripe_connect_secret_key' in form.fields
 
+    def test_ticketing_form_accepts_legacy_paypal_endpoint_on_save(self):
+        gs = GlobalSettingsObject()
+        gs.settings.set('payment_paypal_connect_endpoint', 'https://api.sandbox.paypal.com')
+        form = GlobalTicketingSettingsForm(
+            data={
+                'payment_paypal_connect_endpoint': 'https://api.sandbox.paypal.com',
+                'reservation_time': '30',
+                'max_products_per_order': '0',
+            }
+        )
+        assert form.is_valid(), form.errors
+        assert form.cleaned_data['payment_paypal_connect_endpoint'] == 'sandbox'
+        form.save()
+        assert gs.settings.get('payment_paypal_connect_endpoint') == 'sandbox'
+
 
 @pytest.mark.django_db
 class TestLegacyUrlsAndRedirects:
