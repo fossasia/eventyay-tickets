@@ -11,7 +11,7 @@ const addSummaryRow = (list, label, value) => {
 
 const getFilledLanguages = (form) => {
     const languages = []
-    form.querySelectorAll('input[id^="id_subject_"], textarea[id^="id_text_"]').forEach((field) => {
+    form.querySelectorAll('input[id^="id_subject_"], textarea[id^="id_text_"], textarea[id^="id_message_"]').forEach((field) => {
         const label = field.title || field.lang
         if (field.value.trim() && label && !languages.includes(label)) {
             languages.push(label)

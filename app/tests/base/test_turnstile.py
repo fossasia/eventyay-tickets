@@ -15,6 +15,7 @@ from eventyay.base.services.turnstile import (
     is_turnstile_enabled_for_action,
     record_failed_login_attempt,
     reset_failed_login_attempts,
+    test_turnstile_connection,
     verify_turnstile_token,
 )
 from eventyay.base.settings import GlobalSettingsObject
@@ -25,7 +26,10 @@ from eventyay.common.templatetags.turnstile_tags import (
 )
 from eventyay.control.forms.global_settings import GlobalSettingsForm
 from eventyay.control.forms.organizer_forms.organizer_update_form import OrganizerUpdateForm
+from eventyay.control.views.global_settings import GlobalSettingsTestTurnstileView
 from eventyay.presale.views.contact import ContactOrganizerView
+
+test_turnstile_connection.__test__ = False
 
 
 @pytest.fixture(autouse=True)
@@ -499,5 +503,123 @@ class TestContactOrganizerTurnstile:
             assert response.status_code == 429
             assert json.loads(response.content)['success'] is False
             assert not mock_verify.called
+
+
+@pytest.mark.django_db
+class TestTurnstileTestConnection:
+    def test_test_turnstile_connection_missing_secret(self):
+        success, message = test_turnstile_connection(secret_key='')
+        assert success is False
+        assert 'not configured' in message
+
+    @patch('urllib.request.urlopen')
+    def test_test_turnstile_connection_success_explicit_true(self, mock_urlopen):
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps({'success': True}).encode('utf-8')
+        mock_resp.__enter__.return_value = mock_resp
+        mock_urlopen.return_value = mock_resp
+
+        success, message = test_turnstile_connection(secret_key='valid-secret')
+        assert success is True
+        assert 'successful' in message
+
+    @patch('urllib.request.urlopen')
+    def test_test_turnstile_connection_success_probe_response(self, mock_urlopen):
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps({
+            'success': False,
+            'error-codes': ['invalid-input-response'],
+        }).encode('utf-8')
+        mock_resp.__enter__.return_value = mock_resp
+        mock_urlopen.return_value = mock_resp
+
+        success, message = test_turnstile_connection(secret_key='valid-secret')
+        assert success is True
+        assert 'successful' in message
+
+    @patch('urllib.request.urlopen')
+    def test_test_turnstile_connection_invalid_secret(self, mock_urlopen):
+        mock_resp = MagicMock()
+        mock_resp.read.return_value = json.dumps({
+            'success': False,
+            'error-codes': ['invalid-input-secret'],
+        }).encode('utf-8')
+        mock_resp.__enter__.return_value = mock_resp
+        mock_urlopen.return_value = mock_resp
+
+        success, message = test_turnstile_connection(secret_key='invalid-secret')
+        assert success is False
+        assert 'Invalid Turnstile secret key' in message
+
+    @patch('urllib.request.urlopen')
+    def test_test_turnstile_connection_network_error(self, mock_urlopen):
+        import urllib.error
+        mock_urlopen.side_effect = urllib.error.URLError('Connection refused')
+
+        success, message = test_turnstile_connection(secret_key='some-secret')
+        assert success is False
+        assert 'Could not connect' in message
+
+    @patch('urllib.request.urlopen')
+    def test_test_turnstile_connection_timeout(self, mock_urlopen):
+        mock_urlopen.side_effect = TimeoutError('timed out')
+
+        success, message = test_turnstile_connection(secret_key='some-secret')
+        assert success is False
+        assert 'timed out' in message
+
+
+@pytest.mark.django_db
+class TestGlobalSettingsTestTurnstileView:
+    def test_view_missing_secret_redirects_with_error(self):
+        rf = RequestFactory()
+        request = rf.post('/control/global/settings/test-turnstile/', {})
+        request.session = {}
+        request.user = MagicMock(is_superuser=True, is_staff=True, has_active_staff_session=MagicMock(return_value=True))
+
+        view = GlobalSettingsTestTurnstileView()
+        response = view.post(request)
+        assert response.status_code == 302
+        assert response.url.endswith('#tab-security')
+        assert 'admin_test_turnstile_feedback' in request.session
+        assert request.session['admin_test_turnstile_feedback']['level'] == 'error'
+
+    @patch('eventyay.control.views.global_settings.test_turnstile_connection')
+    def test_view_with_post_secret_success(self, mock_test_conn):
+        mock_test_conn.return_value = (True, 'Connection successful!')
+
+        rf = RequestFactory()
+        request = rf.post('/control/global/settings/test-turnstile/', {
+            'turnstile_secret_key': '0x4AAAAAAtestkey',
+        })
+        request.session = {}
+        request.user = MagicMock(is_superuser=True, is_staff=True, has_active_staff_session=MagicMock(return_value=True))
+
+        view = GlobalSettingsTestTurnstileView()
+        response = view.post(request)
+        assert response.status_code == 302
+        assert response.url.endswith('#tab-security')
+        assert request.session['admin_test_turnstile_feedback']['level'] == 'success'
+        assert request.session['admin_test_turnstile_feedback']['message'] == 'Connection successful!'
+        mock_test_conn.assert_called_once_with(secret_key='0x4AAAAAAtestkey')
+
+    @patch('eventyay.control.views.global_settings.test_turnstile_connection')
+    def test_view_uses_saved_secret(self, mock_test_conn):
+        mock_test_conn.return_value = (True, 'Connection successful!')
+        gs = GlobalSettingsObject().settings
+        gs.set('turnstile_secret_key', 'saved-secret-key')
+
+        rf = RequestFactory()
+        request = rf.post('/control/global/settings/test-turnstile/', {})
+        request.session = {}
+        request.user = MagicMock(is_superuser=True, is_staff=True, has_active_staff_session=MagicMock(return_value=True))
+
+        view = GlobalSettingsTestTurnstileView()
+        response = view.post(request)
+        assert response.status_code == 302
+        assert response.url.endswith('#tab-security')
+        assert request.session['admin_test_turnstile_feedback']['level'] == 'success'
+        mock_test_conn.assert_called_once_with(secret_key='saved-secret-key')
+
 
 

@@ -56,11 +56,11 @@ const filterPlaceholders = (drawer, empty, query) => {
 }
 
 onReady(() => {
-    lastFocusedInput = document.querySelector("#id_text_0")
+    lastFocusedInput = document.querySelector("#id_text_0") || document.querySelector("#id_message_0")
 
     // When an input matching id_text_\d or id_subject\d is focused, set lastFocusedInput to that input
     document
-        .querySelectorAll('textarea[id^="id_text_"], input[id^="id_subject"]')
+        .querySelectorAll('textarea[id^="id_text_"], textarea[id^="id_message_"], input[id^="id_subject"]')
         .forEach((input) => {
             input.addEventListener("focus", () => {
                 lastFocusedInput = input

@@ -104,16 +104,30 @@ def calculate_attendee_recipient_count(event, qmf):
     return len(unique_emails)
 
 
-def calculate_team_recipient_count(event, qmf):
-    if not qmf or not qmf.teams:
+def calculate_team_recipient_count(event, qmf, user=None):
+    if not qmf:
         return 0
-    sent_emails = set()
-    teams = Team.objects.filter(organizer=event.organizer, pk__in=qmf.teams).prefetch_related('members')
-    for team in teams:
-        for member in team.members.all():
-            if member.email:
-                sent_emails.add(member.email.strip().lower())
-    return len(sent_emails)
+    from eventyay.base.models import User
+
+    team_filters = {'teams__organizer': event.organizer}
+    if qmf.teams:
+        team_filters['teams__in'] = qmf.teams
+    if qmf.team_role:
+        team_filters['teams__teamshifts_role'] = qmf.team_role
+    if qmf.permission_level:
+        team_filters[f'teams__{qmf.permission_level}'] = True
+
+    qs = User.objects.filter(**team_filters)
+    if qmf.status == 'active':
+        qs = qs.filter(is_active=True)
+    elif qmf.status == 'inactive':
+        qs = qs.filter(is_active=False)
+    if qmf.specific_people:
+        qs = qs.filter(pk__in=qmf.specific_people)
+    if qmf.exclude_me and user:
+        qs = qs.exclude(pk=user.pk)
+
+    return qs.filter(email__isnull=False).exclude(email='').distinct().count()
 
 
 class CopyDraftMixin:
@@ -170,7 +184,14 @@ class CopyDraftMixin:
 
                 if qmf:
                     if team_mode:
-                        form_kwargs['initial']['teams'] = qmf.teams or []
+                        form_kwargs['initial'].update({
+                            'teams': qmf.teams or [],
+                            'team_role': qmf.team_role or '',
+                            'permission_level': qmf.permission_level or '',
+                            'status': qmf.status or '',
+                            'specific_people': qmf.specific_people or [],
+                            'exclude_me': qmf.exclude_me,
+                        })
                     else:
                         form_kwargs['initial'].update({
                             'recipients': qmf.recipients or 'orders',
@@ -208,7 +229,7 @@ class CopyDraftMixin:
                     self.loaded_draft = qm
                     old_count = qm.recipients.count() if hasattr(qm.recipients, 'count') else len(qm.recipients or [])
                     if team_mode:
-                        new_count = calculate_team_recipient_count(request.event, qmf)
+                        new_count = calculate_team_recipient_count(request.event, qmf, user=request.user)
                     else:
                         new_count = calculate_attendee_recipient_count(request.event, qmf)
 
@@ -223,7 +244,7 @@ class CopyDraftMixin:
                         )
                 elif copy_id:
                     if team_mode:
-                        self.recipient_count = calculate_team_recipient_count(request.event, qmf)
+                        self.recipient_count = calculate_team_recipient_count(request.event, qmf, user=request.user)
                     else:
                         self.recipient_count = calculate_attendee_recipient_count(request.event, qmf)
 

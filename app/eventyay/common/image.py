@@ -1,5 +1,7 @@
 import logging
+import os
 import re
+import tempfile
 from functools import partial
 from io import BytesIO
 from pathlib import Path
@@ -208,8 +210,13 @@ def validate_image(f):
 
 
 def _open_raster_image(image):
-    if getattr(image, 'path', None):
-        opened = Image.open(image.path)
+    try:
+        path = getattr(image, 'path', None)
+    except (NotImplementedError, AttributeError):
+        path = None
+
+    if path:
+        opened = Image.open(path)
         opened.load()
         return opened
 
@@ -222,28 +229,65 @@ def _open_raster_image(image):
         file_obj.close()
 
 
-def _prepare_original_image(img):
-    img_without_exif = Image.new(img.mode, img.size)
-    img_without_exif.putdata(img.getdata())
-    max_dimensions = (
-        getattr(settings, 'IMAGE_DEFAULT_MAX_WIDTH', 2000),
-        getattr(settings, 'IMAGE_DEFAULT_MAX_HEIGHT', 2000),
+def _has_alpha(image: Image.Image) -> bool:
+    return image.mode in ('RGBA', 'LA', 'PA') or (
+        image.mode == 'P' and 'transparency' in image.info
     )
-    img_without_exif = ImageOps.exif_transpose(img_without_exif)
-    img_without_exif.thumbnail(max_dimensions, resample=Resampling.LANCZOS)
-    return img_without_exif
 
 
-def _original_save_params(extension, img):
-    if extension in ('.jpg', '.jpeg'):
-        if img.mode != 'RGB':
-            img = img.convert('RGB')
-        return img, 'JPEG', {'quality': 85, 'optimize': True, 'progressive': True}
-    if extension == '.webp':
-        return img, 'WEBP', {'quality': 95}
-    if extension == '.png':
-        return img, 'PNG', {'optimize': True}
-    raise ValueError(f'Unsupported original extension: {extension}')
+def encode_optimized(img, original_ext, max_dimensions=None, keep_format=False):
+    """
+    Strips EXIF, resizes to max_dimensions, and encodes to optimal format.
+    Returns (data_bytes, extension).
+    """
+    if max_dimensions is None:
+        max_dimensions = (
+            settings.IMAGE_DEFAULT_MAX_WIDTH,
+            settings.IMAGE_DEFAULT_MAX_HEIGHT,
+        )
+        
+    img = ImageOps.exif_transpose(img)
+    
+    # Strip EXIF by pasting into a new image
+    mode = img.mode
+    if _has_alpha(img):
+        mode = 'RGBA'
+    elif mode not in ('RGB', 'L'):
+        mode = 'RGB'
+        
+    img_without_exif = Image.new(mode, img.size)
+    img_without_exif.paste(img)
+    
+    orig_w, orig_h = img_without_exif.size
+    max_w, max_h = max_dimensions
+    
+    # Resize preserving aspect ratio (thumbnail modifies in place)
+    if orig_w > max_w or orig_h > max_h:
+        img_without_exif.thumbnail(max_dimensions, resample=Resampling.LANCZOS)
+    
+    buf = BytesIO()
+    original_ext = original_ext.lower()
+    
+    if _has_alpha(img_without_exif):
+        if original_ext == '.webp':
+            img_without_exif.save(buf, format='WEBP', quality=75)
+            return buf.getvalue(), '.webp'
+        else:
+            img_without_exif.save(buf, format='PNG', optimize=True)
+            return buf.getvalue(), '.png'
+    else:
+        if keep_format and original_ext == '.png':
+            img_without_exif.save(buf, format='PNG', optimize=True)
+            return buf.getvalue(), '.png'
+        elif original_ext == '.webp':
+            img_without_exif.save(buf, format='WEBP', quality=75)
+            return buf.getvalue(), '.webp'
+        else:
+            if img_without_exif.mode != 'RGB':
+                img_without_exif = img_without_exif.convert('RGB')
+            img_without_exif.save(buf, format='JPEG', quality=70, progressive=True, optimize=True)
+            return buf.getvalue(), '.jpg'
+
 
 
 def _generate_thumbnails(image):
@@ -275,16 +319,70 @@ def process_image(*, image, generate_thumbnail=False):
         return True
 
     extension = Path(image.name).suffix.lower()
+    if extension == '.jpeg':
+        extension = '.jpg'
     if extension not in REWRITABLE_ORIGINAL_EXTENSIONS:
         if generate_thumbnail:
             _generate_thumbnails(image)
         return True
 
     try:
-        prepared = _prepare_original_image(img)
-        prepared, save_format, save_kwargs = _original_save_params(extension, prepared)
-        prepared.save(image.path, format=save_format, **save_kwargs)
-    except Exception:
+        try:
+            original_size = image.size
+        except (NotImplementedError, AttributeError, OSError):
+            original_size = 0
+            
+        optimized_bytes, new_extension = encode_optimized(img, extension, keep_format=True)
+        
+        if original_size > 0 and len(optimized_bytes) >= original_size and extension == new_extension:
+            # Prevent PNG/WebP size growth: if the new file is larger and format is identical, keep original
+            pass
+        else:
+            # We need to overwrite
+            buf = BytesIO(optimized_bytes)
+            
+            local_path = None
+            try:
+                local_path = image.path
+            except (NotImplementedError, AttributeError):
+                pass
+    
+            if local_path:
+                # Attempt atomic local file replacement
+                dir_name = os.path.dirname(local_path)
+                temp_path = None
+                try:
+                    fd, temp_path = tempfile.mkstemp(dir=dir_name, suffix=extension)
+                    with os.fdopen(fd, 'wb') as temp_f:
+                        temp_f.write(buf.getvalue())
+                    
+                    os.chmod(temp_path, os.stat(local_path).st_mode)
+                    os.replace(temp_path, local_path)
+                    temp_path = None
+                finally:
+                    if temp_path is not None:
+                        try:
+                            os.unlink(temp_path)
+                        except OSError:
+                            pass
+            else:
+                # Fallback for remote storage backends (e.g., S3)
+                original_name = image.name
+                
+                # 1. Save new file (may generate a new name or overwrite depending on storage)
+                final_name = image.storage.save(original_name, ContentFile(buf.getvalue()))
+                
+                # 2. If a new name was generated, update the database and delete the old file
+                if final_name != original_name:
+                    image.name = final_name
+                    if getattr(image, 'instance', None) is not None and getattr(image, 'field', None) is not None:
+                        image.instance.save(update_fields=[image.field.name])
+                    try:
+                        image.storage.delete(original_name)
+                    except OSError:
+                        pass
+            
+    except (OSError, ValueError, DecompressionBombError, AttributeError, NotImplementedError):
         logger.exception('Failed to save processed image %s', getattr(image, 'name', image))
         return False
 

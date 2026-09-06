@@ -10,6 +10,7 @@ urlpatterns = [
     path('mails/compose/teams/', views.ComposeTeamsMail.as_view(), name='event.mail.compose_teams'),
     path('mails/attendees/select2/', views.attendees_select2, name='event.mail.attendees.select2'),
     path('mails/compose/attendees/recipients/', views.TicketMailRecipients.as_view(), name='event.mail.recipients'),
+    path('mails/compose/teams/recipients/', views.TeamMailRecipients.as_view(), name='event.mail.teams.recipients'),
     path('mails/<int:pk>/', views.EditEmailQueueView.as_view(), name='event.mail.edit'),
     path('drafts/', views.DraftsListView.as_view(), name='event.mail.drafts'),
     path('drafts/duplicate/<int:pk>/', views.DuplicateDraftView.as_view(), name='event.mail.drafts.duplicate'),

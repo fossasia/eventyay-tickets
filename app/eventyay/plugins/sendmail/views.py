@@ -109,6 +109,33 @@ class TicketMailRecipients(EventPermissionRequiredMixin, View):
         )
 
 
+
+
+class TeamMailRecipients(EventPermissionRequiredMixin, View):
+    permission = 'can_change_orders'
+
+    def get(self, request, *args, **kwargs):
+        from .forms import TeamMailRecipientsForm
+        form = TeamMailRecipientsForm(event=request.event, data=request.GET)
+        if not form.is_valid():
+            return JsonResponse({'error': form.errors, 'count': 0, 'recipients': []}, status=400)
+
+        try:
+            recipients = form.get_recipient_preview(user=request.user)
+        except Exception as e:
+            logger.exception('Failed to build team mail recipient preview: %s', e)
+            return JsonResponse(
+                {'error': 'preview_failed', 'count': 0, 'recipients': []},
+                status=500,
+            )
+
+        return JsonResponse(
+            {
+                'count': len(recipients),
+                'recipients': recipients,
+            }
+        )
+
 class BulkReplyToMixin:
     """Mixin for bulk email views to resolve Reply-To address."""
 
@@ -575,11 +602,15 @@ class EditEmailQueueView(EventPermissionRequiredMixin, UpdateView):
         if self.request.POST.get('action') == 'preview':
             self.output = {}
             event = self.request.event
-            subject = form.cleaned_data['subject']
-            message = form.cleaned_data['message']
+            subject = form.cleaned_data.get('subject')
+            if not subject:
+                subject = LazyI18nString({self.request.event.settings.locale or 'en': ''})
+            message = form.cleaned_data.get('text') or form.cleaned_data.get('message')
+            if not message:
+                message = LazyI18nString({self.request.event.settings.locale or 'en': ''})
 
             if form.instance.composing_for == ComposingFor.TEAMS:
-                base_placeholders = ['event', 'team']
+                base_placeholders = ['event', 'user', 'team']
             else:
                 base_placeholders = ['event', 'order', 'position_or_address']
 
@@ -602,7 +633,8 @@ class EditEmailQueueView(EventPermissionRequiredMixin, UpdateView):
                             dict(context_dict),
                         )
                     except KeyError as e:
-                        form.add_error('message', _('Invalid placeholder(s): {}').format(str(e)))
+                        error_field = 'text' if 'text' in form.fields else 'message'
+                        form.add_error(error_field, _('Invalid placeholder(s): {}').format(str(e)))
                         return self.form_invalid(form)
 
                     self.output[l] = {
@@ -857,13 +889,46 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyTo
 
         event = self.request.event
         user = self.request.user
+
+        if self.request.POST.get('action') == 'test':
+            test_email = form.cleaned_data.get('test_email')
+            if not test_email:
+                form.add_error('test_email', _('Please enter a test email address.'))
+                return self.form_invalid(form)
+
+            try:
+                context_dict = build_email_preview_context(
+                    event, ['event', 'user', 'team']
+                )
+
+                mail(
+                    email=test_email,
+                    subject=form.cleaned_data['subject'],
+                    template=form.cleaned_data['message'],
+                    context=context_dict,
+                    event=event,
+                    locale=event.settings.locale,
+                    sender=event.settings.get('mail_from'),
+                    event_reply_to=form.cleaned_data.get('reply_to') or self._get_reply_to_for_bulk_email(),
+                    event_bcc=form.cleaned_data.get('bcc') or event.settings.get('mail_bcc'),
+                    user=user,
+                    auto_email=False,
+                    sync_send=True,
+                    attach_cached_files=[form.cleaned_data['attachment'].id] if form.cleaned_data.get('attachment') else [],
+                )
+                messages.success(self.request, _('Test email sent successfully to {email}.').format(email=test_email))
+            except Exception as e:
+                logger.exception("Failed to send test email")
+                messages.error(self.request, _('Failed to send test email: {error}').format(error=str(e)))
+
+            return self.render_to_response(self.get_context_data(form=form))
         subject = form.cleaned_data['subject']
         message = form.cleaned_data['message']
 
         self.output = {}
         for l in event.settings.locales:
             with language(l, event.settings.region):
-                context_dict = build_email_preview_context(event, ['event', 'team'])
+                context_dict = build_email_preview_context(event, ['event', 'user', 'team'])
 
                 try:
                     subject_preview = nh3.clean(
@@ -892,23 +957,23 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyTo
         if self.request.POST.get('action') == 'preview':
             return self.get(self.request, *self.args, **self.kwargs)
 
-        sent_emails = set()
         recipients_list = []
-        for team in form.cleaned_data.get('teams', []):
-            for member in team.members.all():
-                if not member.email or member.email in sent_emails:
-                    continue
+        try:
+            preview_recipients = form.get_recipient_preview(user=user)
+            for r in preview_recipients:
                 recipients_list.append({
-                    "email": member.email,
-                    "team": team.pk,
+                    "email": r['email'],
+                    "team": None,
                     "orders": [],
                     "positions": [],
                     "products": [],
                     "sent": False,
                     "error": None
                 })
-
-                sent_emails.add(member.email)
+        except Exception:
+            logger.exception("Failed to build team mail recipients list")
+            form.add_error(None, _('An error occurred while resolving recipients.'))
+            return self.form_invalid(form)
 
         if not recipients_list and not is_draft:
             messages.error(self.request, _('There are no valid recipients for the selected teams.'))
@@ -931,18 +996,26 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyTo
         attachment = form.cleaned_data.get('attachment')
         attachment_ids = [] if is_draft or not attachment else [attachment.id]
 
+        reply_to_val = form.cleaned_data.get('reply_to') or self._get_reply_to_for_bulk_email() or ''
+        bcc_val = form.cleaned_data.get('bcc') or event.settings.get('mail_bcc') or ''
+
         if mail_instance:
             mail_instance.subject = subject_val
             mail_instance.message = message_val
             mail_instance.attachments = attachment_ids
-            mail_instance.reply_to = self._get_reply_to_for_bulk_email() or ''
-            mail_instance.bcc = event.settings.get('mail_bcc')
+            mail_instance.reply_to = reply_to_val
+            mail_instance.bcc = bcc_val
             mail_instance.scheduled_at = scheduled_at
             mail_instance.is_draft = is_draft
             mail_instance.save()
 
             qmf, created = EmailQueueFilter.objects.get_or_create(mail=mail_instance)
             qmf.teams = [team.pk for team in form.cleaned_data.get('teams', [])]
+            qmf.team_role = form.cleaned_data.get('team_role', '')
+            qmf.permission_level = form.cleaned_data.get('permission_level', '')
+            qmf.status = form.cleaned_data.get('status', '')
+            qmf.specific_people = [u.pk for u in form.cleaned_data.get('specific_people', [])]
+            qmf.exclude_me = bool(form.cleaned_data.get('exclude_me', False))
             qmf.save()
         else:
             mail_instance = EmailQueue.objects.create(
@@ -952,8 +1025,8 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyTo
                 subject=subject_val,
                 message=message_val,
                 locale=event.settings.locale,
-                reply_to=self._get_reply_to_for_bulk_email() or '',
-                bcc=event.settings.get('mail_bcc'),
+                reply_to=reply_to_val,
+                bcc=bcc_val,
                 attachments=attachment_ids,
                 scheduled_at=scheduled_at,
                 is_draft=is_draft,
@@ -973,6 +1046,11 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyTo
                 order_created_to=None,
                 orders=[],
                 teams=[team.pk for team in form.cleaned_data.get('teams', [])],
+                team_role=form.cleaned_data.get('team_role', ''),
+                permission_level=form.cleaned_data.get('permission_level', ''),
+                status=form.cleaned_data.get('status', ''),
+                specific_people=[u.pk for u in form.cleaned_data.get('specific_people', [])],
+                exclude_me=bool(form.cleaned_data.get('exclude_me', False)),
             )
 
         mail_instance.recipients.all().delete()

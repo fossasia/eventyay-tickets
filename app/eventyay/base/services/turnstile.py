@@ -1,6 +1,7 @@
 import hashlib
 import json
 import logging
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -242,3 +243,65 @@ class TurnstileValidationMixin:
             if error_code == 'missing-secret':
                 raise forms.ValidationError(TURNSTILE_MISCONFIGURED_MESSAGE, code='turnstile_misconfigured')
             raise forms.ValidationError(TURNSTILE_FAILED_MESSAGE, code='turnstile_invalid')
+
+
+def test_turnstile_connection(secret_key: str | None = None) -> tuple[bool, str]:
+    """
+    Tests connectivity to Cloudflare Turnstile API and validates the secret key.
+    Returns (success: bool, message: str).
+    """
+    if not secret_key:
+        cfg = get_turnstile_settings()
+        secret_key = cfg['secret_key']
+
+    if not secret_key:
+        return False, str(_('Turnstile secret key is not configured. Please enter and save the secret key first.'))
+
+    payload = {
+        'secret': secret_key,
+        'response': 'eventyay-test-connection-probe',
+    }
+    try:
+        data = urllib.parse.urlencode(payload).encode('utf-8')
+        req = urllib.request.Request(
+            TURNSTILE_VERIFY_URL,
+            data=data,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'User-Agent': 'Eventyay-Turnstile/1.0',
+            },
+        )
+        with urllib.request.urlopen(req, timeout=5) as response:
+            res_body = response.read().decode('utf-8')
+            res_data = json.loads(res_body)
+
+        if not isinstance(res_data, dict):
+            return False, str(_('Cloudflare Turnstile returned an invalid response.'))
+
+        if res_data.get('success'):
+            return True, str(_('Cloudflare Turnstile connection test successful!'))
+
+        error_codes = res_data.get('error-codes', [])
+        if not isinstance(error_codes, list):
+            error_codes = []
+
+        if 'invalid-input-secret' in error_codes or 'missing-input-secret' in error_codes:
+            return False, str(_('Connection failed: Invalid Turnstile secret key.'))
+
+        if 'invalid-input-response' in error_codes or 'timeout-or-duplicate' in error_codes:
+            return True, str(
+                _('Cloudflare Turnstile connection successful! The secret key is valid and Cloudflare API is reachable.')
+            )
+
+        err_str = ', '.join(error_codes) if error_codes else 'unknown error'
+        return False, str(_('Cloudflare Turnstile returned an error: %(error)s') % {'error': err_str})
+
+    except urllib.error.HTTPError as exc:
+        return False, str(_('Cloudflare Turnstile server returned HTTP error: %(status)s') % {'status': exc.code})
+    except urllib.error.URLError as exc:
+        return False, str(_('Could not connect to Cloudflare Turnstile servers: %(error)s') % {'error': exc.reason})
+    except (TimeoutError, OSError) as exc:
+        return False, str(_('Connection to Cloudflare Turnstile servers timed out: %(error)s') % {'error': exc})
+    except (json.JSONDecodeError, ValueError) as exc:
+        return False, str(_('Failed to parse response from Cloudflare Turnstile: %(error)s') % {'error': exc})
+
