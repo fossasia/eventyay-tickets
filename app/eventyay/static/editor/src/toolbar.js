@@ -315,6 +315,13 @@ function buildPlaceholderMenu(editor, placeholders) {
   toggle.addEventListener('click', (e) => {
     e.stopPropagation()
     const open = !dropdown.hidden
+    document.querySelectorAll('.tiptap-placeholder-dropdown').forEach((d) => {
+      if (d !== dropdown) {
+        d.hidden = true
+        const btn = d.closest('.tiptap-placeholder-menu')?.querySelector('.tiptap-btn[aria-haspopup="listbox"]')
+        if (btn) btn.setAttribute('aria-expanded', 'false')
+      }
+    })
     dropdown.hidden = open
     toggle.setAttribute('aria-expanded', String(!open))
   })

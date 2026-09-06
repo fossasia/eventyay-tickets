@@ -86,7 +86,7 @@
                             </button>
                         </div>
                         <div id="mail-message-edit" role="tabpanel">
-                            {{ form.text.as_field_group }}
+                            {% if form.text %}{{ form.text.as_field_group }}{% elif form.message %}{{ form.message.as_field_group }}{% endif %}
                         </div>
                         <div id="mail-message-preview" class="mail-message-preview-panel" role="tabpanel" hidden>
                             <div class="mail-preview-group">
@@ -170,6 +170,7 @@
             <input type="search" id="placeholder-search" class="form-control" placeholder="{% translate 'Search placeholders' %}" autocomplete="off">
             <p class="text-muted d-none" id="placeholder-empty">{% translate "No placeholders match your search." %}</p>
 
+            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.user tag="user" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.order tag="order" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.ticket tag="ticket" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.invoice tag="invoice" %}

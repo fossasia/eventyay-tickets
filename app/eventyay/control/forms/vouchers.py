@@ -60,7 +60,8 @@ class VoucherForm(I18nModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
-        initial = kwargs.get('initial')
+        kwargs.setdefault('initial', {})
+        initial = kwargs['initial']
         if instance:
             self.initial_instance_data = modelcopy(instance)
             try:
@@ -230,6 +231,7 @@ class VoucherForm(I18nModelForm):
                 self.instance.variation,
             )
         Voucher.clean_voucher_code(data, self.instance.event, self.instance.pk)
+        Voucher.clean_value_and_budget(data)
         if 'seat' in self.fields and data.get('seat'):
             self.instance.seat = Voucher.clean_seat_id(
                 data,
@@ -243,6 +245,18 @@ class VoucherForm(I18nModelForm):
         voucher_form_validation.send(sender=self.instance.event, form=self, data=data)
 
         return data
+
+    def _post_clean(self):
+        super()._post_clean()
+        for field, error_list in list(self._errors.items()):
+            seen = set()
+            unique_errors = []
+            for err in error_list:
+                msg = str(err)
+                if msg not in seen:
+                    seen.add(msg)
+                    unique_errors.append(err)
+            self._errors[field] = self.error_class(unique_errors, renderer=self.renderer)
 
     def save(self, commit=True):
         return super().save(commit)

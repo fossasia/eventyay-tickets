@@ -39,6 +39,7 @@ def test_room_list(client, world):
         "pretalx_id": 0,
         "sorting_priority": 0,
         "schedule_data": None,
+        "picture": None,
     }
 
 
@@ -71,6 +72,7 @@ def test_room_detail(client, world):
         "pretalx_id": 0,
         "sorting_priority": 0,
         "schedule_data": None,
+        "picture": None,
     }
 
 

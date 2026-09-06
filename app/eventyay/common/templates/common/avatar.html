@@ -5,7 +5,10 @@
 
 
 <div class="avatar-form form-group row">
-    <label class="col-md-3 col-form-label">{% translate "Profile picture" %}</label>
+    <label class="col-md-3 col-form-label">
+        <span>{% translate "Profile picture" %}<span class="d-inline text-danger">{% if form.avatar.field.required or form.avatar.field.widget.is_required %} *{% endif %}</span></span>
+        {% if not form.avatar.field.required and not form.avatar.field.widget.is_required %}<span class="optional">{% translate "Optional" %}</span>{% endif %}
+    </label>
     <div class="avatar-form-fields col-md-9">
         <div class="d-flex align-items-start hide-label">
             <div>

@@ -16,7 +16,8 @@ $(function() {
         'id_settings-organizer_logo_image': { ratio: NaN }, // Free form aspect ratio for Organizer Logo
         'id_settings-organizer_header_image': { ratio: 1920 / 640 }, // Aspect ratio for Organizer Header Image (recommended 1920x640)
         'id_settings-og_image': { ratio: 1200 / 630 }, // 1200:630 aspect ratio for Social Media Image (recommended 1200x630)
-        'id_picture': { ratio: NaN } // Free form aspect ratio for Product picture
+        'id_picture': { ratio: NaN }, // Free form aspect ratio for Product picture
+        'id_profile_picture': { ratio: 1 } // 1:1 aspect ratio for Profile Picture
     };
 
     function initCropperForInput(inputId) {

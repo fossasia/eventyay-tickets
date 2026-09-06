@@ -8,14 +8,14 @@ const getActiveLocale = () => {
     if (activeLanguageTab) {
         return activeLanguageTab.dataset.locale
     }
-    const message = document.querySelector("#id_text textarea[lang]")
+    const message = document.querySelector("#id_text textarea[lang], #id_message textarea[lang]")
     return message ? message.lang : ""
 }
 
 const getMessageHtml = (locale) => {
     const textarea = locale
-        ? document.querySelector(`#id_text textarea[lang="${locale}"]`)
-        : document.querySelector("#id_text textarea[lang]")
+        ? document.querySelector(`#id_text textarea[lang="${locale}"], #id_message textarea[lang="${locale}"]`)
+        : document.querySelector("#id_text textarea[lang], #id_message textarea[lang]")
     return textarea ? textarea.value : ""
 }
 

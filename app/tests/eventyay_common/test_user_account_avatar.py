@@ -52,6 +52,35 @@ def test_user_account_profile_picture_upload(client):
 
 
 @pytest.mark.django_db
+def test_user_account_profile_picture_crop_tolerance(client):
+    user = User.objects.create_user(email='profile_pic_crop@example.com', password='password123')
+    client.force_login(user)
+
+    image_file = create_test_image_file()
+
+    response = client.post(
+        reverse('eventyay_common:account.general'),
+        {
+            'fullname': 'Profile Picture User',
+            'locale': 'en',
+            'timezone': 'UTC',
+            'profile_picture': image_file,
+            'profile_picture_crop_x': '0',
+            'profile_picture_crop_y': '0',
+            'profile_picture_crop_w': '200.5',
+            'profile_picture_crop_h': '201.5',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+
+    user.refresh_from_db()
+    assert bool(user.profile_picture) is True
+    assert user.get_profile_picture_url() != ''
+    assert 'profile_pictures/' in user.profile_picture.name
+
+
+@pytest.mark.django_db
 def test_user_account_clear_profile_picture(client):
     user = User.objects.create_user(email='profile_pic_clear@example.com', password='password123')
     client.force_login(user)

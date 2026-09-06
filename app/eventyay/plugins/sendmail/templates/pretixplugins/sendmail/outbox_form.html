@@ -47,7 +47,7 @@
             </div>
             <div class="row form-group">
                 <div class="col-md-12 pt-2 text-right">
-                    {% bootstrap_field form.message layout='horizontal' %}
+                    {% bootstrap_field form.text layout='horizontal' %}
                 </div>
             </div>
 
@@ -123,7 +123,7 @@
                 <div class="form-group"
                      data-email-preview-wrapper
                      data-email-preview-url="{% url 'control:event.editor.email.preview' organizer=request.event.organizer.slug event=request.event.slug %}">
-                    <label class="col-md-3 control-label" for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+                    <label class="col-md-3 control-label" for="{{ form.text.id_for_label }}">{{ form.text.label }}</label>
                     <div class="col-md-9">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
@@ -139,7 +139,7 @@
                         </ul>
                         <div class="tab-content">
                             <div id="outbox_message_edit" class="tab-pane fade in active">
-                                {% bootstrap_field form.message show_label=False form_group_class="" %}
+                                {% bootstrap_field form.text show_label=False form_group_class="" %}
                             </div>
                             <div id="outbox_message_preview" class="tab-pane">
                                 <div class="mail-preview-group">

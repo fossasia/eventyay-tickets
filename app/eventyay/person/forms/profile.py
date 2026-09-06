@@ -202,7 +202,7 @@ class SpeakerProfileForm(
                 self.fields.pop('get_gravatar', None)
             if 'avatar' in self.fields:
                 self.fields['avatar'].required = False
-                self.fields['avatar'].widget.is_required = False
+                self.fields['avatar'].widget.is_required = _cfp.require_avatar and not getattr(self, 'not_strict', False)
                 svg_limit = filesize(getattr(settings, 'IMAGE_SVG_MAX_SIZE', 1024 * 1024))
                 self.fields['avatar'].help_text = ' '.join(
                     part
@@ -219,6 +219,12 @@ class SpeakerProfileForm(
             speaker=self.user,
             readonly=read_only,
         )
+
+        if _cfp and _cfp.request_social_links:
+            self.fields['social_links'] = forms.CharField(
+                required=False,
+                widget=forms.HiddenInput(),
+            )
 
         # Reorder fields based on configuration
         self.order_fields_by_config('speaker')

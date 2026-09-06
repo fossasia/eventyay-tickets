@@ -4,7 +4,6 @@ from decimal import Decimal
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
@@ -127,6 +126,8 @@ class CancelForm(ForceQuotaConfirmationForm):
         required=False,
         max_digits=10,
         decimal_places=2,
+        min_value=Decimal('0.00'),
+        error_messages={'min_value': _('The cancellation fee cannot be negative.')},
         localize=True,
         label=_('Keep a cancellation fee of'),
         help_text=_(
@@ -669,6 +670,7 @@ class EventCancelForm(forms.Form):
         label=_('Keep a fixed cancellation fee'),
         max_digits=10,
         decimal_places=2,
+        min_value=Decimal('0.00'),
         required=False,
     )
     keep_fee_per_ticket = forms.DecimalField(
@@ -676,14 +678,16 @@ class EventCancelForm(forms.Form):
         help_text=_('Free tickets and add-on products are not counted'),
         max_digits=10,
         decimal_places=2,
+        min_value=Decimal('0.00'),
         required=False,
     )
     keep_fee_percentage = forms.DecimalField(
         label=_('Keep a percentual cancellation fee'),
         max_digits=10,
         decimal_places=2,
+        min_value=Decimal('0.00'),
+        max_value=Decimal('100.00'),
         required=False,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     keep_fees = forms.MultipleChoiceField(
         label=_('Keep fees'),

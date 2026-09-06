@@ -1202,7 +1202,7 @@ def test_patch_event_settings_preview_image(token_client, organizer, event):
         '/api/v1/upload',
         data={
             'media_type': 'image/png',
-            'file': ContentFile(b'invalid png content', name='preview.png'),
+            'file': ContentFile(b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82', name='preview.png'),
         },
         format='upload',
         HTTP_CONTENT_DISPOSITION='attachment; filename="preview.png"',
@@ -1214,7 +1214,7 @@ def test_patch_event_settings_preview_image(token_client, organizer, event):
         '/api/v1/upload',
         data={
             'media_type': 'image/png',
-            'file': ContentFile(b'invalid png content', name='header.png'),
+            'file': ContentFile(b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82', name='header.png'),
         },
         format='upload',
         HTTP_CONTENT_DISPOSITION='attachment; filename="header.png"',
@@ -1226,7 +1226,7 @@ def test_patch_event_settings_preview_image(token_client, organizer, event):
         '/api/v1/upload',
         data={
             'media_type': 'image/png',
-            'file': ContentFile(b'invalid png content', name='logo.png'),
+            'file': ContentFile(b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82', name='logo.png'),
         },
         format='upload',
         HTTP_CONTENT_DISPOSITION='attachment; filename="logo.png"',
