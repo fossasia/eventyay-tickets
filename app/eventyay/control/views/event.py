@@ -5,7 +5,7 @@ import logging
 import operator
 import re
 from collections import OrderedDict
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from itertools import groupby
 from urllib.parse import urlsplit
 
@@ -1929,16 +1929,36 @@ class QuickSetupView(FormView):
             try:
                 draft_data = json.loads(draft_str)
                 if 'tickets' in draft_data and isinstance(draft_data['tickets'], list):
-                    initial = [
-                        {
-                            'name': LazyI18nString(t['name']) if isinstance(t.get('name'), (dict, str)) else t.get('name', ''),
-                            'default_price': Decimal(t['default_price']) if t.get('default_price') is not None else Decimal('0.00'),
-                            'quota': t.get('quota'),
-                        }
-                        for t in draft_data['tickets']
-                        if isinstance(t, dict) and 'name' in t
-                    ]
-            except (json.JSONDecodeError, TypeError, KeyError, ValueError):
+                    parsed_tickets = []
+                    for t in draft_data['tickets']:
+                        if not isinstance(t, dict) or 'name' not in t:
+                            continue
+                        name_val = t.get('name')
+                        if not name_val or not str(name_val).strip():
+                            continue
+                        raw_price = t.get('default_price')
+                        if raw_price is None or raw_price == '':
+                            price = Decimal('0.00')
+                        else:
+                            try:
+                                price = Decimal(str(raw_price))
+                            except (InvalidOperation, TypeError, ValueError):
+                                continue
+                        quota = t.get('quota')
+                        if quota is not None and quota != '':
+                            try:
+                                quota = int(quota)
+                            except (TypeError, ValueError):
+                                quota = None
+                        else:
+                            quota = None
+                        parsed_tickets.append({
+                            'name': LazyI18nString(name_val) if isinstance(name_val, (dict, str)) else str(name_val),
+                            'default_price': price,
+                            'quota': quota,
+                        })
+                    initial = parsed_tickets
+            except (json.JSONDecodeError, TypeError, KeyError, ValueError, InvalidOperation):
                 pass
 
         return QuickSetupProductFormSet(
