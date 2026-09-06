@@ -12,10 +12,11 @@
             {% trans "No Cookie Policy URL is configured. The consent banner cannot be enabled until one is published." %}
         </div>
     {% endif %}
-    {% for service in unclassified_services %}
+    {% for service in unpublished_services %}
         <div class="alert alert-warning">
-            {% blocktrans trimmed with name=service.title %}
-                {{ name }} is enabled but has no consent category assigned.
+            {% blocktrans trimmed with name=service.title category=service.get_category_display %}
+                {{ name }} is enabled, but its consent category ({{ category }}) is turned off.
+                It is left out of the consent banner entirely until you enable that category.
             {% endblocktrans %}
         </div>
     {% endfor %}

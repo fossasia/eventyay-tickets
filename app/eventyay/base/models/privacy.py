@@ -24,6 +24,20 @@ class ConsentCategory(models.TextChoices):
         return [c for c in cls if c != cls.NECESSARY]
 
 
+def enabled_consent_categories(settings):
+    """
+    Optional categories an administrator has switched on.
+
+    Shared by the frontend config builder and the admin overview so both agree
+    on which categories are actually live.
+    """
+    return [
+        category.value
+        for category in ConsentCategory.optional()
+        if settings.get(f'privacy_category_{category.value}_enabled', as_type=bool)
+    ]
+
+
 class ConsentProvider(models.TextChoices):
     DISABLED = 'disabled', _('Disabled')
     KLARO = 'klaro', _('Built-in Eventyay consent using Klaro')

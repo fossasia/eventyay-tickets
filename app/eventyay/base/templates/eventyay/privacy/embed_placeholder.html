@@ -1,15 +1,20 @@
 {% load i18n %}
-<div class="consent-embed-placeholder"
-     data-consent-embed="{{ service }}"
-     data-consent-src="{{ src }}"
-     data-consent-title="{{ title }}">
-    <p>
-        {% blocktrans trimmed %}
-            This content is provided by an external service. To view it, allow embedded
-            content in Privacy settings.
-        {% endblocktrans %}
-    </p>
-    <button type="button" class="btn btn-default" data-privacy-settings>
-        {% trans "Allow embedded content" %}
-    </button>
-</div>
+{% if blocked %}
+    <div class="consent-embed-placeholder"
+         data-consent-embed="{{ service }}"
+         data-consent-src="{{ src }}"
+         data-consent-title="{{ title }}">
+        <p>
+            {% blocktrans trimmed %}
+                This content is provided by an external service. To view it, allow embedded
+                content in Privacy settings.
+            {% endblocktrans %}
+        </p>
+        <button type="button" class="btn btn-default" data-privacy-settings>
+            {% trans "Allow embedded content" %}
+        </button>
+    </div>
+{% else %}
+    {# No built-in banner is active, so nothing would ever swap a placeholder in. #}
+    <iframe src="{{ src }}" title="{{ title }}" loading="lazy" allowfullscreen></iframe>
+{% endif %}

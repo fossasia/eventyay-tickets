@@ -1,30 +1,26 @@
-import json
-
 from django import template
-from django.utils.safestring import mark_safe
+from django.utils.html import json_script
 
-from eventyay.base.models.privacy import ConsentCategory, ConsentProvider, ThirdPartyService
+from eventyay.base.models.privacy import (
+    ConsentCategory,
+    ConsentProvider,
+    ThirdPartyService,
+    enabled_consent_categories,
+)
 from eventyay.base.settings import GlobalSettingsObject
 
 
 register = template.Library()
 
-
-def _enabled_categories(settings):
-    return [
-        category.value
-        for category in ConsentCategory.optional()
-        if settings.get(f'privacy_category_{category.value}_enabled', as_type=bool)
-    ]
+CONFIG_ELEMENT_ID = 'klaro-config'
 
 
-@register.simple_tag
-def consent_config():
+def build_consent_config():
     """
     Build the Klaro configuration from admin settings and the service registry.
 
-    Returns ``None`` when consent is disabled so templates can skip rendering
-    the consent layer entirely.
+    Returns ``None`` when the built-in banner is not the active provider, so
+    templates can skip rendering the consent layer entirely.
     """
     gs = GlobalSettingsObject()
     settings = gs.settings
@@ -33,10 +29,10 @@ def consent_config():
     if provider != ConsentProvider.KLARO:
         return None
 
-    enabled = _enabled_categories(settings)
+    enabled = enabled_consent_categories(settings)
     services = ThirdPartyService.objects.filter(enabled=True)
 
-    config = {
+    return {
         'elementID': 'klaro',
         'storageMethod': 'cookie',
         'cookieName': 'eventyay_consent',
@@ -49,12 +45,25 @@ def consent_config():
         'hideDeclineAll': False,
         'purposes': [ConsentCategory.NECESSARY.value] + enabled,
         'services': [
-            service.serialize_public()
-            for service in services
-            if service.required or service.category in enabled
+            service.serialize_public() for service in services if service.required or service.category in enabled
         ],
     }
-    return mark_safe(json.dumps(config))
+
+
+@register.simple_tag
+def consent_config():
+    """
+    Render the Klaro configuration as a JSON ``<script>`` element.
+
+    Service titles and purposes are administrator-supplied, so the payload is
+    written with ``json_script``: it escapes ``<``, ``>`` and ``&`` as unicode
+    escapes, which keeps a value containing ``</script>`` from closing the
+    element early and injecting markup into every public page.
+    """
+    config = build_consent_config()
+    if config is None:
+        return None
+    return json_script(config, CONFIG_ELEMENT_ID)
 
 
 @register.simple_tag
@@ -76,7 +85,18 @@ def consent_embed(service, src, title=''):
     """
     Render a third-party embed behind contextual consent.
 
-    The iframe is never emitted server-side; the placeholder is swapped for it
-    in the browser once the visitor accepts the relevant category.
+    Only the built-in banner can unblock a placeholder, because
+    ``revealConsentedEmbeds`` ships with the Klaro bootstrap. Under the other
+    providers the embed is rendered directly instead: with consent disabled
+    there is nothing to gate on, and an external CMP does its own blocking of
+    third-party frames. Emitting a placeholder in those modes would leave the
+    content permanently unreachable.
     """
-    return {'service': service, 'src': src, 'title': title}
+    gs = GlobalSettingsObject()
+    provider = gs.settings.get('privacy_consent_provider') or ConsentProvider.DISABLED
+    return {
+        'service': service,
+        'src': src,
+        'title': title,
+        'blocked': provider == ConsentProvider.KLARO,
+    }

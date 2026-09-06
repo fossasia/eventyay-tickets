@@ -23,7 +23,7 @@ from eventyay.base.models import Event, GlobalPluginConfig, LogEntry, OrderPayme
 from eventyay.base.plugins import get_all_plugins
 from eventyay.base.services.mail import get_mail_backend
 from eventyay.base.services.update_check import check_result_table, update_check
-from eventyay.base.models.privacy import ThirdPartyService
+from eventyay.base.models.privacy import ThirdPartyService, enabled_consent_categories
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.common.sanitizers import sanitize_rich_text
 from eventyay.control.forms.global_settings import (
@@ -553,7 +553,6 @@ class GlobalSettingsPagePreviewView(AdministratorPermissionRequiredMixin, View):
         return JsonResponse({'previews': previews})
 
 
-
 class PrivacySettingsView(AdministratorPermissionRequiredMixin, FormView):
     template_name = 'pretixcontrol/admin/privacy_settings.html'
     form_class = PrivacySettingsForm
@@ -567,7 +566,19 @@ class PrivacySettingsView(AdministratorPermissionRequiredMixin, FormView):
         context['provider'] = gs.settings.get('privacy_consent_provider', 'disabled')
         # Surfaced as warnings on the overview so misconfiguration is visible
         # rather than silently shipping a banner that blocks nothing.
-        context['unclassified_services'] = [s for s in services if s.enabled and not s.category]
+        #
+        # `category` is non-null and defaulted, so an enabled service is always
+        # classified. What an administrator can still get wrong is enabling a
+        # service whose category is switched off: it is dropped from the consent
+        # config entirely, so the banner never mentions or blocks it.
+        enabled_categories = enabled_consent_categories(gs.settings)
+        context['unpublished_services'] = [
+            service
+            for service in services
+            if service.enabled
+            and not service.required
+            and service.category not in enabled_categories
+        ]
         context['missing_cookie_policy'] = not gs.settings.get('privacy_cookie_policy_url')
         return context
 

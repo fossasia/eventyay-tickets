@@ -5,8 +5,8 @@
 {% external_cmp_script as cmp_script %}
 
 {% if klaro_config %}
-    {# Config travels as JSON so no inline script is needed. #}
-    <script type="application/json" id="klaro-config">{{ klaro_config }}</script>
+    {# Config travels as an escaped JSON script element, so no inline script is needed. #}
+    {{ klaro_config }}
     <script src="{% static 'klaro/klaro.js' %}" defer></script>
     <script type="module" src="{% static 'eventyay/js/privacy/consent.js' %}"></script>
 {% elif cmp_script %}
