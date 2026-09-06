@@ -1608,9 +1608,7 @@ class QuickSetupView(FormView):
             plugins_active = self.request.event.get_plugins()
             payment_plugins = {
                 'eventyay.plugins.banktransfer',
-                'eventyay_stripe',
                 'eventyay.plugins.stripe',
-                'eventyay_paypal',
                 'eventyay.plugins.paypal',
                 'eventyay.plugins.manualpayment',
             }
@@ -1672,23 +1670,22 @@ class QuickSetupView(FormView):
                 )
 
         if form.cleaned_data.get('payment_stripe__enabled', None):
-            if 'eventyay_stripe' not in plugins_active and 'eventyay.plugins.stripe' not in plugins_active:
+            if 'eventyay.plugins.stripe' not in plugins_active:
                 self.request.event.log_action(
                     'eventyay.event.plugins.enabled',
                     user=self.request.user,
-                    data={'plugin': 'eventyay_stripe'},
+                    data={'plugin': 'eventyay.plugins.stripe'},
                 )
-                plugins_active.append('eventyay_stripe')
+                plugins_active.append('eventyay.plugins.stripe')
 
         if form.cleaned_data.get('payment_paypal__enabled', None):
-            if 'eventyay_paypal' not in plugins_active and 'eventyay.plugins.paypal' not in plugins_active:
+            if 'eventyay.plugins.paypal' not in plugins_active:
                 self.request.event.log_action(
                     'eventyay.event.plugins.enabled',
                     user=self.request.user,
-                    data={'plugin': 'eventyay_paypal'},
+                    data={'plugin': 'eventyay.plugins.paypal'},
                 )
-                plugins_active.append('eventyay_paypal')
-            self.request.event.settings.payment_paypal__enabled = True
+                plugins_active.append('eventyay.plugins.paypal')
 
         if form.cleaned_data.get('payment_manualpayment__enabled', None):
             if 'eventyay.plugins.manualpayment' not in plugins_active:
