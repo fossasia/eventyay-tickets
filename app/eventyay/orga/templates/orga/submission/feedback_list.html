@@ -51,6 +51,10 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll('.comment-text-collapsed').forEach((content) => {
+            if (content.dataset.talkFeedbackReadMoreInit === 'true') {
+                return;
+            }
+            content.dataset.talkFeedbackReadMoreInit = 'true';
             if (content.scrollHeight <= content.clientHeight) {
                 return;
             }
