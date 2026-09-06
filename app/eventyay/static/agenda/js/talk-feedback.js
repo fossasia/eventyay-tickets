@@ -147,53 +147,15 @@ function initEmojiPickers(root = document) {
 }
 
 function initRateMeDialog(root = document) {
-  const openBtns = root.querySelectorAll('.rate-me-open-btn');
-  openBtns.forEach((btn) => {
-    if (btn.dataset.rateMeInit === 'true') {
-      return;
-    }
-    btn.dataset.rateMeInit = 'true';
-    btn.addEventListener('click', () => {
-      const dialog = document.getElementById(btn.getAttribute('data-dialog-id'));
-      if (!dialog || typeof dialog.showModal !== 'function') {
-        return;
-      }
-      const mainSpeaker = document.querySelector('.main-feedback-form .speaker-target-select');
-      const rateSpeaker = dialog.querySelector('#rate-me-speaker');
-      if (mainSpeaker && rateSpeaker) {
-        rateSpeaker.value = mainSpeaker.value;
-      }
-      dialog.showModal();
-    });
-  });
 
-  root.querySelectorAll('.rate-me-close-btn').forEach((btn) => {
-    if (btn.dataset.rateMeCloseInit === 'true') {
+  root.querySelectorAll('fieldset.rate-me-emoji-rating').forEach((fieldset) => {
+    if (fieldset.dataset.rateMeInit === 'true') {
       return;
     }
-    btn.dataset.rateMeCloseInit = 'true';
-    btn.addEventListener('click', () => {
-      const dialog = document.getElementById(btn.getAttribute('data-dialog-id'))
-        || btn.closest('dialog');
-      if (dialog && typeof dialog.close === 'function') {
-        dialog.close();
-      }
-    });
-  });
-
-  root.querySelectorAll('dialog.rate-me-dialog').forEach((dialog) => {
-    if (dialog.dataset.rateMeBackdropInit === 'true') {
-      return;
-    }
-    dialog.dataset.rateMeBackdropInit = 'true';
-    dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) {
-        dialog.close();
-      }
-    });
-    dialog.querySelectorAll('.rate-me-emoji-option input[type="radio"]').forEach((radio) => {
+    fieldset.dataset.rateMeInit = 'true';
+    fieldset.querySelectorAll('.rate-me-emoji-option input[type="radio"]').forEach((radio) => {
       radio.addEventListener('change', () => {
-        dialog.querySelectorAll('.rate-me-emoji-option').forEach((option) => {
+        fieldset.querySelectorAll('.rate-me-emoji-option').forEach((option) => {
           option.classList.toggle('is-selected', option.querySelector('input')?.checked === true);
         });
       });
