@@ -70,7 +70,7 @@ class OrganizerSettingsForm(SettingsForm):
         help_text=_(
             'This image appears at the top of all organizer pages, replacing the default color or pattern. '
             'We recommend an image 1920 px wide and 640 px in height (the center 1920 × 320 px will always be visible). '
-            'Images will be automatically optimized to max 3000 px wide on save.'
+            'Images will be automatically optimized to max 1920 px wide on save.'
         ),
     )
 

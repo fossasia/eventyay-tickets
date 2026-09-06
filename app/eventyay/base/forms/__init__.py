@@ -1,9 +1,11 @@
 import logging
+import os
 
 import i18nfield.forms
 from django import forms
 from django.conf import settings
 from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 from django.core.validators import URLValidator
 from django.forms.models import ModelFormMetaclass
 from django.utils.crypto import get_random_string
@@ -16,7 +18,7 @@ from i18nfield.strings import LazyI18nString
 
 from eventyay.base.reldate import RelativeDateField, RelativeDateTimeField
 from eventyay.common.urls import is_http_url
-
+from eventyay.helpers.image_optimize import optimize_uploaded_image
 from .validators import PlaceholderValidator  # NOQA
 
 
@@ -142,6 +144,28 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
             if isinstance(value, str) and is_http_url(value):
                 return value
         return settings_proxy.get(key, as_type=declared_type, default=default)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        for k, v in list(cleaned_data.items()):
+            if isinstance(v, UploadedFile) and k in {
+                'invoice_logo_image', 'startpage_header_image',
+            }:
+                try:
+                    opt = optimize_uploaded_image(v, k)
+                    orig_name = os.path.splitext(v.name or 'upload')[0]
+                    new_name = f'{orig_name}.{opt.optimized_ext}'
+                    cleaned_data[k] = SimpleUploadedFile(
+                        name=new_name,
+                        content=opt.optimized.read(),
+                        content_type=getattr(v, 'content_type', None)
+                    )
+                except (ValueError, OSError) as e:
+                    self.add_error(k, str(e))
+                    if hasattr(v, 'seek'):
+                        v.seek(0)
+        return cleaned_data
 
     def save(self):
         for k, v in self.cleaned_data.items():
