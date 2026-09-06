@@ -212,19 +212,54 @@ def test_admin_navigation_voucher_active_state(rf):
 
 
 @pytest.mark.django_db
-def test_admin_navigation_business_settings_active_state(rf):
+def test_admin_navigation_global_settings_children(rf):
     user = User.objects.create_user('admin@example.com', 'dummy', is_staff=True)
-    request = rf.get('/admin/global/business/')
+    request = rf.get('/admin/global/settings/')
     request.user = user
-    request.resolver_match = resolve('/admin/global/business/')
+    request.resolver_match = resolve('/admin/global/settings/')
 
     nav = get_admin_navigation(request)
-    business_nav = next(item for item in nav if str(item.get('label')) == 'Business')
-    assert business_nav['active'] is True
+    global_nav = next(item for item in nav if str(item.get('label')) == 'Global settings')
+    assert global_nav['active'] is True
 
-    business_settings = next(c for c in business_nav['children'] if str(c.get('label')) == 'Business Settings')
-    assert business_settings['active'] is True
+    children_labels = [str(c.get('label')) for c in global_nav['children']]
+    assert children_labels == [
+        'Settings',
+        'Ticketing',
+        'System information',
+        'Pages',
+        'Generate keys for SSO',
+        'Social login settings',
+        'Plugins',
+    ]
 
-    event_vouchers = next(c for c in business_nav['children'] if str(c.get('label')) == 'Event vouchers')
-    assert event_vouchers['active'] is False
+    # Meta data and Update check are removed as separate sidebar items
+    assert 'Meta data' not in children_labels
+    assert 'Update check' not in children_labels
 
+    # Check URLs of Settings and Ticketing children
+    settings_item = next(c for c in global_nav['children'] if str(c.get('label')) == 'Settings')
+    assert settings_item['url'] == '/admin/global/settings/'
+    assert settings_item['active'] is True
+
+    ticketing_item = next(c for c in global_nav['children'] if str(c.get('label')) == 'Ticketing')
+    assert ticketing_item['url'] == '/admin/global/ticketing/'
+    assert ticketing_item['active'] is False
+
+
+@pytest.mark.django_db
+def test_admin_navigation_ticketing_active_state(rf):
+    user = User.objects.create_user('admin@example.com', 'dummy', is_staff=True)
+    request = rf.get('/admin/global/ticketing/')
+    request.user = user
+    request.resolver_match = resolve('/admin/global/ticketing/')
+
+    nav = get_admin_navigation(request)
+    global_nav = next(item for item in nav if str(item.get('label')) == 'Global settings')
+    assert global_nav['active'] is True
+
+    ticketing_item = next(c for c in global_nav['children'] if str(c.get('label')) == 'Ticketing')
+    assert ticketing_item['active'] is True
+
+    settings_item = next(c for c in global_nav['children'] if str(c.get('label')) == 'Settings')
+    assert settings_item['active'] is False
