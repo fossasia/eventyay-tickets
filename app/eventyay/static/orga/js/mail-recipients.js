@@ -73,19 +73,27 @@ const clearFilters = (form) => {
     }
     filters.querySelectorAll("select.enhanced").forEach((select) => {
         select.selectedIndex = 0
-        select.dispatchEvent(new Event("change", { bubbles: true }))
         if (select.choices) {
-            select.choices.setChoiceByValue("")
+            if (select.multiple) {
+                select.choices.removeActiveItems()
+            } else {
+                select.choices.setChoiceByValue("")
+            }
         }
+        select.dispatchEvent(new Event("change", { bubbles: true }))
     })
     if (window.jQuery) {
-        filters.querySelectorAll("select[data-model-select2]").forEach((select) => {
+        filters.querySelectorAll("select[data-model-select2], select.select2-hidden-accessible").forEach((select) => {
             window.jQuery(select).val(null).trigger("change")
         })
     }
     filters.querySelectorAll('input[type="date"], input[type="time"], input[type="text"]').forEach((input) => {
         input.value = ""
         input.dispatchEvent(new Event("change", { bubbles: true }))
+    })
+    filters.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+        checkbox.checked = false
+        checkbox.dispatchEvent(new Event("change", { bubbles: true }))
     })
 }
 

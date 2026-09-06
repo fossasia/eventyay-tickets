@@ -1,3 +1,4 @@
+import os
 from collections import OrderedDict
 
 from django.core.exceptions import ValidationError
@@ -8,6 +9,7 @@ from hierarkey.proxy import HierarkeyProxy
 from rest_framework import serializers
 
 from eventyay.common.urls import get_file_url_path, get_url_scheme, is_http_url, normalize_url_scheme
+from eventyay.helpers.image_optimize import optimize_uploaded_image
 
 
 def remove_duplicates_from_list(data):
@@ -37,6 +39,7 @@ class UploadedFileField(serializers.Field):
         'not_found': 'The submitted file ID was not found.',
         'invalid_type': 'The submitted file has a file type that is not allowed in this field.',
         'size': 'The submitted file is too large to be used in this field.',
+        'invalid_image': 'Upload a valid image. The file you uploaded was either not an image or a corrupted image.',
     }
 
     def __init__(self, *args, **kwargs):
@@ -63,6 +66,19 @@ class UploadedFileField(serializers.Field):
             self.fail('invalid_type')
         if self.max_size and cf.file.size > self.max_size:
             self.fail('size')
+
+        if cf.type.startswith('image/') and self.field_name in [
+            'picture', 'logo_image', 'event_logo_image', 'event_preview_image', 
+            'og_image', 'organizer_logo_image', 'organizer_header_image', 
+            'invoice_logo_image', 'startpage_header_image'
+        ]:
+            try:
+                opt = optimize_uploaded_image(cf.file, self.field_name)
+                orig_name = os.path.splitext(cf.file.name or 'upload')[0]
+                opt.optimized.name = f'{orig_name}.{opt.optimized_ext}'
+                return opt.optimized
+            except (ValueError, OSError):
+                self.fail('invalid_image')
 
         return cf.file
 

@@ -37,8 +37,9 @@ def test_optimize_uploaded_image_resizes(setting_key):
     # Check optimized file
     opt_img = Image.open(result.optimized)
     assert opt_img.size[0] == max_w
-    # height should scale proportionally
-    assert opt_img.size[1] == int(orig_h * (max_w / orig_w))
+    # height should scale proportionally, allow 1px rounding diff
+    expected_h = int(orig_h * (max_w / orig_w))
+    assert abs(opt_img.size[1] - expected_h) <= 1
 
     # Check original file
     orig_img = Image.open(result.original)

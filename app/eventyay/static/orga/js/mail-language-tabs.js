@@ -73,7 +73,7 @@ const initLanguageTabs = () => {
     if (!container) return
     const groups = [
         document.querySelector("#id_subject"),
-        document.querySelector("#id_text"),
+        document.querySelector("#id_text"), document.querySelector("#id_message"),
     ].filter((group) => group)
     if (groups.length) {
         buildLanguageTabs(container, groups)

@@ -52,7 +52,8 @@
 			sidebar-addons(v-if="inferredType && inferredType.id === 'stage'", :config="config", :modules="modules", :creating="creating")
 	.ui-form-actions
 		bunt-button.btn-save(@click="save", :loading="saving", :error="!!error") {{ creating ? $t('Create') : $t('Save') }}
-		.errors {{ error || validationErrors.join(', ') }}
+		bunt-button.btn-sync(v-if="!creating && interpretationAdmin.usePluginStreams", @click="syncServices", :loading="syncing", :error="!!syncError", style="margin-left: 10px") {{ $t('Sync Services') }}
+		.errors {{ error || syncError || validationErrors.join(', ') }}
 </template>
 <script>
 import { markRaw } from 'vue'
@@ -75,6 +76,7 @@ import {
 	cloneLanguageStreamEntries,
 	fetchInterpretationLanguageStreams,
 	saveInterpretationLanguageStreams,
+	syncInterpretationServices,
 } from 'lib/interpretation-language-streams'
 
 export default {
@@ -109,7 +111,9 @@ export default {
 				'channel-zoom': ChannelZoom,
 			}),
 			saving: false,
+			syncing: false,
 			error: null,
+			syncError: null,
 			interpretationAdmin: {
 				usePluginStreams: false,
 				languageStreams: [],
@@ -198,7 +202,7 @@ export default {
 				this.interpretationAdmin.loaded = true
 			}
 		},
-		async save() {
+		async save({ openScheduleAfterCreate = false, streamScheduleDraft = null } = {}) {
 			this.error = null
 			this.v$.$touch()
 			if (this.v$.$invalid) return
@@ -229,6 +233,10 @@ export default {
 				})
 				Object.assign(this.config, updated)
 
+				if (openScheduleAfterCreate && streamScheduleDraft) {
+					sessionStorage.setItem(`streamScheduleDraft:${roomId}`, JSON.stringify(streamScheduleDraft))
+				}
+
 				if (this.$refs.settings?.saveStreamSchedules) {
 					await this.$refs.settings.saveStreamSchedules(roomId)
 				}
@@ -247,9 +255,12 @@ export default {
 				}
 				this.saving = false
 				if (this.creating) {
+					const routeName = this.isChat ? 'admin:chat:item' : 'admin:rooms:item'
+					const query = openScheduleAfterCreate ? { schedule: 'new' } : {}
 					this.$router.push({
-						name: this.isChat ? 'admin:chat:item' : 'admin:rooms:item',
-						params: {roomId}
+						name: routeName,
+						params: {roomId},
+						query
 					})
 				}
 			} catch (error) {
@@ -258,6 +269,25 @@ export default {
 				this.error = error.message || error
 			}
 		},
+		async syncServices() {
+			this.syncError = null
+			this.syncing = true
+			try {
+				await syncInterpretationServices(this.$store, this.config.id)
+			} catch (error) {
+				this.syncError = error.message || error
+			}
+			this.syncing = false
+		},
+		clearOpenStreamScheduleCreateQuery() {
+			if (this.$route.query.schedule !== 'new') return
+			const query = { ...this.$route.query }
+			delete query.schedule
+			this.$router.replace({ query })
+		},
+		createRoomForStreamSchedule(streamScheduleDraft) {
+			return this.save({ openScheduleAfterCreate: true, streamScheduleDraft })
+		}
 	}
 }
 </script>

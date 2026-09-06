@@ -21,30 +21,32 @@ from __future__ import annotations
 
 import logging
 import os
+import warnings
 from io import BytesIO
 from typing import NamedTuple
 
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from PIL import Image, ImageOps
-from PIL.Image import Resampling
+from PIL.Image import DecompressionBombError, DecompressionBombWarning
+
+from eventyay.common.image import encode_optimized
 
 logger = logging.getLogger(__name__)
 
 # Maximum output width per asset type.  Height is always proportional.
 MAX_WIDTH: dict[str, int] = {
-    'logo_image': 3000,       # header/banner image
+    'logo_image': 1920,       # header/banner image
     'event_logo_image': 1000, # event logo
     'event_preview_image': 1200, # event preview card image
     'organizer_logo_image': 1000,
-    'organizer_header_image': 3000,
+    'organizer_header_image': 1920,
     'og_image': 1200,            # social media image
-    'picture': 1000,             # product picture
+    'picture': 1000,             # product/room picture
+    'invoice_logo_image': 1000,
+    'startpage_header_image': 1920,
     'profile_picture': 1000,     # user profile picture
 }
-
-JPEG_QUALITY = 85
-
 
 class OptimizedImages(NamedTuple):
     """Pair of ContentFile objects returned by optimize_uploaded_image."""
@@ -61,31 +63,7 @@ class OptimizedImages(NamedTuple):
     original_ext: str
     """File extension (without leading dot) for the original file."""
 
-
-def _has_alpha(image: Image.Image) -> bool:
-    return image.mode in ('RGBA', 'LA', 'PA') or (
-        image.mode == 'P' and 'transparency' in image.info
-    )
-
-
-def _encode_optimized(image: Image.Image) -> tuple[bytes, str]:
-    """
-    Encode *image* as progressive JPEG or PNG (for images with alpha).
-
-    Returns ``(data_bytes, extension)`` where *extension* is ``'jpg'`` or
-    ``'png'``.
-    """
-    buf = BytesIO()
-    if _has_alpha(image):
-        if image.mode != 'RGBA':
-            image = image.convert('RGBA')
-        image.save(buf, format='PNG', optimize=True)
-        return buf.getvalue(), 'png'
-    else:
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-        image.save(buf, format='JPEG', quality=JPEG_QUALITY, progressive=True, optimize=True)
-        return buf.getvalue(), 'jpg'
+# Removed _has_alpha and _encode_optimized in favor of eventyay.common.image.encode_optimized
 
 
 def optimize_uploaded_image(
@@ -109,8 +87,11 @@ def optimize_uploaded_image(
 
     max_w = MAX_WIDTH[setting_key]
 
+    if hasattr(uploaded, 'seek'):
+        uploaded.seek(0)
     raw = uploaded.read()
-    uploaded.seek(0)
+    if hasattr(uploaded, 'seek'):
+        uploaded.seek(0)
 
     _, original_ext = os.path.splitext(uploaded.name or 'upload')
     original_ext = (original_ext.lstrip('.') or 'jpg').lower()
@@ -124,9 +105,14 @@ def optimize_uploaded_image(
             original_ext='svg',
         )
 
-    image = Image.open(BytesIO(raw))
     try:
-        image.load()
+        with warnings.catch_warnings():
+            warnings.simplefilter('error', DecompressionBombWarning)
+            image = Image.open(BytesIO(raw))
+            image.load()
+    except (DecompressionBombError, DecompressionBombWarning) as e:
+        logger.exception('Image too large to load (DecompressionBombError)')
+        raise ValueError('Image exceeds maximum safe dimensions') from e
     except OSError:
         logger.exception('Could not load uploaded image for optimization')
         raise
@@ -157,22 +143,19 @@ def optimize_uploaded_image(
                 image.height,
             )
 
-    orig_w, orig_h = image.size
-    if orig_w > max_w:
-        scale_factor = max_w / orig_w
-        new_w = max_w
-        new_h = max(1, int(orig_h * scale_factor))
-        image = image.resize((new_w, new_h), resample=Resampling.LANCZOS)
-        logger.info(
-            'Resized %s from %dx%d to %dx%d',
-            setting_key,
-            orig_w,
-            orig_h,
-            new_w,
-            new_h,
-        )
-
-    optimized_bytes, optimized_ext = _encode_optimized(image)
+    orig_w, _ = image.size
+    
+    optimized_bytes, optimized_ext = encode_optimized(image, f'.{original_ext}', max_dimensions=(max_w, 999999))
+    
+    # encode_optimized returns extensions with a dot (e.g., '.jpg')
+    optimized_ext = optimized_ext.lstrip('.')
+    
+    original_ext_norm = 'jpg' if original_ext in ('jpg', 'jpeg') else original_ext
+    
+    # Prevent PNG/WebP size growth: if we didn't crop or resize, and format didn't change
+    if not crop_box and orig_w <= max_w and len(optimized_bytes) >= len(raw) and optimized_ext == original_ext_norm:
+        optimized_bytes = raw
+        
     optimized_file = ContentFile(optimized_bytes)
     original_file = ContentFile(raw)
 

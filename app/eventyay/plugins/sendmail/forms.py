@@ -15,9 +15,11 @@ from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 
 from eventyay.base.channels import get_all_sales_channels
 from eventyay.base.email import get_available_placeholders
+from eventyay.mail.context import get_available_placeholders as get_talk_placeholders
 from eventyay.base.forms import PlaceholderValidator, SettingsForm
 from eventyay.base.forms.widgets import SplitDateTimePickerWidget
 from eventyay.base.meetup import is_meetup_event
+from eventyay.base.models.auth import User
 from eventyay.base.models.base import CachedFile
 from eventyay.base.models.checkin import CheckinList
 from eventyay.base.models.event import SubEvent
@@ -240,6 +242,9 @@ class MailForm(ScheduledAtValidationMixin, forms.Form):
         event = self.event = kwargs.pop('event')
         self.draft_save = kwargs.pop('draft_save', False)
         super().__init__(*args, **kwargs)
+        
+        self.fields['scheduled_at'].widget.widgets[0].attrs['placeholder'] = ''
+        self.fields['scheduled_at'].widget.widgets[1].attrs['placeholder'] = ''
 
         recp_choices = [('', _('Recipient type'))]
         recp_choices.append(('orders', _('Everyone who created a ticket order')))
@@ -837,9 +842,13 @@ class EmailQueueEditForm(ScheduledAtValidationMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.instance.composing_for == ComposingFor.TEAMS:
-            base_placeholders = ['event', 'team']
+            base_placeholders = ['event', 'user', 'team']
+            base_ph = get_available_placeholders(self.event, base_placeholders)
+            talk_ph = get_talk_placeholders(self.event, base_placeholders)
+            placeholder_names = sorted({**base_ph, **talk_ph}.keys())
         else:
             base_placeholders = ['event', 'order', 'position_or_address']
+            placeholder_names = sorted(get_available_placeholders(self.event, base_placeholders).keys())
 
         existing_recipients = EmailQueueToUser.objects.filter(mail=self.instance).order_by('id')
         self.recipient_objects = list(existing_recipients)
@@ -861,8 +870,7 @@ class EmailQueueEditForm(ScheduledAtValidationMixin, forms.ModelForm):
             locales=list(allowed_locales),
             initial=self.instance.subject
         )
-        placeholder_names = sorted(get_available_placeholders(self.event, base_placeholders).keys())
-        self.fields['message'] = I18nEmailBodyFormField(
+        self.fields['text'] = I18nEmailBodyFormField(
             label=_('Message'),
             widget=I18nEmailEditorWidget,
             widget_kwargs={'placeholders': placeholder_names},
@@ -873,10 +881,16 @@ class EmailQueueEditForm(ScheduledAtValidationMixin, forms.ModelForm):
 
         if not self.read_only:
             self._set_field_placeholders('subject', base_placeholders)
-            self._set_field_placeholders('message', base_placeholders)
+            self._set_field_placeholders('text', base_placeholders)
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        if self.instance.composing_for == ComposingFor.TEAMS:
+            base_ph = get_available_placeholders(self.event, base_parameters)
+            talk_ph = get_talk_placeholders(self.event, base_parameters)
+            all_ph = {**base_ph, **talk_ph}
+            phs = ['{%s}' % p for p in sorted(all_ph.keys())]
+        else:
+            phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
         ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)
@@ -920,7 +934,7 @@ class EmailQueueEditForm(ScheduledAtValidationMixin, forms.ModelForm):
             instance.attachments = [cf.id]
 
         instance.subject = self.cleaned_data['subject']
-        instance.message = self.cleaned_data['message']
+        instance.message = self.cleaned_data['text']
 
         if commit:
             instance.save()
@@ -929,6 +943,8 @@ class EmailQueueEditForm(ScheduledAtValidationMixin, forms.ModelForm):
 
 
 class TeamMailForm(ScheduledAtValidationMixin, forms.Form):
+    subject = forms.CharField(label=_('Subject'))
+    message = forms.CharField(label=_('Message'))
     attachment = CachedFileField(
         label=_('Attachment'),
         required=False,
@@ -953,8 +969,11 @@ class TeamMailForm(ScheduledAtValidationMixin, forms.Form):
         if isinstance(locales, str):
             locales = [locales]
 
-        team_placeholders = ['event', 'team']
-        placeholder_names = sorted(get_available_placeholders(self.event, team_placeholders).keys())
+        team_placeholders = ['event', 'user', 'team']
+        base_ph = get_available_placeholders(self.event, team_placeholders)
+        talk_ph = get_talk_placeholders(self.event, team_placeholders)
+        self.valid_placeholders = {**base_ph, **talk_ph}
+        placeholder_names = sorted(self.valid_placeholders.keys())
         placeholder_text = _("Available placeholders: ") + ', '.join(f"{{{key}}}" for key in placeholder_names)
 
         self.fields['subject'] = I18nFormField(
@@ -962,23 +981,81 @@ class TeamMailForm(ScheduledAtValidationMixin, forms.Form):
             widget=I18nTextInput,
             required=True,
             locales=locales,
-            help_text=placeholder_text
+
         )
         self.fields['message'] = I18nEmailBodyFormField(
             label=_('Message'),
             widget=I18nEmailEditorWidget,
             widget_kwargs={'placeholders': placeholder_names},
             required=True,
-            locales=locales,
-            help_text=placeholder_text,
+            locales=locales
         )
+
         self.fields['teams'] = forms.ModelMultipleChoiceField(
             queryset=Team.objects.filter(organizer=self.event.organizer),
-            widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
-            label=_("Send to members of these teams")
+            widget=EnhancedSelectMultiple(attrs={'title': _('All teams'), 'placeholder': _('All teams')}),
+            label=_("Team"),
+            required=False
         )
+        self.fields['team_role'] = forms.ChoiceField(
+            label=_('Team role'),
+            required=False,
+            choices=[('', _('All team roles'))] + Team.TEAMSHIFTS_ROLE_CHOICES,
+            widget=EnhancedSelect(attrs={'title': _('All team roles'), 'placeholder': _('All team roles')}),
+        )
+        permission_choices = [('', _('All permission levels'))]
+        for p in Team._permission_field_names():
+            verbose_name = Team._meta.get_field(p).verbose_name
+            permission_choices.append((p, verbose_name))
+        
+        self.fields['permission_level'] = forms.ChoiceField(
+            label=_('Permission level'),
+            required=False,
+            choices=permission_choices,
+            widget=EnhancedSelect(attrs={'title': _('All permission levels'), 'placeholder': _('All permission levels')}),
+        )
+
+        self.fields['status'] = forms.ChoiceField(
+            label=_('Status'),
+            required=False,
+            choices=[('', _('Any')), ('active', _('Active')), ('inactive', _('Inactive'))],
+            widget=EnhancedSelect(attrs={'title': _('Any'), 'placeholder': _('Any')}),
+            initial='active',
+        )
+
+        users_qs = User.objects.filter(teams__organizer=self.event.organizer).distinct()
+        self.fields['specific_people'] = forms.ModelMultipleChoiceField(
+            queryset=users_qs,
+            label=_('Specific people'),
+            required=False,
+            widget=EnhancedSelectMultiple(attrs={'title': _('All people'), 'placeholder': _('All people')}),
+        )
+        self.fields['exclude_me'] = forms.BooleanField(
+            label=_('Do not include me in recipients'),
+            required=False,
+        )
+        self.fields['reply_to'] = forms.CharField(
+            label=_('Reply-To'),
+            required=False,
+            help_text=_('Change the Reply-To address if you do not want to use the default organiser address'),
+            widget=forms.EmailInput(),
+        )
+        self.fields['bcc'] = forms.CharField(
+            label=_('BCC'),
+            required=False,
+            help_text=_('Enter comma-separated BCC addresses'),
+            widget=forms.TextInput(),
+        )
+        self.fields['test_email'] = forms.EmailField(
+            label=_('Test email address'),
+            required=False,
+        )
+        
+        widget = SplitDateTimePickerWidget()
+        widget.widgets[0].attrs['placeholder'] = ''
+        widget.widgets[1].attrs['placeholder'] = ''
         self.fields['scheduled_at'] = SplitDateTimeField(
-            widget=SplitDateTimePickerWidget(),
+            widget=widget,
             label=_('Send later'),
             required=False,
             help_text=_('Leave empty to send immediately. If set, the email will be sent at this time. Time is interpreted in the event timezone.'),
@@ -987,3 +1064,95 @@ class TeamMailForm(ScheduledAtValidationMixin, forms.Form):
         if self.draft_save:
             for field_name in ('teams', 'subject', 'message'):
                 self.fields[field_name].required = False
+
+    @cached_property
+    def grouped_placeholders(self):
+        placeholders = self.valid_placeholders
+        grouped = defaultdict(list)
+        specificity = (
+            ('user', 'user'),
+            ('team', 'user'),
+            ('event', 'event'),
+        )
+        for placeholder in placeholders.values():
+            if getattr(placeholder, 'is_visible', True) is False:
+                continue
+            placeholder.rendered_sample = escape(placeholder.render_sample(self.event))
+            for arg, group in specificity:
+                if arg in placeholder.required_context:
+                    grouped[group].append(placeholder)
+                    break
+            else:
+                grouped['other'].append(placeholder)
+        return grouped
+
+    def get_recipient_preview(self, user=None):
+        recipients = {}
+        team_role = self.cleaned_data.get('team_role')
+        teams = self.cleaned_data.get('teams')
+        permission_level = self.cleaned_data.get('permission_level')
+        status = self.cleaned_data.get('status')
+        specific_people = self.cleaned_data.get('specific_people')
+        exclude_me = self.cleaned_data.get('exclude_me')
+        
+        # Build queryset
+        team_filters = {'teams__organizer': self.event.organizer}
+        if teams:
+            team_filters['teams__in'] = teams
+        if team_role:
+            team_filters['teams__teamshifts_role'] = team_role
+        if permission_level:
+            team_filters[f'teams__{permission_level}'] = True
+
+        qs = User.objects.filter(**team_filters)
+        if status == 'active':
+            qs = qs.filter(is_active=True)
+        elif status == 'inactive':
+            qs = qs.filter(is_active=False)
+        if specific_people:
+            qs = qs.filter(pk__in=specific_people)
+        if exclude_me and user:
+            qs = qs.exclude(pk=user.pk)
+            
+        qs = qs.distinct()
+        
+        for u in qs:
+            if not u.email:
+                continue
+                
+            user_teams = u.teams.filter(organizer=self.event.organizer)
+            member_teams = list(user_teams.values_list('name', flat=True))
+            roles = [r for r in user_teams.values_list('teamshifts_role', flat=True) if r]
+            permissions = []
+            for t in user_teams:
+                for p in t._permission_field_names():
+                    if getattr(t, p):
+                        verbose_name = str(t._meta.get_field(p).verbose_name)
+                        if verbose_name not in permissions:
+                            permissions.append(verbose_name)
+                            
+            if specific_people and u.pk in specific_people.values_list('pk', flat=True):
+                from django.utils.translation import gettext_lazy as _
+                reason = str(_("Selected directly"))
+            else:
+                from django.utils.translation import gettext_lazy as _
+                reason = str(_("Matched filters"))
+
+            recipients[u.email] = {
+                'name': u.fullname or u.email,
+                'email': u.email,
+                'team': ', '.join(member_teams),
+                'role': ', '.join(roles),
+                'permission_level': ', '.join(permissions) if permissions else '',
+                'status': 'Active' if u.is_active else 'Inactive',
+                'reason_included': reason,
+            }
+            
+        return sorted(recipients.values(), key=lambda r: r['email'])
+
+
+class TeamMailRecipientsForm(TeamMailForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name in ('subject', 'message', 'attachment', 'reply_to', 'bcc', 'scheduled_at', 'test_email'):
+            self.fields.pop(name, None)
