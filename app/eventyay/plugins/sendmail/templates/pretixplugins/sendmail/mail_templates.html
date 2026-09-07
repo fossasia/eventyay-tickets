@@ -22,11 +22,10 @@
   <div class="mail-templates-title-row d-flex flex-wrap align-items-center mb-3">
     <h2 class="mail-templates-title d-flex align-items-center mr-auto mb-2 mb-md-0">
       {% translate "Email templates" %}
-      <span class="mail-templates-help-trigger" data-dialog-target="#info-dialog" data-toggle="dialog"
-            tabindex="0"
-            title="{% translate 'About email templates' %}" aria-label="{% translate 'About email templates' %}">
+      <button type="button" class="mail-templates-help-trigger" data-dialog-target="#info-dialog" data-toggle="dialog"
+              title="{% translate 'About email templates' %}" aria-label="{% translate 'About email templates' %}">
         <i class="fa fa-question-circle-o" aria-hidden="true"></i>
-      </span>
+      </button>
     </h2>
     {% if can_manage_custom_templates %}
       <a class="btn btn-lg btn-success mb-2 mb-md-0" href="{% url 'control:event.mail.custom_templates.create' organizer=request.event.organizer.slug event=request.event.slug %}">
@@ -77,9 +76,9 @@
               </a>
             </td>
             <td>{{ row.subject }}</td>
-            <td class="text-right">
-              <a href="{{ row.edit_url }}" class="btn btn-sm btn-info">
-                <i class="fa fa-edit"></i>
+            <td class="text-right mail-templates-actions">
+              <a href="{{ row.edit_url }}" class="btn btn-info" title="{% translate 'Edit' %}" aria-label="{% translate 'Edit' %}">
+                <i class="fa fa-edit" aria-hidden="true"></i>
               </a>
             </td>
           </tr>
@@ -93,14 +92,14 @@
               </a>
             </td>
             <td>{{ template.subject }}</td>
-            <td class="text-right">
+            <td class="text-right mail-templates-actions">
               {% if can_manage_custom_templates %}
-                <a href="{{ template.get_compose_url }}" class="btn btn-sm btn-success mr-1 nowrap">{% translate "Send mails" %}</a>
-                <a href="{{ template.get_delete_url }}" class="btn btn-sm btn-danger">
-                  <i class="fa fa-trash"></i>
+                <a href="{{ template.get_compose_url }}" class="btn btn-success nowrap">{% translate "Send mails" %}</a>
+                <a href="{{ template.get_delete_url }}" class="btn btn-danger" title="{% translate 'Delete' %}" aria-label="{% translate 'Delete' %}">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
                 </a>
-                <a href="{{ template.get_absolute_url }}" class="btn btn-sm btn-info">
-                  <i class="fa fa-edit"></i>
+                <a href="{{ template.get_absolute_url }}" class="btn btn-info" title="{% translate 'Edit' %}" aria-label="{% translate 'Edit' %}">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
                 </a>
               {% endif %}
             </td>

@@ -716,3 +716,33 @@ def test_templates_page_lists_custom_templates(logged_in_client, event, custom_t
     assert 'New custom template' in response.rendered_content
     assert 'Custom Mail' in response.rendered_content
     assert 'Placed order' in response.rendered_content
+
+
+@pytest.mark.django_db
+def test_ticket_mail_template_form_validates_reply_to_and_bcc(event):
+    from eventyay.plugins.sendmail.forms import TicketMailTemplateForm
+
+    invalid = TicketMailTemplateForm(
+        data={
+            'subject_0': 'Subject',
+            'text_0': 'Body',
+            'reply_to': 'not-an-email',
+            'bcc': 'ok@example.com, bad-address',
+        },
+        event=event,
+    )
+    assert not invalid.is_valid()
+    assert 'reply_to' in invalid.errors
+    assert 'bcc' in invalid.errors
+
+    valid = TicketMailTemplateForm(
+        data={
+            'subject_0': 'Subject',
+            'text_0': 'Body',
+            'reply_to': 'hello@example.com',
+            'bcc': 'a@example.com, b@example.com',
+        },
+        event=event,
+    )
+    assert valid.is_valid(), valid.errors
+    assert valid.cleaned_data['bcc'] == 'a@example.com, b@example.com'

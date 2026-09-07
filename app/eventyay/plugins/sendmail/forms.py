@@ -3,6 +3,7 @@ from collections import defaultdict
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator
 from django.db.models import Exists, OuterRef, Q
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -1341,6 +1342,34 @@ class TicketMailTemplateForm(I18nModelForm):
         self.fields['subject'].validators.append(PlaceholderValidator(phs))
         self.fields['text'].validators.append(PlaceholderValidator(phs))
 
+        reply_to_field = self.fields['reply_to']
+        self.fields['reply_to'] = forms.EmailField(
+            label=reply_to_field.label,
+            help_text=reply_to_field.help_text,
+            required=False,
+            widget=forms.EmailInput(),
+        )
+
+    def clean_bcc(self):
+        value = (self.cleaned_data.get('bcc') or '').strip()
+        if not value:
+            return ''
+        addresses = [part.strip() for part in value.split(',') if part.strip()]
+        validator = EmailValidator()
+        invalid = []
+        for address in addresses:
+            try:
+                validator(address)
+            except ValidationError:
+                invalid.append(address)
+        if invalid:
+            raise ValidationError(
+                _('Please enter valid email addresses separated by commas. Invalid: %(emails)s'),
+                code='invalid',
+                params={'emails': ', '.join(invalid)},
+            )
+        return ', '.join(addresses)
+
     @cached_property
     def grouped_placeholders(self):
         placeholders = get_available_placeholders(self.event, list(TICKET_CUSTOM_TEMPLATE_PLACEHOLDERS))
@@ -1368,6 +1397,5 @@ class TicketMailTemplateForm(I18nModelForm):
         model = TicketMailTemplate
         fields = ['subject', 'text', 'reply_to', 'bcc']
         widgets = {
-            'reply_to': forms.EmailInput(),
             'bcc': forms.TextInput(),
         }

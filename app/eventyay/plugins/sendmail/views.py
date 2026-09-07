@@ -447,7 +447,9 @@ class MailTemplatesView(EventPermissionRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['custom_templates'] = TicketMailTemplate.objects.filter(event=self.request.event)
+        context['custom_templates'] = TicketMailTemplate.objects.filter(
+            event=self.request.event
+        ).select_related('event__organizer')
         context['system_templates'] = self.get_system_templates()
         context['can_manage_custom_templates'] = self.request.user.has_event_permission(
             self.request.organizer,
