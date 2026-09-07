@@ -267,6 +267,10 @@ class FormFlowStep(TemplateFlowStep):
         return form_initial
 
     def get_form(self, from_storage=False):
+        # Process get_files() before rebuilding POST initial data
+        # so cleared file values are pruned from session beforehand.
+        session_files = self.get_files() if self.request.method == 'POST' else None
+        
         # Cache form initial data to avoid repeated work
         form_initial = self.get_form_initial()
 
@@ -291,12 +295,13 @@ class FormFlowStep(TemplateFlowStep):
             return self.form_class(
                 data=form_data,
                 initial=form_initial,
-                files=self.get_files(),
+                files=session_files or self.get_files(),
                 **self.get_form_kwargs(),
             )
+
         # For POST requests, merge new uploads with existing session files
         # This allows users to navigate back without losing previously uploaded files
-        session_files = self.get_files() or MultiValueDict()
+        session_files = session_files or MultiValueDict()
 
         # Preserve MultiValueDict semantics for proper multi-file field support
         files = MultiValueDict()

@@ -217,3 +217,47 @@ def test_form_flow_step_invalid_post_retains_session_file():
     # Verify the previously uploaded file's initial data remains available on the form
     assert 'document' in form.initial
     assert form.initial['document'].name == 'test.pdf'
+
+
+def test_form_flow_step_invalid_post_cleared_file_not_in_initial():
+    class TestForm(forms.Form):
+        name = forms.CharField(required=True)
+        document = forms.FileField(required=False)
+        
+    class TestFormFlowStep(FormFlowStep):
+        form_class = TestForm
+        @property
+        def identifier(self):
+            return 'test'
+            
+        def get_form_kwargs(self):
+            return {}
+            
+    step = TestFormFlowStep(None)
+    step.request = MagicMock()
+    step.request.method = 'POST'
+    step.request.POST = {'name': '', 'document-clear': '1'}  # Invalid POST + clear file
+    step.request.FILES = MagicMock()
+    step.request.FILES.lists.return_value = []
+    step.file_storage = MagicMock()
+    
+    step.cfp_session = {
+        'initial': {},
+        'data': {},
+        'files': {
+            'test': {
+                'document': {
+                    'name': 'test.pdf',
+                    'tmp_name': 'test_tmp.pdf',
+                    'content_type': 'application/pdf',
+                }
+            }
+        }
+    }
+    
+    form = step.get_form()
+    
+    assert not form.is_valid()
+    assert 'name' in form.errors
+    # Verify the cleared file is removed from the form initial data
+    assert 'document' not in form.initial or not form.initial['document']
