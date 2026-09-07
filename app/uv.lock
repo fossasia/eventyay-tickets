@@ -1165,7 +1165,7 @@ dependencies = [
 [[package]]
 name = "eventyay-business"
 version = "1.0.0"
-source = { git = "https://github.com/fossasia/eventyay-business.git?rev=dev#50c170c2d30f16ffe9834e67f4a21af576a865a7" }
+source = { git = "https://github.com/fossasia/eventyay-business.git?rev=dev#4175a86ce5f6a4df1d26e48cd5091a424a79a5cf" }
 
 [[package]]
 name = "eventyay-hubspot"
