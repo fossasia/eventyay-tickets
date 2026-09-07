@@ -1,6 +1,19 @@
 <template lang="pug">
 .c-januschannelcall(:class="[`size-${size}`]")
-	janus-videoroom(v-if="server", :server="server", :token="token", :iceServers="iceServers", :sessionId="sessionId", :audioSessionId="audioSessionId", :videoSessionId="videoSessionId", :screenShareSessionId="screenShareSessionId", :roomId="roomId", :size="size", @hangup="$emit('close')")
+	janus-videoroom(
+		v-if="server",
+		ref="videoroom",
+		:server="server",
+		:token="token",
+		:iceServers="iceServers",
+		:sessionId="sessionId",
+		:audioSessionId="audioSessionId",
+		:videoSessionId="videoSessionId",
+		:screenShareSessionId="screenShareSessionId",
+		:roomId="roomId",
+		:size="size",
+		@hangup="$emit('close')"
+	)
 </template>
 <script>
 import JanusVideoroom from 'components/janus/JanusVideoroom'
@@ -44,24 +57,35 @@ export default {
 		this.screenShareSessionId = this.call.parameters.screenShareSessionId
 	},
 	methods: {
+		toggleMic() {
+			return this.$refs.videoroom?.toggleMic?.()
+		},
+		toggleCamera() {
+			return this.$refs.videoroom?.toggleCamera?.()
+		},
+		cleanupMedia() {
+			return this.$refs.videoroom?.hangup?.()
+		},
+		hangup() {
+			return this.$refs.videoroom?.hangup?.()
+		},
 	},
 }
 </script>
 <style lang="stylus">
 .c-januschannelcall
 	flex: auto
-	height: auto // 100% breaks safari
+	height: 100%
+	width: 100%
 	display: flex
 	flex-direction: column
 	position: relative
-	padding-bottom: 8px
+	overflow: hidden
 
 	&.size-tiny
-		height: 48px
-		width: 86px // TODO total guesstimate
-		padding-bottom: 0
-		pointer-events: none
-		.controls, .mdi
-			opacity: 0
+		height: 100%
+		width: 100%
+		padding: 0
+		overflow: hidden
 
 </style>

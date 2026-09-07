@@ -116,6 +116,7 @@ class WebSocketClient extends EventEmitter {
 				payload.invite_token = this._config.inviteToken
 			}
 		}
+		payload.is_organizer = Boolean(window.eventyay?.isOrganizerArea)
 		this._send(JSON.stringify(['authenticate', payload]))
 	}
 

@@ -15,6 +15,7 @@ from .views import (
     event,
     exporters,
     feedback,
+    loungemesh,
     mail,
     oauth,
     order,
@@ -275,6 +276,16 @@ urlpatterns = [
     path(
         'events/<slug:event>/favourite-talk/',
         submission.SubmissionFavouriteDeprecatedView.as_view(),
+    ),
+    path(
+        'loungemesh/token/',
+        loungemesh.LoungeMeshTokenExchangeView.as_view(),
+        name='loungemesh.token',
+    ),
+    path(
+        'loungemesh/token/refresh/',
+        loungemesh.LoungeMeshTokenRefreshView.as_view(),
+        name='loungemesh.token.refresh',
     ),
     path('events/<slug:event>/', include(event_router.urls)),
 ]

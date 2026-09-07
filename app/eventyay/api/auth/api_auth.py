@@ -7,9 +7,12 @@ from eventyay.base.models.room import Room
 from eventyay.base.services.room_creation_gate import (
     has_all_server_backed_room_create_permissions,
     has_server_room_development_admin_trait,
+    is_module_config_enabled_for_creation,
     module_config_contains_server_backed_room,
+    newly_added_provider_modules,
     newly_added_server_backed_room_modules,
 )
+from eventyay.base.settings import get_provider_for_module_type, is_video_provider_enabled_for_organizer
 from eventyay.core.permissions import Permission
 
 
@@ -101,6 +104,8 @@ class RoomPermissions(permissions.BasePermission):
         if request.method == "POST":
             traits = request.auth.get("traits")
             module_config = request.data.get("module_config")
+            if not is_module_config_enabled_for_creation(module_config):
+                return False
             # Server-backed modules need the development admin gate in addition to
             # the usual create-permission check (do not return early — mixed
             # payloads still need the general room-create permission check).
@@ -144,6 +149,15 @@ class RoomPermissions(permissions.BasePermission):
                 )
             ):
                 return False
+        newly_added_providers = newly_added_provider_modules(
+            obj.module_config,
+            module_config,
+        )
+        if request.method in ("PATCH", "PUT") and newly_added_providers:
+            for module in newly_added_providers:
+                provider = get_provider_for_module_type(module.get("type"))
+                if provider and not is_video_provider_enabled_for_organizer(provider):
+                    return False
         if request.method in ("PATCH", "PUT"):
             permission = Permission.ROOM_UPDATE
         elif request.method == "DELETE":

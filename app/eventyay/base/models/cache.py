@@ -41,8 +41,15 @@ class VersionedModel(models.Model):
         self.clear_caches()
 
     def save(self, *args, **kwargs):
-        if "update_fields" in kwargs and "version" not in kwargs.get("update_fields"):
-            kwargs["update_fields"].append("version")
+        if "update_fields" in kwargs and kwargs["update_fields"] is not None:
+            update_fields = kwargs["update_fields"]
+            if "version" not in update_fields:
+                if isinstance(update_fields, set):
+                    update_fields.add("version")
+                elif isinstance(update_fields, list):
+                    update_fields.append("version")
+                else:
+                    kwargs["update_fields"] = list(update_fields) + ["version"]
         self.version += 1
         r = super().save(*args, **kwargs)
         transaction.on_commit(self._set_cache_version_sync)
@@ -93,7 +100,7 @@ class VersionedModel(models.Model):
         if latest_version == self.version:
             return
 
-        cache = caches["process"]
+        cache = caches["process"] if "process" in caches.settings else caches["default"]
         try:
             cached_instance = cache.get(self._cachekey)
         except (
@@ -155,7 +162,9 @@ class VersionedModel(models.Model):
         self.__refresh_time = time.time()
 
     def refresh_from_db(self, *args, **kwargs):
-        super().refresh_from_db(*args, **kwargs)
+        from django_scopes import scopes_disabled
+        with scopes_disabled():
+            super().refresh_from_db(*args, **kwargs)
         self.clear_caches()
         self.__refresh_time = time.time()
 
@@ -182,7 +191,7 @@ class VersionedModel(models.Model):
         self._cache_post_update()
 
     def _cache_post_update(self):
-        cache = caches["process"]
+        cache = caches["process"] if "process" in caches.settings else caches["default"]
         try:
             cache.set(self._cachekey, self, timeout=600)
         except (TypeError, AttributeError):

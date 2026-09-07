@@ -89,7 +89,8 @@ export default {
 			return getAvailableVideoProviders(
 				this.hasPermission,
 				this.isAdminMode,
-				(flag) => features.enabled(flag)
+				(flag) => features.enabled(flag),
+				this.$store.state.world?.video_providers
 			)
 		},
 		buttonClass() {

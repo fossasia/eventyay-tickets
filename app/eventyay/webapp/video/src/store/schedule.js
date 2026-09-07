@@ -133,7 +133,7 @@ export default {
 		},
 		sessions (state, getters, rootState) {
 			if (!state.schedule) return
-			const videoModuleTypes = ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom', 'call.jitsi']
+			const videoModuleTypes = ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom', 'call.jitsi', 'call.loungemesh']
 			const videoRooms = new Set((rootState.rooms || []).filter(r => r.modules?.some(m => videoModuleTypes.includes(m.type))).map(r => r.pretalx_id ? String(r.pretalx_id) : null).filter(Boolean))
 			const sessions = []
 			for (const session of state.schedule.talks) {

@@ -66,12 +66,6 @@ const routes = [
 			{
 				path: 'about',
 				alias: 'info',
-				redirect: () => {
-					if (window.eventyay?.isOrganizerArea) {
-						return { name: 'organizer' }
-					}
-					return undefined
-				},
 				component: RoomHeader,
 				children: [{
 					path: '',
@@ -238,6 +232,7 @@ const routes = [
 import { jwtDecode } from 'jwt-decode'
 import store from 'store'
 import { hasOrganizerTraits } from 'lib/traitGrants'
+import { isRoomVisibleToAttendee } from 'lib/video-providers'
 
 const router = createRouter({
 	history: createWebHistory(config.basePath),
@@ -298,6 +293,13 @@ router.beforeEach((to, from, next) => {
 	const isOrganizerRoute = (typeof to.name === 'string' && (to.name.startsWith('admin') || to.name === 'organizer' || to.name === 'room:manage')) ||
 		(typeof to.path === 'string' && (to.path.startsWith('/event') || to.path.includes('/manage')))
 	if (isOrganizerRoute) {
+		const isOrganizerArea = Boolean(window.eventyay?.isOrganizerArea)
+		if (!isOrganizerArea) {
+			if (to.params?.roomId) {
+				return next({ name: 'room', params: { roomId: to.params.roomId } })
+			}
+			return next({ name: 'about' })
+		}
 		const token = store.state.token || localStorage.getItem('token')
 		let tokenTraits = []
 		if (token) {
@@ -329,6 +331,29 @@ router.beforeEach((to, from, next) => {
 			return next({ name: 'organizer' })
 		}
 	} else {
+		if (to.name === 'room' && to.params?.roomId) {
+			const token = store.state.token || localStorage.getItem('token')
+			let tokenTraits = []
+			if (token) {
+				try {
+					tokenTraits = jwtDecode(token)?.traits || []
+				} catch (e) {}
+			}
+			const hasManager = hasOrganizerTraits(tokenTraits)
+			const isOrganizer = Boolean(
+				window.eventyay?.isOrganizerArea && (
+					window.eventyay?.hasOrganiserPermissions ||
+					hasManager ||
+					store.getters.hasPermission('room:update')
+				)
+			)
+			if (!isOrganizer && store.state.rooms && store.state.rooms.length > 0) {
+				const targetRoom = store.state.rooms.find(r => r.id === to.params.roomId)
+				if (!targetRoom || targetRoom.is_disabled || !isRoomVisibleToAttendee(targetRoom, store.state.world?.video_providers)) {
+					return next({ name: 'about' })
+				}
+			}
+		}
 		if (!checkRoutePermission(to)) {
 			return next({ name: 'about' })
 		}

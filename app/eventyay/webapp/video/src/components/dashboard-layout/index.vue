@@ -55,6 +55,7 @@ export default {
 	display: flex
 	min-height: 0
 	min-width: 0
+	max-width: 100%
 	> .column
 		flex: 1 1 0px
 		display: flex

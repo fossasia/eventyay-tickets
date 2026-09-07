@@ -36,6 +36,7 @@ from .invoices import Invoice, InvoiceLine, invoice_filename
 from .janus import JanusServer
 from .jitsi import JitsiServer
 from .log import ActivityLog, LogEntry
+from .loungemesh import LoungeMeshAccessToken, LoungeMeshServer
 from .mail import MailTemplate, MailTemplateRoles, QueuedMail
 from .mixins import FileCleanupMixin, GenerateCode, LogMixin, OrderedModel, PretalxModel, TimestampedModel
 from .notifications import NotificationSetting
@@ -100,7 +101,6 @@ from .seating import Seat, SeatCategoryMapping, SeatingPlan
 from .settings import GlobalSettings
 from .slot import TalkSlot
 from .stream_schedule import StreamSchedule
-from .streaming import StreamingServer
 from .submission import Submission, SubmissionFavourite, SubmissionStates
 from .systemlog import SystemLog
 from .tag import Tag
@@ -217,7 +217,6 @@ __all__ = [
     'SeatingPlan',
     'SpeakerProfile',
     'SpeakerSocialLink',
-    'StreamingServer',
     'SubEvent',
     'SubEventProduct',
     'SubEventProductVariation',

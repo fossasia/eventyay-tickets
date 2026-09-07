@@ -1,0 +1,202 @@
+:root {
+    --zoom-primary: #0b5cff;
+    --zoom-primary-hover: #004bd6;
+    --zoom-bg: #0f172a;
+    --zoom-card-bg: #1e293b;
+    --zoom-border: #334155;
+    --zoom-text-main: #f8fafc;
+    --zoom-text-sub: #94a3b8;
+    --zoom-accent: #2563eb;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--zoom-bg);
+    color: var(--zoom-text-main);
+    font-family: var(--font-family);
+}
+
+.zoom-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--zoom-bg);
+}
+
+.zoom-topbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    min-height: 48px;
+    background-color: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid var(--zoom-border);
+    z-index: 20;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.zoom-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--zoom-text-main);
+}
+
+.zoom-brand svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--zoom-primary);
+}
+
+.zoom-meta-chips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: rgba(51, 65, 85, 0.6);
+    border: 1px solid var(--zoom-border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: var(--zoom-text-sub);
+}
+
+.chip strong {
+    color: var(--zoom-text-main);
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.chip-copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--zoom-text-sub);
+    padding: 2px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    transition: color 0.15s ease;
+}
+
+.chip-copy-btn:hover {
+    color: var(--zoom-text-main);
+}
+
+.zoom-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.btn-launch-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--zoom-primary);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease;
+}
+
+.btn-launch-sm:hover {
+    background-color: var(--zoom-primary-hover);
+}
+
+.btn-leave-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #dc2626;
+    color: #ffffff;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-leave-sm:hover {
+    background-color: #b91c1c;
+}
+
+.zoom-content {
+    flex: 1 1 auto;
+    position: relative;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    background-color: #000000;
+}
+
+#zmmtg-root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: #000000;
+}
+
+.zoom-embedded-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #000000;
+    display: block;
+}
+
+.toast-copied {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #10b981;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+}
+
+.toast-copied.show {
+    opacity: 1;
+}

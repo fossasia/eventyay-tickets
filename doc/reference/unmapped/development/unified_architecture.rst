@@ -47,7 +47,7 @@ Each component extends the base models with specialized functionality:
 **Video Component Models:**
 
 * Room, RoomView, Channel
-* StreamingServer, BBBServer, JanusServer
+* BBBServer, JanusServer, JitsiServer, TurnServer
 * Poll
 * RouletteRequest (networking)
 

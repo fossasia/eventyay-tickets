@@ -5,12 +5,15 @@ from django.core.validators import RegexValidator
 from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 
+from django_scopes import scopes_disabled
+
 from eventyay.base.models import (
     BBBServer,
     JanusServer,
     JitsiServer,
+    LoungeMeshServer,
+    Organizer,
     Room,
-    StreamingServer,
     TurnServer,
 )
 from eventyay.base.models.event import (
@@ -210,32 +213,75 @@ PlannedUsageFormSet = inlineformset_factory(
 )
 
 
-class BBBServerForm(HasSecretsMixin, forms.ModelForm):
+class VideoServerScopeMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "organizers" in self.fields:
+            self.fields["organizers"].queryset = Organizer.objects.all().order_by("name")
+            self.fields["organizers"].required = False
+            self.fields["organizers"].widget.attrs.update({
+                "class": "form-control select2-multi",
+                "data-placeholder": _("Search and select organizers..."),
+                "multiple": "multiple",
+            })
+            self.fields["organizers"].label = _("Organizers")
+            self.fields["organizers"].help_text = _(
+                "Optional: Restrict usage of this server to all events under selected organizers."
+            )
+
+        if "events" in self.fields:
+            with scopes_disabled():
+                self.fields["events"].queryset = Event.objects.all().order_by("name")
+            self.fields["events"].required = False
+            self.fields["events"].widget.attrs.update({
+                "class": "form-control select2-multi",
+                "data-placeholder": _("Search and select events..."),
+                "multiple": "multiple",
+            })
+            self.fields["events"].label = _("Events")
+            self.fields["events"].help_text = _(
+                "Optional: Restrict usage of this server to specific events."
+            )
+
+        if "event_exclusive" in self.fields:
+            with scopes_disabled():
+                self.fields["event_exclusive"].queryset = Event.objects.all().order_by("name")
+            self.fields["event_exclusive"].required = False
+            self.fields["event_exclusive"].label = _("Legacy Exclusive Event")
+            self.fields["event_exclusive"].help_text = _(
+                "Optional legacy single-event constraint. Use 'Events' above for multiple events."
+            )
+
+
+class BBBServerForm(VideoServerScopeMixin, HasSecretsMixin, forms.ModelForm):
     class Meta:
         model = BBBServer
         fields = (
             "url",
             "active",
+            "organizers",
+            "events",
             "event_exclusive",
-            "rooms_only",
             "secret",
         )
         field_classes = {"secret": SecretKeyField}
 
 
-class JanusServerForm(HasSecretsMixin, forms.ModelForm):
+class JanusServerForm(VideoServerScopeMixin, HasSecretsMixin, forms.ModelForm):
     class Meta:
         model = JanusServer
         fields = (
             "url",
             "active",
             "room_create_key",
+            "organizers",
+            "events",
             "event_exclusive",
         )
         field_classes = {"room_create_key": SecretKeyField}
 
 
-class JitsiServerForm(HasSecretsMixin, forms.ModelForm):
+class JitsiServerForm(VideoServerScopeMixin, HasSecretsMixin, forms.ModelForm):
     def clean_url(self):
         normalized = normalize_server_url(self.cleaned_data["url"])
         if not normalized or normalized["protocol"] != "https:":
@@ -250,35 +296,60 @@ class JitsiServerForm(HasSecretsMixin, forms.ModelForm):
             "app_id",
             "key_id",
             "app_secret",
+            "organizers",
+            "events",
             "event_exclusive",
         )
         field_classes = {"app_secret": SecretKeyField}
 
 
-class TurnServerForm(HasSecretsMixin, forms.ModelForm):
+class TurnServerForm(VideoServerScopeMixin, HasSecretsMixin, forms.ModelForm):
     class Meta:
         model = TurnServer
         fields = (
             "active",
             "hostname",
             "auth_secret",
+            "organizers",
+            "events",
             "event_exclusive",
         )
         field_classes = {"auth_secret": SecretKeyField}
 
 
-class StreamingServerForm(HasSecretsMixin, forms.ModelForm):
+class LoungeMeshServerForm(VideoServerScopeMixin, HasSecretsMixin, forms.ModelForm):
     class Meta:
-        model = StreamingServer
+        model = LoungeMeshServer
         fields = (
+            "url",
             "active",
-            "name",
-            "token_secret",
-            "url_input",
-            "url_output",
+            "api_secret",
+            "jitsi_app_id",
+            "jitsi_app_secret",
+            "organizers",
+            "events",
+            "event_exclusive",
         )
-        field_classes = {"token_secret": SecretKeyField}
+        field_classes = {
+            "api_secret": SecretKeyField,
+            "jitsi_app_secret": SecretKeyField,
+        }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["api_secret"].required = True
+        self.fields["jitsi_app_id"].required = True
+        self.fields["jitsi_app_secret"].required = True
+        if not self.instance.pk and not self.initial.get("api_secret"):
+            import secrets
+
+            self.initial["api_secret"] = f"lms_sec_{secrets.token_urlsafe(24)}"
+
+    def clean_url(self):
+        url = self.cleaned_data.get("url")
+        if url:
+            url = url.strip().rstrip("/")
+        return url
 
 
 

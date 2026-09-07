@@ -7,7 +7,7 @@ from eventyay.base.models import (
     BBBServer,
     JanusServer,
     JitsiServer,
-    StreamingServer,
+    LoungeMeshServer,
     TurnServer,
 )
 
@@ -60,14 +60,14 @@ VIDEO_SERVER_CONFIGS = {
         display_attr="hostname",
         action_prefix="turnserver",
     ),
-    "streaming": VideoServerConfig(
-        model=StreamingServer,
-        label=_("Streaming"),
+    "loungemesh": VideoServerConfig(
+        model=LoungeMeshServer,
+        label=_("LoungeMesh"),
         list_url_name="eventyay_admin:video_admin:settings",
-        update_url_name="eventyay_admin:video_admin:streamingserver.update",
-        order_by="name",
-        display_attr="name",
-        action_prefix="streamingserver",
+        update_url_name="eventyay_admin:video_admin:loungemeshserver.update",
+        order_by="url",
+        display_attr="url",
+        action_prefix="loungemeshserver",
     ),
 }
 
@@ -80,23 +80,27 @@ def get_video_server_dashboard_rows():
     rows = []
     for server_type, config in VIDEO_SERVER_CONFIGS.items():
         queryset = config.model.objects.all().order_by(config.order_by)
-        # event_exclusive is a nullable ForeignKey on BBB/Janus/Jitsi/TURN;
-        # StreamingServer has no such field. Prefer the model field check over
-        # getattr so we never touch a reverse OneToOne that could raise.
+        # event_exclusive is a nullable ForeignKey on BBB/Janus/Jitsi/TURN.
+        # Prefer the model field check over getattr so we never touch a reverse
+        # OneToOne that could raise.
         has_event_exclusive = any(
             field.name == "event_exclusive" for field in config.model._meta.fields
         )
         if has_event_exclusive:
             queryset = queryset.select_related("event_exclusive")
+        queryset = queryset.prefetch_related("organizers", "events")
 
         for server in queryset:
             active = bool(server.active)
             rows.append(
                 {
+                    "server": server,
                     "server_type": server_type,
                     "type_label": config.label,
                     "name": getattr(server, config.display_attr),
                     "event_exclusive": server.event_exclusive if has_event_exclusive else None,
+                    "organizers": list(server.organizers.all()),
+                    "events": list(server.events.all()),
                     "edit_url": reverse(
                         config.update_url_name, kwargs={"pk": server.pk}
                     ),

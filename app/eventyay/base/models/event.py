@@ -12,6 +12,8 @@ from operator import attrgetter
 from urllib.parse import urljoin, urlparse
 from zoneinfo import ZoneInfo
 
+from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 import icalendar
 import jwt
 from dateutil.relativedelta import relativedelta
@@ -1582,9 +1584,15 @@ class Event(
         """
         if event_roles is None:
             event_roles = self.roles if self.roles is not None else {}
-        if role_name in event_roles and event_roles[role_name] is not None:
-            return event_roles[role_name]
         defaults = self._get_default_roles()
+        if role_name in event_roles and event_roles[role_name] is not None:
+            perms = list(event_roles[role_name])
+            if role_name in defaults:
+                current_perms_set = {normalize_permission_value(p) for p in perms}
+                for default_perm in defaults[role_name]:
+                    if normalize_permission_value(default_perm) not in current_perms_set:
+                        perms.append(default_perm)
+            return perms
         if role_name in defaults:
             return defaults[role_name]
         return SYSTEM_ROLES.get(role_name, [])
@@ -1719,6 +1727,25 @@ class Event(
         if user.is_silenced and not any(p in MAX_PERMISSIONS_IF_SILENCED for p in permission):
             return False
 
+        # Staff, superusers, administrators, or users holding Eventyay team permissions
+        if (
+            getattr(user, "is_administrator", False)
+            or getattr(user, "is_superuser", False)
+            or getattr(user, "is_staff", False)
+        ):
+            return True
+
+        if hasattr(user, "has_event_permission"):
+            try:
+                if user.has_event_permission(
+                    self.organizer,
+                    self,
+                    ["can_change_event_settings", "can_change_items", "can_change_submissions"],
+                ):
+                    return True
+            except Exception:
+                pass
+
         if self.has_permission_implicit(
             traits=user.traits or [],
             permissions=permission,
@@ -1741,32 +1768,9 @@ class Event(
         Returns whether a user holds a given permission either on the world or on a specific room.
         ``permission`` can be one ``Permission`` or a list of these, in which case it will perform an OR lookup.
         """
-        if user.is_banned:  # pragma: no cover
-            # safeguard only
-            return False
-
-        if not isinstance(permission, list):
-            permission = [permission]
-
-        if user.is_silenced and not any(p in MAX_PERMISSIONS_IF_SILENCED for p in permission):
-            return False
-
-        if self.has_permission_implicit(
-            traits=user.traits or [],
-            permissions=permission,
-            room=room,
-            allow_empty_traits=user.type == User.UserType.PERSON,
-        ):
-            return True
-
-        roles = await user.get_role_grants_async(room)
-        event_roles = self.roles if self.roles is not None else self._get_default_roles()
-        for r in roles:
-            role_perms = self._permissions_for_role(r, event_roles)
-            role_perms_str = [normalize_permission_value(rp) for rp in role_perms]
-            if any(normalize_permission_value(p) in role_perms_str for p in permission):
-                return True
-        return False
+        return await database_sync_to_async(self.has_permission)(
+            user=user, permission=permission, room=room
+        )
 
     def get_all_permissions(self, user):
         result = defaultdict(set)

@@ -130,7 +130,7 @@ video_organizer_patterns = [
     ),
 ]
 
-unified_event_patterns = [
+video_attendee_patterns = [
     path(
         '<orgslug:organizer>/<slug:event>/',
         include(
@@ -151,6 +151,16 @@ unified_event_patterns = [
                 ),
                 # Public attendee-facing video SPA app
                 re_path(r'^video(?:/.*)?$', VideoSPAView.as_view(is_organizer=False), name='video.spa'),
+            ]
+        ),
+    ),
+]
+
+unified_event_patterns = [
+    path(
+        '<orgslug:organizer>/<slug:event>/',
+        include(
+            [
                 path('', include(('eventyay.agenda.urls', 'agenda'))),
                 path('', include(('eventyay.cfp.urls', 'cfp'))),
             ]
@@ -174,6 +184,7 @@ urlpatterns = (
     + storage_patterns
     + live_patterns
     + video_organizer_patterns
+    + video_attendee_patterns
     # The plugins patterns must be before presale_patterns_main
     # to avoid misdetection of plugin prefixes and organizer/event slugs.
     # Anonymous invite short token redirects (before presale to avoid slug conflict)
@@ -185,3 +196,4 @@ urlpatterns = (
 
 handler404 = 'eventyay.base.views.errors.page_not_found'
 handler500 = 'eventyay.base.views.errors.server_error'
+

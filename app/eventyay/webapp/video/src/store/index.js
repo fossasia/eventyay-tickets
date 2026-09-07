@@ -54,7 +54,9 @@ export default new Vuex.Store({
 				.filter(Boolean)
 		),
 		interpretationStreamsByRoom: {},
-		youtubeTranslationsByRoom: {}
+		youtubeTranslationsByRoom: {},
+		activeRoomSidebarTab: null,
+		roomSidebarCollapsedByRoom: {}
 	},
 	getters: {
 		hasPermission(state) {
@@ -177,6 +179,36 @@ export default new Vuex.Store({
 			if (!normalized) return
 			// Replace the Set so watchers that track the reference see the change.
 			state.unblockedIframeDomains = new Set([...state.unblockedIframeDomains, normalized])
+		},
+		setActiveRoomSidebarTab(state, tab) {
+			state.activeRoomSidebarTab = tab
+		},
+		toggleRoomSidebar(state, { roomId, tab = 'chat' } = {}) {
+			if (!roomId) return
+			const isCurrentlyCollapsed = Boolean(state.roomSidebarCollapsedByRoom[roomId])
+			if (isCurrentlyCollapsed) {
+				state.roomSidebarCollapsedByRoom = {
+					...state.roomSidebarCollapsedByRoom,
+					[roomId]: false
+				}
+				if (tab) {
+					state.activeRoomSidebarTab = tab
+				}
+			} else if (state.activeRoomSidebarTab && state.activeRoomSidebarTab !== tab) {
+				state.activeRoomSidebarTab = tab
+			} else {
+				state.roomSidebarCollapsedByRoom = {
+					...state.roomSidebarCollapsedByRoom,
+					[roomId]: true
+				}
+			}
+		},
+		setRoomSidebarCollapsed(state, { roomId, collapsed }) {
+			if (!roomId) return
+			state.roomSidebarCollapsedByRoom = {
+				...state.roomSidebarCollapsedByRoom,
+				[roomId]: Boolean(collapsed)
+			}
 		}
 	},
 	actions: {

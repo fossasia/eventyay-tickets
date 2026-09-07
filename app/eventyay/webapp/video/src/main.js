@@ -104,7 +104,12 @@ async function init({ token, inviteToken }) {
   }
 
   const hasToken = Boolean(activeToken)
-  const isOrganizer = isOrganizerArea || (hasToken ? hasOrganizerTraits(tokenTraits) : Boolean(window.eventyay?.hasOrganiserPermissions))
+  const isOrganizer = Boolean(
+    isOrganizerArea && (
+      window.eventyay?.hasOrganiserPermissions ||
+      (hasToken && hasOrganizerTraits(tokenTraits))
+    )
+  )
 
   if (!relativePath || relativePath === '/') {
     if (isOrganizerArea) {
@@ -143,7 +148,7 @@ async function init({ token, inviteToken }) {
       router.replace(relativePath)
     }
     store.dispatch('login', { token: activeToken })
-  } else if (isOrganizerArea || window.eventyay?.hasOrganiserPermissions) {
+  } else if (isOrganizerArea) {
     localStorage.removeItem('token')
     router.replace(relativePath)
     store.dispatch('login', {})
@@ -155,6 +160,8 @@ async function init({ token, inviteToken }) {
   } else if (anonymousRoomId && localStorage[`clientId:room:${anonymousRoomId}`]) {
     const clientId = localStorage[`clientId:room:${anonymousRoomId}`]
     store.dispatch('login', { clientId })
+  } else if (window.eventyay?.commonAccountUrl) {
+    store.dispatch('login', {})
   } else {
     console.warn('no token found, login in anonymously')
     let clientId = localStorage.clientId

@@ -189,7 +189,40 @@ def validate_room_config_patch(room, body):
     )
     if "module_config" in body:
         _sanitize_jitsi_config(body["module_config"])
+        _sanitize_server_backed_interaction_modules(body["module_config"])
     return partial_validated_update(serializer, body)
+
+
+EMBEDDED_SUITE_MODULE_TYPES = {
+    "call.bigbluebutton",
+    "call.jitsi",
+    "call.zoom",
+}
+PLATFORM_NATIVE_INTERACTION_TYPES = {
+    "chat.native",
+    "question",
+    "poll",
+}
+
+
+def _sanitize_server_backed_interaction_modules(module_config):
+    """
+    Embedded suites (BigBlueButton, Jitsi, Zoom) run third-party iframes with their
+    own built-in chat/polls/questions. Strip redundant platform interaction modules for them.
+    Janus WebRTC uses native platform chat and is explicitly permitted to retain them.
+    """
+    if not isinstance(module_config, list):
+        return
+    has_embedded_suite = any(
+        isinstance(m, dict) and m.get("type") in EMBEDDED_SUITE_MODULE_TYPES
+        for m in module_config
+    )
+    if has_embedded_suite:
+        module_config[:] = [
+            m
+            for m in module_config
+            if isinstance(m, dict) and m.get("type") not in PLATFORM_NATIVE_INTERACTION_TYPES
+        ]
 
 
 def _sanitize_jitsi_config(module_config):

@@ -3,77 +3,248 @@
 	.connection-state(v-if="connectionState !== 'connected'")
 		.state-inner(v-if="connectionState === 'disconnected'")
 			.mdi.mdi-wifi-off.state-icon
-			span {{ $t('You have been disconnected.') }}
+			span {{ $t('Disconnected from meeting') }}
 		.state-inner.connection-error(v-else-if="connectionState === 'failed'")
 			.mdi.mdi-alert-circle-outline.state-icon.state-icon--error
-			p {{ $t('The connection has failed.') }}
+			p {{ $t('Could not connect to meeting room.') }}
 			p.error-detail {{ connectionError }}
 			bunt-button.retry-btn(@click="initJanus") {{ $t('Retry') }}
 		.state-inner(v-else)
 			bunt-progress-circular(size="huge", :page="true")
-			span {{ $t('Connecting...') }}
+			span {{ $t('Connecting…') }}
 
-	.room-surface(v-show="connectionState === 'connected'")
-		.gallery(ref="container", :class="{ 'has-screen': hasScreenTile }", :style="gridStyle", v-resize-observer="onResize")
-			.video-tile(
-				v-for="tile in tiles",
-				:key="tile.key",
-				:class="{ 'is-local': tile.local && !tile.screen, 'is-screen': tile.screen, 'is-speaking': tile.speaking }"
-			)
-				.media-frame(:id="`janus_${tile.key}`")
-					video(
-						v-if="tile.local && !tile.screen",
-						ref="localVideo",
-						:class="{ 'is-hidden': !tile.hasVideo }",
-						autoplay,
-						playsinline,
-						muted
+	.room-surface(v-show="connectionState === 'connected'", :class="{ 'is-speaker-view': effectiveViewMode === 'speaker' }")
+		.moderation-notice(v-if="size !== 'tiny' && moderationNotice")
+			.mdi.mdi-information-outline
+			span {{ moderationNotice }}
+		.spotlight-notice(v-if="size !== 'tiny' && spotlightUserId")
+			.mdi.mdi-star
+			span {{ $t('Host spotlighted') }} {{ spotlightLabel }}
+			button(v-if="canModerateParticipants", type="button", :title="$t('Clear spotlight')", :disabled="spotlightPending", @click="clearSpotlight")
+				.mdi.mdi-close
+		.gallery(ref="container", :class="galleryClasses", :style="gridStyle", v-resize-observer="onResize")
+			template(v-if="isStageMode")
+				.stage-container
+					.video-tile(
+						v-if="stageTile",
+						:key="stageTile.key",
+						:class="{ 'is-local': stageTile.local && !stageTile.screen, 'is-screen': stageTile.screen, 'is-speaking': stageTile.speaking, 'is-pinned': pinnedTileKey === stageTile.key, 'is-spotlighted': spotlightTile && spotlightTile.key === stageTile.key }"
 					)
-					video(
-						v-else-if="tile.local && tile.screen",
-						ref="localScreenVideo",
-						autoplay,
-						playsinline,
-						muted
+						.media-frame(:id="`janus_${stageTile.key}`")
+							video(
+								v-if="stageTile.local && !stageTile.screen",
+								ref="localVideo",
+								:class="{ 'is-hidden': !stageTile.hasVideo }",
+								autoplay,
+								playsinline,
+								muted
+							)
+							.local-screen-placeholder(v-else-if="stageTile.local && stageTile.screen")
+								.mdi.mdi-monitor-share
+								span {{ $t('You are sharing your screen') }}
+								button.btn-stop-share(type="button", @click="stopScreenShare")
+									.mdi.mdi-monitor-off
+									span {{ $t('Stop presenting') }}
+							video(
+								v-else,
+								class="remote-media",
+								:class="{ 'is-hidden': !stageTile.hasVideo }",
+								:data-feed-id="stageTile.videoFeedId || stageTile.id",
+								:muted="remoteVideoShouldBeMuted(stageTile)",
+								autoplay,
+								playsinline
+							)
+							audio(
+								v-if="!stageTile.local && stageTile.audioFeedId",
+								class="remote-audio",
+								:data-audio-feed-id="stageTile.audioFeedId",
+								autoplay
+							)
+							.avatar-wrap(v-if="!stageTile.hasVideo && !stageTile.screen")
+								avatar(v-if="stageTile.user", :user="stageTile.user", :size="size === 'tiny' ? 40 : 96")
+								.mdi.mdi-account-circle(v-else)
+							.tile-gradient
+							.tile-top
+								.audio-meter(:class="{ active: stageTile.audioLevel > 0.01 }")
+									.audio-meter-fill(:style="audioMeterStyle(stageTile)")
+								.tile-state-pill.hand-pill(v-if="isTileHandRaised(stageTile)", :title="$t('Hand raised')")
+									.mdi.mdi-hand-back-right
+								.tile-state-pill(v-else-if="spotlightTile && spotlightTile.key === stageTile.key")
+									.mdi.mdi-star
+							.avatar-placeholder(v-if="!stageTile.hasVideo")
+								avatar(:user="stageTile.user", :size="72")
+								span.user-name {{ stageTile.label }}
+							.tile-overlay
+								.tile-status
+									.mdi.mdi-pin(v-if="pinnedTileKey === stageTile.key", :title="$t('Pinned')")
+									.mdi.mdi-star(v-if="spotlightTile && spotlightTile.key === stageTile.key", :title="$t('Spotlighted')")
+									.mdi.mdi-hand-back-right(v-if="stageTile.handRaised", :title="$t('Hand raised')")
+									.mdi(:class="stageTile.cameraOn ? 'mdi-video' : 'mdi-video-off off'", :title="stageTile.cameraOn ? $t('Camera on') : $t('Camera off')")
+									.mdi(:class="stageTile.micOn ? 'mdi-microphone' : 'mdi-microphone-off muted'", :title="stageTile.micOn ? $t('Microphone on') : $t('Muted')")
+									span.tile-label {{ stageTile.label }}
+								.tile-actions(v-if="size !== 'tiny'")
+									button.tile-action(type="button", :title="pinnedTileKey === stageTile.key ? $t('Unpin') : $t('Pin')", @click="togglePin(stageTile)")
+										.mdi(:class="pinnedTileKey === stageTile.key ? 'mdi-pin-off' : 'mdi-pin'")
+									button.tile-action(type="button", v-if="canModerateParticipants && stageTile.user", :title="spotlightTile && spotlightTile.key === stageTile.key ? $t('Clear spotlight') : $t('Spotlight for everyone')", :disabled="spotlightPending", @click="toggleSpotlight(stageTile)")
+										.mdi(:class="spotlightTile && spotlightTile.key === stageTile.key ? 'mdi-star-off' : 'mdi-star'")
+									button.tile-action(type="button", v-if="!(stageTile.local && stageTile.screen)", :title="$t('Picture in picture')", :disabled="!stageTile.hasVideo", @click="togglePictureInPicture($event)")
+										.mdi.mdi-picture-in-picture-bottom-right
+									button.tile-action(type="button", :title="$t('Fullscreen')", @click="toggleFullscreen($event)")
+										.mdi.mdi-fullscreen
+									button.tile-action(type="button", v-if="stageTile.local && stageTile.screen", :title="$t('Stop screen sharing')", @click="stopScreenShare")
+										.mdi.mdi-monitor-off
+				.filmstrip-container(v-if="filmstripTiles.length")
+					.video-tile(
+						v-for="tile in filmstripTiles",
+						:key="tile.key",
+						:class="{ 'is-local': tile.local && !tile.screen, 'is-screen': tile.screen, 'is-speaking': tile.speaking, 'is-pinned': pinnedTileKey === tile.key, 'is-spotlighted': spotlightTile && spotlightTile.key === tile.key }"
 					)
-					video(
-						v-else,
-						class="remote-media",
-						:class="{ 'is-hidden': !tile.hasVideo }",
-						:data-feed-id="tile.videoFeedId || tile.id",
-						autoplay,
-						playsinline
-					)
-					audio(
-						v-if="!tile.local && tile.audioFeedId",
-						class="remote-audio",
-						:data-audio-feed-id="tile.audioFeedId",
-						autoplay
-					)
-					.avatar-wrap(v-if="!tile.hasVideo && !tile.screen")
-						avatar(v-if="tile.user", :user="tile.user", :size="size === 'tiny' ? 40 : 96")
-						.mdi.mdi-account-circle(v-else)
-					.tile-gradient
-					.tile-top
-						.audio-meter(:class="{ active: tile.audioLevel > 0.01 }")
-							.audio-meter-fill(:style="audioMeterStyle(tile)")
-						.mute-pill(v-if="tile.muted")
-							.mdi.mdi-microphone-off
-					.tile-bottom
-						button.identity(type="button", v-if="tile.user", @click="showUserCard($event, tile.user)")
-							avatar(:user="tile.user", :size="28")
-							span {{ tile.label }}
-						span.identity.identity--plain(v-else)
-							.mdi(:class="tile.screen ? 'mdi-monitor-share' : 'mdi-account'")
-							span {{ tile.label }}
-						.tile-actions
-							button.tile-action(type="button", v-if="tile.local && tile.screen", :title="$t('Stop sharing screen')", @click="stopScreenShare")
+						.media-frame(:id="`janus_${tile.key}`")
+							video(
+								v-if="tile.local && !tile.screen",
+								ref="localVideo",
+								:class="{ 'is-hidden': !tile.hasVideo }",
+								autoplay,
+								playsinline,
+								muted
+							)
+							.local-screen-placeholder(v-else-if="tile.local && tile.screen")
+								.mdi.mdi-monitor-share
+								span {{ $t('You are sharing your screen') }}
+							video(
+								v-else,
+								class="remote-media",
+								:class="{ 'is-hidden': !tile.hasVideo }",
+								:data-feed-id="tile.videoFeedId || tile.id",
+								:muted="remoteVideoShouldBeMuted(tile)",
+								autoplay,
+								playsinline
+							)
+							audio(
+								v-if="!tile.local && tile.audioFeedId",
+								class="remote-audio",
+								:data-audio-feed-id="tile.audioFeedId",
+								autoplay
+							)
+							.avatar-wrap(v-if="!tile.hasVideo && !tile.screen")
+								avatar(v-if="tile.user", :user="tile.user", :size="48")
+								.mdi.mdi-account-circle(v-else)
+							.tile-gradient
+							.tile-top
+								.audio-meter(:class="{ active: tile.audioLevel > 0.01 }")
+									.audio-meter-fill(:style="audioMeterStyle(tile)")
+								.tile-state-pill.hand-pill(v-if="isTileHandRaised(tile)", :title="$t('Hand raised')")
+									.mdi.mdi-hand-back-right
+								.tile-state-pill(v-else-if="spotlightTile && spotlightTile.key === tile.key")
+									.mdi.mdi-star
+							.avatar-placeholder(v-if="!tile.hasVideo")
+								avatar(:user="tile.user", :size="48")
+								span.user-name {{ tile.label }}
+							.tile-overlay
+								.tile-status
+									.mdi.mdi-pin(v-if="pinnedTileKey === tile.key", :title="$t('Pinned')")
+									.mdi.mdi-star(v-if="spotlightTile && spotlightTile.key === tile.key", :title="$t('Spotlighted')")
+									.mdi.mdi-hand-back-right(v-if="tile.handRaised", :title="$t('Hand raised')")
+									.mdi(:class="tile.cameraOn ? 'mdi-video' : 'mdi-video-off off'", :title="tile.cameraOn ? $t('Camera on') : $t('Camera off')")
+									.mdi(:class="tile.micOn ? 'mdi-microphone' : 'mdi-microphone-off muted'", :title="tile.micOn ? $t('Microphone on') : $t('Muted')")
+									span.tile-label {{ tile.label }}
+								.tile-actions(v-if="size !== 'tiny'")
+									button.tile-action(type="button", :title="pinnedTileKey === tile.key ? $t('Unpin') : $t('Pin')", @click="togglePin(tile)")
+										.mdi(:class="pinnedTileKey === tile.key ? 'mdi-pin-off' : 'mdi-pin'")
+									button.tile-action(type="button", v-if="canModerateParticipants && tile.user", :title="spotlightTile && spotlightTile.key === tile.key ? $t('Clear spotlight') : $t('Spotlight for everyone')", :disabled="spotlightPending", @click="toggleSpotlight(tile)")
+										.mdi(:class="spotlightTile && spotlightTile.key === tile.key ? 'mdi-star-off' : 'mdi-star'")
+									button.tile-action(type="button", v-if="!(tile.local && tile.screen)", :title="$t('Picture in picture')", :disabled="!tile.hasVideo", @click="togglePictureInPicture($event)")
+										.mdi.mdi-picture-in-picture-bottom-right
+									button.tile-action(type="button", :title="$t('Fullscreen')", @click="toggleFullscreen($event)")
+										.mdi.mdi-fullscreen
+									button.tile-action(type="button", v-if="tile.local && tile.screen", :title="$t('Stop screen sharing')", @click="stopScreenShare")
+										.mdi.mdi-monitor-off
+			template(v-else)
+				.video-tile(
+					v-for="tile in paginatedDisplayTiles",
+					:key="tile.key",
+					:class="{ 'is-local': tile.local && !tile.screen, 'is-screen': tile.screen, 'is-speaking': tile.speaking, 'is-pinned': pinnedTileKey === tile.key, 'is-spotlighted': spotlightTile && spotlightTile.key === tile.key }"
+				)
+					.media-frame(:id="`janus_${tile.key}`")
+						video(
+							v-if="tile.local && !tile.screen",
+							ref="localVideo",
+							:class="{ 'is-hidden': !tile.hasVideo }",
+							autoplay,
+							playsinline,
+							muted
+						)
+						.local-screen-placeholder(v-else-if="tile.local && tile.screen")
+							.mdi.mdi-monitor-share
+							span {{ $t('You are sharing your screen') }}
+							button.btn-stop-share(type="button", @click="stopScreenShare")
 								.mdi.mdi-monitor-off
+								span {{ $t('Stop presenting') }}
+						video(
+							v-else,
+							class="remote-media",
+							:class="{ 'is-hidden': !tile.hasVideo }",
+							:data-feed-id="tile.videoFeedId || tile.id",
+							:muted="remoteVideoShouldBeMuted(tile)",
+							autoplay,
+							playsinline
+						)
+						audio(
+							v-if="!tile.local && tile.audioFeedId",
+							class="remote-audio",
+							:data-audio-feed-id="tile.audioFeedId",
+							autoplay
+						)
+						.avatar-wrap(v-if="!tile.hasVideo && !tile.screen")
+							avatar(v-if="tile.user", :user="tile.user", :size="size === 'tiny' ? 40 : 96")
+							.mdi.mdi-account-circle(v-else)
+						.tile-gradient
+						.tile-top
+							.audio-meter(:class="{ active: tile.audioLevel > 0.01 }")
+								.audio-meter-fill(:style="audioMeterStyle(tile)")
+							.tile-state-pill.hand-pill(v-if="isTileHandRaised(tile)", :title="$t('Hand raised')")
+								.mdi.mdi-hand-back-right
+							.tile-state-pill(v-else-if="spotlightTile && spotlightTile.key === tile.key")
+								.mdi.mdi-star
+						.avatar-placeholder(v-if="!tile.hasVideo")
+							avatar(:user="tile.user", :size="72")
+							span.user-name {{ tile.label }}
+						.tile-overlay
+							.tile-status
+								.mdi.mdi-pin(v-if="pinnedTileKey === tile.key", :title="$t('Pinned')")
+								.mdi.mdi-star(v-if="spotlightTile && spotlightTile.key === tile.key", :title="$t('Spotlighted')")
+								.mdi.mdi-hand-back-right(v-if="tile.handRaised", :title="$t('Hand raised')")
+								.mdi(:class="tile.cameraOn ? 'mdi-video' : 'mdi-video-off off'", :title="tile.cameraOn ? $t('Camera on') : $t('Camera off')")
+								.mdi(:class="tile.micOn ? 'mdi-microphone' : 'mdi-microphone-off muted'", :title="tile.micOn ? $t('Microphone on') : $t('Muted')")
+								span.tile-label {{ tile.label }}
+							.tile-actions(v-if="size !== 'tiny'")
+								button.tile-action(type="button", :title="pinnedTileKey === tile.key ? $t('Unpin') : $t('Pin')", @click="togglePin(tile)")
+									.mdi(:class="pinnedTileKey === tile.key ? 'mdi-pin-off' : 'mdi-pin'")
+								button.tile-action(type="button", v-if="canModerateParticipants && tile.user", :title="spotlightTile && spotlightTile.key === tile.key ? $t('Clear spotlight') : $t('Spotlight for everyone')", :disabled="spotlightPending", @click="toggleSpotlight(tile)")
+									.mdi(:class="spotlightTile && spotlightTile.key === tile.key ? 'mdi-star-off' : 'mdi-star'")
+								button.tile-action(type="button", v-if="!(tile.local && tile.screen)", :title="$t('Picture in picture')", :disabled="!tile.hasVideo", @click="togglePictureInPicture($event)")
+									.mdi.mdi-picture-in-picture-bottom-right
+								button.tile-action(type="button", :title="$t('Fullscreen')", @click="toggleFullscreen($event)")
+									.mdi.mdi-fullscreen
+								button.tile-action(type="button", v-if="tile.local && tile.screen", :title="$t('Stop screen sharing')", @click="stopScreenShare")
+									.mdi.mdi-monitor-off
 
-			.slow-banner(v-if="downstreamSlowLinkCount > 5 && videoOutput", @click="disableIncomingVideo") {{ $t('It appears your connection is slow. Click here if you want to reconnect without video.') }}
+			.slow-banner(v-if="size !== 'tiny' && downstreamSlowLinkCount > 5 && videoOutput", @click="disableIncomingVideo") {{ $t('Slow connection detected. Click to disable incoming video.') }}
 
-		.info-bar
-			.info-message(v-if="!videoOutput") {{ $t('You disabled receiving videos of other participants in the video/audio settings.') }}
+		.pagination-bar(v-if="size !== 'tiny' && paginationTotalPages > 1")
+			button.pagination-btn(type="button", :disabled="currentVideoPage <= 1", @click="previousVideoPage", :title="$t('Previous page')")
+				.mdi.mdi-chevron-left
+			span.page-indicator {{ $t('Page') }} {{ currentVideoPage }} {{ $t('of') }} {{ paginationTotalPages }}
+			button.pagination-btn(type="button", :disabled="currentVideoPage >= paginationTotalPages", @click="nextVideoPage", :title="$t('Next page')")
+				.mdi.mdi-chevron-right
+
+		.room-reactions(v-if="size !== 'tiny' && roomReactions.length")
+			.room-reaction(v-for="reaction in roomReactions", :key="reaction.id")
+				img.room-reaction-emoji(:src="reaction.url", :alt="reaction.emoji")
+				span.room-reaction-name {{ reaction.name }}
+
+		.info-bar(v-if="size !== 'tiny'")
+			.info-message(v-if="!videoOutput") {{ $t('Incoming video is disabled.') }}
 			.info-message.error-message(v-if="publishingError")
 				.mdi.mdi-alert
 				span {{ publishingError }}
@@ -81,48 +252,156 @@
 				.mdi.mdi-alert
 				span {{ screenShareError }}
 
-		.controlbar
+		.controlbar(v-if="size !== 'tiny'")
 			button.control-button(
 				type="button",
 				:class="{ muted: micMuted }",
-				:title="micMuted ? $t('Unmute') : $t('Mute')",
+				:title="micMuted ? $t('Unmute microphone') : $t('Mute microphone')",
 				@click="toggleMic"
 			)
 				.mdi(:class="micMuted ? 'mdi-microphone-off' : 'mdi-microphone'")
 			button.control-button(
 				type="button",
-				:class="{ disabled: !cameraEnabled, loading: cameraToggleInProgress || videoPublishInProgress }",
-				:disabled="cameraToggleInProgress || videoPublishInProgress",
-				:title="cameraEnabled ? $t('Turn camera off') : $t('Turn camera on')",
+				:class="{ disabled: !cameraEnabled }",
+				:title="cameraEnabled ? $t('Turn off camera') : $t('Turn on camera')",
 				@click="toggleCamera"
 			)
 				.mdi(:class="cameraEnabled ? 'mdi-video' : 'mdi-video-off'")
 			button.control-button(
 				type="button",
 				:class="{ active: screenShareState === 'published', loading: screenShareState === 'publishing' || screenShareState === 'unpublishing' }",
-				:disabled="screenShareState === 'publishing' || screenShareState === 'unpublishing'",
-				:title="screenShareState === 'published' ? $t('Stop sharing screen') : $t('Share screen')",
+				:disabled="screenShareBlockedByHost || screenShareState === 'publishing' || screenShareState === 'unpublishing'",
+				:title="screenShareBlockedByHost ? $t('Screen sharing was disabled by the host') : (screenShareState === 'published' ? $t('Stop screen sharing') : $t('Share screen'))",
 				@click="toggleScreenShare"
 			)
 				.mdi(:class="screenShareState === 'published' ? 'mdi-monitor-off' : 'mdi-monitor-share'")
+			button.control-button.participants-button(type="button", :class="{ active: showParticipantsDrawer }", :title="$t('Participants')", @click="toggleParticipants")
+				.mdi.mdi-account-multiple
+				span.participant-count-badge {{ participantCount }}
+				span.waiting-count-badge(v-if="pendingAdmissionCount") {{ pendingAdmissionCount }}
+
+			.reaction-control
+				button.control-button(type="button", :class="{ active: reactionPickerOpen }", :title="$t('Reactions')", @click="reactionPickerOpen = !reactionPickerOpen")
+					.mdi.mdi-emoticon-outline
+				.reaction-picker(v-if="reactionPickerOpen")
+					button.reaction-choice(v-for="reaction in availableReactions", :key="reaction.emoji", type="button", :title="reaction.emoji", @click="sendReaction(reaction.emoji)")
+						img.reaction-choice-emoji(:src="reaction.url", :alt="reaction.emoji")
+			button.control-button(
+				type="button",
+				:class="{ active: localHandRaised, loading: raiseHandPending }",
+				:disabled="raiseHandPending",
+				:title="localHandRaised ? $t('Lower hand') : $t('Raise hand')",
+				@click="toggleRaiseHand"
+			)
+				.mdi(:class="localHandRaised ? 'mdi-hand-back-right' : 'mdi-hand-back-right-outline'")
 			button.control-button(type="button", :title="$t('Settings')", @click="showDevicePrompt = true")
 				.mdi.mdi-cog
+			button.control-button(
+				v-if="hasChatModule",
+				type="button",
+				:class="{ active: isChatOpen }",
+				:title="$t('Chat')",
+				@click="toggleChat"
+			)
+				.mdi.mdi-message-text-outline
 			button.control-button(type="button", :title="$t('Report issue')", @click="showFeedbackPrompt = true")
 				.mdi.mdi-message-alert-outline
-			button.control-button.leave(type="button", :title="$t('Leave')", @click="leaveRoom")
+			button.control-button.leave(type="button", :title="$t('Leave meeting')", @click="leaveRoom")
 				.mdi.mdi-phone-hangup
+
+	transition(name="participants-backdrop")
+		.participants-backdrop(v-if="showParticipantsDrawer", @click="showParticipantsDrawer = false")
+	transition(name="participants-drawer")
+		.participants-drawer(v-if="showParticipantsDrawer")
+			.participants-header
+				.header-text
+					h2 Participants
+					span {{ participantCount }} in room
+				.participants-header-actions
+					button.end-meeting-button(v-if="canModerateParticipants", type="button", title="End meeting for all", :disabled="endingMeeting", @click="sendEndMeeting")
+						.mdi.mdi-phone-hangup
+						span End
+					button.drawer-close(type="button", title="Close participants", @click="showParticipantsDrawer = false")
+						.mdi.mdi-close
+			.waiting-room-section(v-if="canModerateParticipants && pendingAdmissionCount")
+				.waiting-room-heading
+					span Waiting room
+					span {{ pendingAdmissionCount }}
+				.waiting-room-list
+					.waiting-room-row(v-for="pendingUser in pendingAdmissions", :key="pendingUser.id")
+						.waiting-room-user
+							.mdi.mdi-account-clock-outline
+							span {{ pendingUser.display_name || 'Participant' }}
+						.waiting-room-actions
+							button.waiting-room-action.admit(type="button", :disabled="isAdmissionActionPending(pendingUser)", @click="admitPendingUser(pendingUser)")
+								.mdi.mdi-check
+								span Admit
+							button.waiting-room-action.deny(type="button", :disabled="isAdmissionActionPending(pendingUser)", @click="denyPendingUser(pendingUser)")
+								.mdi.mdi-close
+								span Deny
+			.participants-list
+				.participant-row(
+					v-for="participant in participantRows",
+					:key="participant.key",
+					:class="{ 'is-local': participant.local, 'is-speaking': participant.speaking }"
+				)
+					avatar(:user="participant.user", :size="40")
+					.participant-main
+						.participant-name
+							span.name {{ participant.label }}
+							span.self-label(v-if="participant.local") You
+						.participant-status(v-if="participant.statuses.length")
+							span.status-item(v-for="status in participant.statuses", :key="status.key")
+								.mdi(:class="status.icon")
+								span {{ status.label }}
+					.participant-media
+						.mdi(:class="participant.cameraOn ? 'mdi-video' : 'mdi-video-off off'", :title="participant.cameraOn ? 'Camera on' : 'Camera off'")
+						.mdi(:class="participant.micOn ? 'mdi-microphone' : 'mdi-microphone-off muted'", :title="participant.micOn ? 'Microphone on' : 'Muted'")
+					.participant-actions(v-if="canModerateParticipants && !participant.local")
+						button.participant-action-button(type="button", title="Participant actions", :aria-expanded="openParticipantMenu === participant.key ? 'true' : 'false'", @click.stop="toggleParticipantMenu(participant.key)")
+							.mdi.mdi-dots-vertical
+						.participant-action-menu(v-if="openParticipantMenu === participant.key")
+							button(type="button", :disabled="!participant.audioFeedId || !participant.micOn || isModeratorActionPending(participant, 'mute_participant')", @click="sendModeratorAction(participant, 'mute_participant')")
+								.mdi.mdi-microphone-off
+								span Mute
+							button(type="button", :disabled="!participant.videoFeedId || !participant.cameraOn || isModeratorActionPending(participant, 'stop_participant_video')", @click="sendModeratorAction(participant, 'stop_participant_video')")
+								.mdi.mdi-video-off
+								span Stop Video
+							button(type="button", :disabled="!participant.screenShareFeedId || isModeratorActionPending(participant, 'disable_screenshare')", @click="sendModeratorAction(participant, 'disable_screenshare')")
+								.mdi.mdi-monitor-off
+								span Disable screenshare
+							button(type="button", v-if="participant.handRaised", :disabled="isRaiseHandActionPending(participant)", @click="lowerParticipantHand(participant)")
+								.mdi.mdi-hand-back-right-off
+								span Lower hand
+							button.danger(type="button", :disabled="isModeratorActionPending(participant, 'remove_participant')", @click="sendModeratorAction(participant, 'remove_participant')")
+								.mdi.mdi-account-remove
+								span Remove
+			.raised-hands-section(v-if="raisedHandQueue.length")
+				.raised-hands-heading
+					span Raised hands
+					span {{ raisedHandQueue.length }}
+				.raised-hands-list
+					.raised-hand-row(v-for="hand in raisedHandQueue", :key="hand.user")
+						.raised-hand-user
+							.mdi.mdi-hand-back-right
+							span {{ hand.label }}
+						button.raised-hand-action(v-if="canModerateParticipants && !hand.local", type="button", :disabled="isRaiseHandUserPending(hand.user)", @click="lowerHandByUser(hand.user)")
+							.mdi.mdi-hand-back-right-off
+							span Lower
+
+
 
 	chat-user-card(v-if="selectedUser", ref="avatarCard", :user="selectedUser", @close="selectedUser = null")
 	transition(name="prompt")
-		template
-			a-v-device-prompt(v-if="showDevicePrompt", @close="closeDevicePrompt")
-			feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
+		a-v-device-prompt(v-if="showDevicePrompt", :video-preview="cameraEnabled", @close="closeDevicePrompt")
+	transition(name="prompt")
+		feedback-prompt(v-if="showFeedbackPrompt", module="janus", :collectTrace="collectTrace", @close="showFeedbackPrompt = false")
 </template>
 
 <script>
 import Janus from 'lib/janus.js'
 import adapter from 'webrtc-adapter'
-import {mapState} from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 import api from 'lib/api'
 import ChatUserCard from 'components/ChatUserCard'
 import Avatar from 'components/Avatar'
@@ -130,6 +409,7 @@ import AVDevicePrompt from 'components/AVDevicePrompt'
 import FeedbackPrompt from 'components/FeedbackPrompt'
 import {createPopper} from '@popperjs/core'
 import SoundMeter from 'lib/webrtc/soundmeter'
+import { nativeToUrl as nativeEmojiToUrl } from 'lib/emoji'
 
 const MIN_BITRATE = 150 * 1000
 const MAX_BITRATE = 1500 * 1000
@@ -139,6 +419,8 @@ const USER_VIDEO_DISPLAY = 'venueless user video'
 const AUDIO_LEVEL_INTERVAL = 160
 const SPEAKING_THRESHOLD = 0.03
 const LOG_ENTRIES = []
+const GRID_PAGE_SIZE = 16
+const JANUS_REACTIONS = ['👍', '👏', '🤣', '❤️', '😮']
 
 const log = (source, level, message) => {
 	LOG_ENTRIES.push([source, (new Date()).toISOString(), level, JSON.stringify(message)])
@@ -162,11 +444,17 @@ const summarizeStream = (stream) => stream ? ({
 
 const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRatio, gap) => {
 	const count = Math.max(videoCount, 1)
-	const minimumCols = count > 2 && containerWidth >= 420 ? 2 : 1
+	const isLandscape = containerWidth >= containerHeight || containerWidth >= 540
+	let minimumCols = 1
+	if (count === 2 && isLandscape) {
+		minimumCols = 2
+	} else if (count > 2 && containerWidth >= 420) {
+		minimumCols = 2
+	}
 	let bestLayout = {
 		area: 0,
 		cols: minimumCols,
-		rows: count,
+		rows: Math.ceil(count / minimumCols),
 		width: containerWidth,
 		height: containerHeight
 	}
@@ -181,6 +469,11 @@ const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRati
 		const width = Math.min(widthFromContainer, widthFromHeight)
 		const height = Math.min(heightFromWidth, heightFromContainer)
 		const area = width * height
+		// Prioritize 2 side-by-side columns for 2 people on landscape displays
+		if (count === 2 && cols === 2 && isLandscape) {
+			bestLayout = {area, cols, rows, width, height}
+			break
+		}
 		const isBetterShape = area === bestLayout.area && Math.abs(cols - rows) < Math.abs(bestLayout.cols - bestLayout.rows)
 		if (area > bestLayout.area || isBetterShape) {
 			bestLayout = {area, cols, rows, width, height}
@@ -192,6 +485,10 @@ const calculateLayout = (containerWidth, containerHeight, videoCount, aspectRati
 export default {
 	components: {Avatar, AVDevicePrompt, ChatUserCard, FeedbackPrompt},
 	props: {
+		room: {
+			type: Object,
+			default: null
+		},
 		server: {
 			type: String,
 			required: true
@@ -220,6 +517,14 @@ export default {
 			type: [Number, String],
 			required: true
 		},
+		eventRoomId: {
+			type: [Number, String],
+			default: null
+		},
+		isModerator: {
+			type: Boolean,
+			default: false
+		},
 		iceServers: {
 			type: Array,
 			required: true
@@ -227,6 +532,10 @@ export default {
 		automute: {
 			type: Boolean,
 			default: false
+		},
+		autovideo: {
+			type: Boolean,
+			default: true
 		},
 		size: {
 			type: String,
@@ -263,7 +572,7 @@ export default {
 				subscriberRetryTimeouts: {},
 				subscriberRetryCounts: {},
 				cleaningUp: false,
-				cameraEnabled: localStorage.videoRequested !== 'false',
+				cameraEnabled: this.autovideo !== undefined ? Boolean(this.autovideo) : (localStorage.videoRequested !== 'false'),
 			publishedWithVideo: false,
 			audioPublishInProgress: false,
 			audioPublishQueued: false,
@@ -271,8 +580,6 @@ export default {
 			videoPublishInProgress: false,
 			videoPublishQueued: false,
 			videoPublishTimeout: null,
-			cameraToggleInProgress: false,
-			cameraUnpublishTimeout: null,
 			localCameraActive: false,
 			micMuted: this.automute,
 			videoInput: localStorage.videoInput || '',
@@ -285,7 +592,6 @@ export default {
 			slowLinkInterval: null,
 			audioMeters: {},
 			audioLevels: {},
-			audioMeterContext: null,
 			audioLevelInterval: null,
 			layout: {
 				area: 0,
@@ -296,11 +602,54 @@ export default {
 			},
 			showFeedbackPrompt: false,
 			showDevicePrompt: false,
+			showParticipantsDrawer: false,
+			mediaStates: {},
+			apiMessageHandler: null,
 			selectedUser: null,
+			openParticipantMenu: null,
+			pendingModeratorActions: {},
+			pendingAdmissionActions: {},
+			pendingAdmissions: [],
+			endingMeeting: false,
+			screenShareBlockedByHost: false,
+			pinnedTileKey: null,
+			spotlightUserId: null,
+			spotlightModeratorId: null,
+			spotlightPending: false,
+			moderationNotice: null,
+			moderationNoticeTimeout: null,
+			raisedHands: {},
+			raiseHandPending: false,
+			pendingRaiseHandActions: {},
+			reactionPickerOpen: false,
+			roomReactions: [],
+			reactionSequence: 0,
+			currentVideoPage: 1,
 		}
 	},
 	computed: {
+		...mapGetters(['hasPermission']),
 		...mapState(['user']),
+		effectiveEventRoomId() {
+			return this.room?.id || this.eventRoomId || this.$store.state.activeRoom?.id || this.$route.params?.roomId || null
+		},
+		hasChatModule() {
+			if (this.room?.modules) {
+				return this.room.modules.some(m => m.type === 'chat.native')
+			}
+			return Boolean(this.$store.state.activeRoom?.modules?.some(m => m.type === 'chat.native'))
+		},
+		isChatOpen() {
+			if (!this.effectiveEventRoomId) return false
+			const isCollapsed = Boolean(this.$store.state.roomSidebarCollapsedByRoom?.[this.effectiveEventRoomId])
+			return !isCollapsed && this.$store.state.activeRoomSidebarTab === 'chat'
+		},
+		canModerateParticipants() {
+			return this.isModerator ||
+				this.hasPermission('room:januscall.moderate') ||
+				this.hasPermission('room:update') ||
+				this.hasPermission('world:update')
+		},
 		janusRoomId() {
 			return Number(this.roomId)
 		},
@@ -317,6 +666,14 @@ export default {
 			return Number(this.screenShareSessionId || Number(this.sessionId) + 1000000000)
 		},
 		gridStyle() {
+			if (this.size === 'tiny' || this.isStageMode) {
+				return {
+					'--tile-columns': 1,
+					'--tile-rows': 1,
+					'--tile-width': '100%',
+					'--tile-height': '100%',
+				}
+			}
 			const w = this.layout.width > 0 ? `${this.layout.width}px` : 'minmax(0, 1fr)'
 			const h = this.layout.height > 0 ? `${this.layout.height}px` : 'minmax(0, 1fr)'
 			return {
@@ -326,8 +683,185 @@ export default {
 				'--tile-height': h,
 			}
 		},
+		isStageMode() {
+			return this.size !== 'tiny' && (this.hasScreenTile || this.effectiveViewMode === 'speaker')
+		},
+		stageTile() {
+			if (!this.isStageMode) return null
+			return this.focusTile
+		},
+		filmstripTiles() {
+			if (!this.isStageMode) return []
+			const stageKey = this.stageTile?.key
+			return this.tiles.filter(tile => tile.key !== stageKey)
+		},
+		galleryClasses() {
+			return {
+				'is-stage-mode': this.isStageMode,
+				'has-screen': this.hasScreenTile,
+				'is-speaker-layout': this.effectiveViewMode === 'speaker',
+				[`cols-${this.layout.cols || 1}`]: !this.isStageMode,
+				[`tiles-${this.tiles.length}`]: true,
+			}
+		},
 		hasScreenTile() {
 			return this.tiles.some(tile => tile.screen)
+		},
+		effectiveViewMode() {
+			return this.spotlightUserId || this.pinnedTileKey ? 'speaker' : 'gallery'
+		},
+		spotlightTile() {
+			if (!this.spotlightUserId) return null
+			return this.tileForUser(this.spotlightUserId)
+		},
+		spotlightLabel() {
+			return this.spotlightTile?.label || 'a participant'
+		},
+		availableReactions() {
+			return JANUS_REACTIONS.map(emoji => ({
+				emoji,
+				url: nativeEmojiToUrl(emoji),
+			}))
+		},
+		localUserId() {
+			return this.normalizeFeedId(this.user?.id)
+		},
+		localHandRaised() {
+			return Boolean(this.raisedHands[this.localUserId]?.raised)
+		},
+		raisedHandQueue() {
+			return Object.entries(this.raisedHands)
+				.filter(([, hand]) => hand?.raised)
+				.map(([userId, hand]) => {
+					const participant = this.participantRows.find(row => this.normalizeFeedId(row.user?.id) === userId)
+					return {
+						user: userId,
+						local: userId === this.localUserId,
+						label: participant?.label || hand.display_name || 'Participant',
+						raised_at: hand.raised_at || 0,
+					}
+				})
+				.sort((a, b) => a.raised_at - b.raised_at)
+		},
+		focusTile() {
+			if (this.spotlightTile) return this.spotlightTile
+			const pinnedTile = this.tiles.find(tile => tile.key === this.pinnedTileKey)
+			if (pinnedTile) return pinnedTile
+			const screenTile = this.tiles.find(tile => tile.screen)
+			if (screenTile) return screenTile
+			const speakingTile = this.tiles.find(tile => tile.speaking)
+			if (speakingTile) return speakingTile
+			return this.tiles[0] || null
+		},
+		displayTiles() {
+			if (this.effectiveViewMode !== 'speaker' || !this.focusTile) {
+				return this.tiles
+			}
+			return [
+				this.focusTile,
+				...this.tiles.filter(tile => tile.key !== this.focusTile.key),
+			]
+		},
+		paginationTotalPages() {
+			return Math.max(Math.ceil(this.displayTiles.length / GRID_PAGE_SIZE), 1)
+		},
+		paginatedDisplayTiles() {
+			if (this.size === 'tiny') {
+				if (!this.displayTiles || !this.displayTiles.length) return []
+				const primary =
+					this.displayTiles.find(t => t.screen) ||
+					this.displayTiles.find(t => this.spotlightTile && this.spotlightTile.key === t.key) ||
+					this.displayTiles.find(t => this.pinnedTileKey === t.key) ||
+					this.displayTiles.find(t => t.speaking && !t.local) ||
+					this.displayTiles.find(t => !t.local && t.hasVideo) ||
+					this.displayTiles.find(t => !t.local) ||
+					this.displayTiles[0]
+				return primary ? [primary] : []
+			}
+			if (this.paginationTotalPages <= 1) {
+				return this.displayTiles
+			}
+			const start = (this.currentVideoPage - 1) * GRID_PAGE_SIZE
+			return this.displayTiles.slice(start, start + GRID_PAGE_SIZE)
+		},
+		participantRows() {
+			const rows = new Map()
+			const localState = this.currentMediaState()
+			rows.set(`local-${this.user?.id || 'user'}`, {
+				key: `local-${this.user?.id || 'user'}`,
+				local: true,
+				user: this.user,
+				label: this.user?.profile?.display_name || 'You',
+				micOn: localState.micOn,
+				cameraOn: localState.cameraOn,
+				sharingScreen: localState.sharingScreen,
+				speaking: localState.micOn && this.activeSpeakerId === 'local',
+				audioFeedId: this.normalizeFeedId(this.ourAudioId || this.janusAudioSessionId),
+				videoFeedId: this.normalizeFeedId(this.ourVideoId || this.janusVideoSessionId),
+				screenShareFeedId: this.normalizeFeedId(this.janusScreenShareSessionId),
+				handRaised: this.localHandRaised,
+				raisedAt: this.raisedHands[this.localUserId]?.raised_at || null,
+			})
+			for (const feed of this.remoteFeeds) {
+				if (!feed.user?.id) continue
+				const userId = this.normalizeFeedId(feed.user.id)
+				const mediaState = this.mediaStates[userId]
+				const hasMediaState = Boolean(mediaState)
+				const key = `remote-${userId}`
+				const row = rows.get(key) || {
+					key,
+					local: false,
+					user: feed.user,
+					label: feed.user?.profile?.display_name || 'Participant',
+					micOn: Boolean(mediaState?.micOn),
+					cameraOn: Boolean(mediaState?.cameraOn),
+					sharingScreen: Boolean(mediaState?.sharingScreen),
+					speaking: false,
+					audioFeedId: null,
+					videoFeedId: null,
+					screenShareFeedId: null,
+					handRaised: Boolean(this.raisedHands[userId]?.raised),
+					raisedAt: this.raisedHands[userId]?.raised_at || null,
+				}
+				row.handRaised = Boolean(this.raisedHands[userId]?.raised)
+				row.raisedAt = this.raisedHands[userId]?.raised_at || null
+				if (!hasMediaState && (feed.feedType === 'screen' || feed.isScreenShare)) {
+					row.sharingScreen = true
+				}
+				if (feed.feedType === 'screen' || feed.isScreenShare) {
+					row.screenShareFeedId = this.normalizeFeedId(feed.id)
+				}
+				const hasVideoTrack = Boolean(feed.stream?.getVideoTracks().length)
+				if (!hasMediaState && (feed.feedType === 'video' || feed.hasVideo || hasVideoTrack)) {
+					row.cameraOn = Boolean(feed.hasVideo || hasVideoTrack)
+				}
+				if (feed.feedType === 'video' || feed.hasVideo || hasVideoTrack) {
+					row.videoFeedId = this.normalizeFeedId(feed.id)
+				}
+				const hasAudioTrack = Boolean(feed.stream?.getAudioTracks().length)
+				if (!hasMediaState && (feed.feedType === 'audio' || hasAudioTrack)) {
+					row.micOn = hasAudioTrack && !feed.muted
+				}
+				if (feed.feedType === 'audio' || hasAudioTrack) {
+					row.audioFeedId = this.normalizeFeedId(feed.id)
+				}
+				row.speaking = row.micOn && this.activeSpeakerId === this.normalizeFeedId(feed.id)
+				rows.set(key, row)
+			}
+			return Array.from(rows.values()).map(row => ({
+				...row,
+				statuses: this.participantStatuses(row),
+			})).sort((a, b) => {
+				if (a.local) return -1
+				if (b.local) return 1
+				return a.label.localeCompare(b.label)
+			})
+		},
+		participantCount() {
+			return this.participantRows.length
+		},
+		pendingAdmissionCount() {
+			return this.pendingAdmissions.length
 		},
 		activeSpeakerId() {
 			let activeId = null
@@ -353,7 +887,8 @@ export default {
 				hasVideo: this.localCameraActive,
 				muted: this.micMuted,
 				audioLevel: localAudioLevel,
-				speaking: this.activeSpeakerId === 'local'
+				speaking: this.activeSpeakerId === 'local',
+				handRaised: this.localHandRaised,
 			}]
 			if (this.screenShareStream) {
 				localTiles.push({
@@ -362,11 +897,12 @@ export default {
 					local: true,
 					screen: true,
 					user: this.user,
-					label: this.$t('Your screen'),
+					label: 'Your screen',
 					hasVideo: true,
 					muted: true,
 					audioLevel: 0,
-					speaking: false
+					speaking: false,
+					handRaised: this.localHandRaised,
 				})
 			}
 			const remoteTiles = this.groupedRemoteTiles()
@@ -375,20 +911,32 @@ export default {
 	},
 	watch: {
 		tiles() {
+			if (this.pinnedTileKey && !this.tiles.some(tile => tile.key === this.pinnedTileKey)) {
+				this.pinnedTileKey = null
+			}
 			this.$nextTick(() => {
 				this.onResize()
 			})
-		}
+		},
+		paginationTotalPages() {
+			this.clampVideoPage()
+		},
 	},
-		mounted() {
-			LOG_ENTRIES.splice(0, LOG_ENTRIES.length)
-			window.__JANUS_DEBUG_LOGS__ = () => LOG_ENTRIES
-				.map(([source, timestamp, level, message]) => `${timestamp} [${level}] [${source}] ${message}`)
-				.join('\n')
-			window.__JANUS_DEBUG_JSON__ = () => JSON.stringify(LOG_ENTRIES, null, 2)
-			window.__JANUS_COPY_DEBUG_LOGS__ = () => copy(window.__JANUS_DEBUG_LOGS__())
-			this.cleaningUp = false
-			this.initJanus()
+	mounted() {
+		LOG_ENTRIES.splice(0, LOG_ENTRIES.length)
+		window.__JANUS_DEBUG_LOGS__ = () => LOG_ENTRIES
+			.map(([source, timestamp, level, message]) => `${timestamp} [${level}] [${source}] ${message}`)
+			.join('\n')
+		window.__JANUS_DEBUG_JSON__ = () => JSON.stringify(LOG_ENTRIES, null, 2)
+		window.__JANUS_COPY_DEBUG_LOGS__ = () => copy(window.__JANUS_DEBUG_LOGS__())
+		this.apiMessageHandler = this.onApiMessage.bind(this)
+		api.on('message', this.apiMessageHandler)
+		this.cleaningUp = false
+		this.initJanus()
+		this.loadMediaStates()
+		this.loadSpotlight()
+		this.loadRaisedHands()
+		this.loadPendingAdmissions()
 		this.slowLinkInterval = window.setInterval(() => {
 			this.downstreamSlowLinkCount = Math.max(this.downstreamSlowLinkCount - 1, 0)
 			this.upstreamSlowLinkCount = Math.max(this.upstreamSlowLinkCount - 1, 0)
@@ -396,6 +944,10 @@ export default {
 		this.audioLevelInterval = window.setInterval(this.refreshAudioLevels, AUDIO_LEVEL_INTERVAL)
 	},
 	unmounted() {
+		if (this.apiMessageHandler) {
+			api.off('message', this.apiMessageHandler)
+			this.apiMessageHandler = null
+		}
 		this.cleanup()
 		if (this.connectionRetryTimeout) {
 			window.clearTimeout(this.connectionRetryTimeout)
@@ -412,14 +964,550 @@ export default {
 			if (this.videoPublishTimeout) {
 				window.clearTimeout(this.videoPublishTimeout)
 			}
-			if (this.cameraUnpublishTimeout) {
-				window.clearTimeout(this.cameraUnpublishTimeout)
-				this.cameraUnpublishTimeout = null
+			if (this.moderationNoticeTimeout) {
+				window.clearTimeout(this.moderationNoticeTimeout)
 			}
 	},
 	methods: {
+		toggleChat() {
+			const roomId = this.effectiveEventRoomId
+			if (roomId) {
+				this.$store.commit('toggleRoomSidebar', { roomId, tab: 'chat' })
+			}
+		},
 		collectTrace() {
 			return LOG_ENTRIES
+		},
+		currentMediaState() {
+			const localHasAudio = Boolean(this.localAudioStream?.getAudioTracks().some(track => track.readyState === 'live' && track.enabled))
+			return {
+				micOn: localHasAudio && !this.micMuted,
+				cameraOn: this.localCameraActive,
+				sharingScreen: Boolean(this.screenShareStream),
+			}
+		},
+		onApiMessage(message) {
+			const [name, payload] = message
+			if (this.normalizeFeedId(payload?.room) !== this.normalizeFeedId(this.eventRoomId)) {
+				return
+			}
+			if (name === 'januscall.media_state') {
+				this.mergeMediaStates({
+					[this.normalizeFeedId(payload.user)]: payload.state,
+				})
+			} else if (name === 'januscall.moderation_action') {
+				this.handleModeratorAction(payload)
+			} else if (name === 'januscall.waiting_room_updated') {
+				this.handleWaitingRoomUpdate(payload)
+			} else if (name === 'januscall.spotlight') {
+				this.handleSpotlight(payload)
+			} else if (name === 'januscall.raise_hand') {
+				this.handleRaiseHand(payload)
+			} else if (name === 'januscall.raise_hand_notification') {
+				this.handleRaiseHandNotification(payload)
+			} else if (name === 'room.reaction' && payload?.context === 'januscall') {
+				this.handleRoomReaction(payload)
+			}
+		},
+		mergeMediaStates(states) {
+			const normalizedStates = {}
+			for (const [userId, state] of Object.entries(states || {})) {
+				normalizedStates[this.normalizeFeedId(userId)] = {
+					micOn: Boolean(state?.micOn),
+					cameraOn: Boolean(state?.cameraOn),
+					sharingScreen: Boolean(state?.sharingScreen),
+				}
+			}
+			this.mediaStates = {
+				...this.mediaStates,
+				...normalizedStates,
+			}
+		},
+		async loadMediaStates() {
+			if (!this.eventRoomId) return
+			try {
+				const response = await api.call('januscall.media_state.list', {
+					room: this.eventRoomId,
+				})
+				this.mergeMediaStates(response?.states)
+			} catch (error) {
+				log('janus-media-state', 'warn', {
+					action: 'loadMediaStates:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
+		},
+		async loadSpotlight() {
+			if (!this.eventRoomId) return
+			try {
+				const response = await api.call('januscall.spotlight.state', {
+					room: this.eventRoomId,
+				})
+				this.handleSpotlight(response || {})
+			} catch (error) {
+				log('janus-spotlight', 'warn', {
+					action: 'loadSpotlight:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
+		},
+		async loadRaisedHands() {
+			if (!this.eventRoomId) return
+			try {
+				const response = await api.call('januscall.raise_hand.list', {
+					room: this.eventRoomId,
+				})
+				const hands = {}
+				for (const hand of response?.hands || []) {
+					hands[this.normalizeFeedId(hand.user)] = {
+						raised: true,
+						raised_at: hand.raised_at || 0,
+						display_name: hand.display_name || '',
+					}
+				}
+				this.raisedHands = hands
+			} catch (error) {
+				log('janus-raise-hand', 'warn', {
+					action: 'loadRaisedHands:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
+		},
+		async loadPendingAdmissions() {
+			if (!this.canModerateParticipants || !this.eventRoomId) return
+			try {
+				const response = await api.call('januscall.waiting_room.list', {
+					room: this.eventRoomId,
+				})
+				this.pendingAdmissions = response?.users || []
+			} catch (error) {
+				log('janus-waiting-room', 'warn', {
+					action: 'loadPendingAdmissions:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
+		},
+		handleWaitingRoomUpdate(payload) {
+			if (!this.canModerateParticipants) return
+			const user = payload.user || {}
+			if (!user.id) return
+			if (payload.action === 'pending') {
+				const existingIndex = this.pendingAdmissions.findIndex(pendingUser => String(pendingUser.id) === String(user.id))
+				if (existingIndex >= 0) {
+					this.pendingAdmissions.splice(existingIndex, 1, user)
+				} else {
+					this.pendingAdmissions.push(user)
+				}
+				this.pendingAdmissions.sort((a, b) => (a.joined_at || 0) - (b.joined_at || 0))
+			} else {
+				this.pendingAdmissions = this.pendingAdmissions.filter(pendingUser => String(pendingUser.id) !== String(user.id))
+				const actions = {...this.pendingAdmissionActions}
+				delete actions[user.id]
+				this.pendingAdmissionActions = actions
+			}
+		},
+		isAdmissionActionPending(pendingUser) {
+			return Boolean(this.pendingAdmissionActions[pendingUser.id])
+		},
+		async updatePendingAdmission(pendingUser, action) {
+			this.pendingAdmissionActions = {
+				...this.pendingAdmissionActions,
+				[pendingUser.id]: true,
+			}
+			try {
+				await api.call(`januscall.waiting_room.${action}`, {
+					room: this.eventRoomId,
+					user: pendingUser.id,
+				})
+			} catch (error) {
+				const denied = error?.error === 'protocol.denied' || error?.code === 'protocol.denied'
+				this.showModerationNotice(denied ? 'Permission denied.' : 'Could not update waiting room.')
+				log('janus-waiting-room', 'warn', {
+					action,
+					user: pendingUser.id,
+					error: error?.message || error,
+					name: error?.name,
+				})
+			} finally {
+				const actions = {...this.pendingAdmissionActions}
+				delete actions[pendingUser.id]
+				this.pendingAdmissionActions = actions
+			}
+		},
+		admitPendingUser(pendingUser) {
+			this.updatePendingAdmission(pendingUser, 'admit')
+		},
+		denyPendingUser(pendingUser) {
+			this.updatePendingAdmission(pendingUser, 'deny')
+		},
+		showModerationNotice(message) {
+			this.moderationNotice = message
+			if (this.moderationNoticeTimeout) {
+				window.clearTimeout(this.moderationNoticeTimeout)
+			}
+			this.moderationNoticeTimeout = window.setTimeout(() => {
+				this.moderationNotice = null
+				this.moderationNoticeTimeout = null
+			}, 5000)
+		},
+		handleSpotlight(payload) {
+			this.spotlightUserId = payload.target_user ? this.normalizeFeedId(payload.target_user) : null
+			this.spotlightModeratorId = payload.moderator ? this.normalizeFeedId(payload.moderator) : null
+		},
+		handleRaiseHand(payload) {
+			const userId = this.normalizeFeedId(payload.user)
+			if (!userId) return
+			const state = payload.state || {}
+			if (state.raised) {
+				this.raisedHands = {
+					...this.raisedHands,
+					[userId]: {
+						raised: true,
+						raised_at: state.raised_at || Math.floor(Date.now() / 1000),
+						display_name: state.display_name || '',
+					},
+				}
+			} else {
+				const nextHands = {...this.raisedHands}
+				delete nextHands[userId]
+				this.raisedHands = nextHands
+			}
+		},
+		handleRaiseHandNotification(payload) {
+			const userId = this.normalizeFeedId(payload.user)
+			if (!userId || userId === this.localUserId) return
+			const participant = this.participantRows.find(row => this.normalizeFeedId(row.user?.id) === userId)
+			const displayName = participant?.label || payload.display_name || 'Participant'
+			this.showModerationNotice(`${displayName} raised their hand.`)
+			this.$store.dispatch('notifications/createDesktopNotification', {
+				title: 'Hand raised',
+				body: `${displayName} raised their hand.`,
+				tag: `januscall-hand-${this.eventRoomId}-${userId}`,
+				user: participant?.user,
+			})
+		},
+		async toggleRaiseHand() {
+			if (this.raiseHandPending || !this.eventRoomId) return
+			this.raiseHandPending = true
+			try {
+				const response = await api.call('januscall.raise_hand', {
+					room: this.eventRoomId,
+					raised: !this.localHandRaised,
+				})
+				if (response?.state) {
+					this.handleRaiseHand({
+						user: this.localUserId,
+						state: response.state,
+					})
+				}
+			} catch (error) {
+				this.showModerationNotice('Could not update hand status.')
+				log('janus-raise-hand', 'warn', {
+					action: 'toggleRaiseHand:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			} finally {
+				this.raiseHandPending = false
+			}
+		},
+		raiseHandActionKey(userId) {
+			return `lower-hand:${this.normalizeFeedId(userId)}`
+		},
+		isRaiseHandUserPending(userId) {
+			return Boolean(this.pendingRaiseHandActions[this.raiseHandActionKey(userId)])
+		},
+		isRaiseHandActionPending(participant) {
+			return this.isRaiseHandUserPending(participant.user?.id)
+		},
+		lowerParticipantHand(participant) {
+			if (!participant.user?.id) return
+			this.lowerHandByUser(participant.user.id)
+		},
+		async lowerHandByUser(userId) {
+			if (!this.canModerateParticipants || !this.eventRoomId) return
+			const normalizedUserId = this.normalizeFeedId(userId)
+			const key = this.raiseHandActionKey(normalizedUserId)
+			this.pendingRaiseHandActions = {
+				...this.pendingRaiseHandActions,
+				[key]: true,
+			}
+			this.openParticipantMenu = null
+			try {
+				await api.call('januscall.lower_hand', {
+					room: this.eventRoomId,
+					user: normalizedUserId,
+				})
+			} catch (error) {
+				const denied = error?.error === 'protocol.denied' || error?.code === 'protocol.denied'
+				this.showModerationNotice(denied ? 'Permission denied.' : 'Could not lower hand.')
+				log('janus-raise-hand', 'warn', {
+					action: 'lowerHandByUser:error',
+					userId: normalizedUserId,
+					error: error?.message || error,
+					name: error?.name,
+				})
+			} finally {
+				const nextPending = {...this.pendingRaiseHandActions}
+				delete nextPending[key]
+				this.pendingRaiseHandActions = nextPending
+			}
+		},
+		isTileHandRaised(tile) {
+			if (tile.handRaised) return true
+			const userId = this.normalizeFeedId(tile.user?.id)
+			return Boolean(this.raisedHands[userId]?.raised)
+		},
+		async sendReaction(reaction) {
+			if (!this.eventRoomId) return
+			this.reactionPickerOpen = false
+			try {
+				await api.call('room.react', {
+					room: this.eventRoomId,
+					reaction,
+					context: 'januscall',
+				})
+			} catch (error) {
+				this.showModerationNotice('Could not send reaction.')
+				log('janus-reaction', 'warn', {
+					action: 'sendReaction:error',
+					reaction,
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
+		},
+		handleRoomReaction(payload) {
+			if (payload.user && payload.reaction) {
+				this.showRoomReaction(payload)
+			}
+		},
+		reactionSenderName(payload) {
+			const userId = this.normalizeFeedId(payload.user)
+			const participant = this.participantRows.find(row => this.normalizeFeedId(row.user?.id) === userId)
+			if (participant?.local) return 'You'
+			return participant?.label || payload.display_name || 'Participant'
+		},
+		showRoomReaction(payload) {
+			const reaction = {
+				id: ++this.reactionSequence,
+				emoji: payload.reaction,
+				url: nativeEmojiToUrl(payload.reaction),
+				name: this.reactionSenderName(payload),
+			}
+			this.roomReactions = [...this.roomReactions, reaction].slice(-6)
+			window.setTimeout(() => {
+				this.roomReactions = this.roomReactions.filter(item => item.id !== reaction.id)
+			}, 3200)
+		},
+		tileForUser(userId, {preferScreen = true} = {}) {
+			const normalizedUserId = this.normalizeFeedId(userId)
+			const userTiles = this.tiles.filter(tile => this.normalizeFeedId(tile.user?.id) === normalizedUserId)
+			const preferredTile = preferScreen
+				? userTiles.find(tile => tile.screen)
+				: userTiles.find(tile => !tile.screen)
+			return preferredTile || userTiles[0] || null
+		},
+		togglePin(tile) {
+			if (this.spotlightUserId) return
+			this.pinnedTileKey = this.pinnedTileKey === tile.key ? null : tile.key
+			this.$nextTick(this.onResize)
+		},
+		async toggleSpotlight(tile) {
+			if (!this.canModerateParticipants || !tile.user?.id || this.spotlightPending) return
+			const targetUser = this.spotlightTile && this.spotlightTile.key === tile.key ? null : tile.user.id
+			await this.sendSpotlight(targetUser)
+		},
+		clearSpotlight() {
+			this.sendSpotlight(null)
+		},
+		async sendSpotlight(targetUser) {
+			if (!this.eventRoomId || this.spotlightPending) return
+			this.spotlightPending = true
+			try {
+				await api.call('januscall.spotlight', {
+					room: this.eventRoomId,
+					target_user: targetUser,
+				})
+			} catch (error) {
+				const denied = error?.error === 'protocol.denied' || error?.code === 'protocol.denied'
+				this.showModerationNotice(denied ? 'Permission denied.' : 'Could not update spotlight.')
+				log('janus-spotlight', 'warn', {
+					action: 'sendSpotlight:error',
+					targetUser,
+					error: error?.message || error,
+					name: error?.name,
+				})
+			} finally {
+				this.spotlightPending = false
+			}
+		},
+		tileElementFromEvent(event) {
+			return event?.currentTarget?.closest?.('.video-tile')
+		},
+		async toggleFullscreen(event) {
+			const tileElement = this.tileElementFromEvent(event)
+			if (!tileElement) return
+			try {
+				if (document.fullscreenElement === tileElement) {
+					await document.exitFullscreen()
+				} else {
+					await tileElement.requestFullscreen()
+				}
+			} catch (error) {
+				this.showModerationNotice('Fullscreen is not available.')
+				log('janus-tile-controls', 'warn', {
+					action: 'toggleFullscreen:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
+		},
+		async togglePictureInPicture(event) {
+			if (!document.pictureInPictureEnabled) return
+			const tileElement = this.tileElementFromEvent(event)
+			const video = tileElement?.querySelector?.('video:not(.is-hidden)')
+			if (!video) return
+			try {
+				if (document.pictureInPictureElement === video) {
+					await document.exitPictureInPicture()
+				} else {
+					await video.requestPictureInPicture()
+				}
+			} catch (error) {
+				this.showModerationNotice('Picture in picture is not available for this video.')
+				log('janus-tile-controls', 'warn', {
+					action: 'togglePictureInPicture:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
+		},
+		handleModeratorAction(payload) {
+			if (payload.action === 'end_meeting') {
+				this.micMuted = true
+				this.localCameraActive = false
+				this.sendMediaState()
+				this.cleanup()
+				this.$emit('hangup', {message: 'The meeting was ended by the host.'})
+				return
+			}
+			if (this.normalizeFeedId(payload?.target_user) !== this.normalizeFeedId(this.user?.id)) {
+				return
+			}
+			if (payload.action === 'mute_participant') {
+				this.micMuted = true
+				this.applyMicState()
+				this.sendMediaState()
+				this.showModerationNotice('You were muted by the host.')
+			} else if (payload.action === 'stop_participant_video') {
+				this.cameraEnabled = false
+				localStorage.videoRequested = false
+				this.unpublishVideoMedia()
+				this.showModerationNotice('Your camera was turned off by the host.')
+			} else if (payload.action === 'remove_participant') {
+				this.micMuted = true
+				this.localCameraActive = false
+				this.sendMediaState()
+				this.cleanup()
+				this.$emit('hangup', {message: 'You were removed by the host.'})
+			} else if (payload.action === 'disable_screenshare') {
+				this.screenShareBlockedByHost = true
+				if (this.screenShareState === 'published' || this.screenShareState === 'publishing') {
+					this.stopScreenShare()
+				} else {
+					this.stopPendingScreenShareTracks()
+				}
+				this.showModerationNotice('Screen sharing was disabled by the host.')
+			}
+		},
+		toggleParticipantMenu(key) {
+			this.openParticipantMenu = this.openParticipantMenu === key ? null : key
+		},
+		moderatorActionKey(participant, action) {
+			return `${participant.key}:${action}`
+		},
+		isModeratorActionPending(participant, action) {
+			return Boolean(this.pendingModeratorActions[this.moderatorActionKey(participant, action)])
+		},
+		targetFeedIdForAction(participant, action) {
+			if (action === 'mute_participant') return participant.audioFeedId
+			if (action === 'stop_participant_video') return participant.videoFeedId
+			if (action === 'disable_screenshare') return participant.screenShareFeedId
+			return participant.audioFeedId || participant.videoFeedId || participant.screenShareFeedId
+		},
+		async sendModeratorAction(participant, action) {
+			const targetFeedId = this.targetFeedIdForAction(participant, action)
+			if (!targetFeedId) return
+			const key = this.moderatorActionKey(participant, action)
+			this.pendingModeratorActions = {
+				...this.pendingModeratorActions,
+				[key]: true,
+			}
+			this.openParticipantMenu = null
+			try {
+				await api.call(`januscall.${action}`, {
+					room: this.eventRoomId,
+					target_feed_id: targetFeedId,
+				})
+			} catch (error) {
+				const denied = error?.error === 'protocol.denied' || error?.code === 'protocol.denied'
+				this.showModerationNotice(denied ? 'Permission denied.' : 'Could not apply moderator action.')
+				log('janus-moderation', 'warn', {
+					action: 'sendModeratorAction:error',
+					command: action,
+					targetFeedId,
+					error: error?.message || error,
+					name: error?.name,
+				})
+			} finally {
+				const nextPending = {...this.pendingModeratorActions}
+				delete nextPending[key]
+				this.pendingModeratorActions = nextPending
+			}
+		},
+		async sendEndMeeting() {
+			if (this.endingMeeting) return
+			this.endingMeeting = true
+			this.openParticipantMenu = null
+			try {
+				await api.call('januscall.end_meeting', {
+					room: this.eventRoomId,
+				})
+			} catch (error) {
+				const denied = error?.error === 'protocol.denied' || error?.code === 'protocol.denied'
+				this.showModerationNotice(denied ? 'Permission denied.' : 'Could not end the meeting.')
+				log('janus-moderation', 'warn', {
+					action: 'sendEndMeeting:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+				this.endingMeeting = false
+			}
+		},
+		async sendMediaState() {
+			if (!this.eventRoomId) return
+			const state = this.currentMediaState()
+			this.mergeMediaStates({
+				[this.normalizeFeedId(this.user?.id)]: state,
+			})
+			try {
+				const response = await api.call('januscall.media_state', {
+					room: this.eventRoomId,
+					...state,
+				})
+				this.mergeMediaStates(response?.states)
+			} catch (error) {
+				log('janus-media-state', 'warn', {
+					action: 'sendMediaState:error',
+					error: error?.message || error,
+					name: error?.name,
+				})
+			}
 		},
 		initJanus() {
 			this.connectionState = 'connecting'
@@ -633,8 +1721,6 @@ export default {
 					this.publishVideoMedia()
 				}
 				this.subscribeToPublishers(msg.publishers || [])
-			} else if (event === 'event' && msg.unpublished === 'ok') {
-				this.finishCameraToggle()
 			} else {
 				this.handlePublisherEvent(msg)
 			}
@@ -645,7 +1731,7 @@ export default {
 					this.cameraEnabled = false
 					this.publishedWithVideo = false
 					this.stopLocalCameraTracks()
-					this.publishingError = this.$t('The server rejected the selected camera stream.')
+					this.publishingError = 'The server rejected the selected camera stream.'
 				}
 			} else if (event === 'event' && msg.configured === 'ok') {
 				this.finishVideoPublish()
@@ -659,7 +1745,7 @@ export default {
 				msg,
 			})
 			if (event === 'destroyed') {
-				this.failConnection(this.$t('Room destroyed'), false)
+				this.failConnection('Room destroyed', false)
 			} else if (event === 'event') {
 				if (msg.publishers) this.subscribeToPublishers(msg.publishers)
 				if (msg.joining) {
@@ -679,7 +1765,7 @@ export default {
 				}
 				if (msg.error) {
 					if (msg.error_code === 426) {
-						this.failConnection(this.$t('Room does not exist'), false)
+						this.failConnection('Room does not exist', false)
 					} else {
 						this.failConnection(`Server error: ${msg.error}`, false)
 					}
@@ -743,7 +1829,7 @@ export default {
 					})
 					this.finishAudioPublish()
 					this.publishingState = 'failed'
-					this.publishingError = error?.message || this.$t('Could not publish microphone.')
+					this.publishingError = error?.message || 'Could not publish microphone.'
 					return
 				}
 			}
@@ -759,7 +1845,7 @@ export default {
 					})
 					this.audioPublisherHandle.send({
 						message: {
-							request: 'configure',
+							request: this.audioPublished ? 'configure' : 'publish',
 							audio: true,
 							video: false,
 						},
@@ -768,6 +1854,7 @@ export default {
 							log('janus-audio-publisher', 'debug', {
 								action: 'configure:send-success',
 							})
+							this.audioPublished = true
 							this.audioPublishTimeout = window.setTimeout(() => this.finishAudioPublish(), 4000)
 						},
 						error: (error) => {
@@ -777,7 +1864,7 @@ export default {
 							})
 							this.finishAudioPublish()
 							this.publishingState = 'failed'
-							this.publishingError = error?.message || error || this.$t('Could not configure microphone.')
+							this.publishingError = error?.message || error || 'Could not configure microphone.'
 						},
 					})
 				},
@@ -789,7 +1876,7 @@ export default {
 					})
 					this.finishAudioPublish()
 					this.publishingState = 'failed'
-					this.publishingError = error?.message || this.$t('Could not publish microphone.')
+					this.publishingError = error?.message || 'Could not publish microphone.'
 				},
 			}
 			if (explicitStream) {
@@ -820,7 +1907,18 @@ export default {
 					action: 'publishVideoMedia:skip-not-joined',
 					hasHandle: Boolean(this.videoPublisherHandle),
 				})
-				this.finishCameraToggle()
+				try {
+					this.videoPublisherHandle.send({
+						message: {
+							request: 'join',
+							room: this.janusRoomId,
+							id: this.janusVideoSessionId,
+							ptype: 'publisher',
+							token: this.token,
+							display: USER_VIDEO_DISPLAY,
+						}
+					})
+				} catch (e) {}
 				return
 			}
 			if (this.videoPublishInProgress) {
@@ -867,7 +1965,12 @@ export default {
 					this.publishedWithVideo = false
 					this.localCameraActive = false
 					localStorage.videoRequested = false
-					this.publishingError = error?.message || this.$t('Could not publish camera.')
+					this.publishingError = error?.message || 'Could not publish camera.'
+					return
+				}
+				if (!this.cameraEnabled) {
+					this.stopStreamTracks(explicitStream)
+					this.finishVideoPublish()
 					return
 				}
 			}
@@ -877,6 +1980,13 @@ export default {
 				simulcast: false,
 				simulcast2: false,
 				success: (jsep) => {
+					if (!this.cameraEnabled) {
+						this.finishVideoPublish()
+						if (this.videoPublisherHandle?.webrtcStuff?.pc) {
+							this.videoPublisherHandle.send({message: {request: 'unpublish'}})
+						}
+						return
+					}
 					log('janus-video-publisher', 'debug', {
 						action: 'createOffer:success',
 						jsepType: jsep?.type,
@@ -884,27 +1994,32 @@ export default {
 					})
 					this.videoPublisherHandle.send({
 						message: {
-							request: 'configure',
+							request: this.publishedWithVideo ? 'configure' : 'publish',
 							audio: false,
 							video: true,
 							bitrate: this.upstreamBitrate,
 						},
 						jsep,
 						success: () => {
-							log('janus-video-publisher', 'debug', {
-								action: 'configure:send-success',
-								bitrate: this.upstreamBitrate,
-							})
-							this.publishedWithVideo = true
-							this.videoPublishTimeout = window.setTimeout(() => this.finishVideoPublish(), 4000)
-						},
+								log('janus-video-publisher', 'debug', {
+									action: 'configure:send-success',
+									bitrate: this.upstreamBitrate,
+								})
+								if (!this.cameraEnabled) {
+									this.finishVideoPublish()
+									this.unpublishVideoMedia()
+									return
+								}
+								this.publishedWithVideo = true
+								this.videoPublishTimeout = window.setTimeout(() => this.finishVideoPublish(), 4000)
+							},
 						error: (error) => {
 							log('janus-video-publisher', 'error', {
 								action: 'configure:error',
 								error: error?.message || error,
 							})
 							this.finishVideoPublish()
-							this.publishingError = error?.message || error || this.$t('Could not configure camera.')
+							this.publishingError = error?.message || error || 'Could not configure camera.'
 						},
 					})
 				},
@@ -919,7 +2034,7 @@ export default {
 					this.publishedWithVideo = false
 					this.localCameraActive = false
 					localStorage.videoRequested = false
-					this.publishingError = error?.message || this.$t('Could not publish camera.')
+					this.publishingError = error?.message || 'Could not publish camera.'
 				},
 			}
 			if (explicitStream) {
@@ -930,14 +2045,9 @@ export default {
 		unpublishVideoMedia() {
 			this.publishedWithVideo = false
 			this.stopLocalCameraTracks()
+			this.sendMediaState()
 			if (this.videoPublisherHandle?.webrtcStuff?.pc) {
 				this.videoPublisherHandle.send({message: {request: 'unpublish'}})
-				if (this.cameraUnpublishTimeout) {
-					window.clearTimeout(this.cameraUnpublishTimeout)
-				}
-				this.cameraUnpublishTimeout = window.setTimeout(() => this.finishCameraToggle(), 2500)
-			} else {
-				this.finishCameraToggle()
 			}
 		},
 		microphoneConstraints(audioInput) {
@@ -986,27 +2096,10 @@ export default {
 				this.videoPublishTimeout = null
 			}
 			this.videoPublishInProgress = false
-			if (this.cameraEnabled) {
-				this.finishCameraToggle()
-			}
 			if (this.videoPublishQueued) {
 				this.videoPublishQueued = false
 				this.$nextTick(this.publishVideoMedia)
 			}
-		},
-		startCameraToggle() {
-			this.cameraToggleInProgress = true
-			if (this.cameraUnpublishTimeout) {
-				window.clearTimeout(this.cameraUnpublishTimeout)
-				this.cameraUnpublishTimeout = null
-			}
-		},
-		finishCameraToggle() {
-			if (this.cameraUnpublishTimeout) {
-				window.clearTimeout(this.cameraUnpublishTimeout)
-				this.cameraUnpublishTimeout = null
-			}
-			this.cameraToggleInProgress = false
 		},
 		onLocalAudioStream(stream) {
 			this.localAudioStream = stream
@@ -1025,8 +2118,16 @@ export default {
 			this.applyMicState()
 			this.publishingState = 'published'
 			this.publishingError = null
+			this.sendMediaState()
 		},
 		onLocalVideoStream(stream) {
+			if (!this.cameraEnabled) {
+				this.stopStreamTracks(stream)
+				this.localCameraActive = false
+				this.localVideoStream = null
+				this.sendMediaState()
+				return
+			}
 			this.localVideoStream = stream
 			this.localCameraActive = stream.getVideoTracks().some(track => track.readyState === 'live')
 			log('janus-video-publisher', 'debug', {
@@ -1037,8 +2138,14 @@ export default {
 			this.attachLocalVideo(stream)
 			this.publishingState = 'published'
 			this.publishingError = null
+			this.sendMediaState()
 		},
 		applyMicState() {
+			if (this.localAudioStream) {
+				for (const track of this.localAudioStream.getAudioTracks()) {
+					track.enabled = !this.micMuted
+				}
+			}
 			if (!this.audioPublisherHandle) {
 				log('janus-audio-publisher', 'debug', {
 					action: 'applyMicState:skip-no-handle',
@@ -1083,13 +2190,14 @@ export default {
 				action: 'toggleMic',
 				micMuted: this.micMuted,
 			})
-			this.applyMicState()
+			if (!this.micMuted && !this.audioPublisherHandle.webrtcStuff?.pc) {
+				this.publishAudioMedia()
+			} else {
+				this.applyMicState()
+				this.sendMediaState()
+			}
 		},
 		toggleCamera() {
-			if (this.cameraToggleInProgress || this.videoPublishInProgress) {
-				return
-			}
-			this.startCameraToggle()
 			this.cameraEnabled = !this.cameraEnabled
 			localStorage.videoRequested = this.cameraEnabled
 			log('janus-video-publisher', 'debug', {
@@ -1103,6 +2211,10 @@ export default {
 			}
 		},
 		toggleScreenShare() {
+			if (this.screenShareBlockedByHost) {
+				this.showModerationNotice('Screen sharing was disabled by the host.')
+				return
+			}
 			if (this.screenShareState === 'published') {
 				this.stopScreenShare()
 				return
@@ -1213,7 +2325,7 @@ export default {
 				if (stream) {
 					this.publishScreenShare(stream)
 				} else {
-					this.failScreenShare(this.$t('Screen sharing needs to be started again.'))
+					this.failScreenShare('Screen sharing needs to be started again.')
 				}
 			} else if (event === 'event') {
 				if (msg.unpublished === 'ok') {
@@ -1224,12 +2336,12 @@ export default {
 					this.failScreenShare(msg.error)
 				}
 			} else if (event === 'destroyed') {
-				this.failScreenShare(this.$t('Room destroyed'))
+				this.failScreenShare('Room destroyed')
 			}
 			if (jsep) {
 				this.screenShareHandle.handleRemoteJsep({jsep})
 				if (!msg.video_codec) {
-					this.failScreenShare(this.$t('The server rejected the selected screen stream.'))
+					this.failScreenShare('The server rejected the selected screen stream.')
 				}
 			}
 		},
@@ -1241,10 +2353,11 @@ export default {
 			this.screenShareState = 'publishing'
 			this.stopScreenShareTracks()
 			if (!stream) {
-				this.failScreenShare(this.$t('Screen sharing needs to be started again.'))
+				this.failScreenShare('Screen sharing needs to be started again.')
 				return
 			}
 			this.screenShareStream = stream
+			this.sendMediaState()
 			stream.getVideoTracks()[0].onended = () => {
 				if (this.screenShareState === 'published' || this.screenShareState === 'publishing') {
 					this.stopScreenShare()
@@ -1282,7 +2395,7 @@ export default {
 					})
 					this.screenShareHandle.send({
 						message: {
-							request: 'configure',
+							request: this.screenShareState === 'published' ? 'configure' : 'publish',
 							audio: hasAudio,
 							video: true,
 							bitrate: MAX_BITRATE,
@@ -1310,16 +2423,15 @@ export default {
 		},
 		async getDisplayMedia() {
 			if (!navigator.mediaDevices?.getDisplayMedia) {
-				throw new Error(this.$t('Screen sharing is not supported by this browser.'))
+				throw new Error('Screen sharing is not supported by this browser.')
 			}
-			const isSafari = Janus.webRTCAdapter?.browserDetails?.browser === 'safari'
 			const constraints = {
 				video: {
 					frameRate: {ideal: 15, max: 30},
 					width: {max: 1920},
 					height: {max: 1080},
 				},
-				audio: isSafari ? false : {
+				audio: {
 					echoCancellation: true,
 					noiseSuppression: true,
 					autoGainControl: true,
@@ -1329,16 +2441,16 @@ export default {
 			try {
 				stream = await navigator.mediaDevices.getDisplayMedia(constraints)
 			} catch (error) {
-				if (isSafari || !['TypeError', 'OverconstrainedError', 'ConstraintNotSatisfiedError'].includes(error?.name)) {
+				if (['AbortError', 'NotAllowedError'].includes(error?.name)) {
 					throw error
 				}
 				stream = await navigator.mediaDevices.getDisplayMedia({
-					...constraints,
+					video: constraints.video || true,
 					audio: false,
 				})
 			}
 			if (!stream.getVideoTracks().length) {
-				throw new Error(this.$t('No screen video track was selected.'))
+				throw new Error('No screen video track was selected.')
 			}
 			return stream
 		},
@@ -1371,6 +2483,7 @@ export default {
 				track.stop()
 			}
 			this.screenShareStream = null
+			this.sendMediaState()
 		},
 		stopPendingScreenShareTracks() {
 			if (!this.pendingScreenShareStream) return
@@ -1392,6 +2505,7 @@ export default {
 			this.stopPendingScreenShareTracks()
 			this.stopScreenShareTracks()
 			this.screenShareState = 'unpublished'
+			this.sendMediaState()
 		},
 		failScreenShare(error, silent = false) {
 			log('janus-screen-publisher', 'error', {
@@ -1403,7 +2517,8 @@ export default {
 			this.stopPendingScreenShareTracks()
 			this.stopScreenShareTracks()
 			this.screenShareState = 'failed'
-			this.screenShareError = silent ? null : (error?.message || error || this.$t('Screen sharing failed.'))
+			this.screenShareError = silent ? null : (error?.message || error || 'Screen sharing failed.')
+			this.sendMediaState()
 			if (silent) {
 				this.screenShareState = 'unpublished'
 			}
@@ -1724,10 +2839,9 @@ export default {
 			if (element.srcObject !== feed.stream) {
 				Janus.attachMediaStream(element, feed.stream)
 			}
-			this.setMediaElementAudioOutput(element, {
-				feedId: id,
-				feedType: feed.feedType,
-			})
+			if (localStorage.audioOutput && element.setSinkId) {
+				element.setSinkId(localStorage.audioOutput)
+			}
 			if (!element.paused && element.readyState > 0) return
 			const playPromise = element.play()
 			if (playPromise?.catch) {
@@ -1767,12 +2881,14 @@ export default {
 						hasVideo: feed.hasVideo,
 						muted: feed.muted,
 						audioLevel: level,
-						speaking: this.activeSpeakerId === id
+						speaking: this.activeSpeakerId === id,
+						handRaised: Boolean(this.raisedHands[this.normalizeFeedId(feed.user?.id)]?.raised),
 					})
 					continue
 				}
 				if (!feed.user?.id) continue
 				const userId = this.normalizeFeedId(feed.user.id)
+				const mediaState = this.mediaStates[userId]
 				const existingTile = participantTiles.get(userId) || {
 					key: `remote-user-${userId}`,
 					id: `user-${userId}`,
@@ -1782,20 +2898,21 @@ export default {
 					local: false,
 					screen: false,
 					user: feed.user,
-					label: feed.user?.profile?.display_name || this.$t('Participant'),
-					hasVideo: false,
-					muted: true,
+					label: feed.user?.profile?.display_name || 'Participant',
+					hasVideo: Boolean(mediaState?.cameraOn),
+					muted: mediaState ? !mediaState.micOn : true,
 					audioLevel: 0,
-					speaking: false
+					speaking: false,
+					handRaised: Boolean(this.raisedHands[userId]?.raised),
 				}
 				if (feed.feedType === 'video' || feed.hasVideo || feed.stream?.getVideoTracks().length) {
 					existingTile.videoFeedId = id
-					existingTile.hasVideo = Boolean(feed.hasVideo)
+					existingTile.hasVideo = mediaState ? Boolean(mediaState.cameraOn) : Boolean(feed.hasVideo)
 				}
 				if (feed.feedType === 'audio' || feed.stream?.getAudioTracks().length) {
 					existingTile.audioFeedId = id
 					existingTile.audioMeterFeedId = id
-					existingTile.muted = feed.muted
+					existingTile.muted = mediaState ? !mediaState.micOn : feed.muted
 				}
 				participantTiles.set(userId, existingTile)
 			}
@@ -1864,6 +2981,15 @@ export default {
 					hasFeed: Boolean(feed),
 				})
 				if (feed) {
+					if (this.feedIdEquals(user?.id, this.user?.id)) {
+						log('janus-subscriber', 'warn', {
+							action: 'fetchFeedUser:skip-own-user-feed',
+							feedId: this.normalizeFeedId(feedId),
+							userId: user?.id,
+						})
+						this.removeRemoteFeed(feedId)
+						return
+					}
 					feed.user = user
 					this.upsertRemoteFeed(feed)
 				}
@@ -1875,6 +3001,23 @@ export default {
 					name: error?.name,
 				})
 			}
+		},
+		previousVideoPage() {
+			this.currentVideoPage = Math.max(this.currentVideoPage - 1, 1)
+		},
+		nextVideoPage() {
+			this.currentVideoPage = Math.min(this.currentVideoPage + 1, this.paginationTotalPages)
+		},
+		clampVideoPage() {
+			if (this.currentVideoPage > this.paginationTotalPages) {
+				this.currentVideoPage = this.paginationTotalPages
+			}
+			if (this.currentVideoPage < 1) {
+				this.currentVideoPage = 1
+			}
+		},
+		toggleParticipants() {
+			this.showParticipantsDrawer = !this.showParticipantsDrawer
 		},
 		closeDevicePrompt() {
 			this.showDevicePrompt = false
@@ -1907,30 +3050,16 @@ export default {
 			this.updateAudioOutputs()
 		},
 		updateAudioOutputs() {
-			for (const element of this.$el.querySelectorAll('video[data-feed-id], audio[data-audio-feed-id]')) {
-				this.setMediaElementAudioOutput(element, {
-					feedId: element.dataset.feedId || element.dataset.audioFeedId,
-					feedType: element.tagName.toLowerCase(),
-				})
+			for (const video of this.$el.querySelectorAll('video[data-feed-id]')) {
+				if (localStorage.audioOutput && video.setSinkId) {
+					log('janus-devices', 'debug', {
+						action: 'setSinkId',
+						feedId: video.dataset.feedId,
+						audioOutput: localStorage.audioOutput,
+					})
+					video.setSinkId(localStorage.audioOutput)
+				}
 			}
-		},
-		setMediaElementAudioOutput(element, context = {}) {
-			if (!element?.setSinkId) return
-			const audioOutput = localStorage.audioOutput || ''
-			log('janus-devices', 'debug', {
-				action: 'setSinkId',
-				...context,
-				audioOutput,
-			})
-			element.setSinkId(audioOutput).catch(error => {
-				log('janus-devices', 'warn', {
-					action: 'setSinkId:error',
-					...context,
-					audioOutput,
-					error: error?.message || error,
-					name: error?.name,
-				})
-			})
 		},
 		disableIncomingVideo() {
 			this.videoOutput = false
@@ -1971,7 +3100,9 @@ export default {
 			if (!stream.getAudioTracks().length) return
 			this.closeAudioMeter(id)
 			try {
-				const meter = new SoundMeter(this.getAudioMeterContext())
+				window.AudioContext = window.AudioContext || window.webkitAudioContext
+				const context = new AudioContext()
+				const meter = new SoundMeter(context)
 				meter.connectToSource(stream)
 				this.audioMeters[id] = meter
 				log('janus-audio-meter', 'debug', {
@@ -1987,14 +3118,6 @@ export default {
 				})
 			}
 		},
-		getAudioMeterContext() {
-			if (this.audioMeterContext && this.audioMeterContext.state !== 'closed') {
-				return this.audioMeterContext
-			}
-			const AudioContextConstructor = window.AudioContext || window.webkitAudioContext
-			this.audioMeterContext = new AudioContextConstructor()
-			return this.audioMeterContext
-		},
 		closeAudioMeter(id) {
 			const meter = this.audioMeters[id]
 			if (!meter) return
@@ -2002,18 +3125,11 @@ export default {
 				action: 'closeAudioMeter',
 				id,
 			})
-			meter.stop()
+			if (meter.context?.state !== 'closed') {
+				meter.context.close()
+			}
 			delete this.audioMeters[id]
 			delete this.audioLevels[id]
-			if (!Object.keys(this.audioMeters).length) {
-				this.closeAudioMeterContext()
-			}
-		},
-		closeAudioMeterContext() {
-			if (this.audioMeterContext && this.audioMeterContext.state !== 'closed') {
-				this.audioMeterContext.close()
-			}
-			this.audioMeterContext = null
 		},
 		refreshAudioLevels() {
 			const levels = {}
@@ -2027,6 +3143,28 @@ export default {
 		},
 		audioMeterStyle(tile) {
 			return {transform: `scaleX(${tile.audioLevel})`}
+		},
+		remoteVideoShouldBeMuted(tile) {
+			return Boolean(tile.audioFeedId && tile.videoFeedId && !this.feedIdEquals(tile.audioFeedId, tile.videoFeedId))
+		},
+		participantStatuses(participant) {
+			const statuses = []
+			if (participant.speaking) {
+				statuses.push({key: 'speaking', icon: 'mdi-volume-high', label: 'Speaking'})
+			}
+			if (participant.sharingScreen) {
+				statuses.push({key: 'screen', icon: 'mdi-monitor-share', label: 'Sharing screen'})
+			}
+			if (participant.handRaised) {
+				statuses.push({key: 'hand', icon: 'mdi-hand-back-right', label: 'Hand raised'})
+			}
+			if (!participant.cameraOn) {
+				statuses.push({key: 'camera-off', icon: 'mdi-video-off', label: 'Camera off'})
+			}
+			if (!participant.micOn) {
+				statuses.push({key: 'mic-muted', icon: 'mdi-microphone-off', label: 'Muted'})
+			}
+			return statuses
 		},
 		isFeedMuted(id) {
 			if (id === 'local') return this.micMuted
@@ -2042,8 +3180,6 @@ export default {
 			return 'video'
 		},
 		isOwnFeed(feedId) {
-			// Janus can report our separate publishers before it echoes the assigned ids.
-			// Keep the configured local session ids in this check to avoid self-subscribing.
 			return this.feedIdEquals(feedId, this.ourAudioId) ||
 				this.feedIdEquals(feedId, this.ourVideoId) ||
 				this.feedIdEquals(feedId, this.janusAudioSessionId) ||
@@ -2054,18 +3190,16 @@ export default {
 			this.subscribingFeedIds = this.subscribingFeedIds.filter(id => !this.feedIdEquals(id, feedId))
 		},
 		normalizeFeedId(id) {
-			return String(id)
+			return String(id).split('_')[0]
 		},
 		feedIdEquals(a, b) {
 			return this.normalizeFeedId(a) === this.normalizeFeedId(b)
 		},
 		feedLabel(feed) {
 			if (feed.feedType === 'screen') {
-				return feed.user?.profile?.display_name
-					? this.$t('{{name}}\'s screen', {name: feed.user.profile.display_name})
-					: this.$t('Shared screen')
+				return feed.user?.profile?.display_name ? `${feed.user.profile.display_name}'s screen` : 'Shared screen'
 			}
-			return feed.user?.profile?.display_name || this.$t('Participant')
+			return feed.user?.profile?.display_name || 'Participant'
 		},
 		stopLocalCameraTracks() {
 			this.localCameraActive = false
@@ -2079,16 +3213,6 @@ export default {
 			}
 			this.localVideoStream = null
 		},
-		clearLocalMediaElements() {
-			const localVideo = this.singleRef(this.$refs.localVideo)
-			if (localVideo) {
-				localVideo.srcObject = null
-			}
-			const localScreenVideo = this.singleRef(this.$refs.localScreenVideo)
-			if (localScreenVideo) {
-				localScreenVideo.srcObject = null
-			}
-		},
 		stopStreamTracks(stream) {
 			for (const track of stream.getTracks()) {
 				track.onended = null
@@ -2097,8 +3221,8 @@ export default {
 		},
 		onResize() {
 			if (!this.$refs.container) return
-			if (this.hasScreenTile) {
-				this.layout = {cols: 2, rows: Math.max(this.tiles.length - 1, 1)}
+			if (this.isStageMode) {
+				this.layout = {cols: 1, rows: 1, width: 0, height: 0}
 				return
 			}
 			const bbox = this.$refs.container.getBoundingClientRect()
@@ -2111,6 +3235,12 @@ export default {
 				16 / 9,
 				gap,
 			)
+		},
+		requestFullscreen(id) {
+			const element = document.getElementById(id)
+			if (element?.requestFullscreen) {
+				element.requestFullscreen()
+			}
 		},
 		async showUserCard(event, user) {
 			this.selectedUser = user
@@ -2152,11 +3282,25 @@ export default {
 			if (this.localVideoStream) {
 				this.stopStreamTracks(this.localVideoStream)
 			}
-			this.clearLocalMediaElements()
+			const allHandles = [this.audioPublisherHandle, this.videoPublisherHandle, this.screenShareHandle, ...(this.remoteFeeds || [])]
+			for (const h of allHandles) {
+				try {
+					const pc = h?.webrtcStuff?.pc
+					if (pc?.getSenders) {
+						for (const sender of pc.getSenders()) {
+							if (sender.track) {
+								try { sender.track.stop() } catch (e) {}
+							}
+						}
+					}
+					if (h?.webrtcStuff?.myStream) {
+						this.stopStreamTracks(h.webrtcStuff.myStream)
+					}
+				} catch (e) {}
+			}
 			for (const id of Object.keys(this.audioMeters)) {
 				this.closeAudioMeter(id)
 			}
-			this.closeAudioMeterContext()
 			this.remoteFeeds = []
 			this.subscribingFeedIds = []
 			for (const id of Object.keys(this.subscriberRetryTimeouts)) {
@@ -2189,11 +3333,6 @@ export default {
 				window.clearTimeout(this.videoPublishTimeout)
 				this.videoPublishTimeout = null
 			}
-			if (this.cameraUnpublishTimeout) {
-				window.clearTimeout(this.cameraUnpublishTimeout)
-				this.cameraUnpublishTimeout = null
-			}
-			this.cameraToggleInProgress = false
 			if (this.janus) {
 				this.janus.destroy({cleanupHandles: true})
 				this.janus = null
@@ -2221,7 +3360,7 @@ export default {
 			const retryInterval = this.retryInterval
 			this.cleanup({preserveConnectionFailure: true})
 			this.connectionState = 'failed'
-			this.connectionError = error?.message || error || this.$t('Unknown Janus connection error')
+			this.connectionError = error?.message || error || 'Unknown Janus connection error'
 			if (retry) {
 				this.connectionRetryTimeout = window.setTimeout(this.onJanusInitialized, retryInterval)
 				this.retryInterval = retryInterval * 2
@@ -2231,6 +3370,10 @@ export default {
 			log('janus-lifecycle', 'debug', {
 				action: 'leaveRoom',
 			})
+			this.micMuted = true
+			this.localCameraActive = false
+			this.screenShareStream = null
+			this.sendMediaState()
 			this.cleanup()
 			this.$emit('hangup')
 		},
@@ -2240,8 +3383,8 @@ export default {
 
 <style lang="stylus">
 .c-janusvideoroom
-	background: #111317
-	color: #f6f7f9
+	background: #f5f5f5
+	color: #111827
 	display: flex
 	flex: auto 1 1
 	flex-direction: column
@@ -2257,27 +3400,90 @@ export default {
 		padding: 24px
 		.state-inner
 			align-items: center
-			color: #b8bec8
+			color: #374151
 			display: flex
 			flex-direction: column
 			gap: 12px
 			text-align: center
 		.state-icon
 			font-size: 48px
+			color: #4b5563
 		.state-icon--error
-			color: #ff6b62
+			color: #db2828
 		.error-detail
-			color: #c8ced8
+			color: #6b7280
 			font-size: 13px
 			max-width: 360px
 		.retry-btn
 			margin-top: 8px
+			background-color: #2185d0
+			color: #ffffff
 
 	.room-surface
 		display: flex
 		flex: auto 1 1
 		flex-direction: column
 		min-height: 0
+		position: relative
+
+	.moderation-notice
+		align-items: center
+		align-self: center
+		background: #e8f4fd
+		border: 1px solid #bfdbfe
+		border-radius: 6px
+		box-shadow: 0 4px 16px rgba(0,0,0,.06)
+		color: #1e40af
+		display: flex
+		font-size: 14px
+		font-weight: 600
+		gap: 8px
+		margin-top: 12px
+		max-width: calc(100% - 24px)
+		padding: 10px 14px
+		position: absolute
+		top: 0
+		z-index: 18
+		.mdi
+			font-size: 19px
+
+	.spotlight-notice
+		align-items: center
+		align-self: center
+		background: #2185d0
+		border-radius: 0 0 8px 8px
+		box-shadow: 0 4px 16px rgba(0,0,0,.1)
+		color: #fff
+		display: flex
+		font-size: 14px
+		font-weight: 650
+		gap: 8px
+		left: 50%
+		max-width: calc(100% - 32px)
+		padding: 10px 14px
+		position: absolute
+		top: 0
+		transform: translateX(-50%)
+		z-index: 19
+		span
+			overflow: hidden
+			text-overflow: ellipsis
+			white-space: nowrap
+		button
+			align-items: center
+			background: rgba(255,255,255,.16)
+			border: 0
+			border-radius: 50%
+			color: #fff
+			cursor: pointer
+			display: flex
+			height: 26px
+			justify-content: center
+			width: 26px
+			&:hover,
+			&:focus-visible
+				background: rgba(255,255,255,.26)
+				outline: none
 
 	.gallery
 		align-content: center
@@ -2293,18 +3499,112 @@ export default {
 		padding: 16px
 		position: relative
 		transition: grid-template-columns .2s ease, grid-template-rows .2s ease
-		&.has-screen
-			align-content: stretch
+		&.is-stage-mode
+			display: flex
+			flex-direction: row
 			align-items: stretch
-			grid-template-columns: minmax(0, 1fr) minmax(240px, 320px)
-			grid-template-rows: repeat(var(--tile-rows), minmax(0, 1fr))
-			.video-tile
-				grid-column: 2
-			.video-tile.is-screen
-				grid-column: 1
-				grid-row: 1 / -1
-				align-self: center
-				aspect-ratio: 16 / 9
+			justify-content: space-between
+			gap: 16px
+			padding: 16px
+			overflow: hidden
+
+			@media (max-width: 768px)
+				flex-direction: column
+
+			.stage-container
+				flex: 1 1 0%
+				min-width: 0
+				min-height: 0
+				height: 100%
+				width: 100%
+				display: flex
+				align-items: center
+				justify-content: center
+				position: relative
+
+				.video-tile
+					width: 100%
+					height: 100%
+					max-width: 100%
+					max-height: 100%
+					border-radius: 12px
+					display: flex
+					align-items: center
+					justify-content: center
+					background: #000000
+
+					.media-frame
+						width: 100%
+						height: 100%
+						display: flex
+						align-items: center
+						justify-content: center
+
+						video
+							max-width: 100%
+							max-height: 100%
+							width: 100%
+							height: 100%
+							object-fit: contain
+
+			.filmstrip-container
+				display: flex
+				flex-direction: column
+				gap: 10px
+				width: 240px
+				max-width: 280px
+				height: 100%
+				overflow-y: auto
+				overflow-x: hidden
+				flex-shrink: 0
+				padding: 2px
+
+				@media (max-width: 768px)
+					flex-direction: row
+					width: 100%
+					max-width: 100%
+					height: 110px
+					overflow-x: auto
+					overflow-y: hidden
+
+				.video-tile
+					width: 100%
+					aspect-ratio: 16 / 9
+					flex-shrink: 0
+					min-height: 110px
+					max-height: 150px
+					border-radius: 8px
+
+					@media (max-width: 768px)
+						height: 100%
+						width: auto
+						max-height: 100%
+
+		// Centering rules for balanced grid in gallery mode
+		&.cols-2 .video-tile:last-child:nth-child(odd)
+			grid-column: 1 / span 2
+			justify-self: center
+			width: var(--tile-width)
+
+		&.cols-3 .video-tile:nth-child(3n + 1):last-child
+			grid-column: 1 / -1
+			justify-self: center
+			width: var(--tile-width)
+
+		&.cols-3 .video-tile:nth-child(3n + 1):nth-last-child(2)
+			grid-column: 1 / 3
+			justify-self: end
+			width: var(--tile-width)
+
+		&.cols-3 .video-tile:nth-child(3n + 2):last-child
+			grid-column: 2 / 4
+			justify-self: start
+			width: var(--tile-width)
+
+		&.cols-4 .video-tile:nth-child(4n + 1):last-child
+			grid-column: 1 / -1
+			justify-self: center
+			width: var(--tile-width)
 
 	.video-tile
 		background: #1e2229
@@ -2323,6 +3623,10 @@ export default {
 			box-shadow: 0 0 0 3px #2d8cff, 0 2px 8px rgba(0,0,0,.35)
 			.media-frame
 				box-shadow: none
+		&.is-pinned
+			box-shadow: 0 0 0 3px #f6c343, 0 2px 8px rgba(0,0,0,.35)
+		&.is-spotlighted
+			box-shadow: 0 0 0 3px #55a4ff, 0 2px 8px rgba(0,0,0,.35)
 		&.is-screen video
 			object-fit: contain
 		&.is-local:not(.is-screen) video
@@ -2346,6 +3650,39 @@ export default {
 			.remote-audio
 				display: none
 
+	.local-screen-placeholder
+		align-items: center
+		background: #111317
+		color: #d7dde6
+		display: flex
+		flex-direction: column
+		font-size: 15px
+		font-weight: 650
+		gap: 14px
+		height: 100%
+		justify-content: center
+		padding: 24px
+		text-align: center
+		width: 100%
+		.mdi
+			color: #55a4ff
+			font-size: 52px
+		.btn-stop-share
+			display: inline-flex
+			align-items: center
+			gap: 8px
+			background: #dc2626
+			color: #ffffff
+			border: none
+			border-radius: 6px
+			padding: 8px 16px
+			font-size: 14px
+			font-weight: 600
+			cursor: pointer
+			transition: background 0.15s ease
+			&:hover
+				background: #b91c1c
+
 	.avatar-wrap
 		align-items: center
 		bottom: 0
@@ -2367,6 +3704,48 @@ export default {
 		position: absolute
 		right: 0
 		top: 0
+
+	.room-reactions
+		align-items: center
+		bottom: 94px
+		display: flex
+		flex-direction: column-reverse
+		gap: 10px
+		left: 50%
+		pointer-events: none
+		position: absolute
+		transform: translateX(-50%)
+		max-width: 360px
+		width: calc(100% - 32px)
+		z-index: 16
+
+	.room-reaction
+		align-items: center
+		animation: janus-reaction-float 3.2s ease-out forwards
+		background: rgba(17,19,23,.82)
+		border: 1px solid rgba(255,255,255,.16)
+		border-radius: 999px
+		box-shadow: 0 10px 28px rgba(0,0,0,.34)
+		display: flex
+		gap: 8px
+		max-width: 100%
+		padding: 7px 12px 7px 8px
+
+	.room-reaction-emoji
+		display: block
+		flex: none
+		height: 30px
+		object-fit: contain
+		width: 30px
+
+	.room-reaction-name
+		color: #fff
+		font-size: 13px
+		font-weight: 700
+		min-width: 0
+		overflow: hidden
+		text-overflow: ellipsis
+		white-space: nowrap
 
 	.tile-top
 		align-items: center
@@ -2404,6 +3783,71 @@ export default {
 		.mdi
 			color: white
 			font-size: 17px
+
+	.tile-state-pill
+		align-items: center
+		background: rgba(0,0,0,.56)
+		border-radius: 99px
+		display: flex
+		height: 28px
+		justify-content: center
+		width: 28px
+		.mdi
+			color: #fff
+			font-size: 17px
+		&.hand-pill
+			background: #ffb020
+			.mdi
+				color: #111317
+
+	.tile-overlay
+		align-items: center
+		bottom: 10px
+		display: flex
+		gap: 8px
+		justify-content: space-between
+		left: 10px
+		position: absolute
+		right: 10px
+		z-index: 5
+		pointer-events: none
+
+		.tile-status
+			align-items: center
+			background: rgba(0, 0, 0, 0.65)
+			backdrop-filter: blur(8px)
+			border-radius: 6px
+			color: #fff
+			display: inline-flex
+			font-size: 13px
+			font-weight: 500
+			gap: 6px
+			max-width: calc(100% - 120px)
+			min-width: 0
+			padding: 4px 10px
+			pointer-events: auto
+
+			.tile-label
+				overflow: hidden
+				text-overflow: ellipsis
+				white-space: nowrap
+
+			.mdi
+				font-size: 15px
+
+				&.off, &.muted
+					color: #ef4444
+
+		.tile-actions
+			pointer-events: auto
+			display: flex
+			align-items: center
+			gap: 6px
+			opacity: 0
+			transition: opacity .15s ease
+
+	.video-tile:hover .tile-overlay .tile-actions
+		opacity: 1
 
 	.tile-bottom
 		align-items: center
@@ -2459,6 +3903,11 @@ export default {
 			font-size: 20px
 		&:hover
 			background: rgba(255,255,255,.18)
+		&:disabled
+			cursor: default
+			opacity: .5
+			&:hover
+				background: rgba(0,0,0,.56)
 
 	.info-bar
 		align-items: center
@@ -2495,67 +3944,612 @@ export default {
 
 	.controlbar
 		align-items: center
-		background: #181b20
-		border-top: 1px solid #2d333d
+		background: #ffffff
+		border-top: 1px solid #e5e7eb
+		box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.04)
 		display: flex
 		flex: none
 		gap: 10px
 		justify-content: center
 		padding: 12px 18px
 
-	.control-button
+	.reaction-control
+		position: relative
+
+	.reaction-picker
 		align-items: center
-		background: #2c323c
+		background: #ffffff
+		border: 1px solid #e5e7eb
+		border-radius: 999px
+		box-shadow: 0 4px 16px rgba(0,0,0,.08)
+		display: flex
+		gap: 4px
+		left: 50%
+		padding: 6px
+		position: absolute
+		bottom: calc(100% + 10px)
+		transform: translateX(-50%)
+		z-index: 25
+
+	.reaction-choice
+		align-items: center
+		background: transparent
 		border: 0
 		border-radius: 50%
-		color: #f6f7f9
+		cursor: pointer
+		display: flex
+		font-size: 24px
+		height: 40px
+		justify-content: center
+		line-height: 1
+		width: 40px
+		&:hover,
+		&:focus-visible
+			background: #f1f5f9
+			outline: none
+
+	.reaction-choice-emoji
+		display: block
+		height: 24px
+		object-fit: contain
+		width: 24px
+
+	.control-button
+		align-items: center
+		background: #f8fafc
+		border: 1px solid #d1d5db
+		border-radius: 50%
+		color: #374151
 		cursor: pointer
 		display: flex
 		height: 48px
 		justify-content: center
-		transition: background .14s ease, transform .14s ease
+		transition: background .14s ease, border-color .14s ease, color .14s ease, transform .14s ease
 		width: 48px
 		.mdi
 			font-size: 23px
 		&:hover
-			background: #3a4350
+			background: #e8f4fd
+			border-color: #2185d0
+			color: #2185d0
 		&:active
 			transform: scale(.96)
-		&:disabled
-			cursor: not-allowed
-			transform: none
 		&.muted,
 		&.disabled
-			background: #d93025
+			background: #fee2e2
+			border-color: #fca5a5
+			color: #dc2626
+		&.disabled
+			cursor: default
+			opacity: .7
 		&.active
-			background: #1976d2
+			background: #2185d0
+			border-color: #2185d0
+			color: #ffffff
 		&.loading
-			cursor: wait
 			opacity: .55
-			.mdi
-				animation: camera-toggle-pulse .9s ease-in-out infinite alternate
 		&.leave
-			background: #d93025
+			background: #db2828
+			border-color: #c52424
 			border-radius: 24px
+			color: #ffffff
 			width: 64px
 			&:hover
-				background: #b3261e
+				background: #c52424
+				border-color: #b91c1c
+				color: #ffffff
+		&.participants-button
+			position: relative
 
-	@keyframes camera-toggle-pulse
-		from
-			opacity: .55
-		to
-			opacity: 1
+	.participant-count-badge
+		align-items: center
+		background: #2185d0
+		border: 2px solid #ffffff
+		border-radius: 99px
+		color: #ffffff
+		display: flex
+		font-size: 11px
+		font-weight: 700
+		height: 20px
+		justify-content: center
+		line-height: 1
+		min-width: 20px
+		padding: 0 5px
+		position: absolute
+		right: -4px
+		top: -4px
+
+	.waiting-count-badge
+		align-items: center
+		background: #f59e0b
+		border: 2px solid #ffffff
+		border-radius: 99px
+		color: #ffffff
+		display: flex
+		font-size: 11px
+		font-weight: 800
+		height: 20px
+		justify-content: center
+		line-height: 1
+		min-width: 20px
+		padding: 0 5px
+		position: absolute
+		right: -4px
+		top: 18px
+
+	.participants-backdrop
+		background: rgba(0,0,0,.35)
+		bottom: 0
+		left: 0
+		position: absolute
+		right: 0
+		top: 0
+		z-index: 20
+
+	.participants-backdrop-enter-active,
+	.participants-backdrop-leave-active
+		transition: opacity .18s ease
+	.participants-backdrop-enter-from,
+	.participants-backdrop-leave-to
+		opacity: 0
+
+	.participants-drawer
+		background: #ffffff
+		border-left: 1px solid #e5e7eb
+		box-sizing: border-box
+		box-shadow: -4px 0 20px rgba(0,0,0,.06)
+		bottom: 0
+		color: #111827
+		display: flex
+		flex-direction: column
+		min-height: 0
+		position: absolute
+		right: 0
+		top: 0
+		width: min(320px, 100%)
+		z-index: 21
+
+	.participants-drawer-enter-active,
+	.participants-drawer-leave-active
+		transition: transform .22s ease, opacity .22s ease
+	.participants-drawer-enter-from,
+	.participants-drawer-leave-to
+		opacity: 0
+		transform: translateX(100%)
+
+	.participants-header
+		align-items: center
+		background: #f8fafc
+		border-bottom: 1px solid #e5e7eb
+		display: flex
+		flex: none
+		justify-content: space-between
+		padding: 18px 18px 14px
+		.header-text
+			display: flex
+			flex-direction: column
+			gap: 3px
+			min-width: 0
+		h2
+			font-size: 18px
+			font-weight: 700
+			line-height: 1.25
+			margin: 0
+			color: #111827
+		span
+			color: #6b7280
+			font-size: 13px
+
+	.participants-header-actions
+		align-items: center
+		display: flex
+		flex: none
+		gap: 8px
+
+	.end-meeting-button
+		align-items: center
+		background: #fee2e2
+		border: 1px solid #fca5a5
+		border-radius: 6px
+		color: #dc2626
+		cursor: pointer
+		display: flex
+		flex: none
+		font-size: 13px
+		font-weight: 600
+		gap: 5px
+		height: 34px
+		padding: 0 10px
+		.mdi
+			font-size: 18px
+		&:hover,
+		&:focus-visible
+			background: #fecaca
+			outline: none
+		&:disabled
+			cursor: default
+			opacity: .65
+
+	.drawer-close
+		align-items: center
+		background: #f1f5f9
+		border: 1px solid #d1d5db
+		border-radius: 50%
+		color: #4b5563
+		cursor: pointer
+		display: flex
+		flex: none
+		height: 36px
+		justify-content: center
+		width: 36px
+		.mdi
+			font-size: 22px
+		&:hover
+			background: #e2e8f0
+			color: #111827
+
+	.waiting-room-section
+		border-bottom: 1px solid #e5e7eb
+		display: flex
+		flex: none
+		flex-direction: column
+		gap: 8px
+		padding: 12px 10px
+
+	.waiting-room-heading
+		align-items: center
+		color: #111827
+		display: flex
+		font-size: 13px
+		font-weight: 700
+		justify-content: space-between
+		padding: 0 8px
+		span:last-child
+			background: #f59e0b
+			border-radius: 99px
+			color: #ffffff
+			font-size: 11px
+			min-width: 20px
+			padding: 3px 7px
+			text-align: center
+
+	.waiting-room-list
+		display: flex
+		flex-direction: column
+		gap: 6px
+
+	.waiting-room-row
+		align-items: center
+		background: #f8fafc
+		border: 1px solid #e5e7eb
+		border-radius: 8px
+		display: flex
+		gap: 10px
+		min-width: 0
+		padding: 9px
+
+	.waiting-room-user
+		align-items: center
+		color: #111827
+		display: flex
+		flex: auto 1 1
+		font-size: 13px
+		font-weight: 650
+		gap: 8px
+		min-width: 0
+		.mdi
+			color: #f59e0b
+			flex: none
+			font-size: 20px
+		span
+			overflow: hidden
+			text-overflow: ellipsis
+			white-space: nowrap
+
+	.waiting-room-actions
+		display: flex
+		flex: none
+		gap: 6px
+
+	.waiting-room-action
+		align-items: center
+		border: 0
+		border-radius: 6px
+		color: #fff
+		cursor: pointer
+		display: flex
+		font-size: 12px
+		font-weight: 700
+		gap: 4px
+		height: 30px
+		padding: 0 8px
+		.mdi
+			font-size: 16px
+		&.admit
+			background: #16a34a
+		&.deny
+			background: #dc2626
+		&:hover,
+		&:focus-visible
+			filter: brightness(1.08)
+			outline: none
+		&:disabled
+			cursor: default
+			opacity: .6
+
+	.raised-hands-section
+		border-top: 1px solid #e5e7eb
+		display: flex
+		flex: none
+		flex-direction: column
+		gap: 8px
+		padding: 12px 10px
+
+	.raised-hands-heading
+		align-items: center
+		color: #111827
+		display: flex
+		font-size: 13px
+		font-weight: 700
+		justify-content: space-between
+		padding: 0 8px
+		span:last-child
+			background: #f59e0b
+			border-radius: 99px
+			color: #ffffff
+			font-size: 11px
+			min-width: 20px
+			padding: 3px 7px
+			text-align: center
+
+	.raised-hands-list
+		display: flex
+		flex-direction: column
+		gap: 6px
+		max-height: 164px
+		overflow-y: auto
+
+	.raised-hand-row
+		align-items: center
+		background: #f8fafc
+		border: 1px solid #e5e7eb
+		border-radius: 8px
+		display: flex
+		gap: 10px
+		min-width: 0
+		padding: 9px
+
+	.raised-hand-user
+		align-items: center
+		color: #111827
+		display: flex
+		flex: auto 1 1
+		font-size: 13px
+		font-weight: 650
+		gap: 8px
+		min-width: 0
+		.mdi
+			color: #f59e0b
+			flex: none
+			font-size: 20px
+		span
+			overflow: hidden
+			text-overflow: ellipsis
+			white-space: nowrap
+
+	.raised-hand-action
+		align-items: center
+		background: #f1f5f9
+		border: 1px solid #d1d5db
+		border-radius: 6px
+		color: #374151
+		cursor: pointer
+		display: flex
+		flex: none
+		font-size: 12px
+		font-weight: 700
+		gap: 4px
+		height: 30px
+		padding: 0 8px
+		.mdi
+			font-size: 16px
+		&:hover,
+		&:focus-visible
+			background: #e2e8f0
+			outline: none
+		&:disabled
+			cursor: default
+			opacity: .6
+
+	.participants-list
+		box-sizing: border-box
+		display: flex
+		flex: auto 1 1
+		flex-direction: column
+		gap: 6px
+		min-height: 0
+		overflow-y: auto
+		padding: 10px
+
+	.participant-row
+		align-items: center
+		background: transparent
+		border: 0
+		border-radius: 8px
+		box-sizing: border-box
+		color: inherit
+		display: flex
+		gap: 12px
+		min-height: 64px
+		min-width: 0
+		padding: 10px
+		position: relative
+		text-align: left
+		width: 100%
+		&:hover
+			background: #f8fafc
+		&.is-speaking
+			box-shadow: inset 3px 0 0 #16a34a
+
+	.participant-main
+		display: flex
+		flex: auto 1 1
+		flex-direction: column
+		gap: 5px
+		min-width: 0
+
+	.participant-name
+		align-items: center
+		display: flex
+		gap: 7px
+		min-width: 0
+		.name
+			color: #111827
+			font-size: 14px
+			font-weight: 650
+			min-width: 0
+			overflow: hidden
+			text-overflow: ellipsis
+			white-space: nowrap
+		.self-label
+			background: #e8f4fd
+			border-radius: 99px
+			color: #2185d0
+			flex: none
+			font-size: 11px
+			font-weight: 700
+			padding: 2px 7px
+
+	.participant-status
+		color: #6b7280
+		display: flex
+		flex-wrap: wrap
+		gap: 6px 10px
+		min-width: 0
+
+	.status-item
+		align-items: center
+		display: flex
+		font-size: 12px
+		gap: 4px
+		line-height: 1.2
+		min-width: 0
+		.mdi
+			font-size: 15px
+
+	.participant-media
+		align-items: center
+		color: #6b7280
+		display: flex
+		flex: none
+		gap: 6px
+		height: 32px
+		justify-content: center
+		min-width: 32px
+		.mdi
+			color: #6b7280
+			font-size: 21px
+			&.off
+				color: #9ca3af
+			&.muted
+				color: #dc2626
+
+	.participant-actions
+		flex: none
+		position: relative
+
+	.participant-action-button
+		align-items: center
+		background: transparent
+		border: 0
+		border-radius: 6px
+		color: #6b7280
+		cursor: pointer
+		display: flex
+		height: 32px
+		justify-content: center
+		width: 32px
+		.mdi
+			font-size: 21px
+		&:hover,
+		&:focus-visible
+			background: #f1f5f9
+			color: #111827
+			outline: none
+
+	.participant-action-menu
+		background: #ffffff
+		border: 1px solid #e5e7eb
+		border-radius: 8px
+		box-shadow: 0 4px 16px rgba(0,0,0,.08)
+		display: flex
+		flex-direction: column
+		min-width: 190px
+		padding: 6px
+		position: absolute
+		right: 0
+		top: 36px
+		z-index: 24
+		button
+			align-items: center
+			background: transparent
+			border: 0
+			border-radius: 6px
+			color: #1f2937
+			cursor: pointer
+			display: flex
+			font-size: 13px
+			gap: 8px
+			height: 34px
+			padding: 0 10px
+			text-align: left
+			.mdi
+				font-size: 18px
+			&:hover,
+			&:focus-visible
+				background: #f1f5f9
+				outline: none
+			&:disabled
+				color: #9ca3af
+				cursor: default
+				&:hover
+					background: transparent
+			&.danger
+				color: #dc2626
 
 	&.size-tiny
+		height: 100%
+		width: 100%
+		overflow: hidden
+		.room-surface
+			height: 100%
+			width: 100%
+			overflow: hidden
 		.gallery
 			gap: 0
 			padding: 0
-		.video-tile,
-		.media-frame
-			border-radius: 0
+			width: 100%
+			height: 100%
+			display: block
+			overflow: hidden
+			.video-tile
+				width: 100%
+				height: 100%
+				border-radius: 0
+				border: none
+				box-shadow: none
+				overflow: hidden
+				.media-frame
+					border-radius: 0
+					video
+						object-fit: cover
 		.tile-top,
 		.tile-bottom,
+		.tile-actions,
+		.spotlight-notice,
+		.room-reactions,
+		.participants-backdrop,
+		.participants-drawer,
 		.controlbar,
 		.info-bar
 			display: none
@@ -2572,7 +4566,17 @@ export default {
 				.video-tile.is-screen
 					grid-column: 1
 					grid-row: auto
+			&.is-speaker-layout
+				overflow-y: auto
+				.video-tile:not(:first-child)
+					flex-basis: 138px
+					height: 88px
+					width: 138px
+				.video-tile:first-child
+					height: calc(100% - 112px)
+					min-height: 180px
 		.controlbar
+			flex-wrap: wrap
 			gap: 8px
 			padding: 10px
 		.control-button
@@ -2580,4 +4584,57 @@ export default {
 			width: 44px
 			&.leave
 				width: 58px
+		.participants-drawer
+			border-left: 0
+			border-top: 1px solid #323944
+			height: min(70%, 560px)
+			top: auto
+	.pagination-bar
+		align-items: center
+		background: rgba(15, 23, 42, 0.95)
+		border-top: 1px solid rgba(255, 255, 255, 0.08)
+		color: #e2e8f0
+		display: flex
+		flex: none
+		gap: 12px
+		justify-content: center
+		min-height: 40px
+		padding: 6px 16px
+		z-index: 10
+
+		.pagination-btn
+			display: inline-flex
+			align-items: center
+			justify-content: center
+			background: rgba(255, 255, 255, 0.08)
+			border: 1px solid rgba(255, 255, 255, 0.15)
+			border-radius: 6px
+			color: #ffffff
+			cursor: pointer
+			padding: 4px 8px
+			transition: all 0.2s ease
+			&:hover:not(:disabled)
+				background: rgba(255, 255, 255, 0.18)
+				border-color: rgba(255, 255, 255, 0.3)
+			&:disabled
+				opacity: 0.35
+				cursor: not-allowed
+
+		.page-indicator
+			font-size: 13px
+			font-weight: 500
+			color: #94a3b8
+
+@keyframes janus-reaction-float
+	0%
+		opacity: 0
+		transform: translateY(14px) scale(.92)
+	10%
+		opacity: 1
+		transform: translateY(0) scale(1)
+	80%
+		opacity: 1
+	100%
+		opacity: 0
+		transform: translateY(-72px) scale(1.02)
 </style>

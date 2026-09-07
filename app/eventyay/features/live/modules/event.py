@@ -128,6 +128,15 @@ class EventModule(BaseModule):
                 user=self.consumer.user, permission=Permission.EVENT_ROOMS_CREATE_BBB
             ):
                 allowed_keys.add("bbb_defaults")
+                allowed_keys.add("zoom_defaults")
+            if await self.consumer.event.has_permission_async(
+                user=self.consumer.user, permission=Permission.EVENT_ROOMS_CREATE_JITSI
+            ):
+                allowed_keys.add("jitsi_defaults")
+            if await self.consumer.event.has_permission_async(
+                user=self.consumer.user, permission=Permission.EVENT_ROOMS_CREATE_CHAT
+            ):
+                allowed_keys.add("janus_defaults")
             body = {k: v for k, v in body.items() if k in allowed_keys}
 
         if "track_video_event_views" in body and "track_event_views" not in body:
@@ -142,6 +151,9 @@ class EventModule(BaseModule):
                 "date_locale",
                 "connection_limit",
                 "bbb_defaults",
+                "jitsi_defaults",
+                "janus_defaults",
+                "zoom_defaults",
                 "pretalx",
                 "video_player",
                 "videoPlayer",

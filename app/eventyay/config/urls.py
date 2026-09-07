@@ -140,6 +140,10 @@ orga_patterns = [
     path('orga/', include('eventyay.orga.urls')),
 ]
 
+zoom_patterns = [
+    path('zoom/', include(('eventyay.features.integrations.zoom.urls', 'zoom'), namespace='zoom')),
+]
+
 # Note: agenda and cfp patterns are now included under {organizer}/{event} in maindomain_urlconf.py
 # They are no longer at the root level
 
@@ -157,4 +161,5 @@ common_patterns = (
     + page_patterns
     + admin_patterns
     + orga_patterns
+    + zoom_patterns
 )

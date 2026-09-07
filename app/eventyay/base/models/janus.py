@@ -11,3 +11,9 @@ class JanusServer(models.Model):
     event_exclusive = models.ForeignKey(
         "Event", null=True, blank=True, on_delete=models.PROTECT
     )
+    organizers = models.ManyToManyField(
+        "Organizer", blank=True, related_name="janus_servers"
+    )
+    events = models.ManyToManyField(
+        "Event", blank=True, related_name="janus_servers"
+    )

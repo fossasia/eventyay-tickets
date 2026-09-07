@@ -10,6 +10,9 @@
 			.config-tabs(role="tablist")
 				button.tab-btn(type="button", role="tab", v-if="hasGeneral", :class="{active: activeTab === 'general'}", @click="activeTab = 'general'") {{ $t('General & Live Features') }}
 				button.tab-btn(type="button", role="tab", v-if="hasBBB", :class="{active: activeTab === 'bbb'}", @click="activeTab = 'bbb'") {{ $t('BigBlueButton') }}
+				button.tab-btn(type="button", role="tab", v-if="hasZoom", :class="{active: activeTab === 'zoom'}", @click="activeTab = 'zoom'") {{ $t('Zoom') }}
+				button.tab-btn(type="button", role="tab", v-if="hasJitsi", :class="{active: activeTab === 'jitsi'}", @click="activeTab = 'jitsi'") {{ $t('Jitsi Meet') }}
+				button.tab-btn(type="button", role="tab", v-if="hasJanus", :class="{active: activeTab === 'janus'}", @click="activeTab = 'janus'") {{ $t('Janus WebRTC') }}
 				button.tab-btn(type="button", role="tab", v-if="hasStage", :class="{active: activeTab === 'stages'}", @click="activeTab = 'stages'") {{ $t('Stages & Streams') }}
 			.tab-content(v-if="hasGeneral", v-show="activeTab === 'general'")
 				h2 {{ $t('Live platform features') }}
@@ -32,6 +35,29 @@
 				bunt-checkbox(v-model="config.bbb_defaults.bbb_mute_on_start", :label="$t('Auto-mute users')", name="bbb_mute_on_start")
 				bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_cam", :label="$t('Disable camera for non-moderators')", name="bbb_disable_cam")
 				bunt-checkbox(v-model="config.bbb_defaults.bbb_disable_chat", :label="$t('Disable public chat for non-moderators')", name="bbb_disable_chat")
+			.tab-content(v-if="hasZoom", v-show="activeTab === 'zoom'")
+				h2 {{ $t('Settings for newly-created Zoom rooms') }}
+				bunt-checkbox(v-model="config.zoom_defaults.disable_chat", :label="$t('Disable Zoom in-meeting chat')", name="zoom_disable_chat")
+				bunt-checkbox(v-model="config.zoom_defaults.enable_platform_chat", :label="$t('Enable platform chat sidebar by default')", name="zoom_enable_platform_chat")
+				bunt-checkbox(v-model="config.zoom_defaults.enable_platform_qa", :label="$t('Enable platform Q&A by default')", name="zoom_enable_platform_qa")
+				bunt-checkbox(v-model="config.zoom_defaults.enable_platform_polls", :label="$t('Enable platform polls by default')", name="zoom_enable_platform_polls")
+			.tab-content(v-if="hasJitsi", v-show="activeTab === 'jitsi'")
+				h2 {{ $t('Settings for newly-created Jitsi Meet rooms') }}
+				bunt-checkbox(v-model="config.jitsi_defaults.waiting_room", :label="$t('Put new users in waiting room first (needs to be set before first join)')", name="jitsi_waiting_room")
+				bunt-checkbox(v-model="config.jitsi_defaults.start_with_audio_muted", :label="$t('Auto-mute users on join')", name="jitsi_start_with_audio_muted")
+				bunt-checkbox(v-model="config.jitsi_defaults.start_with_video_muted", :label="$t('Auto-disable camera on join')", name="jitsi_start_with_video_muted")
+				bunt-checkbox(v-model="config.jitsi_defaults.record", :label="$t('Allow recording')", name="jitsi_record")
+				bunt-checkbox(v-model="config.jitsi_defaults.livestreaming", :label="$t('Allow livestreaming')", name="jitsi_livestreaming")
+				bunt-checkbox(v-model="config.jitsi_defaults.disable_cam", :label="$t('Disable camera for non-moderators')", name="jitsi_disable_cam")
+				bunt-checkbox(v-model="config.jitsi_defaults.disable_chat", :label="$t('Disable public chat for non-moderators')", name="jitsi_disable_chat")
+				bunt-checkbox(v-model="config.jitsi_defaults.require_display_name", :label="$t('Require display name to join')", name="jitsi_require_display_name")
+			.tab-content(v-if="hasJanus", v-show="activeTab === 'janus'")
+				h2 {{ $t('Settings for newly-created Janus WebRTC rooms') }}
+				bunt-checkbox(v-model="config.janus_defaults.waiting_room", :label="$t('Put new users in waiting room first')", name="janus_waiting_room")
+				bunt-checkbox(v-model="config.janus_defaults.start_with_audio_muted", :label="$t('Auto-mute users on join')", name="janus_start_with_audio_muted")
+				bunt-checkbox(v-model="config.janus_defaults.start_with_video_muted", :label="$t('Auto-disable camera on join')", name="janus_start_with_video_muted")
+				bunt-checkbox(v-model="config.janus_defaults.disable_cam", :label="$t('Disable camera for non-moderators')", name="janus_disable_cam")
+				bunt-checkbox(v-model="config.janus_defaults.disable_chat", :label="$t('Disable public chat for non-moderators')", name="janus_disable_chat")
 			.tab-content(v-if="hasStage", v-show="activeTab === 'stages'")
 				h2 {{ $t('Settings for stages') }}
 				bunt-input-outline-container(:label="$t('hls.js config')", :class="{error: v$.hlsConfig.$invalid}")
@@ -55,17 +81,32 @@ const loaded = ref(false)
 
 const hasGeneral = computed(() => Boolean(store.getters['hasPermission']?.('world:update') || store.getters['isAdminMode']))
 const hasBBB = computed(() => Boolean(store.getters['hasPermission']?.('world:rooms.create.bbb') || store.getters['hasPermission']?.('world:rooms.create.stage') || store.getters['isAdminMode']))
+const hasZoom = computed(() => Boolean(store.getters['hasPermission']?.('world:rooms.create.bbb') || store.getters['hasPermission']?.('world:rooms.create.stage') || store.getters['isAdminMode']))
+const hasJitsi = computed(() => Boolean(store.getters['hasPermission']?.('world:rooms.create.jitsi') || store.getters['hasPermission']?.('world:rooms.create.stage') || store.getters['isAdminMode']))
+const hasJanus = computed(() => Boolean(store.getters['hasPermission']?.('world:rooms.create.chat') || store.getters['hasPermission']?.('world:rooms.create.stage') || store.getters['isAdminMode']))
 const hasStage = computed(() => Boolean(store.getters['hasPermission']?.('world:rooms.create.stage') || store.getters['isAdminMode']))
 
-const activeTab = ref(hasGeneral.value ? 'general' : (hasStage.value ? 'stages' : (hasBBB.value ? 'bbb' : 'general')))
+const defaultTab = computed(() => {
+	if (hasGeneral.value) return 'general'
+	if (hasBBB.value) return 'bbb'
+	if (hasZoom.value) return 'zoom'
+	if (hasJitsi.value) return 'jitsi'
+	if (hasJanus.value) return 'janus'
+	if (hasStage.value) return 'stages'
+	return 'general'
+})
+const activeTab = ref(defaultTab.value)
 
-watch([hasGeneral, hasStage, hasBBB], () => {
-	if (activeTab.value === 'general' && !hasGeneral.value) {
-		activeTab.value = hasStage.value ? 'stages' : (hasBBB.value ? 'bbb' : 'general')
-	} else if (activeTab.value === 'stages' && !hasStage.value) {
-		activeTab.value = hasGeneral.value ? 'general' : (hasBBB.value ? 'bbb' : 'stages')
-	} else if (activeTab.value === 'bbb' && !hasBBB.value) {
-		activeTab.value = hasGeneral.value ? 'general' : (hasStage.value ? 'stages' : 'bbb')
+watch([hasGeneral, hasBBB, hasZoom, hasJitsi, hasJanus, hasStage], () => {
+	const validTabs = []
+	if (hasGeneral.value) validTabs.push('general')
+	if (hasBBB.value) validTabs.push('bbb')
+	if (hasZoom.value) validTabs.push('zoom')
+	if (hasJitsi.value) validTabs.push('jitsi')
+	if (hasJanus.value) validTabs.push('janus')
+	if (hasStage.value) validTabs.push('stages')
+	if (!validTabs.includes(activeTab.value)) {
+		activeTab.value = validTabs[0] || 'general'
 	}
 })
 
@@ -90,6 +131,29 @@ const config = ref({
 		bbb_mute_on_start: false,
 		bbb_disable_cam: false,
 		bbb_disable_chat: false
+	},
+	jitsi_defaults: {
+		waiting_room: false,
+		start_with_audio_muted: false,
+		start_with_video_muted: false,
+		record: false,
+		livestreaming: false,
+		disable_cam: false,
+		disable_chat: false,
+		require_display_name: false
+	},
+	janus_defaults: {
+		waiting_room: false,
+		start_with_audio_muted: false,
+		start_with_video_muted: false,
+		disable_cam: false,
+		disable_chat: false
+	},
+	zoom_defaults: {
+		disable_chat: false,
+		enable_platform_chat: true,
+		enable_platform_qa: false,
+		enable_platform_polls: false
 	}
 })
 const hlsConfig = ref('')
@@ -129,6 +193,29 @@ async function fetchConfig() {
 			bbb_disable_cam: false,
 			bbb_disable_chat: false
 		}, data.bbb_defaults || {})
+		data.jitsi_defaults = Object.assign({
+			waiting_room: false,
+			start_with_audio_muted: false,
+			start_with_video_muted: false,
+			record: false,
+			livestreaming: false,
+			disable_cam: false,
+			disable_chat: false,
+			require_display_name: false
+		}, data.jitsi_defaults || {})
+		data.janus_defaults = Object.assign({
+			waiting_room: false,
+			start_with_audio_muted: false,
+			start_with_video_muted: false,
+			disable_cam: false,
+			disable_chat: false
+		}, data.janus_defaults || {})
+		data.zoom_defaults = Object.assign({
+			disable_chat: false,
+			enable_platform_chat: true,
+			enable_platform_qa: false,
+			enable_platform_polls: false
+		}, data.zoom_defaults || {})
 		config.value = {
 			...data,
 			track_video_event_views: data.track_video_event_views ?? data.track_event_views ?? data.track_world_views ?? true,
@@ -188,6 +275,15 @@ async function save() {
 		}
 		if (hasBBB.value) {
 			patch.bbb_defaults = config.value.bbb_defaults
+		}
+		if (hasZoom.value) {
+			patch.zoom_defaults = config.value.zoom_defaults
+		}
+		if (hasJitsi.value) {
+			patch.jitsi_defaults = config.value.jitsi_defaults
+		}
+		if (hasJanus.value) {
+			patch.janus_defaults = config.value.janus_defaults
 		}
 		if (hasStage.value) {
 			if (hlsConfig.value && hlsConfig.value.trim()) {

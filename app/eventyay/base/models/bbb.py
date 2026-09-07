@@ -12,6 +12,12 @@ class BBBServer(models.Model):
     event_exclusive = models.ForeignKey(
         "Event", null=True, blank=True, on_delete=models.PROTECT
     )
+    organizers = models.ManyToManyField(
+        "Organizer", blank=True, related_name="bbb_servers"
+    )
+    events = models.ManyToManyField(
+        "Event", blank=True, related_name="bbb_servers"
+    )
     rooms_only = models.BooleanField(default=False)
     cost = models.IntegerField(default=0)
 

@@ -52,11 +52,13 @@ aside.c-organiser-sidebar(
 								v-for="room of individualRooms",
 								:key="room.id",
 								:to="getRoomTargetRoute(room)",
-								:class="{active: ($route.name === 'room:manage' || $route.name === 'admin:rooms:item') && String($route.params.roomId) === String(room.id)}",
+								:class="{active: ($route.name === 'room:manage' || $route.name === 'admin:rooms:item') && String($route.params.roomId) === String(room.id), 'is-disabled-room': isRoomDisabled(room)}",
 								@click="onNavClick"
 							)
 								span.room-name(v-html="$emojify(room.name)")
-								span.viewer-count-badge(:title="getOccupancyTitle(room)", :aria-label="getOccupancyTitle(room)")
+								span.room-disabled-icon(v-if="isRoomDisabled(room)", :title="$t('This feature is no longer available')", :aria-label="$t('Disabled')")
+									i.mdi.mdi-cancel(aria-hidden="true")
+								span.viewer-count-badge(v-else, :title="getOccupancyTitle(room)", :aria-label="getOccupancyTitle(room)")
 									i.mdi.mdi-account-outline(aria-hidden="true")
 									span {{ getOccupancyCount(room) }}
 							router-link.nav-sub-link.nav-sub-link--add.nav-sub-link--nested(:to="{name: 'admin:rooms:new'}", @click="onNavClick")
@@ -192,6 +194,7 @@ import moment from 'lib/timetravelMoment'
 import theme from 'theme'
 import api from 'lib/api'
 import { inferRoomType, isChatManagedRoom } from 'lib/room-types'
+import { isRoomVisibleToAttendee } from 'lib/video-providers'
 import { getRoomOccupancyCount, usesParticipantOccupancy } from 'lib/room-occupancy'
 import CreateDmPrompt from 'components/CreateDmPrompt'
 
@@ -334,6 +337,11 @@ export default {
 		this.fetchKiosks()
 	},
 	methods: {
+		isRoomDisabled(room) {
+			if (!room) return false
+			if (room.is_disabled) return true
+			return !isRoomVisibleToAttendee(room, this.world?.video_providers)
+		},
 		getRoomTargetRoute(room) {
 			if (!room) return { name: 'admin:rooms:index' }
 			// inferRoomType reads room.modules (the store shape)
@@ -726,6 +734,22 @@ export default {
 						i
 							font-size: 12px
 							color: $clr-primary
+
+					.room-disabled-icon
+						display: inline-flex
+						align-items: center
+						justify-content: center
+						margin-left: auto
+						margin-right: 0
+						flex-shrink: 0
+						width: 20px
+						height: 20px
+						border-radius: 50%
+						background-color: rgba(220, 38, 38, 0.12)
+						color: #dc2626
+						i
+							font-size: 14px
+							line-height: 1
 
 					&.nav-sub-link--nested
 						> .room-name, > span:first-child

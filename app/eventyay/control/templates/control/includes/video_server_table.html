@@ -20,10 +20,20 @@
                             <a class="video-server-link" href="{{ server.edit_url }}">{{ server.name }}</a>
                         </td>
                         <td>
-                            {% if server.event_exclusive %}
-                                {{ server.event_exclusive.name }}
-                            {% else %}
-                                <span class="text-muted">{% trans "All events" %}</span>
+                            {% if server.organizers %}
+                                {% for o in server.organizers %}
+                                    <span class="label label-primary" title="{% trans 'Organizer' %}"><i class="fa fa-users"></i> {{ o.name }}</span>
+                                {% endfor %}
+                            {% endif %}
+                            {% if server.events %}
+                                {% for e in server.events %}
+                                    <span class="label label-info" title="{% trans 'Event' %}"><i class="fa fa-calendar"></i> {{ e.name }}</span>
+                                {% endfor %}
+                            {% elif server.event_exclusive %}
+                                <span class="label label-info"><i class="fa fa-calendar"></i> {{ server.event_exclusive.name }}</span>
+                            {% endif %}
+                            {% if not server.organizers and not server.events and not server.event_exclusive %}
+                                <span class="text-muted">{% trans "Global (All events)" %}</span>
                             {% endif %}
                         </td>
                         <td>

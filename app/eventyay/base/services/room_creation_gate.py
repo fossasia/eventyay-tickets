@@ -1,5 +1,9 @@
 from collections import Counter
 
+from eventyay.base.settings import (
+    get_provider_for_module_type,
+    is_video_provider_enabled_for_organizer,
+)
 from eventyay.core.permissions import Permission
 
 
@@ -95,4 +99,41 @@ async def user_has_all_server_backed_room_create_permissions(event, user, module
         if not await event.has_permission_async(user=user, permission=permission):
             return False
     return True
+
+
+def is_module_type_enabled_for_creation(module_type: str) -> bool:
+    provider = get_provider_for_module_type(module_type)
+    if provider:
+        return is_video_provider_enabled_for_organizer(provider)
+    return True
+
+
+def is_module_config_enabled_for_creation(module_config) -> bool:
+    for module in module_config or []:
+        if isinstance(module, dict):
+            module_type = module.get("type")
+            if not is_module_type_enabled_for_creation(module_type):
+                return False
+    return True
+
+
+def newly_added_provider_modules(old_module_config, new_module_config):
+    old_counts = Counter(
+        module.get("type")
+        for module in old_module_config or []
+        if isinstance(module, dict) and get_provider_for_module_type(module.get("type"))
+    )
+    seen_counts = Counter()
+    newly_added = []
+    for module in new_module_config or []:
+        if not isinstance(module, dict):
+            continue
+        module_type = module.get("type")
+        if not get_provider_for_module_type(module_type):
+            continue
+        seen_counts[module_type] += 1
+        if seen_counts[module_type] > old_counts[module_type]:
+            newly_added.append(module)
+    return newly_added
+
 

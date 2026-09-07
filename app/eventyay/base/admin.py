@@ -8,7 +8,7 @@ from .models import (
     SystemLog, fields, Gate, GiftCard, GiftCardAcceptance,
     GiftCardTransaction, giftcards, Invoice, invoices, JanusServer, JitsiServer, log, notifications, Order, OrderPayment, OrderRefund,
     orders, organizer, page, Poll, roomquestion, Quota, Room, roulette,
-    seating, StreamingServer, tax, Team, TeamInvite, TurnServer, vouchers,
+    seating, tax, Team, TeamInvite, TurnServer, vouchers,
     WaitingListEntry, waitinglist, room, poll, chat
 )
 from ..api.models import OAuthApplication, OAuthAccessToken, OAuthRefreshToken, OAuthIDToken, WebHook, WebHookCall, ApiCall, WebHookEventListener
@@ -109,7 +109,6 @@ admin.site.register(BBBCall)
 admin.site.register(JanusServer)
 admin.site.register(JitsiServer)
 admin.site.register(TurnServer)
-admin.site.register(StreamingServer)
 
 # Tax and Billing
 admin.site.register(tax.TaxRule)

@@ -1,15 +1,57 @@
 {% extends "pretixcontrol/admin/base.html" %}
 {% load i18n %}
-{% load formset_tags %}
+{% load bootstrap3 %}
 
 {% block video_admin_content %}
-<h1 class="page-header">{% trans "Create or update BBB server" %}</h1>
-<form method="post" class="form-horizontal">
-    {% csrf_token %}
-    <div class="form-body">{{ form.as_p }}</div>
-    <div class="video-admin-btn-row">
-        <button type="submit" class="btn btn-primary"><span class="fa fa-save"></span> {% trans "Save" %}</button>
-        <a href="{% url 'eventyay_admin:video_admin:bbbserver.list' %}" class="btn btn-default">{% trans "Cancel" %}</a>
+<div class="video-form-container">
+    <a href="{% url 'eventyay_admin:video_admin:settings' %}#bbb" class="video-form-back-nav">
+        <span class="fa fa-arrow-left"></span> {% trans "Back to BigBlueButton Servers" %}
+    </a>
+
+    <div class="video-form-card">
+        <div class="video-form-header">
+            <div class="video-form-header-icon icon-bbb">
+                <span class="fa fa-graduation-cap"></span>
+            </div>
+            <div class="video-form-header-text">
+                <h2>{% if object.pk %}{% trans "Edit BigBlueButton Server" %}{% else %}{% trans "Add BigBlueButton Server" %}{% endif %}</h2>
+                <p>{% trans "Configure connection endpoint, security credentials, and routing rules for this BigBlueButton node." %}</p>
+            </div>
+        </div>
+
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            {% bootstrap_form_errors form %}
+
+            <div class="video-form-body">
+                <div class="video-form-section">
+                    <h3 class="video-form-section-title">
+                        <span class="fa fa-link"></span> {% trans "Connection & Credentials" %}
+                    </h3>
+                    {% bootstrap_field form.url layout="control" placeholder="https://bbb.example.com/bigbluebutton/api" help_text="The BigBlueButton API base URL, usually ending in /bigbluebutton/api." %}
+                    {% bootstrap_field form.secret layout="control" placeholder="Shared API secret" help_text="The shared secret key configured in bigbluebutton.properties." %}
+                </div>
+
+                <div class="video-form-section">
+                    <h3 class="video-form-section-title">
+                        <span class="fa fa-sliders"></span> {% trans "Availability & Scope" %}
+                    </h3>
+                    {% bootstrap_field form.active layout="control" %}
+                    {% bootstrap_field form.organizers layout="control" %}
+                    {% bootstrap_field form.events layout="control" %}
+                </div>
+            </div>
+
+            <div class="video-form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span class="fa fa-save"></span> {% trans "Save Server" %}
+                </button>
+                <a href="{% url 'eventyay_admin:video_admin:settings' %}#bbb" class="btn btn-default">
+                    {% trans "Cancel" %}
+                </a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 {% endblock %}
+

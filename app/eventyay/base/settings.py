@@ -69,6 +69,100 @@ settings_hierarkey.add_default('telemetry_endpoint', '', str)
 settings_hierarkey.add_default('telemetry_api_key', '', str)
 settings_hierarkey.add_default('telemetry_contact_email', '', str)
 
+# Video Room Platform Defaults
+settings_hierarkey.add_default('video_default_provider', 'bbb', str)
+
+settings_hierarkey.add_default('video_bbb_record', False, bool)
+settings_hierarkey.add_default('video_bbb_auto_mute', False, bool)
+settings_hierarkey.add_default('video_bbb_auto_mic', False, bool)
+settings_hierarkey.add_default('video_bbb_auto_cam', False, bool)
+settings_hierarkey.add_default('video_bbb_waiting_room', False, bool)
+settings_hierarkey.add_default('video_bbb_disable_cam', False, bool)
+settings_hierarkey.add_default('video_bbb_disable_chat', False, bool)
+settings_hierarkey.add_default('video_bbb_hide_presentation', False, bool)
+
+settings_hierarkey.add_default('video_jitsi_start_audio_muted', False, bool)
+settings_hierarkey.add_default('video_jitsi_start_video_muted', False, bool)
+settings_hierarkey.add_default('video_jitsi_record', False, bool)
+settings_hierarkey.add_default('video_jitsi_livestreaming', False, bool)
+settings_hierarkey.add_default('video_jitsi_waiting_room', False, bool)
+settings_hierarkey.add_default('video_jitsi_disable_cam', False, bool)
+settings_hierarkey.add_default('video_jitsi_disable_chat', False, bool)
+settings_hierarkey.add_default('video_jitsi_require_display_name', False, bool)
+
+settings_hierarkey.add_default('video_janus_start_audio_muted', False, bool)
+settings_hierarkey.add_default('video_janus_start_video_muted', False, bool)
+settings_hierarkey.add_default('video_janus_waiting_room', False, bool)
+settings_hierarkey.add_default('video_janus_disable_cam', False, bool)
+settings_hierarkey.add_default('video_janus_disable_chat', False, bool)
+
+# Video Provider Visibility Settings (Organizers & Attendees)
+for _p in ('bbb', 'jitsi', 'janus', 'loungemesh', 'zoom'):
+    settings_hierarkey.add_default(f'video_provider_{_p}_organizer', True, bool)
+    settings_hierarkey.add_default(f'video_provider_{_p}_attendee', True, bool)
+
+SUPPORTED_VIDEO_PROVIDERS = ('bbb', 'jitsi', 'janus', 'loungemesh', 'zoom')
+
+MODULE_TYPE_TO_PROVIDER = {
+    'call.bigbluebutton': 'bbb',
+    'call.jitsi': 'jitsi',
+    'call.janus': 'janus',
+    'call.loungemesh': 'loungemesh',
+    'call.zoom': 'zoom',
+    'networking.roulette': 'janus',
+}
+
+
+def get_video_provider_visibility(request=None) -> dict:
+    try:
+        gs = GlobalSettingsObject()
+        result = {}
+        for p in SUPPORTED_VIDEO_PROVIDERS:
+            result[p] = {
+                'organizer': gs.settings.get(f'video_provider_{p}_organizer', as_type=bool, default=True),
+                'attendee': gs.settings.get(f'video_provider_{p}_attendee', as_type=bool, default=True),
+            }
+        return result
+    except Exception:
+        return {p: {'organizer': True, 'attendee': True} for p in SUPPORTED_VIDEO_PROVIDERS}
+
+
+def is_video_provider_enabled_for_organizer(provider_id: str) -> bool:
+    if provider_id not in SUPPORTED_VIDEO_PROVIDERS:
+        return True
+    try:
+        gs = GlobalSettingsObject()
+        return gs.settings.get(f'video_provider_{provider_id}_organizer', as_type=bool, default=True)
+    except Exception:
+        return True
+
+
+def is_video_provider_enabled_for_attendee(provider_id: str) -> bool:
+    if provider_id not in SUPPORTED_VIDEO_PROVIDERS:
+        return True
+    try:
+        gs = GlobalSettingsObject()
+        return gs.settings.get(f'video_provider_{provider_id}_attendee', as_type=bool, default=True)
+    except Exception:
+        return True
+
+
+def get_provider_for_module_type(module_type: str):
+    return MODULE_TYPE_TO_PROVIDER.get(module_type)
+
+
+def is_room_visible_for_attendee(room) -> bool:
+    modules = getattr(room, 'module_config', None) or []
+    if not isinstance(modules, list):
+        return True
+    for module in modules:
+        if not isinstance(module, dict):
+            continue
+        provider = get_provider_for_module_type(module.get('type'))
+        if provider and not is_video_provider_enabled_for_attendee(provider):
+            return False
+    return True
+
 
 def i18n_uns(v):
     try:

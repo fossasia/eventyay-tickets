@@ -1,18 +1,58 @@
 {% extends "pretixcontrol/admin/base.html" %}
 {% load i18n %}
-{% load formset_tags %}
+{% load bootstrap3 %}
 
 {% block video_admin_content %}
-<h1 class="page-header">{% trans "Move a BBB room to a new server" %}</h1>
-<form method="post" class="form-horizontal">
-    {% csrf_token %}
-    <div class="form-body">{{ form.as_p }}</div>
-    <p class="alert alert-warning small">
-        {% trans 'Moving a room will try to kick everyone out of the room. People need to re-join by reloading the page. If kicking people fails (i.e. server down), it will still proceed, but might create a "split" room, i.e. two groups of people who think they are in the same room but are not. Recordings of the room will be no longer accessible through the interface later. It is recommended to join the room yourself to be able to react to this. Use with caution.' %}
-    </p>
-    <div class="video-admin-btn-row">
-        <button type="submit" class="btn btn-warning"><span class="fa fa-exchange"></span> {% trans "Move" %}</button>
-        <a href="{% url 'eventyay_admin:video_admin:bbbserver.list' %}" class="btn btn-default">{% trans "Cancel" %}</a>
+<div class="video-form-container">
+    <a href="{% url 'eventyay_admin:video_admin:settings' %}#bbb" class="video-form-back-nav">
+        <span class="fa fa-arrow-left"></span> {% trans "Back to BigBlueButton Servers" %}
+    </a>
+
+    <div class="video-form-card">
+        <div class="video-form-header">
+            <div class="video-form-header-icon icon-move">
+                <span class="fa fa-exchange"></span>
+            </div>
+            <div class="video-form-header-text">
+                <h2>{% trans "Move BigBlueButton Room" %}</h2>
+                <p>{% trans "Transfer an active or scheduled BigBlueButton room session to a different cluster node." %}</p>
+            </div>
+        </div>
+
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            {% bootstrap_form_errors form %}
+
+            <div class="video-form-body">
+                <div class="video-form-alert video-form-alert-warning">
+                    <span class="fa fa-exclamation-triangle"></span>
+                    <div>
+                        <strong>{% trans "Important notice regarding live room migrations:" %}</strong>
+                        <p style="margin: 4px 0 0 0;">
+                            {% trans "Moving a room will attempt to kick all current participants so they can reconnect to the new node upon reloading. If kicking participants fails (e.g. source server is unreachable), a split session may occur. Past recordings on the previous node will no longer be accessible via the current room interface." %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="video-form-section">
+                    <h3 class="video-form-section-title">
+                        <span class="fa fa-random"></span> {% trans "Migration Target" %}
+                    </h3>
+                    {% bootstrap_field form.room layout="control" help_text="Select or enter the ID of the room you want to move." %}
+                    {% bootstrap_field form.server layout="control" help_text="Select the active target BigBlueButton server to receive this room." %}
+                </div>
+            </div>
+
+            <div class="video-form-actions">
+                <button type="submit" class="btn btn-warning">
+                    <span class="fa fa-exchange"></span> {% trans "Move Room" %}
+                </button>
+                <a href="{% url 'eventyay_admin:video_admin:settings' %}#bbb" class="btn btn-default">
+                    {% trans "Cancel" %}
+                </a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 {% endblock %}
+

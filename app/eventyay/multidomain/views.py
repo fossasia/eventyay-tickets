@@ -139,7 +139,7 @@ class VideoSPAView(View):
 
             injected = {
                 'isOrganizerArea': self.is_organizer,
-                'hasOrganiserPermissions': can_manage,
+                'hasOrganiserPermissions': can_manage if self.is_organizer else False,
                 'publicVideoUrl': f'/{event.organizer.slug}/{event.slug}/video',
                 'homeUrl': safe_reverse('eventyay_common:event.index', organizer=event.organizer.slug, event=event.slug),
                 'ticketUrl': safe_reverse('control:event.index', organizer=event.organizer.slug, event=event.slug) if has_ticket_access else None,
@@ -148,10 +148,11 @@ class VideoSPAView(View):
                 'commonAccountUrl': safe_reverse('eventyay_common:event.index', organizer=event.organizer.slug, event=event.slug),
                 'api': {
                     'base': api_base,
-                    'socket': '{}://{}/ws/event/{}/'.format(
+                    'socket': '{}://{}/ws/event/{}/{}'.format(
                         'wss' if request.is_secure() else 'ws',
                         request.get_host(),
                         event.pk,
+                        '?organizer=1' if self.is_organizer else '?organizer=0',
                     ),
                     'upload': safe_reverse('storage:upload', event_id=event.pk) or '',
                     'uploadMaxSize': settings.MAX_SIZE_CONFIG[SizeKey.UPLOAD_SIZE_OTHER],

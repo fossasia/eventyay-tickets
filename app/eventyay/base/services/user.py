@@ -710,6 +710,7 @@ def get_user(
     with_invite_token=None,
     with_platform_user=None,
     with_session_key=None,
+    is_organizer=False,
 ):
     if with_id:
         user = get_user_by_id(event.id, with_id)
@@ -727,17 +728,23 @@ def get_user(
         from eventyay.eventyay_common.utils import encode_email
 
         token_id = encode_email(with_platform_user.email)
-        permission_set = with_platform_user.get_event_permission_set(event.organizer, event)
-        is_event_admin = is_platform_event_admin(with_platform_user, session_key=with_session_key)
         base_traits = ['attendee', video_attendee_trait(event.slug)]
-        if is_event_admin:
-            base_traits.extend(['admin', f'eventyay-video-event-{event.slug}-organizer'])
-        elif permission_set:
-            base_traits.append(f'eventyay-video-event-{event.slug}-organizer')
+        if is_organizer:
+            token_id = f"{token_id}:orga"
+            permission_set = with_platform_user.get_event_permission_set(event.organizer, event)
+            is_event_admin = is_platform_event_admin(with_platform_user, session_key=with_session_key)
+            if is_event_admin:
+                base_traits.extend(['admin', f'eventyay-video-event-{event.slug}-organizer'])
+            elif permission_set:
+                base_traits.append(f'eventyay-video-event-{event.slug}-organizer')
 
-        token_traits = apply_live_team_video_traits(
-            event, token_id, base_traits, platform_user=with_platform_user, session_key=with_session_key
-        )
+            token_traits = apply_live_team_video_traits(
+                event, token_id, base_traits, platform_user=with_platform_user, session_key=with_session_key
+            )
+        else:
+            # On attendee side, account MUST ONLY have attendee traits!
+            token_traits = base_traits
+
         user = get_user_by_token_id(event.id, token_id)
         if not user:
             user = create_user(
@@ -752,12 +759,29 @@ def get_user(
             return user
     elif with_token:
         from eventyay.eventyay_common.video.traits_sync import apply_live_team_video_traits
+        from eventyay.eventyay_common.video.permissions import video_attendee_trait
 
-        token_id = with_token["uid"]
-        # Team Video traits must follow live Organizer → Teams grants, not a cached JWT.
-        token_traits = apply_live_team_video_traits(
-            event, token_id, with_token.get("traits")
-        )
+        if is_organizer:
+            token_id = f"{with_token['uid']}:orga"
+            # Team Video traits must follow live Organizer → Teams grants, not a cached JWT.
+            token_traits = apply_live_team_video_traits(
+                event, token_id, with_token.get("traits")
+            )
+        else:
+            token_id = with_token["uid"]
+            # On attendee side, attendee sessions only have attendee traits.
+            # Strip any organizer, admin, or moderator traits.
+            raw_traits = with_token.get("traits") or []
+            token_traits = [
+                t for t in raw_traits
+                if t != 'admin'
+                and not (isinstance(t, str) and (t.endswith('-organizer') or t.endswith('-moderator') or t.endswith('-video-moderator')))
+            ]
+            attendee_trait = video_attendee_trait(event.slug)
+            if 'attendee' not in token_traits:
+                token_traits.append('attendee')
+            if attendee_trait not in token_traits:
+                token_traits.append(attendee_trait)
         user = get_user_by_token_id(event.id, token_id)
     elif with_client_id:
         user = get_user_by_client_id(event.id, with_client_id)
@@ -991,6 +1015,7 @@ def login(
     invite_token=None,
     platform_user=None,
     session_key=None,
+    is_organizer=False,
 ) -> LoginResult:
     from .chat import ChatService
     from .event import get_event_config_for_user
@@ -1002,6 +1027,7 @@ def login(
         with_invite_token=invite_token,
         with_platform_user=platform_user,
         with_session_key=session_key,
+        is_organizer=is_organizer,
     )
 
     if user and user.is_banned:

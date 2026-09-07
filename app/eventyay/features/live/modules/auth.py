@@ -74,6 +74,13 @@ class AuthModule(BaseModule):
             "event": self.consumer.event,
         }
         body = body or {}
+        query_string = self.consumer.scope.get("query_string", b"").decode()
+        # Only true organizer area connections can ever request organizer mode
+        is_organizer_requested = bool(
+            body.get("is_organizer")
+            and "organizer=1" in query_string
+        )
+
         if "token" not in body or not body.get("token"):
             session_user = self.consumer.scope.get("user")
             session = self.consumer.scope.get("session")
@@ -91,9 +98,14 @@ class AuthModule(BaseModule):
                 )()
                 is_authorized_session_user = bool(is_admin or has_perm)
 
-            if is_authorized_session_user:
+            if is_authorized_session_user and is_organizer_requested:
                 kwargs["platform_user"] = session_user
                 kwargs["session_key"] = session_key
+                kwargs["is_organizer"] = True
+            elif session_user and getattr(session_user, "is_authenticated", False):
+                kwargs["platform_user"] = session_user
+                kwargs["session_key"] = session_key
+                kwargs["is_organizer"] = False
             else:
                 client_id = body.get("client_id")
                 if not client_id:
@@ -104,6 +116,7 @@ class AuthModule(BaseModule):
                     await self.consumer.send_error(code="auth.missing_id_or_token")
                     return
                 kwargs["client_id"] = client_id
+                kwargs["is_organizer"] = False
                 if "invite_token" in body:
                     kwargs["invite_token"] = body.get("invite_token")
         else:
@@ -126,7 +139,15 @@ class AuthModule(BaseModule):
                     )
                     await self.consumer.send_error(code="auth.invalid_token")
                     return
+
+            token_traits = token.get("traits") or []
+            token_has_organizer = any(
+                t == "admin" or (isinstance(t, str) and t.endswith("-organizer"))
+                for t in token_traits
+            )
             kwargs["token"] = token
+            # Only grant organizer mode to tokens if requested in organizer area AND holding organizer traits
+            kwargs["is_organizer"] = bool(is_organizer_requested and token_has_organizer)
 
         try:
             login_result = await database_sync_to_async(login)(**kwargs)

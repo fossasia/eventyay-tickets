@@ -31,6 +31,11 @@ urlpatterns = [
     
     # Unified Video Settings
     path("settings/", views.VideoSettings.as_view(), name="settings"),
+    path(
+        "settings/toggle-visibility/",
+        views.VideoProviderToggleVisibility.as_view(),
+        name="settings.toggle-visibility",
+    ),
     
     # BBB Server Management URLs
     path("bbbs/", SettingsTabRedirectView.as_view(tab="bbb"), name="bbbserver.list"),
@@ -49,15 +54,16 @@ urlpatterns = [
     path("jitsi/<uuid:pk>/delete", views.JitsiServerDelete.as_view(), name="jitsiserver.delete"),
     path("jitsi/<uuid:pk>/", views.JitsiServerUpdate.as_view(), name="jitsiserver.update"),
     # Turn Server Management URLs
-    path("turns/", SettingsTabRedirectView.as_view(tab="turn"), name="turnserver.list"),
+    path("turns/", SettingsTabRedirectView.as_view(tab="janus"), name="turnserver.list"),
     path("turns/new/", views.TurnServerCreate.as_view(), name="turnserver.create"),
     path("turns/<uuid:pk>/delete", views.TurnServerDelete.as_view(), name="turnserver.delete"),
-    path("turnservers/<uuid:pk>/", views.TurnServerUpdate.as_view(), name="turnserver.update"),
-    # Streaming Server Management URLs
-    path("streamingservers/", SettingsTabRedirectView.as_view(tab="streaming"), name="streamingserver.list"),
-    path("streamingservers/new/", views.StreamingServerCreate.as_view(), name="streamingserver.create"),
-    path("streamingservers/<uuid:pk>/delete", views.StreamingServerDelete.as_view(), name="streamingserver.delete"),
-    path("streamingservers/<uuid:pk>/", views.StreamingServerUpdate.as_view(), name="streamingserver.update"),
+    path("turns/<uuid:pk>/", views.TurnServerUpdate.as_view(), name="turnserver.update"),
+    path("turnservers/<uuid:pk>/", views.TurnServerUpdate.as_view(), name="turnserver.update.legacy"),
+    # LoungeMesh Server Management URLs
+    path("loungemesh/", SettingsTabRedirectView.as_view(tab="loungemesh"), name="loungemeshserver.list"),
+    path("loungemesh/new/", views.LoungeMeshServerCreate.as_view(), name="loungemeshserver.create"),
+    path("loungemesh/<uuid:pk>/delete", views.LoungeMeshServerDelete.as_view(), name="loungemeshserver.delete"),
+    path("loungemesh/<uuid:pk>/", views.LoungeMeshServerUpdate.as_view(), name="loungemeshserver.update"),
     # Event Management URLs
     path("events/", views.EventList.as_view(), name="event.list"),
     path("events/new/", views.EventCreate.as_view(), name="event.create"),

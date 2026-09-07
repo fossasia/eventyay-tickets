@@ -27,7 +27,7 @@
 			router-view(:key="$route.fullPath")
 			//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 			//- Single MediaSource for room streaming (persists across navigation to prevent stream restart)
-			media-source(v-if="streamingRoom && user.profile.greeted && !hasFatalError(streamingRoom)", ref="mediaSource", :room="streamingRoom", :background="isStreamInBackground", :key="streamingRoom.id", :role="isStreamInBackground ? null : 'main'", @close="backgroundRoom = null")
+			media-source(v-if="streamingRoom && user.profile.greeted && !hasFatalError(streamingRoom)", ref="mediaSource", :room="streamingRoom", :background="isStreamInBackground", :key="streamingRoom.id", :role="isStreamInBackground ? null : 'main'", @close="closeMediaSource", @leave="leaveMediaSource")
 			media-source(v-if="call", ref="channelCallSource", :call="call", :background="call.channel !== $route.params.channelId", :key="call.id", @close="$store.dispatch('chat/leaveCall')")
 			#media-source-iframes
 			notifications(:hasBackgroundMedia="isStreamInBackground")
@@ -54,8 +54,9 @@ import OrganiserSidebar from 'components/OrganiserSidebar'
 import MediaSource from 'components/MediaSource'
 import Notifications from 'components/notifications'
 import GreetingPrompt from 'components/profile/GreetingPrompt'
+import { isRoomVisibleToAttendee } from 'lib/video-providers'
 
-const mediaModules = ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom', 'call.jitsi']
+const mediaModules = ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom', 'call.jitsi', 'call.loungemesh']
 const stageToolModules = ['livestream.native', 'livestream.youtube', 'call.janus']
 const chatbarModules = ['chat.native', 'question', 'poll']
 
@@ -134,6 +135,7 @@ export default {
 	data() {
 		return {
 			backgroundRoom: null,
+			leftRoomId: null,
 			previousRouteName: null,
 			sidebarCollapsed: typeof window !== 'undefined' ? localStorage.getItem('sidebarCollapsed') === '1' : false,
 			showMobileSidebar: false,
@@ -204,6 +206,7 @@ export default {
 		},
 		roomHasMedia() {
 			if (this.hasFatalError(this.room)) return false
+			if (this.room?.is_disabled || !isRoomVisibleToAttendee(this.room, this.world?.video_providers)) return false
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
 		},
 		// Single source of truth for which room should be streaming
@@ -314,6 +317,19 @@ export default {
 		window.removeEventListener('keydown', this.onKeydown, true)
 	},
 	methods: {
+		closeMediaSource() {
+			this.backgroundRoom = null
+		},
+		leaveMediaSource(room) {
+			const roomId = room?.id || this.streamingRoom?.id || this.room?.id
+			this.leftRoomId = roomId ? String(roomId) : null
+			this.backgroundRoom = null
+			if (this.$route.params?.roomId || this.$route.name === 'room' || this.$route.name === 'room:manage') {
+				this.$router.push({ name: 'about' }).catch(() => {
+					this.$router.push('/').catch(() => {})
+				})
+			}
+		},
 		async loadStarredSharingPreference() {
 			if (!this.$store.state.user) {
 				this.shareStarredSessions = false
@@ -418,7 +434,7 @@ export default {
 				return
 			}
 			this.$store.dispatch('changeRoom', newRoom)
-			const isExclusive = module => module.type === 'call.bigbluebutton' || module.type === 'call.zoom' || module.type === 'call.jitsi'
+			const isExclusive = module => module.type === 'call.bigbluebutton' || module.type === 'call.zoom' || module.type === 'call.jitsi' || module.type === 'call.janus' || module.type === 'call.loungemesh'
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (this.call) return // When a DM call is running, we never want background media
 			if (this.isAdminRoute || this.isOrganizerRouteName(this.previousRouteName)) {
@@ -432,6 +448,11 @@ export default {
 			if (typeof mediaRef?.isPlaying === 'function') {
 				const result = mediaRef.isPlaying()
 				if (result === false) primaryWasPlaying = false
+			}
+			if (oldRoom && this.leftRoomId && (String(oldRoom.id) === String(this.leftRoomId))) {
+				this.leftRoomId = null
+				this.backgroundRoom = null
+				return
 			}
 			if (oldRoom &&
 				this.rooms.includes(oldRoom) &&

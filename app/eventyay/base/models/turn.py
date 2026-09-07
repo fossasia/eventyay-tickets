@@ -16,6 +16,12 @@ class TurnServer(models.Model):
     event_exclusive = models.ForeignKey(
         "Event", null=True, blank=True, on_delete=models.PROTECT
     )
+    organizers = models.ManyToManyField(
+        "Organizer", blank=True, related_name="turn_servers"
+    )
+    events = models.ManyToManyField(
+        "Event", blank=True, related_name="turn_servers"
+    )
 
     def generate_credentials(self):
         username = get_random_string(16)
@@ -29,19 +35,25 @@ class TurnServer(models.Model):
 
     def get_ice_servers(self):
         username, credential = self.generate_credentials()
+        raw_host = (self.hostname or "").strip()
+        if ":" in raw_host:
+            host, _ = raw_host.split(":", 1)
+        else:
+            host = raw_host
+
         return [
             {
-                "urls": f"stun:{self.hostname}",
+                "urls": f"stun:{raw_host}",
                 "username": username,
                 "credential": credential,
             },
             {
-                "urls": f"turns:{self.hostname}:443?transport=tcp",
+                "urls": f"turns:{host}:443?transport=tcp",
                 "username": username,
                 "credential": credential,
             },
             {
-                "urls": f"turn:{self.hostname}:443?transport=tcp",
+                "urls": f"turn:{raw_host}?transport=tcp" if ":" in raw_host else f"turn:{raw_host}:3478?transport=tcp",
                 "username": username,
                 "credential": credential,
             },

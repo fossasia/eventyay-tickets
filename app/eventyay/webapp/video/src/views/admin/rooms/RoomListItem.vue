@@ -122,6 +122,7 @@ export default {
 		&.type-channel-janus,
 		&.type-channel-jitsi,
 		&.type-channel-zoom,
+		&.type-channel-loungemesh,
 		&.type-channel-roulette
 			background-color: $clr-blue-grey-200
 			color: $clr-blue-grey-900

@@ -9,6 +9,7 @@ const MEDIA_MODULE_TYPES = new Set([
 	'call.janus',
 	'call.zoom',
 	'call.jitsi',
+	'call.loungemesh',
 	'networking.roulette',
 	'page.landing',
 ])

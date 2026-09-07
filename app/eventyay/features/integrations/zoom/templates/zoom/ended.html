@@ -1,19 +1,26 @@
-<html>
-	<head>
-		<title>Thank you</title>
-		<style>
-body {
-	background: #333;
-	color: #fff;
-	font-family: sans-serif;
-	text-align: center;
-	padding: 20px;
-}
-		</style>
-	</head>
-	<body>
-		Thank you for joining this video session.
-		<br><br>
-		See you next time!
-	</body>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Ended</title>
+  <link rel="stylesheet" href="{% static 'zoom/ended.css' %}">
+</head>
+<body>
+<div class="ended-card">
+  <div class="icon-circle">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+    </svg>
+  </div>
+  <h1>Meeting Ended</h1>
+  <p>You have left the meeting. Taking you back to the attendee dashboard…</p>
+  <a href="/about" class="btn-return" id="btn-return-dashboard" data-action="leave" data-event="zoom:leave">
+    <span>Return to Dashboard</span>
+  </a>
+</div>
+
+<script type="module" src="{% static 'zoom/ended.js' %}"></script>
+</body>
 </html>

@@ -74,6 +74,17 @@ aside.c-rooms-sidebar(
 									span {{ getOccupancyCount(stage.room) }}
 								span.notifications(v-if="stage.notifications") {{ stage.notifications }}
 							router-link.nav-sub-link(
+								v-for="room of roomsByType.videoChat",
+								:key="room.id",
+								:to="{name: 'room', params: {roomId: room.id}}",
+								:class="{active: room.id === $route.params.roomId}",
+								@click="onNavClick"
+							)
+								span.room-name(v-html="$emojify(room.name)")
+								span.viewer-count-badge(:title="getOccupancyTitle(room)", :aria-label="getOccupancyTitle(room)")
+									i.mdi.mdi-account-outline(aria-hidden="true")
+									span {{ getOccupancyCount(room) }}
+							router-link.nav-sub-link(
 								v-for="room of roomsByType.networking",
 								:key="room.id",
 								:to="{name: 'room', params: {roomId: room.id}}",
@@ -107,17 +118,6 @@ aside.c-rooms-sidebar(
 									i.mdi.mdi-account-outline(aria-hidden="true")
 									span {{ getOccupancyCount(chat.room) }}
 								span.notifications(v-if="chat.notifications") {{ chat.notifications }}
-							router-link.nav-sub-link(
-								v-for="chat of roomsByType.videoChat",
-								:key="chat.id",
-								:to="{name: 'room', params: {roomId: chat.id}}",
-								:class="{active: chat.id === $route.params.roomId}",
-								@click="onNavClick"
-							)
-								span.room-name(v-html="$emojify(chat.name)")
-								span.viewer-count-badge(:title="getOccupancyTitle(chat)", :aria-label="getOccupancyTitle(chat)")
-									i.mdi.mdi-account-outline(aria-hidden="true")
-									span {{ getOccupancyCount(chat) }}
 							button.nav-sub-link.nav-sub-link--action(type="button", v-if="worldHasTextChannels", @click.prevent="showChannelBrowser = true; onNavClick()")
 								span.mdi.mdi-compass-outline(aria-hidden="true")
 								span {{ $t('Browse Channels') }}
@@ -167,6 +167,7 @@ import Avatar from 'components/Avatar'
 import ChannelBrowser from 'components/ChannelBrowser'
 import CreateDmPrompt from 'components/CreateDmPrompt'
 import { hasOrganizerTraits } from 'lib/traitGrants'
+import { isRoomVisibleToAttendee } from 'lib/video-providers'
 
 export default {
 	name: 'RoomsSidebar',
@@ -199,8 +200,9 @@ export default {
 	},
 	computed: {
 		...mapState(['world', 'rooms', 'activeRoom', 'call']),
+		...mapState('chat', ['joinedChannels']),
 		...mapGetters(['hasPermission', 'isAdminMode']),
-		...mapGetters('chat', ['joinedChannels', 'directMessageChannels', 'notificationCount']),
+		...mapGetters('chat', ['notificationCount']),
 		...mapGetters('schedule', ['currentSessionPerRoom']),
 		eventDateSubtitle() {
 			const dateFrom = this.world?.date_from || window.eventyay?.eventDates?.date_from
@@ -232,7 +234,7 @@ export default {
 			return ROOM_TYPES.find(type => type.sidebarGroup === 'networking')
 		},
 		hasStagesOrRooms() {
-			return (this.roomsByType.stage?.length > 0 || this.roomsByType.networking?.length > 0)
+			return (this.roomsByType.stage?.length > 0 || this.roomsByType.videoChat?.length > 0 || this.roomsByType.networking?.length > 0)
 		},
 		liveFeatures() {
 			return Object.assign({
@@ -244,14 +246,14 @@ export default {
 		},
 		hasChatChannels() {
 			if (!this.liveFeatures.chat_rooms) return false
-			return (this.roomsByType.textChat?.length > 0 || this.roomsByType.videoChat?.length > 0 || this.worldHasTextChannels)
+			return (this.roomsByType.textChat?.length > 0 || this.worldHasTextChannels)
 		},
 		manageVideoUrl() {
 			if (window.eventyay?.videoUrl) return window.eventyay.videoUrl
 			return this.$router.resolve({ name: 'organizer' }).href
 		},
 		hasOrganiserPermissions() {
-			if (window.eventyay?.isOrganizerArea) return true
+			if (!window.eventyay?.isOrganizerArea) return false
 			const hasToken = Boolean(this.$store.state.token)
 			if (hasToken) {
 				const tokenPayload = this.$store.getters.tokenPayload
@@ -296,6 +298,9 @@ export default {
 			if (!this.rooms) return rooms
 
 			for (const room of this.rooms) {
+				if (this.isRoomDisabled(room)) {
+					continue
+				}
 				const inferred = Array.isArray(room.module_config)
 					? inferType({ module_config: room.module_config })
 					: inferRoomType(room)
@@ -312,7 +317,6 @@ export default {
 				} else if (room.modules.some(module => NETWORKING_MODULE_TYPES.has(module.type))) {
 					rooms.networking.push(room)
 				} else if (room.modules.some(module => VIDEO_CHANNEL_MODULE_TYPES.has(module.type))) {
-					if (!this.liveFeatures.chat_rooms) continue
 					rooms.videoChat.push(room)
 				} else if (room.modules.some(module => ['livestream.native', 'livestream.youtube'].includes(module.type))) {
 					let session
@@ -343,6 +347,11 @@ export default {
 		}
 	},
 	methods: {
+		isRoomDisabled(room) {
+			if (!room) return false
+			if (room.is_disabled) return true
+			return !isRoomVisibleToAttendee(room, this.world?.video_providers)
+		},
 		getOccupancyCount(room) {
 			return getRoomOccupancyCount(room, {
 				rooms: this.rooms,
@@ -762,6 +771,25 @@ export default {
 						background-color: #eeeeee
 						color: #23527c
 						font-weight: 600
+
+					&.is-disabled-room
+						opacity: 0.8
+						.room-name
+							color: #777
+
+					.room-disabled-badge
+						font-size: 10px
+						font-weight: 600
+						text-transform: uppercase
+						letter-spacing: 0.3px
+						color: #a94442
+						background-color: #f2dede
+						border: 1px solid #ebccd1
+						border-radius: 10px
+						padding: 1px 6px
+						margin-left: auto
+						line-height: 1.4
+						flex-shrink: 0
 
 	.buffer
 		flex: auto

@@ -1,57 +1,87 @@
-<html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ lang|default:'en-US' }}">
 <head>
-    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/2.10.1/css/bootstrap.css"/>
-    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/2.10.1/css/react-select.css"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Zoom Meeting</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://source.zoom.us">
+  <link rel="preconnect" href="https://zoom.us">
+  {% if has_sdk_credentials %}
+  <link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.2/css/bootstrap.css"/>
+  <link type="text/css" rel="stylesheet" href="https://source.zoom.us/3.11.2/css/react-select.css"/>
+  {% endif %}
+  <link rel="stylesheet" href="{% static 'zoom/meeting.css' %}">
 </head>
 <body>
-<!-- Dependencies for client view and component view -->
-<script src="https://source.zoom.us/2.10.1/lib/vendor/react.min.js"></script>
-<script src="https://source.zoom.us/2.10.1/lib/vendor/react-dom.min.js"></script>
-<script src="https://source.zoom.us/2.10.1/lib/vendor/redux.min.js"></script>
-<script src="https://source.zoom.us/2.10.1/lib/vendor/redux-thunk.min.js"></script>
-<script src="https://source.zoom.us/2.10.1/lib/vendor/lodash.min.js"></script>
+<div class="zoom-wrapper">
+  <header class="zoom-topbar">
+    <div class="zoom-brand">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 4h10a2 2 0 0 1 2 2v3.5l4-2.5v10l-4-2.5V18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+      </svg>
+      <span>Zoom</span>
+    </div>
 
-<!-- CDN for client view -->
-<script src="https://source.zoom.us/zoom-meeting-2.10.1.min.js"></script>
+    <div class="zoom-meta-chips">
+      <div class="chip">
+        <span>Meeting ID:</span>
+        <strong id="header-mn">{{ meeting_number }}</strong>
+        <button type="button" class="chip-copy-btn" data-copy="{{ meeting_number }}" title="Copy Meeting ID" aria-label="Copy Meeting ID">
+          📋
+        </button>
+      </div>
+      {% if password %}
+      <div class="chip">
+        <span>Passcode:</span>
+        <strong id="header-pw">{{ password }}</strong>
+        <button type="button" class="chip-copy-btn" data-copy="{{ password }}" title="Copy Passcode" aria-label="Copy Passcode">
+          📋
+        </button>
+      </div>
+      {% endif %}
+    </div>
 
-<script>
-	ZoomMtg.setZoomJSLib('https://source.zoom.us/2.10.1/lib', '/av');
-	ZoomMtg.preLoadWasm();
-	ZoomMtg.prepareWebSDK()
-    {% if langurl %}
-		ZoomMtg.i18n.load('{{ langurl }}', '{{ lang }}');
-		ZoomMtg.i18n.reload('{{ langurl }}', '{{ lang }}');
-    {% else %}
-		ZoomMtg.i18n.load('{{ lang }}');
-		ZoomMtg.i18n.reload('{{ lang }}');
+    <div class="zoom-topbar-actions">
+      <a href="{{ zoom_app_url }}" class="btn-launch-sm" id="btn-topbar-app" title="Launch native Zoom client">
+        <span>Open in Zoom App</span>
+      </a>
+      <button type="button" class="btn-leave-sm" id="btn-leave-meeting" title="Leave meeting and return to attendee dashboard">
+        <span>Leave</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="zoom-content">
+    {% if has_sdk_credentials %}
+    <div id="zmmtg-root"></div>
     {% endif %}
-	ZoomMtg.init({
-		debug: {% if debug %}true{% else %}false{% endif %},
-		leaveUrl: '/zoom/ended/',
-        isSupportAV: true,
-        isSupportChat: {% if support_chat %}true{% else %}false{% endif %},
-        showMeetingHeader: false,
-        disableInvite: true,
-        disableCallOut: true,
-        disableInvite: true,
-        meetingInfo: ['topic', 'host', 'telPwd', 'participant', 'dc', 'enctype', 'report'],
-		success: function() {
-			ZoomMtg.join({
-				signature: '{{ signature }}',
-				sdkKey: '{{ api_key }}',
-				meetingNumber: '{{ meeting_number }}',
-				userName: '{{ user_name }}',
-                userEmail: '{{ user_email }}',
-				passWord: '{{ password }}',
-				error: function(res) {
-					console.log(res);
-				},
-			});
-		},
-		error: function(res) {
-			console.log(res);
-		},
-	});
-</script>
+
+    <iframe id="zoom-embedded-frame"
+            class="zoom-embedded-frame"
+            src="{{ zoom_web_url }}"
+            {% if has_sdk_credentials %}style="display: none;"{% endif %}
+            allow="camera *; microphone *; fullscreen *; display-capture *; autoplay *; clipboard-write *; clipboard-read *"
+            allowfullscreen>
+    </iframe>
+  </main>
+</div>
+
+<div class="toast-copied" id="copy-toast">Copied to clipboard!</div>
+
+{{ zoom_config|json_script:"zoom-config" }}
+
+{% if has_sdk_credentials %}
+<!-- Modern Zoom Meeting Web SDK 3.11.2 Dependencies -->
+<script src="https://source.zoom.us/3.11.2/lib/vendor/react.min.js"></script>
+<script src="https://source.zoom.us/3.11.2/lib/vendor/react-dom.min.js"></script>
+<script src="https://source.zoom.us/3.11.2/lib/vendor/redux.min.js"></script>
+<script src="https://source.zoom.us/3.11.2/lib/vendor/redux-thunk.min.js"></script>
+<script src="https://source.zoom.us/3.11.2/lib/vendor/lodash.min.js"></script>
+<script src="https://source.zoom.us/zoom-meeting-3.11.2.min.js"></script>
+{% endif %}
+
+<script type="module" src="{% static 'zoom/meeting.js' %}"></script>
 </body>
 </html>

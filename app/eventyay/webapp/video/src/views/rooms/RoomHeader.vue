@@ -1,9 +1,9 @@
 <template lang="pug">
 .c-room-header
-	.ui-page-header(v-if="!modules['page.markdown'] && !modules['page.landing'] && $route.name !== 'room:manage'")
+	.ui-page-header(v-if="!modules['page.markdown'] && !modules['page.landing'] && $route.name !== 'room:manage' && !isVideoCallRoom")
 		bunt-icon-button.btn-back(@click="onBack", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		.room-info
-			.room-name(v-html="$emojify(room.name)")
+			.room-name(v-if="room && room.name", v-html="$emojify(room.name)")
 			.room-session(v-if="currentSession") {{ $localize(currentSession.title) }}
 		//- bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		.actions
@@ -17,6 +17,8 @@
 // better ellipsing for room name + session title on small screens
 import {mapGetters, mapState} from 'vuex'
 import { inferRoomType, inferType } from 'lib/room-types'
+import { hasOrganizerTraits } from 'lib/traitGrants'
+import { isRoomVisibleToAttendee } from 'lib/video-providers'
 import RecordingsPrompt from 'components/RecordingsPrompt'
 
 const PERMISSIONS_TO_MANAGE = [
@@ -79,17 +81,34 @@ export default {
 				if (this.hasPermission(permission)) return true
 			}
 			return false
+		},
+		hasOrganiserPermissions() {
+			if (!window.eventyay?.isOrganizerArea) return false
+			if (window.eventyay?.hasOrganiserPermissions) return true
+			const tokenTraits = this.$store.state.user?.traits || []
+			return (
+				hasOrganizerTraits(tokenTraits) ||
+				this.hasPermission('world:users.list') ||
+				this.hasPermission('world:update') ||
+				this.hasPermission('room:update')
+			)
+		},
+		isVideoCallRoom() {
+			return Boolean(
+				this.modules['call.bigbluebutton'] ||
+				this.modules['call.jitsi'] ||
+				this.modules['call.janus'] ||
+				this.modules['call.zoom'] ||
+				this.modules['call.loungemesh']
+			)
 		}
 	},
 	watch: {
 		room: {
 			handler: 'scheduleRedirectIfUninitiated',
-			immediate: true
-		},
-		rooms: {
-			handler: 'scheduleRedirectIfUninitiated',
 			deep: true
 		},
+		rooms: 'scheduleRedirectIfUninitiated',
 		roomId: 'scheduleRedirectIfUninitiated'
 	},
 	methods: {
@@ -108,6 +127,14 @@ export default {
 			if (this.roomId === undefined) return
 			// Wait until rooms have loaded.
 			if (!this.rooms || this.rooms.length === 0) return
+			// If user is attendee, prevent direct URL access to disabled rooms
+			if (!this.hasOrganiserPermissions) {
+				if (!this.room || this.room.is_disabled || !isRoomVisibleToAttendee(this.room, this.$store.state.world?.video_providers)) {
+					if (this.$route.name === 'about') return
+					this.$router.replace({name: 'about'})
+					return
+				}
+			}
 			// If the room does not exist or is unconfigured, redirect to home.
 			const inferred = this.room
 				? (Array.isArray(this.room.module_config)

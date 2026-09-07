@@ -1,0 +1,67 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block video_admin_content %}
+<div class="video-form-container">
+    <a href="{% url 'eventyay_admin:video_admin:settings' %}?tab=loungemesh" class="video-form-back-nav">
+        <span class="fa fa-arrow-left"></span> {% trans "Back to Video Settings" %}
+    </a>
+
+    <div class="video-form-card">
+        <div class="video-form-header">
+            <div class="video-form-header-icon icon-loungemesh">
+                <span class="fa fa-cubes"></span>
+            </div>
+            <div class="video-form-header-text">
+                <h2>{% if object.pk %}{% trans "Edit LoungeMesh Server" %}{% else %}{% trans "Add LoungeMesh Server" %}{% endif %}</h2>
+                <p>{% trans "Configure host URL, token authentication, and WebRTC credentials for this LoungeMesh spatial lounge server." %}</p>
+            </div>
+        </div>
+
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            {% bootstrap_form_errors form %}
+
+            <div class="video-form-body">
+                <div class="video-form-section">
+                    <h3 class="video-form-section-title">
+                        <span class="fa fa-link"></span> {% trans "Server Connection" %}
+                    </h3>
+                    {% bootstrap_field form.url layout="control" placeholder="http://localhost:8780 or https://loungemesh.example" help_text="The fully qualified domain or URL of the LoungeMesh frontend." %}
+                    {% bootstrap_field form.active layout="control" %}
+                </div>
+
+                <div class="video-form-section">
+                    <h3 class="video-form-section-title">
+                        <span class="fa fa-key"></span> {% trans "Token Exchange & WebRTC Credentials" %}
+                    </h3>
+                    <p class="text-muted small">
+                        {% trans "API secret for validating join tokens and Jitsi credentials for embedded audio/video mesh." %}
+                    </p>
+                    {% bootstrap_field form.api_secret layout="control" placeholder="API Secret" help_text="Secret key for signing and exchanging join tokens with LoungeMesh." %}
+                    {% bootstrap_field form.jitsi_app_id layout="control" placeholder="e.g. eventyay" help_text="Application ID for LoungeMesh Jitsi WebRTC signaling." %}
+                    {% bootstrap_field form.jitsi_app_secret layout="control" placeholder="Jitsi App Secret" help_text="Shared secret for signing Jitsi WebRTC JWT tokens." %}
+                </div>
+
+                <div class="video-form-section">
+                    <h3 class="video-form-section-title">
+                        <span class="fa fa-shield"></span> {% trans "Scope & Access" %}
+                    </h3>
+                    {% bootstrap_field form.organizers layout="control" %}
+                    {% bootstrap_field form.events layout="control" %}
+                </div>
+            </div>
+
+            <div class="video-form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span class="fa fa-save"></span> {% trans "Save Server" %}
+                </button>
+                <a href="{% url 'eventyay_admin:video_admin:settings' %}?tab=loungemesh" class="btn btn-default">
+                    {% trans "Cancel" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

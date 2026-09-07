@@ -4,7 +4,12 @@
 		bunt-icon-button(@click="$router.replace({name: 'admin:rooms:index'})", :tooltip="$t('Back to Rooms & Stages')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		h1 {{ $t('New room') }}
 			template(v-if="chosenProvider")  : {{ $t(chosenProvider.label) }}
-	edit-form(v-if="config", :config="config", :creating="true")
+	.provider-disabled-warning(v-if="type && !chosenProvider")
+		i.mdi.mdi-alert-circle-outline
+		h2 {{ $t('Room Type Disabled') }}
+		p {{ $t('This video provider has been disabled by the system administrator.') }}
+		bunt-button(@click="$router.replace({name: 'admin:rooms:index'})") {{ $t('Back to Rooms & Stages') }}
+	edit-form(v-else-if="config", :config="config", :creating="true")
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -30,7 +35,8 @@ export default {
 			return getAvailableVideoProviders(
 				this.hasPermission,
 				this.isAdminMode,
-				(flag) => features.enabled(flag)
+				(flag) => features.enabled(flag),
+				this.$store.state.world?.video_providers
 			)
 		},
 		chosenProvider() {
@@ -85,4 +91,26 @@ export default {
 	h1
 		font-size: 24px
 		font-weight: 500
+	.provider-disabled-warning
+		margin: 40px auto
+		max-width: 500px
+		text-align: center
+		padding: 32px 24px
+		background-color: $clr-grey-50
+		border: 1px solid $clr-grey-200
+		border-radius: 8px
+		i.mdi
+			font-size: 48px
+			color: $clr-warning
+			margin-bottom: 16px
+			display: block
+		h2
+			font-size: 20px
+			font-weight: 600
+			margin: 0 0 8px
+			color: $clr-grey-900
+		p
+			font-size: 14px
+			color: $clr-grey-700
+			margin: 0 0 24px
 </style>

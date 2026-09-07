@@ -36,9 +36,6 @@ Chat & Communication
 Streaming Infrastructure
 ------------------------
 
-.. autoclass:: eventyay.base.models.StreamingServer
-   :members:
-
 .. autoclass:: eventyay.base.models.BBBServer
    :members:
 
