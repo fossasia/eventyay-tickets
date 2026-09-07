@@ -415,7 +415,7 @@ class SlidesWidget(Widget):
         context['widget']['files_name'] = self.files_field_name(name)
         context['widget']['files_id'] = f'id_{self.files_field_name(name)}'
         context['widget']['clear_name'] = self.clear_checkbox_name(name)
-        context['widget']['is_re_render'] = isinstance(value, dict)
+        context['widget']['is_re_render'] = isinstance(value, dict) and 'existing_resources' not in value
         return context
 
     @staticmethod
