@@ -50,7 +50,7 @@ const fetchRecipients = async (url, form) => {
 // its summary, and names the empty state with data-label-none. Composers that
 // carry neither keep counting to zero and leave their send actions alone.
 const SEND_ACTIONS =
-    'button[name="action"][value="send"], button[name="action"][value="draft"], [data-send-option="now"], [data-send-option="schedule"], input[name="skip_queue"]'
+    'button[name="action"][value="send"], button[name="action"][value="draft"], [data-send-option="now"], [data-send-option="schedule"]'
 
 const renderCount = (el, count) => {
     if (count < 1 && el.dataset.labelNone) {
@@ -72,11 +72,20 @@ const setSendingEnabled = (form, enabled) => {
     form.querySelectorAll(SEND_ACTIONS).forEach((control) => {
         control.disabled = !enabled
     })
-    // The caret of the split send button is a <summary>, which cannot be disabled.
+    // The caret of the split send button is a <summary>, which cannot be disabled and
+    // stays focusable, so the state has to be announced rather than only dimmed.
     const moreOptions = form.querySelector(".composer-send-group details.dropdown")
     if (moreOptions) {
-        moreOptions.querySelector("summary").classList.toggle("disabled", !enabled)
+        const caret = moreOptions.querySelector("summary")
+        caret.classList.toggle("disabled", !enabled)
+        caret.setAttribute("aria-disabled", String(!enabled))
         if (!enabled) moreOptions.open = false
+    }
+    if (!enabled) {
+        // A dialog opened just before the count arrived would still offer an audience
+        // that has since gone, behind a send button that no longer works.
+        const confirmDialog = form.querySelector("#send-confirm-dialog")
+        if (confirmDialog && confirmDialog.open) confirmDialog.close()
     }
 }
 
@@ -203,7 +212,7 @@ const initRecipientPreview = () => {
             console.error("Could not refresh the recipient count", error)
             badge.hidden = true
             if (summary) {
-                summary.textContent = ""
+                summary.textContent = summary.dataset.labelUnavailable || ""
             }
             // The count is unknown, so let the server-side check decide instead.
             if (requiresAudience) setSendingEnabled(form, true)
