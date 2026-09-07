@@ -17,6 +17,7 @@ from eventyay.api.mixins import PretalxViewSetMixin
 from eventyay.api.serializers.team import TeamInviteSerializer, TeamSerializer
 from eventyay.base.entitlements import check_entitlement
 from eventyay.base.models.organizer import (
+    Organizer,
     Team,
     TeamInvite,
     TeamPermissionError,
@@ -131,16 +132,22 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
 
                 if not already_admin:
                     # Lock the organizer row to serialize concurrent checks
-                    from eventyay.base.models import Organizer
                     Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
 
-                    current_users = User.objects.filter(
-                        teams__organizer=team.organizer,
-                        teams__can_change_organizer_settings=True,
-                    ).distinct().count()
+                    admin_member_emails = set(
+                        User.objects.filter(
+                            teams__organizer=team.organizer,
+                            teams__can_change_organizer_settings=True,
+                        ).distinct().values_list('email', flat=True)
+                    )
+                    current_users = len(admin_member_emails)
+
+                    # Exclude invites whose email already belongs to an admin member
                     current_invites = TeamInvite.objects.filter(
                         team__organizer=team.organizer,
                         team__can_change_organizer_settings=True,
+                    ).exclude(
+                        email__in=admin_member_emails,
                     ).distinct().count()
                     decision = check_entitlement(
                         team.organizer,

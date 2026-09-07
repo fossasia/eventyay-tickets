@@ -12,6 +12,7 @@ from eventyay.api.serializers.i18n import I18nAwareModelSerializer
 from eventyay.api.serializers.order import CompatibleJSONField
 from eventyay.api.serializers.settings import SettingsSerializer
 from eventyay.base.auth import get_auth_backends
+from eventyay.base.entitlements import check_entitlement
 from eventyay.base.i18n import get_language_without_region
 from eventyay.base.models import (
     Device,
@@ -294,8 +295,6 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         if not team.can_change_organizer_settings:
             return
 
-        from eventyay.base.entitlements import check_entitlement
-
         # Skip if the user/email already has full-admin access
         if user and user.teams.filter(
             organizer=team.organizer, can_change_organizer_settings=True
@@ -308,14 +307,25 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         ).exists():
             return
 
-        current_users = User.objects.filter(
-            teams__organizer=team.organizer,
-            teams__can_change_organizer_settings=True,
-        ).distinct().count()
+        # Lock the organizer row to serialize concurrent checks
+        Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
+
+        admin_member_emails = set(
+            User.objects.filter(
+                teams__organizer=team.organizer,
+                teams__can_change_organizer_settings=True,
+            ).distinct().values_list('email', flat=True)
+        )
+        current_users = len(admin_member_emails)
+
+        # Exclude invites whose email already belongs to an existing admin member
         current_invites = TeamInvite.objects.filter(
             team__organizer=team.organizer,
             team__can_change_organizer_settings=True,
+        ).exclude(
+            email__in=admin_member_emails,
         ).distinct().count()
+
         decision = check_entitlement(
             team.organizer,
             'organizer.full_admins',

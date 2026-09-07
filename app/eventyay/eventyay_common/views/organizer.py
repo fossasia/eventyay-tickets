@@ -550,13 +550,20 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         # Lock the organizer row to serialize concurrent admin-limit checks
         Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
 
-        current_users = User.objects.filter(
-            teams__organizer=team.organizer,
-            teams__can_change_organizer_settings=True,
-        ).distinct().count()
+        admin_member_emails = set(
+            User.objects.filter(
+                teams__organizer=team.organizer,
+                teams__can_change_organizer_settings=True,
+            ).distinct().values_list('email', flat=True)
+        )
+        current_users = len(admin_member_emails)
+
+        # Exclude invites whose email already belongs to an existing admin member
         current_invites = TeamInvite.objects.filter(
             team__organizer=team.organizer,
             team__can_change_organizer_settings=True,
+        ).exclude(
+            email__in=admin_member_emails,
         ).distinct().count()
 
         decision = check_entitlement(
