@@ -139,3 +139,35 @@ def test_cfp_form_mixin_scrubs_incomplete_errors_in_not_strict_mode():
 
     assert form.is_valid()
     assert not form.errors
+
+
+def test_form_flow_step_clears_last_session_file():
+    from unittest.mock import MagicMock
+    
+    class TestFormFlowStep(FormFlowStep):
+        @property
+        def identifier(self):
+            return 'test'
+            
+    step = TestFormFlowStep(None)
+    step.request = MagicMock()
+    step.request.method = 'POST'
+    step.request.POST = {'slide-clear': '1'}
+    step.file_storage = MagicMock()
+    
+    step.cfp_session = {
+        'files': {
+            'test': {
+                'slide': {
+                    'name': 'test.pdf',
+                    'tmp_name': 'test_tmp.pdf',
+                    'content_type': 'application/pdf',
+                }
+            }
+        }
+    }
+    
+    files = step.get_files()
+    
+    assert files is None
+    assert 'slide' not in step.cfp_session['files']['test']

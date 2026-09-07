@@ -359,7 +359,9 @@ class FormFlowStep(TemplateFlowStep):
     def get_files(self):
         saved_files = self.cfp_session['files'].get(self.identifier, {})
         files = MultiValueDict()
-        for field, field_dict in saved_files.items():
+        
+        # Iterate over a list so we can mutate saved_files safely
+        for field, field_dict in list(saved_files.items()):
             field_entries = field_dict if isinstance(field_dict, list) else [field_dict]
             
             is_cleared = False
@@ -371,14 +373,26 @@ class FormFlowStep(TemplateFlowStep):
                     base_field = field[:-6]
                     clear_ids = self.request.POST.getlist(f"{base_field}_clear_ids")
                     
+            retained_entries = []
             for entry in field_entries:
                 field_entry = entry.copy()
                 tmp_name = field_entry.pop('tmp_name')
                 
                 if is_cleared or tmp_name in clear_ids or f'tmp:{tmp_name}' in clear_ids:
+                    # Prune matching session entries before saving files
                     continue
                     
+                retained_entries.append(entry)
                 files.appendlist(field, UploadedFile(file=self.file_storage.open(tmp_name), **field_entry))
+                
+            # If any entries were cleared, update the session record immediately
+            if len(retained_entries) != len(field_entries):
+                if not retained_entries:
+                    del saved_files[field]
+                else:
+                    saved_files[field] = retained_entries if isinstance(field_dict, list) else retained_entries[0]
+                self.cfp_session['files'][self.identifier] = saved_files
+
         return files or None
 
     def set_files(self, files):
