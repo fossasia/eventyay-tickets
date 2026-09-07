@@ -72,6 +72,19 @@ class UserOrderFilterForm(forms.Form):
             self.add_error('date_to', _('End date must be on or after start date.'))
         return cleaned
 
+    def has_active_filters(self) -> bool:
+        """True when a non-empty filter value would affect the queryset."""
+        if not self.is_bound or not self.is_valid():
+            return False
+        cleaned = self.cleaned_data
+        return bool(
+            cleaned.get('event')
+            or (cleaned.get('code') or '').strip()
+            or cleaned.get('status')
+            or cleaned.get('date_from')
+            or cleaned.get('date_to')
+        )
+
     def get_visible_selected_event(self, user, request):
         event_id = self.data.get(self.add_prefix('event')) if self.is_bound else None
         if not event_id:
@@ -116,3 +129,10 @@ class SessionsFilterForm(forms.Form):
             # Query distinct events based on the user's proposals
             events = Event.objects.filter(submissions__speakers__email__iexact=user.email).distinct()
             self.fields['event'].queryset = events
+
+    def has_active_filters(self) -> bool:
+        """True when a non-empty filter value would affect the queryset."""
+        if not self.is_bound or not self.is_valid():
+            return False
+        cleaned = self.cleaned_data
+        return bool(cleaned.get('event') or (cleaned.get('search') or '').strip())

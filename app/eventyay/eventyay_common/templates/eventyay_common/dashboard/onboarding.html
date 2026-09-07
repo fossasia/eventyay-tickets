@@ -1,0 +1,161 @@
+{% load i18n %}
+{% load static %}
+
+<section class="common-dashboard" aria-labelledby="common-dashboard-title">
+  <header class="common-dashboard__header">
+    <h1 id="common-dashboard-title" class="common-dashboard__title">
+      {% trans "Dashboard" %}
+      <button
+        type="button"
+        class="cd-info"
+        data-toggle="tooltip"
+        data-placement="right"
+        title="{% trans 'Discover events, join as an attendee, submit proposals or create your own event.' %}"
+        aria-label="{% trans 'Discover events, join as an attendee, submit proposals or create your own event.' %}"
+      >
+        <span class="fa fa-info-circle" aria-hidden="true"></span>
+      </button>
+    </h1>
+  </header>
+
+  <section class="cd-welcome" aria-labelledby="onboarding-welcome-title">
+    <div class="cd-welcome__illustration" aria-hidden="true">
+      <div class="cd-welcome__art">
+        <img src="{% static 'pretixbase/img/eventyay-icon.svg' %}" alt="" width="48" height="48">
+      </div>
+    </div>
+    <div class="cd-welcome__body">
+      <h2 id="onboarding-welcome-title">{% trans "Welcome to Eventyay!" %}</h2>
+      <p>
+        {% blocktrans trimmed %}
+          You do not have any tickets, sessions, proposals, or events yet.
+          Use Eventyay to discover events, register for events, submit talks, or organise your own event.
+        {% endblocktrans %}
+      </p>
+      <div class="cd-welcome__actions">
+        <a class="btn btn-default cd-btn" href="#onboarding-find-events">
+          <span class="fa fa-search" aria-hidden="true"></span>
+          {% trans "Search events" %}
+        </a>
+        <a class="btn btn-primary cd-btn" href="{{ browse_events_url }}">
+          <span class="fa fa-calendar" aria-hidden="true"></span>
+          {% trans "Browse events" %}
+        </a>
+        {% if profile_incomplete %}
+          <a class="btn btn-default cd-btn" href="{{ edit_profile_url }}">
+            <span class="fa fa-user" aria-hidden="true"></span>
+            {% trans "Complete your profile" %}
+          </a>
+        {% endif %}
+        {% if can_create_event %}
+          <a class="btn btn-default cd-btn" href="{{ create_event_url }}">
+            <span class="fa fa-plus-circle" aria-hidden="true"></span>
+            {% trans "Create event" %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="common-dashboard__section" id="onboarding-find-events" aria-labelledby="onboarding-find-title">
+    <h2 id="onboarding-find-title">{% trans "Find events" %}</h2>
+    <form class="cd-search" action="{{ search_events_url }}" method="get" role="search">
+      <label class="sr-only" for="onboarding-event-search">{% trans "Search events" %}</label>
+      <div class="cd-search__field">
+        <span class="fa fa-search cd-search__icon" aria-hidden="true"></span>
+        <input
+          id="onboarding-event-search"
+          type="search"
+          name="q"
+          class="form-control cd-search__input"
+          placeholder="{% trans 'Search events by name, organiser, location, or topic' %}"
+          autocomplete="off"
+        >
+        <button type="submit" class="btn btn-primary cd-search__submit">
+          {% trans "Search" %}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="common-dashboard__section" aria-labelledby="onboarding-get-started-title">
+    <h2 id="onboarding-get-started-title">{% trans "Get started" %}</h2>
+    <div class="cd-card-grid cd-card-grid--actions">
+      <article class="cd-action-card">
+        <div class="cd-action-card__icon cd-action-card__icon--attend" aria-hidden="true">
+          <span class="fa fa-ticket"></span>
+        </div>
+        <h3>{% trans "Attend an event" %}</h3>
+        <p>{% trans "Browse upcoming events and register for tickets." %}</p>
+        <a class="cd-action-card__link" href="{{ upcoming_events_url }}">
+          {% trans "Browse events" %}
+          <span aria-hidden="true">></span>
+        </a>
+      </article>
+
+      <article class="cd-action-card">
+        <div class="cd-action-card__icon cd-action-card__icon--talk" aria-hidden="true">
+          <span class="fa fa-microphone"></span>
+        </div>
+        <h3>{% trans "Submit a talk" %}</h3>
+        <p>{% trans "Find events with open calls for proposals." %}</p>
+        <a class="cd-action-card__link" href="{{ open_calls_url }}">
+          {% trans "Find open calls" %}
+          <span aria-hidden="true">></span>
+        </a>
+      </article>
+
+      {% if can_create_event %}
+        <article class="cd-action-card">
+          <div class="cd-action-card__icon cd-action-card__icon--organise" aria-hidden="true">
+            <span class="fa fa-calendar-plus-o"></span>
+          </div>
+          <h3>{% trans "Organise an event" %}</h3>
+          <p>{% trans "Create a new event and start setting up tickets, talks, and video." %}</p>
+          <a class="cd-action-card__link" href="{{ create_event_url }}">
+            {% trans "Create event" %}
+            <span aria-hidden="true">></span>
+          </a>
+        </article>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="common-dashboard__section" aria-labelledby="onboarding-recommended-title">
+    <div class="common-dashboard__section-head">
+      <h2 id="onboarding-recommended-title">{% trans "Recommended events" %}</h2>
+      <a class="common-dashboard__view-all" href="{{ upcoming_events_url }}">
+        {% trans "View all events" %}
+        <span aria-hidden="true">></span>
+      </a>
+    </div>
+
+    {% if recommended_events %}
+      <div class="cd-card-grid cd-card-grid--dense">
+        {% for card in recommended_events %}
+          {% include "eventyay_common/dashboard/includes/event_card.html" with card=card %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="cd-empty">
+        <p>{% trans "No recommended events are available right now." %}</p>
+        <a class="btn btn-default" href="{{ browse_events_url }}">{% trans "Browse all events" %}</a>
+      </div>
+    {% endif %}
+  </section>
+
+  {% if profile_incomplete %}
+    <section class="cd-profile" aria-labelledby="onboarding-profile-title">
+      <div class="cd-profile__icon" aria-hidden="true">
+        <span class="fa fa-user"></span>
+      </div>
+      <div class="cd-profile__body">
+        <h2 id="onboarding-profile-title">{% trans "Complete your profile" %}</h2>
+        <p>{{ profile_incomplete_message }}</p>
+      </div>
+      <a class="btn btn-default cd-profile__cta" href="{{ edit_profile_url }}">
+        {% trans "Edit profile" %}
+      </a>
+    </section>
+  {% endif %}
+</section>
