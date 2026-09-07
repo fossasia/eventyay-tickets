@@ -560,9 +560,18 @@ class RoomView(OrderActionMixin, OrgaCRUDView):
         context['linked_talks_warning'] = DELETE_LINKED_SUBMISSIONS_MESSAGE
         return self.render_to_response(context)
 
+    @transaction.atomic
     def delete_handler(self, request, *args, **kwargs):
-        # Use soft delete to sync with video component
-        obj = self.get_object()
+        # Use soft delete to sync with video component. The whole handler is atomic
+        # so the room and its break slots are never left half-deleted, and the row is
+        # locked so that a concurrent deletion cannot act on a stale linked-session
+        # check. Sessions cannot be moved into a deleted room, because
+        # validate_talk_slot_room() rejects that on every talk slot write.
+        try:
+            obj = self.get_queryset().select_for_update().get(pk=self.object.pk)
+        except Room.DoesNotExist:
+            # Another request deleted the room while we waited for the row lock.
+            return redirect(self.get_success_url())
         # Soft deletion bypasses the PROTECT on TalkSlot.room, so the guard belongs
         # here: without it the room disappears from the organiser UI while the
         # sessions scheduled in it keep pointing at it.

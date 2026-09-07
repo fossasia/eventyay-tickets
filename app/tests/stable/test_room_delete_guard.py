@@ -1,7 +1,9 @@
 import datetime as dt
+from unittest.mock import patch
 
 import pytest
 from django.contrib.messages import get_messages
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django_scopes import scope
 
@@ -52,9 +54,7 @@ def test_linked_submission_talks_lists_each_session_once(event, room):
     slot = schedule_session(event, room)
     with scope(event=event):
         event.wip_schedule.freeze(name='v1', notify_speakers=False)
-        assert (
-            TalkSlot.objects.filter(room=room, submission=slot.submission).count() > 1
-        )
+        assert TalkSlot.objects.filter(room=room, submission=slot.submission).count() > 1
 
     talks = linked_submission_talks(room)
 
@@ -120,3 +120,39 @@ def test_delete_still_works_for_room_without_sessions(organizer_client, event, e
     with scope(event=event):
         empty_room.refresh_from_db()
         assert empty_room.deleted is True
+
+
+@pytest.mark.django_db
+def test_session_cannot_be_scheduled_into_a_deleted_room(event, room):
+    """The other half of the guard: a deleted room must not gain sessions."""
+    with scope(event=event):
+        room.deleted = True
+        room.save(update_fields=['deleted'])
+        submission = Submission.objects.create(
+            event=event,
+            title='Late Addition',
+            submission_type=event.submission_types.first(),
+        )
+        slot = TalkSlot(room=room, schedule=event.wip_schedule, submission=submission)
+        with pytest.raises(ValidationError) as excinfo:
+            slot.save()
+
+    assert 'room' in excinfo.value.message_dict
+
+
+@pytest.mark.django_db
+def test_deletion_is_rolled_back_when_the_handler_fails(organizer_client, event, empty_room):
+    """The handler is atomic, so a later failure must not leave the room deleted."""
+    with scope(event=event):
+        url = empty_room.urls.delete
+
+    with patch(
+        'eventyay.orga.views.schedule.messages.success',
+        side_effect=RuntimeError('cleanup failed'),
+    ):
+        with pytest.raises(RuntimeError):
+            organizer_client.post(url)
+
+    with scope(event=event):
+        empty_room.refresh_from_db()
+        assert empty_room.deleted is False
