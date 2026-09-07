@@ -26,7 +26,6 @@ export default {
 	},
 	watch: {
 		wsUrl(newUrl) {
-			console.log('LiveCaptions wsUrl changed to:', newUrl);
 			this.teardown()
 			this.lines = [] // Clear full history on track switch
 			if (newUrl) {
@@ -35,7 +34,6 @@ export default {
 		}
 	},
 	mounted() {
-		console.log('LiveCaptions mounted, initial wsUrl:', this.wsUrl);
 		if (this.wsUrl) {
 			this.connect()
 		}
@@ -97,7 +95,6 @@ export default {
                                 }
                                 
                                 const data = JSON.parse(event.data);
-                                console.log('LiveCaptions received:', data);
                                 
 								if ((data.type === 'caption' || data.type === 'translated_caption') && data.text) {
                                         this.lines.push({ id: this.nextId++, text: data.text })
