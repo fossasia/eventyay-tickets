@@ -1320,6 +1320,9 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # account_email_verification_sent (not to the login page), so ACCOUNT_SIGNUP_REDIRECT_URL
 # below is only reached when the user is already verified (e.g. social auth signup).
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# Same HTTP response for taken and unused addresses. The mailbox still
+# gets the existing-account mail from CustomAccountAdapter.
+ACCOUNT_PREVENT_ENUMERATION = True
 # Prefer Jinja2 templates for django-allauth
 ACCOUNT_TEMPLATE_EXTENSION = 'jinja'
 ACCOUNT_ADAPTER = 'eventyay.eventyay_common.adapter.CustomAccountAdapter'

@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import gettext as _
 from pydantic import ValidationError
 
 from eventyay.base.auth import SPAM_ACCOUNT_ERROR, get_auth_backends
@@ -97,6 +98,30 @@ class CustomAccountAdapter(DefaultAccountAdapter):
             email=email,
             signup=signup,
             redirect_url=redirect_url,
+        )
+
+    def add_message(
+        self,
+        request: HttpRequest,
+        level: int,
+        message_template: str | None = None,
+        message_context: dict | None = None,
+        extra_tags: str = '',
+        message: str | None = None,
+    ) -> None:
+        # allauth's default flash names the address. After signup that banner
+        # is still in the session when the user opens login, so a taken email
+        # and a new email used to look different on that page.
+        if message_template == 'account/messages/email_confirmation_sent.txt':
+            message = str(_('We have sent a confirmation email. Check your inbox to continue.'))
+            message_template = None
+        return super().add_message(
+            request,
+            level,
+            message_template=message_template,
+            message_context=message_context,
+            extra_tags=extra_tags,
+            message=message,
         )
 
     def send_account_already_exists_mail(self, email: str) -> None:
