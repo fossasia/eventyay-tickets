@@ -974,7 +974,12 @@ def test_session_mail_cannot_be_sent_without_a_selection(orga_client, event, spe
         },
     )
     assert response.status_code == 200
-    assert "Select at least one recipient or audience filter" in response.text
+    # The composer names the empty state on every render, so assert on the error
+    # itself rather than on the page text.
+    assert (
+        "Select at least one recipient or audience filter before sending this email."
+        in response.context["form"].non_field_errors()
+    )
     with scope(event=event):
         assert not QueuedMail.objects.exists()
     assert djmail.outbox == []
@@ -996,7 +1001,10 @@ def test_session_mail_cannot_be_saved_as_draft_without_a_selection(orga_client, 
         },
     )
     assert response.status_code == 200
-    assert "Select at least one recipient or audience filter" in response.text
+    assert (
+        "Select at least one recipient or audience filter before saving this draft."
+        in response.context["form"].non_field_errors()
+    )
     with scope(event=event):
         assert not QueuedMail.objects.exists()
 
@@ -1082,6 +1090,33 @@ def test_session_mail_draft_drops_its_send_time(orga_client, event, speaker, sub
         assert draft.scheduled_at is None
         assert draft.sent is None
     assert djmail.outbox == []
+
+
+@pytest.mark.django_db
+def test_teams_mail_cannot_be_sent_to_a_team_without_members(orga_client, event):
+    # The send guard is shared with the session composer, but this composer has no
+    # audience filters, so an empty result needs its own wording.
+    djmail.outbox = []
+    with scope(event=event):
+        empty_team = event.organizer.teams.create(name="Nobody here", all_events=False)
+        empty_team.limit_events.add(event)
+    response = orga_client.post(
+        event.orga_urls.compose_mails_teams,
+        follow=True,
+        data={
+            "recipients": [empty_team.pk],
+            "subject_0": "foo",
+            "text_0": "bar",
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        "The selected teams have no active members with an email address."
+        in response.context["form"].non_field_errors()
+    )
+    assert djmail.outbox == []
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
 
 
 @pytest.mark.django_db

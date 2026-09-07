@@ -587,10 +587,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
         # With no audience there is nothing to create. Saying so beats reporting
         # that zero emails were queued, or dropping the text of a draft.
         if not form.get_recipients():
-            if is_draft:
-                message = _('Select at least one recipient or audience filter before saving this draft.')
-            else:
-                message = _('Select at least one recipient or audience filter before sending this email.')
+            message = form.empty_audience_draft_error if is_draft else form.empty_audience_error
             form.add_error(None, message)
             return self.render_to_response(self.get_context_data(form=form))
 
