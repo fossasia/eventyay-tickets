@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:14+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 16:14+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/lv/>\n"
 "Language: lv\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= "
 "19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -1242,8 +1242,7 @@ msgstr "Produkts \"{}\" nav piesaistīts kvotai."
 #: eventyay/api/serializers/cart.py:100 eventyay/api/serializers/order.py:1429
 msgid ""
 "There is not enough quota available on quota \"{}\" to perform the operation."
-msgstr ""
-"Kvotā \"{}\" nav pieejams pietiekams kvotas apjoms, lai veiktu darbību."
+msgstr "Kvotā \"{}\" nav pieejams pietiekams kvotas apjoms, lai veiktu darbību."
 
 #: eventyay/api/serializers/cart.py:131 eventyay/api/serializers/order.py:1375
 #: eventyay/base/services/orders.py:1509
@@ -1913,8 +1912,8 @@ msgstr ""
 "vairāki pasākumi vienā organizācijā šajā laukā izmanto vienādu vērtību, tie "
 "koplietos vienu numuru diapazonu, t. i., katrs pilns numurs visos jūsu "
 "pasākumos tiks izmantots ne vairāk kā vienu reizi. Šis iestatījums ietekmē "
-"tikai turpmākos rēķinus. Varat izmantot %Y (ar gadsimtu) un %y (bez "
-"gadsimta), lai ievietotu rēķina gadu, vai %m un %d mēneša dienai."
+"tikai turpmākos rēķinus. Varat izmantot %Y (ar gadsimtu) un %y (bez gadsimta)"
+", lai ievietotu rēķina gadu, vai %m un %d mēneša dienai."
 
 #: eventyay/base/configurations/default_setting.py:494
 msgid "Invoice number prefix for cancellations"
@@ -2674,8 +2673,7 @@ msgstr "Atļaut klientiem mainīt savu informāciju"
 
 #: eventyay/base/configurations/default_setting.py:1332
 msgid "Allow attendees to modify their information after they checked in."
-msgstr ""
-"Atļaut apmeklētājiem mainīt savu informāciju pēc reģistrēšanās atzīmes."
+msgstr "Atļaut apmeklētājiem mainīt savu informāciju pēc reģistrēšanās atzīmes."
 
 #: eventyay/base/configurations/default_setting.py:1334
 msgid ""
@@ -3311,8 +3309,8 @@ msgid ""
 msgstr ""
 "Labdien,\n"
 "\n"
-"mēs vēl neesam saņēmuši pilnu maksājumu par jūsu pasūtījumu pasākumam "
-"{event}.\n"
+"mēs vēl neesam saņēmuši pilnu maksājumu par jūsu pasūtījumu pasākumam {event}"
+".\n"
 "Lūdzu, ņemiet vērā, ka mēs garantējam jūsu pasūtījumu tikai tad, ja saņemam\n"
 "jūsu maksājumu līdz {expire_date}.\n"
 "\n"
@@ -6093,8 +6091,8 @@ msgid ""
 "Using the conversion rate of 1:{rate} as published by the European Central "
 "Bank on {date}, this corresponds to:"
 msgstr ""
-"Izmantojot maiņas kursu 1:{rate}, ko Eiropas Centrālā banka publicēja "
-"{date}, šis atbilst:"
+"Izmantojot maiņas kursu 1:{rate}, ko Eiropas Centrālā banka publicēja {date}"
+", šis atbilst:"
 
 #: eventyay/base/invoice.py:823
 #, python-brace-format
@@ -6103,8 +6101,8 @@ msgid ""
 "Using the conversion rate of 1:{rate} as published by the European Central "
 "Bank on {date}, the invoice total corresponds to {total}."
 msgstr ""
-"Izmantojot maiņas kursu 1:{rate}, ko Eiropas Centrālā banka publicēja "
-"{date}, rēķina kopsumma atbilst {total}."
+"Izmantojot maiņas kursu 1:{rate}, ko Eiropas Centrālā banka publicēja {date}"
+", rēķina kopsumma atbilst {total}."
 
 #: eventyay/base/invoice.py:839
 msgid "Modern"
@@ -6291,8 +6289,7 @@ msgstr "Profila attēla avots"
 msgid ""
 "Please enter the name of the author or source of image and a link if "
 "applicable."
-msgstr ""
-"Lūdzu, ievadiet attēla autora vai avota nosaukumu un saiti, ja tāda ir."
+msgstr "Lūdzu, ievadiet attēla autora vai avota nosaukumu un saiti, ja tāda ir."
 
 #: eventyay/base/models/auth.py:291
 #: eventyay/orga/templates/orga/submission/speakers.html:47
@@ -8642,10 +8639,10 @@ msgid ""
 "paid and completed. You can use this e.g. for discounted tickets that are "
 "only available to specific groups."
 msgstr ""
-"Ja šis produkts ir daļa no pasūtījuma, pasūtījumam tiks piemērots "
-"“apstiprināšanas” satuss un tas būs jāapstiprina jums, pirms klients to "
-"varēs apmaksāt un pabeigt iegādes procesu. Jūs varat izmantot šo funkciju, "
-"piem. biļetēm ar atlaidi, kuras ir pieejamas tikai noteiktām grupām."
+"Ja šis produkts ir daļa no pasūtījuma, pasūtījumam tiks piemērots “"
+"apstiprināšanas” satuss un tas būs jāapstiprina jums, pirms klients to varēs "
+"apmaksāt un pabeigt iegādes procesu. Jūs varat izmantot šo funkciju, piem. "
+"biļetēm ar atlaidi, kuras ir pieejamas tikai noteiktām grupām."
 
 #: eventyay/base/models/product.py:485
 msgid ""
@@ -8811,8 +8808,7 @@ msgstr "Produkta kategorijai jāietilpst tajā pašā pasākumā kā produktam."
 
 #: eventyay/base/models/product.py:780
 msgid "The product's tax rule must belong to the same event as the product."
-msgstr ""
-"Produkta nodokļu noteikumam jāietilpst tajā pašā pasākumā kā produktam."
+msgstr "Produkta nodokļu noteikumam jāietilpst tajā pašā pasākumā kā produktam."
 
 #: eventyay/base/models/product.py:786
 msgid "The product's availability cannot end before it starts."
@@ -11023,8 +11019,7 @@ msgstr "Saite, lai iespējotu maksājuma metodi"
 
 #: eventyay/base/payment.py:400
 msgid "Share this link with customers who should use this payment method."
-msgstr ""
-"Kopīgojiet šo saiti ar klientiem, kuriem jāizmanto šī maksājuma metode."
+msgstr "Kopīgojiet šo saiti ar klientiem, kuriem jāizmanto šī maksājuma metode."
 
 #: eventyay/base/payment.py:434
 msgctxt "invoice"
@@ -11721,8 +11716,8 @@ msgid ""
 "We removed %(product)s from your cart as you can not buy less than %(min)s "
 "items of it."
 msgstr ""
-"No jūsu groza tika noņemti %(product)s, jo jūs nevarat iegādāties mazāk par "
-"%(min)s precēm."
+"No jūsu groza tika noņemti %(product)s, jo jūs nevarat iegādāties mazāk par %"
+"(min)s precēm."
 
 #: eventyay/base/services/cart.py:82 eventyay/base/services/orders.py:118
 msgid "The presale period for this event has not yet started."
@@ -11872,8 +11867,8 @@ msgid ""
 "You can select at most %(max)s add-ons from the category %(cat)s for the "
 "product %(base)s."
 msgstr ""
-"Jūs varat izvēlēties ne vairāk kā %(max)s papildinājumus no kategorijas "
-"%(cat)s šim produktam %(base)s."
+"Jūs varat izvēlēties ne vairāk kā %(max)s papildinājumus no kategorijas %"
+"(cat)s šim produktam %(base)s."
 
 #: eventyay/base/services/cart.py:130
 #, python-format
@@ -11890,8 +11885,8 @@ msgid ""
 "You can select every add-ons from the category %(cat)s for the product "
 "%(base)s at most once."
 msgstr ""
-"Katrai precei %(base)s varat izvēlēties katru papildinājumu no kategorijas "
-"%(cat)s ne vairāk kā vienu reizi."
+"Katrai precei %(base)s varat izvēlēties katru papildinājumu no kategorijas %"
+"(cat)s ne vairāk kā vienu reizi."
 
 #: eventyay/base/services/cart.py:135
 msgid ""
@@ -12343,8 +12338,7 @@ msgstr ""
 #: eventyay/base/services/orders.py:513 eventyay/control/forms/orders.py:159
 msgid ""
 "The cancellation fee cannot be higher than the payment credit of this order."
-msgstr ""
-"Atcelšanas maksa nevar būt lielāka par šī pasūtījuma maksājuma kredītu."
+msgstr "Atcelšanas maksa nevar būt lielāka par šī pasūtījuma maksājuma kredītu."
 
 #: eventyay/base/services/orders.py:550
 #, python-format
@@ -12825,8 +12819,7 @@ msgstr "Lai pieprasītu uzņēmuma nosaukumus, jums ir jāpieprasa rēķina adre
 
 #: eventyay/base/settings.py:241
 msgid "The last payment date cannot be before the end of presale."
-msgstr ""
-"Pēdējais maksājuma datums nedrīkst būt pirms iepriekšpārdošanas beigām."
+msgstr "Pēdējais maksājuma datums nedrīkst būt pirms iepriekšpārdošanas beigām."
 
 #: eventyay/base/shredder.py:47 eventyay/base/shredder.py:50
 msgid "Your event needs to be over for at least 30 days to use this feature."
@@ -13567,8 +13560,7 @@ msgstr "Ielūgums tika nosūtīts!"
 
 #: eventyay/cfp/phrases.py:48
 msgid "You are now part of this proposal! Please fill in your profile below."
-msgstr ""
-"Tagad esat daļa no šī pieteikuma! Lūdzu, aizpildiet savu profilu zemāk."
+msgstr "Tagad esat daļa no šī pieteikuma! Lūdzu, aizpildiet savu profilu zemāk."
 
 #: eventyay/cfp/phrases.py:51
 msgid ""
@@ -13588,8 +13580,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Jūs varat iesniegt pieteikumus līdz %(deadline)s (%(timezone)s), tas ir vēl "
-"%(until_string)s."
+"Jūs varat iesniegt pieteikumus līdz %(deadline)s (%(timezone)s), tas ir vēl %"
+"(until_string)s."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -16198,8 +16190,7 @@ msgstr ""
 
 #: eventyay/control/forms/event.py:209
 msgid "Create a new team for this event with me as the only member"
-msgstr ""
-"Izveidot jaunu komandu šim pasākumam, kurā es esmu vienīgais dalībnieks"
+msgstr "Izveidot jaunu komandu šim pasākumam, kurā es esmu vienīgais dalībnieks"
 
 #: eventyay/control/forms/event.py:256
 #: eventyay/eventyay_common/forms/event.py:255
@@ -18468,8 +18459,7 @@ msgstr ""
 #: eventyay/control/forms/orders.py:827
 msgctxt "subevent"
 msgid "Please either select all dates or a date range, not both."
-msgstr ""
-"Lūdzu, atlasiet vai nu visus datumus, vai datumu diapazonu, nevis abus."
+msgstr "Lūdzu, atlasiet vai nu visus datumus, vai datumu diapazonu, nevis abus."
 
 #: eventyay/control/forms/orders.py:834 eventyay/plugins/sendmail/forms.py:136
 msgctxt "subevent"
@@ -19157,8 +19147,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Pozīcija #{posid}: {old_product} ({old_price}) mainīta uz {new_product} "
-"({new_price})."
+"Pozīcija #{posid}: {old_product} ({old_price}) mainīta uz {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19227,8 +19217,8 @@ msgid ""
 "Position #{posid} created: {product} ({price}) as an add-on to position "
 "#{addon_to}."
 msgstr ""
-"Izveidota pozīcija #{posid}: {product} ({price}) kā papildinājums pozīcijai "
-"#{addon_to}."
+"Izveidota pozīcija #{posid}: {product} ({price}) kā papildinājums pozīcijai #"
+"{addon_to}."
 
 #: eventyay/control/logdisplay.py:194
 #, python-brace-format
@@ -19310,8 +19300,8 @@ msgstr ""
 msgid ""
 "Position #{posid} has been checked out at {datetime} for list \"{list}\"."
 msgstr ""
-"Pozīcija #{posid} tika izskenēta kā izsniegta vietnē {datetime} sarakstam "
-"\"{list}\"."
+"Pozīcija #{posid} tika izskenēta kā izsniegta vietnē {datetime} sarakstam \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:312
 #, python-brace-format
@@ -19323,8 +19313,8 @@ msgstr "Pozīcija #{posid} tika izskenēta kā izsniegta sarakstam \"{list}\"."
 msgid ""
 "Position #{posid} has been checked in at {datetime} for list \"{list}\"."
 msgstr ""
-"Pozīcija #{posid} tika izskenēta kā atgriezta vietnē {datetime} sarakstam "
-"\"{list}\"."
+"Pozīcija #{posid} tika izskenēta kā atgriezta vietnē {datetime} sarakstam \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:321
 #, python-brace-format
@@ -19559,8 +19549,7 @@ msgstr ""
 #: eventyay/control/logdisplay.py:555
 msgid ""
 "An email has been sent to notify the user that the order has been canceled."
-msgstr ""
-"Ir nosūtīts e-pasts, lai informētu lietotāju, ka pasūtījums ir atcelts."
+msgstr "Ir nosūtīts e-pasts, lai informētu lietotāju, ka pasūtījums ir atcelts."
 
 #: eventyay/control/logdisplay.py:558
 msgid ""
@@ -19570,14 +19559,12 @@ msgstr "Ir nosūtīts e-pasts, lai informētu lietotāju, ka pasākums ir atcelt
 #: eventyay/control/logdisplay.py:561
 msgid ""
 "An email has been sent to notify the user that the order has been changed."
-msgstr ""
-"Ir nosūtīts e-pasts, lai paziņotu lietotājam, ka pasūtījums ir mainīts."
+msgstr "Ir nosūtīts e-pasts, lai paziņotu lietotājam, ka pasūtījums ir mainīts."
 
 #: eventyay/control/logdisplay.py:564
 msgid ""
 "An email has been sent to notify the user that the order has been received."
-msgstr ""
-"Ir nosūtīts e-pasts, lai paziņotu lietotājam, ka pasūtījums ir saņemts."
+msgstr "Ir nosūtīts e-pasts, lai paziņotu lietotājam, ka pasūtījums ir saņemts."
 
 #: eventyay/control/logdisplay.py:567
 #, fuzzy
@@ -20160,15 +20147,13 @@ msgstr "Lietotājs apstiprināja šādu ziņojumu: \"{}\""
 msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
-msgstr ""
-"Pozīcija #{posid} ir manuāli reģistrēta {datetime} sarakstā \"{list}\"."
+msgstr "Pozīcija #{posid} ir manuāli reģistrēta {datetime} sarakstā \"{list}\"."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
-msgstr ""
-"Pozīcija #{posid} ir reģistrēta vēlreiz {datetime} sarakstā \"{list}\"."
+msgstr "Pozīcija #{posid} ir reģistrēta vēlreiz {datetime} sarakstā \"{list}\"."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
@@ -20189,8 +20174,8 @@ msgstr "{user} ir noņemts no komandas."
 #, python-brace-format
 msgid "{user} has joined the team using the invite sent to {email}."
 msgstr ""
-"{user} pievienojās komandai, izmantojot uzaicinājumu, kas nosūtīts uz "
-"{email}."
+"{user} pievienojās komandai, izmantojot uzaicinājumu, kas nosūtīts uz {email}"
+"."
 
 #: eventyay/control/logdisplay.py:803
 #, python-brace-format
@@ -20253,8 +20238,7 @@ msgstr "Jūs pārtraucāt uzdoties par {}."
 msgid ""
 "The selected event was not found or you have no permission to administrate "
 "it."
-msgstr ""
-"Atlasītais pasākums netika atrasts vai jums nav atļauju to administrēt."
+msgstr "Atlasītais pasākums netika atrasts vai jums nav atļauju to administrēt."
 
 #: eventyay/control/middleware.py:190
 msgid ""
@@ -22566,10 +22550,10 @@ msgid ""
 "to make sure they do not show up in your reports and statistics and block "
 "people from actually buying tickets."
 msgstr ""
-"Jūsu pasākumā ir <strong>testa režīma pasūtījumi</strong>, lai gan "
-"<strong>testa režīms ir deaktivizēts</strong>. Jums vajadzētu dzēst šos "
-"pasūtījumus, lai tie neparādītos jūsu pārskatos un statistikā un lai neļautu "
-"cilvēkiem faktiski iegādāties biļetes."
+"Jūsu pasākumā ir <strong>testa režīma pasūtījumi</strong>, lai gan <strong>"
+"testa režīms ir deaktivizēts</strong>. Jums vajadzētu dzēst šos pasūtījumus, "
+"lai tie neparādītos jūsu pārskatos un statistikā un lai neļautu cilvēkiem "
+"faktiski iegādāties biļetes."
 
 #: eventyay/control/templates/pretixcontrol/base.html:395
 #: eventyay/eventyay_common/templates/eventyay_common/base.html:365
@@ -22778,8 +22762,7 @@ msgstr ""
 msgid ""
 "This will delete the information of <strong>%(num)s</strong> check-ins as "
 "well."
-msgstr ""
-"Tiks dzēsta arī informācija par <strong>%(num)s</strong> reģistrācijām."
+msgstr "Tiks dzēsta arī informācija par <strong>%(num)s</strong> reģistrācijām."
 
 #: eventyay/control/templates/pretixcontrol/checkin/list_edit.html:10
 #: eventyay/control/templates/pretixcontrol/checkin/list_edit.html:17
@@ -23676,9 +23659,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Nav pieejamu maksājumu pakalpojumu sniedzēju. Lūdzu, dodieties uz <a "
-"%(plugin_settings_href)s>spraudņu iestatījumiem</a> un aktivizējiet vienu "
-"vai vairākus maksājumu spraudņus."
+"Nav pieejamu maksājumu pakalpojumu sniedzēju. Lūdzu, dodieties uz <a %"
+"(plugin_settings_href)s>spraudņu iestatījumiem</a> un aktivizējiet vienu vai "
+"vairākus maksājumu spraudņus."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -24126,9 +24109,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Nav pieejamu biļešu izvades. Lūdzu, dodieties uz <a "
-"%(plugin_settings_href)s>spraudņu iestatījumiem</a> un aktivizējiet vienu "
-"vai vairākus biļešu izvades spraudņus."
+"Nav pieejamu biļešu izvades. Lūdzu, dodieties uz <a %(plugin_settings_href)s>"
+"spraudņu iestatījumiem</a> un aktivizējiet vienu vai vairākus biļešu izvades "
+"spraudņus."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -25164,8 +25147,8 @@ msgid ""
 "All answers to the question given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Visas atbildes uz jautājumu, ko snieguši šo produktu pircēji, tiks "
-"<strong>zaudētas</strong>."
+"Visas atbildes uz jautājumu, ko snieguši šo produktu pircēji, tiks <strong>"
+"zaudētas</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:15
@@ -25683,8 +25666,7 @@ msgstr "ieskaitot visus nodokļus"
 
 #: eventyay/control/templates/pretixcontrol/order/change.html:191
 msgid "Removing this position will also remove all add-ons to this position."
-msgstr ""
-"Noņemot šo pozīciju, tiks noņemti arī visi šīs pozīcijas papildinājumi."
+msgstr "Noņemot šo pozīciju, tiks noņemti arī visi šīs pozīcijas papildinājumi."
 
 #: eventyay/control/templates/pretixcontrol/order/change.html:212
 #: eventyay/control/templates/pretixcontrol/order/change.html:250
@@ -26348,8 +26330,8 @@ msgid ""
 msgstr ""
 "Saņēmām paziņojumu, ka <strong>%(amount)s</strong> ir atmaksāti, izmantojot "
 "<strong>%(method)s</strong>. Ja šī atmaksa tiks apstrādāta, pasūtījumam "
-"pietrūks <strong>%(pending)s</strong>. Pasūtījuma kopsumma ir "
-"<strong>%(total)s</strong>."
+"pietrūks <strong>%(pending)s</strong>. Pasūtījuma kopsumma ir <strong>%"
+"(total)s</strong>."
 
 #: eventyay/control/templates/pretixcontrol/order/refund_process.html:30
 msgid "Since the order is already canceled, this will not affect its state."
@@ -27470,8 +27452,7 @@ msgstr "Webhook žurnāli %(url)s"
 
 #: eventyay/control/templates/pretixcontrol/organizers/webhook_logs.html:7
 msgid "This page shows all calls to your webhook in the past 30 days."
-msgstr ""
-"Šajā lapā ir redzami visi jūsu webhook izsaukumi pēdējo 30 dienu laikā."
+msgstr "Šajā lapā ir redzami visi jūsu webhook izsaukumi pēdējo 30 dienu laikā."
 
 #: eventyay/control/templates/pretixcontrol/organizers/webhook_logs.html:15
 msgid "This webhook was retried since it previously failed."
@@ -27920,8 +27901,8 @@ msgid ""
 "as well as historical log data cannot be downloaded at the moment."
 msgstr ""
 "Lielākajai daļai datu kategoriju varēsiet daļēji lejupielādēt datus, lai tos "
-"glabātu bezsaistē. Dažus datu veidus (piemēram, daļu maksājumu "
-"informācijas), kā arī vēsturiskos žurnāldatus pašlaik nevar lejupielādēt."
+"glabātu bezsaistē. Dažus datu veidus (piemēram, daļu maksājumu informācijas)"
+", kā arī vēsturiskos žurnāldatus pašlaik nevar lejupielādēt."
 
 #: eventyay/control/templates/pretixcontrol/shredder/index.html:46
 msgid "Data selection"
@@ -29338,8 +29319,7 @@ msgstr "Šo maksājumu pašlaik nevar apstiprināt."
 msgid ""
 "You can not refund more than the amount of a payment that is not yet "
 "refunded."
-msgstr ""
-"Jūs nevarat atmaksāt vairāk par maksājuma summu, kas vēl nav atmaksāta."
+msgstr "Jūs nevarat atmaksāt vairāk par maksājuma summu, kas vēl nav atmaksāta."
 
 #: eventyay/control/views/orders.py:1315
 msgid ""
@@ -31106,9 +31086,9 @@ msgid ""
 "you can <a %(login_href)s>log in</a> first and then click this link again to "
 "accept the invitation with your existing account."
 msgstr ""
-"Ja jums jau ir konts šajā vietnē ar citu e-pasta adresi, vispirms varat <a "
-"%(login_href)s>pieteikties</a> un pēc tam vēlreiz noklikšķināt uz šīs "
-"saites, lai pieņemtu uzaicinājumu ar savu esošo kontu."
+"Ja jums jau ir konts šajā vietnē ar citu e-pasta adresi, vispirms varat <a %"
+"(login_href)s>pieteikties</a> un pēc tam vēlreiz noklikšķināt uz šīs saites, "
+"lai pieņemtu uzaicinājumu ar savu esošo kontu."
 
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:17
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:45
@@ -32904,8 +32884,7 @@ msgstr ""
 msgid ""
 "Unable to confirm %(email)s because it is already confirmed by a different "
 "account."
-msgstr ""
-"Neizdevās apstiprināt %(email)s, jo to jau ir apstiprinājis cits konts."
+msgstr "Neizdevās apstiprināt %(email)s, jo to jau ir apstiprinājis cits konts."
 
 #: eventyay/eventyay_common/views/custom.py:63
 msgid "issue a new email confirmation request"
@@ -32917,8 +32896,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Šī e-pasta apstiprināšanas saite ir beigusies vai nav derīga. Lūdzu, "
-"%(email_action_link)s."
+"Šī e-pasta apstiprināšanas saite ir beigusies vai nav derīga. Lūdzu, %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33715,8 +33694,8 @@ msgid ""
 msgstr ""
 "Sveiki!\n"
 "\n"
-"Jūs esat pievienots(-a) priekšlikumam pasākumam {event_name} ar nosaukumu "
-"“{proposal_title}”.\n"
+"Jūs esat pievienots(-a) priekšlikumam pasākumam {event_name} ar nosaukumu “"
+"{proposal_title}”.\n"
 "Jums ir izveidots konts — lūdzu, sekojiet šai saitei, lai iestatītu konta "
 "paroli.\n"
 "\n"
@@ -33743,8 +33722,8 @@ msgid ""
 msgstr ""
 "Sveiki!\n"
 "\n"
-"Jūs esat pievienots(-a) priekšlikumam pasākumam {event_name} ar nosaukumu "
-"“{proposal_title}”.\n"
+"Jūs esat pievienots(-a) priekšlikumam pasākumam {event_name} ar nosaukumu “"
+"{proposal_title}”.\n"
 "Lūdzu, sekojiet šai saitei, lai rediģētu savu lietotāja profilu un redzētu "
 "sava priekšlikuma statusu:\n"
 "\n"
@@ -34539,8 +34518,7 @@ msgstr "Profila attēla avots"
 #| "Please enter the name of the author or source of image and a link if "
 #| "applicable."
 msgid "Name the author or source of the image and include a link if available."
-msgstr ""
-"Lūdzu, ievadiet attēla autora vai avota nosaukumu un saiti, ja tāda ir."
+msgstr "Lūdzu, ievadiet attēla autora vai avota nosaukumu un saiti, ja tāda ir."
 
 #: eventyay/orga/forms/importers.py:103
 #: eventyay/orga/templates/orga/cfp/forms.html:978
@@ -35058,8 +35036,8 @@ msgid ""
 "href=\"http://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
 msgstr ""
 "Izvēlieties, kā tiks noformēts sākumlapas galvenes reklāmkarogs. Raksta "
-"parauga avots: <a href=\"http://www.heropatterns.com/\">heropatterns.com</"
-"a>, CC BY 4.0."
+"parauga avots: <a href=\"http://www.heropatterns.com/\">heropatterns.com</a>"
+", CC BY 4.0."
 
 #: eventyay/orga/phrases.py:13
 msgid "Schedule display format"
@@ -36142,8 +36120,7 @@ msgstr ""
 
 #: eventyay/orga/templates/orga/cfp/text.html:29
 msgid "Link your Code of Conduct and Data Protection statements."
-msgstr ""
-"Pievieno saites uz Uzvedības kodeksu un datu aizsardzības paziņojumiem."
+msgstr "Pievieno saites uz Uzvedības kodeksu un datu aizsardzības paziņojumiem."
 
 #: eventyay/orga/templates/orga/cfp/text.html:30
 msgid ""
@@ -36456,8 +36433,8 @@ msgid ""
 "tab."
 msgstr ""
 "Šeit varat rediģēt noklusējuma veidnes un savas pielāgotās e-pasta veidnes. "
-"Ja vēlaties sūtīt e-pastus dažiem vai visiem runātājiem, dodieties uz cilni "
-"“Sūtīt e-pastus”. Sūtīšanai rindā ievietotie e-pasti ir cilnē “Izsūtne”."
+"Ja vēlaties sūtīt e-pastus dažiem vai visiem runātājiem, dodieties uz cilni “"
+"Sūtīt e-pastus”. Sūtīšanai rindā ievietotie e-pasti ir cilnē “Izsūtne”."
 
 #: eventyay/orga/templates/orga/mails/mailtemplate/list.html:36
 msgid ""
@@ -36728,8 +36705,8 @@ msgid ""
 msgstr ""
 "Šeit varat piešķirt recenzentus konkrētiem priekšlikumiem! Lūdzu, "
 "izmantojiet šo nolaižamo izvēlni, lai pārslēgtos starp abiem piešķiršanas "
-"režīmiem (piešķirt recenzentus priekšlikumiem vai priekšlikumus "
-"recenzentiem)."
+"režīmiem (piešķirt recenzentus priekšlikumiem vai priekšlikumus recenzentiem)"
+"."
 
 #: eventyay/orga/templates/orga/review/assignment.html:133
 msgid ""
@@ -37244,8 +37221,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Ja nepieprasāt ne vērtēšanas punktus, ne vērtējuma tekstu, vērtētājiem, "
-"vērtējot priekšlikumus, tiks piedāvāta papildu poga "
-"%(quotation_open)sAtturēties%(quotation_close)s."
+"vērtējot priekšlikumus, tiks piedāvāta papildu poga %(quotation_open)"
+"sAtturēties%(quotation_close)s."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -37352,8 +37329,8 @@ msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
 msgstr ""
-"Lai iegultu logrīku savā vietnē, kopējiet šo kodu savas vietnes "
-"<code>&lt;head></code> sadaļā:"
+"Lai iegultu logrīku savā vietnē, kopējiet šo kodu savas vietnes <code>"
+"&lt;head></code> sadaļā:"
 
 #: eventyay/orga/templates/orga/settings/widget.html:81
 #, python-format
@@ -37991,8 +37968,7 @@ msgstr "Pievienot runātāju"
 #: eventyay/orga/templates/orga/submission/state_change.html:18
 msgid ""
 "Please confirm that you really want to change the state of this proposal."
-msgstr ""
-"Lūdzu, apstipriniet, ka tiešām vēlaties mainīt šī priekšlikuma statusu."
+msgstr "Lūdzu, apstipriniet, ka tiešām vēlaties mainīt šī priekšlikuma statusu."
 
 #: eventyay/orga/templates/orga/submission/tag/list.html:5
 #: eventyay/orga/views/submission.py:1361
@@ -38524,8 +38500,8 @@ msgstr ""
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr ""
-"Neizdevās atrast pašreizējo eksportu, lūdzu, mēģiniet to ģenerēt vēlreiz. "
-"({error})"
+"Neizdevās atrast pašreizējo eksportu, lūdzu, mēģiniet to ģenerēt vēlreiz. ("
+"{error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -38544,8 +38520,7 @@ msgstr "Lieliski, jūsu grafiks ir publicēts!"
 #: eventyay/orga/views/schedule.py:162
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
-msgstr ""
-"Atiestatīšana veiksmīga – sāciet rediģēt grafiku no izvēlētās versijas!"
+msgstr "Atiestatīšana veiksmīga – sāciet rediģēt grafiku no izvēlētās versijas!"
 
 #: eventyay/orga/views/schedule.py:165
 msgid "Error retrieving the schedule version to reset to."
@@ -38948,8 +38923,7 @@ msgstr "Kartītes"
 #: eventyay/plugins/badges/apps.py:38
 msgid ""
 "This plugin allows you to generate badges or name tags for your attendees."
-msgstr ""
-"Šis spraudnis ļauj ģenerēt kartītes vai vārda birkas jūsu dalībniekiem."
+msgstr "Šis spraudnis ļauj ģenerēt kartītes vai vārda birkas jūsu dalībniekiem."
 
 #: eventyay/plugins/badges/exporters.py:166
 msgid "One badge per page"
@@ -39476,8 +39450,8 @@ msgid ""
 "a specific country."
 msgstr ""
 "Ievadiet vienu IBAN vai IBAN prefiksu katrā rindā. Sistēma nemēģinās nosūtīt "
-"atmaksas uz nevienu no šiem IBAN. Noderīgi, piemēram, ja saņemat daudz "
-"“pārsūtītu maksājumu” no trešās puses maksājumu pakalpojumu sniedzēja. Varat "
+"atmaksas uz nevienu no šiem IBAN. Noderīgi, piemēram, ja saņemat daudz “"
+"pārsūtītu maksājumu” no trešās puses maksājumu pakalpojumu sniedzēja. Varat "
 "arī norādīt valstu kodus, piemēram, \"GB\", ja nekad nevēlaties sūtīt "
 "atmaksas uz IBAN no konkrētas valsts."
 
@@ -40130,8 +40104,7 @@ msgstr "Visi ierašanās saraksti"
 
 #: eventyay/plugins/manualpayment/apps.py:15
 msgid "This plugin adds a customizable payment method for manual processing."
-msgstr ""
-"Šis spraudnis pievieno pielāgojamu maksājuma metodi manuālai apstrādei."
+msgstr "Šis spraudnis pievieno pielāgojamu maksājuma metodi manuālai apstrādei."
 
 #: eventyay/plugins/reports/apps.py:10 eventyay/plugins/reports/apps.py:13
 msgid "Report exporter"
@@ -40355,8 +40328,7 @@ msgstr ""
 
 #: eventyay/plugins/sendmail/forms.py:502
 msgid "Any changes to the BCC field will apply only to this queued email."
-msgstr ""
-"Jebkuras izmaiņas laukā BCC attieksies tikai uz šo rindā esošo e-pastu."
+msgstr "Jebkuras izmaiņas laukā BCC attieksies tikai uz šo rindā esošo e-pastu."
 
 #: eventyay/plugins/sendmail/forms.py:503
 msgid ""
@@ -41547,8 +41519,7 @@ msgstr ""
 #: eventyay/presale/templates/pretixpresale/event/checkout_questions.html:10
 msgid ""
 "You need to fill all fields that are marked with <span>*</span> to continue."
-msgstr ""
-"Lai turpinātu, jāaizpilda visi lauki, kas apzīmēti ar <span> * </span>."
+msgstr "Lai turpinātu, jāaizpilda visi lauki, kas apzīmēti ar <span> * </span>."
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_questions.html:68
 msgid "Copy answers from above"
@@ -42195,8 +42166,7 @@ msgstr "Lūdzu, pabeidziet maksājumu pirms %(date)s"
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:144
 msgid "Re-try payment or choose another payment method"
-msgstr ""
-"Atkārtoti mēģiniet veikt maksājumu vai izvēlieties citu maksājuma veidu"
+msgstr "Atkārtoti mēģiniet veikt maksājumu vai izvēlieties citu maksājuma veidu"
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:152
 #: eventyay/presale/templates/pretixpresale/event/order_pay_confirm.html:45

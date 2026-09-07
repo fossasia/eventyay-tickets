@@ -13,7 +13,11 @@ def control_nav_import(sender, request=None, **kwargs):
     url = resolve(request.path_info)
     if not request.user.has_event_permission(request.organizer, request.event, 'can_change_orders', request=request):
         return []
-    pending_mails = EmailQueue.objects.filter(event=request.event, sent_at__isnull=True).count()
+    pending_mails = EmailQueue.objects.filter(
+        event=request.event,
+        sent_at__isnull=True,
+        is_draft=False,
+    ).count()
 
     return [
         {
@@ -66,6 +70,17 @@ def control_nav_import(sender, request=None, **kwargs):
                             'event.mail.send'
                         }
                     ),
+                },
+                {
+                    'label': _('Drafts'),
+                    'url': reverse(
+                        'control:event.mail.drafts',
+                        kwargs={
+                            'event': request.event.slug,
+                            'organizer': request.event.organizer.slug,
+                        },
+                    ),
+                    'active': (url.url_name == 'event.mail.drafts'),
                 },
                 {
                     'label': _('Sent'),

@@ -250,3 +250,70 @@ def test_meetup_create_validation_errors(orga_client, organizer):
     response_limited = orga_client.post(url, data_limited)
     assert response_limited.status_code == 200
     assert 'registration_limit' in response_limited.context['basics_form'].errors
+
+
+@pytest.mark.django_db
+def test_meetup_create_post_public_default(orga_client, organizer):
+    url = reverse('eventyay_common:events.add')
+    data = {
+        'is_meetup': 'on',
+        'foundation-organizer': organizer.pk,
+        'foundation-locales': ['en'],
+        'basics-locale': 'en',
+        'basics-name_0': 'Public Meetup Test',
+        'basics-date_from_0': '2026-10-15',
+        'basics-date_from_1': '18:00:00',
+        'basics-date_to_0': '2026-10-15',
+        'basics-date_to_1': '20:00:00',
+        'basics-timezone': 'UTC',
+        'basics-location_type': 'in_person',
+        'basics-location_0': 'Community Hall',
+        'basics-capacity_type': 'unlimited',
+        'basics-privacy_type': 'public',
+    }
+    response = orga_client.post(url, data)
+    assert response.status_code == 302
+
+    with scopes_disabled():
+        event = Event.objects.filter(organizer=organizer, name__icontains='Public Meetup Test').first()
+        assert event is not None
+        assert is_meetup_event(event) is True
+        assert event.live is True
+        assert event.tickets_published is True
+        assert event.is_public is True
+        assert event.private_testmode is False
+        assert event.testmode is False
+        assert event.settings.get('private_testmode_tickets', as_type=bool) is False
+
+
+@pytest.mark.django_db
+def test_meetup_create_post_private_mode(orga_client, organizer):
+    url = reverse('eventyay_common:events.add')
+    data = {
+        'is_meetup': 'on',
+        'foundation-organizer': organizer.pk,
+        'foundation-locales': ['en'],
+        'basics-locale': 'en',
+        'basics-name_0': 'Private Meetup Test',
+        'basics-date_from_0': '2026-10-15',
+        'basics-date_from_1': '18:00:00',
+        'basics-date_to_0': '2026-10-15',
+        'basics-date_to_1': '20:00:00',
+        'basics-timezone': 'UTC',
+        'basics-location_type': 'in_person',
+        'basics-location_0': 'Internal Boardroom',
+        'basics-capacity_type': 'unlimited',
+        'basics-privacy_type': 'private',
+    }
+    response = orga_client.post(url, data)
+    assert response.status_code == 302
+
+    with scopes_disabled():
+        event = Event.objects.filter(organizer=organizer, name__icontains='Private Meetup Test').first()
+        assert event is not None
+        assert is_meetup_event(event) is True
+        assert event.live is True
+        assert event.tickets_published is True
+        assert event.is_public is False
+        assert event.private_testmode is False
+        assert event.settings.get('meta_noindex', as_type=bool) is True

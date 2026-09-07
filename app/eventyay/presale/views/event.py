@@ -1277,6 +1277,18 @@ class JoinOnlineVideoView(EventViewMixin, View):
         iat = dt.datetime.now(dt.UTC)
         exp = iat + dt.timedelta(days=30)
 
+        is_user_staff = bool(
+            self.request.user.is_authenticated
+            and (
+                getattr(self.request.user, 'is_staff', False)
+                or getattr(self.request.user, 'is_superuser', False)
+                or self.request.user.has_perm('base.change_event_settings', self.request.event)
+            )
+        )
+        is_user_superuser = bool(
+            self.request.user.is_authenticated and getattr(self.request.user, 'is_superuser', False)
+        )
+
         payload = {
             'iss': self.request.event.settings.venueless_issuer,
             'aud': self.request.event.settings.venueless_audience,
@@ -1284,6 +1296,8 @@ class JoinOnlineVideoView(EventViewMixin, View):
             'iat': iat,
             'uid': uid_token,
             'profile': profile,
+            'is_staff': is_user_staff,
+            'is_superuser': is_user_superuser,
             'traits': list(
                 {
                     # Grant base attendee role so the video app allows EVENT_VIEW by default

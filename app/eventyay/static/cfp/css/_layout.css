@@ -510,8 +510,11 @@ header > .event-home-back {
   padding: 0;
   border: none;
   scroll-margin-top: 72px;
-  main {
+  & > main {
     padding: var(--size-spacer);
+  }
+  & > main > main {
+    padding: 0;
   }
 }
 

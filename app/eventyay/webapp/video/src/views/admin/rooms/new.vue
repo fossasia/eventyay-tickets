@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-admin-rooms-new
 	.ui-page-header
-		bunt-icon-button(@click="$router.replace({name: 'admin:rooms:index'})") arrow_left
+		bunt-icon-button(@click="$router.replace({name: 'admin:rooms:index'})", :tooltip="$t('Back to Rooms & Stages')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		h1 {{ $t('New room') }}
 			template(v-if="chosenProvider")  : {{ $t(chosenProvider.label) }}
 	edit-form(v-if="config", :config="config", :creating="true")
@@ -53,19 +53,18 @@ export default {
 				this.$router.replace({name: 'admin:chat:new'})
 				return
 			}
-			if (!this.type || !this.chosenType) {
-				this.$router.replace({name: 'admin:rooms:index'})
-				return
-			}
 			this.config = {
 				name: '',
 				description: '',
 				sorting_priority: '',
 				pretalx_id: '',
 				force_join: false,
+				is_unscheduled: false,
 				module_config: [],
 			}
-			applyVideoProviderToConfig(this.config, this.chosenType)
+			if (this.type && this.chosenType) {
+				applyVideoProviderToConfig(this.config, this.chosenType)
+			}
 		}
 	}
 }

@@ -16,12 +16,16 @@ from eventyay.timezones import common_timezones
 
 from eventyay.base.forms import I18nModelForm, SettingsForm
 from eventyay.base.meetup import (
+    PRIVACY_CHOICES,
+    PRIVACY_PRIVATE,
+    PRIVACY_PUBLIC,
     add_video_field_errors,
     apply_video_configuration,
     build_video_form_fields,
     get_rsvp_product_and_quota,
     get_video_config_initial,
     is_meetup_event,
+    set_meetup_privacy,
 )
 from eventyay.base.models import Event
 from eventyay.base.settings import validate_event_settings
@@ -134,6 +138,11 @@ class EventCommonSettingsForm(SettingsForm):
                 self.cleaned_data[image_field] = self._save_optimized(new_value, image_field, crop_box)
 
         if is_meetup_event(self.event):
+            self.cleaned_data.pop('meta_noindex', None)
+            if 'privacy_type' in self.cleaned_data:
+                is_priv = self.cleaned_data['privacy_type'] == PRIVACY_PRIVATE
+                set_meetup_privacy(self.event, is_private=is_priv)
+
             if 'video_type' in self.cleaned_data:
                 apply_video_configuration(
                     self.event,
@@ -220,6 +229,19 @@ class EventCommonSettingsForm(SettingsForm):
 
         # Meetup video stream & RSVP support
         if is_meetup_event(self.event):
+            privacy_initial = PRIVACY_PRIVATE if not self.event.is_public else PRIVACY_PUBLIC
+            self.fields['privacy_type'] = forms.ChoiceField(
+                label=_('Visibility'),
+                choices=PRIVACY_CHOICES,
+                initial=privacy_initial,
+                widget=forms.Select(attrs={'class': 'form-control'}),
+                required=True,
+                help_text=_(
+                    'Public meetups appear on your organizer profile and search. '
+                    'Private meetups are unlisted from your profile and accessible only via direct link.'
+                ),
+            )
+            self.initial['privacy_type'] = privacy_initial
             self.fields.update(build_video_form_fields())
             self.initial.update(get_video_config_initial(self.event))
 
@@ -289,7 +311,10 @@ class EventCommonSettingsForm(SettingsForm):
                 )
         if self.event and 'content_locales' in self.fields:
             self.fields['content_locales'].initial = self.event.content_locales
-        if 'meta_noindex' in self.fields:
+        if is_meetup_event(self.event):
+            self.fields.pop('meta_noindex', None)
+            self.initial.pop('meta_noindex', None)
+        elif 'meta_noindex' in self.fields:
             self.fields['meta_noindex'].label = _('Ask search engines not to index the event pages')
 
         for name, field in self.fields.items():
@@ -335,8 +360,11 @@ class EventUpdateForm(I18nModelForm):
         self.fields['geo_lon'].widget.attrs['placeholder'] = _('Longitude, e.g. -74.0060')
 
         if 'is_public' in self.fields:
-            self.fields['is_public'].label = _('Show in search results and lists')
-            self.fields['is_public'].help_text = _('If selected, this event will show up publicly on the list of events for your organizer account and in platform search results.')
+            if is_meetup_event(self.instance):
+                self.fields.pop('is_public', None)
+            else:
+                self.fields['is_public'].label = _('Show in search results and lists')
+                self.fields['is_public'].help_text = _('If selected, this event will show up publicly on the list of events for your organizer account and in platform search results.')
 
         if self.domain_field_enabled:
             self.fields['domain'] = forms.CharField(

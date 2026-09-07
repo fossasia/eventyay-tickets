@@ -17,7 +17,7 @@ from django.db.models import (
 )
 from django.utils.timezone import now
 
-from eventyay.features.live.channels import GROUP_CHAT
+from eventyay.features.live.channels import GROUP_CHAT, GROUP_EVENT
 from eventyay.base.models import (
     AuditLog,
     BBBCall,
@@ -31,6 +31,7 @@ from eventyay.base.models.chat import ChatEventNotification
 from eventyay.core.permissions import Permission
 from eventyay.core.utils.redis import aredis
 from eventyay.base.services.bbb import choose_server
+from eventyay.base.services.event import count_chat_participants, is_chat_channel_room
 from eventyay.base.services.user import get_public_users, user_broadcast
 
 MENTION_RE = re.compile(
@@ -139,6 +140,20 @@ class ChatService:
             trait_badges_map=self.event.config.get("trait_badges_map"),
         )
         return users
+
+    @database_sync_to_async
+    def get_participant_count(self, channel_id):
+        return count_chat_participants(channel_id)
+
+    async def broadcast_participant_count(self, room_id, count):
+        await get_channel_layer().group_send(
+            GROUP_EVENT.format(id=self.event.pk),
+            {
+                "type": "event.user_count_change",
+                "room": str(room_id),
+                "users": count,
+            },
+        )
 
     async def track_subscription(self, channel, uid, socket_id):
         async with aredis(f"chat:subscriptions:{uid}:{channel}") as redis:
@@ -587,3 +602,6 @@ class ChatService:
                         f"chat:unread.notify:{channel.id}",
                         str(user.id),
                     )
+                if channel.room and is_chat_channel_room(channel.room):
+                    count = await self.get_participant_count(channel.id)
+                    await self.broadcast_participant_count(channel.room_id, count)

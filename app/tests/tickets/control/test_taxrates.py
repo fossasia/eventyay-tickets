@@ -6,6 +6,7 @@ from django_scopes import scopes_disabled
 
 from eventyay.base.models import Event, Order, Organizer, Team, User
 from eventyay.base.models.orders import OrderFee
+from eventyay.control.forms.event import TaxRuleLineForm
 from tests.tickets.base import SoupTest, extract_form_fields
 
 
@@ -152,3 +153,41 @@ class TaxRateFormTest(SoupTest):
         self.assertIn('VAT', doc.select('#page-wrapper')[0].text)
         with scopes_disabled():
             assert self.event1.tax_rules.exists()
+
+    def test_tax_rule_line_form_rate_validation(self):
+        form = TaxRuleLineForm(
+            data={
+                'country': 'DE',
+                'address_type': '',
+                'action': 'vat',
+                'rate': '-19.00',
+            },
+            locales=['en'],
+        )
+        assert not form.is_valid()
+        assert 'rate' in form.errors
+        assert any('greater than or equal to 0' in err for err in form.errors['rate'])
+
+        form = TaxRuleLineForm(
+            data={
+                'country': 'DE',
+                'address_type': '',
+                'action': 'vat',
+                'rate': '150.00',
+            },
+            locales=['en'],
+        )
+        assert not form.is_valid()
+        assert 'rate' in form.errors
+        assert any('less than or equal to 100' in err for err in form.errors['rate'])
+
+        form = TaxRuleLineForm(
+            data={
+                'country': 'DE',
+                'address_type': '',
+                'action': 'vat',
+                'rate': '19.00',
+            },
+            locales=['en'],
+        )
+        assert form.is_valid()

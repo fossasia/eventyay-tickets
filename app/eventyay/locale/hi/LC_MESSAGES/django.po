@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-04-13 13:09+0000\n"
+"PO-Revision-Date: 2026-08-27 17:54+0000\n"
 "Last-Translator: Arnav Angarkar <arnav.angarkar20@gmail.com>\n"
 "Language-Team: Hindi <https://hosted.weblate.org/projects/eventyay/eventyay/"
 "hi/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -286,7 +286,8 @@ msgstr "प्रतिक्रिया"
 #: eventyay/agenda/templates/agenda/feedback.html:21
 msgid ""
 "This review is for you personally, not for all speakers in this session."
-msgstr "यह समीक्षा आपके लिए व्यक्तिगत रूप से है, इस सत्र के सभी वक्ताओं के लिए नहीं।"
+msgstr ""
+"यह समीक्षा आपके लिए व्यक्तिगत रूप से है, इस सत्र के सभी वक्ताओं के लिए नहीं।"
 
 #: eventyay/agenda/templates/agenda/feedback.html:25
 #: eventyay/agenda/templates/agenda/feedback_form.html:39
@@ -1295,7 +1296,8 @@ msgstr "उत्पाद \"{}\" इस तारीख को उपलब्�
 msgid ""
 "A gift card with the same secret already exists in your or an affiliated "
 "organizer account."
-msgstr "उसी सीक्रेट वाला एक गिफ्ट कार्ड आपके या किसी संबद्ध आयोजक खाते में पहले से मौजूद है।"
+msgstr ""
+"उसी सीक्रेट वाला एक गिफ्ट कार्ड आपके या किसी संबद्ध आयोजक खाते में पहले से मौजूद है।"
 
 #: eventyay/api/serializers/organizer.py:277 eventyay/base/services/teams.py:34
 #: eventyay/eventyay_common/views/organizer.py:666
@@ -1414,7 +1416,8 @@ msgstr "eventyay लोगो"
 msgid ""
 "The application \"{application_name}\" has been authorized to access your "
 "account."
-msgstr "एप्लिकेशन \"{application_name}\" को आपके खाते तक पहुँचने की अनुमति दे दी गई है।"
+msgstr ""
+"एप्लिकेशन \"{application_name}\" को आपके खाते तक पहुँचने की अनुमति दे दी गई है।"
 
 #: eventyay/api/views/order.py:732 eventyay/control/views/orders.py:1683
 #: eventyay/presale/views/order.py:928 eventyay/presale/views/order.py:1002
@@ -1612,7 +1615,8 @@ msgstr "ऐड-ऑन उत्पादों को गिनती से ब
 msgid ""
 "Display net prices in the product list instead of gross prices (not "
 "recommended)"
-msgstr "उत्पाद सूची में सकल कीमतों के बजाय शुद्ध कीमतें दिखाएं (सुझाया नहीं जाता)"
+msgstr ""
+"उत्पाद सूची में सकल कीमतों के बजाय शुद्ध कीमतें दिखाएं (सुझाया नहीं जाता)"
 
 #: eventyay/base/configurations/default_setting.py:109
 msgid ""
@@ -1629,7 +1633,8 @@ msgstr "प्रतिभागी नाम अनिवार्य करे
 #: eventyay/base/configurations/default_setting.py:129
 msgid ""
 "Require attendee names for all tickets which include admission to the event."
-msgstr "इवेंट में प्रवेश शामिल करने वाले सभी टिकटों के लिए प्रतिभागी नाम अनिवार्य करें।"
+msgstr ""
+"इवेंट में प्रवेश शामिल करने वाले सभी टिकटों के लिए प्रतिभागी नाम अनिवार्य करें।"
 
 #: eventyay/base/configurations/default_setting.py:139
 msgid "Require attendees to fill in their names for all admission tickets."
@@ -1705,7 +1710,8 @@ msgstr "सभी प्रवेश टिकटों के लिए उप�
 msgid ""
 "Ask for an email address per order. The order confirmation will be sent to "
 "this email address."
-msgstr "प्रति ऑर्डर एक ईमेल पता पूछें। ऑर्डर की पुष्टि इस ईमेल पते पर भेजी जाएगी।"
+msgstr ""
+"प्रति ऑर्डर एक ईमेल पता पूछें। ऑर्डर की पुष्टि इस ईमेल पते पर भेजी जाएगी।"
 
 #: eventyay/base/configurations/default_setting.py:251
 msgid "Require email address per order"
@@ -1838,8 +1844,8 @@ msgid ""
 "Note that invoices will never be generated for orders that contain only free "
 "products."
 msgstr ""
-"ध्यान दें कि जिन ऑर्डरों में केवल निःशुल्क उत्पाद हों, उनके लिए कभी भी चालान नहीं बनाए "
-"जाएंगे।"
+"ध्यान दें कि जिन ऑर्डरों में केवल निःशुल्क उत्पाद हों, उनके लिए कभी भी चालान नहीं बनाए जाएंगे"
+"।"
 
 #: eventyay/base/configurations/default_setting.py:444
 msgid "Show expiration date of order"
@@ -1870,7 +1876,8 @@ msgstr "क्रमागत नंबरों के साथ चाला�
 
 #: eventyay/base/configurations/default_setting.py:468
 msgid "If deactivated, the order code will be used in the invoice number."
-msgstr "यदि निष्क्रिय किया गया है, तो चालान संख्या में ऑर्डर कोड का उपयोग किया जाएगा।"
+msgstr ""
+"यदि निष्क्रिय किया गया है, तो चालान संख्या में ऑर्डर कोड का उपयोग किया जाएगा।"
 
 #: eventyay/base/configurations/default_setting.py:477
 msgid "Invoice number prefix"
@@ -1889,8 +1896,8 @@ msgstr ""
 "यह चालान संख्याओं के आगे जोड़ा जाएगा। यदि आप यह फ़ील्ड खाली छोड़ते हैं, तो आपके इवेंट स्लग के "
 "बाद एक डैश लगाया जाएगा। ध्यान दें: यदि एक ही संगठन के भीतर कई इवेंट इस फ़ील्ड में एक ही "
 "मान का उपयोग करते हैं, तो वे एक ही संख्या-सीमा साझा करेंगे, यानी सभी इवेंट में कोई भी पूरा "
-"नंबर अधिकतम एक बार ही उपयोग होगा। यह सेटिंग केवल भविष्य के चालानों को प्रभावित करती "
-"है। आप चालान का वर्ष जोड़ने के लिए %Y (सदी सहित) %y (सदी बिना), या महीने के दिन के "
+"नंबर अधिकतम एक बार ही उपयोग होगा। यह सेटिंग केवल भविष्य के चालानों को प्रभावित करती है"
+"। आप चालान का वर्ष जोड़ने के लिए %Y (सदी सहित) %y (सदी बिना), या महीने के दिन के "
 "लिए %m और %d का उपयोग कर सकते हैं।"
 
 #: eventyay/base/configurations/default_setting.py:494
@@ -2001,8 +2008,8 @@ msgid ""
 "configured below."
 msgstr ""
 "यदि यह सक्रिय है और किसी भी ऑर्डर की भुगतान अवधि शनिवार या रविवार को समाप्त होती "
-"है, तो इसे अगले सोमवार पर ले जाया जाएगा। कुछ देशों में नागरिक कानून के अनुसार यह आवश्यक "
-"है। यह नीचे कॉन्फ़िगर की गई भुगतान की अंतिम तिथि को प्रभावित नहीं करेगा।"
+"है, तो इसे अगले सोमवार पर ले जाया जाएगा। कुछ देशों में नागरिक कानून के अनुसार यह आवश्यक है"
+"। यह नीचे कॉन्फ़िगर की गई भुगतान की अंतिम तिथि को प्रभावित नहीं करेगा।"
 
 #: eventyay/base/configurations/default_setting.py:629
 msgid "Payment term in minutes"
@@ -2253,7 +2260,8 @@ msgstr "हर इनवॉइस पर इनवॉइस कुल के न
 msgid ""
 "e.g. your bank details, legal details like your VAT ID, registration "
 "numbers, etc."
-msgstr "जैसे आपकी बैंक जानकारी, कानूनी विवरण जैसे आपका VAT आईडी, पंजीकरण नंबर, आदि।"
+msgstr ""
+"जैसे आपकी बैंक जानकारी, कानूनी विवरण जैसे आपका VAT आईडी, पंजीकरण नंबर, आदि।"
 
 #: eventyay/base/configurations/default_setting.py:883
 msgid "Footer"
@@ -2263,7 +2271,8 @@ msgstr "फुटर"
 msgid ""
 "Will be printed centered and in a smaller font at the end of every invoice "
 "page."
-msgstr "हर इनवॉइस पेज के अंत में केंद्र में और छोटे फ़ॉन्ट में प्रिंट किया जाएगा।"
+msgstr ""
+"हर इनवॉइस पेज के अंत में केंद्र में और छोटे फ़ॉन्ट में प्रिंट किया जाएगा।"
 
 #: eventyay/base/configurations/default_setting.py:894
 msgid "Attach invoices to emails"
@@ -2287,7 +2296,8 @@ msgstr "प्रीसेल अवधि के बाहर उत्पा�
 #: eventyay/base/configurations/default_setting.py:910
 msgid ""
 "Show product details before presale has started and after presale has ended"
-msgstr "प्रीसेल शुरू होने से पहले और प्रीसेल खत्म होने के बाद उत्पाद विवरण दिखाएँ"
+msgstr ""
+"प्रीसेल शुरू होने से पहले और प्रीसेल खत्म होने के बाद उत्पाद विवरण दिखाएँ"
 
 #: eventyay/base/configurations/default_setting.py:927
 #: eventyay/control/forms/event.py:102
@@ -2371,7 +2381,8 @@ msgstr "बचे हुए टिकटों की संख्या दि�
 #: eventyay/base/configurations/default_setting.py:1020
 #: eventyay/control/forms/event.py:1719
 msgid "Publicly show how many tickets of a certain type are still available."
-msgstr "सार्वजनिक रूप से दिखाएँ कि किसी विशेष प्रकार के कितने टिकट अभी उपलब्ध हैं।"
+msgstr ""
+"सार्वजनिक रूप से दिखाएँ कि किसी विशेष प्रकार के कितने टिकट अभी उपलब्ध हैं।"
 
 #: eventyay/base/configurations/default_setting.py:1029
 msgid "Ask search engines not to index the ticket shop"
@@ -2859,7 +2870,8 @@ msgstr "कैलेंडर फ़ाइलें संलग्न करे
 msgid ""
 "If enabled, we will attach an .ics calendar file to order confirmation "
 "emails."
-msgstr "सक्षम होने पर, हम ऑर्डर पुष्टि ईमेल में एक .ics कैलेंडर फ़ाइल संलग्न करेंगे।"
+msgstr ""
+"सक्षम होने पर, हम ऑर्डर पुष्टि ईमेल में एक .ics कैलेंडर फ़ाइल संलग्न करेंगे।"
 
 #: eventyay/base/configurations/default_setting.py:1640
 msgid "Subject prefix"
@@ -3661,8 +3673,8 @@ msgid ""
 "(the center 1920 × 320 px will always be visible). Images will be "
 "automatically optimized to max 3000 px wide on save."
 msgstr ""
-"यह इमेज सभी आयोजक पेजों के शीर्ष पर दिखाई देती है और डिफ़ॉल्ट रंग या पैटर्न को बदल देती "
-"है। यह केंद्र में संरेखित होती है और खिंचाई नहीं जाती, जिससे छोटी स्क्रीन पर बीच का हिस्सा "
+"यह इमेज सभी आयोजक पेजों के शीर्ष पर दिखाई देती है और डिफ़ॉल्ट रंग या पैटर्न को बदल देती है"
+"। यह केंद्र में संरेखित होती है और खिंचाई नहीं जाती, जिससे छोटी स्क्रीन पर बीच का हिस्सा "
 "दिखाई देता रहे। हम 1140 px चौड़ी और 120 px ऊँची इमेज की सलाह देते हैं (नीचे दिए गए "
 "सेटिंग से बढ़ाई जा सकती है)।"
 
@@ -5534,7 +5546,8 @@ msgstr "यह क्रेडेंशियल संयोजन हमार
 
 #: eventyay/base/forms/auth.py:48 eventyay/base/forms/user.py:20
 msgid "For security reasons, please wait 5 minutes before you try again."
-msgstr "सुरक्षा कारणों से, कृपया दोबारा कोशिश करने से पहले 5 मिनट प्रतीक्षा करें।"
+msgstr ""
+"सुरक्षा कारणों से, कृपया दोबारा कोशिश करने से पहले 5 मिनट प्रतीक्षा करें।"
 
 #: eventyay/base/forms/auth.py:49 eventyay/base/forms/auth.py:250
 msgid "This account is inactive."
@@ -5543,7 +5556,8 @@ msgstr "यह खाता निष्क्रिय है।"
 #: eventyay/base/forms/auth.py:138
 msgid ""
 "You already registered with that email address, please use the login form."
-msgstr "आप इस ईमेल पते से पहले ही पंजीकरण कर चुके हैं, कृपया लॉगिन फ़ॉर्म का उपयोग करें।"
+msgstr ""
+"आप इस ईमेल पते से पहले ही पंजीकरण कर चुके हैं, कृपया लॉगिन फ़ॉर्म का उपयोग करें।"
 
 #: eventyay/base/forms/auth.py:139 eventyay/base/forms/auth.py:197
 #: eventyay/base/forms/user.py:19 eventyay/control/forms/users.py:26
@@ -6101,8 +6115,8 @@ msgid ""
 "You can restrict the access code to a single track, or leave it open for all "
 "tracks."
 msgstr ""
-"आप प्रवेश कोड को किसी एक ट्रैक तक सीमित कर सकते हैं, या सभी ट्रैक्स के लिए खुला छोड़ सकते "
-"हैं।"
+"आप प्रवेश कोड को किसी एक ट्रैक तक सीमित कर सकते हैं, या सभी ट्रैक्स के लिए खुला छोड़ सकते हैं"
+"।"
 
 #: eventyay/base/models/access_code.py:39 eventyay/control/forms/filter.py:1110
 #: eventyay/control/forms/filter.py:1112
@@ -6128,7 +6142,8 @@ msgstr "मान्य तक"
 
 #: eventyay/base/models/access_code.py:49
 msgid "You can set or change this date later to invalidate the access code."
-msgstr "आप एक्सेस कोड को अमान्य करने के लिए यह तारीख बाद में सेट या बदल सकते हैं।"
+msgstr ""
+"आप एक्सेस कोड को अमान्य करने के लिए यह तारीख बाद में सेट या बदल सकते हैं।"
 
 #: eventyay/base/models/access_code.py:54
 msgid "Maximum uses"
@@ -6422,7 +6437,8 @@ msgstr "लंबित ऑर्डर शामिल करें"
 msgid ""
 "With this option, people will be able to check in even if the order has not "
 "been paid."
-msgstr "इस विकल्प के साथ, लोग चेक-इन कर पाएँगे, भले ही ऑर्डर का भुगतान न हुआ हो।"
+msgstr ""
+"इस विकल्प के साथ, लोग चेक-इन कर पाएँगे, भले ही ऑर्डर का भुगतान न हुआ हो।"
 
 #: eventyay/base/models/checkin.py:34
 #: eventyay/control/templates/pretixcontrol/organizers/gates.html:5
@@ -6754,7 +6770,8 @@ msgstr ""
 #: eventyay/base/models/event.py:626
 msgid ""
 "All event dates will be localised and interpreted to be in this timezone."
-msgstr "सभी इवेंट तिथियां इस समय क्षेत्र के अनुसार स्थानीयकृत और व्याख्यायित की जाएंगी।"
+msgstr ""
+"सभी इवेंट तिथियां इस समय क्षेत्र के अनुसार स्थानीयकृत और व्याख्यायित की जाएंगी।"
 
 #: eventyay/base/models/event.py:630
 msgid ""
@@ -6893,7 +6910,8 @@ msgstr "आपको बिलिंग जानकारी भरनी ह�
 #: eventyay/base/models/event.py:2500
 msgid ""
 "Once created an event cannot change between an series and a single event."
-msgstr "एक बार बन जाने के बाद, इवेंट को सीरीज़ और एकल इवेंट के बीच बदला नहीं जा सकता।"
+msgstr ""
+"एक बार बन जाने के बाद, इवेंट को सीरीज़ और एकल इवेंट के बीच बदला नहीं जा सकता।"
 
 #: eventyay/base/models/event.py:2506
 msgid "The event slug cannot be changed."
@@ -7360,7 +7378,8 @@ msgstr ""
 msgid ""
 "The list of custom fields that the user has not responded to, as bullet "
 "points"
-msgstr "कस्टम फ़ील्ड्स की सूची जिनका उपयोगकर्ता ने जवाब नहीं दिया है, बुलेट पॉइंट्स के रूप में"
+msgstr ""
+"कस्टम फ़ील्ड्स की सूची जिनका उपयोगकर्ता ने जवाब नहीं दिया है, बुलेट पॉइंट्स के रूप में"
 
 #: eventyay/base/models/mail.py:352
 #: eventyay/common/templates/common/base_public.html:206
@@ -7731,7 +7750,8 @@ msgstr "आपकी टीमों में किसी के पास न
 #: eventyay/base/models/organizer.py:75
 msgid ""
 "Nobody on your teams has the permission to change organizer-level settings."
-msgstr "आपकी टीमों में किसी के पास आयोजक-स्तर की सेटिंग्स बदलने की अनुमति नहीं है।"
+msgstr ""
+"आपकी टीमों में किसी के पास आयोजक-स्तर की सेटिंग्स बदलने की अनुमति नहीं है।"
 
 #: eventyay/base/models/organizer.py:85
 #, python-brace-format
@@ -7747,7 +7767,8 @@ msgstr ""
 msgid ""
 "Nobody on your teams has the permissions to change settings for the event "
 "{event_name}"
-msgstr "आपकी टीमों में किसी के पास इवेंट {event_name} की सेटिंग्स बदलने की अनुमतियाँ नहीं हैं"
+msgstr ""
+"आपकी टीमों में किसी के पास इवेंट {event_name} की सेटिंग्स बदलने की अनुमतियाँ नहीं हैं"
 
 #: eventyay/base/models/organizer.py:124
 msgid ""
@@ -8109,7 +8130,8 @@ msgstr "वीडियो: कियोस्क बना और संपा�
 #, fuzzy
 #| msgid "Allows managing kiosk displays inside Eventyay Video."
 msgid "Allows creating and editing kiosk displays inside Eventyay Video."
-msgstr "Eventyay Video के अंदर कियोस्क डिस्प्ले प्रबंधित करने की अनुमति देता है।"
+msgstr ""
+"Eventyay Video के अंदर कियोस्क डिस्प्ले प्रबंधित करने की अनुमति देता है।"
 
 #: eventyay/base/models/organizer.py:621
 #, fuzzy
@@ -8264,7 +8286,8 @@ msgstr "आंतरिक नाम"
 #: eventyay/base/models/product.py:57 eventyay/base/models/product.py:330
 msgid ""
 "If you set this, this will be used instead of the public name in the backend."
-msgstr "यदि आप इसे सेट करते हैं, तो बैकएंड में सार्वजनिक नाम के बजाय इसका उपयोग होगा।"
+msgstr ""
+"यदि आप इसे सेट करते हैं, तो बैकएंड में सार्वजनिक नाम के बजाय इसका उपयोग होगा।"
 
 #: eventyay/base/models/product.py:62
 msgid "Category description"
@@ -8516,8 +8539,8 @@ msgstr ""
 "यदि आप यहां कोई कोटा चुनते हैं, तो यह उत्पाद केवल तब दिखाया जाएगा जब वह कोटा उपलब्ध "
 "नहीं होगा। बिक चुके उत्पादों को छिपाने के विकल्प के साथ मिलाकर, यह आपको उत्पाद बिक जाने "
 "पर उन्हें अधिक महंगे उत्पादों से बदलने की अनुमति देता है। एक छोटा समय ऐसा हो सकता है जिसमें "
-"दोनों उत्पाद दिखाई दें, जब संदर्भित कोटा के सभी टिकट आरक्षित हों, लेकिन अभी तक बिके न "
-"हों।"
+"दोनों उत्पाद दिखाई दें, जब संदर्भित कोटा के सभी टिकट आरक्षित हों, लेकिन अभी तक बिके न हों"
+"।"
 
 #: eventyay/base/models/product.py:469
 msgid "This product can only be bought using a voucher."
@@ -8695,11 +8718,13 @@ msgstr "उत्पाद"
 msgid ""
 "The maximum number per order can not be lower than the minimum number per "
 "order."
-msgstr "प्रति ऑर्डर अधिकतम संख्या, प्रति ऑर्डर न्यूनतम संख्या से कम नहीं हो सकती।"
+msgstr ""
+"प्रति ऑर्डर अधिकतम संख्या, प्रति ऑर्डर न्यूनतम संख्या से कम नहीं हो सकती।"
 
 #: eventyay/base/models/product.py:775
 msgid "The product's category must belong to the same event as the product."
-msgstr "उत्पाद की श्रेणी उसी इवेंट से संबंधित होनी चाहिए जिससे उत्पाद संबंधित है।"
+msgstr ""
+"उत्पाद की श्रेणी उसी इवेंट से संबंधित होनी चाहिए जिससे उत्पाद संबंधित है।"
 
 #: eventyay/base/models/product.py:780
 msgid "The product's tax rule must belong to the same event as the product."
@@ -9127,7 +9152,8 @@ msgstr "सभी वेरिएशन उत्पाद सूची मे�
 msgid ""
 "One or more products has variations but none of these are in the variations "
 "list."
-msgstr "एक या अधिक उत्पादों में वेरिएशन हैं, लेकिन इनमें से कोई भी वेरिएशन सूची में नहीं है।"
+msgstr ""
+"एक या अधिक उत्पादों में वेरिएशन हैं, लेकिन इनमें से कोई भी वेरिएशन सूची में नहीं है।"
 
 #: eventyay/base/models/product.py:1807 eventyay/base/models/waitinglist.py:180
 msgid "Subevent cannot be null for event series."
@@ -9222,7 +9248,8 @@ msgstr "क्या आपको हर वक्ता से या हर �
 
 #: eventyay/base/models/question.py:148
 msgid "Set a deadline to make this field required after the given date."
-msgstr "दिए गए दिनांक के बाद इस फ़ील्ड को आवश्यक बनाने के लिए एक समय-सीमा सेट करें।"
+msgstr ""
+"दिए गए दिनांक के बाद इस फ़ील्ड को आवश्यक बनाने के लिए एक समय-सीमा सेट करें।"
 
 #: eventyay/base/models/question.py:153
 msgid "freeze after"
@@ -9230,7 +9257,8 @@ msgstr "इसके बाद फ्रीज़ करें"
 
 #: eventyay/base/models/question.py:154
 msgid "Set a deadline to stop changes to responses after the given date."
-msgstr "दिए गए दिनांक के बाद उत्तरों में बदलाव रोकने के लिए एक समय-सीमा सेट करें।"
+msgstr ""
+"दिए गए दिनांक के बाद उत्तरों में बदलाव रोकने के लिए एक समय-सीमा सेट करें।"
 
 #: eventyay/base/models/question.py:160
 msgid "Field required"
@@ -9240,8 +9268,8 @@ msgstr "फ़ील्ड आवश्यक"
 msgid ""
 "You can limit this field to some tracks. Leave empty to apply to all tracks."
 msgstr ""
-"आप इस फ़ील्ड को कुछ ट्रैक्स तक सीमित कर सकते हैं। सभी ट्रैक्स पर लागू करने के लिए खाली छोड़ "
-"दें।"
+"आप इस फ़ील्ड को कुछ ट्रैक्स तक सीमित कर सकते हैं। सभी ट्रैक्स पर लागू करने के लिए खाली छोड़ दें"
+"।"
 
 #: eventyay/base/models/question.py:172
 msgid ""
@@ -9516,7 +9544,8 @@ msgstr "GUID"
 
 #: eventyay/base/models/room.py:293
 msgid "Unique identifier (UUID) to help external tools identify the room."
-msgstr "कमरे की पहचान करने में बाहरी टूल्स की मदद के लिए अद्वितीय पहचानकर्ता (UUID)।"
+msgstr ""
+"कमरे की पहचान करने में बाहरी टूल्स की मदद के लिए अद्वितीय पहचानकर्ता (UUID)।"
 
 #: eventyay/base/models/room.py:299 eventyay/orga/templates/orga/base.html:364
 #: eventyay/orga/templates/orga/cfp/forms.html:769
@@ -9949,7 +9978,8 @@ msgstr "सत्र चित्र"
 #: eventyay/base/models/submission.py:279
 #: eventyay/submission/forms/submission.py:52
 msgid "Use this if you want an illustration to go with your proposal."
-msgstr "यदि आप अपने प्रस्ताव के साथ कोई चित्र जोड़ना चाहते हैं तो इसका उपयोग करें।"
+msgstr ""
+"यदि आप अपने प्रस्ताव के साथ कोई चित्र जोड़ना चाहते हैं तो इसका उपयोग करें।"
 
 #: eventyay/base/models/submission.py:292
 msgid "Assigned reviewers"
@@ -10051,7 +10081,8 @@ msgstr ""
 
 #: eventyay/base/models/tax.py:193
 msgid "You need to set your home country to use the reverse charge feature."
-msgstr "रिवर्स चार्ज सुविधा का उपयोग करने के लिए आपको अपना गृह देश सेट करना होगा।"
+msgstr ""
+"रिवर्स चार्ज सुविधा का उपयोग करने के लिए आपको अपना गृह देश सेट करना होगा।"
 
 #: eventyay/base/models/tax.py:195
 msgid "Tax rate must be between 0 and 100."
@@ -10120,7 +10151,8 @@ msgstr ""
 msgid ""
 "This session type will only be shown to submitters with a matching access "
 "code."
-msgstr "यह सत्र प्रकार केवल मेल खाते एक्सेस कोड वाले सबमिटर्स को ही दिखाया जाएगा।"
+msgstr ""
+"यह सत्र प्रकार केवल मेल खाते एक्सेस कोड वाले सबमिटर्स को ही दिखाया जाएगा।"
 
 #: eventyay/base/models/type.py:53
 msgid "position"
@@ -10222,7 +10254,8 @@ msgstr "वाउचर का मान"
 
 #: eventyay/base/models/vouchers.py:166 eventyay/control/forms/vouchers.py:31
 msgid "This product is added to the user's cart if the voucher is redeemed."
-msgstr "वाउचर रिडीम होने पर यह उत्पाद उपयोगकर्ता की कार्ट में जोड़ दिया जाता है।"
+msgstr ""
+"वाउचर रिडीम होने पर यह उत्पाद उपयोगकर्ता की कार्ट में जोड़ दिया जाता है।"
 
 #: eventyay/base/models/vouchers.py:177
 msgid "This variation of the product select above is being used."
@@ -10291,7 +10324,8 @@ msgstr "आप किसी दूसरे इवेंट से संबं�
 msgid ""
 "You cannot select a variation without having selected a product that "
 "provides variations."
-msgstr "आप बिना ऐसे प्रोडक्ट का चयन किए, जो वेरिएशन देता हो, वेरिएशन नहीं चुन सकते।"
+msgstr ""
+"आप बिना ऐसे प्रोडक्ट का चयन किए, जो वेरिएशन देता हो, वेरिएशन नहीं चुन सकते।"
 
 #: eventyay/base/models/vouchers.py:261
 msgid "This variation does not belong to this product."
@@ -10463,8 +10497,8 @@ msgid ""
 "You are already on this waiting list! We will notify you as soon as we have "
 "a ticket available for you."
 msgstr ""
-"आप पहले से ही इस वेटिंग लिस्ट में हैं! जैसे ही आपके लिए टिकट उपलब्ध होगा, हम आपको सूचित "
-"करेंगे।"
+"आप पहले से ही इस वेटिंग लिस्ट में हैं! जैसे ही आपके लिए टिकट उपलब्ध होगा, हम आपको सूचित करेंगे"
+"।"
 
 #: eventyay/base/notifications.py:120 eventyay/base/notifications.py:133
 msgid "Administrative action required"
@@ -10734,7 +10768,8 @@ msgstr "कोई मेल खाती सीट नहीं मिली।"
 #: eventyay/base/orderimport.py:984 eventyay/base/services/cart.py:140
 msgid ""
 "The seat you selected has already been taken. Please select a different seat."
-msgstr "आपने जो सीट चुनी है, वह पहले से ली जा चुकी है। कृपया कोई दूसरी सीट चुनें।"
+msgstr ""
+"आपने जो सीट चुनी है, वह पहले से ली जा चुकी है। कृपया कोई दूसरी सीट चुनें।"
 
 #: eventyay/base/orderimport.py:993 eventyay/base/services/cart.py:137
 msgid "You need to select a specific seat."
@@ -10876,7 +10911,8 @@ msgstr "भुगतान विधि सक्षम करने का ल�
 
 #: eventyay/base/payment.py:400
 msgid "Share this link with customers who should use this payment method."
-msgstr "यह लिंक उन ग्राहकों के साथ साझा करें जिन्हें इस भुगतान विधि का उपयोग करना चाहिए।"
+msgstr ""
+"यह लिंक उन ग्राहकों के साथ साझा करें जिन्हें इस भुगतान विधि का उपयोग करना चाहिए।"
 
 #: eventyay/base/payment.py:434
 msgctxt "invoice"
@@ -10891,7 +10927,8 @@ msgstr "इस भुगतान प्रदाता द्वारा स�
 msgid ""
 "No payment is required as this order only includes products which are free "
 "of charge."
-msgstr "कोई भुगतान आवश्यक नहीं है क्योंकि इस ऑर्डर में केवल निःशुल्क उत्पाद शामिल हैं।"
+msgstr ""
+"कोई भुगतान आवश्यक नहीं है क्योंकि इस ऑर्डर में केवल निःशुल्क उत्पाद शामिल हैं।"
 
 #: eventyay/base/payment.py:924
 msgid "Free of charge"
@@ -11533,7 +11570,8 @@ msgstr "आपने ऐसा उत्पाद चुना है जो ब
 msgid ""
 "Some of the products you selected are no longer available. Please see below "
 "for details."
-msgstr "आपके द्वारा चुने गए कुछ उत्पाद अब उपलब्ध नहीं हैं। विवरण के लिए कृपया नीचे देखें।"
+msgstr ""
+"आपके द्वारा चुने गए कुछ उत्पाद अब उपलब्ध नहीं हैं। विवरण के लिए कृपया नीचे देखें।"
 
 #: eventyay/base/services/cart.py:73
 msgid ""
@@ -11590,8 +11628,8 @@ msgid ""
 "The presale period for this event has not yet started. The affected "
 "positions have been removed from your cart."
 msgstr ""
-"इस इवेंट के लिए प्रीसेल अवधि अभी शुरू नहीं हुई है। प्रभावित आइटम आपके कार्ट से हटा दिए गए "
-"हैं।"
+"इस इवेंट के लिए प्रीसेल अवधि अभी शुरू नहीं हुई है। प्रभावित आइटम आपके कार्ट से हटा दिए गए हैं"
+"।"
 
 #: eventyay/base/services/cart.py:90 eventyay/base/services/orders.py:144
 msgid ""
@@ -11687,7 +11725,8 @@ msgstr ""
 
 #: eventyay/base/services/cart.py:122
 msgid "Your voucher is valid for a product that is currently not for sale."
-msgstr "आपका वाउचर ऐसे उत्पाद के लिए मान्य है जो फिलहाल बिक्री के लिए उपलब्ध नहीं है।"
+msgstr ""
+"आपका वाउचर ऐसे उत्पाद के लिए मान्य है जो फिलहाल बिक्री के लिए उपलब्ध नहीं है।"
 
 #: eventyay/base/services/cart.py:123
 msgctxt "subevent"
@@ -11716,7 +11755,8 @@ msgstr "आप एक ही ऐड-ऑन उत्पाद की दो व�
 msgid ""
 "You can select at most %(max)s add-ons from the category %(cat)s for the "
 "product %(base)s."
-msgstr "आप उत्पाद %(base)s के लिए श्रेणी %(cat)s से अधिकतम %(max)s ऐड-ऑन चुन सकते हैं।"
+msgstr ""
+"आप उत्पाद %(base)s के लिए श्रेणी %(cat)s से अधिकतम %(max)s ऐड-ऑन चुन सकते हैं।"
 
 #: eventyay/base/services/cart.py:130
 #, python-format
@@ -12029,7 +12069,8 @@ msgstr "पंक्ति {row} में अमान्य डेटा: {mes
 msgid ""
 "Some of the products you selected were no longer available. Please see below "
 "for details."
-msgstr "आपके चुने हुए कुछ उत्पाद अब उपलब्ध नहीं हैं। विवरण के लिए कृपया नीचे देखें।"
+msgstr ""
+"आपके चुने हुए कुछ उत्पाद अब उपलब्ध नहीं हैं। विवरण के लिए कृपया नीचे देखें।"
 
 #: eventyay/base/services/orders.py:105
 msgid ""
@@ -12097,8 +12138,8 @@ msgid ""
 "The voucher code used for one of the products in your cart is expired. We "
 "removed this product from your cart."
 msgstr ""
-"आपकी कार्ट में मौजूद किसी एक उत्पाद के लिए इस्तेमाल किया गया वाउचर कोड समाप्त हो चुका "
-"है। हमने यह उत्पाद आपकी कार्ट से हटा दिया है।"
+"आपकी कार्ट में मौजूद किसी एक उत्पाद के लिए इस्तेमाल किया गया वाउचर कोड समाप्त हो चुका है"
+"। हमने यह उत्पाद आपकी कार्ट से हटा दिया है।"
 
 #: eventyay/base/services/orders.py:133
 msgid ""
@@ -12113,8 +12154,8 @@ msgid ""
 "You need a valid voucher code to order one of the products in your cart. We "
 "removed this product from your cart."
 msgstr ""
-"आपकी कार्ट में मौजूद किसी एक उत्पाद को ऑर्डर करने के लिए आपको एक मान्य वाउचर कोड "
-"चाहिए। हमने यह उत्पाद आपकी कार्ट से हटा दिया है।"
+"आपकी कार्ट में मौजूद किसी एक उत्पाद को ऑर्डर करने के लिए आपको एक मान्य वाउचर कोड चाहिए"
+"। हमने यह उत्पाद आपकी कार्ट से हटा दिया है।"
 
 #: eventyay/base/services/orders.py:140
 msgid ""
@@ -12128,15 +12169,16 @@ msgstr ""
 msgid ""
 "One of the seats in your order was invalid, we removed the position from "
 "your cart."
-msgstr "आपके ऑर्डर में मौजूद एक सीट अमान्य थी, हमने उसे आपकी कार्ट से हटा दिया है।"
+msgstr ""
+"आपके ऑर्डर में मौजूद एक सीट अमान्य थी, हमने उसे आपकी कार्ट से हटा दिया है।"
 
 #: eventyay/base/services/orders.py:149
 msgid ""
 "One of the seats in your order has been taken in the meantime, we removed "
 "the position from your cart."
 msgstr ""
-"आपके ऑर्डर में मौजूद एक सीट इस बीच किसी और ने ले ली है, हमने उसे आपकी कार्ट से हटा दिया "
-"है।"
+"आपके ऑर्डर में मौजूद एक सीट इस बीच किसी और ने ले ली है, हमने उसे आपकी कार्ट से हटा दिया है"
+"।"
 
 #: eventyay/base/services/orders.py:222 eventyay/control/forms/orders.py:82
 msgid "The new expiry date needs to be in the future."
@@ -12202,8 +12244,8 @@ msgid ""
 "Only one ticket per user is allowed for this product. You already have a "
 "ticket."
 msgstr ""
-"इस उत्पाद के लिए प्रति उपयोगकर्ता केवल एक टिकट की अनुमति है। आपके पास पहले से एक टिकट "
-"है।"
+"इस उत्पाद के लिए प्रति उपयोगकर्ता केवल एक टिकट की अनुमति है। आपके पास पहले से एक टिकट है"
+"।"
 
 #: eventyay/base/services/orders.py:1355
 #, python-format
@@ -12247,7 +12289,8 @@ msgstr "चयनित उत्पाद सक्रिय नहीं ह�
 msgid ""
 "This operation would leave the order empty. Please cancel the order itself "
 "instead."
-msgstr "इस कार्रवाई से ऑर्डर खाली हो जाएगा। कृपया इसके बजाय ऑर्डर को ही रद्द करें।"
+msgstr ""
+"इस कार्रवाई से ऑर्डर खाली हो जाएगा। कृपया इसके बजाय ऑर्डर को ही रद्द करें।"
 
 #: eventyay/base/services/orders.py:1502
 msgid "Only pending or paid orders can be changed."
@@ -12265,13 +12308,15 @@ msgstr ""
 msgid ""
 "This is an add-on product, please select the base position it should be "
 "added to."
-msgstr "यह एक ऐड-ऑन उत्पाद है, कृपया वह बेस पोज़िशन चुनें जिसमें इसे जोड़ा जाना चाहिए।"
+msgstr ""
+"यह एक ऐड-ऑन उत्पाद है, कृपया वह बेस पोज़िशन चुनें जिसमें इसे जोड़ा जाना चाहिए।"
 
 #: eventyay/base/services/orders.py:1507
 msgid ""
 "The selected base position does not allow you to add this product as an add-"
 "on."
-msgstr "चयनित बेस पोज़िशन आपको इस उत्पाद को ऐड-ऑन के रूप में जोड़ने की अनुमति नहीं देती।"
+msgstr ""
+"चयनित बेस पोज़िशन आपको इस उत्पाद को ऐड-ऑन के रूप में जोड़ने की अनुमति नहीं देती।"
 
 #: eventyay/base/services/orders.py:1508
 msgid "You need to choose a subevent for the new position."
@@ -12303,8 +12348,8 @@ msgid ""
 "You cannot change the price of a position that has been used to issue a gift "
 "card."
 msgstr ""
-"जिस पोज़िशन का उपयोग गिफ्ट कार्ड जारी करने में किया गया है, उसकी कीमत आप नहीं बदल "
-"सकते।"
+"जिस पोज़िशन का उपयोग गिफ्ट कार्ड जारी करने में किया गया है, उसकी कीमत आप नहीं बदल सकते"
+"।"
 
 #: eventyay/base/services/orders.py:2165
 #, python-brace-format
@@ -12378,7 +12423,8 @@ msgstr ""
 msgid ""
 "The download file could no longer be found on the server, please try to "
 "start again."
-msgstr "डाउनलोड फ़ाइल अब सर्वर पर नहीं मिल रही है, कृपया फिर से शुरू करने का प्रयास करें।"
+msgstr ""
+"डाउनलोड फ़ाइल अब सर्वर पर नहीं मिल रही है, कृपया फिर से शुरू करने का प्रयास करें।"
 
 #: eventyay/base/services/shredder.py:80 eventyay/control/views/shredder.py:69
 msgid "This file is from a different event."
@@ -12619,11 +12665,13 @@ msgstr ""
 #: eventyay/base/settings.py:206
 msgid ""
 "You cannot require specifying attendee names if you do not ask for them."
-msgstr "यदि आप प्रतिभागी नाम नहीं पूछते हैं, तो आप उन्हें अनिवार्य नहीं कर सकते।"
+msgstr ""
+"यदि आप प्रतिभागी नाम नहीं पूछते हैं, तो आप उन्हें अनिवार्य नहीं कर सकते।"
 
 #: eventyay/base/settings.py:210
 msgid "You have to ask for attendee emails if you want to make them required."
-msgstr "यदि आप प्रतिभागी ईमेल को अनिवार्य बनाना चाहते हैं, तो आपको उन्हें पूछना होगा।"
+msgstr ""
+"यदि आप प्रतिभागी ईमेल को अनिवार्य बनाना चाहते हैं, तो आपको उन्हें पूछना होगा।"
 
 #: eventyay/base/settings.py:216
 msgid ""
@@ -12637,11 +12685,13 @@ msgstr "यदि आप ऑर्डर ईमेल को अनिवार�
 #: eventyay/base/settings.py:226
 msgid ""
 "You have to ask for invoice addresses if you want to make them required."
-msgstr "यदि आप इनवॉइस पते को अनिवार्य बनाना चाहते हैं, तो आपको उन्हें पूछना होगा।"
+msgstr ""
+"यदि आप इनवॉइस पते को अनिवार्य बनाना चाहते हैं, तो आपको उन्हें पूछना होगा।"
 
 #: eventyay/base/settings.py:232
 msgid "You have to require invoice addresses to require for company names."
-msgstr "कंपनी नामों को अनिवार्य बनाने के लिए आपको इनवॉइस पते अनिवार्य करने होंगे।"
+msgstr ""
+"कंपनी नामों को अनिवार्य बनाने के लिए आपको इनवॉइस पते अनिवार्य करने होंगे।"
 
 #: eventyay/base/settings.py:241
 msgid "The last payment date cannot be before the end of presale."
@@ -12673,8 +12723,8 @@ msgid ""
 "This will remove all e-mail addresses from orders and attendees, as well as "
 "logged email contents."
 msgstr ""
-"यह ऑर्डरों और प्रतिभागियों से सभी ई-मेल पते, साथ ही लॉग की गई ई-मेल सामग्री भी हटा "
-"देगा।"
+"यह ऑर्डरों और प्रतिभागियों से सभी ई-मेल पते, साथ ही लॉग की गई ई-मेल सामग्री भी हटा देगा"
+"।"
 
 #: eventyay/base/shredder.py:233
 msgid ""
@@ -12712,7 +12762,8 @@ msgstr "प्रश्नों के उत्तर"
 #: eventyay/base/shredder.py:374
 msgid ""
 "This will remove all answers to questions, as well as logged changes to them."
-msgstr "यह प्रश्नों के सभी उत्तर, साथ ही उनमें किए गए लॉग किए गए बदलाव भी हटा देगा।"
+msgstr ""
+"यह प्रश्नों के सभी उत्तर, साथ ही उनमें किए गए लॉग किए गए बदलाव भी हटा देगा।"
 
 #: eventyay/base/shredder.py:411
 msgid ""
@@ -13150,7 +13201,8 @@ msgstr "कार्य पूरा हो गया है।"
 #: eventyay/cfp/flow.py:466
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is open."
-msgstr "आपका ड्राफ्ट सहेजा गया। CfP खुला रहने तक आप इसे संपादित करना जारी रख सकते हैं।"
+msgstr ""
+"आपका ड्राफ्ट सहेजा गया। CfP खुला रहने तक आप इसे संपादित करना जारी रख सकते हैं।"
 
 #: eventyay/cfp/flow.py:473
 msgid ""
@@ -13178,7 +13230,8 @@ msgstr ""
 msgid ""
 "There was an error when logging in. Please contact the organizer for further "
 "help."
-msgstr "लॉग इन करते समय एक त्रुटि हुई। कृपया आगे सहायता के लिए आयोजक से संपर्क करें।"
+msgstr ""
+"लॉग इन करते समय एक त्रुटि हुई। कृपया आगे सहायता के लिए आयोजक से संपर्क करें।"
 
 #: eventyay/cfp/flow.py:534 eventyay/common/templates/common/base.html:183
 #: eventyay/common/templates/common/fragment_header_user.html:130
@@ -13210,7 +13263,8 @@ msgstr "खाता"
 
 #: eventyay/cfp/flow.py:538
 msgid "That’s it about your proposal! We now just need a way to contact you."
-msgstr "आपके प्रस्ताव के बारे में बस इतना ही! अब हमें आपसे संपर्क करने का एक तरीका चाहिए।"
+msgstr ""
+"आपके प्रस्ताव के बारे में बस इतना ही! अब हमें आपसे संपर्क करने का एक तरीका चाहिए।"
 
 #: eventyay/cfp/flow.py:543
 msgid ""
@@ -13309,7 +13363,8 @@ msgstr "आपका सत्र पुष्टि हो गया है –
 msgid ""
 "This proposal has already been confirmed – we’re looking forward to seeing "
 "you!"
-msgstr "यह प्रस्ताव पहले ही पुष्टि हो चुका है – हम आपको देखने के लिए उत्सुक हैं!"
+msgstr ""
+"यह प्रस्ताव पहले ही पुष्टि हो चुका है – हम आपको देखने के लिए उत्सुक हैं!"
 
 #: eventyay/cfp/phrases.py:26
 msgid ""
@@ -13377,7 +13432,8 @@ msgstr "अब आप इस प्रस्ताव का हिस्सा 
 msgid ""
 "We are experiencing difficulties when sending mails, but your session was "
 "submitted successfully!"
-msgstr "हमें ईमेल भेजने में दिक्कत हो रही है, लेकिन आपका सत्र सफलतापूर्वक सबमिट हो गया है!"
+msgstr ""
+"हमें ईमेल भेजने में दिक्कत हो रही है, लेकिन आपका सत्र सफलतापूर्वक सबमिट हो गया है!"
 
 #: eventyay/cfp/phrases.py:69 eventyay/orga/views/cfp.py:440
 msgid "Custom fields"
@@ -13482,8 +13538,8 @@ msgid ""
 "own personalized schedule, or if you are participating in the event as a "
 "speaker or organizer."
 msgstr ""
-"इवेंट देखने, प्रतिक्रिया सबमिट करने या शेड्यूल अपडेट पाने के लिए आपको खाते की आवश्यकता नहीं "
-"है। खाता केवल तब जरूरी है जब आप अपना व्यक्तिगत शेड्यूल बनाना चाहते हैं, या जब आप वक्ता या "
+"इवेंट देखने, प्रतिक्रिया सबमिट करने या शेड्यूल अपडेट पाने के लिए आपको खाते की आवश्यकता नहीं है"
+"। खाता केवल तब जरूरी है जब आप अपना व्यक्तिगत शेड्यूल बनाना चाहते हैं, या जब आप वक्ता या "
 "आयोजक के रूप में इवेंट में भाग ले रहे हों।"
 
 #: eventyay/cfp/templates/cfp/event/recover.html:25
@@ -13658,7 +13714,8 @@ msgstr ""
 #: eventyay/cfp/templates/cfp/event/user_submission_discard.html:16
 msgid ""
 "Do you really want to discard your draft proposal? All data will be lost."
-msgstr "क्या आप वाकई अपने ड्राफ़्ट प्रस्ताव को हटाना चाहते हैं? सारा डेटा खो जाएगा।"
+msgstr ""
+"क्या आप वाकई अपने ड्राफ़्ट प्रस्ताव को हटाना चाहते हैं? सारा डेटा खो जाएगा।"
 
 #: eventyay/cfp/templates/cfp/event/user_submission_edit.html:34
 msgid ""
@@ -13849,13 +13906,15 @@ msgstr "ऐसा लगता है कि आपने अभी तक इ�
 
 #: eventyay/cfp/templates/cfp/event/user_submissions.html:164
 msgid "If you did, maybe you used a different account? Check your emails!"
-msgstr "अगर किया था, तो शायद आपने कोई दूसरा अकाउंट इस्तेमाल किया? अपनी ईमेल देखें!"
+msgstr ""
+"अगर किया था, तो शायद आपने कोई दूसरा अकाउंट इस्तेमाल किया? अपनी ईमेल देखें!"
 
 #: eventyay/cfp/templates/cfp/event/user_submissions.html:167
 msgid ""
 "If you did not, why not go ahead and create a proposal now? We’d love to "
 "hear from you!"
-msgstr "अगर नहीं किया, तो क्यों न अभी एक प्रस्ताव बना लें? हम आपसे सुनना चाहेंगे!"
+msgstr ""
+"अगर नहीं किया, तो क्यों न अभी एक प्रस्ताव बना लें? हम आपसे सुनना चाहेंगे!"
 
 #: eventyay/cfp/templates/cfp/event/user_submissions.html:172
 msgid "Submit something now!"
@@ -14095,7 +14154,8 @@ msgstr "प्रारंभ समय अतीत में नहीं ह�
 #: eventyay/common/forms/widgets.py:53
 msgid ""
 "This password would take <em class=\"password_strength_time\"></em> to crack."
-msgstr "इस पासवर्ड को क्रैक करने में <em class=\"password_strength_time\"></em> लगेंगे।"
+msgstr ""
+"इस पासवर्ड को क्रैक करने में <em class=\"password_strength_time\"></em> लगेंगे।"
 
 #: eventyay/common/forms/widgets.py:75
 msgid "Warning"
@@ -14150,8 +14210,8 @@ msgid ""
 "Upload a valid image. The file you uploaded was either not an image or a "
 "corrupted image."
 msgstr ""
-"मान्य इमेज अपलोड करें। आपके द्वारा अपलोड की गई फ़ाइल या तो इमेज नहीं थी या खराब इमेज "
-"थी।"
+"मान्य इमेज अपलोड करें। आपके द्वारा अपलोड की गई फ़ाइल या तो इमेज नहीं थी या खराब इमेज थी"
+"।"
 
 #: eventyay/common/log_display.py:33 eventyay/common/log_display.py:36
 #, python-brace-format
@@ -15518,7 +15578,8 @@ msgstr "नया पासवर्ड (फिर से)"
 
 #: eventyay/common/text/phrases.py:89
 msgid "You entered two different passwords. Please enter the same one twice!"
-msgstr "आपने दो अलग-अलग पासवर्ड दर्ज किए हैं। कृपया वही पासवर्ड दो बार दर्ज करें!"
+msgstr ""
+"आपने दो अलग-अलग पासवर्ड दर्ज किए हैं। कृपया वही पासवर्ड दो बार दर्ज करें!"
 
 #: eventyay/common/text/phrases.py:90
 msgctxt "noun / heading"
@@ -16148,8 +16209,8 @@ msgid ""
 "settings of the tax rule are ignored."
 msgstr ""
 "एकल भुगतान तरीकों के लिए आपने जो अतिरिक्त शुल्क कॉन्फ़िगर किए हैं, उन पर लागू कर नियम। "
-"यह कर दर और रिवर्स चार्ज नियम सेट करेगा; कर नियम की अन्य सेटिंग्स को अनदेखा किया "
-"जाएगा।"
+"यह कर दर और रिवर्स चार्ज नियम सेट करेगा; कर नियम की अन्य सेटिंग्स को अनदेखा किया जाएगा"
+"।"
 
 #: eventyay/control/forms/event.py:1161
 msgid "Generate invoices for Sales channels"
@@ -17362,7 +17423,8 @@ msgstr "Webhook गुप्त कुंजी"
 #: eventyay/control/forms/global_settings.py:398
 msgid ""
 "Configure this endpoint in your Stripe dashboard to receive billing events."
-msgstr "बिलिंग इवेंट प्राप्त करने के लिए अपने Stripe डैशबोर्ड में इस एंडपॉइंट को कॉन्फ़िगर करें।"
+msgstr ""
+"बिलिंग इवेंट प्राप्त करने के लिए अपने Stripe डैशबोर्ड में इस एंडपॉइंट को कॉन्फ़िगर करें।"
 
 #: eventyay/control/forms/global_settings.py:407
 msgid "Stripe Connect client ID for ticket payments via the Stripe plugin."
@@ -17791,7 +17853,8 @@ msgstr "दी गई कुंजी वैध नहीं लगती। य
 msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
-msgstr "दी गई कुंजी वैध नहीं लगती। यह इनमें से किसी एक से शुरू होनी चाहिए: %(prefixes)s"
+msgstr ""
+"दी गई कुंजी वैध नहीं लगती। यह इनमें से किसी एक से शुरू होनी चाहिए: %(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -17909,7 +17972,8 @@ msgstr "इस विकल्प को केवल सशुल्क ऑर�
 
 #: eventyay/control/forms/orders.py:186
 msgid "This option cannot be combined with only approval pending orders."
-msgstr "इस विकल्प को केवल अनुमोदन लंबित ऑर्डरों के साथ संयोजित नहीं किया जा सकता।"
+msgstr ""
+"इस विकल्प को केवल अनुमोदन लंबित ऑर्डरों के साथ संयोजित नहीं किया जा सकता।"
 
 #: eventyay/control/forms/orders.py:216
 msgid "Re-calculate taxes"
@@ -17923,13 +17987,15 @@ msgstr "करों की पुनर्गणना न करें"
 msgid ""
 "Re-calculate taxes based on address and product settings, keep gross amount "
 "the same."
-msgstr "पते और उत्पाद सेटिंग्स के आधार पर करों की पुनर्गणना करें, सकल राशि वही रखें।"
+msgstr ""
+"पते और उत्पाद सेटिंग्स के आधार पर करों की पुनर्गणना करें, सकल राशि वही रखें।"
 
 #: eventyay/control/forms/orders.py:226
 msgid ""
 "Re-calculate taxes based on address and product settings, keep net amount "
 "the same."
-msgstr "पते और उत्पाद सेटिंग्स के आधार पर करों की पुनर्गणना करें, शुद्ध राशि वही रखें।"
+msgstr ""
+"पते और उत्पाद सेटिंग्स के आधार पर करों की पुनर्गणना करें, शुद्ध राशि वही रखें।"
 
 #: eventyay/control/forms/orders.py:232
 msgid "Issue a new invoice if required"
@@ -18047,7 +18113,8 @@ msgstr "संदेश"
 #: eventyay/control/forms/orders.py:566
 msgid ""
 "Cancel the order. All tickets will no longer work. This can not be reverted."
-msgstr "ऑर्डर रद्द करें। सभी टिकट अब काम नहीं करेंगे। इसे वापस नहीं किया जा सकता।"
+msgstr ""
+"ऑर्डर रद्द करें। सभी टिकट अब काम नहीं करेंगे। इसे वापस नहीं किया जा सकता।"
 
 #: eventyay/control/forms/orders.py:570
 msgid ""
@@ -18206,11 +18273,13 @@ msgstr "कृपया या तो सभी तिथियाँ चुन�
 #: eventyay/control/forms/orders.py:834 eventyay/plugins/sendmail/forms.py:136
 msgctxt "subevent"
 msgid "If you set a date range, please set both a start and an end."
-msgstr "यदि आप तिथि-सीमा सेट करते हैं, तो कृपया प्रारंभ और समाप्ति दोनों सेट करें।"
+msgstr ""
+"यदि आप तिथि-सीमा सेट करते हैं, तो कृपया प्रारंभ और समाप्ति दोनों सेट करें।"
 
 #: eventyay/control/forms/orders.py:838
 msgid "Please confirm that you want to cancel ALL dates in this event series."
-msgstr "कृपया पुष्टि करें कि आप इस इवेंट श्रृंखला की सभी तिथियाँ रद्द करना चाहते हैं।"
+msgstr ""
+"कृपया पुष्टि करें कि आप इस इवेंट श्रृंखला की सभी तिथियाँ रद्द करना चाहते हैं।"
 
 #: eventyay/control/forms/organizer_forms/device_form.py:47
 msgid "All events (including newly created and published ones)"
@@ -18268,7 +18337,8 @@ msgstr ""
 msgid ""
 "Please provide your name or the name of the person responsible for this "
 "account in your organization."
-msgstr "कृपया अपना नाम या अपनी संस्था में इस खाते के लिए ज़िम्मेदार व्यक्ति का नाम दें।"
+msgstr ""
+"कृपया अपना नाम या अपनी संस्था में इस खाते के लिए ज़िम्मेदार व्यक्ति का नाम दें।"
 
 #: eventyay/control/forms/organizer_forms/organizer_form.py:81
 msgid ""
@@ -18351,7 +18421,8 @@ msgstr "यह डोमेन पहले से किसी दूसरे 
 msgid ""
 "Please either pick some events for this team, or grant access to all your "
 "events!"
-msgstr "कृपया या तो इस टीम के लिए कुछ इवेंट चुनें, या अपने सभी इवेंट्स तक पहुँच दें!"
+msgstr ""
+"कृपया या तो इस टीम के लिए कुछ इवेंट चुनें, या अपने सभी इवेंट्स तक पहुँच दें!"
 
 #: eventyay/control/forms/organizer_forms/team_form.py:293
 #, fuzzy
@@ -18858,7 +18929,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "You generated {codes} vouchers, but entered recipients for {recp} vouchers."
-msgstr "आपने {codes} वाउचर बनाए, लेकिन {recp} वाउचरों के लिए प्राप्तकर्ता दर्ज किए।"
+msgstr ""
+"आपने {codes} वाउचर बनाए, लेकिन {recp} वाउचरों के लिए प्राप्तकर्ता दर्ज किए।"
 
 #: eventyay/control/forms/vouchers.py:453
 msgid "You need to specify as many seats as voucher codes."
@@ -18878,8 +18950,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"स्थिति #{posid}: {old_product} ({old_price}) को बदलकर {new_product} "
-"({new_price}) किया गया।"
+"स्थिति #{posid}: {old_product} ({old_price}) को बदलकर {new_product} ("
+"{new_price}) किया गया।"
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -18903,7 +18975,8 @@ msgstr "स्थिति #{posid} की कीमत {old_price} से ब�
 #: eventyay/control/logdisplay.py:110
 #, python-brace-format
 msgid "Tax rule of position #{posid} changed from {old_rule} to {new_rule}."
-msgstr "स्थिति #{posid} का टैक्स नियम {old_rule} से बदलकर {new_rule} कर दिया गया।"
+msgstr ""
+"स्थिति #{posid} का टैक्स नियम {old_rule} से बदलकर {new_rule} कर दिया गया।"
 
 #: eventyay/control/logdisplay.py:120
 #, python-brace-format
@@ -18979,8 +19052,8 @@ msgid ""
 "Unknown scan of code \"{barcode}…\" at {datetime} for list \"{list}\", type "
 "\"{type}\"."
 msgstr ""
-"सूची \"{list}\" के लिए {datetime} पर कोड \"{barcode}…\" का अज्ञात स्कैन, प्रकार "
-"\"{type}\"।"
+"सूची \"{list}\" के लिए {datetime} पर कोड \"{barcode}…\" का अज्ञात स्कैन, प्रकार \""
+"{type}\"।"
 
 #: eventyay/control/logdisplay.py:258
 #, python-brace-format
@@ -19029,7 +19102,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked out at {datetime} for list \"{list}\"."
-msgstr "स्थिति #{posid} को {datetime} पर सूची \"{list}\" के लिए चेक-आउट किया गया।"
+msgstr ""
+"स्थिति #{posid} को {datetime} पर सूची \"{list}\" के लिए चेक-आउट किया गया।"
 
 #: eventyay/control/logdisplay.py:312
 #, python-brace-format
@@ -19040,7 +19114,8 @@ msgstr "स्थिति #{posid} को सूची \"{list}\" के लि
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in at {datetime} for list \"{list}\"."
-msgstr "स्थिति #{posid} को {datetime} पर सूची \"{list}\" के लिए चेक-इन किया गया।"
+msgstr ""
+"स्थिति #{posid} को {datetime} पर सूची \"{list}\" के लिए चेक-इन किया गया।"
 
 #: eventyay/control/logdisplay.py:321
 #, python-brace-format
@@ -19062,8 +19137,8 @@ msgid ""
 "Position #{posid} has been scanned and rejected because it has already been "
 "scanned before on list \"{list}\"."
 msgstr ""
-"स्थिति #{posid} को स्कैन किया गया और अस्वीकृत किया गया क्योंकि इसे पहले ही सूची "
-"\"{list}\" पर स्कैन किया जा चुका है।"
+"स्थिति #{posid} को स्कैन किया गया और अस्वीकृत किया गया क्योंकि इसे पहले ही सूची \""
+"{list}\" पर स्कैन किया जा चुका है।"
 
 #: eventyay/control/logdisplay.py:489
 msgid "This object has been created by cloning."
@@ -19225,7 +19300,8 @@ msgstr "ऑर्डर की आंतरिक टिप्पणी अप�
 
 #: eventyay/control/logdisplay.py:536
 msgid "The order's flag to require attention at check-in has been toggled."
-msgstr "चेक-इन के समय ध्यान देने की आवश्यकता वाला ऑर्डर का फ़्लैग टॉगल किया गया है।"
+msgstr ""
+"चेक-इन के समय ध्यान देने की आवश्यकता वाला ऑर्डर का फ़्लैग टॉगल किया गया है।"
 
 #: eventyay/control/logdisplay.py:539
 #, python-brace-format
@@ -19264,7 +19340,8 @@ msgstr "टिकट डाउनलोड के लिए उपलब्ध �
 #: eventyay/control/logdisplay.py:552
 msgid ""
 "An email has been sent with a warning that the order is about to expire."
-msgstr "ऑर्डर जल्द ही समाप्त होने वाला है, यह चेतावनी देने वाला ईमेल भेज दिया गया है।"
+msgstr ""
+"ऑर्डर जल्द ही समाप्त होने वाला है, यह चेतावनी देने वाला ईमेल भेज दिया गया है।"
 
 #: eventyay/control/logdisplay.py:555
 msgid ""
@@ -19313,8 +19390,8 @@ msgstr ""
 msgid ""
 "An email has been sent to notify the user that the order has been approved."
 msgstr ""
-"उपयोगकर्ता को सूचित करने के लिए कि ऑर्डर स्वीकृत कर दिया गया है, एक ईमेल भेज दिया गया "
-"है।"
+"उपयोगकर्ता को सूचित करने के लिए कि ऑर्डर स्वीकृत कर दिया गया है, एक ईमेल भेज दिया गया है"
+"।"
 
 #: eventyay/control/logdisplay.py:579
 msgid ""
@@ -19433,7 +19510,8 @@ msgstr "आपके दो-चरणीय आपातकालीन को�
 msgid ""
 "A new two-factor authentication device \"{name}\" has been added to your "
 "account."
-msgstr "आपके खाते में एक नया दो-चरणीय प्रमाणीकरण डिवाइस \"{name}\" जोड़ा गया है।"
+msgstr ""
+"आपके खाते में एक नया दो-चरणीय प्रमाणीकरण डिवाइस \"{name}\" जोड़ा गया है।"
 
 #: eventyay/control/logdisplay.py:611
 #, python-brace-format
@@ -19485,7 +19563,8 @@ msgstr "वाउचर बनाया गया है।"
 
 #: eventyay/control/logdisplay.py:629
 msgid "The voucher has been created and sent to a person on the waiting list."
-msgstr "वाउचर बनाया गया है और प्रतीक्षा सूची में मौजूद व्यक्ति को भेज दिया गया है।"
+msgstr ""
+"वाउचर बनाया गया है और प्रतीक्षा सूची में मौजूद व्यक्ति को भेज दिया गया है।"
 
 #: eventyay/control/logdisplay.py:631
 msgid "The voucher has been changed."
@@ -19759,7 +19838,8 @@ msgstr "डिवाइस का एक्सेस टोकन पुनः �
 
 #: eventyay/control/logdisplay.py:698
 msgid "The device has notified the server of an hardware or software update."
-msgstr "डिवाइस ने हार्डवेयर या सॉफ़्टवेयर अपडेट के बारे में सर्वर को सूचित किया है।"
+msgstr ""
+"डिवाइस ने हार्डवेयर या सॉफ़्टवेयर अपडेट के बारे में सर्वर को सूचित किया है।"
 
 #: eventyay/control/logdisplay.py:699
 msgid "The gift card has been created."
@@ -22128,12 +22208,14 @@ msgstr "वाउचर हटाएँ"
 msgid ""
 "Are you sure you want to delete the voucher <strong>%(invoice_voucher)s</"
 "strong>?"
-msgstr "क्या आप वाकई वाउचर <strong>%(invoice_voucher)s</strong> हटाना चाहते हैं?"
+msgstr ""
+"क्या आप वाकई वाउचर <strong>%(invoice_voucher)s</strong> हटाना चाहते हैं?"
 
 #: eventyay/control/templates/pretixcontrol/admin/vouchers/detail.html:9
 #: eventyay/control/templates/pretixcontrol/vouchers/detail.html:12
 msgid "This voucher already has been used. It is not recommended to modify it."
-msgstr "यह वाउचर पहले ही इस्तेमाल किया जा चुका है। इसे बदलने की सलाह नहीं दी जाती।"
+msgstr ""
+"यह वाउचर पहले ही इस्तेमाल किया जा चुका है। इसे बदलने की सलाह नहीं दी जाती।"
 
 #: eventyay/control/templates/pretixcontrol/admin/vouchers/detail.html:18
 #: eventyay/control/templates/pretixcontrol/vouchers/bulk.html:43
@@ -22235,7 +22317,8 @@ msgstr "टिकट डैशबोर्ड"
 #: eventyay/orga/templates/orga/base.html:193
 msgid ""
 "Please leave a short comment on what you did in the following admin sessions:"
-msgstr "कृपया निम्नलिखित एडमिन सत्रों में आपने क्या किया, उस पर एक छोटी टिप्पणी छोड़ें:"
+msgstr ""
+"कृपया निम्नलिखित एडमिन सत्रों में आपने क्या किया, उस पर एक छोटी टिप्पणी छोड़ें:"
 
 #: eventyay/control/templates/pretixcontrol/base.html:355
 #: eventyay/eventyay_common/templates/eventyay_common/base.html:324
@@ -23080,7 +23163,8 @@ msgstr "अधिक भुगतान किए गए ऑर्डर दि�
 msgid ""
 "This event contains <strong>pending refunds</strong> that you should take "
 "care of."
-msgstr "इस इवेंट में <strong>लंबित रिफंड</strong> हैं जिनका आपको ध्यान रखना चाहिए।"
+msgstr ""
+"इस इवेंट में <strong>लंबित रिफंड</strong> हैं जिनका आपको ध्यान रखना चाहिए।"
 
 #: eventyay/control/templates/pretixcontrol/event/index.html:46
 msgid "Show pending refunds"
@@ -23101,7 +23185,8 @@ msgstr "रद्दीकरण का अनुरोध करने वा�
 msgid ""
 "This event contains <strong>pending approvals</strong> that you should take "
 "care of."
-msgstr "इस इवेंट में <strong>लंबित अनुमोदन</strong> हैं जिनका आपको ध्यान रखना चाहिए।"
+msgstr ""
+"इस इवेंट में <strong>लंबित अनुमोदन</strong> हैं जिनका आपको ध्यान रखना चाहिए।"
 
 #: eventyay/control/templates/pretixcontrol/event/index.html:64
 msgid "Show orders pending approval"
@@ -23572,7 +23657,8 @@ msgstr ""
 msgid ""
 "After the setup, please go to the Payment area and set up the Stripe "
 "connection."
-msgstr "सेटअप के बाद, कृपया Payment क्षेत्र में जाएँ और Stripe कनेक्शन सेट अप करें।"
+msgstr ""
+"सेटअप के बाद, कृपया Payment क्षेत्र में जाएँ और Stripe कनेक्शन सेट अप करें।"
 
 #: eventyay/control/templates/pretixcontrol/event/quick_setup.html:234
 #, fuzzy
@@ -23582,7 +23668,8 @@ msgstr "सेटअप के बाद, कृपया Payment क्षे�
 msgid ""
 "After the setup, please go to the Payment area and set up the PayPal "
 "connection."
-msgstr "सेटअप के बाद, कृपया Payment क्षेत्र में जाएँ और Stripe कनेक्शन सेट अप करें।"
+msgstr ""
+"सेटअप के बाद, कृपया Payment क्षेत्र में जाएँ और Stripe कनेक्शन सेट अप करें।"
 
 #: eventyay/control/templates/pretixcontrol/event/settings.html:7
 #: eventyay/control/templates/pretixcontrol/event/settings.html:13
@@ -23709,10 +23796,9 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"ये सेटिंग्स उन्नत उपयोगकर्ताओं के लिए हैं। अधिक जानकारी के लिए <a "
-"href=\"%(docs)s\">दस्तावेज़ीकरण</a> देखें। ध्यान दें कि आपकी टिकट शॉप में टैक्स के सही "
-"प्रबंधन के लिए हम ज़िम्मेदार नहीं हैं। संदेह होने पर, कृपया किसी वकील या टैक्स सलाहकार से "
-"संपर्क करें।"
+"ये सेटिंग्स उन्नत उपयोगकर्ताओं के लिए हैं। अधिक जानकारी के लिए <a href=\"%(docs)s\">"
+"दस्तावेज़ीकरण</a> देखें। ध्यान दें कि आपकी टिकट शॉप में टैक्स के सही प्रबंधन के लिए हम "
+"ज़िम्मेदार नहीं हैं। संदेह होने पर, कृपया किसी वकील या टैक्स सलाहकार से संपर्क करें।"
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -23812,15 +23898,16 @@ msgid ""
 "To embed the widget onto your website, simply copy the following code to the "
 "<code>&lt;head&gt;</code> section of your website:"
 msgstr ""
-"विजेट को अपनी वेबसाइट में एम्बेड करने के लिए, बस निम्न कोड को अपनी वेबसाइट के "
-"<code>&lt;head&gt;</code> सेक्शन में कॉपी करें:"
+"विजेट को अपनी वेबसाइट में एम्बेड करने के लिए, बस निम्न कोड को अपनी वेबसाइट के <code>"
+"&lt;head&gt;</code> सेक्शन में कॉपी करें:"
 
 #: eventyay/control/templates/pretixcontrol/event/widget.html:25
 #: eventyay/orga/templates/orga/settings/widget.html:63
 msgid ""
 "Then, copy the following code to the place of your website where you want "
 "the widget to show up:"
-msgstr "फिर, जहाँ आप अपनी वेबसाइट पर विजेट दिखाना चाहते हैं, वहाँ निम्न कोड कॉपी करें:"
+msgstr ""
+"फिर, जहाँ आप अपनी वेबसाइट पर विजेट दिखाना चाहते हैं, वहाँ निम्न कोड कॉपी करें:"
 
 #: eventyay/control/templates/pretixcontrol/event/widget.html:39
 #: eventyay/control/templates/pretixcontrol/event/widget.html:52
@@ -23944,7 +24031,8 @@ msgstr "Stripe — आयोजक बिलिंग"
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:25
 msgid "This configuration is used for organizer billing and platform fees."
-msgstr "यह कॉन्फ़िगरेशन आयोजक बिलिंग और प्लेटफ़ॉर्म शुल्क के लिए उपयोग की जाती है।"
+msgstr ""
+"यह कॉन्फ़िगरेशन आयोजक बिलिंग और प्लेटफ़ॉर्म शुल्क के लिए उपयोग की जाती है।"
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:29
 #: eventyay/control/templates/pretixcontrol/global_settings.html:80
@@ -24532,7 +24620,8 @@ msgstr "नया उत्पाद बनाएं"
 #: eventyay/control/templates/pretixcontrol/items/index.html:69
 msgid ""
 "Currently unavailable since a limited timeframe for this product has been set"
-msgstr "फिलहाल उपलब्ध नहीं, क्योंकि इस उत्पाद के लिए सीमित समय-सीमा निर्धारित की गई है"
+msgstr ""
+"फिलहाल उपलब्ध नहीं, क्योंकि इस उत्पाद के लिए सीमित समय-सीमा निर्धारित की गई है"
 
 #: eventyay/control/templates/pretixcontrol/items/index.html:74
 msgid "Only available in a limited timeframe"
@@ -25039,13 +25128,12 @@ msgid ""
 "such as limiting the total number of tickets sold while also restricting the "
 "number of specific ticket types simultaneously."
 msgstr ""
-"यह सुनिश्चित करने के लिए कि आपके उत्पाद अपेक्षित रूप से उपलब्ध हों, आपको कोटा सेट करने "
-"होंगे। कोटा यह निर्धारित करते हैं कि प्लेटफ़ॉर्म पर आपके उत्पाद की कितनी इकाइयाँ बेची जा "
-"सकती हैं। इससे आप कॉन्फ़िगर कर सकते हैं कि आपका इवेंट असीमित संख्या में उपस्थित लोगों को "
-"समायोजित कर सकता है या उपस्थित लोगों की संख्या सीमित है। आप अधिक जटिल आवश्यकताओं को "
-"पूरा करने के लिए किसी उत्पाद को कई कोटा असाइन कर सकते हैं, जैसे कुल बेचे जाने वाले टिकटों "
-"की संख्या सीमित करना और साथ ही एक ही समय में विशिष्ट टिकट प्रकारों की संख्या भी सीमित "
-"करना।"
+"यह सुनिश्चित करने के लिए कि आपके उत्पाद अपेक्षित रूप से उपलब्ध हों, आपको कोटा सेट करने होंगे"
+"। कोटा यह निर्धारित करते हैं कि प्लेटफ़ॉर्म पर आपके उत्पाद की कितनी इकाइयाँ बेची जा सकती "
+"हैं। इससे आप कॉन्फ़िगर कर सकते हैं कि आपका इवेंट असीमित संख्या में उपस्थित लोगों को समायोजित "
+"कर सकता है या उपस्थित लोगों की संख्या सीमित है। आप अधिक जटिल आवश्यकताओं को पूरा करने के "
+"लिए किसी उत्पाद को कई कोटा असाइन कर सकते हैं, जैसे कुल बेचे जाने वाले टिकटों की संख्या "
+"सीमित करना और साथ ही एक ही समय में विशिष्ट टिकट प्रकारों की संख्या भी सीमित करना।"
 
 #: eventyay/control/templates/pretixcontrol/items/quotas.html:22
 msgid "Your search did not match any quotas."
@@ -25554,7 +25642,8 @@ msgstr "लिंक फिर से भेजें"
 
 #: eventyay/control/templates/pretixcontrol/order/index.html:241
 msgid "Rebuild the invoice with updated data but the same invoice number."
-msgstr "अपडेट किए गए डेटा के साथ, लेकिन उसी इनवॉइस नंबर के साथ इनवॉइस दोबारा बनाएं।"
+msgstr ""
+"अपडेट किए गए डेटा के साथ, लेकिन उसी इनवॉइस नंबर के साथ इनवॉइस दोबारा बनाएं।"
 
 #: eventyay/control/templates/pretixcontrol/order/index.html:242
 #: eventyay/control/templates/pretixcontrol/organizers/devices.html:111
@@ -25720,8 +25809,8 @@ msgid ""
 "This payment was created with an older version of pretix, therefore accurate "
 "data might not be available."
 msgstr ""
-"यह भुगतान pretix के पुराने संस्करण से बनाया गया था, इसलिए सटीक डेटा उपलब्ध नहीं हो "
-"सकता।"
+"यह भुगतान pretix के पुराने संस्करण से बनाया गया था, इसलिए सटीक डेटा उपलब्ध नहीं हो सकता"
+"।"
 
 #: eventyay/control/templates/pretixcontrol/order/index.html:666
 msgid "MIGRATED"
@@ -26100,8 +26189,8 @@ msgid ""
 "people on the waiting list by using this option."
 msgstr ""
 "आपकी वेटिंग लिस्ट अपने आप नहीं हटेगी, लेकिन उत्पाद निष्क्रिय होने के कारण इसमें कोई नए "
-"टिकट नहीं आएंगे। आप इस विकल्प का उपयोग करके वेटिंग लिस्ट में लोगों को सूचित करना चुन सकते "
-"हैं।"
+"टिकट नहीं आएंगे। आप इस विकल्प का उपयोग करके वेटिंग लिस्ट में लोगों को सूचित करना चुन सकते हैं"
+"।"
 
 #: eventyay/control/templates/pretixcontrol/orders/cancel.html:71
 msgid ""
@@ -26626,8 +26715,8 @@ msgid ""
 "To confirm you really want this, please type out the organizer's short name "
 "(\"%(slug)s\") here:"
 msgstr ""
-"यह पुष्टि करने के लिए कि आप सच में ऐसा चाहते हैं, कृपया यहाँ आयोजक का संक्षिप्त नाम "
-"(\"%(slug)s\") टाइप करें:"
+"यह पुष्टि करने के लिए कि आप सच में ऐसा चाहते हैं, कृपया यहाँ आयोजक का संक्षिप्त नाम (\"%"
+"(slug)s\") टाइप करें:"
 
 #: eventyay/control/templates/pretixcontrol/organizers/delete.html:40
 #, fuzzy
@@ -27197,8 +27286,8 @@ msgid ""
 "it to copy and share ticket designs, not to modify the design source code."
 msgstr ""
 "यह सुविधा केवल उन्नत उपयोगकर्ताओं के लिए है। हम सुझाव देते हैं कि इसका उपयोग केवल टिकट "
-"डिज़ाइन कॉपी करने और साझा करने के लिए करें, डिज़ाइन के सोर्स कोड में बदलाव करने के लिए "
-"नहीं।"
+"डिज़ाइन कॉपी करने और साझा करने के लिए करें, डिज़ाइन के सोर्स कोड में बदलाव करने के लिए नहीं"
+"।"
 
 #: eventyay/control/templates/pretixcontrol/pdf/index.html:78
 #: eventyay/eventyay_common/templates/eventyay_common/organizers/dashboard.html:333
@@ -27328,7 +27417,8 @@ msgstr "आकार (mm)"
 msgid ""
 "The final QR code will be slightly smaller because some whitespace is "
 "required for proper scanning."
-msgstr "अंतिम QR कोड थोड़ा छोटा होगा क्योंकि सही स्कैनिंग के लिए कुछ खाली जगह जरूरी है।"
+msgstr ""
+"अंतिम QR कोड थोड़ा छोटा होगा क्योंकि सही स्कैनिंग के लिए कुछ खाली जगह जरूरी है।"
 
 #: eventyay/control/templates/pretixcontrol/pdf/index.html:273
 msgid "Font size (pt)"
@@ -27539,9 +27629,9 @@ msgid ""
 "to store it offline. Some kinds of data (such as some payment information) "
 "as well as historical log data cannot be downloaded at the moment."
 msgstr ""
-"अधिकांश डेटा श्रेणियों के लिए, आप डेटा को आंशिक रूप से डाउनलोड करके ऑफ़लाइन संग्रहित कर "
-"सकेंगे। कुछ प्रकार का डेटा (जैसे कुछ भुगतान जानकारी) और ऐतिहासिक लॉग डेटा फिलहाल "
-"डाउनलोड नहीं किया जा सकता।"
+"अधिकांश डेटा श्रेणियों के लिए, आप डेटा को आंशिक रूप से डाउनलोड करके ऑफ़लाइन संग्रहित कर सकेंगे"
+"। कुछ प्रकार का डेटा (जैसे कुछ भुगतान जानकारी) और ऐतिहासिक लॉग डेटा फिलहाल डाउनलोड "
+"नहीं किया जा सकता।"
 
 #: eventyay/control/templates/pretixcontrol/shredder/index.html:46
 msgid "Data selection"
@@ -27810,8 +27900,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"हम बस यह सुनिश्चित करना चाहते हैं कि यह वास्तव में आप ही हैं। कृपया "
-"'%(login_provider)s' से फिर से प्रमाणीकरण करें।"
+"हम बस यह सुनिश्चित करना चाहते हैं कि यह वास्तव में आप ही हैं। कृपया '%(login_provider)"
+"s' से फिर से प्रमाणीकरण करें।"
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -27985,8 +28075,8 @@ msgid ""
 "The waiting list is disabled, so if the event is sold out, people cannot add "
 "themselves to this list. If you want to enable it, go to the event settings."
 msgstr ""
-"वेटिंग लिस्ट अक्षम है, इसलिए यदि इवेंट बिक जाता है, तो लोग खुद को इस सूची में नहीं जोड़ "
-"सकते। इसे सक्षम करना हो तो इवेंट सेटिंग्स में जाएं।"
+"वेटिंग लिस्ट अक्षम है, इसलिए यदि इवेंट बिक जाता है, तो लोग खुद को इस सूची में नहीं जोड़ सकते"
+"। इसे सक्षम करना हो तो इवेंट सेटिंग्स में जाएं।"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:28
 msgid "Send vouchers"
@@ -28527,11 +28617,11 @@ msgid ""
 msgstr ""
 "हम आपके बदलाव सहेज नहीं सके। विवरण के लिए नीचे देखें।\n"
 "\n"
-"                ऑर्डर स्वीकार करना शुरू करने के लिए, कृपया एक भुगतान विकल्प सक्रिय "
-"करें।\n"
+"                ऑर्डर स्वीकार करना शुरू करने के लिए, कृपया एक भुगतान विकल्प सक्रिय करें"
+"।\n"
 "                ->\"Plugins\" खोलें और एक या अधिक भुगतान प्लगइन्स चालू करें।\n"
-"                ->फिर चुने गए तरीकों को कॉन्फ़िगर करने के लिए \"Payments\" टैब पर "
-"जाएँ।\n"
+"                ->फिर चुने गए तरीकों को कॉन्फ़िगर करने के लिए \"Payments\" टैब पर जाएँ"
+"।\n"
 "                भुगतान स्वीकार करना शुरू करने के लिए अपने बदलाव सहेजें।"
 
 #: eventyay/control/views/event.py:1802
@@ -28898,7 +28988,8 @@ msgstr "रिफंड को पूर्ण के रूप में चि
 
 #: eventyay/control/views/orders.py:1041
 msgid "The request has been removed. If you want, you can now inform the user."
-msgstr "अनुरोध हटा दिया गया है। यदि आप चाहें, तो अब आप उपयोगकर्ता को सूचित कर सकते हैं।"
+msgstr ""
+"अनुरोध हटा दिया गया है। यदि आप चाहें, तो अब आप उपयोगकर्ता को सूचित कर सकते हैं।"
 
 #: eventyay/control/views/orders.py:1056
 msgid "Your cancellation request"
@@ -28924,7 +29015,8 @@ msgstr ""
 msgid ""
 "The payment has been marked as complete, but we were unable to send a "
 "confirmation mail."
-msgstr "भुगतान को पूर्ण के रूप में चिह्नित कर दिया गया है, लेकिन हम पुष्टि ईमेल भेज नहीं सके।"
+msgstr ""
+"भुगतान को पूर्ण के रूप में चिह्नित कर दिया गया है, लेकिन हम पुष्टि ईमेल भेज नहीं सके।"
 
 #: eventyay/control/views/orders.py:1122
 msgid "The payment has been marked as complete."
@@ -29007,7 +29099,8 @@ msgstr "आपके द्वारा चुने गए रिफंड च�
 msgid ""
 "The order has been marked as paid, but we were unable to send a confirmation "
 "mail."
-msgstr "ऑर्डर को भुगतान के रूप में चिह्नित कर दिया गया है, लेकिन हम पुष्टि ईमेल भेज नहीं सके।"
+msgstr ""
+"ऑर्डर को भुगतान के रूप में चिह्नित कर दिया गया है, लेकिन हम पुष्टि ईमेल भेज नहीं सके।"
 
 #: eventyay/control/views/orders.py:1599
 msgid "The payment has been created successfully."
@@ -29031,7 +29124,8 @@ msgstr "कोई देश निर्दिष्ट नहीं है।"
 
 #: eventyay/control/views/orders.py:1721
 msgid "VAT ID could not be checked since a non-EU country has been specified."
-msgstr "क्योंकि गैर-EU देश निर्दिष्ट किया गया है, VAT ID की जांच नहीं की जा सकी।"
+msgstr ""
+"क्योंकि गैर-EU देश निर्दिष्ट किया गया है, VAT ID की जांच नहीं की जा सकी।"
 
 #: eventyay/control/views/orders.py:1737
 msgid "This VAT ID is not valid."
@@ -29104,7 +29198,8 @@ msgstr "भुगतान की अवधि बदल दी गई है।
 msgid ""
 "We were not able to process the request completely as the server was too "
 "busy."
-msgstr "सर्वर बहुत व्यस्त होने के कारण हम अनुरोध को पूरी तरह संसाधित नहीं कर पाए।"
+msgstr ""
+"सर्वर बहुत व्यस्त होने के कारण हम अनुरोध को पूरी तरह संसाधित नहीं कर पाए।"
 
 #: eventyay/control/views/orders.py:1947
 msgid "This action is only allowed for pending orders."
@@ -29163,7 +29258,8 @@ msgstr "निम्न उपयोगकर्ता को मेल भे�
 msgid ""
 "This link is no longer valid. Please go back, refresh the page, and try "
 "again."
-msgstr "यह लिंक अब मान्य नहीं है। कृपया वापस जाएँ, पेज रिफ्रेश करें, और फिर से कोशिश करें।"
+msgstr ""
+"यह लिंक अब मान्य नहीं है। कृपया वापस जाएँ, पेज रिफ्रेश करें, और फिर से कोशिश करें।"
 
 #: eventyay/control/views/orders.py:2721
 msgid "There is no order with the given order code."
@@ -29177,7 +29273,8 @@ msgstr "चयनित एक्सपोर्टर नहीं मिला
 #: eventyay/control/views/orders.py:2818
 #: eventyay/control/views/organizer.py:133
 msgid "There was a problem processing your input. See below for error details."
-msgstr "आपके इनपुट को प्रोसेस करने में समस्या हुई। त्रुटि विवरण के लिए नीचे देखें।"
+msgstr ""
+"आपके इनपुट को प्रोसेस करने में समस्या हुई। त्रुटि विवरण के लिए नीचे देखें।"
 
 #: eventyay/control/views/orders.py:2906
 msgid "All orders have been canceled."
@@ -29484,13 +29581,15 @@ msgstr "चयनित कोटा हटा दिया गया है।"
 msgid ""
 "You cannot add add-ons to a product that is only available as an add-on "
 "itself."
-msgstr "आप ऐसे उत्पाद में ऐड-ऑन नहीं जोड़ सकते जो खुद केवल ऐड-ऑन के रूप में उपलब्ध है।"
+msgstr ""
+"आप ऐसे उत्पाद में ऐड-ऑन नहीं जोड़ सकते जो खुद केवल ऐड-ऑन के रूप में उपलब्ध है।"
 
 #: eventyay/control/views/product.py:1457
 msgid ""
 "You cannot add bundles to a product that is only available as an add-on "
 "itself."
-msgstr "आप ऐसे उत्पाद में बंडल नहीं जोड़ सकते जो खुद केवल ऐड-ऑन के रूप में उपलब्ध है।"
+msgstr ""
+"आप ऐसे उत्पाद में बंडल नहीं जोड़ सकते जो खुद केवल ऐड-ऑन के रूप में उपलब्ध है।"
 
 #: eventyay/control/views/product.py:1571
 msgid ""
@@ -29877,8 +29976,8 @@ msgid ""
 "session types, and email templates. Please check those settings once the "
 "event has been created!"
 msgstr ""
-"आप यहाँ पिछले इवेंट्स से सेटिंग्स कॉपी कर सकते हैं, जैसे मेल सेटिंग्स, सेशन प्रकार और ईमेल "
-"टेम्पलेट्स। इवेंट बन जाने के बाद कृपया इन सेटिंग्स को एक बार जाँच लें!"
+"आप यहाँ पिछले इवेंट्स से सेटिंग्स कॉपी कर सकते हैं, जैसे मेल सेटिंग्स, सेशन प्रकार और ईमेल टेम्पलेट्स"
+"। इवेंट बन जाने के बाद कृपया इन सेटिंग्स को एक बार जाँच लें!"
 
 #: eventyay/event/stages.py:40
 msgid "Preparation"
@@ -30277,8 +30376,8 @@ msgid ""
 "If this is the only device connected to your account, we will disable two-"
 "factor authentication."
 msgstr ""
-"यदि यह आपके अकाउंट से जुड़ा एकमात्र डिवाइस है, तो हम दो-कारक प्रमाणीकरण को अक्षम कर "
-"देंगे।"
+"यदि यह आपके अकाउंट से जुड़ा एकमात्र डिवाइस है, तो हम दो-कारक प्रमाणीकरण को अक्षम कर देंगे"
+"।"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-disable.html:4
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-disable.html:19
@@ -30293,7 +30392,8 @@ msgstr "क्या आप वाकई दो-कारक प्रमाण�
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-disable.html:26
 msgid "You will no longer require a second device to log in to your account."
-msgstr "आपको अपने अकाउंट में लॉग इन करने के लिए अब दूसरे डिवाइस की आवश्यकता नहीं होगी।"
+msgstr ""
+"आपको अपने अकाउंट में लॉग इन करने के लिए अब दूसरे डिवाइस की आवश्यकता नहीं होगी।"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:4
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:19
@@ -30309,7 +30409,8 @@ msgstr "क्या आप वाकई दो-कारक प्रमाण�
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:26
 msgid ""
 "You will no longer be able to log in without one of your configured devices."
-msgstr "आप अपने कॉन्फ़िगर किए गए डिवाइसों में से किसी एक के बिना लॉग इन नहीं कर पाएँगे।"
+msgstr ""
+"आप अपने कॉन्फ़िगर किए गए डिवाइसों में से किसी एक के बिना लॉग इन नहीं कर पाएँगे।"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:27
 msgid ""
@@ -30365,7 +30466,8 @@ msgstr "दो-कारक प्रमाणीकरण फिलहाल �
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-main-settings.html:59
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-main-settings.html:96
 msgid "To enable it, you need to configure at least one device below."
-msgstr "इसे सक्षम करने के लिए, आपको नीचे कम से कम एक डिवाइस कॉन्फ़िगर करना होगा।"
+msgstr ""
+"इसे सक्षम करने के लिए, आपको नीचे कम से कम एक डिवाइस कॉन्फ़िगर करना होगा।"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-main-settings.html:76
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-main-settings.html:77
@@ -30683,9 +30785,9 @@ msgid ""
 "you can <a %(login_href)s>log in</a> first and then click this link again to "
 "accept the invitation with your existing account."
 msgstr ""
-"यदि इस साइट पर आपके पास किसी दूसरे ईमेल पते के साथ पहले से अकाउंट है, तो आप पहले <a "
-"%(login_href)s>लॉग इन</a> कर सकते हैं और फिर अपने मौजूदा अकाउंट से निमंत्रण स्वीकार "
-"करने के लिए इस लिंक पर फिर से क्लिक करें।"
+"यदि इस साइट पर आपके पास किसी दूसरे ईमेल पते के साथ पहले से अकाउंट है, तो आप पहले <a %"
+"(login_href)s>लॉग इन</a> कर सकते हैं और फिर अपने मौजूदा अकाउंट से निमंत्रण स्वीकार करने "
+"के लिए इस लिंक पर फिर से क्लिक करें।"
 
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:17
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:45
@@ -31589,7 +31691,8 @@ msgstr ""
 #: eventyay/eventyay_common/templates/eventyay_common/events/create.html:137
 msgid ""
 "We strongly recommend against using short forms of more then 16 characters."
-msgstr "हम 16 वर्णों से अधिक के संक्षिप्त रूपों का उपयोग न करने की जोरदार सलाह देते हैं।"
+msgstr ""
+"हम 16 वर्णों से अधिक के संक्षिप्त रूपों का उपयोग न करने की जोरदार सलाह देते हैं।"
 
 #: eventyay/eventyay_common/templates/eventyay_common/events/create.html:207
 msgid ""
@@ -32267,7 +32370,8 @@ msgstr ""
 msgid ""
 "Your account does not have a password yet. Send yourself a password setup "
 "link below."
-msgstr "आपके खाते में अभी तक पासवर्ड नहीं है। नीचे अपने लिए पासवर्ड सेटअप लिंक भेजें।"
+msgstr ""
+"आपके खाते में अभी तक पासवर्ड नहीं है। नीचे अपने लिए पासवर्ड सेटअप लिंक भेजें।"
 
 #: eventyay/eventyay_common/views/account/email.py:28
 msgid "Please select an email address first."
@@ -32282,7 +32386,8 @@ msgstr "चयनित एप्लिकेशन के लिए एक्�
 msgid ""
 "Are you sure you want to generate a new client secret for the application "
 "{code}?"
-msgstr "क्या आप वाकई एप्लिकेशन {code} के लिए नया क्लाइंट सीक्रेट जनरेट करना चाहते हैं?"
+msgstr ""
+"क्या आप वाकई एप्लिकेशन {code} के लिए नया क्लाइंट सीक्रेट जनरेट करना चाहते हैं?"
 
 #: eventyay/eventyay_common/views/account/oauth.py:130
 msgid "A new client secret has been generated and is now effective."
@@ -32301,7 +32406,8 @@ msgstr "कुछ गलत हो गया, आप अभी इस पेज 
 msgid ""
 "Please configure at least one device before enabling two-factor "
 "authentication."
-msgstr "दो-कारक प्रमाणीकरण सक्षम करने से पहले कृपया कम से कम एक डिवाइस कॉन्फ़िगर करें।"
+msgstr ""
+"दो-कारक प्रमाणीकरण सक्षम करने से पहले कृपया कम से कम एक डिवाइस कॉन्फ़िगर करें।"
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:111
 msgid "Two-factor authentication is now enabled for your account."
@@ -32463,8 +32569,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"यह ईमेल पुष्टि लिंक की समय-सीमा समाप्त हो गई है या यह अमान्य है। कृपया "
-"%(email_action_link)s।"
+"यह ईमेल पुष्टि लिंक की समय-सीमा समाप्त हो गई है या यह अमान्य है। कृपया %"
+"(email_action_link)s।"
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -32706,7 +32812,8 @@ msgstr "टीम बना दी गई है। अब आप टीम म�
 msgid ""
 "Something went wrong, your changes could not be saved. Please see below for "
 "details."
-msgstr "कुछ गलत हो गया, आपके बदलाव सहेजे नहीं जा सके। विवरण के लिए कृपया नीचे देखें।"
+msgstr ""
+"कुछ गलत हो गया, आपके बदलाव सहेजे नहीं जा सके। विवरण के लिए कृपया नीचे देखें।"
 
 #: eventyay/eventyay_common/views/organizer.py:429
 #: eventyay/eventyay_common/views/team.py:415
@@ -32793,7 +32900,8 @@ msgstr "टीम प्रबंधन अब एकीकृत आयोज�
 msgid ""
 "Something went wrong, your changes could not be saved. Please see below for "
 "details"
-msgstr "कुछ गलत हो गया, आपके बदलाव सहेजे नहीं जा सके। कृपया विवरण के लिए नीचे देखें"
+msgstr ""
+"कुछ गलत हो गया, आपके बदलाव सहेजे नहीं जा सके। कृपया विवरण के लिए नीचे देखें"
 
 #: eventyay/eventyay_common/views/team.py:490
 #, python-format
@@ -33029,7 +33137,8 @@ msgstr ""
 #: eventyay/mail/context.py:294
 msgid ""
 "A list of all changes to the user’s schedule in the current schedule version."
-msgstr "वर्तमान शेड्यूल संस्करण में उपयोगकर्ता के शेड्यूल में हुए सभी बदलावों की सूची।"
+msgstr ""
+"वर्तमान शेड्यूल संस्करण में उपयोगकर्ता के शेड्यूल में हुए सभी बदलावों की सूची।"
 
 #: eventyay/mail/context.py:304
 #, python-brace-format
@@ -33247,8 +33356,8 @@ msgid ""
 msgstr ""
 "नमस्ते!\n"
 "\n"
-"आपको {event_name} के एक प्रस्ताव में जोड़ा गया है, जिसका शीर्षक “{proposal_title}” "
-"है।\n"
+"आपको {event_name} के एक प्रस्ताव में जोड़ा गया है, जिसका शीर्षक “{proposal_title}” है"
+"।\n"
 "आपके लिए एक खाता बनाया गया है – कृपया अपने खाते का पासवर्ड सेट करने के लिए इस लिंक का "
 "पालन करें।\n"
 "\n"
@@ -33275,8 +33384,8 @@ msgid ""
 msgstr ""
 "नमस्ते!\n"
 "\n"
-"आपको {event_name} के एक प्रस्ताव में जोड़ा गया है, जिसका शीर्षक “{proposal_title}” "
-"है।\n"
+"आपको {event_name} के एक प्रस्ताव में जोड़ा गया है, जिसका शीर्षक “{proposal_title}” है"
+"।\n"
 "अपना उपयोगकर्ता प्रोफ़ाइल संपादित करने और अपने प्रस्ताव की स्थिति देखने के लिए कृपया इस "
 "लिंक का पालन करें:\n"
 "\n"
@@ -33321,7 +33430,8 @@ msgstr ""
 
 #: eventyay/orga/forms/cfp.py:70
 msgid "Allow submitters to share their proposal publicly"
-msgstr "प्रस्ताव सबमिट करने वालों को अपना प्रस्ताव सार्वजनिक रूप से साझा करने दें"
+msgstr ""
+"प्रस्ताव सबमिट करने वालों को अपना प्रस्ताव सार्वजनिक रूप से साझा करने दें"
 
 #: eventyay/orga/forms/cfp.py:71
 msgid "Allow submitters to share a secret link to their proposal with others."
@@ -33352,7 +33462,8 @@ msgstr ""
 #, fuzzy
 #| msgid "Allow submitters to share their proposal publicly"
 msgid "Allow speakers to use Gravatar for their profile picture."
-msgstr "प्रस्ताव सबमिट करने वालों को अपना प्रस्ताव सार्वजनिक रूप से साझा करने दें"
+msgstr ""
+"प्रस्ताव सबमिट करने वालों को अपना प्रस्ताव सार्वजनिक रूप से साझा करने दें"
 
 #: eventyay/orga/forms/cfp.py:197
 #, fuzzy
@@ -33805,7 +33916,8 @@ msgstr "सिर्फ़ पाठ"
 msgid ""
 "This is how the score will look like on the review interface. The dashboard "
 "will always show numerical scores."
-msgstr "रिव्यू इंटरफ़ेस में स्कोर इस तरह दिखेगा। डैशबोर्ड हमेशा संख्यात्मक स्कोर दिखाएगा।"
+msgstr ""
+"रिव्यू इंटरफ़ेस में स्कोर इस तरह दिखेगा। डैशबोर्ड हमेशा संख्यात्मक स्कोर दिखाएगा।"
 
 #: eventyay/orga/forms/event.py:269
 msgid "Score aggregation method"
@@ -33829,8 +33941,8 @@ msgid ""
 "This text will be shown at the top of every review, as long as reviews can "
 "be created or edited."
 msgstr ""
-"यह पाठ हर रिव्यू के शीर्ष पर दिखाया जाएगा, जब तक रिव्यू बनाए या संपादित किए जा सकते "
-"हैं।"
+"यह पाठ हर रिव्यू के शीर्ष पर दिखाया जाएगा, जब तक रिव्यू बनाए या संपादित किए जा सकते हैं"
+"।"
 
 #: eventyay/orga/forms/event.py:296
 #, fuzzy
@@ -34321,13 +34433,15 @@ msgstr "प्रस्ताव"
 msgid ""
 "Select proposals that should receive the email regardless of the other "
 "filters."
-msgstr "अन्य फ़िल्टरों की परवाह किए बिना जिन प्रस्तावों को ईमेल मिलना चाहिए, उन्हें चुनें।"
+msgstr ""
+"अन्य फ़िल्टरों की परवाह किए बिना जिन प्रस्तावों को ईमेल मिलना चाहिए, उन्हें चुनें।"
 
 #: eventyay/orga/forms/mails.py:346
 msgid ""
 "Select speakers that should receive the email regardless of the other "
 "filters."
-msgstr "अन्य फ़िल्टरों की परवाह किए बिना जिन वक्ताओं को ईमेल मिलना चाहिए, उन्हें चुनें।"
+msgstr ""
+"अन्य फ़िल्टरों की परवाह किए बिना जिन वक्ताओं को ईमेल मिलना चाहिए, उन्हें चुनें।"
 
 #: eventyay/orga/forms/mails.py:367
 msgid ""
@@ -34424,7 +34538,8 @@ msgstr "हमने शेड्यूल का नया संस्कर�
 
 #: eventyay/orga/forms/schedule.py:44
 msgid "This schedule version was used already, please choose a different one."
-msgstr "यह शेड्यूल संस्करण पहले ही उपयोग किया जा चुका है, कृपया कोई दूसरा चुनें।"
+msgstr ""
+"यह शेड्यूल संस्करण पहले ही उपयोग किया जा चुका है, कृपया कोई दूसरा चुनें।"
 
 #: eventyay/orga/forms/schedule.py:58 eventyay/orga/forms/speaker.py:20
 #: eventyay/orga/templates/orga/speaker/information_list.html:42
@@ -34607,7 +34722,8 @@ msgstr ""
 
 #: eventyay/orga/templates/orga/base.html:208
 msgid "You’re using eventyay as a superuser. This is not recommended."
-msgstr "आप इवेंटयाय को सुपरयूज़र के रूप में उपयोग कर रहे हैं। यह अनुशंसित नहीं है।"
+msgstr ""
+"आप इवेंटयाय को सुपरयूज़र के रूप में उपयोग कर रहे हैं। यह अनुशंसित नहीं है।"
 
 #: eventyay/orga/templates/orga/base.html:212
 msgid "Please click here to switch to an administrator account."
@@ -34739,7 +34855,8 @@ msgstr "प्रस्ताव की जानकारी"
 msgid ""
 "Select which information should be requested and/or required during CfP "
 "proposal."
-msgstr "चुनें कि CfP प्रस्ताव के दौरान कौन-सी जानकारी मांगी जाए और/या अनिवार्य हो।"
+msgstr ""
+"चुनें कि CfP प्रस्ताव के दौरान कौन-सी जानकारी मांगी जाए और/या अनिवार्य हो।"
 
 #: eventyay/orga/templates/orga/cfp/forms.html:88
 msgid "Click here to view the proposal form."
@@ -35604,9 +35721,8 @@ msgid ""
 "This field has <strong>%(count)s</strong> responses, <strong>%(missing)s</"
 "strong> <a href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"इस फ़ील्ड में <strong>%(count)s</strong> प्रतिक्रियाएँ हैं, जिनमें से "
-"<strong>%(missing)s</strong> <a href=\"%(base_search_url)sunanswered=1\">अभी "
-"भी लंबित हैं</a>।"
+"इस फ़ील्ड में <strong>%(count)s</strong> प्रतिक्रियाएँ हैं, जिनमें से <strong>%(missing)"
+"s</strong> <a href=\"%(base_search_url)sunanswered=1\">अभी भी लंबित हैं</a>।"
 
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:60
 #, python-format
@@ -35629,7 +35745,8 @@ msgstr "लक्ष्य"
 msgid ""
 "A good Call for Participation will engage potential speakers. Remember to "
 "include:"
-msgstr "एक अच्छा भागीदारी आमंत्रण संभावित वक्ताओं को आकर्षित करेगा। कृपया इसमें शामिल करें:"
+msgstr ""
+"एक अच्छा भागीदारी आमंत्रण संभावित वक्ताओं को आकर्षित करेगा। कृपया इसमें शामिल करें:"
 
 #: eventyay/orga/templates/orga/cfp/text.html:25
 msgid "The formats (sessions, workshops, panels) and their durations"
@@ -35832,8 +35949,8 @@ msgid ""
 "in with the other account. </p><p> If you believe to have received this "
 "invitation by mistake, please contact the organizer directly."
 msgstr ""
-"वर्तमान में सक्रिय खाते से निमंत्रण स्वीकार करने के लिए, कृपया नीचे दिया गया बटन इस्तेमाल "
-"करें। यदि आप किसी दूसरे खाते से निमंत्रण स्वीकार करना चाहते हैं, तो आप <a href=\"/orga/"
+"वर्तमान में सक्रिय खाते से निमंत्रण स्वीकार करने के लिए, कृपया नीचे दिया गया बटन इस्तेमाल करें"
+"। यदि आप किसी दूसरे खाते से निमंत्रण स्वीकार करना चाहते हैं, तो आप <a href=\"/orga/"
 "logout/?next=%(link)s\">लॉग आउट</a> कर सकते हैं और दूसरे खाते से लॉग इन कर सकते हैं। </"
 "p><p> यदि आपको लगता है कि यह निमंत्रण आपको गलती से मिला है, तो कृपया सीधे आयोजक से "
 "संपर्क करें।"
@@ -35914,8 +36031,8 @@ msgid ""
 "Send an email to speakers, authors, submitters, based on their proposal "
 "status and other filters."
 msgstr ""
-"प्रस्ताव की स्थिति और अन्य फ़िल्टरों के आधार पर वक्ताओं, लेखकों, सबमिट करने वालों को ईमेल "
-"भेजें।"
+"प्रस्ताव की स्थिति और अन्य फ़िल्टरों के आधार पर वक्ताओं, लेखकों, सबमिट करने वालों को ईमेल भेजें"
+"।"
 
 #: eventyay/orga/templates/orga/mails/compose_choice.html:22
 #: eventyay/orga/templates/orga/mails/compose_reviewer_mail_form.html:6
@@ -35938,7 +36055,8 @@ msgstr ""
 #: eventyay/orga/templates/orga/mails/compose_session_mail_form.html:16
 #, python-format
 msgid "Recipients filtered by responses to the custom field “%(question)s”."
-msgstr "कस्टम फ़ील्ड “%(question)s” के जवाबों के आधार पर फ़िल्टर किए गए प्राप्तकर्ता।"
+msgstr ""
+"कस्टम फ़ील्ड “%(question)s” के जवाबों के आधार पर फ़िल्टर किए गए प्राप्तकर्ता।"
 
 #: eventyay/orga/templates/orga/mails/compose_session_mail_form.html:28
 #, python-format
@@ -36400,13 +36518,11 @@ msgid_plural ""
 "strong> can be generated and placed in the outbox, to tell speakers about "
 "their session slots."
 msgstr[0] ""
-"यह नया शेड्यूल रिलीज़ करते समय, स्पीकर्स को उनके सत्र स्लॉट के बारे में बताने के लिए "
-"<strong>%(count)s सूचना ईमेल </strong> जनरेट किए जा सकते हैं और आउटबॉक्स में रखे जा "
-"सकते हैं।"
+"यह नया शेड्यूल रिलीज़ करते समय, स्पीकर्स को उनके सत्र स्लॉट के बारे में बताने के लिए <strong>"
+"%(count)s सूचना ईमेल </strong> जनरेट किए जा सकते हैं और आउटबॉक्स में रखे जा सकते हैं।"
 msgstr[1] ""
-"यह नया शेड्यूल रिलीज़ करते समय, स्पीकर्स को उनके सत्र स्लॉट के बारे में बताने के लिए "
-"<strong>%(count)s सूचना ईमेल </strong> जनरेट किए जा सकते हैं और आउटबॉक्स में रखे जा "
-"सकते हैं।"
+"यह नया शेड्यूल रिलीज़ करते समय, स्पीकर्स को उनके सत्र स्लॉट के बारे में बताने के लिए <strong>"
+"%(count)s सूचना ईमेल </strong> जनरेट किए जा सकते हैं और आउटबॉक्स में रखे जा सकते हैं।"
 
 #: eventyay/orga/templates/orga/schedule/release.html:51
 msgid "New schedule version"
@@ -36829,15 +36945,16 @@ msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
 msgstr ""
-"विजेट को अपनी वेबसाइट में एम्बेड करने के लिए, निम्न कोड को अपनी वेबसाइट के "
-"<code>&lt;head></code> सेक्शन में कॉपी करें:"
+"विजेट को अपनी वेबसाइट में एम्बेड करने के लिए, निम्न कोड को अपनी वेबसाइट के <code>"
+"&lt;head></code> सेक्शन में कॉपी करें:"
 
 #: eventyay/orga/templates/orga/settings/widget.html:81
 #, python-format
 msgid ""
 "Please look at <a href=\"%(link)s\">our documentation</a> for more "
 "information."
-msgstr "अधिक जानकारी के लिए कृपया <a href=\"%(link)s\">हमारे दस्तावेज़</a> देखें।"
+msgstr ""
+"अधिक जानकारी के लिए कृपया <a href=\"%(link)s\">हमारे दस्तावेज़</a> देखें।"
 
 #: eventyay/orga/templates/orga/settings/widget.html:90
 msgid "Widget preview"
@@ -37023,7 +37140,8 @@ msgstr "लंबित %(count)s बदलाव लागू करें?"
 msgid ""
 "Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr "कृपया पुष्टि करें कि आप वास्तव में इन %(count)s प्रस्तावों की स्थिति बदलना चाहते हैं।"
+msgstr ""
+"कृपया पुष्टि करें कि आप वास्तव में इन %(count)s प्रस्तावों की स्थिति बदलना चाहते हैं।"
 
 #: eventyay/orga/templates/orga/submission/apply_pending.html:33
 #: eventyay/orga/templates/orga/submission/state_change.html:34
@@ -37384,7 +37502,8 @@ msgstr "हटाएँ"
 
 #: eventyay/orga/templates/orga/submission/review.html:28
 msgid "You’re not allowed to review or see reviews for your own proposals."
-msgstr "आपको अपने ही प्रस्तावों की समीक्षा करने या उनकी समीक्षाएँ देखने की अनुमति नहीं है।"
+msgstr ""
+"आपको अपने ही प्रस्तावों की समीक्षा करने या उनकी समीक्षाएँ देखने की अनुमति नहीं है।"
 
 #: eventyay/orga/templates/orga/submission/review.html:44
 msgid "You will be able to see other reviews once you have given yours."
@@ -37418,7 +37537,8 @@ msgstr "परहेज़"
 
 #: eventyay/orga/templates/orga/submission/review.html:237
 msgid "Go to random next unreviewed proposal, mark this one as skipped"
-msgstr "अगले बिना-समीक्षा वाले प्रस्ताव पर रैंडम जाएँ, इसे स्किप के रूप में चिह्नित करें"
+msgstr ""
+"अगले बिना-समीक्षा वाले प्रस्ताव पर रैंडम जाएँ, इसे स्किप के रूप में चिह्नित करें"
 
 #: eventyay/orga/templates/orga/submission/review.html:237
 msgid "Skip for now"
@@ -37474,8 +37594,8 @@ msgid ""
 "API tokens can be used to access the <a %(apiurl)s>eventyay API</a>. To find "
 "out more, please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
-"API टोकन का उपयोग <a %(apiurl)s>eventyay API</a> तक पहुँचने के लिए किया जा सकता "
-"है। अधिक जानने के लिए, कृपया <a %(docurl)s>API दस्तावेज़</a> देखें।"
+"API टोकन का उपयोग <a %(apiurl)s>eventyay API</a> तक पहुँचने के लिए किया जा सकता है"
+"। अधिक जानने के लिए, कृपया <a %(docurl)s>API दस्तावेज़</a> देखें।"
 
 #: eventyay/orga/templates/orga/user.html:69
 msgid "Your API tokens"
@@ -37525,7 +37645,8 @@ msgstr "अतिरिक्त वक्ता"
 #: eventyay/orga/views/cfp.py:563
 msgid ""
 "You cannot change the options and upload an option file at the same time."
-msgstr "आप एक ही समय में विकल्प नहीं बदल सकते और विकल्प फ़ाइल अपलोड नहीं कर सकते।"
+msgstr ""
+"आप एक ही समय में विकल्प नहीं बदल सकते और विकल्प फ़ाइल अपलोड नहीं कर सकते।"
 
 #: eventyay/orga/views/cfp.py:580
 #, fuzzy
@@ -37663,7 +37784,8 @@ msgstr "केवल अंतिम समीक्षा चरण ओपन-�
 
 #: eventyay/orga/views/event.py:214
 msgid "All review phases except for the first one need a start date."
-msgstr "पहले चरण को छोड़कर बाकी सभी समीक्षा चरणों के लिए शुरू होने की तारीख आवश्यक है।"
+msgstr ""
+"पहले चरण को छोड़कर बाकी सभी समीक्षा चरणों के लिए शुरू होने की तारीख आवश्यक है।"
 
 #: eventyay/orga/views/event.py:218
 #, python-brace-format
@@ -37678,7 +37800,8 @@ msgstr ""
 msgid ""
 "There was a problem with your authentication. Please contact the organizer "
 "for further help."
-msgstr "आपके प्रमाणीकरण में समस्या थी। आगे की मदद के लिए कृपया आयोजक से संपर्क करें।"
+msgstr ""
+"आपके प्रमाणीकरण में समस्या थी। आगे की मदद के लिए कृपया आयोजक से संपर्क करें।"
 
 #: eventyay/orga/views/event.py:366
 msgid "You are now part of the team!"
@@ -37820,7 +37943,8 @@ msgstr "ईमेल भेज दिया गया है।"
 #: eventyay/orga/views/mails.py:318
 msgid ""
 "The email has been saved. When you send it, the updated text will be used."
-msgstr "ईमेल सेव कर दिया गया है। जब आप इसे भेजेंगे, तो अपडेट किया गया टेक्स्ट इस्तेमाल होगा।"
+msgstr ""
+"ईमेल सेव कर दिया गया है। जब आप इसे भेजेंगे, तो अपडेट किया गया टेक्स्ट इस्तेमाल होगा।"
 
 #: eventyay/orga/views/mails.py:332
 msgid "The mail has been copied, you can edit it now."
@@ -37969,7 +38093,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
-msgstr "वर्तमान निर्यात नहीं मिला, कृपया इसे फिर से जनरेट करने का प्रयास करें। ({error})"
+msgstr ""
+"वर्तमान निर्यात नहीं मिला, कृपया इसे फिर से जनरेट करने का प्रयास करें। ({error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -37977,7 +38102,8 @@ msgstr "आपको एक नया, अद्वितीय शेड्य�
 
 #: eventyay/orga/views/schedule.py:139
 msgid "Talks must be published or in private test mode to release a schedule."
-msgstr "शेड्यूल जारी करने के लिए वार्ताएँ प्रकाशित या निजी टेस्ट मोड में होनी चाहिए।"
+msgstr ""
+"शेड्यूल जारी करने के लिए वार्ताएँ प्रकाशित या निजी टेस्ट मोड में होनी चाहिए।"
 
 #: eventyay/orga/views/schedule.py:148
 msgid "Nice, your schedule has been released!"
@@ -38060,7 +38186,8 @@ msgstr ""
 msgid ""
 "There may be pending emails for this proposal that are now incorrect or "
 "outdated."
-msgstr "इस प्रस्ताव के लिए कुछ लंबित ईमेल हो सकते हैं जो अब गलत या पुराने हो गए हैं।"
+msgstr ""
+"इस प्रस्ताव के लिए कुछ लंबित ईमेल हो सकते हैं जो अब गलत या पुराने हो गए हैं।"
 
 #: eventyay/orga/views/submission.py:256
 msgid "The speaker has been removed from the proposal."
@@ -38262,7 +38389,8 @@ msgstr ""
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
-msgstr "कृपया एक प्रोफ़ाइल तस्वीर प्रदान करें या हमें Gravatar से आपकी तस्वीर लोड करने दें!"
+msgstr ""
+"कृपया एक प्रोफ़ाइल तस्वीर प्रदान करें या हमें Gravatar से आपकी तस्वीर लोड करने दें!"
 
 #: eventyay/person/forms/profile.py:264
 #, fuzzy
@@ -38381,7 +38509,8 @@ msgstr "बैज"
 #: eventyay/plugins/badges/apps.py:38
 msgid ""
 "This plugin allows you to generate badges or name tags for your attendees."
-msgstr "यह प्लगइन आपको आपके उपस्थित लोगों के लिए बैज या नाम टैग बनाने की अनुमति देता है।"
+msgstr ""
+"यह प्लगइन आपको आपके उपस्थित लोगों के लिए बैज या नाम टैग बनाने की अनुमति देता है।"
 
 #: eventyay/plugins/badges/exporters.py:166
 msgid "One badge per page"
@@ -38775,7 +38904,8 @@ msgstr "बैंक ट्रांसफर"
 
 #: eventyay/plugins/banktransfer/apps.py:17
 msgid "This plugin allows you to receive payments via bank transfer."
-msgstr "यह प्लगइन आपको बैंक ट्रांसफर के जरिए भुगतान प्राप्त करने की सुविधा देता है।"
+msgstr ""
+"यह प्लगइन आपको बैंक ट्रांसफर के जरिए भुगतान प्राप्त करने की सुविधा देता है।"
 
 #: eventyay/plugins/banktransfer/apps.py:31
 msgid ""
@@ -39002,7 +39132,8 @@ msgstr "संदर्भ कोड (महत्वपूर्ण):"
 msgid ""
 "We will assign you a personal reference code to use after you completed the "
 "order."
-msgstr "ऑर्डर पूरा करने के बाद उपयोग के लिए हम आपको एक व्यक्तिगत संदर्भ कोड देंगे।"
+msgstr ""
+"ऑर्डर पूरा करने के बाद उपयोग के लिए हम आपको एक व्यक्तिगत संदर्भ कोड देंगे।"
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/control.html:22
 msgid "Transfer amount"
@@ -39133,7 +39264,8 @@ msgstr "आयात परिणाम"
 msgid ""
 "The result of your import is in progress. Please be patient while we process "
 "the data …"
-msgstr "आपके आयात का परिणाम प्रगति में है। कृपया डेटा प्रोसेस होने तक प्रतीक्षा करें …"
+msgstr ""
+"आपके आयात का परिणाम प्रगति में है। कृपया डेटा प्रोसेस होने तक प्रतीक्षा करें …"
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:18
 msgid "An internal error occurred during processing your data."
@@ -39141,12 +39273,14 @@ msgstr "आपके डेटा को प्रोसेस करते स�
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:19
 msgid "Some transactions might be missing, please try to re-import the file."
-msgstr "कुछ लेनदेन गायब हो सकते हैं, कृपया फ़ाइल को फिर से आयात करने का प्रयास करें।"
+msgstr ""
+"कुछ लेनदेन गायब हो सकते हैं, कृपया फ़ाइल को फिर से आयात करने का प्रयास करें।"
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:23
 msgid ""
 "Your import did not contain any transactions that you did not import before."
-msgstr "आपके आयात में ऐसे कोई लेनदेन नहीं थे जिन्हें आपने पहले आयात नहीं किया हो।"
+msgstr ""
+"आपके आयात में ऐसे कोई लेनदेन नहीं थे जिन्हें आपने पहले आयात नहीं किया हो।"
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:30
 msgid "Orders marked as paid"
@@ -39211,7 +39345,8 @@ msgstr "टेस्ट मोड में, आपके निर्यात 
 msgid ""
 "If you want, you can now also create these exports for multiple events "
 "combined."
-msgstr "अगर आप चाहें, तो अब आप ये निर्यात कई इवेंट्स के लिए एक साथ भी बना सकते हैं।"
+msgstr ""
+"अगर आप चाहें, तो अब आप ये निर्यात कई इवेंट्स के लिए एक साथ भी बना सकते हैं।"
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/refund_export.html:34
 msgid "Go to organizer-level exports"
@@ -39235,8 +39370,8 @@ msgid ""
 "                "
 msgstr ""
 "\n"
-"                    ध्यान दें कि निर्यात बनते ही रिफंड को पूरा चिह्नित कर दिया "
-"जाएगा।\n"
+"                    ध्यान दें कि निर्यात बनते ही रिफंड को पूरा चिह्नित कर दिया जाएगा"
+"।\n"
 "                    सुनिश्चित करें कि आप निर्यात डाउनलोड करें और रिफंड निष्पादित करें।\n"
 "                "
 
@@ -39414,7 +39549,8 @@ msgstr "आपको भुगतान संदर्भ वाला कॉ�
 msgid ""
 "Please perform per-event bank imports as this organizer has events with "
 "multiple currencies."
-msgstr "कृपया प्रति-इवेंट बैंक आयात करें, क्योंकि इस आयोजक के इवेंट्स में कई मुद्राएँ हैं।"
+msgstr ""
+"कृपया प्रति-इवेंट बैंक आयात करें, क्योंकि इस आयोजक के इवेंट्स में कई मुद्राएँ हैं।"
 
 #: eventyay/plugins/banktransfer/views.py:738
 #, python-brace-format
@@ -39433,7 +39569,8 @@ msgstr "कोई मान्य ऑर्डर नहीं मिला।"
 msgid ""
 "Please perform per-event refund exports as this organizer has events with "
 "multiple currencies."
-msgstr "कृपया प्रति-इवेंट रिफंड एक्सपोर्ट करें, क्योंकि इस आयोजक के इवेंट्स में कई मुद्राएँ हैं।"
+msgstr ""
+"कृपया प्रति-इवेंट रिफंड एक्सपोर्ट करें, क्योंकि इस आयोजक के इवेंट्स में कई मुद्राएँ हैं।"
 
 #: eventyay/plugins/checkinlists/apps.py:13
 msgid "Check-in list exporter"
@@ -39441,7 +39578,8 @@ msgstr "चेक-इन सूची एक्सपोर्टर"
 
 #: eventyay/plugins/checkinlists/apps.py:16
 msgid "This plugin allows you to generate check-in lists for your conference."
-msgstr "यह प्लगइन आपको आपके सम्मेलन के लिए चेक-इन सूचियाँ बनाने की अनुमति देता है।"
+msgstr ""
+"यह प्लगइन आपको आपके सम्मेलन के लिए चेक-इन सूचियाँ बनाने की अनुमति देता है।"
 
 #: eventyay/plugins/checkinlists/exporters.py:91
 msgid "Include QR-code secret"
@@ -39491,7 +39629,8 @@ msgstr "चेक-इन सूची (PDF)"
 msgid ""
 "Please do not pick too many questions, as they may not fit within the PDF "
 "page width."
-msgstr "कृपया बहुत अधिक प्रश्न न चुनें, क्योंकि वे PDF पेज की चौड़ाई में फिट नहीं हो सकते।"
+msgstr ""
+"कृपया बहुत अधिक प्रश्न न चुनें, क्योंकि वे PDF पेज की चौड़ाई में फिट नहीं हो सकते।"
 
 #: eventyay/plugins/checkinlists/exporters.py:362
 msgctxt "tablehead"
@@ -39536,7 +39675,8 @@ msgstr "सभी चेक-इन सूचियाँ"
 
 #: eventyay/plugins/manualpayment/apps.py:15
 msgid "This plugin adds a customizable payment method for manual processing."
-msgstr "यह प्लगइन मैन्युअल प्रोसेसिंग के लिए एक अनुकूलन योग्य भुगतान विधि जोड़ता है।"
+msgstr ""
+"यह प्लगइन मैन्युअल प्रोसेसिंग के लिए एक अनुकूलन योग्य भुगतान विधि जोड़ता है।"
 
 #: eventyay/plugins/reports/apps.py:10 eventyay/plugins/reports/apps.py:13
 msgid "Report exporter"
@@ -39672,7 +39812,8 @@ msgstr "केवल इन तिथियों के ग्राहको�
 #: eventyay/plugins/sendmail/forms.py:93
 msgctxt "subevent"
 msgid "Only send to customers of dates starting at or after"
-msgstr "केवल उन तिथियों के ग्राहकों को भेजें जो इस तिथि से या इसके बाद शुरू होती हैं"
+msgstr ""
+"केवल उन तिथियों के ग्राहकों को भेजें जो इस तिथि से या इसके बाद शुरू होती हैं"
 
 #: eventyay/plugins/sendmail/forms.py:98
 msgctxt "subevent"
@@ -39752,7 +39893,8 @@ msgstr "प्राप्तकर्ता ईमेल पतों की �
 msgid ""
 "Any changes to the Reply-To field apply only to this queued email. If left "
 "empty, the event's default Reply-To will be used."
-msgstr "Reply-To फ़ील्ड में किए गए कोई भी बदलाव केवल इस कतारबद्ध ईमेल पर लागू होंगे।"
+msgstr ""
+"Reply-To फ़ील्ड में किए गए कोई भी बदलाव केवल इस कतारबद्ध ईमेल पर लागू होंगे।"
 
 #: eventyay/plugins/sendmail/forms.py:502
 msgid "Any changes to the BCC field will apply only to this queued email."
@@ -39765,7 +39907,8 @@ msgstr ""
 
 #: eventyay/plugins/sendmail/forms.py:573
 msgid "At least one recipient must remain. You cannot remove all recipients."
-msgstr "कम से कम एक प्राप्तकर्ता बना रहना चाहिए। आप सभी प्राप्तकर्ताओं को हटा नहीं सकते।"
+msgstr ""
+"कम से कम एक प्राप्तकर्ता बना रहना चाहिए। आप सभी प्राप्तकर्ताओं को हटा नहीं सकते।"
 
 #: eventyay/plugins/sendmail/forms.py:578
 msgid ""
@@ -39867,7 +40010,8 @@ msgstr "मौजूदा अटैचमेंट"
 msgid ""
 "These attachments will remain unless you remove them manually in file "
 "settings."
-msgstr "ये अटैचमेंट तब तक रहेंगे, जब तक आप उन्हें फ़ाइल सेटिंग्स में मैन्युअल रूप से नहीं हटाते।"
+msgstr ""
+"ये अटैचमेंट तब तक रहेंगे, जब तक आप उन्हें फ़ाइल सेटिंग्स में मैन्युअल रूप से नहीं हटाते।"
 
 #: eventyay/plugins/sendmail/templates/pretixplugins/sendmail/outbox_form.html:164
 #: eventyay/plugins/sendmail/templates/pretixplugins/sendmail/send_form.html:103
@@ -40265,7 +40409,8 @@ msgstr "अंत में शर्तें स्वीकार करन�
 msgid ""
 "On the next page copy the registered application will return the OAuth "
 "access information:"
-msgstr "अगले पेज पर रजिस्टर्ड एप्लिकेशन OAuth एक्सेस जानकारी लौटाएगा, उसे कॉपी करें:"
+msgstr ""
+"अगले पेज पर रजिस्टर्ड एप्लिकेशन OAuth एक्सेस जानकारी लौटाएगा, उसे कॉपी करें:"
 
 #: eventyay/plugins/socialauth/templates/socialauth/social_setup.html:91
 msgid "Client application key"
@@ -40642,7 +40787,8 @@ msgstr ""
 msgid ""
 "For some of the products in your cart, you can choose additional options "
 "before you continue."
-msgstr "आपकी कार्ट में कुछ उत्पादों के लिए, आगे बढ़ने से पहले आप अतिरिक्त विकल्प चुन सकते हैं।"
+msgstr ""
+"आपकी कार्ट में कुछ उत्पादों के लिए, आगे बढ़ने से पहले आप अतिरिक्त विकल्प चुन सकते हैं।"
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_addons.html:14
 msgid "We're now trying to book these add-ons for you!"
@@ -40665,7 +40811,8 @@ msgstr "आप इस श्रेणी से अधिकतम %(max_count)s
 msgid ""
 "You can choose between %(min_count)s and %(max_count)s options from this "
 "category."
-msgstr "आप इस श्रेणी से %(min_count)s और %(max_count)s के बीच विकल्प चुन सकते हैं।"
+msgstr ""
+"आप इस श्रेणी से %(min_count)s और %(max_count)s के बीच विकल्प चुन सकते हैं।"
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_addons.html:93
 #: eventyay/presale/templates/pretixpresale/event/checkout_addons.html:264
@@ -40790,7 +40937,8 @@ msgstr "कार्ट की अवधि समाप्त हो गई ह
 #: eventyay/presale/templates/pretixpresale/event/checkout_confirm.html:44
 #, python-format
 msgid "The products in your cart are reserved for you for %(minutes)s minutes."
-msgstr "आपकी कार्ट में मौजूद उत्पाद %(minutes)s मिनटों के लिए आपके लिए आरक्षित हैं।"
+msgstr ""
+"आपकी कार्ट में मौजूद उत्पाद %(minutes)s मिनटों के लिए आपके लिए आरक्षित हैं।"
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_base.html:44
 #: eventyay/presale/templates/pretixpresale/event/checkout_confirm.html:48
@@ -40883,7 +41031,8 @@ msgstr "यह बिक्री चैनल टेस्ट मोड के 
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_payment.html:44
 msgid "If you continue, you might pay an actual order with non-existing money!"
-msgstr "यदि आप जारी रखते हैं, तो आप गैर-मौजूद पैसे से वास्तविक ऑर्डर का भुगतान कर सकते हैं!"
+msgstr ""
+"यदि आप जारी रखते हैं, तो आप गैर-मौजूद पैसे से वास्तविक ऑर्डर का भुगतान कर सकते हैं!"
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_payment.html:50
 msgid "This payment provider does not provide support for test mode."
@@ -40900,7 +41049,8 @@ msgstr "कोई भुगतान प्रदाता सक्षम न�
 #: eventyay/presale/templates/pretixpresale/event/checkout_payment.html:65
 msgid ""
 "Please go to the payment settings and activate one or more payment providers."
-msgstr "कृपया भुगतान सेटिंग्स में जाएँ और एक या अधिक भुगतान प्रदाताओं को सक्रिय करें।"
+msgstr ""
+"कृपया भुगतान सेटिंग्स में जाएँ और एक या अधिक भुगतान प्रदाताओं को सक्रिय करें।"
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_questions.html:8
 msgid "Before we continue, we need you to answer some questions."
@@ -41012,8 +41162,8 @@ msgid ""
 "Once the products are in your cart, you will have %(time)s minutes to "
 "complete your purchase."
 msgstr ""
-"उत्पाद आपके कार्ट में होने के बाद, आपकी खरीद पूरी करने के लिए आपके पास %(time)s मिनट "
-"होंगे।"
+"उत्पाद आपके कार्ट में होने के बाद, आपकी खरीद पूरी करने के लिए आपके पास %(time)s मिनट होंगे"
+"।"
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_cart.html:206
 msgid "Add one more"
@@ -41471,7 +41621,8 @@ msgstr "आपका ऑर्डर सफलतापूर्वक प्र
 #: eventyay/presale/templates/pretixpresale/event/order.html:23
 #: eventyay/presale/templates/pretixpresale/event/order.html:77
 msgid "We successfully received your payment. See below for details."
-msgstr "हमें आपका भुगतान सफलतापूर्वक प्राप्त हो गया है। विवरण के लिए नीचे देखें।"
+msgstr ""
+"हमें आपका भुगतान सफलतापूर्वक प्राप्त हो गया है। विवरण के लिए नीचे देखें।"
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:43
 msgid "After approval, your registration will be completed automatically."
@@ -41496,7 +41647,8 @@ msgstr ""
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:71
 msgid "Please note that we still await your payment to complete the process."
-msgstr "कृपया ध्यान दें कि प्रक्रिया पूरी करने के लिए हमें अभी भी आपके भुगतान का इंतज़ार है।"
+msgstr ""
+"कृपया ध्यान दें कि प्रक्रिया पूरी करने के लिए हमें अभी भी आपके भुगतान का इंतज़ार है।"
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:82
 msgid ""
@@ -41704,7 +41856,8 @@ msgstr "इवेंट रद्द या हटाएँ"
 #: eventyay/presale/templates/pretixpresale/event/order.html:478
 msgid ""
 "You can request to cancel this order, but you will not receive a refund."
-msgstr "आप इस ऑर्डर को रद्द करने का अनुरोध कर सकते हैं, लेकिन आपको रिफंड नहीं मिलेगा।"
+msgstr ""
+"आप इस ऑर्डर को रद्द करने का अनुरोध कर सकते हैं, लेकिन आपको रिफंड नहीं मिलेगा।"
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:482
 msgid "You can cancel this order, but you will not receive a refund."
@@ -41752,7 +41905,8 @@ msgstr ""
 #: eventyay/presale/templates/pretixpresale/event/order.html:526
 msgid ""
 "The refund can be issued to your original payment method or as a gift card."
-msgstr "रिफंड आपके मूल भुगतान तरीके से या गिफ्ट कार्ड के रूप में जारी किया जा सकता है।"
+msgstr ""
+"रिफंड आपके मूल भुगतान तरीके से या गिफ्ट कार्ड के रूप में जारी किया जा सकता है।"
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:507
 #: eventyay/presale/templates/pretixpresale/event/order.html:528
@@ -41832,7 +41986,8 @@ msgstr "आपका गिफ्ट कार्ड %(expiry_date)s तक म�
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:103
 msgid "I want the refund as a gift card for later purchases"
-msgstr "मैं बाद की खरीदारी के लिए रिफंड को गिफ्ट कार्ड के रूप में चाहता/चाहती हूं"
+msgstr ""
+"मैं बाद की खरीदारी के लिए रिफंड को गिफ्ट कार्ड के रूप में चाहता/चाहती हूं"
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:109
 msgid "I want the refund to be sent to my original payment method"
@@ -41917,7 +42072,8 @@ msgstr ""
 msgid ""
 "Refunds for canceled tickets will be issued as a gift card for future "
 "purchases."
-msgstr "मैं बाद की खरीदारी के लिए रिफंड को गिफ्ट कार्ड के रूप में चाहता/चाहती हूं"
+msgstr ""
+"मैं बाद की खरीदारी के लिए रिफंड को गिफ्ट कार्ड के रूप में चाहता/चाहती हूं"
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel_positions.html:83
 #, fuzzy
@@ -42446,7 +42602,8 @@ msgstr ""
 #, python-format
 msgid ""
 "To log in and access your events, please <a %(a_attr)s>head over here</a>."
-msgstr "लॉग इन करके अपने इवेंट्स तक पहुंचने के लिए, कृपया <a %(a_attr)s>यहां जाएं</a>।"
+msgstr ""
+"लॉग इन करके अपने इवेंट्स तक पहुंचने के लिए, कृपया <a %(a_attr)s>यहां जाएं</a>।"
 
 #: eventyay/presale/templates/pretixpresale/index.html:30
 msgid "Enjoy!"
@@ -42675,7 +42832,8 @@ msgstr "आपका खाता अक्षम कर दिया गया 
 #, fuzzy
 #| msgid "For security reasons, please wait 5 minutes before you try again."
 msgid "Too many messages sent. Please wait a few minutes before trying again."
-msgstr "सुरक्षा कारणों से, कृपया दोबारा कोशिश करने से पहले 5 मिनट प्रतीक्षा करें।"
+msgstr ""
+"सुरक्षा कारणों से, कृपया दोबारा कोशिश करने से पहले 5 मिनट प्रतीक्षा करें।"
 
 #: eventyay/presale/views/contact.py:98 eventyay/presale/views/contact.py:104
 #, fuzzy
@@ -42824,7 +42982,8 @@ msgstr "इस ऑर्डर के लिए टिकट डाउनलो�
 
 #: eventyay/presale/views/order.py:1309
 msgid "Please click the link we sent you via email to download your tickets."
-msgstr "कृपया अपने टिकट डाउनलोड करने के लिए ईमेल के जरिए भेजे गए लिंक पर क्लिक करें।"
+msgstr ""
+"कृपया अपने टिकट डाउनलोड करने के लिए ईमेल के जरिए भेजे गए लिंक पर क्लिक करें।"
 
 #: eventyay/presale/views/order.py:1472
 msgid "You cannot change this order."
@@ -42898,7 +43057,8 @@ msgstr "इस उत्पाद के लिए वेटिंग लिस�
 msgid ""
 "You cannot add yourself to the waiting list as this product is currently "
 "available."
-msgstr "आप खुद को वेटिंग लिस्ट में नहीं जोड़ सकते क्योंकि यह उत्पाद अभी उपलब्ध है।"
+msgstr ""
+"आप खुद को वेटिंग लिस्ट में नहीं जोड़ सकते क्योंकि यह उत्पाद अभी उपलब्ध है।"
 
 #: eventyay/presale/views/waiting.py:131
 msgid ""
@@ -42975,11 +43135,13 @@ msgstr "कमरा I"
 #: eventyay/schedule/forms.py:199
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
-msgstr "विवरण, उदाहरण के लिए: हमारा मुख्य मिलन स्थल, कमरा I, दाएँ तरफ़ से प्रवेश करें।"
+msgstr ""
+"विवरण, उदाहरण के लिए: हमारा मुख्य मिलन स्थल, कमरा I, दाएँ तरफ़ से प्रवेश करें।"
 
 #: eventyay/schedule/forms.py:202
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
-msgstr "वक्ताओं के लिए जानकारी, उदाहरण के लिए: प्रोजेक्टर में केवल HDMI इनपुट है।"
+msgstr ""
+"वक्ताओं के लिए जानकारी, उदाहरण के लिए: प्रोजेक्टर में केवल HDMI इनपुट है।"
 
 #: eventyay/schedule/phrases.py:9
 msgctxt "Schedule/program of the conference"

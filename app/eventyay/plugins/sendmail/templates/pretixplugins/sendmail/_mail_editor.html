@@ -17,7 +17,7 @@
 {% endblock custom_header %}
 
 {% block content %}
-    <form method="post" enctype="multipart/form-data" class="form-with-placeholder mail-composer">
+    <form method="post" enctype="multipart/form-data" class="form-with-placeholder mail-composer" novalidate>
         {% csrf_token %}
         {% include "common/forms/errors.html" %}
         <div class="composer-intro mb-3">
@@ -86,7 +86,7 @@
                             </button>
                         </div>
                         <div id="mail-message-edit" role="tabpanel">
-                            {{ form.text.as_field_group }}
+                            {% if form.text %}{{ form.text.as_field_group }}{% elif form.message %}{{ form.message.as_field_group }}{% endif %}
                         </div>
                         <div id="mail-message-preview" class="mail-message-preview-panel" role="tabpanel" hidden>
                             <div class="mail-preview-group">
@@ -115,7 +115,7 @@
                             <div class="col-md-9">
                                 <div class="delivery-test-controls">
                                     {{ form.test_email }}
-                                    <button type="submit" class="btn btn-outline-info" name="action" value="test">
+                                    <button type="submit" class="btn btn-outline-info" name="action" value="test" formnovalidate>
                                         {% translate "Send test email" %}
                                     </button>
                                 </div>
@@ -170,6 +170,7 @@
             <input type="search" id="placeholder-search" class="form-control" placeholder="{% translate 'Search placeholders' %}" autocomplete="off">
             <p class="text-muted d-none" id="placeholder-empty">{% translate "No placeholders match your search." %}</p>
 
+            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.user tag="user" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.order tag="order" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.ticket tag="ticket" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.invoice tag="invoice" %}
@@ -223,7 +224,7 @@
                     <span class="text-muted mb-2 mb-md-0">{% block email_editor_actions_summary %}{% endblock email_editor_actions_summary %}</span>
                     <span class="composer-actions">
                         {% block draft_button %}
-                            <button type="submit" class="btn btn-outline-info" name="action" value="draft">
+                            <button type="submit" class="btn btn-outline-info" name="action" value="draft" formnovalidate>
                                 {% translate "Save draft" %}
                             </button>
                         {% endblock draft_button %}

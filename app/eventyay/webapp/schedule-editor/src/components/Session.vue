@@ -173,6 +173,10 @@ const durationPretty = computed<string | undefined>(() => {
 
 function onPointerDown(event: PointerEvent): void {
   if (!event.isPrimary || event.button !== 0) return
+  const el = event.target as HTMLElement
+  if (el && el.releasePointerCapture) {
+    try { el.releasePointerCapture(event.pointerId) } catch (_) {}
+  }
   emit('startDragging', { session: props.session, event })
 }
 </script>
@@ -211,6 +215,9 @@ sessionTextExpand()
 	color: $clr-primary-text-light
 	position: relative
 	cursor: pointer
+	touch-action: none
+	@media (max-width: 767px)
+		min-width: 250px
 	&.clone
 		z-index: 200
 	&.dragging

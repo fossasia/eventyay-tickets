@@ -1,7 +1,12 @@
 {% extends 'eventyay_common/base.html' %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load static %}
 {% block title %}{{ _('Account settings') }}{% endblock %}
+
+{% block custom_header %}
+    <link type="text/css" rel="stylesheet" href="{% static 'vendored/cropperjs/cropper.min.css' %}">
+{% endblock %}
 
 {% block nav_top_header %}
     <a href="{% url 'eventyay_common:account' %}" class='dropdown-toggle'>
@@ -137,4 +142,32 @@
         </div>
     </form>
 {% endif %}
+
+    <!-- Cropper Modal -->
+    <div class="modal fade" id="cropperModal" tabindex="-1" role="dialog" aria-labelledby="cropperModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" style="margin-top: 80px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="cropperModalLabel">{% trans "Crop Image" %}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container"
+                        style="max-height: 500px; overflow: hidden; display: flex; justify-content: center;">
+                        <img id="cropperImage" src="" alt="Picture" style="max-width: 100%;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button type="button" class="btn btn-primary" id="cropperSaveBtn">{% trans "Apply Crop" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'vendored/cropperjs/cropper.min.js' %}"></script>
+    <script src="{% static 'eventyay-common/image_cropper.js' %}"></script>
 {% endblock content %}

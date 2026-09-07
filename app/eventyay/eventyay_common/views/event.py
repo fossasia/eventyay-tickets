@@ -44,6 +44,7 @@ from eventyay.base.gmail.errors import (
     GmailTemporaryError,
 )
 from eventyay.base.meetup import (
+    PRIVACY_PRIVATE,
     get_rsvp_product_and_quota,
     get_video_config_initial,
     is_meetup_event,
@@ -60,7 +61,6 @@ from eventyay.base.settings import (
     is_event_series_creation_enabled,
     is_meetup_creation_enabled,
 )
-from eventyay.eventyay_common.video.permissions import video_attendee_trait
 from eventyay.presale.style import regenerate_css
 from eventyay.common.text.path import resolve_media_path
 from eventyay.base.services.quotas import QuotaAvailability
@@ -79,12 +79,9 @@ from eventyay.eventyay_common.forms.event import EventCommonSettingsForm
 from eventyay.eventyay_common.utils import (
     EventCreatedFor,
     check_create_permission,
-    encode_email,
-    generate_token,
 )
 from eventyay.orga.forms.email import CentralMailSettingsForm
 from eventyay.orga.forms.event import EventFooterLinkFormset, EventHeaderLinkFormset
-from eventyay.eventyay_common.video.permissions import collect_user_video_traits
 from eventyay.helpers.plugin_enable import is_video_enabled
 from eventyay.multidomain.urlreverse import build_absolute_uri
 from ..forms.event import EventCloneForm, EventUpdateForm
@@ -484,7 +481,8 @@ class EventCreateView(TemplateView):
             basics_post = legacy_data.get('basics')
             if not basics_post:
                 return redirect(request.path)
-            basics_form = EventWizardBasicsForm(
+            basics_form_class = MeetupEventWizardBasicsForm if self.is_meetup_request else EventWizardBasicsForm
+            basics_form = basics_form_class(
                 data=basics_post,
                 initial=self.get_basics_initial(foundation_form.cleaned_data),
                 prefix='basics',
@@ -617,6 +615,7 @@ class EventCreateView(TemplateView):
                 except (OverflowError, ValueError, TypeError):
                     crop_box = None
 
+                is_private = basics_data.get('privacy_type') == PRIVACY_PRIVATE
                 provision_meetup_event(
                     event,
                     video_type=basics_data.get('video_type', ''),
@@ -630,6 +629,7 @@ class EventCreateView(TemplateView):
                     payment_stripe_publishable_key=basics_data.get('payment_stripe_publishable_key', ''),
                     payment_stripe_secret_key=basics_data.get('payment_stripe_secret_key', ''),
                     payment_stripe_merchant_country=basics_data.get('payment_stripe_merchant_country', ''),
+                    is_private=is_private,
                 )
 
         return redirect(
@@ -1262,53 +1262,20 @@ class VideoAccessAuthenticator(View):
     def get(self, request, *args, **kwargs):
         """
         Check if the video configuration is complete, the plugin is enabled, and the user has permission to modify the event settings.
-        If configuration is missing, automatically set it up. Then generate a token and redirect to video system.
+        If configuration is missing, automatically set it up. Then redirect directly to the session-authenticated video organizer dashboard.
         @param request: user request
         @param args: arguments
         @param kwargs: keyword arguments
-        @return: redirect to the video system
+        @return: redirect to the video organizer dashboard
         """
-        has_staff_video_access = self._has_staff_video_access()
-        video_traits = self._collect_user_video_traits()
-
         # Auto-setup video configuration if missing
         self._ensure_video_configuration()
 
-        # Generate token and include in url to video system
-        token_traits = self._build_token_traits(has_staff_video_access, video_traits)
+        target = f'/video/event/{self.request.organizer.slug}/{self.request.event.slug}/'
         resume_suffix = self._resume_suffix_from_request(request)
-        return redirect(self.generate_token_url(request, token_traits, resume_suffix=resume_suffix))
-
-    def _has_staff_video_access(self) -> bool:
-        request = self.request
-        return request.user.has_active_staff_session(request.session.session_key)
-
-    def _collect_user_video_traits(self):
-        permission_set = self.request.user.get_event_permission_set(self.request.organizer, self.request.event)
-        return collect_user_video_traits(self.request.event.slug, permission_set)
-
-    def _build_token_traits(self, has_staff_video_access: bool, video_traits):
-        """
-        Build the list of traits to include in the JWT token.
-        - All users get 'attendee' trait for basic access
-        - Users get specific video permission traits based on their team permissions
-        - Only staff users (superuser, is_staff, or active staff session) get 'admin' trait
-        """
-        traits = ['attendee', video_attendee_trait(self.request.event.slug)]
-        traits.extend(video_traits)
-        # Only add 'admin' trait for staff users - this grants full admin access
-        # Regular organizers should NOT get 'admin' trait, only specific video permission traits
-        if has_staff_video_access:
-            organizer_trait = f'eventyay-video-event-{self.request.event.slug}-organizer'
-            traits.extend(['admin', organizer_trait])
-        # Deduplicate while preserving order
-        seen = set()
-        deduped_traits = []
-        for trait in traits:
-            if trait and trait not in seen:
-                seen.add(trait)
-                deduped_traits.append(trait)
-        return deduped_traits
+        if resume_suffix:
+            target = f"{target.rstrip('/')}/{resume_suffix.lstrip('/')}"
+        return redirect(target)
 
     def _resume_suffix_from_request(self, request: HttpRequest) -> str | None:
         path = (request.GET.get('resume_path') or '').strip().strip('/')
@@ -1363,16 +1330,16 @@ class VideoAccessAuthenticator(View):
             from django.utils.crypto import get_random_string
 
             secret = get_random_string(length=64)
-            event.config = {
-                "JWT_secrets": [
-                    {
-                        "issuer": "any",
-                        "audience": "eventyay",
-                        "secret": secret,
-                    }
-                ]
-            }
-            event.save()
+            config = dict(event.config or {})
+            config["JWT_secrets"] = [
+                {
+                    "issuer": "any",
+                    "audience": "eventyay",
+                    "secret": secret,
+                }
+            ]
+            event.config = config
+            event.save(update_fields=["config"])
 
         # Get or use existing JWT secret
         jwt_config = event.config["JWT_secrets"][0]
@@ -1423,29 +1390,6 @@ class VideoAccessAuthenticator(View):
             event.settings.venueless_url = build_video_url()
 
         # Video is integrated; do not toggle event plugins here.
-
-    def generate_token_url(self, request, traits, resume_suffix: str | None = None):
-        uid_token = encode_email(request.user.email)
-        iat = datetime.now(timezone.utc)
-        exp = iat + dt.timedelta(days=1)
-        payload = {
-            'iss': self.request.event.settings.venueless_issuer,
-            'aud': self.request.event.settings.venueless_audience,
-            'exp': exp,
-            'iat': iat,
-            'uid': uid_token,
-            'traits': traits,
-            'is_staff': bool(self.request.user.is_staff),
-            'is_superuser': bool(getattr(self.request.user, 'is_superuser', False)),
-        }
-        token = jwt.encode(payload, self.request.event.settings.venueless_secret, algorithm='HS256')
-        base_url = str(self.request.event.settings.venueless_url).rstrip('/')
-        if resume_suffix:
-            tail = resume_suffix.lstrip('/')
-            target = iri_to_uri(f'{base_url}/{tail}')
-        else:
-            target = f'{base_url}/'
-        return f'{target}#token={token}'.replace('//#', '/#')
 
 
 class EventSearchView(views.APIView):

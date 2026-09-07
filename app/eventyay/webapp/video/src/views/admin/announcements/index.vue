@@ -1,6 +1,7 @@
 <template lang="pug">
 .c-admin-announcements
 	.ui-page-header
+		bunt-icon-button(@click="$router.push({name: 'organizer'})", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		h1 {{ $t('Announcements') }}
 		.actions
 			bunt-link-button#btn-create(:to="{name: 'admin:announcements:item', params: {announcementId: 'new'}}") {{ $t('Create a new announcement') }}

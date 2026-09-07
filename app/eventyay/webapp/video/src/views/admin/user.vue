@@ -2,11 +2,11 @@
 .c-admin-user
 	template(v-if="user")
 		.ui-page-header
-			bunt-icon-button(@click="$router.push({name: 'admin:users'})") arrow_left
+			bunt-icon-button(@click="$router.push({name: 'admin:users'})", :tooltip="$t('Back to Users')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 			h1 {{ $t('User') }} {{ (user.profile && user.profile.display_name) || user.id }}
 			.actions(v-if="user.id !== ownUser.id")
-				bunt-button.btn-dm(v-if="hasPermission('world:chat.direct') && !user.deleted", @click="openDM") {{ $t('message') }}
-				bunt-button.btn-call(v-if="hasPermission('world:chat.direct') && !user.deleted", @click="startCall") {{ $t('call') }}
+				bunt-button.btn-dm(v-if="hasPermission('world:chat.direct') && liveFeatures.direct_messaging && !user.deleted", @click="openDM") {{ $t('message') }}
+				bunt-button.btn-call(v-if="hasPermission('world:chat.direct') && liveFeatures.direct_messaging && !user.deleted", @click="startCall") {{ $t('call') }}
 				bunt-button.btn-delete(v-if="hasPermission('world:users.manage') && !user.deleted", @click="userAction = 'delete'") {{ $t('delete') }}
 				bunt-button.btn-ban(v-if="hasPermission('world:users.manage') && !user.deleted && user.moderation_state !== 'banned'", @click="userAction = 'ban'") {{ $t('ban') }}
 				bunt-button.btn-silence(v-if="hasPermission('world:users.manage') && !user.deleted && !user.moderation_state", @click="userAction = 'silence'") {{ $t('silence') }}
@@ -26,7 +26,6 @@
 			bunt-input(name="order_code", :label="$t('Order code')", :modelValue="user.order_code || '–'", :disabled="true")
 			bunt-input(name="ticket_code", :label="$t('Ticket code (position secret)')", :modelValue="user.ticket_code || '–'", :disabled="true")
 			bunt-input(name="mod_state", :label="$t('Moderation state')", :modelValue="user.moderation_state || '-'", :disabled="true")
-			change-additional-fields(v-model="user.profile.fields", :disabled="!edit")
 	bunt-progress-circular(v-else, size="huge")
 	transition(name="prompt")
 		user-action-prompt(v-if="userAction", :action="userAction", :user="user", :closeDelay="0", @close="completedUserAction")
@@ -46,11 +45,10 @@ import Avatar from 'components/Avatar'
 import Prompt from 'components/Prompt'
 import ChangeAvatar from 'components/profile/ChangeAvatar'
 import UserActionPrompt from 'components/UserActionPrompt'
-import ChangeAdditionalFields from 'components/profile/ChangeAdditionalFields'
 import { required } from 'lib/validators'
 
 export default {
-	components: { Avatar, Prompt, UserActionPrompt, ChangeAdditionalFields, ChangeAvatar },
+	components: { Avatar, Prompt, UserActionPrompt, ChangeAvatar },
 	props: {
 		userId: String
 	},
@@ -79,9 +77,18 @@ export default {
 	},
 	computed: {
 		...mapState({
-			ownUser: 'user'
+			ownUser: 'user',
+			world: 'world'
 		}),
 		...mapGetters(['hasPermission']),
+		liveFeatures() {
+			return Object.assign({
+				chat_rooms: false,
+				kiosks: false,
+				direct_messaging: false,
+				announcements: true
+			}, this.world?.live_features || window.eventyay?.liveFeatures || {})
+		},
 	},
 	async created() {
 		this.user = await api.call('user.fetch', {id: this.userId})

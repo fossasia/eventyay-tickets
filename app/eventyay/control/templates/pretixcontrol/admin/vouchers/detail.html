@@ -1,43 +1,132 @@
 {% extends "pretixcontrol/admin/base.html" %}
 {% load i18n %}
-{% load bootstrap3 %}
-{% block title %}{% trans "Voucher" %}{% endblock %}
+{% load static %}
+
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'pretixcontrol/css/platform-fee-vouchers.css' %}">
+  <script type="module" src="{% static 'pretixcontrol/js/ui/platform-fee-vouchers.js' %}"></script>
+{% endblock %}
+
+{% block title %}{% trans "Voucher details" %}{% endblock %}
+
 {% block content %}
-    <h1>{% trans "Voucher" %}</h1>
-    {% if voucher.redeemed %}
-        <div class="alert alert-warning">
-            {% trans "This voucher already has been used. It is not recommended to modify it." %}
-        </div>
-    {% endif %}
-    <form action="" method="post" class="form-horizontal">
+  <div class="pfv-breadcrumb">
+    <a href="{% url 'eventyay_admin:admin.vouchers' %}">{% trans "Event vouchers" %}</a> &gt; {% trans "Details" %}
+  </div>
+
+  <div class="pfv-header">
+    <h1>
+      {% trans "Voucher" %} {{ voucher.code }}
+      <span style="font-size: 14px; margin-left: 10px; vertical-align: middle;">
+        {% with cs=voucher.computed_status %}
+          {% if cs == 'active' %}
+            <span class="label label-success">{% trans "Active" %}</span>
+          {% elif cs == 'disabled' %}
+            <span class="label label-default">{% trans "Disabled" %}</span>
+          {% elif cs == 'expired' %}
+            <span class="label label-danger">{% trans "Expired" %}</span>
+          {% elif cs == 'used_up' %}
+            <span class="label label-warning">{% trans "Used up" %}</span>
+          {% elif cs == 'draft' %}
+            <span class="label label-info">{% trans "Draft" %}</span>
+          {% endif %}
+        {% endwith %}
+      </span>
+    </h1>
+    <div style="display: flex; gap: 5px;">
+      <a href="{% url 'eventyay_admin:admin.voucher' voucher=voucher.id %}" class="btn btn-primary">
+        <i class="fa fa-edit"></i> {% trans "Edit" %}
+      </a>
+      {% if voucher.computed_status == 'active' %}
+        <a href="{% url 'eventyay_admin:admin.voucher.disable' voucher=voucher.id %}" class="btn btn-warning">
+          <i class="fa fa-ban"></i> {% trans "Disable" %}
+        </a>
+      {% endif %}
+      <form method="post" action="{% url 'eventyay_admin:admin.voucher.duplicate' voucher=voucher.id %}" class="pfv-inline-form">
         {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        <div class="row">
-            <div class="col-xs-12 col-lg-10">
-                <fieldset>
-                    <legend>{% trans "Voucher details" %}</legend>
-                    {% bootstrap_field form.code layout="control" %}
-                    {% bootstrap_field form.max_usages layout="control" %}
-                    {% bootstrap_field form.valid_until layout="control" %}
-                    <div class="form-group">
-                        <label class="col-md-3 control-label" >{% trans "Price effect" %}</label>
-                        <div class="col-md-5">
-                            {% bootstrap_field form.price_mode show_label=False form_group_class="" %}
-                        </div>
-                        <div class="col-md-4">
-                            {% bootstrap_field form.value show_label=False form_group_class="" %}
-                        </div>
-                    </div>
-                    {% bootstrap_field form.budget addon_after=currency layout="control" %}
-                    {% bootstrap_field form.event_effect layout="control" %}
-                    {% bootstrap_field form.organizer_effect layout="control" %}
-                </fieldset>
-            </div>
-        </div>
-        <div class="form-group submit-group">
-            <button type="submit" class="btn btn-primary btn-save">
-                {% trans "Save" %}
+        <button type="submit" class="btn btn-default">
+          <i class="fa fa-copy"></i> {% trans "Duplicate" %}
+        </button>
+      </form>
+      {% if voucher.allow_delete %}
+        <a href="{% url 'eventyay_admin:admin.voucher.delete' voucher=voucher.id %}" class="btn btn-danger">
+          <i class="fa fa-trash"></i> {% trans "Delete" %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">{% trans "Voucher Information" %}</h3>
+    </div>
+    <div class="panel-body form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Code" %}</label>
+        <div class="col-sm-9">
+          <div class="pfv-code" style="margin-top: 7px;">
+            <strong class="pfv-code-text">{{ voucher.code }}</strong>
+            <button class="pfv-code-copy btn btn-xs btn-default" title="{% trans 'Copy' %}" data-code="{{ voucher.code }}">
+              <i class="fa fa-clipboard"></i>
             </button>
+          </div>
         </div>
-    </form>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Effect" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">{{ voucher.get_effect_display }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Scope" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">{{ voucher.get_scope_display }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Redemptions" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">{{ voucher.redeemed }} / {{ voucher.max_usages }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Budget used" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">{{ voucher.get_budget_display }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Valid until" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">
+            {% if voucher.valid_until %}
+              {{ voucher.valid_until|date:"d M Y, H:i" }} UTC
+            {% else %}
+              &mdash;
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Internal note" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">{{ voucher.comment|default:"-"|linebreaksbr }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Created by" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">{{ voucher.created_by|default:"-" }}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{% trans "Last updated" %}</label>
+        <div class="col-sm-9">
+          <p class="form-control-static">{{ voucher.updated_at|date:"d M Y, H:i" }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

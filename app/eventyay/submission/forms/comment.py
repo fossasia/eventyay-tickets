@@ -1,7 +1,7 @@
 from django import forms
 
 from eventyay.common.forms.renderers import InlineFormRenderer
-from eventyay.common.forms.widgets import MarkdownWidget
+from eventyay.common.forms.widgets import RichTextWidget
 from eventyay.base.models import SubmissionComment
 
 
@@ -11,7 +11,7 @@ class SubmissionCommentForm(forms.ModelForm):
     class Meta:
         model = SubmissionComment
         fields = ('text',)
-        widgets = {'text': MarkdownWidget}
+        widgets = {'text': RichTextWidget}
 
     def __init__(self, *args, submission=None, user=None, **kwargs):
         super().__init__(*args, **kwargs)

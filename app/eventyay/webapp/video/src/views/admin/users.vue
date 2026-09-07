@@ -1,8 +1,10 @@
 <template lang="pug">
 .c-admin-users
-	.header
+	.ui-page-header
+		bunt-icon-button(@click="$router.push({name: 'organizer'})", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		h2 {{ $t('Users') }}
-		bunt-input.search(name="search", :placeholder="$t('Search users')", icon="search", v-model="search")
+		.actions
+			bunt-input.search(name="search", :placeholder="$t('Search users')", icon="search", v-model="search")
 	.users-list
 		.header
 			.avatar
@@ -15,71 +17,73 @@
 				span.ticket-info-head-ticket {{ $t('Ticket code') }}
 			.wikimedia {{ $t('Wikimedia') }}
 			.state {{ $t('State') }}
-		RecycleScroller.tbody.bunt-scrollbar(v-if="filteredUsers", :items="filteredUsers", :item-size="56", v-slot="{item: user}", v-scrollbar.y="")
-			.user.table-row(
-				:class="{error: user.error, updating: user.updating}",
-				tabindex="0",
-				role="link",
-				:aria-label="userRowAriaLabel(user)",
-				@click="goToUser(user)",
-				@keydown.enter.self.prevent="goToUser(user)"
-			)
-				avatar.avatar(:user="user", :size="24")
-				.id(:title="user.id") {{ user.id }}
-				.tokenid(:title="user.token_id || ''") {{ user.token_id || '–' }}
-				.name
-					| {{ user.profile.display_name }}
-					.ui-badge(v-for="badge in user.badges") {{ badge }}
-				.email(:title="user.email || ''") {{ user.email || '–' }}
-				.ticket-info(@click.stop="")
-					template(v-if="user.order_code && eventRouting.organizer && eventRouting.event")
-						a.order-link(
-							:href="`/control/event/${encodeURIComponent(eventRouting.organizer)}/${encodeURIComponent(eventRouting.event)}/orders/${encodeURIComponent(user.order_code)}/`",
-							target="_blank",
-							rel="noopener noreferrer",
-							:title="user.order_code",
-							@click.stop
-						) {{ user.order_code }}
-						span.ticket-code(v-if="user.ticket_code", :title="user.ticket_code") {{ user.ticket_code }}
-					span.ticket-code-only(v-else-if="user.ticket_code", :title="user.ticket_code") {{ user.ticket_code }}
-					span.ticket-empty(v-else) –
-				.wikimedia(:title="user.wikimedia_username || ''") {{ user.wikimedia_username || '–' }}
-				.state {{ user.moderation_state || '–' }}
-				.row-actions(v-if="user.id !== ownUser.id", @click.stop="")
-					bunt-button.btn-open-dm(v-if="hasPermission('world:chat.direct')", @click="$store.dispatch('chat/openDirectMessage', {users: [user]})") message
-					bunt-button.btn-ban(
-						v-if="hasPermission('world:users.manage') && user.moderation_state !== 'banned'",
-						:key="`${user.id}-ban`",
-						:loading="user.updating === 'ban'",
-						:error-message="(user.error && user.error.action === 'ban') ? user.error.message : null",
-						tooltipPlacement="left",
-						@click="doAction(user, 'ban', 'banned')")
-						| ban
-					bunt-button.btn-silence(
-						v-if="hasPermission('world:users.manage') && !user.moderation_state",
-						:key="`${user.id}-silence`",
-						:loading="user.updating === 'silence'",
-						:error-message="(user.error && user.error.action === 'silence') ? user.error.message : null",
-						tooltipPlacement="left",
-						@click="doAction(user, 'silence', 'silenced')")
-						| silence
-					bunt-button.btn-reactivate(
-						v-if="hasPermission('world:users.manage') && user.moderation_state",
-						:key="`${user.id}-reactivate`",
-						:loading="user.updating === 'reactivate'",
-						:error-message="(user.error && user.error.action === 'reactivate') ? user.error.message : null",
-						tooltipPlacement="left",
-						@click="doAction(user, 'reactivate', null)")
-						| {{ user.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
+		RecycleScroller.tbody.bunt-scrollbar(v-if="users", :items="users", :item-size="56", v-scrollbar.y="")
+			template(#default="{item: user}")
+				.user.table-row(
+					:class="{error: user.error, updating: user.updating}",
+					tabindex="0",
+					role="link",
+					:aria-label="userRowAriaLabel(user)",
+					@click="goToUser(user)",
+					@keydown.enter.self.prevent="goToUser(user)"
+				)
+					avatar.avatar(:user="user", :size="24")
+					.id(:title="user.id") {{ user.id }}
+					.tokenid(:title="user.token_id || ''") {{ user.token_id || '–' }}
+					.name
+						| {{ user.profile.display_name }}
+						.ui-badge(v-for="badge in user.badges") {{ badge }}
+					.email(:title="user.email || ''") {{ user.email || '–' }}
+					.ticket-info(@click.stop="")
+						template(v-if="user.order_code && eventRouting.organizer && eventRouting.event")
+							a.order-link(
+								:href="`/control/event/${encodeURIComponent(eventRouting.organizer)}/${encodeURIComponent(eventRouting.event)}/orders/${encodeURIComponent(user.order_code)}/`",
+								target="_blank",
+								rel="noopener noreferrer",
+								:title="user.order_code",
+								@click.stop
+							) {{ user.order_code }}
+							span.ticket-code(v-if="user.ticket_code", :title="user.ticket_code") {{ user.ticket_code }}
+						span.ticket-code-only(v-else-if="user.ticket_code", :title="user.ticket_code") {{ user.ticket_code }}
+						span.ticket-empty(v-else) –
+					.wikimedia(:title="user.wikimedia_username || ''") {{ user.wikimedia_username || '–' }}
+					.state {{ user.moderation_state || '–' }}
+					.row-actions(v-if="user.id !== ownUser.id", @click.stop="")
+						bunt-button.btn-open-dm(v-if="hasPermission('world:chat.direct') && liveFeatures.direct_messaging", @click="$store.dispatch('chat/openDirectMessage', {users: [user]})") message
+						bunt-button.btn-ban(
+							v-if="hasPermission('world:users.manage') && user.moderation_state !== 'banned'",
+							:key="`${user.id}-ban`",
+							:loading="user.updating === 'ban'",
+							:error-message="(user.error && user.error.action === 'ban') ? user.error.message : null",
+							tooltipPlacement="left",
+							@click="doAction(user, 'ban', 'banned')")
+							| ban
+						bunt-button.btn-silence(
+							v-if="hasPermission('world:users.manage') && !user.moderation_state",
+							:key="`${user.id}-silence`",
+							:loading="user.updating === 'silence'",
+							:error-message="(user.error && user.error.action === 'silence') ? user.error.message : null",
+							tooltipPlacement="left",
+							@click="doAction(user, 'silence', 'silenced')")
+							| silence
+						bunt-button.btn-reactivate(
+							v-if="hasPermission('world:users.manage') && user.moderation_state",
+							:key="`${user.id}-reactivate`",
+							:loading="user.updating === 'reactivate'",
+							:error-message="(user.error && user.error.action === 'reactivate') ? user.error.message : null",
+							tooltipPlacement="left",
+							@click="doAction(user, 'reactivate', null)")
+							| {{ user.moderation_state === 'banned' ? 'unban' : 'unsilence'}}
+			template(#after)
+				.load-more(v-if="!isLastPage")
+					bunt-button(@click="loadUsers(page + 1)", :loading="loadingMore") {{ $t('Load more') }}
 		bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
-// TODO
-// - search
 import { mapState, mapGetters } from 'vuex'
 import api from 'lib/api'
-import fuzzysearch from 'lib/fuzzysearch'
 import Avatar from 'components/Avatar'
+import debounce from 'lodash/debounce'
 
 export default {
 	name: 'AdminUsers',
@@ -87,39 +91,86 @@ export default {
 	data() {
 		return {
 			users: null,
-			search: ''
+			search: '',
+			page: 1,
+			isLastPage: false,
+			loadingMore: false,
+			debouncedSearch: null,
+			currentSearchRequestId: 0
 		}
 	},
 	computed: {
 		...mapState({
-			ownUser: 'user'
+			ownUser: 'user',
+			world: 'world'
 		}),
 		...mapGetters(['hasPermission', 'eventRouting']),
-		filteredUsers() {
-			if (!this.users) return
-			const q = this.search.trim()
-			if (!q) return this.users
-			const ql = q.toLowerCase()
-			return this.users.filter(
-				user =>
-					user.id.startsWith(q) ||
-					(user.token_id && user.token_id.startsWith(q)) ||
-					fuzzysearch(ql, user.profile?.display_name?.toLowerCase()) ||
-					(user.email && fuzzysearch(ql, user.email.toLowerCase())) ||
-					(user.ticket_code && fuzzysearch(ql, user.ticket_code.toLowerCase()))
-			)
+		liveFeatures() {
+			return Object.assign({
+				chat_rooms: false,
+				kiosks: false,
+				direct_messaging: false,
+				announcements: true
+			}, this.world?.live_features || window.eventyay?.liveFeatures || {})
+		},
+	},
+	watch: {
+		search() {
+			this.debouncedSearch()
 		}
 	},
 	async created() {
-		this.users = (await api.call('user.list')).results.map(user => {
-			return {
-				...user,
-				updating: null,
-				error: null
-			}
-		})
+		this.debouncedSearch = debounce(this.doSearch, 300)
+		await this.loadUsers(1)
+	},
+	beforeUnmount() {
+		if (this.debouncedSearch) {
+			this.debouncedSearch.cancel()
+		}
 	},
 	methods: {
+		async doSearch() {
+			await this.loadUsers(1)
+		},
+		async loadUsers(page) {
+			if (page === 1) {
+				this.users = null
+			} else {
+				this.loadingMore = true
+			}
+			const requestId = ++this.currentSearchRequestId
+			try {
+				const response = await api.call('user.list.search', {
+					search_term: this.search.trim(),
+					page: page,
+					include_banned: true
+				})
+				if (this.currentSearchRequestId !== requestId) return
+				const results = response.results.map(user => ({
+					...user,
+					updating: null,
+					error: null
+				}))
+				if (page === 1) {
+					this.users = results
+				} else if (this.users) {
+					this.users.push(...results)
+				}
+				this.isLastPage = response.isLastPage
+				this.page = page
+			} catch (e) {
+				if (this.currentSearchRequestId === requestId) {
+					console.error(e)
+					if (page === 1 && !this.users) {
+						this.users = []
+					}
+				}
+			} finally {
+				if (this.currentSearchRequestId === requestId) {
+					this.loadingMore = false
+				}
+			}
+		},
 		goToUser(user) {
 			this.$router.push({ name: 'admin:user', params: { userId: user.id } })
 		},
@@ -152,16 +203,13 @@ export default {
 	flex-direction: column
 	min-height: 0
 	background-color: $clr-white
-	.header
-		background-color: $clr-grey-50
-	h2
-		margin: 8px 12px 4px
-		font-size: 20px
-	.search
-		input-style(size: compact)
-		padding: 0
-		margin: 4px 8px 6px
-		flex: none
+	.ui-page-header
+		.search
+			input-style(size: compact)
+			padding: 0
+			margin: 0
+			flex: none
+			background-color: $clr-white
 	.users-list
 		flex-table()
 		font-size: 12px

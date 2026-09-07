@@ -1,44 +1,43 @@
 import json
+from collections import OrderedDict
 from datetime import timedelta
 from io import BytesIO
 
 from django.contrib import messages
-from django.core.files import File
 from django.core.files.storage import default_storage
 from django.db import transaction
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import CreateView, DeleteView, DetailView, FormView, ListView, TemplateView
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, DeleteView, DetailView, FormView, ListView
 from reportlab.lib import pagesizes
 from reportlab.pdfgen import canvas
 
 from eventyay.base.models import CachedFile, OrderPosition, Question, QuestionAnswer
 from eventyay.base.services.tickets import invalidate_cache
-from eventyay.base.views.tasks import AsyncAction
 from eventyay.base.views.cachedfiles import DownloadView
+from eventyay.base.views.tasks import AsyncAction
 from eventyay.control.permissions import EventPermissionRequiredMixin
 from eventyay.control.views.pdf import BaseEditorView, open_stored_pdf_file
 from eventyay.helpers.models import modelcopy
-from eventyay.plugins.badges.forms import BadgeLayoutForm, BadgeLayoutSettingsForm
+from eventyay.plugins.badges.forms import BadgeLayoutForm, BadgeLayoutSettingsForm, BadgeSettingsForm
 from eventyay.plugins.badges.tasks import badges_create_pdf
 from eventyay.plugins.badges.utils import (
     BADGE_TICKET_PROVIDER,
     clear_badge_layout_cache,
     delete_badge_cached_pdfs,
-    position_has_printable_badge,
+    get_event_allowed_badge_placeholders,
 )
 
 from .exporters import BadgeRenderer, _open_layout_background
 from .models import BadgeLayout
-from .providers import BadgeOutputProvider
 
 
 class LayoutGetDefault(EventPermissionRequiredMixin, View):
@@ -153,6 +152,44 @@ class LayoutSettingsView(BadgePluginEnabledMixin, EventPermissionRequiredMixin, 
                 'layout': self.layout.pk,
             },
         )
+
+
+class BadgeSettingsView(BadgePluginEnabledMixin, EventPermissionRequiredMixin, FormView):
+    form_class = BadgeSettingsForm
+    template_name = 'pretixplugins/badges/event_settings.html'
+    permission = 'can_change_event_settings'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def form_valid(self, form):
+        allowed = form.save()
+        _schedule_badge_cache_invalidation(self.request.event)
+        self.request.event.log_action(
+            action='eventyay.plugins.badges.settings.changed',
+            user=self.request.user,
+            data={'badge_allowed_placeholders': allowed},
+        )
+        messages.success(self.request, _('Your badge settings have been saved.'))
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('We could not save your changes. See below for details.'))
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'plugins:badges:event_settings',
+            kwargs={
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+            },
+        )
+
+
+EventBadgeSettingsView = BadgeSettingsView
 
 
 class LayoutCreate(BadgePluginEnabledMixin, EventPermissionRequiredMixin, CreateView):
@@ -293,6 +330,21 @@ class LayoutEditorView(BaseEditorView):
     @property
     def title(self):
         return _('Badge layout: {}').format(self.layout)
+
+    def get_variables(self):
+        all_variables = super().get_variables()
+        allowed_keys = set(get_event_allowed_badge_placeholders(self.request.event))
+        filtered = OrderedDict()
+        for k, v in all_variables.items():
+            canonical = v.get('canonical_key', k)
+            if k in allowed_keys or canonical in allowed_keys:
+                filtered[k] = v
+        return filtered
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['allowed_keys'] = get_event_allowed_badge_placeholders(self.request.event)
+        return ctx
 
     def _get_preview_position(self):
         p = super()._get_preview_position()
@@ -465,5 +517,5 @@ class BadgeCachedDownloadView(DownloadView):
     def get(self, request, *args, **kwargs):
         resp = super().get(request, *args, **kwargs)
         if request.GET.get('inline') in ('1', 'true') and getattr(self.object, 'file', None):
-            resp['Content-Disposition'] = 'inline; filename="{}"'.format(self.object.filename)
+            resp['Content-Disposition'] = f'inline; filename="{self.object.filename}"'
         return resp

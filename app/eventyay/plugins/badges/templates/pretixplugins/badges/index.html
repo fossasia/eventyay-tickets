@@ -24,16 +24,21 @@
                 {% endblocktrans %}
             </p>
 
-            {% if "can_change_event_settings" in request.eventpermset %}
-                <a href="{% url "plugins:badges:add" organizer=request.event.organizer.slug event=request.event.slug %}"
-                        class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new badge layout" %}
+            {% if 'can_change_event_settings' in request.eventpermset %}
+                <a href="{% url 'plugins:badges:add' organizer=request.event.organizer.slug event=request.event.slug %}"
+                        class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans 'Create a new badge layout' %}
+                </a>
+                <a href="{% url 'plugins:badges:event_settings' organizer=request.event.organizer.slug event=request.event.slug %}"
+                        class="btn btn-default btn-lg"><i class="fa fa-cog"></i> {% trans 'Settings' %}
                 </a>
             {% endif %}
         </div>
     {% else %}
         <p class="list-toolbar tickets-toolbar">
-            {% if "can_change_event_settings" in request.eventpermset %}
-                <a href="{% url "plugins:badges:add" organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new badge layout" %}
+            {% if 'can_change_event_settings' in request.eventpermset %}
+                <a href="{% url 'plugins:badges:add' organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans 'Create a new badge layout' %}
+                </a>
+                <a href="{% url 'plugins:badges:event_settings' organizer=request.event.organizer.slug event=request.event.slug %}" class="btn btn-default"><i class="fa fa-cog"></i> {% trans 'Settings' %}
                 </a>
             {% endif %}
             <a href="{% url 'control:event.orders.import_export' organizer=request.event.organizer.slug event=request.event.slug %}?identifier=badges" class="btn btn-primary"><i class="fa fa-print"></i> {% trans "Print badges" %}

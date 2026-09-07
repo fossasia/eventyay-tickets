@@ -1,17 +1,13 @@
 <template lang="pug">
 .c-room-header
-	.ui-page-header(v-if="!modules['page.markdown'] && !modules['page.landing']")
+	.ui-page-header(v-if="!modules['page.markdown'] && !modules['page.landing'] && $route.name !== 'room:manage'")
+		bunt-icon-button.btn-back(@click="onBack", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		.room-info
 			.room-name(v-html="$emojify(room.name)")
 			.room-session(v-if="currentSession") {{ $localize(currentSession.title) }}
 		//- bunt-icon-button(v-if="$features.enabled('schedule-control')", @click="showEditSchedule = true") calendar_edit
 		.actions
 			bunt-icon-button(v-if="modules['call.bigbluebutton'] && hasPermission('room:bbb.recordings')", :tooltip="$t('Recordings')", tooltipPlacement="bottom-end", @click="showRecordingsPrompt = true") file-video-outline
-			.button-group(v-if="['stage', 'channel-bbb', 'channel-janus', 'channel-zoom', 'channel-jitsi'].includes(roomType) && canManage")
-				// TODO buntpapier does not support replace
-				// hardlink params so home page alias works
-				bunt-link-button(:to="{name: 'room:manage', params: {roomId: room.id}}", replace) manage
-				bunt-link-button(:to="{name: 'room', params: {roomId: room.id}}", replace) view
 	router-view(:room="room", :modules="modules")
 	transition(name="prompt")
 		recordings-prompt(v-if="showRecordingsPrompt && room", :room="room", @close="showRecordingsPrompt = false")
@@ -122,6 +118,15 @@ export default {
 				if (this.$route.name === 'about') return
 				this.$router.replace({name: 'about'})
 			}
+		},
+		onBack() {
+			if (window.history.state && window.history.state.back) {
+				this.$router.back()
+			} else if (window.eventyay?.isOrganizerArea) {
+				this.$router.replace({ name: 'organizer' })
+			} else {
+				this.$router.replace({ name: 'about' })
+			}
 		}
 	},
 	beforeUnmount() {
@@ -142,8 +147,12 @@ export default {
 	min-width: 0
 	> .ui-page-header
 		justify-content: space-between
+		.btn-back
+			icon-button-style(style: clear)
+			flex: none
 		.room-info
-			padding: 0 24px
+			padding: 0 12px
+			flex: 1
 			display: flex
 			align-items: baseline
 			min-width: 0
@@ -169,19 +178,8 @@ export default {
 		.actions
 			flex: none
 			display: flex
+			align-items: center
 			gap: 8px
 			.bunt-icon-button
 				icon-button-style(style: clear)
-			.button-group
-				> .bunt-link-button
-					box-sizing: border-box
-					&.router-link-exact-active
-						themed-button-primary()
-					&:not(.router-link-exact-active)
-						themed-button-secondary()
-						border: 2px solid var(--clr-primary)
-					&:first-child
-						border-radius: 4px 0 0 4px
-					&:last-child
-						border-radius: 0 4px 4px 0
 </style>

@@ -14,7 +14,7 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from eventyay.base.models import Review, Submission, SubmissionStates, TalkQuestion, User
 from eventyay.common.forms.mixins import ReadOnlyFlag
 from eventyay.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
-from eventyay.common.forms.widgets import EnhancedSelectMultiple, MarkdownWidget
+from eventyay.common.forms.widgets import EnhancedSelectMultiple, RichTextWidget
 from eventyay.common.text.phrases import phrases
 from eventyay.orga.forms.export import ExportForm
 
@@ -82,7 +82,6 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
                 hide_optional=self.event.review_settings['score_mandatory'],
             )
         self.fields['text'].widget.attrs['rows'] = 2
-        self.fields['text'].help_text += ' ' + phrases.base.use_markdown
 
     def build_score_field(self, category, read_only=False, initial=None, hide_optional=False):
         choices = [(None, _('No score'))] if (not category.required or self.allow_empty) else []
@@ -156,7 +155,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         model = Review
         fields = ('text',)
         widgets = {
-            'text': MarkdownWidget,
+            'text': RichTextWidget,
         }
 
 

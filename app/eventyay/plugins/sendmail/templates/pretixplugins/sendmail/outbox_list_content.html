@@ -8,11 +8,19 @@
     <div class='navigation'>
       <div class='navigation-title'>
         <h1>
-          {% blocktranslate count mail_count=pending_mail_count %}
-            Pending email
-          {% plural %}
-            {{ mail_count }} pending emails
-          {% endblocktranslate %}
+          {% if is_drafts %}
+            {% blocktranslate count mail_count=pending_mail_count %}
+              Draft
+            {% plural %}
+              {{ mail_count }} drafts
+            {% endblocktranslate %}
+          {% else %}
+            {% blocktranslate count mail_count=pending_mail_count %}
+              Pending email
+            {% plural %}
+              {{ mail_count }} pending emails
+            {% endblocktranslate %}
+          {% endif %}
         </h1>
       </div>
       {% include 'pretixcontrol/event/component_link.html' %}

@@ -1,7 +1,8 @@
 <template lang="pug">
 .c-auditlog
 	.ui-page-header
-		h1 {{ $t('Audit Log') }}
+		bunt-icon-button(@click="$router.push({name: 'organizer'})", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
+		h1 {{ $t('Logs') }}
 	bunt-input.search(name="search", :placeholder="$t('Search log')", icon="search", v-model="search")
 	.auditlog-list
 		.header
@@ -18,15 +19,26 @@
 				.type(:title="entry.type") {{ entry.type }}
 				.data {{ entry.data }}
 		bunt-progress-circular(v-else, size="huge", :page="true")
-	transition(name="prompt")
-		prompt.details-prompt(v-if="detailsPrompt != null")
-			.content
-				bunt-icon-button#btn-close(@click="detailsPrompt = null") close
-				p {{ moment(detailsPrompt.timestamp).format('L LT') }}
-				p {{ detailsPrompt.user.profile.display_name }}
-				p {{ detailsPrompt.type }}
-				code
-					pre {{ JSON.stringify(detailsPrompt.data, null, 2) }}
+	teleport(to="body")
+		transition(name="prompt")
+			prompt.details-prompt(v-if="detailsPrompt != null", @close="detailsPrompt = null")
+				.content
+					h2 {{ $t('Log Entry') }}
+					.detail-meta
+						.meta-item
+							span.label {{ $t('Timestamp') }}:
+							span.value {{ moment(detailsPrompt.timestamp).format('L LTS') }}
+						.meta-item(v-if="detailsPrompt.user")
+							span.label {{ $t('User') }}:
+							span.value {{ detailsPrompt.user.profile?.display_name || detailsPrompt.user.id }}
+						.meta-item
+							span.label {{ $t('Action') }}:
+							span.value.type-badge {{ detailsPrompt.type }}
+					.detail-data
+						span.label {{ $t('Data Payload') }}:
+						pre {{ JSON.stringify(detailsPrompt.data, null, 2) }}
+					.actions
+						bunt-button#btn-close-details(@click="detailsPrompt = null") {{ $t('Close') }}
 </template>
 <script>
 import api from 'lib/api'
@@ -49,11 +61,39 @@ export default {
 		filteredEntries() {
 			if (!this.entries) return
 			if (!this.search) return this.entries
-			return this.entries.filter(entry => entry.user.profile.display_name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0 || entry.type.toLowerCase().startsWith(this.search.toLowerCase()) || JSON.stringify(entry.data).toLowerCase().indexOf(this.search.toLowerCase()) >= 0)
+			return this.entries.filter(entry => entry.user?.profile?.display_name?.toLowerCase()?.indexOf(this.search.toLowerCase()) >= 0 || entry.type?.toLowerCase()?.startsWith(this.search.toLowerCase()) || JSON.stringify(entry.data)?.toLowerCase()?.indexOf(this.search.toLowerCase()) >= 0)
 		}
 	},
-	async created() {
-		this.entries = (await api.call('world.auditlog.list')).results
+	created() {
+		this.ensureConnectedAndFetch()
+	},
+	beforeUnmount() {
+		if (this._unwatchConnected) this._unwatchConnected()
+	},
+	methods: {
+		ensureConnectedAndFetch() {
+			if (this.$store.state.connected) {
+				this.fetchEntries()
+			} else {
+				this._unwatchConnected = this.$store.watch(
+					state => state.connected,
+					connected => {
+						if (connected) {
+							this.fetchEntries()
+							if (this._unwatchConnected) this._unwatchConnected()
+						}
+					}
+				)
+			}
+		},
+		async fetchEntries() {
+			try {
+				const res = await api.call('world.auditlog.list')
+				this.entries = res?.results || []
+			} catch (e) {
+				console.error('Failed to fetch audit log entries', e)
+			}
+		}
 	}
 }
 </script>
@@ -102,15 +142,100 @@ export default {
 			ellipsis()
 		.data
 			flex: auto
-	.details-prompt
-		.content
+
+.details-prompt
+	.prompt-wrapper
+		width: 640px !important
+		max-width: min(640px, 94vw) !important
+		max-height: calc(100vh - 48px) !important
+		display: flex
+		flex-direction: column
+		border-radius: 8px
+		overflow: hidden
+
+	.content
+		display: flex
+		flex-direction: column
+		padding: 24px 28px !important
+		gap: 16px
+		overflow-y: auto
+		min-height: 0
+		flex: 1 1 auto
+		box-sizing: border-box
+
+		h2
+			margin: 0
+			font-size: 18px
+			font-weight: 600
+			color: #1e293b
+
+		.detail-meta
 			display: flex
 			flex-direction: column
-			padding: 32px
-			position: relative
-		p
-			margin: 4px
-		pre
-			width: 100%
-			overflow-x: auto
+			gap: 8px
+			background-color: #f8fafc
+			padding: 14px 16px
+			border-radius: 6px
+			border: 1px solid #e2e8f0
+			flex-shrink: 0
+
+			.meta-item
+				display: flex
+				align-items: center
+				gap: 10px
+				font-size: 13.5px
+
+				.label
+					font-weight: 600
+					color: #64748b
+					min-width: 90px
+
+				.value
+					color: #1e293b
+					word-break: break-all
+
+				.type-badge
+					background-color: #e0f2fe
+					color: #0369a1
+					padding: 2px 8px
+					border-radius: 4px
+					font-family: monospace
+					font-size: 12px
+					font-weight: 600
+
+		.detail-data
+			display: flex
+			flex-direction: column
+			gap: 8px
+			min-height: 0
+			flex: 1 1 auto
+
+			.label
+				font-weight: 600
+				font-size: 13.5px
+				color: #64748b
+
+			pre
+				margin: 0
+				padding: 14px
+				background-color: #0f172a
+				color: #e2e8f0
+				border-radius: 6px
+				font-size: 12.5px
+				line-height: 1.5
+				max-height: 300px
+				overflow-y: auto
+				overflow-x: auto
+				box-sizing: border-box
+				word-break: normal
+				white-space: pre
+
+		.actions
+			display: flex
+			justify-content: flex-end
+			margin-top: 8px
+			flex-shrink: 0
+
+			#btn-close-details
+				min-width: 90px
 </style>

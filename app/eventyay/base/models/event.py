@@ -877,21 +877,18 @@ class Event(
     def social_image(self):
         from eventyay.multidomain.urlreverse import build_absolute_uri
 
-        def get_image_value(setting_name: str) -> str:
-            value = self.settings.get(setting_name, as_type=str, default='') or ''
-            if value.startswith('file://'):
-                return value[7:]
-            return value
-
         img = None
-        og_file = get_image_value('og_image')
+        og_file = self.settings.get('og_image', as_type=str, default=None)
         if og_file:
             if is_http_url(og_file):
                 return og_file
-            try:
-                img = get_thumbnail(og_file, '1200').thumb.url
-            except (OSError, SuspiciousFileOperation, ThumbnailError) as exc:
-                logger.warning('Failed to load og_image thumbnail for %s: %s', og_file, exc)
+            
+            og_path = _resolve_media_path(og_file)
+            if og_path:
+                try:
+                    img = get_thumbnail(og_path, '1200').thumb.url
+                except (OSError, SuspiciousFileOperation, ThumbnailError) as exc:
+                    logger.warning('Failed to load og_image thumbnail for %s: %s', og_path, exc)
 
         if not img:
             if self.visible_logo_url:
@@ -1625,20 +1622,30 @@ class Event(
         for role, required_traits in event_trait_grants.items():
             if role == 'attendee':
                 continue
-            if traits_match_required(traits, required_traits) and (required_traits or allow_empty_traits):
-                role_permissions = self._permissions_for_role(role, event_roles)
-                role_permissions_str = [normalize_permission_value(rp) for rp in role_permissions]
-                if any(normalize_permission_value(p) in role_permissions_str for p in permissions):
-                    return True
+            if role in ORGANIZER_ROLES:
+                if not required_traits or not traits_match_required(traits, required_traits):
+                    continue
+            else:
+                if not (traits_match_required(traits, required_traits) and (required_traits or allow_empty_traits)):
+                    continue
+            role_permissions = self._permissions_for_role(role, event_roles)
+            role_permissions_str = [normalize_permission_value(rp) for rp in role_permissions]
+            if any(normalize_permission_value(p) in role_permissions_str for p in permissions):
+                return True
 
         if room:
             room_trait_grants = room.trait_grants if room.trait_grants is not None else {}
             for role, required_traits in room_trait_grants.items():
-                if traits_match_required(traits, required_traits) and (required_traits or allow_empty_traits):
-                    role_permissions = self._permissions_for_role(role, event_roles)
-                    role_permissions_str = [normalize_permission_value(rp) for rp in role_permissions]
-                    if any(normalize_permission_value(p) in role_permissions_str for p in permissions):
-                        return True
+                if role in ORGANIZER_ROLES:
+                    if not required_traits or not traits_match_required(traits, required_traits):
+                        continue
+                else:
+                    if not (traits_match_required(traits, required_traits) and (required_traits or allow_empty_traits)):
+                        continue
+                role_permissions = self._permissions_for_role(role, event_roles)
+                role_permissions_str = [normalize_permission_value(rp) for rp in role_permissions]
+                if any(normalize_permission_value(p) in role_permissions_str for p in permissions):
+                    return True
 
         # Return False if no permission was granted
         return False
@@ -1775,8 +1782,13 @@ class Event(
         user_traits = user.traits or []
 
         for role, required_traits in event_trait_grants.items():
-            if traits_match_required(user_traits, required_traits) and (required_traits or allow_empty_traits):
-                result[self].update(self._permissions_for_role(role, event_roles))
+            if role in ORGANIZER_ROLES:
+                if not required_traits or not traits_match_required(user_traits, required_traits):
+                    continue
+            else:
+                if not (traits_match_required(user_traits, required_traits) and (required_traits or allow_empty_traits)):
+                    continue
+            result[self].update(self._permissions_for_role(role, event_roles))
 
         # Admin mode in the ticket/talk system is represented by the ``admin`` trait on the video side.
         # When admin mode is ON, the user has the ``admin`` trait and should retain full access.
@@ -1794,8 +1806,13 @@ class Event(
         for room in self.rooms.all():
             room_trait_grants = room.trait_grants if room.trait_grants is not None else {}
             for role, required_traits in room_trait_grants.items():
-                if traits_match_required(user_traits, required_traits) and (required_traits or allow_empty_traits):
-                    result[room].update(self._permissions_for_role(role, event_roles))
+                if role in ORGANIZER_ROLES:
+                    if not required_traits or not traits_match_required(user_traits, required_traits):
+                        continue
+                else:
+                    if not (traits_match_required(user_traits, required_traits) and (required_traits or allow_empty_traits)):
+                        continue
+                result[room].update(self._permissions_for_role(role, event_roles))
 
         for grant in user.room_grants.select_related('room'):
             result[grant.room].update(self._permissions_for_role(grant.role, event_roles))

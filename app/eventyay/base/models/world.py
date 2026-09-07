@@ -14,6 +14,7 @@ from eventyay.base.models.auth import User
 from eventyay.base.models.cache import VersionedModel
 from eventyay.core.permissions import (
     MAX_PERMISSIONS_IF_SILENCED,
+    ORGANIZER_ROLES,
     SYSTEM_ROLES,
     Permission,
     default_grants,
@@ -114,29 +115,33 @@ class World(VersionedModel):
         allow_empty_traits=True,
     ):
         for role, required_traits in self.trait_grants.items():
-            if (
-                traits_match_required(traits, required_traits)
-                and (required_traits or allow_empty_traits)
+            if role in ORGANIZER_ROLES:
+                if not required_traits or not traits_match_required(traits, required_traits):
+                    continue
+            else:
+                if not (traits_match_required(traits, required_traits) and (required_traits or allow_empty_traits)):
+                    continue
+            role_perms = self.roles.get(role, SYSTEM_ROLES.get(role, []))
+            if any(
+                normalize_permission_value(p) in role_perms
+                for p in permissions
             ):
+                return True
+
+        if room:
+            for role, required_traits in room.trait_grants.items():
+                if role in ORGANIZER_ROLES:
+                    if not required_traits or not traits_match_required(traits, required_traits):
+                        continue
+                else:
+                    if not (traits_match_required(traits, required_traits) and (required_traits or allow_empty_traits)):
+                        continue
                 role_perms = self.roles.get(role, SYSTEM_ROLES.get(role, []))
                 if any(
                     normalize_permission_value(p) in role_perms
                     for p in permissions
                 ):
                     return True
-
-        if room:
-            for role, required_traits in room.trait_grants.items():
-                if (
-                    traits_match_required(traits, required_traits)
-                    and (required_traits or allow_empty_traits)
-                ):
-                    role_perms = self.roles.get(role, SYSTEM_ROLES.get(role, []))
-                    if any(
-                        normalize_permission_value(p) in role_perms
-                        for p in permissions
-                    ):
-                        return True
 
     def has_permission(self, *, user, permission: Permission, room=None):
         """
@@ -210,11 +215,13 @@ class World(VersionedModel):
         user_traits = user.traits or []
 
         for role, required_traits in self.trait_grants.items():
-            if (
-                traits_match_required(user_traits, required_traits)
-                and (required_traits or allow_empty_traits)
-            ):
-                result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
+            if role in ORGANIZER_ROLES:
+                if not required_traits or not traits_match_required(user_traits, required_traits):
+                    continue
+            else:
+                if not (traits_match_required(user_traits, required_traits) and (required_traits or allow_empty_traits)):
+                    continue
+            result[self].update(self.roles.get(role, SYSTEM_ROLES.get(role, [])))
 
         for grant in user.world_grants.all():
             result[self].update(
@@ -223,13 +230,15 @@ class World(VersionedModel):
 
         for room in self.rooms.all():
             for role, required_traits in room.trait_grants.items():
-                if (
-                    traits_match_required(user_traits, required_traits)
-                    and (required_traits or allow_empty_traits)
-                ):
-                    result[room].update(
-                        self.roles.get(role, SYSTEM_ROLES.get(role, []))
-                    )
+                if role in ORGANIZER_ROLES:
+                    if not required_traits or not traits_match_required(user_traits, required_traits):
+                        continue
+                else:
+                    if not (traits_match_required(user_traits, required_traits) and (required_traits or allow_empty_traits)):
+                        continue
+                result[room].update(
+                    self.roles.get(role, SYSTEM_ROLES.get(role, []))
+                )
 
         for grant in user.room_grants.select_related("room"):
             result[grant.room].update(

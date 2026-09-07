@@ -150,10 +150,6 @@ class BaseSettings(_BaseSettings):
     statsd_host: str = ''
     statsd_port: int = 8125
     statsd_prefix: str = 'eventyay'
-    twitter_client_id: str = ''
-    twitter_client_secret: str = ''
-    linkedin_client_id: str = ''
-    linkedin_client_secret: str = ''
     # Ask to provide comments when making changes in the admin interface.
     admin_audit_comments_asked: bool = False
     # To select a variant from CALL_FOR_SPEAKER_LOGIN_BTN_LABELS.
@@ -351,7 +347,6 @@ _OURS_APPS = (
     'eventyay.features.analytics.graphs.GraphsConfig',
     'eventyay.features.importers.ImportersConfig',
     'eventyay.storage.StorageConfig',
-    'eventyay.features.social.SocialConfig',
     'eventyay.features.integrations.zoom.ZoomConfig',
     'eventyay.helpers',
     'eventyay.mail',
@@ -1593,10 +1588,6 @@ CONTROL_SECRET = conf.control_secret
 STATSD_HOST = conf.statsd_host
 STATSD_PORT = conf.statsd_port
 STATSD_PREFIX = conf.statsd_prefix
-TWITTER_CLIENT_ID = conf.twitter_client_id
-TWITTER_CLIENT_SECRET = conf.twitter_client_secret
-LINKEDIN_CLIENT_ID = conf.linkedin_client_id
-LINKEDIN_CLIENT_SECRET = conf.linkedin_client_secret
 
 FRONTEND_DIR = BASE_DIR / 'webapp'
 VITE_DEV_MODE = conf.npm_dev

@@ -31,7 +31,7 @@ from eventyay.base.models import (
 )
 from eventyay.base.exporters.orderlist import OrderListExporter, OrderPositionListExporter
 from eventyay.base.payment import PaymentException
-from eventyay.control.forms.orders import ExporterForm
+from eventyay.control.forms.orders import CancelForm, EventCancelForm, ExporterForm
 from eventyay.base.services.invoices import (
     generate_cancellation,
     generate_invoice,
@@ -929,6 +929,94 @@ def test_order_cancel_unpaid_no_fees_allowed(client, env):
         assert not o.fees.exists()
     assert o.status == Order.STATUS_CANCELED
     assert o.total == Decimal('14.00')
+
+
+@pytest.mark.django_db
+def test_order_cancel_negative_fee(client, env):
+    with scopes_disabled():
+        o = Order.objects.get(id=env[2].id)
+        o.payments.create(state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=Decimal('14.00'))
+        o.status = Order.STATUS_PAID
+        o.save()
+    client.login(email='dummy@dummy.dummy', password='dummy')
+    client.get('/control/event/dummy/dummy/orders/FOO/transition?status=c')
+    response = client.post(
+        '/control/event/dummy/dummy/orders/FOO/transition',
+        {'status': 'c', 'cancellation_fee': '-5.00'},
+    )
+    assert response.status_code == 200
+    assert 'cancellation_fee' in response.context['form'].errors
+    with scopes_disabled():
+        o.refresh_from_db()
+        assert o.positions.exists()
+        assert not o.fees.filter(fee_type=OrderFee.FEE_TYPE_CANCELLATION).exists()
+    assert o.status == Order.STATUS_PAID
+    assert o.total == Decimal('14.00')
+
+
+@pytest.mark.django_db
+def test_cancel_form_negative_cancellation_fee(env):
+    with scopes_disabled():
+        o = Order.objects.get(id=env[2].id)
+        o.payments.create(state=OrderPayment.PAYMENT_STATE_CONFIRMED, amount=Decimal('14.00'))
+        o.status = Order.STATUS_PAID
+        o.save()
+        form = CancelForm(
+            data={
+                'cancellation_fee': '-5.00',
+            },
+            instance=o,
+        )
+        assert not form.is_valid()
+        assert 'cancellation_fee' in form.errors
+
+        form_valid = CancelForm(
+            data={
+                'cancellation_fee': '5.00',
+            },
+            instance=o,
+        )
+        assert form_valid.is_valid()
+
+
+@pytest.mark.django_db
+def test_event_cancel_form_negative_fees(env):
+    with scopes_disabled():
+        form = EventCancelForm(
+            data={
+                'keep_fee_fixed': '-5.00',
+                'keep_fee_per_ticket': '-2.00',
+                'keep_fee_percentage': '-10.00',
+            },
+            event=env[0],
+        )
+        assert not form.is_valid()
+        assert 'keep_fee_fixed' in form.errors
+        assert 'keep_fee_per_ticket' in form.errors
+        assert 'keep_fee_percentage' in form.errors
+
+        form_over = EventCancelForm(
+            data={
+                'keep_fee_percentage': '150.00',
+            },
+            event=env[0],
+        )
+        assert not form_over.is_valid()
+        assert 'keep_fee_percentage' in form_over.errors
+
+        form_valid = EventCancelForm(
+            data={
+                'keep_fee_fixed': '5.00',
+                'keep_fee_per_ticket': '2.00',
+                'keep_fee_percentage': '10.00',
+                'send_subject_0': 'Canceled: {event}',
+                'send_message_0': 'Hello,\n\nEvent {event} is canceled.',
+                'send_waitinglist_subject_0': 'Canceled: {event}',
+                'send_waitinglist_message_0': 'Hello,\n\nEvent {event} is canceled.',
+            },
+            event=env[0],
+        )
+        assert form_valid.is_valid(), form_valid.errors
 
 
 @pytest.mark.django_db

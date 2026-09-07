@@ -11,6 +11,7 @@
     {% endblock %}
 
     {% block field_content_right %}
+        {% if help_text_above and field.help_text %}<small class="form-text text-muted"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</small>{% endif %}
         {% if field.use_fieldset %}<fieldset{% if field.help_text and field.auto_id and "aria-describedby" not in field.field.widget.attrs %} aria-describedby="{{ field.auto_id }}_helptext"{% endif %}>{% endif %}
         {% if field.field.widget.input_type == "checkbox" and not field.field.widget.allow_multiple_selected %}
             <div class="form-check">
@@ -28,6 +29,6 @@
                 <div class="invalid-feedback d-block">{{ text }}</div>
             {% endfor %}
         {% endif %}
-        {% if field.help_text %}<small class="form-text text-muted"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</small>{% endif %}
+        {% if field.help_text and not help_text_above %}<small class="form-text text-muted"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</small>{% endif %}
     {% endblock %}
 </div>

@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:15+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 08:44+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Malay <https://hosted.weblate.org/projects/eventyay/eventyay/"
 "ms/>\n"
 "Language: ms\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -478,8 +478,8 @@ msgid ""
 "href=\"%(href)s\">here</a>."
 msgstr ""
 "Untuk melihat jadual kami dengan fungsi penuh, seperti penukaran zon waktu "
-"dan penjadualan peribadi, sila aktifkan JavaScript dan pergi <a "
-"href=\"%(href)s\">ke sini</a>."
+"dan penjadualan peribadi, sila aktifkan JavaScript dan pergi <a href=\"%"
+"(href)s\">ke sini</a>."
 
 #: eventyay/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
@@ -1484,8 +1484,7 @@ msgstr "Muat turun tiket belum (lagi) didayakan untuk pesanan ini."
 #, fuzzy
 #| msgid "You cannot select a quota and a specific product at the same time."
 msgid "You cannot set an organizer as default if you are not a member."
-msgstr ""
-"Anda tidak boleh memilih kuota dan produk tertentu pada masa yang sama."
+msgstr "Anda tidak boleh memilih kuota dan produk tertentu pada masa yang sama."
 
 #: eventyay/api/webhooks.py:181 eventyay/base/notifications.py:239
 msgid "New order placed"
@@ -3924,8 +3923,7 @@ msgstr "Susunan tarikh"
 
 #: eventyay/base/configurations/default_setting.py:2514
 msgid "Link back to organizer overview on all event pages"
-msgstr ""
-"Paut kembali ke gambaran keseluruhan penganjur pada semua halaman acara"
+msgstr "Paut kembali ke gambaran keseluruhan penganjur pada semua halaman acara"
 
 #: eventyay/base/configurations/default_setting.py:2523
 msgid "Homepage text"
@@ -6869,8 +6867,7 @@ msgstr ""
 #: eventyay/base/models/event.py:626
 msgid ""
 "All event dates will be localised and interpreted to be in this timezone."
-msgstr ""
-"Semua tarikh acara akan dilokalkan dan ditafsirkan dalam zon waktu ini."
+msgstr "Semua tarikh acara akan dilokalkan dan ditafsirkan dalam zon waktu ini."
 
 #: eventyay/base/models/event.py:630
 msgid ""
@@ -8582,8 +8579,7 @@ msgstr "Adalah tiket kemasukan"
 
 #: eventyay/base/models/product.py:397
 msgid "Whether or not buying this product allows a person to enter your event"
-msgstr ""
-"Sama ada pembelian produk ini membenarkan seseorang memasuki acara anda"
+msgstr "Sama ada pembelian produk ini membenarkan seseorang memasuki acara anda"
 
 #: eventyay/base/models/product.py:405 eventyay/base/models/product.py:898
 msgid "No check-in time restriction"
@@ -9785,8 +9781,7 @@ msgstr "Fail susun atur anda bukan fail JSON yang sah."
 
 #: eventyay/base/models/seating.py:34
 msgid "Your layout file is not a valid seating plan. Error message: {}"
-msgstr ""
-"Fail susun atur anda bukan pelan tempat duduk yang sah. Mesej ralat: {}"
+msgstr "Fail susun atur anda bukan pelan tempat duduk yang sah. Mesej ralat: {}"
 
 #: eventyay/base/models/seating.py:159
 #, python-brace-format
@@ -10485,8 +10480,7 @@ msgstr "Anda tidak boleh memilih kuota yang dimiliki oleh acara yang berbeza."
 
 #: eventyay/base/models/vouchers.py:252
 msgid "You cannot select a quota and a specific product at the same time."
-msgstr ""
-"Anda tidak boleh memilih kuota dan produk tertentu pada masa yang sama."
+msgstr "Anda tidak boleh memilih kuota dan produk tertentu pada masa yang sama."
 
 #: eventyay/base/models/vouchers.py:255
 msgid "You cannot select an product that belongs to a different event."
@@ -10800,8 +10794,7 @@ msgstr "Bayaran balik diminta"
 #: eventyay/base/notifications.py:306
 #, python-brace-format
 msgid "You have been requested to issue a refund for {order.code}."
-msgstr ""
-"Anda telah diminta untuk mengeluarkan bayaran balik untuk {order.code}."
+msgstr "Anda telah diminta untuk mengeluarkan bayaran balik untuk {order.code}."
 
 #: eventyay/base/orderimport.py:118 eventyay/orga/forms/importers.py:137
 #: eventyay/orga/forms/importers.py:323 eventyay/orga/forms/importers.py:375
@@ -11169,8 +11162,8 @@ msgid ""
 msgstr ""
 "Teks ini akan disertakan untuk tempat letak {payment_info} dalam e-mel "
 "pengesahan pesanan. Ia harus memberi arahan kepada pengguna tentang cara "
-"meneruskan pembayaran. Anda boleh menggunakan tempat letak {order}, "
-"{amount}, {currency} dan {amount_with_currency}."
+"meneruskan pembayaran. Anda boleh menggunakan tempat letak {order}, {amount}"
+", {currency} dan {amount_with_currency}."
 
 #: eventyay/base/payment.py:1063
 msgid "Payment process description for pending orders"
@@ -11781,16 +11774,16 @@ msgstr "Anda tidak boleh memilih lebih daripada %s produk bagi setiap pesanan."
 msgid ""
 "You cannot select more than %(max)s products of the product %(product)s."
 msgstr ""
-"Anda tidak boleh memilih lebih daripada %(max)s produk untuk produk "
-"%(product)s."
+"Anda tidak boleh memilih lebih daripada %(max)s produk untuk produk %"
+"(product)s."
 
 #: eventyay/base/services/cart.py:78
 #, python-format
 msgid ""
 "You need to select at least %(min)s products of the product %(product)s."
 msgstr ""
-"Anda perlu memilih sekurang-kurangnya %(min)s produk untuk produk "
-"%(product)s."
+"Anda perlu memilih sekurang-kurangnya %(min)s produk untuk produk %(product)"
+"s."
 
 #: eventyay/base/services/cart.py:80
 #, python-format
@@ -11959,8 +11952,8 @@ msgid ""
 "You need to select at least %(min)s add-ons from the category %(cat)s for "
 "the product %(base)s."
 msgstr ""
-"Anda perlu memilih sekurang-kurangnya %(min)s add-on daripada kategori "
-"%(cat)s untuk produk %(base)s."
+"Anda perlu memilih sekurang-kurangnya %(min)s add-on daripada kategori %(cat)"
+"s untuk produk %(base)s."
 
 #: eventyay/base/services/cart.py:133
 #, python-format
@@ -11968,8 +11961,8 @@ msgid ""
 "You can select every add-ons from the category %(cat)s for the product "
 "%(base)s at most once."
 msgstr ""
-"Anda boleh memilih setiap add-on daripada kategori %(cat)s untuk produk "
-"%(base)s maksimum sekali sahaja."
+"Anda boleh memilih setiap add-on daripada kategori %(cat)s untuk produk %"
+"(base)s maksimum sekali sahaja."
 
 #: eventyay/base/services/cart.py:135
 msgid ""
@@ -12304,8 +12297,8 @@ msgid ""
 "You cannot select more than %(max)s products of the product %(product)s. We "
 "removed the surplus products from your cart."
 msgstr ""
-"Anda tidak boleh memilih lebih daripada %(max)s produk untuk produk "
-"%(product)s. Kami telah membuang produk lebihan daripada troli anda."
+"Anda tidak boleh memilih lebih daripada %(max)s produk untuk produk %"
+"(product)s. Kami telah membuang produk lebihan daripada troli anda."
 
 #: eventyay/base/services/orders.py:119
 msgid "The presale period has ended."
@@ -15377,8 +15370,8 @@ msgid ""
 "The link you clicked on wants to redirect you to a destination on the "
 "website %(host)s."
 msgstr ""
-"Pautan yang anda klik mahu mengalih hala anda ke destinasi di laman web "
-"%(host)s."
+"Pautan yang anda klik mahu mengalih hala anda ke destinasi di laman web %"
+"(host)s."
 
 #: eventyay/common/templates/common/redirect.html:18
 msgid "Please only proceed if you trust this website to be safe."
@@ -18125,8 +18118,8 @@ msgstr "Kunci Stripe tidak boleh kosong."
 msgid ""
 "The provided key does not look valid. It should start with \"%(prefix)s\"."
 msgstr ""
-"Kunci yang diberikan nampaknya tidak sah. Ia sepatutnya bermula dengan "
-"\"%(prefix)s\"."
+"Kunci yang diberikan nampaknya tidak sah. Ia sepatutnya bermula dengan \"%"
+"(prefix)s\"."
 
 #: eventyay/control/forms/global_settings.py:988
 #, python-format
@@ -18566,8 +18559,7 @@ msgstr ""
 #: eventyay/control/forms/orders.py:827
 msgctxt "subevent"
 msgid "Please either select all dates or a date range, not both."
-msgstr ""
-"Sila pilih sama ada semua tarikh atau julat tarikh, bukan kedua-duanya."
+msgstr "Sila pilih sama ada semua tarikh atau julat tarikh, bukan kedua-duanya."
 
 #: eventyay/control/forms/orders.py:834 eventyay/plugins/sendmail/forms.py:136
 msgctxt "subevent"
@@ -19248,8 +19240,7 @@ msgstr ""
 
 #: eventyay/control/forms/vouchers.py:453
 msgid "You need to specify as many seats as voucher codes."
-msgstr ""
-"Anda perlu menentukan jumlah tempat duduk yang sama seperti kod baucar."
+msgstr "Anda perlu menentukan jumlah tempat duduk yang sama seperti kod baucar."
 
 #: eventyay/control/logdisplay.py:38 eventyay/control/logdisplay.py:44
 msgid "(unknown)"
@@ -19288,8 +19279,8 @@ msgstr ""
 #, python-brace-format
 msgid "Price of position #{posid} changed from {old_price} to {new_price}."
 msgstr ""
-"Harga bagi kedudukan #{posid} ditukar daripada {old_price} kepada "
-"{new_price}."
+"Harga bagi kedudukan #{posid} ditukar daripada {old_price} kepada {new_price}"
+"."
 
 #: eventyay/control/logdisplay.py:110
 #, python-brace-format
@@ -19409,8 +19400,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"Imbasan yang ditolak bagi kedudukan #{posid} pada {datetime} untuk senarai "
-"\"{list}\", jenis \"{type}\", kod ralat \"{errorcode}\"."
+"Imbasan yang ditolak bagi kedudukan #{posid} pada {datetime} untuk senarai \""
+"{list}\", jenis \"{type}\", kod ralat \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -19418,8 +19409,8 @@ msgid ""
 "Denied scan of position #{posid} for list \"{list}\", type \"{type}\", error "
 "code \"{errorcode}\"."
 msgstr ""
-"Imbasan ditolak untuk kedudukan #{posid} bagi senarai \"{list}\", jenis "
-"\"{type}\", kod ralat \"{errorcode}\"."
+"Imbasan ditolak untuk kedudukan #{posid} bagi senarai \"{list}\", jenis \""
+"{type}\", kod ralat \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:308
 #, python-brace-format
@@ -20293,8 +20284,8 @@ msgstr ""
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
 msgstr ""
-"Posisi #{posid} telah daftar masuk semula pada {datetime} dalam senarai "
-"\"{list}\"."
+"Posisi #{posid} telah daftar masuk semula pada {datetime} dalam senarai \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
@@ -22693,10 +22684,10 @@ msgid ""
 "to make sure they do not show up in your reports and statistics and block "
 "people from actually buying tickets."
 msgstr ""
-"Acara anda mengandungi <strong>pesanan mod ujian</strong> walaupun "
-"<strong>mod ujian telah dinyahdayakan</strong>. Anda patut memadam pesanan "
-"tersebut untuk memastikan ia tidak dipaparkan dalam laporan dan statistik "
-"anda serta menghalang orang daripada benar-benar membeli tiket."
+"Acara anda mengandungi <strong>pesanan mod ujian</strong> walaupun <strong>"
+"mod ujian telah dinyahdayakan</strong>. Anda patut memadam pesanan tersebut "
+"untuk memastikan ia tidak dipaparkan dalam laporan dan statistik anda serta "
+"menghalang orang daripada benar-benar membeli tiket."
 
 #: eventyay/control/templates/pretixcontrol/base.html:395
 #: eventyay/eventyay_common/templates/eventyay_common/base.html:365
@@ -22899,8 +22890,8 @@ msgstr "Padam senarai daftar masuk"
 msgid ""
 "Are you sure you want to delete the check-in list <strong>%(name)s</strong>?"
 msgstr ""
-"Adakah anda pasti mahu memadam senarai daftar masuk <strong>%(name)s</"
-"strong>?"
+"Adakah anda pasti mahu memadam senarai daftar masuk <strong>%(name)s</strong>"
+"?"
 
 #: eventyay/control/templates/pretixcontrol/checkin/list_delete.html:11
 #, python-format
@@ -23810,9 +23801,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Tiada penyedia pembayaran tersedia. Sila pergi ke <a "
-"%(plugin_settings_href)s>tetapan pemalam</a> dan aktifkan satu atau lebih "
-"pemalam pembayaran."
+"Tiada penyedia pembayaran tersedia. Sila pergi ke <a %(plugin_settings_href)"
+"s>tetapan pemalam</a> dan aktifkan satu atau lebih pemalam pembayaran."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -24180,10 +24170,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Tetapan ini ditujukan untuk pengguna lanjutan. Lihat <a "
-"href=\"%(docs)s\">dokumentasi</a> untuk maklumat lanjut. Harap maklum bahawa "
-"kami tidak bertanggungjawab terhadap pengendalian cukai yang betul di kedai "
-"tiket anda. Jika ragu-ragu, sila hubungi peguam atau perunding cukai."
+"Tetapan ini ditujukan untuk pengguna lanjutan. Lihat <a href=\"%(docs)s\">"
+"dokumentasi</a> untuk maklumat lanjut. Harap maklum bahawa kami tidak "
+"bertanggungjawab terhadap pengendalian cukai yang betul di kedai tiket anda. "
+"Jika ragu-ragu, sila hubungi peguam atau perunding cukai."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24259,9 +24249,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Tiada output tiket tersedia. Sila pergi ke <a "
-"%(plugin_settings_href)s>tetapan pemalam</a> dan aktifkan satu atau lebih "
-"pemalam output tiket."
+"Tiada output tiket tersedia. Sila pergi ke <a %(plugin_settings_href)s>"
+"tetapan pemalam</a> dan aktifkan satu atau lebih pemalam output tiket."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -24946,8 +24935,7 @@ msgstr "Padam perihalan"
 msgid ""
 "Are you sure you want to delete the description <strong>%(question)s</"
 "strong>?"
-msgstr ""
-"Adakah anda pasti mahu memadam perihalan <strong>%(question)s</strong>?"
+msgstr "Adakah anda pasti mahu memadam perihalan <strong>%(question)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/items/description_delete.html:11
 msgid ""
@@ -26346,8 +26334,7 @@ msgstr "Tandakan pembayaran sebagai selesai"
 
 #: eventyay/control/templates/pretixcontrol/order/pay_complete.html:20
 msgid "Do you really want to mark this payment as complete?"
-msgstr ""
-"Adakah anda benar-benar mahu menandakan pembayaran ini sebagai selesai?"
+msgstr "Adakah anda benar-benar mahu menandakan pembayaran ini sebagai selesai?"
 
 #: eventyay/control/templates/pretixcontrol/order/reactivate.html:18
 msgid ""
@@ -28017,8 +28004,8 @@ msgid ""
 msgstr ""
 "Sila semak semula bahawa anda benar-benar pasti mahu memadam kategori data "
 "yang dipilih daripada acara <strong>%(event)s</strong>. Untuk mengesahkan "
-"bahawa anda benar-benar mahukannya, sila taip nama ringkas acara "
-"(\"%(slug)s\") di sini:"
+"bahawa anda benar-benar mahukannya, sila taip nama ringkas acara (\"%(slug)"
+"s\") di sini:"
 
 #: eventyay/control/templates/pretixcontrol/shredder/download.html:41
 msgid "Event short name"
@@ -28355,8 +28342,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Kami hanya mahu pastikan ini benar-benar anda. Sila sahkan semula dengan "
-"'%(login_provider)s'."
+"Kami hanya mahu pastikan ini benar-benar anda. Sila sahkan semula dengan '%"
+"(login_provider)s'."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28527,8 +28514,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Adakah anda pasti mahu memadam entri senarai menunggu berikut "
-"<strong>%(entry)s</strong>?"
+"Adakah anda pasti mahu memadam entri senarai menunggu berikut <strong>%"
+"(entry)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -30887,8 +30874,7 @@ msgstr "Adakah anda benar-benar mahu melumpuhkan pengesahan dua faktor?"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-disable.html:26
 msgid "You will no longer require a second device to log in to your account."
-msgstr ""
-"Anda tidak lagi memerlukan peranti kedua untuk log masuk ke akaun anda."
+msgstr "Anda tidak lagi memerlukan peranti kedua untuk log masuk ke akaun anda."
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:4
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:19
@@ -32920,8 +32906,7 @@ msgstr "Adakah anda pasti mahu melumpuhkan aplikasi {code} secara kekal?"
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:47
 msgid "Something went wrong, you cannot access this page now."
-msgstr ""
-"Sesuatu telah berlaku, anda tidak dapat mengakses halaman ini sekarang."
+msgstr "Sesuatu telah berlaku, anda tidak dapat mengakses halaman ini sekarang."
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:102
 msgid ""
@@ -33096,8 +33081,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Pautan pengesahan e-mel ini telah tamat tempoh atau tidak sah. Sila "
-"%(email_action_link)s."
+"Pautan pengesahan e-mel ini telah tamat tempoh atau tidak sah. Sila %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33669,8 +33654,7 @@ msgstr ""
 #: eventyay/mail/context.py:294
 msgid ""
 "A list of all changes to the user’s schedule in the current schedule version."
-msgstr ""
-"Senarai semua perubahan pada jadual pengguna dalam versi jadual semasa."
+msgstr "Senarai semua perubahan pada jadual pengguna dalam versi jadual semasa."
 
 #: eventyay/mail/context.py:304
 #, python-brace-format
@@ -33742,8 +33726,8 @@ msgid ""
 msgstr ""
 "Hai!\n"
 "\n"
-"Kami gembira untuk memberitahu anda bahawa kami menerima cadangan anda "
-"\"{submission_title}\"\n"
+"Kami gembira untuk memberitahu anda bahawa kami menerima cadangan anda \""
+"{submission_title}\"\n"
 "untuk {event_name}. Sila klik pautan ini untuk mengesahkan kehadiran anda:\n"
 "\n"
 "{confirmation_link}\n"
@@ -33899,8 +33883,8 @@ msgid ""
 msgstr ""
 "Hai!\n"
 "\n"
-"Anda telah ditambah pada cadangan untuk {event_name}, bertajuk "
-"“{proposal_title}”.\n"
+"Anda telah ditambah pada cadangan untuk {event_name}, bertajuk “"
+"{proposal_title}”.\n"
 "Akaun telah dicipta untuk anda – sila ikuti pautan ini untuk menetapkan kata "
 "laluan akaun anda.\n"
 "\n"
@@ -33927,8 +33911,8 @@ msgid ""
 msgstr ""
 "Hai!\n"
 "\n"
-"Anda telah ditambah ke cadangan untuk {event_name}, bertajuk "
-"“{proposal_title}”.\n"
+"Anda telah ditambah ke cadangan untuk {event_name}, bertajuk “"
+"{proposal_title}”.\n"
 "Sila ikuti pautan ini untuk mengedit profil pengguna anda dan melihat status "
 "cadangan anda:\n"
 "\n"
@@ -34960,8 +34944,7 @@ msgstr "Tarikh luput baharu perlu berada pada masa hadapan."
 #| msgid "You cannot select a quota and a specific product at the same time."
 msgid ""
 "You cannot select \"Send immediately\" and also specify a scheduled time."
-msgstr ""
-"Anda tidak boleh memilih kuota dan produk tertentu pada masa yang sama."
+msgstr "Anda tidak boleh memilih kuota dan produk tertentu pada masa yang sama."
 
 #: eventyay/orga/forms/mails.py:274
 msgid "Recipient groups"
@@ -36185,8 +36168,7 @@ msgstr "Sembunyikan medan"
 #: eventyay/orga/templates/orga/cfp/talkquestion/update.html:22
 msgid ""
 "This field is currently inactive, and will not be asked during submission."
-msgstr ""
-"Medan ini sedang tidak aktif, dan tidak akan ditanya semasa penyerahan."
+msgstr "Medan ini sedang tidak aktif, dan tidak akan ditanya semasa penyerahan."
 
 #: eventyay/orga/templates/orga/cfp/question/update.html:23
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:47
@@ -36890,8 +36872,8 @@ msgid ""
 "settings</a>."
 msgstr ""
 "Penyemak akan dapat melihat dan menyemak <strong>hanya cadangan yang "
-"ditugaskan kepada mereka</strong>. Anda boleh mengubah ini dalam <a "
-"href=\"%(href)s\">tetapan semakan</a> anda."
+"ditugaskan kepada mereka</strong>. Anda boleh mengubah ini dalam <a href=\"%"
+"(href)s\">tetapan semakan</a> anda."
 
 #: eventyay/orga/templates/orga/review/assignment.html:120
 #, python-format
@@ -38254,8 +38236,7 @@ msgstr "Jenis Sesi Baharu"
 
 #: eventyay/orga/views/cfp.py:832
 msgid "This Session Type is in use in a proposal and cannot be deleted."
-msgstr ""
-"Jenis Sesi ini sedang digunakan dalam cadangan dan tidak boleh dipadam."
+msgstr "Jenis Sesi ini sedang digunakan dalam cadangan dan tidak boleh dipadam."
 
 #: eventyay/orga/views/cfp.py:854
 msgid "The default Session Type has been removed."
@@ -38630,8 +38611,8 @@ msgid ""
 "Do you really want to regenerate %(count)s acceptance and rejection emails? "
 "They will be placed in the outbox and not sent out directly."
 msgstr ""
-"Adakah anda benar-benar mahu menjana semula e-mel penerimaan dan penolakan "
-"%(count)s? E-mel akan diletakkan dalam peti keluar dan tidak dihantar terus."
+"Adakah anda benar-benar mahu menjana semula e-mel penerimaan dan penolakan %"
+"(count)s? E-mel akan diletakkan dalam peti keluar dan tidak dihantar terus."
 
 #: eventyay/orga/views/review.py:654
 #, python-brace-format
@@ -39053,8 +39034,7 @@ msgstr "Sahkan sebagai dibayar"
 
 #: eventyay/person/forms/user.py:49
 msgid "Please fill all fields of either the login or the registration form."
-msgstr ""
-"Sila isi semua medan sama ada borang log masuk atau borang pendaftaran."
+msgstr "Sila isi semua medan sama ada borang log masuk atau borang pendaftaran."
 
 #: eventyay/person/forms/user.py:66
 msgid ""
@@ -39289,8 +39269,8 @@ msgstr "Cetak lencana"
 msgid ""
 "Are you sure you want to delete the badge layout <strong>%(layout)s</strong>?"
 msgstr ""
-"Adakah anda pasti mahu memadam susun atur lencana <strong>%(layout)s</"
-"strong>?"
+"Adakah anda pasti mahu memadam susun atur lencana <strong>%(layout)s</strong>"
+"?"
 
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:6
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:16
@@ -39491,8 +39471,7 @@ msgstr "Pindahan bank"
 
 #: eventyay/plugins/banktransfer/apps.py:17
 msgid "This plugin allows you to receive payments via bank transfer."
-msgstr ""
-"Pemalam ini membolehkan anda menerima pembayaran melalui pindahan bank."
+msgstr "Pemalam ini membolehkan anda menerima pembayaran melalui pindahan bank."
 
 #: eventyay/plugins/banktransfer/apps.py:31
 msgid ""
@@ -39941,8 +39920,7 @@ msgstr ""
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/refund_export.html:27
 msgid "In test mode, your exports will only contain test mode orders."
-msgstr ""
-"Dalam mod ujian, eksport anda hanya akan mengandungi pesanan mod ujian."
+msgstr "Dalam mod ujian, eksport anda hanya akan mengandungi pesanan mod ujian."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/refund_export.html:31
 msgid ""
@@ -40029,8 +40007,7 @@ msgstr[0] ""
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/sepa_export.html:23
 msgid ""
 "Please state from which bank account the refunds should be transferred from."
-msgstr ""
-"Sila nyatakan daripada akaun bank mana bayaran balik perlu dipindahkan."
+msgstr "Sila nyatakan daripada akaun bank mana bayaran balik perlu dipindahkan."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/transaction_list.html:12
 msgid "Payer and reference"
@@ -40165,8 +40142,8 @@ msgid ""
 "We could not find bank account information for the refund {refund_id}. It "
 "was marked as failed."
 msgstr ""
-"Kami tidak dapat mencari maklumat akaun bank untuk bayaran balik "
-"{refund_id}. Ia telah ditandakan sebagai gagal."
+"Kami tidak dapat mencari maklumat akaun bank untuk bayaran balik {refund_id}"
+". Ia telah ditandakan sebagai gagal."
 
 #: eventyay/plugins/banktransfer/views.py:779
 msgid "No valid orders have been found."
@@ -42109,8 +42086,8 @@ msgid ""
 "Once the items are in your cart, you will have %(time)s minutes to complete "
 "your purchase."
 msgstr ""
-"Sebaik sahaja item berada dalam troli anda, anda akan mempunyai masa "
-"%(time)s minit untuk melengkapkan pembelian anda."
+"Sebaik sahaja item berada dalam troli anda, anda akan mempunyai masa %(time)"
+"s minit untuk melengkapkan pembelian anda."
 
 #: eventyay/presale/templates/pretixpresale/event/index.html:322
 #: eventyay/presale/templates/pretixpresale/event/voucher.html:363
@@ -42662,8 +42639,8 @@ msgid ""
 "to initiate the transfer manually. Please be patient as this might take a "
 "bit longer."
 msgstr ""
-"Dengan kaedah pembayaran yang anda gunakan, jumlah bayaran balik "
-"<strong>tidak boleh dihantar semula kepada anda secara automatik</strong>. "
+"Dengan kaedah pembayaran yang anda gunakan, jumlah bayaran balik <strong>"
+"tidak boleh dihantar semula kepada anda secara automatik</strong>. "
 "Sebaliknya, penganjur acara perlu memulakan pemindahan secara manual. Sila "
 "bersabar kerana ini mungkin mengambil masa sedikit lebih lama."
 
@@ -42996,8 +42973,8 @@ msgid ""
 "                                                    "
 msgstr ""
 "\n"
-"                                                        daripada "
-"%(start_date)s\n"
+"                                                        daripada %"
+"(start_date)s\n"
 "                                                    "
 
 #: eventyay/presale/templates/pretixpresale/fragment_join_online_video.html:10
@@ -43841,8 +43818,7 @@ msgstr "Belum ada maklum balas untuk sesi ini lagi."
 #: eventyay/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
 msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"- Sesi anda “%(title)s” akan berlangsung pada %(start)s di %(location)s"
+msgstr "- Sesi anda “%(title)s” akan berlangsung pada %(start)s di %(location)s"
 
 #: eventyay/schedule/templates/schedule/speaker_notification.txt:3
 #, python-format

@@ -50,7 +50,6 @@ from eventyay.control.forms.server_management import (
     ProfileForm,
     SignupForm,
     StreamingServerForm,
-    StreamKeyGeneratorForm,
     TurnServerForm,
     UserForm,
     EventForm,
@@ -288,21 +287,6 @@ class EventAdminToken(AdministratorPermissionRequiredMixin, DetailView):
             except Exception:
                 pass
 
-        jwt_config = event.config["JWT_secrets"][0]
-        secret = jwt_config["secret"]
-        audience = jwt_config["audience"]
-        issuer = jwt_config["issuer"]
-        iat = datetime.datetime.now(datetime.timezone.utc)
-        exp = iat + datetime.timedelta(days=7)
-        payload = {
-            "iss": issuer,
-            "aud": audience,
-            "exp": exp,
-            "iat": iat,
-            "uid": "__admin__",
-            "traits": ["admin"],
-        }
-        token = jwt.encode(payload, secret, algorithm="HS256")
         LogEntry.objects.create(
             content_object=event,
             user=self.request.user,
@@ -310,16 +294,7 @@ class EventAdminToken(AdministratorPermissionRequiredMixin, DetailView):
             data={},
         )
 
-        # Use the appropriate URL based on environment
-        if event.domain:
-            video_url = f"https://{event.domain}#token={token}"
-        else:
-            # For local development, use the current request's host
-            scheme = 'https' if request.is_secure() else 'http'
-            host = request.get_host()
-            video_url = f"{scheme}://{host}{event.urls.video_base}#token={token}"
-
-        return redirect(video_url)
+        return redirect(f"/video/event/{event.organizer.slug}/{event.slug}/")
 
 
 class FormsetMixin:
@@ -840,22 +815,6 @@ class StreamingServerDelete(AdministratorPermissionRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class StreamkeyGenerator(AdministratorPermissionRequiredMixin, FormView):
-    template_name = "control/streamkey.html"
-    form_class = StreamKeyGeneratorForm
-
-    def form_valid(self, form):
-        return self.get(self.request, *self.args, **self.kwargs)
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        form = ctx["form"]
-        if self.request.method == "POST" and form.is_valid():
-            ctx["result"] = form.cleaned_data["server"].generate_streamkey(
-                form.cleaned_data["name"],
-                form.cleaned_data["days"],
-            )
-        return ctx
 
 
 class BBBMoveRoom(AdministratorPermissionRequiredMixin, FormView):

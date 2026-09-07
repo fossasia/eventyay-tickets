@@ -15,9 +15,9 @@ from eventyay.base.meetup import (
     get_rsvp_product_and_quota,
     provision_meetup_event,
 )
-from eventyay.base.models import Event, Order, OrderPayment, OrderPosition
+from eventyay.base.models import Event, Order, OrderPayment, OrderPosition, Team, User
 from eventyay.base.payment import StripePaymentProvider
-from eventyay.eventyay_common.forms.event import EventCommonSettingsForm
+from eventyay.eventyay_common.forms.event import EventCommonSettingsForm, EventUpdateForm
 from eventyay.presale.views.event import EventIndex, JoinOnlineVideoView
 from eventyay.presale.views.meetup import (
     MEETUP_RSVP_SESSION_KEY,
@@ -94,6 +94,73 @@ def test_settings_form_initial_and_save_updates_quota_size(meetup_event):
 
     product, quota = get_rsvp_product_and_quota(meetup_event)
     assert quota.size == 50
+
+
+@pytest.mark.django_db
+@scopes_disabled()
+def test_settings_form_updates_meetup_visibility(organizer):
+    now = timezone.now()
+    event = Event.objects.create(
+        organizer=organizer,
+        name='Toggle Privacy Meetup',
+        slug='toggle-privacy-meetup',
+        date_from=now + timedelta(days=10),
+        date_to=now + timedelta(days=10, hours=2),
+        currency='USD',
+        locale='en',
+    )
+    provision_meetup_event(event, is_private=True)
+    assert event.live is True
+    assert event.tickets_published is True
+    assert event.is_public is False
+    assert event.settings.get('meta_noindex', as_type=bool) is True
+
+    form = EventCommonSettingsForm(obj=event)
+    assert form.initial['privacy_type'] == 'private'
+
+    data = form.initial.copy()
+    data['privacy_type'] = 'public'
+    data.setdefault('timezone', 'UTC')
+    data.setdefault('locale', 'en')
+    data.setdefault('locales', ['en'])
+    bound_form = EventCommonSettingsForm(data=data, obj=event)
+    assert bound_form.is_valid(), bound_form.errors
+    bound_form.save()
+
+    event.refresh_from_db()
+    assert event.live is True
+    assert event.tickets_published is True
+    assert event.is_public is True
+    assert event.settings.get('meta_noindex', as_type=bool) is False
+
+    form2 = EventCommonSettingsForm(obj=event)
+    assert form2.initial['privacy_type'] == 'public'
+
+    data2 = form2.initial.copy()
+    data2['privacy_type'] = 'private'
+    data2.setdefault('timezone', 'UTC')
+    data2.setdefault('locale', 'en')
+    data2.setdefault('locales', ['en'])
+    bound_form2 = EventCommonSettingsForm(data=data2, obj=event)
+    assert bound_form2.is_valid(), bound_form2.errors
+    bound_form2.save()
+
+    event.refresh_from_db()
+    assert event.live is True
+    assert event.tickets_published is True
+    assert event.is_public is False
+    assert event.settings.get('meta_noindex', as_type=bool) is True
+
+
+@pytest.mark.django_db
+@scopes_disabled()
+def test_event_update_form_drops_is_public_for_meetups(meetup_event):
+    """EventUpdateForm should not include is_public for meetups so saving it does not overwrite privacy."""
+    meetup_event.is_public = True
+    meetup_event.save(update_fields=['is_public'])
+
+    form = EventUpdateForm(instance=meetup_event)
+    assert 'is_public' not in form.fields
 
 
 @pytest.mark.django_db
@@ -307,6 +374,46 @@ def test_stripe_payment_provider_is_allowed_only_for_meetups(meetup_event, organ
 
 @pytest.mark.django_db
 @scopes_disabled()
+def test_private_meetup_guest_rsvp_via_direct_link_creates_order(organizer, rf):
+    now = timezone.now()
+    event = Event.objects.create(
+        organizer=organizer,
+        name='Private Meetup Testing',
+        slug='private-meetup-testing',
+        date_from=now + timedelta(days=10),
+        date_to=now + timedelta(days=10, hours=2),
+        currency='USD',
+        locale='en',
+    )
+    provision_meetup_event(event, is_private=True)
+    assert event.live is True
+    assert event.tickets_published is True
+    assert event.is_public is False
+    assert event.settings.get('meta_noindex', as_type=bool) is True
+    event.settings.set('require_registered_account_for_tickets', False)
+
+    request = rf.post(
+        f'/{event.slug}/rsvp',
+        data={'attendee_name': 'Guest NonMember', 'attendee_email': 'guest@test.org'},
+    )
+    request.event = event
+    request.user = AnonymousUser()
+    middleware = SessionMiddleware(lambda r: None)
+    middleware.process_request(request)
+    request.session.save()
+    setattr(request, '_messages', FallbackStorage(request))
+
+    view = MeetupRsvpView()
+    view.setup(request)
+    response = view.post(request)
+    assert response.status_code == 302
+
+    order = event.orders.filter(email='guest@test.org').first()
+    assert order is not None
+
+
+@pytest.mark.django_db
+@scopes_disabled()
 def test_paid_rsvp_success_creates_paid_order(meetup_event, rf):
     """Paid RSVP successfully charges Stripe, confirms payment, and marks order paid."""
     product, quota = get_rsvp_product_and_quota(meetup_event)
@@ -396,3 +503,34 @@ def test_paid_rsvp_card_error_cancels_order_and_sets_payment_failed(meetup_event
 
     payment = order.payments.first()
     assert payment.state == OrderPayment.PAYMENT_STATE_FAILED
+
+
+@pytest.mark.django_db
+@scopes_disabled()
+def test_private_meetup_excluded_from_organizer_public_listing(organizer):
+    now = timezone.now()
+    public_event = Event.objects.create(
+        organizer=organizer,
+        name='Public Meetup Listing',
+        slug='public-meetup-listing',
+        date_from=now + timedelta(days=10),
+        date_to=now + timedelta(days=10, hours=2),
+        currency='USD',
+        locale='en',
+    )
+    provision_meetup_event(public_event, is_private=False)
+
+    private_event = Event.objects.create(
+        organizer=organizer,
+        name='Private Meetup Hidden',
+        slug='private-meetup-hidden',
+        date_from=now + timedelta(days=10),
+        date_to=now + timedelta(days=10, hours=2),
+        currency='USD',
+        locale='en',
+    )
+    provision_meetup_event(private_event, is_private=True)
+
+    public_listed = organizer.events.filter(is_public=True, live=True)
+    assert public_event in public_listed
+    assert private_event not in public_listed

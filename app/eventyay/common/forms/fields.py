@@ -65,7 +65,7 @@ class SizeFileInput:
     def get_size_warning(max_size=None, fallback=True):
         if not max_size and fallback:
             max_size = settings.FILE_UPLOAD_DEFAULT_LIMIT
-        return _('Please do not upload files larger than {size}!').format(size=filesize(max_size))
+        return _('The upload limit is {size}.').format(size=filesize(max_size))
 
     def validate(self, value):
         super().validate(value)

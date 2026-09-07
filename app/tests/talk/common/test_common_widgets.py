@@ -9,7 +9,6 @@ def test_slides_widget_accepts_plain_dict_session_data():
     value = widget.value_from_datadict(data={}, files=MultiValueDict(), name='slides')
 
     assert value == {
-        'links_text': '',
         'resources': [],
         'clear_ids': [],
     }

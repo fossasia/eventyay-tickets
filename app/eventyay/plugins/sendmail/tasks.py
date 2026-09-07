@@ -32,7 +32,7 @@ def send_queued_mail(self, event_id: int, queued_mail_id: int):
             qm = (
                 EmailQueue.objects
                 .select_for_update(skip_locked=True)
-                .filter(pk=queued_mail_id, event=event, sent_at__isnull=True)
+                .filter(pk=queued_mail_id, event=event, sent_at__isnull=True, is_draft=False)
                 .first()
             )
 

@@ -21,6 +21,7 @@ import i18n, { init as i18nInit } from 'i18n'
 import { emojiPlugin } from 'lib/emoji'
 import features from 'features'
 import config from 'config'
+import { hasOrganizerTraits } from 'lib/traitGrants'
 import { loadThemeConfig } from 'theme'
 import 'webrtc-adapter'
 
@@ -73,8 +74,50 @@ async function init({ token, inviteToken }) {
   // Handle base path for routing early so RouterLink can resolve named routes
   const basePath = config.basePath || ''
   let relativePath = location.pathname.replace(basePath, '')
-  if (!relativePath) {
-    relativePath = '/'
+  const isOrganizerArea = Boolean(window.eventyay?.isOrganizerArea)
+  if (isOrganizerArea) {
+    try {
+      sessionStorage.setItem('video_auth_mode', 'organizer')
+      localStorage.removeItem('token')
+    } catch (e) {}
+  } else if (token) {
+    try {
+      sessionStorage.setItem('video_auth_mode', 'jwt')
+      localStorage.token = token
+    } catch (e) {}
+  }
+
+  const isJwtAuthMode = sessionStorage.getItem('video_auth_mode') === 'jwt'
+  const isOrganizerAuthMode = sessionStorage.getItem('video_auth_mode') === 'organizer'
+
+  const activeToken = token || (
+    !isOrganizerArea && !isOrganizerAuthMode && (isJwtAuthMode || !window.eventyay?.hasOrganiserPermissions) && localStorage.token
+      ? localStorage.token
+      : null
+  )
+
+  let tokenTraits = []
+  if (activeToken) {
+    try {
+      tokenTraits = jwtDecode(activeToken)?.traits || []
+    } catch (e) { /* ignore */ }
+  }
+
+  const hasToken = Boolean(activeToken)
+  const isOrganizer = isOrganizerArea || (hasToken ? hasOrganizerTraits(tokenTraits) : Boolean(window.eventyay?.hasOrganiserPermissions))
+
+  if (!relativePath || relativePath === '/') {
+    if (isOrganizerArea) {
+      relativePath = '/event'
+    } else {
+      relativePath = '/'
+    }
+  } else if (!isOrganizer) {
+    if (relativePath.startsWith('/event') || relativePath === 'event') {
+      relativePath = '/'
+    } else if (relativePath.includes('/manage')) {
+      relativePath = relativePath.replace(/\/manage$/, '') || '/'
+    }
   }
 
   // Ensure router's current route is set before mounting the app so that
@@ -94,12 +137,16 @@ async function init({ token, inviteToken }) {
   store.commit('setUserLocale', i18n.resolvedLanguage)
   store.dispatch('updateUserTimezone', localStorage.userTimezone || moment.tz.guess())
 
-  if (token) {
-    localStorage.token = token
+  if (activeToken) {
+    localStorage.token = activeToken
+    if (token) {
+      router.replace(relativePath)
+    }
+    store.dispatch('login', { token: activeToken })
+  } else if (isOrganizerArea || window.eventyay?.hasOrganiserPermissions) {
+    localStorage.removeItem('token')
     router.replace(relativePath)
-    store.dispatch('login', { token })
-  } else if (localStorage.token) {
-    store.dispatch('login', { token: localStorage.token })
+    store.dispatch('login', {})
   } else if (inviteToken && anonymousRoomId) {
     const clientId = uuid()
     localStorage[`clientId:room:${anonymousRoomId}`] = clientId

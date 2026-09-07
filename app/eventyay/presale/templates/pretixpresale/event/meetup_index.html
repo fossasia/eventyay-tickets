@@ -48,6 +48,13 @@
     {% eventurl request.event 'presale:event.index' as event_public_presale_home %}
     {% has_event_perm "base.orga_access_event" request.user request request.event as is_organiser %}
     {% include "pretixpresale/event/fragment_testmode_alert.html" %}
+    {% if not request.event.is_public %}
+        <div class="alert alert-warning alert-margin">
+            <strong>
+                {% trans "This meetup is private. It is unlisted and accessible only via direct link." %}
+            </strong>
+        </div>
+    {% endif %}
 
 
     <div class="meetup-layout">

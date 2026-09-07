@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-22 15:22+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 17:25+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Swahili <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/sw/>\n"
 "Language: sw\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -256,8 +256,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Ili kuona ratiba yetu, tafadhali ama wezesha JavaScript au nenda <a "
-"href=\"%(href)s\">hapa</a> kwa ratiba yetu ya NoJS."
+"Ili kuona ratiba yetu, tafadhali ama wezesha JavaScript au nenda <a href=\"%"
+"(href)s\">hapa</a> kwa ratiba yetu ya NoJS."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -1388,8 +1388,7 @@ msgstr "Ufunguo wa Stripe hauwezi kuwa tupu."
 #: eventyay/api/serializers/product.py:112
 #: eventyay/control/forms/product.py:1096
 msgid "The bundled product must not be the same product as the bundling one."
-msgstr ""
-"Bidhaa inayounganishwa haipaswi kuwa bidhaa ileile kama inayounganisha."
+msgstr "Bidhaa inayounganishwa haipaswi kuwa bidhaa ileile kama inayounganisha."
 
 #: eventyay/api/serializers/product.py:115
 #: eventyay/control/forms/product.py:1098
@@ -4348,8 +4347,7 @@ msgstr "Kiasi hicho kimetozwa kwenye kadi yako."
 
 #: eventyay/base/email.py:924
 msgid "Please transfer money to this bank account: 9999-9999-9999-9999"
-msgstr ""
-"Tafadhali hamisha pesa kwenye akaunti hii ya benki: 9999-9999-9999-9999"
+msgstr "Tafadhali hamisha pesa kwenye akaunti hii ya benki: 9999-9999-9999-9999"
 
 #: eventyay/base/exporter.py:119 eventyay/base/exporter.py:255
 #: eventyay/base/exporters/orderlist.py:1051 eventyay/orga/forms/export.py:28
@@ -5784,8 +5782,7 @@ msgstr "Kitambulisho chako cha VAT hakilingani na nchi uliyochagua."
 
 #: eventyay/base/forms/questions.py:1052
 msgid "This VAT ID is not valid. Please re-check your input."
-msgstr ""
-"Kitambulisho hiki cha VAT si halali. Tafadhali kagua tena ulichoingiza."
+msgstr "Kitambulisho hiki cha VAT si halali. Tafadhali kagua tena ulichoingiza."
 
 #: eventyay/base/forms/questions.py:1060
 msgid ""
@@ -8756,8 +8753,7 @@ msgstr ""
 msgid ""
 "This product will only be shown if a voucher matching the product is "
 "redeemed."
-msgstr ""
-"Bidhaa hii itaonyeshwa tu ikiwa vocha inayolingana na bidhaa itatumika."
+msgstr "Bidhaa hii itaonyeshwa tu ikiwa vocha inayolingana na bidhaa itatumika."
 
 #: eventyay/base/models/product.py:488
 msgid ""
@@ -11215,8 +11211,7 @@ msgstr ""
 
 #: eventyay/base/payment.py:1041
 msgid "Payment process description in order confirmation emails"
-msgstr ""
-"Maelezo ya mchakato wa malipo katika barua pepe za uthibitisho wa agizo"
+msgstr "Maelezo ya mchakato wa malipo katika barua pepe za uthibitisho wa agizo"
 
 #: eventyay/base/payment.py:1043
 #, python-brace-format
@@ -11262,8 +11257,7 @@ msgstr "Imesawazishwa dhidi ya maagizo: %s"
 
 #: eventyay/base/payment.py:1192
 msgid "In test mode, only test cards will work."
-msgstr ""
-"Katika hali ya majaribio, kadi za majaribio pekee ndizo zitafanya kazi."
+msgstr "Katika hali ya majaribio, kadi za majaribio pekee ndizo zitafanya kazi."
 
 #: eventyay/base/payment.py:1254 eventyay/base/payment.py:1343
 #: eventyay/base/payment.py:1399 eventyay/base/services/orders.py:994
@@ -12030,8 +12024,8 @@ msgid ""
 "You can select every add-ons from the category %(cat)s for the product "
 "%(base)s at most once."
 msgstr ""
-"Unaweza kuchagua kila nyongeza kutoka kwenye kategoria %(cat)s kwa bidhaa "
-"%(base)s mara moja tu."
+"Unaweza kuchagua kila nyongeza kutoka kwenye kategoria %(cat)s kwa bidhaa %"
+"(base)s mara moja tu."
 
 #: eventyay/base/services/cart.py:135
 msgid ""
@@ -12615,8 +12609,7 @@ msgstr "Nchi uliyochagua imezuiwa na sheria yako ya kodi."
 msgid ""
 "You cannot change the price of a position that has been used to issue a gift "
 "card."
-msgstr ""
-"Huwezi kubadilisha bei ya nafasi ambayo imetumika kutoa kadi ya zawadi."
+msgstr "Huwezi kubadilisha bei ya nafasi ambayo imetumika kutoa kadi ya zawadi."
 
 #: eventyay/base/services/orders.py:2165
 #, python-brace-format
@@ -13743,8 +13736,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Unaweza kuweka mapendekezo hadi %(deadline)s (%(timezone)s), "
-"%(until_string)s kuanzia sasa."
+"Unaweza kuweka mapendekezo hadi %(deadline)s (%(timezone)s), %(until_string)"
+"s kuanzia sasa."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -14054,8 +14047,7 @@ msgstr "Maoni ya hadhira"
 
 #: eventyay/cfp/templates/cfp/event/user_submission_edit.html:55
 msgid "Attendees can leave feedback here after your session has taken place."
-msgstr ""
-"Washiriki wanaweza kuacha maoni hapa baada ya kipindi chako kumalizika."
+msgstr "Washiriki wanaweza kuacha maoni hapa baada ya kipindi chako kumalizika."
 
 #: eventyay/cfp/templates/cfp/event/user_submission_edit.html:62
 msgid "Speaker"
@@ -15145,8 +15137,7 @@ msgstr "Ondoka"
 #: eventyay/common/templates/common/base_public.html:267
 #, python-format
 msgid "This is a static export generated at %(timestamp)s"
-msgstr ""
-"Hili ni toleo la kusafirisha tuli lililotengenezwa tarehe %(timestamp)s"
+msgstr "Hili ni toleo la kusafirisha tuli lililotengenezwa tarehe %(timestamp)s"
 
 #: eventyay/common/templates/common/base.html:235
 #: eventyay/common/templates/common/base_public.html:276
@@ -15461,8 +15452,8 @@ msgid ""
 "The link you clicked on wants to redirect you to a destination on the "
 "website %(host)s."
 msgstr ""
-"Kiungo ulichobofya kinataka kukuelekeza upya kwenye lengwa kwenye tovuti "
-"%(host)s."
+"Kiungo ulichobofya kinataka kukuelekeza upya kwenye lengwa kwenye tovuti %"
+"(host)s."
 
 #: eventyay/common/templates/common/redirect.html:18
 msgid "Please only proceed if you trust this website to be safe."
@@ -15551,10 +15542,8 @@ msgstr[1] ""
 #| msgid "You can choose up to %(max_count)s options from this category."
 msgid "You can keep up to %(count)s slide entry in total."
 msgid_plural "You can keep up to %(count)s slide entries in total."
-msgstr[0] ""
-"Unaweza kuchagua hadi chaguo %(max_count)s kutoka kwenye kategoria hii."
-msgstr[1] ""
-"Unaweza kuchagua hadi chaguo %(max_count)s kutoka kwenye kategoria hii."
+msgstr[0] "Unaweza kuchagua hadi chaguo %(max_count)s kutoka kwenye kategoria hii."
+msgstr[1] "Unaweza kuchagua hadi chaguo %(max_count)s kutoka kwenye kategoria hii."
 
 #: eventyay/common/templates/common/widgets/slides_input.html:79
 #, fuzzy
@@ -18228,8 +18217,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"Ufunguo uliotolewa hauonekani kuwa sahihi. Unapaswa kuanza na mojawapo ya: "
-"%(prefixes)s"
+"Ufunguo uliotolewa hauonekani kuwa sahihi. Unapaswa kuanza na mojawapo ya: %"
+"(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -19336,8 +19325,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "You generated {codes} vouchers, but entered recipients for {recp} vouchers."
-msgstr ""
-"Umetengeneza vocha {codes}, lakini umeingiza wapokeaji wa vocha {recp}."
+msgstr "Umetengeneza vocha {codes}, lakini umeingiza wapokeaji wa vocha {recp}."
 
 #: eventyay/control/forms/vouchers.py:453
 msgid "You need to specify as many seats as voucher codes."
@@ -19431,8 +19419,8 @@ msgid ""
 "Position #{posid} created: {product} ({price}) as an add-on to position "
 "#{addon_to}."
 msgstr ""
-"Nafasi #{posid} imeundwa: {product} ({price}) kama nyongeza kwa nafasi "
-"#{addon_to}."
+"Nafasi #{posid} imeundwa: {product} ({price}) kama nyongeza kwa nafasi #"
+"{addon_to}."
 
 #: eventyay/control/logdisplay.py:194
 #, python-brace-format
@@ -19480,8 +19468,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"UchanganuzI wa msimbo uliofutwa \"{barcode}…\" saa {datetime} kwa orodha "
-"\"{list}\", aina \"{type}\", umepakiwa."
+"UchanganuzI wa msimbo uliofutwa \"{barcode}…\" saa {datetime} kwa orodha \""
+"{list}\", aina \"{type}\", umepakiwa."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19489,8 +19477,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"UchanganuzI wa msimbo uliofutwa \"{barcode}\" kwa orodha \"{list}\", aina "
-"\"{type}\", umepakiwa."
+"UchanganuzI wa msimbo uliofutwa \"{barcode}\" kwa orodha \"{list}\", aina \""
+"{type}\", umepakiwa."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -19498,8 +19486,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"UchanganuzI wa nafasi #{posid} saa {datetime} kwa orodha \"{list}\", aina "
-"\"{type}\", umekataliwa, msimbo wa hitilafu \"{errorcode}\"."
+"UchanganuzI wa nafasi #{posid} saa {datetime} kwa orodha \"{list}\", aina \""
+"{type}\", umekataliwa, msimbo wa hitilafu \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -19526,8 +19514,8 @@ msgstr "Nafasi #{posid} imetolewa kwa orodha \"{list}\"."
 msgid ""
 "Position #{posid} has been checked in at {datetime} for list \"{list}\"."
 msgstr ""
-"Nafasi #{posid} imeingizwa wakati wa kuingia saa {datetime} kwa orodha "
-"\"{list}\"."
+"Nafasi #{posid} imeingizwa wakati wa kuingia saa {datetime} kwa orodha \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:321
 #, python-brace-format
@@ -20361,16 +20349,16 @@ msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
 msgstr ""
-"Nafasi #{posid} imekaguliwa kuingia kwa mkono saa {datetime} kwenye orodha "
-"\"{list}\"."
+"Nafasi #{posid} imekaguliwa kuingia kwa mkono saa {datetime} kwenye orodha \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
 msgstr ""
-"Nafasi #{posid} imekaguliwa kuingia tena saa {datetime} kwenye orodha "
-"\"{list}\"."
+"Nafasi #{posid} imekaguliwa kuingia tena saa {datetime} kwenye orodha \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
@@ -22764,9 +22752,9 @@ msgid ""
 "to make sure they do not show up in your reports and statistics and block "
 "people from actually buying tickets."
 msgstr ""
-"Tukio lako lina <strong>maagizo ya hali ya majaribio</strong> ingawa "
-"<strong>hali ya majaribio imezimwa</strong>. Unapaswa kufuta maagizo hayo "
-"ili kuhakikisha hayaonekani kwenye ripoti na takwimu zako na yasiwazuie watu "
+"Tukio lako lina <strong>maagizo ya hali ya majaribio</strong> ingawa <strong>"
+"hali ya majaribio imezimwa</strong>. Unapaswa kufuta maagizo hayo ili "
+"kuhakikisha hayaonekani kwenye ripoti na takwimu zako na yasiwazuie watu "
 "kununua tiketi kweli."
 
 #: eventyay/control/templates/pretixcontrol/base.html:395
@@ -22800,8 +22788,7 @@ msgstr "inaendeshwa katika hali ya maendeleo"
 #: eventyay/orga/templates/orga/base.html:553
 #: eventyay/presale/templates/pretixpresale/waiting.html:24
 msgid "If this takes longer than a few minutes, please contact us."
-msgstr ""
-"Ikiwa hili litachukua zaidi ya dakika chache, tafadhali wasiliana nasi."
+msgstr "Ikiwa hili litachukua zaidi ya dakika chache, tafadhali wasiliana nasi."
 
 #: eventyay/control/templates/pretixcontrol/boxoffice/payment.html:4
 #: eventyay/control/templates/pretixcontrol/organizers/devices.html:48
@@ -23452,8 +23439,8 @@ msgid ""
 "To confirm you really want this, please type out the event's name "
 "(\"%(name)s\") here:"
 msgstr ""
-"Ili kuthibitisha kweli unataka hili, tafadhali andika jina fupi la tukio "
-"(\"%(slug)s\") hapa:"
+"Ili kuthibitisha kweli unataka hili, tafadhali andika jina fupi la tukio (\"%"
+"(slug)s\") hapa:"
 
 #: eventyay/control/templates/pretixcontrol/event/delete.html:36
 msgid "Your event can not be deleted as it already contains orders."
@@ -23876,9 +23863,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Hakuna watoa huduma za malipo wanaopatikana. Tafadhali nenda kwenye <a "
-"%(plugin_settings_href)s>mipangilio ya programu-jalizi</a> na uwashe "
-"programu-jalizi moja au zaidi za malipo."
+"Hakuna watoa huduma za malipo wanaopatikana. Tafadhali nenda kwenye <a %"
+"(plugin_settings_href)s>mipangilio ya programu-jalizi</a> na uwashe programu-"
+"jalizi moja au zaidi za malipo."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -24245,10 +24232,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Mipangilio hii imekusudiwa kwa watumiaji wa hali ya juu. Tazama <a "
-"href=\"%(docs)s\">hati</a> kwa maelezo zaidi. Kumbuka kwamba hatuwajibiki "
-"kwa ushughulikiaji sahihi wa kodi katika duka lako la tiketi. Ukiwa na "
-"shaka, tafadhali wasiliana na wakili au mshauri wa kodi."
+"Mipangilio hii imekusudiwa kwa watumiaji wa hali ya juu. Tazama <a href=\"%"
+"(docs)s\">hati</a> kwa maelezo zaidi. Kumbuka kwamba hatuwajibiki kwa "
+"ushughulikiaji sahihi wa kodi katika duka lako la tiketi. Ukiwa na shaka, "
+"tafadhali wasiliana na wakili au mshauri wa kodi."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24324,8 +24311,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Hakuna matokeo ya tiketi yanayopatikana. Tafadhali nenda kwenye <a "
-"%(plugin_settings_href)s>mipangilio ya programu-jalizi</a> na uamilishe "
+"Hakuna matokeo ya tiketi yanayopatikana. Tafadhali nenda kwenye <a %"
+"(plugin_settings_href)s>mipangilio ya programu-jalizi</a> na uamilishe "
 "programu-jalizi moja au zaidi za matokeo ya tiketi."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
@@ -25014,8 +25001,8 @@ msgid ""
 "All answers to the description given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Majibu yote ya maelezo yaliyotolewa na wanunuzi wa bidhaa zifuatazo "
-"<strong>yatapotea</strong>."
+"Majibu yote ya maelezo yaliyotolewa na wanunuzi wa bidhaa zifuatazo <strong>"
+"yatapotea</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:15
@@ -25922,8 +25909,7 @@ msgstr "Badilisha taarifa za eneo"
 
 #: eventyay/control/templates/pretixcontrol/order/change_locale.html:18
 msgid "This language will be used whenever emails are sent to the users."
-msgstr ""
-"Lugha hii itatumika wakati wowote barua pepe zinapotumwa kwa watumiaji."
+msgstr "Lugha hii itatumika wakati wowote barua pepe zinapotumwa kwa watumiaji."
 
 #: eventyay/control/templates/pretixcontrol/order/change_questions.html:9
 msgid "Change order information"
@@ -28406,8 +28392,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Tunataka tu kuhakikisha ni wewe kweli. Tafadhali thibitisha tena kwa "
-"'%(login_provider)s'."
+"Tunataka tu kuhakikisha ni wewe kweli. Tafadhali thibitisha tena kwa '%"
+"(login_provider)s'."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28576,8 +28562,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Una uhakika unataka kufuta ingizo lifuatalo la orodha ya kusubiri "
-"<strong>%(entry)s</strong>?"
+"Una uhakika unataka kufuta ingizo lifuatalo la orodha ya kusubiri <strong>%"
+"(entry)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -29558,8 +29544,7 @@ msgstr "Malipo haya hayawezi kuthibitishwa kwa sasa."
 msgid ""
 "You can not refund more than the amount of a payment that is not yet "
 "refunded."
-msgstr ""
-"Huwezi kurejesha zaidi ya kiasi cha malipo ambacho bado hakijarejeshwa."
+msgstr "Huwezi kurejesha zaidi ya kiasi cha malipo ambacho bado hakijarejeshwa."
 
 #: eventyay/control/views/orders.py:1315
 msgid ""
@@ -30449,8 +30434,7 @@ msgstr "Huna ruhusa ya kufanya hivi"
 #: eventyay/control/views/waitinglist.py:81
 msgid ""
 "An email containing a voucher code has been sent to the specified address."
-msgstr ""
-"Barua pepe iliyo na msimbo wa vocha imetumwa kwa anwani iliyobainishwa."
+msgstr "Barua pepe iliyo na msimbo wa vocha imetumwa kwa anwani iliyobainishwa."
 
 #: eventyay/control/views/waitinglist.py:85
 #: eventyay/control/views/waitinglist.py:99
@@ -30861,8 +30845,7 @@ msgstr "Blackberry (Kiungo kupitia Google)"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-confirm-totp.html:52
 msgid "Add a new account to the app by scanning the following barcode:"
-msgstr ""
-"Ongeza akaunti mpya kwenye programu kwa kuchanganua msimbo pau ufuatao:"
+msgstr "Ongeza akaunti mpya kwenye programu kwa kuchanganua msimbo pau ufuatao:"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-confirm-totp.html:56
 msgid "Can't scan the barcode?"
@@ -32989,8 +32972,7 @@ msgstr "Uthibitishaji wa hatua mbili sasa umezimwa kwa akaunti yako."
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:143
 msgid "Security devices are only available if pretix is served via HTTPS."
-msgstr ""
-"Vifaa vya usalama vinapatikana tu ikiwa pretix inatolewa kupitia HTTPS."
+msgstr "Vifaa vya usalama vinapatikana tu ikiwa pretix inatolewa kupitia HTTPS."
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:186
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:298
@@ -33123,8 +33105,8 @@ msgstr ""
 #, python-format
 msgid "Please confirm that %(email)s is an email address for user %(user)s."
 msgstr ""
-"Tafadhali thibitisha kuwa %(email)s ni anwani ya barua pepe ya mtumiaji "
-"%(user)s."
+"Tafadhali thibitisha kuwa %(email)s ni anwani ya barua pepe ya mtumiaji %"
+"(user)s."
 
 #: eventyay/eventyay_common/views/custom.py:55
 #, python-format
@@ -33555,8 +33537,7 @@ msgstr "Idadi ya chaneli za ujumbe wa moja kwa moja (jumla)"
 
 #: eventyay/features/analytics/graphs/report.py:458
 msgid "Number of chat messages in direct messages (in timeframe)"
-msgstr ""
-"Idadi ya ujumbe za gumzo katika ujumbe wa moja kwa moja (ndani ya muda)"
+msgstr "Idadi ya ujumbe za gumzo katika ujumbe wa moja kwa moja (ndani ya muda)"
 
 #: eventyay/features/analytics/graphs/report.py:470
 msgid "Number of 1:1 call attempts (in timeframe)"
@@ -33950,8 +33931,8 @@ msgid ""
 msgstr ""
 "Habari!\n"
 "\n"
-"Umeongezwa kwenye pendekezo la {event_name}, lenye kichwa "
-"“{proposal_title}”.\n"
+"Umeongezwa kwenye pendekezo la {event_name}, lenye kichwa “{proposal_title}"
+"”.\n"
 "Akaunti imeundwa kwa ajili yako — tafadhali fuata kiungo hiki kuweka "
 "nenosiri la akaunti yako.\n"
 "\n"
@@ -33978,8 +33959,8 @@ msgid ""
 msgstr ""
 "Habari!\n"
 "\n"
-"Umeongezwa kwenye pendekezo la {event_name}, lenye kichwa "
-"“{proposal_title}”.\n"
+"Umeongezwa kwenye pendekezo la {event_name}, lenye kichwa “{proposal_title}"
+"”.\n"
 "Tafadhali fuata kiungo hiki kuhariri wasifu wako wa mtumiaji na kuona hali "
 "ya pendekezo lako:\n"
 "\n"
@@ -34079,8 +34060,7 @@ msgstr "Onyesha muda na tarehe ambayo CfP inaisha kwa wazungumzaji watarajiwa."
 
 #: eventyay/orga/forms/cfp.py:377
 msgid "Do not show Call for Speakers on the menu after the deadline"
-msgstr ""
-"Usionyeshe Wito kwa Wazungumzaji kwenye menyu baada ya tarehe ya mwisho"
+msgstr "Usionyeshe Wito kwa Wazungumzaji kwenye menyu baada ya tarehe ya mwisho"
 
 #: eventyay/orga/forms/cfp.py:380
 msgid ""
@@ -36353,8 +36333,8 @@ msgid ""
 "strong> <a href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
 "Sehemu hii ina majibu <strong>%(count)s</strong>, <strong>%(missing)s</"
-"strong> <a href=\"%(base_search_url)sunanswered=1\">bado hayajawasilishwa</"
-"a>."
+"strong> <a href=\"%(base_search_url)sunanswered=1\">bado hayajawasilishwa</a>"
+"."
 
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:60
 #, python-format
@@ -36914,8 +36894,8 @@ msgstr ""
 "Unaweza kuwa na misimbo ya mapendekezo (mf. “UX3N1”) kama funguo, na "
 "utambulisho wa mtumiaji kama thamani, au kinyume chake. Utambulisho wa "
 "mtumiaji unaweza kuwa ama anwani ya barua pepe ya mkaguzi au msimbo wake wa "
-"mtumiaji (mf. “34KJN”). Unaweza kupata faili ya mfano <a "
-"href=\"%(href)s\">hapa</a>."
+"mtumiaji (mf. “34KJN”). Unaweza kupata faili ya mfano <a href=\"%(href)s\">"
+"hapa</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:23
 msgid ""
@@ -36958,8 +36938,8 @@ msgid ""
 "settings</a>."
 msgstr ""
 "Wakaguzi wataweza kuona na kukagua <strong>mapendekezo yao waliyopangiwa "
-"pekee</strong>. Unaweza kubadilisha hili katika <a "
-"href=\"%(href)s\">mipangilio ya ukaguzi</a> yako."
+"pekee</strong>. Unaweza kubadilisha hili katika <a href=\"%(href)s\">"
+"mipangilio ya ukaguzi</a> yako."
 
 #: eventyay/orga/templates/orga/review/assignment.html:120
 #, python-format
@@ -37001,8 +36981,7 @@ msgstr "Leta mgao"
 msgid "Or review the missing proposal here."
 msgid_plural "Or review the missing %(count)s proposals one-by-one."
 msgstr[0] "Au kagua pendekezo linalokosekana hapa."
-msgstr[1] ""
-"Au kagua mapendekezo %(count)s yanayokosekana moja baada ya jingine."
+msgstr[1] "Au kagua mapendekezo %(count)s yanayokosekana moja baada ya jingine."
 
 #: eventyay/orga/templates/orga/review/bulk.html:31
 #: eventyay/orga/templates/orga/review/dashboard.html:41
@@ -37606,8 +37585,7 @@ msgstr ""
 msgid ""
 "Please look at <a href=\"%(link)s\">our documentation</a> for more "
 "information."
-msgstr ""
-"Tafadhali angalia <a href=\"%(link)s\">hati zetu</a> kwa maelezo zaidi."
+msgstr "Tafadhali angalia <a href=\"%(link)s\">hati zetu</a> kwa maelezo zaidi."
 
 #: eventyay/orga/templates/orga/settings/widget.html:90
 msgid "Widget preview"
@@ -38550,8 +38528,7 @@ msgstr "Tuma barua pepe"
 msgid ""
 "This mail either does not exist or cannot be sent because it was sent "
 "already."
-msgstr ""
-"Barua pepe hii ama haipo au haiwezi kutumwa kwa sababu tayari ilitumwa."
+msgstr "Barua pepe hii ama haipo au haiwezi kutumwa kwa sababu tayari ilitumwa."
 
 #: eventyay/orga/views/mails.py:155
 msgid "This mail had been sent already."
@@ -38608,8 +38585,7 @@ msgstr "Barua pepe imetumwa."
 #: eventyay/orga/views/mails.py:318
 msgid ""
 "The email has been saved. When you send it, the updated text will be used."
-msgstr ""
-"Barua pepe imehifadhiwa. Ukiituma, maandishi yaliyosasishwa yatatumika."
+msgstr "Barua pepe imehifadhiwa. Ukiituma, maandishi yaliyosasishwa yatatumika."
 
 #: eventyay/orga/views/mails.py:332
 msgid "The mail has been copied, you can edit it now."
@@ -38762,8 +38738,8 @@ msgstr ""
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr ""
-"Haikuweza kupata uhamishaji wa sasa, tafadhali jaribu kuutengeneza upya. "
-"({error})"
+"Haikuweza kupata uhamishaji wa sasa, tafadhali jaribu kuutengeneza upya. ("
+"{error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -39780,8 +39756,7 @@ msgstr "BIC (hiari)"
 
 #: eventyay/plugins/banktransfer/payment.py:460
 msgid "Your input was invalid, please see below for details."
-msgstr ""
-"Uingizaji wako haukuwa sahihi, tafadhali tazama hapa chini kwa maelezo."
+msgstr "Uingizaji wako haukuwa sahihi, tafadhali tazama hapa chini kwa maelezo."
 
 #: eventyay/plugins/banktransfer/refund_export.py:29
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/control.html:5
@@ -40131,8 +40106,8 @@ msgstr[0] ""
 "Unajaribu kupakua uhamishaji wa marejesho kutoka %(date)s wenye agizo moja "
 "na jumla ya %(sum)s."
 msgstr[1] ""
-"Unajaribu kupakua uhamishaji wa marejesho kutoka %(date)s wenye agizo "
-"%(cnt)s na jumla ya %(sum)s."
+"Unajaribu kupakua uhamishaji wa marejesho kutoka %(date)s wenye agizo %(cnt)"
+"s na jumla ya %(sum)s."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/sepa_export.html:23
 msgid ""
@@ -41544,14 +41519,12 @@ msgstr "Sasa tunajaribu kukuandikia nyongeza hizi!"
 msgid "You need to choose exactly one option from this category."
 msgid_plural "You need to choose %(min_count)s options from this category."
 msgstr[0] "Unahitaji kuchagua chaguo moja tu kutoka kwenye kategoria hii."
-msgstr[1] ""
-"Unahitaji kuchagua chaguo %(min_count)s kutoka kwenye kategoria hii."
+msgstr[1] "Unahitaji kuchagua chaguo %(min_count)s kutoka kwenye kategoria hii."
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_addons.html:54
 #, python-format
 msgid "You can choose up to %(max_count)s options from this category."
-msgstr ""
-"Unaweza kuchagua hadi chaguo %(max_count)s kutoka kwenye kategoria hii."
+msgstr "Unaweza kuchagua hadi chaguo %(max_count)s kutoka kwenye kategoria hii."
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_addons.html:58
 #, python-format
@@ -41686,8 +41659,8 @@ msgstr "Muda wa kikapu umeisha"
 #, python-format
 msgid "The products in your cart are reserved for you for %(minutes)s minutes."
 msgstr ""
-"Bidhaa kwenye rukwama yako zimehifadhiwa kwa ajili yako kwa dakika "
-"%(minutes)s."
+"Bidhaa kwenye rukwama yako zimehifadhiwa kwa ajili yako kwa dakika %(minutes)"
+"s."
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_base.html:44
 #: eventyay/presale/templates/pretixpresale/event/checkout_confirm.html:48
@@ -42149,8 +42122,8 @@ msgstr "Taarifa za jumla, ongeza bidhaa kwenye kikapu chako"
 #, python-format
 msgid "The items in your cart are reserved for you for %(minutes)s minutes."
 msgstr ""
-"Bidhaa kwenye kikapu chako zimehifadhiwa kwa ajili yako kwa dakika "
-"%(minutes)s."
+"Bidhaa kwenye kikapu chako zimehifadhiwa kwa ajili yako kwa dakika %(minutes)"
+"s."
 
 #: eventyay/presale/templates/pretixpresale/event/index.html:91
 msgid "The items in your cart are no longer reserved for you."
@@ -42653,8 +42626,8 @@ msgid ""
 "<strong>%(fee)s</strong> will be kept and you will receive a refund of the "
 "remainder."
 msgstr ""
-"Unaweza kughairi agizo hili. Katika hali hii, ada ya kughairi ya "
-"<strong>%(fee)s</strong> itakatwa na utapokea marejesho ya salio."
+"Unaweza kughairi agizo hili. Katika hali hii, ada ya kughairi ya <strong>%"
+"(fee)s</strong> itakatwa na utapokea marejesho ya salio."
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:503
 #: eventyay/presale/templates/pretixpresale/event/order.html:524
@@ -42729,8 +42702,8 @@ msgid ""
 "If you want, you can request a refund for the full amount minus a "
 "cancellation fee of %(fee)s."
 msgstr ""
-"Ukipenda, unaweza kuomba kurejeshewa pesa zote isipokuwa ada ya kughairi ya "
-"%(fee)s."
+"Ukipenda, unaweza kuomba kurejeshewa pesa zote isipokuwa ada ya kughairi ya %"
+"(fee)s."
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:49
 msgid "If you want, you can request a full refund."
@@ -43116,8 +43089,8 @@ msgid ""
 "                                                    "
 msgstr ""
 "\n"
-"                                                        kutoka "
-"%(start_date)s\n"
+"                                                        kutoka %(start_date)"
+"s\n"
 "                                                    "
 
 #: eventyay/presale/templates/pretixpresale/fragment_join_online_video.html:10
@@ -43955,8 +43928,7 @@ msgstr "Bado hakuna maoni kwa kikao hiki."
 #: eventyay/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
 msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"- Kikao chako “%(title)s” kitafanyika saa %(start)s katika %(location)s"
+msgstr "- Kikao chako “%(title)s” kitafanyika saa %(start)s katika %(location)s"
 
 #: eventyay/schedule/templates/schedule/speaker_notification.txt:3
 #, python-format

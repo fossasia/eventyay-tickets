@@ -81,3 +81,16 @@ export function normalizeLanguageStreamEntry(entry) {
 export function defaultLanguageStreamEntry() {
 	return { language: '', url: '', youtube_id: '', use_video: false }
 }
+
+export async function syncInterpretationServices(store, roomId) {
+	const response = await fetch(interpretationApiUrl(store, roomId, 'sync/'), {
+		method: 'POST',
+		headers: await interpretationAuthHeaders(),
+		credentials: 'include',
+	})
+	const data = await response.json().catch(() => ({}))
+	if (!response.ok) {
+		throw new Error(apiErrorDetail(data) || 'Could not sync interpretation services')
+	}
+	return data
+}

@@ -69,7 +69,8 @@ export const CHAT_CHANNEL_TYPE_ID = 'channel-text'
 
 export function isChatChannel(roomOrConfig) {
 	const modules = roomOrConfig?.module_config || roomOrConfig?.modules || []
-	return Array.isArray(modules) && modules.length === 1 && modules[0]?.type === 'chat.native'
+	if (!Array.isArray(modules) || !modules.length) return false
+	return modules.some(m => m.type === 'chat.native') && !modules.some(m => ['livestream.native', 'livestream.youtube', 'call.bigbluebutton', 'call.janus', 'call.zoom', 'call.jitsi', 'networking.roulette', 'page.landing'].includes(m.type))
 }
 
 export function isChatManagedRoom(roomOrConfig) {

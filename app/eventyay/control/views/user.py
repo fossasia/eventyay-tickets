@@ -174,7 +174,7 @@ class StartStaffSession(StaffMemberRequiredMixin, RecentAuthenticationRequiredMi
         if not request.user.has_active_staff_session(request.session.session_key):
             StaffSession.objects.create(user=request.user, session_key=request.session.session_key)
 
-        next_url = request.GET.get('next')
+        next_url = request.GET.get('next') or request.POST.get('next')
         if next_url and url_has_allowed_host_and_scheme(
             next_url,
             allowed_hosts={request.get_host()},
@@ -191,18 +191,20 @@ class StopStaffSession(StaffMemberRequiredMixin, View):
             session_key=request.session.session_key,
             user=request.user,
         ).first()
-        if not session:
-            return redirect(reverse('control:index'))
+        if session:
+            session.date_end = now()
+            session.save()
 
-        session.date_end = now()
-        session.save()
         next_url = request.GET.get('next') or request.POST.get('next')
         if next_url and url_has_allowed_host_and_scheme(
             next_url,
             allowed_hosts={request.get_host()},
         ):
             return redirect(next_url)
-        return redirect(reverse('eventyay_admin:admin.user.sudo.edit', kwargs={'id': session.pk}))
+
+        if session:
+            return redirect(reverse('eventyay_admin:admin.user.sudo.edit', kwargs={'id': session.pk}))
+        return redirect(reverse('control:index'))
 
     def get(self, request, *args, **kwargs):
         return self._end_staff_session(request)

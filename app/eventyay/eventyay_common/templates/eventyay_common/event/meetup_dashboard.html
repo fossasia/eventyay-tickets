@@ -1,0 +1,222 @@
+{% extends "eventyay_common/event/base.html" %}
+{% load i18n %}
+{% load eventurl %}
+{% load bootstrap3 %}
+{% load static %}
+{% load eventsignal %}
+
+{% block title %}{{ request.event.name }}{% endblock %}
+
+{% block custom_header %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'vendored/apexcharts/apexcharts.css' %}" />
+    <link rel="stylesheet" href="{% static 'eventyay-common/css/meetup_dashboard.css' %}">
+    <script defer src="{% static 'vendored/apexcharts/apexcharts.min.js' %}"></script>
+    <script type="module" src="{% static 'eventyay-common/js/meetup-analytics.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {% trans "Meetup" as date_range %}
+    {% with header_extra="<small class='event-date text-muted'>"|add:date_range|add:"</small>" %}
+        {% include "common/includes/header_nav.html" with header_title=request.event.name header_component_link="eventyay_common/event/component_link.html" header_title_extra=header_extra %}
+    {% endwith %}
+
+    {% eventsignal request.event "eventyay.control.signals.event_dashboard_top" request=request %}
+    {% if actions|length > 0 %}
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% trans "Your attention is required to resolve the following issues" %}
+                </h3>
+            </div>
+            <ul class="list-group">
+                {% for action in actions %}
+                    <li class="list-group-item logentry">
+                        <p>
+                            {% url "control:event.requiredaction.discard" event=request.event.slug organizer=request.event.organizer.slug id=action.id as discard_url %}
+                            <a href="{{ discard_url }}" class="btn btn-default btn-xs pull-right flip">
+                                {% trans "Hide message" %}
+                            </a>
+                            <small><span
+                                    class="fa fa-clock-o"></span> {{ action.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                            </small>
+                        </p>
+                        {{ action.display|safe }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="panel-footer">
+                <a href='{% url "control:event.requiredactions" event=request.event.slug organizer=request.event.organizer.slug %}'>
+                    {% trans "Show more" %}
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if request.event.has_subevents %}
+        <form class="form-inline helper-display-inline" action="" method="get">
+            {% include "pretixcontrol/event/fragment_subevent_choice_simple.html" %}
+        </form>
+    {% endif %}
+    <div class="dashboard custom">
+        <div class="panel panel-default items widget-container widget-full no-padding">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% trans "Meetup Dashboard" %}
+                </h3>
+            </div>
+            <div class="panel-body">
+                <p>
+                    {% trans "The meetup dashboard provides a streamlined overview of your core components: Registrations and Video. Manage RSVPs, track attendee lists, and set up live video streams." %}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="dashboard custom">
+        {% if not request.event.has_subevents or subevent %}
+            {% include "pretixcontrol/event/fragment_timeline.html" %}
+        {% endif %}
+        {% include "pretixcontrol/event/fragment_info_box.html" %}
+    </div>
+
+    {% if can_view_orders %}
+        <div class="analytics-section">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{% trans "Registrations over time (last 30 days)" %}</h3>
+                        </div>
+                        <div class="panel-body chart-panel-body">
+                            {% if has_orders %}
+                                {{ orders_over_time|json_script:"meetup-orders-over-time-data" }}
+                                <div
+                                    id="meetup-orders-over-time-chart"
+                                    data-label-ordered="{% trans 'Placed' %}"
+                                    data-label-paid="{% trans 'Confirmed' %}"
+                                ></div>
+                            {% else %}
+                                <div class="empty-chart-state">
+                                    <i class="fa fa-line-chart fa-3x"></i>
+                                    <p>{% trans "No registrations yet. Trend data will appear as attendees RSVP." %}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{% trans "Registrations by status" %}</h3>
+                        </div>
+                        <div class="panel-body chart-panel-body">
+                            {% if has_orders %}
+                                {{ orders_by_status|json_script:"meetup-orders-by-status-data" }}
+                                <div id="meetup-orders-by-status-chart"></div>
+                            {% else %}
+                                <div class="empty-chart-state">
+                                    <i class="fa fa-pie-chart fa-3x"></i>
+                                    <p>{% trans "No registrations to display." %}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{% trans "Cumulative revenue over time (last 30 days)" %}</h3>
+                        </div>
+                        <div class="panel-body chart-panel-body">
+                            {% if has_orders %}
+                                {{ revenue_over_time|json_script:"meetup-revenue-over-time-data" }}
+                                <div
+                                    id="meetup-revenue-over-time-chart"
+                                    data-currency="{{ request.event.currency }}"
+                                    data-label="{% trans 'Cumulative revenue' %}"
+                                ></div>
+                            {% else %}
+                                <div class="empty-chart-state">
+                                    <i class="fa fa-money fa-3x"></i>
+                                    <p>{% trans "No revenue recorded yet." %}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans "Event logs" %}
+            </h3>
+        </div>
+        <ul class="list-group">
+            {% for log in logs %}
+                <li class="list-group-item logentry">
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-6 col-xs-12">
+                            <span class="fa fa-clock-o"></span> {{ log.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                            {% if log.shredded %}
+                                <span class="fa fa-eraser fa-danger fa-fw"
+                                      data-toggle="tooltip"
+                                      title="{% trans "Personal data was cleared from this log entry." %}">
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-2 col-sm-6 col-xs-12">
+                            {% if log.user %}
+                                {% if log.user.is_staff %}
+                                    <span class="fa fa-id-card fa-danger fa-fw"
+                                          data-toggle="tooltip"
+                                          title="{% trans "This change was performed by a system administrator." %}">
+                                </span>
+                                {% else %}
+                                    <span class="fa fa-user fa-fw"></span>
+                                {% endif %}
+                                {{ log.user.get_full_name }}
+                                {% if log.oauth_application %}
+                                    <br><span class="fa fa-plug fa-fw"></span>
+                                    {{ log.oauth_application.name }}
+                                {% endif %}
+                            {% elif log.device %}
+                                <span class="fa fa-mobile fa-fw"></span>
+                                {{ log.device.name }}
+                            {% elif log.api_token %}
+                                <span class="fa fa-key fa-fw"></span>
+                                {{ log.api_token.name }}
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-2 col-sm-12 col-xs-12">
+                            {% if log.display_object %}
+                                <span class="fa fa-flag"></span> {{ log.display_object|safe }}
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-6 col-sm-12 col-xs-12">
+                            {{ log.display }}
+                            {% if staff_session %}
+                                <a href="" class="btn btn-default btn-xs" data-expandlogs data-id="{{ log.pk }}">
+                                    <span class="fa-eye fa fa-fw"></span>
+                                    {% trans "Inspect" %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="panel-footer">
+            <a href="{% url "control:event.log" event=request.event.slug organizer=request.event.organizer.slug %}">
+                {% trans "Show more logs" %}
+            </a>
+        </div>
+    </div>
+
+    {% include 'eventyay_common/includes/event_settings_permission_dialog.html' with dialog_title_id='event-settings-perm-event-index' %}
+{% endblock %}

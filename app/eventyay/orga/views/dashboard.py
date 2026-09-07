@@ -156,6 +156,49 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
     template_name = 'orga/event/dashboard.html'
     permission_required = 'base.talk_orga_access_event'
 
+    def enhance_timeline(self, event, stages):
+        from django.utils.translation import gettext as _
+        from eventyay.base.models import SubmissionStates
+        
+        status_map = {
+            'done': _('Completed'),
+            'current': _('In progress'),
+            'todo': _('Pending'),
+        }
+
+        for key, stage in stages.items():
+            stage['status_text'] = status_map.get(stage.get('phase'), '')
+            stage['summary'] = ''
+
+            if key == 'CFP_OPEN' and hasattr(event, 'cfp') and getattr(event.cfp, 'max_deadline', None):
+                if stage['phase'] == 'current':
+                    stage['summary'] = event.cfp.max_deadline.strftime('%b %d')
+                elif stage['phase'] == 'done':
+                    stage['summary'] = _('{count} submitted').format(count=event.submissions.count())
+
+            elif key == 'REVIEW':
+                rejected = event.submissions.filter(state=SubmissionStates.REJECTED).count()
+                if rejected > 0:
+                    stage['summary'] = _('{count} rejected').format(count=rejected)
+
+            elif key == 'SCHEDULE':
+                from django.db.models import Q
+                unscheduled = event.wip_schedule.talks.filter(
+                    Q(start__isnull=True) | Q(room__isnull=True),
+                    is_visible=True, submission__isnull=False
+                ).count()
+                
+                if stage['phase'] == 'current' or unscheduled > 0:
+                    stage['summary'] = _('{count} unscheduled').format(count=unscheduled)
+                elif stage['phase'] == 'done':
+                    scheduled = event.wip_schedule.talks.filter(
+                        start__isnull=False, room__isnull=False, is_visible=True, submission__isnull=False
+                    ).count()
+                    if scheduled > 0:
+                        stage['summary'] = _('{count} scheduled').format(count=scheduled)
+        
+        return list(stages.values())
+
     def get_cfp_tiles(self, _now, can_change_submissions=False):
         result = []
         if not hasattr(self.request.event, 'cfp'):
@@ -251,7 +294,8 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
         result = super().get_context_data(**kwargs)
         event = self.request.event
         stages = get_stages(event)
-        result['timeline'] = stages.values()
+        
+        result['timeline'] = self.enhance_timeline(event, stages)
         result['go_to_target'] = 'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         _now = now()
         today = _now

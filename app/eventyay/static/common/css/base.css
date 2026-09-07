@@ -56,6 +56,35 @@ legend {
   object-fit: contain;
 }
 
+.content-header,
+h2.content-header {
+  margin-top: 0;
+  padding-top: 0;
+  margin-bottom: 15px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  a,
+  small {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+#main-card > main > h1:first-child,
+#main-card > main > h2:first-child,
+#main-card > main > main > h1:first-child,
+#main-card > main > main > h2:first-child,
+#main-card > main > main > :first-child > h1:first-child,
+#main-card > main > main > :first-child > h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+#main-card > main > main > section.front-page:first-child {
+  margin-top: 0;
+}
+
 button,
 [role="button"],
 a.btn,

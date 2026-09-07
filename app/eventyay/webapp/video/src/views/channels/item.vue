@@ -1,6 +1,7 @@
 <template lang="pug">
 .c-channel(:class="{'has-call': hasCall}")
 	.ui-page-header
+		bunt-icon-button.btn-back(@click="onBack", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		h2
 			span.user(v-for="(u, key) in otherUsers", :class="{deleted: u.deleted}")
 				span(v-if="key !== 0") {{ ', ' }}
@@ -57,6 +58,15 @@ export default {
 		async pollOnlineStatus() {
 			this.onlineStatus = (await api.call('user.online_status', {ids: this.otherUsers.map(u => u.id)}))
 			this.pollOnlineStatusStatusTimeout = window.setTimeout(this.pollOnlineStatus, 20000)
+		},
+		onBack() {
+			if (window.history.state && window.history.state.back) {
+				this.$router.back()
+			} else if (window.eventyay?.isOrganizerArea) {
+				this.$router.replace({ name: 'organizer' })
+			} else {
+				this.$router.replace({ name: 'about' })
+			}
 		}
 	}
 }

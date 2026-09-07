@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:56+0000\n"
-"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
+"PO-Revision-Date: 2026-08-27 12:04+0000\n"
+"Last-Translator: Elena Lappen <elappen@wikimedia.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/es/>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -257,8 +257,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Para ver nuestra agenda, favor de activar JavaScript o de ir <a "
-"href=\"%(href)s\">aquí</a> para nuestra versión sín JavaScript (NoJS)."
+"Para ver nuestra agenda, favor de activar JavaScript o de ir <a href=\"%"
+"(href)s\">aquí</a> para nuestra versión sín JavaScript (NoJS)."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -2176,8 +2176,7 @@ msgstr "Generar facturas"
 
 #: eventyay/base/configurations/default_setting.py:748
 msgid "Invoices will never be automatically generated for free orders."
-msgstr ""
-"Las facturas nunca se generarán automáticamente para pedidos gratuitos."
+msgstr "Las facturas nunca se generarán automáticamente para pedidos gratuitos."
 
 #: eventyay/base/configurations/default_setting.py:757
 msgid "Automatically cancel and reissue invoice on address changes"
@@ -3250,8 +3249,8 @@ msgstr ""
 "Hola, \n"
 "\n"
 "hemos recibido con éxito su pedido para {event} con un valor total\n"
-"de {total_with_currency}. Por favor, complete su pago antes de "
-"{expire_date}. \n"
+"de {total_with_currency}. Por favor, complete su pago antes de {expire_date}"
+". \n"
 "\n"
 "{payment_info} \n"
 "\n"
@@ -5840,8 +5839,8 @@ msgid ""
 "Invalid placeholder syntax: You used a different number of \"{\" than of \"}"
 "\"."
 msgstr ""
-"Sintaxis de marcador de posición no válida: Usaste un número diferente de "
-"\"{\" que de \"}\"."
+"Sintaxis de marcador de posición no válida: Usaste un número diferente de \""
+"{\" que de \"}\"."
 
 #: eventyay/base/forms/validators.py:41
 #, python-format
@@ -6758,8 +6757,7 @@ msgstr ""
 
 #: eventyay/base/models/event.py:525 eventyay/base/models/organizer.py:133
 msgid "The slug may only contain letters, numbers, dots and dashes."
-msgstr ""
-"La URL semántica solo puede contener letras, números, puntos y guiones."
+msgstr "La URL semántica solo puede contener letras, números, puntos y guiones."
 
 #: eventyay/base/models/event.py:529 eventyay/base/models/organizer.py:137
 #: eventyay/control/templates/pretixcontrol/admin/organizers.html:53
@@ -7324,8 +7322,7 @@ msgstr "Hacer predeterminado"
 #, fuzzy
 #| msgid "Invoices will never be automatically generated for free orders."
 msgid "Controls whether the plugin is automatically enabled for new events."
-msgstr ""
-"Las facturas nunca se generarán automáticamente para pedidos gratuitos."
+msgstr "Las facturas nunca se generarán automáticamente para pedidos gratuitos."
 
 #: eventyay/base/models/global_plugin_config.py:38
 msgid "Show in organizer plugin list"
@@ -8431,8 +8428,7 @@ msgstr "Mostrar en el menú del encabezado en todas las páginas"
 
 #: eventyay/base/models/page.py:27
 msgid "Show in website footer menu on all pages"
-msgstr ""
-"Mostrar en el menú del pie de página del sitio web en todas las páginas"
+msgstr "Mostrar en el menú del pie de página del sitio web en todas las páginas"
 
 #: eventyay/base/models/page.py:31
 msgid ""
@@ -8919,15 +8915,13 @@ msgstr ""
 
 #: eventyay/base/models/product.py:786
 msgid "The product's availability cannot end before it starts."
-msgstr ""
-"La disponibilidad del producto no puede terminar antes de que comience."
+msgstr "La disponibilidad del producto no puede terminar antes de que comience."
 
 #: eventyay/base/models/product.py:791
 #, fuzzy
 #| msgid "The product's availability cannot end before it starts."
 msgid "Admission validity cannot end before it starts."
-msgstr ""
-"La disponibilidad del producto no puede terminar antes de que comience."
+msgstr "La disponibilidad del producto no puede terminar antes de que comience."
 
 #: eventyay/base/models/product.py:807
 msgid "Admission validity offsets cannot be negative."
@@ -9127,9 +9121,9 @@ msgid ""
 "and can be toggled by event organizers."
 msgstr ""
 "Las preguntas inactivas no se muestran a los clientes durante la compra o el "
-"check-in. A diferencia de las preguntas ocultas (que son a nivel del "
-"sistema), las preguntas activas controlan la visibilidad y pueden ser "
-"alternadas por los organizadores del evento."
+"check-in. A diferencia de las preguntas ocultas (que son a nivel del sistema)"
+", las preguntas activas controlan la visibilidad y pueden ser alternadas por "
+"los organizadores del evento."
 
 #: eventyay/base/models/product.py:1342
 msgid "Help text"
@@ -10541,8 +10535,7 @@ msgstr ""
 
 #: eventyay/base/models/vouchers.py:250
 msgid "You cannot select a quota that belongs to a different event."
-msgstr ""
-"No se puede seleccionar una cuota que pertenezca a un evento diferente."
+msgstr "No se puede seleccionar una cuota que pertenezca a un evento diferente."
 
 #: eventyay/base/models/vouchers.py:252
 msgid "You cannot select a quota and a specific product at the same time."
@@ -11850,8 +11843,7 @@ msgstr "No puedes seleccionar más de %s productos por pedido."
 #, python-format
 msgid ""
 "You cannot select more than %(max)s products of the product %(product)s."
-msgstr ""
-"No puedes seleccionar más de %(max)s unidades del producto %(product)s."
+msgstr "No puedes seleccionar más de %(max)s unidades del producto %(product)s."
 
 #: eventyay/base/services/cart.py:78
 #, python-format
@@ -11866,8 +11858,8 @@ msgid ""
 "We removed %(product)s from your cart as you can not buy less than %(min)s "
 "items of it."
 msgstr ""
-"Hemos quitado %(product)s de su carrito ya que no puede comprar menos de "
-"%(min)s artículos de él."
+"Hemos quitado %(product)s de su carrito ya que no puede comprar menos de %"
+"(min)s artículos de él."
 
 #: eventyay/base/services/cart.py:82 eventyay/base/services/orders.py:118
 msgid "The presale period for this event has not yet started."
@@ -13220,8 +13212,7 @@ msgstr "Haga clic aquí para ver y cambiar su configuración de notificación"
 
 #: eventyay/base/templates/pretixbase/email/notification.html:60
 msgid "Click here disable all notifications immediately."
-msgstr ""
-"Haga clic aquí para desactivar todas las notificaciones inmediatamente."
+msgstr "Haga clic aquí para desactivar todas las notificaciones inmediatamente."
 
 #: eventyay/base/templates/pretixbase/email/notification.txt:15
 msgid "Click here to view and change your notification settings:"
@@ -13229,8 +13220,7 @@ msgstr "Haga clic aquí para ver y cambiar su configuración de notificación:"
 
 #: eventyay/base/templates/pretixbase/email/notification.txt:17
 msgid "Click here disable all notifications immediately:"
-msgstr ""
-"Haga clic aquí para desactivar todas las notificaciones inmediatamente:"
+msgstr "Haga clic aquí para desactivar todas las notificaciones inmediatamente:"
 
 #: eventyay/base/templates/pretixbase/email/order_details.html:7
 msgid ""
@@ -13819,8 +13809,8 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
 msgstr ""
-"Usted, %(name)s, ha sido invitado a ser un ponente de la sesión “%(talk)s”. "
-"¿Aceptas la invitación?"
+"Usted, %(name)s, ha sido invitado a ser un ponente de la sesión “%(talk)s”. ¿"
+"Aceptas la invitación?"
 
 #: eventyay/cfp/templates/cfp/event/invitation.html:35
 msgid "Abstract:"
@@ -14250,8 +14240,8 @@ msgid ""
 "If you did not, why not go ahead and create a proposal now? We’d love to "
 "hear from you!"
 msgstr ""
-"Si no lo hiciste, ¿por qué no seguir adelante y crear una propuesta ahora? "
-"¡Nos encantaría saber de ti!"
+"Si no lo hiciste, ¿por qué no seguir adelante y crear una propuesta ahora? ¡"
+"Nos encantaría saber de ti!"
 
 #: eventyay/cfp/templates/cfp/event/user_submissions.html:172
 msgid "Submit something now!"
@@ -14993,8 +14983,8 @@ msgid ""
 "It looks as if the communication between you and eventyay went wrong in some "
 "way. <br> Please return to the last page and try again!"
 msgstr ""
-"Parece que la comunicación entre usted y eventyay salió mal de alguna manera."
-"<br> ¡Regrese a la última página y vuelva a intentarlo!"
+"Parece que la comunicación entre usted y eventyay salió mal de alguna "
+"manera.<br> ¡Regrese a la última página y vuelva a intentarlo!"
 
 #: eventyay/common/templates/400.html:29 eventyay/common/templates/400.html:32
 #: eventyay/common/templates/403.html:35 eventyay/common/templates/403.html:38
@@ -15479,8 +15469,8 @@ msgid ""
 "The link you clicked on wants to redirect you to a destination on the "
 "website %(host)s."
 msgstr ""
-"El enlace que has pulsado quiere redirigirte a un destino en el sitio web "
-"%(host)s."
+"El enlace que has pulsado quiere redirigirte a un destino en el sitio web %"
+"(host)s."
 
 #: eventyay/common/templates/common/redirect.html:18
 msgid "Please only proceed if you trust this website to be safe."
@@ -17637,8 +17627,7 @@ msgstr "Texto de pie de página adicional"
 
 #: eventyay/control/forms/global_settings.py:158
 msgid "Will be included as additional text in the footer, site-wide."
-msgstr ""
-"Se incluirá como texto adicional en el pie de página, en todo el sitio."
+msgstr "Se incluirá como texto adicional en el pie de página, en todo el sitio."
 
 #: eventyay/control/forms/global_settings.py:166
 msgid "Additional footer link"
@@ -18256,8 +18245,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"La clave proporcionada no parece válida. Debe comenzar con uno de: "
-"%(prefixes)s"
+"La clave proporcionada no parece válida. Debe comenzar con uno de: %"
+"(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -19319,8 +19308,7 @@ msgstr ""
 #: eventyay/control/forms/vouchers.py:363
 #, python-brace-format
 msgid "CSV input needs to contain a field with the header \"{header}\"."
-msgstr ""
-"El CSV de entrada ha de contener un campo con la cabecera \"{header}\"."
+msgstr "El CSV de entrada ha de contener un campo con la cabecera \"{header}\"."
 
 #: eventyay/control/forms/vouchers.py:368
 #, python-brace-format
@@ -19391,8 +19379,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Posición #{posid}: {old_product} ({old_price}) cambió a {new_product} "
-"({new_price})."
+"Posición #{posid}: {old_product} ({old_price}) cambió a {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19493,8 +19481,8 @@ msgid ""
 "Unknown scan of code \"{barcode}…\" at {datetime} for list \"{list}\", type "
 "\"{type}\"."
 msgstr ""
-"Escaneo desconocido del código \"{barcode}…\" en {datetime} para la lista "
-"\"{list}\", tipo \"{type}\"."
+"Escaneo desconocido del código \"{barcode}…\" en {datetime} para la lista \""
+"{list}\", tipo \"{type}\"."
 
 #: eventyay/control/logdisplay.py:258
 #, python-brace-format
@@ -19537,8 +19525,8 @@ msgid ""
 "Denied scan of position #{posid} for list \"{list}\", type \"{type}\", error "
 "code \"{errorcode}\"."
 msgstr ""
-"Escaneo denegado de la posición #{posid} para la lista \"{list}\", tipo "
-"\"{type}\", código de error \"{errorcode}\"."
+"Escaneo denegado de la posición #{posid} para la lista \"{list}\", tipo \""
+"{type}\", código de error \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:308
 #, python-brace-format
@@ -19617,8 +19605,7 @@ msgstr "Se ha añadido la aceptación de tarjetas regalo para otro organizador."
 
 #: eventyay/control/logdisplay.py:497
 msgid "Gift card acceptance for another organizer has been removed."
-msgstr ""
-"Se ha eliminado la aceptación de tarjetas regalo para otro organizador."
+msgstr "Se ha eliminado la aceptación de tarjetas regalo para otro organizador."
 
 #: eventyay/control/logdisplay.py:498
 msgid "The webhook has been created."
@@ -19692,8 +19679,7 @@ msgstr "Se ha creado la orden."
 
 #: eventyay/control/logdisplay.py:516
 msgid "The order requires approval before it can continue to be processed."
-msgstr ""
-"La orden requiere aprobación antes que pueda continuar a ser procesada."
+msgstr "La orden requiere aprobación antes que pueda continuar a ser procesada."
 
 #: eventyay/control/logdisplay.py:518 eventyay/control/views/orders.py:735
 msgid "The order has been approved."
@@ -19708,8 +19694,8 @@ msgstr "La orden ha sido denegada."
 msgid ""
 "The email address has been changed from \"{old_email}\" to \"{new_email}\"."
 msgstr ""
-"La dirección de correo electrónico se ha cambiado de \"{old_email}\" a "
-"\"{new_email}\"."
+"La dirección de correo electrónico se ha cambiado de \"{old_email}\" a \""
+"{new_email}\"."
 
 #: eventyay/control/logdisplay.py:524
 msgid ""
@@ -20413,16 +20399,16 @@ msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
 msgstr ""
-"La posición #{posid} se ha registrado manualmente a {datetime} en la lista "
-"\"{list}\"."
+"La posición #{posid} se ha registrado manualmente a {datetime} en la lista \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
 msgstr ""
-"La posición #{posid} ha sido comprobada de nuevo a {datetime} en la lista "
-"\"{list}\"."
+"La posición #{posid} ha sido comprobada de nuevo a {datetime} en la lista \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
@@ -22055,8 +22041,7 @@ msgstr "Eliminar una página"
 #: eventyay/control/templates/pretixcontrol/admin/pages/delete.html:9
 #, python-format
 msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
-msgstr ""
-"¿Está seguro de que desea eliminar la página <strong>%(name)s</strong>?"
+msgstr "¿Está seguro de que desea eliminar la página <strong>%(name)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/admin/pages/form.html:5
 #: eventyay/control/templates/pretixcontrol/admin/pages/form.html:16
@@ -22133,9 +22118,9 @@ msgid ""
 "strong> and set the DEBUG variable to False if this page is in any way "
 "reachable from the internet."
 msgstr ""
-"Estás ejecutando %(site_name)s en modo de desarrollo. Por favor, "
-"<strong>DETÉN</strong> y establece la variable DEBUG en False si esta página "
-"es accesible desde Internet."
+"Estás ejecutando %(site_name)s en modo de desarrollo. Por favor, <strong>"
+"DETÉN</strong> y establece la variable DEBUG en False si esta página es "
+"accesible desde Internet."
 
 #: eventyay/control/templates/pretixcontrol/admin/systemconfig.html:31
 msgid "Your eventyay version is:"
@@ -23943,9 +23928,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"No hay proveedores de pago disponibles. Vaya a los <a "
-"%(plugin_settings_href)s>ajustes de complementos</a> y active uno o más "
-"complementos de pago."
+"No hay proveedores de pago disponibles. Vaya a los <a %(plugin_settings_href)"
+"s>ajustes de complementos</a> y active uno o más complementos de pago."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -24290,8 +24274,8 @@ msgstr "Borrar regla fiscal"
 msgid ""
 "Are you sure you want to delete the tax rule <strong>%(taxrule)s</strong>?"
 msgstr ""
-"¿Está seguro de que desea eliminar la regla de impuestos "
-"<strong>%(taxrule)s</strong>?"
+"¿Está seguro de que desea eliminar la regla de impuestos <strong>%(taxrule)"
+"s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/event/tax_delete.html:12
 msgid ""
@@ -24315,11 +24299,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Esta configuración está pensada para usuarios avanzados. Ver la <a "
-"href=\"%(docs)s\">documentación</a> para más información. Tenga en cuenta "
-"que no nos hacemos responsables de la correcta gestión de los impuestos en "
-"su taquilla. En caso de duda, póngase en contacto con un abogado o asesor "
-"fiscal."
+"Esta configuración está pensada para usuarios avanzados. Ver la <a href=\"%"
+"(docs)s\">documentación</a> para más información. Tenga en cuenta que no nos "
+"hacemos responsables de la correcta gestión de los impuestos en su taquilla. "
+"En caso de duda, póngase en contacto con un abogado o asesor fiscal."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24398,9 +24381,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"No hay salidas de tickets disponibles. Vaya a los <a "
-"%(plugin_settings_href)s>ajustes del plugin</a> y active uno o más plugins "
-"de salida de tickets."
+"No hay salidas de tickets disponibles. Vaya a los <a %(plugin_settings_href)"
+"s>ajustes del plugin</a> y active uno o más plugins de salida de tickets."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -25412,8 +25394,7 @@ msgstr "No se encontraron respuestas coincidentes."
 
 #: eventyay/control/templates/pretixcontrol/items/question.html:51
 msgid "You need to assign the question to a product to collect answers."
-msgstr ""
-"Es necesario asignar la pregunta a un producto para obtener respuestas."
+msgstr "Es necesario asignar la pregunta a un producto para obtener respuestas."
 
 #: eventyay/control/templates/pretixcontrol/items/question.html:70
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:77
@@ -25640,8 +25621,7 @@ msgstr "Borrar cuota"
 #: eventyay/control/templates/pretixcontrol/items/quota_delete.html:9
 #, python-format
 msgid "Are you sure you want to delete the quota <strong>%(quota)s</strong>?"
-msgstr ""
-"¿Está seguro de que desea eliminar la cuota <strong>%(quota)s</strong>?"
+msgstr "¿Está seguro de que desea eliminar la cuota <strong>%(quota)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/items/quota_delete.html:12
 msgid "The following products might be no longer available for sale:"
@@ -25941,9 +25921,9 @@ msgid ""
 msgstr ""
 "Por favor, utilice esta herramienta con cuidado. Los cambios que realice "
 "aquí no son reversibles. Además, si se modifica una orden manualmente, no se "
-"verificarán todas las restricciones (por ejemplo, en los add-ons "
-"necesarios). Por lo tanto, puede construir una orden que no podría existir "
-"de otra manera. En la mayoría de los casos es más fácil cancelar la orden "
+"verificarán todas las restricciones (por ejemplo, en los add-ons necesarios)"
+". Por lo tanto, puede construir una orden que no podría existir de otra "
+"manera. En la mayoría de los casos es más fácil cancelar la orden "
 "completamente y crear una nueva."
 
 #: eventyay/control/templates/pretixcontrol/order/change.html:68
@@ -28375,8 +28355,8 @@ msgid ""
 msgstr ""
 "Has seleccionado un conjunto de fechas que actualmente tienen distintas "
 "configuraciones de cuotas. Por lo tanto, no puedes cambiar sus cuotas en "
-"bloque. Si quieres, puedes crear un nuevo conjunto de cuotas para "
-"<strong>reemplazar</strong> la configuración de cuotas de todas las fechas "
+"bloque. Si quieres, puedes crear un nuevo conjunto de cuotas para <strong>"
+"reemplazar</strong> la configuración de cuotas de todas las fechas "
 "seleccionadas."
 
 #: eventyay/control/templates/pretixcontrol/subevents/bulk_edit.html:258
@@ -28501,8 +28481,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Solo queremos asegurarnos de que seas tú. Vuelve a autenticarte con "
-"'%(login_provider)s'."
+"Solo queremos asegurarnos de que seas tú. Vuelve a autenticarte con '%"
+"(login_provider)s'."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -31014,8 +30994,8 @@ msgstr "Eliminar un dispositivo de autenticación de dos factores"
 msgid ""
 "Are you sure you want to delete the authentication device \"%(device)s\"?"
 msgstr ""
-"¿Está seguro de que desea eliminar el dispositivo de autenticación "
-"\"%(device)s\"?"
+"¿Está seguro de que desea eliminar el dispositivo de autenticación \"%"
+"(device)s\"?"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-delete.html:25
 #, fuzzy
@@ -31203,8 +31183,8 @@ msgid ""
 "Are you sure you want to revoke access to your account for the application "
 "%(application)s?"
 msgstr ""
-"¿Está seguro de que desea revocar el acceso a su cuenta para la aplicación "
-"%(application)s?"
+"¿Está seguro de que desea revocar el acceso a su cuenta para la aplicación %"
+"(application)s?"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/authorized-apps.html:4
 #: eventyay/eventyay_common/templates/eventyay_common/account/authorized-apps.html:19
@@ -33103,8 +33083,7 @@ msgstr "La autenticación de dos factores ahora está habilitada para su cuenta.
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:125
 msgid "Two-factor authentication is now disabled for your account."
-msgstr ""
-"La autenticación de dos factores ahora está desactivada para su cuenta."
+msgstr "La autenticación de dos factores ahora está desactivada para su cuenta."
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:143
 msgid "Security devices are only available if pretix is served via HTTPS."
@@ -34069,8 +34048,8 @@ msgid ""
 msgstr ""
 "¡Hola!\n"
 "\n"
-"Se te ha añadido a una propuesta de {event_name}, titulada "
-"“{proposal_title}”.\n"
+"Se te ha añadido a una propuesta de {event_name}, titulada “{proposal_title}"
+"”.\n"
 "Se ha creado una cuenta para ti – por favor sigue este enlace para "
 "establecer la contraseña de tu cuenta.\n"
 "\n"
@@ -34096,8 +34075,8 @@ msgid ""
 msgstr ""
 "¡Hola!\n"
 "\n"
-"Se te ha añadido a una propuesta de {event_name}, titulada "
-"“{proposal_title}”.\n"
+"Se te ha añadido a una propuesta de {event_name}, titulada “{proposal_title}"
+"”.\n"
 "Por favor, sigue este enlace para editar tu perfil de usuario y ver el "
 "estado de tu propuesta:\n"
 "\n"
@@ -36697,9 +36676,9 @@ msgid ""
 "href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
 "new account to join the team!"
 msgstr ""
-"Si ya tienes una cuenta –como ponente u organizador– en <a "
-"href=\"%(domain)s\">%(domain)s</a>, por favor inicia sesión ahora. De lo "
-"contrario, crea una cuenta nueva para unirte al equipo."
+"Si ya tienes una cuenta –como ponente u organizador– en <a href=\"%(domain)"
+"s\">%(domain)s</a>, por favor inicia sesión ahora. De lo contrario, crea una "
+"cuenta nueva para unirte al equipo."
 
 #: eventyay/orga/templates/orga/invitation.html:37
 #, python-format
@@ -36820,8 +36799,8 @@ msgstr ""
 #, python-format
 msgid "Recipients filtered by responses to the custom field “%(question)s”."
 msgstr ""
-"Destinatarios filtrados por las respuestas al campo personalizado "
-"“%(question)s”."
+"Destinatarios filtrados por las respuestas al campo personalizado “%"
+"(question)s”."
 
 #: eventyay/orga/templates/orga/mails/compose_session_mail_form.html:28
 #, python-format
@@ -38895,8 +38874,8 @@ msgstr ""
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr ""
-"No se pudo encontrar la exportación actual, por favor intente regenerarla. "
-"({error})"
+"No se pudo encontrar la exportación actual, por favor intente regenerarla. ("
+"{error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -39723,8 +39702,7 @@ msgstr "Transferencia bancaria"
 
 #: eventyay/plugins/banktransfer/apps.py:17
 msgid "This plugin allows you to receive payments via bank transfer."
-msgstr ""
-"Este complemento permite recibir pagos mediante transferencia bancaria."
+msgstr "Este complemento permite recibir pagos mediante transferencia bancaria."
 
 #: eventyay/plugins/banktransfer/apps.py:31
 msgid ""
@@ -40104,8 +40082,7 @@ msgstr ""
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:18
 msgid "An internal error occurred during processing your data."
-msgstr ""
-"Se ha producido un error interno durante el procesamiento de los datos."
+msgstr "Se ha producido un error interno durante el procesamiento de los datos."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:19
 msgid "Some transactions might be missing, please try to re-import the file."
@@ -40260,8 +40237,8 @@ msgstr[0] ""
 "Estás intentando descargar una exportación de reembolsos de %(date)s con un "
 "pedido y un total de %(sum)s."
 msgstr[1] ""
-"Estás intentando descargar una exportación de reembolsos de %(date)s con "
-"%(cnt)s pedido y un total de %(sum)s."
+"Estás intentando descargar una exportación de reembolsos de %(date)s con %"
+"(cnt)s pedido y un total de %(sum)s."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/sepa_export.html:23
 msgid ""
@@ -41192,8 +41169,7 @@ msgstr "Notas importantes"
 
 #: eventyay/plugins/socialauth/templates/socialauth/social_setup.html:59
 msgid "The OAuth application must be approved by a MediaWiki administrator"
-msgstr ""
-"La aplicación OAuth debe ser aprobada por un administrador de MediaWiki"
+msgstr "La aplicación OAuth debe ser aprobada por un administrador de MediaWiki"
 
 #: eventyay/plugins/socialauth/templates/socialauth/social_setup.html:60
 msgid "Until approved, only the application owner can log in"
@@ -42094,8 +42070,7 @@ msgstr "Orden confirmada"
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_downloads.html:14
 msgid "Please check your email account, we've sent you your tickets."
-msgstr ""
-"Por favor, revisa tu correo electrónico: te hemos enviado tus entradas."
+msgstr "Por favor, revisa tu correo electrónico: te hemos enviado tus entradas."
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_downloads.html:16
 msgid "Please check your email account, we've sent you an email."
@@ -43511,8 +43486,8 @@ msgstr ""
 msgid ""
 "To log in and access your events, please <a %(a_attr)s>head over here</a>."
 msgstr ""
-"Para iniciar sesión y acceder a tus eventos, por favor <a "
-"%(a_attr)s>dirígete aquí</a>."
+"Para iniciar sesión y acceder a tus eventos, por favor <a %(a_attr)s>"
+"dirígete aquí</a>."
 
 #: eventyay/presale/templates/pretixpresale/index.html:30
 msgid "Enjoy!"
@@ -44030,8 +44005,8 @@ msgstr ""
 #, python-brace-format
 msgid "Please note that all times are in the event timezone, {tz}."
 msgstr ""
-"Tenga en cuenta que todas las horas están en la zona horaria del evento, "
-"{tz}."
+"Tenga en cuenta que todas las horas están en la zona horaria del evento, {tz}"
+"."
 
 #: eventyay/schedule/forms.py:81
 msgid ""
@@ -44108,8 +44083,8 @@ msgstr "- Su sesión “%(title)s” tendrá lugar a las %(start)s en %(location
 #, python-format
 msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
-"- Su sesión “%(title)s” ha sido desplazada para tener lugar a la(s) "
-"%(start)s en %(location)s"
+"- Su sesión “%(title)s” ha sido desplazada para tener lugar a la(s) %(start)"
+"s en %(location)s"
 
 #: eventyay/submission/exporters.py:18 eventyay/submission/exporters.py:63
 msgid "Custom fields data"

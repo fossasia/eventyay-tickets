@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-21 16:47+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 17:03+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -258,8 +258,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Чтобы увидеть наше расписание, включите JavaScript или перейдите <a "
-"href=\"%(href)s\">сюда</a> для просмотра нашего NoJS расписания ."
+"Чтобы увидеть наше расписание, включите JavaScript или перейдите <a href=\"%"
+"(href)s\">сюда</a> для просмотра нашего NoJS расписания ."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -2137,9 +2137,9 @@ msgid ""
 "'expired' after the end of their payment deadline. This means that those "
 "tickets go back to the pool and can be ordered by other people."
 msgstr ""
-"Если отмечено, все неоплаченные заказы автоматически перейдут из состояния "
-"«ожидает» в состояние «истёк» после окончания срока оплаты. Это означает, "
-"что эти билеты возвращаются в пул и могут быть заказаны другими людьми."
+"Если отмечено, все неоплаченные заказы автоматически перейдут из состояния «"
+"ожидает» в состояние «истёк» после окончания срока оплаты. Это означает, что "
+"эти билеты возвращаются в пул и могут быть заказаны другими людьми."
 
 #: eventyay/base/configurations/default_setting.py:679
 msgid "Hide \"payment pending\" state on attendee-facing pages"
@@ -2166,8 +2166,8 @@ msgid ""
 "'Last date of payments' configured above."
 msgstr ""
 "Принимать платежи по заказам, даже если они находятся в состоянии «истёк», "
-"при условии, что доступна достаточная вместимость. После настроенной выше "
-"«Последней даты приёма платежей» платежи не будут приниматься никогда."
+"при условии, что доступна достаточная вместимость. После настроенной выше «"
+"Последней даты приёма платежей» платежи не будут приниматься никогда."
 
 #: eventyay/base/configurations/default_setting.py:712
 msgid "Show start date"
@@ -2628,9 +2628,9 @@ msgid ""
 "\"admission ticket\"in the product settings. You can also turn off ticket "
 "issuing in every product separately."
 msgstr ""
-"Если выключено, билеты выдаются только для товаров, которые отмечены как "
-"«входной билет» в настройках товара. Вы также можете отключить выдачу "
-"билетов для каждого товара отдельно."
+"Если выключено, билеты выдаются только для товаров, которые отмечены как «"
+"входной билет» в настройках товара. Вы также можете отключить выдачу билетов "
+"для каждого товара отдельно."
 
 #: eventyay/base/configurations/default_setting.py:1216
 msgid "Generate tickets for pending orders"
@@ -4349,8 +4349,8 @@ msgstr "Сумма была списана с вашей карты."
 #: eventyay/base/email.py:924
 msgid "Please transfer money to this bank account: 9999-9999-9999-9999"
 msgstr ""
-"Пожалуйста, переведите деньги на следующий банковский счёт: "
-"9999-9999-9999-9999"
+"Пожалуйста, переведите деньги на следующий банковский счёт: 9999-9999-9999-"
+"9999"
 
 #: eventyay/base/exporter.py:119 eventyay/base/exporter.py:255
 #: eventyay/base/exporters/orderlist.py:1051 eventyay/orga/forms/export.py:28
@@ -7403,8 +7403,7 @@ msgstr "Ограничить типами заявок"
 
 #: eventyay/base/models/information.py:43
 msgid "Leave empty to show this information for all proposal types."
-msgstr ""
-"Оставьте пустым, чтобы показывать эту информацию для всех типов заявок."
+msgstr "Оставьте пустым, чтобы показывать эту информацию для всех типов заявок."
 
 #: eventyay/base/models/information.py:45 eventyay/base/models/mail.py:108
 #: eventyay/base/models/mail.py:382 eventyay/common/text/phrases.py:112
@@ -8776,8 +8775,8 @@ msgid ""
 "paid and completed. You can use this e.g. for discounted tickets that are "
 "only available to specific groups."
 msgstr ""
-"Если этот продукт является частью заказа, заказ будет переведён в состояние "
-"«подтверждения», и вам необходимо будет подтвердить его, прежде чем он будет "
+"Если этот продукт является частью заказа, заказ будет переведён в состояние «"
+"подтверждения», и вам необходимо будет подтвердить его, прежде чем он будет "
 "оплачен и завершён. Вы можете использовать это, например, для билетов со "
 "скидкой, которые доступны только для определённых групп."
 
@@ -10397,8 +10396,7 @@ msgstr "Требуется код доступа"
 #: eventyay/base/models/track.py:52
 msgid ""
 "This track will only be shown to submitters with a matching access code."
-msgstr ""
-"Этот трек будет показан только отправителям с подходящим кодом доступа."
+msgstr "Этот трек будет показан только отправителям с подходящим кодом доступа."
 
 #: eventyay/base/models/type.py:33
 msgid "name"
@@ -11163,8 +11161,8 @@ msgid ""
 "Don't forget to set the correct fees above!"
 msgstr ""
 "Мы рекомендуем активировать эту опцию, если вы хотите, чтобы ваши "
-"пользователи оплачивали сборы вашего поставщика платёжных услуг. <a "
-"href=\"{docs_url}\" target=\"_blank\" rel=\"noopener\"> Нажмите здесь, чтобы "
+"пользователи оплачивали сборы вашего поставщика платёжных услуг. <a href=\""
+"{docs_url}\" target=\"_blank\" rel=\"noopener\"> Нажмите здесь, чтобы "
 "получить об этом подробную информацию. </a> Не забудьте установить выше "
 "правильные сборы!"
 
@@ -11340,8 +11338,7 @@ msgstr "Этот подарочный сертификат не поддержи
 #: eventyay/base/payment.py:1272 eventyay/base/payment.py:1358
 #: eventyay/base/services/orders.py:987
 msgid "This gift card can only be used in test mode."
-msgstr ""
-"Этот подарочный сертификат можно использовать только в тестовом режиме."
+msgstr "Этот подарочный сертификат можно использовать только в тестовом режиме."
 
 #: eventyay/base/payment.py:1275 eventyay/base/payment.py:1361
 #: eventyay/base/services/orders.py:989
@@ -11400,8 +11397,7 @@ msgstr "Этот подарочный сертификат не принят о�
 
 #: eventyay/base/payment.py:1411
 msgid "This gift card was used in the meantime. Please try again."
-msgstr ""
-"Эта подарочная карта была использована за это время. Повторите попытку."
+msgstr "Эта подарочная карта была использована за это время. Повторите попытку."
 
 #: eventyay/base/pdf.py:65
 msgid "Ticket code (barcode content)"
@@ -12072,8 +12068,8 @@ msgid ""
 "You can select at most %(max)s add-ons from the category %(cat)s for the "
 "product %(base)s."
 msgstr ""
-"Вы можете выбрать не более %(max)s дополнительных продуктов из категории "
-"%(cat)s для продукта %(base)s."
+"Вы можете выбрать не более %(max)s дополнительных продуктов из категории %"
+"(cat)s для продукта %(base)s."
 
 #: eventyay/base/services/cart.py:130
 #, python-format
@@ -12365,8 +12361,8 @@ msgid ""
 "Error while importing value \"{value}\" for column \"{column}\" in line "
 "\"{line}\": {message}"
 msgstr ""
-"Ошибка при импорте значения \"{value}\" для столбца \"{column}\" в строке "
-"\"{line}\": {message}"
+"Ошибка при импорте значения \"{value}\" для столбца \"{column}\" в строке \""
+"{line}\": {message}"
 
 #: eventyay/base/services/orderimport.py:128
 #, fuzzy, python-brace-format
@@ -13792,8 +13788,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Вы можете подавать заявки до %(deadline)s (%(timezone)s), то есть через "
-"%(until_string)s с этого момента."
+"Вы можете подавать заявки до %(deadline)s (%(timezone)s), то есть через %"
+"(until_string)s с этого момента."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -14516,8 +14512,7 @@ msgstr "Одиночное событие в прошлом"
 #: eventyay/common/forms/widgets.py:53
 msgid ""
 "This password would take <em class=\"password_strength_time\"></em> to crack."
-msgstr ""
-"Взлом этого пароля занял бы <em class=\"password_strength_time\"></em>."
+msgstr "Взлом этого пароля занял бы <em class=\"password_strength_time\"></em>."
 
 #: eventyay/common/forms/widgets.py:75
 msgid "Warning"
@@ -16673,8 +16668,7 @@ msgstr "Подпись"
 #: eventyay/control/forms/event.py:1260
 #, python-brace-format
 msgid "This will be attached to every email. Available placeholders: {event}"
-msgstr ""
-"Это будет добавляться к каждому письму. Доступные плейсхолдеры: {event}"
+msgstr "Это будет добавляться к каждому письму. Доступные плейсхолдеры: {event}"
 
 #: eventyay/control/forms/event.py:1262
 msgid "e.g. your contact details"
@@ -17848,8 +17842,7 @@ msgstr ""
 
 #: eventyay/control/forms/global_settings.py:425
 msgid "Live secret key for ticket payments via the Stripe plugin."
-msgstr ""
-"Секретный ключ для рабочей среды для оплат билетов через плагин Stripe."
+msgstr "Секретный ключ для рабочей среды для оплат билетов через плагин Stripe."
 
 #: eventyay/control/forms/global_settings.py:434
 msgid "Test publishable key for ticket payments via the Stripe plugin."
@@ -17986,8 +17979,7 @@ msgstr "Шаблон заголовка главной страницы"
 #| "This will be attached to every email. Available placeholders: {event}"
 msgid ""
 "Pattern used to generate pad names. Available placeholders: {placeholders}."
-msgstr ""
-"Это будет добавляться к каждому письму. Доступные плейсхолдеры: {event}"
+msgstr "Это будет добавляться к каждому письму. Доступные плейсхолдеры: {event}"
 
 #: eventyay/control/forms/global_settings.py:582
 #, fuzzy
@@ -18247,8 +18239,7 @@ msgstr "Ключ API телеметрии"
 
 #: eventyay/control/forms/global_settings.py:921
 msgid "API key for authenticating with the telemetry receiver."
-msgstr ""
-"Ключ API для аутентификации при взаимодействии с приёмником телеметрии."
+msgstr "Ключ API для аутентификации при взаимодействии с приёмником телеметрии."
 
 #: eventyay/control/forms/global_settings.py:925
 msgid "Maintainer contact"
@@ -18276,8 +18267,8 @@ msgstr "Ключ Stripe не может быть пустым."
 msgid ""
 "The provided key does not look valid. It should start with \"%(prefix)s\"."
 msgstr ""
-"Указанный ключ выглядит недействительным. Он должен начинаться с "
-"\"%(prefix)s\"."
+"Указанный ключ выглядит недействительным. Он должен начинаться с \"%(prefix)"
+"s\"."
 
 #: eventyay/control/forms/global_settings.py:988
 #, python-format
@@ -19350,8 +19341,7 @@ msgstr "Входные данные CSV должны содержать поле
 #: eventyay/control/forms/vouchers.py:368
 #, python-brace-format
 msgid "CSV input contains an unknown field with the header \"{header}\"."
-msgstr ""
-"Входные данные CSV содержат неизвестное поле с заголовком \"{header}\"."
+msgstr "Входные данные CSV содержат неизвестное поле с заголовком \"{header}\"."
 
 #: eventyay/control/forms/vouchers.py:377
 #: eventyay/control/forms/vouchers.py:395
@@ -19416,8 +19406,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Позиция №{posid}: {old_product} ({old_price}) изменена на {new_product} "
-"({new_price})."
+"Позиция №{posid}: {old_product} ({old_price}) изменена на {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19430,8 +19420,8 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"Позиция №{posid}: дата события \"{old_event}\" ({old_price}) изменена на "
-"\"{new_event}\" ({new_price})."
+"Позиция №{posid}: дата события \"{old_event}\" ({old_price}) изменена на \""
+"{new_event}\" ({new_price})."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
@@ -19441,8 +19431,7 @@ msgstr "Цена позиции №{posid} изменена с {old_price} на 
 #: eventyay/control/logdisplay.py:110
 #, python-brace-format
 msgid "Tax rule of position #{posid} changed from {old_rule} to {new_rule}."
-msgstr ""
-"Налоговое правило позиции №{posid} изменено с {old_rule} на {new_rule}."
+msgstr "Налоговое правило позиции №{posid} изменено с {old_rule} на {new_rule}."
 
 #: eventyay/control/logdisplay.py:120
 #, python-brace-format
@@ -19526,8 +19515,8 @@ msgstr ""
 msgid ""
 "Unknown scan of code \"{barcode}…\" for list \"{list}\", type \"{type}\"."
 msgstr ""
-"Неизвестное сканирование кода \"{barcode}…\" для списка \"{list}\", тип "
-"\"{type}\"."
+"Неизвестное сканирование кода \"{barcode}…\" для списка \"{list}\", тип \""
+"{type}\"."
 
 #: eventyay/control/logdisplay.py:268
 #, python-brace-format
@@ -19544,8 +19533,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"Сканирование отозванного кода \"{barcode}\" для списка \"{list}\", типа "
-"\"{type}\", было загружено."
+"Сканирование отозванного кода \"{barcode}\" для списка \"{list}\", типа \""
+"{type}\", было загружено."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -22133,9 +22122,9 @@ msgid ""
 "strong> and set the DEBUG variable to False if this page is in any way "
 "reachable from the internet."
 msgstr ""
-"Вы запускаете %(site_name)s в режиме разработки. Пожалуйста, "
-"<strong>ОСТАНОВИТЕ</strong> и установите переменную DEBUG в False, если эта "
-"страница каким-либо образом доступна из интернета."
+"Вы запускаете %(site_name)s в режиме разработки. Пожалуйста, <strong>"
+"ОСТАНОВИТЕ</strong> и установите переменную DEBUG в False, если эта страница "
+"каким-либо образом доступна из интернета."
 
 #: eventyay/control/templates/pretixcontrol/admin/systemconfig.html:31
 msgid "Your eventyay version is:"
@@ -23941,9 +23930,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Нет доступных платёжных провайдеров. Перейдите в <a "
-"%(plugin_settings_href)s>настройки плагинов</a> и активируйте один или "
-"несколько платёжных плагинов."
+"Нет доступных платёжных провайдеров. Перейдите в <a %(plugin_settings_href)s>"
+"настройки плагинов</a> и активируйте один или несколько платёжных плагинов."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -24288,8 +24276,8 @@ msgstr "Удалить налоговое правило"
 msgid ""
 "Are you sure you want to delete the tax rule <strong>%(taxrule)s</strong>?"
 msgstr ""
-"Вы уверены, что хотите удалить налоговое правило <strong>%(taxrule)s</"
-"strong>?"
+"Вы уверены, что хотите удалить налоговое правило <strong>%(taxrule)s</strong>"
+"?"
 
 #: eventyay/control/templates/pretixcontrol/event/tax_delete.html:12
 msgid ""
@@ -24395,8 +24383,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Нет доступных вариантов вывода билетов. Перейдите в <a "
-"%(plugin_settings_href)s>настройки плагина</a> и активируйте один или "
+"Нет доступных вариантов вывода билетов. Перейдите в <a %"
+"(plugin_settings_href)s>настройки плагина</a> и активируйте один или "
 "несколько плагинов вывода билетов."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
@@ -24805,11 +24793,11 @@ msgid ""
 "except if the add-on products or bundled products represent additional "
 "people (e.g. group bundles)."
 msgstr ""
-"Этот параметр следует включать для большинства вещей, которые вы назвали бы "
-"«билетом». Для дополнений к продукту или наборов его следует включать на "
+"Этот параметр следует включать для большинства вещей, которые вы назвали бы «"
+"билетом». Для дополнений к продукту или наборов его следует включать на "
 "основном билете, кроме случаев, когда продукты-дополнения или продукты в "
-"составе набора представляют дополнительных людей (например, групповые "
-"наборы)."
+"составе набора представляют дополнительных людей (например, групповые наборы)"
+"."
 
 #: eventyay/control/templates/pretixcontrol/item/create.html:44
 #: eventyay/control/templates/pretixcontrol/item/index.html:51
@@ -25447,8 +25435,8 @@ msgid ""
 "All answers to the question given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Все ответы на вопрос, данные покупателями следующих продуктов, будут "
-"<strong>утеряны</strong>."
+"Все ответы на вопрос, данные покупателями следующих продуктов, будут <strong>"
+"утеряны</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:15
@@ -28670,8 +28658,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Вы уверены, что хотите удалить следующую запись из списка ожидания "
-"<strong>%(entry)s</strong>?"
+"Вы уверены, что хотите удалить следующую запись из списка ожидания <strong>%"
+"(entry)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -29612,8 +29600,7 @@ msgstr "Возврат был отмечен как выполненный."
 
 #: eventyay/control/views/orders.py:1041
 msgid "The request has been removed. If you want, you can now inform the user."
-msgstr ""
-"Запрос был удалён. При желании вы можете теперь уведомить пользователя."
+msgstr "Запрос был удалён. При желании вы можете теперь уведомить пользователя."
 
 #: eventyay/control/views/orders.py:1056
 msgid "Your cancellation request"
@@ -31042,8 +31029,7 @@ msgstr "Вы действительно хотите отключить двух
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-disable.html:26
 msgid "You will no longer require a second device to log in to your account."
-msgstr ""
-"Для входа в учётную запись вам больше не потребуется второе устройство."
+msgstr "Для входа в учётную запись вам больше не потребуется второе устройство."
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:4
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-enable.html:19
@@ -33102,8 +33088,7 @@ msgstr "Двухфакторная аутентификация теперь в�
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:125
 msgid "Two-factor authentication is now disabled for your account."
-msgstr ""
-"Двухфакторная аутентификация теперь отключена для вашей учётной записи."
+msgstr "Двухфакторная аутентификация теперь отключена для вашей учётной записи."
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:143
 msgid "Security devices are only available if pretix is served via HTTPS."
@@ -33910,8 +33895,8 @@ msgid ""
 msgstr ""
 "Привет!\n"
 "\n"
-"С радостью сообщаем вам, что мы принимаем ваше предложение "
-"«{submission_title}»\n"
+"С радостью сообщаем вам, что мы принимаем ваше предложение «"
+"{submission_title}»\n"
 "для {event_name}. Пожалуйста, нажмите на ссылку ниже, чтобы подтвердить ваше "
 "участие:\n"
 "\n"
@@ -34066,8 +34051,8 @@ msgid ""
 msgstr ""
 "Здравствуйте!\n"
 "\n"
-"Вас добавили в предложение для {event_name} под названием "
-"«{proposal_title}».\n"
+"Вас добавили в предложение для {event_name} под названием «{proposal_title}"
+"».\n"
 "Для вас создана учётная запись — пожалуйста, перейдите по этой ссылке, чтобы "
 "установить пароль для своей учётной записи.\n"
 "\n"
@@ -34094,8 +34079,8 @@ msgid ""
 msgstr ""
 "Здравствуйте!\n"
 "\n"
-"Вас добавили в предложение для {event_name} под названием "
-"«{proposal_title}».\n"
+"Вас добавили в предложение для {event_name} под названием «{proposal_title}"
+"».\n"
 "Пожалуйста, перейдите по этой ссылке, чтобы отредактировать профиль "
 "пользователя и увидеть статус своего предложения:\n"
 "\n"
@@ -36481,8 +36466,7 @@ msgstr ""
 msgid ""
 "This field has <strong>%(count)s</strong> responses, and no answers are "
 "missing."
-msgstr ""
-"У этого поля <strong>%(count)s</strong> ответов, и все ответы получены."
+msgstr "У этого поля <strong>%(count)s</strong> ответов, и все ответы получены."
 
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:78
 #, python-format
@@ -36667,8 +36651,7 @@ msgstr "Применить ожидающие изменения"
 #: eventyay/orga/templates/orga/speaker/list.html:41
 #, python-format
 msgid "List filtered by responses to custom field “%(question)s”."
-msgstr ""
-"Список отфильтрован по ответам на пользовательское поле «%(question)s»."
+msgstr "Список отфильтрован по ответам на пользовательское поле «%(question)s»."
 
 #: eventyay/orga/templates/orga/invitation.html:4
 msgid "Invitation"
@@ -36815,8 +36798,8 @@ msgstr ""
 #, python-format
 msgid "Recipients filtered by responses to the custom field “%(question)s”."
 msgstr ""
-"Получатели, отфильтрованные по ответам на пользовательское поле "
-"«%(question)s»."
+"Получатели, отфильтрованные по ответам на пользовательское поле «%(question)s"
+"»."
 
 #: eventyay/orga/templates/orga/mails/compose_session_mail_form.html:28
 #, python-format
@@ -37522,8 +37505,7 @@ msgstr ""
 #: eventyay/orga/templates/orga/settings/import_export.html:417
 #: eventyay/orga/templates/orga/settings/import_export.html:527
 msgid "You can also use the API to export or use data."
-msgstr ""
-"Вы также можете использовать API для экспорта или использования данных."
+msgstr "Вы также можете использовать API для экспорта или использования данных."
 
 #: eventyay/orga/templates/orga/settings/import_export.html:227
 #: eventyay/orga/templates/orga/settings/import_export.html:419
@@ -37628,8 +37610,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Если вам не требуется ни оценка, ни текст отзыва, рецензентам при "
-"рассмотрении заявок будет предложена дополнительная кнопка "
-"%(quotation_open)sВоздержаться%(quotation_close)s."
+"рассмотрении заявок будет предложена дополнительная кнопка %(quotation_open)"
+"sВоздержаться%(quotation_close)s."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -37738,8 +37720,8 @@ msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
 msgstr ""
-"Чтобы встроить виджет на ваш сайт, скопируйте следующий код в раздел "
-"<code>&lt;head></code> исходного кода вашего сайта:"
+"Чтобы встроить виджет на ваш сайт, скопируйте следующий код в раздел <code>"
+"&lt;head></code> исходного кода вашего сайта:"
 
 #: eventyay/orga/templates/orga/settings/widget.html:81
 #, python-format
@@ -38826,8 +38808,7 @@ msgstr "Организатор и все связанные данные уда�
 msgid ""
 "This is your new API token. Please make sure to save it, as it will not be "
 "shown again:"
-msgstr ""
-"Это новый токен API. Сохраните его, так как он больше не будет показан:"
+msgstr "Это новый токен API. Сохраните его, так как он больше не будет показан:"
 
 #: eventyay/orga/views/person.py:78
 msgid "The API token has been upgraded."
@@ -38910,8 +38891,8 @@ msgstr ""
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr ""
-"Не удалось найти текущий экспорт, попробуйте сгенерировать его заново. "
-"({error})"
+"Не удалось найти текущий экспорт, попробуйте сгенерировать его заново. ("
+"{error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -40546,8 +40527,7 @@ msgstr "Все списки регистрации"
 
 #: eventyay/plugins/manualpayment/apps.py:15
 msgid "This plugin adds a customizable payment method for manual processing."
-msgstr ""
-"Этот плагин добавляет настраиваемый способ оплаты для ручной обработки."
+msgstr "Этот плагин добавляет настраиваемый способ оплаты для ручной обработки."
 
 #: eventyay/plugins/reports/apps.py:10 eventyay/plugins/reports/apps.py:13
 msgid "Report exporter"
@@ -41175,8 +41155,7 @@ msgstr ""
 msgid ""
 "Note: When running tests on the server, the tickets component URL is "
 "typically"
-msgstr ""
-"Примечание: при запуске тестов на сервере URL компонента билетов обычно"
+msgstr "Примечание: при запуске тестов на сервере URL компонента билетов обычно"
 
 #: eventyay/plugins/socialauth/templates/socialauth/social_setup.html:9
 msgid "Therefore, the complete callback URL should be"
@@ -42140,8 +42119,7 @@ msgstr ""
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_downloads.html:16
 msgid "Please check your email account, we've sent you an email."
-msgstr ""
-"Пожалуйста, проверьте свою электронную почту — мы отправили вам письмо."
+msgstr "Пожалуйста, проверьте свою электронную почту — мы отправили вам письмо."
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_downloads.html:21
 msgid ""
@@ -42157,8 +42135,7 @@ msgstr ""
 msgid ""
 "If you click the link in our email, you will be able to download your "
 "tickets here."
-msgstr ""
-"При переходе по ссылке из письма будет доступна загрузка билетов здесь."
+msgstr "При переходе по ссылке из письма будет доступна загрузка билетов здесь."
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_downloads.html:30
 msgid ""
@@ -43549,8 +43526,8 @@ msgstr ""
 msgid ""
 "To log in and access your events, please <a %(a_attr)s>head over here</a>."
 msgstr ""
-"Чтобы войти и получить доступ к своим мероприятиям, перейдите <a "
-"%(a_attr)s>сюда</a>."
+"Чтобы войти и получить доступ к своим мероприятиям, перейдите <a %(a_attr)s>"
+"сюда</a>."
 
 #: eventyay/presale/templates/pretixpresale/index.html:30
 msgid "Enjoy!"
@@ -44096,8 +44073,7 @@ msgstr "Комната I"
 #: eventyay/schedule/forms.py:199
 msgid ""
 "Description, e.g.: Our main meeting place, Room I, enter from the right."
-msgstr ""
-"Описание, например: Наше основное место встреч, комната I, вход справа."
+msgstr "Описание, например: Наше основное место встреч, комната I, вход справа."
 
 #: eventyay/schedule/forms.py:202
 msgid "Information for speakers, e.g.: Projector has only HDMI input."

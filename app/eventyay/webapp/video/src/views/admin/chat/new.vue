@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-admin-chat-new
 	.ui-page-header
-		bunt-icon-button(@click="$router.replace({name: 'admin:chat:index'})") arrow_left
+		bunt-icon-button(@click="$router.replace({name: 'admin:chat:index'})", :tooltip="$t('Back to Chat Channels')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 		h1 {{ $t('New channel') }}
 	.error(v-if="connected && !canCreate")
 		span {{ $t('You do not have permission to create chat channels.') }}

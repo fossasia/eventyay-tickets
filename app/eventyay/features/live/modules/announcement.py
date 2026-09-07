@@ -14,12 +14,22 @@ from eventyay.features.live.modules.base import BaseModule
 logger = logging.getLogger(__name__)
 
 
+def is_announcements_enabled(event) -> bool:
+    """Return True if announcements feature is enabled for the event (default True)."""
+    live_features = (getattr(event, "config", None) or {}).get("live_features", {})
+    return live_features.get("announcements") is not False
+
+
 class AnnouncementModule(BaseModule):
     prefix = "announcement"
 
     @command("create")
     @require_event_permission(Permission.EVENT_ANNOUNCE)
     async def create_announcement(self, body):
+        if not is_announcements_enabled(self.consumer.event):
+            await self.consumer.send_error(code="announcements.disabled")
+            return
+
         announcement = await create_announcement(
             event=self.consumer.event,
             text=body.get("text"),
@@ -40,6 +50,10 @@ class AnnouncementModule(BaseModule):
     @command("update")
     @require_event_permission(Permission.EVENT_ANNOUNCE)
     async def update_announcement(self, body):
+        if not is_announcements_enabled(self.consumer.event):
+            await self.consumer.send_error(code="announcements.disabled")
+            return
+
         old_announcement = await get_announcement(
             body.get("id"), event=self.consumer.event.id
         )
@@ -61,6 +75,10 @@ class AnnouncementModule(BaseModule):
     @command("list")
     @require_event_permission(Permission.EVENT_ANNOUNCE)
     async def list_announcements(self, body):
+        if not is_announcements_enabled(self.consumer.event):
+            await self.consumer.send_error(code="announcements.disabled")
+            return
+
         announcements = []
         is_moderator = await self.consumer.event.has_permission_async(
             user=self.consumer.user,
@@ -74,6 +92,8 @@ class AnnouncementModule(BaseModule):
 
     @event("created_or_updated")
     async def push_announce(self, body):
+        if not is_announcements_enabled(self.consumer.event):
+            return
         await self.consumer.send_json(
             [
                 "announcement.created_or_updated",

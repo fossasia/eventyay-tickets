@@ -20,6 +20,12 @@
 
 {% block inner %}
 
+    {% if social_media_formset.total_error_count or social_media_formset.non_form_errors %}
+        {% include "common/forms/errors.html" with form=form has_errors=True %}
+    {% else %}
+        {% include "common/forms/errors.html" with form=form %}
+    {% endif %}
+
     {% for field in form %}
         {% if field.name == 'avatar' %}
             {% include "common/avatar.html" with user=user form=form %}
@@ -28,10 +34,11 @@
         {% elif field.name == 'availabilities' %}
             {% include "common/availabilities.html" %}
             {{ field.as_field_group }}
+        {% elif field.name == 'social_links' %}
+            {% include "common/speaker_social_links_formset.html" %}
         {% else %}
             {{ field.as_field_group }}
         {% endif %}
     {% endfor %}
-    {% include "common/speaker_social_links_formset.html" %}
 
 {% endblock inner %}

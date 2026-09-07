@@ -21,10 +21,10 @@
 		// AppBar stays fixed; only main content shifts
 		app-bar(:show-actions="true", :show-user="true", @toggle-sidebar="toggleSidebar")
 		transition(name="backdrop")
-			.sidebar-backdrop(v-if="showSidebar", @click="showSidebar = false")
-		.app-content(:class="{'sidebar-open': showSidebar}", role="main", tabindex="-1")
+			.sidebar-backdrop(v-if="showMobileSidebar && $mq.below.m", @click="showMobileSidebar = false")
+		.app-content(:class="{'sidebar-collapsed': sidebarCollapsed, 'is-admin-view': isAdminRoute}", role="main", tabindex="-1")
 			// router-view no longer carries role=main; main landmark is the scroll container
-			router-view(:key="!isAdminRoute ? $route.fullPath : null")
+			router-view(:key="$route.fullPath")
 			//- defining keys like this keeps the playing dom element alive for uninterupted transitions
 			//- Single MediaSource for room streaming (persists across navigation to prevent stream restart)
 			media-source(v-if="streamingRoom && user.profile.greeted && !hasFatalError(streamingRoom)", ref="mediaSource", :room="streamingRoom", :background="isStreamInBackground", :key="streamingRoom.id", :role="isStreamInBackground ? null : 'main'", @close="backgroundRoom = null")
@@ -34,8 +34,8 @@
 			.disconnected-warning(v-if="!connected") {{ $t('Connection lost! Trying to reconnect…') }}
 			transition(name="prompt")
 				greeting-prompt(v-if="!user.profile.greeted")
-			.native-permission-blocker(v-if="askingPermission")
-		rooms-sidebar(:show="showSidebar", @close="showSidebar = false")
+		organiser-sidebar(v-if="isAdminRoute", :collapsed="sidebarCollapsed", :show-mobile="showMobileSidebar", @close="showMobileSidebar = false")
+		rooms-sidebar(v-else, :collapsed="sidebarCollapsed", :show-mobile="showMobileSidebar", @close="showMobileSidebar = false")
 	.connecting(v-else-if="!currentFatalError")
 		bunt-progress-circular(size="huge")
 		.details(v-if="socketCloseCode == 1006") {{ $t("Connection failed. We'll retry, but if this error occurs repeatedly, the connection might be blocked by a firewall in your network or by a VPN on your device.") }}
@@ -50,6 +50,7 @@ import { inferRoomType, inferType } from 'lib/room-types'
 import { loadStarredSharingPreference, updateStarredSharingPreference } from '@schedule/utils'
 import AppBar from 'components/AppBar'
 import RoomsSidebar from 'components/RoomsSidebar'
+import OrganiserSidebar from 'components/OrganiserSidebar'
 import MediaSource from 'components/MediaSource'
 import Notifications from 'components/notifications'
 import GreetingPrompt from 'components/profile/GreetingPrompt'
@@ -59,7 +60,7 @@ const stageToolModules = ['livestream.native', 'livestream.youtube', 'call.janus
 const chatbarModules = ['chat.native', 'question', 'poll']
 
 export default {
-	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
+	components: { AppBar, RoomsSidebar, OrganiserSidebar, MediaSource, GreetingPrompt, Notifications },
 	provide() {
 		return {
 			eventUrl: window.eventyay?.eventUrl || '',
@@ -133,7 +134,9 @@ export default {
 	data() {
 		return {
 			backgroundRoom: null,
-			showSidebar: false,
+			previousRouteName: null,
+			sidebarCollapsed: typeof window !== 'undefined' ? localStorage.getItem('sidebarCollapsed') === '1' : false,
+			showMobileSidebar: false,
 			windowHeight: null,
 			shareStarredSessions: !!window.eventyay?.showPublicly,
 		}
@@ -174,26 +177,30 @@ export default {
 		room() {
 			const routeName = this.$route?.name
 			if (!routeName) return
-			if (this.isAdminRoute) return
 			const rooms = this.rooms || []
 			if (routeName === 'about') {
 				return rooms.find(room => room && room.modules && room.modules.some(m => m.type === 'page.landing'))
 			}
-			const wantedId = String(this.$route.params.roomId)
-			return rooms.find(room => String(room.id) === wantedId || (room.pretalx_id != null && String(room.pretalx_id) === wantedId))
+			if (typeof routeName === 'string' && (routeName.startsWith('admin') || routeName === 'organizer')) {
+				return null
+			}
+			const wantedId = this.$route.params?.roomId ? String(this.$route.params.roomId) : null
+			if (wantedId) {
+				return rooms.find(room => String(room.id) === wantedId || (room.pretalx_id != null && String(room.pretalx_id) === wantedId)) || null
+			}
+			return null
 		},
 		isAdminRoute() {
-			const isAdminRouteName = name => typeof name === 'string' && name.startsWith('admin')
 			const route = this.$route
-			return isAdminRouteName(route?.name) ||
-				route?.matched?.some(match => isAdminRouteName(match.name))
+			return this.isOrganizerRouteName(route?.name) ||
+				route?.matched?.some(match => this.isOrganizerRouteName(match.name))
 		},
 		// TODO since this is used EVERYWHERE, use provide/inject?
 		modules() {
-			return this.room?.modules.reduce((acc, module) => {
+			return this.room?.modules?.reduce((acc, module) => {
 				acc[module.type] = module
 				return acc
-			}, {})
+			}, {}) || {}
 		},
 		roomHasMedia() {
 			if (this.hasFatalError(this.room)) return false
@@ -203,12 +210,14 @@ export default {
 		// Returns the current room if it has media, otherwise the background room
 		streamingRoom() {
 			if (this.roomHasMedia) return this.room
+			if (this.isAdminRoute) return null
 			if (this.backgroundRoom && !this.hasFatalError(this.backgroundRoom)) return this.backgroundRoom
 			return null
 		},
 		// Determines if the streaming room should be shown in background (mini-window) mode
 		// True when we have a background room that's different from the current room
 		isStreamInBackground() {
+			if (this.isAdminRoute) return false
 			return this.backgroundRoom && this.room !== this.backgroundRoom
 		},
 		stageStreamCollapsed() {
@@ -259,7 +268,19 @@ export default {
 			}
 		}
 	},
+	created() {
+		this.previousRouteName = this.$route?.name ?? null
+	},
 	watch: {
+		'$route': {
+			handler(to, from) {
+				this.previousRouteName = from?.name ?? null
+				if (this.isOrganizerRouteName(to?.name) || to?.matched?.some(match => this.isOrganizerRouteName(match.name))) {
+					this.backgroundRoom = null
+				}
+			},
+			flush: 'sync'
+		},
 		world: 'worldChange',
 		rooms: 'roomListChange',
 		room: 'roomChange',
@@ -327,8 +348,8 @@ export default {
 			return !!(room && this.roomFatalErrors?.[room.id])
 		},
 		onKeydown(e) {
-			if ((e.key === 'Escape' || e.key === 'Esc') && this.showSidebar) {
-				this.showSidebar = false
+			if ((e.key === 'Escape' || e.key === 'Esc') && this.showMobileSidebar) {
+				this.showMobileSidebar = false
 				// Prevent the Escape from triggering other handlers if we handled it
 				e.stopPropagation()
 			}
@@ -341,21 +362,36 @@ export default {
 			this.$store.dispatch('notifications/clearDesktopNotifications')
 		},
 		toggleSidebar() {
-			this.showSidebar = !this.showSidebar
+			if (this.$mq?.below?.m) {
+				this.showMobileSidebar = !this.showMobileSidebar
+			} else {
+				this.sidebarCollapsed = !this.sidebarCollapsed
+				try {
+					localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed ? '1' : '')
+				} catch (e) {
+					// ignore
+				}
+			}
 		},
 		onGlobalPointerDown(event) {
-			if (!this.showSidebar) return
-			const sidebarEl = document.querySelector('.c-rooms-sidebar')
-			const hamburgerEl = document.querySelector('.c-app-bar .hamburger')
+			if (!this.showMobileSidebar || this.$mq?.above?.m) return
+			const sidebarEl = document.querySelector('.c-rooms-sidebar') || document.querySelector('.c-organiser-sidebar')
+			const hamburgerEl = document.querySelector('.c-app-bar .navbar-toggle-sidebar')
 			if (sidebarEl?.contains(event.target) || hamburgerEl?.contains(event.target)) return
-			this.showSidebar = false
+			this.showMobileSidebar = false
 		},
 		clearTokenAndReload() {
-			localStorage.removeItem('token')
+			try {
+				localStorage.removeItem('token')
+				sessionStorage.removeItem('video_auth_mode')
+			} catch (e) {}
 			location.reload()
 		},
 		reload() {
 			location.reload()
+		},
+		isOrganizerRouteName(name) {
+			return typeof name === 'string' && (name.startsWith('admin') || name === 'organizer' || name === 'room:manage')
 		},
 		worldChange() {
 			// initial connect
@@ -385,6 +421,10 @@ export default {
 			const isExclusive = module => module.type === 'call.bigbluebutton' || module.type === 'call.zoom' || module.type === 'call.jitsi'
 			if (!this.$mq.above.m) return // no background rooms for mobile
 			if (this.call) return // When a DM call is running, we never want background media
+			if (this.isAdminRoute || this.isOrganizerRouteName(this.previousRouteName)) {
+				this.backgroundRoom = null
+				return
+			}
 			const newRoomHasMedia = newRoom && newRoom.modules && newRoom.modules.some(module => mediaModules.includes(module.type))
 			// We treat "undefined / not callable" as true to avoid race conditions.
 			let primaryWasPlaying = true
@@ -433,29 +473,40 @@ export default {
 	min-height: 0
 	display: flex
 	flex-direction: column
-	--sidebar-width: 280px
+	--sidebar-width: 250px
 	--pretalx-clr-primary: var(--clr-primary)
 	.app-content
 		flex: 1 1 auto
 		min-height: 0
-		height: calc(100vh - 48px)
+		height: calc(100vh - 50px)
 		display: flex
 		flex-direction: column
 		position: relative
-		padding-top: 48px
+		padding-top: 50px
 		z-index: 1
-		&:has(> .c-schedule-view), &:has(> .c-speaker-detail), &:has(> .c-speakers-list), &:has(> .c-talk-detail), &:has(> .c-public-stars)
-			padding-top: 50px !important
-			padding-left: 10px !important
-			padding-right: 10px !important
+		transition: padding-left 0.2s cubic-bezier(0.4, 0, 0.2, 1)
+		+above('m')
+			padding-left: 250px !important
+			&.sidebar-collapsed
+				padding-left: 45px !important
+		+below('m')
+			padding-left: 0 !important
+		> .c-schedule-view, > .c-speaker-detail, > .c-speakers-list, > .c-talk-detail, > .c-public-stars
+			flex: 1 1 auto
+			min-height: 0
+			min-width: 0
+			width: 100%
+			box-sizing: border-box
 	.sidebar-backdrop
 		position: fixed
-		top: 0
+		top: 50px
 		left: 0
 		right: 0
 		bottom: 0
-		background-color: rgba(0, 0, 0, 0.5)
-		z-index: 105
+		background-color: rgba(0, 0, 0, 0.4)
+		z-index: 110
+		+above('m')
+			display: none !important
 		&.backdrop-enter-active, &.backdrop-leave-active
 			transition: opacity .2s
 		&.backdrop-enter-from, &.backdrop-leave-to

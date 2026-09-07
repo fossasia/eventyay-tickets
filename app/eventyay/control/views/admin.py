@@ -34,6 +34,7 @@ from django.views import View
 from django.views.generic import (
     CreateView,
     DeleteView,
+    DetailView,
     FormView,
     ListView,
     TemplateView,
@@ -63,11 +64,11 @@ from eventyay.base.models.organizer import Organizer, TeamAPIToken
 from eventyay.base.models.settings import GlobalSettings
 from eventyay.base.models.cfp import CfP
 from eventyay.base.models.submission import Submission, SubmissionStates
-from eventyay.base.models.vouchers import InvoiceVoucher
+from eventyay.base.models.vouchers import InvoiceVoucher, generate_code
 from eventyay.base.models.product import Product
 from eventyay.base.services.update_check import check_result_table, update_check
 from eventyay.common.text.phrases import phrases
-from eventyay.control.forms.admin.vouchers import InvoiceVoucherForm
+from eventyay.control.forms.admin.vouchers import InvoiceVoucherForm, VoucherFilterForm
 from eventyay.control.forms.filter import AdminOrderFilterForm, OrganizerFilterForm, SubmissionFilterForm, TaskFilterForm
 from eventyay.control.permissions import AdministratorPermissionRequiredMixin
 from eventyay.control.video.admin_dashboard import get_video_server_dashboard_rows
@@ -1031,41 +1032,180 @@ class VoucherList(PaginationMixin, AdministratorPermissionRequiredMixin, ListVie
     template_name = 'pretixcontrol/admin/vouchers/index.html'
 
     def get_queryset(self):
-        qs = InvoiceVoucher.objects.all()
+        qs = InvoiceVoucher.objects.prefetch_related('limit_events', 'limit_organizer').all()
+
+        # Apply tab filter
+        tab = self.request.GET.get('tab', 'all')
+        if tab == 'active':
+            qs = qs.filter(status=InvoiceVoucher.STATUS_ACTIVE)
+        elif tab == 'disabled':
+            qs = qs.filter(status=InvoiceVoucher.STATUS_DISABLED)
+        elif tab == 'draft':
+            qs = qs.filter(status=InvoiceVoucher.STATUS_DRAFT)
+        elif tab == 'expired':
+            qs = qs.filter(
+                status=InvoiceVoucher.STATUS_ACTIVE,
+                valid_until__lt=now(),
+            )
+        elif tab == 'used_up':
+            qs = qs.filter(
+                status=InvoiceVoucher.STATUS_ACTIVE,
+                redeemed__gte=F('max_usages'),
+            )
+
+        # Apply filter form
+        self.filter_form = VoucherFilterForm(self.request.GET)
+        if self.filter_form.is_valid():
+            fdata = self.filter_form.cleaned_data
+
+            if fdata.get('search'):
+                search = fdata['search']
+                qs = qs.filter(
+                    Q(code__icontains=search)
+                    | Q(limit_events__name__icontains=search)
+                    | Q(limit_organizer__name__icontains=search)
+                ).distinct()
+
+            if fdata.get('status'):
+                status_val = fdata['status']
+                if status_val == 'active':
+                    qs = qs.filter(status=InvoiceVoucher.STATUS_ACTIVE)
+                elif status_val == 'disabled':
+                    qs = qs.filter(status=InvoiceVoucher.STATUS_DISABLED)
+                elif status_val == 'draft':
+                    qs = qs.filter(status=InvoiceVoucher.STATUS_DRAFT)
+                elif status_val == 'expired':
+                    qs = qs.filter(
+                        status=InvoiceVoucher.STATUS_ACTIVE,
+                        valid_until__lt=now(),
+                    )
+                elif status_val == 'used_up':
+                    qs = qs.filter(
+                        status=InvoiceVoucher.STATUS_ACTIVE,
+                        redeemed__gte=F('max_usages'),
+                    )
+
+            if fdata.get('effect'):
+                qs = qs.filter(price_mode=fdata['effect'])
+
+            if fdata.get('scope'):
+                scope_val = fdata['scope']
+                if scope_val == 'events':
+                    qs = qs.filter(limit_events__isnull=False).distinct()
+                elif scope_val == 'organisers':
+                    qs = qs.filter(limit_organizer__isnull=False).distinct()
+                elif scope_val == 'platform_wide':
+                    qs = qs.filter(limit_events__isnull=True, limit_organizer__isnull=True)
+
+            if fdata.get('valid_until'):
+                qs = qs.filter(valid_until__date__lte=fdata['valid_until'])
+
+        # Ordering
+        ordering = self.request.GET.get('ordering', '-updated_at')
+        allowed_orderings = {
+            'code', '-code', 'valid_until', '-valid_until',
+            'redeemed', '-redeemed', 'updated_at', '-updated_at',
+        }
+        if ordering in allowed_orderings:
+            qs = qs.order_by(ordering)
+
         return qs
+
+    def _get_status_counts(self):
+        """Compute counts for each status tab."""
+        all_qs = InvoiceVoucher.objects.all()
+        now_dt = now()
+        return {
+            'all': all_qs.count(),
+            'active': all_qs.filter(
+                status=InvoiceVoucher.STATUS_ACTIVE,
+            ).exclude(
+                valid_until__lt=now_dt,
+            ).exclude(
+                redeemed__gte=F('max_usages'),
+            ).count(),
+            'disabled': all_qs.filter(status=InvoiceVoucher.STATUS_DISABLED).count(),
+            'expired': all_qs.filter(
+                status=InvoiceVoucher.STATUS_ACTIVE,
+                valid_until__lt=now_dt,
+            ).count(),
+            'used_up': all_qs.filter(
+                status=InvoiceVoucher.STATUS_ACTIVE,
+                redeemed__gte=F('max_usages'),
+            ).count(),
+            'draft': all_qs.filter(status=InvoiceVoucher.STATUS_DRAFT).count(),
+        }
+
+    def _get_summary_stats(self):
+        """Compute summary card statistics."""
+        all_qs = InvoiceVoucher.objects.all()
+        now_dt = now()
+
+        active_count = all_qs.filter(
+            status=InvoiceVoucher.STATUS_ACTIVE,
+        ).exclude(
+            valid_until__lt=now_dt,
+        ).exclude(
+            redeemed__gte=F('max_usages'),
+        ).count()
+
+        used_count = all_qs.filter(redeemed__gt=0).count()
+
+        expired_count = all_qs.filter(
+            status=InvoiceVoucher.STATUS_ACTIVE,
+            valid_until__lt=now_dt,
+        ).count()
+
+        disabled_count = all_qs.filter(status=InvoiceVoucher.STATUS_DISABLED).count()
+
+        # Total fee waived as percentage-based summary
+        total_vouchers = all_qs.count()
+        used_vouchers = all_qs.filter(redeemed__gt=0).count()
+        total_waived_pct = round((used_vouchers / total_vouchers * 100), 1) if total_vouchers > 0 else 0
+
+        return {
+            'active_count': active_count,
+            'used_count': used_count,
+            'expired_count': expired_count,
+            'disabled_count': disabled_count,
+            'total_waived_pct': total_waived_pct,
+        }
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        ctx['filter_form'] = self.filter_form if hasattr(self, 'filter_form') else VoucherFilterForm()
+        ctx['status_counts'] = self._get_status_counts()
+        ctx['stats'] = self._get_summary_stats()
+        ctx['current_tab'] = self.request.GET.get('tab', 'all')
         return ctx
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
 
 
 class VoucherCreate(AdministratorPermissionRequiredMixin, CreateView):
     model = InvoiceVoucher
-    template_name = 'pretixcontrol/admin/vouchers/detail.html'
+    template_name = 'pretixcontrol/admin/vouchers/form.html'
     context_object_name = 'voucher'
 
     def get_form_class(self):
-        form_class = InvoiceVoucherForm
-        return form_class
+        return InvoiceVoucherForm
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['currency'] = settings.DEFAULT_CURRENCY
+        ctx['creating'] = True
         return ctx
 
     def get_success_url(self) -> str:
-        return reverse('eventyay_admin:admin.vouchers')
+        return reverse('eventyay_admin:admin.global.business') + '#tab-event_vouchers'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         return kwargs
 
     def form_valid(self, form):
-        req = super().form_valid(form)
-        return req
+        form.instance.created_by = str(self.request.user)
+        form.instance.updated_by = str(self.request.user)
+        messages.success(self.request, _('Platform fee voucher has been created.'))
+        return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -1073,12 +1213,53 @@ class VoucherCreate(AdministratorPermissionRequiredMixin, CreateView):
 
 class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
     model = InvoiceVoucher
-    template_name = 'pretixcontrol/admin/vouchers/detail.html'
+    template_name = 'pretixcontrol/admin/vouchers/form.html'
     context_object_name = 'voucher'
 
     def get_form_class(self):
-        form_class = InvoiceVoucherForm
-        return form_class
+        return InvoiceVoucherForm
+
+    def get_object(self, queryset=None) -> InvoiceVoucher:
+        try:
+            return InvoiceVoucher.objects.prefetch_related(
+                'limit_events', 'limit_organizer'
+            ).get(id=self.kwargs['voucher'])
+        except InvoiceVoucher.DoesNotExist:
+            raise Http404(_('The requested voucher does not exist.'))
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['currency'] = settings.DEFAULT_CURRENCY
+        ctx['creating'] = False
+        return ctx
+
+    def form_valid(self, form):
+        form.instance.updated_by = str(self.request.user)
+        messages.success(self.request, _('Your changes have been saved.'))
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse('eventyay_admin:admin.global.business') + '#tab-event_vouchers'
+
+
+class VoucherDetail(AdministratorPermissionRequiredMixin, DetailView):
+    model = InvoiceVoucher
+    template_name = 'pretixcontrol/admin/vouchers/detail.html'
+    context_object_name = 'voucher'
+
+    def get_object(self, queryset=None) -> InvoiceVoucher:
+        try:
+            return InvoiceVoucher.objects.prefetch_related(
+                'limit_events', 'limit_organizer'
+            ).get(id=self.kwargs['voucher'])
+        except InvoiceVoucher.DoesNotExist:
+            raise Http404(_('The requested voucher does not exist.'))
+
+
+class VoucherDisable(AdministratorPermissionRequiredMixin, DetailView):
+    model = InvoiceVoucher
+    template_name = 'pretixcontrol/admin/vouchers/disable.html'
+    context_object_name = 'voucher'
 
     def get_object(self, queryset=None) -> InvoiceVoucher:
         try:
@@ -1086,23 +1267,52 @@ class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
         except InvoiceVoucher.DoesNotExist:
             raise Http404(_('The requested voucher does not exist.'))
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['currency'] = settings.DEFAULT_CURRENCY
-        return ctx
+    def post(self, request, *args, **kwargs):
+        voucher = self.get_object()
+        voucher.status = InvoiceVoucher.STATUS_DISABLED
+        voucher.updated_by = str(request.user)
+        voucher.save(update_fields=['status', 'updated_by', 'updated_at'])
+        messages.success(request, _('The voucher has been disabled.'))
+        return HttpResponseRedirect(reverse('eventyay_admin:admin.vouchers'))
 
-    def form_valid(self, form):
-        messages.success(self.request, _('Your changes have been saved.'))
-        return super().form_valid(form)
 
-    def get_success_url(self) -> str:
-        return reverse('eventyay_admin:admin.vouchers')
+class VoucherDuplicate(AdministratorPermissionRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        try:
+            original = InvoiceVoucher.objects.prefetch_related(
+                'limit_events', 'limit_organizer'
+            ).get(id=self.kwargs['voucher'])
+        except InvoiceVoucher.DoesNotExist:
+            raise Http404(_('The requested voucher does not exist.'))
+
+        # Create a copy as draft with a new code
+        new_voucher = InvoiceVoucher(
+            code=generate_code(),
+            max_usages=original.max_usages,
+            budget=original.budget,
+            valid_until=original.valid_until,
+            price_mode=original.price_mode,
+            value=original.value,
+            status=InvoiceVoucher.STATUS_DRAFT,
+            comment=original.comment,
+            allow_partial_usage=original.allow_partial_usage,
+            created_by=str(request.user),
+            updated_by=str(request.user),
+        )
+        new_voucher.save()
+        new_voucher.limit_events.set(original.limit_events.all())
+        new_voucher.limit_organizer.set(original.limit_organizer.all())
+
+        messages.success(request, _('Voucher duplicated as draft with code %(code)s.') % {'code': new_voucher.code})
+        return HttpResponseRedirect(
+            reverse('eventyay_admin:admin.voucher', kwargs={'voucher': new_voucher.pk})
+        )
 
 
 class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
     model = InvoiceVoucher
     template_name = 'pretixcontrol/admin/vouchers/delete.html'
-    context_object_name = 'invoice_voucher'
+    context_object_name = 'voucher'
 
     def get_object(self, queryset=None) -> InvoiceVoucher:
         try:
@@ -1111,10 +1321,12 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
             raise Http404(_('The requested voucher does not exist.'))
 
     def get(self, request, *args, **kwargs):
-        if self.get_object().redeemed > 0:
+        obj = self.get_object()
+        if not obj.allow_delete():
             messages.error(
                 request,
-                _('A voucher can not be deleted if it already has been redeemed.'),
+                _('This voucher cannot be deleted. Only unredeemed draft vouchers can be deleted. '
+                  'Disable the voucher instead.'),
             )
             return HttpResponseRedirect(self.get_success_url())
         return super().get(request, *args, **kwargs)
@@ -1123,10 +1335,10 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
         self.object = self.get_object()
         success_url = self.get_success_url()
 
-        if self.object.redeemed > 0:
+        if not self.object.allow_delete():
             messages.error(
                 self.request,
-                _('A voucher can not be deleted if it already has been redeemed.'),
+                _('This voucher cannot be deleted. Only unredeemed draft vouchers can be deleted.'),
             )
         else:
             self.object.delete()
@@ -1134,7 +1346,7 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
-        return reverse('eventyay_admin:admin.vouchers')
+        return reverse('eventyay_admin:admin.global.business') + '#tab-event_vouchers'
 
 
 class SystemConfigView(AdministratorPermissionRequiredMixin, TemplateView):

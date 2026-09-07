@@ -146,7 +146,7 @@ def start_view(room: Room, user: User, delete=False):
     else:
         previous.update(end=now())
     r = RoomView.objects.create(room=room, user=user)
-    c = RoomView.objects.filter(room=room, end__isnull=True).count()
+    c = RoomView.objects.filter(room=room, end__isnull=True).values("user_id").distinct().count()
     return r, c
 
 
@@ -158,7 +158,7 @@ def end_view(view: RoomView, delete=False):
     else:
         view.end = now()
         view.save()
-    c = RoomView.objects.filter(room_id=view.room_id, end__isnull=True).count()
+    c = RoomView.objects.filter(room_id=view.room_id, end__isnull=True).values("user_id").distinct().count()
     is_last = RoomView.objects.filter(room_id=view.room_id, end__isnull=True, user=view.user).count() == 0
     return c, is_last
 

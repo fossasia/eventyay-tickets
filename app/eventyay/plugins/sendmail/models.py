@@ -3,11 +3,13 @@ from collections import defaultdict
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nTextField
 
 from eventyay.base.email import get_email_context
+from eventyay.mail.context import get_mail_context
 from eventyay.base.models.auth import User
 from eventyay.base.models.event import Event
 from eventyay.base.models.orders import InvoiceAddress, Order, OrderPosition
@@ -93,12 +95,96 @@ class EmailQueue(models.Model):
         db_index=True,
         help_text=_('If set, the email will be sent at this time instead of immediately.'),
     )
+    is_draft = models.BooleanField(
+        default=False,
+        verbose_name=_('Draft'),
+        help_text=_('Drafts are kept out of the outbox and are never sent until they are moved there.')
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
         return f"EmailQueue(event={self.event.slug}, sent_at={self.sent_at})"
+
+    @property
+    def email_type_display(self):
+        if self.composing_for == ComposingFor.TEAMS:
+            return _('Team members')
+        return _('Attendees, orders, tickets')
+
+    def get_edit_url(self):
+        if self.composing_for == ComposingFor.TEAMS:
+            return reverse('control:event.mail.compose_teams', kwargs={
+                'organizer': self.event.organizer.slug,
+                'event': self.event.slug
+            }) + f'?draft={self.pk}'
+        return reverse('control:event.mail.send', kwargs={
+            'organizer': self.event.organizer.slug,
+            'event': self.event.slug
+        }) + f'?draft={self.pk}'
+
+    def duplicate(self):
+        """
+        Creates a copy of this EmailQueue as a draft and copies its filter data and recipients.
+        """
+        new_mail = EmailQueue.objects.create(
+            event=self.event,
+            user=self.user,
+            composing_for=self.composing_for,
+            subject=self.subject,
+            message=self.message,
+            reply_to=self.reply_to,
+            bcc=self.bcc,
+            locale=self.locale,
+            attachments=list(self.attachments),
+            scheduled_at=self.scheduled_at,
+            is_draft=True,
+            sent_at=None,
+        )
+
+        if hasattr(self, 'filters_data'):
+            orig_filter = self.filters_data
+            EmailQueueFilter.objects.create(
+                mail=new_mail,
+                recipients=orig_filter.recipients,
+                order_status=list(orig_filter.order_status),
+                products=list(orig_filter.products),
+                checkin_lists=list(orig_filter.checkin_lists),
+                has_filter_checkins=orig_filter.has_filter_checkins,
+                not_checked_in=orig_filter.not_checked_in,
+                subevent=orig_filter.subevent,
+                subevents_from=orig_filter.subevents_from,
+                subevents_to=orig_filter.subevents_to,
+                order_created_from=orig_filter.order_created_from,
+                order_created_to=orig_filter.order_created_to,
+                orders=list(orig_filter.orders),
+                teams=list(orig_filter.teams),
+                team_role=orig_filter.team_role,
+                permission_level=orig_filter.permission_level,
+                status=orig_filter.status,
+                specific_people=list(orig_filter.specific_people),
+                exclude_me=orig_filter.exclude_me,
+                individual_attendees=list(getattr(orig_filter, 'individual_attendees', []) or []),
+            )
+
+        recipients = [
+            EmailQueueToUser(
+                mail=new_mail,
+                email=r.email,
+                orders=list(r.orders),
+                positions=list(r.positions),
+                products=list(r.products),
+                team=r.team,
+                sent=False,
+                error=None,
+            )
+            for r in self.recipients.all()
+        ]
+        if recipients:
+            EmailQueueToUser.objects.bulk_create(recipients)
+
+        return new_mail
 
     def subject_localized(self, locale=None):
         """
@@ -121,6 +207,9 @@ class EmailQueue(models.Model):
         """
         if self.sent_at:
             return False  # Already sent
+
+        if self.is_draft:
+            return False  # Do not send drafts
 
         if self.scheduled_at and self.scheduled_at > now():
             raise SendMailException(_('This email is scheduled for the future and cannot be sent yet.'))
@@ -146,7 +235,10 @@ class EmailQueue(models.Model):
     def _build_email_context(self, order, position, position_or_address, recipient):
         try:
             if self.composing_for != ComposingFor.ATTENDEES:
-                return get_email_context(event=self.event)
+                user_obj = User.objects.filter(email__iexact=recipient.email).first()
+                ctx = get_email_context(event=self.event, user=user_obj)
+                ctx.update(get_mail_context(event=self.event, user=user_obj))
+                return ctx
 
             # Only pass keys that are present. ``position=None`` still counts as
             # provided to get_email_context and would break position placeholders.
@@ -430,7 +522,14 @@ class EmailQueueFilter(models.Model):
     order_created_from = models.DateTimeField(null=True, blank=True)
     order_created_to = models.DateTimeField(null=True, blank=True)
     orders = ArrayField(models.IntegerField(), blank=True, default=list)
+
     teams = ArrayField(models.IntegerField(), blank=True, default=list)
+    team_role = models.CharField(max_length=20, blank=True, default='')
+    permission_level = models.CharField(max_length=50, blank=True, default='')
+    status = models.CharField(max_length=10, blank=True, default='')
+    specific_people = ArrayField(models.IntegerField(), blank=True, default=list)
+    exclude_me = models.BooleanField(default=False)
+
     individual_attendees = ArrayField(models.IntegerField(), blank=True, default=list)
 
     def __str__(self):

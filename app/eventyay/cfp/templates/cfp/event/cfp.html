@@ -18,7 +18,7 @@
         {% can_view_featured_sessions_public request.event as can_view_featured_submissions %}
         {% has_event_perm "base.update_event" request.user request request.event as can_edit_cfp %}
         <div class="d-flex align-items-start">
-            <h1>{{ cfp.headline|event_localize|default:"" }}</h1>
+            <h2 class="content-header">{{ cfp.headline|event_localize|default:"" }}</h2>
             {% if can_edit_cfp %}
                 {% orga_edit_link request.event.cfp.urls.text %}
             {% endif %}

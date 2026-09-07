@@ -9,6 +9,7 @@
 
 {% block stylesheets %}
     {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/modern-dashboard.css" %}">
         <link rel="stylesheet" href="{% static "orga/css/dashboard.css" %}">
     {% endcompress %}
     {% has_event_perm "base.orga_list_submission" request.user request request.event as can_view_submission_stats %}
@@ -40,35 +41,20 @@
             {% endblocktranslate %}
         </div>
     {% endif %}
-    {% with date_range=request.event.get_date_range_display %}
-    {% with header_extra="<small class='event-date text-muted'>"|add:date_range|add:"</small>" %}
-        {% include "common/includes/header_nav.html" with header_title=request.event.name|event_localize header_title_extra=header_extra %}
-    {% endwith %}
-    {% endwith %}
-    <div id="timeline-steps" class="stages">
-        {% for stp in timeline %}
-            <div {% if stp.phase == "done" and stp.url %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">
-                <div class="step-icon">
-                    <span class="fa {% if stp.icon %}fa-{{ stp.icon }}{% else %}fa-check{% endif %}"></span>
+    <div class="modern-dashboard">
+        <nav id="event-nav" class="header-nav" style="margin-bottom: 24px;">
+            <div class="navigation">
+                <div class="navigation-title">
+                    <h2 style="margin: 0; padding-top: 8px;">
+                        {% trans "Talks dashboard" %}
+                    </h2>
+                    <div class="text-muted dashboard-header-extra">{{ request.event.name|event_localize }} &middot; {{ request.event.get_date_range_display }}</div>
                 </div>
-                <div class="step-label">
-                    {{ stp.label }}
-                </div>
-                {% if stp.links and can_change_settings %}
-                    <div class="step-links">
-                        <ul>
-                            {% for link in stp.links %}
-                                <li>
-                                    <a {% if link.url %}href="{{ link.url }}"{% endif %}>
-                                        {{ link.title }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
+                {% include "orga/event/component_link.html" %}
             </div>
-        {% endfor %}
+        </nav>
+
+        {% include "orga/includes/dashboard_timeline.html" with timeline_data=timeline %}
     </div>
 
     <div class="dashboard-list dashboard-list-metrics">

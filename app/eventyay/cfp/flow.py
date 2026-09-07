@@ -4,6 +4,7 @@ import logging
 from collections import OrderedDict
 from contextlib import suppress
 from pathlib import Path
+from types import SimpleNamespace
 
 from django.conf import settings
 from django.contrib import messages
@@ -228,12 +229,28 @@ class TemplateFlowStep(TemplateResponseMixin, BaseCfPStep):
 
 class FormFlowStep(TemplateFlowStep):
     form_class = None
-    file_storage = FileSystemStorage(str(Path(settings.MEDIA_ROOT) / 'cfp_uploads'))
+    file_storage = FileSystemStorage(
+        str(Path(settings.MEDIA_ROOT) / 'cfp_uploads'),
+        base_url=f'{settings.MEDIA_URL.rstrip("/")}/cfp_uploads/',
+    )
 
     def get_form_initial(self):
         initial_data = self.cfp_session.get('initial', {}).get(self.identifier, {})
         previous_data = self.cfp_session.get('data', {}).get(self.identifier, {})
-        return copy.deepcopy({**initial_data, **previous_data})
+        form_initial = copy.deepcopy({**initial_data, **previous_data})
+
+        saved_files = self.cfp_session.get('files', {}).get(self.identifier, {})
+        for field, file_data in saved_files.items():
+            if isinstance(file_data, list):
+                continue
+
+            if (file_data.get('content_type') or '').startswith('image/'):
+                form_initial[field] = SimpleNamespace(
+                    name=file_data['name'],
+                    url=self.file_storage.url(file_data['tmp_name']),
+                )
+
+        return form_initial
 
     def get_form(self, from_storage=False):
         # Cache form initial data to avoid repeated work
@@ -659,7 +676,10 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
             prev_url = self.get_prev_url(request)
             return redirect(prev_url) if prev_url else redirect(request.path)
 
-        if not form.is_valid() or not self.social_media_formset_is_valid(formset):
+        form_valid = form.is_valid()
+        formset_valid = self.social_media_formset_is_valid(formset)
+
+        if not form_valid or not formset_valid:
             warning_messages = getattr(form, 'warning_messages', None) or []
             for warning in filter(None, warning_messages):
                 messages.warning(self.request, warning)

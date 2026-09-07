@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:15+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 09:04+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Bulgarian <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/bg/>\n"
 "Language: bg\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -1268,8 +1268,8 @@ msgid ""
 "event before sales can go live."
 msgstr ""
 "Събитията не могат да бъдат създавани като „live“. Квотите и плащането "
-"трябва да бъдат добавени към събитието, преди продажбите да могат да станат "
-"„live“."
+"трябва да бъдат добавени към събитието, преди продажбите да могат да станат „"
+"live“."
 
 #: eventyay/api/serializers/event.py:211 eventyay/api/serializers/event.py:512
 #, python-brace-format
@@ -1956,8 +1956,7 @@ msgstr ""
 #: eventyay/base/configurations/default_setting.py:526
 msgid ""
 "Directly redirect to check-out after a product has been added to the cart."
-msgstr ""
-"Пренасочване директно към плащане след добавяне на продукт в количката."
+msgstr "Пренасочване директно към плащане след добавяне на продукт в количката."
 
 #: eventyay/base/configurations/default_setting.py:535
 msgid "End of presale text"
@@ -2114,8 +2113,8 @@ msgid ""
 "'Last date of payments' configured above."
 msgstr ""
 "Приемайте плащания за поръчки дори когато са в състояние „изтекла“, стига да "
-"има достатъчно наличен капацитет. Никога няма да се приемат плащания след "
-"„Последната дата за плащания“, конфигурирана по-горе."
+"има достатъчно наличен капацитет. Никога няма да се приемат плащания след „"
+"Последната дата за плащания“, конфигурирана по-горе."
 
 #: eventyay/base/configurations/default_setting.py:712
 msgid "Show start date"
@@ -2613,8 +2612,7 @@ msgstr ""
 
 #: eventyay/base/configurations/default_setting.py:1247
 msgid "Require user to be logged in to place an order"
-msgstr ""
-"Изисквайте потребителят да е влязъл в акаунта си, за да направи поръчка"
+msgstr "Изисквайте потребителят да е влязъл в акаунта си, за да направи поръчка"
 
 #: eventyay/base/configurations/default_setting.py:1249
 #: eventyay/control/forms/event.py:73
@@ -6922,8 +6920,7 @@ msgstr "Персонализирани CSS стилове за събитиет�
 msgid ""
 "Upload a custom CSS file if changing the primary colour is not sufficient "
 "for you."
-msgstr ""
-"Качете собствен CSS файл, ако смяната на основния цвят не е достатъчна."
+msgstr "Качете собствен CSS файл, ако смяната на основния цвят не е достатъчна."
 
 #: eventyay/base/models/event.py:668
 msgid ""
@@ -8047,8 +8044,8 @@ msgid ""
 "perform check-ins."
 msgstr ""
 "Това включва търсене на участници, което може да се използва за получаване "
-"на лична информация за участниците. Потребителите с „може да променя "
-"поръчки“ могат също да извършват чекиране."
+"на лична информация за участниците. Потребителите с „може да променя поръчки"
+"“ могат също да извършват чекиране."
 
 #: eventyay/base/models/organizer.py:414
 msgid "Can view vouchers"
@@ -8711,8 +8708,8 @@ msgid ""
 "paid and completed. You can use this e.g. for discounted tickets that are "
 "only available to specific groups."
 msgstr ""
-"Ако този продукт е част от поръчка, поръчката ще бъде поставена в състояние "
-"„одобрение“ и ще трябва да бъде потвърдена от вас, преди да може да бъде "
+"Ако този продукт е част от поръчка, поръчката ще бъде поставена в състояние „"
+"одобрение“ и ще трябва да бъде потвърдена от вас, преди да може да бъде "
 "платена и завършена. Можете да използвате това например за билети с "
 "отстъпка, които са налични само за определени групи."
 
@@ -8774,8 +8771,7 @@ msgstr "Позволете на клиентите да променят инф�
 msgid ""
 "If this is checked, customers can switch between variations of this product "
 "in their order details."
-msgstr ""
-"Клиентите могат да променят вариацията на продуктите, които са закупили"
+msgstr "Клиентите могат да променят вариацията на продуктите, които са закупили"
 
 #: eventyay/base/models/product.py:516
 msgid "Minimum amount per order"
@@ -11311,8 +11307,7 @@ msgstr "Тази подаръчна карта не се приема от то�
 
 #: eventyay/base/payment.py:1411
 msgid "This gift card was used in the meantime. Please try again."
-msgstr ""
-"Тази подаръчна карта е използвана междувременно. Моля, опитайте отново."
+msgstr "Тази подаръчна карта е използвана междувременно. Моля, опитайте отново."
 
 #: eventyay/base/pdf.py:65
 msgid "Ticket code (barcode content)"
@@ -11988,8 +11983,8 @@ msgid ""
 "You need to select at least %(min)s add-ons from the category %(cat)s for "
 "the product %(base)s."
 msgstr ""
-"Трябва да изберете поне %(min)s добавки от категория %(cat)s за продукта "
-"%(base)s."
+"Трябва да изберете поне %(min)s добавки от категория %(cat)s за продукта %"
+"(base)s."
 
 #: eventyay/base/services/cart.py:133
 #, python-format
@@ -13707,8 +13702,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Може да подавате предложения отсега до %(deadline)s (%(timezone)s), "
-"%(until_string)s ."
+"Може да подавате предложения отсега до %(deadline)s (%(timezone)s), %"
+"(until_string)s ."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -15408,8 +15403,8 @@ msgid ""
 "The link you clicked on wants to redirect you to a destination on the "
 "website %(host)s."
 msgstr ""
-"Връзката, която сте последвали, иска да Ви пренасочи към страница на сайта "
-"%(host)s."
+"Връзката, която сте последвали, иска да Ви пренасочи към страница на сайта %"
+"(host)s."
 
 #: eventyay/common/templates/common/redirect.html:18
 msgid "Please only proceed if you trust this website to be safe."
@@ -15854,8 +15849,7 @@ msgstr "Нова парола (отново)"
 
 #: eventyay/common/text/phrases.py:89
 msgid "You entered two different passwords. Please enter the same one twice!"
-msgstr ""
-"Въвели сте две различни пароли. Моля, въведете еднаква парола два пъти!"
+msgstr "Въвели сте две различни пароли. Моля, въведете еднаква парола два пъти!"
 
 #: eventyay/common/text/phrases.py:90
 msgctxt "noun / heading"
@@ -18151,8 +18145,8 @@ msgstr "Ключът за Stripe не може да бъде празен."
 msgid ""
 "The provided key does not look valid. It should start with \"%(prefix)s\"."
 msgstr ""
-"Предоставеният ключ не изглежда валиден. Той трябва да започва с "
-"\"%(prefix)s\"."
+"Предоставеният ключ не изглежда валиден. Той трябва да започва с \"%(prefix)"
+"s\"."
 
 #: eventyay/control/forms/global_settings.py:988
 #, python-format
@@ -18160,8 +18154,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"Предоставеният ключ не изглежда валиден. Той трябва да започва с едно от: "
-"%(prefixes)s"
+"Предоставеният ключ не изглежда валиден. Той трябва да започва с едно от: %"
+"(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -19262,8 +19256,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "You generated {codes} vouchers, but entered recipients for {recp} vouchers."
-msgstr ""
-"Генерирахте {codes} ваучера, но въведохте получатели за {recp} ваучера."
+msgstr "Генерирахте {codes} ваучера, но въведохте получатели за {recp} ваучера."
 
 #: eventyay/control/forms/vouchers.py:453
 msgid "You need to specify as many seats as voucher codes."
@@ -19283,8 +19276,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Позиция #{posid}: {old_product} ({old_price}) променено на {new_product} "
-"({new_price})."
+"Позиция #{posid}: {old_product} ({old_price}) променено на {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19309,8 +19302,8 @@ msgstr "Цената на позиция #{posid} е променена от {ol
 #, python-brace-format
 msgid "Tax rule of position #{posid} changed from {old_rule} to {new_rule}."
 msgstr ""
-"Данъчното правило на позиция #{posid} е променено от {old_rule} на "
-"{new_rule}."
+"Данъчното правило на позиция #{posid} е променено от {old_rule} на {new_rule}"
+"."
 
 #: eventyay/control/logdisplay.py:120
 #, python-brace-format
@@ -19355,8 +19348,8 @@ msgid ""
 "Position #{posid} created: {product} ({price}) as an add-on to position "
 "#{addon_to}."
 msgstr ""
-"Позиция #{posid} създадена: {product} ({price}) като допълнение към позиция "
-"#{addon_to}."
+"Позиция #{posid} създадена: {product} ({price}) като допълнение към позиция #"
+"{addon_to}."
 
 #: eventyay/control/logdisplay.py:194
 #, python-brace-format
@@ -19403,8 +19396,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"Двойно сканиране на отменен код „{barcode}…“ в {datetime} за списък "
-"„{list}“, тип „{type}“, беше качено."
+"Двойно сканиране на отменен код „{barcode}…“ в {datetime} за списък „{list}"
+"“, тип „{type}“, беше качено."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19421,8 +19414,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"Отказано сканиране на позиция №{posid} в {datetime} за списък „{list}“, тип "
-"„{type}“, код на грешка „{errorcode}“."
+"Отказано сканиране на позиция №{posid} в {datetime} за списък „{list}“, тип „"
+"{type}“, код на грешка „{errorcode}“."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -20278,16 +20271,16 @@ msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
 msgstr ""
-"Позиция №{posid} беше регистрирана ръчно при вход в {datetime} в списък "
-"„{list}“."
+"Позиция №{posid} беше регистрирана ръчно при вход в {datetime} в списък „"
+"{list}“."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
 msgstr ""
-"Позиция №{posid} беше регистрирана отново при вход в {datetime} в списък "
-"„{list}“."
+"Позиция №{posid} беше регистрирана отново при вход в {datetime} в списък „"
+"{list}“."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
@@ -22004,8 +21997,7 @@ msgstr "Версията на инсталирания eventyay е:"
 #: eventyay/control/templates/pretixcontrol/admin/systemconfig.html:33
 #, python-format
 msgid "You can check for updates <a href=\"%(update_url)s\">here</a>."
-msgstr ""
-"Можете да проверите за актуализации <a href=\"%(update_url)s\">тук</a>."
+msgstr "Можете да проверите за актуализации <a href=\"%(update_url)s\">тук</a>."
 
 #: eventyay/control/templates/pretixcontrol/admin/systemconfig.html:42
 msgid "Settings have been loaded from:"
@@ -22896,8 +22888,8 @@ msgstr "Изтриване на списъка за регистрация"
 msgid ""
 "Are you sure you want to delete the check-in list <strong>%(name)s</strong>?"
 msgstr ""
-"Сигурни ли сте, че искате да изтриете списъка за регистрация "
-"<strong>%(name)s</strong>?"
+"Сигурни ли сте, че искате да изтриете списъка за регистрация <strong>%(name)"
+"s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/checkin/list_delete.html:11
 #, python-format
@@ -23806,8 +23798,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Няма налични доставчици на плащания. Моля, отидете в <a "
-"%(plugin_settings_href)s>настройките на плъгина</a> и активирайте един или "
+"Няма налични доставчици на плащания. Моля, отидете в <a %"
+"(plugin_settings_href)s>настройките на плъгина</a> и активирайте един или "
 "повече плъгини за плащане."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -24178,11 +24170,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Тези настройки са предназначени за напреднали потребители. Вижте <a "
-"href=\"%(docs)s\">документацията</a> за повече информация. Имайте предвид, "
-"че ние не носим отговорност за правилното обработване на данъците във вашия "
-"магазин за билети. Ако се съмнявате, моля, свържете се с адвокат или данъчен "
-"консултант."
+"Тези настройки са предназначени за напреднали потребители. Вижте <a href=\"%"
+"(docs)s\">документацията</a> за повече информация. Имайте предвид, че ние не "
+"носим отговорност за правилното обработване на данъците във вашия магазин за "
+"билети. Ако се съмнявате, моля, свържете се с адвокат или данъчен консултант."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24205,8 +24196,7 @@ msgstr ""
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:51
 msgid "All of these rules will only apply if an invoice address is set."
-msgstr ""
-"Всички тези правила ще се прилагат само ако е зададен адрес за фактура."
+msgstr "Всички тези правила ще се прилагат само ако е зададен адрес за фактура."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:129
 #: eventyay/control/templates/pretixcontrol/subevents/bulk.html:251
@@ -24259,9 +24249,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Няма налични изходи за билети. Моля, отидете в <a "
-"%(plugin_settings_href)s>настройките на плъгина</a> и активирайте един или "
-"повече плъгини за изход на билети."
+"Няма налични изходи за билети. Моля, отидете в <a %(plugin_settings_href)s>"
+"настройките на плъгина</a> и активирайте един или повече плъгини за изход на "
+"билети."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -24672,8 +24662,8 @@ msgid ""
 "except if the add-on products or bundled products represent additional "
 "people (e.g. group bundles)."
 msgstr ""
-"Тази опция трябва да бъде зададена за повечето неща, които бихте нарекли "
-"„билет“. За добавки към продукт или пакети, това трябва да бъде зададено за "
+"Тази опция трябва да бъде зададена за повечето неща, които бихте нарекли „"
+"билет“. За добавки към продукт или пакети, това трябва да бъде зададено за "
 "основния билет, освен ако добавъчните продукти или продуктите в пакета "
 "представляват допълнителни хора (напр. групови пакети)."
 
@@ -27259,8 +27249,7 @@ msgstr ""
 #| "Generate a new token. The current token will not be usable any longer."
 msgid ""
 "Generate a new setup code? The current QR code and token will stop working."
-msgstr ""
-"Генерирайте нов токен. Текущият токен вече няма да може да се използва."
+msgstr "Генерирайте нов токен. Текущият токен вече няма да може да се използва."
 
 #: eventyay/control/templates/pretixcontrol/organizers/device_connect.html:94
 msgid ""
@@ -28234,9 +28223,9 @@ msgid ""
 msgstr ""
 "Избрахта435 набор от дати, коита43e в момента имат различни настройки на430 "
 "квота438та435. Затова не можете да променяте квота438та435 им ма430сово. Ако "
-"жела430ете, можете да настроите на43eв на430бор от квота438, за да "
-"<strong>за430мени</strong> на430стройка430та430 на430 квота438та435 за "
-"всички избрани дати."
+"жела430ете, можете да настроите на43eв на430бор от квота438, за да <strong>"
+"за430мени</strong> на430стройка430та430 на430 квота438та435 за всички "
+"избрани дати."
 
 #: eventyay/control/templates/pretixcontrol/subevents/bulk_edit.html:258
 msgid ""
@@ -28648,8 +28637,8 @@ msgid ""
 "                                    "
 msgstr ""
 "\n"
-"                                    В изчакване, продуктът е наличен "
-"%(num)sx\n"
+"                                    В изчакване, продуктът е наличен %(num)"
+"sx\n"
 "                                "
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:231
@@ -29405,8 +29394,7 @@ msgstr[1] "Поръчките %(count)d бяха отказани и вече с
 #: eventyay/presale/views/order.py:1186 eventyay/presale/views/order.py:1298
 #: eventyay/presale/views/order.py:1426 eventyay/presale/views/order.py:1470
 msgid "Unknown order code or not authorized to access this order."
-msgstr ""
-"Неизвестен код на поръчката или нямате право на достъп до тази поръчка."
+msgstr "Неизвестен код на поръчката или нямате право на достъп до тази поръчка."
 
 #: eventyay/control/views/orders.py:630 eventyay/presale/views/order.py:1302
 msgid "Ticket download is not enabled for this product."
@@ -30875,8 +30863,8 @@ msgstr "Изтрийте устройство за двуфакторна аут
 msgid ""
 "Are you sure you want to delete the authentication device \"%(device)s\"?"
 msgstr ""
-"Сигурни ли сте, че искате да изтриете устройството за удостоверяване "
-"„%(device)s“?"
+"Сигурни ли сте, че искате да изтриете устройството за удостоверяване „%"
+"(device)s“?"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-delete.html:25
 #, fuzzy
@@ -32537,8 +32525,8 @@ msgid ""
 "Edit permissions for existing teams. Click 'Edit' to expand the permissions "
 "form."
 msgstr ""
-"Редактирайте разрешенията за съществуващи екипи. Щракнете върху "
-"„Редактиране“, за да разгънете формуляра за разрешения."
+"Редактирайте разрешенията за съществуващи екипи. Щракнете върху „Редактиране"
+"“, за да разгънете формуляра за разрешения."
 
 #: eventyay/eventyay_common/templates/eventyay_common/organizers/edit.html:23
 #: eventyay/eventyay_common/templates/eventyay_common/organizers/teams/team_edit.html:9
@@ -32936,8 +32924,7 @@ msgstr "Генерирана е нова тайна на клиента и ве�
 #: eventyay/eventyay_common/views/account/oauth.py:149
 #, python-brace-format
 msgid "Are you sure you want to disable the application {code} permanently?"
-msgstr ""
-"Сигурни ли сте, че искате да деактивирате приложението {code} завинаги?"
+msgstr "Сигурни ли сте, че искате да деактивирате приложението {code} завинаги?"
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:47
 msgid "Something went wrong, you cannot access this page now."
@@ -33115,8 +33102,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Тази връзка за потвърждение на имейл е изтекла или е невалидна. Моля, "
-"%(email_action_link)s."
+"Тази връзка за потвърждение на имейл е изтекла или е невалидна. Моля, %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33763,8 +33750,8 @@ msgid ""
 msgstr ""
 "Здравейте!\n"
 "\n"
-"Радваме се да ви съобщим, че приемаме вашето предложение "
-"„{submission_title}“\n"
+"Радваме се да ви съобщим, че приемаме вашето предложение „{submission_title}"
+"“\n"
 "за {event_name}. Моля, щракнете върху тази връзка, за да потвърдите "
 "присъствието си:\n"
 "\n"
@@ -33945,8 +33932,8 @@ msgid ""
 msgstr ""
 "Здравейте!\n"
 "\n"
-"Добавени сте към предложение за {event_name} със заглавие "
-"„{proposal_title}“.\n"
+"Добавени сте към предложение за {event_name} със заглавие „{proposal_title}"
+"“.\n"
 "Моля, последвайте връзката, за да редактирате профила си и състоянието на "
 "предложението си:\n"
 "\n"
@@ -36345,8 +36332,7 @@ msgstr "Добрата покана за предложения подканя �
 
 #: eventyay/orga/templates/orga/cfp/text.html:25
 msgid "The formats (sessions, workshops, panels) and their durations"
-msgstr ""
-"Форматите (сесии, работилници, панелни дискусии) и продължителността им"
+msgstr "Форматите (сесии, работилници, панелни дискусии) и продължителността им"
 
 #: eventyay/orga/templates/orga/cfp/text.html:26
 msgid "Topics you are looking for"
@@ -36534,9 +36520,9 @@ msgid ""
 "href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
 "new account to join the team!"
 msgstr ""
-"Ако вече имате акаунт – като лектор или организатор – в <a "
-"href=\"%(domain)s\">%(domain)s</a>, моля, влезте сега. В противен случай "
-"създайте нов акаунт, за да се присъедините към екипа!"
+"Ако вече имате акаунт – като лектор или организатор – в <a href=\"%(domain)"
+"s\">%(domain)s</a>, моля, влезте сега. В противен случай създайте нов "
+"акаунт, за да се присъедините към екипа!"
 
 #: eventyay/orga/templates/orga/invitation.html:37
 #, python-format
@@ -36877,8 +36863,8 @@ msgstr ""
 "ползвате кодовете на предложенията като ключове (напр. „UX3N1“), а "
 "идентификаторите на потребителите като стойности, или обратно. За "
 "идентификатор може да ползвате или e-mail адреса на потребителите, или "
-"кодовете им (напр. „34KJN“). Може да погледнете примерен файл <a "
-"href='%(href)s'>тук</a>."
+"кодовете им (напр. „34KJN“). Може да погледнете примерен файл <a href='%"
+"(href)s'>тук</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:23
 msgid ""
@@ -36933,10 +36919,10 @@ msgid ""
 "them first. You can change this in your <a href=\"%(href)s\">review "
 "settings</a>."
 msgstr ""
-"Рецензентите може да виждат и рецензират <strong>всички предложения</"
-"strong>, но предложенията, които са им разпределени, се изобразяват "
-"осветени, а рецензентите биват подканени да прегледат първо тях. Може да "
-"промените това в <a href='%(href)s'>настройките за рецензиране</a>."
+"Рецензентите може да виждат и рецензират <strong>всички предложения</strong>"
+", но предложенията, които са им разпределени, се изобразяват осветени, а "
+"рецензентите биват подканени да прегледат първо тях. Може да промените това "
+"в <a href='%(href)s'>настройките за рецензиране</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:129
 msgid ""
@@ -37170,8 +37156,7 @@ msgstr "Всички непотвърдени сесии."
 msgid "One session has <strong>not yet been scheduled</strong>."
 msgid_plural "%(count)s sessions have <strong>not yet been scheduled</strong>."
 msgstr[0] "Една сесия все още <strong>не е поместена в програмата</strong>."
-msgstr[1] ""
-"%(count)s сесии все още <strong>не са поместени в програмата</strong>."
+msgstr[1] "%(count)s сесии все още <strong>не са поместени в програмата</strong>."
 
 #: eventyay/orga/templates/orga/schedule/release.html:79
 #, python-format
@@ -37179,8 +37164,7 @@ msgid "One session has <strong>not yet been assigned a track</strong>."
 msgid_plural ""
 "%(count)s sessions have <strong>not yet been assigned a track</strong>."
 msgstr[0] "Една сесия все още <strong>не е поместена в някой поток</strong>."
-msgstr[1] ""
-"%(count)s сесии все още <strong>не са поместени в някой поток</strong>."
+msgstr[1] "%(count)s сесии все още <strong>не са поместени в някой поток</strong>."
 
 #: eventyay/orga/templates/orga/schedule/release.html:95
 msgid "Warnings"
@@ -37453,9 +37437,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Ако оценката от рецензията и текстът на рецензията не са задължителни, "
-"рецензентите ще разполагат с допълнителен бутон за "
-"%(quotation_open)sВъздържане%(quotation_close)s при прегледа на "
-"предложенията."
+"рецензентите ще разполагат с допълнителен бутон за %(quotation_open)"
+"sВъздържане%(quotation_close)s при прегледа на предложенията."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -39343,8 +39326,8 @@ msgstr "Отпечатване на баджове"
 msgid ""
 "Are you sure you want to delete the badge layout <strong>%(layout)s</strong>?"
 msgstr ""
-"Сигурни ли сте, че искате да изтриете оформлението на баджа "
-"<strong>%(layout)s</strong>?"
+"Сигурни ли сте, че искате да изтриете оформлението на баджа <strong>%(layout)"
+"s</strong>?"
 
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:6
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:16
@@ -40339,8 +40322,7 @@ msgstr "Всички списъци за регистрация"
 
 #: eventyay/plugins/manualpayment/apps.py:15
 msgid "This plugin adds a customizable payment method for manual processing."
-msgstr ""
-"Този плъгин добавя персонализируем метод на плащане за ръчна обработка."
+msgstr "Този плъгин добавя персонализируем метод на плащане за ръчна обработка."
 
 #: eventyay/plugins/reports/apps.py:10 eventyay/plugins/reports/apps.py:13
 msgid "Report exporter"
@@ -42705,8 +42687,7 @@ msgstr "Вашата подаръчна карта ще бъде валидна 
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:103
 msgid "I want the refund as a gift card for later purchases"
-msgstr ""
-"Искам възстановяването на сумата като подаръчна карта за бъдещи покупки"
+msgstr "Искам възстановяването на сумата като подаръчна карта за бъдещи покупки"
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:109
 msgid "I want the refund to be sent to my original payment method"
@@ -42796,8 +42777,7 @@ msgstr ""
 msgid ""
 "Refunds for canceled tickets will be issued as a gift card for future "
 "purchases."
-msgstr ""
-"Искам възстановяването на сумата като подаръчна карта за бъдещи покупки"
+msgstr "Искам възстановяването на сумата като подаръчна карта за бъдещи покупки"
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel_positions.html:83
 #, fuzzy
@@ -43608,8 +43588,7 @@ msgstr ""
 
 #: eventyay/presale/views/event.py:1084
 msgid "Unknown event code or not authorized to access this event."
-msgstr ""
-"Неизвестен код на събитието или нямате право на достъп до това събитие."
+msgstr "Неизвестен код на събитието или нямате право на достъп до това събитие."
 
 #: eventyay/presale/views/event.py:1091
 msgctxt "subevent"
@@ -43665,8 +43644,7 @@ msgstr "Eventyay Video"
 #, fuzzy
 #| msgid "Unknown order code or not authorized to access this order."
 msgid "You are not authorized to access this order."
-msgstr ""
-"Неизвестен код на поръчката или нямате право на достъп до тази поръчка."
+msgstr "Неизвестен код на поръчката или нямате право на достъп до тази поръчка."
 
 #: eventyay/presale/views/order.py:556 eventyay/presale/views/order.py:626
 #: eventyay/presale/views/order.py:700

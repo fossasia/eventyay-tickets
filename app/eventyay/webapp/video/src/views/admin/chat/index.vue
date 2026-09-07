@@ -1,13 +1,14 @@
 <template lang="pug">
 .c-admin-chat
-	.header
+	.ui-page-header
+		bunt-icon-button(@click="$router.push({name: 'organizer'})", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
+		h2 {{ $t('Chat Channels') }}
 		.actions
-			h2 {{ $t('Chat') }}
 			bunt-link-button.btn-create(
 				v-if="canCreate",
 				:to="{name: 'admin:chat:new'}"
 			) {{ $t('Create a new channel') }}
-		bunt-input.search(name="search", :placeholder="$t('Search channels')", icon="search", v-model="search")
+			bunt-input.search(name="search", :placeholder="$t('Search channels')", icon="search", v-model="search")
 	.error(v-if="error")
 		span {{ $t('Failed to load chat channels.') }}
 		span(v-if="errorCode")  ({{ errorCode }})
@@ -139,25 +140,20 @@ export default {
 	flex-direction: column
 	min-height: 0
 	background-color: $clr-white
-	> .header
-		display: flex
-		align-items: center
-		justify-content: space-between
-		background-color: $clr-grey-50
+	.ui-page-header
 		.actions
 			display: flex
-			flex: none
 			align-items: center
+			gap: 8px
+			margin-left: auto
 			.btn-create
 				themed-button-primary()
-	h2
-		margin: 16px
-	.search
-		input-style(size: compact)
-		padding: 0
-		margin: 8px
-		flex: none
-		background-color: $clr-white
+		.search
+			input-style(size: compact)
+			padding: 0
+			margin: 0
+			flex: none
+			background-color: $clr-white
 	.rooms-list
 		flex-table()
 		.drag

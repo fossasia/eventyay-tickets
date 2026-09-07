@@ -280,12 +280,6 @@ class StreamingServerForm(HasSecretsMixin, forms.ModelForm):
         field_classes = {"token_secret": SecretKeyField}
 
 
-class StreamKeyGeneratorForm(forms.Form):
-    server = forms.ModelChoiceField(
-        label=_('Server'), queryset=StreamingServer.objects.all()
-    )
-    name = forms.CharField(label=_('Name'), validators=[RegexValidator("^[a-z0-9A-Z]+$")])
-    days = forms.IntegerField(label=_('Validity in days'), initial=180)
 
 
 class BBBMoveRoomForm(forms.Form):

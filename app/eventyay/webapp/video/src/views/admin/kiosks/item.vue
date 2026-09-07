@@ -3,15 +3,20 @@
 	.error(v-if="error") {{ $t('We could not fetch the current configuration.') }}
 	template(v-else-if="kiosk")
 		.ui-page-header
-			bunt-icon-button(@click="$router.push({name: 'admin:kiosks:index'})") arrow_left
+			bunt-icon-button(@click="$router.push({name: 'admin:kiosks:index'})", :tooltip="$t('Back to Kiosks')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
 			h1 {{ kiosk.profile.display_name }}
 			.actions
 				bunt-button.btn-delete-kiosk(@click="showDeletePrompt = true") delete
 		.scroll-wrapper(v-scrollbar.y="")
 			.ui-form-body
-				.kiosk-url
-					label {{ $t('Kiosk Login URL:') }}
-					copyable-text(:text="loginUrl")
+				copyable-text(
+					:url="loginUrl",
+					:label="$t('Kiosk Login URL')",
+					:hint="$t('Open this link to display the kiosk or copy it to configure your device.')",
+					:show-launch="true",
+					:launch-label="$t('Launch')",
+					:is-card="true"
+				)
 				bunt-input(name="name", v-model="kiosk.profile.display_name", :label="$t('Name')", :validation="v$.kiosk.profile.display_name")
 				bunt-select(v-model="kiosk.profile.room_id", :label="$t('Room')", name="room", :options="rooms", option-label="name", :validation="v$.kiosk.profile.room_id")
 				bunt-switch(name="show_reactions", v-model="kiosk.profile.show_reactions", :label="$t('Show reaction cloud')")
@@ -83,6 +88,29 @@ export default {
 					room_id: {
 						required: required(this.$t('Room is required'))
 					}
+				}
+			}
+		}
+	},
+	watch: {
+		kioskId: {
+			async handler() {
+				try {
+					this.kiosk = await api.call('user.kiosk.fetch', {id: this.kioskId})
+					if (this.kiosk?.profile?.show_reactions == null && this.kiosk?.profile) this.kiosk.profile.show_reactions = true
+					if (!this.kiosk?.profile?.slides || typeof this.kiosk.profile.slides !== 'object') {
+						if (this.kiosk?.profile) {
+							this.kiosk.profile.slides = {
+								pinned_poll: true,
+								pinned_question: true,
+								next_session: true,
+								viewers: false
+							}
+						}
+					}
+				} catch (error) {
+					this.error = error
+					console.error(error)
 				}
 			}
 		}
@@ -165,6 +193,13 @@ export default {
 				this.deleteError = error?.message || this.$t('Something went wrong.')
 			}
 			this.deleting = false
+		},
+		async copyUrl() {
+			await navigator.clipboard.writeText(this.loginUrl)
+			this.copied = true
+			setTimeout(() => {
+				this.copied = false
+			}, 2500)
 		}
 	}
 }
@@ -205,10 +240,6 @@ export default {
 		.bunt-checkbox
 			margin-bottom: 8px
 
-	.kiosk-url
-		display: flex
-		gap: 8px
-		align-items: center
 	.delete-prompt
 		.content
 			display: flex

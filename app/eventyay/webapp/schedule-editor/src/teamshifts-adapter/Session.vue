@@ -315,6 +315,10 @@ const durationPretty = computed<string | undefined>(() => {
 
 function onPointerDown(event: PointerEvent): void {
   if (!event.isPrimary || event.button !== 0) return
+  const el = event.target as HTMLElement
+  if (el && el.releasePointerCapture) {
+    try { el.releasePointerCapture(event.pointerId) } catch (_) {}
+  }
   emit('startDragging', { session: props.session, event })
 }
 </script>

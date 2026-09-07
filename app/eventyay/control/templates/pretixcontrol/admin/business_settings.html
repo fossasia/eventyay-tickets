@@ -1,0 +1,80 @@
+{% extends "pretixcontrol/global_settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load getitem %}
+{% load static %}
+{% load money %}
+{% load urlreplace %}
+
+{% block title %}{% trans "Business Settings" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Business Settings" %}</h1>
+    {% block inner %}
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="tabbed-form">
+            <fieldset id="tab-organizer_billing">
+                <legend>{% translate "Organizer Billing" %}</legend>
+                <fieldset class="payment-gateway-section">
+                    <legend>{% translate "Stripe — Organizer Billing" %}</legend>
+                    <p class="help-block">
+                        {% translate "This configuration is used for organiser billing and platform fee collection." %}
+                    </p>
+
+                    <div class="payment-subsection">
+                        <h4>{% translate "Live Credentials" %}</h4>
+                        {% bootstrap_field form.payment_stripe_publishable_key layout='control' %}
+                        {% bootstrap_field form.payment_stripe_secret_key layout='control' %}
+                    </div>
+
+                    <div class="payment-subsection">
+                        <h4>{% translate "Test Credentials" %}</h4>
+                        {% bootstrap_field form.payment_stripe_test_publishable_key layout='control' %}
+                        {% bootstrap_field form.payment_stripe_test_secret_key layout='control' %}
+                    </div>
+
+                    <div class="payment-subsection">
+                        <h4>{% translate "Webhooks" %}</h4>
+                        {% bootstrap_field form.stripe_webhook_secret_key layout='control' %}
+                    </div>
+                </fieldset>
+            </fieldset>
+
+            <fieldset id="tab-ticket_fee">
+                <legend>{% translate "Ticket Fee" %}</legend>
+                {% bootstrap_field form.ticket_fee_percentage layout='control' %}
+            </fieldset>
+
+            <fieldset id="tab-billing_validation">
+                <legend>{% translate "Billing Validation" %}</legend>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">
+                        <strong>{{ form.billing_validation.label }}</strong>
+                    </label>
+                    <div class="col-md-9">
+                        <div class="checkbox">
+                            <label>
+                                {{ form.billing_validation }} {% trans "Enable" %}
+                            </label>
+                        </div>
+                        {% if form.billing_validation.help_text %}
+                            <span class="help-block">{{ form.billing_validation.help_text }}</span>
+                        {% endif %}
+                        {% if form.billing_validation.errors %}
+                            <div class="help-block">{{ form.billing_validation.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% translate "Save" %}
+            </button>
+        </div>
+    </form>
+    {% endblock %}
+{% endblock %}

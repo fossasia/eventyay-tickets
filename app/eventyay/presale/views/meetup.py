@@ -7,6 +7,7 @@ import stripe
 from django import forms
 from django.conf import settings as django_settings
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http import Http404
 from django.shortcuts import redirect
@@ -58,6 +59,9 @@ class MeetupRsvpView(EventViewMixin, View):
     def post(self, request, *args, **kwargs):
         if not is_meetup_event(request.event):
             raise Http404
+
+        if not request.event.user_can_view_tickets(request.user, request=request):
+            raise PermissionDenied(_('Registration is currently not available.'))
 
         product, quota = get_rsvp_product_and_quota(request.event)
         if product is None or quota is None:

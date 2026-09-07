@@ -45,12 +45,8 @@ def generate_attendee_list(event, input=None):
     ws.column_dimensions["B"].width = 30
     ws.column_dimensions["C"].width = 40
     ws.column_dimensions["D"].width = 30
-    for j in range(len(event.config.get("profile_fields", []))):
-        ws.column_dimensions[get_column_letter(5 + j)].width = 30
 
     header = ["Internal ID", "External ID", "Name", "Permission traits"]
-    for f in event.config.get("profile_fields", []):
-        header.append(f.get("label"))
     ws.append(header)
 
     for u in event.user_set.all():
@@ -60,10 +56,6 @@ def generate_attendee_list(event, input=None):
                 str(u.token_id) if u.token_id else "",
                 u.profile.get("display_name") or "",
                 ",".join(t for t in u.traits),
-            ]
-            + [
-                u.profile.get("fields", {}).get(f.get("id") or f.get("label")) or ""
-                for j, f in enumerate(event.config.get("profile_fields", []))
             ]
         )
 
@@ -366,8 +358,6 @@ def generate_views(event, input=None):
         "External ID",
         "User name",
     ]
-    for n in event.config.get("profile_fields", []):
-        header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
         RoomView.objects.filter(
@@ -394,10 +384,6 @@ def generate_views(event, input=None):
                     u.token_id,
                     u.profile.get("display_name"),
                 ]
-                + [
-                    (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in event.config.get("profile_fields", [])
-                ]
             )
 
     ws = wb.create_sheet("Event views")
@@ -408,8 +394,6 @@ def generate_views(event, input=None):
         "External ID",
         "User name",
     ]
-    for n in event.config.get("profile_fields", []):
-        header.append(n.get("label") or "")
     ws.append(header)
     rvq = (
         EventView.objects.filter(
@@ -434,10 +418,6 @@ def generate_views(event, input=None):
                     str(u.pk),
                     u.token_id,
                     u.profile.get("display_name"),
-                ]
-                + [
-                    (u.profile["fields"].get(n.get("id"), "") or "").strip()
-                    for n in event.config.get("profile_fields", [])
                 ]
             )
 
@@ -517,9 +497,7 @@ def generate_attendee_session_list(event, input=None):
 
     wb = Workbook(write_only=True)
 
-    header = ["Internal ID", "External ID", "Name", "Duration (minutes)"]
-    for f in event.config.get("profile_fields", []):
-        header.append(f.get("label"))
+    header = ["Internal ID", "External ID", "Name", "Duration (minutes)", "Permission traits"]
 
     room_cache = {r.pretalx_id: r for r in event.rooms.filter(deleted=False)}
     schedule = get_schedule(event, fail_silently=False)
@@ -531,8 +509,7 @@ def generate_attendee_session_list(event, input=None):
         ws.column_dimensions["B"].width = 30
         ws.column_dimensions["C"].width = 40
         ws.column_dimensions["D"].width = 20
-        for j in range(len(event.config.get("profile_fields", []))):
-            ws.column_dimensions[get_column_letter(5 + j)].width = 30
+        ws.column_dimensions["E"].width = 30
 
         talk_start = dateutil.parser.parse(talk["start"])
         talk_end = dateutil.parser.parse(talk["end"])
@@ -590,10 +567,6 @@ def generate_attendee_session_list(event, input=None):
                     u.profile.get("display_name") or "",
                     sum_views.total_seconds() // 60,
                     ",".join(t for t in u.traits),
-                ]
-                + [
-                    u.profile.get("fields", {}).get(f.get("id") or f.get("label")) or ""
-                    for j, f in enumerate(event.config.get("profile_fields", []))
                 ]
             )
 

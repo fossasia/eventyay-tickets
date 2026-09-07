@@ -548,3 +548,26 @@
 .modal.in {
     z-index: 1300;
 }
+
+.meetup-create-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.meetup-create-header h1 {
+    margin: 0;
+    line-height: 1.1;
+}
+
+.meetup-privacy-control {
+    min-width: 140px;
+}
+
+.meetup-privacy-control .form-group {
+    margin-bottom: 0;
+}

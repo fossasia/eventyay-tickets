@@ -46,8 +46,6 @@
             {% endif %}
     {% endif %}
 
-    {% eventsignal current_event "eventyay.presale.signals.header_nav_tabs" request=request %}
-
     {% if show_talks_tab %}
         {% with cfp=current_event.cfp %}
             {% if cfp.is_open or access_code.is_valid %}
@@ -63,6 +61,8 @@
             {% endif %}
         {% endwith %}
     {% endif %}
+
+    {% eventsignal current_event "eventyay.presale.signals.header_nav_tabs" request=request %}
 
     {% for link in header_links %}
         <a href="{% safelink link.url %}" target="_blank" rel="noopener" class="header-tab">

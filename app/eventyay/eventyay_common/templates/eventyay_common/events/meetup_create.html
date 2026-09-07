@@ -6,20 +6,25 @@
 {% block title %}{% trans "Create a meetup" %}{% endblock %}
 
 {% block custom_header %}
-    <link type="text/css" rel="stylesheet" href="{% static 'vendored/cropperjs/cropper.min.css' %}">
     <link type="text/css" rel="stylesheet" href="{% static 'pretixpresale/css/meetup.css' %}">
-    <script defer src="{% static "eventyay-common/js/ui/event-create.js" %}"></script>
-    <script type="module" src="{% static "eventyay-common/js/ui/meetup-create.js" %}"></script>
+    <link type="text/css" rel="stylesheet" href="{% static 'vendored/cropperjs/cropper.min.css' %}">
+    <script defer src="{% static 'eventyay-common/js/ui/event-create.js' %}"></script>
+    <script type="module" src="{% static 'eventyay-common/js/ui/meetup-create.js' %}"></script>
     <script defer src="{% static 'vendored/cropperjs/cropper.min.js' %}"></script>
     <script defer src="{% static 'eventyay-common/image_cropper.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <h1>{% trans "Create a meetup" %}</h1>
     {% if has_organizer %}
         {{ organizer_slug_options|json_script:"event-create-organizers" }}
         <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
             {% csrf_token %}
+            <div class="meetup-create-header">
+                <h1>{% trans "Create a meetup" %}</h1>
+                <div class="meetup-privacy-control">
+                    {% bootstrap_field basics_form.privacy_type layout="inline" show_label=False form_group_class="meetup-privacy-group" %}
+                </div>
+            </div>
             <input type="hidden" name="is_meetup" value="on">
             <input type="hidden" name="{{ foundation_form.has_subevents.html_name }}" value="">
             <input type="hidden" name="{{ foundation_form.is_video_creation.html_name }}" value="">
@@ -256,6 +261,7 @@
             </div>
         </div>
     {% else %}
+        <h1>{% trans "Create a meetup" %}</h1>
         <div class="alert alert-danger">
             {% trans "Every meetup needs to be created as part of an organizer account. Currently, you do not have access to any organizer accounts." %}
         </div>

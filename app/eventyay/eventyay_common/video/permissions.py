@@ -130,7 +130,8 @@ def collect_user_video_traits(event_slug: str, team_permission_set: Iterable[str
     video trait values that should be embedded into the JWT token.
     """
     traits = []
-    for perm_name in team_permission_set:
+    perms = set(team_permission_set or [])
+    for perm_name in perms:
         if definition := VIDEO_PERMISSION_BY_FIELD.get(perm_name):
             traits.append(definition.trait_value(event_slug))
     return traits

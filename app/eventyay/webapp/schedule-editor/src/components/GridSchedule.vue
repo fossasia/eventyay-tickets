@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-grid-schedule(ref="rootEl", :class="'density-' + density")
-	.grid(ref="grid", :style="gridStyle", :class="gridClasses", @pointermove="updateHoverSlice($event)", @pointerup="stopDragging($event)")
+	.grid(ref="grid", :style="gridStyle", :class="gridClasses", @click="onGridClick($event)", @pointermove="updateHoverSlice($event)", @pointerup="stopDragging($event)")
 		template(v-for="slice of visibleTimeslices", :key="slice.name")
 			.timeslice(:ref="setTimesliceRef", :class="getSliceClasses(slice)", :data-slice="slice.date.format()", :style="getSliceStyle(slice)", @click="expandTimeslice(slice)") {{ getSliceLabel(slice) }}
 				svg(viewBox="0 0 10 10", v-if="isSliceExpandable(slice)").expand
@@ -487,12 +487,12 @@ const startDragging = ({ session, event }: DragEventPayload) => {
 
 const stopDragging = (event: PointerEvent) => {
   if (dragStart.value && props.draggedSession) {
-    const distance = dragStart.value.x - event.clientX + dragStart.value.y - event.clientY
+    const distance = Math.abs(dragStart.value.x - event.clientX) + Math.abs(dragStart.value.y - event.clientY)
     const timeDiff = moment().diff(dragStart.value.now, 'ms')
     const session = dragStart.value.session
     dragStart.value = null
 
-    if (Math.abs(distance) < 5 && timeDiff < 500) {
+    if (distance < 6 && timeDiff < 300) {
       emit('editSession', session)
       return
     }
@@ -543,43 +543,131 @@ const expandTimeslice = (slice: Timeslice) => {
   expandedTimes.value = [...new Set(expandedTimes.value.map(d => d.valueOf()))].map(v => moment(v))
 }
 
+const getTimeAndRoomFromPoint = (clientX: number, clientY: number) => {
+  // 1. Determine room index by checking which room column the pointer is horizontally within
+  const roomEls = Array.from(rootEl.value?.querySelectorAll('.grid > .room') || [])
+  let roomIndex = -1
+  for (let i = 1; i < roomEls.length; i++) {
+    const rect = roomEls[i].getBoundingClientRect()
+    if (clientX >= rect.left && clientX < rect.right) {
+      roomIndex = i - 1
+      break
+    }
+    if (clientX >= rect.right && i === roomEls.length - 1) {
+      roomIndex = i - 1
+    }
+  }
+  if (roomIndex < 0 && roomEls.length > 1) {
+    if (clientX < roomEls[1].getBoundingClientRect().left) {
+      roomIndex = 0
+    }
+  }
+  if (roomIndex < 0 || roomIndex >= visibleRooms.value.length) return null
+  const room = visibleRooms.value[roomIndex]
+
+  // 2. Determine timeslice by checking which row the pointer is vertically within
+  const timesliceEls = Array.from(rootEl.value?.querySelectorAll('.grid > .timeslice') || []) as HTMLElement[]
+  if (!timesliceEls.length) return null
+
+  let targetSliceEl: HTMLElement | null = null
+  for (let i = 0; i < timesliceEls.length; i++) {
+    const rect = timesliceEls[i].getBoundingClientRect()
+    const nextRect = timesliceEls[i + 1]?.getBoundingClientRect()
+    const bottom = nextRect ? nextRect.top : rect.bottom
+    if (clientY >= rect.top && clientY < bottom) {
+      targetSliceEl = timesliceEls[i]
+      break
+    }
+  }
+  if (!targetSliceEl) {
+    if (clientY < timesliceEls[0].getBoundingClientRect().top) {
+      targetSliceEl = timesliceEls[0]
+    } else {
+      targetSliceEl = timesliceEls[timesliceEls.length - 1]
+    }
+  }
+
+  if (!targetSliceEl || !targetSliceEl.dataset.slice) return null
+  const time = moment(targetSliceEl.dataset.slice)
+
+  return { time, room, roomIndex }
+}
+
+let lastPlacementTime = 0
+
+const tryPlaceSessionAtPoint = (clientX: number, clientY: number): boolean => {
+  if (!props.draggedSession) return false
+  const now = Date.now()
+  if (now - lastPlacementTime < 300) return false // prevent duplicate triggers
+  lastPlacementTime = now
+
+  const slot = getTimeAndRoomFromPoint(clientX, clientY)
+  if (!slot || !slot.room || !slot.time) return false
+
+  const start = slot.time
+  const end = slot.time.clone().add(props.draggedSession.duration, 'm')
+
+  if (!props.draggedSession.id) {
+    emit('createSession', {
+      session: {
+        ...props.draggedSession,
+        start: moment(start.format()),
+        end: moment(end.format()),
+        room: {
+          id: slot.room.id,
+          name: slot.room.name
+        }
+      }
+    })
+  } else {
+    emit('rescheduleSession', {
+      session: props.draggedSession,
+      start: start.format(),
+      end: end.format(),
+      room: slot.room,
+    })
+  }
+  return true
+}
+
+const onGridClick = (event: MouseEvent) => {
+  if (!props.draggedSession) return
+  const target = event.target as HTMLElement
+  if (target && target.closest('.c-linear-schedule-session:not(.clone)')) {
+    return
+  }
+  tryPlaceSessionAtPoint(event.clientX, event.clientY)
+}
+
 const updateHoverSlice = (e: PointerEvent) => {
   if (!props.draggedSession) {
     hoverSlice.value = null
     return
   }
 
+  if (dragStart.value) {
+    dragStart.value = { ...dragStart.value, y: e.clientY }
+  }
+
   if (!dragScrollTimer.value) {
     dragScrollTimer.value = setInterval(dragOnScroll, 100)
   }
 
-  const scrollParentEl = scrollParent.value
-  if (!scrollParentEl) return
-  const scrollParentRect = scrollParentEl.getBoundingClientRect()
-  const queryX = scrollParentRect.left + 10
-
-  let hoverSliceEl: HTMLElement | null = null
-  for (const element of document.elementsFromPoint(queryX, e.clientY)) {
-    if (
-      element instanceof HTMLElement &&
-      element.dataset.slice &&
-      element.classList.contains('timeslice')
-    ) {
-      hoverSliceEl = element
-      break
-    }
-  }
-
-  if (!hoverSliceEl) return
-  const roomEls = document.querySelectorAll('.grid .room')
-  const roomWidth = roomEls[1]?.getBoundingClientRect().width || 200
-  const roomIndex = Math.floor((e.clientX - gridOffset.value - 80) / roomWidth)
+  const slot = getTimeAndRoomFromPoint(e.clientX, e.clientY)
+  if (!slot) return
 
   hoverSlice.value = {
-    time: moment(hoverSliceEl.dataset.slice),
-    roomIndex,
-    room: visibleRooms.value[roomIndex],
+    time: slot.time,
+    roomIndex: slot.roomIndex,
+    room: slot.room,
     duration: props.draggedSession.duration,
+  }
+}
+
+// Document-level handler: catches touch pointermove even when captured by a session element
+const onDocPointerMove = (e: PointerEvent) => {
+  if (props.draggedSession && e.isPrimary) {
+    updateHoverSlice(e)
   }
 }
 
@@ -752,6 +840,9 @@ onMounted(async () => {
     window.addEventListener('resize', windowResizeListener)
   }
 
+  // Listen on document level so touch drags (where pointer is captured elsewhere) work
+  document.addEventListener('pointermove', onDocPointerMove)
+
   observer = new IntersectionObserver(onIntersect, {
     root: scrollParent.value,
     rootMargin: '-45% 0px',
@@ -765,6 +856,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   timesliceRefs.value = []
+  document.removeEventListener('pointermove', onDocPointerMove)
   if (gridOffsetFrame !== null) {
     cancelAnimationFrame(gridOffsetFrame)
     gridOffsetFrame = null
@@ -793,13 +885,14 @@ onUnmounted(() => {
 	.grid
 		display: grid
 		grid-template-columns: 78px repeat(var(--total-rooms), 1fr) auto
-		// grid-gap: 8px
+		@media (max-width: 767px)
+			grid-template-columns: 78px repeat(var(--total-rooms), minmax(260px, 1fr)) auto
 		position: relative
 		min-width: min-content
 		&.illegal-hover
-			cursor: not-allowed !important
+			cursor: not-allowed
 			.c-linear-schedule-session
-				cursor: not-allowed !important
+				cursor: not-allowed
 		> .room
 			position: sticky
 			top: calc(48px)
@@ -809,8 +902,18 @@ onUnmounted(() => {
 			font-size: 18px
 			background-color: $clr-white
 			border-bottom: 1px solid $clr-dividers-light
-			z-index: 20
+			z-index: 40
 			min-width: 0
+			box-sizing: border-box
+			padding: 8px 12px
+			&:first-child
+				left: 0
+				top: calc(48px)
+				z-index: 45
+				min-width: 78px
+				width: 78px
+				padding: 0
+				background-color: $clr-white
 
 			.room-name
 				overflow: hidden
@@ -833,21 +936,19 @@ onUnmounted(() => {
 		.c-linear-schedule-session
 			z-index: 10
 			transition: padding 0.2s ease, font-size 0.2s ease
-	.grid-viewport .grid
-		.c-linear-schedule-session, .break
-			margin: 6px
-			min-width: 0
-			box-sizing: border-box
 	.timeslice
 		color: $clr-secondary-text-light
 		padding: 8px 10px 0 10px
 		white-space: nowrap
 		position: sticky
 		left: 0
+		width: 78px
+		min-width: 78px
+		box-sizing: border-box
 		text-align: center
 		background-color: $clr-grey-50
 		border-top: 1px solid $clr-dividers-light
-		z-index: 20
+		z-index: 25
 		transition: padding 0.2s ease, font-size 0.2s ease
 		.expand
 			display: none

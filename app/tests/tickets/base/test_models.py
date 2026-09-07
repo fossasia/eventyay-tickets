@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import IntegrityError, transaction
 from django.test import TestCase
 from django.utils.timezone import now
 from django_scopes import scope, scopes_disabled
@@ -34,6 +35,7 @@ from eventyay.base.models import (
     Quota,
     SeatingPlan,
     User,
+    InvoiceVoucher,
     Voucher,
     WaitingListEntry,
 )
@@ -77,9 +79,9 @@ class BaseQuotaTestCase(TestCase):
         self.item1 = Item.objects.create(event=self.event, name='Ticket', default_price=23, admission=True)
         self.item2 = Item.objects.create(event=self.event, name='T-Shirt', default_price=23)
         self.item3 = Item.objects.create(event=self.event, name='Goodie', default_price=23)
-        self.var1 = ItemVariation.objects.create(item=self.item2, value='S')
-        self.var2 = ItemVariation.objects.create(item=self.item2, value='M')
-        self.var3 = ItemVariation.objects.create(item=self.item3, value='Fancy')
+        self.var1 = ItemVariation.objects.create(product=self.item2, value='S')
+        self.var2 = ItemVariation.objects.create(product=self.item2, value='M')
+        self.var3 = ItemVariation.objects.create(product=self.item3, value='Fancy')
 
 
 class QuotaTestCase(BaseQuotaTestCase):
@@ -1042,6 +1044,46 @@ class VoucherTestCase(BaseQuotaTestCase):
             v.clean()
 
     @classscope(attr='o')
+    def test_voucher_full_clean_negative_value(self):
+        v = Voucher(event=self.event, price_mode='set', value=Decimal('-10.00'))
+        with self.assertRaises(ValidationError):
+            v.full_clean()
+
+    @classscope(attr='o')
+    def test_voucher_full_clean_percent_over_100(self):
+        v = Voucher(event=self.event, price_mode='percent', value=Decimal('150.00'))
+        with self.assertRaises(ValidationError):
+            v.full_clean()
+
+    @classscope(attr='o')
+    def test_voucher_full_clean_negative_budget(self):
+        v = Voucher(event=self.event, budget=Decimal('-50.00'))
+        with self.assertRaises(ValidationError):
+            v.full_clean()
+
+    @classscope(attr='o')
+    def test_voucher_full_clean_valid(self):
+        v = Voucher(event=self.event, price_mode='percent', value=Decimal('50.00'), budget=Decimal('100.00'))
+        v.full_clean()
+
+    @classscope(attr='o')
+    def test_voucher_db_constraint_direct_save(self):
+        with transaction.atomic():
+            with self.assertRaises(IntegrityError):
+                Voucher.objects.create(event=self.event, code='TESTNEGVAL', price_mode='set', value=Decimal('-10.00'))
+
+        with transaction.atomic():
+            with self.assertRaises(IntegrityError):
+                Voucher.objects.create(event=self.event, code='TESTOVER100', price_mode='percent', value=Decimal('150.00'))
+
+        with transaction.atomic():
+            with self.assertRaises(IntegrityError):
+                Voucher.objects.create(event=self.event, code='TESTNEGBUDGET', budget=Decimal('-50.00'))
+
+        v = Voucher.objects.create(event=self.event, code='TESTVALID', price_mode='percent', value=Decimal('50.00'), budget=Decimal('100.00'))
+        assert v.pk is not None
+
+    @classscope(attr='o')
     def test_calculate_price_none(self):
         v = Voucher.objects.create(event=self.event, price_mode='none', value=Decimal('10.00'))
         assert v.calculate_price(Decimal('23.42')) == Decimal('23.42')
@@ -1111,6 +1153,43 @@ class VoucherTestCase(BaseQuotaTestCase):
             price_before_voucher=Decimal('23.00'),
         )
         assert v.budget_used() == Decimal('6.00')
+
+
+class InvoiceVoucherTestCase(TestCase):
+    def test_invoice_voucher_full_clean_negative_value(self):
+        v = InvoiceVoucher(price_mode='set', value=Decimal('-10.00'))
+        with self.assertRaises(ValidationError):
+            v.full_clean()
+
+    def test_invoice_voucher_full_clean_percent_over_100(self):
+        v = InvoiceVoucher(price_mode='percent', value=Decimal('150.00'))
+        with self.assertRaises(ValidationError):
+            v.full_clean()
+
+    def test_invoice_voucher_full_clean_negative_budget(self):
+        v = InvoiceVoucher(budget=Decimal('-50.00'))
+        with self.assertRaises(ValidationError):
+            v.full_clean()
+
+    def test_invoice_voucher_full_clean_valid(self):
+        v = InvoiceVoucher(price_mode='percent', value=Decimal('50.00'), budget=Decimal('100.00'))
+        v.full_clean()
+
+    def test_invoice_voucher_db_constraint_direct_save(self):
+        with transaction.atomic():
+            with self.assertRaises(IntegrityError):
+                InvoiceVoucher.objects.create(code='INVTESTNEGVAL', price_mode='set', value=Decimal('-10.00'))
+
+        with transaction.atomic():
+            with self.assertRaises(IntegrityError):
+                InvoiceVoucher.objects.create(code='INVTESTOVER100', price_mode='percent', value=Decimal('150.00'))
+
+        with transaction.atomic():
+            with self.assertRaises(IntegrityError):
+                InvoiceVoucher.objects.create(code='INVTESTNEGBUDGET', budget=Decimal('-50.00'))
+
+        v = InvoiceVoucher.objects.create(code='INVTESTVALID', price_mode='percent', value=Decimal('50.00'), budget=Decimal('100.00'))
+        assert v.pk is not None
 
 
 class OrderTestCase(BaseQuotaTestCase):

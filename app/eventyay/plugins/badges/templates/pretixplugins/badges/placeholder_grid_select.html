@@ -1,0 +1,69 @@
+{% load i18n %}
+<div class="placeholder-grid-widget" id="{{ widget.attrs.id }}-grid-widget" data-placeholder-grid-widget>
+  <div class="placeholder-grid-summary"
+       data-placeholder-grid-summary
+       role="button"
+       tabindex="0"
+       aria-expanded="true"
+       aria-controls="{{ widget.attrs.id }}-grid-panel">
+    <div class="placeholder-grid-badges" data-placeholder-grid-badges></div>
+    <span class="placeholder-grid-summary-label"
+          data-placeholder-grid-count
+          data-empty-text="{% translate 'No placeholders selected' %}"
+          data-selected-singular-text="{% translate 'placeholder enabled' %}"
+          data-selected-plural-text="{% translate 'placeholders enabled' %}">
+      {% translate 'No placeholders selected' %}
+    </span>
+    <span class="placeholder-grid-toggle-icon fa fa-chevron-down" aria-hidden="true"></span>
+  </div>
+
+  <div class="placeholder-grid-panel"
+       id="{{ widget.attrs.id }}-grid-panel"
+       data-placeholder-grid-panel>
+    <div class="placeholder-grid-search-wrap">
+      <input type="text"
+             class="placeholder-grid-search"
+             data-placeholder-grid-search
+             placeholder="{% translate 'Search placeholders…' %}"
+             autocomplete="off"
+             aria-label="{% translate 'Search placeholders' %}">
+    </div>
+
+    <div class="placeholder-grid-toolbar">
+      <button type="button" class="btn btn-default btn-xs" data-placeholder-grid-select-default>
+        <span class="fa fa-undo"></span> {% translate 'Select default set' %}
+      </button>
+      <button type="button" class="btn btn-default btn-xs" data-placeholder-grid-select-all>
+        <span class="fa fa-check-square-o"></span> {% translate 'Select all' %}
+      </button>
+      <button type="button" class="btn btn-default btn-xs" data-placeholder-grid-deselect-all>
+        <span class="fa fa-square-o"></span> {% translate 'Deselect all' %}
+      </button>
+    </div>
+
+    <div class="placeholder-grid-categories" data-placeholder-grid-categories>
+      {% for group, options, index in widget.optgroups %}
+        <div class="placeholder-category-group" data-placeholder-category-group>
+          <div class="placeholder-category-header">
+            <strong>{{ group }}</strong>
+            <span class="badge placeholder-category-badge">{{ options|length }}</span>
+          </div>
+          <div class="placeholder-grid-grid">
+            {% for option in options %}
+              <div class="placeholder-grid-cell{% if option.attrs.checked %} is-checked{% endif %}"
+                   data-placeholder-grid-cell
+                   data-placeholder-key="{{ option.value }}"
+                   data-placeholder-name="{{ option.label }}"
+                   data-is-default="{% if option.is_default %}true{% else %}false{% endif %}">
+                {% include option.template_name with widget=option %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+      <div class="placeholder-grid-no-results" data-placeholder-grid-no-results>
+        {% translate 'No placeholders match your search.' %}
+      </div>
+    </div>
+  </div>
+</div>

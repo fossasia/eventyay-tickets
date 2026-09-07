@@ -1,11 +1,18 @@
+import json
+
 from django import forms
-from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 
 from eventyay.base.models import Product, Voucher
 from eventyay.plugins.badges.models import BadgeLayout, BadgeProduct, BadgeVoucher
-from eventyay.plugins.badges.utils import format_badge_option_labels, get_badge_customizable_fields
+from eventyay.plugins.badges.utils import (
+    DEFAULT_BADGE_ENABLED_PLACEHOLDERS,
+    format_badge_option_labels,
+    get_badge_customizable_fields,
+    get_categorized_badge_placeholders,
+    get_event_allowed_badge_placeholders,
+)
 
 
 def _sync_badge_assignments(model, layout, related_name, selected):
@@ -83,7 +90,9 @@ class BadgeLayoutSettingsForm(forms.Form):
         self.fields['ask_user_fields'].choices = choices
         self.fields['ask_user_fields'].initial = initial_keys
         self.fields['required_badge_fields'].choices = choices
-        self.fields['required_badge_fields'].initial = [key for key in self.layout.required_badge_fields_data if key in valid_keys]
+        self.fields['required_badge_fields'].initial = [
+            key for key in self.layout.required_badge_fields_data if key in valid_keys
+        ]
 
         if not choices:
             self.fields['allow_customization'].disabled = True
@@ -123,7 +132,9 @@ class BadgeLayoutSettingsForm(forms.Form):
         self.layout.allow_badge_editing = self.cleaned_data['allow_badge_editing']
         self.layout.ask_user_fields_data = self.cleaned_data['ask_user_fields']
         self.layout.required_badge_fields_data = self.cleaned_data['required_badge_fields']
-        self.layout.save(update_fields=['allow_customization', 'allow_badge_editing', 'ask_user_fields', 'required_badge_fields'])
+        self.layout.save(
+            update_fields=['allow_customization', 'allow_badge_editing', 'ask_user_fields', 'required_badge_fields']
+        )
         return self.layout
 
 
@@ -166,6 +177,68 @@ class BadgeOptionsField(forms.MultipleChoiceField):
         value = value or []
         if isinstance(value, (list, tuple)):
             value = list(set(value) | self.required_keys)
-            
+
         selected_values = set(super().clean(value))
         return [choice for choice in self._choice_order if choice not in selected_values]
+
+
+class MultiplePlaceholdersWidget(forms.CheckboxSelectMultiple):
+    template_name = 'pretixplugins/badges/placeholder_grid_select.html'
+    option_template_name = 'pretixplugins/badges/placeholder_grid_option.html'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sample_map = {}
+        self.categories = []
+
+    def get_context(self, name, value, attrs):
+        ctx = super().get_context(name, value, attrs)
+        ctx['default_placeholders'] = DEFAULT_BADGE_ENABLED_PLACEHOLDERS
+        ctx['categories'] = self.categories
+        ctx['sample_map'] = self.sample_map
+        return ctx
+
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        opt = super().create_option(name, value, label, selected, index, subindex=subindex, attrs=attrs)
+        opt['sample'] = self.sample_map.get(str(value), '')
+        opt['is_default'] = str(value) in DEFAULT_BADGE_ENABLED_PLACEHOLDERS
+        return opt
+
+
+class BadgeSettingsForm(forms.Form):
+    allowed_placeholders = forms.MultipleChoiceField(
+        required=False,
+        label=_('Allowed badge placeholders'),
+        widget=MultiplePlaceholdersWidget,
+        help_text=_(
+            'Select which placeholders are available for badge designs in this event. '
+            'Unchecked placeholders will be hidden from the badge editor.'
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.event = kwargs.pop('event')
+        super().__init__(*args, **kwargs)
+
+        categories = get_categorized_badge_placeholders(self.event)
+        grouped_choices = []
+        sample_map = {}
+        for cat in categories:
+            cat_choices = []
+            for item in cat['items']:
+                cat_choices.append((item['key'], item['label']))
+                sample_map[item['key']] = item['sample']
+            grouped_choices.append((cat['label'], cat_choices))
+
+        self.fields['allowed_placeholders'].choices = grouped_choices
+        self.fields['allowed_placeholders'].widget.sample_map = sample_map
+        self.fields['allowed_placeholders'].widget.categories = categories
+        self.fields['allowed_placeholders'].initial = get_event_allowed_badge_placeholders(self.event)
+
+    def save(self):
+        allowed = list(self.cleaned_data.get('allowed_placeholders') or [])
+        self.event.settings.badge_allowed_placeholders = json.dumps(allowed)
+        return allowed
+
+
+EventBadgeSettingsForm = BadgeSettingsForm

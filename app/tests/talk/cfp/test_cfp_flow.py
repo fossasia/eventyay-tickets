@@ -5,7 +5,7 @@ from django_scopes import scope
 from i18nfield.strings import LazyI18nString
 
 from eventyay.cfp.forms.cfp import CfPFormMixin
-from eventyay.cfp.flow import BaseCfPStep, i18n_string
+from eventyay.cfp.flow import BaseCfPStep, FormFlowStep, i18n_string
 
 
 @pytest.mark.parametrize(
@@ -87,6 +87,27 @@ def test_base_cfp_step_attributes():
     assert step.done(None) is None
     assert isinstance(step.get(None), HttpResponseNotAllowed)
     assert isinstance(step.post(None), HttpResponseNotAllowed)
+
+def test_form_flow_step_handles_none_file_content_type():
+    class TestFormFlowStep(FormFlowStep):
+        @property
+        def identifier(self):
+            return 'test'
+
+    step = TestFormFlowStep(None)
+    step.cfp_session = {
+        'files': {
+            'test': {
+                'image': {
+                    'name': 'test.png',
+                    'tmp_name': 'test.png',
+                    'content_type': None,
+                }
+            }
+        }
+    }
+
+    assert step.get_form_initial() == {}
 
 
 def test_cfp_form_mixin_scrubs_incomplete_errors_in_not_strict_mode():

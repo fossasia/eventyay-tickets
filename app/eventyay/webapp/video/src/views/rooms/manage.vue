@@ -2,6 +2,12 @@
 .c-room-manager
 	dashboard-layout
 		panel.media
+			.manage-room-header
+				bunt-icon-button.btn-back(@click="$router.push({name: 'admin:rooms:index'})", :tooltip="$t('Back to Rooms & Stages')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
+				.manage-room-title(v-if="room") {{ room.name }}
+				router-link.btn-edit-settings(v-if="hasPermission('room:update')", :to="{name: 'admin:rooms:item', params: {roomId: room.id}}")
+					i.mdi.mdi-cog-outline
+					span {{ $t('Edit Settings') }}
 			media-source-placeholder
 		panel.schedule(v-if="$features.enabled('schedule-control')")
 			.header
@@ -69,21 +75,16 @@
 		panel.no-modules(v-if="Object.keys(modules).length === 1")
 			p {{ $t('No modules to manage in this room') }}
 	.ui-background-blocker(v-if="showingPresentationUrlFor", @click="showingPresentationUrlFor = null")
-	.url-popup(v-if="showingPresentationUrlFor", ref="urlPopup", :class="{'url-copied': copiedUrl}")
-		.copy-success(v-if="copiedUrl")
-			i.mdi.mdi-check-circle-outline
-			span {{ $t('Copied to Clipboard!') }}
-		template(v-else)
-			.popup-header
-				span.title {{ $t('Presentation Link') }}
-				a.open-link(:href="getPresentationUrl(showingPresentationUrlFor)", target="_blank", rel="noopener", :title="$t('Open in new tab')")
-					i.mdi.mdi-open-in-new
-			.copy-url
-				bunt-input(ref="urlInput", name="presentation-url", :readonly="true", :modelValue="getPresentationUrl(showingPresentationUrlFor)")
-				bunt-button(@click="copyUrl")
-					i.mdi.mdi-content-copy
-					span {{ $t('Copy') }}
-			.hint {{ $t('This URL contains your presentation access token. Keep it secure.') }}
+	transition(name="url-popup-anim")
+		.url-popup(v-if="showingPresentationUrlFor", ref="urlPopup")
+			.url-popup-content
+				copyable-text(
+					:url="getPresentationUrl(showingPresentationUrlFor)",
+					:label="$t('Presentation Link')",
+					:hint="$t('This URL contains your presentation access token. Keep it secure.')",
+					:show-launch="true",
+					:compact="true"
+				)
 	transition(name="prompt")
 		// TODO less hacks
 		prompt.create-poll-prompt(v-if="editedPoll", @close="editedPoll = null")
@@ -105,6 +106,7 @@
 
 import {mapGetters, mapState} from 'vuex'
 import { createPopper } from '@popperjs/core'
+import CopyableText from 'components/CopyableText'
 import DashboardLayout from 'components/dashboard-layout'
 import Panel from 'components/dashboard-layout/Panel'
 import Chat from 'components/Chat'
@@ -117,7 +119,7 @@ import SchedulePanel from './ManagePanels/Schedule'
 
 export default {
 	name: 'RoomManager',
-	components: { Chat, DashboardLayout, MediaSourcePlaceholder, MenuDropdown, Panel, Polls, Prompt, Questions, SchedulePanel },
+	components: { Chat, CopyableText, DashboardLayout, MediaSourcePlaceholder, MenuDropdown, Panel, Polls, Prompt, Questions, SchedulePanel },
 	props: {
 		room: Object,
 		modules: Object
@@ -128,7 +130,6 @@ export default {
 	data() {
 		return {
 			showingPresentationUrlFor: null,
-			copiedUrl: false,
 			showingQuestionsMenu: false,
 			editedPoll: null,
 			moderationEnabled: true,
@@ -141,10 +142,23 @@ export default {
 	},
 	computed: {
 		...mapState(['world', 'token']),
-		...mapGetters(['hasPermission', 'isAdminMode']),
+		...mapGetters(['hasPermission']),
 		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow']),
 		canModerateChat() {
-			return this.hasPermission('room:chat.moderate') || this.hasPermission('world:moderate') || this.isAdminMode
+			return this.hasPermission('room:chat.moderate') || this.hasPermission('world:moderate')
+		},
+		hasOrganiserPermissions() {
+			return (
+				this.$store.getters.isAdminMode ||
+				this.hasPermission('world:users.list') ||
+				this.hasPermission('world:update') ||
+				this.hasPermission('world:announce') ||
+				this.hasPermission('room:update') ||
+				this.hasPermission('room:chat.moderate') ||
+				this.hasPermission('room:poll.manage') ||
+				this.hasPermission('room:question.moderate') ||
+				this.hasPermission('world:kiosks.manage')
+			)
 		},
 		pendingMessageIds() {
 			return this.pendingQueue.map(item => item.id)
@@ -154,6 +168,11 @@ export default {
 		}
 	},
 	watch: {
+		hasOrganiserPermissions(val) {
+			if (!val) {
+				this.checkPermissions()
+			}
+		},
 		chatTimeline(newTimeline) {
 			if (!this.moderationReady) return
 			if (!this.moderationEnabled || this.moderationDelay <= 0 || !this.canModerateChat) return
@@ -179,6 +198,7 @@ export default {
 		}
 	},
 	mounted() {
+		this.checkPermissions()
 		for (const message of this.chatTimeline) {
 			if (message.event_id) this.processedMessageIds.add(message.event_id)
 		}
@@ -187,17 +207,38 @@ export default {
 	},
 	beforeUnmount() {
 		if (this.queueTimer) clearInterval(this.queueTimer)
+		if (this._popperInstance) this._popperInstance.destroy()
 	},
 	methods: {
+		checkPermissions() {
+			if (!this.hasOrganiserPermissions) {
+				const roomId = this.room?.id || this.$route.params.roomId
+				if (roomId) {
+					this.$router.replace({ name: 'room', params: { roomId } })
+				} else {
+					this.$router.replace({ name: 'about' })
+				}
+			}
+		},
 		async showUrlPopup(type, event) {
+			if (this.showingPresentationUrlFor === type) {
+				this.showingPresentationUrlFor = null
+				return
+			}
 			this.showingPresentationUrlFor = type
 			await this.$nextTick()
-			createPopper(event.currentTarget, this.$refs.urlPopup, {
-				placement: 'bottom-end',
-				modifiers: [
-					{name: 'offset', options: {offset: [16, 12]}}
-				]
-			})
+			if (this._popperInstance) {
+				this._popperInstance.destroy()
+			}
+			if (this.$refs.urlPopup) {
+				this._popperInstance = createPopper(event.currentTarget, this.$refs.urlPopup, {
+					placement: 'bottom-end',
+					modifiers: [
+						{ name: 'offset', options: { offset: [0, 8] } },
+						{ name: 'preventOverflow', options: { padding: 8 } }
+					]
+				})
+			}
 		},
 		showCreatePollPrompt() {
 			this.editedPoll = {
@@ -238,15 +279,6 @@ export default {
 				params: { roomId: this.room.id }
 			})
 			return window.location.origin + resolved.href + '#token=' + this.token
-		},
-		copyUrl() {
-			this.$refs.urlInput.$refs.input.select()
-			document.execCommand('copy')
-			this.copiedUrl = true
-			setTimeout(() => {
-				this.copiedUrl = false
-				this.showingPresentationUrlFor = null
-			}, 600)
 		},
 		tickQueueTimers() {
 			if (this.pendingQueue.length === 0) return
@@ -310,6 +342,41 @@ export default {
 			min-height: 0
 	.media .c-media-source-placeholder
 		height: 360px
+	.media .manage-room-header
+		display: flex
+		align-items: center
+		height: 56px
+		min-height: 56px
+		box-sizing: border-box
+		padding: 0 16px
+		gap: 8px
+		border-bottom: border-separator()
+		background-color: $clr-white
+		.btn-back
+			icon-button-style(style: clear)
+			flex: none
+			margin-right: 4px
+		.manage-room-title
+			font-size: 20px
+			font-weight: 600
+			flex: auto
+			min-width: 0
+			ellipsis()
+		.btn-edit-settings
+			display: flex
+			align-items: center
+			gap: 6px
+			padding: 6px 12px
+			border-radius: 4px
+			font-size: 13px
+			font-weight: 500
+			color: $clr-primary
+			text-decoration: none
+			white-space: nowrap
+			&:hover
+				background-color: $clr-grey-100
+			.mdi
+				font-size: 16px
 	.polls
 		#btn-create-poll
 			themed-button-primary()
@@ -320,55 +387,29 @@ export default {
 			color: $clr-secondary-text-light
 			margin: 32px
 	.url-popup
-		card()
-		display: flex
-		flex-direction: column
-		justify-content: center
-		align-items: stretch
-		width: var(--chatbar-width)
-		padding: 16px
 		z-index: 1000
-		background: var(--clr-surface, #fff)
-		border-radius: 8px
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15)
-		transition: all .2s ease
-		.popup-header
+		width: var(--chatbar-width, 360px)
+		max-width: calc(100vw - 32px)
+		.url-popup-content
+			card()
 			display: flex
-			justify-content: space-between
-			align-items: center
-			margin-bottom: 12px
-			.title
-				font-weight: 600
-				font-size: 14px
-				color: var(--clr-primary, #1e2327)
-			.open-link
-				color: var(--clr-primary, #3b82f6)
-				font-size: 18px
-				display: flex
-				align-items: center
-				&:hover
-					opacity: 0.8
-		.copy-url
-			display: flex
-			align-items: center
-			gap: 8px
-			margin-bottom: 16px
-			.bunt-input
-				input-style(size: compact)
-				padding: 0
-				flex: auto
-			.bunt-button
-				themed-button-primary()
-				flex: none
-		.hint
-			text-align: center
-			color: $clr-secondary-text-light
-		&.url-copied
-			background-color: $clr-success
-			color: $clr-primary-text-dark
-		.copy-success
-			font-size: 24px
-			font-weight: 500
+			flex-direction: column
+			justify-content: center
+			align-items: stretch
+			padding: 16px
+			background: var(--clr-surface, #fff)
+			border-radius: 8px
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15)
+			transform-origin: top right
+			transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1)
+
+	.url-popup-anim-enter-active, .url-popup-anim-leave-active
+		.url-popup-content
+			transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1)
+	.url-popup-anim-enter-from, .url-popup-anim-leave-to
+		.url-popup-content
+			opacity: 0
+			transform: scale(0.92)
 	.create-poll-prompt .content
 		display: flex
 		flex-direction: column

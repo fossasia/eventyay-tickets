@@ -60,6 +60,13 @@ REGISTRATION_FEE_CHOICES = [
     (REGISTRATION_FEE_PAID, _('Paid')),
 ]
 
+PRIVACY_PUBLIC = 'public'
+PRIVACY_PRIVATE = 'private'
+PRIVACY_CHOICES = [
+    (PRIVACY_PUBLIC, _('Public')),
+    (PRIVACY_PRIVATE, _('Private')),
+]
+
 VIDEO_MODULES = {
     VIDEO_TYPE_YOUTUBE: ('livestream.youtube', 'ytid'),
     VIDEO_TYPE_HLS: ('livestream.native', 'hls_url'),
@@ -340,6 +347,21 @@ def _save_meetup_header_image(event, header_image, crop_box=None):
         event.settings.set(setting_key, f'file://{file_path}')
 
 
+def set_meetup_privacy(event, is_private: bool):
+    """Configure meetup visibility flags for public or private operation."""
+    with transaction.atomic():
+        event.live = True
+        event.tickets_published = True
+        event.private_testmode = False
+        event.is_public = not is_private
+        event.startpage_visible = not is_private
+        if is_private:
+            event.startpage_featured = False
+        event.settings.set('private_testmode_tickets', False)
+        event.settings.set('meta_noindex', is_private)
+        event.save(update_fields=['live', 'tickets_published', 'private_testmode', 'is_public', 'startpage_visible', 'startpage_featured'])
+
+
 def provision_meetup_event(
     event,
     video_type='',
@@ -353,12 +375,10 @@ def provision_meetup_event(
     payment_stripe_publishable_key='',
     payment_stripe_secret_key='',
     payment_stripe_merchant_country='',
+    is_private=False,
 ):
     event.settings.set(EVENT_TYPE_SETTING, MEETUP_EVENT_TYPE)
-
-    event.live = True
-    event.tickets_published = True
-    event.save(update_fields=['live', 'tickets_published'])
+    set_meetup_privacy(event, is_private=is_private)
 
     if frontpage_text is not None:
         event.settings.set('frontpage_text', frontpage_text)
@@ -386,11 +406,14 @@ def provision_meetup_event(
             quota.size = registration_limit
             quota.save(update_fields=['size'])
 
+    acting_user = request.user if request and getattr(request, 'user', None) and request.user.is_authenticated else None
     event.log_action(
         'eventyay.event.meetup.created',
+        user=acting_user,
         data={
             'video_type': video_type,
             'video_url': video_url,
             'registration_fee': str(fee_decimal),
+            'is_private': is_private,
         },
     )

@@ -20,12 +20,20 @@ export default {
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		...mapState(['user'])
+		...mapState(['user', 'world']),
+		liveFeatures() {
+			return Object.assign({
+				chat_rooms: false,
+				kiosks: false,
+				direct_messaging: false,
+				announcements: true
+			}, this.world?.live_features || window.eventyay?.liveFeatures || {})
+		}
 	},
 	methods: {
 		async create(users) {
-			// Check permission before creating direct message
-			if (!this.hasPermission('world:chat.direct')) {
+			// Check permission and feature flag before creating direct message
+			if (!this.hasPermission('world:chat.direct') || !this.liveFeatures.direct_messaging) {
 				this.$emit('close')
 				return
 			}

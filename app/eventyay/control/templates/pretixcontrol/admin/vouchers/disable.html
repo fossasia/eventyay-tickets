@@ -1,0 +1,29 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}{% trans "Disable platform fee voucher" %}{% endblock %}
+
+{% block content %}
+  <h1>{% trans "Disable platform fee voucher?" %}</h1>
+  
+  <form action="" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <p>
+      {% blocktrans trimmed with code=voucher.code %}
+        Are you sure you want to disable the voucher <strong>{{ code }}</strong>?
+      {% endblocktrans %}
+    </p>
+    <p>
+      {% trans "Its existing configuration and usage history will be kept, but the voucher can no longer be used while disabled." %}
+    </p>
+    <div class="form-group submit-group">
+      <a href="{% url 'eventyay_admin:admin.vouchers' %}" class="btn btn-default btn-cancel">
+        {% trans "Cancel" %}
+      </a>
+      <button type="submit" class="btn btn-warning btn-save">
+        <i class="fa fa-ban"></i> {% trans "Disable voucher" %}
+      </button>
+    </div>
+  </form>
+{% endblock %}

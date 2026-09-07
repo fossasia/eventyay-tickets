@@ -18,7 +18,7 @@ from eventyay.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     HtmlDateTimeInput,
-    MarkdownWidget,
+    RichTextWidget,
     TextInputWithAddon,
 )
 from eventyay.common.text.phrases import phrases
@@ -224,9 +224,9 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             'tags': EnhancedSelectMultiple(color_field='color'),
             'track': EnhancedSelect(color_field='color'),
             'submission_type': EnhancedSelect,
-            'abstract': MarkdownWidget,
-            'description': MarkdownWidget,
-            'notes': MarkdownWidget,
+            'abstract': RichTextWidget,
+            'description': RichTextWidget,
+            'notes': RichTextWidget,
             'duration': TextInputWithAddon(addon_after=_('minutes')),
         }
         field_classes = {
@@ -320,7 +320,7 @@ class AddSpeakerForm(forms.Form):
     biography = forms.CharField(
         label=_('Biography'),
         required=False,
-        widget=MarkdownWidget,
+        widget=RichTextWidget(),
     )
     locale = forms.ChoiceField(
         label=_('Invite language'),

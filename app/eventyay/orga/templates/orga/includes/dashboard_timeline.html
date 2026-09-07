@@ -1,0 +1,33 @@
+{% load i18n %}
+<div class="dashboard-timeline-container">
+    <div class="dashboard-timeline">
+        {% for step in timeline_data %}
+            <div class="timeline-step {{ step.phase }}">
+                <{% if step.links and step.links.0.url %}a href="{{ step.links.0.url }}"{% else %}div{% endif %} class="timeline-step-content">
+                    <div class="timeline-step-icon">
+                        <span class="fa fa-{% if step.phase == 'done' %}check{% else %}{{ step.icon|default:'check' }}{% endif %}"></span>
+                    </div>
+                    <div class="timeline-step-label">{{ step.name }}</div>
+                    <div class="timeline-step-status">{{ step.status_text }}</div>
+                    {% if step.summary %}
+                        <div class="timeline-step-summary">{{ step.summary }}</div>
+                    {% endif %}
+                </{% if step.links and step.links.0.url %}a{% else %}div{% endif %}>
+                
+                {% if step.links and can_change_settings %}
+                    <div class="timeline-step-links">
+                        <ul>
+                            {% for link in step.links %}
+                                <li>
+                                    <a {% if link.url %}href="{{ link.url }}"{% endif %}>
+                                        {{ link.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

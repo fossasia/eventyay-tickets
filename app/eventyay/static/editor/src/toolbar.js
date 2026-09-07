@@ -282,7 +282,7 @@ function buildPlaceholderMenu(editor, placeholders) {
   const toggle = document.createElement('button')
   toggle.type = 'button'
   toggle.className = 'tiptap-btn'
-  toggle.textContent = '{ } Placeholder help'
+  toggle.textContent = '{ } Placeholder'
   toggle.setAttribute('aria-haspopup', 'listbox')
   toggle.setAttribute('aria-expanded', 'false')
 
@@ -315,6 +315,13 @@ function buildPlaceholderMenu(editor, placeholders) {
   toggle.addEventListener('click', (e) => {
     e.stopPropagation()
     const open = !dropdown.hidden
+    document.querySelectorAll('.tiptap-placeholder-dropdown').forEach((d) => {
+      if (d !== dropdown) {
+        d.hidden = true
+        const btn = d.closest('.tiptap-placeholder-menu')?.querySelector('.tiptap-btn[aria-haspopup="listbox"]')
+        if (btn) btn.setAttribute('aria-expanded', 'false')
+      }
+    })
     dropdown.hidden = open
     toggle.setAttribute('aria-expanded', String(!open))
   })
@@ -335,9 +342,37 @@ function buildPreviewButton(editor, previewUrl, locale = '') {
   btn.textContent = 'Preview'
   btn.setAttribute('aria-label', 'Preview email')
 
+  let isPreviewMode = false
+  let previewEl = null
+
   btn.addEventListener('click', async (e) => {
     e.preventDefault()
+
+    const editorEl = editor.options.element
+    const toolbar = btn.closest('.tiptap-toolbar')
+    const allButtons = Array.from(toolbar.querySelectorAll('button, select')).filter(b => b !== btn)
+
+    if (isPreviewMode) {
+      // Switch to Edit Mode
+      isPreviewMode = false
+      btn.textContent = 'Preview'
+      btn.classList.remove('is-active')
+      if (previewEl) {
+        previewEl.style.display = 'none'
+      }
+      editorEl.style.display = ''
+      allButtons.forEach(b => b.disabled = false)
+      editor.commands.focus()
+      return
+    }
+
     const html = editor.getHTML()
+    
+    // Disable all other buttons in the toolbar while in preview mode
+    allButtons.forEach(b => b.disabled = true)
+    btn.disabled = true
+    btn.textContent = 'Loading...'
+
     try {
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
       const response = await fetch(previewUrl, {
@@ -350,34 +385,33 @@ function buildPreviewButton(editor, previewUrl, locale = '') {
       })
       if (!response.ok) throw new Error(`Preview request failed: ${response.status}`)
       const data = await response.json()
-      showPreviewModal(data.html)
+      
+      if (!previewEl) {
+        previewEl = document.createElement('div')
+        previewEl.className = 'tiptap-inline-preview tiptap-prosemirror ProseMirror'
+        editorEl.parentNode.insertBefore(previewEl, editorEl.nextSibling)
+      }
+      
+      const doc = new DOMParser().parseFromString(data.html, 'text/html')
+      previewEl.replaceChildren(...doc.body.childNodes)
+      
+      isPreviewMode = true
+      btn.textContent = 'Edit'
+      btn.classList.add('is-active')
+      
+      editorEl.style.display = 'none'
+      previewEl.style.display = 'block'
     } catch (err) {
       console.error('Email preview failed:', err)
       alert('An error occurred while generating the preview. Please try again.')
+      allButtons.forEach(b => b.disabled = false)
+    } finally {
+      btn.disabled = false
+      if (!isPreviewMode) {
+        btn.textContent = 'Preview'
+      }
     }
   })
 
   return btn
-}
-
-function showPreviewModal(html) {
-  let modal = document.getElementById('tiptap-preview-modal')
-  if (!modal) {
-    modal = document.createElement('dialog')
-    modal.id = 'tiptap-preview-modal'
-    modal.className = 'tiptap-preview-modal'
-    modal.innerHTML = `
-      <div class="tiptap-preview-modal-inner">
-        <button type="button" class="tiptap-preview-close" aria-label="Close preview">&times;</button>
-        <h2>Email Preview</h2>
-        <div class="tiptap-preview-body"></div>
-      </div>
-    `
-    modal.querySelector('.tiptap-preview-close').addEventListener('click', () => modal.close())
-    document.body.appendChild(modal)
-  }
-  const body = modal.querySelector('.tiptap-preview-body')
-  const doc = new DOMParser().parseFromString(html, 'text/html')
-  body.replaceChildren(...doc.body.childNodes)
-  modal.showModal()
 }

@@ -517,6 +517,11 @@ urlpatterns = [
                     name='mails.compose.choose',
                 ),
                 path(
+                    'mails/compose/preview',
+                    mails.ComposeMailPreview.as_view(),
+                    name='mails.compose.preview',
+                ),
+                path(
                     'mails/compose/teams/',
                     mails.ComposeTeamsMail.as_view(),
                     name='mails.compose.teams',

@@ -1,3 +1,34 @@
+/* Redirect legacy business-tab and ticketing-tab hashes to their dedicated pages.
+ *
+ * The <script> tag loading this file can carry data-business-redirect-url
+ * and data-ticketing-redirect-url attributes.
+ * This runs at parse time so the redirect happens before the page renders. */
+{
+    const scriptEl = document.currentScript;
+    const businessRedirectUrl = scriptEl && scriptEl.getAttribute('data-business-redirect-url');
+    const ticketingRedirectUrl = scriptEl && scriptEl.getAttribute('data-ticketing-redirect-url');
+    if (location.hash) {
+        const businessTabs = [
+            '#tab-organizer_billing', '#tab-organizer_billing-open',
+            '#tab-ticket_fee', '#tab-ticket_fee-open',
+            '#tab-billing_validation', '#tab-billing_validation-open',
+        ];
+        if (businessRedirectUrl && businessTabs.indexOf(location.hash) !== -1) {
+            window.location.replace(businessRedirectUrl + location.hash);
+        }
+
+        const ticketingTabs = [
+            '#tab-payment_gateways', '#tab-payment_gateways-open',
+            '#tab-payment-gateways', '#tab-payment-gateways-open',
+            '#tab-cart', '#tab-cart-open',
+        ];
+        if (ticketingRedirectUrl && ticketingTabs.indexOf(location.hash) !== -1) {
+            const targetHash = location.hash.replace(/_/g, '-');
+            window.location.replace(ticketingRedirectUrl + targetHash);
+        }
+    }
+}
+
 /* Real-time synchronization of page content fields with page_locales language selector. */
 
 (() => {

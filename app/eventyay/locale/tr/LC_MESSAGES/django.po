@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-02-20 21:30+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 17:30+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/tr/>\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16.1-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -481,8 +481,8 @@ msgid ""
 "href=\"%(href)s\">here</a>."
 msgstr ""
 "Saat dilimi dönüşümü ve kişisel program oluşturma gibi tüm özelliklerle "
-"programımızı görmek için lütfen JavaScript’i etkinleştirip <a "
-"href=\"%(href)s\">buraya</a> gidin."
+"programımızı görmek için lütfen JavaScript’i etkinleştirip <a href=\"%(href)"
+"s\">buraya</a> gidin."
 
 #: eventyay/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
@@ -1703,8 +1703,7 @@ msgstr ""
 
 #: eventyay/base/configurations/default_setting.py:139
 msgid "Require attendees to fill in their names for all admission tickets."
-msgstr ""
-"Tüm giriş biletleri için katılımcıların adlarını girmesini zorunlu kıl."
+msgstr "Tüm giriş biletleri için katılımcıların adlarını girmesini zorunlu kıl."
 
 #: eventyay/base/configurations/default_setting.py:149
 msgid "Ask for email addresses per ticket"
@@ -1794,8 +1793,7 @@ msgstr "Sipariş başına e-posta adresi zorunlu"
 
 #: eventyay/base/configurations/default_setting.py:252
 msgid "Require attendees to fill in an email address for the order."
-msgstr ""
-"Katılımcıların sipariş için bir e-posta adresi girmesini zorunlu kılın."
+msgstr "Katılımcıların sipariş için bir e-posta adresi girmesini zorunlu kılın."
 
 #: eventyay/base/configurations/default_setting.py:262
 msgid "Ask for the order email address twice"
@@ -2787,8 +2785,7 @@ msgstr ""
 #: eventyay/base/configurations/default_setting.py:1387
 msgid ""
 "Only allow changes if the resulting price is higher than the previous price."
-msgstr ""
-"Yalnızca oluşan fiyat önceki fiyattan yüksekse değişikliklere izin ver."
+msgstr "Yalnızca oluşan fiyat önceki fiyattan yüksekse değişikliklere izin ver."
 
 #: eventyay/base/configurations/default_setting.py:1370
 #: eventyay/base/configurations/default_setting.py:1391
@@ -2799,8 +2796,7 @@ msgstr "Yalnızca oluşan fiyat önceki fiyata eşitse değişikliklere izin ver
 #: eventyay/base/configurations/default_setting.py:1374
 #: eventyay/base/configurations/default_setting.py:1395
 msgid "Allow changes regardless of price, even if this results in a refund."
-msgstr ""
-"Fiyattan bağımsız olarak değişikliklere izin ver, iade gerektirse bile."
+msgstr "Fiyattan bağımsız olarak değişikliklere izin ver, iade gerektirse bile."
 
 #: eventyay/base/configurations/default_setting.py:1379
 msgid "Requirement for changed prices"
@@ -5689,8 +5685,7 @@ msgstr "Bu hesap aktif değildir."
 #: eventyay/base/forms/auth.py:138
 msgid ""
 "You already registered with that email address, please use the login form."
-msgstr ""
-"Bu e-posta adresiyle zaten kaydoldunuz, lütfen giriş panelini kullanın."
+msgstr "Bu e-posta adresiyle zaten kaydoldunuz, lütfen giriş panelini kullanın."
 
 #: eventyay/base/forms/auth.py:139 eventyay/base/forms/auth.py:197
 #: eventyay/base/forms/user.py:19 eventyay/control/forms/users.py:26
@@ -6566,8 +6561,7 @@ msgstr "Son tarih"
 
 #: eventyay/base/models/cfp.py:205
 msgid "Please put in the last date you want to accept proposals from users."
-msgstr ""
-"Lütfen kullanıcılardan teklif kabul etmek istediğiniz son tarihi girin."
+msgstr "Lütfen kullanıcılardan teklif kabul etmek istediğiniz son tarihi girin."
 
 #: eventyay/base/models/checkin.py:18
 msgid "All products (including newly created ones)"
@@ -6900,8 +6894,7 @@ msgstr "Belirli satış kanallarıyla sınırla"
 
 #: eventyay/base/models/event.py:605
 msgid "Only sell tickets for this event on the following sales channels."
-msgstr ""
-"Bu etkinlik için biletleri yalnızca aşağıdaki satış kanallarında satın."
+msgstr "Bu etkinlik için biletleri yalnızca aşağıdaki satış kanallarında satın."
 
 #: eventyay/base/models/event.py:609
 msgid "Add video call"
@@ -7053,8 +7046,7 @@ msgstr "Bir şey satmak için en az bir kota yapılandırmanız gerekiyor."
 
 #: eventyay/base/models/event.py:2230
 msgid "You have unpaid invoices, please pay them before going live."
-msgstr ""
-"Ödenmemiş faturalarınız var, yayına geçmeden önce lütfen onları ödeyin."
+msgstr "Ödenmemiş faturalarınız var, yayına geçmeden önce lütfen onları ödeyin."
 
 #: eventyay/base/models/event.py:2235
 #, python-brace-format
@@ -10591,8 +10583,7 @@ msgstr ""
 #: eventyay/base/models/vouchers.py:294 eventyay/base/models/vouchers.py:350
 msgid ""
 "If you want this voucher to block quota, you need to select a specific date."
-msgstr ""
-"Bu makbuzun kotayı engellemesi için belirli bir tarih seçmeniz gerekir."
+msgstr "Bu makbuzun kotayı engellemesi için belirli bir tarih seçmeniz gerekir."
 
 #: eventyay/base/models/vouchers.py:296
 msgid "You can not select a subevent if your event is not an event series."
@@ -11023,8 +11014,7 @@ msgstr "Ödeme yöntemini etkinleştir"
 #: eventyay/base/payment.py:265
 msgid ""
 "Users will not be able to choose this payment provider after the given date."
-msgstr ""
-"Kullanıcılar, bu ödeme sağlayıcısını belirtilen tarihten sonra seçemez."
+msgstr "Kullanıcılar, bu ödeme sağlayıcısını belirtilen tarihten sonra seçemez."
 
 #: eventyay/base/payment.py:272
 msgid "Text on invoices"
@@ -11214,8 +11204,8 @@ msgid ""
 "{amount_with_currency}."
 msgstr ""
 "Bu metin, sipariş onay e-postalarında {payment_info} yer tutucusu için "
-"eklenecektir. Kullanıcıya ödemeye nasıl devam edeceğini anlatmalıdır. "
-"{order}, {amount}, {currency} ve {amount_with_currency} yer tutucularını "
+"eklenecektir. Kullanıcıya ödemeye nasıl devam edeceğini anlatmalıdır. {order}"
+", {amount}, {currency} ve {amount_with_currency} yer tutucularını "
 "kullanabilirsiniz."
 
 #: eventyay/base/payment.py:1063
@@ -13173,8 +13163,7 @@ msgstr "Tüm bildirimleri hemen devre dışı bırakmak için buraya tıklayın.
 
 #: eventyay/base/templates/pretixbase/email/notification.txt:15
 msgid "Click here to view and change your notification settings:"
-msgstr ""
-"Bildirim ayarlarınızı görüntülemek ve değiştirmek için buraya tıklayın:"
+msgstr "Bildirim ayarlarınızı görüntülemek ve değiştirmek için buraya tıklayın:"
 
 #: eventyay/base/templates/pretixbase/email/notification.txt:17
 msgid "Click here disable all notifications immediately:"
@@ -13710,8 +13699,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"%(deadline)s (%(timezone)s) tarihine kadar, şu andan itibaren "
-"%(until_string)s boyunca öneri girebilirsiniz."
+"%(deadline)s (%(timezone)s) tarihine kadar, şu andan itibaren %(until_string)"
+"s boyunca öneri girebilirsiniz."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -18186,8 +18175,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"Sağlanan anahtar geçerli görünmüyor. Şunlardan biriyle başlamalı: "
-"%(prefixes)s"
+"Sağlanan anahtar geçerli görünmüyor. Şunlardan biriyle başlamalı: %(prefixes)"
+"s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -18360,8 +18349,7 @@ msgstr ""
 
 #: eventyay/control/forms/orders.py:247
 msgid "Allow to overbook quotas when performing this operation"
-msgstr ""
-"Bu işlemi gerçekleştirirken kotaların aşırı rezerve edilmesine izin ver"
+msgstr "Bu işlemi gerçekleştirirken kotaların aşırı rezerve edilmesine izin ver"
 
 #: eventyay/control/forms/orders.py:261
 msgid "Add-on to"
@@ -19328,8 +19316,8 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"Pozisyon #{posid}: Etkinlik günü \"{old_event}\" ({old_price}) den "
-"\"{new_event}\" ({new_price}) değiştirildi."
+"Pozisyon #{posid}: Etkinlik günü \"{old_event}\" ({old_price}) den \""
+"{new_event}\" ({new_price}) değiştirildi."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
@@ -19462,8 +19450,8 @@ msgid ""
 "Denied scan of position #{posid} for list \"{list}\", type \"{type}\", error "
 "code \"{errorcode}\"."
 msgstr ""
-"#{posid} numaralı pozisyonun taranması reddedildi, liste \"{list}\", tür "
-"\"{type}\", hata kodu \"{errorcode}\"."
+"#{posid} numaralı pozisyonun taranması reddedildi, liste \"{list}\", tür \""
+"{type}\", hata kodu \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:308
 #, python-brace-format
@@ -19497,8 +19485,8 @@ msgid ""
 "A scan for position #{posid} at {datetime} for list \"{list}\" has been "
 "uploaded even though it has been scanned already."
 msgstr ""
-"Daha önceden incelenmesine rağmen #{posid} pzisyonu için {datetime}'da "
-"\"{list}\" listesi için incelenme yüklendi."
+"Daha önceden incelenmesine rağmen #{posid} pzisyonu için {datetime}'da \""
+"{list}\" listesi için incelenme yüklendi."
 
 #: eventyay/control/logdisplay.py:335
 #, python-brace-format
@@ -19737,8 +19725,7 @@ msgstr ""
 #: eventyay/control/logdisplay.py:564
 msgid ""
 "An email has been sent to notify the user that the order has been received."
-msgstr ""
-"Siparişin alındığını kullanıcıya bildirmek için bir e-posta gönderildi."
+msgstr "Siparişin alındığını kullanıcıya bildirmek için bir e-posta gönderildi."
 
 #: eventyay/control/logdisplay.py:567
 #, fuzzy
@@ -21951,8 +21938,7 @@ msgstr "Bir sayfayı sil"
 #: eventyay/control/templates/pretixcontrol/admin/pages/delete.html:9
 #, python-format
 msgid "Are you sure you want to delete the page <strong>%(name)s</strong>?"
-msgstr ""
-"<strong>%(name)s</strong> sayfasını silmek istediğinizden emin misiniz?"
+msgstr "<strong>%(name)s</strong> sayfasını silmek istediğinizden emin misiniz?"
 
 #: eventyay/control/templates/pretixcontrol/admin/pages/form.html:5
 #: eventyay/control/templates/pretixcontrol/admin/pages/form.html:16
@@ -22761,8 +22747,7 @@ msgstr "geliştirme modunda çalışıyor"
 #: eventyay/orga/templates/orga/base.html:553
 #: eventyay/presale/templates/pretixpresale/waiting.html:24
 msgid "If this takes longer than a few minutes, please contact us."
-msgstr ""
-"Bu işlem birkaç dakikadan uzun sürerse, lütfen bizimle iletişime geçin."
+msgstr "Bu işlem birkaç dakikadan uzun sürerse, lütfen bizimle iletişime geçin."
 
 #: eventyay/control/templates/pretixcontrol/boxoffice/payment.html:4
 #: eventyay/control/templates/pretixcontrol/organizers/devices.html:48
@@ -23402,8 +23387,7 @@ msgstr ""
 #: eventyay/control/templates/pretixcontrol/organizers/delete.html:16
 msgid ""
 "This operation is irreversible and there is no way to bring your data back."
-msgstr ""
-"Bu işlem geri alınamaz ve verilerinizi geri getirmenin bir yolu yoktur."
+msgstr "Bu işlem geri alınamaz ve verilerinizi geri getirmenin bir yolu yoktur."
 
 #: eventyay/control/templates/pretixcontrol/event/delete.html:22
 #, fuzzy, python-format
@@ -23835,9 +23819,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Kullanılabilir ödeme sağlayıcısı yok. Lütfen <a "
-"%(plugin_settings_href)s>eklenti ayarları</a> bölümüne gidip bir veya daha "
-"fazla ödeme eklentisini etkinleştirin."
+"Kullanılabilir ödeme sağlayıcısı yok. Lütfen <a %(plugin_settings_href)s>"
+"eklenti ayarları</a> bölümüne gidip bir veya daha fazla ödeme eklentisini "
+"etkinleştirin."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -26518,9 +26502,9 @@ msgid ""
 "underpaid by <strong>%(pending)s</strong>. The order total is "
 "<strong>%(total)s</strong>."
 msgstr ""
-"Farkettik ki <strong>%(amount)s</strong> üzerinden iade "
-"edildi<strong>%(method)s</strong>. Bu geri ödeme işleniyorsa, sipariş,"
-"<strong>%(pending)s</strong>.Sipariş toplamı <strong>%(total)s</strong>."
+"Farkettik ki <strong>%(amount)s</strong> üzerinden iade edildi<strong>%"
+"(method)s</strong>. Bu geri ödeme işleniyorsa, sipariş,<strong>%(pending)s</"
+"strong>.Sipariş toplamı <strong>%(total)s</strong>."
 
 #: eventyay/control/templates/pretixcontrol/order/refund_process.html:30
 msgid "Since the order is already canceled, this will not affect its state."
@@ -28377,8 +28361,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Sadece gerçekten siz olduğunuzdan emin olmak istiyoruz. Lütfen "
-"'%(login_provider)s' ile yeniden kimlik doğrulayın."
+"Sadece gerçekten siz olduğunuzdan emin olmak istiyoruz. Lütfen '%"
+"(login_provider)s' ile yeniden kimlik doğrulayın."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28460,8 +28444,7 @@ msgstr ""
 #, python-format
 msgid ""
 "Are you sure you want to delete the voucher <strong>%(voucher)s</strong>?"
-msgstr ""
-"Kuponu <strong>%(voucher)s</strong> silmek istediğinizden emin misiniz?"
+msgstr "Kuponu <strong>%(voucher)s</strong> silmek istediğinizden emin misiniz?"
 
 #: eventyay/control/templates/pretixcontrol/vouchers/delete_bulk.html:4
 #: eventyay/control/templates/pretixcontrol/vouchers/delete_bulk.html:6
@@ -31309,8 +31292,8 @@ msgid ""
 "you can <a %(login_href)s>log in</a> first and then click this link again to "
 "accept the invitation with your existing account."
 msgstr ""
-"Bu sitede farklı bir e-posta adresine sahip bir hesabınız varsa, önce <a "
-"%(login_href)s>log in </a> adresinde oturum açabilirsiniz ve ardından mevcut "
+"Bu sitede farklı bir e-posta adresine sahip bir hesabınız varsa, önce <a %"
+"(login_href)s>log in </a> adresinde oturum açabilirsiniz ve ardından mevcut "
 "hesabınızla daveti kabul etmek için bu bağlantıyı tekrar tıklayabilirsiniz."
 
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:17
@@ -33038,8 +33021,7 @@ msgstr ""
 msgid ""
 "You cannot accept the invitation for \"{}\" as you already are part of this "
 "team."
-msgstr ""
-"Bu ekibin bir parçası olduğunuz için \"{}\" davetini kabul edemezsiniz."
+msgstr "Bu ekibin bir parçası olduğunuz için \"{}\" davetini kabul edemezsiniz."
 
 #: eventyay/eventyay_common/views/auth.py:216
 msgid "You are now part of the team \"{}\"."
@@ -36585,10 +36567,10 @@ msgid ""
 "For example, if you are using {session_room}, but some proposals don’t have "
 "a room yet, only emails for proposals with a scheduled room will be created."
 msgstr ""
-"Yer tutucuların geçersiz olduğu e-postalar <strong>oluşturulmayacak</"
-"strong>! Örneğin {session_room} kullanıyorsanız, ancak bazı başvuruların "
-"henüz bir odası yoksa yalnızca planlanmış odası olan başvurular için e-"
-"postalar oluşturulur."
+"Yer tutucuların geçersiz olduğu e-postalar <strong>oluşturulmayacak</strong>"
+"! Örneğin {session_room} kullanıyorsanız, ancak bazı başvuruların henüz bir "
+"odası yoksa yalnızca planlanmış odası olan başvurular için e-postalar "
+"oluşturulur."
 
 #: eventyay/orga/templates/orga/mails/_mail_editor.html:123
 #: eventyay/plugins/sendmail/templates/pretixplugins/sendmail/outbox_form.html:186
@@ -36736,8 +36718,7 @@ msgstr "Hepsini at"
 
 #: eventyay/orga/templates/orga/mails/outbox_list.html:44
 msgid "The current filters will be used when sending/discarding emails."
-msgstr ""
-"E-postalar gönderilirken/iptal edilirken mevcut filtreler kullanılacak."
+msgstr "E-postalar gönderilirken/iptal edilirken mevcut filtreler kullanılacak."
 
 #: eventyay/orga/templates/orga/mails/outbox_list.html:50
 msgid "Send all on this page"
@@ -37336,8 +37317,7 @@ msgstr ""
 #: eventyay/orga/templates/orga/settings/import_export.html:417
 #: eventyay/orga/templates/orga/settings/import_export.html:527
 msgid "You can also use the API to export or use data."
-msgstr ""
-"Verileri dışa aktarmak veya kullanmak için API’yi de kullanabilirsiniz."
+msgstr "Verileri dışa aktarmak veya kullanmak için API’yi de kullanabilirsiniz."
 
 #: eventyay/orga/templates/orga/settings/import_export.html:227
 #: eventyay/orga/templates/orga/settings/import_export.html:419
@@ -37442,8 +37422,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Ne değerlendirme puanı ne de değerlendirme metni gerekiyorsa, teklifleri "
-"değerlendirirken değerlendiricilere ek bir "
-"%(quotation_open)sÇekimser%(quotation_close)s düğmesi sunulur."
+"değerlendirirken değerlendiricilere ek bir %(quotation_open)sÇekimser%"
+"(quotation_close)s düğmesi sunulur."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -37552,8 +37532,8 @@ msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
 msgstr ""
-"Widget’ı web sitenize gömmek için aşağıdaki kodu web sitenizin "
-"<code>&lt;head></code> bölümüne kopyalayın:"
+"Widget’ı web sitenize gömmek için aşağıdaki kodu web sitenizin <code>"
+"&lt;head></code> bölümüne kopyalayın:"
 
 #: eventyay/orga/templates/orga/settings/widget.html:81
 #, python-format
@@ -38067,8 +38047,7 @@ msgstr "RSS Akışı (akış okuyucular için)"
 #: eventyay/orga/templates/orga/submission/list.html:104
 msgid ""
 "Show this session on the list of featured sessions, once it was accepted"
-msgstr ""
-"Kabul edildikten sonra bu oturumu öne çıkan oturumlar listesinde göster"
+msgstr "Kabul edildikten sonra bu oturumu öne çıkan oturumlar listesinde göster"
 
 #: eventyay/orga/templates/orga/submission/list.html:111
 msgid ""
@@ -38648,8 +38627,7 @@ msgstr "Artık süper kullanıcı yerine yönetici oldunuz."
 msgid ""
 "Success! {accepted} proposals were accepted, {rejected} proposals were "
 "rejected."
-msgstr ""
-"Başarılı! {accepted} teklif kabul edildi, {rejected} teklif reddedildi."
+msgstr "Başarılı! {accepted} teklif kabul edildi, {rejected} teklif reddedildi."
 
 #: eventyay/orga/views/review.py:291
 #, python-brace-format
@@ -38716,8 +38694,8 @@ msgstr ""
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr ""
-"Geçerli dışa aktarım bulunamadı, lütfen yeniden oluşturmayı deneyin. "
-"({error})"
+"Geçerli dışa aktarım bulunamadı, lütfen yeniden oluşturmayı deneyin. ("
+"{error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -38736,8 +38714,7 @@ msgstr "Harika, programınız yayınlandı!"
 #: eventyay/orga/views/schedule.py:162
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
-msgstr ""
-"Sıfırlama başarılı – seçtiğiniz sürümden programı düzenlemeye başlayın!"
+msgstr "Sıfırlama başarılı – seçtiğiniz sürümden programı düzenlemeye başlayın!"
 
 #: eventyay/orga/views/schedule.py:165
 msgid "Error retrieving the schedule version to reset to."
@@ -40948,8 +40925,7 @@ msgstr ""
 msgid ""
 "Note: When running tests on the server, the tickets component URL is "
 "typically"
-msgstr ""
-"Not: Sunucuda test çalıştırırken bilet bileşeni URL’si genellikle\"\"\""
+msgstr "Not: Sunucuda test çalıştırırken bilet bileşeni URL’si genellikle\"\"\""
 
 #: eventyay/plugins/socialauth/templates/socialauth/social_setup.html:9
 msgid "Therefore, the complete callback URL should be"
@@ -41847,8 +41823,8 @@ msgid ""
 "Once the products are in your cart, you will have %(time)s minutes to "
 "complete your purchase."
 msgstr ""
-"Ürünler sepetinize eklendikten sonra satın alma işlemini tamamlamak için "
-"%(time)s dakikanız olacak."
+"Ürünler sepetinize eklendikten sonra satın alma işlemini tamamlamak için %"
+"(time)s dakikanız olacak."
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_cart.html:206
 msgid "Add one more"
@@ -42167,8 +42143,8 @@ msgid ""
 "Once the items are in your cart, you will have %(time)s minutes to complete "
 "your purchase."
 msgstr ""
-"Ürünler sepetinize eklendikten sonra satın alımınızı tamamlamak için "
-"%(time)s dakikanız olacak."
+"Ürünler sepetinize eklendikten sonra satın alımınızı tamamlamak için %(time)"
+"s dakikanız olacak."
 
 #: eventyay/presale/templates/pretixpresale/event/index.html:322
 #: eventyay/presale/templates/pretixpresale/event/voucher.html:363
@@ -42574,9 +42550,9 @@ msgid ""
 "cancellation fee of <strong>%(fee)s</strong> will be kept and you will "
 "receive a refund of the remainder."
 msgstr ""
-"Bu siparişi iptal etmeyi talep edebilirsiniz. Talebiniz onaylanırsa, "
-"<strong>%(fee)s</strong> tutarında iptal ücreti kesilir ve kalan tutar size "
-"iade edilir."
+"Bu siparişi iptal etmeyi talep edebilirsiniz. Talebiniz onaylanırsa, <strong>"
+"%(fee)s</strong> tutarında iptal ücreti kesilir ve kalan tutar size iade "
+"edilir."
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:497
 #, python-format

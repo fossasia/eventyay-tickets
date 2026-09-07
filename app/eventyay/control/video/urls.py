@@ -54,7 +54,6 @@ urlpatterns = [
     path("turns/<uuid:pk>/delete", views.TurnServerDelete.as_view(), name="turnserver.delete"),
     path("turnservers/<uuid:pk>/", views.TurnServerUpdate.as_view(), name="turnserver.update"),
     # Streaming Server Management URLs
-    path("streamkey/", views.StreamkeyGenerator.as_view(), name="streamkey"),
     path("streamingservers/", SettingsTabRedirectView.as_view(tab="streaming"), name="streamingserver.list"),
     path("streamingservers/new/", views.StreamingServerCreate.as_view(), name="streamingserver.create"),
     path("streamingservers/<uuid:pk>/delete", views.StreamingServerDelete.as_view(), name="streamingserver.delete"),

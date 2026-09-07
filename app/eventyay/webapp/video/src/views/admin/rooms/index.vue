@@ -1,14 +1,14 @@
 <template lang="pug">
 .c-admin-rooms
-	.header
+	.ui-page-header
+		bunt-icon-button(@click="$router.push({name: 'organizer'})", :tooltip="$t('Back to Overview')", tooltip-placement="bottom-start", :tooltip-fixed="true") arrow-left
+		h2 {{ $t('Rooms & Stages') }}
 		.actions
-			h2 {{ $t('Rooms') }}
 			VideoProviderDropdown(
 				:label="$t('Create Room')",
 				:show-empty-message="true",
 				@select="createRoomWithProvider"
 			)
-		.right-actions
 			.export-actions(v-if="canExportBroadcastConfiguration")
 				a.export-button(:href="exportUrl('xlsx')") {{ $t('Export XLSX') }}
 				a.export-button.secondary(:href="exportUrl('csv-excel')") {{ $t('CSV') }}
@@ -27,7 +27,7 @@
 				:index="index",
 				:key="room.id",
 				:room="room",
-				:to="{name: 'admin:rooms:item', params: {roomId: room.id}}",
+				:to="getRoomTargetRoute(room)",
 				:disabled="!!search",
 				v-show="isRoomVisible(room)"
 			)
@@ -36,7 +36,7 @@
 <script>
 import api from 'lib/api'
 import fuzzysearch from 'lib/fuzzysearch'
-import { isChatManagedRoom, mergeReorderedIds } from 'lib/room-types'
+import { inferType, isChatManagedRoom, mergeReorderedIds } from 'lib/room-types'
 import { mapGetters } from 'vuex'
 import { SlickList } from 'vue-slicksort'
 import VideoProviderDropdown from 'components/VideoProviderDropdown'
@@ -141,6 +141,16 @@ export default {
 				this.allRooms = previousAll
 				console.error(e)
 			}
+		},
+		getRoomTargetRoute(room) {
+			if (!room) return { name: 'admin:rooms:index' }
+			// room.config.list rooms use module_config array (admin config format)
+			const isConfigured = Array.isArray(room.module_config) && room.module_config.length > 0 &&
+				!!inferType({ module_config: room.module_config })
+			if (isConfigured) {
+				return { name: 'room:manage', params: { roomId: room.id } }
+			}
+			return { name: 'admin:rooms:item', params: { roomId: room.id } }
 		}
 	}
 }
@@ -153,25 +163,16 @@ export default {
 	flex-direction: column
 	min-height: 0
 	background-color: $clr-white
-	> .header
-		display: flex
-		align-items: center
-		justify-content: space-between
-		background-color: $clr-grey-50
+	.ui-page-header
 		.actions
 			display: flex
-			flex: none
 			align-items: center
-			.bunt-button:not(:last-child)
-				margin-right: 16px
+			gap: 8px
+			margin-left: auto
 			.btn-create
 				themed-button-primary()
 			.c-video-provider-dropdown
-				margin-right: 8px
-		.right-actions
-			display: flex
-			align-items: center
-			margin-left: auto
+				margin-right: 0
 		.export-actions
 			display: flex
 			align-items: center
@@ -193,14 +194,12 @@ export default {
 				&:focus
 					outline: 2px solid $clr-primary
 					outline-offset: 2px
-	h2
-		margin: 16px
-	.search
-		input-style(size: compact)
-		padding: 0
-		margin: 8px
-		flex: none
-		background-color: $clr-white
+		.search
+			input-style(size: compact)
+			padding: 0
+			margin: 0
+			flex: none
+			background-color: $clr-white
 	.rooms-list
 		flex-table()
 		.room

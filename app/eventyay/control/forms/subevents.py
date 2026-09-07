@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
+from zoneinfo import ZoneInfo
 
 from django import forms
 from django.forms import formset_factory
@@ -170,6 +171,7 @@ class SubEventBulkEditForm(I18nModelForm):
             'geo_lat': '__geo',
             'geo_lon': '__geo',
         }
+        tz = ZoneInfo(self.event.settings.timezone)
         for k in self.fields:
             cb_val = self.prefix + check_map.get(k, k)
             if cb_val not in self.data.getlist('_bulk'):
@@ -184,7 +186,7 @@ class SubEventBulkEditForm(I18nModelForm):
                         if not self._meta.model._meta.get_field(k.replace('_day', '')).null:
                             continue
                     elif oldval:
-                        oldval = oldval.astimezone(self.event.timezone)
+                        oldval = oldval.astimezone(tz)
                         newval = oldval.replace(
                             year=cval.year,
                             month=cval.month,
@@ -197,7 +199,7 @@ class SubEventBulkEditForm(I18nModelForm):
                             year=cval.year,
                             month=cval.month,
                             day=cval.day,
-                            tzinfo=self.event.timezone,
+                            tzinfo=tz,
                         )
                     setattr(obj, k.replace('_day', ''), newval)
                 fields.add(k.replace('_day', ''))
@@ -209,7 +211,7 @@ class SubEventBulkEditForm(I18nModelForm):
                     cval = self.cleaned_data[k]
                     if cval is None:
                         continue
-                    oldval = oldval.astimezone(self.event.timezone)
+                    oldval = oldval.astimezone(tz)
                     newval = oldval.replace(
                         hour=cval.hour,
                         minute=cval.minute,

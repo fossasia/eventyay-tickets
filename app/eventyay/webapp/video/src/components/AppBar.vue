@@ -1,12 +1,16 @@
 <template lang="pug">
 .c-app-bar
 	.left
-		button.hamburger(v-if="showActions", type="button", @click.stop="$emit('toggleSidebar')", :aria-label="toggleNavigationLabel")
-			span.bar
-			span.bar
-			span.bar
-		router-link.logo(:to="{name: 'about'}", :class="{anonymous: isAnonymous}")
-			img(:src="brandLogoUrl", :alt="world.title")
+		button.navbar-toggle-sidebar.navbar-toggle(
+			v-if="showActions",
+			type="button",
+			@click.stop="$emit('toggleSidebar')",
+			:aria-label="toggleNavigationLabel"
+		)
+			i.fa.fa-bars.fa-lg(aria-hidden="true")
+		a.navbar-brand(:href="platformHomeUrl", :class="{anonymous: isAnonymous}")
+			img(src="/eventyay-logo.svg", alt="eventyay")
+			span.brand-text eventyay
 	.nav-actions
 		.admin-session-actions(v-if="showAdminModeStart || showAdminModeEnd")
 			button.admin-mode-btn(
@@ -140,25 +144,70 @@ function decodeTokenPayload(rawToken) {
 const tokenPayload = computed(() => decodeTokenPayload(token.value || localStorage.getItem('token')))
 
 const isAdminMode = computed(() => {
+	if (typeof window !== 'undefined' && window.eventyay?.hasStaffSession != null) {
+		return Boolean(window.eventyay.hasStaffSession)
+	}
 	const decoded = tokenPayload.value
 	return Array.isArray(decoded?.traits) && decoded.traits.includes('admin')
 })
 
 const canStartStaffSession = computed(() => {
+	if (typeof window !== 'undefined' && window.eventyay?.isStaff != null) {
+		return Boolean(window.eventyay.isStaff)
+	}
 	const p = tokenPayload.value
 	return p?.is_staff === true || p?.is_superuser === true
 })
 
-const eventRouting = computed(() => store.getters.eventRouting)
+const isStaffSessionActive = isAdminMode
 
-const showAdminModeStart = computed(() => {
-	if (!canStartStaffSession.value || isAdminMode.value) return false
-	const { organizer, event } = eventRouting.value
-	return Boolean(organizer && event)
+const isAdminRoute = computed(() => {
+	const name = router.currentRoute.value?.name
+	return typeof name === 'string' && (name.startsWith('admin') || name === 'organizer' || name === 'room:manage')
 })
 
-// End session is shown whenever the token carries admin traits (staff session / issued claims).
-const showAdminModeEnd = computed(() => isAdminMode.value)
+const hasOrganiserPermissions = computed(() => {
+	return (
+		isAdminMode.value ||
+		store.getters.hasPermission('world:users.list') ||
+		store.getters.hasPermission('world:update') ||
+		store.getters.hasPermission('world:announce') ||
+		store.getters.hasPermission('room:update') ||
+		store.getters.hasPermission('world:kiosks.manage')
+	)
+})
+
+const eventRouting = computed(() => store.getters.eventRouting)
+
+const isOrganizerNavVisible = computed(() => {
+	return isAdminRoute.value || Boolean(window.eventyay?.isOrganizerArea)
+})
+
+const platformHomeUrl = computed(() => window.eventyay?.platformHomeUrl || '/')
+const homeUrl = computed(() => window.eventyay?.homeUrl || null)
+const ticketUrl = computed(() => window.eventyay?.ticketUrl || null)
+const talkUrl = computed(() => window.eventyay?.talkUrl || null)
+const videoUrl = computed(() => window.eventyay?.videoUrl || router.resolve({ name: 'organizer' }).href)
+
+const publicEventUrl = computed(() => {
+	if (window.eventyay?.eventUrl) {
+		return window.eventyay.eventUrl
+	}
+	const { organizer, event } = eventRouting.value || {}
+	if (organizer && event) {
+		const base = buildBaseSansVideo()
+		return `${base}${organizer}/${event}/`
+	}
+	return buildBaseSansVideo()
+})
+
+const showAdminModeStart = computed(() => {
+	return canStartStaffSession.value && !isStaffSessionActive.value
+})
+
+const showAdminModeEnd = computed(() => {
+	return isStaffSessionActive.value
+})
 
 const isAnonymous = computed(() => Object.keys(user.value.profile || {}).length === 0)
 
@@ -219,7 +268,8 @@ const currentLanguageCode = computed(() => (currentLanguage.value || 'en').slice
 const currentLanguageLabel = computed(() => currentLanguageMeta.value?.nativeLabel || currentLanguage.value)
 
 function getCsrfToken() {
-	const match = document.cookie.match(/eventyay_csrftoken=([^;]+)/)
+	if (typeof document === 'undefined') return null
+	const match = document.cookie.match(/(?:eventyay_csrftoken|pretix_csrftoken|csrftoken)=([^;]+)/)
 	return match ? decodeURIComponent(match[1]) : null
 }
 
@@ -238,7 +288,7 @@ function getVideoResumeParam() {
 }
 
 function videoAccessRefreshPath() {
-	const { organizer, event } = eventRouting.value
+	const { organizer, event } = eventRouting.value || {}
 	if (!organizer || !event) return null
 	const base = `/common/event/${encodeURIComponent(organizer)}/${encodeURIComponent(event)}/video-access/`
 	const resume = getVideoResumeParam()
@@ -253,50 +303,35 @@ function videoAccessRefreshPath() {
 	return qs ? `${base}?${qs}` : base
 }
 
-function startAdminSession() {
-	const nextUrl = videoAccessRefreshPath()
-	const csrf = getCsrfToken()
-	if (!nextUrl || !csrf) {
-		if (process.env.NODE_ENV === 'development') {
-			console.warn('Cannot start admin session: missing next URL or CSRF cookie.')
-		}
-		return
+function getNextUrl() {
+	if (window.eventyay?.isOrganizerArea) {
+		return window.location.pathname + window.location.search + window.location.hash
 	}
-	const action = new URL('control/sudo/', buildBaseSansVideo())
-	action.searchParams.set('next', nextUrl)
+	return videoAccessRefreshPath() || (window.location.pathname + window.location.search + window.location.hash)
+}
+
+function startAdminSession() {
+	const nextUrl = getNextUrl()
+	const action = new URL('control/sudo/', buildBaseSansVideo()).href
 	const form = document.createElement('form')
 	form.method = 'POST'
-	form.action = action.toString()
-	const input = document.createElement('input')
-	input.type = 'hidden'
-	input.name = 'csrfmiddlewaretoken'
-	input.value = csrf
-	form.appendChild(input)
+	form.action = `${action}?next=${encodeURIComponent(nextUrl)}`
+	const csrf = getCsrfToken()
+	if (csrf) {
+		const input = document.createElement('input')
+		input.type = 'hidden'
+		input.name = 'csrfmiddlewaretoken'
+		input.value = csrf
+		form.appendChild(input)
+	}
 	document.body.appendChild(form)
 	form.submit()
 }
 
 function endAdminSession() {
-	const csrf = getCsrfToken()
-	if (!csrf) {
-		if (process.env.NODE_ENV === 'development') {
-			console.warn('Cannot end admin session: missing CSRF cookie.')
-		}
-		return
-	}
-	const action = new URL('control/sudo/stop/', buildBaseSansVideo())
-	const nextUrl = videoAccessRefreshPath()
-	if (nextUrl) action.searchParams.set('next', nextUrl)
-	const form = document.createElement('form')
-	form.method = 'POST'
-	form.action = action.toString()
-	const input = document.createElement('input')
-	input.type = 'hidden'
-	input.name = 'csrfmiddlewaretoken'
-	input.value = csrf
-	form.appendChild(input)
-	document.body.appendChild(form)
-	form.submit()
+	const nextUrl = getNextUrl()
+	const action = new URL('control/sudo/stop/', buildBaseSansVideo()).href
+	window.location.href = `${action}?next=${encodeURIComponent(nextUrl)}`
 }
 
 function buildBaseSansVideo() {
@@ -430,11 +465,11 @@ onBeforeUnmount(() => {
 	top: 0
 	left: 0
 	right: 0
-	height: 48px
+	height: 50px
 	display: flex
 	align-items: center
 	justify-content: space-between
-	padding: 0 8px
+	padding: 0 12px 0 8px
 	font-size: 14px
 	font-weight: 400
 	background-color: var(--app-bar-background)
@@ -460,7 +495,7 @@ onBeforeUnmount(() => {
 		border: none
 		padding: 0 12px
 		margin: 0
-		min-height: 48px
+		min-height: 50px
 		display: inline-flex
 		align-items: center
 		gap: 6px
@@ -532,7 +567,7 @@ onBeforeUnmount(() => {
 			border: none
 			padding: 0 12px
 			margin: 0
-			min-height: 48px
+			min-height: 50px
 			height: 100%
 			box-sizing: border-box
 			display: inline-flex
@@ -572,46 +607,88 @@ onBeforeUnmount(() => {
 	.left
 		display: flex
 		align-items: center
-		gap: 4px
+		gap: 2px
 		position: relative
-		.hamburger
+		.navbar-toggle-sidebar
 			appearance: none
-			background: none
-			border: none
-			padding: 0.5rem
-			margin: 0
-			width: auto
-			height: auto
-			display: flex
-			flex-direction: column
+			background: transparent !important
+			background-color: transparent !important
+			border: none !important
+			padding: 7px 9px
+			margin: 1px 0 0 0
+			color: #fff
+			font-size: 14px
+			display: inline-flex
+			align-items: center
 			justify-content: center
-			align-items: flex-start
 			cursor: pointer
 			-webkit-tap-highlight-color: transparent
-			outline: none
+			outline: none !important
+			box-shadow: none !important
+			border-radius: 0
+			transition: color 0.15s ease
+			&:hover, &:focus, &:active
+				background: transparent !important
+				background-color: transparent !important
+				color: rgba(255, 255, 255, 0.8)
+				outline: none !important
+				box-shadow: none !important
 			&:focus-visible
-				outline: 2px solid var(--clr-primary)
-				outline-offset: 2px
-			.bar
-				display: block
-				width: 22px
-				height: 3px
-				background: var(--app-bar-text)
-				border-radius: 2px
-				&:not(:last-child)
-					margin-bottom: 5px
-	.logo
-		margin-left: 0
-		font-size: 24px
-		height: 40px
-		&.anonymous
-			pointer-events: none
-		img
-			height: 100%
-			max-width: 100%
-			object-fit: contain
-			margin: 0
-			padding: 0
+				outline: none !important
+			.fa-bars
+				font-size: 18px
+				color: inherit
+				line-height: 1
+		.navbar-brand
+			display: inline-flex
+			align-items: center
+			height: 50px
+			padding: 5px 0
+			margin-right: 16px
+			margin-left: 2px
+			font-size: 20px
+			font-weight: 500
+			line-height: inherit
+			white-space: nowrap
+			color: #f8f9fa
+			text-decoration: none
+			font-family: inherit
+			&.anonymous
+				pointer-events: none
+			img
+				display: inline-block
+				vertical-align: middle
+				height: 30px
+				width: auto
+				margin-top: 0
+				margin-right: 0.2em
+			.brand-text
+				font-size: 20px
+				font-weight: 500
+				color: #f8f9fa
+				line-height: 1
+				letter-spacing: normal
+			&:hover, &:focus
+				color: #fff
+				text-decoration: none
+		.nav-view-event
+			display: inline-flex
+			align-items: center
+			gap: 6px
+			color: rgba(255, 255, 255, 0.9)
+			font-size: 14px
+			text-decoration: none
+			padding: 0 12px
+			height: 50px
+			line-height: 50px
+			margin-left: 8px
+			font-weight: normal
+			transition: color 0.15s ease
+			.fa
+				font-size: 14px
+			&:hover, &:focus
+				color: #ffffff
+				text-decoration: none
 	.user-section
 		display: flex
 		align-items: center
@@ -835,12 +912,72 @@ onBeforeUnmount(() => {
 	transform: translateY(-4px)
 
 
-@media (max-width: 560px)
+@media (max-width: 991px)
 	.c-app-bar
+		padding: 0 10px 0 6px
+		.nav-view-event
+			padding: 0 8px
+			margin-left: 4px
+			span
+				display: none
+		.admin-session-actions .admin-mode-btn
+			padding: 0 8px
+			span
+				display: none
 		.user-profile .display-name
+			max-width: 90px
+
+@media (max-width: 767px)
+	.c-app-bar
+		height: 50px
+		padding: 0 8px 0 4px
+		.left
+			gap: 0
+			.navbar-brand
+				margin-right: 6px
+				margin-left: 0
+				padding: 0
+				img
+					height: 28px
+		.nav-actions
+			gap: 2px
+		.language-toggle
+			padding: 0 6px
+			gap: 3px
+			font-size: 13px
+		.user-profile
+			padding: 4px
+			gap: 4px
+			.display-name
+				display: none
+			.user-caret
+				margin-left: 0
+		.language-dropdown
+			right: 4px
+			max-width: calc(100vw - 12px)
+		.user-section
+			.profile-dropdown
+				right: 4px
+				max-width: calc(100vw - 12px)
+				&::before
+					right: 14px
+				&::after
+					right: 15px
+				.profile-submenu
+					position: static
+					right: auto
+					top: auto
+					margin: 4px 0 4px 12px
+					box-shadow: none
+					border: 1px solid #e9ecef
+					border-left: 3px solid var(--clr-primary, #2185d0)
+					&::before, &::after
+						display: none
+
+@media (max-width: 480px)
+	.c-app-bar
+		.left .navbar-brand .brand-text
 			display: none
-		.logo img
-			max-width: 120px
 
 #app.override-sidebar-collapse .c-app-bar
 	border-bottom: none

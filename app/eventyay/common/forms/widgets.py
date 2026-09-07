@@ -117,15 +117,6 @@ class ImageInput(ClearableBasenameFileInput):
         return ctx
 
 
-class MarkdownWidget(Textarea):
-    template_name = 'common/widgets/markdown.html'
-
-    def __init__(self, attrs=None):
-        attrs = attrs.copy() if attrs is not None else {}
-        attrs.setdefault('data-markdown-field', 'true')
-        super().__init__(attrs=attrs)
-
-
 class RichTextWidget(Textarea):
     """Tiptap-enhanced textarea for simple rich text editing.
 
@@ -144,6 +135,16 @@ class RichTextWidget(Textarea):
         attrs = attrs.copy() if attrs is not None else {}
         attrs.setdefault('data-tiptap-profile', 'richtext')
         super().__init__(attrs=attrs)
+
+
+class MarkdownWidget(RichTextWidget):
+    """Backward-compatible alias for RichTextWidget.
+
+    Previously rendered a plain textarea with a ``data-markdown-wrapper``
+    attribute.  All call sites have been migrated to ``RichTextWidget``
+    directly; this alias remains so that any third-party plugin that
+    still imports ``MarkdownWidget`` continues to work without change.
+    """
 
 
 class I18nRichTextWidget(I18nTextarea):
@@ -387,27 +388,20 @@ class SlidesWidget(Widget):
         self.max_size = None
 
     @staticmethod
-    def links_field_name(name):
-        return f'{name}_links'
-
-    @staticmethod
     def files_field_name(name):
         return f'{name}_files'
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
         if isinstance(value, dict):
-            if 'existing_resources' in value or 'links' in value:
+            if 'existing_resources' in value:
                 # Value came from InfoForm.__init__ setting initial from DB resources
                 current_resources = list(value.get('existing_resources', []))
-                links_value = '\n'.join(value.get('links', []))
             else:
                 # Raw dict from value_from_datadict (POST submission, possibly invalid form re-render)
                 current_resources = []
-                links_value = value.get('links_text', '')
         else:
             current_resources = list(value or [])
-            links_value = ''
         context['widget']['current_resources'] = current_resources
         context['widget']['existing_value'] = bool(current_resources)
         context['widget']['max_items'] = self.max_items
@@ -416,13 +410,10 @@ class SlidesWidget(Widget):
         context['widget']['remaining_items'] = (
             max(self.max_items - len(current_resources), 0) if self.max_items else None
         )
-        context['widget']['links_name'] = self.links_field_name(name)
         context['widget']['files_name'] = self.files_field_name(name)
-        context['widget']['links_id'] = f'id_{self.links_field_name(name)}'
         context['widget']['files_id'] = f'id_{self.files_field_name(name)}'
         context['widget']['clear_name'] = self.clear_checkbox_name(name)
-        context['widget']['links_value'] = links_value
-        context['widget']['is_re_render'] = isinstance(value, dict) and 'existing_resources' not in value and 'links' not in value
+        context['widget']['is_re_render'] = isinstance(value, dict) and 'existing_resources' not in value
         return context
 
     @staticmethod
@@ -432,16 +423,13 @@ class SlidesWidget(Widget):
     def value_from_datadict(self, data, files, name):
         stored_value = data.get(name)
         if isinstance(stored_value, dict):
-            links_text = '\n'.join(stored_value.get('links', []))
             clear_ids = stored_value.get('clear_ids', [])
         else:
-            links_text = data.get(self.links_field_name(name), '')
             if isinstance(data, MultiValueDict):
                 clear_ids = data.getlist(self.clear_checkbox_name(name))
             else:
                 clear_ids = data.get(self.clear_checkbox_name(name), [])
         return {
-            'links_text': links_text,
             'resources': files.getlist(self.files_field_name(name)),
             'clear_ids': clear_ids,
         }

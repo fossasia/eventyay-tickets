@@ -91,6 +91,8 @@
             <script defer src="{% static 'common/js/nav-tabs.js' %}"></script>
             <script type="module" src="{% static 'common/js/contact-modal.js' %}"></script>
         {% endcompress %}
+        {# Keep tiptapLoader outside the compress block so document.currentScript keeps data-tiptap-* attributes (see common/js/tiptapLoader.js). #}
+        <script type="module" src="{% static 'common/js/tiptapLoader.js' %}" data-tiptap-js="{% static 'editor/editor.js' %}" data-tiptap-css="{% static 'editor/editor.css' %}"></script>
         <meta id="eventyay-file-input-i18n" data-choose-file="{% translate 'Choose file' %}">
         {% block scripts %}{% endblock scripts %}
         {% block custom_header %}{% endblock custom_header %}
@@ -114,12 +116,19 @@
             {% block header_background %}{% endblock header_background %}
         </div>
         {% block site_notice %}
+            {% is_meetup current_event as is_meetup_flag %}
             {% if current_event and not current_event.live and not is_html_export %}
                 <div id="event-nonpublic" class="d-print-none">
                     <i class="fa fa-user-secret"></i>
-                    {% blocktranslate trimmed %}
-                        This event is currently offline. Only event team members and system administrators can see it.
-                    {% endblocktranslate %}
+                    {% if is_meetup_flag %}
+                        {% blocktranslate trimmed %}
+                            This meetup is currently offline. Only event team members and system administrators can see it.
+                        {% endblocktranslate %}
+                    {% else %}
+                        {% blocktranslate trimmed %}
+                            This event is currently offline. Only event team members and system administrators can see it.
+                        {% endblocktranslate %}
+                    {% endif %}
                 </div>
             {% endif %}
             {% private_testmode_tickets_enabled as tickets_private_testmode %}
@@ -129,7 +138,11 @@
                 {% if tickets_private_testmode or talks_private_testmode %}
                     <div id="event-testmode" class="d-print-none">
                         <i class="fa fa-flask"></i>
-                        {% if tickets_private_testmode and talks_private_testmode %}
+                        {% if is_meetup_flag and tickets_private_testmode %}
+                            {% blocktranslate trimmed %}
+                                Registrations are in private test mode. Only event team members and system administrators can see them.
+                            {% endblocktranslate %}
+                        {% elif tickets_private_testmode and talks_private_testmode %}
                             {% blocktranslate trimmed %}
                                 Tickets and talk pages are in private test mode. Only event team members and system administrators can see them.
                             {% endblocktranslate %}

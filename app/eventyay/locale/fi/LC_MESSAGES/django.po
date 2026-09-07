@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:15+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 12:10+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/fi/>\n"
 "Language: fi\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -255,8 +255,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Aikataulun katsomiseksi ota JavaScript käyttöön tai siirry <a "
-"href=\"%(href)s\">tänne</a> NoJS-aikatauluun."
+"Aikataulun katsomiseksi ota JavaScript käyttöön tai siirry <a href=\"%(href)"
+"s\">tänne</a> NoJS-aikatauluun."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -2587,10 +2587,9 @@ msgid ""
 "orders performed through other sales channels."
 msgstr ""
 "Jos tämä on päällä, lippuja ei tarjota ladattavaksi heti oston jälkeen. Ne "
-"liitetään maksun vahvistussähköpostiin (jos tiedostokoko ei ole liian "
-"suuri), ja osallistuja voi ladata ne sivulta heti, kun on klikannut "
-"sähköpostissa olevaa linkkiä. Ei vaikuta muissa myyntikanavissa tehtyihin "
-"tilauksiin."
+"liitetään maksun vahvistussähköpostiin (jos tiedostokoko ei ole liian suuri)"
+", ja osallistuja voi ladata ne sivulta heti, kun on klikannut sähköpostissa "
+"olevaa linkkiä. Ei vaikuta muissa myyntikanavissa tehtyihin tilauksiin."
 
 #: eventyay/base/configurations/default_setting.py:1247
 msgid "Require user to be logged in to place an order"
@@ -2728,8 +2727,7 @@ msgstr "Salli muutokset vain, jos lopullinen hinta on sama kuin aiempi hinta."
 #: eventyay/base/configurations/default_setting.py:1374
 #: eventyay/base/configurations/default_setting.py:1395
 msgid "Allow changes regardless of price, even if this results in a refund."
-msgstr ""
-"Salli muutokset hinnasta riippumatta, vaikka tämä johtaisi hyvitykseen."
+msgstr "Salli muutokset hinnasta riippumatta, vaikka tämä johtaisi hyvitykseen."
 
 #: eventyay/base/configurations/default_setting.py:1379
 msgid "Requirement for changed prices"
@@ -3885,8 +3883,7 @@ msgstr "Päivämäärien järjestys"
 
 #: eventyay/base/configurations/default_setting.py:2514
 msgid "Link back to organizer overview on all event pages"
-msgstr ""
-"Linkki takaisin järjestäjän yleiskatsaukseen kaikilla tapahtumasivuilla"
+msgstr "Linkki takaisin järjestäjän yleiskatsaukseen kaikilla tapahtumasivuilla"
 
 #: eventyay/base/configurations/default_setting.py:2523
 msgid "Homepage text"
@@ -6681,8 +6678,7 @@ msgstr ""
 
 #: eventyay/base/models/event.py:525 eventyay/base/models/organizer.py:133
 msgid "The slug may only contain letters, numbers, dots and dashes."
-msgstr ""
-"Slug saa sisältää vain kirjaimia, numeroita, pisteitä ja yhdysmerkkejä."
+msgstr "Slug saa sisältää vain kirjaimia, numeroita, pisteitä ja yhdysmerkkejä."
 
 #: eventyay/base/models/event.py:529 eventyay/base/models/organizer.py:137
 #: eventyay/control/templates/pretixcontrol/admin/organizers.html:53
@@ -7078,8 +7074,7 @@ msgstr "Ei saa sisältää välilyöntejä tai erikoismerkkejä, paitsi alaviivo
 
 #: eventyay/base/models/event.py:3547 eventyay/base/models/product.py:1836
 msgid "The property name may only contain letters, numbers and underscores."
-msgstr ""
-"Ominaisuuden nimi voi sisältää vain kirjaimia, numeroita ja alaviivoja."
+msgstr "Ominaisuuden nimi voi sisältää vain kirjaimia, numeroita ja alaviivoja."
 
 #: eventyay/base/models/event.py:3552
 msgid "Default value"
@@ -10427,8 +10422,7 @@ msgstr "Eri tapahtumaan kuuluvaa tuotetta ei voi valita."
 msgid ""
 "You cannot select a variation without having selected a product that "
 "provides variations."
-msgstr ""
-"Muunnelmaa ei voi valita, ellei ole valittu tuote, jolla on muunnelmia."
+msgstr "Muunnelmaa ei voi valita, ellei ole valittu tuote, jolla on muunnelmia."
 
 #: eventyay/base/models/vouchers.py:261
 msgid "This variation does not belong to this product."
@@ -11865,8 +11859,8 @@ msgid ""
 "You can select at most %(max)s add-ons from the category %(cat)s for the "
 "product %(base)s."
 msgstr ""
-"Tuotteelle %(base)s voi valita enintään %(max)s lisäosaa kategoriasta "
-"%(cat)s."
+"Tuotteelle %(base)s voi valita enintään %(max)s lisäosaa kategoriasta %(cat)"
+"s."
 
 #: eventyay/base/services/cart.py:130
 #, python-format
@@ -11998,8 +11992,7 @@ msgstr "Tätä tilausta ei ole merkitty maksetuksi."
 
 #: eventyay/base/services/checkin.py:578
 msgid "You need to answer questions to complete this check-in."
-msgstr ""
-"Tämän sisäänkirjautumisen viimeistelemiseksi on vastattava kysymyksiin."
+msgstr "Tämän sisäänkirjautumisen viimeistelemiseksi on vastattava kysymyksiin."
 
 #: eventyay/base/services/checkin.py:590
 msgid "This entry is not permitted due to custom rules."
@@ -12774,8 +12767,7 @@ msgstr ""
 #: eventyay/base/settings.py:206
 msgid ""
 "You cannot require specifying attendee names if you do not ask for them."
-msgstr ""
-"Osallistujien nimien ilmoittamista ei voi vaatia, jos niitä ei pyydetä."
+msgstr "Osallistujien nimien ilmoittamista ei voi vaatia, jos niitä ei pyydetä."
 
 #: eventyay/base/settings.py:210
 msgid "You have to ask for attendee emails if you want to make them required."
@@ -13289,8 +13281,8 @@ msgid ""
 "origin' requests."
 msgstr ""
 "Jos selaimeen on määritetty „Referer”-otsakkeiden lähetys pois käytöstä, ota "
-"ne uudelleen käyttöön ainakin tälle sivustolle, tai HTTPS-yhteyksille, tai "
-"„same-origin”-pyynnöille."
+"ne uudelleen käyttöön ainakin tälle sivustolle, tai HTTPS-yhteyksille, tai „"
+"same-origin”-pyynnöille."
 
 #: eventyay/base/views/errors.py:36
 msgid ""
@@ -15350,10 +15342,8 @@ msgstr[1] ""
 #| msgid "You can choose up to %(max_count)s options from this category."
 msgid "You can keep up to %(count)s slide entry in total."
 msgid_plural "You can keep up to %(count)s slide entries in total."
-msgstr[0] ""
-"Voit valita korkeintaan %(max_count)s vaihtoehtoa tästä kategoriasta."
-msgstr[1] ""
-"Voit valita korkeintaan %(max_count)s vaihtoehtoa tästä kategoriasta."
+msgstr[0] "Voit valita korkeintaan %(max_count)s vaihtoehtoa tästä kategoriasta."
+msgstr[1] "Voit valita korkeintaan %(max_count)s vaihtoehtoa tästä kategoriasta."
 
 #: eventyay/common/templates/common/widgets/slides_input.html:79
 #, fuzzy
@@ -15610,8 +15600,7 @@ msgstr "Vahvista poisto"
 msgid ""
 "Please make sure that this is the item you want to delete. This action "
 "cannot be undone!"
-msgstr ""
-"Varmista, että tämä on poistettava kohde. Tätä toimintoa ei voi kumota!"
+msgstr "Varmista, että tämä on poistettava kohde. Tätä toimintoa ei voi kumota!"
 
 #: eventyay/common/text/phrases.py:63
 msgid "The item has been deleted."
@@ -18008,8 +17997,8 @@ msgstr "Stripe-avain ei voi olla tyhjä."
 msgid ""
 "The provided key does not look valid. It should start with \"%(prefix)s\"."
 msgstr ""
-"Annettu avain ei vaikuta kelvolliselta. Sen tulee alkaa merkkijonolla "
-"\"%(prefix)s\"."
+"Annettu avain ei vaikuta kelvolliselta. Sen tulee alkaa merkkijonolla \"%"
+"(prefix)s\"."
 
 #: eventyay/control/forms/global_settings.py:988
 #, python-format
@@ -18448,8 +18437,7 @@ msgstr "Jos asetat päivämäärävälin, määritä sekä alku- että loppupäi
 
 #: eventyay/control/forms/orders.py:838
 msgid "Please confirm that you want to cancel ALL dates in this event series."
-msgstr ""
-"Vahvista, että kaikki tämän tapahtumasarjan päivämäärät halutaan perua."
+msgstr "Vahvista, että kaikki tämän tapahtumasarjan päivämäärät halutaan perua."
 
 #: eventyay/control/forms/organizer_forms/device_form.py:47
 msgid "All events (including newly created and published ones)"
@@ -18772,8 +18760,8 @@ msgid ""
 "\"inactive\" instead."
 msgstr ""
 "Variaatiota „%s” ei voi poistaa, koska käyttäjä on jo tilannut sen tai se on "
-"parhaillaan käyttäjän ostoskorissa. Määritä variaatio sen sijaan "
-"„inaktiiviseksi”."
+"parhaillaan käyttäjän ostoskorissa. Määritä variaatio sen sijaan „"
+"inaktiiviseksi”."
 
 #: eventyay/control/forms/product.py:904
 msgid "Add-ons"
@@ -19064,8 +19052,7 @@ msgstr "CSV-syötteen on sisällettävä kenttä, jonka otsikko on \"{header}\".
 #: eventyay/control/forms/vouchers.py:368
 #, python-brace-format
 msgid "CSV input contains an unknown field with the header \"{header}\"."
-msgstr ""
-"CSV-syöte sisältää tuntemattoman kentän, jonka otsikko on \"{header}\"."
+msgstr "CSV-syöte sisältää tuntemattoman kentän, jonka otsikko on \"{header}\"."
 
 #: eventyay/control/forms/vouchers.py:377
 #: eventyay/control/forms/vouchers.py:395
@@ -19129,8 +19116,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Rivinro {posid}: {old_product} ({old_price}) muutettu muotoon {new_product} "
-"({new_price})."
+"Rivinro {posid}: {old_product} ({old_price}) muutettu muotoon {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19155,8 +19142,7 @@ msgstr "Rivin #{posid} hinta muuttui arvosta {old_price} arvoon {new_price}."
 #: eventyay/control/logdisplay.py:110
 #, python-brace-format
 msgid "Tax rule of position #{posid} changed from {old_rule} to {new_rule}."
-msgstr ""
-"Rivin #{posid} verosääntö muuttui arvosta {old_rule} arvoon {new_rule}."
+msgstr "Rivin #{posid} verosääntö muuttui arvosta {old_rule} arvoon {new_rule}."
 
 #: eventyay/control/logdisplay.py:120
 #, python-brace-format
@@ -19239,8 +19225,8 @@ msgstr ""
 msgid ""
 "Unknown scan of code \"{barcode}…\" for list \"{list}\", type \"{type}\"."
 msgstr ""
-"Tuntematon skannaus koodista \"{barcode}…\" listalle \"{list}\", tyyppi "
-"\"{type}\"."
+"Tuntematon skannaus koodista \"{barcode}…\" listalle \"{list}\", tyyppi \""
+"{type}\"."
 
 #: eventyay/control/logdisplay.py:268
 #, python-brace-format
@@ -19248,8 +19234,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"Peruutetun koodin \"{barcode}…\" skannaus ajankohtana {datetime} listalle "
-"\"{list}\", tyyppi \"{type}\", on ladattu."
+"Peruutetun koodin \"{barcode}…\" skannaus ajankohtana {datetime} listalle \""
+"{list}\", tyyppi \"{type}\", on ladattu."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19266,8 +19252,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"Estetty skannaus sijainnille #{posid} ajankohtana {datetime} listalle "
-"\"{list}\", tyyppi \"{type}\", virhekoodi \"{errorcode}\"."
+"Estetty skannaus sijainnille #{posid} ajankohtana {datetime} listalle \""
+"{list}\", tyyppi \"{type}\", virhekoodi \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -19443,8 +19429,8 @@ msgstr "Tilaus on hylätty."
 msgid ""
 "The email address has been changed from \"{old_email}\" to \"{new_email}\"."
 msgstr ""
-"Sähköpostiosoite on vaihdettu osoitteesta „{old_email}” osoitteeseen "
-"„{new_email}”."
+"Sähköpostiosoite on vaihdettu osoitteesta „{old_email}” osoitteeseen „"
+"{new_email}”."
 
 #: eventyay/control/logdisplay.py:524
 msgid ""
@@ -19689,8 +19675,7 @@ msgstr "Kaksivaiheisen tunnistautumisen hätäkoodit on luotu uudelleen."
 msgid ""
 "A new two-factor authentication device \"{name}\" has been added to your "
 "account."
-msgstr ""
-"Uusi kaksivaiheisen tunnistautumisen laite ”{name}” on lisätty tilille."
+msgstr "Uusi kaksivaiheisen tunnistautumisen laite ”{name}” on lisätty tilille."
 
 #: eventyay/control/logdisplay.py:611
 #, python-brace-format
@@ -20126,16 +20111,16 @@ msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
 msgstr ""
-"Sijainti #{posid} kirjattiin sisään manuaalisesti klo {datetime} listalla "
-"\"{list}\"."
+"Sijainti #{posid} kirjattiin sisään manuaalisesti klo {datetime} listalla \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
 msgstr ""
-"Sijainti #{posid} kirjattiin sisään uudelleen klo {datetime} listalla "
-"\"{list}\"."
+"Sijainti #{posid} kirjattiin sisään uudelleen klo {datetime} listalla \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
@@ -20155,8 +20140,7 @@ msgstr "{user} poistettiin tiimistä."
 #: eventyay/control/logdisplay.py:798
 #, python-brace-format
 msgid "{user} has joined the team using the invite sent to {email}."
-msgstr ""
-"{user} liittyi tiimiin käyttäen osoitteeseen {email} lähetettyä kutsua."
+msgstr "{user} liittyi tiimiin käyttäen osoitteeseen {email} lähetettyä kutsua."
 
 #: eventyay/control/logdisplay.py:803
 #, python-brace-format
@@ -20219,8 +20203,7 @@ msgstr "Lopetit käyttäjän {} esiintymisen."
 msgid ""
 "The selected event was not found or you have no permission to administrate "
 "it."
-msgstr ""
-"Valittua tapahtumaa ei löytynyt tai sen hallinnointiin ei ole oikeutta."
+msgstr "Valittua tapahtumaa ei löytynyt tai sen hallinnointiin ei ole oikeutta."
 
 #: eventyay/control/middleware.py:190
 msgid ""
@@ -22506,8 +22489,7 @@ msgstr "Lippujen hallintapaneeli"
 #: eventyay/orga/templates/orga/base.html:193
 msgid ""
 "Please leave a short comment on what you did in the following admin sessions:"
-msgstr ""
-"Lisää lyhyt kommentti siitä, mitä teit seuraavissa ylläpitoistunnoissa:"
+msgstr "Lisää lyhyt kommentti siitä, mitä teit seuraavissa ylläpitoistunnoissa:"
 
 #: eventyay/control/templates/pretixcontrol/base.html:355
 #: eventyay/eventyay_common/templates/eventyay_common/base.html:324
@@ -22528,10 +22510,9 @@ msgid ""
 "to make sure they do not show up in your reports and statistics and block "
 "people from actually buying tickets."
 msgstr ""
-"Tapahtumassa on <strong>testitilan tilauksia</strong>, vaikka "
-"<strong>testitila on poistettu käytöstä</strong>. Tilaukset kannattaa "
-"poistaa, jotta ne eivät näy raporteissa ja tilastoissa eivätkä estä lippujen "
-"ostamista."
+"Tapahtumassa on <strong>testitilan tilauksia</strong>, vaikka <strong>"
+"testitila on poistettu käytöstä</strong>. Tilaukset kannattaa poistaa, jotta "
+"ne eivät näy raporteissa ja tilastoissa eivätkä estä lippujen ostamista."
 
 #: eventyay/control/templates/pretixcontrol/base.html:395
 #: eventyay/eventyay_common/templates/eventyay_common/base.html:365
@@ -23213,8 +23194,8 @@ msgid ""
 "To confirm you really want this, please type out the event's name "
 "(\"%(name)s\") here:"
 msgstr ""
-"Vahvistaaksesi toiminnon, ole hyvä ja kirjoita tapahtuman lyhyt tunniste "
-"(\"%(slug)s\"):"
+"Vahvistaaksesi toiminnon, ole hyvä ja kirjoita tapahtuman lyhyt tunniste (\"%"
+"(slug)s\"):"
 
 #: eventyay/control/templates/pretixcontrol/event/delete.html:36
 msgid "Your event can not be deleted as it already contains orders."
@@ -23639,9 +23620,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Maksupalveluntarjoajia ei ole saatavilla. Siirry <a "
-"%(plugin_settings_href)s>liitännäisten asetuksiin</a> ja aktivoi yksi tai "
-"useampi maksuliitännäinen."
+"Maksupalveluntarjoajia ei ole saatavilla. Siirry <a %(plugin_settings_href)s>"
+"liitännäisten asetuksiin</a> ja aktivoi yksi tai useampi maksuliitännäinen."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -24081,9 +24061,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Lippitulosteita ei ole saatavilla. Siirry <a "
-"%(plugin_settings_href)s>lisäosien asetuksiin</a> ja aktivoi yksi tai "
-"useampi lipputulostelisäosa."
+"Lippitulosteita ei ole saatavilla. Siirry <a %(plugin_settings_href)s>"
+"lisäosien asetuksiin</a> ja aktivoi yksi tai useampi lipputulostelisäosa."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -24489,8 +24468,8 @@ msgid ""
 "except if the add-on products or bundled products represent additional "
 "people (e.g. group bundles)."
 msgstr ""
-"Tämä asetus kannattaa valita useimmille tuotteille, joita kutsuttaisiin "
-"”lipuksi”. Tuotelisäosille tai paketeille tämä kannattaa asettaa päälipulle, "
+"Tämä asetus kannattaa valita useimmille tuotteille, joita kutsuttaisiin ”"
+"lipuksi”. Tuotelisäosille tai paketeille tämä kannattaa asettaa päälipulle, "
 "paitsi jos lisäosatuotteet tai pakettiin sisältyvät tuotteet edustavat "
 "lisähenkilöitä (esim. ryhmäpaketit)."
 
@@ -24771,8 +24750,8 @@ msgid ""
 "All answers to the description given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Kaikki ostajien antamat vastaukset seuraavien tuotteiden kuvaukseen "
-"<strong>menetetään</strong>."
+"Kaikki ostajien antamat vastaukset seuraavien tuotteiden kuvaukseen <strong>"
+"menetetään</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:15
@@ -25117,8 +25096,8 @@ msgid ""
 "All answers to the question given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Kaikki seuraavien tuotteiden ostajien kysymykseen antamat vastaukset "
-"<strong>menetetään</strong>."
+"Kaikki seuraavien tuotteiden ostajien kysymykseen antamat vastaukset <strong>"
+"menetetään</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:15
@@ -28381,8 +28360,8 @@ msgid ""
 "<strong>%(amount)s</strong>."
 msgstr ""
 "Jos tapahtumaan saadaan järjestettyä riittävästi tilaa kaikille "
-"odotuslistalla oleville henkilöille, voidaan myydä lippuja vielä "
-"<strong>%(amount)s</strong> arvosta."
+"odotuslistalla oleville henkilöille, voidaan myydä lippuja vielä <strong>%"
+"(amount)s</strong> arvosta."
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:107
 msgid "Successfully redeemed"
@@ -29469,8 +29448,7 @@ msgstr "Tämä toiminto on sallittu vain peruutetuille tilauksille."
 
 #: eventyay/control/views/orders.py:2047
 msgid "This action is only allowed for pending or paid orders."
-msgstr ""
-"Tämä toiminto on sallittu vain odottaville tai maksetuille tilauksille."
+msgstr "Tämä toiminto on sallittu vain odottaville tai maksetuille tilauksille."
 
 #: eventyay/control/views/orders.py:2251 eventyay/presale/views/order.py:1575
 msgid "An error occurred. Please see the details below."
@@ -29847,8 +29825,7 @@ msgstr ""
 msgid ""
 "You cannot add bundles to a product that is only available as an add-on "
 "itself."
-msgstr ""
-"Paketteja ei voi lisätä tuotteeseen, joka on saatavilla vain lisäosana."
+msgstr "Paketteja ei voi lisätä tuotteeseen, joka on saatavilla vain lisäosana."
 
 #: eventyay/control/views/product.py:1571
 msgid ""
@@ -30160,8 +30137,7 @@ msgstr "Ei käyttöoikeutta tähän toimintaan"
 #: eventyay/control/views/waitinglist.py:81
 msgid ""
 "An email containing a voucher code has been sent to the specified address."
-msgstr ""
-"Kuponkikoodin sisältävä sähköposti on lähetetty annettuun osoitteeseen."
+msgstr "Kuponkikoodin sisältävä sähköposti on lähetetty annettuun osoitteeseen."
 
 #: eventyay/control/views/waitinglist.py:85
 #: eventyay/control/views/waitinglist.py:99
@@ -32848,8 +32824,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Tämä sähköpostivahvistuslinkki on vanhentunut tai virheellinen. "
-"%(email_action_link)s."
+"Tämä sähköpostivahvistuslinkki on vanhentunut tai virheellinen. %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33181,8 +33157,7 @@ msgstr "Tiimien hallinta on siirretty yhdistetylle järjestäjäsivulle."
 msgid ""
 "Something went wrong, your changes could not be saved. Please see below for "
 "details"
-msgstr ""
-"Jokin meni pieleen, muutoksia ei voitu tallentaa. Katso lisätiedot alta"
+msgstr "Jokin meni pieleen, muutoksia ei voitu tallentaa. Katso lisätiedot alta"
 
 #: eventyay/eventyay_common/views/team.py:490
 #, python-format
@@ -33645,8 +33620,8 @@ msgid ""
 msgstr ""
 "Hei!\n"
 "\n"
-"Sinut on lisätty ehdotukseen tapahtumalle {event_name}, otsikolla "
-"“{proposal_title}”.\n"
+"Sinut on lisätty ehdotukseen tapahtumalle {event_name}, otsikolla “"
+"{proposal_title}”.\n"
 "Sinulle on luotu tili – seuraa tätä linkkiä asettaaksesi tilisi salasanan.\n"
 "\n"
 "{invitation_link}\n"
@@ -33671,8 +33646,8 @@ msgid ""
 msgstr ""
 "Hei!\n"
 "\n"
-"Sinut on lisätty ehdotukseen tapahtumalle {event_name}, otsikolla "
-"“{proposal_title}”.\n"
+"Sinut on lisätty ehdotukseen tapahtumalle {event_name}, otsikolla “"
+"{proposal_title}”.\n"
 "Seuraa tätä linkkiä muokataksesi käyttäjäprofiiliasi ja nähdäksesi "
 "ehdotuksesi tilan:\n"
 "\n"
@@ -34636,8 +34611,8 @@ msgid ""
 "Invalid email template! Please check that you don’t have stray { or } "
 "somewhere, and that there are no spaces inside the {} blocks."
 msgstr ""
-"Virheellinen sähköpostimalli! Tarkista, ettei tekstissä ole ylimääräisiä "
-"{ tai } -merkkejä ja ettei {}-lohkojen sisällä ole välilyöntejä."
+"Virheellinen sähköpostimalli! Tarkista, ettei tekstissä ole ylimääräisiä { "
+"tai } -merkkejä ja ettei {}-lohkojen sisällä ole välilyöntejä."
 
 #: eventyay/orga/forms/mails.py:100 eventyay/orga/forms/mails.py:117
 msgid "Unknown placeholder!"
@@ -35129,8 +35104,8 @@ msgid ""
 "click on the item you want to change!"
 msgstr ""
 "Tämä on %(site_name)s Call for Papers -editori. Tällä sivulla voidaan "
-"muuttaa otsikkoa ja infoteksiä kaikissa yksittäisissä Call for Papers "
-"-vaiheissa. Lisäksi yksittäisiin kenttiin voi lisätä mukautetun ohjetekstin. "
+"muuttaa otsikkoa ja infoteksiä kaikissa yksittäisissä Call for Papers -"
+"vaiheissa. Lisäksi yksittäisiin kenttiin voi lisätä mukautetun ohjetekstin. "
 "Muokkaa napsauttamalla muutettavaa kohtaa!"
 
 #: eventyay/orga/templates/orga/cfp/forms.html:37
@@ -35159,8 +35134,7 @@ msgstr "Ehdotuksen tiedot"
 msgid ""
 "Select which information should be requested and/or required during CfP "
 "proposal."
-msgstr ""
-"Valitse, mitä tietoja CfP-ehdotuksen aikana pyydetään ja/tai vaaditaan."
+msgstr "Valitse, mitä tietoja CfP-ehdotuksen aikana pyydetään ja/tai vaaditaan."
 
 #: eventyay/orga/templates/orga/cfp/forms.html:88
 msgid "Click here to view the proposal form."
@@ -36593,8 +36567,8 @@ msgstr ""
 "Arvioijatehtävät voi ladata tähän JSON-tiedostosta. Avaimina voi olla joko "
 "ehdotuskoodit (esim. “UX3N1”) ja arvoina käyttäjätunnisteet tai toisinpäin. "
 "Käyttäjätunnisteena voi olla joko arvioijan sähköpostiosoite tai "
-"käyttäjäkoodi (esim. “34KJN”). Esimerkkitiedosto löytyy <a "
-"href=\"%(href)s\">täältä</a>."
+"käyttäjäkoodi (esim. “34KJN”). Esimerkkitiedosto löytyy <a href=\"%(href)s\">"
+"täältä</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:23
 msgid ""
@@ -37275,8 +37249,8 @@ msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
 msgstr ""
-"Upota widget verkkosivustolle kopioimalla seuraava koodi sivuston "
-"<code>&lt;head></code>-osioon:"
+"Upota widget verkkosivustolle kopioimalla seuraava koodi sivuston <code>"
+"&lt;head></code>-osioon:"
 
 #: eventyay/orga/templates/orga/settings/widget.html:81
 #, python-format
@@ -37976,8 +37950,7 @@ msgstr "Lisäpuheenvuoron pitäjä"
 #: eventyay/orga/views/cfp.py:563
 msgid ""
 "You cannot change the options and upload an option file at the same time."
-msgstr ""
-"Valintoja ei voi muuttaa ja ladata vaihtoehtotiedostoa samanaikaisesti."
+msgstr "Valintoja ei voi muuttaa ja ladata vaihtoehtotiedostoa samanaikaisesti."
 
 #: eventyay/orga/views/cfp.py:580
 #, fuzzy
@@ -39049,8 +39022,7 @@ msgstr "Tulosta nimikyltit"
 #, python-format
 msgid ""
 "Are you sure you want to delete the badge layout <strong>%(layout)s</strong>?"
-msgstr ""
-"Haluatko varmasti poistaa nimikylttipohjan <strong>%(layout)s</strong>?"
+msgstr "Haluatko varmasti poistaa nimikylttipohjan <strong>%(layout)s</strong>?"
 
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:6
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:16
@@ -40592,8 +40564,7 @@ msgstr "eventyay-tiimi"
 
 #: eventyay/plugins/socialauth/apps.py:16
 msgid "This plugin allows you to login via social networks"
-msgstr ""
-"Tämä lisäosa mahdollistaa kirjautumisen sosiaalisten verkostojen kautta"
+msgstr "Tämä lisäosa mahdollistaa kirjautumisen sosiaalisten verkostojen kautta"
 
 #: eventyay/plugins/socialauth/templates/socialauth/social_auth_settings.html:25
 msgid "Social login providers"
@@ -41603,8 +41574,7 @@ msgstr ""
 msgid ""
 "If you click the link in our email, you will be able to download your "
 "tickets here."
-msgstr ""
-"Kun sähköpostissamme olevaa linkkiä klikataan, liput voi ladata täältä."
+msgstr "Kun sähköpostissamme olevaa linkkiä klikataan, liput voi ladata täältä."
 
 #: eventyay/presale/templates/pretixpresale/event/fragment_downloads.html:30
 msgid ""
@@ -41981,8 +41951,7 @@ msgstr "Kiitos!"
 #: eventyay/presale/templates/pretixpresale/event/order.html:19
 #: eventyay/presale/templates/pretixpresale/event/order.html:69
 msgid "Your order has been placed successfully. See below for details."
-msgstr ""
-"Tilauksesi on vastaanotettu onnistuneesti. Katso tilauksen tiedot alta."
+msgstr "Tilauksesi on vastaanotettu onnistuneesti. Katso tilauksen tiedot alta."
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:21
 #: eventyay/presale/templates/pretixpresale/event/order.html:75
@@ -42328,8 +42297,8 @@ msgid ""
 "If you want, you can request a refund for the full amount minus a "
 "cancellation fee of %(fee)s."
 msgstr ""
-"Halutessa voi pyytää hyvitystä koko summasta vähennettynä peruutusmaksulla "
-"%(fee)s."
+"Halutessa voi pyytää hyvitystä koko summasta vähennettynä peruutusmaksulla %"
+"(fee)s."
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:49
 msgid "If you want, you can request a full refund."
@@ -42714,8 +42683,8 @@ msgid ""
 "                                                    "
 msgstr ""
 "\n"
-"                                                        alkaen "
-"%(start_date)s\n"
+"                                                        alkaen %(start_date)"
+"s\n"
 "                                                    "
 
 #: eventyay/presale/templates/pretixpresale/fragment_join_online_video.html:10
@@ -42975,8 +42944,8 @@ msgstr ""
 msgid ""
 "To log in and access your events, please <a %(a_attr)s>head over here</a>."
 msgstr ""
-"Jos halutaan kirjautua sisään ja käyttää omia tapahtumia, siirry <a "
-"%(a_attr)s>tänne</a>."
+"Jos halutaan kirjautua sisään ja käyttää omia tapahtumia, siirry <a %(a_attr)"
+"s>tänne</a>."
 
 #: eventyay/presale/templates/pretixpresale/index.html:30
 msgid "Enjoy!"
@@ -43558,8 +43527,8 @@ msgstr "- Sessio „%(title)s” pidetään %(start)s kohteessa %(location)s"
 #, python-format
 msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
 msgstr ""
-"- Sessio „%(title)s” on siirretty ajankohtaan %(start)s kohteessa "
-"%(location)s"
+"- Sessio „%(title)s” on siirretty ajankohtaan %(start)s kohteessa %(location)"
+"s"
 
 #: eventyay/submission/exporters.py:18 eventyay/submission/exporters.py:63
 msgid "Custom fields data"

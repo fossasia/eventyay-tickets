@@ -29,10 +29,16 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
         return []
     nav = [
         {
-            'label': _('My Orders'),
+            'label': _('Browse events'),
+            'url': reverse('presale:index'),
+            'active': False,
+            'icon': 'compass',
+        },
+        {
+            'label': _('My Tickets'),
             'url': reverse('eventyay_common:orders'),
             'active': 'orders' in url.url_name,
-            'icon': 'shopping-cart',
+            'icon': 'ticket',
         },
         {
             'label': _('My Sessions'),
@@ -46,13 +52,26 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
             'active': 'events' in url.url_name,
             'icon': 'calendar',
         },
-        {
+    ]
+
+    show_organizers = False
+    if request.user.is_authenticated:
+        if request.user.teams.exists():
+            show_organizers = True
+        else:
+            from eventyay.control.permissions import OrganizerCreationPermissionMixin
+            class _PermChecker(OrganizerCreationPermissionMixin):
+                def __init__(self, request):
+                    self.request = request
+            show_organizers = _PermChecker(request)._can_create_organizer(request.user)
+
+    if show_organizers:
+        nav.append({
             'label': _('Organizers'),
             'url': reverse('eventyay_common:organizers'),
             'active': 'organizers' in url.url_name,
             'icon': 'group',
-        },
-    ]
+        })
 
     # Merge plugin-provided navigation items
     plugin_responses = nav_global.send(request, request=request)
@@ -70,8 +89,142 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
     return nav
 
 
+def get_meetup_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
+    """Generate flat navigation items for a meetup event."""
+    url = request.resolver_match
+    if not url:
+        return []
+
+    nav = []
+    has_settings_perm = request.user.has_event_permission(
+        event.organizer,
+        event,
+        'can_change_event_settings',
+        request=request,
+    )
+    has_items_perm = request.user.has_event_permission(
+        event.organizer,
+        event,
+        'can_change_items',
+        request=request,
+    )
+    has_orders_perm = request.user.has_event_permission(
+        event.organizer,
+        event,
+        'can_view_orders',
+        request=request,
+    )
+    has_mail_perm = request.user.has_event_permission(
+        event.organizer,
+        event,
+        'can_change_orders',
+        request=request,
+    )
+
+    if has_settings_perm:
+        nav.append(
+            {
+                'label': _('Meetup settings'),
+                'url': reverse(
+                    'eventyay_common:event.update',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': (url.url_name == 'event.update'),
+                'icon': 'wrench',
+            }
+        )
+
+    if has_orders_perm:
+        nav.append(
+            {
+                'label': _('Registrations'),
+                'url': reverse(
+                    'control:event.orders',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': url.url_name in ('event.orders', 'event.order', 'event.orders.search')
+                or 'event.order.' in url.url_name,
+                'icon': 'list-alt',
+            }
+        )
+
+    if has_items_perm:
+        nav.append(
+            {
+                'label': _('Products'),
+                'url': reverse(
+                    'control:event.products',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': url.url_name in ('event.product', 'event.products.add', 'event.products')
+                or 'event.product.' in url.url_name,
+                'icon': 'ticket',
+            }
+        )
+        nav.append(
+            {
+                'label': _('Quotas'),
+                'url': reverse(
+                    'control:event.products.quotas',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': 'event.products.quota' in url.url_name,
+                'icon': 'tasks',
+            }
+        )
+
+    if has_settings_perm:
+        nav.append(
+            {
+                'label': _('Payment'),
+                'url': reverse(
+                    'control:event.settings.payment',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': url.url_name == 'event.settings.payment',
+                'icon': 'credit-card',
+            }
+        )
+
+    if 'eventyay.plugins.sendmail' in event.get_plugins() and has_mail_perm:
+        nav.append(
+            {
+                'label': _('Message center'),
+                'url': reverse(
+                    'control:event.mail.compose',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': 'event.mail' in url.url_name,
+                'icon': 'envelope',
+            }
+        )
+
+    return nav
+
+
 def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     """Generate navigation items for an event."""
+    if is_meetup_event(event):
+        return get_meetup_event_navigation(request, event)
+
     url = request.resolver_match
     if not url:
         return []
@@ -86,7 +239,7 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
     if has_settings_perm:
         nav = [
             {
-                'label': _('Meetup settings') if is_meetup_event(event) else _('Event settings'),
+                'label': _('Event settings'),
                 'url': reverse(
                     'eventyay_common:event.update',
                     kwargs={

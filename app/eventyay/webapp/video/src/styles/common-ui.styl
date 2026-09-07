@@ -2,16 +2,30 @@
 	flex: none
 	display: flex
 	align-items: center
-	padding: 8px
+	padding: 0 16px
 	height: 56px
+	min-height: 56px
 	box-sizing: border-box
 	border-bottom: border-separator()
-	h1
+	background-color: $clr-white
+	gap: 8px
+
+	> .bunt-icon-button:first-child
+		flex: none
+		margin-right: 4px
+
+	h1, h2
 		flex: auto
-		font-size: 24px
-		font-weight: 500
-		margin: 1px 16px 0 0
+		font-size: 20px
+		font-weight: 600
+		margin: 0
 		ellipsis()
+
+	.actions
+		display: flex
+		align-items: center
+		gap: 8px
+		margin-left: auto
 
 .ui-form-actions
 	flex: none

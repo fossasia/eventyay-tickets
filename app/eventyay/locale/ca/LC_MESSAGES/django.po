@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:15+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 09:09+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/ca/>\n"
 "Language: ca\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -257,8 +257,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Per veure el nostre programa, activa el JavaScript o ves <a "
-"href=\"%(href)s\">aquí</a> per al nostre programa sense JS."
+"Per veure el nostre programa, activa el JavaScript o ves <a href=\"%(href)"
+"s\">aquí</a> per al nostre programa sense JS."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -1484,8 +1484,7 @@ msgstr ""
 #, fuzzy
 #| msgid "You cannot select a quota and a specific product at the same time."
 msgid "You cannot set an organizer as default if you are not a member."
-msgstr ""
-"No podeu seleccionar una quota i un producte específic al mateix temps."
+msgstr "No podeu seleccionar una quota i un producte específic al mateix temps."
 
 #: eventyay/api/webhooks.py:181 eventyay/base/notifications.py:239
 msgid "New order placed"
@@ -2640,8 +2639,8 @@ msgid ""
 msgstr ""
 "Si aquesta opció està activada, els usuaris han d'iniciar sessió abans de "
 "completar una comanda. Quan un usuari fa clic a «Checkout» sense haver "
-"iniciat sessió, se'l redirigirà a la pàgina d'inici de sessió. L'opció "
-"«Continue as a Guest» no estarà disponible per als assistents d'aquest "
+"iniciat sessió, se'l redirigirà a la pàgina d'inici de sessió. L'opció «"
+"Continue as a Guest» no estarà disponible per als assistents d'aquest "
 "esdeveniment."
 
 #: eventyay/base/configurations/default_setting.py:1261
@@ -4319,8 +4318,8 @@ msgstr "S'ha carregat l'import a la vostra targeta."
 #: eventyay/base/email.py:924
 msgid "Please transfer money to this bank account: 9999-9999-9999-9999"
 msgstr ""
-"Si us plau, feu una transferència a aquest compte bancari: "
-"9999-9999-9999-9999"
+"Si us plau, feu una transferència a aquest compte bancari: 9999-9999-9999-"
+"9999"
 
 #: eventyay/base/exporter.py:119 eventyay/base/exporter.py:255
 #: eventyay/base/exporters/orderlist.py:1051 eventyay/orga/forms/export.py:28
@@ -6165,8 +6164,8 @@ msgid ""
 "Bank on {date}, the invoice total corresponds to {total}."
 msgstr ""
 "S'està usant la taxa de conversió de 1:{rate} tal com publica el Banc "
-"Central Europeu a dia {date}, el total de la factura es correspon amb "
-"{total}."
+"Central Europeu a dia {date}, el total de la factura es correspon amb {total}"
+"."
 
 #: eventyay/base/invoice.py:839
 msgid "Modern"
@@ -6302,8 +6301,7 @@ msgstr "Zona horària"
 
 #: eventyay/base/models/auth.py:203
 msgid "Two-factor authentication is required to log in"
-msgstr ""
-"Es necessita un factor d'autenticació de dues passes per iniciar sessió"
+msgstr "Es necessita un factor d'autenticació de dues passes per iniciar sessió"
 
 #: eventyay/base/models/auth.py:206
 msgid "Receive notifications according to my settings below"
@@ -6726,8 +6724,7 @@ msgstr "Data d'inicialització"
 
 #: eventyay/base/models/event.py:181
 msgid "The end of the presale period has to be later than its start."
-msgstr ""
-"La data del període de prevenda ha de ser posterior al seu començament."
+msgstr "La data del període de prevenda ha de ser posterior al seu començament."
 
 #: eventyay/base/models/event.py:183
 msgid "The end of the event has to be later than its start."
@@ -6918,8 +6915,7 @@ msgstr "Domini personalitzat"
 
 #: eventyay/base/models/event.py:638
 msgid "Enter a custom domain, such as https://my.event.example.org"
-msgstr ""
-"Introduïu un domini personalitzat, com ara https://my.event.example.org"
+msgstr "Introduïu un domini personalitzat, com ara https://my.event.example.org"
 
 #: eventyay/base/models/event.py:652
 msgid "Main event colour"
@@ -9112,8 +9108,8 @@ msgid ""
 "and can be toggled by event organizers."
 msgstr ""
 "Les preguntes inactives no es mostren als clients durant el pagament o el "
-"registre. A diferència de les preguntes ocultes (que són a nivell de "
-"sistema), l'activació en controla la visibilitat i pot ser commutada pels "
+"registre. A diferència de les preguntes ocultes (que són a nivell de sistema)"
+", l'activació en controla la visibilitat i pot ser commutada pels "
 "organitzadors de l'esdeveniment."
 
 #: eventyay/base/models/product.py:1342
@@ -9140,8 +9136,7 @@ msgstr "Camp obligatori"
 
 #: eventyay/base/models/product.py:1354
 msgid "This question will be asked to buyers of the selected products"
-msgstr ""
-"Aquesta pregunta es demanarà als compradors dels productes seleccionats"
+msgstr "Aquesta pregunta es demanarà als compradors dels productes seleccionats"
 
 #: eventyay/base/models/product.py:1358
 msgid "Ask during check-in instead of in the ticket buying process"
@@ -10188,8 +10183,7 @@ msgstr "Imatge de la sessió"
 #: eventyay/base/models/submission.py:279
 #: eventyay/submission/forms/submission.py:52
 msgid "Use this if you want an illustration to go with your proposal."
-msgstr ""
-"Utilitza això si vols una il·lustració per acompanyar la teva proposta."
+msgstr "Utilitza això si vols una il·lustració per acompanyar la teva proposta."
 
 #: eventyay/base/models/submission.py:292
 msgid "Assigned reviewers"
@@ -10533,13 +10527,11 @@ msgstr "No podeu seleccionar una quota que pertany a un esdeveniment diferent."
 
 #: eventyay/base/models/vouchers.py:252
 msgid "You cannot select a quota and a specific product at the same time."
-msgstr ""
-"No podeu seleccionar una quota i un producte específic al mateix temps."
+msgstr "No podeu seleccionar una quota i un producte específic al mateix temps."
 
 #: eventyay/base/models/vouchers.py:255
 msgid "You cannot select an product that belongs to a different event."
-msgstr ""
-"No pots seleccionar un producte que pertany a un esdeveniment diferent."
+msgstr "No pots seleccionar un producte que pertany a un esdeveniment diferent."
 
 #: eventyay/base/models/vouchers.py:258 eventyay/base/models/vouchers.py:277
 msgid ""
@@ -12022,8 +12014,8 @@ msgid ""
 "You can select every add-ons from the category %(cat)s for the product "
 "%(base)s at most once."
 msgstr ""
-"Podeu seleccionar cada complement de la categoria %(cat)s per al producte "
-"%(base)s com a màxim una vegada."
+"Podeu seleccionar cada complement de la categoria %(cat)s per al producte %"
+"(base)s com a màxim una vegada."
 
 #: eventyay/base/services/cart.py:135
 msgid ""
@@ -13746,14 +13738,13 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Pots enviar propostes fins al %(deadline)s (%(timezone)s), d’aquí a "
-"%(until_string)s."
+"Pots enviar propostes fins al %(deadline)s (%(timezone)s), d’aquí a %"
+"(until_string)s."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
 msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
-msgstr ""
-"Aquesta crida de ponències es va tancar el %(deadline)s (%(timezone)s)."
+msgstr "Aquesta crida de ponències es va tancar el %(deadline)s (%(timezone)s)."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:60
 msgid "View or edit speaker profile"
@@ -14157,8 +14148,8 @@ msgid ""
 "link:"
 msgstr ""
 "Convida un altre ponent a la teva proposta aquí. En lloc de deixar que "
-"enviem un correu electrònic (que podria acabar als filtres de correu "
-"brossa), també els pots donar aquest enllaç:"
+"enviem un correu electrònic (que podria acabar als filtres de correu brossa)"
+", també els pots donar aquest enllaç:"
 
 #: eventyay/cfp/templates/cfp/event/user_submission_withdraw.html:16
 msgid "Do you really want to withdraw your proposal?"
@@ -15463,8 +15454,8 @@ msgid ""
 "The link you clicked on wants to redirect you to a destination on the "
 "website %(host)s."
 msgstr ""
-"L'enllaç en què has fet clic vol redirigir-te a una destinació del lloc web "
-"%(host)s."
+"L'enllaç en què has fet clic vol redirigir-te a una destinació del lloc web %"
+"(host)s."
 
 #: eventyay/common/templates/common/redirect.html:18
 msgid "Please only proceed if you trust this website to be safe."
@@ -18823,8 +18814,7 @@ msgstr "No pots triar el domini base d'aquesta instal·lació."
 #: eventyay/control/forms/organizer_forms/organizer_update_form.py:58
 #: eventyay/eventyay_common/forms/event.py:279
 msgid "This domain is already in use for a different event or organizer."
-msgstr ""
-"Aquest domini ja està en ús per a un altre esdeveniment o organitzador."
+msgstr "Aquest domini ja està en ús per a un altre esdeveniment o organitzador."
 
 #: eventyay/control/forms/organizer_forms/team_form.py:279
 #: eventyay/event/forms.py:58
@@ -19383,8 +19373,8 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"Posició núm. {posid}: la data de l'esdeveniment \"{old_event}\" "
-"({old_price}) s'ha canviat a \"{new_event}\" ({new_price})."
+"Posició núm. {posid}: la data de l'esdeveniment \"{old_event}\" ("
+"{old_price}) s'ha canviat a \"{new_event}\" ({new_price})."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
@@ -19475,8 +19465,8 @@ msgid ""
 "Unknown scan of code \"{barcode}…\" at {datetime} for list \"{list}\", type "
 "\"{type}\"."
 msgstr ""
-"Escaneig desconegut del codi \"{barcode}…\" a {datetime} per a la llista "
-"\"{list}\", tipus \"{type}\"."
+"Escaneig desconegut del codi \"{barcode}…\" a {datetime} per a la llista \""
+"{list}\", tipus \"{type}\"."
 
 #: eventyay/control/logdisplay.py:258
 #, python-brace-format
@@ -19501,8 +19491,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"S'ha pujat un escaneig d'un codi revocat \"{barcode}\" per a la llista "
-"\"{list}\", tipus \"{type}\"."
+"S'ha pujat un escaneig d'un codi revocat \"{barcode}\" per a la llista \""
+"{list}\", tipus \"{type}\"."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -19510,8 +19500,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"Escaneig denegat de la posició núm. {posid} a {datetime} per a la llista "
-"\"{list}\", tipus \"{type}\", codi d'error \"{errorcode}\"."
+"Escaneig denegat de la posició núm. {posid} a {datetime} per a la llista \""
+"{list}\", tipus \"{type}\", codi d'error \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -19558,8 +19548,8 @@ msgid ""
 "A scan for position #{posid} at {datetime} for list \"{list}\" has been "
 "uploaded even though it has been scanned already."
 msgstr ""
-"S'ha pujat una lectura per a la posició #{posid} a {datetime} de la llista "
-"\"{list}\" tot i que ja s'havia escanejat."
+"S'ha pujat una lectura per a la posició #{posid} a {datetime} de la llista \""
+"{list}\" tot i que ja s'havia escanejat."
 
 #: eventyay/control/logdisplay.py:335
 #, python-brace-format
@@ -19598,8 +19588,7 @@ msgstr "No s'ha pogut completar el registre. Torna-ho a provar."
 
 #: eventyay/control/logdisplay.py:496
 msgid "Gift card acceptance for another organizer has been added."
-msgstr ""
-"S'ha afegit l'acceptació de targetes regal per a un altre organitzador."
+msgstr "S'ha afegit l'acceptació de targetes regal per a un altre organitzador."
 
 #: eventyay/control/logdisplay.py:497
 msgid "Gift card acceptance for another organizer has been removed."
@@ -19678,8 +19667,7 @@ msgstr "S'ha creat la comanda."
 
 #: eventyay/control/logdisplay.py:516
 msgid "The order requires approval before it can continue to be processed."
-msgstr ""
-"La comanda requereix aprovació abans que es pugui continuar processant."
+msgstr "La comanda requereix aprovació abans que es pugui continuar processant."
 
 #: eventyay/control/logdisplay.py:518 eventyay/control/views/orders.py:735
 msgid "The order has been approved."
@@ -19693,8 +19681,7 @@ msgstr "La comanda s'ha denegat."
 #, python-brace-format
 msgid ""
 "The email address has been changed from \"{old_email}\" to \"{new_email}\"."
-msgstr ""
-"L'adreça electrònica s'ha canviat de \"{old_email}\" a \"{new_email}\"."
+msgstr "L'adreça electrònica s'ha canviat de \"{old_email}\" a \"{new_email}\"."
 
 #: eventyay/control/logdisplay.py:524
 msgid ""
@@ -19708,8 +19695,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "The phone number has been changed from \"{old_phone}\" to \"{new_phone}\"."
-msgstr ""
-"El número de telèfon s'ha canviat de \"{old_phone}\" a \"{new_phone}\"."
+msgstr "El número de telèfon s'ha canviat de \"{old_phone}\" a \"{new_phone}\"."
 
 #: eventyay/control/logdisplay.py:530
 msgid "The order locale has been changed."
@@ -20401,16 +20387,16 @@ msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
 msgstr ""
-"La posició núm. {posid} s'ha registrat manualment a {datetime} a la llista "
-"\"{list}\"."
+"La posició núm. {posid} s'ha registrat manualment a {datetime} a la llista \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
 msgstr ""
-"La posició núm. {posid} s'ha tornat a registrar a {datetime} a la llista "
-"\"{list}\"."
+"La posició núm. {posid} s'ha tornat a registrar a {datetime} a la llista \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
@@ -20847,8 +20833,8 @@ msgid ""
 msgstr ""
 "En moure una sala, s'intentarà expulsar tothom de la sala. La gent haurà de "
 "tornar-s'hi a unir recarregant la pàgina. Si no es pot expulsar la gent (p. "
-"ex., servidor caigut), igualment es continuarà, però podria crear una sala "
-"«dividida», és a dir, dos grups de persones que es pensen que són a la "
+"ex., servidor caigut), igualment es continuarà, però podria crear una sala «"
+"dividida», és a dir, dos grups de persones que es pensen que són a la "
 "mateixa sala però no ho estan. Els enregistraments de la sala ja no seran "
 "accessibles a través de la interfície més endavant. Es recomana que "
 "t'uneixis a la sala tu mateix per poder reaccionar-hi. Feu-ho amb precaució."
@@ -22335,8 +22321,7 @@ msgstr "No s'ha pogut accedir al servidor eventyay.com."
 #: eventyay/control/templates/pretixcontrol/admin/update.html:34
 #: eventyay/control/templates/pretixcontrol/global_update.html:32
 msgid "This installation appears to be a development installation."
-msgstr ""
-"Sembla que aquesta instal·lació és una instal·lació de desenvolupament."
+msgstr "Sembla que aquesta instal·lació és una instal·lació de desenvolupament."
 
 #: eventyay/control/templates/pretixcontrol/admin/update.html:50
 #: eventyay/control/templates/pretixcontrol/global_update.html:47
@@ -23939,8 +23924,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"No hi ha proveïdors de pagament disponibles. Ves a la <a "
-"%(plugin_settings_href)s>configuració de connectors</a> i activa un o més "
+"No hi ha proveïdors de pagament disponibles. Ves a la <a %"
+"(plugin_settings_href)s>configuració de connectors</a> i activa un o més "
 "connectors de pagament."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -24396,8 +24381,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"No hi ha cap sortida d'entrades disponible. Ves a la <a "
-"%(plugin_settings_href)s>configuració dels connectors</a> i activa un o més "
+"No hi ha cap sortida d'entrades disponible. Ves a la <a %"
+"(plugin_settings_href)s>configuració dels connectors</a> i activa un o més "
 "connectors de sortida d'entrades."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
@@ -28503,8 +28488,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Només volem assegurar-nos que realment ets tu. Torna a autenticar-te amb "
-"«%(login_provider)s»."
+"Només volem assegurar-nos que realment ets tu. Torna a autenticar-te amb «%"
+"(login_provider)s»."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28674,8 +28659,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Segur que vols eliminar la següent entrada de la llista d'espera "
-"<strong>%(entry)s</strong>?"
+"Segur que vols eliminar la següent entrada de la llista d'espera <strong>%"
+"(entry)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -29003,8 +28988,7 @@ msgstr "S'ha creat la nova llista de registre d'entrada."
 #: eventyay/plugins/sendmail/views.py:231
 #: eventyay/plugins/ticketoutputpdf/views.py:109
 msgid "We could not save your changes. See below for details."
-msgstr ""
-"No hem pogut desar els teus canvis. Consulta els detalls a continuació."
+msgstr "No hem pogut desar els teus canvis. Consulta els detalls a continuació."
 
 #: eventyay/control/views/checkin.py:331 eventyay/control/views/checkin.py:369
 msgid "The requested list does not exist."
@@ -30715,8 +30699,7 @@ msgstr "Si us plau, proporciona una adreça electrònica."
 
 #: eventyay/eventyay_common/forms/event.py:215
 msgid "Ask search engines not to index the event pages"
-msgstr ""
-"Demana als motors de cerca que no indexin les pàgines de l'esdeveniment"
+msgstr "Demana als motors de cerca que no indexin les pàgines de l'esdeveniment"
 
 #: eventyay/eventyay_common/forms/event.py:260
 msgid "Show in search results and lists"
@@ -31128,8 +31111,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Two-factor authentication is required to log in"
 msgid "Two-factor authentication is mandatory on this system"
-msgstr ""
-"Es necessita un factor d'autenticació de dues passes per iniciar sessió"
+msgstr "Es necessita un factor d'autenticació de dues passes per iniciar sessió"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-main-settings.html:97
 #: eventyay/eventyay_common/templates/eventyay_common/organizers/edit.html:186
@@ -31206,8 +31188,8 @@ msgid ""
 "Are you sure you want to revoke access to your account for the application "
 "%(application)s?"
 msgstr ""
-"Segur que vols revocar l'accés al teu compte per a l'aplicació "
-"%(application)s?"
+"Segur que vols revocar l'accés al teu compte per a l'aplicació %(application)"
+"s?"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/authorized-apps.html:4
 #: eventyay/eventyay_common/templates/eventyay_common/account/authorized-apps.html:19
@@ -33314,8 +33296,7 @@ msgstr "No podeu generar una factura per aquesta comanda."
 #, fuzzy
 #| msgid "Content languages must be a subset of the active languages."
 msgid "Select at least one active language."
-msgstr ""
-"Els idiomes del contingut han de ser un subconjunt dels idiomes actius."
+msgstr "Els idiomes del contingut han de ser un subconjunt dels idiomes actius."
 
 #: eventyay/eventyay_common/views/event.py:716
 #, fuzzy
@@ -35134,8 +35115,7 @@ msgstr "La nova data d'expiració s'ha d'establir en el futur."
 #| msgid "You cannot select a quota and a specific product at the same time."
 msgid ""
 "You cannot select \"Send immediately\" and also specify a scheduled time."
-msgstr ""
-"No podeu seleccionar una quota i un producte específic al mateix temps."
+msgstr "No podeu seleccionar una quota i un producte específic al mateix temps."
 
 #: eventyay/orga/forms/mails.py:274
 msgid "Recipient groups"
@@ -35414,8 +35394,7 @@ msgstr "El nom del ponent que s’ha de mostrar públicament."
 
 #: eventyay/orga/forms/submission.py:324
 msgid "The language in which the speaker will receive their invitation email."
-msgstr ""
-"La llengua en què el ponent rebrà el seu correu electrònic d’invitació."
+msgstr "La llengua en què el ponent rebrà el seu correu electrònic d’invitació."
 
 #: eventyay/orga/forms/submission.py:354
 msgid "Please provide an email address."
@@ -36476,8 +36455,8 @@ msgid ""
 "strong> <a href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
 "Aquest camp té <strong>%(count)s</strong> respostes; encara en falten "
-"<strong>%(missing)s</strong> <a href=\"%(base_search_url)sunanswered=1\"></"
-"a>."
+"<strong>%(missing)s</strong> <a href=\"%(base_search_url)sunanswered=1\"></a>"
+"."
 
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:60
 #, python-format
@@ -37620,8 +37599,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Si no necessites ni una puntuació de revisió ni un text de revisió, "
-"s’oferirà als revisors un botó addicional %(quotation_open)sAbstenir-"
-"se%(quotation_close)s quan revisin les propostes."
+"s’oferirà als revisors un botó addicional %(quotation_open)sAbstenir-se%"
+"(quotation_close)s quan revisin les propostes."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -38474,8 +38453,7 @@ msgstr "Nou tipus de sessió"
 
 #: eventyay/orga/views/cfp.py:832
 msgid "This Session Type is in use in a proposal and cannot be deleted."
-msgstr ""
-"Aquest tipus de sessió s'utilitza en una proposta i no es pot suprimir."
+msgstr "Aquest tipus de sessió s'utilitza en una proposta i no es pot suprimir."
 
 #: eventyay/orga/views/cfp.py:854
 msgid "The default Session Type has been removed."
@@ -39722,8 +39700,7 @@ msgstr "Transferència bancària"
 
 #: eventyay/plugins/banktransfer/apps.py:17
 msgid "This plugin allows you to receive payments via bank transfer."
-msgstr ""
-"Aquest complement us permet rebre pagaments via transferència bancària."
+msgstr "Aquest complement us permet rebre pagaments via transferència bancària."
 
 #: eventyay/plugins/banktransfer/apps.py:31
 msgid ""
@@ -40400,8 +40377,8 @@ msgid ""
 "We could not find bank account information for the refund {refund_id}. It "
 "was marked as failed."
 msgstr ""
-"No hem trobat informació del compte bancari per al reemborsament "
-"{refund_id}. S'ha marcat com a fallit."
+"No hem trobat informació del compte bancari per al reemborsament {refund_id}"
+". S'ha marcat com a fallit."
 
 #: eventyay/plugins/banktransfer/views.py:779
 msgid "No valid orders have been found."
@@ -41934,8 +41911,7 @@ msgstr "Abans de continuar, necessitem que ens proporcioneu més informació."
 #: eventyay/presale/templates/pretixpresale/event/checkout_questions.html:10
 msgid ""
 "You need to fill all fields that are marked with <span>*</span> to continue."
-msgstr ""
-"Heu d'omplir tots els camps marcats amb <span>*</span> per a continuar."
+msgstr "Heu d'omplir tots els camps marcats amb <span>*</span> per a continuar."
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_questions.html:68
 msgid "Copy answers from above"
@@ -42346,8 +42322,7 @@ msgstr "El període de prevenda per a aquest esdeveniment s'ha acabat."
 #: eventyay/presale/views/widget.py:744
 #, python-format
 msgid "The presale for this event will start on %(date)s at %(time)s."
-msgstr ""
-"La prevenda d'aquest esdeveniment començarà el %(date)s a les %(time)s."
+msgstr "La prevenda d'aquest esdeveniment començarà el %(date)s a les %(time)s."
 
 #: eventyay/presale/templates/pretixpresale/event/index.html:292
 #: eventyay/presale/views/widget.py:755
@@ -42475,8 +42450,7 @@ msgstr "El període de prevenda per a aquest esdeveniment s'ha acabat."
 #, fuzzy, python-format
 #| msgid "The presale for this event will start on %(date)s at %(time)s."
 msgid "Registration for this event will open on %(date)s at %(time)s."
-msgstr ""
-"La prevenda d'aquest esdeveniment començarà el %(date)s a les %(time)s."
+msgstr "La prevenda d'aquest esdeveniment començarà el %(date)s a les %(time)s."
 
 #: eventyay/presale/templates/pretixpresale/event/meetup_index.html:218
 #, fuzzy
@@ -43173,8 +43147,7 @@ msgstr "Bescanvi de vals"
 
 #: eventyay/presale/templates/pretixpresale/event/voucher.html:18
 msgid "This voucher is valid only for the following specific date and time."
-msgstr ""
-"Aquest val és vàlid només per a la data i l'hora específiques següents."
+msgstr "Aquest val és vàlid només per a la data i l'hora específiques següents."
 
 #: eventyay/presale/templates/pretixpresale/event/voucher.html:65
 msgid ""
@@ -44078,8 +44051,7 @@ msgstr ""
 
 #: eventyay/schedule/forms.py:202
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
-msgstr ""
-"Informació per als ponents, p. ex.: El projector només té entrada HDMI."
+msgstr "Informació per als ponents, p. ex.: El projector només té entrada HDMI."
 
 #: eventyay/schedule/phrases.py:9
 msgctxt "Schedule/program of the conference"

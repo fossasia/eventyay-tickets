@@ -463,6 +463,11 @@
                                 {% endfor %}
                                 <option value="other">{% trans "Other…" %}</option>
                             </select>
+                            <div id="toolbox-disabled-placeholder-warning" class="alert alert-warning">
+                                <span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                                <strong>{% trans "Notice:" %}</strong>
+                                <span id="toolbox-disabled-placeholder-text">{% trans "This placeholder is disabled in event settings." %}</span>
+                            </div>
                             <textarea type="text" value="" class="input-block-level form-control"
                                     id="toolbox-content-other"></textarea>
                             <p class="help-block">

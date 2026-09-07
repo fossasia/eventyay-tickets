@@ -11,9 +11,9 @@
 					ChatContent(:content="$t('This message was not visible to {{count}} people.', {count: mergedWarning.missed_users.length, missedUsers: mergedWarning.missed_users})", @clickMention="showUserCard")
 				bunt-icon-button(@click="$store.dispatch('chat/dismissWarnings')") close
 			.chat-input
-				.no-permission(v-if="room && !room.permissions.includes('room:chat.join')") {{ $t("Sorry, you can't join this channel.") }}
+				.no-permission(v-if="room && room.permissions && !room.permissions.includes('room:chat.join')") {{ $t("Sorry, you can't join this channel.") }}
 				bunt-button(v-else-if="!activeJoinedChannel", @click="join", :tooltip="$t('Join this chat')") {{ $t('join chat') }}
-				.no-permission(v-else-if="room && !room.permissions.includes('room:chat.send')") {{ $t('This channel is readonly.') }}
+				.no-permission(v-else-if="room && room.permissions && !room.permissions.includes('room:chat.send')") {{ $t('This channel is readonly.') }}
 				chat-input(v-else, @send="send")
 		.user-list(v-if="mode === 'standalone' && showUserlist && $mq.above['m']")
 			.user-list-info(v-if="sortedMembers.length > 2")
@@ -121,9 +121,18 @@ const mergedWarning = computed(() => {
 
 // Watchers
 watch(connected, (value) => {
-	if (value) {
+	if (value && props.module?.channel_id) {
 		// resubscribe
 		store.dispatch('chat/subscribe', { channel: props.module.channel_id, config: props.module.config })
+	}
+})
+
+watch(() => props.module?.channel_id, (newChannelId, oldChannelId) => {
+	if (newChannelId && newChannelId !== oldChannelId) {
+		if (oldChannelId) {
+			store.dispatch('chat/unsubscribe')
+		}
+		store.dispatch('chat/subscribe', { channel: newChannelId, config: props.module?.config })
 	}
 })
 
@@ -138,7 +147,9 @@ watch(filteredTimeline, async () => {
 
 // Lifecycle
 onMounted(() => {
-	store.dispatch('chat/subscribe', { channel: props.module.channel_id, config: props.module.config })
+	if (props.module?.channel_id) {
+		store.dispatch('chat/subscribe', { channel: props.module.channel_id, config: props.module.config })
+	}
 })
 
 onBeforeUnmount(() => {

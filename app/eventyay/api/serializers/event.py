@@ -9,6 +9,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from django_countries.serializers import CountryFieldMixin
 from eventyay.timezones import common_timezones
+from rest_framework import serializers
 from rest_framework.fields import ChoiceField, Field
 from rest_framework.relations import SlugRelatedField
 
@@ -659,6 +660,13 @@ class SubEventSerializer(I18nAwareModelSerializer):
 
 
 class TaxRuleSerializer(CountryFieldMixin, I18nAwareModelSerializer):
+    rate = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        min_value=0,
+        max_value=100,
+    )
+
     class Meta:
         model = TaxRule
         fields = (

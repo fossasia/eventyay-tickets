@@ -27,8 +27,102 @@ BADGE_LAYOUT_PERSISTED_FIELDS = (
     'default',
 )
 
+DEFAULT_BADGE_ENABLED_PLACEHOLDERS = (
+    'attendee_name',
+    'attendee_company',
+    'attendee_job_title',
+    'product',
+    'event_name',
+    'event_date',
+    'secret',
+)
+
+DEFAULT_BADGE_ENABLED_PLACEHOLDERS_SET = frozenset(DEFAULT_BADGE_ENABLED_PLACEHOLDERS)
+
+BADGE_PLACEHOLDER_CATEGORIES = (
+    ('attendee', _('Attendee Information')),
+    ('event', _('Event Details')),
+    ('product_order', _('Product & Order')),
+    ('questions', _('Custom Questions')),
+    ('invoice', _('Invoice & Billing')),
+    ('misc', _('Seating & Miscellaneous')),
+)
+
+_PRODUCT_ORDER_PLACEHOLDERS = frozenset({
+    'product',
+    'variation',
+    'productvar',
+    'product_description',
+    'productvar_description',
+    'product_category',
+    'price',
+    'price_with_addons',
+    'ticket_validity',
+    'order',
+    'positionid',
+    'secret',
+    'addons',
+    'telephone',
+    'email',
+})
+
 _renderer_cache = {}
 _ASSIGNMENT_CACHE_ATTR = '_badge_layout_assignment_cache'
+
+
+def get_placeholder_category(key: str) -> str:
+    if key.startswith('question_'):
+        return 'questions'
+    if key.startswith('attendee_'):
+        return 'attendee'
+    if key.startswith('event_'):
+        return 'event'
+    if key.startswith('invoice_'):
+        return 'invoice'
+    if key in _PRODUCT_ORDER_PLACEHOLDERS:
+        return 'product_order'
+    return 'misc'
+
+
+def get_event_allowed_badge_placeholders(event) -> list[str]:
+    if not event:
+        return list(DEFAULT_BADGE_ENABLED_PLACEHOLDERS)
+
+    raw = event.settings.get('badge_allowed_placeholders')
+    if raw is None or raw == '':
+        return list(DEFAULT_BADGE_ENABLED_PLACEHOLDERS)
+    if isinstance(raw, str):
+        try:
+            val = json.loads(raw)
+            if isinstance(val, list):
+                return [str(item) for item in val]
+        except (ValueError, TypeError):
+            return list(DEFAULT_BADGE_ENABLED_PLACEHOLDERS)
+    elif isinstance(raw, (list, tuple)):
+        return [str(item) for item in raw]
+    return list(DEFAULT_BADGE_ENABLED_PLACEHOLDERS)
+
+
+def get_categorized_badge_placeholders(event) -> list[dict]:
+    variables = _get_cached_badge_variables(event)
+    category_map = {
+        cat_id: {'id': cat_id, 'label': str(cat_label), 'items': []}
+        for cat_id, cat_label in BADGE_PLACEHOLDER_CATEGORIES
+    }
+
+    for varname, var in variables.items():
+        if var.get('canonical_key', varname) != varname:
+            continue
+        cat_id = get_placeholder_category(varname)
+        category_map[cat_id]['items'].append(
+            {
+                'key': varname,
+                'label': str(var.get('label', varname)),
+                'sample': str(var.get('editor_sample', '')),
+            }
+        )
+
+    return [cat for cat in category_map.values() if cat['items']]
 
 
 def _badge_version_key(event):
@@ -266,7 +360,7 @@ def validate_badge_hidden_fields(event, position, hidden_fields):
         raise ValidationError(
             _('Invalid badge field keys: {keys}').format(keys=', '.join(invalid_keys))
         )
-        
+
     layout = _badge_customization_layout(event, position)
     required_keys = set(layout.required_badge_fields_data)
     hidden_required = required_keys & set(normalized)
@@ -276,7 +370,7 @@ def validate_badge_hidden_fields(event, position, hidden_fields):
                 keys=', '.join(sorted(hidden_required))
             )
         )
-        
+
     return normalized
 
 

@@ -2,75 +2,269 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% load urlreplace %}
-{% load money %}
-{% block title %}{% trans "Vouchers" %}{% endblock %}
-{% block content %}
-    <h1>{% trans "Vouchers" %}</h1>
-    {% if vouchers|length == 0 %}
-        <div class="empty-collection">
-            <p>
-                {% blocktrans trimmed %}
-                    You haven't created any vouchers yet.
-                {% endblocktrans %}
-            </p>
+{% load static %}
 
-            <a href='{% url "eventyay_admin:admin.vouchers.add" %}'
-                    class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new voucher" %}</a>
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'pretixcontrol/css/platform-fee-vouchers.css' %}">
+  <script type="module" src="{% static 'pretixcontrol/js/ui/platform-fee-vouchers.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+  {% trans "Platform Fee Vouchers" %}
+{% endblock %}
+
+{% block content %}
+  <div class="pfv-header">
+    <h1>{% trans "Platform Fee Vouchers" %}</h1>
+    <a href="{% url 'eventyay_admin:admin.vouchers.add' %}" class="btn btn-primary">
+      <i class="fa fa-plus"></i> {% trans "Create platform fee voucher" %}
+    </a>
+  </div>
+  <p class="pfv-subtitle">
+    {% trans "Manage vouchers that waive or reduce platform fees for selected events or organisers." %}<br>
+    {% trans "These vouchers do not change attendee ticket prices." %}
+  </p>
+
+  <div class="pfv-info-notice">
+    <i class="fa fa-info-circle"></i>
+    {% trans "Platform fee vouchers only affect Eventyay platform fees. They do not reduce attendee ticket prices, ticket fees, payment gateway fees, or taxes." %}
+  </div>
+
+  {% if status_counts.all == 0 %}
+    <div class="empty-collection">
+      <p>
+        {% blocktrans trimmed %}
+          No platform fee vouchers yet
+        {% endblocktrans %}
+      </p>
+      <p>
+        {% blocktrans trimmed %}
+          Create vouchers to waive or reduce platform fees for selected events or organisers.
+          These vouchers do not change attendee ticket prices.
+        {% endblocktrans %}
+      </p>
+      <a href="{% url 'eventyay_admin:admin.vouchers.add' %}" class="btn btn-primary btn-lg">
+        <i class="fa fa-plus"></i> {% trans "Create platform fee voucher" %}
+      </a>
+    </div>
+  {% else %}
+    <div class="pfv-summary-cards">
+      <div class="pfv-summary-card">
+        <i class="fa fa-check-circle text-success"></i>
+        <div class="pfv-summary-card-count">{{ stats.active_count }}</div>
+        <div class="pfv-summary-card-label">{% trans "Active vouchers" %}</div>
+      </div>
+      <div class="pfv-summary-card">
+        <i class="fa fa-check text-info"></i>
+        <div class="pfv-summary-card-count">{{ stats.used_count }}</div>
+        <div class="pfv-summary-card-label">{% trans "Used vouchers" %}</div>
+      </div>
+      <div class="pfv-summary-card">
+        <i class="fa fa-clock-o text-danger"></i>
+        <div class="pfv-summary-card-count">{{ stats.expired_count }}</div>
+        <div class="pfv-summary-card-label">{% trans "Expired vouchers" %}</div>
+      </div>
+      <div class="pfv-summary-card">
+        <i class="fa fa-ban text-muted"></i>
+        <div class="pfv-summary-card-count">{{ stats.disabled_count }}</div>
+        <div class="pfv-summary-card-label">{% trans "Disabled vouchers" %}</div>
+      </div>
+      <div class="pfv-summary-card">
+        <i class="fa fa-pie-chart text-primary"></i>
+        <div class="pfv-summary-card-count">{{ stats.total_waived_pct }}%</div>
+        <div class="pfv-summary-card-label">{% trans "Voucher utilisation" %}</div>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs pfv-tabs">
+      <li {% if current_tab == 'all' %}class="active"{% endif %}>
+        <a href="?tab=all">
+          {% trans "All" %} <span class="pfv-tab-count">({{ status_counts.all }})</span>
+        </a>
+      </li>
+      <li {% if current_tab == 'active' %}class="active"{% endif %}>
+        <a href="?tab=active">
+          {% trans "Active" %} <span class="pfv-tab-count">({{ status_counts.active }})</span>
+        </a>
+      </li>
+      <li {% if current_tab == 'disabled' %}class="active"{% endif %}>
+        <a href="?tab=disabled">
+          {% trans "Disabled" %} <span class="pfv-tab-count">({{ status_counts.disabled }})</span>
+        </a>
+      </li>
+      <li {% if current_tab == 'expired' %}class="active"{% endif %}>
+        <a href="?tab=expired">
+          {% trans "Expired" %} <span class="pfv-tab-count">({{ status_counts.expired }})</span>
+        </a>
+      </li>
+      <li {% if current_tab == 'used_up' %}class="active"{% endif %}>
+        <a href="?tab=used_up">
+          {% trans "Used up" %} <span class="pfv-tab-count">({{ status_counts.used_up }})</span>
+        </a>
+      </li>
+      <li {% if current_tab == 'draft' %}class="active"{% endif %}>
+        <a href="?tab=draft">
+          {% trans "Draft" %} <span class="pfv-tab-count">({{ status_counts.draft }})</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="advanced-filter-search" data-advanced-filter-search>
+      <form class="filter-form advanced-filter-search-form" action="" method="get">
+        {% if current_tab != 'all' %}
+          <input type="hidden" name="tab" value="{{ current_tab }}">
+        {% endif %}
+        <div class="advanced-filter-search-bar">
+          <div class="input-group advanced-filter-search-query-group">
+            <input id="id_search" type="text" name="search" class="form-control"
+                   placeholder="{% trans 'Search voucher code, event, organiser...' %}"
+                   aria-label="{% trans 'Search voucher code, event, organiser...' %}"
+                   value="{{ filter_form.search.value|default_if_none:'' }}">
+            <span class="input-group-btn">
+              <button class="btn btn-primary" type="submit">
+                <span class="fa fa-search" aria-hidden="true"></span>
+                {% trans "Search" %}
+              </button>
+            </span>
+          </div>
+
+          <div class="advanced-filter-field advanced-filter-field--inline">
+            {% bootstrap_field filter_form.status layout='inline' %}
+          </div>
+          <div class="advanced-filter-field advanced-filter-field--inline">
+            {% bootstrap_field filter_form.scope layout='inline' %}
+          </div>
+          <div class="advanced-filter-field advanced-filter-field--inline">
+            {% bootstrap_field filter_form.effect layout='inline' %}
+          </div>
+          <div class="advanced-filter-field advanced-filter-field--inline">
+            {% bootstrap_field filter_form.valid_until layout='inline' %}
+          </div>
+
+          <div class="advanced-filter-search-actions">
+            <button class="btn btn-primary" type="submit">
+              <span class="fa fa-filter" aria-hidden="true"></span>
+              {% trans "Filter" %}
+            </button>
+            <a href="{% url 'eventyay_admin:admin.vouchers' %}" class="btn btn-default btn-clear-filter"
+               aria-label="{% trans 'Clear filters' %}" title="{% trans 'Clear filters' %}">
+              <span class="fa fa-eraser" aria-hidden="true"></span>
+              <span class="sr-only">{% trans "Clear filters" %}</span>
+            </a>
+          </div>
         </div>
-    {% else %}
-        <p>
-            <a href='{% url "eventyay_admin:admin.vouchers.add" %}'
-                    class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new voucher" %}</a>
-        </p>
-        <form action='{% url "eventyay_admin:admin.vouchers" %}' method="post">
-            {% csrf_token %}
-            <div class="table-responsive">
-                <table class="table table-hover table-quotas">
-                    <thead>
-                    <tr>
-                        <th>
-                            {% trans "Voucher code" %}
-                            <a href="?{% url_replace request 'ordering' '-code' %}"><i class="fa fa-caret-down"></i></a>
-                            <a href="?{% url_replace request 'ordering' 'code' %}"><i class="fa fa-caret-up"></i></a>
-                        </th>
-                        <th>
-                            {% trans "Redemptions" %}
-                            <a href="?{% url_replace request 'ordering' '-redeemed' %}"><i class="fa fa-caret-down"></i></a>
-                            <a href="?{% url_replace request 'ordering' 'redeemed' %}"><i class="fa fa-caret-up"></i></a>
-                        </th>
-                        <th>
-                            {% trans "Expiry" %}
-                            <a href="?{% url_replace request 'ordering' '-valid_until' %}"><i class="fa fa-caret-down"></i></a>
-                            <a href="?{% url_replace request 'ordering' 'valid_until' %}"><i class="fa fa-caret-up"></i></a>
-                        </th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for v in vouchers %}
-                        <tr>
-                            <td>
-                                {% if not v.is_active %}
-                                    <del>
-                                {% endif %}
-                                <strong><a href='{% url "eventyay_admin:admin.voucher" voucher=v.id %}'>{{ v.code }}</a></strong>
-                                {% if not v.is_active %}
-                                    </del>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {{ v.redeemed }} / {{ v.max_usages }}
-                            </td>
-                            <td>{{ v.valid_until|date }}</td>
-                            <td class="text-right flip">
-                                <a href='{% url "eventyay_admin:admin.voucher.delete" voucher=v.id %}' class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </form>
-        {% include "pretixcontrol/pagination.html" %}
-    {% endif %}
+      </form>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-condensed table-hover pfv-table">
+        <thead>
+          <tr>
+            <th>{% trans "Status" %}</th>
+            <th>
+              {% trans "Code" %}
+              <a href="?{% url_replace request 'ordering' '-code' %}"><i class="fa fa-caret-down"></i></a>
+              <a href="?{% url_replace request 'ordering' 'code' %}"><i class="fa fa-caret-up"></i></a>
+            </th>
+            <th>{% trans "Effect" %}</th>
+            <th>{% trans "Scope" %}</th>
+            <th>
+              {% trans "Used / Limit" %}
+              <a href="?{% url_replace request 'ordering' '-redeemed' %}"><i class="fa fa-caret-down"></i></a>
+              <a href="?{% url_replace request 'ordering' 'redeemed' %}"><i class="fa fa-caret-up"></i></a>
+            </th>
+            <th>{% trans "Budget used" %}</th>
+            <th>
+              {% trans "Valid until" %}
+              <a href="?{% url_replace request 'ordering' '-valid_until' %}"><i class="fa fa-caret-down"></i></a>
+              <a href="?{% url_replace request 'ordering' 'valid_until' %}"><i class="fa fa-caret-up"></i></a>
+            </th>
+            <th>{% trans "Created by" %}</th>
+            <th>
+              {% trans "Last updated" %}
+              <a href="?{% url_replace request 'ordering' '-updated_at' %}"><i class="fa fa-caret-down"></i></a>
+              <a href="?{% url_replace request 'ordering' 'updated_at' %}"><i class="fa fa-caret-up"></i></a>
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in vouchers %}
+            <tr>
+              <td>
+                {% with cs=v.computed_status %}
+                  {% if cs == 'active' %}
+                    <span class="label label-success">{% trans "Active" %}</span>
+                  {% elif cs == 'disabled' %}
+                    <span class="label label-default">{% trans "Disabled" %}</span>
+                  {% elif cs == 'expired' %}
+                    <span class="label label-danger">{% trans "Expired" %}</span>
+                  {% elif cs == 'used_up' %}
+                    <span class="label label-warning">{% trans "Used up" %}</span>
+                  {% elif cs == 'draft' %}
+                    <span class="label label-info">{% trans "Draft" %}</span>
+                  {% endif %}
+                {% endwith %}
+              </td>
+              <td>
+                <div class="pfv-code">
+                  <strong>
+                    <a href="{% url 'eventyay_admin:admin.voucher.detail' voucher=v.id %}">{{ v.code }}</a>
+                  </strong>
+                  <button class="pfv-code-copy btn btn-xs btn-default" title="{% trans 'Copy' %}" data-code="{{ v.code }}">
+                    <i class="fa fa-clipboard"></i>
+                  </button>
+                </div>
+              </td>
+              <td>{{ v.get_effect_display }}</td>
+              <td>{{ v.get_scope_display }}</td>
+              <td>{{ v.redeemed }} / {{ v.max_usages }}</td>
+              <td>{{ v.get_budget_display }}</td>
+              <td {% if v.computed_status == 'expired' %}class="pfv-expired-date"{% endif %}>
+                {% if v.valid_until %}
+                  {{ v.valid_until|date:"d M Y, H:i" }} UTC
+                {% else %}
+                  &mdash;
+                {% endif %}
+              </td>
+              <td>{{ v.created_by }}</td>
+              <td>{{ v.updated_at|date:"d M Y, H:i" }}</td>
+              <td class="text-right">
+                <a href="{% url 'eventyay_admin:admin.voucher.detail' voucher=v.id %}" class="btn btn-default btn-sm" title="{% trans 'View details' %}" aria-label="{% trans 'View details' %}">
+                  <i class="fa fa-eye"></i>
+                </a>
+                <a href="{% url 'eventyay_admin:admin.voucher' voucher=v.id %}" class="btn btn-default btn-sm" title="{% trans 'Edit' %}" aria-label="{% trans 'Edit' %}">
+                  <i class="fa fa-pencil"></i>
+                </a>
+                <form method="post" action="{% url 'eventyay_admin:admin.voucher.duplicate' voucher=v.id %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-default btn-sm" title="{% trans 'Duplicate' %}" aria-label="{% trans 'Duplicate' %}">
+                    <i class="fa fa-copy"></i>
+                  </button>
+                </form>
+                {% if v.computed_status == 'active' %}
+                  <a href="{% url 'eventyay_admin:admin.voucher.disable' voucher=v.id %}" class="btn btn-default btn-sm" title="{% trans 'Disable' %}" aria-label="{% trans 'Disable' %}">
+                    <i class="fa fa-ban text-warning"></i>
+                  </a>
+                {% endif %}
+                {% if v.allow_delete %}
+                  <a href="{% url 'eventyay_admin:admin.voucher.delete' voucher=v.id %}" class="btn btn-default btn-sm" title="{% trans 'Delete draft' %}" aria-label="{% trans 'Delete draft' %}">
+                    <i class="fa fa-trash text-danger"></i>
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="10" class="text-center text-muted" style="padding: 30px;">
+                {% trans "No vouchers found matching your filters." %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% include "pretixcontrol/pagination.html" %}
+  {% endif %}
 {% endblock %}

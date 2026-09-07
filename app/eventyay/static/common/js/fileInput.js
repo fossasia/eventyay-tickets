@@ -6,6 +6,9 @@ const IS_DISABLED_CLASS = 'file-input-is-disabled'
 let fileInputIdCounter = 0
 
 const updateFileInput = (input) => {
+    const previewRevision =Number(input.dataset.eventyayPreviewRevision || 0) + 1
+    input.dataset.eventyayPreviewRevision = previewRevision
+
     const hasSelection = Boolean(input.files?.length)
     const hasError = input.getAttribute('aria-invalid') === 'true' || input.classList.contains('is-invalid')
     const wrapper = input.closest('.eventyay-file-pick-wrapper')
@@ -20,7 +23,46 @@ const updateFileInput = (input) => {
             ? Array.from(input.files).map((file) => file.name).join(', ')
             : ''
     }
+    const imagePreview = input
+        .closest('.eventyay-file-pick-wrapper')
+        ?.parentElement
+        ?.querySelector('.form-image-preview')
+
+    if (!imagePreview) return
+
+    const image = imagePreview.querySelector('img')
+    const imageLink = imagePreview.querySelector('a')
+
+    if (hasSelection && input.files[0].type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            if (Number(input.dataset.eventyayPreviewRevision) !== previewRevision) return
+
+            image.src = event.target.result
+            image.classList.remove('d-none')
+            imageLink.href = event.target.result
+            imageLink.dataset.lightbox = event.target.result
+            imagePreview.classList.remove('d-none')
+        }
+        reader.readAsDataURL(input.files[0])
+    } else {
+        const initialSrc = image.dataset.initialSrc
+
+        if (initialSrc) {
+            image.src = initialSrc
+            image.classList.remove('d-none')
+            imageLink.href = initialSrc
+            imageLink.dataset.lightbox = initialSrc
+            imagePreview.classList.remove('d-none')
+        } else {
+            image.removeAttribute("src")
+            image.classList.add("d-none")
+            imageLink.removeAttribute("href")
+            imagePreview.classList.add("d-none")
+        }
+    }
 }
+
 
 const wrapFileInput = (input) => {
     if (input.closest('.avatar-upload')) return
@@ -60,6 +102,32 @@ const wrapFileInput = (input) => {
 
     input.addEventListener('change', () => updateFileInput(input))
     input.addEventListener('invalid', () => updateFileInput(input))
+
+    const fieldContainer = input.closest('.eventyay-file-pick-wrapper')?.parentElement
+
+    const clearCheckbox = fieldContainer?.querySelector('.form-image-clear input[type="checkbox"]')
+
+    if (clearCheckbox) {
+        clearCheckbox.addEventListener('change', () => {
+            const imagePreview = fieldContainer.querySelector('.form-image-preview')
+            if (!imagePreview) return
+
+            const image = imagePreview.querySelector('img')
+            const imageLink = imagePreview.querySelector('a')
+
+            if (clearCheckbox.checked) {
+                input.dataset.eventyayPreviewRevision =
+                    Number(input.dataset.eventyayPreviewRevision || 0) + 1
+                image.removeAttribute('src')
+                image.classList.add('d-none')
+                imageLink.removeAttribute('href')
+                imagePreview.classList.add('d-none')
+            } else {
+                updateFileInput(input)
+            }
+        })
+    }
+
     updateFileInput(input)
 }
 

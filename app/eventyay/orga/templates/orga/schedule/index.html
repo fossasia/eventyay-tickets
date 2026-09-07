@@ -18,7 +18,8 @@
     <li class="nav-item">
         <a class="nav-link text-danger">
             <i class="fa fa-clock-o"></i>
-            {% phrase "phrases.schedule.timezone_hint" tz=request.event.timezone %}
+            <span class="d-none d-md-inline">{% phrase "phrases.schedule.timezone_hint" tz=request.event.timezone %}</span>
+            <span class="d-inline d-md-none">{{ request.event.timezone }}</span>
         </a>
     </li>
 {% endblock navbar_right %}

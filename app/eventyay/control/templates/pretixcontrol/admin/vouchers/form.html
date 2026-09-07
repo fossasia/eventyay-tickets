@@ -1,0 +1,155 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'pretixcontrol/css/platform-fee-vouchers.css' %}">
+  <script type="module" src="{% static 'pretixcontrol/js/ui/platform-fee-vouchers.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+  {% if creating %}
+    {% trans "Create platform fee voucher" %}
+  {% else %}
+    {% trans "Edit platform fee voucher" %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="pfv-breadcrumb">
+    <a href="{% url 'eventyay_admin:admin.vouchers' %}">{% trans "Event vouchers" %}</a> &gt; 
+    {% if creating %}
+      {% trans "Create" %}
+    {% else %}
+      {% trans "Edit" %}
+    {% endif %}
+  </div>
+
+  <div class="pfv-header">
+    <h1>
+      {% if creating %}
+        {% trans "Create platform fee voucher" %}
+      {% else %}
+        {% trans "Edit platform fee voucher" %}
+      {% endif %}
+    </h1>
+  </div>
+  <p class="pfv-subtitle">
+    {% trans "Configure a platform fee waiver or discount." %}
+  </p>
+
+  <form method="post" class="form-horizontal">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-lg-8">
+        
+        <div class="pfv-form-section">
+          <div class="pfv-form-section-title">1. {% trans "Voucher Details" %}</div>
+          {% bootstrap_field form.code layout='horizontal' %}
+          {% bootstrap_field form.status layout='horizontal' %}
+          {% bootstrap_field form.valid_until layout='horizontal' %}
+          {% bootstrap_field form.comment layout='horizontal' %}
+        </div>
+
+        <div class="pfv-form-section">
+          <div class="pfv-form-section-title">2. {% trans "Fee Waiver" %}</div>
+          {% bootstrap_field form.waiver_type layout='horizontal' %}
+          <div id="waiver-value-container" style="display:none;">
+            {% bootstrap_field form.value layout='horizontal' addon_after=currency %}
+          </div>
+          {% bootstrap_field form.max_usages layout='horizontal' %}
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="id_budget">{{ form.budget.label }}</label>
+            <div class="col-md-9">
+              <div class="input-group">
+                {{ form.budget }}
+                <span class="input-group-addon">{{ currency }}</span>
+              </div>
+              {% if form.budget.help_text %}
+                <div class="help-block">{{ form.budget.help_text }}</div>
+              {% endif %}
+              {{ form.budget.errors }}
+            </div>
+          </div>
+        </div>
+
+        <div class="pfv-form-section">
+          <div class="pfv-form-section-title">3. {% trans "Scope" %}</div>
+          {% bootstrap_field form.scope_type layout='horizontal' %}
+          <div id="scope-events" style="display:none;">
+            {% bootstrap_field form.event_effect layout='horizontal' %}
+          </div>
+          <div id="scope-organisers" style="display:none;">
+            {% bootstrap_field form.organizer_effect layout='horizontal' %}
+          </div>
+        </div>
+
+        <div class="pfv-form-section">
+          <div class="pfv-form-section-title">4. {% trans "Additional Settings" %}</div>
+          {% bootstrap_field form.allow_partial_usage layout='horizontal' %}
+        </div>
+
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="pfv-summary-panel" id="summary-panel">
+          <h4>{% trans "Voucher Summary" %}</h4>
+          <div class="pfv-summary-item">
+            <span>{% trans "Code" %}</span>
+            <strong id="summary-code">{{ voucher.code|default:"..." }}</strong>
+          </div>
+          <div class="pfv-summary-item">
+            <span>{% trans "Status" %}</span>
+            <strong id="summary-status">{{ voucher.get_status_display|default:"..." }}</strong>
+          </div>
+          <div class="pfv-summary-item">
+            <span>{% trans "Waiver" %}</span>
+            <strong id="summary-waiver">...</strong>
+          </div>
+          <div class="pfv-info-notice" style="margin-top: 20px; font-size: 13px; padding: 10px;">
+            <i class="fa fa-info-circle"></i>
+            {% trans "Platform fee vouchers are automatically applied when billing organizers." %}
+          </div>
+        </div>
+
+        <div class="pfv-help-panel">
+          <h4>{% trans "How platform fee vouchers work" %}</h4>
+          <div class="pfv-help-item">
+            <i class="fa fa-check text-success"></i>
+            <div>{% trans "Applied automatically during billing" %}</div>
+          </div>
+          <div class="pfv-help-item">
+            <i class="fa fa-check text-success"></i>
+            <div>{% trans "Only applies to the platform fee amount" %}</div>
+          </div>
+          <div class="pfv-help-item">
+            <i class="fa fa-check text-success"></i>
+            <div>{% trans "Can be restricted to specific events" %}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pfv-form-actions form-submit">
+      <a href="{% url 'eventyay_admin:admin.vouchers' %}" class="btn btn-default">
+        {% trans "Cancel" %}
+      </a>
+      {% if creating %}
+        <button type="submit" class="btn btn-primary btn-save">
+          {% trans "Save voucher" %}
+        </button>
+      {% else %}
+        {% if voucher.computed_status == 'active' %}
+          <a href="{% url 'eventyay_admin:admin.voucher.disable' voucher=voucher.id %}" class="btn btn-default text-danger">
+            {% trans "Disable" %}
+          </a>
+        {% endif %}
+        <button type="submit" class="btn btn-primary btn-save">
+          {% trans "Save changes" %}
+        </button>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}

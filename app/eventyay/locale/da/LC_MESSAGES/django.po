@@ -4,8 +4,8 @@ msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:15+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 09:19+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Danish <https://hosted.weblate.org/projects/eventyay/eventyay/"
 "da/>\n"
 "Language: da\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -250,8 +250,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"For at se planen skal JavaScript aktiveres, eller gå til <a "
-"href=\"%(href)s\">her</a> for NoJS-planen."
+"For at se planen skal JavaScript aktiveres, eller gå til <a href=\"%(href)"
+"s\">her</a> for NoJS-planen."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -473,8 +473,8 @@ msgid ""
 "href=\"%(href)s\">here</a>."
 msgstr ""
 "For at se planen med fuld funktionalitet, som konvertering af tidszone og "
-"personlig planlægning, skal JavaScript aktiveres og gå til <a "
-"href=\"%(href)s\">her</a>."
+"personlig planlægning, skal JavaScript aktiveres og gå til <a href=\"%(href)"
+"s\">her</a>."
 
 #: eventyay/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
@@ -1377,8 +1377,7 @@ msgstr ""
 #: eventyay/api/serializers/product.py:436
 #: eventyay/control/forms/product.py:135
 msgid "Question cannot depend on a question asked during check-in."
-msgstr ""
-"Spørgsmål kan ikke afhænge af et spørgsmål, der stilles under check-in."
+msgstr "Spørgsmål kan ikke afhænge af et spørgsmål, der stilles under check-in."
 
 #: eventyay/api/serializers/product.py:441
 #: eventyay/control/forms/product.py:140 eventyay/orga/forms/cfp.py:527
@@ -6169,8 +6168,7 @@ msgstr "Gyldig indtil"
 
 #: eventyay/base/models/access_code.py:49
 msgid "You can set or change this date later to invalidate the access code."
-msgstr ""
-"Datoen kan angives eller ændres senere for at ugyldiggøre adgangskoden."
+msgstr "Datoen kan angives eller ændres senere for at ugyldiggøre adgangskoden."
 
 #: eventyay/base/models/access_code.py:54
 msgid "Maximum uses"
@@ -7393,8 +7391,7 @@ msgstr "Svar til"
 msgid ""
 "Change the Reply-To address if you do not want to use the default organiser "
 "address"
-msgstr ""
-"Skift Svar til-adressen, hvis standardarrangøradressen ikke skal bruges"
+msgstr "Skift Svar til-adressen, hvis standardarrangøradressen ikke skal bruges"
 
 #: eventyay/base/models/mail.py:124 eventyay/base/models/mail.py:379
 #: eventyay/plugins/sendmail/forms.py:497
@@ -9988,8 +9985,7 @@ msgstr "Noter"
 
 #: eventyay/base/models/submission.py:237
 msgid "These notes are meant for the organiser and won’t be made public."
-msgstr ""
-"Disse noter er beregnet til arrangøren og bliver ikke gjort offentlige."
+msgstr "Disse noter er beregnet til arrangøren og bliver ikke gjort offentlige."
 
 #: eventyay/base/models/submission.py:242 eventyay/orga/forms/importers.py:307
 #: eventyay/orga/templates/orga/submission/content.html:144
@@ -11689,8 +11685,8 @@ msgid ""
 "We removed %(product)s from your cart as you can not buy less than %(min)s "
 "items of it."
 msgstr ""
-"Vi har fjernet %(product)s fra din kurv idet du ikke kan købe færre end "
-"%(min)s af det."
+"Vi har fjernet %(product)s fra din kurv idet du ikke kan købe færre end %"
+"(min)s af det."
 
 #: eventyay/base/services/cart.py:82 eventyay/base/services/orders.py:118
 msgid "The presale period for this event has not yet started."
@@ -11842,8 +11838,8 @@ msgid ""
 "You can select at most %(max)s add-ons from the category %(cat)s for the "
 "product %(base)s."
 msgstr ""
-"Du kan højst vælge %(max)s tilføjelser fra kategorien %(cat)s for produktet "
-"%(base)s."
+"Du kan højst vælge %(max)s tilføjelser fra kategorien %(cat)s for produktet %"
+"(base)s."
 
 #: eventyay/base/services/cart.py:130
 #, python-format
@@ -12132,8 +12128,8 @@ msgid ""
 "Error while importing value \"{value}\" for column \"{column}\" in line "
 "\"{line}\": {message}"
 msgstr ""
-"Fejl ved import af værdien „{value}“ for kolonnen „{column}“ på linje "
-"„{line}“: {message}"
+"Fejl ved import af værdien „{value}“ for kolonnen „{column}“ på linje „{line}"
+"“: {message}"
 
 #: eventyay/base/services/orderimport.py:128
 #, fuzzy, python-brace-format
@@ -13592,8 +13588,8 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
 msgstr ""
-"Du, %(name)s, er blevet inviteret til at være oplægsholder for sessionen "
-"„%(talk)s“. Accepteres invitationen?"
+"Du, %(name)s, er blevet inviteret til at være oplægsholder for sessionen „%"
+"(talk)s“. Accepteres invitationen?"
 
 #: eventyay/cfp/templates/cfp/event/invitation.html:35
 msgid "Abstract:"
@@ -13818,8 +13814,7 @@ msgstr ""
 #: eventyay/cfp/templates/cfp/event/user_submission_discard.html:16
 msgid ""
 "Do you really want to discard your draft proposal? All data will be lost."
-msgstr ""
-"Vil kladdeudkastet til forslaget virkelig kasseres? Alle data går tabt."
+msgstr "Vil kladdeudkastet til forslaget virkelig kasseres? Alle data går tabt."
 
 #: eventyay/cfp/templates/cfp/event/user_submission_edit.html:34
 msgid ""
@@ -15245,8 +15240,8 @@ msgid ""
 "The link you clicked on wants to redirect you to a destination on the "
 "website %(host)s."
 msgstr ""
-"Linket, der blev klikket på, vil omdirigere til en destination på webstedet "
-"%(host)s."
+"Linket, der blev klikket på, vil omdirigere til en destination på webstedet %"
+"(host)s."
 
 #: eventyay/common/templates/common/redirect.html:18
 msgid "Please only proceed if you trust this website to be safe."
@@ -17981,8 +17976,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"Den angivne nøgle ser ikke gyldig ud. Den skal starte med en af følgende: "
-"%(prefixes)s"
+"Den angivne nøgle ser ikke gyldig ud. Den skal starte med en af følgende: %"
+"(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -19101,8 +19096,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Position #{posid}: {old_product} ({old_price}) ændret til {new_product} "
-"({new_price})."
+"Position #{posid}: {old_product} ({old_price}) ændret til {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19115,14 +19110,13 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"Position #{posid}: Eventdato \"{old_event}\" ({old_price}) er ændret til "
-"\"{new_event}\" ({new_price})."
+"Position #{posid}: Eventdato \"{old_event}\" ({old_price}) er ændret til \""
+"{new_event}\" ({new_price})."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
 msgid "Price of position #{posid} changed from {old_price} to {new_price}."
-msgstr ""
-"Prisen for position #{posid} er ændret fra {old_price} til {new_price}."
+msgstr "Prisen for position #{posid} er ændret fra {old_price} til {new_price}."
 
 #: eventyay/control/logdisplay.py:110
 #, python-brace-format
@@ -19133,8 +19127,7 @@ msgstr ""
 #: eventyay/control/logdisplay.py:120
 #, python-brace-format
 msgid "Tax rule of fee #{fee} changed from {old_rule} to {new_rule}."
-msgstr ""
-"Afgiftsreglen for gebyr #{fee} er ændret fra {old_rule} til {new_rule}."
+msgstr "Afgiftsreglen for gebyr #{fee} er ændret fra {old_rule} til {new_rule}."
 
 #: eventyay/control/logdisplay.py:127
 msgid "A fee has been added"
@@ -19173,8 +19166,8 @@ msgid ""
 "Position #{posid} created: {product} ({price}) as an add-on to position "
 "#{addon_to}."
 msgstr ""
-"Position #{posid} oprettet: {product} ({price}) som et tilkøb til position "
-"#{addon_to}."
+"Position #{posid} oprettet: {product} ({price}) som et tilkøb til position #"
+"{addon_to}."
 
 #: eventyay/control/logdisplay.py:194
 #, python-brace-format
@@ -19220,8 +19213,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"Scanning af tilbagekaldt kode \"{barcode}…\" kl. {datetime} for liste "
-"\"{list}\", type \"{type}\", blev uploadet."
+"Scanning af tilbagekaldt kode \"{barcode}…\" kl. {datetime} for liste \""
+"{list}\", type \"{type}\", blev uploadet."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19229,8 +19222,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"Scanning af tilbagekaldt kode \"{barcode}\" for liste \"{list}\", type "
-"\"{type}\", blev uploadet."
+"Scanning af tilbagekaldt kode \"{barcode}\" for liste \"{list}\", type \""
+"{type}\", blev uploadet."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -19681,8 +19674,7 @@ msgstr ""
 msgid ""
 "The two-factor authentication device \"{name}\" has been removed from your "
 "account."
-msgstr ""
-"Tofaktorgodkendelsesenheden \"{name}\" er blevet fjernet fra din konto."
+msgstr "Tofaktorgodkendelsesenheden \"{name}\" er blevet fjernet fra din konto."
 
 #: eventyay/control/logdisplay.py:613
 msgid "Notifications have been enabled."
@@ -20111,22 +20103,21 @@ msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
 msgstr ""
-"Position #{posid} er blevet checket ind manuelt kl. {datetime} på listen "
-"\"{list}\"."
+"Position #{posid} er blevet checket ind manuelt kl. {datetime} på listen \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
 msgid ""
 "Position #{posid} has been checked in again at {datetime} on list \"{list}\"."
 msgstr ""
-"Position #{posid} er blevet checket ind igen kl. {datetime} på listen "
-"\"{list}\"."
+"Position #{posid} er blevet checket ind igen kl. {datetime} på listen \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
 msgid "The check-in of position #{posid} on list \"{list}\" has been reverted."
-msgstr ""
-"Check-in for position #{posid} på listen \"{list}\" er blevet fortrudt."
+msgstr "Check-in for position #{posid} på listen \"{list}\" er blevet fortrudt."
 
 #: eventyay/control/logdisplay.py:792
 #, python-brace-format
@@ -20814,8 +20805,7 @@ msgstr "Opdater bruger"
 
 #: eventyay/control/templates/pretixcontrol/admin/attendees/index.html:20
 msgid "This is a list of all paid attendees and their check-in status."
-msgstr ""
-"Dette er en liste over alle betalte deltagere og deres check-in-status."
+msgstr "Dette er en liste over alle betalte deltagere og deres check-in-status."
 
 #: eventyay/control/templates/pretixcontrol/admin/attendees/index.html:27
 #, fuzzy
@@ -22734,8 +22724,7 @@ msgstr ""
 msgid ""
 "This will delete the information of <strong>%(num)s</strong> check-ins as "
 "well."
-msgstr ""
-"Dette vil også slette oplysninger om <strong>%(num)s</strong> tjek-ind."
+msgstr "Dette vil også slette oplysninger om <strong>%(num)s</strong> tjek-ind."
 
 #: eventyay/control/templates/pretixcontrol/checkin/list_edit.html:10
 #: eventyay/control/templates/pretixcontrol/checkin/list_edit.html:17
@@ -23210,8 +23199,8 @@ msgid ""
 "To confirm you really want this, please type out the event's name "
 "(\"%(name)s\") here:"
 msgstr ""
-"For at bekræfte at dette virkelig ønskes, skal begivenhedens korte navn "
-"(\"%(slug)s\") indtastes her:"
+"For at bekræfte at dette virkelig ønskes, skal begivenhedens korte navn (\"%"
+"(slug)s\") indtastes her:"
 
 #: eventyay/control/templates/pretixcontrol/event/delete.html:36
 msgid "Your event can not be deleted as it already contains orders."
@@ -23633,8 +23622,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Der er ingen tilgængelige betalingsudbydere. Gå til <a "
-"%(plugin_settings_href)s>pluginindstillinger</a> og aktivér et eller flere "
+"Der er ingen tilgængelige betalingsudbydere. Gå til <a %"
+"(plugin_settings_href)s>pluginindstillinger</a> og aktivér et eller flere "
 "betalingsplugins."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -23999,10 +23988,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Disse indstillinger er beregnet til avancerede brugere. Se <a "
-"href=\"%(docs)s\">dokumentationen</a> for flere oplysninger. Bemærk, at vi "
-"ikke er ansvarlige for korrekt håndtering af moms i din billetshop. Kontakt "
-"en advokat eller skatterådgiver, hvis der er tvivl."
+"Disse indstillinger er beregnet til avancerede brugere. Se <a href=\"%(docs)"
+"s\">dokumentationen</a> for flere oplysninger. Bemærk, at vi ikke er "
+"ansvarlige for korrekt håndtering af moms i din billetshop. Kontakt en "
+"advokat eller skatterådgiver, hvis der er tvivl."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24077,9 +24066,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Der er ingen tilgængelige billetoutputs. Gå til <a "
-"%(plugin_settings_href)s>pluginindstillinger</a>, og aktivér et eller flere "
-"billetoutput-plugins."
+"Der er ingen tilgængelige billetoutputs. Gå til <a %(plugin_settings_href)s>"
+"pluginindstillinger</a>, og aktivér et eller flere billetoutput-plugins."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -24238,8 +24226,7 @@ msgstr "Stripe — arrangørfakturering"
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:25
 msgid "This configuration is used for organizer billing and platform fees."
-msgstr ""
-"Denne konfiguration bruges til arrangørfakturering og platformsgebyrer."
+msgstr "Denne konfiguration bruges til arrangørfakturering og platformsgebyrer."
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:29
 #: eventyay/control/templates/pretixcontrol/global_settings.html:80
@@ -24485,10 +24472,10 @@ msgid ""
 "except if the add-on products or bundled products represent additional "
 "people (e.g. group bundles)."
 msgstr ""
-"Denne indstilling bør vælges for det meste af det, der kan kaldes en "
-"„billet“. For produkttilføjelser eller pakker bør dette vælges på "
-"hovedbilletten, medmindre tilføjelsesprodukterne eller pakkede produkter "
-"repræsenterer ekstra personer (f.eks. gruppepakker)."
+"Denne indstilling bør vælges for det meste af det, der kan kaldes en „billet"
+"“. For produkttilføjelser eller pakker bør dette vælges på hovedbilletten, "
+"medmindre tilføjelsesprodukterne eller pakkede produkter repræsenterer "
+"ekstra personer (f.eks. gruppepakker)."
 
 #: eventyay/control/templates/pretixcontrol/item/create.html:44
 #: eventyay/control/templates/pretixcontrol/item/index.html:51
@@ -24766,8 +24753,8 @@ msgid ""
 "All answers to the description given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Alle svar på beskrivelsen fra købere af følgende produkter vil gå "
-"<strong>tabt</strong>."
+"Alle svar på beskrivelsen fra købere af følgende produkter vil gå <strong>"
+"tabt</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:15
@@ -25114,8 +25101,8 @@ msgid ""
 "All answers to the question given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Alle svar på spørgsmålet fra købere af følgende produkter vil gå "
-"<strong>tabt</strong>."
+"Alle svar på spørgsmålet fra købere af følgende produkter vil gå <strong>"
+"tabt</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:15
@@ -26945,8 +26932,8 @@ msgid ""
 "To confirm you really want this, please type out the organizer's short name "
 "(\"%(slug)s\") here:"
 msgstr ""
-"For at bekræfte, at dette virkelig ønskes, skal arrangørens korte navn "
-"(\"%(slug)s\") indtastes her:"
+"For at bekræfte, at dette virkelig ønskes, skal arrangørens korte navn (\"%"
+"(slug)s\") indtastes her:"
 
 #: eventyay/control/templates/pretixcontrol/organizers/delete.html:40
 #, fuzzy
@@ -28141,8 +28128,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Der skal bekræftes, at det virkelig er den rette bruger. Godkend igen med "
-"\"%(login_provider)s\"."
+"Der skal bekræftes, at det virkelig er den rette bruger. Godkend igen med \"%"
+"(login_provider)s\"."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28313,8 +28300,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Er du sikker på at du vil slette ventelistepladsen <strong>%(entry)s</"
-"strong>?"
+"Er du sikker på at du vil slette ventelistepladsen <strong>%(entry)s</strong>"
+"?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -28381,8 +28368,8 @@ msgid ""
 "<strong>%(amount)s</strong>."
 msgstr ""
 "Hvis du kan skabe kapacitet ved dit arrangement til alle personer på "
-"ventelisten, kan du potentielt sælge billetter for yderligere "
-"<strong>%(amount)s</strong>."
+"ventelisten, kan du potentielt sælge billetter for yderligere <strong>%"
+"(amount)s</strong>."
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:107
 msgid "Successfully redeemed"
@@ -31054,9 +31041,9 @@ msgid ""
 "you can <a %(login_href)s>log in</a> first and then click this link again to "
 "accept the invitation with your existing account."
 msgstr ""
-"Hvis du allerede har en konto på dette site, så kan du <a "
-"%(login_href)s>logge ind</a> først og så igen klikke på dette link for at "
-"acceptere invitationen med din eksisterende konto."
+"Hvis du allerede har en konto på dette site, så kan du <a %(login_href)s>"
+"logge ind</a> først og så igen klikke på dette link for at acceptere "
+"invitationen med din eksisterende konto."
 
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:17
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:45
@@ -32809,8 +32796,7 @@ msgstr ""
 
 #: eventyay/eventyay_common/views/auth.py:331
 msgid "We were unable to find the user you requested a new password for."
-msgstr ""
-"Vi kunne ikke finde brugeren som du efterspurgte en ny adgangskode til."
+msgstr "Vi kunne ikke finde brugeren som du efterspurgte en ny adgangskode til."
 
 #: eventyay/eventyay_common/views/auth.py:364
 msgid "You can now login using your new password."
@@ -32851,8 +32837,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Dette bekræftelseslink til e-mail er udløbet eller ugyldigt. "
-"%(email_action_link)s."
+"Dette bekræftelseslink til e-mail er udløbet eller ugyldigt. %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33645,8 +33631,8 @@ msgid ""
 msgstr ""
 "Hej!\n"
 "\n"
-"Du er blevet tilføjet til et forslag til {event_name} med titlen "
-"“{proposal_title}”.\n"
+"Du er blevet tilføjet til et forslag til {event_name} med titlen “"
+"{proposal_title}”.\n"
 "Der er oprettet en konto – følg dette link for at angive adgangskode til "
 "kontoen.\n"
 "\n"
@@ -33672,8 +33658,8 @@ msgid ""
 msgstr ""
 "Hej!\n"
 "\n"
-"Du er blevet tilføjet til et forslag til {event_name} med titlen "
-"“{proposal_title}”.\n"
+"Du er blevet tilføjet til et forslag til {event_name} med titlen “"
+"{proposal_title}”.\n"
 "Følg dette link for at redigere brugerprofilen og se status for forslaget:\n"
 "\n"
 "{proposal_url}\n"
@@ -36220,8 +36206,7 @@ msgstr "Anvend afventende ændringer"
 #: eventyay/orga/templates/orga/speaker/list.html:41
 #, python-format
 msgid "List filtered by responses to custom field “%(question)s”."
-msgstr ""
-"Liste filtreret efter svar på det brugerdefinerede felt „%(question)s“."
+msgstr "Liste filtreret efter svar på det brugerdefinerede felt „%(question)s“."
 
 #: eventyay/orga/templates/orga/invitation.html:4
 msgid "Invitation"
@@ -38421,8 +38406,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
-msgstr ""
-"Den aktuelle eksport kunne ikke findes. Prøv at gendanne den. ({error})"
+msgstr "Den aktuelle eksport kunne ikke findes. Prøv at gendanne den. ({error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"

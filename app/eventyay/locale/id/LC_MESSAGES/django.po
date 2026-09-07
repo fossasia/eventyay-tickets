@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-04-18 13:10+0000\n"
-"Last-Translator: Mujadidi <mujadidi.bjm@gmail.com>\n"
+"PO-Revision-Date: 2026-08-27 08:29+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/id/>\n"
 "Language: id\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -255,8 +255,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Untuk melihat jadwal kami, silakan izinkan JavaScript atau buka <a "
-"href=\"%(href)s\">di sini</a> untuk melihat jadwal NoJS."
+"Untuk melihat jadwal kami, silakan izinkan JavaScript atau buka <a href=\"%"
+"(href)s\">di sini</a> untuk melihat jadwal NoJS."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -479,8 +479,8 @@ msgid ""
 "href=\"%(href)s\">here</a>."
 msgstr ""
 "Untuk melihat jadwal dengan fitur lengkap kami, seperti konversi zona waktu "
-"dan penjadwalan pribadi, silakan aktifkan JavaScript dan buka <a "
-"href=\"%(href)s\">di sini</a>."
+"dan penjadwalan pribadi, silakan aktifkan JavaScript dan buka <a href=\"%"
+"(href)s\">di sini</a>."
 
 #: eventyay/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
@@ -2157,8 +2157,7 @@ msgstr "Faktur tidak akan pernah dibuat secara otomatis untuk pesanan gratis."
 
 #: eventyay/base/configurations/default_setting.py:757
 msgid "Automatically cancel and reissue invoice on address changes"
-msgstr ""
-"Batalkan dan terbitkan ulang faktur secara otomatis saat alamat berubah"
+msgstr "Batalkan dan terbitkan ulang faktur secara otomatis saat alamat berubah"
 
 #: eventyay/base/configurations/default_setting.py:759
 msgid ""
@@ -8618,8 +8617,7 @@ msgstr "Tampilkan daftar tunggu untuk tiket ini"
 
 #: eventyay/base/models/product.py:425
 msgid "This will only work if waiting lists are enabled for this event."
-msgstr ""
-"Ini hanya akan berfungsi jika daftar tunggu diaktifkan untuk acara ini."
+msgstr "Ini hanya akan berfungsi jika daftar tunggu diaktifkan untuk acara ini."
 
 #: eventyay/base/models/product.py:430
 msgid "Publicly show how many tickets are still available."
@@ -9281,8 +9279,7 @@ msgstr "Kuota"
 #: eventyay/base/models/product.py:1790
 msgid ""
 "All variations must belong to an product contained in the products list."
-msgstr ""
-"Semua variasi harus terkait dengan produk yang ada dalam daftar produk."
+msgstr "Semua variasi harus terkait dengan produk yang ada dalam daftar produk."
 
 #: eventyay/base/models/product.py:1800
 msgid ""
@@ -11098,8 +11095,7 @@ msgstr "Pembayaran untuk faktur ini sudah diterima."
 
 #: eventyay/base/payment.py:846
 msgid "Automatic refunds are not supported by this payment provider."
-msgstr ""
-"Pengembalian dana otomatis tidak didukung oleh penyedia pembayaran ini."
+msgstr "Pengembalian dana otomatis tidak didukung oleh penyedia pembayaran ini."
 
 #: eventyay/base/payment.py:917
 msgid ""
@@ -11957,8 +11953,8 @@ msgid ""
 "You can select every add-ons from the category %(cat)s for the product "
 "%(base)s at most once."
 msgstr ""
-"Anda hanya dapat memilih setiap add-on dari kategori %(cat)s untuk produk "
-"%(base)s paling satu kali."
+"Anda hanya dapat memilih setiap add-on dari kategori %(cat)s untuk produk %"
+"(base)s paling satu kali."
 
 #: eventyay/base/services/cart.py:135
 msgid ""
@@ -13665,8 +13661,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Anda dapat mengirim proposal hingga %(deadline)s (%(timezone)s), "
-"%(until_string)s dari sekarang."
+"Anda dapat mengirim proposal hingga %(deadline)s (%(timezone)s), %"
+"(until_string)s dari sekarang."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -16149,8 +16145,7 @@ msgstr "Berlaku pada penyelenggara"
 
 #: eventyay/control/forms/admin/vouchers.py:25
 msgid "The voucher will be valid for all events under the selected organizers."
-msgstr ""
-"Voucher akan berlaku untuk semua acara dari penyelenggara yang dipilih."
+msgstr "Voucher akan berlaku untuk semua acara dari penyelenggara yang dipilih."
 
 #: eventyay/control/forms/checkin.py:74 eventyay/control/forms/filter.py:365
 #: eventyay/control/forms/filter.py:408 eventyay/control/forms/filter.py:1692
@@ -18002,8 +17997,7 @@ msgstr ""
 
 #: eventyay/control/forms/global_settings.py:848
 msgid "This field is required when using SendGrid as email vendor."
-msgstr ""
-"Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
+msgstr "Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
 
 #: eventyay/control/forms/global_settings.py:851
 #: eventyay/control/forms/global_settings.py:859
@@ -18099,8 +18093,8 @@ msgstr "Kunci Stripe tidak boleh kosong."
 msgid ""
 "The provided key does not look valid. It should start with \"%(prefix)s\"."
 msgstr ""
-"Kunci yang diberikan tampaknya tidak valid. Harus diawali dengan "
-"\"%(prefix)s\"."
+"Kunci yang diberikan tampaknya tidak valid. Harus diawali dengan \"%(prefix)"
+"s\"."
 
 #: eventyay/control/forms/global_settings.py:988
 #, python-format
@@ -19108,8 +19102,8 @@ msgid ""
 msgstr ""
 "Halo,\n"
 "\n"
-"dengan email ini, kami mengirimkan satu atau beberapa voucher untuk "
-"{event}:\n"
+"dengan email ini, kami mengirimkan satu atau beberapa voucher untuk {event}"
+":\n"
 "\n"
 "{voucher_list}\n"
 "\n"
@@ -19241,8 +19235,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Posisi #{posid}: {old_product} ({old_price}) diubah menjadi {new_product} "
-"({new_price})."
+"Posisi #{posid}: {old_product} ({old_price}) diubah menjadi {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19311,8 +19305,8 @@ msgid ""
 "Position #{posid} created: {product} ({price}) as an add-on to position "
 "#{addon_to}."
 msgstr ""
-"Posisi #{posid} dibuat: {product} ({price}) sebagai tambahan untuk posisi "
-"#{addon_to}."
+"Posisi #{posid} dibuat: {product} ({price}) sebagai tambahan untuk posisi #"
+"{addon_to}."
 
 #: eventyay/control/logdisplay.py:194
 #, python-brace-format
@@ -19343,8 +19337,8 @@ msgid ""
 "Unknown scan of code \"{barcode}…\" at {datetime} for list \"{list}\", type "
 "\"{type}\"."
 msgstr ""
-"Pemindaian kode \"{barcode}…\" tidak dikenal di {datetime} untuk daftar "
-"\"{list}\", tipe \"{type}\"."
+"Pemindaian kode \"{barcode}…\" tidak dikenal di {datetime} untuk daftar \""
+"{list}\", tipe \"{type}\"."
 
 #: eventyay/control/logdisplay.py:258
 #, python-brace-format
@@ -19360,8 +19354,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"Pemindaian kode yang dicabut \"{barcode}…\" di {datetime} untuk daftar "
-"\"{list}\", tipe \"{type}\" telah diunggah."
+"Pemindaian kode yang dicabut \"{barcode}…\" di {datetime} untuk daftar \""
+"{list}\", tipe \"{type}\" telah diunggah."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19369,8 +19363,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"Pemindaian kode yang dicabut \"{barcode}\" untuk daftar \"{list}\", tipe "
-"\"{type}\" telah diunggah."
+"Pemindaian kode yang dicabut \"{barcode}\" untuk daftar \"{list}\", tipe \""
+"{type}\" telah diunggah."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -19378,8 +19372,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"Pemindaian posisi #{posid} di {datetime} untuk daftar \"{list}\", tipe "
-"\"{type}\" ditolak, kode kesalahan \"{errorcode}\"."
+"Pemindaian posisi #{posid} di {datetime} untuk daftar \"{list}\", tipe \""
+"{type}\" ditolak, kode kesalahan \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -19552,8 +19546,7 @@ msgstr "Pesanan telah ditolak."
 #, python-brace-format
 msgid ""
 "The email address has been changed from \"{old_email}\" to \"{new_email}\"."
-msgstr ""
-"Alamat email telah diubah dari \"{old_email}\" menjadi \"{new_email}\"."
+msgstr "Alamat email telah diubah dari \"{old_email}\" menjadi \"{new_email}\"."
 
 #: eventyay/control/logdisplay.py:524
 msgid ""
@@ -21958,9 +21951,9 @@ msgid ""
 "strong> and set the DEBUG variable to False if this page is in any way "
 "reachable from the internet."
 msgstr ""
-"Anda menjalankan %(site_name)s dalam mode pengembangan. Silakan "
-"<strong>HENTIKAN</strong> dan atur variabel DEBUG ke False jika halaman ini "
-"dapat diakses dari internet."
+"Anda menjalankan %(site_name)s dalam mode pengembangan. Silakan <strong>"
+"HENTIKAN</strong> dan atur variabel DEBUG ke False jika halaman ini dapat "
+"diakses dari internet."
 
 #: eventyay/control/templates/pretixcontrol/admin/systemconfig.html:31
 msgid "Your eventyay version is:"
@@ -22525,8 +22518,7 @@ msgstr ""
 #: eventyay/control/templates/pretixcontrol/admin/vouchers/detail.html:9
 #: eventyay/control/templates/pretixcontrol/vouchers/detail.html:12
 msgid "This voucher already has been used. It is not recommended to modify it."
-msgstr ""
-"Voucher ini sudah pernah digunakan. Tidak disarankan untuk mengubahnya."
+msgstr "Voucher ini sudah pernah digunakan. Tidak disarankan untuk mengubahnya."
 
 #: eventyay/control/templates/pretixcontrol/admin/vouchers/detail.html:18
 #: eventyay/control/templates/pretixcontrol/vouchers/bulk.html:43
@@ -22687,8 +22679,7 @@ msgstr "berjalan dalam mode pengembangan"
 #: eventyay/orga/templates/orga/base.html:553
 #: eventyay/presale/templates/pretixpresale/waiting.html:24
 msgid "If this takes longer than a few minutes, please contact us."
-msgstr ""
-"Jika ini memakan waktu lebih dari beberapa menit, silakan hubungi kami."
+msgstr "Jika ini memakan waktu lebih dari beberapa menit, silakan hubungi kami."
 
 #: eventyay/control/templates/pretixcontrol/boxoffice/payment.html:4
 #: eventyay/control/templates/pretixcontrol/organizers/devices.html:48
@@ -23768,8 +23759,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Tidak ada penyedia pembayaran yang tersedia. Silakan buka <a "
-"%(plugin_settings_href)s>pengaturan plugin</a> dan aktifkan satu atau lebih "
+"Tidak ada penyedia pembayaran yang tersedia. Silakan buka <a %"
+"(plugin_settings_href)s>pengaturan plugin</a> dan aktifkan satu atau lebih "
 "plugin pembayaran."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -23825,8 +23816,7 @@ msgstr "Versi %(v)s"
 #: eventyay/eventyay_common/templates/eventyay_common/event/plugins.html:39
 msgid ""
 "This plugin needs to be enabled by a system administrator for your event."
-msgstr ""
-"Plugin ini perlu diaktifkan oleh administrator sistem untuk acara Anda."
+msgstr "Plugin ini perlu diaktifkan oleh administrator sistem untuk acara Anda."
 
 #: eventyay/control/templates/pretixcontrol/event/plugins.html:44
 #: eventyay/eventyay_common/templates/eventyay_common/event/plugins.html:44
@@ -24135,10 +24125,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Pengaturan ini ditujukan untuk pengguna lanjutan. Lihat <a "
-"href=\"%(docs)s\">dokumentasi</a> untuk informasi lebih lanjut. Perlu "
-"dicatat bahwa kami tidak bertanggung jawab atas penanganan pajak yang benar "
-"di toko tiket Anda. Jika ragu, hubungi pengacara atau konsultan pajak."
+"Pengaturan ini ditujukan untuk pengguna lanjutan. Lihat <a href=\"%(docs)s\">"
+"dokumentasi</a> untuk informasi lebih lanjut. Perlu dicatat bahwa kami tidak "
+"bertanggung jawab atas penanganan pajak yang benar di toko tiket Anda. Jika "
+"ragu, hubungi pengacara atau konsultan pajak."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24214,9 +24204,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Tidak ada output tiket yang tersedia. Silakan buka <a "
-"%(plugin_settings_href)s>pengaturan plugin</a> dan aktifkan satu atau lebih "
-"plugin output tiket."
+"Tidak ada output tiket yang tersedia. Silakan buka <a %(plugin_settings_href)"
+"s>pengaturan plugin</a> dan aktifkan satu atau lebih plugin output tiket."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -24399,8 +24388,7 @@ msgstr "Stripe — Pembayaran Tiket"
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:65
 msgid "This configuration is used for ticket payments via the Stripe plugin."
-msgstr ""
-"Konfigurasi ini digunakan untuk pembayaran tiket melalui plugin Stripe."
+msgstr "Konfigurasi ini digunakan untuk pembayaran tiket melalui plugin Stripe."
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:69
 msgid "Client Configuration"
@@ -25822,8 +25810,7 @@ msgstr "Ubah informasi lokal"
 
 #: eventyay/control/templates/pretixcontrol/order/change_locale.html:18
 msgid "This language will be used whenever emails are sent to the users."
-msgstr ""
-"Bahasa ini akan digunakan setiap kali email dikirimkan kepada pengguna."
+msgstr "Bahasa ini akan digunakan setiap kali email dikirimkan kepada pengguna."
 
 #: eventyay/control/templates/pretixcontrol/order/change_questions.html:9
 msgid "Change order information"
@@ -25853,8 +25840,7 @@ msgstr "Opsi Lencana"
 #: eventyay/presale/templates/pretixpresale/event/checkout_questions.html:180
 #: eventyay/presale/templates/pretixpresale/event/order_modify.html:79
 msgid "Please select all fields you'd like to appear on your event badge."
-msgstr ""
-"Silakan pilih semua kolom yang ingin anda tampilkan pada lencana acara."
+msgstr "Silakan pilih semua kolom yang ingin anda tampilkan pada lencana acara."
 
 #: eventyay/control/templates/pretixcontrol/order/delete.html:4
 #: eventyay/control/templates/pretixcontrol/order/delete.html:8
@@ -26438,8 +26424,7 @@ msgstr "Proses pengembalian dana"
 
 #: eventyay/control/templates/pretixcontrol/order/refund_done.html:20
 msgid "Do you really want to mark this refund as complete?"
-msgstr ""
-"Apakah Anda yakin ingin menandai pengembalian dana ini sebagai selesai?"
+msgstr "Apakah Anda yakin ingin menandai pengembalian dana ini sebagai selesai?"
 
 #: eventyay/control/templates/pretixcontrol/order/refund_done.html:29
 msgid "Mark as done"
@@ -27970,8 +27955,8 @@ msgid ""
 msgstr ""
 "Silakan periksa kembali bahwa Anda benar-benar yakin ingin menghapus "
 "kategori data yang dipilih dari acara <strong>%(event)s</strong>. Untuk "
-"memastikan Anda benar-benar menginginkannya, ketik nama singkat acara "
-"(\"%(slug)s\") di sini:"
+"memastikan Anda benar-benar menginginkannya, ketik nama singkat acara (\"%"
+"(slug)s\") di sini:"
 
 #: eventyay/control/templates/pretixcontrol/shredder/download.html:41
 msgid "Event short name"
@@ -28550,8 +28535,8 @@ msgid ""
 "<strong>%(amount)s</strong>."
 msgstr ""
 "Jika Anda bisa membuat cukup ruang di acara Anda untuk menampung semua orang "
-"di daftar tunggu, Anda bisa menjual tiket senilai tambahan "
-"<strong>%(amount)s</strong>."
+"di daftar tunggu, Anda bisa menjual tiket senilai tambahan <strong>%(amount)"
+"s</strong>."
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:107
 msgid "Successfully redeemed"
@@ -30803,8 +30788,7 @@ msgstr "Hapus perangkat autentikasi dua faktor"
 #, python-format
 msgid ""
 "Are you sure you want to delete the authentication device \"%(device)s\"?"
-msgstr ""
-"Apakah Anda yakin ingin menghapus perangkat autentikasi \"%(device)s\"?"
+msgstr "Apakah Anda yakin ingin menghapus perangkat autentikasi \"%(device)s\"?"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-delete.html:25
 #, fuzzy
@@ -32851,8 +32835,7 @@ msgstr "Akses untuk aplikasi yang dipilih telah dicabut."
 msgid ""
 "Are you sure you want to generate a new client secret for the application "
 "{code}?"
-msgstr ""
-"Anda yakin ingin menghasilkan client secret baru untuk aplikasi {code}?"
+msgstr "Anda yakin ingin menghasilkan client secret baru untuk aplikasi {code}?"
 
 #: eventyay/eventyay_common/views/account/oauth.py:130
 msgid "A new client secret has been generated and is now effective."
@@ -33039,8 +33022,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Tautan konfirmasi email ini telah kedaluwarsa atau tidak valid. Silakan "
-"%(email_action_link)s."
+"Tautan konfirmasi email ini telah kedaluwarsa atau tidak valid. Silakan %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33681,8 +33664,8 @@ msgid ""
 msgstr ""
 "Halo!\n"
 "\n"
-"Kami dengan senang hati memberitahukan bahwa kami menerima proposal Anda "
-"\"{submission_title}\"\n"
+"Kami dengan senang hati memberitahukan bahwa kami menerima proposal Anda \""
+"{submission_title}\"\n"
 "untuk {event_name}. Silakan klik tautan ini untuk mengonfirmasi kehadiran "
 "Anda:\n"
 "\n"
@@ -33836,8 +33819,8 @@ msgid ""
 msgstr ""
 "Hai!\n"
 "\n"
-"Anda telah ditambahkan ke usulan dari {event_name}, berjudul "
-"“{proposal_title}”.\n"
+"Anda telah ditambahkan ke usulan dari {event_name}, berjudul “"
+"{proposal_title}”.\n"
 "Akun telah dibuat untuk Anda – silakan ikuti tautan ini untuk mengatur kata "
 "sandi akun Anda.\n"
 "\n"
@@ -33864,8 +33847,8 @@ msgid ""
 msgstr ""
 "Hai!\n"
 "\n"
-"Anda telah ditambahkan ke usulan dari {event_name}, berjudul "
-"“{proposal_title}”.\n"
+"Anda telah ditambahkan ke usulan dari {event_name}, berjudul “"
+"{proposal_title}”.\n"
 "Silakan ikuti tautan ini untuk mengedit profil Anda dan melihat status "
 "usulan Anda:\n"
 "\n"
@@ -34208,22 +34191,19 @@ msgstr ""
 #, fuzzy
 #| msgid "This field is required when using SendGrid as email vendor."
 msgid "A sender email address is required when using a custom email gateway."
-msgstr ""
-"Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
+msgstr "Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
 
 #: eventyay/orga/forms/email.py:197
 #, fuzzy
 #| msgid "This field is required when using SendGrid as email vendor."
 msgid "An API key is required when using SendGrid."
-msgstr ""
-"Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
+msgstr "Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
 
 #: eventyay/orga/forms/email.py:215
 #, fuzzy
 #| msgid "This field is required when using SendGrid as email vendor."
 msgid "A hostname is required when using a custom SMTP server."
-msgstr ""
-"Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
+msgstr "Kolom ini wajib diisi saat menggunakan SendGrid sebagai penyedia email."
 
 #: eventyay/orga/forms/email.py:220
 msgid "A port number is required when using a custom SMTP server."
@@ -35076,8 +35056,7 @@ msgstr "Skor ulasan rata-rata, jika sudah ada ulasan"
 
 #: eventyay/orga/forms/schedule.py:150
 msgid "Resources provided by the speaker, either as links or as uploaded files"
-msgstr ""
-"Materi yang disediakan pembicara, berupa tautan atau file yang diunggah"
+msgstr "Materi yang disediakan pembicara, berupa tautan atau file yang diunggah"
 
 #: eventyay/orga/forms/speaker.py:23
 msgid "Just speakers with accepted and confirmed proposals"
@@ -35829,8 +35808,7 @@ msgstr "Ubah status publik untuk"
 #: eventyay/orga/templates/orga/cfp/forms.html:1169
 #: eventyay/orga/templates/orga/cfp/forms.html:1258
 msgid "You cannot make this field public because answers already exist."
-msgstr ""
-"Anda tidak dapat menjadikan bidang ini publik karena jawaban sudah ada."
+msgstr "Anda tidak dapat menjadikan bidang ini publik karena jawaban sudah ada."
 
 #: eventyay/orga/templates/orga/cfp/forms.html:735
 #: eventyay/orga/templates/orga/cfp/forms.html:1173
@@ -36226,8 +36204,8 @@ msgid ""
 "strong> <a href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
 "Bidang ini memiliki <strong>%(count)s</strong> respons, <strong>%(missing)s</"
-"strong> <a href=\"%(base_search_url)sunanswered=1\"> masih belum menjawab</"
-"a>."
+"strong> <a href=\"%(base_search_url)sunanswered=1\"> masih belum menjawab</a>"
+"."
 
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:60
 #, python-format
@@ -36825,8 +36803,8 @@ msgid ""
 "settings</a>."
 msgstr ""
 "Peninjau akan dapat melihat dan meninjau <strong>hanya proposal yang "
-"ditugaskan kepada mereka</strong>. Anda dapat mengubah ini di <a "
-"href=\"%(href)s\">pengaturan peninjauan</a>."
+"ditugaskan kepada mereka</strong>. Anda dapat mengubah ini di <a href=\"%"
+"(href)s\">pengaturan peninjauan</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:120
 #, python-format
@@ -37108,8 +37086,7 @@ msgstr "Jadwal"
 
 #: eventyay/orga/templates/orga/schedule/room/list.html:58
 msgid "Please add at least one place in which sessions can take place."
-msgstr ""
-"Silakan tambahkan setidaknya satu lokasi tempat sesi dapat berlangsung."
+msgstr "Silakan tambahkan setidaknya satu lokasi tempat sesi dapat berlangsung."
 
 #: eventyay/orga/templates/orga/settings/delete_confirm.html:17
 #, fuzzy
@@ -37238,8 +37215,7 @@ msgstr ""
 #: eventyay/orga/templates/orga/settings/import_export.html:417
 #: eventyay/orga/templates/orga/settings/import_export.html:527
 msgid "You can also use the API to export or use data."
-msgstr ""
-"Anda juga dapat menggunakan API untuk mengekspor atau menggunakan data."
+msgstr "Anda juga dapat menggunakan API untuk mengekspor atau menggunakan data."
 
 #: eventyay/orga/templates/orga/settings/import_export.html:227
 #: eventyay/orga/templates/orga/settings/import_export.html:419
@@ -39415,8 +39391,7 @@ msgstr "Transfer bank"
 
 #: eventyay/plugins/banktransfer/apps.py:17
 msgid "This plugin allows you to receive payments via bank transfer."
-msgstr ""
-"Plugin ini memungkinkan Anda menerima pembayaran melalui transfer bank."
+msgstr "Plugin ini memungkinkan Anda menerima pembayaran melalui transfer bank."
 
 #: eventyay/plugins/banktransfer/apps.py:31
 msgid ""
@@ -41934,8 +41909,7 @@ msgstr "Informasi umum, tambahkan produk ke keranjang Anda"
 #: eventyay/presale/templates/pretixpresale/event/index.html:87
 #, python-format
 msgid "The items in your cart are reserved for you for %(minutes)s minutes."
-msgstr ""
-"Item di keranjang Anda dicadangkan untuk Anda selama %(minutes)s menit."
+msgstr "Item di keranjang Anda dicadangkan untuk Anda selama %(minutes)s menit."
 
 #: eventyay/presale/templates/pretixpresale/event/index.html:91
 msgid "The items in your cart are no longer reserved for you."
@@ -42574,10 +42548,10 @@ msgid ""
 "to initiate the transfer manually. Please be patient as this might take a "
 "bit longer."
 msgstr ""
-"Dengan metode pembayaran yang Anda gunakan, jumlah pengembalian dana "
-"<strong>tidak dapat dikirimkan kembali kepada Anda secara otomatis</strong>. "
-"Sebagai gantinya, penyelenggara acara harus melakukan transfer secara "
-"manual. Harap bersabar karena ini mungkin memakan waktu lebih lama."
+"Dengan metode pembayaran yang Anda gunakan, jumlah pengembalian dana <strong>"
+"tidak dapat dikirimkan kembali kepada Anda secara otomatis</strong>. Sebagai "
+"gantinya, penyelenggara acara harus melakukan transfer secara manual. Harap "
+"bersabar karena ini mungkin memakan waktu lebih lama."
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:195
 msgid "Yes, request cancellation"
@@ -43349,8 +43323,7 @@ msgstr "Produk berhasil ditambahkan ke keranjang Anda."
 #: eventyay/presale/views/cart.py:496 eventyay/presale/views/event.py:698
 #: eventyay/presale/views/widget.py:332
 msgid "Tickets for this event cannot be purchased on this sales channel."
-msgstr ""
-"Tiket untuk acara ini tidak dapat dibeli melalui saluran penjualan ini."
+msgstr "Tiket untuk acara ini tidak dapat dibeli melalui saluran penjualan ini."
 
 #: eventyay/presale/views/checkout.py:38
 msgid "Your cart is empty"
@@ -43433,8 +43406,7 @@ msgstr ""
 
 #: eventyay/presale/views/event.py:1084
 msgid "Unknown event code or not authorized to access this event."
-msgstr ""
-"Kode acara tidak dikenal atau Anda tidak berwenang mengakses acara ini."
+msgstr "Kode acara tidak dikenal atau Anda tidak berwenang mengakses acara ini."
 
 #: eventyay/presale/views/event.py:1091
 msgctxt "subevent"
@@ -43745,8 +43717,7 @@ msgstr "Belum ada umpan balik untuk sesi ini."
 #: eventyay/schedule/templates/schedule/speaker_notification.txt:2
 #, python-format
 msgid "- Your session “%(title)s” will take place at %(start)s in %(location)s"
-msgstr ""
-"- Sesi Anda “%(title)s” akan berlangsung pada %(start)s di %(location)s"
+msgstr "- Sesi Anda “%(title)s” akan berlangsung pada %(start)s di %(location)s"
 
 #: eventyay/schedule/templates/schedule/speaker_notification.txt:3
 #, python-format

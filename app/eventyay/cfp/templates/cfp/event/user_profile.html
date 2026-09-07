@@ -19,26 +19,20 @@
         {% csrf_token %}
         {% include "common/forms/errors.html" with form=profile_form %}
 
-        {{ profile_form.fullname.as_field_group }}
-        {% if profile_form.biography %}
-            {{ profile_form.biography.as_field_group }}
-        {% endif %}
-        {% if request.event.cfp.request_avatar %}
-            {% include "common/avatar.html" with user=request.user form=profile_form %}
-        {% endif %}
-        {% if profile_form.avatar_source %}{{ profile_form.avatar_source.as_field_group }}{% endif %}
-        {% if profile_form.avatar_license %}{{ profile_form.avatar_license.as_field_group }}{% endif %}
-        {% if profile_form.availabilities %}
-            {% include "common/availabilities.html" %}
-            {{ profile_form.availabilities.as_field_group }}
-        {% endif %}
-        {% include "common/speaker_social_links_formset.html" %}
-        {% if profile_question_fields %}
-            <h2>{% translate "We have some questions" %}</h2>
-            {% for field in profile_question_fields %}
+        {% for field in profile_form %}
+            {% if field.name == 'avatar' %}
+                {% include "common/avatar.html" with user=request.user form=profile_form %}
+            {% elif field.name == 'get_gravatar' %}
+                {# already handled by avatar.html #}
+            {% elif field.name == 'availabilities' %}
+                {% include "common/availabilities.html" %}
                 {{ field.as_field_group }}
-            {% endfor %}
-        {% endif %}
+            {% elif field.name == 'social_links' %}
+                {% include "common/speaker_social_links_formset.html" %}
+            {% else %}
+                {{ field.as_field_group }}
+            {% endif %}
+        {% endfor %}
 
         <div class="row">
             <div class="col-md-4 flip ml-auto">

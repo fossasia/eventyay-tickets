@@ -125,17 +125,14 @@ const devurl = helpers.regex(/^http:\/\/localhost.*$/) // vuelidate does not all
 export function url(message) {
 	return helpers.withMessage(message, (value) => (!helpers.req(value) || _url(value) || relative(value) || (ENV_DEVELOPMENT && devurl(value))))
 }
-export function isJson() {
-	return helpers.withMessage(({ $response }) => $response?.message, value => {
-		if (!value || value.length === 0) return { $valid: true }
+export function isJson(message = 'Invalid JSON') {
+	return helpers.withMessage(message, (value) => {
+		if (value == null || !String(value).trim()) return true
 		try {
 			JSON.parse(value)
-			return { $valid: true }
-		} catch (exception) {
-			return {
-				$valid: false,
-				message: exception.message
-			}
+			return true
+		} catch (e) {
+			return false
 		}
 	})
 }

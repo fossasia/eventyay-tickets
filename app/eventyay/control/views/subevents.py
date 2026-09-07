@@ -1,6 +1,7 @@
 import copy
 from collections import defaultdict
 from datetime import datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
 from dateutil.rrule import DAILY, MONTHLY, WEEKLY, YEARLY, rrule, rruleset
 from django.contrib import messages
@@ -763,7 +764,7 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
             'active': True,
         }
         kwargs['event'] = self.request.event
-        tz = self.request.event.timezone
+        tz = ZoneInfo(self.request.event.settings.timezone)
         if self.copy_from:
             i = copy.copy(self.copy_from)
             i.pk = None
@@ -857,7 +858,7 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
 
     @transaction.atomic
     def form_valid(self, form):
-        tz = self.request.event.timezone
+        tz = ZoneInfo(self.request.event.settings.timezone)
         subevents = []
         for rdate in self.get_rrule_set():
             for t in self.get_times():

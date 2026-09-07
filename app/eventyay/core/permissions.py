@@ -169,6 +169,8 @@ ORGANIZER_ROLES = frozenset(
         'admin',
         'apiuser',
         'scheduleuser',
+        'moderator',
+        'room_creator',
         *VIDEO_ROLE_PERMISSIONS,
         *LEGACY_VIDEO_ROLE_PERMISSIONS,
     }
@@ -274,13 +276,21 @@ def normalize_permission_value(permission):
     Raises:
         TypeError: If permission is not a string or Permission enum
     """
-    if isinstance(permission, str):
-        return permission
     if isinstance(permission, Permission):
-        return permission.value
-    raise TypeError(
-        f"Expected str or Permission enum, got {type(permission).__name__}"
-    )
+        val = permission.value
+    elif isinstance(permission, str):
+        val = permission
+    else:
+        raise TypeError(
+            f"Expected str or Permission enum, got {type(permission).__name__}"
+        )
+    if val == "world:view":
+        return "event.view"
+    if val == "world:update":
+        return "event.update"
+    if val.startswith("world:"):
+        return "event:" + val[len("world:"):]
+    return val
 
 
 def traits_match_required(traits: list[str], required_traits: list) -> bool:

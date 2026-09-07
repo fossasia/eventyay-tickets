@@ -664,6 +664,14 @@ var editor = {
         });
     },
 
+    _update_disabled_placeholder_warning: function () {
+        var selected = $("#toolbox-content option:selected");
+        var isTemp = selected.hasClass('editor-temp-option');
+        var val = $("#toolbox-content").val();
+        var shouldShow = isTemp && val && val !== 'other';
+        $('#toolbox-disabled-placeholder-warning').toggle(!!shouldShow);
+    },
+
     _set_toolbox_content_value: function (content, fallbackText) {
         content = editor._normalize_text_content(content);
         $('#toolbox-content option.editor-temp-option').remove();
@@ -672,8 +680,8 @@ var editor = {
         if (!option.length && content) {
             option = $('<option></option>', {
                 value: content,
-                text: fallbackText || content,
-                class: 'editor-temp-option'
+                text: (fallbackText || content) + (window.gettext ? ' (' + window.gettext('Disabled in settings') + ')' : ' (Disabled in settings)'),
+                class: 'editor-temp-option is-disabled-placeholder'
             });
             if (fallbackText) {
                 option.attr('data-sample', fallbackText);
@@ -685,6 +693,8 @@ var editor = {
         if (!$('#toolbox-content').val()) {
             $('#toolbox-content').val('other');
         }
+
+        editor._update_disabled_placeholder_warning();
     },
 
     _get_toolbox_target_object: function (allowFallback) {
@@ -712,6 +722,8 @@ var editor = {
 
         $("#toolbox-content").val(content || 'other');
         $("#toolbox-content-other").toggle($("#toolbox-content").val() === "other");
+
+        editor._update_disabled_placeholder_warning();
 
         o.content = $("#toolbox-content").val();
         if (o.content === "other") {
@@ -1068,6 +1080,12 @@ var editor = {
         } else {
             $("#toolbox").removeAttr("data-type");
             $("#toolbox-heading").text(gettext("Ticket design"));
+        }
+        var isSingleText = selected.length === 1 && (selected[0].type === "textarea" || selected[0].type === "text");
+        if (isSingleText) {
+            editor._update_disabled_placeholder_warning();
+        } else {
+            $("#toolbox-disabled-placeholder-warning").hide();
         }
         editor._update_toolbox_values();
     },

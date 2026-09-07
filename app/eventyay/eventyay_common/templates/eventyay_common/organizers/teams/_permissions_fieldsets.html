@@ -20,7 +20,6 @@
     {% bootstrap_field form.all_events layout="control" %}
     {% bootstrap_field form.limit_events layout="control" %}
     {% bootstrap_field form.can_change_event_settings layout="control" %}
-    {% bootstrap_field form.can_change_config layout="control" %}
 </fieldset>
 
 <fieldset>
@@ -184,6 +183,7 @@
 
 <fieldset>
     <legend>{% translate "Video permissions" %}</legend>
+    {% bootstrap_field form.can_change_config layout="control" %}
     {% bootstrap_field form.can_video_manage_content layout="control" %}
     {% bootstrap_field form.can_video_moderate layout="control" %}
     {% bootstrap_field form.can_video_manage_kiosks layout="control" %}

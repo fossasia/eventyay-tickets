@@ -49,10 +49,14 @@ export default {
 	position: fixed
 	top: 0
 	left: 0
+	right: 0
+	bottom: 0
 	width: 100vw
-	height: var(--vh100)
-	z-index: 1000
-	background-color: $clr-secondary-text-light
+	height: 100vh
+	height: 100dvh
+	height: var(--vh100, 100vh)
+	z-index: 2000
+	background-color: rgba(0, 0, 0, 0.54)
 	display: flex
 	justify-content: center
 	align-items: safe center
@@ -64,13 +68,17 @@ export default {
 		display: flex
 		flex-direction: column
 		width: 480px
-		max-height: calc(var(--vh100) - 32px)
+		max-height: calc(100vh - 32px)
+		max-height: calc(100dvh - 32px)
+		max-height: calc(var(--vh100, 100vh) - 32px)
 		min-height: 0
 		flex-shrink: 1
 		position: relative
 		+below('m')
 			width: 100vw
-			max-height: calc(var(--vh100) - 32px)
+			max-height: calc(100vh - 32px)
+			max-height: calc(100dvh - 32px)
+			max-height: calc(var(--vh100, 100vh) - 32px)
 		> .content
 			display: flex
 			flex-direction: column

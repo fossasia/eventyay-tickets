@@ -68,7 +68,7 @@ def test_rule_update(token_client, organizer, event, taxrule):
     assert resp.status_code == 200
     taxrule.refresh_from_db()
     assert taxrule.rate == Decimal('20.00')
-    assert taxrule.all_logentries().last().action_type == 'pretix.event.taxrule.changed'
+    assert taxrule.all_logentries().last().action_type == 'eventyay.event.taxrule.changed'
 
 
 @pytest.mark.django_db
@@ -83,9 +83,69 @@ def test_rule_delete(token_client, organizer, event, taxrule):
 @pytest.mark.django_db
 def test_rule_delete_forbidden(token_client, organizer, event, taxrule):
     with scopes_disabled():
-        event.items.create(name='Budget Ticket', default_price=23, tax_rule=taxrule)
+        event.products.create(name='Budget Ticket', default_price=23, tax_rule=taxrule)
     resp = token_client.delete(
         '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(organizer.slug, event.slug, taxrule.pk),
     )
     assert resp.status_code == 403
     assert event.tax_rules.exists()
+
+
+@pytest.mark.django_db
+def test_rule_create_negative_rate(token_client, organizer, event):
+    resp = token_client.post(
+        '/api/v1/organizers/{}/events/{}/taxrules/'.format(organizer.slug, event.slug),
+        {
+            'name': {'en': 'VAT'},
+            'rate': '-19.00',
+            'price_includes_tax': True,
+            'eu_reverse_charge': False,
+            'home_country': 'DE',
+        },
+        format='json',
+    )
+    assert resp.status_code == 400
+    assert 'rate' in resp.data
+
+
+@pytest.mark.django_db
+def test_rule_create_over_hundred_rate(token_client, organizer, event):
+    resp = token_client.post(
+        '/api/v1/organizers/{}/events/{}/taxrules/'.format(organizer.slug, event.slug),
+        {
+            'name': {'en': 'VAT'},
+            'rate': '150.00',
+            'price_includes_tax': True,
+            'eu_reverse_charge': False,
+            'home_country': 'DE',
+        },
+        format='json',
+    )
+    assert resp.status_code == 400
+    assert 'rate' in resp.data
+
+
+@pytest.mark.django_db
+def test_rule_update_negative_rate(token_client, organizer, event, taxrule):
+    resp = token_client.patch(
+        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(organizer.slug, event.slug, taxrule.pk),
+        {
+            'rate': '-19.00',
+        },
+        format='json',
+    )
+    assert resp.status_code == 400
+    assert 'rate' in resp.data
+
+
+@pytest.mark.django_db
+def test_rule_update_over_hundred_rate(token_client, organizer, event, taxrule):
+    resp = token_client.patch(
+        '/api/v1/organizers/{}/events/{}/taxrules/{}/'.format(organizer.slug, event.slug, taxrule.pk),
+        {
+            'rate': '150.00',
+        },
+        format='json',
+    )
+    assert resp.status_code == 400
+    assert 'rate' in resp.data

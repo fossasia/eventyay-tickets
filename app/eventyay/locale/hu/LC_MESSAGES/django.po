@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:15+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 14:20+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/hu/>\n"
 "Language: hu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -479,8 +479,8 @@ msgid ""
 "href=\"%(href)s\">here</a>."
 msgstr ""
 "A program teljes funkcionalitású megtekintéséhez (például időzóna-átváltás "
-"és személyes program) engedélyezze a JavaScriptet, és nyissa meg <a "
-"href=\"%(href)s\">itt</a>."
+"és személyes program) engedélyezze a JavaScriptet, és nyissa meg <a href=\"%"
+"(href)s\">itt</a>."
 
 #: eventyay/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
@@ -2106,8 +2106,8 @@ msgid ""
 "'Last date of payments' configured above."
 msgstr ""
 "Fizetések elfogadása a rendelésekhez akkor is, ha azok „lejárt” állapotban "
-"vannak, amennyiben elegendő kapacitás áll rendelkezésre. A fent beállított "
-"„Utolsó fizetési dátum” után soha nem fogadunk el fizetést."
+"vannak, amennyiben elegendő kapacitás áll rendelkezésre. A fent beállított „"
+"Utolsó fizetési dátum” után soha nem fogadunk el fizetést."
 
 #: eventyay/base/configurations/default_setting.py:712
 msgid "Show start date"
@@ -2154,8 +2154,7 @@ msgstr "Ingyenes rendelésekhez soha nem készülnek automatikusan számlák."
 
 #: eventyay/base/configurations/default_setting.py:757
 msgid "Automatically cancel and reissue invoice on address changes"
-msgstr ""
-"A számla automatikus sztornózása és újra kiállítása címmódosítás esetén"
+msgstr "A számla automatikus sztornózása és újra kiállítása címmódosítás esetén"
 
 #: eventyay/base/configurations/default_setting.py:759
 msgid ""
@@ -2276,8 +2275,8 @@ msgid ""
 "e.g. Thank you for your purchase! You can find more information on the event "
 "at ..."
 msgstr ""
-"pl. Köszönjük a vásárlást! Az eseményről további információ itt "
-"található: ..."
+"pl. Köszönjük a vásárlást! Az eseményről további információ itt található: "
+"..."
 
 #: eventyay/base/configurations/default_setting.py:864
 msgid "Additional text"
@@ -2291,8 +2290,7 @@ msgstr "Minden számlán a számla végösszege alatt kerül nyomtatásra."
 msgid ""
 "e.g. your bank details, legal details like your VAT ID, registration "
 "numbers, etc."
-msgstr ""
-"pl. bankszámla-adatok, jogi adatok (pl. adószám), cégjegyzékszámok stb."
+msgstr "pl. bankszámla-adatok, jogi adatok (pl. adószám), cégjegyzékszámok stb."
 
 #: eventyay/base/configurations/default_setting.py:883
 msgid "Footer"
@@ -2620,8 +2618,8 @@ msgid ""
 msgstr ""
 "Ha ez a beállítás be van kapcsolva, a felhasználóknak be kell jelentkezniük "
 "a rendelés befejezése előtt. Ha a felhasználó bejelentkezés nélkül kattint a "
-"„Fizetés” gombra, a rendszer átirányítja a bejelentkezési oldalra. A "
-"„Folytatás vendégként” lehetőség nem lesz elérhető az esemény résztvevői "
+"„Fizetés” gombra, a rendszer átirányítja a bejelentkezési oldalra. A „"
+"Folytatás vendégként” lehetőség nem lesz elérhető az esemény résztvevői "
 "számára."
 
 #: eventyay/base/configurations/default_setting.py:1261
@@ -2974,8 +2972,7 @@ msgstr "Utca, házszám"
 #, fuzzy
 #| msgid "All emails will be sent to this address as a Bcc copy"
 msgid "User replies will be sent to this address."
-msgstr ""
-"Minden e-mail erre a címre is elküldésre kerül titkos másolatként (Bcc)"
+msgstr "Minden e-mail erre a címre is elküldésre kerül titkos másolatként (Bcc)"
 
 #: eventyay/base/configurations/default_setting.py:1674
 msgid "Sender name"
@@ -7161,8 +7158,7 @@ msgstr ""
 
 #: eventyay/base/models/event.py:3577
 msgid "You cannot set a default value that is not a valid value."
-msgstr ""
-"Nem állítható be olyan alapértelmezett érték, amely nem érvényes érték."
+msgstr "Nem állítható be olyan alapértelmezett érték, amely nem érvényes érték."
 
 #: eventyay/base/models/feedback.py:44
 msgid "Author"
@@ -9405,8 +9401,7 @@ msgstr "Minden előadótól vagy minden szekcióhoz kötelező választ kérni?"
 
 #: eventyay/base/models/question.py:148
 msgid "Set a deadline to make this field required after the given date."
-msgstr ""
-"Határidő beállítása, hogy a mező a megadott dátum után kötelező legyen."
+msgstr "Határidő beállítása, hogy a mező a megadott dátum után kötelező legyen."
 
 #: eventyay/base/models/question.py:153
 msgid "freeze after"
@@ -12253,8 +12248,8 @@ msgid ""
 "Error while importing value \"{value}\" for column \"{column}\" in line "
 "\"{line}\": {message}"
 msgstr ""
-"Hiba az importálás során a(z) „{value}” értékhez a(z) „{column}” oszlopban, "
-"a(z) „{line}” sorban: {message}"
+"Hiba az importálás során a(z) „{value}” értékhez a(z) „{column}” oszlopban, a"
+"(z) „{line}” sorban: {message}"
 
 #: eventyay/base/services/orderimport.py:128
 #, fuzzy, python-brace-format
@@ -12884,8 +12879,7 @@ msgstr ""
 #: eventyay/base/settings.py:206
 msgid ""
 "You cannot require specifying attendee names if you do not ask for them."
-msgstr ""
-"Nem lehet megkövetelni a résztvevők nevének megadását, ha nem kéred be."
+msgstr "Nem lehet megkövetelni a résztvevők nevének megadását, ha nem kéred be."
 
 #: eventyay/base/settings.py:210
 msgid "You have to ask for attendee emails if you want to make them required."
@@ -16519,8 +16513,7 @@ msgstr "Titkos másolat (Bcc) címe"
 
 #: eventyay/control/forms/event.py:1251
 msgid "All emails will be sent to this address as a Bcc copy"
-msgstr ""
-"Minden e-mail erre a címre is elküldésre kerül titkos másolatként (Bcc)"
+msgstr "Minden e-mail erre a címre is elküldésre kerül titkos másolatként (Bcc)"
 
 #: eventyay/control/forms/event.py:1257
 msgid "Signature"
@@ -17664,8 +17657,7 @@ msgstr "Közzétehető kulcs (Teszt)"
 
 #: eventyay/control/forms/global_settings.py:381
 msgid "Test publishable key for organizer billing and platform fees."
-msgstr ""
-"Teszt közzétehető kulcs a szervezői számlázáshoz és a platformdíjakhoz."
+msgstr "Teszt közzétehető kulcs a szervezői számlázáshoz és a platformdíjakhoz."
 
 #: eventyay/control/forms/global_settings.py:387
 #: eventyay/control/forms/global_settings.py:440
@@ -18083,8 +18075,8 @@ msgstr "Telemetria végpont"
 #: eventyay/control/forms/global_settings.py:916
 msgid "The URL where telemetry data will be sent (Google Apps Script URL)."
 msgstr ""
-"Az URL, ahová a telemetriaadatok elküldésre kerülnek (Google Apps Script "
-"URL)."
+"Az URL, ahová a telemetriaadatok elküldésre kerülnek (Google Apps Script URL)"
+"."
 
 #: eventyay/control/forms/global_settings.py:920
 msgid "Telemetry API key"
@@ -18718,8 +18710,7 @@ msgstr "A telepítés alapdomainje nem választható."
 #: eventyay/control/forms/organizer_forms/organizer_update_form.py:58
 #: eventyay/eventyay_common/forms/event.py:279
 msgid "This domain is already in use for a different event or organizer."
-msgstr ""
-"Ez a domain már használatban van egy másik eseményhez vagy szervezőhöz."
+msgstr "Ez a domain már használatban van egy másik eseményhez vagy szervezőhöz."
 
 #: eventyay/control/forms/organizer_forms/team_form.py:279
 #: eventyay/event/forms.py:58
@@ -19276,8 +19267,8 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"A(z) {posid}. pozíció: az esemény dátuma („{old_event}” ({old_price})) "
-"„{new_event}” ({new_price}) értékre változott."
+"A(z) {posid}. pozíció: az esemény dátuma („{old_event}” ({old_price})) „"
+"{new_event}” ({new_price}) értékre változott."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
@@ -19367,16 +19358,16 @@ msgid ""
 "Unknown scan of code \"{barcode}…\" at {datetime} for list \"{list}\", type "
 "\"{type}\"."
 msgstr ""
-"Ismeretlen beolvasás a(z) „{barcode}…” kódhoz {datetime} időpontban a(z) "
-"„{list}” listához, „{type}” típus."
+"Ismeretlen beolvasás a(z) „{barcode}…” kódhoz {datetime} időpontban a(z) „"
+"{list}” listához, „{type}” típus."
 
 #: eventyay/control/logdisplay.py:258
 #, python-brace-format
 msgid ""
 "Unknown scan of code \"{barcode}…\" for list \"{list}\", type \"{type}\"."
 msgstr ""
-"Ismeretlen beolvasás a(z) „{barcode}…” kódhoz a(z) „{list}” listához, "
-"„{type}” típus."
+"Ismeretlen beolvasás a(z) „{barcode}…” kódhoz a(z) „{list}” listához, „{type}"
+"” típus."
 
 #: eventyay/control/logdisplay.py:268
 #, python-brace-format
@@ -19384,8 +19375,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"A visszavont „{barcode}…” kód beolvasása feltöltve {datetime} időpontban "
-"a(z) „{list}” listához, „{type}” típus."
+"A visszavont „{barcode}…” kód beolvasása feltöltve {datetime} időpontban a"
+"(z) „{list}” listához, „{type}” típus."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19393,8 +19384,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"A visszavont „{barcode}” kód beolvasása feltöltve a(z) „{list}” listához, "
-"„{type}” típus."
+"A visszavont „{barcode}” kód beolvasása feltöltve a(z) „{list}” listához, „"
+"{type}” típus."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -19402,8 +19393,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"Elutasított beolvasás a(z) {posid}. pozícióhoz {datetime} időpontban a(z) "
-"„{list}” listához, „{type}” típus, „{errorcode}” hibakód."
+"Elutasított beolvasás a(z) {posid}. pozícióhoz {datetime} időpontban a(z) „"
+"{list}” listához, „{type}” típus, „{errorcode}” hibakód."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -19411,8 +19402,8 @@ msgid ""
 "Denied scan of position #{posid} for list \"{list}\", type \"{type}\", error "
 "code \"{errorcode}\"."
 msgstr ""
-"Elutasított beolvasás a(z) {posid}. pozícióhoz a(z) „{list}” listához, "
-"„{type}” típus, „{errorcode}” hibakód."
+"Elutasított beolvasás a(z) {posid}. pozícióhoz a(z) „{list}” listához, „"
+"{type}” típus, „{errorcode}” hibakód."
 
 #: eventyay/control/logdisplay.py:308
 #, python-brace-format
@@ -19456,8 +19447,8 @@ msgid ""
 "Position #{posid} has been scanned and rejected because it has already been "
 "scanned before on list \"{list}\"."
 msgstr ""
-"A(z) #{posid} pozíció be lett szkennelve, és el lett utasítva, mert a(z) "
-"\"{list}\" listán már korábban be lett szkennelve."
+"A(z) #{posid} pozíció be lett szkennelve, és el lett utasítva, mert a(z) \""
+"{list}\" listán már korábban be lett szkennelve."
 
 #: eventyay/control/logdisplay.py:489
 msgid "This object has been created by cloning."
@@ -20280,8 +20271,8 @@ msgid ""
 "Position #{posid} has been checked in manually at {datetime} on list \"{list}"
 "\"."
 msgstr ""
-"A(z) #{posid} pozíciót manuálisan becsekkolták ekkor: {datetime}, a(z) "
-"„{list}” listán."
+"A(z) #{posid} pozíciót manuálisan becsekkolták ekkor: {datetime}, a(z) „"
+"{list}” listán."
 
 #: eventyay/control/logdisplay.py:776
 #, python-brace-format
@@ -23287,9 +23278,9 @@ msgid ""
 "alerted of such requests."
 msgstr ""
 "Ha egy felhasználó kéri egy fizetett rendelés lemondását, és a pénz nem "
-"téríthető vissza automatikusan (és például a kiválasztott fizetési mód "
-"miatt), manuális beavatkozásra lesz szükség. Ellenőrizze, hogy az "
-"értesítések engedélyezve vannak, hogy értesüljön az ilyen kérelmekről."
+"téríthető vissza automatikusan (és például a kiválasztott fizetési mód miatt)"
+", manuális beavatkozásra lesz szükség. Ellenőrizze, hogy az értesítések "
+"engedélyezve vannak, hogy értesüljön az ilyen kérelmekről."
 
 #: eventyay/control/templates/pretixcontrol/event/cancel.html:41
 msgid "Order changes"
@@ -23800,9 +23791,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Nem érhető el fizetési szolgáltató. Lépjen a(z) <a "
-"%(plugin_settings_href)s>bővítménybeállítások</a> oldalra, és aktiváljon egy "
-"vagy több fizetési bővítményt."
+"Nem érhető el fizetési szolgáltató. Lépjen a(z) <a %(plugin_settings_href)s>"
+"bővítménybeállítások</a> oldalra, és aktiváljon egy vagy több fizetési "
+"bővítményt."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -23986,8 +23977,8 @@ msgid ""
 msgstr ""
 "Ha fejlettebb funkciókat szeretne használni, például belépésre nem jogosító "
 "termékeket, termékváltozatokat, egyedi kvótákat, kiegészítő termékeket, vagy "
-"részletesebben szeretné módosítani a jegytípusokat, ezt később a navigáció "
-"„Termékek” részében teheti meg. Nem gond, itt mindent meg lehet változtatni."
+"részletesebben szeretné módosítani a jegytípusokat, ezt később a navigáció „"
+"Termékek” részében teheti meg. Nem gond, itt mindent meg lehet változtatni."
 
 #: eventyay/control/templates/pretixcontrol/event/quick_setup.html:175
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:73
@@ -24247,9 +24238,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Nem érhető el jegykimenet. Lépjen a <a "
-"%(plugin_settings_href)s>bővítménybeállítások</a> oldalra, és aktiváljon egy "
-"vagy több jegykimeneti bővítményt."
+"Nem érhető el jegykimenet. Lépjen a <a %(plugin_settings_href)s>"
+"bővítménybeállítások</a> oldalra, és aktiváljon egy vagy több jegykimeneti "
+"bővítményt."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -24274,8 +24265,8 @@ msgid ""
 "To embed the widget onto your website, simply copy the following code to the "
 "<code>&lt;head&gt;</code> section of your website:"
 msgstr ""
-"A widget beágyazásához egyszerűen másolja az alábbi kódot a webhely "
-"<code>&lt;head&gt;</code> szakaszába:"
+"A widget beágyazásához egyszerűen másolja az alábbi kódot a webhely <code>"
+"&lt;head&gt;</code> szakaszába:"
 
 #: eventyay/control/templates/pretixcontrol/event/widget.html:25
 #: eventyay/orga/templates/orga/settings/widget.html:63
@@ -24939,8 +24930,8 @@ msgid ""
 "All answers to the description given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"A következő termékek vásárlói által adott összes válasz a leíráshoz "
-"<strong>elveszik</strong>."
+"A következő termékek vásárlói által adott összes válasz a leíráshoz <strong>"
+"elveszik</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/description_edit.html:15
@@ -25284,8 +25275,8 @@ msgid ""
 "All answers to the question given by the buyers of the following products "
 "will be <strong>lost</strong>."
 msgstr ""
-"Az alábbi termékek vásárlói által a kérdésre adott összes válasz "
-"<strong>elveszik</strong>."
+"Az alábbi termékek vásárlói által a kérdésre adott összes válasz <strong>"
+"elveszik</strong>."
 
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:8
 #: eventyay/control/templates/pretixcontrol/items/question_edit.html:15
@@ -27980,9 +27971,9 @@ msgid ""
 "confirm you really want this, please type out the event's short name "
 "(\"%(slug)s\") here:"
 msgstr ""
-"Ellenőrizze újra, hogy teljesen biztosan törölni szeretné az esemény "
-"<strong>%(event)s</strong> kiválasztott adatkategóriáit. A megerősítéshez "
-"írja be ide az esemény rövid nevét (\"%(slug)s\"):"
+"Ellenőrizze újra, hogy teljesen biztosan törölni szeretné az esemény <strong>"
+"%(event)s</strong> kiválasztott adatkategóriáit. A megerősítéshez írja be "
+"ide az esemény rövid nevét (\"%(slug)s\"):"
 
 #: eventyay/control/templates/pretixcontrol/shredder/download.html:41
 msgid "Event short name"
@@ -28490,8 +28481,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Biztosan törölni szeretné a következő várólista-bejegyzést: "
-"<strong>%(entry)s</strong>?"
+"Biztosan törölni szeretné a következő várólista-bejegyzést: <strong>%(entry)"
+"s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -29341,8 +29332,7 @@ msgstr[1] "%(count)d rendelés jóváhagyva."
 #, python-format
 msgid "%(count)d order has been denied and is now canceled."
 msgid_plural "%(count)d orders have been denied and are now canceled."
-msgstr[0] ""
-"A(z) %(count)d rendelés elutasításra került, és mostantól törölve van."
+msgstr[0] "A(z) %(count)d rendelés elutasításra került, és mostantól törölve van."
 msgstr[1] ""
 "A(z) %(count)d rendelés elutasításra kerültek, és mostantól törölve vannak."
 
@@ -29356,8 +29346,7 @@ msgstr[1] ""
 #: eventyay/presale/views/order.py:1186 eventyay/presale/views/order.py:1298
 #: eventyay/presale/views/order.py:1426 eventyay/presale/views/order.py:1470
 msgid "Unknown order code or not authorized to access this order."
-msgstr ""
-"Ismeretlen rendelési kód, vagy nincs jogosultság a rendelés eléréséhez."
+msgstr "Ismeretlen rendelési kód, vagy nincs jogosultság a rendelés eléréséhez."
 
 #: eventyay/control/views/orders.py:630 eventyay/presale/views/order.py:1302
 msgid "Ticket download is not enabled for this product."
@@ -29568,8 +29557,7 @@ msgstr "Ország nincs megadva."
 
 #: eventyay/control/views/orders.py:1721
 msgid "VAT ID could not be checked since a non-EU country has been specified."
-msgstr ""
-"Az ÁFA-azonosító nem ellenőrizhető, mert nem uniós ország lett megadva."
+msgstr "Az ÁFA-azonosító nem ellenőrizhető, mert nem uniós ország lett megadva."
 
 #: eventyay/control/views/orders.py:1737
 msgid "This VAT ID is not valid."
@@ -31249,8 +31237,8 @@ msgid ""
 "you can <a %(login_href)s>log in</a> first and then click this link again to "
 "accept the invitation with your existing account."
 msgstr ""
-"Ha már van fiókja ezen az oldalon egy másik e-mail-címmel, előbb <a "
-"%(login_href)s>jelentkezzen be</a>, majd kattintson ismét erre a "
+"Ha már van fiókja ezen az oldalon egy másik e-mail-címmel, előbb <a %"
+"(login_href)s>jelentkezzen be</a>, majd kattintson ismét erre a "
 "hivatkozásra, hogy a meglévő fiókjával fogadja el a meghívást."
 
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:17
@@ -32868,8 +32856,7 @@ msgstr "A kijelölt alkalmazáshoz való hozzáférés visszavonásra került."
 msgid ""
 "Are you sure you want to generate a new client secret for the application "
 "{code}?"
-msgstr ""
-"Biztosan új kliens titkot szeretne generálni a(z) {code} alkalmazáshoz?"
+msgstr "Biztosan új kliens titkot szeretne generálni a(z) {code} alkalmazáshoz?"
 
 #: eventyay/eventyay_common/views/account/oauth.py:130
 msgid "A new client secret has been generated and is now effective."
@@ -32973,8 +32960,7 @@ msgstr ""
 msgid ""
 "You cannot accept the invitation for \"{}\" as you already are part of this "
 "team."
-msgstr ""
-"Nem fogadható el a(z) „{}” meghívása, mert már tagja ennek a csapatnak."
+msgstr "Nem fogadható el a(z) „{}” meghívása, mert már tagja ennek a csapatnak."
 
 #: eventyay/eventyay_common/views/auth.py:216
 msgid "You are now part of the team \"{}\"."
@@ -33058,8 +33044,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Ez az e-mail-megerősítési hivatkozás lejárt vagy érvénytelen. Kérjük, "
-"%(email_action_link)s."
+"Ez az e-mail-megerősítési hivatkozás lejárt vagy érvénytelen. Kérjük, %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -34156,8 +34142,7 @@ msgstr "Titkos másolat (Bcc) címe"
 msgid ""
 "All outgoing event emails (Tickets and Talks) will be sent to this address "
 "as a blind copy."
-msgstr ""
-"Minden e-mail erre a címre is elküldésre kerül titkos másolatként (Bcc)"
+msgstr "Minden e-mail erre a címre is elküldésre kerül titkos másolatként (Bcc)"
 
 #: eventyay/orga/forms/email.py:49
 #, fuzzy
@@ -34856,8 +34841,8 @@ msgid ""
 "Invalid email template! Please check that you don’t have stray { or } "
 "somewhere, and that there are no spaces inside the {} blocks."
 msgstr ""
-"Érvénytelen e-mail-sablon! Ellenőrizd, hogy nincs-e valahol felesleges "
-"{ vagy }, és hogy a {} blokkokon belül nincsenek szóközök."
+"Érvénytelen e-mail-sablon! Ellenőrizd, hogy nincs-e valahol felesleges { "
+"vagy }, és hogy a {} blokkokon belül nincsenek szóközök."
 
 #: eventyay/orga/forms/mails.py:100 eventyay/orga/forms/mails.py:117
 msgid "Unknown placeholder!"
@@ -36258,8 +36243,8 @@ msgid ""
 "This field has <strong>%(count)s</strong> responses, <strong>%(missing)s</"
 "strong> <a href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"Ehhez a mezőhöz <strong>%(count)s</strong> válasz érkezett, "
-"<strong>%(missing)s</strong> <a href=\"%(base_search_url)sunanswered=1\">még "
+"Ehhez a mezőhöz <strong>%(count)s</strong> válasz érkezett, <strong>%"
+"(missing)s</strong> <a href=\"%(base_search_url)sunanswered=1\">még "
 "hiányzik</a>."
 
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:60
@@ -36496,8 +36481,8 @@ msgid ""
 "invitation by mistake, please contact the organizer directly."
 msgstr ""
 "A meghívó elfogadásához a jelenleg aktív fiókkal használja az alábbi gombot. "
-"Ha másik fiókkal szeretné elfogadni a meghívót, <a href=\"/orga/logout/?"
-"next=%(link)s\">kijelentkezhet</a>, majd bejelentkezhet a másik fiókkal. </"
+"Ha másik fiókkal szeretné elfogadni a meghívót, <a href=\"/orga/logout/"
+"?next=%(link)s\">kijelentkezhet</a>, majd bejelentkezhet a másik fiókkal. </"
 "p><p> Ha úgy gondolja, hogy ezt a meghívót tévedésből kapta, kérjük, vegye "
 "fel a kapcsolatot közvetlenül a szervezővel."
 
@@ -37401,8 +37386,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Ha sem értékelési pontszámot, sem értékelési szöveget nem kér, az értékelők "
-"az ajánlatok értékelésekor egy további "
-"%(quotation_open)sTartózkodom%(quotation_close)s gombot kapnak."
+"az ajánlatok értékelésekor egy további %(quotation_open)sTartózkodom%"
+"(quotation_close)s gombot kapnak."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -37518,8 +37503,8 @@ msgid ""
 "Please look at <a href=\"%(link)s\">our documentation</a> for more "
 "information."
 msgstr ""
-"További információért tekintse meg a(z) <a "
-"href=\"%(link)s\">dokumentációnkat</a>."
+"További információért tekintse meg a(z) <a href=\"%(link)s\">"
+"dokumentációnkat</a>."
 
 #: eventyay/orga/templates/orga/settings/widget.html:90
 msgid "Widget preview"
@@ -38664,8 +38649,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
-msgstr ""
-"A jelenlegi export nem található, próbálja meg újragenerálni. ({error})"
+msgstr "A jelenlegi export nem található, próbálja meg újragenerálni. ({error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -40419,8 +40403,7 @@ msgstr "Csak a következő ügyfeleinek"
 #: eventyay/plugins/sendmail/forms.py:93
 msgctxt "subevent"
 msgid "Only send to customers of dates starting at or after"
-msgstr ""
-"Csak a következő dátumtól vagy azután kezdődő dátumú ügyfeleknek küldje"
+msgstr "Csak a következő dátumtól vagy azután kezdődő dátumú ügyfeleknek küldje"
 
 #: eventyay/plugins/sendmail/forms.py:98
 msgctxt "subevent"
@@ -40495,8 +40478,7 @@ msgstr "Töltsön fel új fájlt a meglévő cseréjéhez."
 
 #: eventyay/plugins/sendmail/forms.py:480
 msgid "Edit the list of recipient email addresses separated by commas."
-msgstr ""
-"Szerkessze a címzettek vesszővel elválasztott e-mail-címeinek listáját."
+msgstr "Szerkessze a címzettek vesszővel elválasztott e-mail-címeinek listáját."
 
 #: eventyay/plugins/sendmail/forms.py:501
 #, fuzzy
@@ -42990,8 +42972,8 @@ msgid ""
 "                                                    "
 msgstr ""
 "\n"
-"                                                        ettől: "
-"%(start_date)s\n"
+"                                                        ettől: %(start_date)"
+"s\n"
 "                                                    "
 
 #: eventyay/presale/templates/pretixpresale/fragment_join_online_video.html:10
@@ -43575,8 +43557,7 @@ msgstr "Eventyay videó"
 #, fuzzy
 #| msgid "Unknown order code or not authorized to access this order."
 msgid "You are not authorized to access this order."
-msgstr ""
-"Ismeretlen rendelési kód, vagy nincs jogosultság a rendelés eléréséhez."
+msgstr "Ismeretlen rendelési kód, vagy nincs jogosultság a rendelés eléréséhez."
 
 #: eventyay/presale/views/order.py:556 eventyay/presale/views/order.py:626
 #: eventyay/presale/views/order.py:700
@@ -43692,8 +43673,7 @@ msgstr ""
 msgid ""
 "If there were any orders by this user, they will receive an email with their "
 "order codes."
-msgstr ""
-"Ha a felhasználónak vannak rendelései, emailt kap a rendelési kódokkal."
+msgstr "Ha a felhasználónak vannak rendelései, emailt kap a rendelési kódokkal."
 
 #: eventyay/presale/views/waiting.py:89
 msgid "Waiting lists are disabled for this event."

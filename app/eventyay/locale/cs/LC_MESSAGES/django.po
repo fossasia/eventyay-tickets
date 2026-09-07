@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:14+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 09:14+0000\n"
+"Last-Translator: LibreTranslate <noreply-mt-libretranslate@weblate.org>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/eventyay/eventyay/"
 "cs/>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -256,8 +256,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"K zobrazení programu si buď povolte JavaScript, nebo navštivte <a "
-"href=\"%(href)s\">tuto</a> stránku s NoJS programem."
+"K zobrazení programu si buď povolte JavaScript, nebo navštivte <a href=\"%"
+"(href)s\">tuto</a> stránku s NoJS programem."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -3886,8 +3886,7 @@ msgstr "Řazení data"
 
 #: eventyay/base/configurations/default_setting.py:2514
 msgid "Link back to organizer overview on all event pages"
-msgstr ""
-"Zobrazit na všech stránkách událostí odkaz zpět na přehled organizátora"
+msgstr "Zobrazit na všech stránkách událostí odkaz zpět na přehled organizátora"
 
 #: eventyay/base/configurations/default_setting.py:2523
 msgid "Homepage text"
@@ -9410,8 +9409,7 @@ msgstr "Minimální délka textu"
 
 #: eventyay/base/models/question.py:200
 msgid "Minimum allowed text in characters or words (set in CfP settings)."
-msgstr ""
-"Minimální povolený počet znaků nebo slov v textu (podle nastavení CfP)."
+msgstr "Minimální povolený počet znaků nebo slov v textu (podle nastavení CfP)."
 
 #: eventyay/base/models/question.py:205
 msgid "Maximum text length"
@@ -9420,8 +9418,7 @@ msgstr "Maximální délka textu"
 #: eventyay/base/models/question.py:206
 msgid ""
 "Maximum allowed text length in characters or words (set in CfP settings)."
-msgstr ""
-"Maximální povolený počet znaků nebo slov v textu (podle nastavení CfP)."
+msgstr "Maximální povolený počet znaků nebo slov v textu (podle nastavení CfP)."
 
 #: eventyay/base/models/question.py:240
 msgid "Publish answers"
@@ -12156,8 +12153,8 @@ msgid ""
 "Error while importing value \"{value}\" for column \"{column}\" in line "
 "\"{line}\": {message}"
 msgstr ""
-"Chyba při importu hodnoty „{value}“ pro sloupec „{column}“ na řádku "
-"„{line}“: {message}"
+"Chyba při importu hodnoty „{value}“ pro sloupec „{column}“ na řádku „{line}"
+"“: {message}"
 
 #: eventyay/base/services/orderimport.py:128
 #, fuzzy, python-brace-format
@@ -12819,8 +12816,7 @@ msgstr ""
 
 #: eventyay/base/shredder.py:52
 msgid "Your ticket shop needs to be offline to use this feature."
-msgstr ""
-"Abyste mohli tuto funkci použít, musí být váš prodej vstupenek offline."
+msgstr "Abyste mohli tuto funkci použít, musí být váš prodej vstupenek offline."
 
 #: eventyay/base/shredder.py:142
 msgid "Phone numbers"
@@ -13324,8 +13320,7 @@ msgstr "Úkol byl dokončen."
 #: eventyay/cfp/flow.py:466
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is open."
-msgstr ""
-"Váš koncept byl uložen. Můžete ho upravovat, dokud nebude CfP uzavřeno."
+msgstr "Váš koncept byl uložen. Můžete ho upravovat, dokud nebude CfP uzavřeno."
 
 #: eventyay/cfp/flow.py:473
 msgid ""
@@ -13573,8 +13568,8 @@ msgstr ""
 #, python-format
 msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
 msgstr ""
-"Toto shánění přednášejících (Call for Papers) skončilo %(deadline)s "
-"(%(timezone)s)."
+"Toto shánění přednášejících (Call for Papers) skončilo %(deadline)s (%"
+"(timezone)s)."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:60
 msgid "View or edit speaker profile"
@@ -17553,8 +17548,7 @@ msgstr "Veřejný klíč (Test)"
 
 #: eventyay/control/forms/global_settings.py:381
 msgid "Test publishable key for organizer billing and platform fees."
-msgstr ""
-"Testovací veřejný klíč pro fakturaci organizátora a poplatky platformy."
+msgstr "Testovací veřejný klíč pro fakturaci organizátora a poplatky platformy."
 
 #: eventyay/control/forms/global_settings.py:387
 #: eventyay/control/forms/global_settings.py:440
@@ -19030,8 +19024,8 @@ msgid ""
 "\"email\", \"number\", \"name\", or \"tag\"."
 msgstr ""
 "Můžete buď zadat seznam e-mailových adres, jednu e-mailovou adresu na řádek, "
-"nebo soubor CSV se sloupcem title a jednou nebo více sloupci „email“, "
-"„number“, „name“ nebo „tag“."
+"nebo soubor CSV se sloupcem title a jednou nebo více sloupci „email“, „number"
+"“, „name“ nebo „tag“."
 
 #: eventyay/control/forms/vouchers.py:332
 msgid "Maximum usages per voucher"
@@ -19126,8 +19120,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Položka č. {posid}: {old_product} ({old_price}) změněna na {new_product} "
-"({new_price})."
+"Položka č. {posid}: {old_product} ({old_price}) změněna na {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19140,8 +19134,8 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"Pozice č. {posid}: Datum události „{old_event}“ ({old_price}) změněno na "
-"„{new_event}“ ({new_price})."
+"Pozice č. {posid}: Datum události „{old_event}“ ({old_price}) změněno na „"
+"{new_event}“ ({new_price})."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
@@ -19234,8 +19228,7 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Unknown scan of code \"{barcode}…\" for list \"{list}\", type \"{type}\"."
-msgstr ""
-"Neznámý sken kódu \"{barcode}…\" pro seznam \"{list}\", typ \"{type}\"."
+msgstr "Neznámý sken kódu \"{barcode}…\" pro seznam \"{list}\", typ \"{type}\"."
 
 #: eventyay/control/logdisplay.py:268
 #, python-brace-format
@@ -19243,8 +19236,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"Sken sken odvolaného kódu \"{barcode}…\" v čase {datetime} pro seznam "
-"\"{list}\", typ \"{type}\", byl nahrán."
+"Sken sken odvolaného kódu \"{barcode}…\" v čase {datetime} pro seznam \""
+"{list}\", typ \"{type}\", byl nahrán."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -20017,8 +20010,7 @@ msgstr "Přístupový token zařízení byl znovu vygenerován."
 
 #: eventyay/control/logdisplay.py:698
 msgid "The device has notified the server of an hardware or software update."
-msgstr ""
-"Zařízení upozornilo server na hardwarovou nebo softwarovou aktualizaci."
+msgstr "Zařízení upozornilo server na hardwarovou nebo softwarovou aktualizaci."
 
 #: eventyay/control/logdisplay.py:699
 msgid "The gift card has been created."
@@ -20566,8 +20558,8 @@ msgid ""
 msgstr ""
 "Přesun místnosti se pokusí všechny z místnosti vyhodit. Lidem se bude nutné "
 "znovu připojit po obnovení stránky. Pokud se lidi nepodaří vyhodit (např. "
-"server je nedostupný), akce bude i tak pokračovat, ale může vytvořit "
-"„rozdělenou“ místnost, tj. dvě skupiny lidí, které si myslí, že jsou ve "
+"server je nedostupný), akce bude i tak pokračovat, ale může vytvořit „"
+"rozdělenou“ místnost, tj. dvě skupiny lidí, které si myslí, že jsou ve "
 "stejné místnosti, ale nejsou. Nahrávky místnosti už později nebudou "
 "přístupné přes rozhraní. Doporučuje se připojit se do místnosti osobně, "
 "abyste na to mohli reagovat. Používejte s opatrností."
@@ -23211,8 +23203,8 @@ msgid ""
 "To confirm you really want this, please type out the event's name "
 "(\"%(name)s\") here:"
 msgstr ""
-"Pro potvrzení, že to opravdu chcete, sem zadejte krátký název akce "
-"(\"%(slug)s\"):"
+"Pro potvrzení, že to opravdu chcete, sem zadejte krátký název akce (\"%(slug)"
+"s\"):"
 
 #: eventyay/control/templates/pretixcontrol/event/delete.html:36
 msgid "Your event can not be deleted as it already contains orders."
@@ -23637,8 +23629,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Nejsou k dispozici žádní poskytovatelé plateb. Přejděte prosím do <a "
-"%(plugin_settings_href)s>nastavení pluginů</a> a aktivujte jeden nebo více "
+"Nejsou k dispozici žádní poskytovatelé plateb. Přejděte prosím do <a %"
+"(plugin_settings_href)s>nastavení pluginů</a> a aktivujte jeden nebo více "
 "platebních pluginů."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -24082,8 +24074,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Nejsou k dispozici žádné výstupy vstupenek. Přejděte prosím do <a "
-"%(plugin_settings_href)s>nastavení pluginu</a> a aktivujte jeden nebo více "
+"Nejsou k dispozici žádné výstupy vstupenek. Přejděte prosím do <a %"
+"(plugin_settings_href)s>nastavení pluginu</a> a aktivujte jeden nebo více "
 "pluginů pro výstup vstupenek."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
@@ -24266,8 +24258,7 @@ msgstr "Stripe — Platby za vstupenky"
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:65
 msgid "This configuration is used for ticket payments via the Stripe plugin."
-msgstr ""
-"Tato konfigurace se používá pro platby za vstupenky přes plugin Stripe."
+msgstr "Tato konfigurace se používá pro platby za vstupenky přes plugin Stripe."
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:69
 msgid "Client Configuration"
@@ -24490,8 +24481,8 @@ msgid ""
 "except if the add-on products or bundled products represent additional "
 "people (e.g. group bundles)."
 msgstr ""
-"Tato volba by měla být nastavena u většiny věcí, které byste nazvali "
-"„vstupenkou“. U doplňků produktu nebo balíčků by měla být nastavena u hlavní "
+"Tato volba by měla být nastavena u většiny věcí, které byste nazvali „"
+"vstupenkou“. U doplňků produktu nebo balíčků by měla být nastavena u hlavní "
 "vstupenky, s výjimkou případů, kdy doplňkové produkty nebo produkty v "
 "balíčku představují další osoby (např. skupinové balíčky)."
 
@@ -28145,8 +28136,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Chceme se jen ujistit, že jste to opravdu vy. Znovu se ověřte pomocí "
-"„%(login_provider)s“."
+"Chceme se jen ujistit, že jste to opravdu vy. Znovu se ověřte pomocí „%"
+"(login_provider)s“."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28315,8 +28306,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Opravdu chcete smazat následující záznam na čekací listině "
-"<strong>%(entry)s</strong>?"
+"Opravdu chcete smazat následující záznam na čekací listině <strong>%(entry)"
+"s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -28360,12 +28351,11 @@ msgid ""
 "quota is available) or you can press the big button below this text to send "
 "out as many vouchers as currently possible to the persons who waited longest."
 msgstr ""
-"Nastavili jste, že poukazy nebudou automaticky odesílány <strong>ne</"
-"strong>. Můžete je buď odesílat po jednom v pořadí dle svého výběru "
-"kliknutím na tlačítka vedle řádku v této tabulce (pokud je k dispozici "
-"dostatečná kvóta), nebo můžete stisknout velké tlačítko pod tímto textem a "
-"odeslat co nejvíce poukazů, kolik je právě možné, osobám, které čekají "
-"nejdéle."
+"Nastavili jste, že poukazy nebudou automaticky odesílány <strong>ne</strong>"
+". Můžete je buď odesílat po jednom v pořadí dle svého výběru kliknutím na "
+"tlačítka vedle řádku v této tabulce (pokud je k dispozici dostatečná kvóta), "
+"nebo můžete stisknout velké tlačítko pod tímto textem a odeslat co nejvíce "
+"poukazů, kolik je právě možné, osobám, které čekají nejdéle."
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:69
 msgid "Send as many vouchers as possible"
@@ -29250,8 +29240,7 @@ msgstr "Refundace byla označena jako dokončená."
 
 #: eventyay/control/views/orders.py:1041
 msgid "The request has been removed. If you want, you can now inform the user."
-msgstr ""
-"Žádost byla odstraněna. Pokud chcete, můžete nyní informovat uživatele."
+msgstr "Žádost byla odstraněna. Pokud chcete, můžete nyní informovat uživatele."
 
 #: eventyay/control/views/orders.py:1056
 msgid "Your cancellation request"
@@ -30555,8 +30544,7 @@ msgstr "Přidat zařízení pro dvoufaktorové ověřování"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-confirm-totp.html:21
 msgid "To set up this device, please follow the following steps:"
-msgstr ""
-"Chcete-li toto zařízení nastavit, postupujte podle následujících kroků:"
+msgstr "Chcete-li toto zařízení nastavit, postupujte podle následujících kroků:"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/2fa-confirm-totp.html:25
 msgid "Download the Google Authenticator application to your phone:"
@@ -31977,8 +31965,7 @@ msgstr ""
 #: eventyay/eventyay_common/templates/eventyay_common/events/create.html:137
 msgid ""
 "We strongly recommend against using short forms of more then 16 characters."
-msgstr ""
-"Důsledně nedoporučujeme používat zkrácené formuláře delší než 16 znaků."
+msgstr "Důsledně nedoporučujeme používat zkrácené formuláře delší než 16 znaků."
 
 #: eventyay/eventyay_common/templates/eventyay_common/events/create.html:207
 msgid ""
@@ -32860,8 +32847,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Tento odkaz pro potvrzení e-mailu vypršel nebo je neplatný. Prosím "
-"%(email_action_link)s."
+"Tento odkaz pro potvrzení e-mailu vypršel nebo je neplatný. Prosím %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33525,8 +33512,8 @@ msgid ""
 msgstr ""
 "Zdravíme.\n"
 "\n"
-"Je nám líto, ale vaši přihlášku „{submission_title}“ na událost "
-"{event_name}\n"
+"Je nám líto, ale vaši přihlášku „{submission_title}“ na událost {event_name}"
+"\n"
 "jsme nemohli přijmout. Přednášek bylo prostě přihlášených příliš mnoho.\n"
 "Doufáme, že na {event_name} přijdete alespoň jako návštěvník.\n"
 "\n"
@@ -33649,8 +33636,8 @@ msgid ""
 msgstr ""
 "Zdravíme.\n"
 "\n"
-"Byli jste přidáni do přihlášky na událost {event_name} s názvem "
-"„{proposal_title}“.\n"
+"Byli jste přidáni do přihlášky na událost {event_name} s názvem „"
+"{proposal_title}“.\n"
 "Vytvořili jsme proto pro vás účet – navštivte prosím tento odkaz pro "
 "nastavení hesla.\n"
 "\n"
@@ -33677,8 +33664,8 @@ msgid ""
 msgstr ""
 "Zdravíme.\n"
 "\n"
-"Byli jste přidáni do přihlášky na událost {event_name} s názvem "
-"„{proposal_title}“.\n"
+"Byli jste přidáni do přihlášky na událost {event_name} s názvem „"
+"{proposal_title}“.\n"
 "Navštivte prosím tento odkaz pro úpravu uživatelského profilu a zobrazení "
 "stavu přihlášky:\n"
 "\n"
@@ -36245,9 +36232,9 @@ msgid ""
 "href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
 "new account to join the team!"
 msgstr ""
-"Pokud už máte účet – jako řečník nebo organizátor – na <a "
-"href=\"%(domain)s\">%(domain)s</a>, přihlaste se nyní. Jinak si vytvořte "
-"nový účet a připojte se k týmu!"
+"Pokud už máte účet – jako řečník nebo organizátor – na <a href=\"%(domain)"
+"s\">%(domain)s</a>, přihlaste se nyní. Jinak si vytvořte nový účet a "
+"připojte se k týmu!"
 
 #: eventyay/orga/templates/orga/invitation.html:37
 #, python-format
@@ -36386,8 +36373,8 @@ msgid ""
 "tab."
 msgstr ""
 "Zde lze upravit výchozí šablony a vlastní šablony e-mailů. Pokud je potřeba "
-"odeslat e-maily některým nebo všem řečníkům, přejdi na kartu „Odeslat e-"
-"maily“. E-maily zařazené do fronty k odeslání jsou na kartě „K odeslání“."
+"odeslat e-maily některým nebo všem řečníkům, přejdi na kartu „Odeslat e-maily"
+"“. E-maily zařazené do fronty k odeslání jsou na kartě „K odeslání“."
 
 #: eventyay/orga/templates/orga/mails/mailtemplate/list.html:36
 msgid ""
@@ -36634,8 +36621,8 @@ msgid ""
 "settings</a>."
 msgstr ""
 "Kontrolující uvidí a budou moci kontrolovat <strong>jenom jim konkrétně "
-"přiřazené</strong> přihlášky. Toto můžete změnit v <a "
-"href=\"%(href)s\">nastavení kontroly</a>."
+"přiřazené</strong> přihlášky. Toto můžete změnit v <a href=\"%(href)s\">"
+"nastavení kontroly</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:120
 #, python-format
@@ -37280,8 +37267,8 @@ msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
 msgstr ""
-"Pro vložení widgetu do webu zkopírujte následující kód do sekce "
-"<code>&lt;head&gt;</code>:"
+"Pro vložení widgetu do webu zkopírujte následující kód do sekce <code>"
+"&lt;head&gt;</code>:"
 
 #: eventyay/orga/templates/orga/settings/widget.html:81
 #, python-format
@@ -38455,8 +38442,7 @@ msgstr "Váš program byl zveřejněn!"
 #: eventyay/orga/views/schedule.py:162
 msgid ""
 "Reset successful – start editing the schedule from your selected version!"
-msgstr ""
-"Obnovení bylo úspěšné – program začněte upravovat o vámi zvolené verze!"
+msgstr "Obnovení bylo úspěšné – program začněte upravovat o vámi zvolené verze!"
 
 #: eventyay/orga/views/schedule.py:165
 msgid "Error retrieving the schedule version to reset to."
@@ -39382,8 +39368,8 @@ msgid ""
 "a specific country."
 msgstr ""
 "Uveďte jeden IBAN nebo předponu IBAN na řádek. Systém se nepokusí odeslat "
-"refundace na žádný z těchto IBANů. Užitečné např. pokud dostáváte hodně "
-"„ přeposlaných plateb“ od platebního poskytovatele třetí strany. Můžete také "
+"refundace na žádný z těchto IBANů. Užitečné např. pokud dostáváte hodně „ "
+"přeposlaných plateb“ od platebního poskytovatele třetí strany. Můžete také "
 "uvést kódy zemí jako například „GB“, pokud nikdy nechcete odesílat refundace "
 "na IBANy z určité země."
 
@@ -39529,8 +39515,7 @@ msgstr ""
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/import_assign.html:95
 msgid ""
 "More data was uploaded but is not shown here. It will still be processed"
-msgstr ""
-"Bylo nahráno více dat, ale zde nejsou zobrazená. Stále budou zpracována"
+msgstr "Bylo nahráno více dat, ale zde nejsou zobrazená. Stále budou zpracována"
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/import_base.html:12
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/import_base_organizer.html:9
@@ -39776,11 +39761,11 @@ msgstr[0] ""
 "Pokoušíte se stáhnout export vrácení peněz z %(date)s s jednou objednávkou a "
 "celkovou částkou %(sum)s."
 msgstr[1] ""
-"Pokoušíte se stáhnout export vrácení peněz z %(date)s s počtem objednávek "
-"%(cnt)s a celkovou částkou %(sum)s."
+"Pokoušíte se stáhnout export vrácení peněz z %(date)s s počtem objednávek %"
+"(cnt)s a celkovou částkou %(sum)s."
 msgstr[2] ""
-"Pokoušíte se stáhnout export vrácení peněz z %(date)s s počtem objednávek "
-"%(cnt)s a celkovou částkou %(sum)s."
+"Pokoušíte se stáhnout export vrácení peněz z %(date)s s počtem objednávek %"
+"(cnt)s a celkovou částkou %(sum)s."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/sepa_export.html:23
 msgid ""
@@ -39921,8 +39906,8 @@ msgid ""
 "We could not find bank account information for the refund {refund_id}. It "
 "was marked as failed."
 msgstr ""
-"Nepodařilo se nám najít informace o bankovním účtu pro refundaci "
-"{refund_id}. Byla označena jako neúspěšná."
+"Nepodařilo se nám najít informace o bankovním účtu pro refundaci {refund_id}"
+". Byla označena jako neúspěšná."
 
 #: eventyay/plugins/banktransfer/views.py:779
 msgid "No valid orders have been found."
@@ -41328,8 +41313,7 @@ msgstr "Platnost košíku vypršela"
 #: eventyay/presale/templates/pretixpresale/event/checkout_confirm.html:44
 #, python-format
 msgid "The products in your cart are reserved for you for %(minutes)s minutes."
-msgstr ""
-"Produkty ve vašem košíku jsou pro vás rezervovány na %(minutes)s minut."
+msgstr "Produkty ve vašem košíku jsou pro vás rezervovány na %(minutes)s minut."
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_base.html:44
 #: eventyay/presale/templates/pretixpresale/event/checkout_confirm.html:48
@@ -42116,8 +42100,7 @@ msgstr ""
 #: eventyay/presale/templates/pretixpresale/event/order.html:182
 #, python-format
 msgid "A refund of %(amount)s will be sent out to you soon, please be patient."
-msgstr ""
-"Vrácení částky %(amount)s vám bude brzy odesláno, prosíme o trpělivost."
+msgstr "Vrácení částky %(amount)s vám bude brzy odesláno, prosíme o trpělivost."
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:191
 #, python-format
@@ -42421,9 +42404,9 @@ msgid ""
 "to initiate the transfer manually. Please be patient as this might take a "
 "bit longer."
 msgstr ""
-"U platební metody, kterou jste použili, nelze částku k vrácení "
-"<strong>automaticky odeslat zpět</strong>. Místo toho bude muset pořadatel "
-"akce převod zahájit ručně. Buďte prosím trpěliví, může to trvat o něco déle."
+"U platební metody, kterou jste použili, nelze částku k vrácení <strong>"
+"automaticky odeslat zpět</strong>. Místo toho bude muset pořadatel akce "
+"převod zahájit ručně. Buďte prosím trpěliví, může to trvat o něco déle."
 
 #: eventyay/presale/templates/pretixpresale/event/order_cancel.html:195
 msgid "Yes, request cancellation"
@@ -43597,8 +43580,7 @@ msgstr "- Vaše přednáška „%(title)s“ se bude konat od %(start)s v %(loca
 #: eventyay/schedule/templates/schedule/speaker_notification.txt:3
 #, python-format
 msgid "- Your session “%(title)s” has been moved to %(start)s in %(location)s"
-msgstr ""
-"- Vaše přednáška „%(title)s“ byla přesunuta na %(start)s v %(location)s"
+msgstr "- Vaše přednáška „%(title)s“ byla přesunuta na %(start)s v %(location)s"
 
 #: eventyay/submission/exporters.py:18 eventyay/submission/exporters.py:63
 msgid "Custom fields data"

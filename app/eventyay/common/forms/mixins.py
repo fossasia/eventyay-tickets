@@ -828,6 +828,8 @@ class ConfiguredFieldOrderMixin:
 class ScheduledAtValidationMixin:
     def clean_scheduled_at(self):
         scheduled_at = self.cleaned_data.get('scheduled_at')
+        if getattr(self, 'draft_save', False):
+            return scheduled_at
         if scheduled_at is not None:
             if timezone.is_naive(scheduled_at):
                 scheduled_at = timezone.make_aware(scheduled_at, timezone.get_current_timezone())

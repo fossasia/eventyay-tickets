@@ -26,22 +26,6 @@
 {% endif %}
 
 {% if not widget.attrs.disabled %}
-  <div class='mb-3'>
-    <textarea
-      name='{{ widget.links_name }}'
-      id='{{ widget.links_id }}'
-      rows='4'
-      class='form-control'
-      placeholder='{% if widget.max_items == 1 %}https://example.com/slides.pdf{% else %}https://example.com/slides-1.pdf&#10;https://example.com/slides-2.pdf{% endif %}'>{{ widget.links_value }}</textarea>
-    <small class='form-text text-muted'>
-      {% if widget.max_items == 1 %}
-        {% translate 'Add one direct PDF link.' %}
-      {% else %}
-        {% translate 'Add one direct PDF link per line.' %}
-      {% endif %}
-    </small>
-  </div>
-
   <div class="slides-input-widget" data-id="{{ widget.files_id }}" data-is-re-render="{% if widget.is_re_render %}true{% else %}false{% endif %}">
     <div>
       <label class='btn btn-default mb-0 slides-file-label' for='{{ widget.files_id }}'>
@@ -60,7 +44,7 @@
       </span>
       <div id='{{ widget.files_id }}_error' class='text-danger mt-1 slides-error-msg'>
         {% if widget.max_size %}
-          {% blocktranslate with size=widget.max_size|filesize %}Please do not upload files larger than {{ size }}.{% endblocktranslate %}
+          {% blocktranslate with size=widget.max_size|filesize %}The upload limit is {{ size }}.{% endblocktranslate %}
         {% endif %}
       </div>
       <div id='{{ widget.files_id }}_storage_warning' class='text-warning mt-1 slides-storage-warning'>
@@ -80,7 +64,7 @@
       {% endif %}
       {% translate 'Only PDF is supported right now.' %}
       {% if widget.max_size %}
-        {% blocktranslate with size=widget.max_size|filesize %}Maximum file size: {{ size }}.{% endblocktranslate %}
+        {% blocktranslate with size=widget.max_size|filesize %}The upload limit is {{ size }}.{% endblocktranslate %}
       {% endif %}
     </small>
   </div>

@@ -118,3 +118,11 @@ body {
     display: block;
 }
 
+#toolbox-disabled-placeholder-warning {
+    display: none;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+}
+

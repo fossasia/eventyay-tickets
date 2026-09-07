@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-30 15:29+0000\n"
+"PO-Revision-Date: 2026-09-02 04:04+0000\n"
 "Last-Translator: Andreas Kleinert <Andy.Kleinert@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/eventyay/eventyay/"
 "de/>\n"
@@ -14,26 +14,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 "X-Poedit-Bookmarks: -1,-1,904,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
-#, fuzzy
-#| msgid "Exhibitors"
 msgid "Exhibitors/Sponsors"
-msgstr "Aussteller"
+msgstr "Aussteller/Förderer"
 
 #: data/templates/exhibitors/exhibitor_info.html:9
-#, fuzzy
-#| msgid "You don't have any API tokens yet."
 msgid "You don't have any exhibitors or sponsors yet."
-msgstr "Du hast noch keine API-Token."
+msgstr "Sie haben noch keine Aussteller oder Förderer."
 
 #: data/templates/exhibitors/exhibitor_info.html:16
 #: data/templates/exhibitors/exhibitor_info.html:23
 msgid "Add an Exhibitor/Sponsor"
-msgstr ""
+msgstr "Aussteller/Förderer hinzufügen"
 
 #: data/templates/exhibitors/exhibitor_info.html:31
 #: eventyay/base/configurations/default_setting.py:2492
@@ -94,11 +90,11 @@ msgstr "Name"
 
 #: data/templates/exhibitors/exhibitor_info.html:32
 msgid "Group"
-msgstr ""
+msgstr "Gruppe"
 
 #: data/templates/exhibitors/exhibitor_info.html:33
 msgid "Booth"
-msgstr ""
+msgstr "Stand"
 
 #: data/templates/exhibitors/exhibitor_info.html:62
 #, fuzzy
@@ -108,7 +104,7 @@ msgstr "Titel"
 
 #: data/templates/exhibitors/exhibitor_info.html:71
 msgid "Copy exhibitor key"
-msgstr ""
+msgstr "Ausstellerschlüssel kopieren"
 
 #: eventyay/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -163,6 +159,9 @@ msgid ""
 "public view. You will only be able to see the schedule if it is public and "
 "released."
 msgstr ""
+"Sie verlassen gerade den Modus „Programm-Vorschau“. Dadurch gelangen Sie zur "
+"öffentlichen Ansicht. Sie können den Zeitplan nur einsehen, wenn er "
+"öffentlich zugänglich und freigegeben wurde."
 
 #: eventyay/agenda/templates/agenda/base.html:67
 #, fuzzy
@@ -217,16 +216,18 @@ msgstr "Wir mussten einen Beitrag verschieben: "
 
 #: eventyay/agenda/templates/agenda/etherpad_session_block.html:3
 msgid "Collaborative notes"
-msgstr ""
+msgstr "Gemeinsame Anmerkungen"
 
 #: eventyay/agenda/templates/agenda/etherpad_session_block.html:6
 msgid "Open collaborative notes"
-msgstr ""
+msgstr "Gemeinsame Anmerkungen öffnen"
 
 #: eventyay/agenda/templates/agenda/etherpad_session_block.html:9
 msgid ""
 "Notes are hosted on an external Etherpad instance and open in a new tab."
 msgstr ""
+"Anmerkungen werden auf einer externen Etherpad-Instanz gehostet und in einem "
+"neuen Tab geöffnet."
 
 #: eventyay/agenda/templates/agenda/featured.html:7
 #: eventyay/agenda/templates/agenda/featured.html:8
@@ -263,6 +264,9 @@ msgid ""
 "No featured sessions have been selected yet. Once our organisers highlight "
 "sessions, they will appear here. Please check back later!"
 msgstr ""
+"Es wurden noch keine hervorgehobenen Veranstaltungen ausgewählt. Sobald "
+"unsere Organisatoren Veranstaltungen hervorheben, werden diese hier "
+"angezeigt. Schauen Sie bitte später noch einmal vorbei!"
 
 #: eventyay/agenda/templates/agenda/feed/description.html:6
 #, python-format
@@ -317,7 +321,7 @@ msgstr "Derzeit kann für diese Veranstaltung kein Feedback gegeben werden."
 
 #: eventyay/agenda/templates/agenda/feedback_form.html:44
 msgid "stars"
-msgstr ""
+msgstr "Sterne"
 
 #: eventyay/agenda/templates/agenda/includes/feedback_reply.html:13
 #: eventyay/agenda/templates/agenda/talk.html:119
@@ -645,7 +649,7 @@ msgstr "Zusätzliche Informationen"
 
 #: eventyay/agenda/views/public.py:59
 msgid "Anonymous (name not shared)"
-msgstr ""
+msgstr "Anonym (Name nicht angegeben)"
 
 #: eventyay/agenda/views/public.py:60
 #, python-format
@@ -671,16 +675,24 @@ msgid ""
 "may be lost if you clear your browser data; we are not responsible for data "
 "loss in this case."
 msgstr ""
+"Ihre Favoriten können nur lokal in diesem Browser gespeichert werden. Bitte "
+"melden Sie sich an oder registrieren Sie sich, um mit einem Stern markierte "
+"Veranstaltungen zu synchronisieren und weitere Funktionen nutzen zu können. "
+"Lokal gespeicherte Favoriten können verloren gehen, wenn Sie Ihre "
+"Browserdaten löschen; es wird in diesem Fall keine Haftung für Datenverluste "
+"übernommen."
 
 #: eventyay/agenda/views/schedule.py:396 eventyay/multidomain/views.py:160
 msgid ""
 "Could not save favourites in this browser. Please check your browser storage "
 "settings."
 msgstr ""
+"Die Favoriten konnten in diesem Browser nicht gespeichert werden. Bitte "
+"überprüfen Sie die Speichereinstellungen Ihres Browsers."
 
 #: eventyay/agenda/views/schedule.py:398 eventyay/multidomain/views.py:162
 msgid "Sorry, no matching options."
-msgstr ""
+msgstr "Leider wurden keine passenden Ergebnisse gefunden."
 
 #: eventyay/agenda/views/schedule.py:399 eventyay/multidomain/views.py:163
 msgid "View Changelog"
@@ -704,15 +716,15 @@ msgstr "Nach Raum"
 
 #: eventyay/agenda/views/schedule.py:404 eventyay/multidomain/views.py:168
 msgid "A–Z"
-msgstr ""
+msgstr "A-Z"
 
 #: eventyay/agenda/views/schedule.py:405 eventyay/multidomain/views.py:169
 msgid "Most popular"
-msgstr ""
+msgstr "Am beliebtesten"
 
 #: eventyay/agenda/views/schedule.py:406 eventyay/multidomain/views.py:170
 msgid "Fullscreen"
-msgstr ""
+msgstr "Vollbild"
 
 #: eventyay/agenda/views/schedule.py:407 eventyay/multidomain/views.py:171
 msgid "Exit Fullscreen"
@@ -749,7 +761,7 @@ msgstr "Dies ist eine veraltete Fassung des Veranstaltungsprogramms."
 
 #: eventyay/agenda/views/schedule.py:417 eventyay/multidomain/views.py:178
 msgid "Join room"
-msgstr ""
+msgstr "Raum beitreten"
 
 #: eventyay/agenda/views/schedule.py:418 eventyay/multidomain/views.py:179
 msgid "View Video"
@@ -783,6 +795,8 @@ msgstr "Zum Kalender hinzufügen"
 msgid ""
 "Only available on the public schedule once a schedule is released and public."
 msgstr ""
+"Erstmals im öffentlichen Zeitplan verfügbar, sobald dieser veröffentlicht "
+"und öffentlich zugänglich ist."
 
 #: eventyay/agenda/views/schedule.py:426 eventyay/multidomain/views.py:184
 msgid "iCal"
@@ -790,15 +804,15 @@ msgstr "iCal"
 
 #: eventyay/agenda/views/schedule.py:427 eventyay/multidomain/views.py:185
 msgid "JSON"
-msgstr ""
+msgstr "JSON"
 
 #: eventyay/agenda/views/schedule.py:428 eventyay/multidomain/views.py:186
 msgid "XML"
-msgstr ""
+msgstr "XML"
 
 #: eventyay/agenda/views/schedule.py:429 eventyay/multidomain/views.py:187
 msgid "XCal"
-msgstr ""
+msgstr "XCal"
 
 #: eventyay/agenda/views/schedule.py:430 eventyay/multidomain/views.py:188
 msgid "Google Calendar"
@@ -806,7 +820,7 @@ msgstr "Google Kalender"
 
 #: eventyay/agenda/views/schedule.py:431 eventyay/multidomain/views.py:189
 msgid "Webcal"
-msgstr ""
+msgstr "WebCal"
 
 #: eventyay/agenda/views/schedule.py:432
 #: eventyay/base/exporters/invoices.py:297
@@ -916,6 +930,10 @@ msgid ""
 "Make your starred sessions visible to others. You can open someone else's "
 "starred list only if they have enabled sharing."
 msgstr ""
+"Machen Sie Ihre mit einem Stern gekennzeichneten Veranstaltungen für andere "
+"sichtbar. Sie können die Liste der mit einem Stern gekennzeichneten "
+"Veranstaltungen einer anderen Person nur öffnen, wenn diese die Freigabe "
+"aktiviert hat."
 
 #: eventyay/agenda/views/schedule.py:445 eventyay/control/navigation.py:296
 #: eventyay/eventyay_common/navigation.py:268 eventyay/multidomain/views.py:203
@@ -961,7 +979,7 @@ msgstr "Listenansicht"
 
 #: eventyay/agenda/views/schedule.py:453 eventyay/multidomain/views.py:211
 msgid "Calendar View"
-msgstr ""
+msgstr "Kalenderansicht"
 
 #: eventyay/agenda/views/schedule.py:454 eventyay/common/forms/forms.py:12
 #: eventyay/common/forms/widgets.py:349
@@ -1012,7 +1030,7 @@ msgstr "Keine mit Stern markierten Sitzungen."
 
 #: eventyay/agenda/views/schedule.py:459
 msgid "This room has live interpretation."
-msgstr ""
+msgstr "In diesem Raum wird simultan übersetzt."
 
 #. Translators: This is a label on navigation elements leading to the previous page.
 #: eventyay/agenda/views/schedule.py:460 eventyay/common/text/phrases.py:57
@@ -1030,7 +1048,7 @@ msgstr "Zurück"
 
 #: eventyay/agenda/views/schedule.py:461
 msgid "Coming soon"
-msgstr ""
+msgstr "Demnächst verfügbar"
 
 #: eventyay/agenda/views/schedule.py:462
 #: eventyay/presale/templates/pretixpresale/event/meetup_index.html:74
@@ -1074,7 +1092,7 @@ msgstr "Ungültiger Link"
 
 #: eventyay/agenda/views/schedule.py:491
 msgid "Expected boolean show_publicly."
-msgstr ""
+msgstr "Erwarteter boolescher Wert: show_publicly."
 
 #: eventyay/agenda/views/speaker.py:102 eventyay/agenda/views/speaker.py:203
 msgid "No published speakers."
@@ -1179,6 +1197,9 @@ msgid ""
 "Ticket check-in, attendee search and edits, live registration, badge "
 "printing, and offline sync of orders, revoked secrets, and badge layouts."
 msgstr ""
+"Ticket-Check-in, Suche nach Teilnehmern und Bearbeitung von Teilnehmerdaten, "
+"Live-Registrierung, Druck von Ausweisen sowie Offline-Synchronisation von "
+"Bestellungen, widerrufenen Zugangsdaten und Ausweisvorlagen."
 
 #: eventyay/api/auth/devicesecurity.py:137
 #, fuzzy
@@ -1191,6 +1212,9 @@ msgid ""
 "Kiosk badge printing: scan tickets, check in attendees, and print badges. "
 "Online only — no order sync, revoked-secret sync, or live registration."
 msgstr ""
+"Ausweisdruck am Kiosk: Tickets erfassen, Teilnehmer einschreiben und "
+"Ausweise drucken. Nur online – keine Auftragsabgleichung, keine "
+"Synchronisation gesperrter Zugangsdaten und keine Live-Registrierung."
 
 #: eventyay/api/models.py:23
 msgid "Application name"
@@ -1297,6 +1321,8 @@ msgstr "Unbekannte Erweiterung: '{name}'."
 msgid ""
 "External image URLs are no longer accepted. Please upload a file instead."
 msgstr ""
+"Externe Bild-URLs werden nicht mehr akzeptiert. Bitte stattdessen eine Datei "
+"hochladen."
 
 #: eventyay/api/serializers/order.py:1393
 #: eventyay/api/serializers/order.py:1403
@@ -1415,12 +1441,16 @@ msgstr "Die Endzeit muss nach der Startzeit liegen."
 msgid ""
 "Stream schedules must include at least one scheduled session in this room."
 msgstr ""
+"Die Sendungspläne müssen mindestens eine geplante Sitzung in diesem Raum "
+"enthalten."
 
 #: eventyay/api/serializers/stream_schedule.py:130
 msgid ""
 "This stream schedule overlaps with an existing schedule for this room. "
 "Please adjust the time range."
 msgstr ""
+"Dieser Sendungsplan überschneidet sich mit einem bereits bestehenden Plan "
+"für diesen Raum. Bitte passen Sie den Zeitrahmen an."
 
 #: eventyay/api/templates/rest_framework/api.html:18
 #: eventyay/orga/templates/orga/auth/base.html:29
@@ -1491,8 +1521,7 @@ msgstr ""
 #, fuzzy
 #| msgid "You cannot select a quota and a specific product at the same time."
 msgid "You cannot set an organizer as default if you are not a member."
-msgstr ""
-"Sie können nicht gleichzeitig ein Kontingent und ein Produkt auswählen."
+msgstr "Sie können nicht gleichzeitig ein Kontingent und ein Produkt auswählen."
 
 #: eventyay/api/webhooks.py:181 eventyay/base/notifications.py:239
 msgid "New order placed"
@@ -2175,8 +2204,7 @@ msgstr ""
 
 #: eventyay/base/configurations/default_setting.py:757
 msgid "Automatically cancel and reissue invoice on address changes"
-msgstr ""
-"Bei Adressänderungen automatisch Rechnung stornieren und neu ausstellen"
+msgstr "Bei Adressänderungen automatisch Rechnung stornieren und neu ausstellen"
 
 #: eventyay/base/configurations/default_setting.py:759
 msgid ""
@@ -2424,8 +2452,8 @@ msgid ""
 "If disabled, the event's start and end date will be displayed without the "
 "time of day."
 msgstr ""
-"Wenn diese Einstellung deaktiviert ist, werden Veranstaltungsbeginn und "
-"-ende ohne Uhrzeit angezeigt."
+"Wenn diese Einstellung deaktiviert ist, werden Veranstaltungsbeginn und -"
+"ende ohne Uhrzeit angezeigt."
 
 #: eventyay/base/configurations/default_setting.py:1010
 msgid "Hide all products that are sold out"
@@ -2926,6 +2954,9 @@ msgid ""
 "contact form. Messages will be sent to this address. Your email address "
 "remains hidden from attendees."
 msgstr ""
+"Sie müssen eine E-Mail-Adresse angeben, damit die Teilnehmer Sie über ein "
+"Kontaktformular erreichen können. Nachrichten werden an diese Adresse "
+"gesendet. Ihre E-Mail-Adresse bleibt für die Teilnehmer verborgen."
 
 #: eventyay/base/configurations/default_setting.py:1597
 msgid "Imprint URL"
@@ -2961,8 +2992,8 @@ msgid ""
 "If enabled, we will attach an .ics calendar file to order confirmation "
 "emails."
 msgstr ""
-"Wenn diese Option aktiviert ist, hängen wir Bestellbestätigungs-E-Mails "
-"eine .ics-Kalenderdatei an."
+"Wenn diese Option aktiviert ist, hängen wir Bestellbestätigungs-E-Mails eine "
+".ics-Kalenderdatei an."
 
 #: eventyay/base/configurations/default_setting.py:1640
 msgid "Subject prefix"
@@ -3670,7 +3701,7 @@ msgstr "Hintergrundfarbe der Seite"
 
 #: eventyay/base/configurations/default_setting.py:2110
 msgid "Video sidebar text color"
-msgstr ""
+msgstr "Textfarbe in der Video-Seitenleiste"
 
 #: eventyay/base/configurations/default_setting.py:2114
 #, fuzzy
@@ -3707,6 +3738,13 @@ msgid ""
 "will always be visible). Images will be automatically optimized to max 3000 "
 "px wide on save."
 msgstr ""
+"Laden Sie ein Bannerbild hoch, das oben auf allen Veranstaltungsseiten "
+"angezeigt wird. Das Banner wird standardmäßig auf einen 320 px hohen "
+"Streifen zugeschnitten. Platzieren Sie wichtige Inhalte (Titel, Logo, "
+"wichtige Bildelemente) in der Mitte des Bildes – auf schmalen Bildschirmen "
+"werden die Seiten beschnitten. Empfohlene Größe: 1920 × 640 px (der mittlere "
+"Bereich von 1920 × 320 px ist immer sichtbar). Bilder werden beim Speichern "
+"automatisch auf eine maximale Breite von 3000 px optimiert."
 
 #: eventyay/base/configurations/default_setting.py:2169
 #, fuzzy
@@ -3723,6 +3761,14 @@ msgid ""
 "recommend an aspect ratio of 16:9, and at least 800 x 450 px for best "
 "display results."
 msgstr ""
+"Diese Grafik wird speziell für die Veranstaltungskarten auf der Startseite "
+"der Plattform und andere Veranstaltungslisten verwendet. Ist keine Grafik "
+"festgelegt, greift die Plattform auf die Grafik der Kopfzeile der "
+"Veranstaltung, dann auf das Logo der Veranstaltung und schließlich auf ein "
+"Standard-Platzhalter-Symbol für den Kalender zurück. Die Grafik sollte für "
+"eine rechteckige Karte optimiert sein. Wir empfehlen ein Seitenverhältnis "
+"von 16:9 und eine Größe von mindestens 800 x 450 px, um optimale "
+"Anzeigeergebnisse zu erzielen."
 
 #: eventyay/base/configurations/default_setting.py:2191
 #: eventyay/base/configurations/default_setting.py:2231
@@ -3739,6 +3785,12 @@ msgid ""
 "save (max 1000 px wide), except for SVG and animated images which remain "
 "unmodified."
 msgstr ""
+"Laden Sie Ihr Veranstaltungslogo hoch. Das Logo wird mit einer Höhe von bis "
+"zu 160 px (maximale Höhe) angezeigt, die Breite passt sich proportional an. "
+"Wir empfehlen eine Mindesthöhe von 320 px, um eine scharfe Darstellung auf "
+"Retina-Bildschirmen zu gewährleisten. Das Logo wird beim Speichern "
+"automatisch optimiert (max. 1000 px breit), mit Ausnahme von SVG- und "
+"animierten Bildern, die unverändert bleiben."
 
 #: eventyay/base/configurations/default_setting.py:2212
 #: eventyay/base/configurations/default_setting.py:2273
@@ -3767,6 +3819,12 @@ msgid ""
 "save (max 1000 px wide), except for SVG and animated images which remain "
 "unmodified."
 msgstr ""
+"Laden Sie Ihr Veranstalterlogo hoch. Das Logo wird mit einer Höhe von bis zu "
+"160 px (maximale Höhe) angezeigt, die Breite passt sich proportional an. Wir "
+"empfehlen eine Mindesthöhe von 320 px für eine scharfe Darstellung auf "
+"Retina-Bildschirmen. Das Logo wird beim Speichern automatisch optimiert "
+"(maximal 1000 px breit), mit Ausnahme von SVG- und animierten Bildern, die "
+"unverändert bleiben."
 
 #: eventyay/base/configurations/default_setting.py:2256
 #: eventyay/control/forms/organizer_forms/organizer_settings_form.py:71
@@ -3976,6 +4034,9 @@ msgid ""
 "When enabled, logged-in users can follow your organizer profile and receive "
 "notifications when you publish new public events."
 msgstr ""
+"Wenn diese Funktion aktiviert ist, können angemeldete Nutzer Ihrem "
+"Veranstalterprofil folgen und Benachrichtigungen erhalten, sobald Sie neue "
+"öffentliche Veranstaltungen veröffentlichen."
 
 #: eventyay/base/configurations/default_setting.py:2547
 #, fuzzy
@@ -4084,6 +4145,9 @@ msgid ""
 "Custom label for the \"Tickets\" menu item. Leave empty to use the default "
 "label or locale-specific translation."
 msgstr ""
+"Benutzerdefinierte Bezeichnung für den Menüpunkt „Tickets“. Lassen Sie das "
+"Feld leer, um die Standardbezeichnung oder die landesspezifische Übersetzung "
+"zu verwenden."
 
 #: eventyay/base/configurations/default_setting.py:2653
 #: eventyay/eventyay_common/templates/eventyay_common/auth/_login_form.html:42
@@ -4104,6 +4168,9 @@ msgid ""
 "Custom label for the \"Join online video\" menu item. Leave empty to use the "
 "default label or locale-specific translation."
 msgstr ""
+"Benutzerdefinierte Bezeichnung für den Menüpunkt „An Online-Video teilnehmen"
+"“. Lassen Sie das Feld leer, um die Standardbezeichnung oder die "
+"landesspezifische Übersetzung zu verwenden."
 
 #: eventyay/base/configurations/default_setting.py:2669
 #, fuzzy
@@ -4270,6 +4337,8 @@ msgid ""
 "This is a test email sent from Eventyay. If you received this email, your "
 "email settings are correct."
 msgstr ""
+"Dies ist eine Test-E-Mail von Eventyay. Wenn Sie diese E-Mail erhalten "
+"haben, sind Ihre E-Mail-Einstellungen korrekt."
 
 #: eventyay/base/email.py:351 eventyay/eventyay_common/views/event.py:563
 #: eventyay/eventyay_common/views/event.py:1588
@@ -5979,7 +6048,7 @@ msgstr "Seite %(page)s von %(of)s"
 #: eventyay/base/invoice.py:272
 msgctxt "invoice"
 msgid "Classic"
-msgstr ""
+msgstr "Klassisch"
 
 #: eventyay/base/invoice.py:326
 msgctxt "invoice"
@@ -6184,15 +6253,15 @@ msgstr ""
 
 #: eventyay/base/invoice.py:839
 msgid "Modern"
-msgstr ""
+msgstr "Modern"
 
 #: eventyay/base/meetup.py:26
 msgid "No video stream"
-msgstr ""
+msgstr "Kein Videostream"
 
 #: eventyay/base/meetup.py:27 eventyay/common/social_links.py:157
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: eventyay/base/meetup.py:28
 #, fuzzy
@@ -6214,7 +6283,7 @@ msgstr "Video-Plattform für diese Veranstaltung erstellen."
 
 #: eventyay/base/meetup.py:134
 msgid "Video URL / stream identifier"
-msgstr ""
+msgstr "Video-URL / Stream-ID"
 
 #: eventyay/base/meetup.py:135
 msgid "YouTube video URL or HLS stream URL."
@@ -6222,11 +6291,11 @@ msgstr ""
 
 #: eventyay/base/meetup.py:143
 msgid "A URL is required when a video type is selected."
-msgstr ""
+msgstr "Bei Auswahl eines Videotyps ist die Angabe einer URL erforderlich."
 
 #: eventyay/base/meetup.py:145
 msgid "A video type is required when a URL is provided."
-msgstr ""
+msgstr "Wenn eine URL angegeben wird, muss ein Videotyp angegeben werden."
 
 #: eventyay/base/meetup.py:150
 #, fuzzy
@@ -6302,6 +6371,8 @@ msgstr "Bestellung als bezahlt markiert"
 #: eventyay/base/models/auth.py:196
 msgid "Spam accounts are blocked from logging in but remain in the database."
 msgstr ""
+"Spam-Konten werden am Anmelden gehindert, bleiben jedoch in der Datenbank "
+"erhalten."
 
 #: eventyay/base/models/auth.py:198
 msgid "Date joined"
@@ -6933,8 +7004,7 @@ msgstr "Eigene Domain"
 
 #: eventyay/base/models/event.py:638
 msgid "Enter a custom domain, such as https://my.event.example.org"
-msgstr ""
-"Gib eine eigene Domain ein, zum Beispiel https://mein.event.example.org"
+msgstr "Gib eine eigene Domain ein, zum Beispiel https://mein.event.example.org"
 
 #: eventyay/base/models/event.py:652
 msgid "Main event colour"
@@ -7071,8 +7141,7 @@ msgstr "Die Kurzform einer Veranstaltung kann nicht geändert werden."
 
 #: eventyay/base/models/event.py:2509
 msgid "This slug has already been used for a different event."
-msgstr ""
-"Diese Kurzform ist bereits in Verwendung, bitte wählen Sie eine andere."
+msgstr "Diese Kurzform ist bereits in Verwendung, bitte wählen Sie eine andere."
 
 #: eventyay/base/models/event.py:2515
 msgid "The event cannot end before it starts."
@@ -9468,8 +9537,7 @@ msgstr "Feldtyp"
 
 #: eventyay/base/models/question.py:142
 msgid "Do you require an answer from every speaker or for every session?"
-msgstr ""
-"Brauchst du eine Antwort von jeder Vortragenden oder für jeden Beitrag?"
+msgstr "Brauchst du eine Antwort von jeder Vortragenden oder für jeden Beitrag?"
 
 #: eventyay/base/models/question.py:148
 msgid "Set a deadline to make this field required after the given date."
@@ -9837,8 +9905,7 @@ msgstr "Der Raum {room_name} steht zur gewählten Zeit nicht zur Verfügung."
 
 #: eventyay/base/models/schedule.py:464
 msgid "Another session in the same room overlaps with this one."
-msgstr ""
-"Ein anderer Programmpunkt überschneidet sich mit diesem im selben Raum."
+msgstr "Ein anderer Programmpunkt überschneidet sich mit diesem im selben Raum."
 
 #: eventyay/base/models/schedule.py:490
 #, python-brace-format
@@ -10574,8 +10641,7 @@ msgstr ""
 
 #: eventyay/base/models/vouchers.py:252
 msgid "You cannot select a quota and a specific product at the same time."
-msgstr ""
-"Sie können nicht gleichzeitig ein Kontingent und ein Produkt auswählen."
+msgstr "Sie können nicht gleichzeitig ein Kontingent und ein Produkt auswählen."
 
 #: eventyay/base/models/vouchers.py:255
 msgid "You cannot select an product that belongs to a different event."
@@ -10743,8 +10809,7 @@ msgstr "An diese Person wurde bereits ein Gutschein gesendet."
 
 #: eventyay/base/models/waitinglist.py:125
 msgid "This entry is anonymized and can no longer be used."
-msgstr ""
-"Dieser Eintrag wurde anonymisiert und kann nicht mehr verwendet werden."
+msgstr "Dieser Eintrag wurde anonymisiert und kann nicht mehr verwendet werden."
 
 #: eventyay/base/models/waitinglist.py:135
 #, python-brace-format
@@ -11149,8 +11214,8 @@ msgid ""
 "Don't forget to set the correct fees above!"
 msgstr ""
 "Es wird empfohlen, diese Option zu aktivieren, wenn Sie möchten, dass Ihre "
-"Nutzer die Zahlungsgebühren Ihres Zahlungsanbieters übernehmen. <a "
-"href=\"{docs_url}\" target=\"_blank\" rel=\"noopener\">Klicken Sie hier, um "
+"Nutzer die Zahlungsgebühren Ihres Zahlungsanbieters übernehmen. <a href=\""
+"{docs_url}\" target=\"_blank\" rel=\"noopener\">Klicken Sie hier, um "
 "detaillierte Informationen zu dieser Funktion zu erhalten.</a> Vergessen Sie "
 "nicht, oben die korrekten Gebühren anzugeben!"
 
@@ -11381,8 +11446,7 @@ msgstr ""
 
 #: eventyay/base/payment.py:1409 eventyay/base/services/orders.py:991
 msgid "This gift card is not accepted by this event organizer."
-msgstr ""
-"Dieser Geschenkgutschein wird von diesem Veranstalter nicht akzeptiert."
+msgstr "Dieser Geschenkgutschein wird von diesem Veranstalter nicht akzeptiert."
 
 #: eventyay/base/payment.py:1411
 msgid "This gift card was used in the meantime. Please try again."
@@ -12079,8 +12143,8 @@ msgid ""
 "You can select every add-ons from the category %(cat)s for the product "
 "%(base)s at most once."
 msgstr ""
-"Sie können jedes Zusatzprodukte aus der Kategorie %(cat)s für das Produkt "
-"%(base)s höchstens ein mal auswählen."
+"Sie können jedes Zusatzprodukte aus der Kategorie %(cat)s für das Produkt %"
+"(base)s höchstens ein mal auswählen."
 
 #: eventyay/base/services/cart.py:135
 msgid ""
@@ -12187,8 +12251,7 @@ msgstr "Leer, wenn dies kein Eintrittsticket ist"
 #, fuzzy
 #| msgid "This gift card is not accepted by this event organizer."
 msgid "This ticket type is not accepted at this check-in list."
-msgstr ""
-"Dieser Geschenkgutschein wird von diesem Veranstalter nicht akzeptiert."
+msgstr "Dieser Geschenkgutschein wird von diesem Veranstalter nicht akzeptiert."
 
 #: eventyay/base/services/checkin.py:567
 msgid "This order position has an invalid date for this check-in list."
@@ -12304,8 +12367,7 @@ msgstr "Termin: {}"
 
 #: eventyay/base/services/invoices.py:388
 msgid "A payment provider specific text might appear here."
-msgstr ""
-"Hier kann ein spezifischer Text über einen Zahlungsanbieter erscheinen."
+msgstr "Hier kann ein spezifischer Text über einen Zahlungsanbieter erscheinen."
 
 #: eventyay/base/services/invoices.py:395
 msgid "214th Example Street"
@@ -12362,8 +12424,8 @@ msgid ""
 "Error while importing value \"{value}\" for column \"{column}\" in line "
 "\"{line}\": {message}"
 msgstr ""
-"Fehler beim Import des Wertes \"{value}\" für Spalte \"{column}\" in Zeile "
-"\"{line}\": {message}"
+"Fehler beim Import des Wertes \"{value}\" für Spalte \"{column}\" in Zeile \""
+"{line}\": {message}"
 
 #: eventyay/base/services/orderimport.py:128
 #, fuzzy, python-brace-format
@@ -13811,14 +13873,13 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Du kannst Einreichungen bis %(deadline)s (%(timezone)s) abschicken – noch "
-"%(until_string)s."
+"Du kannst Einreichungen bis %(deadline)s (%(timezone)s) abschicken – noch %"
+"(until_string)s."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
 msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
-msgstr ""
-"Einreichungen konnten bis %(deadline)s (%(timezone)s) abgegeben werden."
+msgstr "Einreichungen konnten bis %(deadline)s (%(timezone)s) abgegeben werden."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:60
 msgid "View or edit speaker profile"
@@ -15997,8 +16058,7 @@ msgstr "Lasst mich ein neues setzen!"
 
 #: eventyay/common/text/phrases.py:93
 msgid "Now you just need to choose your new password and you are ready to go."
-msgstr ""
-"Jetzt brauchst du nur noch ein neues Passwort und wir sind hier fertig."
+msgstr "Jetzt brauchst du nur noch ein neues Passwort und wir sind hier fertig."
 
 #: eventyay/common/text/phrases.py:94
 msgid "The password was reset."
@@ -16946,8 +17006,7 @@ msgstr "Ticket-Downloads"
 
 #: eventyay/control/forms/event.py:1733
 msgid "Your customers will be able to download their tickets in PDF format."
-msgstr ""
-"Ihre Teilnehmer werden ihre Tickets im PDF-Format herunterladen können."
+msgstr "Ihre Teilnehmer werden ihre Tickets im PDF-Format herunterladen können."
 
 #: eventyay/control/forms/event.py:1737
 msgid "Require all attendees to fill in their names"
@@ -18288,8 +18347,8 @@ msgstr "Der Stripe-Schlüssel darf nicht leer sein."
 msgid ""
 "The provided key does not look valid. It should start with \"%(prefix)s\"."
 msgstr ""
-"Der angegebene Schlüssel scheint ungültig zu sein. Er sollte mit "
-"\"%(prefix)s\" beginnen."
+"Der angegebene Schlüssel scheint ungültig zu sein. Er sollte mit \"%(prefix)"
+"s\" beginnen."
 
 #: eventyay/control/forms/global_settings.py:988
 #, python-format
@@ -18794,8 +18853,7 @@ msgstr "Organisator-Kurzname"
 
 #: eventyay/control/forms/organizer_forms/organizer_form.py:18
 msgid "This slug is already in use. Please choose a different one."
-msgstr ""
-"Diese Kurzform ist bereits in Verwendung. Bitte wählen Sie eine andere."
+msgstr "Diese Kurzform ist bereits in Verwendung. Bitte wählen Sie eine andere."
 
 #: eventyay/control/forms/organizer_forms/organizer_form.py:22
 #, fuzzy
@@ -19310,8 +19368,8 @@ msgid ""
 msgstr ""
 "Hallo,\n"
 "\n"
-"mit dieser E-Mail senden wir Ihnen einen oder mehrere Gutscheine für "
-"{event}:\n"
+"mit dieser E-Mail senden wir Ihnen einen oder mehrere Gutscheine für {event}"
+":\n"
 "\n"
 "{voucher_list}\n"
 "\n"
@@ -19445,14 +19503,13 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Position #{posid}: {old_product} ({old_price}) wurde zu {new_product} "
-"({new_price}) geändert."
+"Position #{posid}: {old_product} ({old_price}) wurde zu {new_product} ("
+"{new_price}) geändert."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
 msgid "Position #{posid}: Seat \"{old_seat}\" changed to \"{new_seat}\"."
-msgstr ""
-"Position #{posid}: Sitzplatz \"{old_seat}\" geändert zu \"{new_seat}\"."
+msgstr "Position #{posid}: Sitzplatz \"{old_seat}\" geändert zu \"{new_seat}\"."
 
 #: eventyay/control/logdisplay.py:86
 #, python-brace-format
@@ -19460,8 +19517,8 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"Position #{posid}: Termin \"{old_event}\" ({old_price}) geändert zu "
-"\"{new_event}\" ({new_price})."
+"Position #{posid}: Termin \"{old_event}\" ({old_price}) geändert zu \""
+"{new_event}\" ({new_price})."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
@@ -19517,8 +19574,8 @@ msgid ""
 "Position #{posid} created: {product} ({price}) as an add-on to position "
 "#{addon_to}."
 msgstr ""
-"Position #{posid} erstellt: {product} ({price}) als Add-on zu Position "
-"#{addon_to}."
+"Position #{posid} erstellt: {product} ({price}) als Add-on zu Position #"
+"{addon_to}."
 
 #: eventyay/control/logdisplay.py:194
 #, python-brace-format
@@ -19557,8 +19614,8 @@ msgstr ""
 msgid ""
 "Unknown scan of code \"{barcode}…\" for list \"{list}\", type \"{type}\"."
 msgstr ""
-"Unbekannter Scan von Code \"{barcode}…\" für die Liste \"{list}\" (Typ "
-"\"{type}\")."
+"Unbekannter Scan von Code \"{barcode}…\" für die Liste \"{list}\" (Typ \""
+"{type}\")."
 
 #: eventyay/control/logdisplay.py:268
 #, python-brace-format
@@ -19575,8 +19632,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"Unbekannter Scan von Code \"{barcode}…\" für die Liste \"{list}\" (Typ "
-"\"{type}\")."
+"Unbekannter Scan von Code \"{barcode}…\" für die Liste \"{list}\" (Typ \""
+"{type}\")."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -19584,8 +19641,8 @@ msgid ""
 "Denied scan of position #{posid} at {datetime} for list \"{list}\", type "
 "\"{type}\", error code \"{errorcode}\"."
 msgstr ""
-"Ein Scan für Ticket #{posid} am {datetime} für die Liste \"{list}\" (Typ: "
-"\"{type}\") wurde abgelehnt. Fehlercode: \"{errorcode}\"."
+"Ein Scan für Ticket #{posid} am {datetime} für die Liste \"{list}\" (Typ: \""
+"{type}\") wurde abgelehnt. Fehlercode: \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:298
 #, python-brace-format
@@ -20474,8 +20531,7 @@ msgstr ""
 #: eventyay/control/logdisplay.py:786
 #, python-brace-format
 msgid "The check-in of position #{posid} on list \"{list}\" has been reverted."
-msgstr ""
-"Der Check-in von Position #{posid} auf Liste \"{list}\" wurde gelöscht."
+msgstr "Der Check-in von Position #{posid} auf Liste \"{list}\" wurde gelöscht."
 
 #: eventyay/control/logdisplay.py:792
 #, python-brace-format
@@ -24004,8 +24060,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Es sind keine Zahlungsmethoden verfügbar. Bitte gehen Sie in die <a "
-"%(plugin_settings_href)s>Erweiterungs-Einstellungen</a> und aktivieren Sie "
+"Es sind keine Zahlungsmethoden verfügbar. Bitte gehen Sie in die <a %"
+"(plugin_settings_href)s>Erweiterungs-Einstellungen</a> und aktivieren Sie "
 "eins oder mehrere Zahlungsplugins."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -24457,8 +24513,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Es sind keine Ausgabemethoden verfügbar. Bitte gehen Sie in die <a "
-"%(plugin_settings_href)s>Erweiterungs-Einstellungen</a> und aktivieren Sie "
+"Es sind keine Ausgabemethoden verfügbar. Bitte gehen Sie in die <a %"
+"(plugin_settings_href)s>Erweiterungs-Einstellungen</a> und aktivieren Sie "
 "eins oder mehrere Ticketausgabe-Erweiterungen."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
@@ -25698,8 +25754,7 @@ msgstr "Kontingent löschen"
 #: eventyay/control/templates/pretixcontrol/items/quota_delete.html:9
 #, python-format
 msgid "Are you sure you want to delete the quota <strong>%(quota)s</strong>?"
-msgstr ""
-"Möchten Sie das Kontingent <strong>%(quota)s</strong> wirklich löschen?"
+msgstr "Möchten Sie das Kontingent <strong>%(quota)s</strong> wirklich löschen?"
 
 #: eventyay/control/templates/pretixcontrol/items/quota_delete.html:12
 msgid "The following products might be no longer available for sale:"
@@ -26708,11 +26763,10 @@ msgid ""
 "underpaid by <strong>%(pending)s</strong>. The order total is "
 "<strong>%(total)s</strong>."
 msgstr ""
-"Uns wurde mitgeteilt, dass <strong>%(amount)s</strong> über "
-"<strong>%(method)s</strong> erstattet wurden. Wenn diese Erstattung "
-"verarbeitet wird, wird die Bestellung einen ausstehenden Betrag von "
-"<strong>%(pending)s</strong> haben. Der Gesamtbetrag der Bestellung ist "
-"<strong>%(total)s</strong>."
+"Uns wurde mitgeteilt, dass <strong>%(amount)s</strong> über <strong>%(method)"
+"s</strong> erstattet wurden. Wenn diese Erstattung verarbeitet wird, wird "
+"die Bestellung einen ausstehenden Betrag von <strong>%(pending)s</strong> "
+"haben. Der Gesamtbetrag der Bestellung ist <strong>%(total)s</strong>."
 
 #: eventyay/control/templates/pretixcontrol/order/refund_process.html:30
 msgid "Since the order is already canceled, this will not affect its state."
@@ -27523,8 +27577,7 @@ msgstr "Gerätezugriff entziehen:"
 
 #: eventyay/control/templates/pretixcontrol/organizers/device_revoke.html:10
 msgid "Are you sure you want remove access for this device?"
-msgstr ""
-"Möchten Sie diesem Gerät wirklich den Zugriff auf das System entziehen?"
+msgstr "Möchten Sie diesem Gerät wirklich den Zugriff auf das System entziehen?"
 
 #: eventyay/control/templates/pretixcontrol/organizers/device_revoke.html:11
 msgid ""
@@ -27840,8 +27893,7 @@ msgstr "Protokolle für Webhook %(url)s"
 
 #: eventyay/control/templates/pretixcontrol/organizers/webhook_logs.html:7
 msgid "This page shows all calls to your webhook in the past 30 days."
-msgstr ""
-"Diese Seite zeigt alle Aufrufe des Webhooks in den letzten 30 Tagen an."
+msgstr "Diese Seite zeigt alle Aufrufe des Webhooks in den letzten 30 Tagen an."
 
 #: eventyay/control/templates/pretixcontrol/organizers/webhook_logs.html:15
 msgid "This webhook was retried since it previously failed."
@@ -28232,8 +28284,8 @@ msgid ""
 msgstr ""
 "Bitte prüfen Sie erneut, dass Sie wirklich die ausgewählten Daten von der "
 "Veranstaltung <strong>%(event)s</strong> entfernen wollen. Wenn dies der "
-"Fall ist, geben Sie bitte hier den Kurznamen der Veranstaltung "
-"(\"%(slug)s\") ein:"
+"Fall ist, geben Sie bitte hier den Kurznamen der Veranstaltung (\"%(slug)"
+"s\") ein:"
 
 #: eventyay/control/templates/pretixcontrol/shredder/download.html:41
 msgid "Event short name"
@@ -28814,8 +28866,8 @@ msgid ""
 "<strong>%(amount)s</strong>."
 msgstr ""
 "Wenn Sie Ihre Veranstaltung so vergrößern können, dass Sie allen Personen "
-"auf dieser Liste Tickets verkaufen könnten, würden Sie zusätzliche "
-"<strong>%(amount)s</strong> einnehmen."
+"auf dieser Liste Tickets verkaufen könnten, würden Sie zusätzliche <strong>%"
+"(amount)s</strong> einnehmen."
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:107
 msgid "Successfully redeemed"
@@ -28846,19 +28898,15 @@ msgstr ""
 "früher erhält diese Person einen Gutschein."
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:226
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                                    Waiting, product %(num)sx available\n"
-#| "                                "
+#, python-format
 msgid ""
 "\n"
 "                                        Waiting, product %(num)sx available\n"
 "                                    "
 msgstr ""
 "\n"
-"                                    Wartet, Produkt %(num)sx verfügbar\n"
-"                                "
+"                                        Wartet, Produkt %(num)sx verfügbar\n"
+"                                    "
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:231
 msgid "Waiting, product unavailable"
@@ -29923,8 +29971,7 @@ msgstr ""
 
 #: eventyay/control/views/orders.py:2251 eventyay/presale/views/order.py:1575
 msgid "An error occurred. Please see the details below."
-msgstr ""
-"Ein Fehler ist aufgetreten, bitte schauen Sie weiter unten für Details."
+msgstr "Ein Fehler ist aufgetreten, bitte schauen Sie weiter unten für Details."
 
 #: eventyay/control/views/orders.py:2261
 msgid "The order has been changed and the user has been notified."
@@ -31724,8 +31771,8 @@ msgid ""
 msgstr ""
 "Richten Sie das Ticketing für die Veranstaltung ein und verkaufen Sie "
 "Zusatzangebote wie Premium‑Zugang oder Swag. Verwalten Sie Teilnehmende und "
-"Aussteller, entwerfen Sie individuelle Badges und optimieren Sie das "
-"Event‑Marketing durch gezielte E‑Mails."
+"Aussteller, entwerfen Sie individuelle Badges und optimieren Sie das Event‑"
+"Marketing durch gezielte E‑Mails."
 
 #: eventyay/eventyay_common/templates/eventyay_common/event/fragment_dashboard.html:47
 #: eventyay/eventyay_common/templates/eventyay_common/event/fragment_dashboard.html:65
@@ -33324,8 +33371,8 @@ msgstr ""
 #, python-format
 msgid "Please confirm that %(email)s is an email address for user %(user)s."
 msgstr ""
-"Bitte bestätigen Sie, dass %(email)s eine E-Mail-Adresse für Benutzer "
-"%(user)s ist."
+"Bitte bestätigen Sie, dass %(email)s eine E-Mail-Adresse für Benutzer %(user)"
+"s ist."
 
 #: eventyay/eventyay_common/views/custom.py:55
 #, python-format
@@ -33346,8 +33393,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Dieser Bestätigungslink für die E-Mail ist abgelaufen oder ungültig. Bitte "
-"%(email_action_link)s."
+"Dieser Bestätigungslink für die E-Mail ist abgelaufen oder ungültig. Bitte %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -34007,8 +34054,8 @@ msgid ""
 msgstr ""
 "Hallo!\n"
 "\n"
-"Wir freuen uns, Ihnen mitteilen zu können, dass wir Ihren Vorschlag "
-"„{submission_title}”\n"
+"Wir freuen uns, Ihnen mitteilen zu können, dass wir Ihren Vorschlag „"
+"{submission_title}”\n"
 "für {event_name} angenommen haben. Bitte klicken Sie auf diesen Link, um "
 "Ihre Teilnahme zu bestätigen:\n"
 "\n"
@@ -35171,8 +35218,8 @@ msgid ""
 "Invalid email template! Please check that you don’t have stray { or } "
 "somewhere, and that there are no spaces inside the {} blocks."
 msgstr ""
-"Ungültiges E-Mail-Template! Bitte stell sicher, dass du keine einzelnen "
-"{ oder } irgendwo stehen hast, und dass innerhalb der {}-Blöcke keine "
+"Ungültiges E-Mail-Template! Bitte stell sicher, dass du keine einzelnen { "
+"oder } irgendwo stehen hast, und dass innerhalb der {}-Blöcke keine "
 "Leerzeichen sind."
 
 #: eventyay/orga/forms/mails.py:100 eventyay/orga/forms/mails.py:117
@@ -35237,8 +35284,7 @@ msgstr "Die neue Frist muss in der Zukunft liegen."
 #| msgid "You cannot select a quota and a specific product at the same time."
 msgid ""
 "You cannot select \"Send immediately\" and also specify a scheduled time."
-msgstr ""
-"Sie können nicht gleichzeitig ein Kontingent und ein Produkt auswählen."
+msgstr "Sie können nicht gleichzeitig ein Kontingent und ein Produkt auswählen."
 
 #: eventyay/orga/forms/mails.py:274
 msgid "Recipient groups"
@@ -36581,9 +36627,9 @@ msgid ""
 "This field has <strong>%(count)s</strong> responses, <strong>%(missing)s</"
 "strong> <a href=\"%(base_search_url)sunanswered=1\">are still missing</a>."
 msgstr ""
-"Dieses Feld wurde <strong>%(count)s</strong> mal ausgefüllt, "
-"<strong>%(missing)s</strong> Antworten <a "
-"href=\"%(base_search_url)sunanswered=1\">fehlen noch</a>."
+"Dieses Feld wurde <strong>%(count)s</strong> mal ausgefüllt, <strong>%"
+"(missing)s</strong> Antworten <a href=\"%(base_search_url)sunanswered=1\">"
+"fehlen noch</a>."
 
 #: eventyay/orga/templates/orga/cfp/talkquestion/detail.html:60
 #, python-format
@@ -36819,10 +36865,10 @@ msgid ""
 msgstr ""
 "Um die Einladung mit dem aktuell angemeldeten Konto anzunehmen, verwenden "
 "Sie bitte die Schaltfläche unten. Wenn Sie die Einladung mit einem anderen "
-"Konto annehmen möchten, können Sie sich <a href=\"/orga/logout/?"
-"next=%(link)s\">abmelden</a> und sich mit dem anderen Konto anmelden. </"
-"p><p> Wenn Sie der Meinung sind, diese Einladung irrtümlich erhalten zu "
-"haben, kontaktieren Sie bitte direkt den Veranstalter."
+"Konto annehmen möchten, können Sie sich <a href=\"/orga/logout/?next=%(link)"
+"s\">abmelden</a> und sich mit dem anderen Konto anmelden. </p><p> Wenn Sie "
+"der Meinung sind, diese Einladung irrtümlich erhalten zu haben, kontaktieren "
+"Sie bitte direkt den Veranstalter."
 
 #: eventyay/orga/templates/orga/invitation.html:45
 msgid "Join the team!"
@@ -36946,8 +36992,8 @@ msgid ""
 "tab."
 msgstr ""
 "Du kannst die Standardvorlagen und eigene Vorlagen hier editieren. Wenn du "
-"Mails zu allen oder manchen der Vortragenden schicken möchtest, klicke auf "
-"„E-Mails verschicken“. Noch nicht verschickte Mails sind im „Postausgang“."
+"Mails zu allen oder manchen der Vortragenden schicken möchtest, klicke auf „"
+"E-Mails verschicken“. Noch nicht verschickte Mails sind im „Postausgang“."
 
 #: eventyay/orga/templates/orga/mails/mailtemplate/list.html:36
 msgid ""
@@ -37192,8 +37238,8 @@ msgid ""
 "settings</a>."
 msgstr ""
 "Reviewer werden <strong>nur die ihnen zugeteilten</strong> Einreichungen "
-"sehen und bewerten können. Du kannst das in deinen <a "
-"href=\"%(href)s\">Review-Einstellungen</a> anpassen."
+"sehen und bewerten können. Du kannst das in deinen <a href=\"%(href)s\">"
+"Review-Einstellungen</a> anpassen."
 
 #: eventyay/orga/templates/orga/review/assignment.html:120
 #, python-format
@@ -37439,8 +37485,7 @@ msgstr "Alle noch nicht bestätigten Vorträge sehen."
 msgid "One session has <strong>not yet been scheduled</strong>."
 msgid_plural "%(count)s sessions have <strong>not yet been scheduled</strong>."
 msgstr[0] "Ein Programmpunkt wurde <strong>noch nicht geplant</strong>."
-msgstr[1] ""
-"%(count)s Programmpunkte wurden <strong>noch nicht geplant</strong>."
+msgstr[1] "%(count)s Programmpunkte wurden <strong>noch nicht geplant</strong>."
 
 #: eventyay/orga/templates/orga/schedule/release.html:79
 #, python-format
@@ -37726,8 +37771,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Wenn weder eine Wertung noch ein Text verpflichtend für Reviewer ist, wird "
-"beim Reviewen ein zusätzlicher "
-"%(quotation_open)sEnthalten%(quotation_close)s-Knopf angeboten."
+"beim Reviewen ein zusätzlicher %(quotation_open)sEnthalten%(quotation_close)"
+"s-Knopf angeboten."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -37846,8 +37891,8 @@ msgid ""
 "Please look at <a href=\"%(link)s\">our documentation</a> for more "
 "information."
 msgstr ""
-"Für weitere Informationen kannst du auch einen Blick auf <a "
-"href=\"%(link)s\">unsere Dokumentation</a> werfen."
+"Für weitere Informationen kannst du auch einen Blick auf <a href=\"%(link)"
+"s\">unsere Dokumentation</a> werfen."
 
 #: eventyay/orga/templates/orga/settings/widget.html:90
 msgid "Widget preview"
@@ -40865,8 +40910,8 @@ msgstr ""
 #: eventyay/plugins/sendmail/forms.py:502
 msgid "Any changes to the BCC field will apply only to this queued email."
 msgstr ""
-"Änderungen am BCC-Feld gelten nur für diese in der Warteschlange stehende "
-"E‑Mail."
+"Änderungen am BCC-Feld gelten nur für diese in der Warteschlange stehende E‑"
+"Mail."
 
 #: eventyay/plugins/sendmail/forms.py:503
 msgid ""
@@ -41121,8 +41166,7 @@ msgstr ""
 
 #: eventyay/plugins/sendmail/views.py:128
 msgid "There are no orders matching this selection."
-msgstr ""
-"Es existiert keine Bestellung, die zu den eingegebenen Kriterien passt."
+msgstr "Es existiert keine Bestellung, die zu den eingegebenen Kriterien passt."
 
 #: eventyay/plugins/sendmail/views.py:194
 #: eventyay/plugins/sendmail/views.py:680
@@ -41791,8 +41835,7 @@ msgstr "Wir versuchen nun, diese Zusatzprodukte für Sie zu buchen!"
 msgid "You need to choose exactly one option from this category."
 msgid_plural "You need to choose %(min_count)s options from this category."
 msgstr[0] "Sie müssen genau eine Option aus dieser Kategorie auswählen."
-msgstr[1] ""
-"Sie müssen genau %(min_count)s Optionen aus dieser Kategorie auswählen."
+msgstr[1] "Sie müssen genau %(min_count)s Optionen aus dieser Kategorie auswählen."
 
 #: eventyay/presale/templates/pretixpresale/event/checkout_addons.html:54
 #, python-format
@@ -43334,9 +43377,9 @@ msgid ""
 "ticket until we assign it to the next person on the list."
 msgstr ""
 "Wenn wieder Tickets verfügbar sind, werden wir die ersten Leute auf der "
-"Warteliste benachrichtigen. Wenn wir Sie benachrichtigen, haben Sie "
-"%(hours)s Stunden Zeit, ein Ticket zu erwerben, bevor wir es an die nächste "
-"Person auf der Liste weitergeben."
+"Warteliste benachrichtigen. Wenn wir Sie benachrichtigen, haben Sie %(hours)"
+"s Stunden Zeit, ein Ticket zu erwerben, bevor wir es an die nächste Person "
+"auf der Liste weitergeben."
 
 #: eventyay/presale/templates/pretixpresale/event/waitinglist.html:35
 msgid "Add me to the list"
@@ -43638,8 +43681,8 @@ msgid ""
 "events of all kinds — from conferences to online meetups."
 msgstr ""
 "Eventyay befähigt Gemeinden und Organisationen, Veranstaltungen aller Art zu "
-"erstellen, zu verwalten und auszurichten — von Konferenzen bis zu "
-"Online‑Treffen."
+"erstellen, zu verwalten und auszurichten — von Konferenzen bis zu Online‑"
+"Treffen."
 
 #: eventyay/presale/templates/pretixpresale/index.html:20
 msgid ""

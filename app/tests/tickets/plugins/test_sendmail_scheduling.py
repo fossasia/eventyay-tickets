@@ -47,7 +47,7 @@ def pending_order(product):
         locale='en',
         require_approval=False,
     )
-    OrderPosition.objects.create(order=order, item=product, price=10)
+    OrderPosition.objects.create(order=order, product=product, price=10)
     return order
 
 
@@ -85,7 +85,7 @@ def _base_post_data(product):
         'recipients': 'orders',
         'order_status': ['na'],
         'subject_0': 'Test subject',
-        'message_0': 'Hello attendee.',
+        'text_0': 'Hello attendee.',
         'products': [str(product.pk)],
         'browser_timezone': 'UTC',
     }

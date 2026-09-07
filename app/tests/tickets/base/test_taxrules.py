@@ -411,6 +411,8 @@ def test_custom_rules_country_rate(event):
     assert tr._tax_applicable(ia)
 
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import IntegrityError, transaction
+
 
 @pytest.mark.django_db
 def test_tax_rate_validation(event):
@@ -427,3 +429,25 @@ def test_tax_rate_validation(event):
     tr = TaxRule(event=event, rate=Decimal('101.00'), price_includes_tax=True, name="Over Hundred")
     with pytest.raises(DjangoValidationError):
         tr.full_clean()
+
+
+@pytest.mark.django_db
+def test_tax_rate_db_constraint_direct_save(event):
+    # a. Rate < 0 raises IntegrityError on direct .save() bypassing full_clean()
+    tr_invalid_neg = TaxRule(event=event, rate=Decimal('-19.00'), price_includes_tax=True, name="Negative Rate")
+    with transaction.atomic():
+        with pytest.raises(IntegrityError):
+            tr_invalid_neg.save()
+
+    # b. Valid rate succeeds on direct .save()
+    tr_valid = TaxRule(event=event, rate=Decimal('19.00'), price_includes_tax=True, name="Valid Rate")
+    tr_valid.save()
+    assert tr_valid.id is not None
+
+    # c. Rate > 100 raises IntegrityError on direct .save() bypassing full_clean()
+    tr_invalid_over = TaxRule(event=event, rate=Decimal('101.00'), price_includes_tax=True, name="Over Hundred Rate")
+    with transaction.atomic():
+        with pytest.raises(IntegrityError):
+            tr_invalid_over.save()
+
+

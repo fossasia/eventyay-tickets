@@ -10,22 +10,29 @@ from eventyay.plugins.badges.api import (
 )
 
 from .views import (
+    BadgeCachedDownloadView,
+    BadgeSettingsView,
     LayoutCreate,
-    LayoutGetDefault,
     LayoutDelete,
     LayoutEditorView,
+    LayoutGetDefault,
     LayoutListView,
-    LayoutSettingsView,
     LayoutSetDefault,
+    LayoutSettingsView,
     OrderPrintDo,
-    BadgeCachedDownloadView,
 )
+
 
 urlpatterns = [
     path(
         'control/event/<orgslug:organizer>/<slug:event>/badges/',
         LayoutListView.as_view(),
         name='index',
+    ),
+    path(
+        'control/event/<orgslug:organizer>/<slug:event>/badges/settings',
+        BadgeSettingsView.as_view(),
+        name='event_settings',
     ),
     path(
         'control/event/<orgslug:organizer>/<slug:event>/badges/print',

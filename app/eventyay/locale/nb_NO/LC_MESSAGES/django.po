@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-23 15:17+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 16:20+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "eventyay/eventyay/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -254,8 +254,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"For å se programmet, aktiver JavaScript eller gå til <a "
-"href=\"%(href)s\">her</a> for NoJS-programmet."
+"For å se programmet, aktiver JavaScript eller gå til <a href=\"%(href)s\">"
+"her</a> for NoJS-programmet."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -477,8 +477,8 @@ msgid ""
 "href=\"%(href)s\">here</a>."
 msgstr ""
 "For å se programmet med full funksjonalitet, som tidssonekonvertering og "
-"personlig planlegging, aktiver JavaScript og gå til <a "
-"href=\"%(href)s\">her</a>."
+"personlig planlegging, aktiver JavaScript og gå til <a href=\"%(href)s\">"
+"her</a>."
 
 #: eventyay/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
@@ -2127,8 +2127,8 @@ msgid ""
 "'expired' after the end of their payment deadline. This means that those "
 "tickets go back to the pool and can be ordered by other people."
 msgstr ""
-"Hvis valgt, vil alle ubetalte bestillinger automatisk gå fra «ventende» til "
-"«utløpt» etter at betalingsfristen er passert. Dette betyr at disse "
+"Hvis valgt, vil alle ubetalte bestillinger automatisk gå fra «ventende» til «"
+"utløpt» etter at betalingsfristen er passert. Dette betyr at disse "
 "billettene går tilbake til beholdningen og kan bestilles av andre."
 
 #: eventyay/base/configurations/default_setting.py:679
@@ -2660,8 +2660,8 @@ msgid ""
 msgstr ""
 "Hvis dette alternativet er slått på, må brukere være logget inn før de "
 "fullfører en bestilling. Når en bruker klikker «Checkout» uten å være logget "
-"inn, blir vedkommende videresendt til innloggingssiden. Alternativet "
-"«Continue as a Guest» vil ikke være tilgjengelig for deltakere i dette "
+"inn, blir vedkommende videresendt til innloggingssiden. Alternativet «"
+"Continue as a Guest» vil ikke være tilgjengelig for deltakere i dette "
 "arrangementet."
 
 #: eventyay/base/configurations/default_setting.py:1261
@@ -2732,8 +2732,7 @@ msgstr "Tillat kunder å endre informasjonen sin"
 
 #: eventyay/base/configurations/default_setting.py:1332
 msgid "Allow attendees to modify their information after they checked in."
-msgstr ""
-"Tillat deltakere å endre informasjonen sin etter at de har sjekket inn."
+msgstr "Tillat deltakere å endre informasjonen sin etter at de har sjekket inn."
 
 #: eventyay/base/configurations/default_setting.py:1334
 msgid ""
@@ -2786,8 +2785,7 @@ msgstr ""
 #: eventyay/base/configurations/default_setting.py:1374
 #: eventyay/base/configurations/default_setting.py:1395
 msgid "Allow changes regardless of price, even if this results in a refund."
-msgstr ""
-"Tillat endringer uavhengig av pris, selv om dette medfører en refusjon."
+msgstr "Tillat endringer uavhengig av pris, selv om dette medfører en refusjon."
 
 #: eventyay/base/configurations/default_setting.py:1379
 msgid "Requirement for changed prices"
@@ -6355,8 +6353,7 @@ msgstr "Kilde for profilbilde"
 msgid ""
 "Please enter the name of the author or source of image and a link if "
 "applicable."
-msgstr ""
-"Oppgi navnet på forfatteren eller bildekilden og en lenke hvis aktuelt."
+msgstr "Oppgi navnet på forfatteren eller bildekilden og en lenke hvis aktuelt."
 
 #: eventyay/base/models/auth.py:291
 #: eventyay/orga/templates/orga/submission/speakers.html:47
@@ -8957,8 +8954,7 @@ msgstr "Tillat at samme produkt kan velges flere ganger"
 
 #: eventyay/base/models/product.py:1138
 msgid "The add-on's category must belong to the same event as the product."
-msgstr ""
-"Tilleggsproduktets kategori må tilhøre samme arrangement som produktet."
+msgstr "Tilleggsproduktets kategori må tilhøre samme arrangement som produktet."
 
 #: eventyay/base/models/product.py:1143
 msgid "The product already has an add-on of this category."
@@ -9490,8 +9486,7 @@ msgstr "Maksimal tekstlengde"
 #: eventyay/base/models/question.py:206
 msgid ""
 "Maximum allowed text length in characters or words (set in CfP settings)."
-msgstr ""
-"Maksimalt tillatt tekst i tegn eller ord (angitt i CfP-innstillingene)."
+msgstr "Maksimalt tillatt tekst i tegn eller ord (angitt i CfP-innstillingene)."
 
 #: eventyay/base/models/question.py:240
 msgid "Publish answers"
@@ -10280,8 +10275,8 @@ msgid ""
 "Reverse Charge: According to Article 194, 196 of Council Directive 2006/112/"
 "EEC, VAT liability rests with the service recipient."
 msgstr ""
-"Omvendt avgiftsplikt: I henhold til artikkel 194 og 196 i rådsdirektiv "
-"2006/112/EF ligger MVA-ansvaret hos mottakeren av tjenesten."
+"Omvendt avgiftsplikt: I henhold til artikkel 194 og 196 i rådsdirektiv 2006/"
+"112/EF ligger MVA-ansvaret hos mottakeren av tjenesten."
 
 #: eventyay/base/models/tax.py:331
 msgctxt "invoice"
@@ -10503,8 +10498,7 @@ msgstr ""
 
 #: eventyay/base/models/vouchers.py:255
 msgid "You cannot select an product that belongs to a different event."
-msgstr ""
-"Det er ikke mulig å velge et produkt som tilhører et annet arrangement."
+msgstr "Det er ikke mulig å velge et produkt som tilhører et annet arrangement."
 
 #: eventyay/base/models/vouchers.py:258 eventyay/base/models/vouchers.py:277
 msgid ""
@@ -11788,8 +11782,7 @@ msgstr "Det kan ikke velges mer enn %s produkter per bestilling."
 #, python-format
 msgid ""
 "You cannot select more than %(max)s products of the product %(product)s."
-msgstr ""
-"Det kan ikke velges mer enn %(max)s produkter av produktet %(product)s."
+msgstr "Det kan ikke velges mer enn %(max)s produkter av produktet %(product)s."
 
 #: eventyay/base/services/cart.py:78
 #, python-format
@@ -11964,8 +11957,8 @@ msgid ""
 "You need to select at least %(min)s add-ons from the category %(cat)s for "
 "the product %(base)s."
 msgstr ""
-"Det må velges minst %(min)s tilvalg fra kategorien %(cat)s for produktet "
-"%(base)s."
+"Det må velges minst %(min)s tilvalg fra kategorien %(cat)s for produktet %"
+"(base)s."
 
 #: eventyay/base/services/cart.py:133
 #, python-format
@@ -12081,8 +12074,7 @@ msgstr "Dette gavekortet godtas ikke av denne arrangøren."
 
 #: eventyay/base/services/checkin.py:567
 msgid "This order position has an invalid date for this check-in list."
-msgstr ""
-"Denne ordreposisjonen har en ugyldig dato for denne innsjekkingslisten."
+msgstr "Denne ordreposisjonen har en ugyldig dato for denne innsjekkingslisten."
 
 #: eventyay/base/services/checkin.py:575
 msgid "This order is not marked as paid."
@@ -12247,8 +12239,8 @@ msgid ""
 "Error while importing value \"{value}\" for column \"{column}\" in line "
 "\"{line}\": {message}"
 msgstr ""
-"Feil ved import av verdien \"{value}\" for kolonnen \"{column}\" på linje "
-"\"{line}\": {message}"
+"Feil ved import av verdien \"{value}\" for kolonnen \"{column}\" på linje \""
+"{line}\": {message}"
 
 #: eventyay/base/services/orderimport.py:128
 #, fuzzy, python-brace-format
@@ -13138,8 +13130,7 @@ msgstr "Klikk her for å deaktivere alle varsler umiddelbart:"
 msgid ""
 "You are receiving this email because someone signed you up for the following "
 "event:"
-msgstr ""
-"Denne e-posten mottas fordi noen har meldt deg på følgende arrangement:"
+msgstr "Denne e-posten mottas fordi noen har meldt deg på følgende arrangement:"
 
 #: eventyay/base/templates/pretixbase/email/order_details.html:12
 #: eventyay/base/templates/pretixbase/email/order_details.html:64
@@ -15371,8 +15362,8 @@ msgid ""
 "The link you clicked on wants to redirect you to a destination on the "
 "website %(host)s."
 msgstr ""
-"Lenken som ble klikket på vil videresende til en destinasjon på nettstedet "
-"%(host)s."
+"Lenken som ble klikket på vil videresende til en destinasjon på nettstedet %"
+"(host)s."
 
 #: eventyay/common/templates/common/redirect.html:18
 msgid "Please only proceed if you trust this website to be safe."
@@ -15461,10 +15452,8 @@ msgstr[1] ""
 #| msgid "You can choose up to %(max_count)s options from this category."
 msgid "You can keep up to %(count)s slide entry in total."
 msgid_plural "You can keep up to %(count)s slide entries in total."
-msgstr[0] ""
-"Det kan velges opptil %(max_count)s alternativer fra denne kategorien."
-msgstr[1] ""
-"Det kan velges opptil %(max_count)s alternativer fra denne kategorien."
+msgstr[0] "Det kan velges opptil %(max_count)s alternativer fra denne kategorien."
+msgstr[1] "Det kan velges opptil %(max_count)s alternativer fra denne kategorien."
 
 #: eventyay/common/templates/common/widgets/slides_input.html:79
 #, fuzzy
@@ -18116,8 +18105,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"Den oppgitte nøkkelen ser ikke gyldig ut. Den må starte med én av: "
-"%(prefixes)s"
+"Den oppgitte nøkkelen ser ikke gyldig ut. Den må starte med én av: %"
+"(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -18888,8 +18877,8 @@ msgid ""
 "\"inactive\" instead."
 msgstr ""
 "Variasjonen «%s» kan ikke slettes fordi den allerede er bestilt av en bruker "
-"eller for øyeblikket ligger i en brukers handlekurv. Sett variasjonen til "
-"«inaktiv» i stedet."
+"eller for øyeblikket ligger i en brukers handlekurv. Sett variasjonen til «"
+"inaktiv» i stedet."
 
 #: eventyay/control/forms/product.py:904
 msgid "Add-ons"
@@ -19242,8 +19231,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Posisjon #{posid}: {old_product} ({old_price}) endret til {new_product} "
-"({new_price})."
+"Posisjon #{posid}: {old_product} ({old_price}) endret til {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19256,8 +19245,8 @@ msgid ""
 "Position #{posid}: Event date \"{old_event}\" ({old_price}) changed to "
 "\"{new_event}\" ({new_price})."
 msgstr ""
-"Posisjon #{posid}: Arrangementsdato «{old_event}» ({old_price}) endret til "
-"«{new_event}» ({new_price})."
+"Posisjon #{posid}: Arrangementsdato «{old_event}» ({old_price}) endret til «"
+"{new_event}» ({new_price})."
 
 #: eventyay/control/logdisplay.py:99
 #, python-brace-format
@@ -19360,8 +19349,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"Skanning av tilbakekalt kode «{barcode}…» kl. {datetime} for listen "
-"«{list}», type «{type}», ble lastet opp."
+"Skanning av tilbakekalt kode «{barcode}…» kl. {datetime} for listen «{list}"
+"», type «{type}», ble lastet opp."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19655,8 +19644,7 @@ msgstr "En e-post er sendt for å varsle brukeren om at bestillingen er endret."
 #: eventyay/control/logdisplay.py:564
 msgid ""
 "An email has been sent to notify the user that the order has been received."
-msgstr ""
-"En e-post er sendt for å varsle brukeren om at bestillingen er mottatt."
+msgstr "En e-post er sendt for å varsle brukeren om at bestillingen er mottatt."
 
 #: eventyay/control/logdisplay.py:567
 #, fuzzy
@@ -19672,8 +19660,7 @@ msgstr "En e-post er sendt for å varsle brukeren om at betaling er mottatt."
 #: eventyay/control/logdisplay.py:573
 msgid ""
 "An email has been sent to notify the user that the order has been denied."
-msgstr ""
-"En e-post er sendt for å varsle brukeren om at bestillingen er avslått."
+msgstr "En e-post er sendt for å varsle brukeren om at bestillingen er avslått."
 
 #: eventyay/control/logdisplay.py:576
 msgid ""
@@ -22587,8 +22574,8 @@ msgid ""
 "This application has been reviewed, but granting access to your account is "
 "at your <strong>own risk.</strong>"
 msgstr ""
-"Applikasjonen er gjennomgått, men å gi tilgang til kontoen skjer på "
-"<strong>eget ansvar.</strong>"
+"Applikasjonen er gjennomgått, men å gi tilgang til kontoen skjer på <strong>"
+"eget ansvar.</strong>"
 
 #: eventyay/control/templates/pretixcontrol/auth/oauth_authorization.html:53
 #: eventyay/eventyay_common/templates/eventyay_common/organizers/teams/_permissions_fieldsets.html:250
@@ -22847,8 +22834,8 @@ msgstr "Slett innsjekkingsliste"
 msgid ""
 "Are you sure you want to delete the check-in list <strong>%(name)s</strong>?"
 msgstr ""
-"Er du sikker på at du vil slette innsjekkingslisten <strong>%(name)s</"
-"strong>?"
+"Er du sikker på at du vil slette innsjekkingslisten <strong>%(name)s</strong>"
+"?"
 
 #: eventyay/control/templates/pretixcontrol/checkin/list_delete.html:11
 #, python-format
@@ -23755,8 +23742,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Ingen betalingsleverandører er tilgjengelige. Gå til <a "
-"%(plugin_settings_href)s>plugininnstillinger</a> og aktiver ett eller flere "
+"Ingen betalingsleverandører er tilgjengelige. Gå til <a %"
+"(plugin_settings_href)s>plugininnstillinger</a> og aktiver ett eller flere "
 "betalingsplugins."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -23940,8 +23927,8 @@ msgid ""
 msgstr ""
 "Hvis mer avanserte funksjoner som produkter uten adgang, produktvariasjoner, "
 "egendefinerte kvoter eller tilleggsprodukter skal brukes, eller hvis "
-"billettypene skal endres mer detaljert, kan dette gjøres senere i "
-"«Produkter»-delen i navigasjonen. Alt som fylles inn her kan endres senere."
+"billettypene skal endres mer detaljert, kan dette gjøres senere i «Produkter"
+"»-delen i navigasjonen. Alt som fylles inn her kan endres senere."
 
 #: eventyay/control/templates/pretixcontrol/event/quick_setup.html:175
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:73
@@ -24118,10 +24105,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Disse innstillingene er beregnet for avanserte brukere. Se <a "
-"href=\"%(docs)s\">dokumentasjonen</a> for mer informasjon. Merk at vi ikke "
-"er ansvarlige for korrekt håndtering av skatter i billettbutikken. Ved tvil, "
-"kontakt advokat eller skatterådgiver."
+"Disse innstillingene er beregnet for avanserte brukere. Se <a href=\"%(docs)"
+"s\">dokumentasjonen</a> for mer informasjon. Merk at vi ikke er ansvarlige "
+"for korrekt håndtering av skatter i billettbutikken. Ved tvil, kontakt "
+"advokat eller skatterådgiver."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24197,9 +24184,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Ingen billettutdata er tilgjengelige. Gå til <a "
-"%(plugin_settings_href)s>plugininnstillinger</a> og aktiver én eller flere "
-"plugins for billettutdata."
+"Ingen billettutdata er tilgjengelige. Gå til <a %(plugin_settings_href)s>"
+"plugininnstillinger</a> og aktiver én eller flere plugins for billettutdata."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -24224,8 +24210,8 @@ msgid ""
 "To embed the widget onto your website, simply copy the following code to the "
 "<code>&lt;head&gt;</code> section of your website:"
 msgstr ""
-"For å bygge inn widgeten på nettstedet ditt, kopier følgende kode til "
-"<code>&lt;head&gt;</code>-delen av nettstedet ditt:"
+"For å bygge inn widgeten på nettstedet ditt, kopier følgende kode til <code>"
+"&lt;head&gt;</code>-delen av nettstedet ditt:"
 
 #: eventyay/control/templates/pretixcontrol/event/widget.html:25
 #: eventyay/orga/templates/orga/settings/widget.html:63
@@ -24383,8 +24369,7 @@ msgstr "Stripe — billettbetalinger"
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:65
 msgid "This configuration is used for ticket payments via the Stripe plugin."
-msgstr ""
-"Denne konfigurasjonen brukes for billettbetalinger via Stripe-pluginen."
+msgstr "Denne konfigurasjonen brukes for billettbetalinger via Stripe-pluginen."
 
 #: eventyay/control/templates/pretixcontrol/global_settings.html:69
 msgid "Client Configuration"
@@ -24608,10 +24593,10 @@ msgid ""
 "except if the add-on products or bundled products represent additional "
 "people (e.g. group bundles)."
 msgstr ""
-"Dette alternativet bør brukes for det meste av det som vanligvis kalles en "
-"«billett». For produkttillegg eller pakker bør dette angis på "
-"hovedbilletten, med mindre tilleggsproduktene eller pakkede produkter "
-"representerer flere personer (f.eks. gruppepakker)."
+"Dette alternativet bør brukes for det meste av det som vanligvis kalles en «"
+"billett». For produkttillegg eller pakker bør dette angis på hovedbilletten, "
+"med mindre tilleggsproduktene eller pakkede produkter representerer flere "
+"personer (f.eks. gruppepakker)."
 
 #: eventyay/control/templates/pretixcontrol/item/create.html:44
 #: eventyay/control/templates/pretixcontrol/item/index.html:51
@@ -26430,8 +26415,8 @@ msgid ""
 msgstr ""
 "Det er mottatt beskjed om at <strong>%(amount)s</strong> er refundert via "
 "<strong>%(method)s</strong>. Hvis denne refusjonen behandles, vil ordren "
-"være underbetalt med <strong>%(pending)s</strong>. Ordresummen er "
-"<strong>%(total)s</strong>."
+"være underbetalt med <strong>%(pending)s</strong>. Ordresummen er <strong>%"
+"(total)s</strong>."
 
 #: eventyay/control/templates/pretixcontrol/order/refund_process.html:30
 msgid "Since the order is already canceled, this will not affect its state."
@@ -28280,8 +28265,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"Vil bare forsikre oss om at det virkelig er deg. Autentiser på nytt med "
-"«%(login_provider)s»."
+"Vil bare forsikre oss om at det virkelig er deg. Autentiser på nytt med «%"
+"(login_provider)s»."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28452,8 +28437,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Er det sikkert at følgende ventelisteoppføring skal slettes "
-"<strong>%(entry)s</strong>?"
+"Er det sikkert at følgende ventelisteoppføring skal slettes <strong>%(entry)"
+"s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -33004,8 +32989,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Denne e-postbekreftelseslenken er utløpt eller ugyldig. "
-"%(email_action_link)s."
+"Denne e-postbekreftelseslenken er utløpt eller ugyldig. %(email_action_link)"
+"s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -33798,8 +33783,8 @@ msgid ""
 msgstr ""
 "Hei!\n"
 "\n"
-"Du er lagt til i et forslag til {event_name}, med tittelen "
-"“{proposal_title}”.\n"
+"Du er lagt til i et forslag til {event_name}, med tittelen “{proposal_title}"
+"”.\n"
 "Det er opprettet en konto – følg denne lenken for å angi passord for "
 "kontoen.\n"
 "\n"
@@ -33825,8 +33810,8 @@ msgid ""
 msgstr ""
 "Hei!\n"
 "\n"
-"Du har blitt lagt til i et forslag for {event_name}, med tittelen "
-"“{proposal_title}”.\n"
+"Du har blitt lagt til i et forslag for {event_name}, med tittelen “"
+"{proposal_title}”.\n"
 "Følg denne lenken for å redigere brukerprofilen og se statusen for "
 "forslaget:\n"
 "\n"
@@ -34623,8 +34608,7 @@ msgstr "Kilde for profilbilde"
 #| "Please enter the name of the author or source of image and a link if "
 #| "applicable."
 msgid "Name the author or source of the image and include a link if available."
-msgstr ""
-"Oppgi navnet på forfatteren eller bildekilden og en lenke hvis aktuelt."
+msgstr "Oppgi navnet på forfatteren eller bildekilden og en lenke hvis aktuelt."
 
 #: eventyay/orga/forms/importers.py:103
 #: eventyay/orga/templates/orga/cfp/forms.html:978
@@ -36421,8 +36405,8 @@ msgid ""
 msgstr ""
 "Bruk knappen nedenfor for å godta invitasjonen med kontoen som er aktiv nå. "
 "Hvis invitasjonen skal godtas med en annen konto, kan du <a href=\"/orga/"
-"logout/?next=%(link)s\">logge ut</a> og logge inn med den andre kontoen. </"
-"p><p> Hvis invitasjonen er mottatt ved en feil, kontakt arrangøren direkte."
+"logout/?next=%(link)s\">logge ut</a> og logge inn med den andre kontoen. </p>"
+"<p> Hvis invitasjonen er mottatt ved en feil, kontakt arrangøren direkte."
 
 #: eventyay/orga/templates/orga/invitation.html:45
 msgid "Join the team!"
@@ -36546,8 +36530,8 @@ msgid ""
 "tab."
 msgstr ""
 "Standardmalene og de egendefinerte e-postmalene kan redigeres her. For å "
-"sende e-post til noen eller alle foredragsholdere, gå til fanen «Send e-"
-"post». E-poster som er satt i kø for sending, finnes i fanen «Utboks»."
+"sende e-post til noen eller alle foredragsholdere, gå til fanen «Send e-post"
+"». E-poster som er satt i kø for sending, finnes i fanen «Utboks»."
 
 #: eventyay/orga/templates/orga/mails/mailtemplate/list.html:36
 msgid ""
@@ -36745,8 +36729,8 @@ msgstr ""
 "Her kan vurderertildelinger lastes opp fra en JSON-fil. Forslagskodene "
 "(f.eks. “UX3N1”) kan brukes som nøkler og brukeridentifikasjon som verdier, "
 "eller omvendt. Brukeridentifikasjon kan være enten vurdererens e-postadresse "
-"eller brukerkode (f.eks. “34KJN”). Et eksempelfil finnes <a "
-"href=\"%(href)s\">her</a>."
+"eller brukerkode (f.eks. “34KJN”). Et eksempelfil finnes <a href=\"%(href)"
+"s\">her</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:23
 msgid ""
@@ -36789,8 +36773,8 @@ msgid ""
 "settings</a>."
 msgstr ""
 "Anmeldere vil kunne se og vurdere <strong>kun sine tildelte</strong> "
-"forslag. Dette kan endres i <a href=\"%(href)s\">vurderingsinnstillingene</"
-"a>."
+"forslag. Dette kan endres i <a href=\"%(href)s\">vurderingsinnstillingene</a>"
+"."
 
 #: eventyay/orga/templates/orga/review/assignment.html:120
 #, python-format
@@ -36975,8 +36959,7 @@ msgstr "Bekreft følgende betalingsdetaljer."
 #: eventyay/orga/templates/orga/schedule/release.html:32
 #, python-format
 msgid "The previous schedule (%(prev)s) was released %(since)s ago."
-msgstr ""
-"Den forrige programplanen (%(prev)s) ble publisert for %(since)s siden."
+msgstr "Den forrige programplanen (%(prev)s) ble publisert for %(since)s siden."
 
 #: eventyay/orga/templates/orga/schedule/release.html:36
 msgid "This will be the very first schedule release."
@@ -37045,8 +37028,7 @@ msgid "One session has <strong>not yet been assigned a track</strong>."
 msgid_plural ""
 "%(count)s sessions have <strong>not yet been assigned a track</strong>."
 msgstr[0] "Én sesjon har <strong>ennå ikke fått tildelt et spor</strong>."
-msgstr[1] ""
-"%(count)s sesjoner har <strong>ennå ikke fått tildelt et spor</strong>."
+msgstr[1] "%(count)s sesjoner har <strong>ennå ikke fått tildelt et spor</strong>."
 
 #: eventyay/orga/templates/orga/schedule/release.html:95
 msgid "Warnings"
@@ -37429,8 +37411,8 @@ msgid ""
 "To embed the widget into your website, copy the following code to the "
 "<code>&lt;head></code> section of your website:"
 msgstr ""
-"For å bygge inn widgeten på nettstedet, kopier følgende kode til "
-"<code>&lt;head></code>-delen av nettstedet:"
+"For å bygge inn widgeten på nettstedet, kopier følgende kode til <code>"
+"&lt;head></code>-delen av nettstedet:"
 
 #: eventyay/orga/templates/orga/settings/widget.html:81
 #, python-format
@@ -38081,8 +38063,8 @@ msgid ""
 "API tokens can be used to access the <a %(apiurl)s>eventyay API</a>. To find "
 "out more, please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
-"API-tokener kan brukes til å få tilgang til <a %(apiurl)s>eventyay-API-et</"
-"a>. Se <a %(docurl)s>API-dokumentasjonen</a> for mer informasjon."
+"API-tokener kan brukes til å få tilgang til <a %(apiurl)s>eventyay-API-et</a>"
+". Se <a %(docurl)s>API-dokumentasjonen</a> for mer informasjon."
 
 #: eventyay/orga/templates/orga/user.html:69
 msgid "Your API tokens"
@@ -39210,8 +39192,8 @@ msgstr "Skriv ut navneskilt"
 msgid ""
 "Are you sure you want to delete the badge layout <strong>%(layout)s</strong>?"
 msgstr ""
-"Er du sikker på at du vil slette oppsettet for navneskilt "
-"<strong>%(layout)s</strong>?"
+"Er du sikker på at du vil slette oppsettet for navneskilt <strong>%(layout)"
+"s</strong>?"
 
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:6
 #: eventyay/plugins/badges/templates/pretixplugins/badges/edit.html:16
@@ -39796,8 +39778,7 @@ msgstr "Noen transaksjoner kan mangle. Prøv å importere filen på nytt."
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:23
 msgid ""
 "Your import did not contain any transactions that you did not import before."
-msgstr ""
-"Importen inneholdt ingen transaksjoner som ikke allerede var importert."
+msgstr "Importen inneholdt ingen transaksjoner som ikke allerede var importert."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/job_detail.html:30
 msgid "Orders marked as paid"
@@ -40419,8 +40400,7 @@ msgstr ""
 
 #: eventyay/plugins/sendmail/forms.py:502
 msgid "Any changes to the BCC field will apply only to this queued email."
-msgstr ""
-"Eventuelle endringer i BCC-feltet gjelder bare for denne e-posten i kø."
+msgstr "Eventuelle endringer i BCC-feltet gjelder bare for denne e-posten i kø."
 
 #: eventyay/plugins/sendmail/forms.py:503
 msgid ""
@@ -41021,8 +41001,7 @@ msgstr "Billettoppsett"
 #: eventyay/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/delete.html:9
 #, python-format
 msgid "Are you sure you want to delete the layout <strong>%(layout)s</strong>?"
-msgstr ""
-"Er du sikker på at du vil slette oppsettet <strong>%(layout)s</strong>?"
+msgstr "Er du sikker på at du vil slette oppsettet <strong>%(layout)s</strong>?"
 
 #: eventyay/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/edit.html:6
 #: eventyay/plugins/ticketoutputpdf/templates/pretixplugins/ticketoutputpdf/edit.html:16
@@ -42324,8 +42303,7 @@ msgstr "Registrerte enheter"
 #: eventyay/presale/templates/pretixpresale/event/order.html:329
 msgid ""
 "You need to select a payment method above before you can request an invoice."
-msgstr ""
-"Det må velges en betalingsmetode ovenfor før det kan bes om en faktura."
+msgstr "Det må velges en betalingsmetode ovenfor før det kan bes om en faktura."
 
 #: eventyay/presale/templates/pretixpresale/event/order.html:334
 #: eventyay/presale/templates/pretixpresale/event/order.html:341
@@ -43338,8 +43316,7 @@ msgstr "Produktene er lagt til i handlekurven."
 #: eventyay/presale/views/cart.py:496 eventyay/presale/views/event.py:698
 #: eventyay/presale/views/widget.py:332
 msgid "Tickets for this event cannot be purchased on this sales channel."
-msgstr ""
-"Billetter til dette arrangementet kan ikke kjøpes i denne salgskanalen."
+msgstr "Billetter til dette arrangementet kan ikke kjøpes i denne salgskanalen."
 
 #: eventyay/presale/views/checkout.py:38
 msgid "Your cart is empty"

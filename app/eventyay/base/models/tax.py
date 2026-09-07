@@ -136,7 +136,12 @@ class TaxRule(LoggedModel):
         help_text=_('Should be short, e.g. "VAT"'),
         max_length=190,
     )
-    rate = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Tax rate'))
+    rate = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('Tax rate'),
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+    )
     price_includes_tax = models.BooleanField(
         verbose_name=_('The configured product prices include the tax amount'),
         default=True,
@@ -164,6 +169,12 @@ class TaxRule(LoggedModel):
 
     class Meta:
         ordering = ('event', 'rate', 'id')
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(rate__gte=0) & models.Q(rate__lte=100),
+                name='tax_rate_between_0_and_100',
+            ),
+        ]
 
     class SaleNotAllowed(Exception):  # NOQA: N818
         pass

@@ -22,6 +22,7 @@ from eventyay.base.services.event import (
     create_room,
     get_room_config_for_user,
     get_rooms,
+    is_chat_channel_room,
     notify_event_change,
 )
 from eventyay.base.services.poll import get_polls, get_voted_polls
@@ -332,13 +333,20 @@ class RoomModule(BaseModule):
                 )
 
     async def _update_view_count(self, room, actual_view_count):
+        if is_chat_channel_room(room):
+            return
         async with aredis(f"room:approxcount:known:{room.pk}") as redis:
             prev_value = await redis.getset(
                 f"room:approxcount:known:{room.pk}", actual_view_count
             )
-            if prev_value != actual_view_count:
+            is_changed = True
+            if prev_value is not None:
+                try:
+                    is_changed = int(prev_value) != actual_view_count
+                except (ValueError, TypeError):
+                    is_changed = True
+            if is_changed:
                 await redis.expire(f"room:approxcount:known:{room.pk}", 900)
-                # broadcast actual viewer count instead of approximate text
                 await self.consumer.channel_layer.group_send(
                     GROUP_EVENT.format(id=self.consumer.event.pk),
                     {

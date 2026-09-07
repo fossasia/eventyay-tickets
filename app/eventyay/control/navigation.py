@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
 from eventyay.base.meetup import is_meetup_event
-from eventyay.control.checkin_app import get_eventyay_checkin_app_url, user_can_open_checkin_app
 from eventyay.control.signals import (
     nav_event,
     nav_event_settings,
@@ -31,7 +30,120 @@ def _vouchers_nav_item(request, url) -> dict:
     }
 
 
+def get_meetup_event_navigation(request: HttpRequest):
+    url = request.resolver_match
+    if not url:
+        return []
+    nav = []
+    event = request.event
+    has_settings_perm = 'can_change_event_settings' in request.eventpermset
+    has_items_perm = 'can_change_items' in request.eventpermset
+    has_orders_perm = 'can_view_orders' in request.eventpermset
+    has_mail_perm = 'can_change_orders' in request.eventpermset
+
+    if has_settings_perm:
+        nav.append(
+            {
+                'label': _('Meetup settings'),
+                'url': reverse(
+                    'eventyay_common:event.update',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': (url.url_name == 'event.update'),
+                'icon': 'wrench',
+            }
+        )
+
+    if has_orders_perm:
+        nav.append(
+            {
+                'label': _('Registrations'),
+                'url': reverse(
+                    'control:event.orders',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': url.url_name in ('event.orders', 'event.order', 'event.orders.search')
+                or 'event.order.' in url.url_name,
+                'icon': 'list-alt',
+            }
+        )
+
+    if has_items_perm:
+        nav.append(
+            {
+                'label': _('Products'),
+                'url': reverse(
+                    'control:event.products',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': url.url_name in ('event.product', 'event.products.add', 'event.products')
+                or 'event.product.' in url.url_name,
+                'icon': 'ticket',
+            }
+        )
+        nav.append(
+            {
+                'label': _('Quotas'),
+                'url': reverse(
+                    'control:event.products.quotas',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': 'event.products.quota' in url.url_name,
+                'icon': 'tasks',
+            }
+        )
+
+    if has_settings_perm:
+        nav.append(
+            {
+                'label': _('Payment'),
+                'url': reverse(
+                    'control:event.settings.payment',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': url.url_name == 'event.settings.payment',
+                'icon': 'credit-card',
+            }
+        )
+
+    if 'eventyay.plugins.sendmail' in event.get_plugins() and has_mail_perm:
+        nav.append(
+            {
+                'label': _('Message center'),
+                'url': reverse(
+                    'control:event.mail.compose',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': 'event.mail' in url.url_name,
+                'icon': 'envelope',
+            }
+        )
+
+    return nav
+
+
 def get_event_navigation(request: HttpRequest):
+    if is_meetup_event(request.event):
+        return get_meetup_event_navigation(request)
+
     url = request.resolver_match
     if not url:
         return []
@@ -125,7 +237,7 @@ def get_event_navigation(request: HttpRequest):
         )
         nav.append(
             {
-                'label': _('Registration settings') if is_meetup_event(request.event) else _('Ticket settings'),
+                'label': _('Ticket settings'),
                 'url': reverse(
                     'control:event.settings',
                     kwargs={
@@ -345,15 +457,6 @@ def get_event_navigation(request: HttpRequest):
                 'active': 'event.orders.checkin' in url.url_name,
             },
         ]
-        if user_can_open_checkin_app(request):
-            checkin_children.append(
-                {
-                    'label': _('eventyay Check-in'),
-                    'url': get_eventyay_checkin_app_url(request),
-                    'external': True,
-                    'active': False,
-                }
-            )
         nav.append(
             {
                 'label': pgettext_lazy('navigation', 'Check-in'),
@@ -433,54 +536,70 @@ def get_admin_navigation(request):
     url = request.resolver_match
     if not url:
         return []
+    business_children = [
+        {
+            'label': _('Business Settings'),
+            'url': reverse('eventyay_admin:admin.global.business'),
+            'active': (url.url_name == 'admin.global.business'),
+        },
+        {
+            'label': _('Event vouchers'),
+            'url': reverse('eventyay_admin:admin.vouchers'),
+            'active': 'voucher' in url.url_name,
+        },
+    ]
+
+    global_settings_children = [
+        {
+            'label': _('Settings'),
+            'url': reverse('eventyay_admin:admin.global.settings'),
+            'active': (url.url_name == 'admin.global.settings'),
+        },
+        {
+            'label': _('Ticketing'),
+            'url': reverse('eventyay_admin:admin.global.ticketing'),
+            'active': (url.url_name == 'admin.global.ticketing'),
+        },
+        {
+            'label': _('System information'),
+            'url': reverse('eventyay_admin:admin.config'),
+            'active': 'config' in url.url_name,
+        },
+        {
+            'label': _('Pages'),
+            'url': reverse('eventyay_admin:admin.pages'),
+            'active': 'pages' in url.url_name,
+        },
+        {
+            'label': _('Generate keys for SSO'),
+            'url': reverse('eventyay_admin:admin.global.sso'),
+            'active': (url.url_name == 'admin.global.sso'),
+        },
+        {
+            'label': _('Social login settings'),
+            'url': reverse('plugins:socialauth:admin.global.social.auth.settings'),
+            'active': (url.url_name == 'admin.global.social.auth.settings'),
+        },
+        {
+            'label': _('Plugins'),
+            'url': reverse('eventyay_admin:admin.global.plugins'),
+            'active': (url.url_name == 'admin.global.plugins'),
+        },
+    ]
     nav = [
         {
             'label': _('Global settings'),
             'url': reverse('eventyay_admin:admin.global.settings'),
-            'active': False,
+            'active': any(c['active'] for c in global_settings_children),
             'icon': 'wrench',
-            'children': [
-                {
-                    'label': _('Settings'),
-                    'url': reverse('eventyay_admin:admin.global.settings'),
-                    'active': (url.url_name == 'admin.global.settings'),
-                },
-                {
-                    'label': _('System information'),
-                    'url': reverse('eventyay_admin:admin.config'),
-                    'active': 'config' in url.url_name,
-                },
-                {
-                    'label': _('Pages'),
-                    'url': reverse('eventyay_admin:admin.pages'),
-                    'active': 'pages' in url.url_name,
-                },
-                {
-                    'label': _('Update check'),
-                    'url': reverse('eventyay_admin:admin.global.update'),
-                    'active': (url.url_name == 'admin.global.update'),
-                },
-                {
-                    'label': _('Meta data'),
-                    'url': reverse('eventyay_admin:admin.global.metadata'),
-                    'active': (url.url_name == 'admin.global.metadata'),
-                },
-                {
-                    'label': _('Generate keys for SSO'),
-                    'url': reverse('eventyay_admin:admin.global.sso'),
-                    'active': (url.url_name == 'admin.global.sso'),
-                },
-                {
-                    'label': _('Social login settings'),
-                    'url': reverse('plugins:socialauth:admin.global.social.auth.settings'),
-                    'active': (url.url_name == 'admin.global.social.auth.settings'),
-                },
-                {
-                    'label': _('Plugins'),
-                    'url': reverse('eventyay_admin:admin.global.plugins'),
-                    'active': (url.url_name == 'admin.global.plugins'),
-                },
-            ],
+            'children': global_settings_children,
+        },
+        {
+            'label': _('Business'),
+            'url': reverse('eventyay_admin:admin.global.business'),
+            'active': any(c['active'] for c in business_children),
+            'icon': 'briefcase',
+            'children': business_children,
         },
         {
             'label': _('Task management'),
@@ -512,11 +631,6 @@ def get_admin_navigation(request):
                 'label': _('Events'),
                 'url': reverse('eventyay_admin:video_admin:event.list'),
                 'active': is_video_route and url.url_name.startswith('event.'),
-            },
-            {
-                'label': _('Streamkey generator'),
-                'url': reverse('eventyay_admin:video_admin:streamkey'),
-                'active': is_video_route and url.url_name == 'streamkey',
             },
             {
                 'label': _('System log'),
@@ -590,12 +704,6 @@ def get_admin_navigation(request):
                         'active': ('sudo' in url.url_name),
                     },
                 ],
-            },
-            {
-                'label': _('Vouchers'),
-                'url': reverse('eventyay_admin:admin.vouchers'),
-                'active': 'voucher' in url.url_name,
-                'icon': 'tags',
             },
         ]
     )

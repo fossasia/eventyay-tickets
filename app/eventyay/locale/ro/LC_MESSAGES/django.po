@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-03-23 15:11+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 16:58+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/eventyay/"
 "eventyay/ro/>\n"
 "Language: ro\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -257,8 +257,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Pentru a vedea programul, activați JavaScript sau accesați <a "
-"href=\"%(href)s\">aici</a> pentru programul fără JavaScript."
+"Pentru a vedea programul, activați JavaScript sau accesați <a href=\"%(href)"
+"s\">aici</a> pentru programul fără JavaScript."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -1970,8 +1970,7 @@ msgstr "Generează facturi cu numere consecutive"
 
 #: eventyay/base/configurations/default_setting.py:468
 msgid "If deactivated, the order code will be used in the invoice number."
-msgstr ""
-"Dacă este dezactivat, codul comenzii va fi folosit în numărul facturii."
+msgstr "Dacă este dezactivat, codul comenzii va fi folosit în numărul facturii."
 
 #: eventyay/base/configurations/default_setting.py:477
 msgid "Invoice number prefix"
@@ -2155,15 +2154,14 @@ msgid ""
 "'expired' after the end of their payment deadline. This means that those "
 "tickets go back to the pool and can be ordered by other people."
 msgstr ""
-"Dacă este bifat, toate comenzile neplătite vor trece automat din starea "
-"„pending” în „expired” după expirarea termenului de plată. Asta înseamnă că "
+"Dacă este bifat, toate comenzile neplătite vor trece automat din starea „"
+"pending” în „expired” după expirarea termenului de plată. Asta înseamnă că "
 "biletele revin înapoi în disponibilitate și pot fi comandate de alte "
 "persoane."
 
 #: eventyay/base/configurations/default_setting.py:679
 msgid "Hide \"payment pending\" state on attendee-facing pages"
-msgstr ""
-"Ascunde starea \"payment pending\" pe paginile vizibile participanților"
+msgstr "Ascunde starea \"payment pending\" pe paginile vizibile participanților"
 
 #: eventyay/base/configurations/default_setting.py:681
 msgid ""
@@ -2340,8 +2338,7 @@ msgstr "ID TVA UE"
 
 #: eventyay/base/configurations/default_setting.py:842
 msgid "e.g. With this document, we sent you the invoice for your ticket order."
-msgstr ""
-"de ex. Cu acest document, v-am trimis factura pentru comanda de bilete."
+msgstr "de ex. Cu acest document, v-am trimis factura pentru comanda de bilete."
 
 #: eventyay/base/configurations/default_setting.py:845
 msgid "Introductory text"
@@ -2651,8 +2648,8 @@ msgid ""
 "\"admission ticket\"in the product settings. You can also turn off ticket "
 "issuing in every product separately."
 msgstr ""
-"Dacă este dezactivată, biletele sunt emise doar pentru produsele marcate ca "
-"„bilet de acces” în setările produsului. De asemenea, emiterea biletelor "
+"Dacă este dezactivată, biletele sunt emise doar pentru produsele marcate ca „"
+"bilet de acces” în setările produsului. De asemenea, emiterea biletelor "
 "poate fi dezactivată separat pentru fiecare produs."
 
 #: eventyay/base/configurations/default_setting.py:1216
@@ -3969,8 +3966,8 @@ msgstr ""
 "Utilizatorii care nu au acces la toate evenimentele din cadrul acestui "
 "organizator trebuie să selecteze una dintre echipele lor pentru a avea acces "
 "la evenimentul creat. Această setare permite utilizatorilor să creeze pe loc "
-"o echipă specifică evenimentului, chiar și atunci când nu au permisiunea "
-"„Poate modifica echipele și permisiunile”."
+"o echipă specifică evenimentului, chiar și atunci când nu au permisiunea „"
+"Poate modifica echipele și permisiunile”."
 
 #: eventyay/base/configurations/default_setting.py:2490
 #: eventyay/base/configurations/default_setting.py:2500
@@ -9906,8 +9903,7 @@ msgstr "Fișierul de aspect nu este un fișier JSON valid."
 
 #: eventyay/base/models/seating.py:34
 msgid "Your layout file is not a valid seating plan. Error message: {}"
-msgstr ""
-"Fișierul de aspect nu este un plan de locuri valid. Mesaj de eroare: {}"
+msgstr "Fișierul de aspect nu este un plan de locuri valid. Mesaj de eroare: {}"
 
 #: eventyay/base/models/seating.py:159
 #, python-brace-format
@@ -10213,8 +10209,7 @@ msgstr "Note"
 
 #: eventyay/base/models/submission.py:237
 msgid "These notes are meant for the organiser and won’t be made public."
-msgstr ""
-"Aceste note sunt destinate organizatorului și nu vor fi făcute publice."
+msgstr "Aceste note sunt destinate organizatorului și nu vor fi făcute publice."
 
 #: eventyay/base/models/submission.py:242 eventyay/orga/forms/importers.py:307
 #: eventyay/orga/templates/orga/submission/content.html:144
@@ -10910,8 +10905,7 @@ msgstr "Comanda {order.code} a fost marcată ca expirată."
 #: eventyay/base/notifications.py:276
 #, python-brace-format
 msgid "The ticket information of order {order.code} has been changed."
-msgstr ""
-"Informațiile despre bilet ale comenzii {order.code} au fost modificate."
+msgstr "Informațiile despre bilet ale comenzii {order.code} au fost modificate."
 
 #: eventyay/base/notifications.py:282
 #, python-brace-format
@@ -11928,8 +11922,7 @@ msgstr "Nu se pot selecta mai mult de %s produse pe comandă."
 #, python-format
 msgid ""
 "You cannot select more than %(max)s products of the product %(product)s."
-msgstr ""
-"Nu se pot selecta mai mult de %(max)s produse din produsul %(product)s."
+msgstr "Nu se pot selecta mai mult de %(max)s produse din produsul %(product)s."
 
 #: eventyay/base/services/cart.py:78
 #, python-format
@@ -12108,8 +12101,8 @@ msgid ""
 "You need to select at least %(min)s add-ons from the category %(cat)s for "
 "the product %(base)s."
 msgstr ""
-"Este necesar să se selecteze cel puțin %(min)s suplimente din categoria "
-"%(cat)s pentru produsul %(base)s."
+"Este necesar să se selecteze cel puțin %(min)s suplimente din categoria %"
+"(cat)s pentru produsul %(base)s."
 
 #: eventyay/base/services/cart.py:133
 #, python-format
@@ -12396,8 +12389,8 @@ msgid ""
 "Error while importing value \"{value}\" for column \"{column}\" in line "
 "\"{line}\": {message}"
 msgstr ""
-"Eroare la importarea valorii „{value}” pentru coloana „{column}” în linia "
-"„{line}”: {message}"
+"Eroare la importarea valorii „{value}” pentru coloana „{column}” în linia „"
+"{line}”: {message}"
 
 #: eventyay/base/services/orderimport.py:128
 #, fuzzy, python-brace-format
@@ -13295,8 +13288,7 @@ msgstr "Faceți clic aici pentru a dezactiva imediat toate notificările."
 
 #: eventyay/base/templates/pretixbase/email/notification.txt:15
 msgid "Click here to view and change your notification settings:"
-msgstr ""
-"Faceți clic aici pentru a vizualiza și modifica setările de notificare:"
+msgstr "Faceți clic aici pentru a vizualiza și modifica setările de notificare:"
 
 #: eventyay/base/templates/pretixbase/email/notification.txt:17
 msgid "Click here disable all notifications immediately:"
@@ -13540,9 +13532,9 @@ msgid ""
 "required for security reasons, to ensure that your browser is not being "
 "hijacked by third parties."
 msgstr ""
-"Acest mesaj este afișat deoarece acest site HTTPS necesită trimiterea unui "
-"„antet Referer” de către browserul web, însă nu a fost trimis niciunul. "
-"Acest antet este necesar din motive de securitate, pentru a se asigura că "
+"Acest mesaj este afișat deoarece acest site HTTPS necesită trimiterea unui „"
+"antet Referer” de către browserul web, însă nu a fost trimis niciunul. Acest "
+"antet este necesar din motive de securitate, pentru a se asigura că "
 "browserul nu este deturnat de terți."
 
 #: eventyay/base/views/errors.py:30
@@ -13647,8 +13639,7 @@ msgstr "Cont"
 
 #: eventyay/cfp/flow.py:538
 msgid "That’s it about your proposal! We now just need a way to contact you."
-msgstr ""
-"Atât despre propunere! Mai este nevoie doar de o modalitate de contact."
+msgstr "Atât despre propunere! Mai este nevoie doar de o modalitate de contact."
 
 #: eventyay/cfp/flow.py:543
 msgid ""
@@ -13811,8 +13802,7 @@ msgstr "Invitația a fost trimisă!"
 
 #: eventyay/cfp/phrases.py:48
 msgid "You are now part of this proposal! Please fill in your profile below."
-msgstr ""
-"Acum faci parte din această propunere! Completează-ți profilul mai jos."
+msgstr "Acum faci parte din această propunere! Completează-ți profilul mai jos."
 
 #: eventyay/cfp/phrases.py:51
 msgid ""
@@ -13832,8 +13822,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Se pot introduce propuneri până la %(deadline)s (%(timezone)s), încă "
-"%(until_string)s."
+"Se pot introduce propuneri până la %(deadline)s (%(timezone)s), încă %"
+"(until_string)s."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -15541,8 +15531,7 @@ msgstr "Prezentare generală a utilizării"
 
 #: eventyay/common/templates/common/logs.html:15
 msgid "This change was performed by an event organiser."
-msgstr ""
-"Această modificare a fost efectuată de un organizator al evenimentului."
+msgstr "Această modificare a fost efectuată de un organizator al evenimentului."
 
 #: eventyay/common/templates/common/redirect.html:7
 #: eventyay/common/templates/common/redirect.html:13
@@ -15646,12 +15635,9 @@ msgstr[2] ""
 #| msgid "You can choose up to %(max_count)s options from this category."
 msgid "You can keep up to %(count)s slide entry in total."
 msgid_plural "You can keep up to %(count)s slide entries in total."
-msgstr[0] ""
-"Se pot selecta cel mult %(max_count)s opțiuni din această categorie."
-msgstr[1] ""
-"Se pot selecta cel mult %(max_count)s opțiuni din această categorie."
-msgstr[2] ""
-"Se pot selecta cel mult %(max_count)s opțiuni din această categorie."
+msgstr[0] "Se pot selecta cel mult %(max_count)s opțiuni din această categorie."
+msgstr[1] "Se pot selecta cel mult %(max_count)s opțiuni din această categorie."
+msgstr[2] "Se pot selecta cel mult %(max_count)s opțiuni din această categorie."
 
 #: eventyay/common/templates/common/widgets/slides_input.html:79
 #, fuzzy
@@ -18328,8 +18314,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"Cheia furnizată nu pare validă. Ar trebui să înceapă cu una dintre: "
-"%(prefixes)s"
+"Cheia furnizată nu pare validă. Ar trebui să înceapă cu una dintre: %"
+"(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -19571,16 +19557,16 @@ msgid ""
 "Unknown scan of code \"{barcode}…\" at {datetime} for list \"{list}\", type "
 "\"{type}\"."
 msgstr ""
-"Scanare necunoscută a codului „{barcode}…” la {datetime} pentru lista "
-"„{list}”, tip „{type}”."
+"Scanare necunoscută a codului „{barcode}…” la {datetime} pentru lista „{list}"
+"”, tip „{type}”."
 
 #: eventyay/control/logdisplay.py:258
 #, python-brace-format
 msgid ""
 "Unknown scan of code \"{barcode}…\" for list \"{list}\", type \"{type}\"."
 msgstr ""
-"Scanare necunoscută a codului „{barcode}…” pentru lista „{list}”, tip "
-"„{type}”."
+"Scanare necunoscută a codului „{barcode}…” pentru lista „{list}”, tip „{type}"
+"”."
 
 #: eventyay/control/logdisplay.py:268
 #, python-brace-format
@@ -19597,8 +19583,8 @@ msgid ""
 "Scan of revoked code \"{barcode}\" for list \"{list}\", type \"{type}\", was "
 "uploaded."
 msgstr ""
-"A fost încărcată o scanare a codului revocat „{barcode}” pentru lista "
-"„{list}”, tip „{type}”."
+"A fost încărcată o scanare a codului revocat „{barcode}” pentru lista „{list}"
+"”, tip „{type}”."
 
 #: eventyay/control/logdisplay.py:287
 #, python-brace-format
@@ -22894,9 +22880,9 @@ msgid ""
 "to make sure they do not show up in your reports and statistics and block "
 "people from actually buying tickets."
 msgstr ""
-"Evenimentul conține <strong>comenzi în modul test</strong>, deși "
-"<strong>modul test a fost dezactivat</strong>. Aceste comenzi trebuie șterse "
-"pentru a evita afișarea lor în rapoarte și statistici și pentru a împiedica "
+"Evenimentul conține <strong>comenzi în modul test</strong>, deși <strong>"
+"modul test a fost dezactivat</strong>. Aceste comenzi trebuie șterse pentru "
+"a evita afișarea lor în rapoarte și statistici și pentru a împiedica "
 "achiziționarea efectivă a biletelor."
 
 #: eventyay/control/templates/pretixcontrol/base.html:395
@@ -24013,8 +23999,8 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Nu există furnizori de plată disponibili. Accesează <a "
-"%(plugin_settings_href)s>setările pluginurilor</a> și activează unul sau mai "
+"Nu există furnizori de plată disponibili. Accesează <a %"
+"(plugin_settings_href)s>setările pluginurilor</a> și activează unul sau mai "
 "multe pluginuri de plată."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
@@ -24380,10 +24366,10 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Aceste setări sunt destinate utilizatorilor avansați. Consultați <a "
-"href=\"%(docs)s\">documentația</a> pentru mai multe informații. Rețineți că "
-"nu ne asumăm răspunderea pentru gestionarea corectă a taxelor în magazinul "
-"de bilete. În caz de îndoială, contactați un avocat sau un consultant fiscal."
+"Aceste setări sunt destinate utilizatorilor avansați. Consultați <a href=\"%"
+"(docs)s\">documentația</a> pentru mai multe informații. Rețineți că nu ne "
+"asumăm răspunderea pentru gestionarea corectă a taxelor în magazinul de "
+"bilete. În caz de îndoială, contactați un avocat sau un consultant fiscal."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24461,9 +24447,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Nu sunt disponibile ieșiri pentru bilete. Accesați <a "
-"%(plugin_settings_href)s>setările pluginului</a> și activați unul sau mai "
-"multe pluginuri de ieșire pentru bilete."
+"Nu sunt disponibile ieșiri pentru bilete. Accesați <a %(plugin_settings_href)"
+"s>setările pluginului</a> și activați unul sau mai multe pluginuri de ieșire "
+"pentru bilete."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -26715,8 +26701,7 @@ msgstr ""
 
 #: eventyay/control/templates/pretixcontrol/order/refund_process.html:30
 msgid "Since the order is already canceled, this will not affect its state."
-msgstr ""
-"Deoarece comanda este deja anulată, acest lucru nu îi va afecta starea."
+msgstr "Deoarece comanda este deja anulată, acest lucru nu îi va afecta starea."
 
 #: eventyay/control/templates/pretixcontrol/order/refund_process.html:36
 msgid "What should happen to the ticket order?"
@@ -28582,8 +28567,7 @@ msgstr ""
 msgid ""
 "We just want to make sure it's really you. Please re-enter your password to "
 "continue."
-msgstr ""
-"Se dorește confirmarea identității. Reintrodu parola pentru a continua."
+msgstr "Se dorește confirmarea identității. Reintrodu parola pentru a continua."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:22
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login_2fa.html:18
@@ -28744,8 +28728,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Sigur doriți să ștergeți următoarea intrare din lista de așteptare "
-"<strong>%(entry)s</strong>?"
+"Sigur doriți să ștergeți următoarea intrare din lista de așteptare <strong>%"
+"(entry)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -28857,8 +28841,8 @@ msgid ""
 "                                    "
 msgstr ""
 "\n"
-"                                    În așteptare, produs disponibil "
-"%(num)sx\n"
+"                                    În așteptare, produs disponibil %(num)"
+"sx\n"
 "                                "
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:231
@@ -33233,8 +33217,7 @@ msgstr "Înregistrarea nu a putut fi finalizată. Încercați din nou."
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:354
 msgid "A two-factor authentication device has been removed from your account."
-msgstr ""
-"Un dispozitiv de autentificare cu doi factori a fost eliminat din cont."
+msgstr "Un dispozitiv de autentificare cu doi factori a fost eliminat din cont."
 
 #: eventyay/eventyay_common/views/account/two_factor_auth.py:364
 msgid "The device has been removed."
@@ -33346,8 +33329,8 @@ msgid ""
 "This email confirmation link expired or is invalid. Please "
 "%(email_action_link)s."
 msgstr ""
-"Acest link de confirmare a e-mailului a expirat sau nu este valid. "
-"%(email_action_link)s."
+"Acest link de confirmare a e-mailului a expirat sau nu este valid. %"
+"(email_action_link)s."
 
 #: eventyay/eventyay_common/views/dashboards.py:407
 msgid "You do not have permission to change event settings."
@@ -34153,8 +34136,8 @@ msgid ""
 msgstr ""
 "Bună!\n"
 "\n"
-"Ai fost adăugat(ă) la o propunere pentru {event_name}, intitulată "
-"„{proposal_title}”.\n"
+"Ai fost adăugat(ă) la o propunere pentru {event_name}, intitulată „"
+"{proposal_title}”.\n"
 "A fost creat un cont pentru tine – urmează acest link pentru a seta parola "
 "contului.\n"
 "\n"
@@ -34181,8 +34164,8 @@ msgid ""
 msgstr ""
 "Bună!\n"
 "\n"
-"Ai fost adăugat(ă) la o propunere pentru {event_name}, intitulată "
-"„{proposal_title}”.\n"
+"Ai fost adăugat(ă) la o propunere pentru {event_name}, intitulată „"
+"{proposal_title}”.\n"
 "Urmează acest link pentru a edita profilul de utilizator și pentru a vedea "
 "starea propunerii:\n"
 "\n"
@@ -35403,8 +35386,7 @@ msgstr "Scor mediu al recenziilor, dacă există deja recenzii"
 
 #: eventyay/orga/forms/schedule.py:150
 msgid "Resources provided by the speaker, either as links or as uploaded files"
-msgstr ""
-"Resurse furnizate de vorbitor, fie ca linkuri, fie ca fișiere încărcate"
+msgstr "Resurse furnizate de vorbitor, fie ca linkuri, fie ca fișiere încărcate"
 
 #: eventyay/orga/forms/speaker.py:23
 msgid "Just speakers with accepted and confirmed proposals"
@@ -36759,8 +36741,7 @@ msgstr "Aplică modificările în așteptare"
 #: eventyay/orga/templates/orga/speaker/list.html:41
 #, python-format
 msgid "List filtered by responses to custom field “%(question)s”."
-msgstr ""
-"Listă filtrată după răspunsurile la câmpul personalizat „%(question)s”."
+msgstr "Listă filtrată după răspunsurile la câmpul personalizat „%(question)s”."
 
 #: eventyay/orga/templates/orga/invitation.html:4
 msgid "Invitation"
@@ -37191,8 +37172,8 @@ msgid ""
 msgstr ""
 "Evaluatorii vor putea vedea și evalua <strong>toate propunerile</strong>, "
 "dar evaluările alocate vor apărea evidențiate și vor fi direcționați mai "
-"întâi către acestea. Setarea poate fi modificată în <a "
-"href=\"%(href)s\">setările de evaluare</a>."
+"întâi către acestea. Setarea poate fi modificată în <a href=\"%(href)s\">"
+"setările de evaluare</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:129
 msgid ""
@@ -37722,8 +37703,8 @@ msgid ""
 "when reviewing proposals."
 msgstr ""
 "Dacă nu este necesar nici un scor de evaluare, nici un text de evaluare, "
-"evaluatorilor li se va oferi un buton suplimentar "
-"%(quotation_open)sAbținere%(quotation_close)s la evaluarea propunerilor."
+"evaluatorilor li se va oferi un buton suplimentar %(quotation_open)sAbținere%"
+"(quotation_close)s la evaluarea propunerilor."
 
 #: eventyay/orga/templates/orga/settings/review.html:82
 msgid ""
@@ -38476,8 +38457,7 @@ msgstr "Adaugă vorbitor"
 #: eventyay/orga/templates/orga/submission/state_change.html:18
 msgid ""
 "Please confirm that you really want to change the state of this proposal."
-msgstr ""
-"Confirmați că doriți cu adevărat să schimbați starea acestei propuneri."
+msgstr "Confirmați că doriți cu adevărat să schimbați starea acestei propuneri."
 
 #: eventyay/orga/templates/orga/submission/tag/list.html:5
 #: eventyay/orga/views/submission.py:1361
@@ -38975,9 +38955,8 @@ msgid ""
 "Do you really want to regenerate %(count)s acceptance and rejection emails? "
 "They will be placed in the outbox and not sent out directly."
 msgstr ""
-"Sigur se dorește regenerarea e-mailurilor de acceptare și respingere "
-"%(count)s? Acestea vor fi plasate în căsuța de ieșire și nu vor fi trimise "
-"direct."
+"Sigur se dorește regenerarea e-mailurilor de acceptare și respingere %(count)"
+"s? Acestea vor fi plasate în căsuța de ieșire și nu vor fi trimise direct."
 
 #: eventyay/orga/views/review.py:654
 #, python-brace-format
@@ -40522,8 +40501,8 @@ msgid ""
 "We could not find bank account information for the refund {refund_id}. It "
 "was marked as failed."
 msgstr ""
-"Nu s-au găsit informații despre contul bancar pentru rambursarea "
-"{refund_id}. A fost marcată ca eșuată."
+"Nu s-au găsit informații despre contul bancar pentru rambursarea {refund_id}"
+". A fost marcată ca eșuată."
 
 #: eventyay/plugins/banktransfer/views.py:779
 msgid "No valid orders have been found."
@@ -41689,8 +41668,7 @@ msgstr "plus taxe"
 
 #: eventyay/presale/forms/order.py:123
 msgid "No other variation of this product is currently available for you."
-msgstr ""
-"Nu este disponibilă nicio altă variantă a acestui produs pentru moment."
+msgstr "Nu este disponibilă nicio altă variantă a acestui produs pentru moment."
 
 #: eventyay/presale/forms/renderers.py:37
 msgctxt "form"
@@ -43382,8 +43360,8 @@ msgid ""
 "                                                    "
 msgstr ""
 "\n"
-"                                                        de la "
-"%(start_date)s\n"
+"                                                        de la %(start_date)"
+"s\n"
 "                                                    "
 
 #: eventyay/presale/templates/pretixpresale/fragment_join_online_video.html:10
@@ -43843,8 +43821,7 @@ msgstr "Coșul este gol"
 
 #: eventyay/presale/views/checkout.py:42
 msgid "The presale for this event is over or has not yet started."
-msgstr ""
-"Pre-vânzarea pentru acest eveniment s-a încheiat sau nu a început încă."
+msgstr "Pre-vânzarea pentru acest eveniment s-a încheiat sau nu a început încă."
 
 #: eventyay/presale/views/checkout.py:61
 msgid "Please log in to complete your order."
@@ -44198,8 +44175,7 @@ msgstr ""
 
 #: eventyay/schedule/forms.py:202
 msgid "Information for speakers, e.g.: Projector has only HDMI input."
-msgstr ""
-"Informații pentru vorbitori, de ex.: Proiectorul are doar intrare HDMI."
+msgstr "Informații pentru vorbitori, de ex.: Proiectorul are doar intrare HDMI."
 
 #: eventyay/schedule/phrases.py:9
 msgctxt "Schedule/program of the conference"

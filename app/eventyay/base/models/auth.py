@@ -39,7 +39,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from eventyay.base.i18n import language
 from eventyay.base.models.cache import VersionedModel
-from eventyay.common.image import get_thumbnail
+from eventyay.common.image import create_thumbnail, get_thumbnail
 from eventyay.common.text.path import path_with_hash
 from eventyay.common.urls import EventUrls
 from eventyay.helpers.urls import build_absolute_uri

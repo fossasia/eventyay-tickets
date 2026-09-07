@@ -1,0 +1,33 @@
+/* Meetup Dashboard styles */
+@import url("dashboard.css");
+
+.analytics-section {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    font-family: "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.analytics-section .panel {
+    margin-bottom: 20px;
+}
+
+.analytics-section .chart-panel-body {
+    padding: 15px;
+    min-height: 260px;
+}
+
+.analytics-section .empty-chart-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 240px;
+    color: #767676;
+    text-align: center;
+    font-family: "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.analytics-section .empty-chart-state i {
+    opacity: 0.35;
+    margin-bottom: 12px;
+}

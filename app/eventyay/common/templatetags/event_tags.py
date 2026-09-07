@@ -9,6 +9,7 @@ from django.urls import reverse
 
 from django_scopes import scopes_disabled
 
+from eventyay.base.meetup import is_meetup_event
 from eventyay.base.models import Order, OrderPosition
 from eventyay.common.urls import is_http_url
 from eventyay.common.permissions import is_admin_mode_active, user_has_cfp_submissions
@@ -26,6 +27,13 @@ from eventyay.agenda.views.utils import event_has_public_featured_schedule_talks
 
 register = template.Library()
 logger = logging.getLogger(__name__)
+
+
+@register.simple_tag(takes_context=True)
+def is_meetup(context, event=None):
+    request = context.get('request')
+    event = event or getattr(request, 'event', None)
+    return is_meetup_event(event)
 
 
 @register.filter

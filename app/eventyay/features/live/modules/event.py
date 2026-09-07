@@ -74,12 +74,30 @@ class EventModule(BaseModule):
         )
 
     @command("config.get")
-    @require_event_permission(Permission.EVENT_UPDATE)
+    @require_event_permission(
+        [
+            Permission.EVENT_UPDATE,
+            Permission.EVENT_ROOMS_CREATE_STAGE,
+            Permission.EVENT_ROOMS_CREATE_BBB,
+        ]
+    )
     async def config_get(self, body):
-        await self.consumer.send_success(_config_serializer(self.consumer.event).data)
+        data = _config_serializer(self.consumer.event).data
+        has_general_update = await self.consumer.event.has_permission_async(
+            user=self.consumer.user, permission=Permission.EVENT_UPDATE
+        )
+        if not has_general_update:
+            data.pop("conftool_password", None)
+        await self.consumer.send_success(data)
 
     @command("config.patch")
-    @require_event_permission(Permission.EVENT_UPDATE)
+    @require_event_permission(
+        [
+            Permission.EVENT_UPDATE,
+            Permission.EVENT_ROOMS_CREATE_STAGE,
+            Permission.EVENT_ROOMS_CREATE_BBB,
+        ]
+    )
     async def config_patch(self, body):
         # Staff Video permissions are assigned only via Organizer → Teams.
         # Reject in-video role/trait editing so the Teams dashboard stays authoritative.
@@ -97,6 +115,26 @@ class EventModule(BaseModule):
             )
             return
 
+        has_general_update = await self.consumer.event.has_permission_async(
+            user=self.consumer.user, permission=Permission.EVENT_UPDATE
+        )
+        if not has_general_update:
+            allowed_keys = set()
+            if await self.consumer.event.has_permission_async(
+                user=self.consumer.user, permission=Permission.EVENT_ROOMS_CREATE_STAGE
+            ):
+                allowed_keys.update({"video_player", "videoPlayer"})
+            if await self.consumer.event.has_permission_async(
+                user=self.consumer.user, permission=Permission.EVENT_ROOMS_CREATE_BBB
+            ):
+                allowed_keys.add("bbb_defaults")
+            body = {k: v for k, v in body.items() if k in allowed_keys}
+
+        if "track_video_event_views" in body and "track_event_views" not in body:
+            body["track_event_views"] = body["track_video_event_views"]
+        elif "track_world_views" in body and "track_event_views" not in body:
+            body["track_event_views"] = body["track_world_views"]
+
         old = _config_serializer(self.consumer.event).data
         s = _config_serializer(self.consumer.event, data=body, partial=True)
         if s.is_valid():
@@ -105,15 +143,14 @@ class EventModule(BaseModule):
                 "connection_limit",
                 "bbb_defaults",
                 "pretalx",
+                "video_player",
                 "videoPlayer",
-                "profile_fields",
                 "track_room_views",
                 "track_event_views",
+                "live_features",
                 "onsite_traits",
                 "conftool_url",
                 "conftool_password",
-                "iframe_blockers",
-                "social_logins",
             )
             model_fields = {
                 "title": "name",

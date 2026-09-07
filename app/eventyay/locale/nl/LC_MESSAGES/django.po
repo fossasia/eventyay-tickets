@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-26 20:35+0000\n"
-"PO-Revision-Date: 2026-02-20 21:38+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"PO-Revision-Date: 2026-08-27 16:25+0000\n"
+"Last-Translator: Mario Behling <mb@mariobehling.de>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/eventyay/eventyay/"
 "nl/>\n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16.1-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: data/templates/exhibitors/exhibitor_info.html:3
 #: data/templates/exhibitors/exhibitor_info.html:5
@@ -255,8 +255,8 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
-"Om het programma te zien, dient Javascript aan te staan, of klik <a "
-"href=\"%(href)s\">hier</a> voor ons NoJS programma."
+"Om het programma te zien, dient Javascript aan te staan, of klik <a href=\"%"
+"(href)s\">hier</a> voor ons NoJS programma."
 
 #: eventyay/agenda/templates/agenda/featured.html:55
 msgid ""
@@ -479,8 +479,8 @@ msgid ""
 "href=\"%(href)s\">here</a>."
 msgstr ""
 "Om ons programma te bekijken met volledige functionaliteit, zoals tijdzone "
-"conversies en persoonlijk programma, zet JavaScript aan en klik <a "
-"href=\"%(href)s\">hier</a>."
+"conversies en persoonlijk programma, zet JavaScript aan en klik <a href=\"%"
+"(href)s\">hier</a>."
 
 #: eventyay/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
@@ -1486,8 +1486,7 @@ msgstr "Het eventyay logo"
 msgid ""
 "The application \"{application_name}\" has been authorized to access your "
 "account."
-msgstr ""
-"De applicatie \"{application_name}\" is toegang gegeven tot uw account."
+msgstr "De applicatie \"{application_name}\" is toegang gegeven tot uw account."
 
 #: eventyay/api/views/order.py:732 eventyay/control/views/orders.py:1683
 #: eventyay/presale/views/order.py:928 eventyay/presale/views/order.py:1002
@@ -2775,8 +2774,7 @@ msgstr "Klanten toestaan hun gegevens te wijzigen"
 
 #: eventyay/base/configurations/default_setting.py:1332
 msgid "Allow attendees to modify their information after they checked in."
-msgstr ""
-"Sta deelnemers toe hun informatie te wijzigen nadat ze zijn ingecheckt."
+msgstr "Sta deelnemers toe hun informatie te wijzigen nadat ze zijn ingecheckt."
 
 #: eventyay/base/configurations/default_setting.py:1334
 msgid ""
@@ -3005,8 +3003,8 @@ msgid ""
 "Tickets will never be attached if they're larger than {size} to avoid email "
 "delivery problems."
 msgstr ""
-"Tickets worden nooit bijgevoegd bij een e-mail als ze groter zijn dan "
-"{size}, om problemen met het versturen van de e-mail te voorkomen."
+"Tickets worden nooit bijgevoegd bij een e-mail als ze groter zijn dan {size}"
+", om problemen met het versturen van de e-mail te voorkomen."
 
 #: eventyay/base/configurations/default_setting.py:1630
 msgid "Attach calendar files"
@@ -4036,8 +4034,7 @@ msgstr "Tag publiekelijk tonen"
 #, fuzzy
 #| msgid "Displayed as the background image on the public start page."
 msgid "Display the number of followers on the public organizer profile page."
-msgstr ""
-"Wordt weergegeven als achtergrondafbeelding op de openbare startpagina."
+msgstr "Wordt weergegeven als achtergrondafbeelding op de openbare startpagina."
 
 #: eventyay/base/configurations/default_setting.py:2559
 msgid "Length of gift card codes"
@@ -4101,8 +4098,7 @@ msgstr "Achtergrondafbeelding paginakop startpagina"
 
 #: eventyay/base/configurations/default_setting.py:2622
 msgid "Displayed as the background image on the public start page."
-msgstr ""
-"Wordt weergegeven als achtergrondafbeelding op de openbare startpagina."
+msgstr "Wordt weergegeven als achtergrondafbeelding op de openbare startpagina."
 
 #: eventyay/base/configurations/default_setting.py:2636
 msgid "Start page header text"
@@ -9809,8 +9805,7 @@ msgstr "Tags toevoegen, verwijderen en aanmaken"
 
 #: eventyay/base/models/review.py:263
 msgid "Speakers can modify their proposals before acceptance"
-msgstr ""
-"Sprekers kunnen hun voorstellen wijzigen voordat ze worden geaccepteerd"
+msgstr "Sprekers kunnen hun voorstellen wijzigen voordat ze worden geaccepteerd"
 
 #: eventyay/base/models/review.py:265
 msgid ""
@@ -13055,8 +13050,8 @@ msgstr "Het geselecteerde evenement kon niet worden gevonden."
 msgid ""
 "Your default locale must also be enabled for your event (see box above)."
 msgstr ""
-"Uw standaardtaal moet ook zijn ingeschakeld voor uw evenement (zie "
-"hierboven)."
+"Uw standaardtaal moet ook zijn ingeschakeld voor uw evenement (zie hierboven)"
+"."
 
 #: eventyay/base/settings.py:206
 msgid ""
@@ -13869,8 +13864,8 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
-"Je kan voorstellen insturen tot %(deadline)s (%(timezone)s), "
-"%(until_string)s vanaf nu."
+"Je kan voorstellen insturen tot %(deadline)s (%(timezone)s), %(until_string)"
+"s vanaf nu."
 
 #: eventyay/cfp/templates/cfp/event/cfp.html:35
 #, python-format
@@ -14246,8 +14241,8 @@ msgid ""
 "just uncertain if you can or should submit your proposal, please contact the "
 "organiser instead."
 msgstr ""
-"Je kan je concept voorstel hier verwijderen. Ja kan dit niet ongedaan maken "
-"- als je twijfelt om je voorstel in te dienen, neem contact op met de "
+"Je kan je concept voorstel hier verwijderen. Ja kan dit niet ongedaan "
+"maken - als je twijfelt om je voorstel in te dienen, neem contact op met de "
 "organisatie."
 
 #: eventyay/cfp/templates/cfp/event/user_submission_edit.html:159
@@ -15095,8 +15090,8 @@ msgid ""
 "It looks as if the communication between you and eventyay went wrong in some "
 "way. <br> Please return to the last page and try again!"
 msgstr ""
-"Het lijkt er op dat de communicatie tussen jou en eventyay fout is gelopen."
-"<br>Ga terug naar de vorige pagina en probeer het opnieuw!"
+"Het lijkt er op dat de communicatie tussen jou en eventyay fout is "
+"gelopen.<br>Ga terug naar de vorige pagina en probeer het opnieuw!"
 
 #: eventyay/common/templates/400.html:29 eventyay/common/templates/400.html:32
 #: eventyay/common/templates/403.html:35 eventyay/common/templates/403.html:38
@@ -17760,8 +17755,7 @@ msgstr "Extra footertekst"
 
 #: eventyay/control/forms/global_settings.py:158
 msgid "Will be included as additional text in the footer, site-wide."
-msgstr ""
-"Zal over de hele website als extra tekst in de footer worden opgenomen."
+msgstr "Zal over de hele website als extra tekst in de footer worden opgenomen."
 
 #: eventyay/control/forms/global_settings.py:166
 msgid "Additional footer link"
@@ -17933,8 +17927,7 @@ msgstr "Stripe Connect-client-ID voor ticketbetalingen via de Stripe-plug-in."
 
 #: eventyay/control/forms/global_settings.py:416
 msgid "Live publishable key for ticket payments via the Stripe plugin."
-msgstr ""
-"Live publiceerbare sleutel voor ticketbetalingen via de Stripe-plug-in."
+msgstr "Live publiceerbare sleutel voor ticketbetalingen via de Stripe-plug-in."
 
 #: eventyay/control/forms/global_settings.py:425
 msgid "Live secret key for ticket payments via the Stripe plugin."
@@ -17942,8 +17935,7 @@ msgstr "Live geheime sleutel voor ticketbetalingen via de Stripe-plug-in."
 
 #: eventyay/control/forms/global_settings.py:434
 msgid "Test publishable key for ticket payments via the Stripe plugin."
-msgstr ""
-"Test publiceerbare sleutel voor ticketbetalingen via de Stripe-plug-in."
+msgstr "Test publiceerbare sleutel voor ticketbetalingen via de Stripe-plug-in."
 
 #: eventyay/control/forms/global_settings.py:443
 msgid "Test secret key for ticket payments via the Stripe plugin."
@@ -18362,8 +18354,8 @@ msgstr "De Stripe-sleutel mag niet leeg zijn."
 msgid ""
 "The provided key does not look valid. It should start with \"%(prefix)s\"."
 msgstr ""
-"De opgegeven sleutel lijkt niet geldig. Deze moet beginnen met "
-"\"%(prefix)s\"."
+"De opgegeven sleutel lijkt niet geldig. Deze moet beginnen met \"%(prefix)"
+"s\"."
 
 #: eventyay/control/forms/global_settings.py:988
 #, python-format
@@ -18371,8 +18363,8 @@ msgid ""
 "The provided key does not look valid. It should start with one of: "
 "%(prefixes)s"
 msgstr ""
-"De opgegeven sleutel lijkt niet geldig. Deze moet beginnen met een van: "
-"%(prefixes)s"
+"De opgegeven sleutel lijkt niet geldig. Deze moet beginnen met een van: %"
+"(prefixes)s"
 
 #: eventyay/control/forms/orderimport.py:10
 msgid "Import mode"
@@ -19505,8 +19497,8 @@ msgid ""
 "Position #{posid}: {old_product} ({old_price}) changed to {new_product} "
 "({new_price})."
 msgstr ""
-"Positie #{posid}: {old_product} ({old_price}) gewijzigd naar {new_product} "
-"({new_price})."
+"Positie #{posid}: {old_product} ({old_price}) gewijzigd naar {new_product} ("
+"{new_price})."
 
 #: eventyay/control/logdisplay.py:73
 #, python-brace-format
@@ -19577,8 +19569,8 @@ msgid ""
 "Position #{posid} created: {product} ({price}) as an add-on to position "
 "#{addon_to}."
 msgstr ""
-"Positie #{posid} aangemaakt: {product} ({price}) als add-on bij positie "
-"#{addon_to}."
+"Positie #{posid} aangemaakt: {product} ({price}) als add-on bij positie #"
+"{addon_to}."
 
 #: eventyay/control/logdisplay.py:194
 #, python-brace-format
@@ -19627,8 +19619,8 @@ msgid ""
 "Scan scan of revoked code \"{barcode}…\" at {datetime} for list \"{list}\", "
 "type \"{type}\", was uploaded."
 msgstr ""
-"Een scan van ingetrokken code \"{barcode}…\" om {datetime} voor lijst "
-"\"{list}\", type \"{type}\" is geüpload."
+"Een scan van ingetrokken code \"{barcode}…\" om {datetime} voor lijst \""
+"{list}\", type \"{type}\" is geüpload."
 
 #: eventyay/control/logdisplay.py:277
 #, python-brace-format
@@ -19654,8 +19646,8 @@ msgid ""
 "Denied scan of position #{posid} for list \"{list}\", type \"{type}\", error "
 "code \"{errorcode}\"."
 msgstr ""
-"Een scan voor plaats #{posid} is geweigerd voor de lijst \"{list}\", type "
-"\"{type}\". Foutcode: \"{errorcode}\"."
+"Een scan voor plaats #{posid} is geweigerd voor de lijst \"{list}\", type \""
+"{type}\". Foutcode: \"{errorcode}\"."
 
 #: eventyay/control/logdisplay.py:308
 #, python-brace-format
@@ -19694,8 +19686,8 @@ msgid ""
 "Position #{posid} has been scanned and rejected because it has already been "
 "scanned before on list \"{list}\"."
 msgstr ""
-"Plaats #{posid} is gescand en geweigerd omdat het al is gescand op lijst "
-"\"{list}\"."
+"Plaats #{posid} is gescand en geweigerd omdat het al is gescand op lijst \""
+"{list}\"."
 
 #: eventyay/control/logdisplay.py:489
 msgid "This object has been created by cloning."
@@ -23630,8 +23622,8 @@ msgid ""
 "To confirm you really want this, please type out the event's name "
 "(\"%(name)s\") here:"
 msgstr ""
-"Typ om zeker te zijn dat u dit echt wilt de korte naam van het evenement "
-"(\"%(slug)s\") hier:"
+"Typ om zeker te zijn dat u dit echt wilt de korte naam van het evenement (\"%"
+"(slug)s\") hier:"
 
 #: eventyay/control/templates/pretixcontrol/event/delete.html:36
 msgid "Your event can not be deleted as it already contains orders."
@@ -24058,9 +24050,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more "
 "payment plugins."
 msgstr ""
-"Er zijn geen betalingsproviders beschikbaar. Ga naar de <a "
-"%(plugin_settings_href)s>plug-in-instellingen</a> en activeer een of "
-"meerdere betalingsplug-ins."
+"Er zijn geen betalingsproviders beschikbaar. Ga naar de <a %"
+"(plugin_settings_href)s>plug-in-instellingen</a> en activeer een of meerdere "
+"betalingsplug-ins."
 
 #: eventyay/control/templates/pretixcontrol/event/payment.html:76
 msgid "Deadlines"
@@ -24429,11 +24421,11 @@ msgid ""
 "not responsible for the correct handling of taxes in your ticket shop. If in "
 "doubt, please contact a lawyer or tax consultant."
 msgstr ""
-"Deze instellingen zijn bedoeld voor gevorderde gebruikers. Zie de <a "
-"href=\"%(docs)s\">handleiding</a> voor meer informatie. Houd er rekening mee "
-"dat wij niet verantwoordelijk zijn voor de juiste behandeling van belasting "
-"bij de ticketverkoop. Neem in geval van twijfel contact op met een advocaat "
-"of belastingadviseur."
+"Deze instellingen zijn bedoeld voor gevorderde gebruikers. Zie de <a href=\"%"
+"(docs)s\">handleiding</a> voor meer informatie. Houd er rekening mee dat wij "
+"niet verantwoordelijk zijn voor de juiste behandeling van belasting bij de "
+"ticketverkoop. Neem in geval van twijfel contact op met een advocaat of "
+"belastingadviseur."
 
 #: eventyay/control/templates/pretixcontrol/event/tax_edit.html:43
 msgid "Custom taxation rules"
@@ -24512,9 +24504,9 @@ msgid ""
 "%(plugin_settings_href)s>plugin settings</a> and activate one or more ticket "
 "output plugins."
 msgstr ""
-"Er zijn geen uitvoerformaten voor tickets beschikbaar. Ga naar de <a "
-"%(plugin_settings_href)s>plug-in-instellingen</a> en activeer een of "
-"meerdere uitvoerplug-ins."
+"Er zijn geen uitvoerformaten voor tickets beschikbaar. Ga naar de <a %"
+"(plugin_settings_href)s>plug-in-instellingen</a> en activeer een of meerdere "
+"uitvoerplug-ins."
 
 #: eventyay/control/templates/pretixcontrol/event/tickets.html:65
 msgid "Download time"
@@ -26760,8 +26752,8 @@ msgid ""
 msgstr ""
 "We hebben een bericht ontvangen dat <strong>%(amount)s</strong> is "
 "terugbetaald via <strong>%(method)s</strong>. Als deze terugbetaling wordt "
-"verwerkt zal de bestelling onderbetaald zijn met <strong>%(pending)s</"
-"strong>. Het totaalbedrag is <strong>%(total)s</strong>."
+"verwerkt zal de bestelling onderbetaald zijn met <strong>%(pending)s</strong>"
+". Het totaalbedrag is <strong>%(total)s</strong>."
 
 #: eventyay/control/templates/pretixcontrol/order/refund_process.html:30
 msgid "Since the order is already canceled, this will not affect its state."
@@ -28290,8 +28282,8 @@ msgid ""
 msgstr ""
 "Controleer opnieuw of u zeker weet dat u de gekozen soorten gegevens wilt "
 "verwijderen uit het evenement <strong>%(event)s</strong>. Voer om te "
-"bevestigen dat u dit echt wilt de korte naam van het evenement "
-"(\"%(slug)s\") hier in:"
+"bevestigen dat u dit echt wilt de korte naam van het evenement (\"%(slug)"
+"s\") hier in:"
 
 #: eventyay/control/templates/pretixcontrol/shredder/download.html:41
 msgid "Event short name"
@@ -28506,8 +28498,8 @@ msgid ""
 msgstr ""
 "De quotuminstellingen van de gekozen datums verschillen en kunnen hierom "
 "niet in één keer aangepast worden. Als u dit wilt kunt u wel nieuwe quota "
-"definiëren om de quotuminstellingen van de geselecteerde datums "
-"<strong>vervangen</strong>."
+"definiëren om de quotuminstellingen van de geselecteerde datums <strong>"
+"vervangen</strong>."
 
 #: eventyay/control/templates/pretixcontrol/subevents/bulk_edit.html:258
 msgid ""
@@ -28630,8 +28622,8 @@ msgid ""
 "We just want to make sure it's really you. Please re-authenticate with "
 "'%(login_provider)s'."
 msgstr ""
-"We willen zeker zijn dat u het bent. Meld u opnieuw aan met "
-"'%(login_provider)s'."
+"We willen zeker zijn dat u het bent. Meld u opnieuw aan met '%"
+"(login_provider)s'."
 
 #: eventyay/control/templates/pretixcontrol/user/reauth.html:14
 msgid ""
@@ -28804,8 +28796,8 @@ msgid ""
 "Are you sure you want to delete the following waiting list entry "
 "<strong>%(entry)s</strong>?"
 msgstr ""
-"Weet u zeker dat u het volgende wachtlijstitem wilt verwijderen: "
-"<strong>%(entry)s</strong>?"
+"Weet u zeker dat u het volgende wachtlijstitem wilt verwijderen: <strong>%"
+"(entry)s</strong>?"
 
 #: eventyay/control/templates/pretixcontrol/waitinglist/index.html:18
 msgid ""
@@ -29679,8 +29671,7 @@ msgstr[1] "De bestelling is geweigerd, en is hierom nu geannuleerd."
 #: eventyay/presale/views/order.py:1186 eventyay/presale/views/order.py:1298
 #: eventyay/presale/views/order.py:1426 eventyay/presale/views/order.py:1470
 msgid "Unknown order code or not authorized to access this order."
-msgstr ""
-"Onbekende bestelcode of niet gemachtigd om deze bestelling te bekijken."
+msgstr "Onbekende bestelcode of niet gemachtigd om deze bestelling te bekijken."
 
 #: eventyay/control/views/orders.py:630 eventyay/presale/views/order.py:1302
 msgid "Ticket download is not enabled for this product."
@@ -29972,8 +29963,7 @@ msgstr "De betalingstermijn is veranderd."
 msgid ""
 "We were not able to process the request completely as the server was too "
 "busy."
-msgstr ""
-"We konden uw verzoek niet verwerken, omdat de server het te druk heeft."
+msgstr "We konden uw verzoek niet verwerken, omdat de server het te druk heeft."
 
 #: eventyay/control/views/orders.py:1947
 msgid "This action is only allowed for pending orders."
@@ -31346,8 +31336,8 @@ msgid ""
 "Are you sure you want to revoke access to your account for the application "
 "%(application)s?"
 msgstr ""
-"Weet je zeker dat je de toegang tot je account voor de applicatie "
-"%(application)s wilt intrekken?"
+"Weet je zeker dat je de toegang tot je account voor de applicatie %"
+"(application)s wilt intrekken?"
 
 #: eventyay/eventyay_common/templates/eventyay_common/account/authorized-apps.html:4
 #: eventyay/eventyay_common/templates/eventyay_common/account/authorized-apps.html:19
@@ -31582,8 +31572,8 @@ msgid ""
 "you can <a %(login_href)s>log in</a> first and then click this link again to "
 "accept the invitation with your existing account."
 msgstr ""
-"Als u al een account op deze site heeft met een ander e-mailadres kunt u <a "
-"%(login_href)s>inloggen</a> en dan opnieuw op deze link klikken om de "
+"Als u al een account op deze site heeft met een ander e-mailadres kunt u <a %"
+"(login_href)s>inloggen</a> en dan opnieuw op deze link klikken om de "
 "uitnodiging met uw bestaande account te accepteren."
 
 #: eventyay/eventyay_common/templates/eventyay_common/auth/login.html:17
@@ -34197,8 +34187,8 @@ msgid ""
 msgstr ""
 "Hallo!\n"
 "\n"
-"Je bent toegevoegd aan een voorstel voor {event_name}, met als titel "
-"“{proposal_title}”.\n"
+"Je bent toegevoegd aan een voorstel voor {event_name}, met als titel “"
+"{proposal_title}”.\n"
 "Er is een account voor je aangemaakt – volg deze link om je "
 "accountwachtwoord in te stellen.\n"
 "\n"
@@ -34225,8 +34215,8 @@ msgid ""
 msgstr ""
 "Hallo!\n"
 "\n"
-"Je bent toegevoegd aan een voorstel voor {event_name}, met als titel "
-"“{proposal_title}”.\n"
+"Je bent toegevoegd aan een voorstel voor {event_name}, met als titel “"
+"{proposal_title}”.\n"
 "Volg deze link om je gebruikersprofiel te bewerken en de status van je "
 "voorstel te bekijken:\n"
 "\n"
@@ -36625,8 +36615,7 @@ msgstr ""
 
 #: eventyay/orga/templates/orga/cfp/text.html:25
 msgid "The formats (sessions, workshops, panels) and their durations"
-msgstr ""
-"De soorten sessies (presentaties, workshops, panels) en de duur daarvan"
+msgstr "De soorten sessies (presentaties, workshops, panels) en de duur daarvan"
 
 #: eventyay/orga/templates/orga/cfp/text.html:26
 msgid "Topics you are looking for"
@@ -36814,9 +36803,9 @@ msgid ""
 "href=\"%(domain)s\">%(domain)s</a>, please log in now. Otherwise, create a "
 "new account to join the team!"
 msgstr ""
-"Als je al een account hebt – als spreker of als organisator – op <a "
-"href=\"%(domain)s\">%(domain)s</a>, log dan nu in. Maak anders een nieuw "
-"account aan om je bij het team aan te sluiten!"
+"Als je al een account hebt – als spreker of als organisator – op <a href=\"%"
+"(domain)s\">%(domain)s</a>, log dan nu in. Maak anders een nieuw account aan "
+"om je bij het team aan te sluiten!"
 
 #: eventyay/orga/templates/orga/invitation.html:37
 #, python-format
@@ -37160,8 +37149,8 @@ msgstr ""
 "Je kunt hier je beoordelingsopdrachten uploaden vanuit een JSON-bestand. U "
 "kunt de voorstelcodes (bijv. “UX3N1”) als sleutels hebben en de "
 "gebruikersidentificatie als waarden, of andersom. Gebruikersidentificatie "
-"kan het e-mailadres van de beoordelaar zijn of hun gebruikerscode (bijv. "
-"“34KJN”). Je kunt een voorbeeldbestand <a href=\"%(href)s\">hier</a> vinden."
+"kan het e-mailadres van de beoordelaar zijn of hun gebruikerscode (bijv. “"
+"34KJN”). Je kunt een voorbeeldbestand <a href=\"%(href)s\">hier</a> vinden."
 
 #: eventyay/orga/templates/orga/review/assignment.html:23
 msgid ""
@@ -37205,8 +37194,8 @@ msgid ""
 "settings</a>."
 msgstr ""
 "Beoordelaars kunnen <strong>alleen de aan hen toegewezen</strong> "
-"voorstellen zien en beoordelen. U kunt dit wijzigen in uw <a "
-"href=\"%(href)s\">beoordelingsinstellingen</a>."
+"voorstellen zien en beoordelen. U kunt dit wijzigen in uw <a href=\"%(href)"
+"s\">beoordelingsinstellingen</a>."
 
 #: eventyay/orga/templates/orga/review/assignment.html:120
 #, python-format
@@ -37460,8 +37449,7 @@ msgstr[1] "%(count)s sessies zijn <strong>nog niet geprogrammeerd</strong>."
 msgid "One session has <strong>not yet been assigned a track</strong>."
 msgid_plural ""
 "%(count)s sessions have <strong>not yet been assigned a track</strong>."
-msgstr[0] ""
-"Eén sessie heeft <strong>nog geen slot toegewezen gekregen</strong>."
+msgstr[0] "Eén sessie heeft <strong>nog geen slot toegewezen gekregen</strong>."
 msgstr[1] ""
 "%(count)s sessies hebben <strong>nog geen slot toegewezen gekregen</strong>."
 
@@ -37927,8 +37915,8 @@ msgid ""
 "files (e.g. a conference styleguide). <br> They are shown to the selected "
 "speakers above the list of their submitted sessions."
 msgstr ""
-"Voeg belangrijke berichten (bijv. \"Breng indien nodig een HDMI adapter mee."
-"\") of bestanden (bijv. een stijlgids) toe.<br> Deze worden aan de "
+"Voeg belangrijke berichten (bijv. \"Breng indien nodig een HDMI adapter "
+"mee.\") of bestanden (bijv. een stijlgids) toe.<br> Deze worden aan de "
 "geselecteerde sprekers getoond boven de lijst van hun voorstellen."
 
 #: eventyay/orga/templates/orga/speaker/information_list.html:34
@@ -38045,8 +38033,7 @@ msgstr "%(count)s wijzigingen toepassen?"
 msgid ""
 "Please confirm that you really want to change the state of these %(count)s "
 "proposals."
-msgstr ""
-"Bevestig dat je de status van deze %(count)s voorstellen wilt wijzigen."
+msgstr "Bevestig dat je de status van deze %(count)s voorstellen wilt wijzigen."
 
 #: eventyay/orga/templates/orga/submission/apply_pending.html:33
 #: eventyay/orga/templates/orga/submission/state_change.html:34
@@ -38409,8 +38396,7 @@ msgstr "Verwijderen"
 
 #: eventyay/orga/templates/orga/submission/review.html:28
 msgid "You’re not allowed to review or see reviews for your own proposals."
-msgstr ""
-"Je hebt geen toestemming om je eigen voorstellen te zien of recenceren."
+msgstr "Je hebt geen toestemming om je eigen voorstellen te zien of recenceren."
 
 #: eventyay/orga/templates/orga/submission/review.html:44
 msgid "You will be able to see other reviews once you have given yours."
@@ -38502,9 +38488,9 @@ msgid ""
 "API tokens can be used to access the <a %(apiurl)s>eventyay API</a>. To find "
 "out more, please have a look at the <a %(docurl)s> API documentation</a>."
 msgstr ""
-"API-tokens kunnen worden gebruikt om toegang te krijgen tot de <a "
-"%(apiurl)s>eventyay API</a>. Kijk voor meer informatie in de <a %(docurl)s> "
-"API-documentatie</a>."
+"API-tokens kunnen worden gebruikt om toegang te krijgen tot de <a %(apiurl)s>"
+"eventyay API</a>. Kijk voor meer informatie in de <a %(docurl)s> API-"
+"documentatie</a>."
 
 #: eventyay/orga/templates/orga/user.html:69
 msgid "Your API tokens"
@@ -38998,8 +38984,7 @@ msgstr "De beoordelaars werden met succes toegewezen."
 
 #: eventyay/orga/views/schedule.py:73
 msgid "A new export is being generated and will be available soon."
-msgstr ""
-"Er wordt een nieuwe export gemaakt die binnenkort beschikbaar zal zijn."
+msgstr "Er wordt een nieuwe export gemaakt die binnenkort beschikbaar zal zijn."
 
 #: eventyay/orga/views/schedule.py:80
 msgid ""
@@ -39014,8 +38999,8 @@ msgstr ""
 msgid ""
 "Could not find the current export, please try to regenerate it. ({error})"
 msgstr ""
-"Kon de huidige export niet vinden, probeer deze opnieuw te genereren. "
-"({error})"
+"Kon de huidige export niet vinden, probeer deze opnieuw te genereren. ("
+"{error})"
 
 #: eventyay/orga/views/schedule.py:129
 msgid "You have to provide a new, unique schedule version!"
@@ -40390,8 +40375,8 @@ msgstr[0] ""
 "aangemaakt op %(date)s, met één bestelling en een totaalbedrag van %(sum)s."
 msgstr[1] ""
 "U probeert een exportbestand met terugbetalingen te downloaden dat is "
-"aangemaakt op %(date)s, met %(cnt)s bestellingen en een totaalbedrag van "
-"%(sum)s."
+"aangemaakt op %(date)s, met %(cnt)s bestellingen en een totaalbedrag van %"
+"(sum)s."
 
 #: eventyay/plugins/banktransfer/templates/pretixplugins/banktransfer/sepa_export.html:23
 msgid ""
@@ -43665,8 +43650,8 @@ msgstr ""
 msgid ""
 "To log in and access your events, please <a %(a_attr)s>head over here</a>."
 msgstr ""
-"Om in te loggen en toegang te krijgen tot je evenementen, ga naar <a "
-"%(a_attr)s>hier</a>."
+"Om in te loggen en toegang te krijgen tot je evenementen, ga naar <a %"
+"(a_attr)s>hier</a>."
 
 #: eventyay/presale/templates/pretixpresale/index.html:30
 msgid "Enjoy!"
@@ -43861,8 +43846,7 @@ msgstr "Uw winkelwagen is leeg"
 
 #: eventyay/presale/views/checkout.py:42
 msgid "The presale for this event is over or has not yet started."
-msgstr ""
-"De voorverkoop voor dit evenement is afgelopen of is nog niet begonnen."
+msgstr "De voorverkoop voor dit evenement is afgelopen of is nog niet begonnen."
 
 #: eventyay/presale/views/checkout.py:61
 msgid "Please log in to complete your order."
@@ -43995,8 +43979,7 @@ msgstr "Eventyay-video"
 #, fuzzy
 #| msgid "Unknown order code or not authorized to access this order."
 msgid "You are not authorized to access this order."
-msgstr ""
-"Onbekende bestelcode of niet gemachtigd om deze bestelling te bekijken."
+msgstr "Onbekende bestelcode of niet gemachtigd om deze bestelling te bekijken."
 
 #: eventyay/presale/views/order.py:556 eventyay/presale/views/order.py:626
 #: eventyay/presale/views/order.py:700

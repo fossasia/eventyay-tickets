@@ -1,6 +1,7 @@
 import datetime
 from decimal import Decimal
 
+from django.test import override_settings
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
 
@@ -17,6 +18,7 @@ from eventyay.base.models.product import SubEventProduct as SubEventItem
 from tests.tickets.base import SoupTest, extract_form_fields
 
 
+@override_settings(SITE_URL='https://testserver')
 class SubEventsTest(SoupTest):
     @scopes_disabled()
     def setUp(self):
@@ -40,7 +42,7 @@ class SubEventsTest(SoupTest):
         )
         t.members.add(self.user)
         t.limit_events.add(self.event1)
-        self.ticket = self.event1.items.create(
+        self.ticket = self.event1.products.create(
             name='Early-bird ticket', category=None, default_price=23, admission=True
         )
 
@@ -81,8 +83,8 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
-                'item-%d-price' % self.ticket.pk: '12',
+                'quotas-0-productvars': str(self.ticket.pk),
+                'product-%d-price' % self.ticket.pk: '12',
             },
         )
         assert doc.select('.alert-success')
@@ -99,8 +101,8 @@ class SubEventsTest(SoupTest):
             q = se.quotas.last()
             assert q.name == 'Q1'
             assert q.size == 50
-            assert list(q.items.all()) == [self.ticket]
-            sei = SubEventItem.objects.get(subevent=se, item=self.ticket)
+            assert list(q.products.all()) == [self.ticket]
+            sei = SubEventItem.objects.get(subevent=se, product=self.ticket)
             assert sei.price == 12
             assert se.checkinlist_set.count() == 1
 
@@ -125,14 +127,14 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
                 'checkinlist_set-TOTAL_FORMS': '1',
                 'checkinlist_set-INITIAL_FORMS': '0',
                 'checkinlist_set-MIN_NUM_FORMS': '0',
                 'checkinlist_set-MAX_NUM_FORMS': '1000',
                 'checkinlist_set-0-name': 'Default',
                 'checkinlist_set-0-all_products': 'on',
-                'item-%d-price' % self.ticket.pk: '12',
+                'product-%d-price' % self.ticket.pk: '12',
             },
         )
         assert doc.select('.alert-success')
@@ -150,8 +152,8 @@ class SubEventsTest(SoupTest):
             q = se.quotas.last()
             assert q.name == 'Q1'
             assert q.size == 50
-            assert list(q.items.all()) == [self.ticket]
-            sei = SubEventItem.objects.get(subevent=se, item=self.ticket)
+            assert list(q.products.all()) == [self.ticket]
+            sei = SubEventItem.objects.get(subevent=se, product=self.ticket)
             assert sei.price == 12
             assert se.checkinlist_set.count() == 1
 
@@ -181,7 +183,7 @@ class SubEventsTest(SoupTest):
             )
             OrderPosition.objects.create(
                 order=o,
-                item=self.ticket,
+                product=self.ticket,
                 subevent=self.subevent1,
                 price=Decimal('14'),
             )
@@ -254,8 +256,8 @@ class SubEventsTest(SoupTest):
                 'quotas-0-id': '',
                 'quotas-0-name': 'Bar',
                 'quotas-0-size': '12',
-                'quotas-0-itemvars': str(self.ticket.pk),
-                'item-%d-price' % self.ticket.pk: '16',
+                'quotas-0-productvars': str(self.ticket.pk),
+                'product-%d-price' % self.ticket.pk: '16',
                 'checkinlist_set-TOTAL_FORMS': '1',
                 'checkinlist_set-INITIAL_FORMS': '0',
                 'checkinlist_set-MIN_NUM_FORMS': '0',
@@ -271,28 +273,28 @@ class SubEventsTest(SoupTest):
         assert len(ses) == 10
 
         assert str(ses[0].name) == 'Foo'
-        assert ses[0].date_from.isoformat() == '2018-04-03T12:36:31+00:00'
-        assert ses[0].date_to.isoformat() == '2018-04-03T14:36:31+00:00'
+        assert ses[0].date_from.isoformat() == '2018-04-03T11:29:31+00:00'
+        assert ses[0].date_to.isoformat() == '2018-04-03T13:29:31+00:00'
         assert not ses[0].presale_start
-        assert ses[0].presale_end.isoformat() == '2018-04-02T12:36:31+00:00'
+        assert ses[0].presale_end.isoformat() == '2018-04-02T11:29:31+00:00'
         with scopes_disabled():
             assert ses[0].quotas.count() == 1
-            assert list(ses[0].quotas.first().items.all()) == [self.ticket]
-            assert SubEventItem.objects.get(subevent=ses[0], item=self.ticket).price == 16
+            assert list(ses[0].quotas.first().products.all()) == [self.ticket]
+            assert SubEventItem.objects.get(subevent=ses[0], product=self.ticket).price == 16
             assert ses[0].checkinlist_set.count() == 1
 
         assert str(ses[1].name) == 'Foo'
-        assert ses[1].date_from.isoformat() == '2019-04-03T12:36:31+00:00'
-        assert ses[1].date_to.isoformat() == '2019-04-03T14:36:31+00:00'
+        assert ses[1].date_from.isoformat() == '2019-04-03T11:29:31+00:00'
+        assert ses[1].date_to.isoformat() == '2019-04-03T13:29:31+00:00'
         assert not ses[1].presale_start
-        assert ses[1].presale_end.isoformat() == '2019-04-02T12:36:31+00:00'
+        assert ses[1].presale_end.isoformat() == '2019-04-02T11:29:31+00:00'
         with scopes_disabled():
             assert ses[1].quotas.count() == 1
-            assert list(ses[1].quotas.first().items.all()) == [self.ticket]
-            assert SubEventItem.objects.get(subevent=ses[0], item=self.ticket).price == 16
+            assert list(ses[1].quotas.first().products.all()) == [self.ticket]
+            assert SubEventItem.objects.get(subevent=ses[1], product=self.ticket).price == 16
             assert ses[1].checkinlist_set.count() == 1
 
-        assert ses[-1].date_from.isoformat() == '2027-04-03T12:36:31+00:00'
+        assert ses[-1].date_from.isoformat() == '2027-04-03T11:29:31+00:00'
 
     def test_create_bulk_daily_interval(self):
         with scopes_disabled():
@@ -346,7 +348,7 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
                 'checkinlist_set-TOTAL_FORMS': '0',
                 'checkinlist_set-INITIAL_FORMS': '0',
                 'checkinlist_set-MIN_NUM_FORMS': '0',
@@ -358,9 +360,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 183
 
-        assert ses[0].date_from.isoformat() == '2018-04-03T12:36:31+00:00'
-        assert ses[110].date_from.isoformat() == '2018-11-09T12:36:31+00:00'  # DST :)
-        assert ses[-1].date_from.isoformat() == '2019-04-02T12:36:31+00:00'
+        assert ses[0].date_from.isoformat() == '2018-04-03T11:29:31+00:00'
+        assert ses[110].date_from.isoformat() == '2018-11-09T12:29:31+00:00'  # DST :)
+        assert ses[-1].date_from.isoformat() == '2019-04-02T11:29:31+00:00'
 
     def test_create_bulk_daily_interval_multiple_times(self):
         with scopes_disabled():
@@ -416,7 +418,7 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
                 'checkinlist_set-TOTAL_FORMS': '0',
                 'checkinlist_set-INITIAL_FORMS': '0',
                 'checkinlist_set-MIN_NUM_FORMS': '0',
@@ -428,10 +430,10 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 183 * 2
 
-        assert ses[0].date_from.isoformat() == '2018-04-03T12:36:31+00:00'
-        assert ses[1].date_from.isoformat() == '2018-04-03T14:36:31+00:00'
-        assert ses[220].date_from.isoformat() == '2018-11-09T12:36:31+00:00'  # DST :)
-        assert ses[-1].date_from.isoformat() == '2019-04-02T14:36:31+00:00'
+        assert ses[0].date_from.isoformat() == '2018-04-03T11:29:31+00:00'
+        assert ses[1].date_from.isoformat() == '2018-04-03T13:29:31+00:00'
+        assert ses[220].date_from.isoformat() == '2018-11-09T12:29:31+00:00'  # DST :)
+        assert ses[-1].date_from.isoformat() == '2019-04-02T13:29:31+00:00'
 
     def test_create_bulk_exclude(self):
         with scopes_disabled():
@@ -500,7 +502,7 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
                 'checkinlist_set-TOTAL_FORMS': '0',
                 'checkinlist_set-INITIAL_FORMS': '0',
                 'checkinlist_set-MIN_NUM_FORMS': '0',
@@ -512,9 +514,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 314
 
-        assert ses[0].date_from.isoformat() == '2018-04-03T12:36:31+00:00'
-        assert ses[5].date_from.isoformat() == '2018-04-08T12:36:31+00:00'
-        assert ses[6].date_from.isoformat() == '2018-04-10T12:36:31+00:00'
+        assert ses[0].date_from.isoformat() == '2018-04-03T11:29:31+00:00'
+        assert ses[5].date_from.isoformat() == '2018-04-08T11:29:31+00:00'
+        assert ses[6].date_from.isoformat() == '2018-04-10T11:29:31+00:00'
 
     def test_create_bulk_monthly_interval(self):
         with scopes_disabled():
@@ -567,7 +569,7 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
                 'checkinlist_set-TOTAL_FORMS': '0',
                 'checkinlist_set-INITIAL_FORMS': '0',
                 'checkinlist_set-MIN_NUM_FORMS': '0',
@@ -579,9 +581,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 12
 
-        assert ses[0].date_from.isoformat() == '2018-04-30T12:36:31+00:00'
-        assert ses[1].date_from.isoformat() == '2018-05-31T12:36:31+00:00'
-        assert ses[-1].date_from.isoformat() == '2019-03-29T12:36:31+00:00'
+        assert ses[0].date_from.isoformat() == '2018-04-30T11:29:31+00:00'
+        assert ses[1].date_from.isoformat() == '2018-05-31T11:29:31+00:00'
+        assert ses[-1].date_from.isoformat() == '2019-03-29T12:29:31+00:00'
 
     def test_create_bulk_weekly_interval(self):
         with scopes_disabled():
@@ -634,7 +636,7 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
                 'checkinlist_set-TOTAL_FORMS': '0',
                 'checkinlist_set-INITIAL_FORMS': '0',
                 'checkinlist_set-MIN_NUM_FORMS': '0',
@@ -646,9 +648,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 52
 
-        assert ses[0].date_from.isoformat() == '2018-04-05T12:36:31+00:00'
-        assert ses[1].date_from.isoformat() == '2018-04-12T12:36:31+00:00'
-        assert ses[-1].date_from.isoformat() == '2019-03-28T12:36:31+00:00'
+        assert ses[0].date_from.isoformat() == '2018-04-05T11:29:31+00:00'
+        assert ses[1].date_from.isoformat() == '2018-04-12T11:29:31+00:00'
+        assert ses[-1].date_from.isoformat() == '2019-03-28T12:29:31+00:00'
 
     def test_delete_bulk(self):
         self.subevent2.active = True
@@ -666,7 +668,7 @@ class SubEventsTest(SoupTest):
             )
             OrderPosition.objects.create(
                 order=o,
-                item=self.ticket,
+                product=self.ticket,
                 subevent=self.subevent1,
                 price=Decimal('14'),
             )
@@ -975,8 +977,10 @@ class SubEventsTest(SoupTest):
     def test_edit_bulk_time_unset_before(self):
         with scopes_disabled():
             self.subevent1.date_from = datetime.datetime(2013, 12, 26, 9, 0, 0, tzinfo=datetime.timezone.utc)
+            self.subevent1.date_to = self.subevent1.date_from
             self.subevent1.save()
             self.subevent2.date_from = datetime.datetime(2013, 12, 27, 11, 0, 0, tzinfo=datetime.timezone.utc)
+            self.subevent2.date_to = self.subevent2.date_from
             self.subevent2.save()
 
         doc = self.post_doc(
@@ -1003,8 +1007,8 @@ class SubEventsTest(SoupTest):
             assert self.subevent2.date_to == datetime.datetime(2013, 12, 27, 17, 0, 0, tzinfo=datetime.timezone.utc)
 
     def test_edit_bulk_price(self):
-        sei1 = SubEventItem.objects.create(subevent=self.subevent1, item=self.ticket, price=Decimal('4.00'))
-        sei2 = SubEventItem.objects.create(subevent=self.subevent2, item=self.ticket, price=Decimal('4.00'))
+        sei1 = SubEventItem.objects.create(subevent=self.subevent1, product=self.ticket, price=Decimal('4.00'))
+        sei2 = SubEventItem.objects.create(subevent=self.subevent2, product=self.ticket, price=Decimal('4.00'))
         doc = self.post_doc(
             '/control/event/ccc/30c3/subevents/bulk_edit',
             {
@@ -1013,11 +1017,11 @@ class SubEventsTest(SoupTest):
             follow=True,
         )
         fields = extract_form_fields(doc)
-        assert fields.get('item-{}-price'.format(self.ticket.id)) == '4.00'
+        assert fields.get('product-{}-price'.format(self.ticket.id)) == '4.00'
         fields.update(
             {
-                '_bulk': ['item-{}price'.format(self.ticket.id)],
-                'item-{}-price'.format(self.ticket.id): '5.00',
+                '_bulk': ['product-{}price'.format(self.ticket.id)],
+                'product-{}-price'.format(self.ticket.id): '5.00',
             }
         )
         doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
@@ -1046,10 +1050,10 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '50',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
                 'quotas-1-name': 'Q2',
                 'quotas-1-size': '25',
-                'quotas-1-itemvars': str(self.ticket.pk),
+                'quotas-1-productvars': str(self.ticket.pk),
             }
         )
         doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)
@@ -1059,11 +1063,11 @@ class SubEventsTest(SoupTest):
                 q = se.quotas.first()
                 assert q.name == 'Q1'
                 assert q.size == 50
-                assert list(q.items.all()) == [self.ticket]
+                assert list(q.products.all()) == [self.ticket]
                 q = se.quotas.last()
                 assert q.name == 'Q2'
                 assert q.size == 25
-                assert list(q.items.all()) == [self.ticket]
+                assert list(q.products.all()) == [self.ticket]
 
         doc = self.post_doc(
             '/control/event/ccc/30c3/subevents/bulk_edit',
@@ -1086,10 +1090,10 @@ class SubEventsTest(SoupTest):
             for se in [self.subevent1, self.subevent2]:
                 q = se.quotas.get(name='Q1')
                 assert q.size == 25
-                assert list(q.items.all()) == [self.ticket]
+                assert list(q.products.all()) == [self.ticket]
                 q = se.quotas.get(name='Q2')
                 assert q.size == 50
-                assert list(q.items.all()) == [self.ticket]
+                assert list(q.products.all()) == [self.ticket]
 
         doc = self.post_doc(
             '/control/event/ccc/30c3/subevents/bulk_edit',
@@ -1144,7 +1148,7 @@ class SubEventsTest(SoupTest):
                 'quotas-MAX_NUM_FORMS': '1000',
                 'quotas-0-name': 'Q1',
                 'quotas-0-size': '100',
-                'quotas-0-itemvars': str(self.ticket.pk),
+                'quotas-0-productvars': str(self.ticket.pk),
             }
         )
         doc = self.post_doc('/control/event/ccc/30c3/subevents/bulk_edit', fields, follow=True)

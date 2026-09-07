@@ -2,7 +2,7 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, MinValueValidator
 from django.db import models
 from django.db.models import F, OuterRef, Q, Subquery, Sum
 from django.db.models.functions import Coalesce
@@ -19,8 +19,8 @@ from ..decimal import round_decimal
 from .base import LoggedModel
 from .choices import PriceModeChoices
 from .event import Event, SubEvent
-from .product import Product, ProductVariation, Quota
 from .orders import Order, OrderPosition
+from .product import Product, ProductVariation, Quota
 
 
 def _generate_random_code(prefix=None):
@@ -120,6 +120,7 @@ class Voucher(LoggedModel):
         max_digits=10,
         null=True,
         blank=True,
+        validators=[MinValueValidator(Decimal('0.00'))],
     )
     valid_until = models.DateTimeField(blank=True, null=True, db_index=True, verbose_name=_('Valid until'))
     block_quota = models.BooleanField(
@@ -155,6 +156,7 @@ class Voucher(LoggedModel):
         max_digits=10,
         null=True,
         blank=True,
+        validators=[MinValueValidator(Decimal('0.00'))],
     )
     product = models.ForeignKey(
         Product,
@@ -221,6 +223,24 @@ class Voucher(LoggedModel):
         verbose_name_plural = _('Vouchers')
         unique_together = (('event', 'code'),)
         ordering = ('code',)
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(budget__isnull=True) | models.Q(budget__gte=Decimal('0.00')),
+                name='voucher_budget_gte_zero',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(value__isnull=True) | models.Q(value__gte=Decimal('0.00')),
+                name='voucher_value_gte_zero',
+            ),
+            models.CheckConstraint(
+                condition=(
+                    ~models.Q(price_mode='percent')
+                    | models.Q(value__isnull=True)
+                    | models.Q(value__lte=Decimal('100.00'))
+                ),
+                name='voucher_percent_value_lte_100',
+            ),
+        ]
 
     def __str__(self):
         return self.code
@@ -239,9 +259,28 @@ class Voucher(LoggedModel):
             self.variation,
             seats_given=bool(self.seat),
         )
-        if self.price_mode == 'percent' and self.value is not None:
-            if self.value < 0 or self.value > 100:
-                raise ValidationError({'value': _('Percentage values must be between 0 and 100.')})
+        Voucher.clean_value_and_budget(
+            {
+                'value': self.value,
+                'price_mode': self.price_mode,
+                'budget': self.budget,
+            }
+        )
+
+    @staticmethod
+    def clean_value_and_budget(data):
+        value = data.get('value')
+        price_mode = data.get('price_mode')
+        budget = data.get('budget')
+
+        if value is not None:
+            if value < Decimal('0.00'):
+                raise ValidationError({'value': _('Voucher value cannot be negative.')})
+            if (price_mode == 'percent' or price_mode == PriceModeChoices.PERCENT) and value > Decimal('100.00'):
+                raise ValidationError({'value': _('Voucher discount percentage cannot exceed 100%.')})
+
+        if budget is not None and budget < Decimal('0.00'):
+            raise ValidationError({'budget': _('Voucher budget cannot be negative.')})
 
     @staticmethod
     def clean_product_properties(data, event, quota, product, variation, block_quota=False, seats_given=False):
@@ -546,6 +585,15 @@ class Voucher(LoggedModel):
 
 
 class InvoiceVoucher(LoggedModel):
+    STATUS_ACTIVE = 'active'
+    STATUS_DISABLED = 'disabled'
+    STATUS_DRAFT = 'draft'
+    STATUS_CHOICES = [
+        (STATUS_ACTIVE, _('Active')),
+        (STATUS_DISABLED, _('Disabled')),
+        (STATUS_DRAFT, _('Draft')),
+    ]
+
     code = models.CharField(
         verbose_name=_('Voucher code'),
         max_length=255,
@@ -555,34 +603,58 @@ class InvoiceVoucher(LoggedModel):
         unique=True,
     )
     max_usages = models.PositiveIntegerField(
-        verbose_name=_('Maximum usages'),
-        help_text=_('Number of times this voucher can be redeemed.'),
+        verbose_name=_('Maximum redemptions'),
+        help_text=_('How many times this voucher can be redeemed.'),
         default=1,
     )
     redeemed = models.PositiveIntegerField(verbose_name=_('Redeemed'), default=0)
     budget = models.DecimalField(
-        verbose_name=_('Maximum discount budget'),
+        verbose_name=_('Maximum fee waiver budget'),
         help_text=_(
-            'This is the maximum monetary amount that will be discounted using this voucher across all usages.'
+            'Maximum monetary amount that will be waived using this voucher across all usages. '
+            'Leave empty for no budget limit.'
         ),
         decimal_places=2,
         max_digits=10,
         null=True,
         blank=True,
+        validators=[MinValueValidator(Decimal('0.00'))],
     )
     valid_until = models.DateTimeField(blank=True, null=True, db_index=True, verbose_name=_('Valid until'))
     price_mode = models.CharField(
-        verbose_name=_('Price mode'),
+        verbose_name=_('Waiver type'),
         max_length=100,
         choices=PriceModeChoices.choices,
         default=PriceModeChoices.NONE,
     )
     value = models.DecimalField(
-        verbose_name=_('Voucher value'),
+        verbose_name=_('Fee waiver value'),
         decimal_places=2,
         max_digits=10,
         null=True,
         blank=True,
+        validators=[MinValueValidator(Decimal('0.00'))],
+    )
+    status = models.CharField(
+        verbose_name=_('Status'),
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_ACTIVE,
+        db_index=True,
+    )
+    comment = models.TextField(
+        verbose_name=_('Internal note'),
+        help_text=_('Optional note for internal reference. Not shown publicly.'),
+        blank=True,
+        default='',
+    )
+    allow_partial_usage = models.BooleanField(
+        verbose_name=_('Allow partial usage'),
+        help_text=_(
+            'If enabled, the voucher can be used multiple times until the budget '
+            'or redemption limit is reached.'
+        ),
+        default=False,
     )
 
     limit_events = models.ManyToManyField(
@@ -605,19 +677,108 @@ class InvoiceVoucher(LoggedModel):
     updated_by = models.CharField(max_length=50, default='system')
 
     class Meta:
-        verbose_name = _('Invoice Voucher')
-        verbose_name_plural = _('Invoice Vouchers')
-        ordering = ('code',)
+        verbose_name = _('Platform Fee Voucher')
+        verbose_name_plural = _('Platform Fee Vouchers')
+        ordering = ('-updated_at',)
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(budget__isnull=True) | models.Q(budget__gte=Decimal('0.00')),
+                name='invoice_voucher_budget_gte_zero',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(value__isnull=True) | models.Q(value__gte=Decimal('0.00')),
+                name='invoice_voucher_value_gte_zero',
+            ),
+            models.CheckConstraint(
+                condition=(
+                    ~models.Q(price_mode='percent')
+                    | models.Q(value__isnull=True)
+                    | models.Q(value__lte=Decimal('100.00'))
+                ),
+                name='invoice_voucher_percent_value_lte_100',
+            ),
+        ]
 
     def __str__(self):
         return self.code
 
-    def is_active(self):
+    def clean(self):
+        super().clean()
+        Voucher.clean_value_and_budget(
+            {
+                'value': self.value,
+                'price_mode': self.price_mode,
+                'budget': self.budget,
+            }
+        )
+
+    @property
+    def computed_status(self) -> str:
+        """Derive the display status from the stored status and runtime state."""
+        if self.status == self.STATUS_DRAFT:
+            return 'draft'
+        if self.status == self.STATUS_DISABLED:
+            return 'disabled'
+        if self.redeemed >= self.max_usages:
+            return 'used_up'
+        if self.valid_until and self.valid_until < now():
+            return 'expired'
+        return 'active'
+
+    def is_active(self) -> bool:
+        if self.status != self.STATUS_ACTIVE:
+            return False
         if self.redeemed >= self.max_usages:
             return False
         if self.valid_until and self.valid_until < now():
             return False
         return True
+
+    def get_effect_display(self) -> str:
+        """Return human-readable platform-fee effect text."""
+        if self.price_mode == PriceModeChoices.NONE:
+            return str(_('No effect'))
+        if self.price_mode == PriceModeChoices.PERCENT:
+            if self.value == Decimal('100.00'):
+                return str(_('Waives 100% of platform fees'))
+            return str(_('%(pct)s%% platform fee discount') % {'pct': self.value})
+        if self.price_mode == PriceModeChoices.SUBTRACT:
+            return str(_('Fixed credit %(amount)s') % {'amount': f'{self.value:.2f}'})
+        if self.price_mode == PriceModeChoices.SET:
+            return str(_('Set platform fee to %(amount)s') % {'amount': f'{self.value:.2f}'})
+        return str(_('No effect'))
+
+    def get_scope_display(self) -> str:
+        """Return human-readable scope summary."""
+        events = list(self.limit_events.values_list('name', flat=True))
+        organizers = list(self.limit_organizer.values_list('name', flat=True))
+
+        if not events and not organizers:
+            return str(_('All events (platform-wide)'))
+
+        parts = []
+        if events:
+            if len(events) <= 2:
+                parts.append(', '.join(str(e) for e in events))
+            else:
+                parts.append(str(_('%(count)d events') % {'count': len(events)}))
+        if organizers:
+            if len(organizers) <= 2:
+                org_text = ', '.join(str(o) for o in organizers)
+                parts.append(str(_('All events by %(orgs)s') % {'orgs': org_text}))
+            else:
+                parts.append(str(_('%(count)d organisers') % {'count': len(organizers)}))
+
+        return ' and '.join(parts)
+
+    def get_budget_display(self) -> str:
+        """Return human-readable budget usage text."""
+        if self.budget is None:
+            return str(_('No budget limit'))
+        return f'0.00 / {self.budget:.2f}'
+
+    def allow_delete(self) -> bool:
+        return self.redeemed == 0 and self.status == self.STATUS_DRAFT
 
     def calculate_price(self, original_price: Decimal, max_discount: Decimal = None, event: Event = None) -> Decimal:
         """

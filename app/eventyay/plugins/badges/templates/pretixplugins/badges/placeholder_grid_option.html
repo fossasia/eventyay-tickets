@@ -1,0 +1,13 @@
+{% load i18n %}
+{% include "django/forms/widgets/input.html" %}
+{% if widget.wrap_label %}
+  <label {% if widget.attrs.id %}for="{{ widget.attrs.id }}"{% endif %}>
+    <span class="placeholder-label-text">{{ widget.label }}</span>
+    {% if widget.is_default %}
+      <span class="badge badge-default placeholder-default-tag" title="{% translate 'Included in default set' %}">{% translate 'default' %}</span>
+    {% endif %}
+    {% if widget.sample %}
+      <span class="placeholder-sample-text text-muted" title="{{ widget.sample }}">({{ widget.sample }})</span>
+    {% endif %}
+  </label>
+{% endif %}
