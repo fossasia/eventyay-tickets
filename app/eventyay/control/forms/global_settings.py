@@ -2,6 +2,7 @@ import logging
 import os
 from collections import OrderedDict
 from typing import List, Union
+from urllib.parse import urlparse
 
 from django import forms
 from django.conf import settings
@@ -23,18 +24,45 @@ from eventyay.helpers.image_optimize import optimize_uploaded_image
 
 logger = logging.getLogger(__name__)
 
+PAYPAL_CONNECT_ENDPOINT_LIVE = 'live'
+PAYPAL_CONNECT_ENDPOINT_SANDBOX = 'sandbox'
+
 PAYPAL_CONNECT_ENDPOINT_CHOICES = (
-    ('live', _('Live')),
-    ('sandbox', _('Sandbox')),
+    (PAYPAL_CONNECT_ENDPOINT_LIVE, _('Live')),
+    (PAYPAL_CONNECT_ENDPOINT_SANDBOX, _('Sandbox')),
 )
 
+# Values accepted in addition to the choices above, kept for settings written
+# before the endpoint became a live/sandbox switch.
+PAYPAL_CONNECT_ENDPOINT_ALIASES = {
+    PAYPAL_CONNECT_ENDPOINT_LIVE: PAYPAL_CONNECT_ENDPOINT_LIVE,
+    PAYPAL_CONNECT_ENDPOINT_SANDBOX: PAYPAL_CONNECT_ENDPOINT_SANDBOX,
+    'test': PAYPAL_CONNECT_ENDPOINT_SANDBOX,
+}
 
-def paypal_connect_endpoint_choice(value: str | None) -> str:
-    """Map stored PayPal endpoint values (including legacy URLs) to live/sandbox."""
-    raw = (value or 'live').strip().lower()
-    if raw in {'sandbox', 'test'} or 'sandbox' in raw:
-        return 'sandbox'
-    return 'live'
+
+def paypal_connect_endpoint_choice(value: str | None) -> str | None:
+    """Map stored PayPal endpoint values (including legacy URLs) to live/sandbox.
+
+    Unrecognised values are returned unchanged so that ``ChoiceField`` rejects
+    them, instead of silently pointing an installation at the live endpoint.
+    """
+    if not isinstance(value, str):
+        return PAYPAL_CONNECT_ENDPOINT_LIVE if value is None else value
+
+    raw = value.strip().lower()
+    if not raw:
+        return PAYPAL_CONNECT_ENDPOINT_LIVE
+    if raw in PAYPAL_CONNECT_ENDPOINT_ALIASES:
+        return PAYPAL_CONNECT_ENDPOINT_ALIASES[raw]
+
+    host = urlparse(raw).hostname or ''
+    if host == 'paypal.com' or host.endswith('.paypal.com'):
+        if 'sandbox' in host:
+            return PAYPAL_CONNECT_ENDPOINT_SANDBOX
+        return PAYPAL_CONNECT_ENDPOINT_LIVE
+
+    return value
 
 
 class GlobalSettingsForm(SettingsForm):

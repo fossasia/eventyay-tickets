@@ -370,3 +370,43 @@ def test_paypal_connect_endpoint_choice_maps_legacy_urls():
     assert paypal_connect_endpoint_choice('https://api.sandbox.paypal.com') == 'sandbox'
     assert paypal_connect_endpoint_choice('https://api.paypal.com') == 'live'
     assert paypal_connect_endpoint_choice('https://api-m.sandbox.paypal.com') == 'sandbox'
+
+
+def test_paypal_connect_endpoint_choice_keeps_unknown_values():
+    # Unknown values must not be coerced to "live"; ChoiceField has to reject them.
+    assert paypal_connect_endpoint_choice('bogus') == 'bogus'
+    assert paypal_connect_endpoint_choice('https://api.evil.example.com') == 'https://api.evil.example.com'
+    assert paypal_connect_endpoint_choice('https://paypal.com.evil.example.com') == (
+        'https://paypal.com.evil.example.com'
+    )
+
+
+@pytest.mark.django_db
+def test_ticketing_form_rejects_unknown_submitted_paypal_endpoint():
+    gs = GlobalSettingsObject()
+    gs.settings.set('payment_paypal_connect_endpoint', 'sandbox')
+    form = GlobalTicketingSettingsForm(
+        data={
+            'payment_paypal_connect_endpoint': 'https://api.evil.example.com',
+            'reservation_time': '30',
+            'max_products_per_order': '0',
+        }
+    )
+    assert not form.is_valid()
+    assert 'payment_paypal_connect_endpoint' in form.errors
+    assert gs.settings.get('payment_paypal_connect_endpoint') == 'sandbox'
+
+
+@pytest.mark.django_db
+def test_ticketing_form_rejects_unknown_stored_paypal_endpoint():
+    gs = GlobalSettingsObject()
+    gs.settings.set('payment_paypal_connect_endpoint', 'https://api.evil.example.com')
+    form = GlobalTicketingSettingsForm(
+        data={
+            'reservation_time': '30',
+            'max_products_per_order': '0',
+        }
+    )
+    assert not form.is_valid()
+    assert 'payment_paypal_connect_endpoint' in form.errors
+    assert gs.settings.get('payment_paypal_connect_endpoint') == 'https://api.evil.example.com'
