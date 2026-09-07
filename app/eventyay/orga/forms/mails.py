@@ -378,7 +378,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         self.filter_search = initial.get('q')
         question = initial.get('question')
         if question:
-            self.filter_question = self.event.questions.all().filter(pk=question).first()
+            self.filter_question = self.event.talkquestions.all().filter(pk=question).first()
             if self.filter_question:
                 self.filter_option = self.filter_question.options.filter(pk=initial.get('answer__options')).first()
                 self.filter_answer = initial.get('answer')
