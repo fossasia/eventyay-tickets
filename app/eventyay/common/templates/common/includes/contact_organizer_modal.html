@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n turnstile_tags %}
 
 <dialog id="contact-organizer-dialog" class="contact-organizer-dialog"
         role="dialog" aria-labelledby="contact-modal-title" aria-describedby="contact-modal-desc"
@@ -51,6 +51,8 @@
                         The organizer will send replies to {{ email }}.
                     {% endblocktranslate %}
                 </p>
+                {% turnstile_widget 'contact' %}
+                {% turnstile_script 'contact' %}
                 <button type="submit" class="contact-form-submit" id="contact-submit-btn">
                     {% translate "Send Message" %}
                 </button>
