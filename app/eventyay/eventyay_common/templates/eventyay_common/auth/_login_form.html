@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load urlreplace %}
 {% load append_next_url %}
+{% load turnstile_tags %}
 <div id='login-form' class='{% if not force_show %}collapse{% if form.errors %} in{% endif %}{% endif %}'>
   {% if backends|length > 1 %}
     <ul class='nav nav-pills'>
@@ -19,6 +20,8 @@
   {% endif %}
   {% csrf_token %}
   {% bootstrap_form form %}
+  {% turnstile_widget 'login' %}
+  {% turnstile_script 'login' %}
   <div class='form-group buttons'>
     {% if backend.identifier == 'native' %}
       {% if can_reset %}

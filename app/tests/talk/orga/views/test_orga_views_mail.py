@@ -929,6 +929,52 @@ def test_session_mail_recipients_follow_the_state_filter(
 
 
 @pytest.mark.django_db
+def test_session_composer_opens_with_a_custom_field_filter(orga_client, event, answer, question):
+    # Talk custom fields live on event.talkquestions. event.questions is the ticket
+    # shop's manager, scoped on the organizer, and reading it here raised ScopeError.
+    response = orga_client.get(
+        event.orga_urls.compose_mails_sessions,
+        {"question": question.pk, "answer": answer.answer},
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert str(question.question) in response.text
+
+
+@pytest.mark.django_db
+def test_session_mail_recipients_follow_a_custom_field_answer(
+    orga_client, event, speaker, answer, question, other_submission
+):
+    matching = orga_client.get(
+        event.orga_urls.compose_mails_sessions_recipients,
+        {"question": question.pk, "answer": answer.answer},
+        follow=True,
+    )
+    assert matching.status_code == 200
+    assert [entry["email"] for entry in matching.json()["recipients"]] == [speaker.email]
+
+    other = orga_client.get(
+        event.orga_urls.compose_mails_sessions_recipients,
+        {"question": question.pk, "answer": "something else"},
+        follow=True,
+    )
+    assert other.json()["count"] == 0
+
+
+@pytest.mark.django_db
+def test_session_mail_recipients_can_select_the_unanswered(
+    orga_client, event, other_speaker, answer, question, other_submission
+):
+    response = orga_client.get(
+        event.orga_urls.compose_mails_sessions_recipients,
+        {"question": question.pk, "unanswered": "1"},
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert [entry["email"] for entry in response.json()["recipients"]] == [other_speaker.email]
+
+
+@pytest.mark.django_db
 def test_reviewer_cannot_see_session_mail_recipients(review_client, event, submission):
     # EventPermissionRequired refuses a login redirect and raises Http404 instead.
     response = review_client.get(event.orga_urls.compose_mails_sessions_recipients)
