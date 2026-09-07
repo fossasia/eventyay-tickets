@@ -381,6 +381,13 @@ def test_paypal_connect_endpoint_choice_keeps_unknown_values():
     )
 
 
+def test_paypal_connect_endpoint_choice_keeps_malformed_urls():
+    # urlparse() raises ValueError on these; they must come back unchanged, not blow up.
+    assert paypal_connect_endpoint_choice('http://[::1') == 'http://[::1'
+    assert paypal_connect_endpoint_choice('https://[') == 'https://['
+    assert paypal_connect_endpoint_choice('http://[abc]') == 'http://[abc]'
+
+
 @pytest.mark.django_db
 def test_ticketing_form_rejects_unknown_submitted_paypal_endpoint():
     gs = GlobalSettingsObject()
@@ -395,6 +402,22 @@ def test_ticketing_form_rejects_unknown_submitted_paypal_endpoint():
     assert not form.is_valid()
     assert 'payment_paypal_connect_endpoint' in form.errors
     assert gs.settings.get('payment_paypal_connect_endpoint') == 'sandbox'
+
+
+@pytest.mark.django_db
+def test_ticketing_form_rejects_malformed_stored_paypal_endpoint():
+    gs = GlobalSettingsObject()
+    gs.settings.set('payment_paypal_connect_endpoint', 'http://[::1')
+    # Constructing the form must not raise, even though urlparse() cannot parse the value.
+    form = GlobalTicketingSettingsForm(
+        data={
+            'reservation_time': '30',
+            'max_products_per_order': '0',
+        }
+    )
+    assert not form.is_valid()
+    assert 'payment_paypal_connect_endpoint' in form.errors
+    assert gs.settings.get('payment_paypal_connect_endpoint') == 'http://[::1'
 
 
 @pytest.mark.django_db

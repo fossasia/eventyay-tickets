@@ -56,7 +56,12 @@ def paypal_connect_endpoint_choice(value: str | None) -> str | None:
     if raw in PAYPAL_CONNECT_ENDPOINT_ALIASES:
         return PAYPAL_CONNECT_ENDPOINT_ALIASES[raw]
 
-    host = urlparse(raw).hostname or ''
+    try:
+        host = urlparse(raw).hostname or ''
+    except ValueError:
+        # Malformed URL, e.g. an unterminated IPv6 literal. Leave it to ChoiceField.
+        return value
+
     if host == 'paypal.com' or host.endswith('.paypal.com'):
         if 'sandbox' in host:
             return PAYPAL_CONNECT_ENDPOINT_SANDBOX
