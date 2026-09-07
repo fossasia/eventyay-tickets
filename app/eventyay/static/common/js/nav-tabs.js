@@ -15,10 +15,38 @@ const updateTabActiveState = () => {
     }
 }
 
+const alignTicketsSection = () => {
+    if (window.location.hash !== '#tickets') return
+
+    const targetElement = document.querySelector('h3[id^="category-"]') || document.getElementById('tickets')
+    const stickyTabs = document.querySelector('.presale-sticky-tabs-wrap')
+
+    if (targetElement) {
+        const headerHeight = stickyTabs ? stickyTabs.getBoundingClientRect().height : 0
+        const offsetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight
+        window.scrollTo({ top: offsetPosition })
+    }
+}
+
 const initNavTabs = () => {
     updateTabActiveState()
 
-    window.addEventListener('hashchange', updateTabActiveState)
+    window.addEventListener('hashchange', () => {
+        updateTabActiveState()
+        alignTicketsSection()
+    })
+
+    const ticketsTab = document.getElementById('nav-tab-tickets')
+
+    if (ticketsTab) {
+        ticketsTab.addEventListener('click', () => {
+            if (window.location.hash === '#tickets') {
+                setTimeout(alignTicketsSection, 0)
+            }
+        })
+    }
+
+    window.addEventListener('load', alignTicketsSection)
 }
 
 if (
