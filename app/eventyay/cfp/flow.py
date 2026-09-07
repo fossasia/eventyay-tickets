@@ -242,18 +242,20 @@ class FormFlowStep(TemplateFlowStep):
         saved_files = self.cfp_session.get('files', {}).get(self.identifier, {})
         for field, file_data in saved_files.items():
             entries = file_data if isinstance(file_data, list) else [file_data]
-            
+
             is_multiple = field.endswith('_files')
-            
+
             if is_multiple:
                 resources = []
                 for entry in entries:
-                    resources.append(SimpleNamespace(
-                        filename=entry['name'],
-                        url=self.file_storage.url(entry['tmp_name']),
-                        pk='tmp:' + entry['tmp_name'],
-                        link='',
-                    ))
+                    resources.append(
+                        SimpleNamespace(
+                            filename=entry['name'],
+                            url=self.file_storage.url(entry['tmp_name']),
+                            pk='tmp:' + entry['tmp_name'],
+                            link='',
+                        )
+                    )
                 form_initial[field] = resources
             else:
                 # Single file field (ImageField, ExtensionFileField)
@@ -270,7 +272,7 @@ class FormFlowStep(TemplateFlowStep):
         # Process get_files() before rebuilding POST initial data
         # so cleared file values are pruned from session beforehand.
         session_files = self.get_files() if self.request.method == 'POST' else None
-        
+
         # Cache form initial data to avoid repeated work
         form_initial = self.get_form_initial()
 
@@ -308,9 +310,16 @@ class FormFlowStep(TemplateFlowStep):
         # Add session files first
         for field, file_list in session_files.lists():
             files.setlist(field, file_list)
-        # For each field, new uploads completely replace any existing session files
+        # For single-file fields, new uploads replace the session file.
+        # For multi-file fields (e.g. slides_files), HTML file inputs only
+        # submit the newly selected files, so we must *append* them to the
+        # existing session files rather than overwriting.
         for field, file_list in self.request.FILES.lists():
-            files.setlist(field, file_list)
+            if field.endswith('_files'):
+                for f in file_list:
+                    files.appendlist(field, f)
+            else:
+                files.setlist(field, file_list)
 
         return self.form_class(
             data=self.request.POST,
@@ -369,32 +378,34 @@ class FormFlowStep(TemplateFlowStep):
     def get_files(self):
         saved_files = self.cfp_session['files'].get(self.identifier, {})
         files = MultiValueDict()
-        
+
         # Iterate over a list so we can mutate saved_files safely
         for field, field_dict in list(saved_files.items()):
             field_entries = field_dict if isinstance(field_dict, list) else [field_dict]
-            
+
             is_cleared = False
             clear_ids = []
             if getattr(self, 'request', None) and self.request.method == 'POST':
-                if self.request.POST.get(f"{field}-clear"):
+                if self.request.POST.get(f'{field}-clear'):
                     is_cleared = True
                 if field.endswith('_files'):
                     base_field = field[:-6]
-                    clear_ids = self.request.POST.getlist(f"{base_field}_clear_ids")
-                    
+                    clear_ids = self.request.POST.getlist(f'{base_field}_clear_ids')
+
             retained_entries = []
             for entry in field_entries:
                 field_entry = entry.copy()
                 tmp_name = field_entry.pop('tmp_name')
-                
+
                 if is_cleared or tmp_name in clear_ids or f'tmp:{tmp_name}' in clear_ids:
                     # Prune matching session entries before saving files
                     continue
-                    
+
                 retained_entries.append(entry)
-                files.appendlist(field, UploadedFile(file=self.file_storage.open(tmp_name), **field_entry))
-                
+                uf = UploadedFile(file=self.file_storage.open(tmp_name), **field_entry)
+                uf.is_session_file = True
+                files.appendlist(field, uf)
+
             # If any entries were cleared, update the session record immediately
             if len(retained_entries) != len(field_entries):
                 if not retained_entries:
@@ -407,12 +418,12 @@ class FormFlowStep(TemplateFlowStep):
 
     def set_files(self, files):
         data = self.cfp_session['files'].get(self.identifier, {})
-        
+
         # Remove fields that were fully cleared and are no longer in `files`
         for field in list(data.keys()):
             if field not in files:
                 del data[field]
-                
+
         for field, field_files in files.lists():
             file_entries = []
             for field_file in field_files:
