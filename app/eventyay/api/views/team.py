@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from eventyay.api.documentation import build_expand_docs, build_search_docs
 from eventyay.api.mixins import PretalxViewSetMixin
 from eventyay.api.serializers.team import TeamInviteSerializer, TeamSerializer
+from eventyay.base.entitlements import check_entitlement
 from eventyay.base.models.organizer import (
     Team,
     TeamInvite,
@@ -113,40 +114,44 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
                 "This user has already been invited to the team."
             )
 
-        if team.can_change_organizer_settings:
-            # Skip check if the invited email already has full-admin access
-            try:
-                invited_user = User.objects.get(email__iexact=email)
-                already_admin = invited_user.teams.filter(
-                    organizer=team.organizer, can_change_organizer_settings=True
-                ).exists()
-            except User.DoesNotExist:
-                already_admin = TeamInvite.objects.filter(
-                    team__organizer=team.organizer,
-                    team__can_change_organizer_settings=True,
-                    email__iexact=email,
-                ).exists()
+        with transaction.atomic():
+            if team.can_change_organizer_settings:
+                # Skip check if the invited email already has full-admin access
+                try:
+                    invited_user = User.objects.get(email__iexact=email)
+                    already_admin = invited_user.teams.filter(
+                        organizer=team.organizer, can_change_organizer_settings=True
+                    ).exists()
+                except User.DoesNotExist:
+                    already_admin = TeamInvite.objects.filter(
+                        team__organizer=team.organizer,
+                        team__can_change_organizer_settings=True,
+                        email__iexact=email,
+                    ).exists()
 
-            if not already_admin:
-                from eventyay.base.entitlements import check_entitlement
-                current_users = User.objects.filter(
-                    teams__organizer=team.organizer,
-                    teams__can_change_organizer_settings=True,
-                ).distinct().count()
-                current_invites = TeamInvite.objects.filter(
-                    team__organizer=team.organizer,
-                    team__can_change_organizer_settings=True,
-                ).distinct().count()
-                decision = check_entitlement(
-                    team.organizer,
-                    'organizer.full_admins',
-                    quantity=current_users + current_invites + 1,
-                )
-                if not decision.allowed:
-                    raise exceptions.ValidationError(decision.message)
+                if not already_admin:
+                    # Lock the organizer row to serialize concurrent checks
+                    from eventyay.base.models import Organizer
+                    Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
 
-        invite = TeamInvite.objects.create(team=team, email=email)
-        invite.send()
+                    current_users = User.objects.filter(
+                        teams__organizer=team.organizer,
+                        teams__can_change_organizer_settings=True,
+                    ).distinct().count()
+                    current_invites = TeamInvite.objects.filter(
+                        team__organizer=team.organizer,
+                        team__can_change_organizer_settings=True,
+                    ).distinct().count()
+                    decision = check_entitlement(
+                        team.organizer,
+                        'organizer.full_admins',
+                        quantity=current_users + current_invites + 1,
+                    )
+                    if not decision.allowed:
+                        raise exceptions.ValidationError(decision.message)
+
+            invite = TeamInvite.objects.create(team=team, email=email)
+            invite.send()
 
         output_serializer = TeamInviteSerializer(
             invite, context=self.get_serializer_context()

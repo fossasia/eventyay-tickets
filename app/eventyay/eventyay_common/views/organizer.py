@@ -14,6 +14,7 @@ from django.views.generic import ListView
 from django_scopes import scopes_disabled
 
 from eventyay.base.auth import get_auth_backends
+from eventyay.base.entitlements import check_entitlement
 from eventyay.base.models import Organizer, Team
 from eventyay.base.models.auth import User
 from eventyay.base.models.organizer import TeamAPIToken, TeamInvite
@@ -539,28 +540,29 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
     def _check_full_admin_limit(self, team, user=None, email=None):
         if not team.can_change_organizer_settings:
             return True
-            
-        from eventyay.base.entitlements import check_entitlement
-        
+
         # Determine if the user/email is already a full admin
         if user and user.teams.filter(organizer=team.organizer, can_change_organizer_settings=True).exists():
             return True
         if email and TeamInvite.objects.filter(team__organizer=team.organizer, team__can_change_organizer_settings=True, email__iexact=email).exists():
             return True
-            
+
+        # Lock the organizer row to serialize concurrent admin-limit checks
+        Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
+
         current_users = User.objects.filter(
-            teams__organizer=team.organizer, 
-            teams__can_change_organizer_settings=True
+            teams__organizer=team.organizer,
+            teams__can_change_organizer_settings=True,
         ).distinct().count()
         current_invites = TeamInvite.objects.filter(
-            team__organizer=team.organizer, 
-            team__can_change_organizer_settings=True
+            team__organizer=team.organizer,
+            team__can_change_organizer_settings=True,
         ).distinct().count()
-        
+
         decision = check_entitlement(
             team.organizer,
             'organizer.full_admins',
-            quantity=current_users + current_invites + 1
+            quantity=current_users + current_invites + 1,
         )
         if not decision.allowed:
             messages.error(self.request, decision.message)
