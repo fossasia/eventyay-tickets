@@ -180,7 +180,7 @@
                             <div class="mb-0 comment-text-content comment-text-collapsed">
                                 {{ fb.review|rich_text }}
                             </div>
-                            <button class="read-more-btn d-none" data-expanded="false" data-read-more="{% translate 'Read more' %}" data-show-less="{% translate 'Show less' %}">{% translate "Read more" %}</button>
+                            <button type="button" class="read-more-btn d-none" data-expanded="false" data-read-more="{% translate 'Read more' %}" data-show-less="{% translate 'Show less' %}">{% translate "Read more" %}</button>
                             <div class="comment-actions d-flex align-items-center">
                                 {% if request.user.is_authenticated %}
                                 <button class="btn react-btn mr-1 {% if fb.user_vote == True %}active-vote{% endif %}" data-action="upvote" data-id="{{ fb.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=fb.id %}">
