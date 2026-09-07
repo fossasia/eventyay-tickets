@@ -134,3 +134,80 @@ test('drops a message that arrives after disconnect', async () => {
 		assert.equal(sockets.length, 1, 'no replacement socket is opened')
 	})
 })
+
+test('retries a dropped connection on an exponential backoff', async (t) => {
+	t.mock.timers.enable({ apis: ['setTimeout'] })
+	await withBrowserStubs(async (sockets) => {
+		const scheduler = await connectedScheduler(sockets)
+
+		sockets[0].onclose()
+		assert.equal(sockets.length, 1, 'the retry is deferred rather than immediate')
+
+		t.mock.timers.tick(999)
+		assert.equal(sockets.length, 1, 'nothing reconnects before the first delay elapses')
+		t.mock.timers.tick(1)
+		assert.equal(sockets.length, 2, 'the first retry reconnects after 1s')
+
+		sockets[1].onclose()
+		t.mock.timers.tick(1999)
+		assert.equal(sockets.length, 2, 'the second delay is longer than the first')
+		t.mock.timers.tick(1)
+		assert.equal(sockets.length, 3, 'the second retry reconnects after 2s')
+
+		scheduler.disconnect()
+	})
+})
+
+test('gives up once the retry limit is reached', async (t) => {
+	t.mock.timers.enable({ apis: ['setTimeout'] })
+	await withBrowserStubs(async (sockets) => {
+		const scheduler = await connectedScheduler(sockets)
+
+		for (let attempt = 0; attempt < scheduler.maxRetries; attempt++) {
+			sockets[sockets.length - 1].onclose()
+			t.mock.timers.tick(scheduler.retryDelay * Math.pow(2, attempt))
+		}
+		assert.equal(sockets.length, scheduler.maxRetries + 1, 'the original socket plus one per retry')
+
+		sockets[sockets.length - 1].onclose()
+		t.mock.timers.tick(60000)
+		assert.equal(sockets.length, scheduler.maxRetries + 1, 'no further sockets once the limit is reached')
+
+		scheduler.disconnect()
+	})
+})
+
+test('a successful reconnect resets the backoff', async (t) => {
+	t.mock.timers.enable({ apis: ['setTimeout'] })
+	await withBrowserStubs(async (sockets) => {
+		const scheduler = await connectedScheduler(sockets)
+
+		sockets[0].onclose()
+		t.mock.timers.tick(scheduler.retryDelay)
+		assert.equal(sockets.length, 2)
+		sockets[1].onopen()
+		assert.equal(scheduler.retryCount, 0, 'reconnecting clears the accumulated backoff')
+
+		sockets[1].onclose()
+		t.mock.timers.tick(scheduler.retryDelay)
+		assert.equal(sockets.length, 3, 'the next drop retries at the base delay again')
+
+		scheduler.disconnect()
+	})
+})
+
+test('disconnect cancels a retry that is already pending', async (t) => {
+	t.mock.timers.enable({ apis: ['setTimeout'] })
+	await withBrowserStubs(async (sockets) => {
+		const scheduler = await connectedScheduler(sockets)
+
+		sockets[0].onclose()
+		assert.notEqual(scheduler.reconnectTimer, null, 'a retry is pending')
+
+		scheduler.disconnect()
+		assert.equal(scheduler.reconnectTimer, null, 'the pending retry is cleared')
+
+		t.mock.timers.tick(60000)
+		assert.equal(sockets.length, 1, 'the cancelled retry never opens a socket')
+	})
+})
