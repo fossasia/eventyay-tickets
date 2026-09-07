@@ -50,19 +50,22 @@ def test_existing_email_signup_uses_the_same_public_path_as_a_new_email(client):
 @pytest.mark.django_db
 def test_signup_flash_does_not_echo_the_submitted_email(client):
     taken = 'admin@example.com'
+    unused = 'new-user@example.com'
     user = User.objects.create_user(email=taken, password=SIGNUP_PASSWORD)
     EmailAddress.objects.create(user=user, email=taken, primary=True, verified=True)
 
-    response = _post_signup(client, taken)
-    flashes = _flash_texts(response)
-    joined = ' '.join(flashes)
+    unused_client = Client()
+    existing_flash = ' '.join(_flash_texts(_post_signup(client, taken)))
+    unused_flash = ' '.join(_flash_texts(_post_signup(unused_client, unused)))
 
-    assert flashes
-    assert taken not in joined
-    assert 'admin@example.com' not in joined
+    assert existing_flash
+    assert unused_flash == existing_flash
+    for text in (existing_flash, unused_flash):
+        assert taken not in text
+        assert unused not in text
 
-    login = client.get(reverse('auth.login'))
-    body = login.content.decode('utf-8')
-    assert taken not in body
-    assert 'Confirmation e-mail sent to' not in body
-    assert 'Confirmation email sent to' not in body
+    for browser, email in ((client, taken), (unused_client, unused)):
+        body = browser.get(reverse('auth.login')).content.decode('utf-8')
+        assert email not in body
+        assert 'Confirmation e-mail sent to' not in body
+        assert 'Confirmation email sent to' not in body
