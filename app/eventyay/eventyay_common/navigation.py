@@ -274,6 +274,18 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[MenuItem]:
                 'active': (url.url_name == 'event.plugins'),
                 'icon': 'plug',
             },
+            {
+                'label': _('API'),
+                'url': reverse(
+                    'eventyay_common:event.api',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
+                'active': (url.url_name == 'event.api'),
+                'icon': 'code',
+            },
         ]
 
     plugin_responses = nav_event_common.send(event, request=request)

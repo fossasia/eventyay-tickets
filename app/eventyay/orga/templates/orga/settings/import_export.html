@@ -222,23 +222,16 @@
         </div>
 
         <div role="tabpanel" id="panel-speaker-api" aria-hidden="true">
-        <p>{% translate "You can also use the API to export or use data." %}</p>
         <p>
             {% blocktranslate trimmed %}
-                Some of the general exports are only accessible for organisers, or include
-                more information when accessed with your organiser account. If you want to
-                access the organiser version in automatic integrations, you’ll have to
-                provide your authentication token just like in the API, like this:
+                API links, authentication, and usage examples for speakers are available in the
+                dedicated event API area.
             {% endblocktranslate %}
         </p>
-        <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.speakers.full }} </pre>
         <div class="submit-group"><span></span><span>
-            <a class="btn btn-lg btn-info" href="https://docs.eventyay.com/api/fundamentals" target="_blank" rel="noopener noreferrer">
-                <i class="fa fa-book"></i>
-                {% translate "Documentation" %}
-            </a>
-            <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
-                {% translate "Go to API" %}
+            <a class="btn btn-lg btn-success" href="{% url 'eventyay_common:event.api' organizer=request.event.organizer.slug event=request.event.slug %}#examples">
+                <i class="fa fa-code"></i>
+                {% translate "Open event API" %}
             </a>
         </span>
         </div>
@@ -414,24 +407,16 @@
         </div>
 
         <div role="tabpanel" id="panel-session-api" aria-hidden="true">
-        <p>{% translate "You can also use the API to export or use data." %}</p>
         <p>
             {% blocktranslate trimmed %}
-                Some of the general exports are only accessible for organisers, or include
-                more information when accessed with your organiser account. If you want to
-                access the organiser version in automatic integrations, you’ll have to
-                provide your authentication token just like in the API, like this:
+                API links, authentication, and usage examples for sessions are available in the
+                dedicated event API area.
             {% endblocktranslate %}
         </p>
-        <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
- curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.submissions.full }} </pre>
         <div class="submit-group"><span></span><span>
-            <a class="btn btn-lg btn-info" href="https://docs.eventyay.com/api/fundamentals" target="_blank" rel="noopener noreferrer">
-                <i class="fa fa-book"></i>
-                {% translate "Documentation" %}
-            </a>
-            <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
-                {% translate "Go to API" %}
+            <a class="btn btn-lg btn-success" href="{% url 'eventyay_common:event.api' organizer=request.event.organizer.slug event=request.event.slug %}#examples">
+                <i class="fa fa-code"></i>
+                {% translate "Open event API" %}
             </a>
         </span>
         </div>
@@ -524,23 +509,16 @@
         </div>
 
         <div role="tabpanel" id="panel-review-api" aria-hidden="true">
-        <p>{% translate "You can also use the API to export or use data." %}</p>
         <p>
             {% blocktranslate trimmed %}
-                Some of the general exports are only accessible for organisers, or include
-                more information when accessed with your organiser account. If you want to
-                access the organiser version in automatic integrations, you’ll have to
-                provide your authentication token just like in the API, like this:
+                API links, authentication, and usage examples for reviews are available in the
+                dedicated event API area.
             {% endblocktranslate %}
         </p>
-        <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.reviews.full }} </pre>
         <div class="submit-group"><span></span><span>
-            <a class="btn btn-lg btn-info" href="https://docs.eventyay.com/api/fundamentals" target="_blank" rel="noopener noreferrer">
-                <i class="fa fa-book"></i>
-                {% translate "Documentation" %}
-            </a>
-            <a class="btn btn-lg btn-success" href="{{ request.event.api_urls.base }}">
-                {% translate "Go to API" %}
+            <a class="btn btn-lg btn-success" href="{% url 'eventyay_common:event.api' organizer=request.event.organizer.slug event=request.event.slug %}#examples">
+                <i class="fa fa-code"></i>
+                {% translate "Open event API" %}
             </a>
         </span>
         </div>
