@@ -538,39 +538,8 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         return self._redirect_to_team_permissions(team.pk)
 
     def _check_full_admin_limit(self, team, user=None, email=None):
-        if not team.can_change_organizer_settings:
-            return True
-
-        # Determine if the user/email is already a full admin
-        if user and user.teams.filter(organizer=team.organizer, can_change_organizer_settings=True).exists():
-            return True
-        if email and TeamInvite.objects.filter(team__organizer=team.organizer, team__can_change_organizer_settings=True, email__iexact=email).exists():
-            return True
-
-        # Lock the organizer row to serialize concurrent admin-limit checks
-        Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
-
-        admin_member_emails = set(
-            User.objects.filter(
-                teams__organizer=team.organizer,
-                teams__can_change_organizer_settings=True,
-            ).distinct().values_list('email', flat=True)
-        )
-        current_users = len(admin_member_emails)
-
-        # Exclude invites whose email already belongs to an existing admin member
-        current_invites = TeamInvite.objects.filter(
-            team__organizer=team.organizer,
-            team__can_change_organizer_settings=True,
-        ).exclude(
-            email__in=admin_member_emails,
-        ).distinct().count()
-
-        decision = check_entitlement(
-            team.organizer,
-            'organizer.full_admins',
-            quantity=current_users + current_invites + 1,
-        )
+        from eventyay.base.services.teams import check_full_admin_limit
+        decision = check_full_admin_limit(team, email=email, user=user)
         if not decision.allowed:
             messages.error(self.request, decision.message)
             return False
@@ -602,7 +571,7 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         )
         sync_video_traits_for_team(team, members=[user])
 
-        send_team_invitation_email(
+        transaction.on_commit(lambda: send_team_invitation_email(
             user=user,
             organizer_name=self.request.organizer.name,
             team_name=team.name,
@@ -615,7 +584,7 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
             ),
             locale=self.request.LANGUAGE_CODE,
             is_registered_user=True,
-        )
+        ))
 
         messages.success(self.request, _('The new member has been added to the team.'))
         return self._redirect_to_team_members_panel(team.pk)
@@ -640,7 +609,7 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
             return self._render_members_error(team.pk, invite_form)
 
         invite = team.invites.create(email=invite_form.cleaned_data['user'])
-        self._send_invite(invite)
+        transaction.on_commit(lambda: self._send_invite(invite))
         team.log_action(
             'eventyay.team.invite.created',
             user=self.request.user,

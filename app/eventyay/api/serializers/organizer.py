@@ -1,6 +1,7 @@
 import logging
 from decimal import Decimal
 
+from django.db import transaction
 from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
@@ -291,50 +292,10 @@ class TeamInviteSerializer(serializers.ModelSerializer):
 
     def _check_full_admin_limit(self, email, user=None):
         """Enforce full-admin entitlement before adding a member or invite."""
-        team = self.context['team']
-        if not team.can_change_organizer_settings:
-            return
-
-        # Skip if the user/email already has full-admin access
-        if user and user.teams.filter(
-            organizer=team.organizer, can_change_organizer_settings=True
-        ).exists():
-            return
-        if not user and TeamInvite.objects.filter(
-            team__organizer=team.organizer,
-            team__can_change_organizer_settings=True,
-            email__iexact=email,
-        ).exists():
-            return
-
-        # Lock the organizer row to serialize concurrent checks
-        Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
-
-        admin_member_emails = set(
-            User.objects.filter(
-                teams__organizer=team.organizer,
-                teams__can_change_organizer_settings=True,
-            ).distinct().values_list('email', flat=True)
-        )
-        current_users = len(admin_member_emails)
-
-        # Exclude invites whose email already belongs to an existing admin member
-        current_invites = TeamInvite.objects.filter(
-            team__organizer=team.organizer,
-            team__can_change_organizer_settings=True,
-        ).exclude(
-            email__in=admin_member_emails,
-        ).distinct().count()
-
-        decision = check_entitlement(
-            team.organizer,
-            'organizer.full_admins',
-            quantity=current_users + current_invites + 1,
-        )
+        from eventyay.base.services.teams import check_full_admin_limit
+        decision = check_full_admin_limit(self.context['team'], email=email, user=user)
         if not decision.allowed:
-            raise ValidationError(
-                decision.message or _('You have reached the maximum limit for this feature on your current plan.')
-            )
+            raise ValidationError(decision.message)
 
     def create(self, validated_data):
         if 'email' in validated_data:
@@ -349,7 +310,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                 self._check_full_admin_limit(validated_data['email'])
 
                 invite = self.context['team'].invites.create(email=validated_data['email'])
-                self._send_invite(invite)
+                transaction.on_commit(lambda: self._send_invite(invite))
                 invite.team.log_action(
                     'eventyay.team.invite.created',
                     data={'email': validated_data['email']},
@@ -373,7 +334,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                     **self.context['log_kwargs'],
                 )
 
-                send_team_invitation_email(
+                transaction.on_commit(lambda: send_team_invitation_email(
                     user=user,
                     organizer_name=self.context['organizer'].name,
                     team_name=self.context['team'].name,
@@ -386,7 +347,7 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                     ),
                     locale=get_language_without_region(),
                     is_registered_user=True,
-                )
+                ))
 
                 return TeamInvite(email=user.email)
         else:

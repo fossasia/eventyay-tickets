@@ -7,6 +7,62 @@ from eventyay.base.services.mail import SendMailException, mail
 logger = logging.getLogger(__name__)
 
 
+def check_full_admin_limit(team, email=None, user=None):
+    """
+    Enforce full-admin entitlement before adding a member or invite.
+    Returns the EntitlementDecision. If decision.allowed is False, the fallback
+    message is set on decision.message if it was empty.
+    """
+    from eventyay.base.entitlements import check_entitlement, EntitlementDecision
+    from eventyay.base.models import Organizer
+    from eventyay.base.models.auth import User
+    from eventyay.base.models.organizer import TeamInvite
+
+    if not team.can_change_organizer_settings:
+        return EntitlementDecision(allowed=True)
+
+    # Skip if the user/email already has full-admin access
+    if user and user.teams.filter(
+        organizer=team.organizer, can_change_organizer_settings=True
+    ).exists():
+        return EntitlementDecision(allowed=True)
+    if not user and email and TeamInvite.objects.filter(
+        team__organizer=team.organizer,
+        team__can_change_organizer_settings=True,
+        email__iexact=email,
+    ).exists():
+        return EntitlementDecision(allowed=True)
+
+    # Lock the organizer row to serialize concurrent checks
+    Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
+
+    admin_member_emails = set(
+        User.objects.filter(
+            teams__organizer=team.organizer,
+            teams__can_change_organizer_settings=True,
+        ).distinct().values_list('email', flat=True)
+    )
+    current_users = len(admin_member_emails)
+
+    # Exclude invites whose email already belongs to an existing admin member
+    current_invites = TeamInvite.objects.filter(
+        team__organizer=team.organizer,
+        team__can_change_organizer_settings=True,
+    ).exclude(
+        email__in=admin_member_emails,
+    ).distinct().count()
+
+    decision = check_entitlement(
+        team.organizer,
+        'organizer.full_admins',
+        quantity=current_users + current_invites + 1,
+    )
+    if not decision.allowed and not decision.message:
+        decision.message = str(_('You have reached the maximum limit for this feature on your current plan.'))
+
+    return decision
+
+
 def send_team_invitation_email(
     *,
     user,

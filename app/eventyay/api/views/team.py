@@ -116,49 +116,13 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
             )
 
         with transaction.atomic():
-            if team.can_change_organizer_settings:
-                # Skip check if the invited email already has full-admin access
-                try:
-                    invited_user = User.objects.get(email__iexact=email)
-                    already_admin = invited_user.teams.filter(
-                        organizer=team.organizer, can_change_organizer_settings=True
-                    ).exists()
-                except User.DoesNotExist:
-                    already_admin = TeamInvite.objects.filter(
-                        team__organizer=team.organizer,
-                        team__can_change_organizer_settings=True,
-                        email__iexact=email,
-                    ).exists()
-
-                if not already_admin:
-                    # Lock the organizer row to serialize concurrent checks
-                    Organizer.objects.select_for_update().filter(pk=team.organizer_id).first()
-
-                    admin_member_emails = set(
-                        User.objects.filter(
-                            teams__organizer=team.organizer,
-                            teams__can_change_organizer_settings=True,
-                        ).distinct().values_list('email', flat=True)
-                    )
-                    current_users = len(admin_member_emails)
-
-                    # Exclude invites whose email already belongs to an admin member
-                    current_invites = TeamInvite.objects.filter(
-                        team__organizer=team.organizer,
-                        team__can_change_organizer_settings=True,
-                    ).exclude(
-                        email__in=admin_member_emails,
-                    ).distinct().count()
-                    decision = check_entitlement(
-                        team.organizer,
-                        'organizer.full_admins',
-                        quantity=current_users + current_invites + 1,
-                    )
-                    if not decision.allowed:
-                        raise exceptions.ValidationError(decision.message)
+            from eventyay.base.services.teams import check_full_admin_limit
+            decision = check_full_admin_limit(team, email=email)
+            if not decision.allowed:
+                raise exceptions.ValidationError(decision.message)
 
             invite = TeamInvite.objects.create(team=team, email=email)
-            invite.send()
+            transaction.on_commit(lambda: invite.send())
 
         output_serializer = TeamInviteSerializer(
             invite, context=self.get_serializer_context()
