@@ -201,6 +201,13 @@ const initRecipientPreview = () => {
         if (requiresAudience) setSendingEnabled(form, count > 0)
     }
 
+    // The audience has just changed, so any answer already in flight describes the
+    // old one, and the new count is not known until it arrives.
+    const invalidateCount = () => {
+        latestRequest += 1
+        if (requiresAudience) setSendingEnabled(form, false)
+    }
+
     const refreshCount = async () => {
         const request = (latestRequest += 1)
         try {
@@ -223,6 +230,7 @@ const initRecipientPreview = () => {
     if (clearButton) {
         clearButton.addEventListener("click", () => {
             clearFilters(form)
+            invalidateCount()
             window.clearTimeout(timer)
             timer = window.setTimeout(refreshCount, 50)
         })
@@ -231,6 +239,7 @@ const initRecipientPreview = () => {
     let timer = null
     form.addEventListener("change", (e) => {
         if (MESSAGE_FIELDS.test(e.target.name || "")) return
+        invalidateCount()
         window.clearTimeout(timer)
         timer = window.setTimeout(refreshCount, 300)
     })
