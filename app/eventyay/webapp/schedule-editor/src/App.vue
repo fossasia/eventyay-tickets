@@ -887,9 +887,12 @@ async function assignMember(roleId: number): Promise<void> {
     await fetchAdditionalScheduleData()
     await loadMembers(roleId)
     selectedMemberIds.value[String(roleId)] = undefined
-  } catch (error) {
+  }catch (error) {
     console.error('Failed to assign member', error)
-    assignModalError.value = $t('Failed to assign member. Please try again.')
+    assignModalError.value =
+      error instanceof Error && error.message
+        ? error.message.replace(/^HTTP error \d+: /, '').replace(/^{"detail":"(.*)"}$/, '$1')
+        : $t('Failed to unassign member. Please try again.')
   } finally {
     assigningWaiting.value = false
   }
@@ -921,7 +924,20 @@ async function unassignMember(roleId: number, userId: number): Promise<void> {
     await fetchAdditionalScheduleData()
   } catch (error) {
     console.error('Failed to unassign member', error)
-    assignModalError.value = $t('Failed to unassign member. Please try again.')
+
+    if (error instanceof Error) {
+      try {
+        const parsedError = JSON.parse(error.message)
+        assignModalError.value =
+          typeof parsedError.detail === 'string'
+            ? parsedError.detail
+            : $t('Failed to unassign member. Please try again.')
+      } catch {
+        assignModalError.value = $t('Failed to unassign member. Please try again.')
+      }
+    } else {
+      assignModalError.value = $t('Failed to unassign member. Please try again.')
+    }
   } finally {
     assigningWaiting.value = false
   }
