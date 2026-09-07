@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 from django.core import mail as djmail
+from django.test import override_settings
 from django.urls import reverse
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
@@ -620,3 +621,98 @@ def test_edit_draft_without_filters_redirects_to_composer(logged_in_client, even
 
     assert response.status_code == 302
     assert response.url.endswith(draft.get_edit_url())
+
+
+@pytest.fixture
+def custom_template(event):
+    from eventyay.base.i18n import LazyI18nString
+    from eventyay.plugins.sendmail.models import TicketMailTemplate
+
+    return TicketMailTemplate.objects.create(
+        event=event,
+        subject=LazyI18nString({'en': 'Hello {event}'}),
+        text=LazyI18nString({'en': 'Dear customer, welcome to {event}.'}),
+        reply_to='reply@example.com',
+        bcc='bcc@example.com',
+    )
+
+
+@pytest.mark.django_db
+@override_settings(DEBUG=True)
+def test_custom_template_create(logged_in_client, event):
+    from eventyay.plugins.sendmail.models import TicketMailTemplate
+
+    url = reverse(
+        'control:event.mail.custom_templates.create',
+        kwargs={'organizer': event.organizer.slug, 'event': event.slug},
+    )
+    response = logged_in_client.get(url)
+    assert response.status_code == 200
+
+    response = logged_in_client.post(
+        url,
+        {
+            'subject_0': 'Custom subject {event}',
+            'text_0': 'Custom body for {event}',
+            'reply_to': 'hello@example.com',
+            'bcc': '',
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert TicketMailTemplate.objects.filter(event=event).count() == 1
+    template = TicketMailTemplate.objects.get(event=event)
+    assert 'Custom subject' in str(template.subject)
+    assert 'Custom body' in str(template.text)
+
+
+@pytest.mark.django_db
+@override_settings(DEBUG=True)
+def test_custom_template_compose_prefill(logged_in_client, event, custom_template):
+    url = reverse(
+        'control:event.mail.send',
+        kwargs={'organizer': event.organizer.slug, 'event': event.slug},
+    )
+    response = logged_in_client.get(f'{url}?template={custom_template.pk}')
+    assert response.status_code == 200
+    form = response.context['form']
+    assert 'Hello' in str(form.initial.get('subject'))
+    assert 'welcome' in str(form.initial.get('text'))
+    assert form.initial.get('reply_to') == 'reply@example.com'
+    assert form.initial.get('bcc') == 'bcc@example.com'
+
+
+@pytest.mark.django_db
+@override_settings(DEBUG=True)
+def test_custom_template_delete(logged_in_client, event, custom_template):
+    from eventyay.plugins.sendmail.models import TicketMailTemplate
+
+    url = reverse(
+        'control:event.mail.custom_templates.delete',
+        kwargs={
+            'organizer': event.organizer.slug,
+            'event': event.slug,
+            'pk': custom_template.pk,
+        },
+    )
+    response = logged_in_client.get(url)
+    assert response.status_code == 200
+
+    response = logged_in_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert not TicketMailTemplate.objects.filter(pk=custom_template.pk).exists()
+
+
+@pytest.mark.django_db
+@override_settings(DEBUG=True)
+def test_templates_page_lists_custom_templates(logged_in_client, event, custom_template):
+    url = reverse(
+        'control:event.mail.templates',
+        kwargs={'organizer': event.organizer.slug, 'event': event.slug},
+    )
+    response = logged_in_client.get(url)
+    assert response.status_code == 200
+    assert 'Hello' in response.rendered_content
+    assert 'New custom template' in response.rendered_content
+    assert 'Custom Mail' in response.rendered_content
+    assert 'Placed order' in response.rendered_content
