@@ -11,4 +11,5 @@ and plugin documentation before enabling those services.
 .. toctree::
    :maxdepth: 1
 
+   turnstile
    ../admin/telemetry

@@ -12,6 +12,15 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from eventyay.base.models.page import Page
+from eventyay.base.services.turnstile import (
+    TURNSTILE_ERROR_MESSAGE,
+    TURNSTILE_FAILED_MESSAGE,
+    TURNSTILE_MISCONFIGURED_MESSAGE,
+    get_turnstile_settings,
+    is_turnstile_enabled_for_action,
+    verify_turnstile_token,
+)
+from eventyay.helpers.http import get_client_ip
 
 
 class SignupConfirmationForm(forms.Form):
@@ -86,6 +95,36 @@ class SignupView(_SignupView):
             for error in confirmation_form.non_field_errors():
                 form.add_error(None, error)
             return self.form_invalid(form)
+
+        if is_turnstile_enabled_for_action('registration', self.request):
+            cfg = get_turnstile_settings()
+            if not cfg['site_key'] or not cfg['secret_key']:
+                form.add_error(
+                    None,
+                    forms.ValidationError(TURNSTILE_MISCONFIGURED_MESSAGE, code='turnstile_misconfigured'),
+                )
+                return self.form_invalid(form)
+
+            token = self.request.POST.get('cf-turnstile-response')
+            if not token:
+                form.add_error(None, forms.ValidationError(TURNSTILE_ERROR_MESSAGE, code='turnstile_missing'))
+                return self.form_invalid(form)
+            client_ip = get_client_ip(self.request)
+            valid, error_code = verify_turnstile_token(
+                token,
+                remote_ip=client_ip,
+                expected_action='registration',
+            )
+            if not valid:
+                if error_code == 'missing-secret':
+                    form.add_error(
+                        None,
+                        forms.ValidationError(TURNSTILE_MISCONFIGURED_MESSAGE, code='turnstile_misconfigured'),
+                    )
+                else:
+                    form.add_error(None, forms.ValidationError(TURNSTILE_FAILED_MESSAGE, code='turnstile_invalid'))
+                return self.form_invalid(form)
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
