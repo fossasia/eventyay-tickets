@@ -117,4 +117,56 @@ const initFileInput = function () {
     })
 }
 
+const initImageInput = function () {
+    document.querySelectorAll('.eventyay-image-input').forEach((container) => {
+        const fileInput = container.querySelector('.eventyay-image-file')
+        const nameSpan = container.querySelector('.eventyay-file-name')
+        const picker = container.querySelector('.eventyay-image-picker')
+        const clearCheckbox = container.querySelector('.eventyay-image-clear')
+        const current = container.querySelector('.eventyay-image-current')
+        const currentName = container.querySelector('.eventyay-image-name')
+        const deleteButton = container.querySelector('.eventyay-image-delete')
+        const replaceButton = container.querySelector('.eventyay-image-replace')
+
+        if (!fileInput) return
+
+        if (replaceButton) {
+            replaceButton.addEventListener('click', () => fileInput.click())
+        }
+
+        if (picker) {
+            picker.addEventListener('click', (event) => {
+                if (event.target.tagName !== 'LABEL') fileInput.click()
+            })
+        }
+
+        fileInput.addEventListener('change', () => {
+            const files = fileInput.files
+            const chosen = files && files.length ? files[0].name : ''
+            if (nameSpan) nameSpan.textContent = chosen
+            if (!chosen) return
+            // A new upload and a clear signal together make Django raise
+            // FILE_INPUT_CONTRADICTION, so picking a file always cancels the delete.
+            if (clearCheckbox) clearCheckbox.checked = false
+            if (currentName && current && !current.hidden) {
+                currentName.textContent = chosen
+                currentName.title = chosen
+            }
+        })
+
+        if (!deleteButton || !clearCheckbox) return
+
+        deleteButton.addEventListener('click', () => {
+            clearCheckbox.checked = true
+            clearCheckbox.dispatchEvent(new Event('change', { bubbles: true }))
+            fileInput.value = ''
+            if (nameSpan) nameSpan.textContent = ''
+            if (current) current.hidden = true
+            if (picker) picker.hidden = false
+            container.classList.remove('has-image')
+        })
+    })
+}
+
 onReady(initFileInput)
+onReady(initImageInput)
