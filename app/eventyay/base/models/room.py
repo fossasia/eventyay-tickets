@@ -45,6 +45,10 @@ UNSCHEDULED_LINKED_SUBMISSIONS_MESSAGE = _(
 UNSCHEDULED_ROOM_SCHEDULING_MESSAGE = _(
     'Unscheduled rooms cannot be linked to talk sessions.'
 )
+DELETE_LINKED_SUBMISSIONS_MESSAGE = _(
+    'This room has linked schedules/sessions. Deleting it will affect the event '
+    'schedule. Please move these sessions to another room or unschedule them first.'
+)
 _LINKED_SUBMISSION_TALK_FILTER = {'submission__isnull': False}
 
 
@@ -62,6 +66,32 @@ def room_has_linked_submissions(room) -> bool:
         return bool(room.has_linked_sessions)
     with scope(event=room.event):
         return _linked_submission_talkslots(room=room).exists()
+
+
+def linked_submission_talks(room):
+    """Return one talk per session scheduled in this room.
+
+    A session holds a slot in every schedule version it appears in, so the talks
+    are deduplicated by submission to list each session once. The queryset is
+    evaluated inside the event scope so that callers, such as templates, can
+    iterate over the result outside of it.
+    """
+    from django_scopes import scope
+
+    with scope(event=room.event):
+        talks = (
+            _linked_submission_talkslots(room=room)
+            .select_related('submission')
+            .order_by('start')
+        )
+        seen = set()
+        unique_talks = []
+        for talk in talks:
+            if talk.submission_id in seen:
+                continue
+            seen.add(talk.submission_id)
+            unique_talks.append(talk)
+        return unique_talks
 
 
 def validate_is_unscheduled_change(room) -> None:
