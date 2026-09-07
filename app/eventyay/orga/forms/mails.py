@@ -393,6 +393,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
             'track': (_('Track'), None),
             'content_locale': (_('Content locale'), None),
             'tags': (_('Tags'), None),
+            'pending_state__isnull': (_('Exclude pending'), None),
         }
         for field_name, (label, help_text) in composer_filter_fields.items():
             if field_name not in self.fields:

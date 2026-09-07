@@ -896,6 +896,63 @@ def test_mail_template_list_hides_auto_created_templates(orga_client, event, mai
 
 
 @pytest.mark.django_db
+def test_composer_keeps_every_value_of_a_multi_value_filter(orga_client, event, submission, other_submission):
+    # QueryDict.get keeps only the last value, so a proposal list filtered on two
+    # states used to hand the composer just one of them.
+    response = orga_client.get(
+        event.orga_urls.compose_mails_sessions + "?state=submitted&state=accepted",
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert response.context["form"].initial["state"] == ["submitted", "accepted"]
+
+
+@pytest.mark.django_db
+def test_composer_keeps_a_single_valued_filter_as_a_string(orga_client, event, submission):
+    response = orga_client.get(
+        event.orga_urls.compose_mails_sessions + "?q=Lametta",
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert response.context["form"].initial["q"] == "Lametta"
+
+
+@pytest.mark.django_db
+def test_composer_offers_the_exclude_pending_filter(orga_client, event, submission):
+    # The field exists on the form but had no widget in the composer, so the filter
+    # the proposal list was showing could never survive the POST.
+    response = orga_client.get(
+        event.orga_urls.compose_mails_sessions + "?state=submitted&pending_state__isnull=on",
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert 'name="pending_state__isnull"' in response.text
+    assert response.context["form"].initial["pending_state__isnull"] == "on"
+
+
+@pytest.mark.django_db
+def test_composer_excludes_pending_proposals_when_asked(orga_client, event, speaker, submission):
+    with scope(event=event):
+        submission.pending_state = "accepted"
+        submission.save(update_fields=["pending_state"])
+    response = orga_client.post(
+        event.orga_urls.compose_mails_sessions,
+        follow=True,
+        data={
+            "state": "submitted",
+            "pending_state__isnull": "on",
+            "bcc": "",
+            "reply_to": "",
+            "subject_0": "foo",
+            "text_0": "bar",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        assert not QueuedMail.objects.filter(sent__isnull=True).exists()
+
+
+@pytest.mark.django_db
 def test_orga_can_see_session_mail_recipients(orga_client, event, speaker, submission):
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions_recipients,
