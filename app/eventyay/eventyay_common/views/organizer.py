@@ -536,6 +536,39 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         messages.success(self.request, _('The invite has been resent.'))
         return self._redirect_to_team_permissions(team.pk)
 
+    def _check_full_admin_limit(self, team, user=None, email=None):
+        if not team.can_change_organizer_settings:
+            return True
+            
+        from eventyay.base.entitlements import get_decision
+        from eventyay.base.models.auth import User
+        from eventyay.base.models.organizer import TeamInvite
+        
+        # Determine if the user/email is already a full admin
+        if user and user.teams.filter(organizer=team.organizer, can_change_organizer_settings=True).exists():
+            return True
+        if email and TeamInvite.objects.filter(team__organizer=team.organizer, team__can_change_organizer_settings=True, email__iexact=email).exists():
+            return True
+            
+        current_users = User.objects.filter(
+            teams__organizer=team.organizer, 
+            teams__can_change_organizer_settings=True
+        ).distinct().count()
+        current_invites = TeamInvite.objects.filter(
+            team__organizer=team.organizer, 
+            team__can_change_organizer_settings=True
+        ).distinct().count()
+        
+        decision = get_decision(
+            team.organizer,
+            'organizer.full_admins',
+            quantity=current_users + current_invites + 1
+        )
+        if not decision.allowed:
+            messages.error(self.request, decision.message)
+            return False
+        return True
+
     def _handle_add_member_or_invite(self, team, invite_form, post):
         """Handle adding a member or creating an invite."""
         try:
@@ -548,6 +581,9 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
                 self.request,
                 _('This user already has permissions for this team.'),
             )
+            return self._render_members_error(team.pk, invite_form)
+
+        if not self._check_full_admin_limit(team, user=user):
             return self._render_members_error(team.pk, invite_form)
 
         team.members.add(user)
@@ -591,6 +627,9 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
                 self.request,
                 _('Users need to have a eventyay account before they can be invited.'),
             )
+            return self._render_members_error(team.pk, invite_form)
+
+        if not self._check_full_admin_limit(team, email=invite_form.cleaned_data['user']):
             return self._render_members_error(team.pk, invite_form)
 
         invite = team.invites.create(email=invite_form.cleaned_data['user'])

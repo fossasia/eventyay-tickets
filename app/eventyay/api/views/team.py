@@ -113,6 +113,24 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
                 "This user has already been invited to the team."
             )
 
+        if team.can_change_organizer_settings:
+            from eventyay.base.entitlements import get_decision
+            current_users = User.objects.filter(
+                teams__organizer=team.organizer, 
+                teams__can_change_organizer_settings=True
+            ).distinct().count()
+            current_invites = TeamInvite.objects.filter(
+                team__organizer=team.organizer, 
+                team__can_change_organizer_settings=True
+            ).distinct().count()
+            decision = get_decision(
+                team.organizer,
+                'organizer.full_admins',
+                quantity=current_users + current_invites + 1
+            )
+            if not decision.allowed:
+                raise exceptions.ValidationError(decision.message)
+
         invite = TeamInvite.objects.create(team=team, email=email)
         invite.send()
 

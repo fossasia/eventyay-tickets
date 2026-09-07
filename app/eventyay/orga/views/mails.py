@@ -589,6 +589,20 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             if is_draft and result:
                 # Until this runs, the rows look like ordinary outbox entries.
                 QueuedMail.objects.filter(pk__in=[mail.pk for mail in result]).update(is_draft=True)
+            
+            if not is_draft and result:
+                from eventyay.base.signals import entitlement_usage_recorded
+                import uuid
+                entitlement_usage_recorded.send(
+                    sender=self.request.event.organizer,
+                    capability='email.bulk.monthly',
+                    quantity=len(result),
+                    unit='emails',
+                    source_type='bulk_email',
+                    source_id=str(result[0].pk) if hasattr(result[0], 'pk') else 'send_direct',
+                    idempotency_key=f"bulk_mail_compose_{getattr(result[0], 'pk', 'direct')}_{uuid.uuid4().hex[:8]}",
+                    event=self.request.event,
+                )
         scheduled_at = form.cleaned_data.get('scheduled_at')
         if len(result) and result[0].sent:
             self.success_url = self.request.event.orga_urls.sent_mails
