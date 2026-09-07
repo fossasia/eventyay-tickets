@@ -296,7 +296,7 @@ class FormFlowStep(TemplateFlowStep):
             )
         # For POST requests, merge new uploads with existing session files
         # This allows users to navigate back without losing previously uploaded files
-        session_files = self.get_files() or {}
+        session_files = self.get_files() or MultiValueDict()
 
         # Preserve MultiValueDict semantics for proper multi-file field support
         files = MultiValueDict()
