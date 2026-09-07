@@ -182,6 +182,10 @@ const initRecipientPreview = () => {
     const summary = document.querySelector("#recipient-summary")
     const requiresAudience = Boolean(summary && "requiresAudience" in summary.dataset)
 
+    // Responses can arrive out of order, and a stale one would report an audience
+    // the form no longer has, re-enabling the send buttons.
+    let latestRequest = 0
+
     const applyCount = (count) => {
         renderCount(badge, count)
         if (summary) renderCount(summary, count)
@@ -189,10 +193,13 @@ const initRecipientPreview = () => {
     }
 
     const refreshCount = async () => {
+        const request = (latestRequest += 1)
         try {
             const data = await fetchRecipients(url, form)
+            if (request !== latestRequest) return
             applyCount(data.count)
         } catch (error) {
+            if (request !== latestRequest) return
             console.error("Could not refresh the recipient count", error)
             badge.hidden = true
             if (summary) {
@@ -221,9 +228,10 @@ const initRecipientPreview = () => {
 
     trigger.addEventListener("click", async () => {
         body.textContent = body.dataset.loadingLabel
+        const request = (latestRequest += 1)
         try {
             const data = await fetchRecipients(url, form)
-            applyCount(data.count)
+            if (request === latestRequest) applyCount(data.count)
             renderRecipients(body, data.recipients)
         } catch (error) {
             console.error("Could not load the recipient list", error)
