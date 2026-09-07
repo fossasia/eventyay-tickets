@@ -676,7 +676,10 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
             prev_url = self.get_prev_url(request)
             return redirect(prev_url) if prev_url else redirect(request.path)
 
-        if not form.is_valid() or not self.social_media_formset_is_valid(formset):
+        form_valid = form.is_valid()
+        formset_valid = self.social_media_formset_is_valid(formset)
+
+        if not form_valid or not formset_valid:
             warning_messages = getattr(form, 'warning_messages', None) or []
             for warning in filter(None, warning_messages):
                 messages.warning(self.request, warning)
