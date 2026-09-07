@@ -301,8 +301,8 @@ class FormFlowStep(TemplateFlowStep):
         # Preserve MultiValueDict semantics for proper multi-file field support
         files = MultiValueDict()
         # Add session files first
-        for field, file_obj in session_files.items():
-            files[field] = file_obj
+        for field, file_list in session_files.lists():
+            files.setlist(field, file_list)
         # For each field, new uploads completely replace any existing session files
         for field, file_list in self.request.FILES.lists():
             files.setlist(field, file_list)
@@ -383,6 +383,12 @@ class FormFlowStep(TemplateFlowStep):
 
     def set_files(self, files):
         data = self.cfp_session['files'].get(self.identifier, {})
+        
+        # Remove fields that were fully cleared and are no longer in `files`
+        for field in list(data.keys()):
+            if field not in files:
+                del data[field]
+                
         for field, field_files in files.lists():
             file_entries = []
             for field_file in field_files:
