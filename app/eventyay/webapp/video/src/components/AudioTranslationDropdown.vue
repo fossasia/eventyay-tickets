@@ -23,14 +23,16 @@
 		:aria-label="resolvedLabel"
 	)
 		li(
-			v-for="(language, index) of languageOptions",
-			:key="language",
+			v-for="(option, index) of languageOptions",
+			:key="option.language",
 			role="option",
-			:aria-selected="language === internalSelectedLanguage ? 'true' : 'false'",
-			:class="{active: language === internalSelectedLanguage, highlight: index === highlightedIndex}",
-			@click="selectLanguage(language)",
+			:aria-selected="option.language === internalSelectedLanguage ? 'true' : 'false'",
+			:class="{active: option.language === internalSelectedLanguage, highlight: index === highlightedIndex}",
+			@click="selectLanguage(option.language)",
 			@mouseenter="highlightedIndex = index"
-		) {{ language }}
+		)
+			span.language-name {{ option.language }}
+			span.stream-type(v-if="option.streamType") {{ option.streamType }}
 </template>
 <script>
 import { createPopper } from '@popperjs/core'
@@ -75,7 +77,10 @@ export default {
 		languages: {
 			immediate: true,
 			handler(newLanguages) {
-				this.languageOptions = newLanguages.map(entry => entry.language)
+				this.languageOptions = newLanguages.map(entry => ({
+					language: entry.language,
+					streamType: this.resolveStreamTypeLabel(entry)
+				}))
 				this.syncSelectedLanguage()
 			}
 		},
@@ -96,9 +101,17 @@ export default {
 		this.destroyPopper()
 	},
 	methods: {
+		resolveStreamTypeLabel(entry) {
+			if (entry.tts_ws_url) return this.$t('AI')
+			if (entry.whep_url || entry.whip_url) return this.$t('Human')
+			return null
+		},
+		hasLanguageOption(language) {
+			return this.languageOptions.some(option => option.language === language)
+		},
 		syncSelectedLanguage() {
-			const fallback = this.languageOptions.includes('Original') ? 'Original' : null
-			const nextLanguage = this.languageOptions.includes(this.selectedLanguage) ? this.selectedLanguage : fallback
+			const fallback = this.hasLanguageOption('Original') ? 'Original' : null
+			const nextLanguage = this.hasLanguageOption(this.selectedLanguage) ? this.selectedLanguage : fallback
 			if (this.internalSelectedLanguage === nextLanguage) return
 			this.isSyncingSelection = true
 			this.internalSelectedLanguage = nextLanguage
@@ -111,14 +124,19 @@ export default {
 			const audioSource = normalizeAudioTranslationSource(selected?.url || selected?.youtube_id)
 			const useVideo = selected?.use_video || false
 
-			this.$emit('languageChanged', { url: audioSource, useVideo })
+			this.$emit('languageChanged', {
+				url: audioSource,
+				useVideo,
+				whepUrl: selected?.whep_url || selected?.whip_url || null,
+				ttsWsUrl: selected?.tts_ws_url || null
+			})
 		},
 		async toggleMenu() {
 			if (this.menuOpen) {
 				this.closeMenu()
 				return
 			}
-			this.highlightedIndex = Math.max(this.languageOptions.indexOf(this.internalSelectedLanguage), 0)
+			this.highlightedIndex = Math.max(this.languageOptions.findIndex(option => option.language === this.internalSelectedLanguage), 0)
 			this.menuOpen = true
 			await this.$nextTick()
 			if (!this.$refs.toggle || !this.$refs.menu) {
@@ -159,8 +177,8 @@ export default {
 					this.toggleMenu()
 					return
 				}
-				const language = this.languageOptions[this.highlightedIndex]
-				if (language) this.selectLanguage(language)
+				const option = this.languageOptions[this.highlightedIndex]
+				if (option) this.selectLanguage(option.language)
 				return
 			}
 			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -249,6 +267,9 @@ export default {
 		box-sizing: border-box
 		li
 			box-sizing: border-box
+			display: flex
+			align-items: center
+			gap: 8px
 			height: 32px
 			padding: 0 12px
 			font-size: 14px
@@ -260,4 +281,13 @@ export default {
 				background-color: var(--clr-input-primary-bg, $clr-grey-50)
 			&.active
 				font-weight: 600
+			.stream-type
+				margin-left: auto
+				padding: 0 6px
+				border-radius: 10px
+				background: $clr-grey-100
+				color: $clr-secondary-text-light
+				font-size: 11px
+				font-weight: 400
+				line-height: 18px
 </style>
