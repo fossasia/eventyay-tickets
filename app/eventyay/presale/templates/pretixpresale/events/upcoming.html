@@ -1,6 +1,12 @@
 {% extends "pretixpresale/startpage_base.html" %}
 {% load i18n %}
-{% block page_title %}{% trans "Upcoming Events" %}{% endblock %}
+{% block page_title %}
+  {% if cfp_open_filter %}
+    {% trans "Open calls for proposals" %}
+  {% else %}
+    {% trans "Upcoming Events" %}
+  {% endif %}
+{% endblock %}
 {% block event_brand_class %} event-list-header-brand{% endblock %}
 {% block back_button %}
 <a class="event-home-back d-print-none" href="{% url 'presale:index' %}" aria-label="{% trans 'Home' %}">
@@ -11,13 +17,24 @@
 </a>
 {% endblock %}
 {% block content %}
-<section class="startpage-events" aria-label="{% trans "Upcoming events" %}">
-  <h2>{% trans "Upcoming Events" %}</h2>
+<section class="startpage-events" aria-label="{% if cfp_open_filter %}{% trans 'Open calls for proposals' %}{% else %}{% trans 'Upcoming events' %}{% endif %}">
+  <h2>
+    {% if cfp_open_filter %}
+      {% trans "Open calls for proposals" %}
+    {% else %}
+      {% trans "Upcoming Events" %}
+    {% endif %}
+  </h2>
   <div class="startpage-event-list">
     {% for event in events %}
       {% include "pretixpresale/includes/startpage_event_card.html" with event=event %}
     {% empty %}
-      <p class="startpage-empty">{% trans "No upcoming events available yet." %}</p>
+      {% if cfp_open_filter %}
+        <p class="startpage-empty">{% trans "No events with an open call for proposals are available right now." %}</p>
+        <p><a href="{% url 'presale:events.upcoming' %}">{% trans "Browse all upcoming events" %}</a></p>
+      {% else %}
+        <p class="startpage-empty">{% trans "No upcoming events available yet." %}</p>
+      {% endif %}
     {% endfor %}
   </div>
 </section>

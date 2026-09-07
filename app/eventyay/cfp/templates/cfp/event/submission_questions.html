@@ -8,6 +8,7 @@
 {% endblock orga_edit_link %}
 
 {% block inner %}
+    {% include "common/forms/errors.html" with form=form %}
     {% if form.submission_fields %}
         {% if form.speaker_fields and form.submission_fields %}
             <h4>{% translate "… about your proposal:" %}</h4>
