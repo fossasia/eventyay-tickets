@@ -992,8 +992,8 @@ defineExpose({ isPlaying });
 		transform: translate(calc(-1 * var(--chatbar-width)), 52px)
 .c-media-source .c-livestream, .c-media-source .c-januscall, .c-media-source .c-januschannelcall, .c-media-source .iframe-error, iframe.iframe-media-source
 	position: fixed
-	transition: all .3s ease
 	&.size-tiny, &.background
+		transition: all .3s ease
 		bottom: calc(var(--vh100) - 48px - 51px)
 		right: 4px + 36px + 4px
 		+below('l')
@@ -1004,7 +1004,6 @@ defineExpose({ isPlaying });
 		width: var(--mediasource-placeholder-width, 100vw)
 		height: var(--mediasource-placeholder-height, var(--mobile-media-height, 40vh))
 iframe.iframe-media-source
-	transition: all .3s ease
 	border: none
 	&.jitsi-media-source
 		// Jitsi External API writes inline width/height on the generated iframe.

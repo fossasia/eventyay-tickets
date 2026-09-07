@@ -1,7 +1,8 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
 	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']", style="container-type: inline-size;")
-		media-source-placeholder
+		.video-wrapper(:class="{'is-16-9-video': hasLivestream}")
+			media-source-placeholder
 		LiveCaptions(v-if="ccEnabled", :ws-url="selectedCcWsUrl")
 		reactions-overlay(v-if="hasLivestream")
 		upcoming-stream-countdown(:room="room")
@@ -285,6 +286,24 @@ export default {
 		flex: auto
 		overflow: hidden
 		position: relative
+		+below('m')
+			height: 40vh
+	.video-wrapper
+		display: flex
+		flex-direction: column
+		align-items: center
+		justify-content: center
+		flex: auto
+		width: 100%
+		position: relative
+		&.is-16-9-video
+			container-type: size
+			.c-media-source-placeholder
+				flex: none
+				aspect-ratio: 16 / 9
+				width: 100cqw
+				max-width: calc(100cqh * 16 / 9)
+				max-height: 100cqh
 	.c-media-source-placeholder
 		flex: auto
 	.room-sidebar

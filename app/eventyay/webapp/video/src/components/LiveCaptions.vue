@@ -127,7 +127,9 @@ export default {
 <style lang="stylus">
 .c-live-captions
         position: relative
-        width: 100%
+        width: var(--mediasource-placeholder-width, 100%)
+        margin: 0 auto
+        align-self: center
         background-color: #000000
         color: #ffffff
         padding: 8px 16px
@@ -137,13 +139,13 @@ export default {
         flex-direction: column
         align-items: center
         
-        font-size: clamp(16px, 3cqi, 28px)
+        font-size: clamp(14px, 2.5vh, 22px)
         line-height: 1.5
         font-weight: 500
 
         .caption-log
-                height: 3em 
-                max-height: 3em
+                height: calc(3em + 12px)
+                max-height: calc(3em + 12px)
                 overflow-y: hidden
                 text-align: center
                 width: 100%

@@ -15,9 +15,13 @@ export default {
 	created() {},
 	async mounted() {
 		await this.$nextTick()
-		this.$store.commit('reportMediaSourcePlaceholderRect', this.$el.getBoundingClientRect())
+		this.onResize()
+		this._rafId = requestAnimationFrame(this.pollRect)
 	},
 	beforeUnmount() {
+		if (this._rafId) {
+			cancelAnimationFrame(this._rafId)
+		}
 		this.$store.commit('reportMediaSourcePlaceholderRect', null)
 	},
 	methods: {
@@ -26,6 +30,15 @@ export default {
 				'reportMediaSourcePlaceholderRect',
 				this.$el.getBoundingClientRect(),
 			)
+		},
+		pollRect() {
+			if (!this.$el) return
+			const rect = this.$el.getBoundingClientRect()
+			const old = this.$store.state.mediaSourcePlaceholderRect
+			if (!old || rect.top !== old.top || rect.left !== old.left || rect.width !== old.width || rect.height !== old.height) {
+				this.onResize()
+			}
+			this._rafId = requestAnimationFrame(this.pollRect)
 		}
 	}
 }
