@@ -10,14 +10,19 @@ export class AudioScheduler {
 		this.ws = null;
 		this.parser = new TtsParser();
 		this.audioContext = null;
-		this.audioBuffer = null;
 		this.isConnected = false;
+		this.isDisposed = false;
 		this.retryCount = 0;
 		this.maxRetries = 5;
 		this.retryDelay = 1000; // exponential backoff starts at 1s
+		this.reconnectTimer = null;
+		this.nextStartTime = 0;
 	}
 
 	async connect() {
+		if (this.isDisposed) {
+			return;
+		}
 		if (this.isConnected) {
 			console.warn('AudioScheduler already connected');
 			return;
@@ -63,11 +68,15 @@ export class AudioScheduler {
 
 	handleClose() {
 		this.isConnected = false;
+		if (this.isDisposed) return;
+
 		if (this.retryCount < this.maxRetries) {
 			const delay = this.retryDelay * Math.pow(2, this.retryCount);
 			this.retryCount++;
 			console.log(`Attempting to reconnect to TTS endpoint (attempt ${this.retryCount}/${this.maxRetries}) after ${delay}ms`);
-			setTimeout(() => {
+			this.reconnectTimer = setTimeout(() => {
+				this.reconnectTimer = null;
+				if (this.isDisposed) return;
 				this.connect().catch(error => {
 					console.error('Reconnection failed:', error);
 				});
@@ -101,6 +110,7 @@ export class AudioScheduler {
 			try {
 				const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 				this.audioContext = new AudioContextClass();
+				this.nextStartTime = 0;
 			} catch (error) {
 				console.error('Failed to create AudioContext:', error);
 				return;
@@ -124,7 +134,12 @@ export class AudioScheduler {
 			const source = this.audioContext.createBufferSource();
 			source.buffer = audioBuffer;
 			source.connect(this.audioContext.destination);
-			source.start(this.audioContext.currentTime);
+
+			// Queue each frame after the previous one so consecutive frames neither
+			// overlap nor leave a gap when several arrive in the same tick.
+			const startTime = Math.max(this.audioContext.currentTime, this.nextStartTime);
+			source.start(startTime);
+			this.nextStartTime = startTime + audioBuffer.duration;
 		} catch (error) {
 			console.error('Error scheduling audio frame:', error);
 		}
@@ -145,8 +160,14 @@ export class AudioScheduler {
 	}
 
 	disconnect() {
+		this.isDisposed = true;
 		this.isConnected = false;
 		this.retryCount = this.maxRetries; // Prevent reconnection
+
+		if (this.reconnectTimer) {
+			clearTimeout(this.reconnectTimer);
+			this.reconnectTimer = null;
+		}
 
 		if (this.ws) {
 			this.ws.close();
@@ -162,6 +183,7 @@ export class AudioScheduler {
 			this.audioContext = null;
 		}
 
+		this.nextStartTime = 0;
 		this.parser = new TtsParser();
 		console.log('AudioScheduler disconnected');
 	}

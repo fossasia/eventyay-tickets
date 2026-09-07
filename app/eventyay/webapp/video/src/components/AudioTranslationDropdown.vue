@@ -24,11 +24,11 @@
 	)
 		li(
 			v-for="(option, index) of languageOptions",
-			:key="option.language",
+			:key="option.key",
 			role="option",
-			:aria-selected="option.language === internalSelectedLanguage ? 'true' : 'false'",
-			:class="{active: option.language === internalSelectedLanguage, highlight: index === highlightedIndex}",
-			@click="selectLanguage(option.language)",
+			:aria-selected="index === selectedIndex ? 'true' : 'false'",
+			:class="{active: index === selectedIndex, highlight: index === highlightedIndex}",
+			@click="selectLanguage(index)",
 			@mouseenter="highlightedIndex = index"
 		)
 			span.language-name {{ option.language }}
@@ -59,7 +59,7 @@ export default {
 	},
 	data() {
 		return {
-			internalSelectedLanguage: null,
+			selectedIndex: -1,
 			languageOptions: [],
 			isSyncingSelection: false,
 			menuOpen: false,
@@ -72,12 +72,16 @@ export default {
 		resolvedLabel() {
 			return this.label || this.$t('Interpretation')
 		},
+		internalSelectedLanguage() {
+			return this.languageOptions[this.selectedIndex]?.language ?? null
+		},
 	},
 	watch: {
 		languages: {
 			immediate: true,
 			handler(newLanguages) {
-				this.languageOptions = newLanguages.map(entry => ({
+				this.languageOptions = newLanguages.map((entry, index) => ({
+					key: `${index}:${entry.language}`,
 					language: entry.language,
 					streamType: this.resolveStreamTypeLabel(entry)
 				}))
@@ -90,9 +94,9 @@ export default {
 				this.syncSelectedLanguage()
 			}
 		},
-		internalSelectedLanguage(newLanguage) {
+		selectedIndex(index) {
 			if (this.isSyncingSelection) return
-			if (newLanguage) {
+			if (index >= 0) {
 				this.sendLanguageChange()
 			}
 		}
@@ -106,21 +110,24 @@ export default {
 			if (entry.whep_url || entry.whip_url) return this.$t('Human')
 			return null
 		},
-		hasLanguageOption(language) {
-			return this.languageOptions.some(option => option.language === language)
+		findLanguageIndex(language) {
+			return this.languageOptions.findIndex(option => option.language === language)
 		},
 		syncSelectedLanguage() {
-			const fallback = this.hasLanguageOption('Original') ? 'Original' : null
-			const nextLanguage = this.hasLanguageOption(this.selectedLanguage) ? this.selectedLanguage : fallback
-			if (this.internalSelectedLanguage === nextLanguage) return
+			// A language can appear twice, once per stream type, so a pick that already
+			// satisfies the parent must survive rather than snap back to the first match.
+			if (this.internalSelectedLanguage === this.selectedLanguage) return
+			let nextIndex = this.findLanguageIndex(this.selectedLanguage)
+			if (nextIndex === -1) nextIndex = this.findLanguageIndex('Original')
+			if (this.selectedIndex === nextIndex) return
 			this.isSyncingSelection = true
-			this.internalSelectedLanguage = nextLanguage
+			this.selectedIndex = nextIndex
 			this.$nextTick(() => {
 				this.isSyncingSelection = false
 			})
 		},
 		sendLanguageChange() {
-			const selected = this.languages.find(item => item.language === this.internalSelectedLanguage)
+			const selected = this.languages[this.selectedIndex]
 			const audioSource = normalizeAudioTranslationSource(selected?.url || selected?.youtube_id)
 			const useVideo = selected?.use_video || false
 
@@ -136,7 +143,7 @@ export default {
 				this.closeMenu()
 				return
 			}
-			this.highlightedIndex = Math.max(this.languageOptions.findIndex(option => option.language === this.internalSelectedLanguage), 0)
+			this.highlightedIndex = Math.max(this.selectedIndex, 0)
 			this.menuOpen = true
 			await this.$nextTick()
 			if (!this.$refs.toggle || !this.$refs.menu) {
@@ -161,8 +168,9 @@ export default {
 			this.popper?.destroy()
 			this.popper = null
 		},
-		selectLanguage(language) {
-			this.internalSelectedLanguage = language
+		selectLanguage(index) {
+			if (index < 0 || index >= this.languageOptions.length) return
+			this.selectedIndex = index
 			this.closeMenu()
 		},
 		onToggleKeydown(event) {
@@ -177,8 +185,7 @@ export default {
 					this.toggleMenu()
 					return
 				}
-				const option = this.languageOptions[this.highlightedIndex]
-				if (option) this.selectLanguage(option.language)
+				this.selectLanguage(this.highlightedIndex)
 				return
 			}
 			if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {

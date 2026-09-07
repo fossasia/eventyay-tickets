@@ -1,3 +1,6 @@
+// Guards against a desynchronised or corrupt stream claiming an absurd frame size.
+const MAX_FRAME_LENGTH = 16 * 1024 * 1024;
+
 /**
  * Parses Voxbento binary frame format: [1-byte version][4-byte length][JSON header][audio bytes]
  */
@@ -8,9 +11,10 @@ export class TtsParser {
 	}
 
 	append(data) {
-		const newBuffer = new Uint8Array(this.buffer.length + data.length);
+		const incoming = data instanceof Uint8Array ? data : new Uint8Array(data);
+		const newBuffer = new Uint8Array(this.buffer.length + incoming.length);
 		newBuffer.set(this.buffer);
-		newBuffer.set(new Uint8Array(data), this.buffer.length);
+		newBuffer.set(incoming, this.buffer.length);
 		this.buffer = newBuffer;
 		this.parseFrames();
 	}
@@ -26,6 +30,12 @@ export class TtsParser {
 
 			const lengthView = new DataView(this.buffer.buffer, this.buffer.byteOffset + 1, 4);
 			const frameLength = lengthView.getUint32(0, false);
+
+			if (frameLength > MAX_FRAME_LENGTH) {
+				console.warn(`TTS frame length ${frameLength} exceeds ${MAX_FRAME_LENGTH}, resynchronising`);
+				this.buffer = this.buffer.slice(1);
+				continue;
+			}
 
 			const totalLength = 5 + frameLength;
 			if (this.buffer.length < totalLength) {
