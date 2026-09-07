@@ -54,8 +54,9 @@ def get_slides_max_count(event) -> int:
 
 
 def save_slides_resource(submission, slides: SlidesData):
-    if slides.clear_ids:
-        delete_slide_resources(submission, resource_ids=slides.clear_ids)
+    valid_clear_ids = [cid for cid in slides.clear_ids if cid.isdigit()]
+    if valid_clear_ids:
+        delete_slide_resources(submission, resource_ids=valid_clear_ids)
 
     created_resources = []
     for resource_file in slides.resources:

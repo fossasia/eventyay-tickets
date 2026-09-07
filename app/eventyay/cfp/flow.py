@@ -241,14 +241,28 @@ class FormFlowStep(TemplateFlowStep):
 
         saved_files = self.cfp_session.get('files', {}).get(self.identifier, {})
         for field, file_data in saved_files.items():
-            if isinstance(file_data, list):
-                continue
-
-            if (file_data.get('content_type') or '').startswith('image/'):
-                form_initial[field] = SimpleNamespace(
-                    name=file_data['name'],
-                    url=self.file_storage.url(file_data['tmp_name']),
-                )
+            entries = file_data if isinstance(file_data, list) else [file_data]
+            
+            is_multiple = field.endswith('_files')
+            
+            if is_multiple:
+                resources = []
+                for entry in entries:
+                    resources.append(SimpleNamespace(
+                        filename=entry['name'],
+                        url=self.file_storage.url(entry['tmp_name']),
+                        pk='tmp:' + entry['tmp_name'],
+                        link='',
+                    ))
+                form_initial[field] = resources
+            else:
+                # Single file field (ImageField, ExtensionFileField)
+                entry = entries[0] if entries else None
+                if entry:
+                    form_initial[field] = SimpleNamespace(
+                        name=entry['name'],
+                        url=self.file_storage.url(entry['tmp_name']),
+                    )
 
         return form_initial
 
@@ -347,9 +361,23 @@ class FormFlowStep(TemplateFlowStep):
         files = MultiValueDict()
         for field, field_dict in saved_files.items():
             field_entries = field_dict if isinstance(field_dict, list) else [field_dict]
+            
+            is_cleared = False
+            clear_ids = []
+            if getattr(self, 'request', None) and self.request.method == 'POST':
+                if self.request.POST.get(f"{field}-clear"):
+                    is_cleared = True
+                if field.endswith('_files'):
+                    base_field = field[:-6]
+                    clear_ids = self.request.POST.getlist(f"{base_field}_clear_ids")
+                    
             for entry in field_entries:
                 field_entry = entry.copy()
                 tmp_name = field_entry.pop('tmp_name')
+                
+                if is_cleared or tmp_name in clear_ids or f'tmp:{tmp_name}' in clear_ids:
+                    continue
+                    
                 files.appendlist(field, UploadedFile(file=self.file_storage.open(tmp_name), **field_entry))
         return files or None
 
