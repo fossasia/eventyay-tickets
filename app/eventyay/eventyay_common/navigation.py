@@ -29,10 +29,16 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
         return []
     nav = [
         {
-            'label': _('My Orders'),
+            'label': _('Browse events'),
+            'url': reverse('presale:index'),
+            'active': False,
+            'icon': 'compass',
+        },
+        {
+            'label': _('My Tickets'),
             'url': reverse('eventyay_common:orders'),
             'active': 'orders' in url.url_name,
-            'icon': 'shopping-cart',
+            'icon': 'ticket',
         },
         {
             'label': _('My Sessions'),
@@ -46,13 +52,26 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
             'active': 'events' in url.url_name,
             'icon': 'calendar',
         },
-        {
+    ]
+
+    show_organizers = False
+    if request.user.is_authenticated:
+        if request.user.teams.exists():
+            show_organizers = True
+        else:
+            from eventyay.control.permissions import OrganizerCreationPermissionMixin
+            class _PermChecker(OrganizerCreationPermissionMixin):
+                def __init__(self, request):
+                    self.request = request
+            show_organizers = _PermChecker(request)._can_create_organizer(request.user)
+
+    if show_organizers:
+        nav.append({
             'label': _('Organizers'),
             'url': reverse('eventyay_common:organizers'),
             'active': 'organizers' in url.url_name,
             'icon': 'group',
-        },
-    ]
+        })
 
     # Merge plugin-provided navigation items
     plugin_responses = nav_global.send(request, request=request)
