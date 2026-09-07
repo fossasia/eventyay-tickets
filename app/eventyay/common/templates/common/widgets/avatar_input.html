@@ -1,0 +1,16 @@
+{% load i18n %}
+<div class="eventyay-image-input{% if widget.is_initial %} has-image{% endif %}">
+    {% if widget.is_initial %}
+        <div class="eventyay-image-current">
+            <span class="eventyay-image-name" title="{{ widget.value }}">{{ widget.value }}</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary eventyay-image-replace"{% if widget.attrs.disabled %} disabled{% endif %}>{% translate "Replace" %}</button>
+            <button type="button" class="btn btn-sm btn-outline-danger eventyay-image-delete"{% if widget.attrs.disabled %} disabled{% endif %}>{% translate "Delete" %}</button>
+        </div>
+        <input type="checkbox" class="eventyay-image-clear" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}>
+    {% endif %}
+    <div class="eventyay-file-pick-wrapper eventyay-image-picker"{% if widget.is_initial %} hidden{% endif %}>
+        <label for="{{ widget.attrs.id }}">{% translate "Choose file" %}</label>
+        <span class="eventyay-file-name text-muted small" aria-live="polite"></span>
+    </div>
+    <input type="{{ widget.type }}" name="{{ widget.name }}" class="eventyay-image-file" data-eventyay-file-wrapper="disabled"{% include "django/forms/widgets/attrs.html" %}>
+</div>
