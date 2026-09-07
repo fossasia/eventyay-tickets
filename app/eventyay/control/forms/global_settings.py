@@ -21,6 +21,20 @@ from eventyay.helpers.image_optimize import optimize_uploaded_image
 
 logger = logging.getLogger(__name__)
 
+PAYPAL_CONNECT_ENDPOINT_CHOICES = (
+    ('live', _('Live')),
+    ('sandbox', _('Sandbox')),
+)
+
+
+def paypal_connect_endpoint_choice(value: str | None) -> str:
+    """Map stored PayPal endpoint values (including legacy URLs) to live/sandbox."""
+    raw = (value or 'live').strip().lower()
+    if raw in {'sandbox', 'test'} or 'sandbox' in raw:
+        return 'sandbox'
+    return 'live'
+
+
 class GlobalSettingsForm(SettingsForm):
     auto_fields = [
         'region',
@@ -812,10 +826,12 @@ class GlobalTicketingSettingsForm(SettingsForm):
                 ),
                 (
                     'payment_paypal_connect_endpoint',
-                    forms.CharField(
-                        label=_('API Endpoint'),
+                    forms.ChoiceField(
+                        label=_('Endpoint'),
                         required=False,
-                        help_text=_('PayPal API endpoint (e.g., https://api.paypal.com or https://api.sandbox.paypal.com).'),
+                        initial='live',
+                        choices=PAYPAL_CONNECT_ENDPOINT_CHOICES,
+                        help_text=_('Use Sandbox to test PayPal payments without charging real money.'),
                     ),
                 ),
                 # Cart
@@ -872,6 +888,20 @@ class GlobalTicketingSettingsForm(SettingsForm):
                 'max_products_per_order',
             ]),
         ]
+        self.initial['payment_paypal_connect_endpoint'] = paypal_connect_endpoint_choice(
+            self.initial.get('payment_paypal_connect_endpoint')
+            or self.obj.settings.get('payment_paypal_connect_endpoint')
+        )
+        if self.is_bound:
+            data = self.data.copy()
+            data['payment_paypal_connect_endpoint'] = paypal_connect_endpoint_choice(
+                data.get('payment_paypal_connect_endpoint')
+                or self.initial.get('payment_paypal_connect_endpoint')
+            )
+            self.data = data
+
+    def clean_payment_paypal_connect_endpoint(self):
+        return paypal_connect_endpoint_choice(self.cleaned_data.get('payment_paypal_connect_endpoint'))
 
 
 class SSOConfigForm(SettingsForm):
