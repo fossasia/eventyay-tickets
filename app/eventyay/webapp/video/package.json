@@ -60,7 +60,7 @@
     "uuid": "^14.0.2",
     "vue": "^3.5.42",
     "vue-advanced-cropper": "^2.8.9",
-    "vue-router": "^5.3.0",
+    "vue-router": "^5.3.1",
     "vue-slicksort": "^2.0.5",
     "vue-virtual-scroller": "^3.0.5",
     "vuex": "^4.1.0",
