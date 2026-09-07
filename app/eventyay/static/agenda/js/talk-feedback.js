@@ -261,7 +261,6 @@ export function initTalkFeedback(root = document) {
         parentInput.value = parentId;
       }
       formContainer.classList.remove('d-none');
-      formContainer.style.display = 'block';
       const textarea = formContainer.querySelector('textarea');
       if (textarea) {
         textarea.focus();
@@ -380,7 +379,7 @@ export function initTalkFeedback(root = document) {
   });
 
   root.querySelectorAll('.reply-form-container').forEach((form) => {
-    form.style.display = 'none';
+    form.classList.add('d-none');
   });
 
   root.querySelectorAll('.comment-text-collapsed').forEach((content) => {

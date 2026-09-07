@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load rich_text %}
+{% load static %}
 
 {% block submission_title %}{% translate "Attendee feedback" %} :: {% endblock submission_title %}
 
@@ -34,52 +35,7 @@
 
 {% endblock submission_content %}
 
-{% block stylesheets %}
-{{ block.super }}
-<style>
-    .comment-text-collapsed {
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-</style>
-{% endblock stylesheets %}
-
 {% block scripts %}
 {{ block.super }}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll('.comment-text-collapsed').forEach((content) => {
-            if (content.dataset.talkFeedbackReadMoreInit === 'true') {
-                return;
-            }
-            content.dataset.talkFeedbackReadMoreInit = 'true';
-            if (content.scrollHeight <= content.clientHeight) {
-                return;
-            }
-            const btn = content.nextElementSibling;
-            if (!btn || !btn.classList.contains('read-more-btn')) {
-                return;
-            }
-            btn.classList.remove('d-none');
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                const expanded = this.getAttribute('data-expanded') === 'true';
-                const readMoreText = this.getAttribute('data-read-more');
-                const showLessText = this.getAttribute('data-show-less');
-
-                if (expanded) {
-                    content.classList.add('comment-text-collapsed');
-                    this.textContent = readMoreText;
-                    this.setAttribute('data-expanded', 'false');
-                } else {
-                    content.classList.remove('comment-text-collapsed');
-                    this.textContent = showLessText;
-                    this.setAttribute('data-expanded', 'true');
-                }
-            });
-        });
-    });
-</script>
+<script type="module" src="{% static 'agenda/js/talk-feedback.js' %}"></script>
 {% endblock scripts %}
