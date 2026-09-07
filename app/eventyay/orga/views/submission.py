@@ -1274,7 +1274,7 @@ class FeedbackBulkAction(EventPermissionRequired, View):
         if not feedback_ids:
             messages.warning(request, _('No items selected.'))
             next_url = request.GET.get('next')
-            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
                 return redirect(next_url)
             return redirect(request.event.orga_urls.feedback)
             
@@ -1291,7 +1291,7 @@ class FeedbackBulkAction(EventPermissionRequired, View):
             messages.success(request, _('Successfully deleted %d feedback(s).') % count)
 
         next_url = request.GET.get('next')
-        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
             return redirect(next_url)
         return redirect(request.event.orga_urls.feedback)
 
@@ -1305,7 +1305,7 @@ class FeedbackUpdateStatus(EventPermissionRequired, View):
             from django.shortcuts import render
             return render(request, 'orga/submission/feedback_delete.html', {'object': feedback})
         next_url = request.GET.get('next')
-        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
             return redirect(next_url)
         return redirect(request.event.orga_urls.feedback)
 
@@ -1341,7 +1341,7 @@ class FeedbackUpdateStatus(EventPermissionRequired, View):
                 messages.error(request, _('Cannot unban anonymous user.'))
             
         next_url = request.GET.get('next')
-        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
             return redirect(next_url)
         return redirect(request.event.orga_urls.feedback)
 
