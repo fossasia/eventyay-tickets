@@ -46,6 +46,7 @@
 
     <!-- Sessions Table -->
     <div data-ajax-results-region>
+        {% if object_list %}
         <div class="table-responsive mt-3">
             <table class="table table-condensed table-hover events-table">
             <thead>
@@ -94,16 +95,23 @@
                         </a>
                     </td>
                 </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="text-center">
-                        {% translate "You have no sessions." %}
-                    </td>
-                </tr>
                 {% endfor %}
             </tbody>
             </table>
         </div>
         {% include 'pretixcontrol/pagination.html' %}
+        {% else %}
+          {% if has_active_filters %}
+            <div class="alert alert-info">{% translate "No sessions match your filters." %}</div>
+          {% else %}
+            {% url 'presale:events.upcoming' as upcoming_url %}
+            {% url 'eventyay_common:dashboard' as dashboard_url %}
+            {% translate "No sessions yet" as empty_title %}
+            {% translate "Find events with open calls for proposals and submit a talk to see your sessions here." as empty_description %}
+            {% translate "Find open calls" as empty_primary_label %}
+            {% translate "Go to dashboard" as empty_secondary_label %}
+            {% include "eventyay_common/includes/personal_empty_state.html" with icon="microphone" title=empty_title description=empty_description primary_url=upcoming_url|add:"?cfp=open" primary_label=empty_primary_label secondary_url=dashboard_url secondary_label=empty_secondary_label %}
+          {% endif %}
+        {% endif %}
     </div>
 {% endblock %}

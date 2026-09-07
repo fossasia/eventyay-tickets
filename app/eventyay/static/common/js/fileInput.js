@@ -1,6 +1,8 @@
 const FILE_INPUT_SELECTOR = 'input[type="file"]'
 const CHECKOUT_FILE_INPUT_SELECTOR = '.questions-form input[type="file"]'
 const HAS_SELECTION_CLASS = 'file-input-has-selection'
+const HAS_ERROR_CLASS = 'file-input-has-error'
+const IS_DISABLED_CLASS = 'file-input-is-disabled'
 let fileInputIdCounter = 0
 
 const updateFileInput = (input) => {
@@ -8,11 +10,18 @@ const updateFileInput = (input) => {
     input.dataset.eventyayPreviewRevision = previewRevision
 
     const hasSelection = Boolean(input.files?.length)
+    const hasError = input.getAttribute('aria-invalid') === 'true' || input.classList.contains('is-invalid')
+    const wrapper = input.closest('.eventyay-file-pick-wrapper')
     input.classList.toggle(HAS_SELECTION_CLASS, hasSelection)
+    wrapper?.classList.toggle(HAS_SELECTION_CLASS, hasSelection)
+    wrapper?.classList.toggle(HAS_ERROR_CLASS, hasError)
+    wrapper?.classList.toggle(IS_DISABLED_CLASS, input.disabled)
 
-    const filename = input.closest('.eventyay-file-pick-wrapper')?.querySelector('.eventyay-file-name')
+    const filename = wrapper?.querySelector('.eventyay-file-name')
     if (filename) {
-        filename.textContent = hasSelection ? input.files[0].name : ''
+        filename.textContent = hasSelection
+            ? Array.from(input.files).map((file) => file.name).join(', ')
+            : ''
     }
     const imagePreview = input
         .closest('.eventyay-file-pick-wrapper')
@@ -70,12 +79,17 @@ const wrapFileInput = (input) => {
     const wrapper = document.createElement('div')
     wrapper.className = 'eventyay-file-pick-wrapper'
 
+    if (!input.id) {
+        input.id = 'eventyay-file-' + (++fileInputIdCounter)
+    }
+
     const label = document.createElement('label')
-    label.setAttribute('for', input.id || '')
+    label.setAttribute('for', input.id)
     label.textContent = chooseLabel
 
     const filename = document.createElement('span')
-    filename.className = 'eventyay-file-name text-muted small ms-2'
+    filename.className = 'eventyay-file-name text-muted small'
+    filename.setAttribute('aria-live', 'polite')
 
     wrapper.addEventListener('click', (event) => {
         if (event.target !== label && event.target !== input) {
@@ -86,12 +100,8 @@ const wrapFileInput = (input) => {
     input.parentNode.insertBefore(wrapper, input)
     wrapper.append(label, filename, input)
 
-    if (!input.id) {
-        input.id = 'eventyay-file-' + (++fileInputIdCounter)
-        label.setAttribute('for', input.id)
-    }
-
     input.addEventListener('change', () => updateFileInput(input))
+    input.addEventListener('invalid', () => updateFileInput(input))
 
     const fieldContainer = input.closest('.eventyay-file-pick-wrapper')?.parentElement
 

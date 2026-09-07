@@ -15,7 +15,13 @@
              data-formset-prefix="{{ social_media_formset.prefix }}"
              data-social-link-prefixes='{{ social_link_prefixes|escapejson_dumps }}'>
             {{ social_media_formset.management_form }}
-            {{ social_media_formset.non_form_errors }}
+            {% if social_media_formset.non_form_errors %}
+                <div class="invalid-feedback d-block mb-2">
+                    {% for error in social_media_formset.non_form_errors %}
+                        {{ error }}<br>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div data-formset-body>
                 {% for social_form in social_media_formset %}
                     <div class="row partner-link-row mb-2" data-formset-form data-social-link-row>
@@ -63,7 +69,7 @@
                 {% endescapescript %}
             </script>
             <p class="mt-2 mb-0">
-                <button type="button" class="btn btn-info btn-sm" data-formset-add>
+                <button type="button" class="btn btn-sm btn-info" data-formset-add>
                     <i class="fa fa-plus" aria-hidden="true"></i> {% translate "Add social media link" %}
                 </button>
             </p>

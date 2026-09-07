@@ -163,18 +163,21 @@ class UpcomingEventsView(PaginationMixin, ListView):
         qs = (
             Event.objects.select_related('organizer')
             .prefetch_related('_settings_objects')
-            .filter(live=True)
+            .filter(live=True, is_public=True)
             .filter(Q(startpage_visible=True) | Q(startpage_featured=True))
             .filter(Q(date_to__gte=today_datetime) | Q(date_to__isnull=True, date_from__gte=today_datetime))
             .filter(testmode=False)
             .exclude(_settings_objects__key='talks_testmode', _settings_objects__value='True')
             .order_by('date_from')
         )
+        if self.request.GET.get('cfp') == 'open':
+            qs = qs.filter(Q(cfp__deadline__isnull=True) | Q(cfp__deadline__gte=timezone.now()))
         return qs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['pagination_sizes'] = [20, 50, 100]
+        ctx['cfp_open_filter'] = self.request.GET.get('cfp') == 'open'
         ctx.update(_common_base_context(self.request))
         return ctx
 
