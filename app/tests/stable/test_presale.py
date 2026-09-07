@@ -2,7 +2,12 @@
 Tests for public presale/event pages (agenda, schedule, speakers).
 These pages should be accessible without authentication.
 """
+from datetime import timedelta
+
 import pytest
+from django.utils import timezone
+
+from eventyay.base.models import Event
 
 
 @pytest.mark.django_db
@@ -42,6 +47,28 @@ class TestPresalePages:
         response = client.get('/all-events/past/')
         assert response.status_code == 301
         assert response['Location'] == '/past/'
+
+    def test_past_events_excludes_non_public_events(self, client, organizer):
+        """Events with 'Show in lists' disabled must not appear on /past/."""
+        now = timezone.now()
+        common_kwargs = {
+            'organizer': organizer,
+            'live': True,
+            'startpage_visible': True,
+            'date_from': now - timedelta(days=30),
+            'date_to': now - timedelta(days=29),
+            'currency': 'USD',
+            'locale': 'en',
+            'email': 'test@example.com',
+        }
+        Event.objects.create(name='Public Past Event', slug='public-past', is_public=True, **common_kwargs)
+        Event.objects.create(name='Hidden Past Event', slug='hidden-past', is_public=False, **common_kwargs)
+
+        response = client.get('/past/')
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert 'Public Past Event' in content
+        assert 'Hidden Past Event' not in content
 
     def test_followed_events_page_redirects_unauthenticated(self, client):
         """Test that followed events page redirects anonymous users to login."""
