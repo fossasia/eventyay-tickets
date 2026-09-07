@@ -17,6 +17,7 @@ from eventyay.base.signals import register_global_settings
 from eventyay.control.forms.global_settings import (
     GlobalSettingsForm,
     GlobalTicketingSettingsForm,
+    paypal_connect_endpoint_choice,
 )
 
 
@@ -209,6 +210,7 @@ class TestGlobalTicketingSettings:
         assert 'payment_stripe_connect_publishable_key' in content
         assert 'payment_stripe_connect_secret_key' in content
         assert 'payment_paypal_connect_client_id' in content
+        assert 'payment_paypal_connect_endpoint' in content
 
         # Cart fields
         assert 'reservation_time' in content
@@ -227,6 +229,7 @@ class TestGlobalTicketingSettings:
             'payment_stripe_connect_secret_key': 'sk_live_ticket_stripe_key',
             'payment_stripe_connect_app_fee_percent': '2.50',
             'payment_paypal_connect_client_id': 'paypal_client_123',
+            'payment_paypal_connect_endpoint': 'sandbox',
             'reservation_time': '45',
             'max_products_per_order': '10',
         }
@@ -239,8 +242,36 @@ class TestGlobalTicketingSettings:
         assert gs.settings.get('payment_stripe_connect_publishable_key') == 'pk_live_ticket_stripe_key'
         assert gs.settings.get('payment_stripe_connect_app_fee_percent', as_type=Decimal) == Decimal('2.50')
         assert gs.settings.get('payment_paypal_connect_client_id') == 'paypal_client_123'
+        assert gs.settings.get('payment_paypal_connect_endpoint') == 'sandbox'
         assert gs.settings.get('reservation_time', as_type=int) == 45
         assert gs.settings.get('max_products_per_order', as_type=int) == 10
+
+    def test_ticketing_paypal_endpoint_coerces_legacy_urls(self):
+        gs = GlobalSettingsObject()
+        gs.settings.set('payment_paypal_connect_endpoint', 'https://api.sandbox.paypal.com')
+        form = GlobalTicketingSettingsForm()
+        assert form.initial['payment_paypal_connect_endpoint'] == 'sandbox'
+
+        gs.settings.set('payment_paypal_connect_endpoint', 'https://api.paypal.com')
+        form = GlobalTicketingSettingsForm()
+        assert form.initial['payment_paypal_connect_endpoint'] == 'live'
+        assert 'payment_stripe_connect_client_id' in form.fields
+        assert 'payment_stripe_connect_secret_key' in form.fields
+
+    def test_ticketing_form_accepts_legacy_paypal_endpoint_on_save(self):
+        gs = GlobalSettingsObject()
+        gs.settings.set('payment_paypal_connect_endpoint', 'https://api.sandbox.paypal.com')
+        form = GlobalTicketingSettingsForm(
+            data={
+                'payment_paypal_connect_endpoint': 'https://api.sandbox.paypal.com',
+                'reservation_time': '30',
+                'max_products_per_order': '0',
+            }
+        )
+        assert form.is_valid(), form.errors
+        assert form.cleaned_data['payment_paypal_connect_endpoint'] == 'sandbox'
+        form.save()
+        assert gs.settings.get('payment_paypal_connect_endpoint') == 'sandbox'
 
 
 @pytest.mark.django_db
@@ -329,3 +360,13 @@ class TestPluginProvidedPaymentSettingsRegression:
             assert gs.settings.get('payment_customplugin_api_key') == 'test_secret_token_123'
         finally:
             register_global_settings.disconnect(dispatch_uid='test_custom_payment_receiver')
+
+
+def test_paypal_connect_endpoint_choice_maps_legacy_urls():
+    assert paypal_connect_endpoint_choice(None) == 'live'
+    assert paypal_connect_endpoint_choice('live') == 'live'
+    assert paypal_connect_endpoint_choice('sandbox') == 'sandbox'
+    assert paypal_connect_endpoint_choice('test') == 'sandbox'
+    assert paypal_connect_endpoint_choice('https://api.sandbox.paypal.com') == 'sandbox'
+    assert paypal_connect_endpoint_choice('https://api.paypal.com') == 'live'
+    assert paypal_connect_endpoint_choice('https://api-m.sandbox.paypal.com') == 'sandbox'
