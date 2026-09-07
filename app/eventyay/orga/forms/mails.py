@@ -426,6 +426,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                 'content_locale',
                 'track',
                 'tags',
+                'pending_state__isnull',
                 'question',
             )
         ):

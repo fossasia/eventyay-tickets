@@ -953,6 +953,38 @@ def test_composer_excludes_pending_proposals_when_asked(orga_client, event, spea
 
 
 @pytest.mark.django_db
+def test_excluding_pending_still_filters_alongside_a_chosen_proposal(
+    orga_client, event, speaker, other_speaker, submission, other_submission
+):
+    # Choosing a proposal outright does not mean the other filters stop applying,
+    # so "exclude pending" must count as a filter rather than leave an empty base.
+    with scope(event=event):
+        other_submission.pending_state = "accepted"
+        other_submission.save(update_fields=["pending_state"])
+    response = orga_client.post(
+        event.orga_urls.compose_mails_sessions,
+        follow=True,
+        data={
+            "pending_state__isnull": "on",
+            "submissions": [other_submission.code],
+            "bcc": "",
+            "reply_to": "",
+            "subject_0": "foo",
+            "text_0": "bar",
+        },
+    )
+    assert response.status_code == 200
+    with scope(event=event):
+        addressed = {
+            user
+            for mail in QueuedMail.objects.filter(sent__isnull=True)
+            for user in mail.to_users.all()
+        }
+    # the chosen proposal, plus the speaker of the non-pending one the filter matches
+    assert addressed == {speaker, other_speaker}
+
+
+@pytest.mark.django_db
 def test_orga_can_see_session_mail_recipients(orga_client, event, speaker, submission):
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions_recipients,
