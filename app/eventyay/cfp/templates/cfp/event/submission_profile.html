@@ -20,6 +20,12 @@
 
 {% block inner %}
 
+    {% if social_media_formset.total_error_count or social_media_formset.non_form_errors %}
+        {% include "common/forms/errors.html" with form=form has_errors=True %}
+    {% else %}
+        {% include "common/forms/errors.html" with form=form %}
+    {% endif %}
+
     {% for field in form %}
         {% if field.name == 'avatar' %}
             {% include "common/avatar.html" with user=user form=form %}

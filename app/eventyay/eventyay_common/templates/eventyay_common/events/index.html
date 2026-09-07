@@ -12,30 +12,20 @@
 {% block content %}
     <h1>{% trans "Events" %}</h1>
     {% if events|length == 0 and not filter_form.filtered %}
-        <div class="empty-collection">
-            <p>
-                {% blocktrans trimmed %}
-                    You currently do not have access to any events.
-                {% endblocktrans %}
-            </p>
-
-            <a href='{% url "eventyay_common:events.add" %}' class="btn btn-primary btn-lg">
-                <span class="fa fa-plus"></span>
-                {% trans "Create Event" %}
-            </a>
-            {% if event_series_creation_enabled %}
-            <a href='{% url "eventyay_common:events.add" %}?series=1' class="btn btn-default btn-lg">
-                {% include "eventyay_common/includes/icon_calendar_series.html" %}
-                {% trans "Create Event Series" %}
-            </a>
-            {% endif %}
-            {% if meetup_creation_enabled %}
-            <a href='{% url "eventyay_common:events.add" %}?meetup=1' class="btn btn-default btn-lg">
-                <span class="fa fa-users"></span>
-                {% trans "Create Meetup" %}
-            </a>
-            {% endif %}
-        </div>
+        {% url 'eventyay_common:events.add' as create_event_url %}
+        {% trans "No events yet" as empty_title %}
+        {% trans "You currently do not have access to any events. Create one to get started." as empty_description %}
+        {% trans "Create Event" as empty_primary_label %}
+        
+        {% if event_series_creation_enabled %}
+            {% trans "Create Event Series" as series_label %}
+        {% endif %}
+        
+        {% if meetup_creation_enabled %}
+            {% trans "Create Meetup" as meetup_label %}
+        {% endif %}
+        
+        {% include "eventyay_common/includes/personal_empty_state.html" with icon="calendar" title=empty_title description=empty_description primary_url=create_event_url primary_label=empty_primary_label secondary_url=create_event_url|add:'?series=1' secondary_label=series_label tertiary_url=create_event_url|add:'?meetup=1' tertiary_label=meetup_label %}
     {% else %}
         <div class="advanced-filter-search" data-advanced-filter-search>
             <form class="filter-form advanced-filter-search-form" action="" method="get">
