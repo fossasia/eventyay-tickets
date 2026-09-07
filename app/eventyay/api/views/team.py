@@ -114,7 +114,7 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
             )
 
         if team.can_change_organizer_settings:
-            from eventyay.base.entitlements import get_decision
+            from eventyay.base.entitlements import check_entitlement
             current_users = User.objects.filter(
                 teams__organizer=team.organizer, 
                 teams__can_change_organizer_settings=True
@@ -123,7 +123,7 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
                 team__organizer=team.organizer, 
                 team__can_change_organizer_settings=True
             ).distinct().count()
-            decision = get_decision(
+            decision = check_entitlement(
                 team.organizer,
                 'organizer.full_admins',
                 quantity=current_users + current_invites + 1

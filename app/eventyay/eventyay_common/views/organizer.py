@@ -540,7 +540,7 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         if not team.can_change_organizer_settings:
             return True
             
-        from eventyay.base.entitlements import get_decision
+        from eventyay.base.entitlements import check_entitlement
         from eventyay.base.models.auth import User
         from eventyay.base.models.organizer import TeamInvite
         
@@ -559,7 +559,7 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
             team__can_change_organizer_settings=True
         ).distinct().count()
         
-        decision = get_decision(
+        decision = check_entitlement(
             team.organizer,
             'organizer.full_admins',
             quantity=current_users + current_invites + 1
