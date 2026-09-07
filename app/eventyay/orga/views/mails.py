@@ -12,7 +12,9 @@ from django.utils.translation import ngettext_lazy, npgettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 
+import uuid
 from eventyay.base.models.mail import MailTemplate, QueuedMail, get_prefixed_subject
+from eventyay.base.signals import entitlement_usage_recorded
 
 from eventyay.common.exceptions import SendMailException
 from eventyay.common.language import language
@@ -591,8 +593,6 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                 QueuedMail.objects.filter(pk__in=[mail.pk for mail in result]).update(is_draft=True)
             
             if not is_draft and result:
-                from eventyay.base.signals import entitlement_usage_recorded
-                import uuid
                 entitlement_usage_recorded.send(
                     sender=self.request.event.organizer,
                     capability='email.bulk.monthly',

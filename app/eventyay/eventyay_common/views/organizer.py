@@ -541,8 +541,6 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
             return True
             
         from eventyay.base.entitlements import check_entitlement
-        from eventyay.base.models.auth import User
-        from eventyay.base.models.organizer import TeamInvite
         
         # Determine if the user/email is already a full admin
         if user and user.teams.filter(organizer=team.organizer, can_change_organizer_settings=True).exists():

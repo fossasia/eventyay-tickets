@@ -114,22 +114,36 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
             )
 
         if team.can_change_organizer_settings:
-            from eventyay.base.entitlements import check_entitlement
-            current_users = User.objects.filter(
-                teams__organizer=team.organizer, 
-                teams__can_change_organizer_settings=True
-            ).distinct().count()
-            current_invites = TeamInvite.objects.filter(
-                team__organizer=team.organizer, 
-                team__can_change_organizer_settings=True
-            ).distinct().count()
-            decision = check_entitlement(
-                team.organizer,
-                'organizer.full_admins',
-                quantity=current_users + current_invites + 1
-            )
-            if not decision.allowed:
-                raise exceptions.ValidationError(decision.message)
+            # Skip check if the invited email already has full-admin access
+            try:
+                invited_user = User.objects.get(email__iexact=email)
+                already_admin = invited_user.teams.filter(
+                    organizer=team.organizer, can_change_organizer_settings=True
+                ).exists()
+            except User.DoesNotExist:
+                already_admin = TeamInvite.objects.filter(
+                    team__organizer=team.organizer,
+                    team__can_change_organizer_settings=True,
+                    email__iexact=email,
+                ).exists()
+
+            if not already_admin:
+                from eventyay.base.entitlements import check_entitlement
+                current_users = User.objects.filter(
+                    teams__organizer=team.organizer,
+                    teams__can_change_organizer_settings=True,
+                ).distinct().count()
+                current_invites = TeamInvite.objects.filter(
+                    team__organizer=team.organizer,
+                    team__can_change_organizer_settings=True,
+                ).distinct().count()
+                decision = check_entitlement(
+                    team.organizer,
+                    'organizer.full_admins',
+                    quantity=current_users + current_invites + 1,
+                )
+                if not decision.allowed:
+                    raise exceptions.ValidationError(decision.message)
 
         invite = TeamInvite.objects.create(team=team, email=email)
         invite.send()

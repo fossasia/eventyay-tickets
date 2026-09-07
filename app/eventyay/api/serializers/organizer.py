@@ -288,6 +288,44 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         except SendMailException:
             pass  # Already logged
 
+    def _check_full_admin_limit(self, email, user=None):
+        """Enforce full-admin entitlement before adding a member or invite."""
+        team = self.context['team']
+        if not team.can_change_organizer_settings:
+            return
+
+        from eventyay.base.entitlements import check_entitlement
+
+        # Skip if the user/email already has full-admin access
+        if user and user.teams.filter(
+            organizer=team.organizer, can_change_organizer_settings=True
+        ).exists():
+            return
+        if not user and TeamInvite.objects.filter(
+            team__organizer=team.organizer,
+            team__can_change_organizer_settings=True,
+            email__iexact=email,
+        ).exists():
+            return
+
+        current_users = User.objects.filter(
+            teams__organizer=team.organizer,
+            teams__can_change_organizer_settings=True,
+        ).distinct().count()
+        current_invites = TeamInvite.objects.filter(
+            team__organizer=team.organizer,
+            team__can_change_organizer_settings=True,
+        ).distinct().count()
+        decision = check_entitlement(
+            team.organizer,
+            'organizer.full_admins',
+            quantity=current_users + current_invites + 1,
+        )
+        if not decision.allowed:
+            raise ValidationError(
+                decision.message or _('You have reached the maximum limit for this feature on your current plan.')
+            )
+
     def create(self, validated_data):
         if 'email' in validated_data:
             try:
@@ -297,6 +335,8 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                     raise ValidationError(_('This user already has been invited for this team.'))
                 if 'native' not in get_auth_backends():
                     raise ValidationError('Users need to have a eventyay account before they can be invited.')
+
+                self._check_full_admin_limit(validated_data['email'])
 
                 invite = self.context['team'].invites.create(email=validated_data['email'])
                 self._send_invite(invite)
@@ -309,6 +349,8 @@ class TeamInviteSerializer(serializers.ModelSerializer):
             else:
                 if self.context['team'].members.filter(pk=user.pk).exists():
                     raise ValidationError(_('This user already has permissions for this team.'))
+
+                self._check_full_admin_limit(validated_data['email'], user=user)
 
                 self.context['team'].members.add(user)
 
