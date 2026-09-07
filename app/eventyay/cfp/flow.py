@@ -307,7 +307,12 @@ class FormFlowStep(TemplateFlowStep):
         for field, file_list in self.request.FILES.lists():
             files.setlist(field, file_list)
 
-        return self.form_class(data=self.request.POST, files=files, **self.get_form_kwargs())
+        return self.form_class(
+            data=self.request.POST,
+            files=files,
+            initial=form_initial,
+            **self.get_form_kwargs(),
+        )
 
     def is_completed(self, request):
         self.request = request
