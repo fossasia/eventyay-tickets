@@ -43,6 +43,7 @@ class MyOrdersView(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['filter_form'] = self.filter_form
+        ctx['has_active_filters'] = self.filter_form.has_active_filters()
         return ctx
 
     def get(self, request, *args, **kwargs):
