@@ -1,4 +1,4 @@
-import { TtsParser } from './tts-parser';
+import { TtsParser } from './tts-parser.js';
 
 /**
  * Manages WebSocket connection to Voxbento TTS endpoint and schedules audio playback
@@ -87,6 +87,8 @@ export class AudioScheduler {
 	}
 
 	handleMessage(data) {
+		if (this.isDisposed) return;
+
 		if (!(data instanceof ArrayBuffer)) {
 			console.warn('Received non-binary TTS message');
 			return;
