@@ -100,6 +100,12 @@ class ClearableBasenameFileInput(ClearableFileInput):
         return ctx
 
 
+class AvatarInput(ClearableBasenameFileInput):
+    """Render the current image, its delete action and the replace action as one control."""
+
+    template_name = 'common/widgets/avatar_input.html'
+
+
 class ImageInput(ClearableBasenameFileInput):
     template_name = 'common/widgets/image_input.html'
 
