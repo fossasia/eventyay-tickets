@@ -556,6 +556,11 @@ def get_admin_navigation(request):
             'active': (url.url_name == 'admin.global.settings'),
         },
         {
+            'label': _('Ticketing'),
+            'url': reverse('eventyay_admin:admin.global.ticketing'),
+            'active': (url.url_name == 'admin.global.ticketing'),
+        },
+        {
             'label': _('System information'),
             'url': reverse('eventyay_admin:admin.config'),
             'active': 'config' in url.url_name,
@@ -564,16 +569,6 @@ def get_admin_navigation(request):
             'label': _('Pages'),
             'url': reverse('eventyay_admin:admin.pages'),
             'active': 'pages' in url.url_name,
-        },
-        {
-            'label': _('Update check'),
-            'url': reverse('eventyay_admin:admin.global.update'),
-            'active': (url.url_name == 'admin.global.update'),
-        },
-        {
-            'label': _('Meta data'),
-            'url': reverse('eventyay_admin:admin.global.metadata'),
-            'active': (url.url_name == 'admin.global.metadata'),
         },
         {
             'label': _('Generate keys for SSO'),
