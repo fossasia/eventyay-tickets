@@ -69,6 +69,18 @@ settings_hierarkey.add_default('telemetry_endpoint', '', str)
 settings_hierarkey.add_default('telemetry_api_key', '', str)
 settings_hierarkey.add_default('telemetry_contact_email', '', str)
 
+# Cloudflare Turnstile anti-abuse settings
+settings_hierarkey.add_default('anti_abuse_provider', 'disabled', str)
+settings_hierarkey.add_default('turnstile_site_key', '', str)
+settings_hierarkey.add_default('turnstile_secret_key', '', str)
+settings_hierarkey.add_default('turnstile_on_registration', False, bool)
+settings_hierarkey.add_default('turnstile_login_mode', 'disabled', str)
+settings_hierarkey.add_default('turnstile_failed_login_threshold', 3, int)
+settings_hierarkey.add_default('turnstile_on_password_reset', False, bool)
+settings_hierarkey.add_default('turnstile_on_organizer_create', False, bool)
+settings_hierarkey.add_default('turnstile_on_contact', False, bool)
+
+
 
 def i18n_uns(v):
     try:
