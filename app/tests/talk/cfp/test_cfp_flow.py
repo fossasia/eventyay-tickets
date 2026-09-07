@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import MagicMock
 from django import forms
 from django.http import HttpResponseNotAllowed
 from django_scopes import scope
@@ -142,7 +143,6 @@ def test_cfp_form_mixin_scrubs_incomplete_errors_in_not_strict_mode():
 
 
 def test_form_flow_step_clears_last_session_file():
-    from unittest.mock import MagicMock
     
     class TestFormFlowStep(FormFlowStep):
         @property
@@ -174,8 +174,6 @@ def test_form_flow_step_clears_last_session_file():
 
 
 def test_form_flow_step_invalid_post_retains_session_file():
-    from unittest.mock import MagicMock
-    from django import forms
     
     class TestForm(forms.Form):
         name = forms.CharField(required=True)
