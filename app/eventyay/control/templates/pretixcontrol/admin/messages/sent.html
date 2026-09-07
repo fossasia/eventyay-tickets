@@ -1,0 +1,60 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n static %}
+
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'pretixcontrol/css/admin-messages.css' %}">
+{% endblock %}
+
+{% block title %}{% translate "Message center — Sent" %}{% endblock %}
+
+{% block content %}
+<h1>{% translate "Sent emails" %}</h1>
+<p class="text-muted">{% translate "Platform emails that have been sent." %}</p>
+
+{% if mails %}
+  <div class="table-responsive">
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>{% translate "Subject" %}</th>
+          <th>{% translate "Audience" %}</th>
+          <th>{% translate "Recipients" %}</th>
+          <th>{% translate "Sent by" %}</th>
+          <th>{% translate "Sent at" %}</th>
+          <th class="text-right">{% translate "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mail in mails %}
+          <tr>
+            <td><strong>{{ mail.subject|default:"—" }}</strong></td>
+            <td>{{ mail.get_recipient_group_display }}</td>
+            <td>{{ mail.recipient_count }}</td>
+            <td>{{ mail.user.email|default:"—" }}</td>
+            <td>{{ mail.sent_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td class="text-right">
+              <form method="post" action="{% url 'eventyay_admin:admin.messages.duplicate' pk=mail.pk %}" class="action-form-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-default" title="{% translate 'Duplicate as draft' %}">
+                  <i class="fa fa-copy" aria-hidden="true"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">{% translate "No sent emails found." %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "pretixcontrol/pagination.html" %}
+{% else %}
+  <div class="empty-collection">
+    <p>{% translate "No sent emails yet." %}</p>
+  </div>
+{% endif %}
+{% endblock %}

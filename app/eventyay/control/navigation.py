@@ -708,6 +708,43 @@ def get_admin_navigation(request):
         ]
     )
 
+    # --- Admin Message Center ---
+    is_messages_route = 'admin.messages' in (url.url_name or '')
+    message_center_children = [
+        {
+            'label': _('Outbox'),
+            'url': reverse('eventyay_admin:admin.messages.outbox'),
+            'active': url.url_name == 'admin.messages.outbox',
+        },
+        {
+            'label': _('Compose'),
+            'url': reverse('eventyay_admin:admin.messages.compose'),
+            'active': url.url_name == 'admin.messages.compose',
+        },
+        {
+            'label': _('Drafts'),
+            'url': reverse('eventyay_admin:admin.messages.drafts'),
+            'active': url.url_name == 'admin.messages.drafts',
+        },
+        {
+            'label': _('Sent'),
+            'url': reverse('eventyay_admin:admin.messages.sent'),
+            'active': url.url_name == 'admin.messages.sent',
+        },
+        {
+            'label': _('Templates'),
+            'url': reverse('eventyay_admin:admin.messages.templates'),
+            'active': 'admin.messages.template' in (url.url_name or ''),
+        },
+    ]
+    nav.append({
+        'label': _('Message center'),
+        'url': reverse('eventyay_admin:admin.messages.outbox'),
+        'active': is_messages_route or any(c['active'] for c in message_center_children),
+        'icon': 'envelope',
+        'children': message_center_children,
+    })
+
     merge_in(
         nav,
         sorted(

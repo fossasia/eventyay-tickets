@@ -1,0 +1,46 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Message center — Templates" %}{% endblock %}
+
+{% block content %}
+<h1>{% translate "Email templates" %}</h1>
+<p class="text-muted">{% translate "Read-only list of platform email templates. Editing is not available yet." %}</p>
+
+{% if templates %}
+  <div class="table-responsive">
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>{% translate "Template" %}</th>
+          <th>{% translate "Category" %}</th>
+          <th>{% translate "Trigger" %}</th>
+          <th>{% translate "Recipient" %}</th>
+          <th class="text-right">{% translate "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for tpl in templates %}
+          <tr>
+            <td><strong>{{ tpl.name }}</strong></td>
+            <td>{{ tpl.category }}</td>
+            <td>{{ tpl.trigger }}</td>
+            <td>{{ tpl.recipient_type }}</td>
+            <td class="text-right">
+              {% if tpl.role %}
+                <a href="{% url 'eventyay_admin:admin.messages.template_detail' role=tpl.role %}" class="btn btn-sm btn-default" title="{% translate 'View' %}">
+                  <i class="fa fa-eye" aria-hidden="true"></i>
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="empty-collection">
+    <p>{% translate "No email templates found." %}</p>
+  </div>
+{% endif %}
+{% endblock %}

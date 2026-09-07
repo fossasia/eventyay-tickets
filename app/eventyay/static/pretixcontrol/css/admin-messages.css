@@ -1,0 +1,81 @@
+.composer-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.composer-filter-full {
+  grid-column: 1 / -1;
+}
+
+.composer-filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.composer-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.delivery-test-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.delivery-test-controls input {
+  flex: 1;
+}
+
+.placeholder-group {
+  margin-bottom: 1rem;
+}
+
+.placeholder-group dt {
+  font-weight: 600;
+}
+
+.placeholder-group dd {
+  margin-left: 1rem;
+  color: #666;
+}
+
+.mail-preview {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  background: #fafafa;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+#recipient-count {
+  font-size: 0.9em;
+}
+
+.optional-label {
+  font-size: 0.85em;
+}
+
+.send-immediately-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+#recipient-list-dialog {
+  max-width: 700px;
+  width: 90%;
+}
+
+#recipient-list-dialog .dialog-content {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.action-form-inline {
+  display: inline;
+}

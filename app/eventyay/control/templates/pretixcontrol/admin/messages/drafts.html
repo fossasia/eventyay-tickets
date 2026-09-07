@@ -1,0 +1,84 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n static %}
+
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'pretixcontrol/css/admin-messages.css' %}">
+{% endblock %}
+
+{% block title %}{% translate "Message center — Drafts" %}{% endblock %}
+
+{% block content %}
+<h1>{% translate "Drafts" %}</h1>
+<p class="text-muted">{% translate "Saved draft emails that have not been sent." %}</p>
+
+<div class="mb-3">
+  <a href="{% url 'eventyay_admin:admin.messages.compose' %}" class="btn btn-primary">
+    <i class="fa fa-plus" aria-hidden="true"></i>
+    {% translate "Compose new email" %}
+  </a>
+</div>
+
+{% if mails %}
+  <div class="table-responsive">
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>{% translate "Subject" %}</th>
+          <th>{% translate "Audience" %}</th>
+          <th>{% translate "Scheduled for" %}</th>
+          <th>{% translate "Last modified" %}</th>
+          <th class="text-right">{% translate "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mail in mails %}
+          <tr>
+            <td>
+              <strong>
+                <a href="{{ mail.get_edit_url }}">{{ mail.subject|default:"(Untitled draft)" }}</a>
+              </strong>
+            </td>
+            <td>{{ mail.get_recipient_group_display }}</td>
+            <td>
+              {% if mail.scheduled_at %}
+                {{ mail.scheduled_at|date:"SHORT_DATETIME_FORMAT" }}
+              {% else %}
+                <span class="text-muted">{% translate "Not scheduled" %}</span>
+              {% endif %}
+            </td>
+            <td>{{ mail.updated_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td class="text-right">
+              <a href="{{ mail.get_edit_url }}" class="btn btn-sm btn-info" title="{% translate 'Edit draft' %}">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </a>
+              <form method="post" action="{% url 'eventyay_admin:admin.messages.duplicate' pk=mail.pk %}" class="action-form-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-default" title="{% translate 'Duplicate draft' %}">
+                  <i class="fa fa-copy" aria-hidden="true"></i>
+                </button>
+              </form>
+              <form method="post" action="{% url 'eventyay_admin:admin.messages.delete' pk=mail.pk %}" class="action-form-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger" title="{% translate 'Delete draft' %}">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center text-muted py-4">{% translate "No drafts found." %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "pretixcontrol/pagination.html" %}
+{% else %}
+  <div class="empty-collection">
+    <p>{% translate "No drafts." %}</p>
+  </div>
+{% endif %}
+{% endblock %}

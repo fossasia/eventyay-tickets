@@ -1,0 +1,57 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n static %}
+
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'pretixcontrol/css/admin-messages.css' %}">
+{% endblock %}
+
+{% block title %}{% translate "Template detail" %} — {{ role_label }}{% endblock %}
+
+{% block content %}
+<h1>{{ role_label }}</h1>
+<p>
+  <a href="{% url 'eventyay_admin:admin.messages.templates' %}">
+    <i class="fa fa-arrow-left" aria-hidden="true"></i> {% translate "Back to templates" %}
+  </a>
+</p>
+
+<div class="card">
+  <div class="card-body">
+    <dl>
+      <dt>{% translate "Template name" %}</dt>
+      <dd>{{ role_label }}</dd>
+
+      <dt>{% translate "Role / System identifier" %}</dt>
+      <dd><code>{{ role }}</code></dd>
+
+      {% if mail_template %}
+        <dt>{% translate "Subject" %}</dt>
+        <dd>{{ mail_template.subject }}</dd>
+
+        <dt>{% translate "Body preview" %}</dt>
+        <dd>
+          <div class="mail-preview">
+            {{ mail_template.text|linebreaksbr }}
+          </div>
+        </dd>
+
+        {% if mail_template.reply_to %}
+          <dt>{% translate "Reply-To" %}</dt>
+          <dd>{{ mail_template.reply_to }}</dd>
+        {% endif %}
+
+        {% if mail_template.bcc %}
+          <dt>{% translate "BCC" %}</dt>
+          <dd>{{ mail_template.bcc }}</dd>
+        {% endif %}
+      {% else %}
+        <dt>{% translate "Template data" %}</dt>
+        <dd class="text-muted">
+          {% translate "This is a system template. Its content is defined in code and varies by event configuration." %}
+        </dd>
+      {% endif %}
+    </dl>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n static %}
+
+{% block custom_header %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'pretixcontrol/css/admin-messages.css' %}">
+{% endblock %}
+
+{% block title %}{% translate "Message center — Outbox" %}{% endblock %}
+
+{% block content %}
+<h1>
+  {% blocktranslate count count=pending_count %}
+    {{ count }} pending email
+  {% plural %}
+    {{ count }} pending emails
+  {% endblocktranslate %}
+</h1>
+<p class="text-muted">{% translate "Queued platform emails waiting to be sent." %}</p>
+
+<div class="mb-3">
+  <a href="{% url 'eventyay_admin:admin.messages.compose' %}" class="btn btn-primary">
+    <i class="fa fa-plus" aria-hidden="true"></i>
+    {% translate "Compose new email" %}
+  </a>
+</div>
+
+{% if mails %}
+  <div class="table-responsive">
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>{% translate "Subject" %}</th>
+          <th>{% translate "Audience" %}</th>
+          <th>{% translate "Recipients" %}</th>
+          <th>{% translate "Created by" %}</th>
+          <th>{% translate "Scheduled for" %}</th>
+          <th>{% translate "Created at" %}</th>
+          <th class="text-right">{% translate "Actions" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mail in mails %}
+          <tr>
+            <td>
+              <strong>
+                <a href="{{ mail.get_edit_url }}">{{ mail.subject|default:"—" }}</a>
+              </strong>
+            </td>
+            <td>{{ mail.get_recipient_group_display }}</td>
+            <td>{{ mail.recipient_count }}</td>
+            <td>{{ mail.user.email|default:"—" }}</td>
+            <td>
+              {% if mail.scheduled_at %}
+                {{ mail.scheduled_at|date:"SHORT_DATETIME_FORMAT" }}
+              {% else %}
+                <span class="text-muted">{% translate "Immediate" %}</span>
+              {% endif %}
+            </td>
+            <td>{{ mail.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+            <td class="text-right">
+              <form method="post" action="{% url 'eventyay_admin:admin.messages.send' pk=mail.pk %}" class="action-form-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-success" title="{% translate 'Send now' %}">
+                  <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
+              </form>
+              <a href="{{ mail.get_edit_url }}" class="btn btn-sm btn-info" title="{% translate 'Edit' %}">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </a>
+              <form method="post" action="{% url 'eventyay_admin:admin.messages.cancel' pk=mail.pk %}" class="action-form-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-warning" title="{% translate 'Cancel' %}">
+                  <i class="fa fa-ban" aria-hidden="true"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "pretixcontrol/pagination.html" %}
+{% else %}
+  <div class="empty-collection">
+    <p>{% translate "No queued emails." %}</p>
+  </div>
+{% endif %}
+{% endblock %}
