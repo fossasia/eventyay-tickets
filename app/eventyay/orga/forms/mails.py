@@ -371,6 +371,20 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         ),
     )
 
+    # Audience criteria the composer offers. With none of them set there is no
+    # audience at all, so an empty form must not be read as “every proposal”.
+    audience_fields = (
+        'state',
+        'submission_type',
+        'content_locale',
+        'track',
+        'tags',
+        'question',
+        'q',
+        'submissions',
+        'speakers',
+    )
+
     def __init__(self, **kwargs):
         kwargs.setdefault('show_all_filters', True)
         super().__init__(**kwargs)
@@ -415,6 +429,8 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):
+        if not any(self.cleaned_data.get(field) for field in self.audience_fields):
+            return []
         added_submissions = self.cleaned_data.get('submissions')
         added_speakers = self.cleaned_data.get('speakers')
         if (added_submissions or added_speakers) and all(

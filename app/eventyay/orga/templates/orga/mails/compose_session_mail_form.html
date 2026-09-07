@@ -64,7 +64,8 @@
 {% block audience_summary %}
   <span class="badge bg-info text-white ml-2" id="recipient-count" hidden
         data-label-one="{% translate 'recipient' %}"
-        data-label-other="{% translate 'recipients' %}"></span>
+        data-label-other="{% translate 'recipients' %}"
+        data-label-none="{% translate 'No recipients selected' %}"></span>
 {% endblock audience_summary %}
 
 {% block audience_actions %}
@@ -79,9 +80,10 @@
 {% endblock audience_actions %}
 
 {% block email_editor_actions_summary %}
-  <span id="recipient-summary"
+  <span id="recipient-summary" data-requires-audience
         data-label-one="{% translate 'recipient selected' %}"
-        data-label-other="{% translate 'recipients selected' %}"></span>
+        data-label-other="{% translate 'recipients selected' %}"
+        data-label-none="{% translate 'Select at least one recipient or audience filter before sending this email.' %}"></span>
 {% endblock email_editor_actions_summary %}
 
 {% block mail_extra %}

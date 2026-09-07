@@ -46,7 +46,18 @@ const fetchRecipients = async (url, form) => {
     return response.json()
 }
 
+// A composer opts into refusing an empty audience with data-requires-audience on
+// its summary, and names the empty state with data-label-none. Composers that
+// carry neither keep counting to zero and leave their send actions alone.
+const SEND_ACTIONS =
+    'button[name="action"][value="send"], button[name="action"][value="draft"], [data-send-option="now"], [data-send-option="schedule"], input[name="skip_queue"]'
+
 const renderCount = (el, count) => {
+    if (count < 1 && el.dataset.labelNone) {
+        el.textContent = el.dataset.labelNone
+        el.hidden = false
+        return
+    }
     const label = count === 1 ? el.dataset.labelOne : el.dataset.labelOther
     el.textContent = `${count} ${label}`
     // Audience badge stays quiet until there is an audience; footer summary always shows.
@@ -54,6 +65,18 @@ const renderCount = (el, count) => {
         el.hidden = count < 1
     } else {
         el.hidden = false
+    }
+}
+
+const setSendingEnabled = (form, enabled) => {
+    form.querySelectorAll(SEND_ACTIONS).forEach((control) => {
+        control.disabled = !enabled
+    })
+    // The caret of the split send button is a <summary>, which cannot be disabled.
+    const moreOptions = form.querySelector(".composer-send-group details.dropdown")
+    if (moreOptions) {
+        moreOptions.querySelector("summary").classList.toggle("disabled", !enabled)
+        if (!enabled) moreOptions.open = false
     }
 }
 
@@ -72,7 +95,15 @@ const clearFilters = (form) => {
         guard += 1
     }
     filters.querySelectorAll("select.enhanced").forEach((select) => {
-        select.selectedIndex = 0
+        // On a multiple select, selectedIndex = 0 selects the first option
+        // rather than clearing the field.
+        if (select.multiple) {
+            Array.from(select.options).forEach((option) => {
+                option.selected = false
+            })
+        } else {
+            select.selectedIndex = 0
+        }
         if (select.choices) {
             if (select.multiple) {
                 select.choices.removeActiveItems()
@@ -149,18 +180,26 @@ const initRecipientPreview = () => {
     }
 
     const summary = document.querySelector("#recipient-summary")
+    const requiresAudience = Boolean(summary && "requiresAudience" in summary.dataset)
+
+    const applyCount = (count) => {
+        renderCount(badge, count)
+        if (summary) renderCount(summary, count)
+        if (requiresAudience) setSendingEnabled(form, count > 0)
+    }
 
     const refreshCount = async () => {
         try {
             const data = await fetchRecipients(url, form)
-            renderCount(badge, data.count)
-            if (summary) renderCount(summary, data.count)
+            applyCount(data.count)
         } catch (error) {
             console.error("Could not refresh the recipient count", error)
             badge.hidden = true
             if (summary) {
                 summary.textContent = ""
             }
+            // The count is unknown, so let the server-side check decide instead.
+            if (requiresAudience) setSendingEnabled(form, true)
         }
     }
 
@@ -184,8 +223,7 @@ const initRecipientPreview = () => {
         body.textContent = body.dataset.loadingLabel
         try {
             const data = await fetchRecipients(url, form)
-            renderCount(badge, data.count)
-            if (summary) renderCount(summary, data.count)
+            applyCount(data.count)
             renderRecipients(body, data.recipients)
         } catch (error) {
             console.error("Could not load the recipient list", error)
