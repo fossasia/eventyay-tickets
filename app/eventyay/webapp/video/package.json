@@ -22,7 +22,7 @@
     "@tiptap/core": "^3.31.2",
     "@tiptap/extension-document": "^3.31.2",
     "@tiptap/extension-image": "^3.31.2",
-    "@tiptap/extension-paragraph": "^3.31.2",
+    "@tiptap/extension-paragraph": "^3.31.3",
     "@tiptap/extension-text": "^3.31.2",
     "@tiptap/extension-text-align": "^3.31.2",
     "@tiptap/extensions": "^3.31.2",
