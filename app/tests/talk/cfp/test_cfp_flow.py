@@ -1,4 +1,5 @@
 import pytest
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 from django import forms
 from django.http import HttpResponseNotAllowed
@@ -108,7 +109,12 @@ def test_form_flow_step_handles_none_file_content_type():
         }
     }
 
-    assert step.get_form_initial() == {}
+    assert step.get_form_initial() == {
+        'image': SimpleNamespace(
+            name='test.png',
+            url='/media/cfp_uploads/test.png'
+        )
+    }
 
 
 def test_cfp_form_mixin_scrubs_incomplete_errors_in_not_strict_mode():
