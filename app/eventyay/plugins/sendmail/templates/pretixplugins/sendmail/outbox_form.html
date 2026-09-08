@@ -159,19 +159,7 @@
 
             </fieldset>
 
-            {% if request.method == "POST" %}
-                <fieldset>
-                    <legend>{% translate "E-mail preview" %}</legend>
-                        <div class="tab-pane mail-preview-group">
-                            {% for locale, out in output.items %}
-                                <div lang="{{ locale }}" class="mail-preview">
-                                    <strong>{{ out.subject|safe }}</strong><br><br>
-                                    {{ out.html|safe }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                </fieldset>
-            {% endif %}
+
 
             <!-- Button container -->
             <div class="form-group submit-group row" style="margin-bottom: 15px;">
@@ -182,7 +170,7 @@
                 </div>
                 <div class="col-xs-6 text-right">
                     <!-- Preview Button -->
-                    <button type="submit" class="btn btn-default btn-save" name="action" value="preview">
+                    <button type="submit" class="btn btn-default" name="action" value="preview" formnovalidate data-no-loading>
                         {% translate "Preview email" %}
                     </button>
 
@@ -201,7 +189,14 @@
                     {% endif %}
                 </div>
             </div>
+            
+            <div id="ajax-preview-container">
+            {% if output %}
+                {% include "pretixplugins/sendmail/_mail_preview.html" with preview_warning=preview_warning %}
+            {% endif %}
+            </div>
         </form>
 
     {% endif %}
+    <script src="{% static 'common/js/mail-preview.js' %}" defer></script>
 {% endblock %}
