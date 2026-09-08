@@ -705,16 +705,18 @@ body:has(.td-dashboard) #page-content {
 }
 
 .td-status-card.td-status-card-live {
-  border-color: var(--td-border);
-  background: linear-gradient(180deg, #f0fdf4 0%, #fff 48%);
-  box-shadow: inset 4px 0 0 var(--td-green), var(--td-card-shadow, var(--td-shadow));
+  background: linear-gradient(135deg, var(--td-green-soft) 0%, #fff 100%);
+  border: 1px solid var(--td-border);
+  border-left: 4px solid var(--td-green);
+  box-shadow: var(--td-card-shadow, var(--td-shadow));
 }
 
 .td-status-card.td-status-card-off,
 .td-status-card.td-status-card-danger {
-  border-color: var(--td-border);
-  background: linear-gradient(180deg, #fff5f5 0%, #fff 48%);
-  box-shadow: inset 4px 0 0 var(--td-red), var(--td-card-shadow, var(--td-shadow));
+  background: linear-gradient(135deg, var(--td-red-soft) 0%, #fff 100%);
+  border: 1px solid var(--td-border);
+  border-left: 4px solid var(--td-red);
+  box-shadow: var(--td-card-shadow, var(--td-shadow));
 }
 
 .td-kpi-card:hover,
@@ -729,14 +731,18 @@ body:has(.td-dashboard) #page-content {
 
 .td-status-card.td-status-card-live:hover,
 .td-status-card.td-status-card-live:focus {
-  box-shadow: inset 4px 0 0 var(--td-green), var(--td-shadow-hover);
+  border-color: var(--td-border);
+  border-left-color: var(--td-green);
+  box-shadow: var(--td-shadow-hover);
 }
 
 .td-status-card.td-status-card-off:hover,
 .td-status-card.td-status-card-off:focus,
 .td-status-card.td-status-card-danger:hover,
 .td-status-card.td-status-card-danger:focus {
-  box-shadow: inset 4px 0 0 var(--td-red), var(--td-shadow-hover);
+  border-color: var(--td-border);
+  border-left-color: var(--td-red);
+  box-shadow: var(--td-shadow-hover);
 }
 
 .td-kpi-top {
