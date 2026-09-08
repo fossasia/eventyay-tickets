@@ -9,13 +9,9 @@ from .mixins import PretalxModel
 
 
 class Feedback(PretalxModel):
-    """The Feedback model allows for anonymous feedback by attendees to one or
-    all speakers of a.
+    """Attendee feedback for a session, aimed at one or all of its speakers.
 
-    :class:`~pretalx.submission.models.submission.Submission`.
-
-    :param speaker: If the ``speaker`` attribute is not set, the feedback is
-        assumed to be directed to all speakers.
+    :param speaker: If unset, the feedback is directed to all speakers of the session.
     """
 
     talk = models.ForeignKey(

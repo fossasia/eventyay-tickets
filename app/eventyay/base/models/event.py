@@ -126,7 +126,7 @@ def default_feature_flags():
         'session_popularity_show_on_schedule': True,
         'export_html_on_release': False,
         'use_tracks': True,
-        'use_feedback': True,
+        'use_feedback': False,
         'use_submission_comments': True,
         'present_multiple_times': False,
         'submission_public_review': True,
