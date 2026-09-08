@@ -4,7 +4,7 @@ from decimal import Decimal
 import pytest
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django_scopes import scopes_disabled
+from django_scopes import scope
 
 from eventyay.base.models import BillingInvoice, Order
 from eventyay.eventyay_common.tasks import collect_billing_invoice
@@ -26,7 +26,7 @@ def test_collect_billing_invoice_stores_reminder_schedule(event):
     last_month_date = _last_month_start()
     order_time = last_month_date + relativedelta(days=5)
 
-    with scopes_disabled():
+    with scope(organizer=event.organizer, event=event):
         Order.objects.create(
             event=event,
             code='BILL1',
