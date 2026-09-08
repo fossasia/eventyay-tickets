@@ -50,7 +50,11 @@
     </div>
   {% endif %}
   <div class="composer-filters">
-    {{ form.state.as_field_group }}
+    {# "Exclude pending" narrows the state filter, so it sits with it, as on the proposal list. #}
+    <div class="d-flex flex-column">
+      {{ form.state.as_field_group }}
+      {{ form.pending_state__isnull.as_field_group }}
+    </div>
     {{ form.submission_type.as_field_group }}
     {{ form.track.as_field_group }}
     {{ form.content_locale.as_field_group }}

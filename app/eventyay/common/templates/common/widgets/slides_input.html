@@ -42,12 +42,12 @@
       <span id='{{ widget.files_id }}_label' class='ml-2 text-muted slides-filename-label'>
         {% translate 'No file chosen' %}
       </span>
-      <div id='{{ widget.files_id }}_error' class='text-danger mt-1 slides-error-msg'>
+      <div id='{{ widget.files_id }}_error' class='text-danger mt-1 slides-error-msg' style='display: none;'>
         {% if widget.max_size %}
           {% blocktranslate with size=widget.max_size|filesize %}The upload limit is {{ size }}.{% endblocktranslate %}
         {% endif %}
       </div>
-      <div id='{{ widget.files_id }}_storage_warning' class='text-warning mt-1 slides-storage-warning'>
+      <div id='{{ widget.files_id }}_storage_warning' class='text-warning mt-1 slides-storage-warning' style='display: none;'>
         {% translate 'Note: This file is too large to be saved in the browser’s temporary storage. If the form has other errors, you will need to re-select it before submitting.' %}
       </div>
     </div>
