@@ -2,6 +2,7 @@
 {% load bootstrap3 %}
 {% load static %}
 {% load i18n %}
+{% load turnstile_tags %}
 {% block content %}
 	<form class="form-signin" action="" method="post">
         <h3>{% translate "Accept an invitation" %}</h3>
@@ -21,6 +22,8 @@
         <p class="help-block">{{ password_requirement }}</p>
         {% endif %}
         {% bootstrap_field form.password_repeat %}
+        {% turnstile_widget 'registration' %}
+        {% turnstile_script 'registration' %}
 		<div class="form-group buttons">
             <a href="{% url 'auth.login' %}" class="btn btn-link">
                 &laquo; {% translate "Login" %}

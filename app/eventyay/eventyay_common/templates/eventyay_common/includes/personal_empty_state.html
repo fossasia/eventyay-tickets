@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="personal-empty-state" role="status">
+  <div class="personal-empty-state__icon" aria-hidden="true">
+    <span class="fa fa-{{ icon|default:'info-circle' }}"></span>
+  </div>
+  <div class="personal-empty-state__body">
+    <h2>{{ title }}</h2>
+    <p>{{ description }}</p>
+  </div>
+  {% if primary_url and primary_label %}
+    <div class="personal-empty-state__actions">
+      <a class="btn btn-primary" href="{{ primary_url }}">{{ primary_label }}</a>
+      {% if secondary_url and secondary_label %}
+        <a class="btn btn-default" href="{{ secondary_url }}">{{ secondary_label }}</a>
+      {% endif %}
+      {% if tertiary_url and tertiary_label %}
+        <a class="btn btn-default" href="{{ tertiary_url }}">{{ tertiary_label }}</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

@@ -11,6 +11,22 @@
             src="{% static 'control/js/global-settings-pages.js' %}"
             data-business-redirect-url="{% url 'eventyay_admin:admin.global.business' %}"
             data-ticketing-redirect-url="{% url 'eventyay_admin:admin.global.ticketing' %}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#admin-test-turnstile-btn').on('click', function () {
+                var secret = $('#id_turnstile_secret_key').val();
+                var $form = $('#admin-test-turnstile-form');
+                $form.find('input[name="turnstile_secret_key"]').remove();
+                if (secret) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'turnstile_secret_key',
+                        value: secret
+                    }).appendTo($form);
+                }
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block inner %}
@@ -192,6 +208,39 @@
                                 {% endwith %}
                             {% endfor %}
                         </fieldset>
+                    {% elif group_key == 'security' %}
+                        <p class="help-block">
+                            {% translate "Configure anti-abuse and CAPTCHA protection across public and auth forms to protect against spam and automated attacks." %}
+                        </p>
+                        {% for field_name in field_names %}
+                            {% with form|getitem:field_name as field %}
+                                {% bootstrap_field field layout='control' %}
+                            {% endwith %}
+                        {% endfor %}
+                        <hr>
+                        <div class="form-group" data-display-dependency="#id_anti_abuse_provider_1">
+                            <label class="col-md-3 control-label">
+                                <strong>{% trans "Test connection" %}</strong>
+                            </label>
+                            <div class="col-md-9">
+                                <button type="submit"
+                                        class="btn btn-default"
+                                        id="admin-test-turnstile-btn"
+                                        form="admin-test-turnstile-form">
+                                    <i class="fa fa-shield"></i>
+                                    {% trans "Test connection" %}
+                                </button>
+                                <span class="help-block">
+                                    {% trans "Tests connectivity to Cloudflare Turnstile servers and verifies the secret key." %}
+                                </span>
+                                <div id="admin-test-turnstile-feedback"
+                                     class="{% if test_turnstile_feedback %}alert alert-{% if test_turnstile_feedback.level == 'success' %}success{% else %}danger{% endif %}{% else %}hidden{% endif %}"
+                                     role="status"
+                                     aria-live="polite">
+                                    {% if test_turnstile_feedback %}{{ test_turnstile_feedback.message }}{% endif %}
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
                         {% for field_name in field_names %}
                             {% with form|getitem:field_name as field %}
@@ -210,10 +259,15 @@
         </div>
     </form>
 
-    {# Test email form lives OUTSIDE the main settings form to prevent invalid HTML nesting.   #}
-    {# The input and button above reference this form via the HTML5 form= attribute.           #}
+    {# Test email and Turnstile forms live OUTSIDE the main settings form to prevent invalid HTML nesting. #}
+    {# The buttons above reference these forms via the HTML5 form= attribute.                             #}
     <form id="admin-test-email-form"
           action="{% url 'eventyay_admin:admin.global.settings.test_email' %}"
+          method="post">
+        {% csrf_token %}
+    </form>
+    <form id="admin-test-turnstile-form"
+          action="{% url 'eventyay_admin:admin.global.settings.test_turnstile' %}"
           method="post">
         {% csrf_token %}
     </form>
