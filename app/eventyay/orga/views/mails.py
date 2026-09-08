@@ -12,7 +12,7 @@ from django.utils.translation import ngettext_lazy, npgettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 
-import uuid
+
 from eventyay.base.models.mail import MailTemplate, QueuedMail, get_prefixed_subject
 from eventyay.base.signals import entitlement_usage_recorded
 
@@ -609,7 +609,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     unit='emails',
                     source_type='bulk_email',
                     source_id=str(result[0].pk) if hasattr(result[0], 'pk') else 'send_direct',
-                    idempotency_key=f"bulk_mail_compose_{getattr(result[0], 'pk', 'direct')}_{uuid.uuid4().hex[:8]}",
+                    idempotency_key=f"bulk_mail_compose_{getattr(result[0], 'pk', 'direct')}",
                     event=self.request.event,
                 )
         scheduled_at = form.cleaned_data.get('scheduled_at')

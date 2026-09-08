@@ -26,7 +26,13 @@ def check_full_admin_limit(team, email=None, user=None):
         organizer=team.organizer, can_change_organizer_settings=True
     ).exists():
         return EntitlementDecision(allowed=True)
-    if not user and email and TeamInvite.objects.filter(
+    if not user and email and User.objects.filter(
+        email__iexact=email,
+        teams__organizer=team.organizer,
+        teams__can_change_organizer_settings=True,
+    ).exists():
+        return EntitlementDecision(allowed=True)
+    if email and TeamInvite.objects.filter(
         team__organizer=team.organizer,
         team__can_change_organizer_settings=True,
         email__iexact=email,

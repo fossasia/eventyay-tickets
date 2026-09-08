@@ -14,13 +14,11 @@ from django.views.generic import ListView
 from django_scopes import scopes_disabled
 
 from eventyay.base.auth import get_auth_backends
-from eventyay.base.entitlements import check_entitlement
 from eventyay.base.models import Organizer, Team
 from eventyay.base.models.auth import User
 from eventyay.base.models.organizer import TeamAPIToken, TeamInvite
 from eventyay.base.services.mail import SendMailException, mail
 from eventyay.base.services.teams import check_full_admin_limit, send_team_invitation_email
-from eventyay.base.signals import register_payment_providers
 from eventyay.control.forms.filter import OrganizerFilterForm
 from eventyay.control.permissions import (
     OrganizerCreationPermissionMixin,

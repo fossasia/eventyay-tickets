@@ -13,7 +13,6 @@ from eventyay.api.serializers.i18n import I18nAwareModelSerializer
 from eventyay.api.serializers.order import CompatibleJSONField
 from eventyay.api.serializers.settings import SettingsSerializer
 from eventyay.base.auth import get_auth_backends
-from eventyay.base.entitlements import check_entitlement
 from eventyay.base.i18n import get_language_without_region
 from eventyay.base.models import (
     Device,

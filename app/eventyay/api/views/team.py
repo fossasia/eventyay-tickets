@@ -15,7 +15,6 @@ from rest_framework.response import Response
 from eventyay.api.documentation import build_expand_docs, build_search_docs
 from eventyay.api.mixins import PretalxViewSetMixin
 from eventyay.api.serializers.team import TeamInviteSerializer, TeamSerializer
-from eventyay.base.entitlements import check_entitlement
 from eventyay.base.services.teams import check_full_admin_limit
 from eventyay.base.models.organizer import (
     Organizer,
