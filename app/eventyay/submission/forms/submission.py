@@ -88,8 +88,12 @@ class InfoForm(
         self._set_slot_count(instance=instance)
         if 'slides' in self.fields:
             slides_resources = list(get_slide_resources(instance)) if instance and instance.pk else []
+            session_slides = initial.get('slides_files', [])
+            if session_slides:
+                slides_resources.extend(session_slides)
             self.initial['slides'] = slides_resources
             self.fields['slides'].existing_resources = slides_resources
+            self.fields['slides'].widget.existing_resources = slides_resources
             self.fields['slides'].set_max_items(get_slides_max_count(self.event))
 
         self.inject_questions_into_fields(
