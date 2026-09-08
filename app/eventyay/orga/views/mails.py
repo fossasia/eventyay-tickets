@@ -448,8 +448,12 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                 initial['text'] = template.text
                 initial['reply_to'] = template.reply_to
                 initial['bcc'] = template.bcc
-        for key in self.form_class.base_fields.keys():
-            if key in self.request.GET:
+        for key, field in self.form_class.base_fields.items():
+            if key not in self.request.GET:
+                continue
+            if getattr(field.widget, 'allow_multiple_selected', False):
+                initial[key] = self.request.GET.getlist(key)
+            else:
                 initial[key] = self.request.GET.get(key)
         kwargs['initial'] = initial
 
@@ -583,6 +587,11 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                         'html': preview_text,
                     }
             return self.get(self.request, *self.args, **self.kwargs)
+
+        if not form.get_recipients():
+            message = form.empty_audience_draft_error if is_draft else form.empty_audience_error
+            form.add_error(None, message)
+            return self.render_to_response(self.get_context_data(form=form))
 
         with transaction.atomic():
             result = form.save()
