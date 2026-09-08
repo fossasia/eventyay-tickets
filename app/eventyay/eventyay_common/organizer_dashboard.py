@@ -429,8 +429,6 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
                 }
             )
         integrations_attention = 0
-        if can_settings and not hubspot_url:
-            integrations_attention += 0  # plugin may simply be unavailable
         if device_count == 0 and can_settings:
             integrations_attention += 1
         if team_member_count <= 1 and can_teams:
