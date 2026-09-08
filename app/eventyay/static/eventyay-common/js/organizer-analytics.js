@@ -11,6 +11,7 @@ function parseData(el, attr) {
 }
 
 const PALETTE = ['#2185d0', '#21ba45', '#f2711c', '#db2828', '#a333c8', '#fbbd08', '#00b5ad']
+const CHART_ANIMATIONS_ENABLED = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function drawOrdersOverTime() {
     const dataEl = document.getElementById('orders-over-time-data')
@@ -33,7 +34,7 @@ function drawOrdersOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
         colors: [PALETTE[0], PALETTE[1]],
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
@@ -63,7 +64,7 @@ function drawOrdersByStatus() {
             type: 'donut',
             height: 220,
             redrawOnParentResize: true,
-            animations: { enabled: true },
+            animations: { enabled: CHART_ANIMATIONS_ENABLED },
         },
         colors: PALETTE,
         dataLabels: { enabled: false },
@@ -109,7 +110,7 @@ function drawRevenueOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
         colors: lineColors,
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
@@ -139,7 +140,7 @@ function drawProposalsByState() {
             type: 'donut',
             height: 220,
             redrawOnParentResize: true,
-            animations: { enabled: true },
+            animations: { enabled: CHART_ANIMATIONS_ENABLED },
         },
         colors: PALETTE,
         dataLabels: { enabled: false },
@@ -180,7 +181,7 @@ function drawProposalsOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true },
+            animations: { enabled: CHART_ANIMATIONS_ENABLED },
         },
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
         yaxis: { min: 0, labels: { formatter: (v) => Math.round(v) } },
@@ -219,7 +220,7 @@ function drawCheckinRate() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true },
+            animations: { enabled: CHART_ANIMATIONS_ENABLED },
         },
         plotOptions: {
             bar: {
@@ -289,7 +290,7 @@ function drawCheckinsOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
         colors: [PALETTE[3]],
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
@@ -327,7 +328,7 @@ function drawAttendanceOverTime() {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
         colors: [PALETTE[0], PALETTE[1]],
         xaxis: { type: 'datetime', tooltip: { enabled: false }, labels: { format: 'dd MMM' } },
@@ -377,7 +378,7 @@ function drawFollowerChart(dataElId, chartElId, paletteIndex, isWeekly) {
             height: 220,
             redrawOnParentResize: true,
             toolbar: { show: false },
-            animations: { enabled: true }
+            animations: { enabled: CHART_ANIMATIONS_ENABLED }
         },
         colors: [color],
         xaxis: {

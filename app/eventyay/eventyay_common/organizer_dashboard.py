@@ -121,16 +121,21 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
 
         paid_orders = 0
         gross_revenue = Decimal('0')
+        revenue_by_currency = []
         pending_approval_orders = 0
         if order_event_ids:
             paid_orders = Order.objects.filter(
                 event_id__in=order_event_ids, status=Order.STATUS_PAID
             ).count()
-            revenue_agg = OrderPayment.objects.filter(
-                order__event_id__in=order_event_ids,
-                state=OrderPayment.PAYMENT_STATE_CONFIRMED,
-            ).aggregate(total=Sum('amount'))
-            gross_revenue = revenue_agg['total'] or Decimal('0')
+            revenue_by_currency = list(
+                OrderPayment.objects.filter(
+                    order__event_id__in=order_event_ids,
+                    state=OrderPayment.PAYMENT_STATE_CONFIRMED,
+                )
+                .values('order__event__currency')
+                .annotate(total=Sum('amount'))
+                .order_by('-total')
+            )
             pending_approval_orders = Order.objects.filter(
                 event_id__in=order_event_ids,
                 status=Order.STATUS_PENDING,
@@ -169,32 +174,36 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         orders_by_event = {}
         revenue_by_event = {}
         sessions_by_event = {}
-        if portfolio_ids:
+        order_event_id_set = set(order_event_ids)
+        proposal_event_id_set = set(proposal_event_ids)
+        portfolio_order_ids = [pk for pk in portfolio_ids if pk in order_event_id_set]
+        portfolio_proposal_ids = [pk for pk in portfolio_ids if pk in proposal_event_id_set]
+        if portfolio_order_ids:
             for row in (
-                Order.objects.filter(event_id__in=portfolio_ids)
+                Order.objects.filter(event_id__in=portfolio_order_ids)
                 .values('event_id')
                 .annotate(total=Count('pk'))
             ):
                 orders_by_event[row['event_id']] = row['total']
             for row in (
                 OrderPayment.objects.filter(
-                    order__event_id__in=portfolio_ids,
+                    order__event_id__in=portfolio_order_ids,
                     state=OrderPayment.PAYMENT_STATE_CONFIRMED,
                 )
                 .values('order__event_id')
                 .annotate(total=Sum('amount'))
             ):
                 revenue_by_event[row['order__event_id']] = row['total'] or Decimal('0')
-            if proposal_event_ids:
-                for row in (
-                    Submission.objects.filter(
-                        event_id__in=portfolio_ids,
-                        state=SubmissionStates.CONFIRMED,
-                    )
-                    .values('event_id')
-                    .annotate(total=Count('pk'))
-                ):
-                    sessions_by_event[row['event_id']] = row['total']
+        if portfolio_proposal_ids:
+            for row in (
+                Submission.objects.filter(
+                    event_id__in=portfolio_proposal_ids,
+                    state=SubmissionStates.CONFIRMED,
+                )
+                .values('event_id')
+                .annotate(total=Count('pk'))
+            ):
+                sessions_by_event[row['event_id']] = row['total']
 
         team_member_count = (
             Team.objects.filter(organizer=organizer)
@@ -214,11 +223,20 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         )
 
     currency = full_events[0].currency if full_events else (getattr(organizer, 'default_currency', None) or 'USD')
-    # Prefer a currency from an event with revenue
-    for e in portfolio_candidates:
-        if revenue_by_event.get(e.pk):
-            currency = e.currency
-            break
+    gross_revenue_is_money = True
+    if revenue_by_currency:
+        # Never sum amounts across currencies; show the largest single-currency total.
+        top_revenue = revenue_by_currency[0]
+        currency = top_revenue['order__event__currency'] or currency
+        gross_revenue = top_revenue['total'] or Decimal('0')
+        if len(revenue_by_currency) > 1:
+            # Multiple currencies: render a plain multi-currency summary instead of a mixed total.
+            gross_revenue_is_money = False
+            gross_revenue = ' · '.join(
+                f"{row['order__event__currency']} {row['total'] or Decimal('0')}"
+                for row in revenue_by_currency
+                if row.get('order__event__currency')
+            )
 
     events_url = reverse('eventyay_common:organizer.events', kwargs={'organizer': slug})
     create_event_url = reverse('eventyay_common:events.add') + f'?organizer={slug}'
@@ -265,7 +283,7 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         {
             'label': _('Gross revenue'),
             'value': gross_revenue,
-            'value_is_money': True,
+            'value_is_money': gross_revenue_is_money,
             'currency': currency,
             'icon': 'money',
             'tone': 'green',
