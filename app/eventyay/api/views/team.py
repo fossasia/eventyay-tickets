@@ -16,6 +16,7 @@ from eventyay.api.documentation import build_expand_docs, build_search_docs
 from eventyay.api.mixins import PretalxViewSetMixin
 from eventyay.api.serializers.team import TeamInviteSerializer, TeamSerializer
 from eventyay.base.entitlements import check_entitlement
+from eventyay.base.services.teams import check_full_admin_limit
 from eventyay.base.models.organizer import (
     Organizer,
     Team,
@@ -116,7 +117,6 @@ class TeamViewSet(PretalxViewSetMixin, viewsets.ModelViewSet):
             )
 
         with transaction.atomic():
-            from eventyay.base.services.teams import check_full_admin_limit
             decision = check_full_admin_limit(team, email=email)
             if not decision.allowed:
                 raise exceptions.ValidationError(decision.message)

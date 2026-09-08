@@ -30,7 +30,7 @@ from eventyay.base.models import (
 from eventyay.base.models.seating import SeatingPlanLayoutValidator
 from eventyay.base.models.track import Track
 from eventyay.base.services.mail import SendMailException, mail
-from eventyay.base.services.teams import send_team_invitation_email
+from eventyay.base.services.teams import check_full_admin_limit, send_team_invitation_email
 from eventyay.base.settings import validate_organizer_settings
 from eventyay.helpers.urls import build_absolute_uri
 
@@ -292,7 +292,6 @@ class TeamInviteSerializer(serializers.ModelSerializer):
 
     def _check_full_admin_limit(self, email, user=None):
         """Enforce full-admin entitlement before adding a member or invite."""
-        from eventyay.base.services.teams import check_full_admin_limit
         decision = check_full_admin_limit(self.context['team'], email=email, user=user)
         if not decision.allowed:
             raise ValidationError(decision.message)
