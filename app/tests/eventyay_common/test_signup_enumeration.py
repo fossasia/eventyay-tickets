@@ -11,6 +11,8 @@ from django.urls import reverse
 User = get_user_model()
 
 SIGNUP_PASSWORD = 'Testpass1!'
+GENERIC_FLASH = 'We have sent a confirmation email. Check your inbox to continue.'
+VERIFY_PAGE_COPY = 'We have sent an email to you for verification.'
 
 
 def _signup_payload(email: str) -> dict[str, str]:
@@ -55,17 +57,31 @@ def test_signup_flash_does_not_echo_the_submitted_email(client):
     EmailAddress.objects.create(user=user, email=taken, primary=True, verified=True)
 
     unused_client = Client()
-    existing_flash = ' '.join(_flash_texts(_post_signup(client, taken)))
-    unused_flash = ' '.join(_flash_texts(_post_signup(unused_client, unused)))
+    existing = _post_signup(client, taken)
+    unused_resp = _post_signup(unused_client, unused)
+    existing_verify = client.get(existing['Location']).content.decode('utf-8')
+    unused_verify = unused_client.get(unused_resp['Location']).content.decode('utf-8')
+    existing_login = client.get(reverse('auth.login')).content.decode('utf-8')
+    unused_login = unused_client.get(reverse('auth.login')).content.decode('utf-8')
+    existing_flash = ' '.join(_flash_texts(existing))
+    unused_flash = ' '.join(_flash_texts(unused_resp))
 
     assert existing_flash
     assert unused_flash == existing_flash
-    for text in (existing_flash, unused_flash):
+    assert GENERIC_FLASH in existing_flash
+    assert VERIFY_PAGE_COPY in existing_verify
+    assert VERIFY_PAGE_COPY in unused_verify
+    assert GENERIC_FLASH in existing_login
+    assert GENERIC_FLASH in unused_login
+    for text in (
+        existing_flash,
+        unused_flash,
+        existing_verify,
+        unused_verify,
+        existing_login,
+        unused_login,
+    ):
         assert taken not in text
         assert unused not in text
-
-    for browser, email in ((client, taken), (unused_client, unused)):
-        body = browser.get(reverse('auth.login')).content.decode('utf-8')
-        assert email not in body
-        assert 'Confirmation e-mail sent to' not in body
-        assert 'Confirmation email sent to' not in body
+        assert 'Confirmation e-mail sent to' not in text
+        assert 'Confirmation email sent to' not in text
