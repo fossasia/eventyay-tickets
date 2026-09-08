@@ -1,5 +1,6 @@
 import logging
 from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -29,6 +30,7 @@ from eventyay.helpers.urls import build_absolute_uri as build_global_uri
 
 from ...control.forms.organizer_forms import OrganizerForm, OrganizerUpdateForm, TeamForm
 from ..video.traits_sync import sync_video_traits_for_team
+
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +77,7 @@ class OrganizerCreate(OrganizerCreationPermissionMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['request'] = self.request
         return kwargs
 
     @transaction.atomic

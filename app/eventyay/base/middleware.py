@@ -303,6 +303,7 @@ class SecurityMiddleware(MiddlewareMixin):
             'script-src': [
                 '{static}',
                 'https://static.cloudflareinsights.com',
+                'https://challenges.cloudflare.com',
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
                 *vite_http,
@@ -311,6 +312,7 @@ class SecurityMiddleware(MiddlewareMixin):
             'object-src': ["'none'"],
             'frame-src': [
                 '{static}',
+                'https://challenges.cloudflare.com',
                 'https://checkout.stripe.com',
                 'https://js.stripe.com',
                 'https://www.youtube.com',
@@ -325,6 +327,7 @@ class SecurityMiddleware(MiddlewareMixin):
             'connect-src': [
                 '{dynamic}',
                 '{media}',
+                'https://challenges.cloudflare.com',
                 'https://checkout.stripe.com',
                 'https://static.cloudflareinsights.com',
                 'https:',
