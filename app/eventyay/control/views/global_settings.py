@@ -21,7 +21,9 @@ from eventyay.api.models import OAuthApplication
 from eventyay.base.email import CustomSMTPBackend, SendGridEmail
 from eventyay.base.models import Event, GlobalPluginConfig, LogEntry, OrderPayment, OrderRefund
 from eventyay.base.plugins import get_all_plugins
+from eventyay.base.forms import SECRET_REDACTED
 from eventyay.base.services.mail import get_mail_backend
+from eventyay.base.services.turnstile import test_turnstile_connection
 from eventyay.base.services.update_check import check_result_table, update_check
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.common.sanitizers import sanitize_rich_text
@@ -80,6 +82,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         context['gmail_connect_url'] = reverse('eventyay_admin:admin.global.gmail.connect')
         context['gmail_disconnect_url'] = reverse('eventyay_admin:admin.global.gmail.disconnect')
         context['test_email_feedback'] = self.request.session.pop('admin_test_email_feedback', None)
+        context['test_turnstile_feedback'] = self.request.session.pop('admin_test_turnstile_feedback', None)
         context['gs'] = GlobalSettingsObject()
         context['gs'].settings.set('update_check_ack', True)
         context['tbl'] = check_result_table()
@@ -410,6 +413,42 @@ class GlobalSettingsTestEmailView(AdministratorPermissionRequiredMixin, View):
             request,
             'success',
             _('Test email sent to %(email)s — check inbox.') % {'email': recipients_str},
+        )
+
+
+class GlobalSettingsTestTurnstileView(AdministratorPermissionRequiredMixin, View):
+    """
+    Tests the Cloudflare Turnstile configuration (connectivity and secret key) with Cloudflare API.
+    """
+
+    SECURITY_TAB_HASH = '#tab-security'
+
+    def _respond(self, request, level, message):
+        """Redirect back to the security tab with inline feedback. Does not save settings."""
+        request.session['admin_test_turnstile_feedback'] = {
+            'level': level,
+            'message': str(message),
+        }
+        return redirect(reverse('eventyay_admin:admin.global.settings') + self.SECURITY_TAB_HASH)
+
+    def post(self, request, *args, **kwargs):
+        gs = GlobalSettingsObject()
+        secret = request.POST.get('turnstile_secret_key', '').strip()
+        if not secret or secret == SECRET_REDACTED:
+            secret = gs.settings.get('turnstile_secret_key', as_type=str, default='') or ''
+
+        if not secret:
+            return self._respond(
+                request,
+                'error',
+                _('Turnstile secret key is not configured. Please enter and save the secret key first.'),
+            )
+
+        success, message = test_turnstile_connection(secret_key=secret)
+        return self._respond(
+            request,
+            'success' if success else 'error',
+            message,
         )
 
 

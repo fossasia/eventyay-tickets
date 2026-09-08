@@ -34,6 +34,7 @@ class PluginType(Enum):
 BETA_PLUGINS: frozenset[str] = frozenset(
     [
         'exhibition',
+        'hubspot',
         'interpretation',
         'socialmedia',
         'teamshifts',
