@@ -2,12 +2,15 @@
 {% load bootstrap3 %}
 {% load static %}
 {% load i18n %}
+{% load turnstile_tags %}
 {% block content %}
 	<form class="form-signin" action="" method="post">
         <h3>{% translate "Password recovery" %}</h3>
         {% csrf_token %}
         {% bootstrap_form_errors form type='all' layout='inline' %}
         {% bootstrap_field form.email %}
+        {% turnstile_widget 'password_reset' %}
+        {% turnstile_script 'password_reset' %}
 		<div class="form-group buttons">
 
             <button type="submit" class="btn btn-primary">
