@@ -11,18 +11,19 @@ Plugins
 The following plugins are declared as Git dependencies in
 ``app/pyproject.toml``:
 
-=========================  ==========================================  =========
-Plugin package             Repository                                  Branch
-=========================  ==========================================  =========
-``eventyay-paypal``        ``fossasia/eventyay-paypal``                 ``main``
-``eventyay-stripe``        ``fossasia/eventyay-stripe``                 ``main``
-``eventyay-bitpay``        ``fossasia/eventyay-bitpay``                 ``main``
-``eventyay-socialmedia``   ``fossasia/eventyay-socialmedia``            ``dev``
-``exhibition``             ``fossasia/eventyay-exhibition``             ``dev``
-``eventyay-teamshifts``    ``fossasia/eventyay-teamshifts``             ``dev``
-``eventyay-interpretation`` ``fossasia/eventyay-interpretation``        ``dev``
-``eventyay-hubspot``       ``fossasia/eventyay-hubspot``                ``dev``
-=========================  ==========================================  =========
+===========================  ======================================  ========
+Plugin package               Repository                              Branch
+===========================  ======================================  ========
+``eventyay-paypal``          ``fossasia/eventyay-paypal``            ``main``
+``eventyay-stripe``          ``fossasia/eventyay-stripe``            ``main``
+``eventyay-bitpay``          ``fossasia/eventyay-bitpay``            ``main``
+``eventyay-socialmedia``     ``fossasia/eventyay-socialmedia``       ``main``
+``exhibition``               ``fossasia/eventyay-exhibition``        ``main``
+``eventyay-teamshifts``      ``fossasia/eventyay-teamshifts``        ``main``
+``eventyay-interpretation``  ``fossasia/eventyay-interpretation``    ``main``
+``eventyay-hubspot``         ``fossasia/eventyay-hubspot``           ``main``
+``eventyay-business``        ``fossasia/eventyay-business``          ``main``
+===========================  ======================================  ========
 
 Build Modes
 -----------
