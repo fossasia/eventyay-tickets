@@ -3,7 +3,7 @@
 <section class="od-section" aria-labelledby="od-tools-title">
   <div class="od-section-heading">
     <h2 id="od-tools-title" class="od-section-title">
-      <span class="fa fa-wrench" aria-hidden="true"></span>
+      <span class="fa fa-wrench od-title-icon--blue" aria-hidden="true"></span>
       {% trans "Organizer tools" %}
     </h2>
   </div>
@@ -12,7 +12,7 @@
       <article class="od-tool-card">
         <div class="od-tool-head">
           <h3>
-            <span class="fa fa-{{ tool.icon }}" aria-hidden="true"></span>
+            <span class="fa fa-{{ tool.icon }} od-icon-{{ tool.icon_tone }}" aria-hidden="true"></span>
             {{ tool.title }}
           </h3>
           <span class="od-badge od-badge-{{ tool.badge_tone }}">{{ tool.badge }}</span>

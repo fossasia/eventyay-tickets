@@ -457,6 +457,7 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
             'title': _('HubSpot'),
             'description': _('Sync contacts and CRM data with your events.'),
             'icon': 'exchange',
+            'icon_tone': 'blue',
             'badge': _('Connected') if hubspot_url else _('Not connected'),
             'badge_tone': 'success' if hubspot_url else 'muted',
             'url': hubspot_url or settings_url,
@@ -467,6 +468,7 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
             'title': _('Social Media'),
             'description': _('Connect accounts used for event promotion.'),
             'icon': 'share-alt',
+            'icon_tone': 'green',
             'badge': _('Connected') if social_url else _('Not connected'),
             'badge_tone': 'success' if social_url else 'muted',
             'url': social_url or settings_url,
@@ -477,6 +479,7 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
             'title': _('Devices'),
             'description': _('Register check-in devices for your events.'),
             'icon': 'tablet',
+            'icon_tone': 'orange',
             'badge': (
                 ngettext('%(count)d registered', '%(count)d registered', device_count) % {'count': device_count}
                 if device_count
@@ -491,6 +494,7 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
             'title': _('Teams'),
             'description': _('Manage who can access this organizer account.'),
             'icon': 'users',
+            'icon_tone': 'purple',
             'badge': (
                 ngettext('%(count)d member', '%(count)d members', team_member_count) % {'count': team_member_count}
                 if team_member_count
