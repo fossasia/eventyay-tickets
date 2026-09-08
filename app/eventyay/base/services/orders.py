@@ -82,6 +82,7 @@ from eventyay.base.services.tasks import ProfiledEventTask, ProfiledTask
 from eventyay.base.settings import GlobalSettingsObject
 from eventyay.base.signals import (
     allow_ticket_download,
+    entitlement_usage_recorded,
     order_approved,
     order_canceled,
     order_changed,
@@ -1074,6 +1075,21 @@ def _create_order(
                 order.log_action('eventyay.event.order.consent', data={'msg': msg})
 
     order_placed.send(event, order=order)
+
+    # Track usage for free registrations
+    free_registrations_count = sum(1 for pos in positions if getattr(pos, 'price', 0) == 0 and not pos.product.issue_giftcard and pos.product.admission)
+    if free_registrations_count > 0:
+        entitlement_usage_recorded.send(
+            sender=event.organizer,
+            capability='registration.free_allowance_per_event',
+            quantity=free_registrations_count,
+            unit='registrations',
+            source_type='order',
+            source_id=order.code,
+            idempotency_key=f"order_{order.code}_free_registrations",
+            event=event,
+        )
+
     return order, p
 
 
