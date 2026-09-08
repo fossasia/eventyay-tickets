@@ -71,7 +71,9 @@ class OrganizerCreate(OrganizerCreationPermissionMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         # Check if user has permission to create organizers
         if not self._can_create_organizer(request.user):
-            raise PermissionDenied(_('You do not have permission to create organizers. Please contact an administrator.'))
+            raise PermissionDenied(
+                _('You do not have permission to create organizers. Please contact an administrator.')
+            )
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
@@ -121,6 +123,7 @@ class OrganizerCreate(OrganizerCreationPermissionMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse('eventyay_common:organizers')
+
 
 class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
     model = Organizer
@@ -569,20 +572,22 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
         )
         sync_video_traits_for_team(team, members=[user])
 
-        transaction.on_commit(lambda: send_team_invitation_email(
-            user=user,
-            organizer_name=self.request.organizer.name,
-            team_name=team.name,
-            url=build_global_uri(
-                'eventyay_common:organizer.team',
-                kwargs={
-                    'organizer': self.request.organizer.slug,
-                    'team': team.pk,
-                },
-            ),
-            locale=self.request.LANGUAGE_CODE,
-            is_registered_user=True,
-        ))
+        transaction.on_commit(
+            lambda: send_team_invitation_email(
+                user=user,
+                organizer_name=self.request.organizer.name,
+                team_name=team.name,
+                url=build_global_uri(
+                    'eventyay_common:organizer.team',
+                    kwargs={
+                        'organizer': self.request.organizer.slug,
+                        'team': team.pk,
+                    },
+                ),
+                locale=self.request.LANGUAGE_CODE,
+                is_registered_user=True,
+            )
+        )
 
         messages.success(self.request, _('The new member has been added to the team.'))
         return self._redirect_to_team_members_panel(team.pk)
@@ -720,11 +725,11 @@ class OrganizerTeamsView(UpdateView, OrganizerPermissionRequiredMixin):
 
     def _collect_team_change_data(self, team: Team, form: TeamForm):
         """Collect only changed field data for audit logging.
-        
+
         Args:
             team: The Team model instance
             form: The TeamForm with changed_data populated
-            
+
         Returns:
             dict: Dictionary of changed field names to their new values
         """

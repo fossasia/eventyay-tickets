@@ -40,8 +40,7 @@ logger = logging.getLogger(__name__)
 class OrganizerSerializer(I18nAwareModelSerializer):
     follower_count = serializers.SerializerMethodField(
         help_text=(
-            'Number of users following this organizer, or null when follower counts '
-            'are hidden by the organizer.'
+            'Number of users following this organizer, or null when follower counts are hidden by the organizer.'
         ),
     )
     is_following = serializers.SerializerMethodField(
@@ -332,20 +331,22 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                     **self.context['log_kwargs'],
                 )
 
-                transaction.on_commit(lambda: send_team_invitation_email(
-                    user=user,
-                    organizer_name=self.context['organizer'].name,
-                    team_name=self.context['team'].name,
-                    url=build_absolute_uri(
-                        'eventyay_common:organizer.team',
-                        kwargs={
-                            'organizer': self.context['organizer'].slug,
-                            'team': self.context['team'].pk,
-                        },
-                    ),
-                    locale=get_language_without_region(),
-                    is_registered_user=True,
-                ))
+                transaction.on_commit(
+                    lambda: send_team_invitation_email(
+                        user=user,
+                        organizer_name=self.context['organizer'].name,
+                        team_name=self.context['team'].name,
+                        url=build_absolute_uri(
+                            'eventyay_common:organizer.team',
+                            kwargs={
+                                'organizer': self.context['organizer'].slug,
+                                'team': self.context['team'].pk,
+                            },
+                        ),
+                        locale=get_language_without_region(),
+                        is_registered_user=True,
+                    )
+                )
 
                 return TeamInvite(email=user.email)
         else:

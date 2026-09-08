@@ -9,6 +9,7 @@ from eventyay.base.models.auth import User
 from eventyay.base.models.organizer import TeamInvite
 from eventyay.base.services.mail import SendMailException, mail
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -22,21 +23,26 @@ def check_full_admin_limit(team, email=None, user=None):
         return EntitlementDecision(allowed=True)
 
     # Skip if the user/email already has full-admin access
-    if user and user.teams.filter(
-        organizer=team.organizer, can_change_organizer_settings=True
-    ).exists():
+    if user and user.teams.filter(organizer=team.organizer, can_change_organizer_settings=True).exists():
         return EntitlementDecision(allowed=True)
-    if not user and email and User.objects.filter(
-        email__iexact=email,
-        teams__organizer=team.organizer,
-        teams__can_change_organizer_settings=True,
-    ).exists():
+    if (
+        not user
+        and email
+        and User.objects.filter(
+            email__iexact=email,
+            teams__organizer=team.organizer,
+            teams__can_change_organizer_settings=True,
+        ).exists()
+    ):
         return EntitlementDecision(allowed=True)
-    if email and TeamInvite.objects.filter(
-        team__organizer=team.organizer,
-        team__can_change_organizer_settings=True,
-        email__iexact=email,
-    ).exists():
+    if (
+        email
+        and TeamInvite.objects.filter(
+            team__organizer=team.organizer,
+            team__can_change_organizer_settings=True,
+            email__iexact=email,
+        ).exists()
+    ):
         return EntitlementDecision(allowed=True)
 
     # Lock the organizer row to serialize concurrent checks
@@ -46,21 +52,25 @@ def check_full_admin_limit(team, email=None, user=None):
         User.objects.filter(
             teams__organizer=team.organizer,
             teams__can_change_organizer_settings=True,
-        ).annotate(
-            email_lower=Lower('email')
-        ).values_list('email_lower', flat=True)
+        )
+        .annotate(email_lower=Lower('email'))
+        .values_list('email_lower', flat=True)
     )
     current_users = len(admin_member_emails)
 
     # Exclude invites whose email already belongs to an existing admin member
-    current_invites = TeamInvite.objects.filter(
-        team__organizer=team.organizer,
-        team__can_change_organizer_settings=True,
-    ).annotate(
-        email_lower=Lower('email')
-    ).exclude(
-        email_lower__in=admin_member_emails,
-    ).distinct().count()
+    current_invites = (
+        TeamInvite.objects.filter(
+            team__organizer=team.organizer,
+            team__can_change_organizer_settings=True,
+        )
+        .annotate(email_lower=Lower('email'))
+        .exclude(
+            email_lower__in=admin_member_emails,
+        )
+        .distinct()
+        .count()
+    )
 
     decision = check_entitlement(
         team.organizer,
