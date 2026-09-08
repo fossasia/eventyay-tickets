@@ -153,11 +153,11 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         emails_queued = 0
         if proposal_event_ids:
             mail_agg = QueuedMail.objects.filter(event_id__in=proposal_event_ids).aggregate(
-                sent=Count('pk', filter=Q(sent__isnull=False)),
-                queued=Count('pk', filter=Q(sent__isnull=True)),
+                sent_count=Count('pk', filter=Q(sent__isnull=False)),
+                queued_count=Count('pk', filter=Q(sent__isnull=True)),
             )
-            emails_sent = mail_agg['sent'] or 0
-            emails_queued = mail_agg['queued'] or 0
+            emails_sent = mail_agg['sent_count'] or 0
+            emails_queued = mail_agg['queued_count'] or 0
 
         # Per-event portfolio stats for first N events (prioritize live, upcoming, recent)
         portfolio_candidates = sorted(
