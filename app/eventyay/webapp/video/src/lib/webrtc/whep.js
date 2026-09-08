@@ -48,21 +48,36 @@ export class WhepClient {
 					resolve();
 					return;
 				}
-				const handler = () => {
-					if (this.peerConnection.iceGatheringState === 'complete') {
-						this.peerConnection.removeEventListener('icegatheringstatechange', handler);
-						this.abortController.signal.removeEventListener('abort', abortHandler);
-						resolve();
-					}
-				};
-				const abortHandler = () => {
+				
+				let timeoutId;
+				
+				const cleanup = () => {
 					if (this.peerConnection) {
 						this.peerConnection.removeEventListener('icegatheringstatechange', handler);
 					}
+					this.abortController.signal.removeEventListener('abort', abortHandler);
+					clearTimeout(timeoutId);
+				};
+				
+				const handler = () => {
+					if (this.peerConnection.iceGatheringState === 'complete') {
+						cleanup();
+						resolve();
+					}
+				};
+				
+				const abortHandler = () => {
+					cleanup();
 					reject(abortError);
 				};
+				
 				this.peerConnection.addEventListener('icegatheringstatechange', handler);
 				this.abortController.signal.addEventListener('abort', abortHandler, { once: true });
+				
+				timeoutId = setTimeout(() => {
+					cleanup();
+					resolve();
+				}, 500);
 			});
 
 			const response = await fetch(this.url, {
@@ -83,6 +98,8 @@ export class WhepClient {
 			const hostname = window.location.hostname;
 			const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) && hostname.split('.').every((octet) => Number(octet) <= 255);
 			const answerSdp = isIPv4 ? originalAnswerSdp.replace(/c=IN IP4 [0-9.]+/g, 'c=IN IP4 ' + hostname) : originalAnswerSdp;
+
+			if (this.abortController.signal.aborted || !this.peerConnection) return;
 
 			await this.peerConnection.setRemoteDescription({
 				type: 'answer',

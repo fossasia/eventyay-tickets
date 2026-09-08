@@ -7,7 +7,6 @@
 		upcoming-stream-countdown(:room="room")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="hasLivestream")
-			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 			.cc-controls(v-if="showPluginLanguageDropdown", style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0;")
 				.dropdown-wrapper(style="display: flex; align-items: center; gap: 4px;")
 					i.mdi.mdi-account-voice(style="font-size: 20px; color: var(--clr-secondary-text-light);")
@@ -17,6 +16,7 @@
 				.dropdown-wrapper(v-if="ccEnabled", style="display: flex; align-items: center; gap: 4px;")
 					i.mdi.mdi-translate(style="font-size: 20px; color: var(--clr-secondary-text-light);")
 					AudioTranslationDropdown(:key="`${room.id}-cc`", :languages="pluginLanguages", :selected-language="selectedCcLanguage", :label="$t('Caption Language')", @languageChanged="handleCcLanguageChange")
+			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 	media-source-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom'] || modules['call.jitsi']")
 	roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 	landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
@@ -106,7 +106,7 @@ export default {
 			if (!this.ccEnabled) return null
 			const lang = this.pluginLanguages.find(l => l.language === this.selectedCcLanguage)
 			if (lang && lang.caption_ws_url && this.listenerToken) {
-				return `${lang.caption_ws_url}?token=${this.listenerToken}`
+				return `${lang.caption_ws_url}${lang.caption_ws_url.includes('?') ? '&' : '?'}token=${this.listenerToken}`
 			}
 			return null
 		},
