@@ -615,12 +615,6 @@
   border-color: color-mix(in srgb, var(--cd-warning) 35%, white);
 }
 
-.cd-badge--neutral {
-  color: #3f4854;
-  background: #eef1f4;
-  border-color: #d5dae1;
-}
-
 .cd-event-card__footer {
   margin-top: auto;
   padding: 1.1rem 1.5rem 1.5rem;

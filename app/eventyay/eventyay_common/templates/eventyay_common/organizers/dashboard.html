@@ -2,422 +2,67 @@
 {% load i18n %}
 {% load static %}
 {% load compress %}
-{% load money %}
 
 {% block title %}{{ request.organizer.name }} — {% trans "Organizer Dashboard" %}{% endblock %}
 
 {% block custom_header %}
-    <link rel="stylesheet" type="text/css" href="{% static 'vendored/apexcharts/apexcharts.css' %}" />
-    {% compress js %}
-        <script defer src="{% static 'vendored/apexcharts/apexcharts.min.js' %}"></script>
-        <script defer src="{% static 'eventyay-common/js/organizer-analytics.js' %}"></script>
-    {% endcompress %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vendored/apexcharts/apexcharts.css' %}" />
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'eventyay-common/css/organizer-dashboard.css' %}" />
+  {% endcompress %}
+  {% compress js %}
+    <script defer src="{% static 'vendored/apexcharts/apexcharts.min.js' %}"></script>
+    <script defer src="{% static 'eventyay-common/js/organizer-analytics.js' %}"></script>
+  {% endcompress %}
 {% endblock %}
 
 {% block inner %}
-  <div class="page-header-with-actions">
-    <a href="?refresh=true" class="btn btn-default btn-sm pull-right">
-      <span class="fa fa-refresh"></span> {% trans "Refresh Analytics" %}
-    </a>
-    <h1>
-      {% blocktrans with name=request.organizer.name %}{{ name }} Organizer Dashboard{% endblocktrans %}
-    </h1>
-  </div>
-  <p>
-    {% blocktrans with name=request.organizer.name %}Welcome to the dashboard for {{ name }}.{% endblocktrans %}
-  </p>
-  <div class="row">
-    <div class="col-md-4 col-sm-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">
-            <i class="fa fa-calendar"></i>
-            {% trans "Events" %}
-          </h3>
-        </div>
-        <div class="panel-body">
-          <p>{% trans "View and manage all events for this organizer." %}</p>
-          <a href="{% url 'eventyay_common:organizer.events' organizer=request.organizer.slug %}" class="btn btn-default">
-            {% trans "View events" %}
+  <div class="od-dashboard">
+    <header class="od-header">
+      <div>
+        <h1 class="od-header-title">
+          {% blocktrans with name=request.organizer.name %}{{ name }} Organizer Dashboard{% endblocktrans %}
+        </h1>
+        <p class="od-header-subtitle">{{ dashboard_subtitle }}</p>
+      </div>
+      <div class="od-header-actions">
+        <a class="od-btn" href="{{ public_profile_url }}" target="_blank" rel="noopener noreferrer">
+          <span class="fa fa-eye" aria-hidden="true"></span>
+          {% trans "View public profile" %}
+        </a>
+        {% if can_create_event %}
+          <a class="od-btn od-btn-primary" href="{{ create_event_url }}">
+            <span class="fa fa-plus" aria-hidden="true"></span>
+            {% trans "Create event" %}
           </a>
-        </div>
+        {% endif %}
+        {% if can_change_organizer_settings %}
+          <a class="od-btn" href="{{ organizer_settings_url }}">
+            <span class="fa fa-cog" aria-hidden="true"></span>
+            {% trans "Organizer settings" %}
+          </a>
+        {% endif %}
+        <a class="od-btn" href="?refresh=true" title="{% trans 'Refresh analytics' %}">
+          <span class="fa fa-refresh" aria-hidden="true"></span>
+          <span class="sr-only">{% trans "Refresh analytics" %}</span>
+        </a>
       </div>
-    </div>
-    {% if "can_create_events" in request.orgapermset %}
-      <div class="col-md-4 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">
-              <i class="fa fa-plus"></i>
-              {% trans "Create Event" %}
-            </h3>
-          </div>
-          <div class="panel-body">
-            <p>{% trans "Set up a new event under this organizer." %}</p>
-            <a href="{% url 'eventyay_common:events.add' %}?organizer={{ request.organizer.slug }}" class="btn btn-primary">
-              {% trans "Create Event" %}
-            </a>
-          </div>
-        </div>
-      </div>
-      {% if event_series_creation_enabled %}
-      <div class="col-md-4 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">
-              {% include "eventyay_common/includes/icon_calendar_series.html" %}
-              {% trans "Create Event Series" %}
-            </h3>
-          </div>
-          <div class="panel-body">
-            <p>{% trans "Set up a new event series under this organizer." %}</p>
-            <a href="{% url 'eventyay_common:events.add' %}?organizer={{ request.organizer.slug }}&amp;series=1" class="btn btn-default">
-              {% trans "Create Event Series" %}
-            </a>
-          </div>
-        </div>
-      </div>
-      {% endif %}
-      {% if meetup_creation_enabled %}
-      <div class="col-md-4 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">
-              <span class="fa fa-users"></span>
-              {% trans "Create Meetup" %}
-            </h3>
-          </div>
-          <div class="panel-body">
-            <p>{% trans "Set up a new meetup event under this organizer." %}</p>
-            <a href="{% url 'eventyay_common:events.add' %}?organizer={{ request.organizer.slug }}&amp;meetup=1" class="btn btn-default">
-              {% trans "Create Meetup" %}
-            </a>
-          </div>
-        </div>
-      </div>
-      {% endif %}
+    </header>
+
+    {% if is_onboarding %}
+      {% include "eventyay_common/organizers/includes/getting_started.html" %}
+    {% else %}
+      {% include "eventyay_common/organizers/includes/action_required.html" %}
     {% endif %}
-    {% if "can_change_organizer_settings" in request.orgapermset %}
-      <div class="col-md-4 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">
-              <i class="fa fa-wrench"></i>
-              {% trans "Settings" %}
-            </h3>
-          </div>
-          <div class="panel-body">
-            <p>{% trans "Configure organizer settings and preferences." %}</p>
-            <a href="{% url 'eventyay_common:organizer.edit' organizer=request.organizer.slug %}" class="btn btn-default">
-              {% trans "Organizer settings" %}
-            </a>
-          </div>
-        </div>
-      </div>
-    {% endif %}
+
+    {% include "eventyay_common/organizers/includes/kpi_cards.html" %}
+    {% include "eventyay_common/organizers/includes/event_portfolio.html" %}
+    {% include "eventyay_common/organizers/includes/analytics.html" %}
+    {% include "eventyay_common/organizers/includes/organizer_tools.html" %}
+    {% include "eventyay_common/organizers/includes/recent_activity.html" %}
+
+    <p class="od-footer-note">
+      {% trans "Times displayed in your account timezone" %} · {% trans "powered by eventyay" %}
+    </p>
   </div>
-
-  {% if has_any_analytics %}
-    <div class="analytics-page">
-      {% if has_orders %}
-        <div class="analytics-section">
-          <h2>{% trans "Ticket Sales & Revenue" %}</h2>
-          <div class="row">
-            <div class="col-md-8">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Orders over time (last 30 days)" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div
-                    id="orders-over-time-data"
-                    class="d-none"
-                    data-series="{{ orders_over_time_json }}"
-                    data-label-ordered="{% trans 'Placed' %}"
-                    data-label-paid="{% trans 'Paid' %}"
-                  ></div>
-                  <div id="orders-over-time-chart"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Orders by status" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div id="orders-by-status-data" class="d-none" data-series="{{ orders_by_status_json }}"></div>
-                  <div id="orders-by-status-chart"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Revenue over time (last 30 days)" %}</h3>
-                </div>
-                <div class="panel-body">
-                  <div
-                    id="revenue-over-time-data"
-                    class="d-none"
-                    data-series="{{ revenue_over_time_json }}"
-                    data-currencies="{{ currencies_json }}"
-                    data-label="{% trans 'Cumulative revenue' %}"
-                  ></div>
-                  <div id="revenue-over-time-chart"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {% if top_events %}
-          <div class="row">
-            <div class="col-md-12">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Top events by ticket sales" %}</h3>
-                </div>
-                <div class="panel-body">
-                  <table class="table table-condensed table-hover">
-                    <thead>
-                      <tr>
-                        <th>{% trans "Event" %}</th>
-                        <th class="text-right">{% trans "Total orders" %}</th>
-                        <th class="text-right">{% trans "Paid orders" %}</th>
-                        <th class="text-right">{% trans "Gross revenue" %}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for event in top_events %}
-                      <tr>
-                        <td>{{ event.name }}</td>
-                        <td class="text-right">{{ event.total_orders }}</td>
-                        <td class="text-right">{{ event.paid_orders }}</td>
-                        <td class="text-right">{{ event.gross_revenue|money:event.currency }}</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-      {% endif %}
-
-      {% if has_proposals %}
-        <div class="analytics-section">
-          <h2>{% trans "Proposals & Sessions" %}</h2>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Proposals by state" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div id="proposals-by-state-data" class="d-none" data-series="{{ proposals_by_state_json }}"></div>
-                  <div id="proposals-by-state-chart"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-8">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Proposals submitted over time (last 60 days)" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div
-                    id="proposals-over-time-data"
-                    class="d-none"
-                    data-series="{{ proposals_over_time_json }}"
-                    data-label="{% trans 'New proposals' %}"
-                  ></div>
-                  <div id="proposals-over-time-chart"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {% if pending_proposal_events %}
-          <div class="row">
-            <div class="col-md-12">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Events with pending proposals" %}</h3>
-                </div>
-                <div class="panel-body">
-                  <table class="table table-condensed table-hover">
-                    <thead>
-                      <tr>
-                        <th>{% trans "Event" %}</th>
-                        <th class="text-right">{% trans "Pending proposals" %}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for item in pending_proposal_events %}
-                      <tr>
-                        <td>{{ item.name }}</td>
-                        <td class="text-right">
-                          <span>{{ item.pending }}</span>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-      {% endif %}
-
-      {% if show_checkins %}
-        <div class="analytics-section">
-          <h2>{% trans "Check-In Summary" %}</h2>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Check-in rate per event" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div
-                    id="checkin-rate-data"
-                    class="d-none"
-                    data-series="{{ checkin_rate_json }}"
-                    data-label-checked-in="{% trans 'Checked in' %}"
-                    data-label-total="{% trans 'Total' %}"
-                  ></div>
-                  <div id="checkin-rate-chart"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Check-ins over time (last 30 days)" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div
-                    id="checkins-over-time-data"
-                    class="d-none"
-                    data-series="{{ checkins_over_time_json }}"
-                    data-label="{% trans 'Check-ins' %}"
-                  ></div>
-                  <div id="checkins-over-time-chart"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
-
-      {% if has_attendance %}
-        <div class="analytics-section">
-          <h2>{% trans "Attendance Trends" %}</h2>
-          <form method="get" class="form-inline">
-            <div class="form-group">
-              <label for="attendance-event">{% trans "Event" %}</label>
-              <select id="attendance-event" name="attendance_event" class="form-control">
-                <option value=""{% if not attendance_selected_event_id %} selected{% endif %}>{% trans "All events" %}</option>
-                {% for event in attendance_events %}
-                <option value="{{ event.id }}"{% if attendance_selected_event_id == event.id %} selected{% endif %}>{{ event.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <button type="submit" class="btn btn-default">{% trans "Apply" %}</button>
-          </form>
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">{% trans "Attendance activity (last 30 days)" %}</h3>
-            </div>
-            <div class="panel-body chart-panel-body">
-              <div
-                id="attendance-over-time-data"
-                class="d-none"
-                data-series="{{ attendance_over_time_json }}"
-                data-label-orders="{% trans 'Orders' %}"
-                data-label-registrations="{% trans 'Registrations' %}"
-              ></div>
-              <div id="attendance-over-time-chart"></div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
-
-      {% if has_email_engagement %}
-        <div class="analytics-section">
-          <h2>{% trans "Email Engagement" %}</h2>
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <table class="table table-condensed table-hover">
-                <thead>
-                  <tr>
-                    <th>{% trans "Event" %}</th>
-                    <th class="text-right">{% trans "Sent" %}</th>
-                    <th class="text-right">{% trans "Queued" %}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for row in email_engagement_rows %}
-                  <tr>
-                    <td>{{ row.event_name }}</td>
-                    <td class="text-right">{{ row.sent }}</td>
-                    <td class="text-right">{{ row.queued }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      {% endif %}
-
-      {% if has_followers %}
-        <div class="analytics-section">
-          <h2>{% trans "Follower Growth" %}</h2>
-          <p>{% blocktrans with total=follower_total %}Total followers: {{ total }}{% endblocktrans %}</p>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Weekly follower growth" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div
-                    id="followers-weekly-data"
-                    class="d-none"
-                    data-series="{{ followers_weekly_json }}"
-                    data-label="{% trans 'New followers' %}"
-                  ></div>
-                  <div id="followers-weekly-chart"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">{% trans "Monthly follower growth" %}</h3>
-                </div>
-                <div class="panel-body chart-panel-body">
-                  <div
-                    id="followers-monthly-data"
-                    class="d-none"
-                    data-series="{{ followers_monthly_json }}"
-                    data-label="{% trans 'New followers' %}"
-                  ></div>
-                  <div id="followers-monthly-chart"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
-    </div>
-  {% endif %}
 {% endblock %}

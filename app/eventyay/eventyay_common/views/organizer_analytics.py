@@ -339,6 +339,7 @@ class OrganizerAnalyticsView(OrganizerPermissionRequiredMixin, TemplateView):
                 'orders_over_time_json': '[]',
                 'orders_by_status_json': '[]',
                 'revenue_over_time_json': '[]',
+                'currencies_json': '[]',
                 'top_events': [],
                 'has_orders': False,
             }

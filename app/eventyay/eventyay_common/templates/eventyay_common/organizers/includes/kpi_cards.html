@@ -1,0 +1,27 @@
+{% load i18n %}
+{% load money %}
+<section class="od-section" aria-labelledby="od-kpi-title">
+  <div class="od-section-heading">
+    <h2 id="od-kpi-title" class="od-section-title">
+      <span class="fa fa-tachometer" aria-hidden="true"></span>
+      {% trans "At a glance" %}
+    </h2>
+  </div>
+  <div class="od-kpi-grid">
+    {% for card in kpi_cards %}
+      <a href="{{ card.url }}" class="od-kpi-card od-tone-{{ card.tone }}" title="{{ card.label }}">
+        <div class="od-kpi-top">
+          <span class="od-kpi-icon" aria-hidden="true"><span class="fa fa-{{ card.icon }}"></span></span>
+          <span class="od-kpi-label">{{ card.label }}</span>
+        </div>
+        <div class="od-kpi-value">
+          {% if card.value_is_money %}
+            {{ card.value|money:card.currency }}
+          {% else %}
+            {{ card.value }}
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>

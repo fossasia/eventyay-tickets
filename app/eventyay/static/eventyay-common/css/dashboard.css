@@ -188,63 +188,16 @@
     }
 }
 
-/* Organizer Analytics */
-.analytics-page {
-    margin-top: 20px;
-    padding-bottom: 40px;
-}
-
-.analytics-section {
-    margin-bottom: 32px;
-}
-
-.analytics-section .form-inline {
-    margin-bottom: 16px;
-}
-
-.analytics-section h2 {
-    font-size: 18px;
-    font-weight: 600;
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 8px;
-    margin-bottom: 16px;
-    color: #333;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 32px 16px;
-    color: #999;
-}
-
-.empty-state i {
-    display: block;
-    margin-bottom: 8px;
-}
-
 #orders-over-time-chart,
 #orders-by-status-chart,
 #proposals-by-state-chart,
 #proposals-over-time-chart,
 #checkin-rate-chart,
-#checkins-over-time-chart {
-    min-height: 220px;
-    height: 220px;
-}
-
-#revenue-over-time-chart {
+#checkins-over-time-chart,
+#revenue-over-time-chart,
+#attendance-over-time-chart,
+#followers-weekly-chart {
     min-height: 200px;
-    height: 200px;
-}
-
-.chart-panel-body {
-    min-height: 250px;
-    height: 250px;
-}
-.analytics-page h1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 /* Event Status Page Styles */

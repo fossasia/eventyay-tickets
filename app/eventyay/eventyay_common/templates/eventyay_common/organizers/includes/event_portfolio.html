@@ -1,0 +1,82 @@
+{% load i18n %}
+{% load money %}
+<section class="od-section" aria-labelledby="od-portfolio-title">
+  <div class="od-section-heading">
+    <h2 id="od-portfolio-title" class="od-section-title">
+      <span class="fa fa-calendar" aria-hidden="true"></span>
+      {% trans "Event portfolio" %}
+    </h2>
+    {% if total_events %}
+      <a class="od-view-all" href="{{ events_list_url }}">
+        {% trans "View all events" %}
+        <span aria-hidden="true">→</span>
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="od-panel">
+    {% if portfolio_events %}
+      <div class="od-table-wrap">
+        <table class="od-table">
+          <thead>
+            <tr>
+              <th>{% trans "Event" %}</th>
+              <th>{% trans "Status" %}</th>
+              <th>{% trans "Start date" %}</th>
+              <th class="text-right">{% trans "Orders" %}</th>
+              <th class="text-right">{% trans "Revenue" %}</th>
+              <th class="text-right">{% trans "Sessions" %}</th>
+              <th>{% trans "Action" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for event in portfolio_events %}
+              <tr>
+                <td>
+                  <a href="{{ event.dashboard_url }}">{{ event.name }}</a>
+                </td>
+                <td>
+                  <span class="od-badge od-badge-{{ event.status_class }}">{{ event.status_label }}</span>
+                </td>
+                <td>{{ event.start_date }}</td>
+                <td class="text-right">{{ event.orders }}</td>
+                <td class="text-right">{{ event.revenue|money:event.currency }}</td>
+                <td class="text-right">{{ event.sessions }}</td>
+                <td>
+                  <a class="btn btn-default btn-sm" href="{{ event.dashboard_url }}">
+                    {% if event.is_draft %}{% trans "Edit" %}{% else %}{% trans "View" %}{% endif %}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if not portfolio_has_published %}
+        <div class="od-empty-box">
+          <span class="fa fa-calendar-o" aria-hidden="true"></span>
+          {% trans "Your published events will appear here." %}
+        </div>
+      {% endif %}
+      {% if total_events > portfolio_events|length %}
+        <div class="od-panel-footer">
+          <a class="od-view-all" href="{{ events_list_url }}">
+            {% trans "View all events" %}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="od-empty-box">
+        <span class="fa fa-calendar-o" aria-hidden="true"></span>
+        <p>{% trans "You have not created any events yet." %}</p>
+        {% if can_create_event %}
+          <a class="od-btn od-btn-primary" href="{{ create_event_url }}" style="margin-top: 12px;">
+            <span class="fa fa-plus" aria-hidden="true"></span>
+            {% trans "Create your first event" %}
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,26 @@
+{% load i18n %}
+{% if action_required %}
+<section class="od-section" aria-labelledby="od-action-required-title">
+  <div class="od-section-heading">
+    <h2 id="od-action-required-title" class="od-section-title">
+      <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+      {% trans "Action required" %}
+    </h2>
+  </div>
+  <div class="od-card-grid od-card-grid--3">
+    {% for card in action_required %}
+      <article class="od-action-card od-tone-{{ card.tone }}">
+        <div class="od-action-card-title">
+          <span class="fa fa-{{ card.icon }}" aria-hidden="true"></span>
+          {{ card.title }}
+        </div>
+        <p>{{ card.description }}</p>
+        <a class="od-card-link" href="{{ card.url }}">
+          {{ card.cta }}
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

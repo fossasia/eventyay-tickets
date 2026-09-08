@@ -1,0 +1,29 @@
+{% load i18n %}
+{% if organizer_tools %}
+<section class="od-section" aria-labelledby="od-tools-title">
+  <div class="od-section-heading">
+    <h2 id="od-tools-title" class="od-section-title">
+      <span class="fa fa-wrench" aria-hidden="true"></span>
+      {% trans "Organizer tools" %}
+    </h2>
+  </div>
+  <div class="od-card-grid od-card-grid--4">
+    {% for tool in organizer_tools %}
+      <article class="od-tool-card">
+        <div class="od-tool-head">
+          <h3>
+            <span class="fa fa-{{ tool.icon }}" aria-hidden="true"></span>
+            {{ tool.title }}
+          </h3>
+          <span class="od-badge od-badge-{{ tool.badge_tone }}">{{ tool.badge }}</span>
+        </div>
+        <p>{{ tool.description }}</p>
+        <a class="od-card-link" href="{{ tool.url }}">
+          {{ tool.cta }}
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

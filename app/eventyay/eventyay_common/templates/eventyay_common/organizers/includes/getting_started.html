@@ -1,0 +1,24 @@
+{% load i18n %}
+<section class="od-section" aria-labelledby="od-getting-started-title">
+  <div class="od-section-heading">
+    <h2 id="od-getting-started-title" class="od-section-title">
+      <span class="fa fa-flag" aria-hidden="true"></span>
+      {% trans "Getting started" %}
+    </h2>
+  </div>
+  <div class="od-card-grid od-card-grid--4">
+    {% for card in getting_started %}
+      <article class="od-start-card od-tone-{{ card.tone }}">
+        <div class="od-start-icon" aria-hidden="true">
+          <span class="fa fa-{{ card.icon }}"></span>
+        </div>
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.description }}</p>
+        <a class="od-card-link" href="{{ card.url }}">
+          {{ card.cta }}
+          <span aria-hidden="true">→</span>
+        </a>
+      </article>
+    {% endfor %}
+  </div>
+</section>

@@ -47,6 +47,7 @@ from eventyay.control.permissions import (
 from eventyay.control.signals import nav_organizer
 from eventyay.control.tasks import delete_organizer_data
 from eventyay.control.views import PaginationMixin
+from eventyay.eventyay_common.organizer_dashboard import build_organizer_dashboard_overview
 from eventyay.eventyay_common.views.organizer_analytics import OrganizerAnalyticsView
 from eventyay.helpers.stripe_utils import (
     create_setup_intent,
@@ -382,6 +383,7 @@ class OrganizerDashboard(OrganizerDetailViewMixin, OrganizerAnalyticsView):
             ctx.get('has_email_engagement'),
             ctx.get('has_followers'),
         ])
+        ctx.update(build_organizer_dashboard_overview(self.request, ctx))
         return ctx
 
 
