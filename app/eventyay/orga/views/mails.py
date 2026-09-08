@@ -469,7 +469,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        if request.POST.get('action') == 'test':
+        if request.POST.get('action') in ('test', 'preview'):
             for field_name in list(form.fields.keys()):
                 if field_name == 'subject' or field_name.startswith('subject_'):
                     form.fields[field_name].required = False

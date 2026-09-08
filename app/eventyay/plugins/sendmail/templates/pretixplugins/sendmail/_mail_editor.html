@@ -259,7 +259,7 @@
     {% block mail_extra %}{% endblock mail_extra %}
 
     <script src="{% static 'orga/js/placeholder.js' %}" defer></script>
-    <script src="{% static 'common/js/mail-preview.js' %}" defer></script>
+    <script type="module" src="{% static 'common/js/mail-preview.js' %}" defer></script>
     <script type="module" src="{% static 'orga/js/mail-language-tabs.js' %}"></script>
     <script type="module" src="{% static 'orga/js/mail-editor-tabs.js' %}"></script>
     <script type="module" src="{% static 'orga/js/mail-delivery.js' %}"></script>

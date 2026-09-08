@@ -700,8 +700,9 @@ class EditEmailQueueView(EventPermissionRequiredMixin, UpdateView):
                         'html': compile_email_body(message_preview),
                     }
 
+            self.mail_count = form.instance.recipients.count()
             self.preview_warning = None
-            if getattr(self, 'mail_count', 0) == 0:
+            if self.mail_count == 0:
                 self.preview_warning = _('Preview generated with sample recipient data because no recipient is currently selected.')
 
             if self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -1041,11 +1042,7 @@ class ComposeTeamsMail(EventPermissionRequiredMixin, CopyDraftMixin, BulkReplyTo
                         'html': compile_email_body(message_preview),
                     }
 
-        preview_recipients = []
-        try:
-            preview_recipients = form.get_recipient_preview(user=user)
-        except Exception:
-            pass
+        preview_recipients = form.get_recipient_preview(user=user)
         
         self.mail_count = len(preview_recipients)
         self.preview_warning = None
