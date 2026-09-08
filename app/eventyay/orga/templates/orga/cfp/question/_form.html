@@ -22,11 +22,10 @@
 {% endblock scripts %}
 
 {% block form %}
+    {% block warnings %}{% endblock warnings %}
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% include "common/forms/errors.html" %}
-
-        {% block warnings %}{% endblock warnings %}
 
         {{ form.target.as_field_group }}
         {{ form.variant.as_field_group }}

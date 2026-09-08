@@ -1,5 +1,6 @@
 import datetime as dt
 import json
+import re
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -10,6 +11,19 @@ from eventyay.base.models import Event
 from eventyay.base.models import QueuedMail
 from eventyay.base.models import TalkQuestion as Question
 from eventyay.base.models.question import TalkQuestionRequired as QuestionRequired
+
+_FORM_OPEN = re.compile(r"<form(?:\s|>)", re.I)
+_FORM_CLOSE = re.compile(r"</form\s*>", re.I)
+
+
+def _max_form_nesting(html: str) -> int:
+    events = [(match.start(), 1) for match in _FORM_OPEN.finditer(html)]
+    events += [(match.start(), -1) for match in _FORM_CLOSE.finditer(html)]
+    depth = max_depth = 0
+    for _, delta in sorted(events):
+        depth += delta
+        max_depth = max(max_depth, depth)
+    return max_depth
 
 
 @pytest.mark.django_db
@@ -629,6 +643,15 @@ def test_can_hide_question_via_json(orga_client, question):
         question = Question.all_objects.get(pk=question.pk)
     assert response.status_code == 200
     assert not question.active
+
+
+@pytest.mark.django_db
+def test_question_edit_toggle_form_is_not_nested(orga_client, question):
+    response = orga_client.get(question.urls.edit)
+    assert response.status_code == 200
+    html = response.content.decode()
+    assert question.urls.toggle in html
+    assert _max_form_nesting(html) <= 1
 
 
 @pytest.mark.django_db
