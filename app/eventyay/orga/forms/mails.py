@@ -376,8 +376,6 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         ),
     )
 
-    # `question` is deliberately absent: on its own it narrows nothing, because
-    # _filter_question only applies once an answer, option or `unanswered` is given.
     audience_fields = (
         'state',
         'submission_type',
@@ -438,8 +436,6 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):
-        # Walking the audience costs a query per proposal, and both the send
-        # guard and save() ask for it within one request.
         if self._recipients is None:
             self._recipients = self.build_recipients()
         return self._recipients

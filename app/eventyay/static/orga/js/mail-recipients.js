@@ -1,9 +1,5 @@
 /* Keeps the audience summary in step with the recipient filters, and fills the
- * recipient list dialog from the same endpoint the send path filters on.
- *
- * A composer opts into refusing an empty audience with data-requires-audience on
- * its summary. Composers that carry neither that nor data-label-none keep
- * counting to zero and leave their send actions alone. */
+ * recipient list dialog from the same endpoint the send path filters on. */
 
 const MESSAGE_FIELDS = /^(csrfmiddlewaretoken|action|subject_|text_|reply_to|bcc|scheduled_at|delivery_mode|skip_queue|test_email|attachment)/
 
@@ -73,8 +69,6 @@ const setSendingEnabled = (form, enabled) => {
     form.querySelectorAll(SEND_ACTIONS).forEach((control) => {
         control.disabled = !enabled
     })
-    // The caret of the split send button is a <summary>, which cannot be disabled and
-    // stays focusable, so the state has to be announced rather than only dimmed.
     const moreOptions = form.querySelector(".composer-send-group details.dropdown")
     if (moreOptions) {
         const caret = moreOptions.querySelector("summary")
@@ -83,8 +77,6 @@ const setSendingEnabled = (form, enabled) => {
         if (!enabled) moreOptions.open = false
     }
     if (!enabled) {
-        // A dialog opened just before the count arrived would still offer an
-        // audience that has since gone.
         const confirmDialog = form.querySelector("#send-confirm-dialog")
         if (confirmDialog && confirmDialog.open) confirmDialog.close()
     }
@@ -105,8 +97,6 @@ const clearFilters = (form) => {
         guard += 1
     }
     filters.querySelectorAll("select.enhanced").forEach((select) => {
-        // On a multiple select, selectedIndex = 0 selects the first option
-        // rather than clearing the field.
         if (select.multiple) {
             Array.from(select.options).forEach((option) => {
                 option.selected = false
@@ -192,9 +182,6 @@ const initRecipientPreview = () => {
     const summary = document.querySelector("#recipient-summary")
     const requiresAudience = Boolean(summary && "requiresAudience" in summary.dataset)
 
-    // Responses can arrive out of order, and a stale one would report an audience
-    // the form no longer has, re-enabling the send buttons. Counting the two apart
-    // keeps a failed dialog lookup from swallowing the count response.
     let latestCountRequest = 0
     let latestListRequest = 0
 
@@ -223,7 +210,6 @@ const initRecipientPreview = () => {
             if (summary) {
                 summary.textContent = summary.dataset.labelUnavailable || ""
             }
-            // The count is unknown, so let the server-side check decide instead.
             if (requiresAudience) setSendingEnabled(form, true)
         }
     }
