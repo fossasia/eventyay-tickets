@@ -23,7 +23,7 @@
             data-label-ordered="{% trans 'Placed' %}"
             data-label-paid="{% trans 'Paid' %}"
           ></div>
-          <h4 class="od-subchart" style="margin-top: 0; border: 0; padding: 0;">{% trans "Orders over time" %}</h4>
+          <h4 class="od-subchart od-subchart--first">{% trans "Orders over time" %}</h4>
           <div id="orders-over-time-chart" class="od-chart-host"></div>
 
           <div class="od-subchart">
@@ -85,7 +85,7 @@
       <div class="od-panel-body">
         {% if has_proposals %}
           <div id="proposals-by-state-data" class="d-none" data-series="{{ proposals_by_state_json }}"></div>
-          <h4 class="od-subchart" style="margin-top: 0; border: 0; padding: 0;">{% trans "Proposals by state" %}</h4>
+          <h4 class="od-subchart od-subchart--first">{% trans "Proposals by state" %}</h4>
           <div id="proposals-by-state-chart" class="od-chart-host"></div>
 
           <div class="od-subchart">
@@ -112,7 +112,7 @@
   </div>
 
   {% if show_checkins or has_attendance or has_email_engagement or has_followers %}
-    <div class="od-analytics-grid" style="margin-top: 12px;">
+    <div class="od-analytics-grid">
       {% if show_checkins %}
         <article class="od-panel">
           <div class="od-panel-head">
@@ -147,7 +147,7 @@
             <h3>{% trans "Attendance trends" %}</h3>
           </div>
           <div class="od-panel-body">
-            <form method="get" class="form-inline" style="margin-bottom: 12px;">
+            <form method="get" class="od-filter-form">
               <div class="form-group">
                 <label for="attendance-event">{% trans "Event" %}</label>
                 <select id="attendance-event" name="attendance_event" class="form-control">
@@ -157,7 +157,7 @@
                   {% endfor %}
                 </select>
               </div>
-              <button type="submit" class="btn btn-default">{% trans "Apply" %}</button>
+              <button type="submit" class="od-btn">{% trans "Apply" %}</button>
             </form>
             <div
               id="attendance-over-time-data"

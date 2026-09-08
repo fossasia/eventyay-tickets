@@ -29,15 +29,20 @@
   --od-space-3: 16px;
   --od-space-4: 20px;
   --od-space-5: 24px;
+  --od-btn-height: 36px;
+  --od-btn-min-width: 120px;
   --od-font-display: "Titillium Web", "Open Sans", system-ui, sans-serif;
   --od-font-body: "Open Sans", "Titillium Web", system-ui, sans-serif;
   max-width: none;
   width: 100%;
   margin: 0;
-  padding: 4px 0 40px;
+  padding: 16px 0 40px;
   box-sizing: border-box;
   font-family: var(--od-font-body);
   color: var(--od-text);
+  display: flex;
+  flex-direction: column;
+  gap: var(--od-space-4);
 }
 
 .od-dashboard *,
@@ -58,8 +63,13 @@ body:has(.od-dashboard) #page-content {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--od-space-4);
-  margin-bottom: var(--od-space-5);
+  margin: 0;
   flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius);
+  box-shadow: var(--od-shadow);
+  padding: 18px 20px;
 }
 
 .od-header-title {
@@ -89,15 +99,20 @@ body:has(.od-dashboard) #page-content {
 .od-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  padding: 8px 14px;
+  min-height: var(--od-btn-height);
+  min-width: var(--od-btn-min-width);
+  padding: 0 14px;
   border-radius: var(--od-radius-sm);
   font-size: 13.5px;
   font-weight: 600;
+  line-height: 1.2;
   text-decoration: none;
   border: 1px solid var(--od-border);
   background: #fff;
   color: var(--od-text);
+  box-sizing: border-box;
   transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -123,15 +138,33 @@ body:has(.od-dashboard) #page-content {
   color: #fff;
 }
 
+.od-btn-icon {
+  min-width: var(--od-btn-height);
+  padding: 0;
+}
+
 .od-btn .fa {
   font-size: 13px;
 }
 
+.od-btn-sm {
+  min-width: 72px;
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
 /* --------------------------------------------------------------------------
-   Sections
+   Sections — card containers (aligned with talks .td-section)
    -------------------------------------------------------------------------- */
 .od-section {
-  margin-bottom: var(--od-space-5);
+  margin: 0;
+  background: #fff;
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius);
+  box-shadow: var(--od-shadow);
+  padding: 16px 18px 18px;
+  box-sizing: border-box;
 }
 
 .od-section-heading {
@@ -139,19 +172,24 @@ body:has(.od-dashboard) #page-content {
   align-items: center;
   justify-content: space-between;
   gap: var(--od-space-3);
-  margin-bottom: var(--od-space-3);
+  margin: -16px -18px 16px;
+  padding: 12px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--od-border);
+  border-radius: var(--od-radius) var(--od-radius) 0 0;
 }
 
 .od-section-title {
   margin: 0;
   font-family: var(--od-font-display);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #0f172a;
   display: flex;
   align-items: center;
   gap: 10px;
+  line-height: 1.2;
 }
 
 .od-section-title .fa {
@@ -164,6 +202,7 @@ body:has(.od-dashboard) #page-content {
   background: var(--od-blue-soft);
   color: var(--od-blue);
   font-size: 13px;
+  flex-shrink: 0;
 }
 
 .od-view-all {
@@ -395,8 +434,9 @@ body:has(.od-dashboard) #page-content {
   font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1;
+  line-height: 1.15;
   font-variant-numeric: tabular-nums;
+  word-break: break-word;
 }
 
 /* --------------------------------------------------------------------------
@@ -405,6 +445,19 @@ body:has(.od-dashboard) #page-content {
 .od-panel {
   padding: 0;
   overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius);
+  box-shadow: var(--od-shadow);
+}
+
+/* Nested panel inside a section card: no double outer chrome */
+.od-section > .od-panel,
+.od-section > .od-table-wrap {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
 }
 
 .od-table-wrap {
@@ -419,7 +472,7 @@ body:has(.od-dashboard) #page-content {
 
 .od-table th,
 .od-table td {
-  padding: 12px 16px;
+  padding: 12px 14px;
   text-align: left;
   border-bottom: 1px solid var(--od-border);
   font-size: 13.5px;
@@ -435,7 +488,7 @@ body:has(.od-dashboard) #page-content {
   letter-spacing: 0.03em;
 }
 
-.od-table tr:last-child td {
+.od-table tbody tr:last-child td {
   border-bottom: none;
 }
 
@@ -458,26 +511,34 @@ body:has(.od-dashboard) #page-content {
 .od-badge-muted { background: #f3f4f6; color: var(--od-muted); }
 
 .od-empty-box {
-  margin: 12px 16px 16px;
+  margin: 4px 0 0;
   padding: 28px 16px;
   border: 1.5px dashed var(--od-border);
   border-radius: var(--od-radius-sm);
   text-align: center;
   color: var(--od-muted);
   font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 .od-empty-box .fa {
   display: block;
   font-size: 22px;
-  margin-bottom: 8px;
   color: #9ca3af;
 }
 
+.od-empty-box p {
+  margin: 0;
+}
+
 .od-panel-footer {
-  padding: 12px 16px 16px;
+  padding: 12px 0 0;
   text-align: center;
   border-top: 1px solid var(--od-border);
+  margin-top: 8px;
 }
 
 /* --------------------------------------------------------------------------
@@ -487,6 +548,10 @@ body:has(.od-dashboard) #page-content {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.od-analytics-grid + .od-analytics-grid {
+  margin-top: 12px;
 }
 
 .od-panel-body {
@@ -550,11 +615,40 @@ body:has(.od-dashboard) #page-content {
   border-top: 1px solid var(--od-border);
 }
 
-.od-subchart h4 {
+.od-subchart h4,
+h4.od-subchart {
   margin: 0 0 10px;
   font-size: 14px;
   font-weight: 700;
   color: var(--od-text);
+}
+
+.od-subchart--first {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.od-filter-form {
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.od-filter-form .form-group {
+  margin: 0;
+}
+
+.od-filter-form .od-btn,
+.od-filter-form .btn {
+  min-height: var(--od-btn-height);
+  min-width: var(--od-btn-min-width);
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* --------------------------------------------------------------------------
@@ -600,10 +694,6 @@ body:has(.od-dashboard) #page-content {
   list-style: none;
   margin: 0;
   padding: 0;
-  background: #fff;
-  border: 1px solid var(--od-border);
-  border-radius: var(--od-radius);
-  box-shadow: var(--od-shadow);
   overflow: hidden;
 }
 
@@ -611,12 +701,17 @@ body:has(.od-dashboard) #page-content {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 14px 16px;
+  padding: 14px 4px;
   border-bottom: 1px solid var(--od-border);
 }
 
 .od-activity-item:last-child {
   border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.od-activity-item:first-child {
+  padding-top: 2px;
 }
 
 .od-activity-icon {
@@ -655,7 +750,7 @@ body:has(.od-dashboard) #page-content {
 }
 
 .od-footer-note {
-  margin-top: 28px;
+  margin: 8px 0 0;
   text-align: center;
   font-size: 12.5px;
   color: #9ca3af;
@@ -674,8 +769,9 @@ body:has(.od-dashboard) #page-content {
   .od-dashboard *,
   .od-dashboard *::before,
   .od-dashboard *::after {
-    transition: none !important;
-    animation: none !important;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
   }
 }
 

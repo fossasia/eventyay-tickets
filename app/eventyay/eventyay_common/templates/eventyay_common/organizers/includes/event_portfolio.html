@@ -9,7 +9,7 @@
     {% if total_events %}
       <a class="od-view-all" href="{{ events_list_url }}">
         {% trans "View all events" %}
-        <span aria-hidden="true">→</span>
+        <span aria-hidden="true">></span>
       </a>
     {% endif %}
   </div>
@@ -43,7 +43,7 @@
                 <td class="text-right">{{ event.revenue|money:event.currency }}</td>
                 <td class="text-right">{{ event.sessions }}</td>
                 <td>
-                  <a class="btn btn-default btn-sm" href="{{ event.dashboard_url }}">
+                  <a class="od-btn od-btn-sm" href="{{ event.dashboard_url }}">
                     {% if event.is_draft %}{% trans "Edit" %}{% else %}{% trans "View" %}{% endif %}
                   </a>
                 </td>
@@ -62,7 +62,7 @@
         <div class="od-panel-footer">
           <a class="od-view-all" href="{{ events_list_url }}">
             {% trans "View all events" %}
-            <span aria-hidden="true">→</span>
+            <span aria-hidden="true">></span>
           </a>
         </div>
       {% endif %}
@@ -71,7 +71,7 @@
         <span class="fa fa-calendar-o" aria-hidden="true"></span>
         <p>{% trans "You have not created any events yet." %}</p>
         {% if can_create_event %}
-          <a class="od-btn od-btn-primary" href="{{ create_event_url }}" style="margin-top: 12px;">
+          <a class="od-btn od-btn-primary" href="{{ create_event_url }}">
             <span class="fa fa-plus" aria-hidden="true"></span>
             {% trans "Create your first event" %}
           </a>
