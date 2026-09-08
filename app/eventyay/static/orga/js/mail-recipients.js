@@ -1,5 +1,9 @@
 /* Keeps the audience summary in step with the recipient filters, and fills the
- * recipient list dialog from the same endpoint the send path filters on. */
+ * recipient list dialog from the same endpoint the send path filters on.
+ *
+ * A composer opts into refusing an empty audience with data-requires-audience on
+ * its summary. Composers that carry neither that nor data-label-none keep
+ * counting to zero and leave their send actions alone. */
 
 const MESSAGE_FIELDS = /^(csrfmiddlewaretoken|action|subject_|text_|reply_to|bcc|scheduled_at|delivery_mode|skip_queue|test_email|attachment)/
 
@@ -46,9 +50,6 @@ const fetchRecipients = async (url, form) => {
     return response.json()
 }
 
-// A composer opts into refusing an empty audience with data-requires-audience on
-// its summary, and names the empty state with data-label-none. Composers that
-// carry neither keep counting to zero and leave their send actions alone.
 const SEND_ACTIONS =
     'button[name="action"][value="send"], button[name="action"][value="draft"], [data-send-option="now"], [data-send-option="schedule"]'
 
@@ -82,8 +83,8 @@ const setSendingEnabled = (form, enabled) => {
         if (!enabled) moreOptions.open = false
     }
     if (!enabled) {
-        // A dialog opened just before the count arrived would still offer an audience
-        // that has since gone, behind a send button that no longer works.
+        // A dialog opened just before the count arrived would still offer an
+        // audience that has since gone.
         const confirmDialog = form.querySelector("#send-confirm-dialog")
         if (confirmDialog && confirmDialog.open) confirmDialog.close()
     }
@@ -192,8 +193,10 @@ const initRecipientPreview = () => {
     const requiresAudience = Boolean(summary && "requiresAudience" in summary.dataset)
 
     // Responses can arrive out of order, and a stale one would report an audience
-    // the form no longer has, re-enabling the send buttons.
-    let latestRequest = 0
+    // the form no longer has, re-enabling the send buttons. Counting the two apart
+    // keeps a failed dialog lookup from swallowing the count response.
+    let latestCountRequest = 0
+    let latestListRequest = 0
 
     const applyCount = (count) => {
         renderCount(badge, count)
@@ -201,21 +204,20 @@ const initRecipientPreview = () => {
         if (requiresAudience) setSendingEnabled(form, count > 0)
     }
 
-    // The audience has just changed, so any answer already in flight describes the
-    // old one, and the new count is not known until it arrives.
     const invalidateCount = () => {
-        latestRequest += 1
+        latestCountRequest += 1
+        latestListRequest += 1
         if (requiresAudience) setSendingEnabled(form, false)
     }
 
     const refreshCount = async () => {
-        const request = (latestRequest += 1)
+        const request = (latestCountRequest += 1)
         try {
             const data = await fetchRecipients(url, form)
-            if (request !== latestRequest) return
+            if (request !== latestCountRequest) return
             applyCount(data.count)
         } catch (error) {
-            if (request !== latestRequest) return
+            if (request !== latestCountRequest) return
             console.error("Could not refresh the recipient count", error)
             badge.hidden = true
             if (summary) {
@@ -246,12 +248,13 @@ const initRecipientPreview = () => {
 
     trigger.addEventListener("click", async () => {
         body.textContent = body.dataset.loadingLabel
-        const request = (latestRequest += 1)
+        const request = (latestListRequest += 1)
         try {
             const data = await fetchRecipients(url, form)
-            if (request === latestRequest) applyCount(data.count)
+            if (request !== latestListRequest) return
             renderRecipients(body, data.recipients)
         } catch (error) {
+            if (request !== latestListRequest) return
             console.error("Could not load the recipient list", error)
             body.textContent = body.dataset.errorLabel
         }

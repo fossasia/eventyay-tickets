@@ -230,8 +230,6 @@ class MailDetailForm(ScheduledAtValidationMixin, ReadOnlyFlag, forms.ModelForm):
 
 
 class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
-    # Shown when a composer is asked to send to nobody. Each composer describes its
-    # own audience, so the wording belongs with the form rather than the view.
     empty_audience_error = _('Select at least one recipient or audience filter before sending this email.')
     empty_audience_draft_error = _('Select at least one recipient or audience filter before saving this draft.')
 
@@ -290,8 +288,6 @@ class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
 
 
 class WriteTeamsMailForm(WriteMailBaseForm):
-    # This composer has no audience filters, and an empty result means the chosen
-    # teams hold nobody who could be emailed.
     empty_audience_error = _('The selected teams have no active members with an email address.')
 
     recipients = forms.MultipleChoiceField(
@@ -380,8 +376,6 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         ),
     )
 
-    # Audience criteria the composer offers. With none of them set there is no
-    # audience at all, so an empty form must not be read as “every proposal”.
     # `question` is deliberately absent: on its own it narrows nothing, because
     # _filter_question only applies once an answer, option or `unanswered` is given.
     audience_fields = (
@@ -443,8 +437,8 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):
-        # Walking the audience costs a query per proposal, and both the send guard
-        # and save() ask for it within one request.
+        # Walking the audience costs a query per proposal, and both the send
+        # guard and save() ask for it within one request.
         if self._recipients is None:
             self._recipients = self.build_recipients()
         return self._recipients

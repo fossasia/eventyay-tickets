@@ -932,8 +932,6 @@ def test_session_mail_recipients_follow_the_state_filter(
 
 @pytest.mark.django_db
 def test_session_mail_recipients_are_empty_without_a_selection(orga_client, event, speaker, submission):
-    # This is the request the composer makes on load, so an untouched composer
-    # must not report the whole event as its audience.
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions_recipients,
         follow=True,
@@ -951,7 +949,6 @@ def test_session_mail_recipient_count_follows_selection_and_clearing(orga_client
     )
     assert selected.json()["count"] == 1
 
-    # Clearing the filters sends the same request as the initial page load.
     cleared = orga_client.get(
         event.orga_urls.compose_mails_sessions_recipients,
         follow=True,
@@ -987,8 +984,6 @@ def test_session_mail_cannot_be_sent_without_a_selection(orga_client, event, spe
 
 @pytest.mark.django_db
 def test_session_mail_cannot_be_saved_as_draft_without_a_selection(orga_client, event, speaker, submission):
-    # A draft is built from the recipients, so an empty audience would drop the
-    # organiser's text while reporting success.
     response = orga_client.post(
         event.orga_urls.compose_mails_sessions,
         follow=True,
@@ -1140,8 +1135,6 @@ def test_session_mail_draft_drops_its_send_time(orga_client, event, speaker, sub
 
 @pytest.mark.django_db
 def test_teams_mail_cannot_be_sent_to_a_team_without_members(orga_client, event):
-    # The send guard is shared with the session composer, but this composer has no
-    # audience filters, so an empty result needs its own wording.
     djmail.outbox = []
     with scope(event=event):
         empty_team = event.organizer.teams.create(name="Nobody here", all_events=False)
