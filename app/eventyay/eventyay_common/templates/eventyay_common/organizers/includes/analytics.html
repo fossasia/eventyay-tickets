@@ -8,6 +8,7 @@
     </h2>
   </div>
 
+  {# Row 1: Ticket sales & revenue beside Check-in summary (or Proposals when no check-ins) #}
   <div class="od-analytics-grid">
     <article class="od-panel">
       <div class="od-panel-head">
@@ -77,66 +78,103 @@
       </div>
     </article>
 
-    <article class="od-panel">
-      <div class="od-panel-head">
-        <h3>{% trans "Proposals & sessions" %}</h3>
-        <span class="od-badge od-badge-muted">{% trans "Last 60 days" %}</span>
-      </div>
-      <div class="od-panel-body">
-        {% if has_proposals %}
-          <div id="proposals-by-state-data" class="d-none" data-series="{{ proposals_by_state_json }}"></div>
-          <h4 class="od-subchart od-subchart--first">{% trans "Proposals by state" %}</h4>
-          <div id="proposals-by-state-chart" class="od-chart-host"></div>
-
+    {% if show_checkins %}
+      <article class="od-panel">
+        <div class="od-panel-head">
+          <h3>{% trans "Check-in summary" %}</h3>
+          <span class="od-badge od-badge-muted">{% trans "Last 30 days" %}</span>
+        </div>
+        <div class="od-panel-body">
+          <div
+            id="checkin-rate-data"
+            class="d-none"
+            data-series="{{ checkin_rate_json }}"
+            data-label-checked-in="{% trans 'Checked in' %}"
+            data-label-total="{% trans 'Total' %}"
+          ></div>
+          <div id="checkin-rate-chart" class="od-chart-host"></div>
           <div class="od-subchart">
             <div
-              id="proposals-over-time-data"
+              id="checkins-over-time-data"
               class="d-none"
-              data-series="{{ proposals_over_time_json }}"
-              data-label="{% trans 'New proposals' %}"
+              data-series="{{ checkins_over_time_json }}"
+              data-label="{% trans 'Check-ins' %}"
             ></div>
-            <h4>{% trans "Proposals submitted over time" %}</h4>
-            <div id="proposals-over-time-chart" class="od-chart-host"></div>
+            <h4>{% trans "Check-ins over time (last 30 days)" %}</h4>
+            <div id="checkins-over-time-chart" class="od-chart-host"></div>
           </div>
-        {% else %}
-          <div class="od-chart-empty">
-            <span class="fa fa-pie-chart" aria-hidden="true"></span>
-            <p>
-              <strong>{% trans "No proposal data yet." %}</strong>
-              {% trans "Proposal and session data will appear here once submissions are received." %}
-            </p>
-          </div>
-        {% endif %}
-      </div>
-    </article>
+        </div>
+      </article>
+    {% else %}
+      <article class="od-panel">
+        <div class="od-panel-head">
+          <h3>{% trans "Proposals & sessions" %}</h3>
+          <span class="od-badge od-badge-muted">{% trans "Last 60 days" %}</span>
+        </div>
+        <div class="od-panel-body">
+          {% if has_proposals %}
+            <div id="proposals-by-state-data" class="d-none" data-series="{{ proposals_by_state_json }}"></div>
+            <h4 class="od-subchart od-subchart--first">{% trans "Proposals by state" %}</h4>
+            <div id="proposals-by-state-chart" class="od-chart-host"></div>
+
+            <div class="od-subchart">
+              <div
+                id="proposals-over-time-data"
+                class="d-none"
+                data-series="{{ proposals_over_time_json }}"
+                data-label="{% trans 'New proposals' %}"
+              ></div>
+              <h4>{% trans "Proposals submitted over time" %}</h4>
+              <div id="proposals-over-time-chart" class="od-chart-host"></div>
+            </div>
+          {% else %}
+            <div class="od-chart-empty">
+              <span class="fa fa-pie-chart" aria-hidden="true"></span>
+              <p>
+                <strong>{% trans "No proposal data yet." %}</strong>
+                {% trans "Proposal and session data will appear here once submissions are received." %}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </article>
+    {% endif %}
   </div>
 
+  {# Row 2+: remaining analytics panels #}
   {% if show_checkins or has_attendance or has_email_engagement or has_followers %}
     <div class="od-analytics-grid">
       {% if show_checkins %}
         <article class="od-panel">
           <div class="od-panel-head">
-            <h3>{% trans "Check-in summary" %}</h3>
+            <h3>{% trans "Proposals & sessions" %}</h3>
+            <span class="od-badge od-badge-muted">{% trans "Last 60 days" %}</span>
           </div>
           <div class="od-panel-body">
-            <div
-              id="checkin-rate-data"
-              class="d-none"
-              data-series="{{ checkin_rate_json }}"
-              data-label-checked-in="{% trans 'Checked in' %}"
-              data-label-total="{% trans 'Total' %}"
-            ></div>
-            <div id="checkin-rate-chart" class="od-chart-host"></div>
-            <div class="od-subchart">
-              <div
-                id="checkins-over-time-data"
-                class="d-none"
-                data-series="{{ checkins_over_time_json }}"
-                data-label="{% trans 'Check-ins' %}"
-              ></div>
-              <h4>{% trans "Check-ins over time (last 30 days)" %}</h4>
-              <div id="checkins-over-time-chart" class="od-chart-host"></div>
-            </div>
+            {% if has_proposals %}
+              <div id="proposals-by-state-data" class="d-none" data-series="{{ proposals_by_state_json }}"></div>
+              <h4 class="od-subchart od-subchart--first">{% trans "Proposals by state" %}</h4>
+              <div id="proposals-by-state-chart" class="od-chart-host"></div>
+
+              <div class="od-subchart">
+                <div
+                  id="proposals-over-time-data"
+                  class="d-none"
+                  data-series="{{ proposals_over_time_json }}"
+                  data-label="{% trans 'New proposals' %}"
+                ></div>
+                <h4>{% trans "Proposals submitted over time" %}</h4>
+                <div id="proposals-over-time-chart" class="od-chart-host"></div>
+              </div>
+            {% else %}
+              <div class="od-chart-empty">
+                <span class="fa fa-pie-chart" aria-hidden="true"></span>
+                <p>
+                  <strong>{% trans "No proposal data yet." %}</strong>
+                  {% trans "Proposal and session data will appear here once submissions are received." %}
+                </p>
+              </div>
+            {% endif %}
           </div>
         </article>
       {% endif %}
