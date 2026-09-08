@@ -79,48 +79,50 @@
                             </div>
 
                             <div class="comment-action-container d-flex justify-content-between align-items-center flex-wrap mt-2">
-                                <div class="d-flex align-items-center flex-wrap mt-0 comment-action-left">
-                                    <fieldset class="rate-me-emoji-rating m-0 p-0 border-0 mr-3">
-                                        <legend class="sr-only">{% translate "Rating" %}</legend>
-                                        <div class="rate-me-emoji-options minimalist-rating" role="radiogroup" aria-label="{% translate 'Rating' %}">
-                                            <label class="rate-me-emoji-option" title="{% translate 'Terrible' %}">
-                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="1">
-                                                <span class="rate-me-emoji" aria-hidden="true">😠</span>
-                                            </label>
-                                            <label class="rate-me-emoji-option" title="{% translate 'Bad' %}">
-                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="2">
-                                                <span class="rate-me-emoji" aria-hidden="true">😕</span>
-                                            </label>
-                                            <label class="rate-me-emoji-option" title="{% translate 'Okay' %}">
-                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="3">
-                                                <span class="rate-me-emoji" aria-hidden="true">😐</span>
-                                            </label>
-                                            <label class="rate-me-emoji-option" title="{% translate 'Good' %}">
-                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="4">
-                                                <span class="rate-me-emoji" aria-hidden="true">🙂</span>
-                                            </label>
-                                            <label class="rate-me-emoji-option" title="{% translate 'Excellent' %}">
-                                                <input type="radio" name="{{ feedback_form.rating.name }}" value="5">
-                                                <span class="rate-me-emoji" aria-hidden="true">🤩</span>
-                                            </label>
-                                        </div>
-                                    </fieldset>
-
-                                    {% if feedback_form.speaker %}
-                                        {% if feedback_form.speaker.is_hidden %}
-                                            {{ feedback_form.speaker }}
-                                        {% else %}
-                                            <div class="speaker-target-chip" title="{% translate 'All speakers: everyone on this session. Pick one speaker to send feedback only to them.' %}">
-                                                <i class="fa fa-users speaker-target-chip__icon" aria-hidden="true"></i>
-                                                <label class="speaker-target-label" for="{{ feedback_form.speaker.id_for_label }}">
-                                                    {% translate "Send to" %}
+                                <div class="comment-action-left">
+                                    <div class="comment-action-inline">
+                                        <fieldset class="rate-me-emoji-rating comment-inline-rating">
+                                            <legend class="sr-only">{% translate "Rating" %}</legend>
+                                            <div class="rate-me-emoji-options minimalist-rating" role="radiogroup" aria-label="{% translate 'Rating' %}">
+                                                <label class="rate-me-emoji-option" title="{% translate 'Terrible' %}">
+                                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="1">
+                                                    <span class="rate-me-emoji" aria-hidden="true">😠</span>
                                                 </label>
-                                                {{ feedback_form.speaker }}
+                                                <label class="rate-me-emoji-option" title="{% translate 'Bad' %}">
+                                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="2">
+                                                    <span class="rate-me-emoji" aria-hidden="true">😕</span>
+                                                </label>
+                                                <label class="rate-me-emoji-option" title="{% translate 'Okay' %}">
+                                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="3">
+                                                    <span class="rate-me-emoji" aria-hidden="true">😐</span>
+                                                </label>
+                                                <label class="rate-me-emoji-option" title="{% translate 'Good' %}">
+                                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="4">
+                                                    <span class="rate-me-emoji" aria-hidden="true">🙂</span>
+                                                </label>
+                                                <label class="rate-me-emoji-option" title="{% translate 'Excellent' %}">
+                                                    <input type="radio" name="{{ feedback_form.rating.name }}" value="5">
+                                                    <span class="rate-me-emoji" aria-hidden="true">🤩</span>
+                                                </label>
                                             </div>
+                                        </fieldset>
+
+                                        {% if feedback_form.speaker %}
+                                            {% if feedback_form.speaker.is_hidden %}
+                                                {{ feedback_form.speaker }}
+                                            {% else %}
+                                                <div class="speaker-target-chip" title="{% translate 'Session speakers share this feedback. Pick one speaker to send it only to them.' %}">
+                                                    <i class="fa fa-users speaker-target-chip__icon" aria-hidden="true"></i>
+                                                    <label class="speaker-target-label" for="{{ feedback_form.speaker.id_for_label }}">
+                                                        {% translate "Send to" %}
+                                                    </label>
+                                                    {{ feedback_form.speaker }}
+                                                </div>
+                                            {% endif %}
                                         {% endif %}
-                                    {% endif %}
+                                    </div>
                                     {% if feedback_anonymous_mode == 'optional' %}
-                                    <div class="form-check m-0">
+                                    <div class="form-check form-check-inline comment-visibility-check m-0">
                                         {{ feedback_form.is_public }}
                                         <label class="form-check-label text-muted comment-visibility-label" for="{{ feedback_form.is_public.id_for_label }}">
                                             {% translate "Visible to public" %}
@@ -133,8 +135,6 @@
                             </div>
                         </form>
                     </div>
-                </div>
-
                 </div>
             {% else %}
                 <div class="alert alert-info mb-5">
@@ -163,12 +163,12 @@
                                 <strong class="mr-2 comment-author-name">{% if fb.author %}{{ fb.author.get_display_name }}{% else %}{{ phrases.agenda.anonymous|default:"Anonymous" }}{% endif %}</strong>
                                 <small class="text-muted">{{ fb.created|timesince }} {% translate "ago" %}</small>
                                 {% if fb.speaker %}
-                                    <span class="comment-speaker-badge ml-2" title="{% translate 'Directed to this speaker' %}">
+                                    <span class="comment-speaker-badge ml-2" title="{% translate 'Directed to this session speaker' %}">
                                         {% blocktranslate trimmed with name=fb.speaker.get_display_name %}For {{ name }}{% endblocktranslate %}
                                     </span>
                                 {% else %}
                                     <span class="comment-speaker-badge comment-speaker-badge--all ml-2" title="{% translate 'Visible to all speakers of this session' %}">
-                                        {% translate "All speakers" %}
+                                        {% translate "Session speakers" %}
                                     </span>
                                 {% endif %}
                                 {% if fb.rating %}
@@ -181,13 +181,13 @@
                                 {{ fb.review|rich_text }}
                             </div>
                             <button type="button" class="read-more-btn d-none" data-expanded="false" data-read-more="{% translate 'Read more' %}" data-show-less="{% translate 'Show less' %}">{% translate "Read more" %}</button>
-                            <div class="comment-actions d-flex align-items-center">
+                            <div class="comment-actions">
                                 {% if request.user.is_authenticated %}
-                                <button class="btn react-btn mr-1 {% if fb.user_vote == True %}active-vote{% endif %}" data-action="upvote" data-id="{{ fb.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=fb.id %}">
-                                    <i class="fa {% if fb.user_vote == True %}fa-thumbs-up text-success{% else %}fa-thumbs-o-up{% endif %}"></i> <span class="upvote-count ml-1">{{ fb.upvote_count|default:"" }}</span>
+                                <button class="btn react-btn {% if fb.user_vote == True %}active-vote{% endif %}" data-action="upvote" data-id="{{ fb.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=fb.id %}">
+                                    <i class="fa {% if fb.user_vote == True %}fa-thumbs-up text-success{% else %}fa-thumbs-o-up{% endif %}"></i> <span class="upvote-count">{{ fb.upvote_count|default:"" }}</span>
                                 </button>
-                                <button class="btn react-btn mr-2 {% if fb.user_vote == False %}active-vote{% endif %}" data-action="downvote" data-id="{{ fb.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=fb.id %}">
-                                    <i class="fa {% if fb.user_vote == False %}fa-thumbs-down text-danger{% else %}fa-thumbs-o-down{% endif %}"></i> <span class="downvote-count ml-1">{{ fb.downvote_count|default:"" }}</span>
+                                <button class="btn react-btn {% if fb.user_vote == False %}active-vote{% endif %}" data-action="downvote" data-id="{{ fb.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=fb.id %}">
+                                    <i class="fa {% if fb.user_vote == False %}fa-thumbs-down text-danger{% else %}fa-thumbs-o-down{% endif %}"></i> <span class="downvote-count">{{ fb.downvote_count|default:"" }}</span>
                                 </button>
                                 {% endif %}
                                 {% if feedback_form %}
@@ -196,7 +196,7 @@
                                     </button>
                                 {% endif %}
                                 {% if request.user.is_authenticated %}
-                                    <details class="dropdown d-inline-block ml-2" aria-haspopup="menu" role="menu">
+                                    <details class="dropdown comment-actions-menu" aria-haspopup="menu" role="menu">
                                         <summary class="btn btn-sm btn-link text-muted p-0 border-0 comment-dropdown-toggle">
                                             <i class="fa fa-ellipsis-v"></i>
                                         </summary>

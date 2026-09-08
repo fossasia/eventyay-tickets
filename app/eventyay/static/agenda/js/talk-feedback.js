@@ -191,7 +191,7 @@ function filterCommentsBySpeaker(select) {
       return;
     }
     const itemSpeaker = item.getAttribute('data-speaker-id') || '';
-    // Selected speaker sees their targeted comments plus general (all speakers) ones.
+    // Selected speaker sees their targeted comments plus general (session speakers) ones.
     const show = !speakerId || itemSpeaker === speakerId || itemSpeaker === '';
     item.classList.toggle('d-none', !show);
     if (show) {

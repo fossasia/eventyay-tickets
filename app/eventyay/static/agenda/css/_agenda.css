@@ -713,19 +713,43 @@ dialog.agenda-wip-preview-leave-dialog::backdrop {
 .comment-item {
   margin-bottom: 1rem;
 }
+.comment-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.35rem;
+  margin-top: 0.15rem;
+}
+
 .comment-actions .btn {
   border: none;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.45rem;
   color: #606060;
   background: transparent;
   font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  line-height: 1.2;
 }
+
 .comment-actions .btn:hover {
   background-color: #f2f2f2;
   border-radius: 16px;
 }
+
 .comment-actions .reply-btn {
   font-weight: 500;
+}
+
+.comment-actions-menu {
+  display: inline-block;
+  margin-left: 0.15rem;
+}
+
+.comment-actions .upvote-count,
+.comment-actions .downvote-count {
+  min-width: 0.75rem;
 }
 .rating-stars-inline .btn {
   border: none;
@@ -917,9 +941,48 @@ dialog.agenda-wip-preview-leave-dialog::backdrop {
 }
 
 .comment-action-left {
-  gap: 0.5rem 0.75rem;
-  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  gap: 0.5rem 0.85rem;
+  width: 100%;
+}
+
+.comment-action-inline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  min-width: 0;
+}
+
+.comment-inline-rating.rate-me-emoji-rating {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.comment-inline-rating .rate-me-emoji-options {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 2px;
+}
+
+.comment-inline-rating .rate-me-emoji-option {
+  flex-direction: row;
+  flex-shrink: 0;
+}
+
+.comment-visibility-check {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .speaker-target-chip {
@@ -927,6 +990,7 @@ dialog.agenda-wip-preview-leave-dialog::backdrop {
   align-items: center;
   gap: 0.45rem;
   max-width: 100%;
+  flex: 0 1 auto;
   padding: 0.2rem 0.35rem 0.2rem 0.55rem;
   border-radius: 999px;
   background: #f0f4f8;
@@ -953,7 +1017,9 @@ dialog.agenda-wip-preview-leave-dialog::backdrop {
   white-space: nowrap;
 }
 
+.speaker-target-chip .speaker-target-select,
 .speaker-target-select {
+  display: inline-block;
   width: auto;
   min-width: 9.5rem;
   max-width: 14rem;
@@ -966,6 +1032,7 @@ dialog.agenda-wip-preview-leave-dialog::backdrop {
   color: #243b53;
   box-shadow: none;
   appearance: auto;
+  flex: 0 1 auto;
 }
 
 .speaker-target-chip--modal .speaker-target-select {
@@ -1236,31 +1303,38 @@ dialog.rate-me-dialog::backdrop {
     max-width: 100%;
   }
 
-  .speaker-target-chip {
+  .comment-action-inline {
     width: 100%;
   }
 
+  .speaker-target-chip {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .speaker-target-chip .speaker-target-select,
   .speaker-target-select {
     flex: 1 1 auto;
     min-width: 0;
     max-width: none;
+    width: auto;
   }
 }
 
 
 
 .minimalist-rating {
-  gap: 8px;
+  gap: 4px;
 }
 
 .minimalist-rating .rate-me-emoji {
-  font-size: 1.45rem;
+  font-size: 1.35rem;
 }
 
 .minimalist-rating .rate-me-emoji-option {
   border: none;
   background: transparent;
-  padding: 6px;
+  padding: 4px;
   border-radius: 50%;
   box-shadow: none;
   filter: grayscale(100%) opacity(0.6);
