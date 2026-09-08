@@ -111,10 +111,13 @@
                    class="btn btn-info">
                     <i class="fa fa-edit"></i> {{ phrases.base.edit }}
                 </a>
-                <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.user.id }}"
-                   class="btn btn-danger">
-                    <i class="fa fa-trash"></i> {% translate "Remove" %}
-                </a>
+                <form method="post" action="{{ submission.orga_urls.delete_speaker }}" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ speaker.user.id }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> {% translate "Remove" %}
+                    </button>
+                </form>
             {% endif %}
         </div></div>
     {% endfor %}

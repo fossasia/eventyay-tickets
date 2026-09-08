@@ -299,11 +299,10 @@ class PhaseActivate(EventSettingsPermission, View):
     def get_object(self):
         return get_object_or_404(ReviewPhase, event=self.request.event, pk=self.kwargs.get('pk'))
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
         phase = self.get_object()
         phase.activate()
-        return redirect(self.request.event.orga_urls.review_settings)
+        return redirect(request.event.orga_urls.review_settings)
 
 
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):

@@ -266,11 +266,14 @@
                                       {% if action != "view" %}
                                           <div class="phase-option-delete flip ml-2 d-flex">
                                               {% if not form.instance.is_active %}
-                                                  <a href="{{ form.instance.urls.activate }}"
-                                                     class="btn btn-outline-warning mr-2 keep-scroll-position"
-                                                     title="{% translate "Activate phase" %}">
-                                                      <i class="fa fa-star"></i>
-                                                  </a>
+                                                  <form method="post" action="{{ form.instance.urls.activate }}" class="d-inline">
+                                                      {% csrf_token %}
+                                                      <button type="submit"
+                                                              class="btn btn-outline-warning mr-2 keep-scroll-position"
+                                                              title="{% translate "Activate phase" %}">
+                                                          <i class="fa fa-star"></i>
+                                                      </button>
+                                                  </form>
                                               {% else %}
                                                   <a href=""
                                                      class="btn btn-warning mr-2 keep-scroll-position"

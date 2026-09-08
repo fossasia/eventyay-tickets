@@ -377,16 +377,27 @@ def test_orga_can_toggle_schedule_visibility(orga_client, event):
 
     assert event.feature_flags["show_schedule"] is True
 
-    response = orga_client.post(event.orga_urls.toggle_schedule, follow=True)
-    assert response.status_code == 200
+    response = orga_client.post(event.orga_urls.toggle_schedule)
+    assert response.status_code == 302
     event = Event.objects.get(pk=event.pk)
     assert event.feature_flags["show_schedule"] is False
 
-    response = orga_client.post(event.orga_urls.toggle_schedule, follow=True)
-    assert response.status_code == 200
+    response = orga_client.post(event.orga_urls.toggle_schedule)
+    assert response.status_code == 302
     event = Event.objects.get(pk=event.pk)
     with scope(event=event):
         assert event.feature_flags["show_schedule"] is True
+
+
+@pytest.mark.django_db
+def test_toggle_schedule_visibility_rejects_get(orga_client, event):
+    from eventyay.base.models import Event
+
+    assert event.feature_flags["show_schedule"] is True
+    response = orga_client.get(event.orga_urls.toggle_schedule)
+    assert response.status_code == 405
+    event = Event.objects.get(pk=event.pk)
+    assert event.feature_flags["show_schedule"] is True
 
 
 @pytest.mark.django_db

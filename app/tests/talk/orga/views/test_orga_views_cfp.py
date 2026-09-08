@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -105,12 +106,25 @@ def test_make_submission_type_default(
     with scope(event=submission_type.event):
         assert default_submission_type.event.submission_types.count() == 2
         assert submission_type.event.cfp.default_type == default_submission_type
-    response = orga_client.get(submission_type.urls.default, follow=True)
+    response = orga_client.post(submission_type.urls.default, follow=True)
     assert response.status_code == 200
     with scope(event=submission_type.event):
         assert default_submission_type.event.submission_types.count() == 2
         submission_type.event.cfp.refresh_from_db()
         assert submission_type.event.cfp.default_type == submission_type
+
+
+@pytest.mark.django_db
+def test_make_submission_type_default_rejects_get(
+    orga_client, submission_type, default_submission_type
+):
+    with scope(event=submission_type.event):
+        assert submission_type.event.cfp.default_type == default_submission_type
+    response = orga_client.get(submission_type.urls.default)
+    assert response.status_code == 405
+    with scope(event=submission_type.event):
+        submission_type.event.cfp.refresh_from_db()
+        assert submission_type.event.cfp.default_type == default_submission_type
 
 
 @pytest.mark.django_db
@@ -585,7 +599,7 @@ def test_can_remind_answered_submission_question(
 def test_can_hide_question(orga_client, question):
     assert question.active
 
-    response = orga_client.get(question.urls.toggle, follow=True)
+    response = orga_client.post(question.urls.toggle, follow=True)
     with scope(event=question.event):
         question = Question.all_objects.get(pk=question.pk)
 
@@ -594,10 +608,34 @@ def test_can_hide_question(orga_client, question):
 
 
 @pytest.mark.django_db
+def test_hide_question_rejects_get(orga_client, question):
+    assert question.active
+    response = orga_client.get(question.urls.toggle)
+    with scope(event=question.event):
+        question = Question.all_objects.get(pk=question.pk)
+    assert response.status_code == 405
+    assert question.active
+
+
+@pytest.mark.django_db
+def test_can_hide_question_via_json(orga_client, question):
+    assert question.active
+    response = orga_client.post(
+        question.urls.toggle,
+        data=json.dumps({"field": "active", "value": False}),
+        content_type="application/json",
+    )
+    with scope(event=question.event):
+        question = Question.all_objects.get(pk=question.pk)
+    assert response.status_code == 200
+    assert not question.active
+
+
+@pytest.mark.django_db
 def test_can_activate_inactive_question(orga_client, inactive_question):
     assert not inactive_question.active
 
-    response = orga_client.get(inactive_question.urls.toggle, follow=True)
+    response = orga_client.post(inactive_question.urls.toggle, follow=True)
     inactive_question.refresh_from_db()
 
     assert response.status_code == 200

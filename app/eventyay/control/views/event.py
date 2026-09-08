@@ -1314,12 +1314,12 @@ class EventActions(EventPermissionRequiredMixin, ListView):
 class EventActionDiscard(EventPermissionRequiredMixin, View):
     permission = 'can_change_orders'
 
-    def get(self, request, **kwargs):
+    def post(self, request, **kwargs):
         action = get_object_or_404(RequiredAction, event=request.event, pk=kwargs.get('id'))
         action.done = True
         action.user = request.user
         action.save()
-        messages.success(self.request, _('The issue has been marked as resolved!'))
+        messages.success(request, _('The issue has been marked as resolved!'))
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:

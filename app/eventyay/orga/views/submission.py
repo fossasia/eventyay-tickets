@@ -246,13 +246,12 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
 class SubmissionSpeakersDelete(SubmissionViewMixin, View):
     permission_required = 'base.update_submission'
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
         submission = self.object
-        speaker = get_object_or_404(User, pk=request.GET.get('id'))
+        speaker = get_object_or_404(User, pk=request.POST.get('id') or request.GET.get('id'))
 
         if submission in speaker.submissions.all():
-            submission.remove_speaker(speaker, user=self.request.user)
+            submission.remove_speaker(speaker, user=request.user)
             messages.success(request, _('The speaker has been removed from the proposal.'))
         else:
             messages.warning(request, _('The speaker was not part of this proposal.'))

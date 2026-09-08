@@ -1585,6 +1585,32 @@ class EventsTest(SoupTest):
         )
         assert doc.select('.has-error')
 
+    def test_required_action_discard_rejects_get(self):
+        from eventyay.base.models.event import RequiredAction
+
+        self.team1.can_change_orders = True
+        self.team1.save()
+        action = RequiredAction.objects.create(event=self.event1, action_type='test.action')
+        resp = self.client.get(
+            '/control/event/%s/%s/requiredactions/%s/discard' % (self.orga1.slug, self.event1.slug, action.pk)
+        )
+        assert resp.status_code == 405
+        action.refresh_from_db()
+        assert action.done is False
+
+    def test_required_action_discard_via_post(self):
+        from eventyay.base.models.event import RequiredAction
+
+        self.team1.can_change_orders = True
+        self.team1.save()
+        action = RequiredAction.objects.create(event=self.event1, action_type='test.action')
+        resp = self.client.post(
+            '/control/event/%s/%s/requiredactions/%s/discard' % (self.orga1.slug, self.event1.slug, action.pk)
+        )
+        assert resp.status_code == 302
+        action.refresh_from_db()
+        assert action.done is True
+
 
 class EventDeletionTest(SoupTest):
     @scopes_disabled()

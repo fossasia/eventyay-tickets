@@ -42,7 +42,7 @@ def test_user_typeahead(
 def test_remove_superuser(orga_client, orga_user, follow, expected):
     orga_user.is_superuser = True
     orga_user.save()
-    response = orga_client.get(
+    response = orga_client.post(
         reverse("orga:user.subuser"),
         data={"next": follow},
     )
@@ -55,11 +55,22 @@ def test_remove_superuser(orga_client, orga_user, follow, expected):
 
 @pytest.mark.django_db
 def test_remove_superuser_if_no_superuser(orga_client, orga_user):
-    response = orga_client.get(reverse("orga:user.subuser"), follow=True)
+    response = orga_client.post(reverse("orga:user.subuser"), follow=True)
 
     orga_user.refresh_from_db()
     assert response.status_code == 200
     assert not orga_user.is_superuser
+
+
+@pytest.mark.django_db
+def test_remove_superuser_rejects_get(orga_client, orga_user):
+    orga_user.is_superuser = True
+    orga_user.save()
+    response = orga_client.get(reverse("orga:user.subuser"))
+
+    orga_user.refresh_from_db()
+    assert response.status_code == 405
+    assert orga_user.is_superuser
 
 
 @pytest.mark.django_db
