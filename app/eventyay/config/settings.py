@@ -1564,6 +1564,9 @@ EVENTYAY_OBLIGATORY_2FA = conf.obligatory_2fa
 EVENTYAY_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 EVENTYAY_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 
+# Calendar days of the month used for unpaid billing-invoice reminders.
+BILLING_REMINDER_SCHEDULE = [14, 28]
+
 # TODO: The `pdftk` tool should be auto-detected.
 PDFTK = ''
 
