@@ -706,6 +706,7 @@ body:has(.td-dashboard) #page-content {
 
 .td-status-card.td-status-card-live {
   border-color: #bbf7d0;
+  border-right: none;
   background: linear-gradient(180deg, #f0fdf4 0%, #fff 48%);
   box-shadow: inset 4px 0 0 var(--td-green), var(--td-card-shadow, var(--td-shadow));
 }
@@ -713,6 +714,7 @@ body:has(.td-dashboard) #page-content {
 .td-status-card.td-status-card-off,
 .td-status-card.td-status-card-danger {
   border-color: #fecaca;
+  border-right: none;
   background: linear-gradient(180deg, #fff5f5 0%, #fff 48%);
   box-shadow: inset 4px 0 0 var(--td-red), var(--td-card-shadow, var(--td-shadow));
 }
