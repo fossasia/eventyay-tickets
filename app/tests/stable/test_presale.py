@@ -6,8 +6,9 @@ from datetime import timedelta
 
 import pytest
 from django.utils import timezone
+from eventyay.base.models import Event, OrganizerFollower
 
-from eventyay.base.models import Event
+
 
 
 @pytest.mark.django_db
@@ -69,6 +70,64 @@ class TestPresalePages:
         content = response.content.decode()
         assert 'Public Past Event' in content
         assert 'Hidden Past Event' not in content
+     
+
+
+    def test_homepage_excludes_non_public_events(self, client, organizer):
+        """Events with 'Show in lists' disabled must not appear in any
+        section of the homepage (featured, upcoming, or past)."""
+        now = timezone.now()
+        common_kwargs = {
+            'organizer': organizer,
+            'live': True,
+            'startpage_visible': True,
+            'currency': 'USD',
+            'locale': 'en',
+            'email': 'test@example.com',
+        }
+        Event.objects.create(
+            name='Public Upcoming Event', slug='public-upcoming', is_public=True,
+            date_from=now + timedelta(days=10), date_to=now + timedelta(days=11),
+            **common_kwargs,
+        )
+        Event.objects.create(
+            name='Hidden Upcoming Event', slug='hidden-upcoming', is_public=False,
+            date_from=now + timedelta(days=10), date_to=now + timedelta(days=11),
+            **common_kwargs,
+        )
+        Event.objects.create(
+            name='Public Featured Event', slug='public-featured', is_public=True,
+            startpage_featured=True,
+            date_from=now + timedelta(days=5), date_to=now + timedelta(days=6),
+            **common_kwargs,
+        )
+        Event.objects.create(
+            name='Hidden Featured Event', slug='hidden-featured', is_public=False,
+            startpage_featured=True,
+            date_from=now + timedelta(days=5), date_to=now + timedelta(days=6),
+            **common_kwargs,
+        )
+        Event.objects.create(
+            name='Public Past Event Home', slug='public-past-home', is_public=True,
+            date_from=now - timedelta(days=30), date_to=now - timedelta(days=29),
+            **common_kwargs,
+        )
+        Event.objects.create(
+            name='Hidden Past Event Home', slug='hidden-past-home', is_public=False,
+            date_from=now - timedelta(days=30), date_to=now - timedelta(days=29),
+            **common_kwargs,
+        )
+
+        response = client.get('/')
+        assert response.status_code == 200
+        content = response.content.decode()
+
+        assert 'Public Upcoming Event' in content
+        assert 'Hidden Upcoming Event' not in content
+        assert 'Public Featured Event' in content
+        assert 'Hidden Featured Event' not in content
+        assert 'Public Past Event Home' in content
+        assert 'Hidden Past Event Home' not in content
 
     def test_followed_events_page_redirects_unauthenticated(self, client):
         """Test that followed events page redirects anonymous users to login."""
@@ -80,6 +139,34 @@ class TestPresalePages:
         client.force_login(user)
         response = client.get('/followed-events/')
         assert response.status_code == 200
+
+
+    def test_followed_events_excludes_non_public_events(self, client, user, organizer):
+        """Events from a followed organizer with 'Show in lists' disabled
+        must not appear on /followed-events/."""
+        OrganizerFollower.objects.create(user=user, organizer=organizer)
+
+        now = timezone.now()
+        common_kwargs = {
+            'organizer': organizer,
+            'live': True,
+            'startpage_visible': True,
+            'date_from': now + timedelta(days=10),
+            'date_to': now + timedelta(days=11),
+            'currency': 'USD',
+            'locale': 'en',
+            'email': 'test@example.com',
+        }
+        Event.objects.create(name='Public Followed Event', slug='public-followed', is_public=True, **common_kwargs)
+        Event.objects.create(name='Hidden Followed Event', slug='hidden-followed', is_public=False, **common_kwargs)
+
+        client.force_login(user)
+        response = client.get('/followed-events/')
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert 'Public Followed Event' in content
+        assert 'Hidden Followed Event' not in content
+
 
 
 @pytest.mark.django_db

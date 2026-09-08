@@ -17,6 +17,7 @@ from eventyay.common.permissions import is_admin_mode_active
 from eventyay.eventyay_common.navigation import get_global_navigation
 from eventyay.multidomain.urlreverse import eventreverse
 
+
 _SEARCH_PAGE_LIMIT = 200
 
 
@@ -77,7 +78,7 @@ class StartPageView(TemplateView):
             base_qs = (
                 Event.objects.select_related('organizer')
                 .prefetch_related('_settings_objects')
-                .filter(live=True, testmode=False)
+                .filter(live=True, is_public=True, testmode=False)
                 .exclude(_settings_objects__key='talks_testmode', _settings_objects__value='True')
             )
             future_filter = Q(date_to__gte=today_datetime) | Q(date_to__isnull=True, date_from__gte=today_datetime)
@@ -232,6 +233,7 @@ class FollowedEventsView(TemplateView):
                 Event.objects.filter(
                     organizer=org,
                     live=True,
+                    is_public=True,
                 )
                 .filter(Q(startpage_visible=True) | Q(startpage_featured=True))
                 .filter(Q(date_to__gte=today_datetime) | Q(date_to__isnull=True, date_from__gte=today_datetime))
