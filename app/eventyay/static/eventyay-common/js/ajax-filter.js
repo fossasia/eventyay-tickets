@@ -134,6 +134,26 @@ const syncFilterBadge = function(oldContext, newContext) {
     }
 };
 
+/* Result counts and links that carry the current filters are rendered from the
+ * query string, so any of them sitting outside the results region would keep the
+ * values of the last full page load. Templates mark those elements to have them
+ * taken from the fetched document as well. */
+const syncMarkedRegions = function(oldContext, newContext) {
+    if (!oldContext || !newContext) return;
+
+    const replacements = new Map();
+    newContext.querySelectorAll('[data-ajax-sync]').forEach(function(element) {
+        replacements.set(element.getAttribute('data-ajax-sync'), element);
+    });
+
+    oldContext.querySelectorAll('[data-ajax-sync]').forEach(function(stale) {
+        const fresh = replacements.get(stale.getAttribute('data-ajax-sync'));
+        if (fresh) {
+            stale.replaceWith(fresh);
+        }
+    });
+};
+
 const fetchAndReplace = async function(url, replaceUrlParams, form) {
     const tabContext = getTabContextFromForm(form);
     let resultsContainer = getResultsContainer(tabContext.context);
@@ -182,7 +202,8 @@ const fetchAndReplace = async function(url, replaceUrlParams, form) {
         resultsContainer.style.opacity = '1';
 
         syncFilterBadge(tabContext.context, newContext); 
-        
+        syncMarkedRegions(tabContext.context, newContext);
+
         reinitializeBehaviors(resultsContainer);
 
         if (replaceUrlParams) {

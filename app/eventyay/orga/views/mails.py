@@ -448,8 +448,14 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                 initial['text'] = template.text
                 initial['reply_to'] = template.reply_to
                 initial['bcc'] = template.bcc
-        for key in self.form_class.base_fields.keys():
-            if key in self.request.GET:
+        for key, field in self.form_class.base_fields.items():
+            if key not in self.request.GET:
+                continue
+            # QueryDict.get keeps only the last value, which silently drops all but
+            # one of a multi-valued filter carried over from the proposal list.
+            if getattr(field.widget, 'allow_multiple_selected', False):
+                initial[key] = self.request.GET.getlist(key)
+            else:
                 initial[key] = self.request.GET.get(key)
         kwargs['initial'] = initial
 
