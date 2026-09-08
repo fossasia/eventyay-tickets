@@ -48,6 +48,7 @@ urlpatterns = [
     path('global/business/', global_settings.GlobalBusinessSettingsView.as_view(), name='admin.global.business'),
     path('global/settings/preview/', global_settings.GlobalSettingsPagePreviewView.as_view(), name='admin.global.settings.preview'),
     path('global/settings/test-email/', global_settings.GlobalSettingsTestEmailView.as_view(), name='admin.global.settings.test_email'),
+    path('global/settings/test-turnstile/', global_settings.GlobalSettingsTestTurnstileView.as_view(), name='admin.global.settings.test_turnstile'),
     path('global/metadata/', global_settings.MetaDataSettingsView.as_view(), name='admin.global.metadata'),
     path('global/privacy/', global_settings.PrivacySettingsView.as_view(), name='admin.global.privacy'),
 

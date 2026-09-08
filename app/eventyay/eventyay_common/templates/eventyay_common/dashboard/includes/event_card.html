@@ -1,0 +1,83 @@
+{% load i18n %}
+
+<article class="cd-event-card">
+  <a class="cd-event-card__media" href="{{ card.url }}">
+    {% if card.kind %}
+      <span class="cd-event-kind cd-event-kind--{{ card.kind.tone }}">
+        <span class="fa fa-{{ card.kind.icon }}" aria-hidden="true"></span>
+        {{ card.kind.label }}
+      </span>
+    {% endif %}
+    {% if card.image_url %}
+      <img src="{{ card.image_url }}" alt="" loading="lazy">
+    {% else %}
+      <div class="cd-event-card__placeholder" aria-hidden="true">
+        <span class="fa fa-calendar"></span>
+      </div>
+    {% endif %}
+  </a>
+  <div class="cd-event-card__body">
+    <h3 class="cd-event-card__title">
+      <a href="{{ card.url }}">{{ card.name }}</a>
+    </h3>
+    {% if card.date_range %}
+      <p class="cd-event-card__meta">
+        <span class="fa fa-calendar-o" aria-hidden="true"></span>
+        <span>{{ card.date_range }}{% if card.time_label %} · {{ card.time_label }}{% endif %}</span>
+      </p>
+    {% endif %}
+    {% if card.location %}
+      <p class="cd-event-card__meta">
+        <span class="fa fa-map-marker" aria-hidden="true"></span>
+        <span>{{ card.location }}</span>
+      </p>
+    {% endif %}
+    {% if card.badges %}
+      <ul class="cd-event-card__badges">
+        {% for badge in card.badges %}
+          <li class="cd-badge cd-badge--{{ badge.tone }}">{{ badge.label }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+  <div class="cd-event-card__footer">
+    {% if card.module_actions %}
+      <div class="cd-event-card__modules">
+        {% for action in card.module_actions %}
+          {% if action.dialog_id %}
+            <a href="#" role="button"
+               class="cd-module-btn cd-module-btn--{{ action.tone }}"
+               aria-label="{{ action.label }}"
+               title="{{ action.label }}"
+               aria-haspopup="dialog" aria-controls="{{ action.dialog_id }}"
+               data-dialog-target="#{{ action.dialog_id }}" data-toggle="dialog">
+              <span class="fa fa-{{ action.icon }}" aria-hidden="true"></span>
+            </a>
+          {% elif action.modal_target %}
+            <a href="#"
+               class="cd-module-btn cd-module-btn--{{ action.tone }}"
+               aria-label="{{ action.label }}"
+               title="{{ action.label }}"
+               data-toggle="modal"
+               data-target="{{ action.modal_target }}">
+              <span class="fa fa-{{ action.icon }}" aria-hidden="true"></span>
+            </a>
+          {% else %}
+            <a href="{{ action.url }}"
+               class="cd-module-btn cd-module-btn--{{ action.tone }}"
+               aria-label="{{ action.label }}"
+               title="{{ action.label }}"
+               data-toggle="tooltip">
+              <span class="fa fa-{{ action.icon }}" aria-hidden="true"></span>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% elif card.primary_action %}
+      <a class="cd-event-card__action" href="{{ card.primary_action.url }}">
+        {{ card.primary_action.label }}
+        <span aria-hidden="true">></span>
+      </a>
+    {% endif %}
+  </div>
+</article>

@@ -100,12 +100,12 @@ dependencies = [
     "eventyay-paypal @ git+https://github.com/fossasia/eventyay-paypal.git@main",
     "eventyay-stripe @ git+https://github.com/fossasia/eventyay-stripe.git@main",
     "eventyay-bitpay @ git+https://github.com/fossasia/eventyay-bitpay.git@main",
-    "eventyay-socialmedia @ git+https://github.com/fossasia/eventyay-socialmedia.git@dev",
-    "exhibition @ git+https://github.com/fossasia/eventyay-exhibition.git@dev",
-    "eventyay-teamshifts @ git+https://github.com/fossasia/eventyay-teamshifts.git@dev",
-    "eventyay-interpretation @ git+https://github.com/fossasia/eventyay-interpretation.git@dev",
-    "eventyay-hubspot @ git+https://github.com/fossasia/eventyay-hubspot.git@dev",
-    "eventyay-business @ git+https://github.com/fossasia/eventyay-business.git@dev",
+    "eventyay-socialmedia @ git+https://github.com/fossasia/eventyay-socialmedia.git@main",
+    "exhibition @ git+https://github.com/fossasia/eventyay-exhibition.git@main",
+    "eventyay-teamshifts @ git+https://github.com/fossasia/eventyay-teamshifts.git@main",
+    "eventyay-interpretation @ git+https://github.com/fossasia/eventyay-interpretation.git@main",
+    "eventyay-hubspot @ git+https://github.com/fossasia/eventyay-hubspot.git@main",
+    "eventyay-business @ git+https://github.com/fossasia/eventyay-business.git@main",
     "execnet>=2.1.2",
     "fido2>=2.2.0",
     "fonttools>=4.63.0",
@@ -289,8 +289,9 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 [tool.ruff.lint.isort]
 lines-after-imports = 2
 
-[tool.setuptools]
-packages = ["eventyay"]
+[tool.setuptools.packages.find]
+include = ["eventyay*"]
+namespaces = false
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "tests.tickets.settings"

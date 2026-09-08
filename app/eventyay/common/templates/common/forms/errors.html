@@ -1,5 +1,5 @@
 {% load phrases %}
-{% if form.non_field_errors or form.errors %}
+{% if form.non_field_errors or form.errors or has_errors %}
   <div class="alert alert-danger" role="alert">
     <div>
       {% if form.non_field_errors %}

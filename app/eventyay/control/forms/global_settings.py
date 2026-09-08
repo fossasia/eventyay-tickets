@@ -126,11 +126,118 @@ class GlobalSettingsForm(SettingsForm):
 
         super().__init__(*args, obj=self.obj, **kwargs)
 
+        anti_abuse_providers = [
+            ('disabled', _('Disabled')),
+            ('turnstile', _('Cloudflare Turnstile')),
+        ]
+        login_modes = [
+            ('disabled', _('Disabled')),
+            ('always', _('Always require')),
+            ('failed_attempts_only', _('Only after repeated failed login attempts')),
+        ]
         smtp_select = [('sendgrid', _('SendGrid')), ('smtp', _('SMTP')), ('gmail_api', _('Gmail / Google Workspace API'))]
 
         self.fields = OrderedDict(
             list(self.fields.items())
             + [
+                (
+                    'anti_abuse_provider',
+                    forms.ChoiceField(
+                        label=_('Anti-Abuse / CAPTCHA Provider'),
+                        required=True,
+                        widget=forms.RadioSelect,
+                        choices=anti_abuse_providers,
+                        initial='disabled',
+                    ),
+                ),
+                (
+                    'turnstile_site_key',
+                    forms.CharField(
+                        required=False,
+                        label=_('Cloudflare Turnstile Site Key'),
+                        widget=forms.TextInput(attrs={
+                            'placeholder': '0x4AAAAAA...',
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
+                (
+                    'turnstile_secret_key',
+                    SecretKeySettingsField(
+                        required=False,
+                        label=_('Cloudflare Turnstile Secret Key'),
+                        widget=SecretKeySettingsWidget(attrs={
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
+                (
+                    'turnstile_on_registration',
+                    forms.BooleanField(
+                        required=False,
+                        label=_('Require Turnstile on user registration / signup'),
+                        widget=forms.CheckboxInput(attrs={
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
+                (
+                    'turnstile_login_mode',
+                    forms.ChoiceField(
+                        label=_('Turnstile on user login'),
+                        required=False,
+                        choices=login_modes,
+                        initial='disabled',
+                        widget=forms.Select(attrs={
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
+                (
+                    'turnstile_failed_login_threshold',
+                    forms.IntegerField(
+                        label=_('Failed login attempt threshold'),
+                        required=False,
+                        min_value=1,
+                        initial=3,
+                        help_text=_(
+                            'Number of consecutive failed login attempts before Turnstile challenge is required.'
+                        ),
+                        widget=forms.NumberInput(attrs={
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
+                (
+                    'turnstile_on_password_reset',
+                    forms.BooleanField(
+                        required=False,
+                        label=_('Require Turnstile on password reset requests'),
+                        widget=forms.CheckboxInput(attrs={
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
+                (
+                    'turnstile_on_organizer_create',
+                    forms.BooleanField(
+                        required=False,
+                        label=_('Require Turnstile on organizer creation'),
+                        widget=forms.CheckboxInput(attrs={
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
+                (
+                    'turnstile_on_contact',
+                    forms.BooleanField(
+                        required=False,
+                        label=_('Require Turnstile on public contact and inquiry forms'),
+                        widget=forms.CheckboxInput(attrs={
+                            'data-display-dependency': '#id_anti_abuse_provider_1',
+                        }),
+                    ),
+                ),
                 (
                     'allow_all_users_create_organizer',
                     forms.BooleanField(
@@ -209,11 +316,10 @@ class GlobalSettingsForm(SettingsForm):
                     forms.CharField(
                         required=False,
                         label=_('Leaflet tiles attribution'),
-                        help_text=_('e.g. {sample}').format(
-                            sample='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        ),
+                        help_text=_('e.g. {sample}').format(sample='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'),
                     ),
                 ),
+
                 (
                     'email_vendor',
                     forms.ChoiceField(
@@ -397,16 +503,22 @@ class GlobalSettingsForm(SettingsForm):
                     'etherpad_enabled',
                     forms.BooleanField(
                         label=_('Enable Etherpad integration'),
-                        help_text=_('Allow events to attach collaborative Etherpad notes to their sessions.'),
+                        help_text=_(
+                            'When enabled, Etherpad collaborative pads can be created for schedule sessions.'
+                        ),
                         required=False,
                     ),
                 ),
                 (
                     'etherpad_base_url',
                     forms.URLField(
-                        label=_('Default Etherpad instance URL'),
-                        help_text=_('Base URL of the Etherpad instance, e.g. {sample}').format(sample='https://pad.example.org'),
+                        label=_('Etherpad base URL'),
+                        help_text=_('The root URL of your Etherpad instance, e.g. https://pad.example.com/'),
                         required=False,
+                        widget=forms.URLInput(attrs={
+                            'placeholder': 'https://pad.example.com/',
+                            'data-display-dependency': '#id_etherpad_enabled',
+                        }),
                     ),
                 ),
                 (
@@ -414,10 +526,12 @@ class GlobalSettingsForm(SettingsForm):
                     SecretKeySettingsField(
                         label=_('Etherpad API key'),
                         help_text=_(
-                            'API key of the Etherpad instance (found in APIKEY.txt). Required only for automatic pad '
-                            'creation; without it, pad links are generated as plain URLs that Etherpad creates on first visit.'
+                            'Found in APIKEY.txt in your Etherpad installation directory.'
                         ),
                         required=False,
+                        widget=SecretKeySettingsWidget(attrs={
+                            'data-display-dependency': '#id_etherpad_enabled',
+                        }),
                     ),
                 ),
                 (
@@ -425,34 +539,32 @@ class GlobalSettingsForm(SettingsForm):
                     forms.CharField(
                         label=_('Pad name pattern'),
                         help_text=_(
-                            'Pattern used to generate pad names. Available placeholders: {placeholders}.'
-                        ).format(placeholders='{event}, {submission}, {token}'),
+                            'Pattern used to generate Etherpad pad names. '
+                            'Available placeholders: {submission} (session slug/code), {token} (unique random token). '
+                            'Default: eventyay-{submission}-{token}'
+                        ),
+                        initial='eventyay-{submission}-{token}',
                         required=False,
+                        widget=forms.TextInput(attrs={
+                            'placeholder': 'eventyay-{submission}-{token}',
+                            'data-display-dependency': '#id_etherpad_enabled',
+                        }),
                     ),
                 ),
             ]
         )
-        responses = register_global_settings.send(self)
-        for r, response in sorted(responses, key=lambda r: str(r[0])):
-            for key, value in response.items():
-                # Payment settings belong to Ticketing, not GlobalSettingsForm
-                if not key.startswith('payment_'):
-                    self.fields[key] = value
 
-        # VoxBento
-        if 'voxbento_base_url' not in self.fields:
+        if any(app.endswith('interpretation') or app == 'interpretation' for app in settings.INSTALLED_APPS):
             self.fields['voxbento_base_url'] = forms.URLField(
                 label=_('VoxBento Base URL'),
                 required=False,
                 help_text=_('Base URL of the VoxBento interpretation server (e.g. https://interpretation.eventyay.com).'),
             )
-        if 'voxbento_client_id' not in self.fields:
             self.fields['voxbento_client_id'] = forms.CharField(
                 label=_('VoxBento Client ID'),
                 required=False,
                 help_text=_('Client ID for authenticating with VoxBento API.'),
             )
-        if 'voxbento_client_secret' not in self.fields:
             self.fields['voxbento_client_secret'] = SecretKeySettingsField(
                 label=_('VoxBento Client Secret'),
                 required=False,
@@ -523,6 +635,17 @@ class GlobalSettingsForm(SettingsForm):
                 'etherpad_api_key',
                 'etherpad_pad_name_pattern',
             ]),
+            ('security', _('Security & Anti-Abuse'), [
+                'anti_abuse_provider',
+                'turnstile_site_key',
+                'turnstile_secret_key',
+                'turnstile_on_registration',
+                'turnstile_login_mode',
+                'turnstile_failed_login_threshold',
+                'turnstile_on_password_reset',
+                'turnstile_on_organizer_create',
+                'turnstile_on_contact',
+            ]),
             ('voxbento', _('VoxBento'), [
                 'voxbento_base_url',
                 'voxbento_client_id',
@@ -534,6 +657,11 @@ class GlobalSettingsForm(SettingsForm):
                 'hubspot_property_sync_ttl_minutes',
             ]),
         ]
+
+        if 'turnstile_site_key' in self.fields:
+            self.fields['turnstile_site_key']._required = True
+        if 'turnstile_secret_key' in self.fields:
+            self.fields['turnstile_secret_key']._required = True
 
         for name, field in self.fields.items():
             if isinstance(field.widget, forms.ClearableFileInput):
@@ -576,6 +704,25 @@ class GlobalSettingsForm(SettingsForm):
             if not has_secret:
                 raise forms.ValidationError({'gmail_client_secret': _('This field is required when using Gmail as email vendor.')})
 
+        if data.get('anti_abuse_provider') == 'turnstile':
+            turnstile_errors = {}
+            if not (data.get('turnstile_site_key') or '').strip():
+                turnstile_errors['turnstile_site_key'] = _(
+                    'This field is required when Cloudflare Turnstile is enabled.'
+                )
+            turnstile_secret = data.get('turnstile_secret_key')
+            has_turnstile_secret = (
+                turnstile_secret == SECRET_REDACTED
+                or bool((turnstile_secret or '').strip())
+                or self.obj.settings.get('turnstile_secret_key')
+            )
+            if not has_turnstile_secret:
+                turnstile_errors['turnstile_secret_key'] = _(
+                    'This field is required when Cloudflare Turnstile is enabled.'
+                )
+            if turnstile_errors:
+                raise forms.ValidationError(turnstile_errors)
+
         return data
 
     def save(self):
@@ -584,7 +731,6 @@ class GlobalSettingsForm(SettingsForm):
         new_value = self.cleaned_data.get(image_field)
 
         if isinstance(new_value, UploadedFile):
-
             clean_name, ext = os.path.splitext(new_value.name or image_field)
             new_filename = self.get_new_filename(clean_name)
             base_path, _ = os.path.splitext(new_filename)
@@ -670,7 +816,7 @@ class GlobalTicketingSettingsForm(SettingsForm):
                         required=False,
                         decimal_places=2,
                         max_digits=10,
-                        help_text=_('Percentage fee charged on ticket payments.'),
+                        help_text=_('A percentage fee charged on each ticket payment processed through Stripe Connect.'),
                         validators=[MinValueValidator(0), MaxValueValidator(100)],
                     ),
                 ),
