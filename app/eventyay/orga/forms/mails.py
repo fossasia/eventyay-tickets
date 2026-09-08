@@ -230,6 +230,9 @@ class MailDetailForm(ScheduledAtValidationMixin, ReadOnlyFlag, forms.ModelForm):
 
 
 class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
+    empty_audience_error = _('Select at least one recipient or audience filter before sending this email.')
+    empty_audience_draft_error = _('Select at least one recipient or audience filter before saving this draft.')
+
     skip_queue = forms.BooleanField(
         label=_('Send immediately'),
         required=False,
@@ -285,6 +288,8 @@ class WriteMailBaseForm(ScheduledAtValidationMixin, MailTemplateForm):
 
 
 class WriteTeamsMailForm(WriteMailBaseForm):
+    empty_audience_error = _('The selected teams have no active members with an email address.')
+
     recipients = forms.MultipleChoiceField(
         label=_('Recipient groups'),
         required=False,
@@ -371,6 +376,20 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         ),
     )
 
+    audience_fields = (
+        'state',
+        'submission_type',
+        'content_locale',
+        'track',
+        'tags',
+        'answer',
+        'answer__options',
+        'unanswered',
+        'q',
+        'submissions',
+        'speakers',
+    )
+
     def __init__(self, **kwargs):
         kwargs.setdefault('show_all_filters', True)
         super().__init__(**kwargs)
@@ -383,6 +402,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                 self.filter_option = self.filter_question.options.filter(pk=initial.get('answer__options')).first()
                 self.filter_answer = initial.get('answer')
                 self.filter_unanswered = initial.get('unanswered')
+        self._recipients = None
         self.fields['submissions'].choices = [
             (sub.code, sub.title) for sub in self.event.submissions.all().order_by('title')
         ]
@@ -416,6 +436,13 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):
+        if self._recipients is None:
+            self._recipients = self.build_recipients()
+        return self._recipients
+
+    def build_recipients(self):
+        if not any(self.cleaned_data.get(field) for field in self.audience_fields):
+            return []
         added_submissions = self.cleaned_data.get('submissions')
         added_speakers = self.cleaned_data.get('speakers')
         if (added_submissions or added_speakers) and all(

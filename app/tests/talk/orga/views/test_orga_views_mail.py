@@ -534,7 +534,7 @@ def test_orga_can_compose_single_mail_multiple_states_and_failing_placeholders(
         event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
-            "recipients": ["submitted", "confirmed"],
+            "state": ["submitted", "confirmed"],
             "bcc": "",
             "cc": "",
             "reply_to": "",
@@ -628,7 +628,7 @@ def test_orga_can_compose_mail_for_track(orga_client, event, submission, track):
             "reply_to": "",
             "subject_0": "foo",
             "text_0": "bar",
-            "tracks": [track.pk],
+            "track": [track.pk],
         },
     )
     assert response.status_code == 200
@@ -654,7 +654,7 @@ def test_orga_can_compose_mail_for_submission_type(orga_client, event, submissio
             "reply_to": "",
             "subject_0": "foo",
             "text_0": "bar",
-            "submission_types": [submission.submission_type.pk],
+            "submission_type": [submission.submission_type.pk],
         },
     )
     assert response.status_code == 200
@@ -685,8 +685,8 @@ def test_orga_can_compose_mail_for_track_and_type_no_doubles(
             "reply_to": "",
             "subject_0": "foo",
             "text_0": "bar",
-            "tracks": [track.pk],
-            "submission_types": [submission.submission_type.pk],
+            "track": [track.pk],
+            "submission_type": [submission.submission_type.pk],
         },
     )
     assert response.status_code == 200
@@ -724,9 +724,10 @@ def test_orga_can_compose_single_mail_selected_submissions(
 def test_orga_can_compose_single_mail_to_additional_recipients(
     orga_client,
     event,
+    speaker,
+    other_speaker,
     submission,
     other_submission,
-    orga_user,
 ):
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 0
@@ -734,7 +735,7 @@ def test_orga_can_compose_single_mail_to_additional_recipients(
         event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
-            "additional_recipients": f"foot@example.com,{orga_user.email}",
+            "speakers": [speaker.pk, other_speaker.pk],
             "bcc": "",
             "cc": "",
             "reply_to": "",
@@ -758,7 +759,7 @@ def test_orga_can_compose_mail_to_speakers_with_no_slides(
         event.orga_urls.compose_mails_sessions,
         follow=True,
         data={
-            "recipients": "no_slides",
+            "state": "confirmed",
             "bcc": "",
             "cc": "",
             "reply_to": "",
@@ -897,8 +898,6 @@ def test_mail_template_list_hides_auto_created_templates(orga_client, event, mai
 
 @pytest.mark.django_db
 def test_composer_keeps_every_value_of_a_multi_value_filter(orga_client, event, submission, other_submission):
-    # QueryDict.get keeps only the last value, so a proposal list filtered on two
-    # states used to hand the composer just one of them.
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions + "?state=submitted&state=accepted",
         follow=True,
@@ -919,8 +918,6 @@ def test_composer_keeps_a_single_valued_filter_as_a_string(orga_client, event, s
 
 @pytest.mark.django_db
 def test_composer_offers_the_exclude_pending_filter(orga_client, event, submission):
-    # The field exists on the form but had no widget in the composer, so the filter
-    # the proposal list was showing could never survive the POST.
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions + "?state=submitted&pending_state__isnull=on",
         follow=True,
@@ -956,8 +953,6 @@ def test_composer_excludes_pending_proposals_when_asked(orga_client, event, spea
 def test_excluding_pending_still_filters_alongside_a_chosen_proposal(
     orga_client, event, speaker, other_speaker, submission, other_submission
 ):
-    # Choosing a proposal outright does not mean the other filters stop applying,
-    # so "exclude pending" must count as a filter rather than leave an empty base.
     with scope(event=event):
         other_submission.pending_state = "accepted"
         other_submission.save(update_fields=["pending_state"])
@@ -980,7 +975,6 @@ def test_excluding_pending_still_filters_alongside_a_chosen_proposal(
             for mail in QueuedMail.objects.filter(sent__isnull=True)
             for user in mail.to_users.all()
         }
-    # the chosen proposal, plus the speaker of the non-pending one the filter matches
     assert addressed == {speaker, other_speaker}
 
 
@@ -988,6 +982,7 @@ def test_excluding_pending_still_filters_alongside_a_chosen_proposal(
 def test_orga_can_see_session_mail_recipients(orga_client, event, speaker, submission):
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions_recipients,
+        {"state": submission.state},
         follow=True,
     )
     assert response.status_code == 200
@@ -1018,9 +1013,99 @@ def test_session_mail_recipients_follow_the_state_filter(
 
 
 @pytest.mark.django_db
+def test_session_mail_recipients_are_empty_without_a_selection(orga_client, event, speaker, submission):
+    response = orga_client.get(
+        event.orga_urls.compose_mails_sessions_recipients,
+        follow=True,
+    )
+    assert response.status_code == 200
+    assert response.json() == {"count": 0, "recipients": []}
+
+
+@pytest.mark.django_db
+def test_session_mail_recipient_count_follows_selection_and_clearing(orga_client, event, speaker, submission):
+    selected = orga_client.get(
+        event.orga_urls.compose_mails_sessions_recipients,
+        {"state": submission.state},
+        follow=True,
+    )
+    assert selected.json()["count"] == 1
+
+    cleared = orga_client.get(
+        event.orga_urls.compose_mails_sessions_recipients,
+        follow=True,
+    )
+    assert cleared.json()["count"] == 0
+
+
+@pytest.mark.django_db
+def test_session_mail_cannot_be_sent_without_a_selection(orga_client, event, speaker, submission):
+    djmail.outbox = []
+    response = orga_client.post(
+        event.orga_urls.compose_mails_sessions,
+        follow=True,
+        data={
+            "action": "send",
+            "bcc": "",
+            "reply_to": "",
+            "subject_0": "foo",
+            "text_0": "bar",
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        "Select at least one recipient or audience filter before sending this email."
+        in response.context["form"].non_field_errors()
+    )
+    with scope(event=event):
+        assert not QueuedMail.objects.exists()
+    assert djmail.outbox == []
+
+
+@pytest.mark.django_db
+def test_session_mail_cannot_be_saved_as_draft_without_a_selection(orga_client, event, speaker, submission):
+    response = orga_client.post(
+        event.orga_urls.compose_mails_sessions,
+        follow=True,
+        data={
+            "action": "draft",
+            "bcc": "",
+            "reply_to": "",
+            "subject_0": "foo",
+            "text_0": "bar",
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        "Select at least one recipient or audience filter before saving this draft."
+        in response.context["form"].non_field_errors()
+    )
+    with scope(event=event):
+        assert not QueuedMail.objects.exists()
+
+
+@pytest.mark.django_db
+def test_session_mail_preview_works_without_a_selection(orga_client, event, speaker, submission):
+    response = orga_client.post(
+        event.orga_urls.compose_mails_sessions,
+        follow=True,
+        data={
+            "action": "preview",
+            "bcc": "",
+            "reply_to": "",
+            "subject_0": "foo",
+            "text_0": "bar",
+        },
+    )
+    assert response.status_code == 200
+    assert "Roughly 0 emails will be generated" in response.text
+    assert "sample recipient data" in response.text
+    with scope(event=event):
+        assert not QueuedMail.objects.exists()
+
+
+@pytest.mark.django_db
 def test_session_composer_opens_with_a_custom_field_filter(orga_client, event, answer, question):
-    # Talk custom fields live on event.talkquestions. event.questions is the ticket
-    # shop's manager, scoped on the organizer, and reading it here raised ScopeError.
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions,
         {"question": question.pk, "answer": answer.answer},
@@ -1124,6 +1209,31 @@ def test_session_mail_draft_drops_its_send_time(orga_client, event, speaker, sub
         assert draft.scheduled_at is None
         assert draft.sent is None
     assert djmail.outbox == []
+
+
+@pytest.mark.django_db
+def test_teams_mail_cannot_be_sent_to_a_team_without_members(orga_client, event):
+    djmail.outbox = []
+    with scope(event=event):
+        empty_team = event.organizer.teams.create(name="Nobody here", all_events=False)
+        empty_team.limit_events.add(event)
+    response = orga_client.post(
+        event.orga_urls.compose_mails_teams,
+        follow=True,
+        data={
+            "recipients": [empty_team.pk],
+            "subject_0": "foo",
+            "text_0": "bar",
+        },
+    )
+    assert response.status_code == 200
+    assert (
+        "The selected teams have no active members with an email address."
+        in response.context["form"].non_field_errors()
+    )
+    assert djmail.outbox == []
+    with scope(event=event):
+        assert QueuedMail.objects.filter(sent__isnull=False).count() == 0
 
 
 @pytest.mark.django_db

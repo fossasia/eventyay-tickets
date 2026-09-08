@@ -451,8 +451,6 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
         for key, field in self.form_class.base_fields.items():
             if key not in self.request.GET:
                 continue
-            # QueryDict.get keeps only the last value, which silently drops all but
-            # one of a multi-valued filter carried over from the proposal list.
             if getattr(field.widget, 'allow_multiple_selected', False):
                 initial[key] = self.request.GET.getlist(key)
             else:
@@ -589,6 +587,11 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                         'html': preview_text,
                     }
             return self.get(self.request, *self.args, **self.kwargs)
+
+        if not form.get_recipients():
+            message = form.empty_audience_draft_error if is_draft else form.empty_audience_error
+            form.add_error(None, message)
+            return self.render_to_response(self.get_context_data(form=form))
 
         with transaction.atomic():
             result = form.save()
