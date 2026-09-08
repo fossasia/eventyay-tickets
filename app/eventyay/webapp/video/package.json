@@ -79,7 +79,7 @@
     "i18next-parser": "^9.4.0",
     "pug": "^3.0.4",
     "rollup-plugin-visualizer": "^7.1.1",
-    "sass": "^1.103.1",
+    "sass": "^1.104.0",
     "stylus": "^0.64.0",
     "vite": "^8.2.2",
     "vite-plugin-eslint": "^1.8.1",
