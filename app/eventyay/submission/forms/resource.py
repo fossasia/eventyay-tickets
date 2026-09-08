@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 
-
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -52,14 +51,23 @@ def get_slides_max_count(event) -> int:
     return event.cfp.fields.get('slides', {}).get('max_count') or 1
 
 
-
 def save_slides_resource(submission, slides: SlidesData):
-    if slides.clear_ids:
-        delete_slide_resources(submission, resource_ids=slides.clear_ids)
+    valid_clear_ids = [cid for cid in slides.clear_ids if cid.isdigit()]
+    if valid_clear_ids:
+        delete_slide_resources(submission, resource_ids=valid_clear_ids)
 
     created_resources = []
     for resource_file in slides.resources:
         created_resources.append(create_slide_resource(submission, resource_file=resource_file))
+
+    from django.core.files import File
+    from django.core.files.storage import default_storage
+
+    for resource in slides.kept_existing_resources:
+        if str(resource.pk).startswith('tmp:'):
+            tmp_name = str(resource.pk)[4:]
+            file_obj = File(default_storage.open(tmp_name), name=resource.filename)
+            created_resources.append(create_slide_resource(submission, resource_file=file_obj))
 
     return created_resources
 
@@ -101,6 +109,8 @@ class SlidesField(forms.Field):
 
         cleaned_resources = []
         for uploaded_resource in value.get('resources', []):
+            if getattr(uploaded_resource, 'is_session_file', False):
+                continue
             cleaned_resources.append(self.resource_field.clean(uploaded_resource))
 
         kept_existing_resources = [
