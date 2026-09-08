@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load rich_text %}
+{% load static %}
 
 {% block submission_title %}{% translate "Attendee feedback" %} :: {% endblock submission_title %}
 
@@ -10,13 +11,20 @@
         <div class="card mb-2">
             <div class="card-body pb-0">
                 {% if entry.rating %}
-                    <div class="feedback-rating mb-2" aria-label="{% translate 'Rating' %}: {{ entry.rating }} / 5" title="{% translate 'Rating' %}: {{ entry.rating }} / 5">
-                        {% for i in "12345"|make_list %}
-                            <span class="{% if forloop.counter <= entry.rating %}text-warning{% else %}text-muted{% endif %}">★</span>
-                        {% endfor %}
+                    <div class="feedback-rating mb-2" title="{% translate 'Rating' %}: {{ entry.rating }}/5" aria-label="{% translate 'Rating' %}: {{ entry.rating }}/5">
+                        <span class="comment-rating-badge">
+                            {% if entry.rating == 1 %}😠 {% translate "Terrible" %}
+                            {% elif entry.rating == 2 %}😕 {% translate "Poor" %}
+                            {% elif entry.rating == 3 %}😐 {% translate "Average" %}
+                            {% elif entry.rating == 4 %}🙂 {% translate "Good" %}
+                            {% else %}🤩 {% translate "Excellent" %}{% endif %}
+                        </span>
                     </div>
                 {% endif %}
-                {{ entry.review|rich_text }}
+                <div class="comment-text-content comment-text-collapsed mb-2">
+                    {{ entry.review|rich_text }}
+                </div>
+                <button type="button" class="btn btn-link btn-sm p-0 read-more-btn d-none mb-2 mt-1 text-left" data-expanded="false" data-read-more="{% translate 'more' %}" data-show-less="{% translate 'less' %}">{% translate "more" %}</button>
             </div>
         </div>
     {% empty %}
@@ -26,3 +34,8 @@
     {% include "orga/includes/pagination.html" %}
 
 {% endblock submission_content %}
+
+{% block scripts %}
+{{ block.super }}
+<script type="module" src="{% static 'agenda/js/talk-feedback.js' %}"></script>
+{% endblock scripts %}

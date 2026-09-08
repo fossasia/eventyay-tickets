@@ -1,6 +1,7 @@
 import logging
 from decimal import Decimal
 
+from django.db import transaction
 from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
@@ -28,7 +29,7 @@ from eventyay.base.models import (
 from eventyay.base.models.seating import SeatingPlanLayoutValidator
 from eventyay.base.models.track import Track
 from eventyay.base.services.mail import SendMailException, mail
-from eventyay.base.services.teams import send_team_invitation_email
+from eventyay.base.services.teams import check_full_admin_limit, send_team_invitation_email
 from eventyay.base.settings import validate_organizer_settings
 from eventyay.helpers.urls import build_absolute_uri
 
@@ -39,8 +40,7 @@ logger = logging.getLogger(__name__)
 class OrganizerSerializer(I18nAwareModelSerializer):
     follower_count = serializers.SerializerMethodField(
         help_text=(
-            'Number of users following this organizer, or null when follower counts '
-            'are hidden by the organizer.'
+            'Number of users following this organizer, or null when follower counts are hidden by the organizer.'
         ),
     )
     is_following = serializers.SerializerMethodField(
@@ -288,6 +288,12 @@ class TeamInviteSerializer(serializers.ModelSerializer):
         except SendMailException:
             pass  # Already logged
 
+    def _check_full_admin_limit(self, email, user=None):
+        """Enforce full-admin entitlement before adding a member or invite."""
+        decision = check_full_admin_limit(self.context['team'], email=email, user=user)
+        if not decision.allowed:
+            raise ValidationError(decision.message)
+
     def create(self, validated_data):
         if 'email' in validated_data:
             try:
@@ -298,8 +304,10 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                 if 'native' not in get_auth_backends():
                     raise ValidationError('Users need to have a eventyay account before they can be invited.')
 
+                self._check_full_admin_limit(validated_data['email'])
+
                 invite = self.context['team'].invites.create(email=validated_data['email'])
-                self._send_invite(invite)
+                transaction.on_commit(lambda: self._send_invite(invite))
                 invite.team.log_action(
                     'eventyay.team.invite.created',
                     data={'email': validated_data['email']},
@@ -309,6 +317,8 @@ class TeamInviteSerializer(serializers.ModelSerializer):
             else:
                 if self.context['team'].members.filter(pk=user.pk).exists():
                     raise ValidationError(_('This user already has permissions for this team.'))
+
+                self._check_full_admin_limit(validated_data['email'], user=user)
 
                 self.context['team'].members.add(user)
 
@@ -321,19 +331,21 @@ class TeamInviteSerializer(serializers.ModelSerializer):
                     **self.context['log_kwargs'],
                 )
 
-                send_team_invitation_email(
-                    user=user,
-                    organizer_name=self.context['organizer'].name,
-                    team_name=self.context['team'].name,
-                    url=build_absolute_uri(
-                        'eventyay_common:organizer.team',
-                        kwargs={
-                            'organizer': self.context['organizer'].slug,
-                            'team': self.context['team'].pk,
-                        },
-                    ),
-                    locale=get_language_without_region(),
-                    is_registered_user=True,
+                transaction.on_commit(
+                    lambda: send_team_invitation_email(
+                        user=user,
+                        organizer_name=self.context['organizer'].name,
+                        team_name=self.context['team'].name,
+                        url=build_absolute_uri(
+                            'eventyay_common:organizer.team',
+                            kwargs={
+                                'organizer': self.context['organizer'].slug,
+                                'team': self.context['team'].pk,
+                            },
+                        ),
+                        locale=get_language_without_region(),
+                        is_registered_user=True,
+                    )
                 )
 
                 return TeamInvite(email=user.email)

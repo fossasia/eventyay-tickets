@@ -17,9 +17,23 @@ class FeedbackForm(ReadOnlyFlag, forms.ModelForm):
         self.instance.talk = talk
         speakers = talk.speakers.all()
         self.fields['speaker'].queryset = speakers
-        self.fields['speaker'].empty_label = _('All speakers')
+        self.fields['speaker'].empty_label = _('Session speakers')
+        self.fields['speaker'].label_from_instance = lambda obj: obj.get_display_name()
+        self.fields['speaker'].help_text = ''
         if len(speakers) == 1:
             self.fields['speaker'].widget = forms.HiddenInput()
+        else:
+            self.fields['speaker'].widget.attrs.update(
+                {
+                    'class': 'form-control form-control-sm speaker-target-select',
+                    'aria-label': str(_('Send to')),
+                    'title': str(
+                        _(
+                            'Session speakers share this feedback. Choose one speaker to send it only to them.'
+                        )
+                    ),
+                }
+            )
 
         anonymous_mode = get_feedback_anonymous_mode(talk.event)
         if anonymous_mode == 'optional':

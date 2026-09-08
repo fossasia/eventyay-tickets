@@ -333,7 +333,9 @@ class CartManager:
                 # TODO: i18n plurals
                 raise CartError(_(error_messages['max_products']) % (max_products,))
 
-    def _check_product_constraints(self, op, current_ops=[]):
+    def _check_product_constraints(self, op, current_ops=None):
+        if current_ops is None:
+            current_ops = []
         if isinstance(op, (self.AddOperation, self.ExtendOperation)):
             if not (
                 (isinstance(op, self.AddOperation) and op.addon_to == 'FAKE')
