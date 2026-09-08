@@ -1,15 +1,14 @@
 <template lang="pug">
 .c-room(v-if="room", :class="{'standalone-chat': modules['chat.native'] && room.modules.length === 1}")
-	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']", style="container-type: inline-size;")
-		.video-wrapper(:class="{'is-16-9-video': hasLivestream}")
-			media-source-placeholder
+	.stage(v-if="modules['livestream.native'] || modules['livestream.youtube'] || modules['call.janus']")
+		media-source-placeholder
 		LiveCaptions(v-if="ccEnabled", :ws-url="selectedCcWsUrl")
 		reactions-overlay(v-if="hasLivestream")
 		upcoming-stream-countdown(:room="room")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="hasLivestream")
 			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
-			.cc-controls(v-if="showPluginLanguageDropdown", style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;")
+			.cc-controls(v-if="showPluginLanguageDropdown", style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0;")
 				.dropdown-wrapper(style="display: flex; align-items: center; gap: 4px;")
 					i.mdi.mdi-account-voice(style="font-size: 20px; color: var(--clr-secondary-text-light);")
 					AudioTranslationDropdown(:key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange")
@@ -280,30 +279,14 @@ export default {
 	min-height: 0
 	min-width: 0
 	.stage
+		flex: auto
 		display: flex
 		flex-direction: column
+		position: relative
 		min-height: 0
-		flex: auto
 		overflow: hidden
-		position: relative
 		+below('m')
-			height: 40vh
-	.video-wrapper
-		display: flex
-		flex-direction: column
-		align-items: center
-		justify-content: center
-		flex: auto
-		width: 100%
-		position: relative
-		&.is-16-9-video
-			container-type: size
-			.c-media-source-placeholder
-				flex: none
-				aspect-ratio: 16 / 9
-				width: 100cqw
-				max-width: calc(100cqh * 16 / 9)
-				max-height: 100cqh
+			height: auto
 	.c-media-source-placeholder
 		flex: auto
 	.room-sidebar
@@ -338,9 +321,12 @@ export default {
 		min-height: 40px
 		justify-content: space-between
 		align-items: center
+		width: 100%
+		box-sizing: border-box
+		margin: 0 auto
 		flex-wrap: wrap
 		gap: 6px
-		padding: 4px 8px
+		padding: 4px 16px
 		user-select: none
 		.stage-tool
 			font-size: 16px
@@ -389,6 +375,6 @@ export default {
 		&:not(.standalone-chat)
 			.c-chat
 				flex: auto
-				width: 100vw
+				width: 100%
 				min-height: 0
 </style>

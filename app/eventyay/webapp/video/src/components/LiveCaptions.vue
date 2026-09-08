@@ -124,7 +124,7 @@ export default {
 <style lang="stylus">
 .c-live-captions
         position: relative
-        width: var(--mediasource-placeholder-width, 100%)
+        width: 100%
         margin: 0 auto
         align-self: center
         background-color: #000000
