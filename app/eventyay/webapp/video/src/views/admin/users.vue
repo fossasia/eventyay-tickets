@@ -192,8 +192,14 @@ export default {
 			this.userAction = null
 			this.selectedUser = null
 			if (!user) return
+			
+			this._latestUserRefresh = this._latestUserRefresh || {}
+			const refreshId = Date.now()
+			this._latestUserRefresh[user.id] = refreshId
+			
 			try {
 				const updatedUser = await api.call('user.fetch', {id: user.id})
+				if (this._latestUserRefresh[user.id] !== refreshId) return
 				if (updatedUser) {
 					user.moderation_state = updatedUser.moderation_state
 				}
