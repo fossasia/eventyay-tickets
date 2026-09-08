@@ -1157,7 +1157,7 @@ wheels = [
 [[package]]
 name = "eventyay-bitpay"
 version = "1.5.2"
-source = { git = "https://github.com/fossasia/eventyay-bitpay.git?rev=main#39e38f11ffdd676e6df3c34b5f5787ca7076932b" }
+source = { git = "https://github.com/fossasia/eventyay-bitpay.git?rev=main#35b29ffa04586953986e3a3afcd99253d3bfa404" }
 dependencies = [
     { name = "btcpay-python" },
 ]
@@ -1165,12 +1165,12 @@ dependencies = [
 [[package]]
 name = "eventyay-business"
 version = "1.0.0"
-source = { git = "https://github.com/fossasia/eventyay-business.git?rev=main#4175a86ce5f6a4df1d26e48cd5091a424a79a5cf" }
+source = { git = "https://github.com/fossasia/eventyay-business.git?rev=main#a51fc02d2b444f4e7b6a6c6ea83492ee60ebc9b2" }
 
 [[package]]
 name = "eventyay-hubspot"
 version = "1.0.0"
-source = { git = "https://github.com/fossasia/eventyay-hubspot.git?rev=main#cbc6ce64194cf536163c2c003e0ed96904f65292" }
+source = { git = "https://github.com/fossasia/eventyay-hubspot.git?rev=main#c80f2316728ce78dd7aea1130cc235fe17af8e5f" }
 dependencies = [
     { name = "cryptography" },
     { name = "requests" },
@@ -1179,7 +1179,7 @@ dependencies = [
 [[package]]
 name = "eventyay-interpretation"
 version = "0.1.0"
-source = { git = "https://github.com/fossasia/eventyay-interpretation.git?rev=main#a8beefb11108099218686bdc7f7ea806079c7f16" }
+source = { git = "https://github.com/fossasia/eventyay-interpretation.git?rev=main#910e1d460a10deaea1eb9ffa7d53e98ab407b787" }
 dependencies = [
     { name = "cryptography" },
     { name = "requests" },
@@ -1187,13 +1187,13 @@ dependencies = [
 
 [[package]]
 name = "eventyay-paypal"
-version = "1.0.0"
-source = { git = "https://github.com/fossasia/eventyay-paypal.git?rev=main#a6d9cbdd28ff567ac336cb0242d09a8e5aa0cd7c" }
+version = "1.1.0"
+source = { git = "https://github.com/fossasia/eventyay-paypal.git?rev=main#0d963b1e5dc68d622c2109abbbf149939c55d638" }
 
 [[package]]
 name = "eventyay-socialmedia"
 version = "0.1.0"
-source = { git = "https://github.com/fossasia/eventyay-socialmedia.git?rev=main#0b573af4a714d376bce0a2cc12a350ff5dd5801b" }
+source = { git = "https://github.com/fossasia/eventyay-socialmedia.git?rev=main#fa7c644b2d275563afacfb7a479097027ba92b12" }
 dependencies = [
     { name = "cryptography" },
     { name = "mastodon-py" },
@@ -1203,15 +1203,16 @@ dependencies = [
 [[package]]
 name = "eventyay-stripe"
 version = "1.0.1"
-source = { git = "https://github.com/fossasia/eventyay-stripe.git?rev=main#10007c4ca478cde2f2f347d8ec4930e2929086c9" }
+source = { git = "https://github.com/fossasia/eventyay-stripe.git?rev=main#16a591159e5893a1a4cad30f98614ac6eab3d8e3" }
 dependencies = [
+    { name = "pydantic" },
     { name = "stripe" },
 ]
 
 [[package]]
 name = "eventyay-teamshifts"
 version = "0.1.0"
-source = { git = "https://github.com/fossasia/eventyay-teamshifts.git?rev=main#aa24fbf87099e8e2b02466f54759a201dba07871" }
+source = { git = "https://github.com/fossasia/eventyay-teamshifts.git?rev=main#77169f237865db8eb7aecaca098b92471056768b" }
 
 [[package]]
 name = "eventyay-unified"
@@ -1703,7 +1704,7 @@ wheels = [
 [[package]]
 name = "exhibition"
 version = "0.1.0"
-source = { git = "https://github.com/fossasia/eventyay-exhibition.git?rev=main#dfb613210f25e1ddc631e3c3893612d2d28c0054" }
+source = { git = "https://github.com/fossasia/eventyay-exhibition.git?rev=main#448f2b9e91f8f1253d2a0eaee1b05daddab64575" }
 
 [[package]]
 name = "faker"
@@ -2597,11 +2598,11 @@ wheels = [
 
 [[package]]
 name = "publicsuffixlist"
-version = "1.0.2.20260903"
+version = "1.0.2.20260904"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ca/03/bcdbea103c5f2dc9103b0b888e0cfe1f4214ccaf0597d80fe82714b80bf7/publicsuffixlist-1.0.2.20260903.tar.gz", hash = "sha256:cc08f5c5c96a6609f1a3dd3b651c6d77e28a90278cf29b252cfeecc9b0048b9a", size = 108959, upload-time = "2026-09-03T07:58:49.87Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3a/dd/2dec03dc9afb59c5970c760be1953596c87dc0e9794bebb904b267b51ec9/publicsuffixlist-1.0.2.20260904.tar.gz", hash = "sha256:20ba05378dc9a0206266ea93aacb6779d8e77b6ba1be227c494bad85ce539a1d", size = 109395, upload-time = "2026-09-04T07:54:59.754Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/27/03/0fb12cf1fe1bb0841450c9f6b63c4a7ec2e4e7e13021f6bf9c4c2ba0d6ad/publicsuffixlist-1.0.2.20260903-py2.py3-none-any.whl", hash = "sha256:4545cb8c9c69d9a8993a2af8a043c611dc8b778167ffe237019c90f5d27a5f2e", size = 108705, upload-time = "2026-09-03T07:58:48.79Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/e0/bf3f2e37858b95dbe2376b622ac38a002eefce07bbe23fd43bedae3b42fc/publicsuffixlist-1.0.2.20260904-py2.py3-none-any.whl", hash = "sha256:8dd405d398f207c2944b89a753f63bae4b0a5f80069ce6cd5e67df2a67be7fec", size = 108745, upload-time = "2026-09-04T07:54:58.402Z" },
 ]
 
 [[package]]
@@ -2793,11 +2794,11 @@ wheels = [
 
 [[package]]
 name = "pypdf"
-version = "6.16.2"
+version = "6.17.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/44/66/54212e75406afd9f3e933d0dda23072f6aecc55c5a273077dc2e0b028b23/pypdf-6.16.2.tar.gz", hash = "sha256:595647f6191de6f402cfde1d0c455d6cbccbd509aac32b34783009c032de5d6e", size = 7008996, upload-time = "2026-08-23T13:50:07.135Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5d/dc/34857a5e31cf708c163929f61a9ba4bd357a8850e49fc4e846ced527b51f/pypdf-6.17.0.tar.gz", hash = "sha256:097ad0d829778ec5b615aeaa5c6da4b6cac4992f8fd80b56f98a1a8c006573bb", size = 7018352, upload-time = "2026-09-04T11:30:44.256Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/f1/a2da3b55acd4ab737bf728c97edaaed5ec1d3c1236acb639dcdfa97e42c7/pypdf-6.16.2-py3-none-any.whl", hash = "sha256:c8b09a59399062fb45a1b8156c18a787a10a3dae03ac9674397a226712c94604", size = 385060, upload-time = "2026-08-23T13:50:05.349Z" },
+    { url = "https://files.pythonhosted.org/packages/c1/08/1e9731038124a9127e1d27848952b86fb32b2f45f8f1b94adc7f0817a6ac/pypdf-6.17.0-py3-none-any.whl", hash = "sha256:5bd827266a21553b74d910e350131a6227b72f2ab4209bf372814b8195fa11c5", size = 388051, upload-time = "2026-09-04T11:30:42.681Z" },
 ]
 
 [[package]]
