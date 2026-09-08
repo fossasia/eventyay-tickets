@@ -1,6 +1,6 @@
 <template lang="pug">
 .c-live-captions
-	.caption-log(ref="log", @scroll="onScroll")
+	.caption-log(ref="log")
 		.caption-line(v-for="(line, index) in lines", :key="line.id || index") {{ line.text }}
 </template>
 
@@ -20,7 +20,6 @@ export default {
 			reconnectAttempts: 0,
 			maxReconnectAttempts: 5,
 			reconnectTimeout: null,
-			isAutoScrollPaused: false,
 			nextId: 1
 		}
 	},
@@ -79,7 +78,7 @@ export default {
 		},
                 attemptReconnect() {
                         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-                                this.lines = [{ id: this.nextId++, text: '[Captions disconnected]' }]
+                                this.lines = [{ id: this.nextId++, text: this.$t('[Captions disconnected]') }]
                                 return
                         }
                         const backoffMs = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000)
@@ -98,24 +97,13 @@ export default {
                                 
 								if ((data.type === 'caption' || data.type === 'translated_caption') && data.text) {
                                         this.lines.push({ id: this.nextId++, text: data.text })
-                                        if (this.lines.length > 100) {
-                                                this.lines = this.lines.slice(-50)
+                                        if (this.lines.length > 2) {
+                                                this.lines = this.lines.slice(-2)
                                         }
-                                        this.$nextTick(() => {
-                                                if (!this.isAutoScrollPaused && this.$refs.log) {
-                                                        this.$refs.log.scrollTop = this.$refs.log.scrollHeight
-                                                }
-                                        })
                                 }
 			} catch (e) {
 				console.error('Failed to parse caption message', e)
 			}
-		},
-		onScroll(e) {
-			const target = e.target
-			// If we scroll up from the bottom (with a small 2px threshold for floating point rounding), pause auto-scroll
-			const isAtBottom = Math.abs(target.scrollHeight - target.scrollTop - target.clientHeight) < 2
-			this.isAutoScrollPaused = !isAtBottom
 		}
 	}
 }

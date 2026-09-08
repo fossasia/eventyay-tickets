@@ -16,29 +16,21 @@ export default {
 	async mounted() {
 		await this.$nextTick()
 		this.onResize()
-		this._rafId = requestAnimationFrame(this.pollRect)
+		window.addEventListener('scroll', this.onResize, { passive: true })
+		window.addEventListener('resize', this.onResize, { passive: true })
 	},
 	beforeUnmount() {
-		if (this._rafId) {
-			cancelAnimationFrame(this._rafId)
-		}
+		window.removeEventListener('scroll', this.onResize)
+		window.removeEventListener('resize', this.onResize)
 		this.$store.commit('reportMediaSourcePlaceholderRect', null)
 	},
 	methods: {
 		onResize() {
+			if (!this.$el) return
 			this.$store.commit(
 				'reportMediaSourcePlaceholderRect',
 				this.$el.getBoundingClientRect(),
 			)
-		},
-		pollRect() {
-			if (!this.$el) return
-			const rect = this.$el.getBoundingClientRect()
-			const old = this.$store.state.mediaSourcePlaceholderRect
-			if (!old || rect.top !== old.top || rect.left !== old.left || rect.width !== old.width || rect.height !== old.height) {
-				this.onResize()
-			}
-			this._rafId = requestAnimationFrame(this.pollRect)
 		}
 	}
 }
