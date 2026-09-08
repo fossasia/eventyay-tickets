@@ -386,10 +386,16 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
             # At a glance metrics
             submitted_proposals_count = event.submissions.count()
             accepted_proposals_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
-            conversion_percentage = round((accepted_proposals_count / submitted_proposals_count * 100), 1) if submitted_proposals_count else 0
-        
             confirmed_sessions_count = event.submissions.filter(state=SubmissionStates.CONFIRMED).count()
-        
+            conversion_percentage = (
+                round(
+                    ((accepted_proposals_count + confirmed_sessions_count) / submitted_proposals_count) * 100,
+                    1,
+                )
+                if submitted_proposals_count
+                else 0
+            )
+
             scheduled_sessions_count = 0
             if getattr(event, 'current_schedule', None):
                 scheduled_sessions_count = event.current_schedule.talks.filter(

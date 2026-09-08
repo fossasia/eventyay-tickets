@@ -10,7 +10,7 @@
 
     <div class="td-kpi-grid">
         {% if can_update_event %}
-        <a href="{% url 'eventyay_common:event.live' event=request.event.slug organizer=request.event.organizer.slug %}" class="td-kpi-card td-status-card {{ at_a_glance.talk_component_status.text_class|default:'td-status-card-blue' }}" title="{% trans "Talk component status" %}">
+        <a href="{% url 'eventyay_common:event.live' event=request.event.slug organizer=request.event.organizer.slug %}" class="td-kpi-card td-status-card td-status-card-{{ at_a_glance.talk_component_status.class|default:'off' }}" title="{% trans "Talk component status" %}">
             <div class="td-kpi-top">
                 <span class="td-kpi-icon" aria-hidden="true"><span class="fa fa-desktop"></span></span>
                 <span class="td-kpi-label">{% trans "Talk component" %}</span>
