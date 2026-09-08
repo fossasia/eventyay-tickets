@@ -13,7 +13,7 @@ from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
 
 from eventyay.base.models.mail import MailTemplate, QueuedMail, get_prefixed_subject
-
+from eventyay.base.signals import entitlement_usage_recorded
 from eventyay.common.exceptions import SendMailException
 from eventyay.common.language import language
 from eventyay.common.mail import TolerantDict, mail_send_task
@@ -30,7 +30,6 @@ from eventyay.common.views.mixins import (
     Sortable,
 )
 from eventyay.helpers.timezone import format_scheduled_datetime
-
 from eventyay.mail.signals import request_pre_send
 from eventyay.orga.forms.mails import (
     DraftRemindersForm,
@@ -409,9 +408,9 @@ class ComposeMailPreview(EventPermissionRequired, View):
 
         locale = data.get('locale') or request.event.locale
 
-        from eventyay.common.sanitizers import sanitize_email_html
-        from eventyay.base.templatetags.rich_text import build_email_preview_context
         from eventyay.base.services.mail import expand_email_variable_chips
+        from eventyay.base.templatetags.rich_text import build_email_preview_context
+        from eventyay.common.sanitizers import sanitize_email_html
 
         safe_html = sanitize_email_html(html_body)
 
@@ -489,10 +488,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
     def send_test_email(self, form):
         address = form.cleaned_data.get('test_email')
         if not address:
-            form.add_error(
-                'test_email',
-                _('Please enter an email address to send the test email to.')
-            )
+            form.add_error('test_email', _('Please enter an email address to send the test email to.'))
             return self.render_to_response(self.get_context_data(form=form))
 
         from eventyay.base.templatetags.rich_text import compile_email_body
@@ -503,20 +499,28 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             context_dict = TolerantDict()
             for key, value in form.get_valid_placeholders().items():
                 context_dict[key] = value.render_sample(event)
-                
+
             subject_data = form.cleaned_data.get('subject')
-            subject = nh3.clean(subject_data.localize(locale), tags=set()) if subject_data else ""
+            subject = nh3.clean(subject_data.localize(locale), tags=set()) if subject_data else ''
             if not subject.strip():
-                subject = str(_("Example Subject for {event_name}"))
+                subject = str(_('Example Subject for {event_name}'))
             subject = get_prefixed_subject(event, subject.format_map(context_dict))
-            
+
             text_data = form.cleaned_data.get('text')
-            text = text_data.localize(locale) if text_data else ""
+            text = text_data.localize(locale) if text_data else ''
             if not text.strip():
                 if 'proposal_title' in context_dict:
-                    text = str(_("Hello {name},\n\nThis is an example test email for your proposal \"{proposal_title}\" at {event_name}.\n\nBest regards,\nThe {event_name} team"))
+                    text = str(
+                        _(
+                            'Hello {name},\n\nThis is an example test email for your proposal "{proposal_title}" at {event_name}.\n\nBest regards,\nThe {event_name} team'
+                        )
+                    )
                 else:
-                    text = str(_("Hello {name},\n\nThis is an example test email for {event_name}.\n\nBest regards,\nThe {event_name} team"))
+                    text = str(
+                        _(
+                            'Hello {name},\n\nThis is an example test email for {event_name}.\n\nBest regards,\nThe {event_name} team'
+                        )
+                    )
             text = text.format_map(context_dict)
 
         mail_send_task.apply_async(
@@ -557,16 +561,15 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             # Only approximate, good enough. Doesn't run deduplication, so it doesn't have to
             # run rendering for all placeholders for all people, either.
             result = form.get_recipients()
-            
-            from eventyay.base.templatetags.rich_text import compile_email_body
 
+            from eventyay.base.templatetags.rich_text import compile_email_body
 
             # Very rough method to deduplicate recipients, but good enough for a preview
             self.mail_count = len({str(res) for res in result}) if result else 0
             if not result:
                 messages.warning(
                     self.request,
-                    _('Preview generated with sample recipient data because no recipient is currently selected.')
+                    _('Preview generated with sample recipient data because no recipient is currently selected.'),
                 )
 
             for locale in self.request.event.locales:
@@ -598,6 +601,18 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             if is_draft and result:
                 # Until this runs, the rows look like ordinary outbox entries.
                 QueuedMail.objects.filter(pk__in=[mail.pk for mail in result]).update(is_draft=True)
+
+            if not is_draft and result:
+                entitlement_usage_recorded.send(
+                    sender=self.request.event.organizer,
+                    capability='email.bulk.monthly',
+                    quantity=len(result),
+                    unit='emails',
+                    source_type='bulk_email',
+                    source_id=str(result[0].pk) if hasattr(result[0], 'pk') else 'send_direct',
+                    idempotency_key=f'bulk_mail_compose_{getattr(result[0], "pk", "direct")}',
+                    event=self.request.event,
+                )
         scheduled_at = form.cleaned_data.get('scheduled_at')
         if len(result) and result[0].sent:
             self.success_url = self.request.event.orga_urls.sent_mails
