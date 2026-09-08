@@ -40,7 +40,7 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
-    "eslint": "^10.9.1",
+    "eslint": "^10.10.0",
     "eslint-plugin-vue": "^10.9.2",
     "eslint-plugin-vue-pug": "^1.0.0-alpha.6",
     "globals": "^17.12.0",
