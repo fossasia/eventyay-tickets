@@ -1,6 +1,7 @@
 {% extends "eventyay_common/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
+{% load turnstile_tags %}
 {% block title %}{% trans "Create a new organizer" %}{% endblock %}
 {% block content %}
 	<h1>{% trans "Create a new organizer" %}</h1>
@@ -14,6 +15,8 @@
             {% if form.set_as_default %}
                 {% bootstrap_field form.set_as_default layout="horizontal" %}
             {% endif %}
+            {% turnstile_widget 'organizer_create' %}
+            {% turnstile_script 'organizer_create' %}
         </fieldset>
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">
