@@ -1165,7 +1165,7 @@ dependencies = [
 [[package]]
 name = "eventyay-business"
 version = "1.0.0"
-source = { git = "https://github.com/fossasia/eventyay-business.git?rev=main#a51fc02d2b444f4e7b6a6c6ea83492ee60ebc9b2" }
+source = { git = "https://github.com/fossasia/eventyay-business.git?rev=main#85091ad4587559b030d9aa7c2dff2e9f211fe2c7" }
 
 [[package]]
 name = "eventyay-hubspot"
@@ -1704,7 +1704,7 @@ wheels = [
 [[package]]
 name = "exhibition"
 version = "0.1.0"
-source = { git = "https://github.com/fossasia/eventyay-exhibition.git?rev=main#448f2b9e91f8f1253d2a0eaee1b05daddab64575" }
+source = { git = "https://github.com/fossasia/eventyay-exhibition.git?rev=main#e421f46fcfd906065441728086d7fd534db11805" }
 
 [[package]]
 name = "faker"
