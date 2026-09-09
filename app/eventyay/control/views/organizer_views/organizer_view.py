@@ -18,7 +18,6 @@ from django.views.generic import (
     CreateView,
     FormView,
     ListView,
-    TemplateView,
     UpdateView,
 )
 from rest_framework.decorators import api_view
@@ -82,6 +81,7 @@ class OrganizerCreate(OrganizerCreationPermissionMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['request'] = self.request
         return kwargs
 
     @transaction.atomic
@@ -435,7 +435,7 @@ class OrganizerDetail(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin
         ctx = super().get_context_data(**kwargs)
         ctx['filter_form'] = self.filter_form
         ctx['advanced_filters_open'] = advanced_filters_open_from_get(self.filter_form)
-        ctx['meta_fields'] = [self.filter_form['meta_{}'.format(p.name)] for p in self.organizer.meta_properties.all()]
+        ctx['meta_fields'] = [self.filter_form[f'meta_{p.name}'] for p in self.organizer.meta_properties.all()]
         ctx['event_series_creation_enabled'] = is_event_series_creation_enabled(self.request)
         ctx['meetup_creation_enabled'] = is_meetup_creation_enabled(self.request)
         return ctx

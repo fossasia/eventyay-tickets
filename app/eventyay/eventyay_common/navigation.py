@@ -29,12 +29,6 @@ def get_global_navigation(request: HttpRequest) -> List[MenuItem]:
         return []
     nav = [
         {
-            'label': _('Browse events'),
-            'url': reverse('presale:index'),
-            'active': False,
-            'icon': 'compass',
-        },
-        {
             'label': _('My Tickets'),
             'url': reverse('eventyay_common:orders'),
             'active': 'orders' in url.url_name,

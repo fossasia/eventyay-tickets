@@ -10,8 +10,18 @@ from django.http import JsonResponse
 from django.utils.translation import gettext as _
 from django.views import View
 
+from eventyay.base.services.turnstile import (
+    TURNSTILE_ERROR_MESSAGE,
+    TURNSTILE_FAILED_MESSAGE,
+    TURNSTILE_MISCONFIGURED_MESSAGE,
+    get_turnstile_settings,
+    is_turnstile_enabled_for_action,
+    verify_turnstile_token,
+)
 from eventyay.helpers.http import get_client_ip
+
 from . import EventViewMixin
+
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +40,7 @@ class ContactOrganizerView(EventViewMixin, View):
             return False
         from django_redis import get_redis_connection
         from redis.exceptions import RedisError
-        key = 'contact_ratelimit_{}'.format(hashlib.sha1(client_ip.encode()).hexdigest())
+        key = f'contact_ratelimit_{hashlib.sha1(client_ip.encode()).hexdigest()}'
         try:
             rc = get_redis_connection('redis')
             count = rc.get(key)
@@ -87,7 +97,10 @@ class ContactOrganizerView(EventViewMixin, View):
 
         if self._is_rate_limited(request):
             return JsonResponse(
-                {'success': False, 'error': _('Too many messages sent. Please wait a few minutes before trying again.')},
+                {
+                    'success': False,
+                    'error': _('Too many messages sent. Please wait a few minutes before trying again.'),
+                },
                 status=429,
             )
 
@@ -104,6 +117,37 @@ class ContactOrganizerView(EventViewMixin, View):
                 {'success': False, 'error': _('No contact email configured for this event.')},
                 status=400,
             )
+
+        if is_turnstile_enabled_for_action('contact', request):
+            cfg = get_turnstile_settings()
+            if not cfg['site_key'] or not cfg['secret_key']:
+                return JsonResponse(
+                    {'success': False, 'error': str(TURNSTILE_MISCONFIGURED_MESSAGE)},
+                    status=400,
+                )
+
+            token = request.POST.get('cf-turnstile-response')
+            if not token:
+                return JsonResponse(
+                    {'success': False, 'error': str(TURNSTILE_ERROR_MESSAGE)},
+                    status=400,
+                )
+            client_ip = get_client_ip(request)
+            valid, error_code = verify_turnstile_token(
+                token,
+                remote_ip=client_ip,
+                expected_action='contact',
+            )
+            if not valid:
+                if error_code == 'missing-secret':
+                    return JsonResponse(
+                        {'success': False, 'error': str(TURNSTILE_MISCONFIGURED_MESSAGE)},
+                        status=400,
+                    )
+                return JsonResponse(
+                    {'success': False, 'error': str(TURNSTILE_FAILED_MESSAGE)},
+                    status=400,
+                )
 
         subject = _('Message from attendee – {event}').format(
             event=str(request.event.name),
