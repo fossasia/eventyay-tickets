@@ -242,7 +242,7 @@ def build_api_catalog(request: HttpRequest, event: Event) -> list[ApiEndpointGro
                     access=ACCESS_PUBLIC,
                     methods='GET, POST, PATCH, DELETE',
                     description=_('Talk submissions. Public read; writes need organiser access.'),
-                    write_permission='can_change_event_settings',
+                    write_permission='can_change_submissions',
                 ),
                 ApiEndpoint(
                     name=_('Speakers'),
@@ -250,6 +250,7 @@ def build_api_catalog(request: HttpRequest, event: Event) -> list[ApiEndpointGro
                     access=ACCESS_PUBLIC,
                     methods='GET, PATCH',
                     description=_('Speaker profiles linked to this event.'),
+                    write_permission='can_change_submissions',
                 ),
                 ApiEndpoint(
                     name=_('Reviews'),
@@ -265,6 +266,7 @@ def build_api_catalog(request: HttpRequest, event: Event) -> list[ApiEndpointGro
                     access=ACCESS_PUBLIC,
                     methods='GET, POST, PATCH, DELETE',
                     description=_('Session tracks.'),
+                    write_permission='can_change_event_settings',
                 ),
                 ApiEndpoint(
                     name=_('Submission types'),
@@ -272,6 +274,7 @@ def build_api_catalog(request: HttpRequest, event: Event) -> list[ApiEndpointGro
                     access=ACCESS_PUBLIC,
                     methods='GET, POST, PATCH, DELETE',
                     description=_('Talk types (talk, workshop, …).'),
+                    write_permission='can_change_event_settings',
                 ),
                 ApiEndpoint(
                     name=_('Tags'),
@@ -279,6 +282,7 @@ def build_api_catalog(request: HttpRequest, event: Event) -> list[ApiEndpointGro
                     access=ACCESS_PUBLIC,
                     methods='GET, POST, PATCH, DELETE',
                     description=_('Submission tags.'),
+                    write_permission='can_change_submissions',
                 ),
             ),
         )
@@ -316,6 +320,7 @@ def build_api_catalog(request: HttpRequest, event: Event) -> list[ApiEndpointGro
                     access=ACCESS_PUBLIC,
                     methods='GET, POST, PATCH, DELETE',
                     description=_('Venue rooms used by the schedule.'),
+                    write_permission='can_change_event_settings',
                 ),
             ),
         )

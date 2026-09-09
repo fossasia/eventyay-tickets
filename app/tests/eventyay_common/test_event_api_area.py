@@ -98,6 +98,20 @@ def test_api_catalog_shows_orders_with_permission(rf, event, user, team):
     assert 'Products' in names
 
 
+def test_api_catalog_talk_write_permissions(rf, event, user, team):
+    request = _attach_session(rf.get(_api_url(event)))
+    request.user = user
+    groups = build_api_catalog(request, event)
+    talk_group = next(g for g in groups if g.key == 'talks')
+    by_name = {str(e.name): e for e in talk_group.endpoints}
+
+    assert by_name['Submissions / sessions'].write_permission == 'can_change_submissions'
+    assert by_name['Speakers'].write_permission == 'can_change_submissions'
+    assert by_name['Tags'].write_permission == 'can_change_submissions'
+    assert by_name['Tracks'].write_permission == 'can_change_event_settings'
+    assert by_name['Submission types'].write_permission == 'can_change_event_settings'
+
+
 @override_settings(SITE_URL='https://testserver')
 def test_create_and_revoke_team_token_from_api_page(organizer_client, event, team):
     url = _api_url(event)
