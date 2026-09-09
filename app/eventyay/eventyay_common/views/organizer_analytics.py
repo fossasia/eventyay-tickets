@@ -672,4 +672,25 @@ class OrganizerAnalyticsView(OrganizerPermissionRequiredMixin, TemplateView):
 
         ctx.update(data)
         ctx.update(attendance_presentation)
+
+        # Client-side filters: keep full top-events list and attendance payload in the page.
+        top_events = list(data.get('top_events') or [])
+        currencies = sorted({event.get('currency') for event in top_events if event.get('currency')})
+        selected_currency = (self.request.GET.get('revenue_currency') or '').strip().upper()
+        if selected_currency and selected_currency not in currencies:
+            selected_currency = ''
+
+        date_labels = self._attendance_date_labels(
+            timezone.now(),
+            timezone.get_current_timezone(),
+        )
+        daily_by_event = data.get('attendance_daily_by_event') or {}
+        # JSON object keys must be strings
+        daily_payload = {str(event_id): days for event_id, days in daily_by_event.items()}
+
+        ctx['top_events'] = top_events
+        ctx['top_event_currencies'] = currencies if len(currencies) > 1 else []
+        ctx['selected_revenue_currency'] = selected_currency
+        ctx['attendance_daily_by_event_client'] = daily_payload
+        ctx['attendance_date_labels'] = list(date_labels)
         return ctx

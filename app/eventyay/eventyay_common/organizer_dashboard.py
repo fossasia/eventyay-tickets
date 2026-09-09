@@ -26,6 +26,7 @@ from eventyay.base.models import (
     SubmissionStates,
     Team,
 )
+from eventyay.base.templatetags.money import money_filter
 from eventyay.eventyay_common.navigation import get_organizer_navigation
 from eventyay.multidomain.urlreverse import build_absolute_uri
 
@@ -224,19 +225,46 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
 
     currency = full_events[0].currency if full_events else (getattr(organizer, 'default_currency', None) or 'USD')
     gross_revenue_is_money = True
+    revenue_currencies: list[str] = []
+    revenue_filter_options: list[dict[str, str]] = []
+    selected_revenue_currency = (request.GET.get('revenue_currency') or '').strip().upper()
     if revenue_by_currency:
-        # Never sum amounts across currencies; show the largest single-currency total.
-        top_revenue = revenue_by_currency[0]
-        currency = top_revenue['order__event__currency'] or currency
-        gross_revenue = top_revenue['total'] or Decimal('0')
-        if len(revenue_by_currency) > 1:
-            # Multiple currencies: render a plain multi-currency summary instead of a mixed total.
-            gross_revenue_is_money = False
-            gross_revenue = ' · '.join(
-                f"{row['order__event__currency']} {row['total'] or Decimal('0')}"
+        revenue_currencies = [
+            row['order__event__currency']
+            for row in revenue_by_currency
+            if row.get('order__event__currency')
+        ]
+        if selected_revenue_currency and selected_revenue_currency not in revenue_currencies:
+            selected_revenue_currency = ''
+
+        revenue_filter_options = [
+            {
+                'currency': row['order__event__currency'],
+                'label': str(money_filter(row['total'] or Decimal('0'), row['order__event__currency'])),
+            }
+            for row in revenue_by_currency
+            if row.get('order__event__currency')
+        ]
+        all_currencies_label = ' · '.join(option['label'] for option in revenue_filter_options)
+
+        if selected_revenue_currency:
+            selected_row = next(
+                row
                 for row in revenue_by_currency
-                if row.get('order__event__currency')
+                if row.get('order__event__currency') == selected_revenue_currency
             )
+            currency = selected_revenue_currency
+            gross_revenue = selected_row['total'] or Decimal('0')
+            gross_revenue_is_money = True
+        else:
+            # Never sum amounts across currencies; show the largest single-currency total,
+            # or a plain multi-currency summary when several currencies exist.
+            top_revenue = revenue_by_currency[0]
+            currency = top_revenue['order__event__currency'] or currency
+            gross_revenue = top_revenue['total'] or Decimal('0')
+            if len(revenue_by_currency) > 1:
+                gross_revenue_is_money = False
+                gross_revenue = all_currencies_label
 
     events_url = reverse('eventyay_common:organizer.events', kwargs={'organizer': slug})
     create_event_url = reverse('eventyay_common:events.add') + f'?organizer={slug}'
@@ -285,6 +313,14 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
             'value': gross_revenue,
             'value_is_money': gross_revenue_is_money,
             'currency': currency,
+            'currencies': revenue_currencies if len(revenue_currencies) > 1 else [],
+            'revenue_options': revenue_filter_options if len(revenue_filter_options) > 1 else [],
+            'revenue_all_label': (
+                ' · '.join(option['label'] for option in revenue_filter_options)
+                if len(revenue_filter_options) > 1
+                else ''
+            ),
+            'selected_currency': selected_revenue_currency,
             'icon': 'money',
             'tone': 'green',
             'url': events_url,
@@ -532,4 +568,6 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         'organizer_settings_url': settings_url,
         'can_create_event': can_create,
         'can_change_organizer_settings': can_settings,
+        'revenue_currencies': revenue_currencies if len(revenue_currencies) > 1 else [],
+        'selected_revenue_currency': selected_revenue_currency,
     }

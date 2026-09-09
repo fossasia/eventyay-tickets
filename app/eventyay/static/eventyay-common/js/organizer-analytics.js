@@ -291,6 +291,8 @@ function drawCheckinsOverTime() {
     new ApexCharts(chartEl, options).render()
 }
 
+let attendanceChart = null
+
 function drawAttendanceOverTime() {
     if (typeof ApexCharts === 'undefined') return
 
@@ -327,7 +329,28 @@ function drawAttendanceOverTime() {
         legend: { position: 'top' },
         tooltip: { shared: true, x: { format: 'dd MMM yyyy' } }
     }
-    new ApexCharts(chartEl, options).render()
+    attendanceChart = new ApexCharts(chartEl, options)
+    attendanceChart.render().then(() => {
+        if (window.odPendingAttendanceSeries) {
+            window.odUpdateAttendanceChart(window.odPendingAttendanceSeries)
+            window.odPendingAttendanceSeries = null
+        }
+    })
+}
+
+window.odUpdateAttendanceChart = function updateAttendanceChart(series) {
+    if (!Array.isArray(series)) return
+    if (!attendanceChart) {
+        window.odPendingAttendanceSeries = series
+        return
+    }
+    const dataEl = document.getElementById('attendance-over-time-data')
+    const labelOrders = dataEl?.dataset.labelOrders || 'Orders'
+    const labelRegistrations = dataEl?.dataset.labelRegistrations || 'Registrations'
+    attendanceChart.updateSeries([
+        { name: labelOrders, data: series.map(d => ({ x: new Date(d.x), y: d.orders || 0 })) },
+        { name: labelRegistrations, data: series.map(d => ({ x: new Date(d.x), y: d.registrations || 0 })) }
+    ])
 }
 
 function drawFollowerWeekly() {
