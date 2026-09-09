@@ -2172,7 +2172,7 @@ class Event(
         return bool(self.testmode or self.talks_testmode)
 
     @staticmethod
-    def without_talks_testmode(qs):
+    def exclude_talks_testmode(qs):
         """Exclude events whose talks component is in test mode.
 
         Django's ``.exclude(related__a=x, related__b=y)`` splits into two
