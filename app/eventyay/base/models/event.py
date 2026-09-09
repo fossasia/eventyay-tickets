@@ -126,7 +126,7 @@ def default_feature_flags():
         'session_popularity_show_on_schedule': True,
         'export_html_on_release': False,
         'use_tracks': True,
-        'use_feedback': True,
+        'use_feedback': False,
         'use_submission_comments': True,
         'present_multiple_times': False,
         'submission_public_review': True,
@@ -2170,6 +2170,25 @@ class Event(
     @property
     def has_component_testmode(self):
         return bool(self.testmode or self.talks_testmode)
+
+    @staticmethod
+    def exclude_talks_testmode(qs):
+        """Exclude events whose talks component is in test mode.
+
+        Django's ``.exclude(related__a=x, related__b=y)`` splits into two
+        independent EXISTS checks, so events with a ``talks_testmode`` row
+        (even False) plus any other setting value ``True`` are wrongly dropped.
+        Use a same-row NOT EXISTS instead.
+        """
+        return qs.exclude(
+            Exists(
+                Event_SettingsStore.objects.filter(
+                    object_id=OuterRef('pk'),
+                    key='talks_testmode',
+                    value='True',
+                )
+            )
+        )
 
     def user_can_view_tickets(self, user=None, request=None):
         private_tickets = self.private_testmode_tickets_enabled
