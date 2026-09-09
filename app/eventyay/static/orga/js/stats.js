@@ -1,6 +1,19 @@
 const globalData = document.getElementById("global-data")
+const statsRoot = document.getElementById("stats")
 let dataMapping = {}
 let searchUrl = ""
+
+const TOTAL_LABEL = (statsRoot && (statsRoot.dataset.labelTotal || statsRoot.dataset.totalLabel)) || "Total"
+const L_TOTAL_SESSIONS = (statsRoot && statsRoot.dataset.labelTotalSessions) || "Total sessions"
+const L_PEAK_DAY = (statsRoot && statsRoot.dataset.labelPeakDay) || "Peak day"
+const L_ACCEPTED_RATE = (statsRoot && statsRoot.dataset.labelAcceptedRate) || "Accepted rate"
+const L_TOP_TYPE = (statsRoot && statsRoot.dataset.labelTopType) || "Top type"
+const L_TOTAL_TYPES = (statsRoot && statsRoot.dataset.labelTotalTypes) || "Total types"
+const L_TOP_TRACK = (statsRoot && statsRoot.dataset.labelTopTrack) || "Top track"
+const L_TOTAL_TRACKS = (statsRoot && statsRoot.dataset.labelTotalTracks) || "Total tracks"
+const L_NAME = (statsRoot && statsRoot.dataset.labelName) || "Name"
+const L_COUNT = (statsRoot && statsRoot.dataset.labelCount) || "Count"
+const L_NO_DATA = (statsRoot && statsRoot.dataset.labelNoData) || "No data for this status"
 
 try {
     if (globalData && globalData.dataset.mapping) {
@@ -213,15 +226,15 @@ const drawTimeline = (targetId, timelineRows, label, stateRows) => {
 
     const summaryHtml = `
         <div class="td-ts-item">
-            <div class="td-ts-label">Total sessions</div>
+            <div class="td-ts-label">${escapeHtml(L_TOTAL_SESSIONS)}</div>
             <div class="td-ts-value">${totalCount}</div>
         </div>
         <div class="td-ts-item">
-            <div class="td-ts-label">Peak day</div>
+            <div class="td-ts-label">${escapeHtml(L_PEAK_DAY)}</div>
             <div class="td-ts-value">${peakCount > 0 ? `${escapeHtml(peakDate)}, ${peakCount}` : "-"}</div>
         </div>
         <div class="td-ts-item">
-            <div class="td-ts-label">Accepted rate</div>
+            <div class="td-ts-label">${escapeHtml(L_ACCEPTED_RATE)}</div>
             <div class="td-ts-value">${acceptedRate}</div>
         </div>
     `
@@ -337,14 +350,14 @@ const drawHBarChart = (data, elementId, clickType) => {
     const uniqueCount = combined.length
     const topItem = combined[0] ? combined[0].label : "-"
 
-    let typeLabel = "Items"
-    let typeLabelSingular = "Item"
+    let topLabel = "Top Item"
+    let totalLabel = "Total Items"
     if (clickType === "type") {
-        typeLabel = "Types"
-        typeLabelSingular = "Type"
+        totalLabel = L_TOTAL_TYPES
+        topLabel = L_TOP_TYPE
     } else if (clickType === "track") {
-        typeLabel = "Tracks"
-        typeLabelSingular = "Track"
+        totalLabel = L_TOTAL_TRACKS
+        topLabel = L_TOP_TRACK
     }
 
     let shortTopItem = topItem
@@ -352,15 +365,15 @@ const drawHBarChart = (data, elementId, clickType) => {
 
     const summaryHtml = `
         <div class="td-ts-item" title="${escapeHtml(topItem)}">
-            <div class="td-ts-label">Top ${typeLabelSingular}</div>
+            <div class="td-ts-label">${escapeHtml(topLabel)}</div>
             <div class="td-ts-value" style="font-size: 13px;">${escapeHtml(shortTopItem)}</div>
         </div>
         <div class="td-ts-item">
-            <div class="td-ts-label">Total ${typeLabel}</div>
+            <div class="td-ts-label">${escapeHtml(totalLabel)}</div>
             <div class="td-ts-value">${uniqueCount}</div>
         </div>
         <div class="td-ts-item">
-            <div class="td-ts-label">Total sessions</div>
+            <div class="td-ts-label">${escapeHtml(L_TOTAL_SESSIONS)}</div>
             <div class="td-ts-value">${totalCount}</div>
         </div>
     `
@@ -377,15 +390,12 @@ const drawHBarChart = (data, elementId, clickType) => {
 const PALETTE = ["#2185d0", "#f97316", "#22c55e", "#8b5cf6", "#ef4444", "#06b6d4", "#f59e0b", "#ec4899", "#10b981", "#a78bfa"]
 const MIN_STATS_ROWS = 3
 
-const statsRoot = document.getElementById("stats")
-const TOTAL_LABEL = (statsRoot && (statsRoot.dataset.labelTotal || statsRoot.dataset.totalLabel)) || "Total"
-
 const drawStatsTable = (data, elementId) => {
     const element = document.getElementById(elementId)
     if (!element) return
 
     if (!data || !data.series || !data.series.length) {
-        element.innerHTML = `<p class="td-analytics-empty">No data for this status</p>`
+        element.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
         return
     }
 
@@ -402,8 +412,8 @@ const drawStatsTable = (data, elementId) => {
             <col class="td-col-pct" />
         </colgroup>
         <thead><tr>
-            <th colspan="2">Name</th>
-            <th class="td-st-count">Count</th>
+            <th colspan="2">${escapeHtml(L_NAME)}</th>
+            <th class="td-st-count">${escapeHtml(L_COUNT)}</th>
             <th class="td-st-pct">%</th>
         </tr></thead>
         <tbody>`
@@ -485,7 +495,7 @@ const renderCard = (payload, cardName, scope) => {
         } else {
             clearChartTarget("stats-timeline")
             const slot = document.querySelector('[data-summary-for="stats-timeline"]')
-            if (slot) slot.innerHTML = `<p class="td-analytics-empty">No data for this status</p>`
+            if (slot) slot.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
         }
         return
     }
@@ -499,7 +509,7 @@ const renderCard = (payload, cardName, scope) => {
             chartInstances.type = drawHBarChart(typeData, "stats-type-chart", "type")
         } else {
             const slot = document.querySelector('[data-summary-for="stats-type-chart"]')
-            if (slot) slot.innerHTML = `<p class="td-analytics-empty">No data for this status</p>`
+            if (slot) slot.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
         }
         return
     }
@@ -513,7 +523,7 @@ const renderCard = (payload, cardName, scope) => {
             chartInstances.track = drawHBarChart(trackData, "stats-track-chart", "track")
         } else {
             const slot = document.querySelector('[data-summary-for="stats-track-chart"]')
-            if (slot) slot.innerHTML = `<p class="td-analytics-empty">No data for this status</p>`
+            if (slot) slot.innerHTML = `<p class="td-analytics-empty">${escapeHtml(L_NO_DATA)}</p>`
         }
         return
     }
