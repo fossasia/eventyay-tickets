@@ -7,14 +7,14 @@
 		upcoming-stream-countdown(:room="room")
 		.stage-tool-blocker(v-if="activeStageTool !== null", @click="activeStageTool = null")
 		.stage-tools(v-if="hasLivestream")
-			.cc-controls(v-if="showPluginLanguageDropdown", style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0;")
-				.dropdown-wrapper(style="display: flex; align-items: center; gap: 4px;")
-					i.mdi.mdi-account-voice(style="font-size: 20px; color: var(--clr-secondary-text-light);")
+			.cc-controls(v-if="showPluginLanguageDropdown")
+				.dropdown-wrapper
+					i.mdi.mdi-account-voice
 					AudioTranslationDropdown(:key="`${room.id}-plugin`", :languages="pluginLanguages", :selected-language="selectedPluginLanguage", :label="$t('Interpretation')", @languageChanged="handlePluginLanguageChange")
-				button.stage-tool.cc-toggle(:class="{active: ccEnabled}", @click="toggleCc", :title="$t('Toggle Captions')", style="margin: 0; padding: 4px; display: flex; align-items: center;")
-					i.mdi.mdi-closed-caption(style="font-size: 22px;")
-				.dropdown-wrapper(v-if="ccEnabled", style="display: flex; align-items: center; gap: 4px;")
-					i.mdi.mdi-translate(style="font-size: 20px; color: var(--clr-secondary-text-light);")
+				button.stage-tool.cc-toggle(:class="{active: ccEnabled}", @click="toggleCc", :title="$t('Toggle Captions')")
+					i.mdi.mdi-closed-caption
+				.dropdown-wrapper(v-if="ccEnabled")
+					i.mdi.mdi-translate
 					AudioTranslationDropdown(:key="`${room.id}-cc`", :languages="pluginLanguages", :selected-language="selectedCcLanguage", :label="$t('Caption Language')", @languageChanged="handleCcLanguageChange")
 			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 	media-source-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom'] || modules['call.jitsi']")
@@ -47,7 +47,6 @@ import MediaSourcePlaceholder from 'components/MediaSourcePlaceholder'
 import AudioTranslationDropdown from 'components/AudioTranslationDropdown'
 import LiveCaptions from 'components/LiveCaptions'
 import UpcomingStreamCountdown from 'components/UpcomingStreamCountdown'
-import api from 'lib/api'
 import { normalizeAudioTranslationSource } from 'lib/validators'
 import { pluginLanguageStreams, roomUsesPluginLanguageStreams } from '../../interpretation-streams'
 import { interpretationApiUrl, interpretationAuthHeaders } from 'lib/interpretation-api'
@@ -86,8 +85,6 @@ export default {
 			isManualCCOverride: false,
 			selectedCcLanguage: 'Original',
 			listenerToken: null,
-			isAiTtsEnabled: false,
-			pollingInterval: null,
 			activeTranslationConfig: null,
 		}
 	},
@@ -132,7 +129,19 @@ export default {
 			this.unreadTabs[tab] = false
 		},
 		room: {
-			handler: 'initializeLanguages',
+			handler(room, oldRoom) {
+				if (room?.id !== oldRoom?.id) {
+					this.$store.dispatch('stopStreamPolling')
+					this.listenerToken = null
+					if (room?.id && this.usesStreamPolling) {
+						this.$store.dispatch('startStreamPolling', room.id)
+					}
+					if (room?.id && this.showPluginLanguageDropdown) {
+						this.fetchListenerToken()
+					}
+				}
+				this.initializeLanguages()
+			},
 			immediate: true
 		},
 		'room.currentStream': {
@@ -144,19 +153,14 @@ export default {
 		'room.interpretation_use_plugin_streams': {
 			handler: 'initializeLanguages'
 		},
-		'room.id'(roomId) {
-			this.$store.dispatch('stopStreamPolling')
-			this.listenerToken = null
-			if (roomId && this.usesStreamPolling) {
-				this.$store.dispatch('startStreamPolling', roomId)
-			}
-			if (roomId) {
-				this.fetchListenerToken()
-			}
-		},
-		isAiTtsEnabled() {
-			this.recomputeInterpretationAudio();
-		},
+		showPluginLanguageDropdown: {
+			handler(val) {
+				if (val && this.room?.id && !this.listenerToken) {
+					this.fetchListenerToken()
+				}
+			},
+			immediate: true
+		}
 	},
 	async created() {
 		if (this.modules['chat.native']) {
@@ -169,9 +173,6 @@ export default {
 		if (this.room?.id && this.usesStreamPolling) {
 			await this.$nextTick()
 			this.$store.dispatch('startStreamPolling', this.room.id)
-		}
-		if (this.room?.id) {
-			this.fetchListenerToken()
 		}
 	},
 	beforeUnmount() {
@@ -230,14 +231,8 @@ export default {
 			if (finalConfig && finalConfig.language === 'Original') {
 				finalConfig = null;
 			}
-			if (finalConfig && !finalConfig.url && !finalConfig.youtube_id && !finalConfig.tts_ws_url) {
+			if (finalConfig && !finalConfig.url && !finalConfig.youtube_id) {
 				finalConfig = null;
-			}
-			if (finalConfig) {
-				finalConfig = { ...finalConfig };
-				if (!this.isAiTtsEnabled) {
-					delete finalConfig.tts_ws_url;
-				}
 			}
 			this.$store.commit('updateInterpretationAudio', {
 				roomId: this.room?.id,
@@ -348,6 +343,26 @@ export default {
 				height: 2px
 				width: calc(100% - 16px)
 				background-color: var(--clr-primary)
+		.cc-controls
+			display: flex
+			align-items: center
+			gap: 8px
+			flex-wrap: wrap
+			flex-shrink: 0
+			.dropdown-wrapper
+				display: flex
+				align-items: center
+				gap: 4px
+				.mdi
+					font-size: 20px
+					color: var(--clr-secondary-text-light)
+			.cc-toggle
+				margin: 0
+				padding: 4px
+				display: flex
+				align-items: center
+				.mdi
+					font-size: 22px
 		+below('m')
 			justify-content: space-between
 	.stage-tool-blocker

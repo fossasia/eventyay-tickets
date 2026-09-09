@@ -78,7 +78,7 @@ export default {
 		},
                 attemptReconnect() {
                         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-                                this.lines = [{ id: this.nextId++, text: this.$t('[Captions disconnected]') }]
+                                this.lines = [{ id: this.nextId++, text: this.$t('LiveCaptions:disconnected') }]
                                 return
                         }
                         const backoffMs = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000)

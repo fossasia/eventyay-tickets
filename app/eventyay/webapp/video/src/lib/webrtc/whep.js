@@ -96,18 +96,25 @@ export class WhepClient {
 			const originalAnswerSdp = await response.text();
 			// Force the IP to the browser's hostname when it is a valid private/local IPv4 address (for local dev)
 			const hostname = window.location.hostname;
-			const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) && hostname.split('.').every((octet) => Number(octet) <= 255);
 			
-			// Check if it's a private or loopback IP (10.x.x.x, 172.16.x.x-172.31.x.x, 192.168.x.x, 127.x.x.x)
-			const isPrivateIP = isIPv4 && (() => {
-				const parts = hostname.split('.').map(Number);
+			const isPrivateOrLocalIP = (ip) => {
+				if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(ip)) return false;
+				const parts = ip.split('.').map(Number);
+				if (!parts.every(octet => octet <= 255)) return false;
 				return parts[0] === 10 || 
 				       (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
 				       (parts[0] === 192 && parts[1] === 168) ||
-				       parts[0] === 127;
-			})();
+				       parts[0] === 127 ||
+				       (parts[0] === 169 && parts[1] === 254);
+			};
+
+			const isPrivateIP = isPrivateOrLocalIP(hostname);
 			
-			const answerSdp = isPrivateIP ? originalAnswerSdp.replace(/c=IN IP4 [0-9.]+/g, 'c=IN IP4 ' + hostname) : originalAnswerSdp;
+			const answerSdp = isPrivateIP 
+				? originalAnswerSdp.replace(/(c=IN IP4 |a=candidate:(?:[^ ]+ ){4})([0-9.]+)/g, (match, prefix, ip) => {
+					return isPrivateOrLocalIP(ip) ? prefix + hostname : match;
+				}) 
+				: originalAnswerSdp;
 
 			if (this.abortController.signal.aborted || !this.peerConnection) return;
 
