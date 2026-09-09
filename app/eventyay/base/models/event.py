@@ -2180,10 +2180,6 @@ class Event(
         (even False) plus any other setting value ``True`` are wrongly dropped.
         Use a same-row NOT EXISTS instead.
         """
-        from django.db.models import Exists, OuterRef
-
-        from eventyay.base.models.event import Event_SettingsStore
-
         return qs.exclude(
             Exists(
                 Event_SettingsStore.objects.filter(
