@@ -1,0 +1,29 @@
+{% load i18n %}
+<article class="td-analytics-card {{ card_extra_class|default:'' }}"{% if filter_name %} data-stats-card="{{ filter_name }}"{% endif %}>
+  <div class="td-analytics-card-header">
+    <div class="td-analytics-card-title">
+      {% if card_icon %}<span class="fa fa-{{ card_icon }}" aria-hidden="true"></span>{% endif %}
+      <span{% if title_attr %} {{ title_attr }}{% endif %}>{{ card_title }}</span>
+    </div>
+    {% if filter_name %}
+      <label class="td-analytics-card-filter">
+        <span class="visually-hidden">{% translate "Status" %}</span>
+        <select class="td-analytics-filter-select" data-stats-filter="{{ filter_name }}">
+          <option value="all" selected>{% translate "All sessions" %}</option>
+          <option value="accepted">{% translate "Accepted sessions" %}</option>
+        </select>
+      </label>
+    {% endif %}
+  </div>
+  <div class="td-analytics-chart-wrap {{ wrap_extra_class|default:'' }}">
+    <div id="{{ chart_id }}"></div>
+  </div>
+  {% if not hide_summary %}
+    <div class="td-analytics-summary-slot" data-summary-for="{{ chart_id }}"></div>
+  {% endif %}
+  {% if footer_url %}
+    <a href="{{ footer_url }}" class="td-analytics-view-all td-analytics-view-all-visible">{{ footer_label }} <span aria-hidden="true">&gt;</span></a>
+  {% else %}
+    <div class="td-analytics-card-footer" aria-hidden="true"></div>
+  {% endif %}
+</article>

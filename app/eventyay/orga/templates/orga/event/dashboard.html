@@ -102,11 +102,11 @@
         
 
         {% include "orga/includes/dashboard_kpi_cards.html" %}
-    </div>
 
-    {% if can_view_submission_stats %}
-        {% include "orga/submission/includes/statistics.html" %}
-    {% endif %}
+        {% if can_view_submission_stats %}
+            {% include "orga/submission/includes/statistics.html" %}
+        {% endif %}
+    </div>
 
     {% if history and can_change_settings %}
         <div class="dashboard-history mt-4">

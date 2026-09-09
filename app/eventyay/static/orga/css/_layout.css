@@ -1139,6 +1139,12 @@ table .color-square {
   }
 }
 
+/* Talks dashboard analytics override legacy #stats flex/.pie sizing */
+.td-analytics-shell #stats {
+  display: block;
+  width: 100%;
+}
+
 .toggle-group {
   display: flex;
   align-items: center;

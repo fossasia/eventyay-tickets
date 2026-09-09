@@ -1,120 +1,232 @@
 {% load i18n %}
-{% load static %}
 
-{% if submission_timeline_data or submission_type_data or submission_track_data or submission_state_data or submission_language_data or talk_timeline_data or talk_type_data or talk_track_data or talk_state_data or talk_language_data %}
-<div id="stats" class="mt-4">
-    <div id="global-data" class="d-none" data-url="{{ request.event.orga_urls.submissions }}?" data-mapping="{{ id_mapping }}" data-annotations="{{ timeline_annotations }}"></div>
+{% if submission_timeline_data or submission_type_data or submission_track_data or submission_state_data or submission_language_data or talk_timeline_data or talk_type_data or talk_track_data or talk_state_data or talk_language_data or room_status %}
+{% translate "Proposals" as timeline_label_all %}
+{% translate "Submissions over time" as timeline_title_all %}
+{% translate "Sessions over time" as timeline_title_accepted %}
+{% translate "Total" as total_label %}
+{% translate "Total sessions" as label_total_sessions %}
+{% translate "Peak day" as label_peak_day %}
+{% translate "Accepted rate" as label_accepted_rate %}
+{% translate "Top type" as label_top_type %}
+{% translate "Top track" as label_top_track %}
+{% translate "Total types" as label_total_types %}
+{% translate "Total tracks" as label_total_tracks %}
+{% translate "Name" as label_name %}
+{% translate "Count" as label_count %}
+{% translate "No data" as label_no_data %}
 
-    {% if submission_timeline_data or submission_type_data or submission_track_data or submission_state_data or submission_language_data %}
-    <section class="stats-section mb-5" id="proposal-statistics">
-        <h2>{% translate "Proposal Statistics" %}</h2>
+<section class="td-section td-analytics-shell" aria-labelledby="td-analytics-title">
+  <div class="td-section-heading">
+    <h2 id="td-analytics-title" class="td-section-title">
+      <span class="fa fa-bar-chart" aria-hidden="true"></span>
+      {% translate "Analytics" %}
+    </h2>
+  </div>
 
-        {% if submission_timeline_data %}
-            <div class="card stats-timeline mb-4">
-                <div class="card-header">{% translate "Proposals by submission date" %}</div>
-                <div id="submission-timeline-data" class="d-none" data-timeline="{{ submission_timeline_data }}" data-label="{% translate "Proposals" %}"></div>
-                <div id="proposal-timeline" class="card-body"></div>
-            </div>
-        {% endif %}
+  <div id="stats"
+       data-label-total="{{ total_label|escapejs }}"
+       data-label-total-sessions="{{ label_total_sessions|escapejs }}"
+       data-label-peak-day="{{ label_peak_day|escapejs }}"
+       data-label-accepted-rate="{{ label_accepted_rate|escapejs }}"
+       data-label-top-type="{{ label_top_type|escapejs }}"
+       data-label-top-track="{{ label_top_track|escapejs }}"
+       data-label-total-types="{{ label_total_types|escapejs }}"
+       data-label-total-tracks="{{ label_total_tracks|escapejs }}"
+       data-label-name="{{ label_name|escapejs }}"
+       data-label-count="{{ label_count|escapejs }}"
+       data-label-no-data="{{ label_no_data|escapejs }}">
+    <div id="global-data" class="d-none"
+         data-url="{{ request.event.orga_urls.submissions }}?"
+         data-mapping="{{ id_mapping }}"
+         data-annotations="{{ timeline_annotations }}"></div>
 
-        <div class="row">
-            {% if submission_type_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by session type" %}</div>
-                        <div id="submission-type-data" class="d-none" data-states="{{ submission_type_data }}"></div>
-                        <div id="submission-type" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
+    <script type="application/json" id="stats-payload">
+    {
+      "titles": {
+        "all": "{{ timeline_title_all|escapejs }}",
+        "accepted": "{{ timeline_title_accepted|escapejs }}"
+      },
+      "all": {
+        "timeline": {% if submission_timeline_data %}{{ submission_timeline_data|safe }}{% else %}null{% endif %},
+        "timelineLabel": "{{ timeline_label_all|escapejs }}",
+        "type": {% if submission_type_data %}{{ submission_type_data|safe }}{% else %}null{% endif %},
+        "track": {% if submission_track_data %}{{ submission_track_data|safe }}{% else %}null{% endif %},
+        "language": {% if submission_language_data %}{{ submission_language_data|safe }}{% else %}null{% endif %},
+        "state": {% if submission_state_data %}{{ submission_state_data|safe }}{% else %}null{% endif %}
+      },
+      "accepted": {
+        "timeline": {% if talk_timeline_data %}{{ talk_timeline_data|safe }}{% else %}null{% endif %},
+        "timelineLabel": "{{ phrases.schedule.sessions|escapejs }}",
+        "type": {% if talk_type_data %}{{ talk_type_data|safe }}{% else %}null{% endif %},
+        "track": {% if talk_track_data %}{{ talk_track_data|safe }}{% else %}null{% endif %},
+        "language": {% if talk_language_data %}{{ talk_language_data|safe }}{% else %}null{% endif %},
+        "state": {% if talk_state_data %}{{ talk_state_data|safe }}{% else %}null{% endif %}
+      }
+    }
+    </script>
 
-            {% if submission_track_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by track" %}</div>
-                        <div id="submission-track-data" class="d-none" data-states="{{ submission_track_data }}"></div>
-                        <div id="submission-track" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if submission_state_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by state" %}</div>
-                        <div id="submission-state-data" class="d-none" data-states="{{ submission_state_data }}"></div>
-                        <div id="submission-state" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if submission_language_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Proposals by language" %}</div>
-                        <div id="submission-language-data" class="d-none" data-states="{{ submission_language_data }}"></div>
-                        <div id="submission-language" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
+    <div class="td-analytics-top-row" id="proposal-statistics">
+      {% if submission_timeline_data or talk_timeline_data %}
+      <div class="td-analytics-card td-analytics-card-timeline" data-stats-card="timeline">
+        <div class="td-analytics-card-header">
+          <div class="td-analytics-card-title">
+            <span class="fa fa-line-chart" aria-hidden="true"></span>
+            <span data-stats-timeline-title>{% translate "Submissions over time" %}</span>
+          </div>
+          <label class="td-analytics-card-filter">
+            <span class="visually-hidden">{% translate "Status" %}</span>
+            <select class="td-analytics-filter-select" data-stats-filter="timeline">
+              <option value="all" selected>{% translate "All sessions" %}</option>
+              <option value="accepted">{% translate "Accepted sessions" %}</option>
+            </select>
+          </label>
         </div>
-    </section>
-    {% endif %}
-
-    {% if talk_timeline_data or talk_type_data or talk_track_data or talk_state_data or talk_language_data %}
-    <section class="stats-section mb-4" id="session-statistics">
-        <h2>{% translate "Session Statistics" %}</h2>
-
-        {% if talk_timeline_data %}
-            <div class="card stats-timeline mb-4">
-                <div class="card-header">{% translate "Sessions by submission date" %}</div>
-                <div id="talk-timeline-data" class="d-none" data-timeline="{{ talk_timeline_data }}" data-label="{{ phrases.schedule.sessions }}"></div>
-                <div id="talk-timeline" class="card-body"></div>
-            </div>
-        {% endif %}
-
-        <div class="row">
-            {% if talk_type_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by session type" %}</div>
-                        <div id="talk-type-data" class="d-none" data-states="{{ talk_type_data }}"></div>
-                        <div id="talk-type" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if talk_track_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by track" %}</div>
-                        <div id="talk-track-data" class="d-none" data-states="{{ talk_track_data }}"></div>
-                        <div id="talk-track" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if talk_state_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by state" %}</div>
-                        <div id="talk-state-data" class="d-none" data-states="{{ talk_state_data }}"></div>
-                        <div id="talk-state" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {% if talk_language_data %}
-                <div class="col-12 col-md-6 col-lg-4 mb-3 d-flex align-items-stretch">
-                    <div class="card w-100 m-0">
-                        <div class="card-header">{% translate "Sessions by language" %}</div>
-                        <div id="talk-language-data" class="d-none" data-states="{{ talk_language_data }}"></div>
-                        <div id="talk-language" class="pie card-body"></div>
-                    </div>
-                </div>
-            {% endif %}
+        <div class="td-analytics-chart-wrap">
+          <div id="stats-timeline"></div>
         </div>
-    </section>
+        <div class="td-analytics-summary-slot" data-summary-for="stats-timeline"></div>
+        <div class="td-analytics-card-footer" aria-hidden="true"></div>
+      </div>
+      {% endif %}
+
+      {% if submission_type_data or talk_type_data %}
+      <div class="td-analytics-card" data-stats-card="type">
+        <div class="td-analytics-card-header">
+          <div class="td-analytics-card-title">
+            <span class="fa fa-list-ul" aria-hidden="true"></span>
+            {% translate "Sessions by type" %}
+          </div>
+          <label class="td-analytics-card-filter">
+            <span class="visually-hidden">{% translate "Status" %}</span>
+            <select class="td-analytics-filter-select" data-stats-filter="type">
+              <option value="all" selected>{% translate "All sessions" %}</option>
+              <option value="accepted">{% translate "Accepted sessions" %}</option>
+            </select>
+          </label>
+        </div>
+        <div class="td-analytics-chart-wrap td-analytics-hbar-wrap">
+          <div id="stats-type-chart"></div>
+        </div>
+        <div class="td-analytics-summary-slot" data-summary-for="stats-type-chart"></div>
+        <a href="{{ request.event.cfp.urls.types }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all session types" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+      {% endif %}
+
+      {% if submission_track_data or talk_track_data %}
+      <div class="td-analytics-card" data-stats-card="track">
+        <div class="td-analytics-card-header">
+          <div class="td-analytics-card-title">
+            <span class="fa fa-tags" aria-hidden="true"></span>
+            {% translate "Sessions by track" %}
+          </div>
+          <label class="td-analytics-card-filter">
+            <span class="visually-hidden">{% translate "Status" %}</span>
+            <select class="td-analytics-filter-select" data-stats-filter="track">
+              <option value="all" selected>{% translate "All sessions" %}</option>
+              <option value="accepted">{% translate "Accepted sessions" %}</option>
+            </select>
+          </label>
+        </div>
+        <div class="td-analytics-chart-wrap td-analytics-hbar-wrap">
+          <div id="stats-track-chart"></div>
+        </div>
+        <div class="td-analytics-summary-slot" data-summary-for="stats-track-chart"></div>
+        <a href="{{ request.event.cfp.urls.tracks }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all tracks" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if submission_language_data or talk_language_data or submission_state_data or talk_state_data or room_status %}
+    <div class="td-analytics-bottom-row" id="session-statistics">
+      {% if submission_language_data or talk_language_data %}
+      <div class="td-analytics-card td-analytics-card-table" data-stats-card="language">
+        <div class="td-analytics-card-header">
+          <div class="td-analytics-card-title">
+            <span class="fa fa-globe" aria-hidden="true"></span>
+            {% translate "Sessions by language" %}
+          </div>
+          <label class="td-analytics-card-filter">
+            <span class="visually-hidden">{% translate "Status" %}</span>
+            <select class="td-analytics-filter-select" data-stats-filter="language">
+              <option value="all" selected>{% translate "All sessions" %}</option>
+              <option value="accepted">{% translate "Accepted sessions" %}</option>
+            </select>
+          </label>
+        </div>
+        <div id="stats-language-table" class="td-analytics-table-wrap"></div>
+        <a href="{{ request.event.orga_urls.submissions }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all languages" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+      {% endif %}
+
+      {% if submission_state_data or talk_state_data %}
+      <div class="td-analytics-card td-analytics-card-table" data-stats-card="state">
+        <div class="td-analytics-card-header">
+          <div class="td-analytics-card-title">
+            <span class="fa fa-tasks" aria-hidden="true"></span>
+            {% translate "Sessions by state" %}
+          </div>
+          <label class="td-analytics-card-filter">
+            <span class="visually-hidden">{% translate "Status" %}</span>
+            <select class="td-analytics-filter-select" data-stats-filter="state">
+              <option value="all" selected>{% translate "All sessions" %}</option>
+              <option value="accepted">{% translate "Accepted sessions" %}</option>
+            </select>
+          </label>
+        </div>
+        <div id="stats-state-table" class="td-analytics-table-wrap"></div>
+        <a href="{{ request.event.orga_urls.submissions }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "View all sessions" %} <span aria-hidden="true">&gt;</span></a>
+      </div>
+      {% endif %}
+
+      {% if room_status %}
+      <article class="td-analytics-card td-analytics-card-table" data-stats-card="room">
+        <div class="td-analytics-card-header">
+          <div class="td-analytics-card-title">
+            <span class="fa fa-map-marker" aria-hidden="true"></span>
+            {% translate "Sessions by room status" %}
+          </div>
+          <span class="td-analytics-card-filter-spacer" aria-hidden="true"></span>
+        </div>
+        <div class="td-analytics-table-wrap" id="stats-room-table">
+          <table class="td-stats-table">
+            <colgroup>
+              <col class="td-col-dot" />
+              <col class="td-col-name" />
+              <col class="td-col-count" />
+              <col class="td-col-pct" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th colspan="2">{% translate "Name" %}</th>
+                <th class="td-st-count">{% translate "Count" %}</th>
+                <th class="td-st-pct">%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in room_status.rows %}
+                <tr>
+                  <td class="td-st-dot"><span class="td-dot-{{ row.status }}"></span></td>
+                  <td class="td-st-name">{{ row.label }}</td>
+                  <td class="td-st-count">{{ row.count }}</td>
+                  <td class="td-st-pct">{{ row.pct }}%</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2"><strong>{% translate "Total" %}</strong></td>
+                <td class="td-st-count"><strong>{{ room_status.total }}</strong></td>
+                <td class="td-st-pct"><strong>100%</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <a href="{{ room_status.schedule_url }}" class="td-analytics-view-all td-analytics-view-all-visible">{% translate "Open schedule" %} <span aria-hidden="true">&gt;</span></a>
+      </article>
+      {% endif %}
+    </div>
     {% endif %}
-</div>
+  </div>
+</section>
 {% endif %}

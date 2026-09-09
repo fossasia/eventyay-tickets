@@ -931,8 +931,11 @@ def test_talk_dashboard_statistics(use_tracks, slot, other_slot, orga_client):
     response = orga_client.get(slot.event.orga_urls.base)
     assert response.status_code == 200
     content = response.content.decode()
-    assert "Proposal Statistics" in content
-    assert "Session Statistics" in content
+    assert "Analytics" in content
+    assert "All sessions" in content
+    assert "Accepted sessions" in content
+    assert 'id="stats-payload"' in content
+    assert "Sessions by type" in content or "Sessions by state" in content
 
 
 @pytest.mark.django_db

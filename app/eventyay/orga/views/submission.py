@@ -1235,6 +1235,72 @@ class SubmissionStatsMixin:
             )
         )
 
+    @context
+    def room_status(self):
+        """Room assignment breakdown for session analytics."""
+        if not self.can_view_submission_stats:
+            return None
+        event = self.request.event
+        total = event.submissions.filter(state=SubmissionStates.CONFIRMED).count()
+        if not total:
+            return None
+        schedule = getattr(event, 'wip_schedule', None)
+        assigned = 0
+        not_published = 0
+        if schedule is not None:
+            assigned = (
+                schedule.talks.filter(
+                    submission__isnull=False,
+                    submission__state=SubmissionStates.CONFIRMED,
+                    room__isnull=False,
+                    room__deleted=False,
+                )
+                .values('submission_id')
+                .distinct()
+                .count()
+            )
+            not_published = (
+                schedule.talks.filter(
+                    submission__isnull=False,
+                    submission__state=SubmissionStates.CONFIRMED,
+                    room__isnull=False,
+                    room__deleted=False,
+                    is_visible=False,
+                )
+                .values('submission_id')
+                .distinct()
+                .count()
+            )
+        not_assigned = max(0, total - assigned)
+
+        def pct(count):
+            return round((count / total) * 100, 1) if total else 0.0
+
+        return {
+            'rows': [
+                {
+                    'label': _('Assigned to room'),
+                    'count': assigned,
+                    'pct': pct(assigned),
+                    'status': 'success',
+                },
+                {
+                    'label': _('Room not assigned'),
+                    'count': not_assigned,
+                    'pct': pct(not_assigned),
+                    'status': 'warning' if not_assigned else 'success',
+                },
+                {
+                    'label': _('Room not published'),
+                    'count': not_published,
+                    'pct': pct(not_published),
+                    'status': 'warning' if not_published else 'success',
+                },
+            ],
+            'total': total,
+            'schedule_url': event.orga_urls.schedule,
+        }
+
 
 class AllFeedbacksList(EventPermissionRequired, PaginationMixin, ListView):
     model = Feedback
