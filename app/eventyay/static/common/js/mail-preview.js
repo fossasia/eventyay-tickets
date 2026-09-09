@@ -2,6 +2,8 @@ const initMailPreview = () => {
     const previewButtons = document.querySelectorAll('button[name="action"][value="preview"]');
 
     previewButtons.forEach(button => {
+        let currentAbortController = null;
+
         button.addEventListener("click", async (e) => {
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -13,6 +15,12 @@ const initMailPreview = () => {
             if (!form || !previewContainer) {
                 return;
             }
+
+            if (currentAbortController) {
+                currentAbortController.abort();
+            }
+            currentAbortController = new AbortController();
+            const { signal } = currentAbortController;
 
             const setHTML = (container, htmlString) => {
                 const fragment = document.createRange().createContextualFragment(htmlString);
@@ -54,6 +62,7 @@ const initMailPreview = () => {
                         "X-Requested-With": "XMLHttpRequest",
                     },
                     credentials: "same-origin",
+                    signal: signal,
                 });
 
                 if (!response.ok) {
@@ -74,6 +83,9 @@ const initMailPreview = () => {
                     throw new Error("Preview response did not contain HTML.");
                 }
             } catch (error) {
+                if (error.name === 'AbortError') {
+                    return;
+                }
                 console.error("Email preview failed:", error);
                 setHTML(previewContainer, `
                     <fieldset class="mt-4 mb-4">
