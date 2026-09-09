@@ -2171,6 +2171,25 @@ class Event(
     def has_component_testmode(self):
         return bool(self.testmode or self.talks_testmode)
 
+    @staticmethod
+    def without_talks_testmode(qs):
+        """Exclude events whose talks component is in test mode.
+
+        Django's ``.exclude(related__a=x, related__b=y)`` splits into two
+        independent EXISTS checks, so events with a ``talks_testmode`` row
+        (even False) plus any other setting value ``True`` are wrongly dropped.
+        Use a same-row NOT EXISTS instead.
+        """
+        return qs.exclude(
+            Exists(
+                Event_SettingsStore.objects.filter(
+                    object_id=OuterRef('pk'),
+                    key='talks_testmode',
+                    value='True',
+                )
+            )
+        )
+
     def user_can_view_tickets(self, user=None, request=None):
         private_tickets = self.private_testmode_tickets_enabled
         if not self.tickets_published and not private_tickets:
