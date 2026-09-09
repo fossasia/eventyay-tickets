@@ -110,6 +110,7 @@ def test_api_catalog_talk_write_permissions(rf, event, user, team):
     assert by_name['Tags'].write_permission == 'can_change_submissions'
     assert by_name['Tracks'].write_permission == 'can_change_event_settings'
     assert by_name['Submission types'].write_permission == 'can_change_event_settings'
+    assert by_name['Rooms'].write_permission == 'can_change_event_settings'
 
 
 @override_settings(SITE_URL='https://testserver')
