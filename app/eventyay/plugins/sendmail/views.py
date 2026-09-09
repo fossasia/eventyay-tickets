@@ -552,6 +552,10 @@ class TicketMailTemplateCreateView(TicketMailTemplateMixin, EventPermissionRequi
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['is_create'] = True
+        locales = self.request.event.settings.get('locales') or [self.request.event.locale or 'en']
+        if isinstance(locales, str):
+            locales = [locales]
+        ctx['normalized_locales'] = locales
         return ctx
 
     @transaction.atomic
@@ -580,6 +584,10 @@ class TicketMailTemplateUpdateView(TicketMailTemplateMixin, EventPermissionRequi
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['is_create'] = False
+        locales = self.request.event.settings.get('locales') or [self.request.event.locale or 'en']
+        if isinstance(locales, str):
+            locales = [locales]
+        ctx['normalized_locales'] = locales
         return ctx
 
     @transaction.atomic

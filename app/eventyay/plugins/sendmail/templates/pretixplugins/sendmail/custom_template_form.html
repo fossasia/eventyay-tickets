@@ -59,7 +59,7 @@
         </div>
         <div id="mail-message-preview" class="mail-message-preview-panel" role="tabpanel" hidden>
           <div class="mail-preview-group">
-            {% for locale in request.event.settings.locales %}
+            {% for locale in normalized_locales %}
               <div lang="{{ locale }}" class="mail-preview"></div>
             {% endfor %}
           </div>
