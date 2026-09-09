@@ -187,7 +187,7 @@ If the speaker does not have an account yet, their email will contain a link whe
 Interaction & Communication
 ---------------------------
 
-There are two main ways to discuss sessions:
+There are two main ways to discuss sessions **inside the organiser area**:
 
 Comments
 ^^^^^^^^
@@ -197,6 +197,10 @@ Comments are intended for discussions about the session, useful for clarifying d
 Because they are timestamped, comments are also useful to note discussions you had with the team or the speaker(s) about the session.
 
 You can think of the comments tab of the session page as a forum page, where you can post multiple times, respond to the comments of others, and read all comments ordered by time.
+
+.. note::
+   Attendee-facing **session feedback** on public talk pages is a separate
+   feature. See :ref:`user-guide-session-feedback`.
 
 Reviews
 ^^^^^^^
