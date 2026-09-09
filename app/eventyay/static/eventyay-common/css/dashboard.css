@@ -188,18 +188,6 @@
     }
 }
 
-#orders-over-time-chart,
-#orders-by-status-chart,
-#proposals-by-state-chart,
-#proposals-over-time-chart,
-#checkin-rate-chart,
-#checkins-over-time-chart,
-#revenue-over-time-chart,
-#attendance-over-time-chart,
-#followers-weekly-chart {
-    min-height: 200px;
-}
-
 /* Event Status Page Styles */
 .status-card {
     border-radius: 8px;

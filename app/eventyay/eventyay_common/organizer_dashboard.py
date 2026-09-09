@@ -318,7 +318,6 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         portfolio_events.append(
             {
                 'name': str(e.name),
-                'slug': e.slug,
                 'status_label': status['label'],
                 'status_class': status['class'],
                 'start_date': date_format(e.date_from, 'DATE_FORMAT') if e.date_from else '—',
@@ -334,7 +333,6 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
             }
         )
 
-    has_published = any(e['status_class'] != 'draft' for e in portfolio_events)
     total_events = len(full_events)
 
     has_meaningful_data = bool(
@@ -525,7 +523,6 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         'getting_started': getting_started,
         'action_required': action_required,
         'portfolio_events': portfolio_events,
-        'portfolio_has_published': has_published,
         'total_events': total_events,
         'organizer_tools': [t for t in organizer_tools if t.get('available')],
         'recent_activity': recent_activity,
@@ -535,6 +532,4 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         'organizer_settings_url': settings_url,
         'can_create_event': can_create,
         'can_change_organizer_settings': can_settings,
-        'live_events_count': live_count,
-        'draft_events_count': draft_count,
     }

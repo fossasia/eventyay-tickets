@@ -52,12 +52,6 @@
           </tbody>
         </table>
       </div>
-      {% if not portfolio_has_published %}
-        <div class="od-empty-box">
-          <span class="fa fa-calendar-o" aria-hidden="true"></span>
-          {% trans "Your published events will appear here." %}
-        </div>
-      {% endif %}
       {% if total_events > portfolio_events|length %}
         <div class="od-panel-footer">
           <a class="od-view-all" href="{{ events_list_url }}">

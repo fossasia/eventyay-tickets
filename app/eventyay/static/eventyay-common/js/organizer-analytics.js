@@ -374,7 +374,7 @@ function drawFollowerWeekly() {
                     const start = new Date(val)
                     const end = new Date(start)
                     end.setDate(end.getDate() + 6)
-                    const fmt = date => date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+                    const fmt = date => date.toLocaleDateString(undefined, { day: '2-digit', month: 'short' })
                     return `${fmt(start)} - ${fmt(end)} ${start.getFullYear()}`
                 }
             }

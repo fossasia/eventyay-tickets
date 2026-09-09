@@ -373,16 +373,6 @@ class OrganizerDashboard(OrganizerDetailViewMixin, OrganizerAnalyticsView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['event_series_creation_enabled'] = is_event_series_creation_enabled(self.request)
-        ctx['meetup_creation_enabled'] = is_meetup_creation_enabled(self.request)
-        ctx['has_any_analytics'] = any([
-            ctx.get('has_orders'),
-            ctx.get('has_proposals'),
-            ctx.get('show_checkins'),
-            ctx.get('has_attendance'),
-            ctx.get('has_email_engagement'),
-            ctx.get('has_followers'),
-        ])
         ctx.update(build_organizer_dashboard_overview(self.request, ctx))
         return ctx
 
