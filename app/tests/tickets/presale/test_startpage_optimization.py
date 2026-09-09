@@ -94,3 +94,40 @@ def test_startpage_bounded_query_scaling(startpage_events, client, django_assert
     assert len(ctx['past_events']) <= 8
     assert len(ctx['upcoming_events']) <= 8
     assert len(ctx['featured_events']) <= 8
+
+
+@pytest.mark.django_db
+def test_startpage_keeps_featured_when_talks_testmode_false_and_other_true_setting(
+    startpage_events, client
+):
+    """Regression: Django exclude(related__a, related__b) must not drop live events.
+
+    Prod events often have talks_testmode=False stored plus unrelated True settings
+    (plugins). The old exclude wrongly hid them from Featured/Upcoming.
+    """
+    _, e_featured, _, _ = startpage_events
+    with scopes_disabled():
+        e_featured.settings.set('talks_testmode', False)
+        e_featured.settings.set('payment_stripe__enabled', True)
+
+    response = client.get('/')
+    assert response.status_code == 200
+    names = [str(e.name) for e in response.context['featured_events']]
+    assert 'Featured Event' in names
+
+    upcoming = client.get('/upcoming/')
+    assert upcoming.status_code == 200
+    upcoming_names = [str(e.name) for e in upcoming.context['events']]
+    assert 'Featured Event' in upcoming_names
+
+
+@pytest.mark.django_db
+def test_startpage_hides_events_with_talks_testmode_true(startpage_events, client):
+    _, e_featured, _, _ = startpage_events
+    with scopes_disabled():
+        e_featured.settings.set('talks_testmode', True)
+
+    response = client.get('/')
+    assert response.status_code == 200
+    names = [str(e.name) for e in response.context['featured_events']]
+    assert 'Featured Event' not in names
