@@ -30,8 +30,8 @@
   --od-shadow: var(--shadow-lighter);
   --od-shadow-hover: var(--shadow-light);
   --od-section-shadow: var(--shadow-light);
-  --od-radius: 12px;
-  --od-radius-sm: 8px;
+  --od-radius: 0;
+  --od-radius-sm: 0;
   --od-space-2: 12px;
   --od-space-3: 16px;
   --od-space-4: 20px;
