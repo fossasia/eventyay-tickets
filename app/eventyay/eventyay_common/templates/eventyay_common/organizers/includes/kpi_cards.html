@@ -9,7 +9,9 @@
   </div>
   <div class="od-kpi-grid">
     {% for card in kpi_cards %}
-      <a href="{{ card.url }}" class="od-kpi-card od-tone-{{ card.tone }}" title="{{ card.label }}">
+      <a href="{{ card.url }}"
+         class="od-kpi-card od-kpi-{{ card.tone }}{% if card.tone == 'blue' or card.tone == 'green' or card.tone == 'purple' or card.tone == 'orange' %} od-kpi-sparkline od-kpi-sparkline-{{ card.tone }}{% endif %}"
+         title="{{ card.label }}">
         <div class="od-kpi-top">
           <span class="od-kpi-icon" aria-hidden="true"><span class="fa fa-{{ card.icon }}"></span></span>
           <span class="od-kpi-label">{{ card.label }}</span>
@@ -21,6 +23,8 @@
             {{ card.value }}
           {% endif %}
         </div>
+        <div class="od-kpi-hint od-kpi-hint-spacer" aria-hidden="true"></div>
+        <div class="od-kpi-link">{% trans "View all" %} <span aria-hidden="true">&gt;</span></div>
       </a>
     {% endfor %}
   </div>
