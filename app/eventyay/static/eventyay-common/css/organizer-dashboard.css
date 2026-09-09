@@ -30,8 +30,8 @@
   --od-shadow: var(--shadow-lighter);
   --od-shadow-hover: var(--shadow-light);
   --od-section-shadow: var(--shadow-light);
-  --od-radius: 0;
-  --od-radius-sm: 0;
+  --od-radius: 12px;
+  --od-radius-sm: 8px;
   --od-space-2: 12px;
   --od-space-3: 16px;
   --od-space-4: 20px;
@@ -446,8 +446,11 @@ body:has(.od-dashboard) #page-content {
   color: inherit;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 8px;
-  min-height: 112px;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  box-sizing: border-box;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
@@ -475,6 +478,7 @@ body:has(.od-dashboard) #page-content {
   font-size: 13px;
   background: var(--od-accent-soft, var(--od-heading-bg));
   color: var(--od-accent, var(--od-muted));
+  flex-shrink: 0;
 }
 
 .od-kpi-label {
@@ -482,17 +486,19 @@ body:has(.od-dashboard) #page-content {
   font-size: 14px;
   font-weight: 700;
   color: var(--od-text);
+  line-height: 1.25;
 }
 
 .od-kpi-value {
   font-family: var(--od-font-display);
-  font-size: 30px;
+  font-size: clamp(1.15rem, 2.2vw, 1.875rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
   font-variant-numeric: tabular-nums;
   word-break: break-word;
   color: var(--od-text);
+  margin-top: auto;
 }
 
 .od-kpi-card:not(.od-tone-muted) .od-kpi-value {
