@@ -3488,6 +3488,7 @@ button.btn-speaker-not-arrived {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
+  max-width: 400px;
 }
 
 .feedback-comment-cell__text {
@@ -3564,4 +3565,15 @@ button.btn-speaker-not-arrived {
 
 .review-tags-list .badge {
   background-color: var(--tag-color, #cccccc);
+}
+
+.checkbox-col {
+  width: 1%;
+}
+
+.comment-text-collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

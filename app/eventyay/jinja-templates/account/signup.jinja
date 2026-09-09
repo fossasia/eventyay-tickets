@@ -91,6 +91,9 @@
         </div>
       {% endif %}
 
+      {{ turnstile_widget('registration') }}
+      {{ turnstile_script('registration') }}
+
       <button type='submit' class='btn btn-primary btn-block'>
         <i class='fa fa-check'></i>
         {{ _('Create Account') }}

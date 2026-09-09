@@ -16,22 +16,22 @@
             {{ reply.review|rich_text }}
         </div>
         <button class="read-more-btn d-none" data-expanded="false" data-read-more="{% translate 'Read more' %}" data-show-less="{% translate 'Show less' %}">{% translate "Read more" %}</button>
-        <div class="comment-actions d-flex align-items-center">
+        <div class="comment-actions">
             {% if request.user.is_authenticated %}
-            <button class="btn react-btn mr-1 {% if reply.user_vote == True %}active-vote{% endif %}" data-action="upvote" data-id="{{ reply.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=reply.id %}">
-                <i class="fa {% if reply.user_vote == True %}fa-thumbs-up text-success{% else %}fa-thumbs-o-up{% endif %}"></i> <span class="upvote-count ml-1">{{ reply.upvote_count|default:"" }}</span>
+            <button class="btn react-btn {% if reply.user_vote == True %}active-vote{% endif %}" data-action="upvote" data-id="{{ reply.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=reply.id %}">
+                <i class="fa {% if reply.user_vote == True %}fa-thumbs-up text-success{% else %}fa-thumbs-o-up{% endif %}"></i> <span class="upvote-count">{{ reply.upvote_count|default:"" }}</span>
             </button>
             <button class="btn react-btn {% if reply.user_vote == False %}active-vote{% endif %}" data-action="downvote" data-id="{{ reply.id }}" data-url="{% url 'agenda:feedback.react' organizer=request.event.organizer.slug event=request.event.slug slug=submission.code feedback_id=reply.id %}">
-                <i class="fa {% if reply.user_vote == False %}fa-thumbs-down text-danger{% else %}fa-thumbs-o-down{% endif %}"></i> <span class="downvote-count ml-1">{{ reply.downvote_count|default:"" }}</span>
+                <i class="fa {% if reply.user_vote == False %}fa-thumbs-down text-danger{% else %}fa-thumbs-o-down{% endif %}"></i> <span class="downvote-count">{{ reply.downvote_count|default:"" }}</span>
             </button>
             {% endif %}
             {% if feedback_form %}
-                <button class="btn reply-btn ml-2" data-form-id="{{ root_fb.id }}" data-parent-id="{{ reply.id }}">
+                <button class="btn reply-btn" data-form-id="{{ root_fb.id }}" data-parent-id="{{ reply.id }}">
                     {% translate "Reply" %}
                 </button>
             {% endif %}
             {% if request.user.is_authenticated %}
-                <details class="dropdown d-inline-block ml-2" aria-haspopup="menu" role="menu">
+                <details class="dropdown comment-actions-menu" aria-haspopup="menu" role="menu">
                     <summary class="btn btn-sm btn-link text-muted p-0 border-0 comment-dropdown-toggle">
                         <i class="fa fa-ellipsis-v"></i>
                     </summary>

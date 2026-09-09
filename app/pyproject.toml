@@ -289,8 +289,9 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 [tool.ruff.lint.isort]
 lines-after-imports = 2
 
-[tool.setuptools]
-packages = ["eventyay"]
+[tool.setuptools.packages.find]
+include = ["eventyay*"]
+namespaces = false
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "tests.tickets.settings"
