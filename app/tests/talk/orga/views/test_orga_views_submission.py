@@ -935,6 +935,7 @@ def test_talk_dashboard_statistics(use_tracks, slot, other_slot, orga_client):
     assert "All sessions" in content
     assert "Accepted sessions" in content
     assert 'id="stats-payload"' in content
+    assert 'type="application/json"' in content
     assert "Sessions by type" in content or "Sessions by state" in content
 
 

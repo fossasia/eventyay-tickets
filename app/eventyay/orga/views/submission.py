@@ -1001,17 +1001,42 @@ class SubmissionStatsMixin:
             for date in date_range
         ]
 
+    @staticmethod
+    def _sorted_label_value_rows(counter):
+        if not counter:
+            return None
+        return sorted(
+            [{'label': label, 'value': value} for label, value in counter.items()],
+            key=itemgetter('label'),
+        )
+
+    @staticmethod
+    def _sorted_state_rows(rows):
+        state_labels = dict(SubmissionStates.get_choices())
+        payload = [
+            {
+                'label': str(state_labels.get(row['state'], row['state'])),
+                'value': row['count'],
+                'state': row['state'],
+            }
+            for row in rows
+            if row['count']
+        ]
+        if not payload:
+            return None
+        return sorted(payload, key=itemgetter('label'))
+
     @context
     def submission_timeline_data(self):
         if self.raw_submission_timeline_data:
-            return json.dumps(self.raw_submission_timeline_data)
-        return ''
+            return self.raw_submission_timeline_data
+        return None
 
     @context
     @cached_property
     def submission_state_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         rows = (
             Submission.all_objects
             .exclude(state=SubmissionStates.DRAFT)
@@ -1019,21 +1044,12 @@ class SubmissionStatsMixin:
             .values('state')
             .annotate(count=DbCount('id'))
         )
-        state_labels = dict(SubmissionStates.get_choices())
-        counter = {str(state_labels.get(row['state'], row['state'])): row['count'] for row in rows if row['count']}
-        if not counter:
-            return ''
-        return json.dumps(
-            sorted(
-                [{'label': label, 'value': value} for label, value in counter.items()],
-                key=itemgetter('label'),
-            )
-        )
+        return self._sorted_state_rows(rows)
 
     @context
     def submission_type_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         rows = (
             Submission.objects
             .filter(event=self.request.event)
@@ -1048,19 +1064,12 @@ class SubmissionStatsMixin:
             types_dict[row['submission_type_id']]: row['count']
             for row in rows if row['submission_type_id'] in types_dict and row['count']
         }
-        if not counter:
-            return ''
-        return json.dumps(
-            sorted(
-                [{'label': label, 'value': value} for label, value in counter.items()],
-                key=itemgetter('label'),
-            )
-        )
+        return self._sorted_label_value_rows(counter)
 
     @context
     def submission_track_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         if self.request.event.get_feature_flag('use_tracks'):
             rows = (
                 Submission.objects
@@ -1076,20 +1085,13 @@ class SubmissionStatsMixin:
                 tracks_dict[row['track_id']]: row['count']
                 for row in rows if row['track_id'] in tracks_dict and row['count']
             }
-            if not counter:
-                return ''
-            return json.dumps(
-                sorted(
-                    [{'label': label, 'value': value} for label, value in counter.items()],
-                    key=itemgetter('label'),
-                )
-            )
-        return ''
+            return self._sorted_label_value_rows(counter)
+        return None
 
     @context
     def submission_language_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         locales_dict = dict(self.request.event.named_content_locales)
         rows = (
             Submission.objects
@@ -1101,19 +1103,12 @@ class SubmissionStatsMixin:
             str(locales_dict.get(row['content_locale'], row['content_locale'])): row['count']
             for row in rows if row['content_locale'] and row['count']
         }
-        if not counter:
-            return ''
-        return json.dumps(
-            sorted(
-                [{'label': label, 'value': value} for label, value in counter.items()],
-                key=itemgetter('label'),
-            )
-        )
+        return self._sorted_label_value_rows(counter)
 
     @context
     def talk_timeline_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         rows = (
             self.request.event.submissions
             .filter(state__in=SubmissionStates.accepted_states, created__isnull=False)
@@ -1123,42 +1118,34 @@ class SubmissionStatsMixin:
             .order_by('date')
         )
         if not rows:
-            return ''
+            return None
 
         data = {row['date'].isoformat(): row['count'] for row in rows if row['date']}
-        if data:
-            if self.raw_submission_timeline_data:
-                return json.dumps(
-                    [{'x': point['x'], 'y': data.get(point['x'][:10], 0)} for point in self.raw_submission_timeline_data]
-                )
-            return json.dumps([{'x': date, 'y': count} for date, count in sorted(data.items())])
-        return ''
+        if not data:
+            return None
+        if self.raw_submission_timeline_data:
+            return [
+                {'x': point['x'], 'y': data.get(point['x'][:10], 0)}
+                for point in self.raw_submission_timeline_data
+            ]
+        return [{'x': date, 'y': count} for date, count in sorted(data.items())]
 
     @context
     def talk_state_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         rows = (
             self.request.event.submissions
             .filter(state__in=SubmissionStates.accepted_states)
             .values('state')
             .annotate(count=DbCount('id'))
         )
-        state_labels = dict(SubmissionStates.get_choices())
-        counter = {str(state_labels.get(row['state'], row['state'])): row['count'] for row in rows if row['count']}
-        if not counter:
-            return ''
-        return json.dumps(
-            sorted(
-                [{'label': label, 'value': value} for label, value in counter.items()],
-                key=itemgetter('label'),
-            )
-        )
+        return self._sorted_state_rows(rows)
 
     @context
     def talk_type_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         rows = (
             self.request.event.submissions
             .filter(state__in=SubmissionStates.accepted_states)
@@ -1173,19 +1160,12 @@ class SubmissionStatsMixin:
             types_dict[row['submission_type_id']]: row['count']
             for row in rows if row['submission_type_id'] in types_dict and row['count']
         }
-        if not counter:
-            return ''
-        return json.dumps(
-            sorted(
-                [{'label': label, 'value': value} for label, value in counter.items()],
-                key=itemgetter('label'),
-            )
-        )
+        return self._sorted_label_value_rows(counter)
 
     @context
     def talk_track_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         if self.request.event.get_feature_flag('use_tracks'):
             rows = (
                 self.request.event.submissions
@@ -1201,20 +1181,13 @@ class SubmissionStatsMixin:
                 tracks_dict[row['track_id']]: row['count']
                 for row in rows if row['track_id'] in tracks_dict and row['count']
             }
-            if not counter:
-                return ''
-            return json.dumps(
-                sorted(
-                    [{'label': label, 'value': value} for label, value in counter.items()],
-                    key=itemgetter('label'),
-                )
-            )
-        return ''
+            return self._sorted_label_value_rows(counter)
+        return None
 
     @context
     def talk_language_data(self):
         if not self.can_view_submission_stats:
-            return ''
+            return None
         locales_dict = dict(self.request.event.named_content_locales)
         rows = (
             self.request.event.submissions
@@ -1226,52 +1199,87 @@ class SubmissionStatsMixin:
             str(locales_dict.get(row['content_locale'], row['content_locale'])): row['count']
             for row in rows if row['content_locale'] and row['count']
         }
-        if not counter:
-            return ''
-        return json.dumps(
-            sorted(
-                [{'label': label, 'value': value} for label, value in counter.items()],
-                key=itemgetter('label'),
-            )
-        )
+        return self._sorted_label_value_rows(counter)
+
+    @context
+    def stats_payload(self):
+        """Analytics chart payload for safe JSON embedding via json_script."""
+        if not self.can_view_submission_stats:
+            return None
+
+        def resolve(value):
+            # Plain @context methods are callables on the view; cached_property values are not.
+            return value() if callable(value) else value
+
+        return {
+            'titles': {
+                'all': str(_('Submissions over time')),
+                'accepted': str(_('Sessions over time')),
+            },
+            'all': {
+                'timeline': resolve(self.submission_timeline_data),
+                'timelineLabel': str(_('Proposals')),
+                'type': resolve(self.submission_type_data),
+                'track': resolve(self.submission_track_data),
+                'language': resolve(self.submission_language_data),
+                'state': resolve(self.submission_state_data),
+            },
+            'accepted': {
+                'timeline': resolve(self.talk_timeline_data),
+                'timelineLabel': str(phrases.schedule.sessions),
+                'type': resolve(self.talk_type_data),
+                'track': resolve(self.talk_track_data),
+                'language': resolve(self.talk_language_data),
+                'state': resolve(self.talk_state_data),
+            },
+        }
 
     @context
     def room_status(self):
-        """Room assignment breakdown for session analytics."""
+        """Room assignment breakdown for session analytics.
+
+        Rows are mutually exclusive and sum to confirmed submissions:
+        published on current schedule, assigned in WIP but unpublished, and unassigned.
+        """
         if not self.can_view_submission_stats:
             return None
         event = self.request.event
         total = event.submissions.filter(state=SubmissionStates.CONFIRMED).count()
         if not total:
             return None
-        schedule = getattr(event, 'wip_schedule', None)
-        assigned = 0
-        not_published = 0
-        if schedule is not None:
-            assigned = (
-                schedule.talks.filter(
+
+        wip_schedule = getattr(event, 'wip_schedule', None)
+        assigned_ids = set()
+        if wip_schedule is not None:
+            assigned_ids = set(
+                wip_schedule.talks.filter(
                     submission__isnull=False,
                     submission__state=SubmissionStates.CONFIRMED,
                     room__isnull=False,
                     room__deleted=False,
                 )
-                .values('submission_id')
+                .values_list('submission_id', flat=True)
                 .distinct()
-                .count()
             )
-            not_published = (
-                schedule.talks.filter(
+
+        published_ids = set()
+        current_schedule = getattr(event, 'current_schedule', None)
+        if current_schedule is not None:
+            published_ids = set(
+                current_schedule.talks.filter(
                     submission__isnull=False,
                     submission__state=SubmissionStates.CONFIRMED,
                     room__isnull=False,
                     room__deleted=False,
-                    is_visible=False,
+                    is_visible=True,
                 )
-                .values('submission_id')
+                .values_list('submission_id', flat=True)
                 .distinct()
-                .count()
             )
-        not_assigned = max(0, total - assigned)
+
+        published = len(assigned_ids & published_ids)
+        not_published = len(assigned_ids - published_ids)
+        not_assigned = max(0, total - len(assigned_ids))
 
         def pct(count):
             return round((count / total) * 100, 1) if total else 0.0
@@ -1280,8 +1288,8 @@ class SubmissionStatsMixin:
             'rows': [
                 {
                     'label': _('Assigned to room'),
-                    'count': assigned,
-                    'pct': pct(assigned),
+                    'count': published,
+                    'pct': pct(published),
                     'status': 'success',
                 },
                 {

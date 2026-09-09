@@ -19,6 +19,15 @@ const chartInstances = {
     track: null,
 }
 
+const ACCEPTED_STATES = new Set(["accepted", "confirmed"])
+
+const escapeHtml = (value) => String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+
 const loadPayload = () => {
     const payloadEl = document.getElementById("stats-payload")
     if (!payloadEl) return null
@@ -35,6 +44,7 @@ const toChartData = (rows) => {
     return {
         series: rows.map((row) => row.value),
         labels: rows.map((row) => row.label),
+        states: rows.map((row) => row.state || null),
     }
 }
 
@@ -193,8 +203,8 @@ const drawTimeline = (targetId, timelineRows, label, stateRows) => {
         let total = 0
         stateRows.forEach((row) => {
             total += row.value
-            const stateLabel = String(row.label).toLowerCase()
-            if (stateLabel === "accepted" || stateLabel === "confirmed") {
+            const stateCode = String(row.state || "").toLowerCase()
+            if (ACCEPTED_STATES.has(stateCode)) {
                 accepted += row.value
             }
         })
@@ -208,7 +218,7 @@ const drawTimeline = (targetId, timelineRows, label, stateRows) => {
         </div>
         <div class="td-ts-item">
             <div class="td-ts-label">Peak day</div>
-            <div class="td-ts-value">${peakCount > 0 ? `${peakDate}, ${peakCount}` : "-"}</div>
+            <div class="td-ts-value">${peakCount > 0 ? `${escapeHtml(peakDate)}, ${peakCount}` : "-"}</div>
         </div>
         <div class="td-ts-item">
             <div class="td-ts-label">Accepted rate</div>
@@ -341,9 +351,9 @@ const drawHBarChart = (data, elementId, clickType) => {
     if (shortTopItem.length > 20) shortTopItem = shortTopItem.substring(0, 17) + "..."
 
     const summaryHtml = `
-        <div class="td-ts-item" title="${topItem}">
+        <div class="td-ts-item" title="${escapeHtml(topItem)}">
             <div class="td-ts-label">Top ${typeLabelSingular}</div>
-            <div class="td-ts-value" style="font-size: 13px;">${shortTopItem}</div>
+            <div class="td-ts-value" style="font-size: 13px;">${escapeHtml(shortTopItem)}</div>
         </div>
         <div class="td-ts-item">
             <div class="td-ts-label">Total ${typeLabel}</div>
@@ -403,7 +413,7 @@ const drawStatsTable = (data, elementId) => {
         const color = PALETTE[i % PALETTE.length]
         html += `<tr>
             <td class="td-st-dot"><span style="background:${color}"></span></td>
-            <td class="td-st-name">${label}</td>
+            <td class="td-st-name">${escapeHtml(label)}</td>
             <td class="td-st-count">${value}</td>
             <td class="td-st-pct">${pct}%</td>
         </tr>`
@@ -421,7 +431,7 @@ const drawStatsTable = (data, elementId) => {
 
     html += `</tbody>
         <tfoot><tr>
-            <td colspan="2"><strong>${TOTAL_LABEL}</strong></td>
+            <td colspan="2"><strong>${escapeHtml(TOTAL_LABEL)}</strong></td>
             <td class="td-st-count"><strong>${total}</strong></td>
             <td class="td-st-pct"><strong>100%</strong></td>
         </tr></tfoot>

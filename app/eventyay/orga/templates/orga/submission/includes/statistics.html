@@ -1,9 +1,6 @@
 {% load i18n %}
 
 {% if submission_timeline_data or submission_type_data or submission_track_data or submission_state_data or submission_language_data or talk_timeline_data or talk_type_data or talk_track_data or talk_state_data or talk_language_data or room_status %}
-{% translate "Proposals" as timeline_label_all %}
-{% translate "Submissions over time" as timeline_title_all %}
-{% translate "Sessions over time" as timeline_title_accepted %}
 {% translate "Total" as total_label %}
 {% translate "Total sessions" as label_total_sessions %}
 {% translate "Peak day" as label_peak_day %}
@@ -41,30 +38,7 @@
          data-mapping="{{ id_mapping }}"
          data-annotations="{{ timeline_annotations }}"></div>
 
-    <script type="application/json" id="stats-payload">
-    {
-      "titles": {
-        "all": "{{ timeline_title_all|escapejs }}",
-        "accepted": "{{ timeline_title_accepted|escapejs }}"
-      },
-      "all": {
-        "timeline": {% if submission_timeline_data %}{{ submission_timeline_data|safe }}{% else %}null{% endif %},
-        "timelineLabel": "{{ timeline_label_all|escapejs }}",
-        "type": {% if submission_type_data %}{{ submission_type_data|safe }}{% else %}null{% endif %},
-        "track": {% if submission_track_data %}{{ submission_track_data|safe }}{% else %}null{% endif %},
-        "language": {% if submission_language_data %}{{ submission_language_data|safe }}{% else %}null{% endif %},
-        "state": {% if submission_state_data %}{{ submission_state_data|safe }}{% else %}null{% endif %}
-      },
-      "accepted": {
-        "timeline": {% if talk_timeline_data %}{{ talk_timeline_data|safe }}{% else %}null{% endif %},
-        "timelineLabel": "{{ phrases.schedule.sessions|escapejs }}",
-        "type": {% if talk_type_data %}{{ talk_type_data|safe }}{% else %}null{% endif %},
-        "track": {% if talk_track_data %}{{ talk_track_data|safe }}{% else %}null{% endif %},
-        "language": {% if talk_language_data %}{{ talk_language_data|safe }}{% else %}null{% endif %},
-        "state": {% if talk_state_data %}{{ talk_state_data|safe }}{% else %}null{% endif %}
-      }
-    }
-    </script>
+    {{ stats_payload|json_script:'stats-payload' }}
 
     <div class="td-analytics-top-row" id="proposal-statistics">
       {% if submission_timeline_data or talk_timeline_data %}
