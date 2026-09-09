@@ -5,7 +5,7 @@ import logging
 import operator
 import re
 from collections import OrderedDict
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from itertools import groupby
 from urllib.parse import urlsplit
 
@@ -1593,16 +1593,59 @@ class QuickSetupView(FormView):
         return ctx
 
     def get_initial(self):
-        return {
+        initial = {
             'currency': self.request.event.currency,
             'waiting_list_enabled': True,
             'ticket_download': True,
             'require_registered_account_for_tickets': True,
         }
+        draft_str = self.request.event.settings.get('quickstart_draft')
+        if draft_str:
+            try:
+                draft_data = json.loads(draft_str)
+                if draft_data.get('form'):
+                    initial.update(draft_data['form'])
+            except Exception:
+                pass
+        return initial
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        if form.is_valid() and self.formset.is_valid():
+        form_is_valid = form.is_valid()
+        formset_is_valid = self.formset.is_valid()
+        is_draft = request.POST.get('action') == 'draft'
+
+        if form_is_valid and formset_is_valid and not is_draft:
+            named_tickets = [
+                f
+                for f in self.formset
+                if f not in self.formset.deleted_forms
+                and f.cleaned_data.get('name')
+                and str(f.cleaned_data.get('name')).strip()
+            ]
+            if not named_tickets:
+                form.add_error(None, _('At least one ticket type is required to continue.'))
+                form_is_valid = False
+
+            has_paid_ticket = any(
+                (f.cleaned_data.get('default_price') or Decimal('0')) > Decimal('0')
+                for f in named_tickets
+            )
+            if has_paid_ticket:
+                payment_enabled = any(
+                    bool(form.cleaned_data.get(k))
+                    for k in (
+                        'payment_banktransfer__enabled',
+                        'payment_manualpayment__enabled',
+                        'payment_stripe__enabled',
+                        'payment_paypal__enabled',
+                    )
+                )
+                if not payment_enabled:
+                    form.add_error(None, _('At least one payment method is required for paid tickets.'))
+                    form_is_valid = False
+
+        if form_is_valid and formset_is_valid:
             return self.form_valid(form)
         else:
             plugins_active = self.request.event.get_plugins()
@@ -1628,6 +1671,59 @@ class QuickSetupView(FormView):
 
     @transaction.atomic
     def form_valid(self, form):
+        if self.request.POST.get('action') == 'draft':
+            draft_tickets = []
+            for f in self.formset:
+                if f in self.formset.deleted_forms:
+                    continue
+                name_val = f.cleaned_data.get('name')
+                if not name_val or not str(name_val).strip():
+                    continue
+                draft_tickets.append({
+                    'name': name_val.data if hasattr(name_val, 'data') else str(name_val),
+                    'default_price': str(f.cleaned_data.get('default_price') or '0.00'),
+                    'quota': f.cleaned_data.get('quota'),
+                })
+            draft_form = {}
+            for k, v in form.cleaned_data.items():
+                if isinstance(v, Decimal):
+                    draft_form[k] = str(v)
+                elif isinstance(v, (str, int, float, bool)) or v is None:
+                    draft_form[k] = v
+            draft_data = {
+                'form': draft_form,
+                'tickets': draft_tickets,
+            }
+            self.request.event.settings.set('quickstart_draft', json.dumps(draft_data))
+
+            if form.cleaned_data.get('currency'):
+                self.request.event.currency = form.cleaned_data['currency']
+                self.request.event.save(update_fields=['currency'])
+            if form.cleaned_data.get('show_quota_left') is not None:
+                self.request.event.settings.show_quota_left = form.cleaned_data['show_quota_left']
+            if form.cleaned_data.get('waiting_list_enabled') is not None:
+                self.request.event.settings.waiting_list_enabled = form.cleaned_data['waiting_list_enabled']
+            if form.cleaned_data.get('attendee_names_required') is not None:
+                self.request.event.settings.attendee_names_required = form.cleaned_data['attendee_names_required']
+            if form.cleaned_data.get('ticket_download') is not None:
+                self.request.event.settings.ticket_download = form.cleaned_data['ticket_download']
+            if form.cleaned_data.get('require_registered_account_for_tickets') is not None:
+                self.request.event.settings.require_registered_account_for_tickets = form.cleaned_data['require_registered_account_for_tickets']
+
+            messages.success(
+                self.request,
+                _('Your draft ticketing setup has been saved.'),
+            )
+            return redirect(
+                reverse(
+                    'control:event.index',
+                    kwargs={
+                        'organizer': self.request.event.organizer.slug,
+                        'event': self.request.event.slug,
+                    },
+                )
+            )
+
         plugins_active = self.request.event.get_plugins()
         if form.cleaned_data['ticket_download']:
             self.request.event.settings.ticket_download = True
@@ -1748,7 +1844,7 @@ class QuickSetupView(FormView):
 
         subevent = self.request.event.subevents.first()
         for i, f in enumerate(self.formset):
-            if f in self.formset.deleted_forms or not f.has_changed():
+            if f in self.formset.deleted_forms or not f.has_changed() or not f.cleaned_data.get('name'):
                 continue
 
             product = self.request.event.products.create(
@@ -1796,6 +1892,7 @@ class QuickSetupView(FormView):
 
         self.request.event.plugins = ','.join(plugins_active)
         self.request.event.save()
+        self.request.event.settings.delete('quickstart_draft')
         messages.success(
             self.request,
             _(
@@ -1803,10 +1900,9 @@ class QuickSetupView(FormView):
                 'or take your event live to start selling!'
             ),
         )
-
         return redirect(
             reverse(
-                'control:event.index',
+                'control:event.live',
                 kwargs={
                     'organizer': self.request.event.organizer.slug,
                     'event': self.request.event.slug,
@@ -1816,21 +1912,57 @@ class QuickSetupView(FormView):
 
     @cached_property
     def formset(self):
+        initial = [
+            {
+                'name': LazyI18nString.from_gettext(gettext('Standard Ticket')),
+                'default_price': Decimal('49.00'),
+                'quota': 200,
+            },
+            {
+                'name': LazyI18nString.from_gettext(gettext('Virtual Ticket')),
+                'default_price': Decimal('0.00'),
+                'quota': 500,
+            },
+        ]
+        draft_str = self.request.event.settings.get('quickstart_draft')
+        if draft_str:
+            try:
+                draft_data = json.loads(draft_str)
+                if 'tickets' in draft_data and isinstance(draft_data['tickets'], list):
+                    parsed_tickets = []
+                    for t in draft_data['tickets']:
+                        if not isinstance(t, dict) or 'name' not in t:
+                            continue
+                        name_val = t.get('name')
+                        if not name_val or not str(name_val).strip():
+                            continue
+                        raw_price = t.get('default_price')
+                        if raw_price is None or raw_price == '':
+                            price = Decimal('0.00')
+                        else:
+                            try:
+                                price = Decimal(str(raw_price))
+                            except (InvalidOperation, TypeError, ValueError):
+                                continue
+                        quota = t.get('quota')
+                        if quota is not None and quota != '':
+                            try:
+                                quota = int(quota)
+                            except (TypeError, ValueError):
+                                quota = None
+                        else:
+                            quota = None
+                        parsed_tickets.append({
+                            'name': LazyI18nString(name_val) if isinstance(name_val, (dict, str)) else str(name_val),
+                            'default_price': price,
+                            'quota': quota,
+                        })
+                    initial = parsed_tickets
+            except (json.JSONDecodeError, TypeError, KeyError, ValueError, InvalidOperation):
+                pass
+
         return QuickSetupProductFormSet(
             data=self.request.POST if self.request.method == 'POST' else None,
             event=self.request.event,
-            initial=[
-                {
-                    'name': LazyI18nString.from_gettext(gettext('Standard Ticket')),
-                    'default_price': Decimal('49.00'),
-                    'quota': 200,
-                },
-                {
-                    'name': LazyI18nString.from_gettext(gettext('Virtual Ticket')),
-                    'default_price': Decimal('0.00'),
-                    'quota': 500,
-                },
-            ]
-            if self.request.method != 'POST'
-            else [],
+            initial=initial if self.request.method != 'POST' else [],
         )
