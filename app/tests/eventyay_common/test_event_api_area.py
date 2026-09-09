@@ -61,6 +61,11 @@ def test_api_page_renders_for_organiser(organizer_client, event, team):
     assert 'speakers/' in content
     assert 'submissions/' in content
     assert 'reviews/' in content
+    assert 'ReDoc' not in content
+    assert 'docs.eventyay.com/api/fundamentals' not in content
+    assert 'docs.eventyay.com/api-reference/index.html' in content
+    assert 'bound method' not in content
+    assert f'/api/v1/events/{event.slug}/' in content
 
 
 def test_api_catalog_hides_orders_without_permission(rf, event, organizer, user):

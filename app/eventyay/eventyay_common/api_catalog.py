@@ -58,14 +58,14 @@ def tickets_api_base(event: Event) -> str:
 
 def talks_api_base(event: Event) -> str:
     # Event.api_urls already encodes TALK_BASE_PATH; prefer that when available.
-    return str(event.api_urls.base.full)
+    # urlman exposes ``.full`` as a method; call it so templates get a real URL.
+    return event.api_urls.base.full()
 
 
 def docs_urls() -> dict[str, str]:
     return {
-        'fundamentals': 'https://docs.eventyay.com/api/fundamentals',
+        'reference': 'https://docs.eventyay.com/api-reference/index.html',
         'swagger': urljoin(_site_base(), 'api/v1/docs/'),
-        'redoc': urljoin(_site_base(), 'api/v1/redoc/'),
         'schema': urljoin(_site_base(), 'api/v1/schema/'),
     }
 

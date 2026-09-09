@@ -284,9 +284,6 @@
                                     <a href="{{ request.event.orga_urls.import_export_settings }}" class="nav-link nav-link-second-level{% if 'settings.import_export' in url_name %} active{% endif %}">
                                         <span>{% translate "Import/Export" %}</span>
                                     </a>
-                                    <a href="{% url 'eventyay_common:event.api' organizer=request.event.organizer.slug event=request.event.slug %}" class="nav-link nav-link-second-level">
-                                        <span>{% translate "API" %}</span>
-                                    </a>
                                     {% for plugin_setting in nav_settings %}
                                         <a href="{{ plugin_setting.url }}" class="nav-link nav-link-second-level{% if plugin_setting.active %} active{% endif %}">
                                             <span>{{ plugin_setting.label }}</span>
