@@ -74,7 +74,7 @@ class StartPageView(TemplateView):
                 return ctx
 
             today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
-            base_qs = Event.without_talks_testmode(
+            base_qs = Event.exclude_talks_testmode(
                 Event.objects.select_related('organizer')
                 .prefetch_related('_settings_objects')
                 .filter(live=True, testmode=False)
@@ -159,7 +159,7 @@ class UpcomingEventsView(PaginationMixin, ListView):
 
     def get_queryset(self):
         today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
-        qs = Event.without_talks_testmode(
+        qs = Event.exclude_talks_testmode(
             Event.objects.select_related('organizer')
             .prefetch_related('_settings_objects')
             .filter(live=True, is_public=True)
@@ -188,7 +188,7 @@ class PastEventsView(PaginationMixin, ListView):
 
     def get_queryset(self):
         today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
-        return Event.without_talks_testmode(
+        return Event.exclude_talks_testmode(
             Event.objects.select_related('organizer')
             .prefetch_related('_settings_objects')
             .filter(live=True)
@@ -222,7 +222,7 @@ class FollowedEventsView(TemplateView):
 
         organizer_groups = []
         for org in organizers:
-            events_qs = Event.without_talks_testmode(
+            events_qs = Event.exclude_talks_testmode(
                 Event.objects.filter(
                     organizer=org,
                     live=True,

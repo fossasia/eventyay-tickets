@@ -107,7 +107,7 @@ def build_profile_prompt_context(user: User) -> dict[str, Any]:
 
 def _public_upcoming_events_qs():
     today = now().replace(hour=0, minute=0, second=0, microsecond=0)
-    return Event.without_talks_testmode(
+    return Event.exclude_talks_testmode(
         Event.objects.select_related('organizer')
         .prefetch_related('_settings_objects', 'cfp')
         .filter(live=True, is_public=True, testmode=False)
