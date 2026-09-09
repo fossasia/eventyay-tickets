@@ -2172,15 +2172,15 @@ class Event(
         return bool(self.testmode or self.talks_testmode)
 
     @staticmethod
-    def without_testmode(qs):
-        """Exclude events with tickets or talks in test mode.
+    def exclude_talks_testmode(qs):
+        """Exclude events whose talks component is in test mode.
 
         Django's ``.exclude(related__a=x, related__b=y)`` splits into two
         independent EXISTS checks, so events with a ``talks_testmode`` row
         (even False) plus any other setting value ``True`` are wrongly dropped.
-        Use a same-row NOT EXISTS for the talks setting instead.
+        Use a same-row NOT EXISTS instead.
         """
-        return qs.filter(testmode=False).exclude(
+        return qs.exclude(
             Exists(
                 Event_SettingsStore.objects.filter(
                     object_id=OuterRef('pk'),

@@ -74,10 +74,10 @@ class StartPageView(TemplateView):
                 return ctx
 
             today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
-            base_qs = Event.without_testmode(
+            base_qs = Event.exclude_talks_testmode(
                 Event.objects.select_related('organizer')
                 .prefetch_related('_settings_objects')
-                .filter(live=True)
+                .filter(live=True, testmode=False)
             )
             future_filter = Q(date_to__gte=today_datetime) | Q(date_to__isnull=True, date_from__gte=today_datetime)
             past_filter = Q(date_to__lt=today_datetime) | Q(date_to__isnull=True, date_from__lt=today_datetime)
@@ -159,12 +159,13 @@ class UpcomingEventsView(PaginationMixin, ListView):
 
     def get_queryset(self):
         today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
-        qs = Event.without_testmode(
+        qs = Event.exclude_talks_testmode(
             Event.objects.select_related('organizer')
             .prefetch_related('_settings_objects')
             .filter(live=True, is_public=True)
             .filter(Q(startpage_visible=True) | Q(startpage_featured=True))
             .filter(Q(date_to__gte=today_datetime) | Q(date_to__isnull=True, date_from__gte=today_datetime))
+            .filter(testmode=False)
         ).order_by('date_from')
         if self.request.GET.get('cfp') == 'open':
             qs = qs.filter(Q(cfp__deadline__isnull=True) | Q(cfp__deadline__gte=timezone.now()))
@@ -187,12 +188,13 @@ class PastEventsView(PaginationMixin, ListView):
 
     def get_queryset(self):
         today_datetime = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
-        return Event.without_testmode(
+        return Event.exclude_talks_testmode(
             Event.objects.select_related('organizer')
             .prefetch_related('_settings_objects')
             .filter(live=True)
             .filter(Q(startpage_visible=True) | Q(startpage_featured=True))
             .filter(Q(date_to__lt=today_datetime) | Q(date_to__isnull=True, date_from__lt=today_datetime))
+            .filter(testmode=False)
         ).order_by('-date_from')
 
     def get_context_data(self, **kwargs):
@@ -220,13 +222,14 @@ class FollowedEventsView(TemplateView):
 
         organizer_groups = []
         for org in organizers:
-            events_qs = Event.without_testmode(
+            events_qs = Event.exclude_talks_testmode(
                 Event.objects.filter(
                     organizer=org,
                     live=True,
                 )
                 .filter(Q(startpage_visible=True) | Q(startpage_featured=True))
                 .filter(Q(date_to__gte=today_datetime) | Q(date_to__isnull=True, date_from__gte=today_datetime))
+                .filter(testmode=False)
                 .select_related('organizer')
                 .prefetch_related('_settings_objects')
             ).order_by('date_from')[:9]
