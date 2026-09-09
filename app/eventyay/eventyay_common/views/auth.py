@@ -43,10 +43,10 @@ from eventyay.base.forms.auth import (
 )
 from eventyay.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
 from eventyay.base.services.mail import SendMailException
-from eventyay.base.settings import GlobalSettingsObject
 from eventyay.helpers.cookies import set_cookie_without_samesite
 from eventyay.helpers.jwt_generate import generate_sso_token
 from eventyay.multidomain.middlewares import get_cookie_domain
+
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +217,7 @@ def invite(request: HttpRequest, token):
             return redirect('eventyay_common:dashboard')
 
     if request.method == 'POST':
-        form = RegistrationForm(data=request.POST)
+        form = RegistrationForm(data=request.POST, request=request)
         with transaction.atomic():
             valid = form.is_valid()
             if valid:
@@ -311,7 +311,8 @@ class Forgot(TemplateView):
 
     @cached_property
     def form(self):
-        return PasswordForgotForm(data=self.request.POST if self.request.method == 'POST' else None)
+        data = self.request.POST if self.request.method == 'POST' else None
+        return PasswordForgotForm(data=data, request=self.request)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -23,6 +23,12 @@ def test_plugin_installed(plugin):
     assert plugin.module in settings.INSTALLED_APPS
 
 
+def test_hubspot_in_beta_plugins():
+    from eventyay.base.plugins import BETA_PLUGINS
+
+    assert 'hubspot' in BETA_PLUGINS
+
+
 class PluginSignalTest(TestCase):
     """
     This test case tests the EventPluginSignal handler
