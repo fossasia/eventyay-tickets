@@ -192,7 +192,7 @@
                         {% endif %}
                     </td>
                     <td class="text-right flip">
-                        <a href='{% url "control:event.index" organizer=e.organizer.slug event=e.slug %}'
+                        <a href='{% url "eventyay_common:event.index" organizer=e.organizer.slug event=e.slug %}'
                                 class="btn btn-sm btn-default" title='{% trans "Open event dashboard" %}'
                                 data-toggle="tooltip">
                             <span class="fa fa-eye"></span>

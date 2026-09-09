@@ -45,6 +45,7 @@ class EventsTest(SoupTest):
             organizer=self.orga1,
             name='30C3',
             slug='30c3',
+            live=True,
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
             plugins='eventyay.plugins.banktransfer,tests.tickets.testdummy',
         )
