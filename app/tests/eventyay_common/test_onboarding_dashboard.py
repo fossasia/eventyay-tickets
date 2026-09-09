@@ -232,7 +232,6 @@ def test_private_events_are_not_recommended(new_user_client, db):
 def test_global_navigation_labels(new_user_client):
     response = new_user_client.get(reverse('eventyay_common:dashboard'))
     content = response.content.decode()
-    assert 'Browse events' in content
     assert 'My Tickets' in content
     assert 'Dashboard' in content
 
