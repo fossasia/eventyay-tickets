@@ -87,6 +87,23 @@ class EventsTest(SoupTest):
         self.assertNotIn('31C3', tabletext)
         self.assertNotIn('MRMCD14', tabletext)
 
+    def test_event_name_links_to_organizer_dashboard(self):
+        resp = self.client.get('/control/events/', follow=True)
+        self.assertEqual(resp.status_code, 200)
+        
+        doc = BeautifulSoup(resp.content, 'html.parser')
+
+        event_link = next(
+            link
+            for link in doc.select('a')
+            if link.get_text(strip=True) == '30C3'
+        )
+
+        self.assertEqual(
+            event_link['href'],
+            '/orga/event/ccc/30c3/',
+        )
+
     def test_convenience_organizer_redirect(self):
         resp = self.client.get('/control/event/%s/' % (self.orga1.slug))
         self.assertRedirects(resp, '/control/organizer/%s/' % (self.orga1.slug))
