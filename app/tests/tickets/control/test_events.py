@@ -89,7 +89,7 @@ class EventsTest(SoupTest):
         self.assertNotIn('MRMCD14', tabletext)
 
     def test_event_name_links_to_organizer_dashboard(self):
-        expected_href = '/orga/event/ccc/30c3/'
+        expected_href = '/common/event/ccc/30c3/'
         
         test_cases = (
             '/control/events/',
