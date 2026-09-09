@@ -433,7 +433,7 @@ body:has(.od-dashboard) #page-content {
    -------------------------------------------------------------------------- */
 .od-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
 }
@@ -966,11 +966,16 @@ h4.od-subchart {
 }
 
 /* --------------------------------------------------------------------------
-   Responsive
+   Responsive — KPI breakpoints match Talks (.td-kpi-grid)
    -------------------------------------------------------------------------- */
-@media (max-width: 1199px) {
-  .od-card-grid--4,
+@media (max-width: 1200px) {
   .od-kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1199px) {
+  .od-card-grid--4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -980,6 +985,10 @@ h4.od-subchart {
   .od-card-grid--3,
   .od-card-grid--2 {
     grid-template-columns: 1fr;
+  }
+
+  .od-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
