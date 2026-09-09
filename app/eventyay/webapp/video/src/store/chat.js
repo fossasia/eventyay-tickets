@@ -210,14 +210,16 @@ export default {
 		async moderateUser({state}, {user, action}) {
 			const postStates = {
 				ban: 'banned',
-				silence: 'silence',
+				silence: 'silenced',
 				reactivate: null
 			}
 			await api.call(`user.${action}`, {id: user.id})
 			if (state.usersLookup[user.id] && typeof postStates[action] !== 'undefined') {
 				state.usersLookup[user.id].moderation_state = postStates[action]
 			}
-			// user.moderation_state = postStates[action]
+			if (user && typeof postStates[action] !== 'undefined') {
+				user.moderation_state = postStates[action]
+			}
 		},
 		async blockUser({state}, {user}) {
 			await api.call('user.block', {id: user.id})

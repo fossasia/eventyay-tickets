@@ -107,15 +107,13 @@ def build_profile_prompt_context(user: User) -> dict[str, Any]:
 
 def _public_upcoming_events_qs():
     today = now().replace(hour=0, minute=0, second=0, microsecond=0)
-    return (
+    return Event.exclude_talks_testmode(
         Event.objects.select_related('organizer')
         .prefetch_related('_settings_objects', 'cfp')
         .filter(live=True, is_public=True, testmode=False)
         .filter(Q(startpage_visible=True) | Q(startpage_featured=True))
         .filter(Q(date_to__gte=today) | Q(date_to__isnull=True, date_from__gte=today))
-        .exclude(_settings_objects__key='talks_testmode', _settings_objects__value='True')
-        .order_by('-startpage_featured', 'date_from')
-    )
+    ).order_by('-startpage_featured', 'date_from')
 
 
 def _event_date_range(event: Event) -> str:
