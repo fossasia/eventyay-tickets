@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy, npgettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
 from django_context_decorator import context
+from i18nfield.strings import LazyI18nString
 
 from eventyay.base.models.mail import MailTemplate, QueuedMail, get_prefixed_subject
 from eventyay.base.signals import entitlement_usage_recorded
@@ -591,9 +592,11 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                             content=escape(value.render_sample(self.request.event)),
                         )
 
-                    subject = nh3.clean(form.cleaned_data['subject'].localize(locale), tags=set())
+                    subject_data = form.cleaned_data.get('subject') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
+                    text_data = form.cleaned_data.get('text') or LazyI18nString({self.request.event.settings.locale or 'en': ''})
+                    subject = nh3.clean(subject_data.localize(locale), tags=set())
                     preview_subject = get_prefixed_subject(self.request.event, subject.format_map(context_dict))
-                    message = form.cleaned_data['text'].localize(locale)
+                    message = text_data.localize(locale)
                     preview_text = compile_email_body(message.format_map(context_dict))
                     self.output[locale] = {
                         'subject': _('Subject: {subject}').format(subject=preview_subject),

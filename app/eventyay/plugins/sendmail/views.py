@@ -629,6 +629,7 @@ class EditEmailQueueView(EventPermissionRequiredMixin, UpdateView):
             ctx['attachments_files'] = []
 
         ctx['output'] = getattr(self, 'output', None)
+        ctx['mail_count'] = getattr(self, 'mail_count', None) or 0
         ctx['preview_warning'] = getattr(self, 'preview_warning', None)
 
         return ctx
@@ -700,7 +701,7 @@ class EditEmailQueueView(EventPermissionRequiredMixin, UpdateView):
                         'html': compile_email_body(message_preview),
                     }
 
-            self.mail_count = form.instance.recipients.count()
+            self.mail_count = len(form.cleaned_data.get('emails', []))
             self.preview_warning = None
             if self.mail_count == 0:
                 self.preview_warning = _('Preview generated with sample recipient data because no recipient is currently selected.')
