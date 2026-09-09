@@ -393,15 +393,17 @@ class SlidesWidget(Widget):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
+        
+        clear_ids = []
         if isinstance(value, dict):
-            if 'existing_resources' in value:
-                # Value came from InfoForm.__init__ setting initial from DB resources
-                current_resources = list(value.get('existing_resources', []))
-            else:
-                # Raw dict from value_from_datadict (POST submission, possibly invalid form re-render)
-                current_resources = []
-        else:
-            current_resources = list(value or [])
+            clear_ids = value.get('clear_ids', [])
+
+        existing_resources = getattr(self, 'existing_resources', [])
+        current_resources = [
+            resource for resource in existing_resources
+            if str(resource.pk) not in clear_ids
+        ]
+
         context['widget']['current_resources'] = current_resources
         context['widget']['existing_value'] = bool(current_resources)
         context['widget']['max_items'] = self.max_items

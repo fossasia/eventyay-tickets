@@ -1587,7 +1587,9 @@ class QuestionOption(models.Model):
         super().save(*args, **kwargs)
 
     @staticmethod
-    def clean_identifier(event, code, instance=None, known=[]):
+    def clean_identifier(event, code, instance=None, known=None):
+        if known is None:
+            known = []
         qs = QuestionOption.objects.filter(question__event=event, identifier=code)
         if instance:
             qs = qs.exclude(pk=instance.pk)

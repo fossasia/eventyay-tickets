@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 from django.views.generic import TemplateView
 from django_context_decorator import context
-from django_scopes import scopes_disabled
+from django_scopes import scope, scopes_disabled
 
 from django.http import Http404
 
@@ -35,7 +35,8 @@ def legacy_orga_event_redirect(request, event):
                 return redirect(url, permanent=True)
         raise Http404()
 
-from eventyay.base.models import Submission, SubmissionStates
+from eventyay.base.models import Review, Submission, SubmissionStates
+from eventyay.base.models.profile import SpeakerProfile
 from eventyay.base.models.event import Event
 from eventyay.base.models.log import LogEntry
 from eventyay.base.models.organizer import Organizer
@@ -262,7 +263,7 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
                     'priority': 60,
                 }
             )
-        is_reviewer = self.request.event.teams.filter(members__in=[self.request.user], is_reviewer=True).exists()
+        is_reviewer = self.request.user.is_administrator or self.request.event.teams.filter(members__in=[self.request.user], is_reviewer=True).exists()
         if is_reviewer:
             reviews_missing = get_missing_reviews(self.request.event, self.request.user).count()
             if reviews_missing:
@@ -299,144 +300,134 @@ class EventDashboardView(EventPermissionRequired, SubmissionStatsMixin, Template
         result['go_to_target'] = 'schedule' if stages['REVIEW']['phase'] == 'done' else 'cfp'
         _now = now()
         today = _now
+        
+        can_update_event = self.request.user.has_perm('base.update_event', event)
         can_change_settings = self.request.user.has_perm('base.change_settings.event', event)
-        can_change_submissions = self.request.user.has_perm('base.orga_update_submission', event)
-        result['tiles'] = self.get_cfp_tiles(_now, can_change_submissions=can_change_submissions)
-        if today < event.date_from:
-            days = (event.date_from - today).days
-            result['tiles'].append(
-                {
+        can_update_submission = self.request.user.has_perm('base.orga_update_submission', event)
+        can_view_submission_stats = self.request.user.has_perm('base.orga_list_submission', event)
+        can_edit_schedule = self.request.user.has_perm('base.orga_edit_schedule', event)
+        can_view_schedule = self.request.user.has_perm('base.orga_view_schedule', event)
+        can_list_speaker = self.request.user.has_perm('base.orga_list_speakerprofile', event)
+        can_view_speakers = can_list_speaker
+        can_send_mail = self.request.user.has_perm('base.list_queuedmail', event)
+        can_view_mails = can_send_mail
+        can_view_teams = can_change_settings
+        
+        result.update({
+            'can_update_event': can_update_event,
+            'can_change_settings': can_change_settings,
+            'can_update_submission': can_update_submission,
+            'can_view_submission_stats': can_view_submission_stats,
+            'can_edit_schedule': can_edit_schedule,
+            'can_view_schedule': can_view_schedule,
+            'can_list_speaker': can_list_speaker,
+            'can_view_speakers': can_view_speakers,
+            'can_send_mail': can_send_mail,
+            'can_view_mails': can_view_mails,
+            'can_view_teams': can_view_teams,
+            'can_review': self.request.user.is_administrator or event.teams.filter(members__in=[self.request.user], is_reviewer=True).exists(),
+        })
+        can_change_submissions = can_update_submission
+
+        with scope(event=event):
+            tiles = self.get_cfp_tiles(_now, can_change_submissions=can_change_submissions)
+            if today < event.date_from:
+                days = (event.date_from - today).days
+                from django.utils.translation import ngettext_lazy
+                tiles.append({
                     'large': days,
                     'small': ngettext_lazy('day until event start', 'days until event start', days),
                     'priority': 10,
-                }
-            )
-        elif today > event.date_to:
-            days = (today - event.date_from).days
-            result['tiles'].append(
-                {
+                })
+            elif today > event.date_to:
+                days = (today - event.date_to).days
+                from django.utils.translation import ngettext_lazy
+                tiles.append({
                     'large': days,
                     'small': ngettext_lazy('day since event end', 'days since event end', days),
                     'priority': 80,
-                }
-            )
-        elif event.date_to != event.date_from:
-            day = (today - event.date_from).days + 1
-            result['tiles'].append(
-                {
+                })
+            elif event.date_to != event.date_from:
+                day = (today - event.date_from).days + 1
+                total_days = (event.date_to - event.date_from).days + 1
+                tiles.append({
                     'large': _('Day {number}').format(number=day),
-                    'small': _('of {total_days} days').format(total_days=(event.date_to - event.date_from).days + 1),
+                    'small': _('of {total_days} days').format(total_days=total_days),
                     'url': event.urls.schedule + f'#{today.isoformat()}',
                     'priority': 10,
-                }
-            )
-        if event.current_schedule:
-            result['tiles'].append(
-                {
-                    'large': event.current_schedule.version,
-                    'small': _('current schedule'),
-                    'url': event.urls.schedule,
-                    'priority': 25,
-                }
+                })
+            result['upcoming_items'] = tiles
+
+            # Action required metrics
+            unconfirmed_sessions_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
+        
+            unscheduled_sessions_count = 0
+            if getattr(event, 'wip_schedule', None):
+                unscheduled_sessions_count = event.wip_schedule.talks.filter(
+                    Q(start__isnull=True) | Q(room__isnull=True),
+                    is_visible=True,
+                    submission__state=SubmissionStates.CONFIRMED
+                ).count()
+            
+            incomplete_speakers_count = SpeakerProfile.objects.filter(
+                Q(event=event, user__in=event.speakers) &
+                (Q(biography__isnull=True) | Q(biography='') | Q(user__avatar__isnull=True) | Q(user__avatar=''))
+            ).distinct().count()
+
+            pending_notifications_count = event.queued_mails.filter(sent__isnull=True).count()
+        
+            result['action_required'] = {
+                'unconfirmed_sessions': unconfirmed_sessions_count,
+                'unscheduled_sessions': unscheduled_sessions_count,
+                'incomplete_speakers': incomplete_speakers_count,
+                'pending_notifications': pending_notifications_count,
+            }
+
+            # At a glance metrics
+            submitted_proposals_count = event.submissions.count()
+            accepted_proposals_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
+            confirmed_sessions_count = event.submissions.filter(state=SubmissionStates.CONFIRMED).count()
+            conversion_percentage = (
+                round(
+                    ((accepted_proposals_count + confirmed_sessions_count) / submitted_proposals_count) * 100,
+                    1,
+                )
+                if submitted_proposals_count
+                else 0
             )
 
-        talk_count = event.talks.count()
-        accepted_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
-        submission_count = event.submissions.count()
-        pending_state_submissions = event.submissions.filter(pending_state__isnull=False).count()
-        if talk_count or accepted_count:
-            confirmed_count = event.submissions.filter(state=SubmissionStates.CONFIRMED).count()
-            result['tiles'].append(
-                {
-                    # Don’t show 0 here for events that do not use the scheduling
-                    # component, instead show accepted + confirmed
-                    'large': talk_count or (accepted_count + confirmed_count),
-                    'small': ngettext_lazy('session', 'sessions', talk_count),
-                    'url': event.orga_urls.submissions
-                    + f'?state={SubmissionStates.ACCEPTED}&state={SubmissionStates.CONFIRMED}',
-                    'priority': 55,
-                    'right': {
-                        'text': str(_('unconfirmed')) + f': {accepted_count}',
-                        'url': event.orga_urls.submissions + f'?state={SubmissionStates.ACCEPTED}',
-                        'color': 'error' if accepted_count else 'info',
-                    },
-                    'left': {
-                        'text': str(_('confirmed')) + f': {confirmed_count}',
-                        'url': event.orga_urls.submissions,
-                        'color': 'success',
-                    },
-                }
-            )
-        elif submission_count:
-            count = event.submissions.count()
-            result['tiles'].append(
-                {
-                    'large': count,
-                    'small': ngettext_lazy('proposal', 'proposals', count),
-                    'url': event.orga_urls.submissions,
-                    'priority': 60,
-                }
-            )
-        if pending_state_submissions and pending_state_submissions > 0:
-            states = '&'.join(
-                [
-                    f'state=pending_state__{state}'
-                    for state, __ in SubmissionStates.get_choices()
-                    if state not in (SubmissionStates.DRAFT, SubmissionStates.DELETED)
-                ]
-            )
-            result['tiles'].append(
-                {
-                    'large': pending_state_submissions,
-                    'small': ngettext_lazy(
-                        'submission with pending changes',
-                        'submissions with pending changes',
-                        pending_state_submissions,
-                    ),
-                    'url': event.orga_urls.submissions + f'?{states}',
-                    'priority': 56,
-                }
-            )
-        submitter_count = event.submitters.count()
-        speaker_count = event.speakers.count()
-        rejected_count = event.submitters.filter(submissions__state=SubmissionStates.REJECTED).distinct().count()
-        if speaker_count:
-            result['tiles'].append(
-                {
-                    'large': speaker_count,
-                    'small': ngettext_lazy('speaker', 'speakers', speaker_count),
-                    'url': event.orga_urls.speakers + '?role=true',
-                    'priority': 56,
-                    'right': {
-                        'text': _('rejected') + f': {rejected_count}',
-                        'url': event.orga_urls.speakers + '?role=false',
-                        'color': 'error',
-                    },
-                    'left': {
-                        'text': phrases.submission.submitted + f': {submitter_count}',
-                        'url': event.orga_urls.speakers,
-                        'color': 'success',
-                    },
-                }
-            )
-        else:
-            result['tiles'].append(
-                {
-                    'large': submitter_count,
-                    'small': ngettext_lazy('submitter', 'submitters', submitter_count),
-                    'url': event.orga_urls.speakers,
-                    'priority': 60,
-                }
-            )
-        count = event.queued_mails.filter(sent__isnull=False).count()
-        result['tiles'].append(
-            {
-                'large': count,
-                'small': ngettext_lazy('sent email', 'sent emails', count),
-                'url': event.orga_urls.sent_mails,
-                'priority': 80,
+            scheduled_sessions_count = 0
+            if getattr(event, 'current_schedule', None):
+                scheduled_sessions_count = event.current_schedule.talks.filter(
+                    start__isnull=False, room__isnull=False, is_visible=True, submission__isnull=False
+                ).count()
+
+            speakers_count = event.speakers.count()
+        
+            is_reviewer = self.request.user.is_administrator or event.teams.filter(members__in=[self.request.user], is_reviewer=True).exists()
+            pending_reviews_count = get_missing_reviews(event, self.request.user).count() if is_reviewer else 0
+            rejected_proposals_count = event.submissions.filter(state=SubmissionStates.REJECTED).count()
+            withdrawn_proposals_count = event.submissions.filter(state__in=[SubmissionStates.WITHDRAWN, SubmissionStates.CANCELED]).count()
+        
+            emails_sent_count = event.queued_mails.filter(sent__isnull=False).count()
+            current_schedule_version = getattr(event.current_schedule, 'version', None) if getattr(event, 'current_schedule', None) else None
+        
+            active_reviewers_count = Review.objects.filter(submission__event=event).values('user').distinct().count()
+
+            result['at_a_glance'] = {
+                'talk_component_status': getattr(event, 'talk_component_presale_status', None),
+                'submitted_proposals': submitted_proposals_count,
+                'accepted_proposals': accepted_proposals_count,
+                'conversion_percentage': conversion_percentage,
+                'confirmed_sessions': confirmed_sessions_count,
+                'scheduled_sessions': scheduled_sessions_count,
+                'speakers': speakers_count,
+                'pending_reviews': pending_reviews_count,
+                'rejected_proposals': rejected_proposals_count,
+                'withdrawn_proposals': withdrawn_proposals_count,
+                'emails_sent': emails_sent_count,
+                'current_schedule_version': current_schedule_version,
+                'active_reviewers': active_reviewers_count,
             }
-        )
-        result['tiles'] += self.get_review_tiles(can_change_settings=can_change_settings)
-        result['tiles'].sort(key=lambda tile: tile.get('priority') or 100)
+        
         return result
