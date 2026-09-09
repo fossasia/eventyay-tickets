@@ -436,20 +436,21 @@ body:has(.od-dashboard) #page-content {
    -------------------------------------------------------------------------- */
 .od-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(148px, 148px));
   gap: 12px;
+  justify-content: start;
 }
 
 .od-kpi-card {
-  padding: 14px 16px;
+  width: 148px;
+  height: 148px;
+  padding: 14px;
   text-decoration: none;
   color: inherit;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 8px;
-  aspect-ratio: 1 / 1;
-  min-height: 0;
   box-sizing: border-box;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
@@ -483,7 +484,7 @@ body:has(.od-dashboard) #page-content {
 
 .od-kpi-label {
   font-family: var(--od-font-display);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--od-text);
   line-height: 1.25;
@@ -491,7 +492,7 @@ body:has(.od-dashboard) #page-content {
 
 .od-kpi-value {
   font-family: var(--od-font-display);
-  font-size: clamp(1.15rem, 2.2vw, 1.875rem);
+  font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
@@ -870,8 +871,7 @@ h4.od-subchart {
    Responsive
    -------------------------------------------------------------------------- */
 @media (max-width: 1199px) {
-  .od-card-grid--4,
-  .od-kpi-grid {
+  .od-card-grid--4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -889,9 +889,12 @@ h4.od-subchart {
     flex-direction: column;
   }
 
-  .od-card-grid--4,
-  .od-kpi-grid {
+  .od-card-grid--4 {
     grid-template-columns: 1fr;
+  }
+
+  .od-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 148px));
   }
 
   .od-activity-item {
