@@ -16,12 +16,17 @@
         <span>
             {% if question.active %}
                 {% translate "This field is currently active, it will be asked during submission." %}
-                <a class="btn btn-sm btn-outline-danger"
-                   href="{{ question.urls.toggle }}">{% translate "Hide field" %}</a>
             {% else %}
                 {% translate "This field is currently inactive, and will not be asked during submission." %}
-                <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% translate "Activate field" %}</a>
             {% endif %}
+            <form action="{{ question.urls.toggle }}" method="post" class="d-inline">
+                {% csrf_token %}
+                {% if question.active %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">{% translate "Hide field" %}</button>
+                {% else %}
+                    <button type="submit" class="btn btn-sm btn-success">{% translate "Activate field" %}</button>
+                {% endif %}
+            </form>
         </span>
     </div>
 {% endblock warnings %}

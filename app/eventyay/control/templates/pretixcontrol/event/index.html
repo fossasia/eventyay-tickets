@@ -87,10 +87,13 @@
                 {% for action in actions %}
                     <li class="list-group-item logentry">
                         <p>
-                            <a href="{% url "control:event.requiredaction.discard" event=request.event.slug organizer=request.event.organizer.slug id=action.id %}"
-                               class="btn btn-default btn-xs pull-right flip">
-                                {% trans "Hide message" %}
-                            </a>
+                            <form action="{% url 'control:event.requiredaction.discard' event=request.event.slug organizer=request.event.organizer.slug id=action.id %}"
+                                  method="post" class="pull-right flip">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-default btn-xs">
+                                    {% trans "Hide message" %}
+                                </button>
+                            </form>
                             <small><span
                                     class="fa fa-clock-o"></span> {{ action.datetime|date:"SHORT_DATETIME_FORMAT" }}
                             </small>

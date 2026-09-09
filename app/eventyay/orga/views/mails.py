@@ -155,40 +155,42 @@ class OutboxSend(ActionConfirmMixin, OutboxList):
     def action_back_url(self):
         return self.request.event.orga_urls.outbox
 
-    def dispatch(self, request, *args, **kwargs):
-        if 'pk' in self.kwargs:
-            try:
-                mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
-            except QueuedMail.DoesNotExist:
-                messages.error(
-                    request,
-                    _('This mail either does not exist or cannot be sent because it was sent already.'),
-                )
-                return redirect(self.request.event.orga_urls.outbox)
-            if mail.sent:
-                messages.error(request, _('This mail had been sent already.'))
-            else:
-                errors = get_send_mail_exceptions(request)
-                if errors:
-                    for error in errors:
-                        messages.error(request, error)
-                    return redirect(self.request.event.orga_urls.outbox)
-                try:
-                    mail.send(requestor=self.request.user)
-                    messages.success(request, _('The mail has been sent.'))
-                except SendMailException as e:
-                    messages.error(request, str(e))
-            return redirect(self.request.event.orga_urls.outbox)
-        return super().dispatch(request, *args, **kwargs)
-
     @cached_property
     def queryset(self):
+        if 'pk' in self.kwargs:
+            return self.request.event.queued_mails.filter(pk=self.kwargs.get('pk'), sent__isnull=True)
         pks = self.request.GET.get('pks') or ''
         if pks:
             return self.request.event.queued_mails.filter(sent__isnull=True, is_draft=False, pk__in=pks.split(','))
         return self.get_queryset()
 
+    def send_single_mail(self, request):
+        try:
+            mail = self.request.event.queued_mails.get(pk=self.kwargs.get('pk'))
+        except QueuedMail.DoesNotExist:
+            messages.error(
+                request,
+                _('This mail either does not exist or cannot be sent because it was sent already.'),
+            )
+            return redirect(self.request.event.orga_urls.outbox)
+        if mail.sent:
+            messages.error(request, _('This mail had been sent already.'))
+            return redirect(self.request.event.orga_urls.outbox)
+        errors = get_send_mail_exceptions(request)
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return redirect(self.request.event.orga_urls.outbox)
+        try:
+            mail.send(requestor=self.request.user)
+            messages.success(request, _('The mail has been sent.'))
+        except SendMailException as e:
+            messages.error(request, str(e))
+        return redirect(self.request.event.orga_urls.outbox)
+
     def post(self, request, *args, **kwargs):
+        if 'pk' in self.kwargs:
+            return self.send_single_mail(request)
         mails = self.queryset
         errors = get_send_mail_exceptions(request)
         if errors:

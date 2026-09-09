@@ -154,7 +154,7 @@ def test_orga_can_send_all_mails(orga_client, event, mail, other_mail, sent_mail
 def test_orga_can_send_single_mail(orga_client, event, mail, other_mail):
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
-    response = orga_client.get(mail.urls.send, follow=True)
+    response = orga_client.post(mail.urls.send, follow=True)
     assert response.status_code == 200
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 1
@@ -164,7 +164,7 @@ def test_orga_can_send_single_mail(orga_client, event, mail, other_mail):
 def test_orga_cannot_send_single_wrong_mail(orga_client, event, mail, other_mail):
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=True).count() == 2
-    response = orga_client.get(
+    response = orga_client.post(
         mail.urls.send.replace(str(mail.pk), str(mail.pk + 100)), follow=True
     )
     assert response.status_code == 200
@@ -225,7 +225,7 @@ def test_orga_can_discard_single_mail(orga_client, event, mail, other_mail):
 def test_orga_cannot_send_sent_mail(orga_client, event, sent_mail):
     with scope(event=event):
         assert QueuedMail.objects.filter(sent__isnull=False).count() == 1
-    response = orga_client.get(sent_mail.urls.send, follow=True)
+    response = orga_client.post(sent_mail.urls.send, follow=True)
     before = sent_mail.sent
     sent_mail.refresh_from_db()
     assert sent_mail.sent == before

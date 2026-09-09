@@ -57,13 +57,16 @@
                                     aria-label="{% translate "Move session type" %}">
                                 <i class="fa fa-arrows"></i>
                             </button>
-                            {% if request.event.cfp.default_type == type %}
-                                <a href="{{ type.urls.default }}" class="btn btn-sm btn-success" title="{% translate 'Click to remove default' %}">
-                                    <i class="fa fa-check"></i> {% translate "Default" %}
-                                </a>
-                            {% else %}
-                                <a href="{{ type.urls.default }}" class="btn btn-sm btn-info">{% translate "Make default" %}</a>
-                            {% endif %}
+                            <form action="{{ type.urls.default }}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                {% if request.event.cfp.default_type == type %}
+                                    <button type="submit" class="btn btn-sm btn-success" title="{% translate 'Click to remove default' %}">
+                                        <i class="fa fa-check"></i> {% translate "Default" %}
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-sm btn-info">{% translate "Make default" %}</button>
+                                {% endif %}
+                            </form>
                             <a href="{{ type.urls.prefilled_cfp.full }}"
                                title="{% translate "Go to pre-filled CfP form" %}"
                                class="btn btn-sm btn-info">

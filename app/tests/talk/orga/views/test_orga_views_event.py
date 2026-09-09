@@ -838,7 +838,7 @@ def test_edit_review_settings_activate_review_phase(orga_client, event):
         assert event.review_phases.count() == 2
         phase = event.active_review_phase
         other_phase = event.review_phases.exclude(pk=phase.pk).first()
-    response = orga_client.get(other_phase.urls.activate, follow=True)
+    response = orga_client.post(other_phase.urls.activate, follow=True)
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
     with scope(event=event):

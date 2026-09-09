@@ -27,6 +27,7 @@ from django.views.generic import (
     UpdateView,
     View,
 )
+from django.views.generic.detail import SingleObjectMixin
 
 from eventyay.base.models import (
     BBBCall,
@@ -226,8 +227,7 @@ class EventList(AdministratorPermissionRequiredMixin, ListView):
         return ctx
 
 
-class EventAdminToken(AdministratorPermissionRequiredMixin, DetailView):
-    template_name = "control/event_clear.html"
+class EventAdminToken(AdministratorPermissionRequiredMixin, SingleObjectMixin, View):
     queryset = Event.objects.all()
     success_url = "/admin/video/events/"
 
@@ -256,7 +256,7 @@ class EventAdminToken(AdministratorPermissionRequiredMixin, DetailView):
             from django.http import Http404
             raise Http404("Event not found")
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         event = self.get_object()
 
         # Ensure JWT configuration exists

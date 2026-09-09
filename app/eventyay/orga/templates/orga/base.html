@@ -207,9 +207,12 @@
                 {% blocktranslate with link=link trimmed %}
                     You’re using eventyay as a superuser. This is not recommended.
                 {% endblocktranslate %}
-                <a href="{% url "orga:user.subuser" %}?next={{ request.path|urlencode }}">
-                    {% translate "Please click here to switch to an administrator account." %}
-                </a>
+                <form action="{% url 'orga:user.subuser' %}?next={{ request.path|urlencode }}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link p-0 align-baseline">
+                        {% translate "Please click here to switch to an administrator account." %}
+                    </button>
+                </form>
             </div>
         {% endif %}
         <div id="page-wrapper">

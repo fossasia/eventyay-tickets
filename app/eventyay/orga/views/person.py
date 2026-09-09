@@ -97,7 +97,7 @@ class UserSettings(TemplateView):
 
 
 class SubuserView(View):
-    def dispatch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         request.user.is_administrator = request.user.is_superuser
         request.user.is_superuser = False
         request.user.save(update_fields=['is_administrator', 'is_superuser'])

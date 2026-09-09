@@ -295,15 +295,30 @@ class FeedbackSettings(EventSettingsPermission, ActionFromUrl, FormView):
         return super().form_valid(form)
 
 
-class PhaseActivate(EventSettingsPermission, View):
+class PhaseActivate(EventSettingsPermission, ActionConfirmMixin, TemplateView):
+    action_confirm_color = 'warning'
+    action_confirm_icon = 'star'
+    action_confirm_label = _('Activate phase')
+    action_title = _('Activate review phase')
+    action_text = _(
+        'Do you really want to activate this review phase? It will replace the currently active phase.'
+    )
+
     def get_object(self):
         return get_object_or_404(ReviewPhase, event=self.request.event, pk=self.kwargs.get('pk'))
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
+    @property
+    def action_object_name(self):
+        return self.get_object().name
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.review_settings
+
+    def post(self, request, *args, **kwargs):
         phase = self.get_object()
         phase.activate()
-        return redirect(self.request.event.orga_urls.review_settings)
+        return redirect(request.event.orga_urls.review_settings)
 
 
 class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):

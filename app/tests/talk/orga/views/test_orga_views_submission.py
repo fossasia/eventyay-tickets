@@ -370,7 +370,7 @@ def test_orga_can_readd_speaker(orga_client, submission):
 @pytest.mark.django_db
 def test_orga_can_remove_speaker(orga_client, submission):
     assert submission.speakers.count() == 1
-    response = orga_client.get(
+    response = orga_client.post(
         submission.orga_urls.delete_speaker
         + "?id="
         + str(submission.speakers.first().pk),
@@ -384,7 +384,7 @@ def test_orga_can_remove_speaker(orga_client, submission):
 @pytest.mark.django_db
 def test_orga_can_remove_wrong_speaker(orga_client, submission, other_speaker):
     assert submission.speakers.count() == 1
-    response = orga_client.get(
+    response = orga_client.post(
         submission.orga_urls.delete_speaker + "?id=" + str(other_speaker.pk),
         follow=True,
     )

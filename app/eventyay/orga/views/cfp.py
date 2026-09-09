@@ -644,31 +644,20 @@ class QuestionView(OrderActionMixin, OrgaCRUDView):
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class CfPQuestionToggle(PermissionRequired, View):
-    """Toggle question field states via AJAX POST or legacy GET."""
+    """Toggle question field states via AJAX POST or a form POST."""
 
     permission_required = 'base.update_talkquestion'
 
     def get_object(self) -> TalkQuestion:
         return get_object_or_404(TalkQuestion.all_objects, event=self.request.event, pk=self.kwargs.get('pk'))
 
-    def dispatch(self, request, *args, **kwargs):
-        # Check permissions first
-        if not self.has_permission():
-            return self.handle_no_permission()
-
+    def post(self, request, *args, **kwargs):
         question = self.get_object()
-
-        # Legacy GET: toggle active
-        if request.method == http.HTTPMethod.GET:
-            question.active = not question.active
-            question.save(update_fields=['active'])
-            return redirect(question.urls.base)
-
-        # AJAX POST: toggle specific field
-        if request.method == http.HTTPMethod.POST:
+        if request.content_type == 'application/json':
             return self._handle_post(request, question)
-
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        question.active = not question.active
+        question.save(update_fields=['active'])
+        return redirect(question.urls.base)
 
     @transaction.atomic
     def _handle_post(self, request, question):
@@ -842,10 +831,9 @@ class SubmissionTypeDefault(PermissionRequired, View):
     def get_object(self):
         return get_object_or_404(self.request.event.submission_types, pk=self.kwargs.get('pk'))
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
         submission_type = self.get_object()
-        cfp = self.request.event.cfp
+        cfp = request.event.cfp
 
         if cfp.default_type == submission_type:
             # Already default - remove it
@@ -856,10 +844,10 @@ class SubmissionTypeDefault(PermissionRequired, View):
             # Set as new default
             cfp.default_type = submission_type
             cfp.save(update_fields=['default_type'])
-            submission_type.log_action('eventyay.submission_type.make_default', person=self.request.user, orga=True)
+            submission_type.log_action('eventyay.submission_type.make_default', person=request.user, orga=True)
             messages.success(request, _('The Session Type has been made default.'))
 
-        return redirect(self.request.event.cfp.urls.types)
+        return redirect(request.event.cfp.urls.types)
 
 
 class TrackView(OrderActionMixin, OrgaCRUDView):

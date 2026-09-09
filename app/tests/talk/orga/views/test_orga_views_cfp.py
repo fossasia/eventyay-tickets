@@ -105,7 +105,7 @@ def test_make_submission_type_default(
     with scope(event=submission_type.event):
         assert default_submission_type.event.submission_types.count() == 2
         assert submission_type.event.cfp.default_type == default_submission_type
-    response = orga_client.get(submission_type.urls.default, follow=True)
+    response = orga_client.post(submission_type.urls.default, follow=True)
     assert response.status_code == 200
     with scope(event=submission_type.event):
         assert default_submission_type.event.submission_types.count() == 2
@@ -585,7 +585,7 @@ def test_can_remind_answered_submission_question(
 def test_can_hide_question(orga_client, question):
     assert question.active
 
-    response = orga_client.get(question.urls.toggle, follow=True)
+    response = orga_client.post(question.urls.toggle, follow=True)
     with scope(event=question.event):
         question = Question.all_objects.get(pk=question.pk)
 
@@ -597,7 +597,7 @@ def test_can_hide_question(orga_client, question):
 def test_can_activate_inactive_question(orga_client, inactive_question):
     assert not inactive_question.active
 
-    response = orga_client.get(inactive_question.urls.toggle, follow=True)
+    response = orga_client.post(inactive_question.urls.toggle, follow=True)
     inactive_question.refresh_from_db()
 
     assert response.status_code == 200

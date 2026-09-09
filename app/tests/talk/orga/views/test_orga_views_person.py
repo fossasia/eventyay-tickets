@@ -1,4 +1,5 @@
 import json
+import urllib.parse
 
 import pytest
 from django.urls import reverse
@@ -42,9 +43,8 @@ def test_user_typeahead(
 def test_remove_superuser(orga_client, orga_user, follow, expected):
     orga_user.is_superuser = True
     orga_user.save()
-    response = orga_client.get(
-        reverse("orga:user.subuser"),
-        data={"next": follow},
+    response = orga_client.post(
+        reverse("orga:user.subuser") + "?next=" + urllib.parse.quote(follow, safe=""),
     )
 
     orga_user.refresh_from_db()
@@ -55,7 +55,7 @@ def test_remove_superuser(orga_client, orga_user, follow, expected):
 
 @pytest.mark.django_db
 def test_remove_superuser_if_no_superuser(orga_client, orga_user):
-    response = orga_client.get(reverse("orga:user.subuser"), follow=True)
+    response = orga_client.post(reverse("orga:user.subuser"), follow=True)
 
     orga_user.refresh_from_db()
     assert response.status_code == 200

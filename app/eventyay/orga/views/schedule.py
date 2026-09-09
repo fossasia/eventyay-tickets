@@ -181,10 +181,9 @@ class ScheduleToggleView(EventPermissionRequired, View):
         event.settings.talk_schedule_public = is_public
         event.save(update_fields=['feature_flags'])
 
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        is_public = not self.request.event.get_feature_flag('show_schedule')
-        self._set_schedule_public(self.request.event, is_public)
+    def post(self, request, *args, **kwargs):
+        is_public = not request.event.get_feature_flag('show_schedule')
+        self._set_schedule_public(request.event, is_public)
         # Trigger tickets to hidden/unhidden schedule menu
         try:
             from eventyay.orga.tasks import trigger_public_schedule
@@ -192,9 +191,9 @@ class ScheduleToggleView(EventPermissionRequired, View):
             trigger_public_schedule.apply_async(
                 kwargs={
                     'is_show_schedule': is_public,
-                    'event_slug': self.request.event.slug,
-                    'organiser_slug': self.request.event.organizer.slug,
-                    'user_email': self.request.user.email,
+                    'event_slug': request.event.slug,
+                    'organiser_slug': request.event.organizer.slug,
+                    'user_email': request.user.email,
                 },
                 ignore_result=True,
             )
@@ -205,7 +204,7 @@ class ScheduleToggleView(EventPermissionRequired, View):
             )
         except Exception as e:
             logger.error('Unexpected error in task: %s', e)
-        return redirect(self.request.event.orga_urls.schedule)
+        return redirect(request.event.orga_urls.schedule)
 
 
 class ScheduleResendMailsView(EventPermissionRequired, View):
