@@ -399,12 +399,8 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         if draft_count:
             action_required.append(
                 {
-                    'title': ngettext(
-                        '%(count)d draft event incomplete',
-                        '%(count)d draft events incomplete',
-                        draft_count,
-                    )
-                    % {'count': draft_count},
+                    'title': _('Draft events incomplete'),
+                    'count': draft_count,
                     'description': _('Finish setup and publish when you are ready.'),
                     'icon': 'file-text-o',
                     'tone': 'caution',
@@ -415,12 +411,8 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         if pending_approval_orders:
             action_required.append(
                 {
-                    'title': ngettext(
-                        '%(count)d order needs approval',
-                        '%(count)d orders need approval',
-                        pending_approval_orders,
-                    )
-                    % {'count': pending_approval_orders},
+                    'title': _('Orders need approval'),
+                    'count': pending_approval_orders,
                     'description': _('Review pending ticket orders across your events.'),
                     'icon': 'shopping-cart',
                     'tone': 'warning',
@@ -436,12 +428,8 @@ def build_organizer_dashboard_overview(request, analytics: Mapping[str, Any]) ->
         if integrations_attention:
             action_required.append(
                 {
-                    'title': ngettext(
-                        '%(count)d integration needs attention',
-                        '%(count)d integrations need attention',
-                        integrations_attention,
-                    )
-                    % {'count': integrations_attention},
+                    'title': _('Integrations need attention'),
+                    'count': integrations_attention,
                     'description': _('Connect devices, invite teammates, or finish setup.'),
                     'icon': 'puzzle-piece',
                     'tone': 'info',

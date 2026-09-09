@@ -3,21 +3,22 @@
 <section class="od-section" aria-labelledby="od-action-required-title">
   <div class="od-section-heading">
     <h2 id="od-action-required-title" class="od-section-title">
-      <span class="fa fa-exclamation-circle od-title-icon--orange" aria-hidden="true"></span>
+      <span class="fa fa-info-circle od-title-icon--orange" aria-hidden="true"></span>
       {% trans "Action required" %}
     </h2>
   </div>
-  <div class="od-card-grid od-card-grid--3">
+  <div class="od-action-grid">
     {% for card in action_required %}
-      <article class="od-action-card od-tone-{{ card.tone }}">
-        <div class="od-action-card-title">
-          <span class="fa fa-{{ card.icon }}" aria-hidden="true"></span>
-          {{ card.title }}
+      <article class="od-action-card od-action-{{ card.tone }} od-action-card-active">
+        <div class="od-action-header">
+          <span class="od-action-icon" aria-hidden="true"><span class="fa fa-{{ card.icon }}"></span></span>
+          <span class="od-action-title">{{ card.title }}</span>
         </div>
-        <p>{{ card.description }}</p>
-        <a class="od-card-link" href="{{ card.url }}">
+        <div class="od-action-count">{{ card.count }}</div>
+        <p class="od-action-desc">{{ card.description }}</p>
+        <a class="od-action-btn" href="{{ card.url }}">
           {{ card.cta }}
-          <span aria-hidden="true">></span>
+          <span aria-hidden="true">&gt;</span>
         </a>
       </article>
     {% endfor %}

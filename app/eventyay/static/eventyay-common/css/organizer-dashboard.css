@@ -268,7 +268,6 @@ body:has(.od-dashboard) #page-content {
 }
 
 .od-start-card,
-.od-action-card,
 .od-tool-card,
 .od-panel {
   background: var(--od-surface);
@@ -277,7 +276,7 @@ body:has(.od-dashboard) #page-content {
   box-shadow: var(--od-shadow);
 }
 
-/* Tone accents — shared by start / action cards */
+/* Tone accents — shared by start cards */
 .od-tone-blue {
   --od-accent: var(--od-blue);
   --od-accent-soft: var(--od-blue-soft);
@@ -308,14 +307,12 @@ body:has(.od-dashboard) #page-content {
   --od-accent-soft: var(--od-heading-bg);
 }
 
-.od-start-card[class*='od-tone-'],
-.od-action-card[class*='od-tone-'] {
+.od-start-card[class*='od-tone-'] {
   background: linear-gradient(135deg, var(--od-accent-soft) 0%, var(--od-surface) 100%);
   border-color: color-mix(in srgb, var(--od-accent) 28%, var(--od-surface));
 }
 
-.od-start-card[class*='od-tone-']:is(:hover, :focus-within),
-.od-action-card[class*='od-tone-']:is(:hover, :focus-within) {
+.od-start-card[class*='od-tone-']:is(:hover, :focus-within) {
   border-color: var(--od-accent);
 }
 
@@ -385,47 +382,179 @@ body:has(.od-dashboard) #page-content {
   color: var(--color-primary-hover);
 }
 
+/* --------------------------------------------------------------------------
+   Action required — match Talks (.td-action-*) card size and layout
+   -------------------------------------------------------------------------- */
+.od-action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
 .od-action-card {
-  padding: 16px 18px;
+  background: #fff;
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius);
+  box-shadow: var(--od-shadow);
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 140px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 168px;
+  box-sizing: border-box;
+  transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 
 .od-action-card:hover,
 .od-action-card:focus-within {
-  transform: translateY(-2px);
   box-shadow: var(--od-shadow-hover);
+  transform: translateY(-1px);
 }
 
-.od-action-card-title {
+.od-action-card.od-action-danger {
+  border-color: #fecaca;
+  background: linear-gradient(180deg, #fff5f5 0%, #fff 48%);
+}
+
+.od-action-card.od-action-warning {
+  border-color: #fed7aa;
+  background: linear-gradient(180deg, #fff7ed 0%, #fff 48%);
+}
+
+.od-action-card.od-action-caution {
+  border-color: #fde68a;
+  background: linear-gradient(180deg, #fffbeb 0%, #fff 48%);
+}
+
+.od-action-card.od-action-info {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #eff6ff 0%, #fff 48%);
+}
+
+.od-action-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--od-font-display);
-  font-size: 16px;
-  font-weight: 800;
+  min-height: 26px;
+  min-width: 0;
 }
 
-.od-action-card-title .fa {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+.od-action-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  background: var(--od-accent-soft);
-  color: var(--od-accent);
+  flex-shrink: 0;
+  background: #f3f4f6;
+  color: var(--od-muted);
+  font-size: 12px;
 }
 
-.od-action-card p {
+.od-action-danger .od-action-icon {
+  background: var(--od-red-soft);
+  color: var(--od-red);
+}
+
+.od-action-warning .od-action-icon {
+  background: var(--od-orange-soft);
+  color: var(--od-orange);
+}
+
+.od-action-caution .od-action-icon {
+  background: var(--od-yellow-soft);
+  color: var(--od-yellow);
+}
+
+.od-action-info .od-action-icon {
+  background: var(--od-blue-soft);
+  color: var(--od-blue);
+}
+
+.od-action-title {
+  font-family: var(--od-font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--od-text);
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.od-action-count {
+  font-family: var(--od-font-display);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--od-text);
+  margin: 2px 0 0;
+}
+
+.od-action-danger .od-action-count { color: var(--od-red); }
+.od-action-warning .od-action-count { color: var(--od-orange); }
+.od-action-caution .od-action-count { color: #a16207; }
+.od-action-info .od-action-count { color: var(--od-blue); }
+
+.od-action-desc {
   margin: 0;
+  font-family: var(--od-font-body);
   font-size: 13.5px;
+  line-height: 1.45;
   color: var(--od-muted);
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.od-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, filter 0.15s ease;
+}
+
+.od-action-danger .od-action-btn {
+  background: var(--od-red);
+  color: #fff;
+}
+
+.od-action-warning .od-action-btn {
+  background: var(--od-orange);
+  color: #fff;
+}
+
+.od-action-caution .od-action-btn {
+  background: #ca8a04;
+  color: #fff;
+}
+
+.od-action-info .od-action-btn {
+  background: var(--od-blue);
+  color: #fff;
+}
+
+.od-action-btn:hover,
+.od-action-btn:focus {
+  filter: brightness(0.95);
+  text-decoration: none;
+  color: #fff;
 }
 
 /* --------------------------------------------------------------------------
@@ -972,6 +1101,10 @@ h4.od-subchart {
   .od-kpi-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .od-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1199px) {
@@ -998,6 +1131,7 @@ h4.od-subchart {
   }
 
   .od-card-grid--4,
+  .od-action-grid,
   .od-kpi-grid {
     grid-template-columns: 1fr;
   }
