@@ -14,8 +14,13 @@ const initMailPreview = () => {
                 return;
             }
 
+            const setHTML = (container, htmlString) => {
+                const fragment = document.createRange().createContextualFragment(htmlString);
+                container.replaceChildren(fragment);
+            };
+
             // Show loading state
-            previewContainer.innerHTML = `
+            setHTML(previewContainer, `
                 <fieldset class="mt-4 mb-4">
                     <legend id="preview">${typeof window.gettext === 'function' ? window.gettext("Email preview") : "Email preview"}</legend>
                     <div class="alert alert-info">
@@ -25,7 +30,7 @@ const initMailPreview = () => {
                         </div>
                     </div>
                 </fieldset>
-            `;
+            `);
 
             // Prepare form data
             const formData = new FormData(form);
@@ -62,7 +67,7 @@ const initMailPreview = () => {
                 const data = await response.json();
 
                 if (data.html) {
-                    previewContainer.innerHTML = data.html;
+                    setHTML(previewContainer, data.html);
                 } else if (data.error) {
                     throw new Error("Form validation failed.");
                 } else {
@@ -70,7 +75,7 @@ const initMailPreview = () => {
                 }
             } catch (error) {
                 console.error("Email preview failed:", error);
-                previewContainer.innerHTML = `
+                setHTML(previewContainer, `
                     <fieldset class="mt-4 mb-4">
                         <legend id="preview">${typeof window.gettext === 'function' ? window.gettext("Email preview") : "Email preview"}</legend>
                         <div class="alert alert-danger">
@@ -79,7 +84,7 @@ const initMailPreview = () => {
                             </div>
                         </div>
                     </fieldset>
-                `;
+                `);
             }
         });
     });
