@@ -5,6 +5,7 @@ from allauth.account.models import EmailAddress
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -193,21 +194,53 @@ def resolve_admin_recipients(filters: dict) -> list[dict]:
         n = tz_now()
         with scopes_disabled():
             if event_status == 'live':
-                event_pks = Event.objects.filter(live=True).values_list('pk', flat=True)
+                event_pks = list(Event.objects.filter(live=True).values_list('pk', flat=True))
             elif event_status == 'draft':
-                event_pks = Event.objects.filter(live=False).values_list('pk', flat=True)
+                event_pks = list(Event.objects.filter(live=False).values_list('pk', flat=True))
             elif event_status == 'past':
-                event_pks = Event.objects.filter(
+                event_pks = list(Event.objects.filter(
                     Q(date_to__lt=n) | Q(date_to__isnull=True, date_from__lt=n)
-                ).values_list('pk', flat=True)
+                ).values_list('pk', flat=True))
             else:
                 event_pks = None
 
             if event_pks is not None:
-                qs = qs.filter(
-                    Q(teams__all_events=True, teams__organizer__events__pk__in=event_pks)
-                    | Q(teams__limit_events__pk__in=event_pks)
-                ).distinct()
+                if recipient_group in (
+                    AdminRecipientGroup.EVENT_ORGANISERS,
+                    AdminRecipientGroup.EVENT_TEAM_MEMBERS,
+                    AdminRecipientGroup.REVIEWERS,
+                ):
+                    qs = qs.filter(
+                        Q(teams__all_events=True, teams__organizer__events__pk__in=event_pks)
+                        | Q(teams__limit_events__pk__in=event_pks)
+                    ).distinct()
+
+                elif recipient_group == AdminRecipientGroup.SPEAKERS:
+                    from eventyay.base.models.submission import Submission
+                    speaker_ids = Submission.objects.filter(
+                        event__pk__in=event_pks
+                    ).values_list('speakers__pk', flat=True).distinct()
+                    qs = qs.filter(pk__in=speaker_ids)
+
+                elif recipient_group == AdminRecipientGroup.ATTENDEES:
+                    from eventyay.base.models.orders import Order, OrderPosition
+                    filtered_pos_emails = set(
+                        OrderPosition.objects.filter(
+                            order__event__pk__in=event_pks,
+                            attendee_email__isnull=False,
+                        ).exclude(attendee_email='').values_list('attendee_email', flat=True).distinct()
+                    )
+                    filtered_order_emails = set(
+                        Order.objects.filter(
+                            event__pk__in=event_pks,
+                            status__in=['p', 'n'],
+                        ).exclude(email__isnull=True).exclude(email='').values_list('email', flat=True).distinct()
+                    )
+                    event_emails = filtered_pos_emails | filtered_order_emails
+                    qs = qs.filter(email__in=event_emails)
+                    extra_emails = {e.strip().lower() for e in event_emails} - {
+                        e.strip().lower() for e in qs.values_list('email', flat=True)
+                    }
 
     seen: set[str] = set()
     result: list[dict] = []
@@ -379,7 +412,7 @@ class AdminMessageComposeView(AdministratorPermissionRequiredMixin, FormView):
         draft_pk = self.request.GET.get('draft')
         if draft_pk:
             draft = AdminEmailQueue.objects.filter(
-                pk=draft_pk, status=AdminEmailStatus.DRAFT
+                pk=draft_pk, status__in=[AdminEmailStatus.DRAFT, AdminEmailStatus.QUEUED]
             ).first()
             if draft:
                 self._draft = draft
@@ -407,9 +440,14 @@ class AdminMessageComposeView(AdministratorPermissionRequiredMixin, FormView):
                         'exclude_inactive': f.exclude_inactive,
                         'exclude_unconfirmed_email': f.exclude_unconfirmed_email,
                     })
+                    if f.organiser_ids:
+                        initial['selected_organisers'] = Organizer.objects.filter(pk__in=f.organiser_ids)
+                    if f.event_ids:
+                        initial['selected_events'] = Event.objects.filter(pk__in=f.event_ids)
+                    if f.selected_user_ids:
+                        initial['selected_users'] = User.objects.filter(pk__in=f.selected_user_ids)
                 except AdminEmailQueueFilter.DoesNotExist:
                     pass
-        return initial
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -450,7 +488,7 @@ class AdminMessageComposeView(AdministratorPermissionRequiredMixin, FormView):
         draft_pk = self.request.POST.get('draft_id') or self.request.GET.get('draft')
         if draft_pk and not draft:
             draft = AdminEmailQueue.objects.filter(
-                pk=draft_pk, status=AdminEmailStatus.DRAFT
+                pk=draft_pk, status__in=[AdminEmailStatus.DRAFT, AdminEmailStatus.QUEUED]
             ).first()
 
         attachment = cd.get('attachment')
@@ -498,9 +536,10 @@ class AdminMessageComposeView(AdministratorPermissionRequiredMixin, FormView):
             return self.render_to_response(ctx)
 
         mail.recipient_count_snapshot = count
-        mail.save()
-        _save_filters(mail, filters)
-        _populate_recipients(mail, resolved)
+        with transaction.atomic():
+            mail.save()
+            _save_filters(mail, filters)
+            _populate_recipients(mail, resolved)
 
         LogEntry.objects.create(
             content_type=ContentType.objects.get_for_model(AdminEmailQueue),
@@ -728,9 +767,19 @@ class AdminMessageSendView(AdministratorPermissionRequiredMixin, View):
 
 class AdminMessageCancelView(AdministratorPermissionRequiredMixin, View):
     def post(self, request, pk):
-        mail = get_object_or_404(AdminEmailQueue, pk=pk, status=AdminEmailStatus.QUEUED)
-        mail.status = AdminEmailStatus.CANCELLED
-        mail.save(update_fields=['status'])
+        with transaction.atomic():
+            mail = (
+                AdminEmailQueue.objects
+                .select_for_update()
+                .filter(pk=pk, status=AdminEmailStatus.QUEUED)
+                .first()
+            )
+            if mail is None:
+                messages.warning(request, _('This email could not be cancelled (not found or already processed).'))
+                return redirect('eventyay_admin:admin.messages.outbox')
+
+            mail.status = AdminEmailStatus.CANCELLED
+            mail.save(update_fields=['status'])
 
         LogEntry.objects.create(
             content_type=ContentType.objects.get_for_model(AdminEmailQueue),
@@ -769,17 +818,16 @@ class AdminMessageRecipientsView(AdministratorPermissionRequiredMixin, View):
         filters = _extract_filter_dict(form.cleaned_data)
         recipients = resolve_admin_recipients(filters)
 
-        show_list = request.GET.get('show_list', '').lower() in ('1', 'true', 'yes')
-        preview = []
-        if show_list:
-            for r in recipients[:100]:
-                preview.append({
-                    'name': r['name'],
-                    'email': r['email'],
-                    'status': r.get('status', ''),
-                    'role': r.get('role', ''),
-                    'reason': r.get('reason', ''),
-                })
+        preview = [
+            {
+                'name': r['name'],
+                'email': r['email'],
+                'status': r.get('status', ''),
+                'role': r.get('role', ''),
+                'reason': r.get('reason', ''),
+            }
+            for r in recipients[:100]
+        ]
 
         no_email_count = sum(1 for r in recipients if not r.get('email'))
         return JsonResponse({

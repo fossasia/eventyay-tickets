@@ -150,14 +150,20 @@ class AdminEmailQueue(models.Model):
         return new_mail
 
     def _resolve_attachment(self) -> list[dict] | None:
-        """Resolve the CachedFile UUID into an attachment list for mail_send_task."""
         if not self.attachment:
             return None
         from eventyay.base.models.base import CachedFile
         try:
             cf = CachedFile.objects.get(id=self.attachment)
-            content = cf.file.read()
-            cf.file.seek(0)
+            try:
+                content = cf.file.read()
+                cf.file.seek(0)
+            except (ValueError, FileNotFoundError, OSError):
+                logger.warning(
+                    'CachedFile %s content unavailable for AdminEmailQueue %s',
+                    self.attachment, self.pk,
+                )
+                return None
             return [{
                 'name': cf.filename or 'attachment',
                 'content': content,
@@ -169,7 +175,7 @@ class AdminEmailQueue(models.Model):
 
     def send(self) -> bool:
         """
-        Send the queued email to all recipients. Returns True if sent.
+        Send the queued email to all recipients. Returns True if called.
         Called by the Celery task.
         """
         if self.status in (AdminEmailStatus.SENT, AdminEmailStatus.DRAFT):
@@ -178,8 +184,15 @@ class AdminEmailQueue(models.Model):
         if self.scheduled_at and self.scheduled_at > now():
             return False
 
-        recipients = self.recipients.select_related('user').filter(sent=False)
-        if not recipients.exists():
+        # Only consider recipients with a valid email address.
+        valid_recipients = (
+            self.recipients
+            .select_related('user')
+            .filter(sent=False)
+            .exclude(email__isnull=True)
+            .exclude(email='')
+        )
+        if not valid_recipients.exists():
             self.status = AdminEmailStatus.SENT
             self.sent_at = now()
             self.save(update_fields=['status', 'sent_at'])
@@ -194,12 +207,8 @@ class AdminEmailQueue(models.Model):
         bcc_list = [b.strip() for b in self.bcc.split(',') if b.strip()] if self.bcc else []
         attachments = self._resolve_attachment()
 
-        for recipient in recipients:
-            if not recipient.email:
-                recipient.error = 'No email address'
-                recipient.save(update_fields=['error'])
-                continue
-
+        any_dispatched = False
+        for recipient in valid_recipients:
             context = self._build_context(recipient)
             subject = self.subject
             body = self.message
@@ -218,24 +227,55 @@ class AdminEmailQueue(models.Model):
                         'reply_to': [reply_to_addr] if reply_to_addr else [],
                         'event': None,
                         'cc': [],
-                        'bcc': bcc_list,
+                        'bcc': [],
                         'attachments': attachments,
                     },
                     ignore_result=True,
                 )
+                # Mark dispatched, not delivered — best-effort tracking.
                 recipient.sent = True
                 recipient.error = None
                 recipient.save(update_fields=['sent', 'error'])
-            except Exception as exc:
-                logger.exception('Error sending admin email to %s', recipient.email)
-                recipient.error = str(exc)
+                any_dispatched = True
+            except Exception:
+                logger.exception('Error dispatching admin email to %s', recipient.email)
+                recipient.error = 'Dispatch failed'
                 recipient.save(update_fields=['error'])
 
-        if not self.recipients.filter(sent=False).exists():
+        if bcc_list and any_dispatched:
+            try:
+                mail_send_task.apply_async(
+                    kwargs={
+                        'to': bcc_list,
+                        'subject': self.subject,
+                        'body': self.message,
+                        'html': AdminEmailQueue.make_html(self.message),
+                        'reply_to': [],
+                        'event': None,
+                        'cc': [],
+                        'bcc': [],
+                        'attachments': attachments,
+                    },
+                    ignore_result=True,
+                )
+            except Exception:
+                logger.exception('Error dispatching BCC copy for AdminEmailQueue %s', self.pk)
+
+        unsent_valid = (
+            self.recipients
+            .filter(sent=False)
+            .exclude(email__isnull=True)
+            .exclude(email='')
+            .exists()
+        )
+        if not unsent_valid:
             self.status = AdminEmailStatus.SENT
             self.sent_at = now()
             self.scheduled_at = None
             self.save(update_fields=['status', 'sent_at', 'scheduled_at'])
+        else:
+            self.status = AdminEmailStatus.QUEUED
+            self.save(update_fields=['status'])
 
         return True
 

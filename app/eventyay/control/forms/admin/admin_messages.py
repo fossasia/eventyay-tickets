@@ -216,7 +216,7 @@ class AdminComposeForm(ScheduledAtValidationMixin, forms.Form):
         choices=DELIVERY_MODE_CHOICES,
         initial='now',
         required=False,
-        widget=forms.HiddenInput(),
+        widget=forms.RadioSelect(),
     )
 
     scheduled_at = SplitDateTimeField(
