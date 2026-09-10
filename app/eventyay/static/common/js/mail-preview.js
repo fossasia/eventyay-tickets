@@ -78,7 +78,19 @@ const initMailPreview = () => {
                 if (data.html) {
                     setHTML(previewContainer, data.html);
                 } else if (data.error) {
-                    throw new Error("Form validation failed.");
+                    let errorMessage = typeof window.gettext === 'function' ? window.gettext("Form validation failed.") : "Form validation failed.";
+                    if (data.errors) {
+                        const errorDetails = Object.entries(data.errors)
+                            .map(([field, errors]) => {
+                                const msgs = Array.isArray(errors) ? errors.map(e => e.message || e).join(', ') : errors;
+                                return `<strong>${field}</strong>: ${msgs}`;
+                            })
+                            .join('<br>');
+                        errorMessage += `<br><br>${errorDetails}`;
+                    }
+                    const err = new Error("Form validation failed.");
+                    err.details = errorMessage;
+                    throw err;
                 } else {
                     throw new Error("Preview response did not contain HTML.");
                 }
@@ -87,12 +99,18 @@ const initMailPreview = () => {
                     return;
                 }
                 console.error("Email preview failed:", error);
+                
+                let errorHtml = typeof window.gettext === 'function' ? window.gettext("Email preview could not be generated. Please check the message content and try again.") : "Email preview could not be generated. Please check the message content and try again.";
+                if (error.details) {
+                    errorHtml = error.details;
+                }
+
                 setHTML(previewContainer, `
                     <fieldset class="mt-4 mb-4">
                         <legend id="preview">${typeof window.gettext === 'function' ? window.gettext("Email preview") : "Email preview"}</legend>
                         <div class="alert alert-danger">
                             <div>
-                                ${typeof window.gettext === 'function' ? window.gettext("Email preview could not be generated. Please check the message content and try again.") : "Email preview could not be generated. Please check the message content and try again."}
+                                ${errorHtml}
                             </div>
                         </div>
                     </fieldset>

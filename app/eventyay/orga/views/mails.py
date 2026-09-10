@@ -489,7 +489,8 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
 
     def form_invalid(self, form):
         if self.request.POST.get('action') == 'preview' and self.request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'success': False, 'error': True}, status=400)
+            errors = form.errors.get_json_data() if hasattr(form.errors, 'get_json_data') else dict(form.errors)
+            return JsonResponse({'success': False, 'error': True, 'errors': errors}, status=400)
         return super().form_invalid(form)
 
     def send_test_email(self, form):
